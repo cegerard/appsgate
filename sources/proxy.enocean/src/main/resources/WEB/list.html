@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>EnOcean Pairing web GUI</title>
+<link rel="stylesheet" href="style.css">
+<script type="text/javascript" src="webSocket.js"></script>
+</head>
+<body onload="javascript:WebSocketOpen();"
+	onUnload="javascript:WebSocketClose();">
+	<div id="undefinedSensor">
+		<button type="button" id="pairing-button" onclick="javascript:setPairingMode();">Toggle Pairing mode</button>
+		<p id="pairing-status" style="background-color: Red; height: 30px; width: 50px">OFF<p>
+		
+		<h2>Configurable sensors</h2>
+		<select id="sensor-list" name="selectSensor" size="3" onChange="javascript:getSensorInfos();" style="width: 119px; ">
+		</select>
+
+		<div id="sensor-profile">
+			<p style="width: 150px; ">Type:</p><select id="profile-list" name="selectProfile" size="1" onChange="javascript:selectNewProfile();" style="width: 150px; ">
+			</select>
+			<p style="width: 150px; ">Profile:</p><p id="selected-profile" style="width: 150px; "></p>
+		</div>
+	</div>
+	<button type="button" id="validate-button" onclick="javascript:validConf();">Validate</button>
+</body>
+</html>

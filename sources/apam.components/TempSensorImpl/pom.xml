@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>apam.components</artifactId>
+		<groupId>appsGate.bundle</groupId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>TempSensorImpl</artifactId>
+	<packaging>bundle</packaging>
+	<name>Temperature sensor implementation</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<!-- Repositories List -->
+	<repositories>
+		<repository>
+			<id>apam-repo</id>
+			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<!-- Dependencies Description -->
+	<dependencies>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>TempSensorSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-core</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.lig</groupId>
+			<artifactId>proxy.enocean</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			 <groupId>appsGate.bundle</groupId>
+			 <artifactId>AbstractObjectSpec</artifactId>
+			 <version>1.0.0</version>
+		</dependency>
+		<!--BEGIN Temporary dependency  -->
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>communication.manager</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!--END Temporary dependency  -->
+	</dependencies>
+
+	<!-- Build Description -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>fr.imag.adele.apam</groupId>
+				<artifactId>apam-maven-plugin</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>apam-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

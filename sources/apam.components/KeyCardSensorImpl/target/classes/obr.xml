@@ -1,0 +1,27 @@
+<obr> 
+   <capability name='maven'>
+      <p n='groupId' v='appsGate.bundle' />
+      <p n='artifactId' v='KeyCardSensorImpl' />
+      <p n='version' v='1.0.0' />
+   </capability>
+   <capability name='apam-component'>
+      <p n='name' v='KeyCardSensorImpl' />
+      <p n='component-type' v='implementation' />
+      <p n='impl-name' v='KeyCardSensorImpl' />
+      <p n='provide-interfaces' v='appsgate.lig.keycard.sensor.spec.KeyCardSensorSpec,appsgate.lig.logical.object.spec.AbstractObjectSpec' />
+      <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
+      <p n='provide-specification' v='KeyCardSensorSpec' />
+      <p n='definition-deviceName' t='string' v='Unknown' />
+      <p n='definition-deviceId' t='string' v='000000' />
+      <p n='definition-deviceType' t='string' v='EnOcean_DEVICE' />
+      <p n='definition-userName' t='string' v='' />
+      <p n='definition-locationId' t='string' v='-1' />
+      <p n='definition-pictureId' t='string' v='' />
+      <p n='definition-userType' t='string' v='4' />
+      <p n='definition-status' t='string' v='2' />
+      <p n='definition-isPaired' t='string' v='false' />
+      <p n='definition-currentStatus' t='string' v='' />
+      <p n='version' t='version' v='1.0.0' />
+   </capability>
+   <require name='apam-component' filter='(&amp;(name=KeyCardSensorSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification dependency toward KeyCardSensorSpec</require>
+</obr> 

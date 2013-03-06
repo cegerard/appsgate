@@ -1,0 +1,14 @@
+<obr> 
+   <capability name='maven'>
+      <p n='groupId' v='appsGate.bundle' />
+      <p n='artifactId' v='PlaceManagerSpec' />
+      <p n='version' v='1.0.0' />
+   </capability>
+   <capability name='apam-component'>
+      <p n='name' v='PlaceManagerSpec' />
+      <p n='component-type' v='specification' />
+      <p n='spec-name' v='PlaceManagerSpec' />
+      <p n='provide-interfaces' v='appsgate.lig.manager.location.spec.PlaceManagerSpec' />
+      <p n='version' t='version' v='1.0.0' />
+   </capability>
+</obr> 

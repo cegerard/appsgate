@@ -1,0 +1,15 @@
+<obr> 
+   <capability name='maven'>
+      <p n='groupId' v='appsGate.bundle' />
+      <p n='artifactId' v='KeyCardSensorSpec' />
+      <p n='version' v='1.0.0' />
+   </capability>
+   <capability name='apam-component'>
+      <p n='name' v='KeyCardSensorSpec' />
+      <p n='component-type' v='specification' />
+      <p n='spec-name' v='KeyCardSensorSpec' />
+      <p n='provide-interfaces' v='appsgate.lig.keycard.sensor.spec.KeyCardSensorSpec' />
+      <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
+      <p n='version' t='version' v='1.0.0' />
+   </capability>
+</obr> 

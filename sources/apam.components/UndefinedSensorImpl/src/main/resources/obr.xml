@@ -1,0 +1,22 @@
+<obr> 
+   <capability name='maven'>
+      <p n='groupId' v='appsGate.bundle' />
+      <p n='artifactId' v='UndefinedSensorImpl' />
+      <p n='version' v='1.0.0' />
+   </capability>
+   <capability name='apam-component'>
+      <p n='name' v='UndefinedSensorImpl' />
+      <p n='component-type' v='implementation' />
+      <p n='impl-name' v='UndefinedSensorImpl' />
+      <p n='provide-interfaces' v='appsgate.lig.undefined.sensor.spec.UndefinedSensorSpec,appsgate.lig.logical.object.spec.AbstractObjectSpec' />
+      <p n='provide-specification' v='UndefinedSensorSpec' />
+      <p n='definition-deviceName' t='string' v='Unknown' />
+      <p n='definition-deviceId' t='string' v='000000' />
+      <p n='definition-deviceType' t='string' v='Sensor_DEVICE' />
+      <p n='definition-pictureId' t='string' v='' />
+      <p n='definition-userType' t='string' v='undefined' />
+      <p n='definition-status' t='string' v='1' />
+      <p n='version' t='version' v='1.0.0' />
+   </capability>
+   <require name='apam-component' filter='(&amp;(name=UndefinedSensorSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification dependency toward UndefinedSensorSpec</require>
+</obr> 
