@@ -28,3 +28,13 @@ sources/communication.manager/.DS_Store
 sources/proxy.enocean/.DS_Store
 
 sources/proxy.enocean/src/main/resources/WEB/.DS_Store
+
+distributions/AppsGate-distribution/.DS_Store
+
+distributions/AppsGate-distribution/bundle/.DS_Store
+
+distributions/AppsGate-distribution/db/.DS_Store
+
+distributions/AppsGate-distribution/doc/.DS_Store
+
+distributions/AppsGate-distribution/load/.DS_Store
