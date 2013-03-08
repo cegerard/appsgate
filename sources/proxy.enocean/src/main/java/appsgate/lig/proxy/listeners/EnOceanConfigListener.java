@@ -56,6 +56,25 @@ public class EnOceanConfigListener implements ConfigListener {
 			String id = (String)obj.get("id");
 			JSONArray SelectedCapas = (JSONArray)obj.get("capabilities");
 			enoceanProxy.validateItem(id, SelectedCapas, true);
+			
+		} else if (cmd.equalsIgnoreCase("getConfDevices")) {
+			enoceanProxy.getActuator();
+			
+		} else if (cmd.equalsIgnoreCase("createActuator")) {
+			String profile = (String)obj.get("profile");
+			String name = (String)obj.get("name");
+			String place = (String)obj.get("place");
+			enoceanProxy.createActuator(profile, name, place);
+			
+		} else if (cmd.equalsIgnoreCase("actuatorAction")) {
+			String id = (String)obj.get("id");
+			String action = (String)obj.get("action");
+			
+			if(action.equalsIgnoreCase("on")){
+				enoceanProxy.turnOnActuator(id);
+			}else if(action.equalsIgnoreCase("off")) {
+				enoceanProxy.turnOffActuator(id);
+			}
 		}
 	}
 

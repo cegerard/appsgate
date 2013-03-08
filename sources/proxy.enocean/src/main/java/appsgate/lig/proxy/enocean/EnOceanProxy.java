@@ -18,6 +18,7 @@ import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.osgi.service.http.HttpContext;
@@ -30,6 +31,7 @@ import org.ubikit.PhysicalEnvironmentModelObserver;
 import org.ubikit.pem.event.*;
 import org.ubikit.pem.event.NewItemEvent.CapabilitySelection;
 import org.ubikit.service.PhysicalEnvironmentModelService;
+import org.ubikit.PhysicalEnvironmentItem.Type;
 import org.ubikit.event.impl.EventGateImpl;
 
 import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
@@ -314,10 +316,23 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @see EnOceanService
 	 */
 	// Override
+	@SuppressWarnings("unchecked")
 	public JSONArray getAllItem() {
 		Collection<PhysicalEnvironmentItem> enOceanDeviceList = enoceanBridge.getAllItems();
-		enOceanDeviceList.toString();
-		return new JSONArray();
+		
+		Iterator<PhysicalEnvironmentItem> it = enOceanDeviceList.iterator();
+		PhysicalEnvironmentItem pei;
+		Instance apamInst;
+		JSONArray allJSONItem = new JSONArray();
+		
+		while(it.hasNext()) {
+			pei = it.next();
+			apamInst = sidToInstanceName.get(pei.getUID());
+			logger.debug(apamInst.getAllProperties().keySet().toString());
+			allJSONItem.add(pei.getUID());
+		}
+		
+		return allJSONItem;
 	}
 
 	/**
@@ -366,6 +381,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @param targetID
 	 *            , the actuator id
 	 */
+	//@Override
 	public void turnOnActuator(String targetID) {
 		eventGate.postEvent(new TurnOnActuatorEvent(targetID));
 	}
@@ -376,6 +392,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @param targetID
 	 *            , the actuator id.
 	 */
+	//@Override
 	public void turnOffActuator(String targetID) {
 		eventGate.postEvent(new TurnOffActuatorEvent(targetID));
 	}
@@ -482,17 +499,32 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	public void onEvent(ItemAddedEvent addItEvent) {
 		logger.debug("!ItemAddedEvent! from " + addItEvent.getSourceItemUID() + " to " + addItEvent.getPemUID() + ", type "+ addItEvent.getItemType());
 		
-		EnOceanProfiles ep;
+		EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
 		Implementation impl = null;
 		Map<String, String> properties = new HashMap<String, String>();
 		
-		if (addItEvent.getCapabilities().length == 1) {
+		if(addItEvent.getItemType().equals(Type.SENSOR)) {
+			if (addItEvent.getCapabilities().length == 1) {
+				String capabilitie = addItEvent.getCapabilities()[0];
+				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);	
+			} else {
+				ArrayList<EnOceanProfiles> profilesList = tempEventCapabilitiesMap.get(addItEvent.getSourceItemUID());
+				//TODO manage for multiple profiles sensors.
+				ep = profilesList.iterator().next();
+				tempEventCapabilitiesMap.remove(addItEvent.getSourceItemUID());
+			}
+			properties.put("isPaired", "true");
+			
+		}else if(addItEvent.getItemType().equals(Type.ACTUATOR)) {
 			String capabilitie = addItEvent.getCapabilities()[0];
-			ep = EnOceanProfiles.getEnOceanProfile(capabilitie);		
-		} else {
-			ArrayList<EnOceanProfiles> profilesList = tempEventCapabilitiesMap.get(addItEvent.getSourceItemUID());
-			//TODO manage for multiple profiles sensors.
-			ep = profilesList.iterator().next();
+			ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
+			properties.put("isPaired", "false");
+			try {
+				org.json.JSONObject obj = addItEvent.getUserProperties();
+				properties.put("userName", obj.getString("CustomName"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
@@ -500,13 +532,17 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		properties.put("deviceName", ep.getUserFriendlyName());
 		properties.put("deviceId", addItEvent.getSourceItemUID());
 		properties.put("deviceType", ep.name());
-		properties.put("isPaired", "true");
 		
 		Instance createInstance = impl.createInstance(null, properties);
 		sidToInstanceName.put(addItEvent.getSourceItemUID(), createInstance);
-		//Notify config UI
-		JSONObject jsonObj =   new JSONObject();
+		
+		//Notify configuration UI
+		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("id", addItEvent.getSourceItemUID());
+		jsonObj.put("name", properties.get("userName"));
+		jsonObj.put("type", addItEvent.getItemType().name());
+		jsonObj.put("deviceType", ep.name());
+		jsonObj.put("paired", properties.get("isPaired"));
 		sendToClientService.send("newObject", jsonObj);
 	}
 
@@ -588,6 +624,44 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		JSONObject pairingState = new JSONObject();
 		pairingState.put("pairingMode", mode);
 		sendToClientService.send("pairingModeChanged", pairingState);
+	}
+	
+	/**
+	 * Create and send the newActuator event to ubikit
+	 * 
+	 * @param profile, the actuator profile
+	 * @param name, the actuator name
+	 * @param place, the place where it be
+	 */
+	@SuppressWarnings("unchecked")
+	public void createActuator(String profile, String name, String place) {
+		ActuatorProfile ap = EnOceanProfiles.getActuatorProfile(profile);
+		if(ap != null) {
+			
+			CreateNewActuatorEvent ev = new CreateNewActuatorEvent(ap, name, place);
+			eventGate.postEvent(ev);
+		}else {
+			JSONObject error = new JSONObject();
+			error.put("code", "0001");
+			error.put("deescription", "No ubikit<>appsgate actuator profile found !");
+			sendToClientService.send("actuatorError", error);
+		}
+	}
+	
+	/**
+	 * Send all paired actuators and all existing actuator profiles
+	 */
+	@SuppressWarnings("unchecked")
+	public void getActuator() {
+		JSONObject actuatorsJSON = new JSONObject();
+		JSONArray actuatorsProfiles = new JSONArray();
+		
+		actuatorsProfiles.addAll(EnOceanProfiles.getActuatorProfiles());
+		
+		actuatorsJSON.put("actuatorProfiles", actuatorsProfiles);
+		actuatorsJSON.put("enoceanDevices", getAllItem());
+		logger.debug(actuatorsJSON.toJSONString());
+		sendToClientService.send("confDevices",actuatorsJSON);
 	}
 
 }

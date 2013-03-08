@@ -23,5 +23,20 @@
 		</div>
 	</div>
 	<button type="button" id="validate-button" onclick="javascript:validConf();">Validate</button>
+	<div id="createActuator">
+	 	<h2>Actuator creation</h2>
+		<select id="actuator-profile" name="selectActuatorProfile" size="3" style="width: 170px; ">
+		</select>
+		<p>Name:</p>
+		<input id="actuatorName-input" style="width: 150px; "></input>
+		<button type="button" id="actuator-button" onclick="javascript:createActuator();">Add actuator</button>
+	</div>
+	<div id="pairingActuator">
+	 	<h2>EnOcean actuator list</h2>
+		<select id="actuator-list" name="selectActuator" size="2" onChange="javascript:getActuatorInfos();" style="width: 150px; ">
+		</select>
+		<div id="actuator-actions">
+		</div>
+	</div>
 </body>
 </html>

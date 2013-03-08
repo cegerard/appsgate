@@ -165,6 +165,8 @@
 		<module>RouterApAM</module>
     <module>PlaceManager</module>
     <module>PlaceManagerSpec</module>
+    <module>OnOffActuatorSpec</module>
+    <module>OnOffActuatorImpl</module>
   </modules>
 
 </project>

@@ -154,7 +154,7 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 
 	@Override
 	public void setLocationId(int locationId) {
-		this.locationId = String.valueOf(locationId) ;
+		this.locationId = String.valueOf(locationId);
 	}
 
 	@Override

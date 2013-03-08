@@ -20,7 +20,7 @@ function WebSocketOpen()
      ws.onmessage = function (evt) 
      { 
 		var received_msg = evt.data;
-		
+		console.log(received_msg);
        	var msg_type;
         var jsonCMD = JSON.parse(received_msg);
         for(var key in jsonCMD){
@@ -29,7 +29,11 @@ function WebSocketOpen()
        	
        	if (msg_type == "newObject"){
        		var obj = jsonCMD.newObject;
-       		removedUndefinedFromList(obj.id);
+       		if (obj.type == "SENSOR"){
+       			removedUndefinedFromList(obj.id);
+       		}else if (obj.type == "ACTUATOR") {
+       			addActuatorToList(obj);
+       		}	
        		
        	} else if (msg_type == "newUndefinedSensor"){
        		addUndefinedToList(jsonCMD.newUndefinedSensor);
@@ -45,7 +49,10 @@ function WebSocketOpen()
        			currentStatus.innerHTML = "OFF";
        			currentStatus.style.backgroundColor="RED";
        		}
-       	} 	
+       	} else if( msg_type == "confDevices") {
+       		var confDeviceJSON = jsonCMD.confDevices
+       		addActuatorProfileToList(confDeviceJSON.actuatorProfiles);
+       	}
      };
      
      ws.onerror = function (evt)
@@ -91,6 +98,39 @@ function addUndefinedToList(jsondevice) {
     sensor_list.add(new_sensor, null);
     
     deviceToProfiles.setItem(jsondevice.id, jsondevice.capabilities);
+}
+
+/** Check */
+function addActuatorProfileToList(profileList) {
+	var cpt = 0;
+	var profile;
+	var profile_list = document.getElementById("actuator-profile");
+	var new_profile;
+	
+	while(cpt < profileList.length) { 
+		profile = profileList[cpt];
+		new_profile = document.createElement('OPTION');
+		new_profile.value = profile;
+		new_profile.text = profile;
+		profile_list.add(new_profile, null);
+		cpt++;
+	}
+}
+
+/** Check */
+function addActuatorToList(obj) {
+	var actuator_list = document.getElementById("actuator-list");
+	var  nameInput = document.getElementById("actuatorName-input");
+	
+	var new_actuator = document.createElement('OPTION');
+	new_actuator.value = obj.id;
+	new_actuator.text = obj.name;
+
+	var act = new device(obj.id, obj.name, obj.type, obj.deviceType, obj.paired);
+	addToDeviceList(act);
+	
+	actuator_list.add(new_actuator, null);
+	nameInput.value = "";
 }
 
 /** Check */
@@ -171,6 +211,54 @@ function setPairingMode() {
         ws.send("{\"setPairingMode\":{\"pairingMode\":\""+true+"\"}}");
         pairingMode = 1;
     }
+}
+
+/** Check */
+function createActuator() {
+	var actuator_profile = document.getElementById("actuator-profile");
+	var  name = document.getElementById("actuatorName-input");
+	
+	var profile = actuator_profile.options[actuator_profile.selectedIndex].value;
+	
+	 ws.send("{\"createActuator\":{\"profile\":\""+profile+"\", \"name\":\""+name.value+"\", \"place\":\"\"}}");
+}
+
+/** Check */
+function getActuatorInfos() {
+	var actuator_list = document.getElementById("actuator-list");
+	var actId = actuator_list.options[actuator_list.selectedIndex].value;
+
+	var actuator = getFromDeviceList(actId);
+	
+	if(actuator.deviceType == "ONOFF_DEVICE"){
+		var myOnButton = document.createElement("button");
+		myOnButton.type = 'button';
+		myOnButton.id = 'sendOn-button';
+		myOnButton.setAttribute("onClick","javascript:actuatorOn();");
+		myOnButton.innerHTML = "On";
+		
+		var myOffButton = document.createElement("button");
+		myOffButton.type = 'button';
+		myOffButton.id = 'sendOff-button';
+		myOffButton.setAttribute("onClick","javascript:actuatorOff();");
+		myOffButton.innerHTML = "Off";
+		
+		var actuatoractions = document.getElementById("actuator-actions");
+		actuatoractions.appendChild(myOnButton);
+		actuatoractions.appendChild(myOffButton);
+	}
+}
+
+function actuatorOn() {
+	var actuator_list = document.getElementById("actuator-list");
+	var actId = actuator_list.options[actuator_list.selectedIndex].value;
+	ws.send("{\"actuatorAction\":{\"action\":\"on\", \"id\":\""+actId+"\"}}");
+}
+
+function actuatorOff() {
+	var actuator_list = document.getElementById("actuator-list");
+	var actId = actuator_list.options[actuator_list.selectedIndex].value;
+	ws.send("{\"actuatorAction\":{\"action\":\"off\", \"id\":\""+actId+"\"}}");
 }
 
 /** Check */
@@ -258,3 +346,40 @@ function HashTable(obj)
 }
 
 var deviceToProfiles = new HashTable();
+
+/** Check */
+function device(id, name, type, deviceType,  paired) {
+	this.id = id;
+	this.name = name;
+	this.type = type;
+	this.deviceType = deviceType;
+	this.paired = paired;
+} 
+
+var deviceList = new Array();
+
+function addToDeviceList(dev) {
+	deviceList[deviceList.length] = dev;
+}
+
+function getFromDeviceList(id) {
+	var i=0;
+	var found = false;
+	var current;
+
+	while(i<deviceList.length && found == false) {
+		current = deviceList[i];
+		console.log(current.id)
+		if(current.id == id) {
+			found = true;
+		}
+		i++;
+	}
+	
+	if (found == true) {
+		return current;
+	}else {
+		return null;
+	}
+		
+}
