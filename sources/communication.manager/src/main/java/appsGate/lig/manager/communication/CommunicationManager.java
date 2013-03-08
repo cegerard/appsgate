@@ -143,6 +143,12 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 			} else if (command.contentEquals("getConfDevices")) {
 				notifyConfigListeners(socket, cmd);
 				
+			} else if (command.contentEquals("createActuator")) { 
+				notifyConfigListeners(socket, cmd);
+				
+			} else if (command.contentEquals("actuatorAction")) { 
+				notifyConfigListeners(socket, cmd);
+				
 			} else {
 				notifyCommandListeners(socket, cmd);
 			}
