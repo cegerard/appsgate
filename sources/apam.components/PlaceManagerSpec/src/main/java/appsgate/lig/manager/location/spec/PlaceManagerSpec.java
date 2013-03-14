@@ -1,6 +1,6 @@
 package appsgate.lig.manager.location.spec;
 
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 

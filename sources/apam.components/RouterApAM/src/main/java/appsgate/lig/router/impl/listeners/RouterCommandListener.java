@@ -2,10 +2,9 @@ package appsgate.lig.router.impl.listeners;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,80 +51,94 @@ public class RouterCommandListener implements CommandListener {
 	 */
 	@Override
 	public void onReceivedCommand(JSONObject obj) {
-		logger.debug("Client send : " + obj.toJSONString());
-		String targetTypeTemp = (String)obj.get("targetType");
-		int targetType = Integer.parseInt(targetTypeTemp);
-		
-		switch (targetType) {
-		
-		case 0: // Router level
-			logger.debug("Router level message");
-			String cmd = (String)obj.get("commandName");
-			
-			if (cmd.equalsIgnoreCase("getDevices")) {
-				router.getDevices("clientID");	
-			}
-			
-			break;
+		logger.debug("Client send : " + obj.toString());
+		try {
+			String targetTypeTemp;
+			targetTypeTemp = obj.getString("targetType");
 
-		case 1:// Abstract object level
-			logger.debug("Abstract object level message");
-			String method = (String) obj.get("method");
-			String id = (String) obj.get("objectId");
-			JSONArray args = (JSONArray) obj.get("args");
-			
-			ArrayList<Object> arguments = new ArrayList<Object>();
+			int targetType = Integer.parseInt(targetTypeTemp);
 
-			try {
-				// Get all arguments types and values
-				@SuppressWarnings("unchecked")
-				Iterator<JSONObject> it = args.iterator();
-				JSONObject JSONObj;
-				String value, type;
-				while (it.hasNext()) {
-					JSONObj = it.next();
-					value = (String) JSONObj.get("value");
-					type = (String) JSONObj.get("type");
-					addArguments(type, value, arguments);
+			switch (targetType) {
+
+			case 0: // Router level
+				logger.debug("Router level message");
+				String cmd = obj.getString("commandName");
+
+				if (cmd.equalsIgnoreCase("getDevices")) {
+					router.getDevices("clientID");
 				}
-			} catch (IllegalArgumentException e) {
-				logger.debug("Inappropriate argument: " + e.getMessage());
-			} catch (ClassNotFoundException e) {
-				logger.debug("The argument type is unknown from \"java/lang\" package: "+ e.getMessage());
+
+				break;
+
+			case 1:// Abstract object level
+				logger.debug("Abstract object level message");
+				try {
+					String method = obj.getString("method");
+					String id = obj.getString("objectId");
+					JSONArray args = obj.getJSONArray("args");
+
+					ArrayList<Object> arguments = new ArrayList<Object>();
+
+					// Get all arguments types and values
+					int l = args.length();
+					int cpt = 0;
+					JSONObject JSONObj;
+					String value, type;
+					while (cpt < l) {
+						JSONObj = args.getJSONObject(cpt);
+						value = JSONObj.getString("value");
+						type = JSONObj.getString("type");
+						addArguments(type, value, arguments);
+						cpt++;
+					}
+
+					// Null because the call does not need a client
+					// identification for response.
+					router.executeCommand(null, id, method, arguments);
+
+				} catch (IllegalArgumentException e) {
+					logger.debug("Inappropriate argument: " + e.getMessage());
+				} catch (ClassNotFoundException e) {
+					logger.debug("The argument type is unknown from \"java/lang\" package: "
+							+ e.getMessage());
+				}
+
+				break;
+
+			case 2: // Location level
+				logger.debug("Location level message");
+				String cmdName = obj.getString("commandName");
+
+				if (cmdName.equalsIgnoreCase("getLocations")) {
+					router.getLocations();
+
+				} else if (cmdName.equalsIgnoreCase("newLocation")) {
+					router.newLocation(obj.getJSONObject("location"));
+
+				} else if (cmdName.equalsIgnoreCase("updateLocation")) {
+					router.updateLocation(obj.getJSONObject("location"));
+
+				} else if (cmdName.equalsIgnoreCase("moveDevice")) {
+					String objId = obj.getString("deviceId");
+					AbstractObjectSpec abObj = (AbstractObjectSpec) router
+							.getObjectRefFromID(objId);
+					router.moveObject(abObj, obj.getString("srcLocationId"),
+							obj.getString("destLocationId"));
+				}
+
+				break;
+
+			case 3: // Interpreter
+				logger.debug("Interpreter level message");
+				break;
+
+			default:
+				logger.debug("Not corresponding target type");
+				break;
 			}
-			// Null because the call does not need a client identification for response.
-			router.executeCommand(null, id, method, arguments);
-			
-			break; 
-			
-		case 2: // Location level
-			logger.debug("Location level message");
-			String cmdName = (String)obj.get("commandName");
-			
-			 if(cmdName.equalsIgnoreCase("getLocations")) {
-				 router.getLocations();
-				 
-			 } else if(cmdName.equalsIgnoreCase("newLocation")) {
-				 router.newLocation((JSONObject)obj.get("location"));
-				 
-			 } else if(cmdName.equalsIgnoreCase("updateLocation")) {
-				 router.updateLocation((JSONObject)obj.get("location"));
-				 
-			 } else if(cmdName.equalsIgnoreCase("moveDevice")) {
-				 String objId = (String)obj.get("deviceId");
-				 AbstractObjectSpec abObj = (AbstractObjectSpec) router.getObjectRefFromID(objId);
-				 router.moveObject(abObj, (String)obj.get("srcLocationId"), (String)obj.get("destLocationId"));
-			 }
-			
-			break; 
-			
-		case 3: // Interpreter
-			logger.debug("Interpreter level message");
-			break;
-			
-		default: 
-			logger.debug("Not corresponding target type");
-			break;
+
+		} catch (JSONException e1) {
+			e1.printStackTrace();
 		}
 	}
 

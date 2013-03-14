@@ -3,8 +3,9 @@ package appsgate.lig.manager.location.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 
@@ -90,22 +91,27 @@ public class Location {
 	 * Get the JSONdescription of this location
 	 * @return the JSONObject
 	 */
-	@SuppressWarnings("unchecked")
 	public JSONObject getDescription() {
 		JSONObject obj = new JSONObject();
-		obj.put("id", id);
-		obj.put("name", name);
+		try {
+			obj.put("id", id);
+			obj.put("name", name);
 		
-		JSONArray objects = new JSONArray();
-		AbstractObjectSpec abObj;
-		Iterator<AbstractObjectSpec> it = abstractsObjects.iterator();
+			JSONArray objects = new JSONArray();
+			AbstractObjectSpec abObj;
+			Iterator<AbstractObjectSpec> it = abstractsObjects.iterator();
 		
-		while(it.hasNext()) {
-			abObj = it.next();
-			objects.add(abObj.getAbstractObjectId());
+			while(it.hasNext()) {
+				abObj = it.next();
+				objects.put(abObj.getAbstractObjectId());
+			}
+		
+			obj.put("devices", objects);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		obj.put("devices", objects);
 		
 		return obj;
 	}

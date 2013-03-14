@@ -1,6 +1,6 @@
 package appsGate.lig.manager.communication.service.subscribe;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 /**
  * This interface is the specification for the listener which allow

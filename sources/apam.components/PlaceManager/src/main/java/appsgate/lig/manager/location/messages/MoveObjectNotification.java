@@ -1,6 +1,7 @@
 package appsgate.lig.manager.location.messages;
 
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
@@ -47,9 +48,8 @@ public class MoveObjectNotification implements NotificationMsg {
 		return "Place manager send : MoveDevice";
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject JSONize() {
+	public JSONObject JSONize() throws JSONException {
 		JSONObject notif = new JSONObject();
 		JSONObject content = new JSONObject();
 		

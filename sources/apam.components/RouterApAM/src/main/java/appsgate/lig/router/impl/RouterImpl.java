@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,11 @@ public class RouterImpl {
 		
 		//notify that a new object appeared
 		AbstractObjectSpec newObj = (AbstractObjectSpec)inst.getServiceObject();
-		sendToClientService.send("newDevice", newObj.getDescription());
+		try {
+			sendToClientService.send("newDevice", newObj.getDescription());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -171,8 +176,12 @@ public class RouterImpl {
 	 * @param notif the notification message from ApAM
 	 */
 	public void gotNotification(NotificationMsg notif) {
-		logger.debug("Notification message receive, " + notif.JSONize());
-		sendToClientService.send(notif.JSONize().toJSONString());
+		try {
+			logger.debug("Notification message receive, " + notif.JSONize());
+			sendToClientService.send(notif.JSONize().toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		//sendToClientService.send("notification", notif.JSONize());
 		//executeCommand(null, "ENO57ce7", "getTemperature", new ArrayList<Object>());
 	}
@@ -181,7 +190,6 @@ public class RouterImpl {
 	 * Send all the devices description to one client
 	 * @param clientId, the client connection identifier
 	 */
-	@SuppressWarnings("unchecked")
 	public void getDevices(String clientId) {
 		Iterator<AbstractObjectSpec> devices = abstractDevice.iterator();
 		
@@ -191,9 +199,13 @@ public class RouterImpl {
 			
 			while (devices.hasNext()) {
 				adev = devices.next();
-				jsonDeviceList.add(adev.getDescription());
+				try {
+					jsonDeviceList.put(adev.getDescription());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
-//			send(clientId, "listDevices", jsonDeviceList);
+//			sendToClientService.send(clientId, "listDevices", jsonDeviceList);
 			sendToClientService.send("listDevices", jsonDeviceList);
 		}else{
 			logger.debug("No smart object detected.");
@@ -213,7 +225,11 @@ public class RouterImpl {
 	 * @param jsonObject, the JSON of the new location
 	 */
 	public void newLocation(JSONObject jsonObject) {
-		locationManager.addPlace((String)jsonObject.get("id"), (String)jsonObject.get("name"));
+		try {
+			locationManager.addPlace(jsonObject.getString("id"), jsonObject.getString("name"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -234,6 +250,10 @@ public class RouterImpl {
 	 */
 	public void updateLocation(JSONObject jsonObject) {
 		//for now we could just rename a location
-		locationManager.renameLocation((String)jsonObject.get("id"), (String)jsonObject.get("name"));
+		try {
+			locationManager.renameLocation(jsonObject.getString("id"), jsonObject.getString("name"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 }

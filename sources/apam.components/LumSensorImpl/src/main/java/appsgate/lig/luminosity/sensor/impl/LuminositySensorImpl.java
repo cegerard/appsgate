@@ -1,6 +1,7 @@
 package appsgate.lig.luminosity.sensor.impl;
 
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,9 +160,8 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 		notifyChanges("pictureId", pictureId);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject getDescription() {
+	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
 		descr.put("name", userName);
@@ -220,7 +220,13 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
 		//TODO remove this call when Adele fix the message bug.
-		sendToClientService.send(new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value, this).JSONize().toJSONString());
+		try {
+			sendToClientService.send(new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value, this).JSONize().toString());
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		return new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value,  this);
 	}
 	

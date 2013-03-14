@@ -2,8 +2,8 @@ package appsgate.lig.proxy.services;
 
 import java.util.ArrayList;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public interface EnOceanService {
 

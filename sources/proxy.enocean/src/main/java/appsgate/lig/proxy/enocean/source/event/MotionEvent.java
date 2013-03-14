@@ -25,12 +25,16 @@ public class MotionEvent implements PIROffEvent.Listener, PIROnEvent.Listener {
 	public void onEvent(PIROnEvent arg0) {
 		logger.info("This is a gesture event from " + arg0.getSourceItemUID()
 				+ ", something is moving");
+		Instance instRef = enocean.getSensorInstance(arg0.getSourceItemUID());
+		instRef.isSingleton();
 	}
 
 	//@Override
 	public void onEvent(PIROffEvent arg0) {
 		logger.info("This is a gesture event from " + arg0.getSourceItemUID()
 				+ ", something stop moving");
+		Instance instRef = enocean.getSensorInstance(arg0.getSourceItemUID());
+		instRef.isSingleton();
 	}
 
 }

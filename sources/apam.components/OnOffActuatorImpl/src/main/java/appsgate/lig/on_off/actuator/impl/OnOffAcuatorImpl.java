@@ -1,6 +1,7 @@
 package appsgate.lig.on_off.actuator.impl;
 
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,9 +136,8 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 		return pictureId;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject getDescription() {
+	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		
 		descr.put("id", actuatorId);
@@ -215,11 +215,14 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 		return new OnOffActuatorNotificationMsg(isOn, varName, value, this);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getTargetState() {
 		JSONObject obj = new JSONObject();
-		obj.put("state", isOn);
+		try {
+			obj.put("state", isOn);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		return obj;
 	}
 

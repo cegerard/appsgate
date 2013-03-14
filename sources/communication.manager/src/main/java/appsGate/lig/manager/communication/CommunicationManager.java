@@ -21,10 +21,10 @@ import org.glassfish.grizzly.websockets.WebSocket;
 import org.glassfish.grizzly.websockets.WebSocketApplication;
 import org.glassfish.grizzly.websockets.WebSocketEngine;
 import org.glassfish.grizzly.websockets.WebSocketListener;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -63,12 +63,6 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory.getLogger(CommunicationManager.class);
-	
-	
-	/**
-	 * A JSON parser, for interpret received messages.
-	 */
-	JSONParser jsonParser = new JSONParser();
 	
 	/**
 	 * HTTP service dependency resolve by iPOJO.
@@ -129,10 +123,11 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 		logger.debug("msg --> " + cmd);
 		
 		try {
-			
-			JSONObject jsObj = (JSONObject)jsonParser.parse(cmd);
-			Set<?> keys = jsObj.keySet();
-			String command = keys.iterator().next().toString();
+			JSONTokener jsonParser = new JSONTokener(cmd);
+			JSONObject jsObj = (JSONObject)jsonParser.nextValue();
+			@SuppressWarnings("rawtypes")
+			Iterator keys = jsObj.keys();
+			String command = keys.next().toString();
 
 			if (command.contentEquals("setPairingMode")) {
 				notifyConfigListeners(socket, cmd);
@@ -153,7 +148,7 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 				notifyCommandListeners(socket, cmd);
 			}
 
-		} catch (ParseException e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
@@ -201,19 +196,25 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	/**
 	 * send service
 	 */
-	@SuppressWarnings("unchecked")
 	public void send(String cmd, JSONObject msg) {
 		
 		JSONObject jsonResponse =  new JSONObject();
-		jsonResponse.put(cmd, msg);
-		this.send(jsonResponse.toJSONString());
+		try {
+			jsonResponse.put(cmd, msg);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		this.send(jsonResponse.toString());
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void send(String cmd, JSONArray msg) {
 		JSONObject jsonResponse =  new JSONObject();
-		jsonResponse.put(cmd, msg);
-		this.send(jsonResponse.toJSONString());
+		try {
+			jsonResponse.put(cmd, msg);
+		} catch (JSONException e) {
+ 			e.printStackTrace();
+		}
+		this.send(jsonResponse.toString());
 	}
 	
 	/**
@@ -263,16 +264,26 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	 * @param cmd, the command.
 	 * @throws ParseException 
 	 */
-	private void notifyCommandListeners(WebSocket socket, String cmd) throws ParseException {
+	private void notifyCommandListeners(WebSocket socket, String cmd) {
 		logger.debug("notify listeners for new command event");
-		JSONObject jsObj = (JSONObject)jsonParser.parse(cmd);
 		
-		Iterator<CommandListener> it = commandListeners.iterator();
-		CommandListener allcmdListener;
+		try {
 		
-		while(it.hasNext()){
-			allcmdListener = it.next();
-			allcmdListener.onReceivedCommand(jsObj);
+			JSONTokener jsonParser = new JSONTokener(cmd);
+			JSONObject jsObj;
+		
+			jsObj = (JSONObject)jsonParser.nextValue();
+		
+			Iterator<CommandListener> it = commandListeners.iterator();
+			CommandListener allcmdListener;
+		
+			while(it.hasNext()){
+				allcmdListener = it.next();
+				allcmdListener.onReceivedCommand(jsObj);
+			}
+		
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -282,19 +293,27 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	 * @param cmd, the command.
 	 * @throws ParseException 
 	 */
-	private void notifyConfigListeners(WebSocket socket, String cmd) throws ParseException {
+	private void notifyConfigListeners(WebSocket socket, String cmd) {
 		logger.debug("notify listeners for new configuration event");
-		JSONObject jsObj = (JSONObject)jsonParser.parse(cmd);
-		Set<?> keys = jsObj.keySet();
-		String command = keys.iterator().next().toString();
-		JSONObject value = (JSONObject)jsObj.get(command);
-		
-		Iterator<ConfigListener> it = configListeners.iterator();
-		ConfigListener configCommandListener;
-		
-		while(it.hasNext()){
-			configCommandListener = it.next();
-			configCommandListener.onReceivedConfig(command, value);
+		try {
+			JSONTokener jsonParser = new JSONTokener(cmd);
+			JSONObject jsObj = (JSONObject)jsonParser.nextValue();
+			@SuppressWarnings("rawtypes")
+			Iterator keys = jsObj.keys();
+			String command = keys.next().toString();
+			JSONObject value;
+			value = jsObj.getJSONObject(command);
+			
+			Iterator<ConfigListener> it = configListeners.iterator();
+			ConfigListener configCommandListener;
+			
+			while(it.hasNext()){
+				configCommandListener = it.next();
+				configCommandListener.onReceivedConfig(command, value);
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 	

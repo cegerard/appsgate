@@ -1,6 +1,7 @@
 package appsgate.lig.logical.object.spec;
 
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This java interface is an ApAM specification shared by all ApAM
@@ -71,7 +72,7 @@ public interface AbstractObjectSpec {
 	 * Get the JSON of an object
 	 * @return the description as an JSONObject
 	 */
-	public JSONObject getDescription();
+	public JSONObject getDescription() throws JSONException;
 	
 	/**
 	 * Change the current user name

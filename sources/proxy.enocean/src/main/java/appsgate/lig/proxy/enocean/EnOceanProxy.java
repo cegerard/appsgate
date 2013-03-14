@@ -19,8 +19,8 @@ import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.json.JSONException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -316,7 +316,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @see EnOceanService
 	 */
 	// Override
-	@SuppressWarnings("unchecked")
 	public JSONArray getAllItem() {
 		Collection<PhysicalEnvironmentItem> enOceanDeviceList = enoceanBridge.getAllItems();
 		
@@ -329,7 +328,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 			pei = it.next();
 			apamInst = sidToInstanceName.get(pei.getUID());
 			logger.debug(apamInst.getAllProperties().keySet().toString());
-			allJSONItem.add(pei.getUID());
+			allJSONItem.put(pei.getUID());
 		}
 		
 		return allJSONItem;
@@ -343,11 +342,14 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @see EnOceanService
 	 */
 	// Override
-	@SuppressWarnings("unchecked")
 	public JSONObject getItem(String id) {
 		PhysicalEnvironmentItem item = enoceanBridge.getItem(id);
 		JSONObject obj = new JSONObject();
-		obj.put("id", item.getUID());
+		try {
+			obj.put("id", item.getUID());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		return obj;
 	}
 
@@ -356,7 +358,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * item id
 	 */
 	// @Override
-	@SuppressWarnings("unchecked")
 	public JSONArray getItemCapabilities(String id) {
 		ArrayList<EnOceanProfiles> capas = tempEventCapabilitiesMap.get(id);
 
@@ -370,7 +371,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 			map = new HashMap<String, String>();
 			map.put("profile", ep.name());
 			map.put("type", ep.getUserFriendlyName());
-			capList.add(new JSONObject(map));
+			capList.put(new JSONObject(map));
 		}
 		return capList;
 	}
@@ -427,7 +428,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @see NewItemEvent
 	 */
 	// @Override
-	@SuppressWarnings("unchecked")
 	public void onEvent(NewItemEvent newItEvent) {
 		logger.debug("!NewItemEvent! from " + newItEvent.getSourceItemUID()
 				+ " to " + newItEvent.getPemUID() + ", type="
@@ -454,8 +454,12 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 				}
 				tempEventCapabilitiesMap.put(newItEvent.getSourceItemUID(),tempCapList);
 				JSONObject newUndefinedMsg =  new JSONObject();
-				newUndefinedMsg.put("id", newItEvent.getSourceItemUID());
-				newUndefinedMsg.put("capabilities", getItemCapabilities(newItEvent.getSourceItemUID()));
+				try {
+					newUndefinedMsg.put("id", newItEvent.getSourceItemUID());
+					newUndefinedMsg.put("capabilities", getItemCapabilities(newItEvent.getSourceItemUID()));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 				sendToClientService.send("newUndefinedSensor", newUndefinedMsg);
 
 			} else if (cs == CapabilitySelection.MULTIPLE) {
@@ -474,7 +478,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @see UnsupportedNewItemEvent
 	 */
 	// @Override
-	@SuppressWarnings("unchecked")
 	public void onEvent(UnsupportedNewItemEvent unsupportedItEvent) {
 		logger.debug("!UnsupportedNewItemEvent! from "
 				+ unsupportedItEvent.getSourceItemUID() + " to "
@@ -482,8 +485,12 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 				+ unsupportedItEvent.getItemType());
 		
 		JSONObject newUnsupportedMsg =  new JSONObject();
-		newUnsupportedMsg.put("id", unsupportedItEvent.getSourceItemUID());
-		newUnsupportedMsg.put("capabilities", getItemCapabilities(unsupportedItEvent.getSourceItemUID()));
+		try {
+			newUnsupportedMsg.put("id", unsupportedItEvent.getSourceItemUID());
+			newUnsupportedMsg.put("capabilities", getItemCapabilities(unsupportedItEvent.getSourceItemUID()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		sendToClientService.send("newUnsupportedSensor", newUnsupportedMsg);
 		
 	}
@@ -495,7 +502,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @see ItemAddedEvent
 	 */
 	// @Override
-	@SuppressWarnings("unchecked")
 	public void onEvent(ItemAddedEvent addItEvent) {
 		logger.debug("!ItemAddedEvent! from " + addItEvent.getSourceItemUID() + " to " + addItEvent.getPemUID() + ", type "+ addItEvent.getItemType());
 		
@@ -538,11 +544,15 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		
 		//Notify configuration UI
 		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("id", addItEvent.getSourceItemUID());
-		jsonObj.put("name", properties.get("userName"));
-		jsonObj.put("type", addItEvent.getItemType().name());
-		jsonObj.put("deviceType", ep.name());
-		jsonObj.put("paired", properties.get("isPaired"));
+		try {
+			jsonObj.put("id", addItEvent.getSourceItemUID());
+			jsonObj.put("name", properties.get("userName"));
+			jsonObj.put("type", addItEvent.getItemType().name());
+			jsonObj.put("deviceType", ep.name());
+			jsonObj.put("paired", properties.get("isPaired"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		sendToClientService.send("newObject", jsonObj);
 	}
 
@@ -553,17 +563,20 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @see ItemAddingFailedEvent
 	 */
 	// @Override
-	@SuppressWarnings("unchecked")
 	public void onEvent(ItemAddingFailedEvent addFailedEvent) {
 		logger.debug("!ItemAddingFailedEvent! from "
 				+ addFailedEvent.getSourceItemUID() + " Error Code = "
 				+ addFailedEvent.getErrorCode() + ", Reason = "
 				+ addFailedEvent.getReason());
 		JSONObject pairingFailedMsg =  new JSONObject();
-		pairingFailedMsg.put("id", addFailedEvent.getSourceItemUID());
-		pairingFailedMsg.put("capabilities", getItemCapabilities(addFailedEvent.getSourceItemUID()));
-		pairingFailedMsg.put("code", addFailedEvent.getErrorCode());
-		pairingFailedMsg.put("reason", addFailedEvent.getReason());
+		try {
+			pairingFailedMsg.put("id", addFailedEvent.getSourceItemUID());
+			pairingFailedMsg.put("capabilities", getItemCapabilities(addFailedEvent.getSourceItemUID()));
+			pairingFailedMsg.put("code", addFailedEvent.getErrorCode());
+			pairingFailedMsg.put("reason", addFailedEvent.getReason());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		sendToClientService.send("pairingFailed", pairingFailedMsg);
 	}
 
@@ -619,10 +632,13 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @param pairingState, the new pairing status
 	 */
-	@SuppressWarnings("unchecked")
 	public void pairingModeChanged(boolean mode) {
 		JSONObject pairingState = new JSONObject();
-		pairingState.put("pairingMode", mode);
+		try {
+			pairingState.put("pairingMode", mode);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		sendToClientService.send("pairingModeChanged", pairingState);
 	}
 	
@@ -633,7 +649,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @param name, the actuator name
 	 * @param place, the place where it be
 	 */
-	@SuppressWarnings("unchecked")
 	public void createActuator(String profile, String name, String place) {
 		ActuatorProfile ap = EnOceanProfiles.getActuatorProfile(profile);
 		if(ap != null) {
@@ -642,8 +657,12 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 			eventGate.postEvent(ev);
 		}else {
 			JSONObject error = new JSONObject();
-			error.put("code", "0001");
-			error.put("deescription", "No ubikit<>appsgate actuator profile found !");
+			try {
+				error.put("code", "0001");
+				error.put("deescription", "No ubikit<>appsgate actuator profile found !");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 			sendToClientService.send("actuatorError", error);
 		}
 	}
@@ -651,16 +670,19 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Send all paired actuators and all existing actuator profiles
 	 */
-	@SuppressWarnings("unchecked")
 	public void getActuator() {
 		JSONObject actuatorsJSON = new JSONObject();
 		JSONArray actuatorsProfiles = new JSONArray();
 		
-		actuatorsProfiles.addAll(EnOceanProfiles.getActuatorProfiles());
+		actuatorsProfiles.put(EnOceanProfiles.getActuatorProfiles());
 		
-		actuatorsJSON.put("actuatorProfiles", actuatorsProfiles);
-		actuatorsJSON.put("enoceanDevices", getAllItem());
-		logger.debug(actuatorsJSON.toJSONString());
+		try {
+			actuatorsJSON.put("actuatorProfiles", actuatorsProfiles);
+			actuatorsJSON.put("enoceanDevices", getAllItem());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		logger.debug(actuatorsJSON.toString());
 		sendToClientService.send("confDevices",actuatorsJSON);
 	}
 

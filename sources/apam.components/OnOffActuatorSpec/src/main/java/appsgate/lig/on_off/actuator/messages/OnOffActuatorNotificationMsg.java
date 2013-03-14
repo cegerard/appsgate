@@ -1,6 +1,7 @@
 package appsgate.lig.on_off.actuator.messages;
 
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
@@ -59,9 +60,8 @@ public class OnOffActuatorNotificationMsg implements NotificationMsg{
 		return String.valueOf(isOn);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject JSONize() {
+	public JSONObject JSONize() throws JSONException {
 		
 		JSONObject notif = new JSONObject();
 		

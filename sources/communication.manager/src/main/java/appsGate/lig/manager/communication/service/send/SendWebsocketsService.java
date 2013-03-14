@@ -1,7 +1,7 @@
 package appsGate.lig.manager.communication.service.send;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * This interface is the specification of service for send notification, message

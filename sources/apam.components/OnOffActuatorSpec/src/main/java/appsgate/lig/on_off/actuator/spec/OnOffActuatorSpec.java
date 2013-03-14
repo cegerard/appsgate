@@ -1,6 +1,6 @@
 package appsgate.lig.on_off.actuator.spec;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 /**
  * This java interface is an ApAM specification shared by all ApAM
@@ -15,7 +15,7 @@ public interface OnOffActuatorSpec {
 	
 	/**
 	 * Get the virtual state of this actuator.
-	 * Nothing is sur thaht the real device is in this corresponding
+	 * Nothing is sure that the real device is in this corresponding
 	 * state.
 	 * 
 	 * @return a JSON description of the device state

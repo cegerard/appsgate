@@ -1,6 +1,6 @@
 package appsgate.lig.undefined.sensor.spec;
 
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 
 /**
  * This java interface is an ApAM specification shared by all ApAM

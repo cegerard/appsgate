@@ -1,6 +1,7 @@
 package appsgate.lig.temperature.sensor.impl;
 
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,9 +164,8 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 		notifyChanges("pictureId", pictureId);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject getDescription() {
+	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		
 		descr.put("id", sensorId);
@@ -225,7 +225,13 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
 		//TODO remove this call when Adele fix the message bug.
-		sendToClientService.send(new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this).JSONize().toJSONString());
+		try {
+			sendToClientService.send(new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this).JSONize().toString());
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this);
 	}
 	

@@ -1,6 +1,7 @@
 package appsgate.lig.contact.sensor.impl;
 
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,9 +156,8 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject getDescription() {
+	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
 		descr.put("name", userName);
@@ -216,7 +216,11 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
 		//TODO remove this call when Adele fix the message bug.
-		sendToClientService.send(new ContactNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this).JSONize().toJSONString());
+		try {
+			sendToClientService.send(new ContactNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this).JSONize().toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		return new ContactNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this);
 	}
 	

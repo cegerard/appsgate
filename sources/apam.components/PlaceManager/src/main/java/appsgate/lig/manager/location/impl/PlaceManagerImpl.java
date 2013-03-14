@@ -3,7 +3,8 @@ package appsgate.lig.manager.location.impl;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,7 +134,6 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * 
 	 * @return, the JSONArray
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized JSONArray getJSONLocations() {
 		Iterator<Location> locations = locationObjectsMap.values().iterator();
 		JSONArray jsonLocationList = new JSONArray();
@@ -141,20 +141,30 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 		while (locations.hasNext()) {
 			loc = locations.next();
-			jsonLocationList.add(loc.getDescription());
+			jsonLocationList.put(loc.getDescription());
 		}
 
 		return jsonLocationList;
 	}
 
 	private void notifyMove(String oldLocationId, String newLocationId, AbstractObjectSpec object) {
+		//TODO use this line when the notifications system works
 		//notifyChanged(new MoveObjectNotification(oldLocationId, newLocationId, object));
-		sendToClientService.send(new MoveObjectNotification(oldLocationId, newLocationId, object).JSONize().toJSONString());
+		try {
+			sendToClientService.send(new MoveObjectNotification(oldLocationId, newLocationId, object).JSONize().toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void notifyPlace(String locationId, String locationName, int type) {
+		//TODO use this line when the notification system works
 		//notifyChanged(new PlaceManagerNotification(locationId, locationName, type));
-		sendToClientService.send(new PlaceManagerNotification(locationId, locationName, type).JSONize().toJSONString());
+		try {
+			sendToClientService.send(new PlaceManagerNotification(locationId, locationName, type).JSONize().toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
