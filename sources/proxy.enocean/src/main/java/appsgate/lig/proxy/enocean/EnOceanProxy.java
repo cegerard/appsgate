@@ -281,7 +281,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Get the HTTP service form OSGi/iPojo. This service is optional.
 	 * 
-	 * @param httpService, the HTTP service
+	 * @param httpService the HTTP service
 	 */
 	@Bind(optional = true)
 	public void bindHTTPService(HttpService httpService) {
@@ -292,7 +292,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Call when the EnOcean proxy release the HTTP service.
 	 * 
-	 * @param httpService, the HTTP service
+	 * @param httpService the HTTP service
 	 */
 	@Unbind(optional = true)
 	public void unbindHTTPService(HttpService httpService) {
@@ -630,7 +630,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Send the new pairing mode to client part.
 	 * 
-	 * @param pairingState, the new pairing status
+	 * @param mode the new pairing status
 	 */
 	public void pairingModeChanged(boolean mode) {
 		JSONObject pairingState = new JSONObject();
@@ -645,9 +645,9 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Create and send the newActuator event to ubikit
 	 * 
-	 * @param profile, the actuator profile
-	 * @param name, the actuator name
-	 * @param place, the place where it be
+	 * @param profile the actuator profile
+	 * @param name the actuator name
+	 * @param place the place where it be
 	 */
 	public void createActuator(String profile, String name, String place) {
 		ActuatorProfile ap = EnOceanProfiles.getActuatorProfile(profile);

@@ -19,13 +19,13 @@ public interface EnOceanService {
 	
 	/**
 	 * Send the turn on actuator event to ubikit
-	 * @param targetID, the targeted device identifier
+	 * @param targetID the targeted device identifier
 	 */
 	public void turnOnActuator(String targetID);
 	
 	/**
 	 * Send the turn off actuator event to ubikit
-	 * @param targetID, the targeted device identifier
+	 * @param targetID the targeted device identifier
 	 */
 	public void turnOffActuator(String targetID);
 }

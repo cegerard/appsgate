@@ -260,8 +260,8 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	
 	/**
 	 * notify all command listeners that new command or event is received
-	 * @param socket, the client connection
-	 * @param cmd, the command.
+	 * @param socket the client connection
+	 * @param cmd the command.
 	 * @throws ParseException 
 	 */
 	private void notifyCommandListeners(WebSocket socket, String cmd) {
@@ -289,8 +289,8 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	
 	/**
 	 * notify all configuration listener that new event is received
-	 * @param socket, the client connection
-	 * @param cmd, the command.
+	 * @param socket the client connection
+	 * @param cmd the command.
 	 * @throws ParseException 
 	 */
 	private void notifyConfigListeners(WebSocket socket, String cmd) {

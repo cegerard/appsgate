@@ -36,7 +36,7 @@ public class RouterCommandListener implements CommandListener {
 	/**
 	 * Constructor to initialize the listener with its parent
 	 * 
-	 * @param enoceanProxy
+	 * @param router
 	 *            , the parent of this listener
 	 */
 	public RouterCommandListener(RouterImpl router) {

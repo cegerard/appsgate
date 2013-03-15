@@ -124,10 +124,10 @@ public class RouterImpl {
 	/**
 	 * Get a command description, resolve the target reference and make the call.
 	 * 
-	 * @param clientID, client identifier
-	 * @param objectId, abstract object identifier
-	 * @param methodName, method to call on objectId
-	 * @param args, arguments list form method methodName
+	 * @param clientID client identifier
+	 * @param objectId abstract object identifier
+	 * @param methodName method to call on objectId
+	 * @param args arguments list form method methodName
 	 */
 	public void executeCommand(String clientID, String objectId, String methodName, ArrayList<Object> args) {
 		try {
@@ -188,7 +188,7 @@ public class RouterImpl {
 
 	/**
 	 * Send all the devices description to one client
-	 * @param clientId, the client connection identifier
+	 * @param clientId the client connection identifier
 	 */
 	public void getDevices(String clientId) {
 		Iterator<AbstractObjectSpec> devices = abstractDevice.iterator();
@@ -214,7 +214,6 @@ public class RouterImpl {
 
 	/**
 	 * Resolve the location manager dependency and return the reference
-	 * @return the location manager
 	 */
 	public void getLocations() {
 		sendToClientService.send("listLocations", locationManager.getJSONLocations());
@@ -222,7 +221,7 @@ public class RouterImpl {
 
 	/**
 	 * Add new location in the place manager
-	 * @param jsonObject, the JSON of the new location
+	 * @param jsonObject the JSON of the new location
 	 */
 	public void newLocation(JSONObject jsonObject) {
 		try {
@@ -235,9 +234,9 @@ public class RouterImpl {
 	/**
 	 * Move an object from source location to destination location.
 	 * 
-	 * @param objectId, the object reference
-	 * @param srcLocationId, the source location identifier
-	 * @param destLocationId, the destination location identifier
+	 * @param objectId the object reference
+	 * @param srcLocationId the source location identifier
+	 * @param destLocationId the destination location identifier
 	 */
 	public void moveObject(AbstractObjectSpec objectId, String srcLocationId, String destLocationId) {
 		locationManager.moveObject(objectId, srcLocationId, destLocationId);
@@ -246,7 +245,7 @@ public class RouterImpl {
 	/**
 	 * update the specified location
 	 * 
-	 * @param jsonObject, the location update details
+	 * @param jsonObject the location update details
 	 */
 	public void updateLocation(JSONObject jsonObject) {
 		//for now we could just rename a location

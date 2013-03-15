@@ -189,7 +189,7 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 	
 	/**
 	 * Called by APAM when a new contact status is received from the sensor.
-	 * @param newContactStatus, the new contact status
+	 * @param newContactStatus the new contact status
 	 */
 	public void currentStatusChanged(String newContactStatus) {
 		logger.info("New contact status from "+sensorId+"/"+sensorName+", "+newContactStatus);
@@ -198,7 +198,7 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 	
 	/**
 	 * Called by ApAM when the status value changed
-	 * @param newStatus, the new status value.
+	 * @param newStatus the new status value.
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {

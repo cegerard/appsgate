@@ -37,7 +37,7 @@ public class ContactNotificationMsg implements NotificationMsg {
 
 	/**
 	 * Constructor for this ApAM message
-	 * @param isContact, the new contact sensor status
+	 * @param isContact the new contact sensor status
 	 */
 	public ContactNotificationMsg(boolean isContact, String varName, String value, AbstractObjectSpec source) {
 		super();

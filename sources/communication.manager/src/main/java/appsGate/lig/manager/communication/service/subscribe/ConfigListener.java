@@ -16,8 +16,8 @@ public interface ConfigListener extends CommandListener {
 	/**
 	 * The call back to be notified when events or commands concerning configuration 
 	 * are received.
-	 * @param cmd, the command or events 
-	 * @param obj, the core of the cmd parameters
+	 * @param cmd the command or events 
+	 * @param obj the core of the cmd parameters
 	 */
 	public void onReceivedConfig(String cmd, JSONObject obj);
 

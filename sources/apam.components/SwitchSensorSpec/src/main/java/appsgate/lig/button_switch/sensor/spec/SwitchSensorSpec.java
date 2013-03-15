@@ -32,8 +32,8 @@ public interface SwitchSensorSpec {
 
 		/**
 		 * Constructor for an action object
-		 * @param switchNumber, the number of the pressed button
-		 * @param isOn, the button state
+		 * @param switchNumber the number of the pressed button
+		 * @param isOn the button state
 		 */
 		public Action(byte switchNumber, boolean isOn) {
 			super();

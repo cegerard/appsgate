@@ -200,7 +200,7 @@ public class SwitchSensorImpl implements SwitchSensorSpec, AbstractObjectSpec {
 	
 	/**
 	 * Called by APAM when a new switch is pressed.
-	 * @param newSwitchNumber, the new switch number
+	 * @param newSwitchNumber the new switch number
 	 */
 	public void switchNumberChanged(String newSwitchNumber) {
 		logger.info("New switch value from "+sensorId+"/"+sensorName+", "+newSwitchNumber);
@@ -209,7 +209,7 @@ public class SwitchSensorImpl implements SwitchSensorSpec, AbstractObjectSpec {
 	
 	/**
 	 *  Called by APAM when a switch status changed.
-	 * @param status, the new status
+	 * @param status the new status
 	 */
 	public void buttonStatusChanged(String status) {
 		logger.info("New switch value from "+sensorId+"/"+sensorName+", "+status);
@@ -218,7 +218,7 @@ public class SwitchSensorImpl implements SwitchSensorSpec, AbstractObjectSpec {
 	
 	/**
 	 * Called by ApAM when the status value changed
-	 * @param newStatus, the new status value.
+	 * @param newStatus the new status value.
 	 * Its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {

@@ -14,7 +14,7 @@ public interface AddListenerService {
 	/**
 	 * This method allow all the caller to subscribe for all commands and events except configuration
 	 * command.
-	 * @param cmdListener, the listener for subscription
+	 * @param cmdListener the listener for subscription
 	 * @return true if the listener is registered, false otherwise
 	 */
 	public boolean addCommandListener(CommandListener cmdListener);
@@ -22,7 +22,7 @@ public interface AddListenerService {
 	
 	/**
 	 * This method all the caller to subscribe for all configuration command.
-	 * @param configListener, the listener for subscription
+	 * @param configListener the listener for subscription
 	 * @return true if the listener is registered, false otherwise
 	 */
 	public boolean addConfigListener(ConfigListener configListener);

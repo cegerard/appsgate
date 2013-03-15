@@ -195,7 +195,7 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 	
 	/**
 	 * Called by ApAM when the status value changed
-	 * @param newStatus, the new status value.
+	 * @param newStatus the new status value.
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {

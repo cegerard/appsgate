@@ -38,7 +38,11 @@ public class OnOffActuatorNotificationMsg implements NotificationMsg{
 	
 	/**
 	 * Constructor for this ApAM message.
-	 * @param newTemperature, the new temperature value 
+	 * 
+	 * @param isOn the current state
+	 * @param varName the name of the variable that changed
+	 * @param value the value corresponding to the variable
+	 * @param source the source of this message
 	 */
 	public OnOffActuatorNotificationMsg (String isOn, String varName, String value, AbstractObjectSpec source) {
 		this.isOn = Boolean.valueOf(isOn);

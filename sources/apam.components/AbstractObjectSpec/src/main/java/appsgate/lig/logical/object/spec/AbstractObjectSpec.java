@@ -77,21 +77,21 @@ public interface AbstractObjectSpec {
 	/**
 	 * Change the current user name
 	 * 
-	 * @param userName, the new user name
+	 * @param userName the new user name
 	 */
 	public void setUserObjectName(String userName);
 	
 	/**
 	 * Change the current location for this object
 	 * 
-	 * @param locationId, the new location identifier
+	 * @param locationId the new location identifier
 	 */
 	public void setLocationId(int locationId);
 	
 	/**
 	 * Change the current picture for this device
 	 * 
-	 * @param pictureId, the new picture identifier
+	 * @param pictureId the new picture identifier
 	 */
 	public void setPictureId(String pictureId);
 	

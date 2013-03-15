@@ -27,7 +27,7 @@ public interface UndefinedSensorSpec {
 	 * This method send to the EnOcean dump bundle the corresponding profile to
 	 * that sensor in order to validate the configuration and receive telegrams from it.
 	 * 
-	 * @param profile, the chosen sensor profile
+	 * @param profile the chosen sensor profile
 	 */
 	public void validate(String profile);
 

@@ -56,7 +56,7 @@ public class Location {
 	
 	/**
 	 * Add on object to this place
-	 * @param obj, the new abstract object
+	 * @param obj the new abstract object
 	 */
 	public void addObject(AbstractObjectSpec obj) {
 		if(abstractsObjects.add(obj)){
@@ -67,7 +67,7 @@ public class Location {
 	/**
 	 * Remove this object from this place
 	 * 
-	 * @param obj, the object to remove
+	 * @param obj the object to remove
 	 */
 	public void removeObject(AbstractObjectSpec obj) {
 		if(abstractsObjects.remove(obj)) {

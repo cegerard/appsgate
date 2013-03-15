@@ -101,12 +101,8 @@ public class EnOceanConfigListener implements ConfigListener {
 	/**
 	 * Like onReceiveConfig but more generic
 	 * 
-	 * @param cmd
-	 *            , the command or event
 	 * @param obj
 	 *            , the core of the cmd parameter
-	 * 
-	 * @see onReceivedConfig
 	 */
 	public void onReceivedCommand(JSONObject obj) {
 		@SuppressWarnings("rawtypes")

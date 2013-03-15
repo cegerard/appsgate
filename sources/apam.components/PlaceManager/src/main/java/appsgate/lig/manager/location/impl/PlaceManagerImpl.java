@@ -97,9 +97,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * 
 	 * @param obj
 	 *            , the object to move.
-	 * @param oldPlaceId
+	 * @param oldPlaceID
 	 *            , the former place where obj was located
-	 * @param newPlaceId
+	 * @param newPlaceID
 	 *            , the new place where obj is locate.
 	 */
 	public synchronized void moveObject(AbstractObjectSpec obj,
@@ -132,7 +132,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	/**
 	 * Get the JSON tab of all location
 	 * 
-	 * @return, the JSONArray
+	 * @return all the location as a JSONArray
 	 */
 	public synchronized JSONArray getJSONLocations() {
 		Iterator<Location> locations = locationObjectsMap.values().iterator();
@@ -169,7 +169,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	
 	/**
 	 * This method notify ApAM that a new notification message has been produced.
-	 * @param notif, the notification message to send.
+	 * @param notif the notification message to send.
 	 * @return nothing it just notify ApAM.
 	 */
 	public NotificationMsg notifyChanged (NotificationMsg notif) {

@@ -38,7 +38,7 @@ public class TemperatureNotificationMsg implements NotificationMsg{
 	
 	/**
 	 * Constructor for this ApAM message.
-	 * @param newTemperature, the new temperature value 
+	 * @param newTemperature the new temperature value 
 	 */
 	public TemperatureNotificationMsg (float newTemperature, String varName, String value, AbstractObjectSpec source) {
 		this.newTemperature = newTemperature;

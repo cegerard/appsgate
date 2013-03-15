@@ -70,7 +70,7 @@ public enum EnOceanProfiles {
 	 * Get the EnOcean profile object corresponding to parameter profile string or EEP_00_00_00 if no
 	 * EnOcean profile match the parameter string.
 	 * 
-	 * @param profileString, the EnOcean profile
+	 * @param profileString the EnOcean profile
 	 * @return an EnOcean profile object
 	 */
 	public static EnOceanProfiles getEnOceanProfile(String profileString){
@@ -90,7 +90,7 @@ public enum EnOceanProfiles {
 	 * If no corresponding ubikit profile were found the getActuatorProfile
 	 * method return null.
 	 * 
-	 * @param profile, the specified profile
+	 * @param profile the specified profile
 	 * @return an ActuatorProfile
 	 */
 	public static ActuatorProfile getActuatorProfile(String profile) {

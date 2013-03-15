@@ -193,7 +193,7 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 	
 	/**
 	 * Called by APAM when a new illumination value is received from the sensor.
-	 * @param newIlluminationValue, the new illumination
+	 * @param newIlluminationValue the new illumination
 	 */
 	public void currentIlluminationChanged(String newIlluminationValue) {
 		logger.info("New illumination value from "+sensorId+"/"+sensorName+", "+newIlluminationValue);
@@ -202,7 +202,7 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 	
 	/**
 	 * Called by ApAM when the status value changed
-	 * @param newStatus, the new status value.
+	 * @param newStatus the new status value.
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {

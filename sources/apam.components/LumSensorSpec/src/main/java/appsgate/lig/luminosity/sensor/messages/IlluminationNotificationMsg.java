@@ -38,7 +38,7 @@ public class IlluminationNotificationMsg implements NotificationMsg {
 	
 	/**
 	 * Constructor for this ApAM message
-	 * @param newIllumination, the new illumination value
+	 * @param newIllumination the new illumination value
 	 */
 	public IlluminationNotificationMsg (int newIllumination, String varName, String value, AbstractObjectSpec source) {
 		this.newIllumination = newIllumination;

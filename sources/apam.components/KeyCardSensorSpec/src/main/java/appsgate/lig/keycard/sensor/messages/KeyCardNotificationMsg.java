@@ -38,7 +38,7 @@ public class KeyCardNotificationMsg implements NotificationMsg{
 
 	/**
 	 * Constructor for this ApAM message
-	 * @param isCardInserted, the new key card status
+	 * @param isCardInserted the new key card status
 	 */
 	public KeyCardNotificationMsg(boolean isCardInserted, String varName, String value, AbstractObjectSpec source) {
 		super();

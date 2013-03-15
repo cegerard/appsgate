@@ -188,7 +188,7 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	
 	/**
 	 * Called by APAM when a new status value is received from the sensor.
-	 * @param newStatusValue, the new status (Card inserted = true, card removed = false)
+	 * @param newStatusValue the new status (Card inserted = true, card removed = false)
 	 */
 	public void currentStatusChanged (String newStatusValue) {
 		logger.info("New status value from "+sensorId+"/"+sensorName+", "+newStatusValue);
@@ -197,7 +197,7 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	
 	/**
 	 * Called by ApAM when the status value changed
-	 * @param newStatus, the new status value.
+	 * @param newStatus the new status value.
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {

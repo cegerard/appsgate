@@ -198,7 +198,7 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	
 	/**
 	 * Called by APAM when a new temperature value is received from the sensor.
-	 * @param newTemperatureValue, the new temperature
+	 * @param newTemperatureValue the new temperature
 	 */
 	public void currentTemperatureChanged (String newTemperatureValue) {
 		logger.info("New temperature value from "+sensorId+"/"+sensorName+", "+newTemperatureValue);
@@ -207,7 +207,7 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	
 	/**
 	 * Called by ApAM when the status value changed
-	 * @param newStatus, the new status value.
+	 * @param newStatus the new status value.
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {

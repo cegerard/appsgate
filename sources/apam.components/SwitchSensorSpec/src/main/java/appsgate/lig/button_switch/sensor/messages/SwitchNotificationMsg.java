@@ -42,8 +42,8 @@ public class SwitchNotificationMsg implements NotificationMsg{
 	
 	/**
 	 * Constructor for this ApAM message
-	 * @param switchNumber, the button pressed (for multiple buttons switch)
-	 * @param isOn, the button state
+	 * @param switchNumber the button pressed (for multiple buttons switch)
+	 * @param isOn the button state
 	 */
 	public SwitchNotificationMsg (int switchNumber, boolean isOn, String varName, String value, AbstractObjectSpec source){
 		this.switchNumber = switchNumber;

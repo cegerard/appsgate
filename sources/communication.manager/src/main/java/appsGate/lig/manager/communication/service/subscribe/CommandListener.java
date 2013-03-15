@@ -17,7 +17,7 @@ public interface CommandListener {
 	 * The call back to be notified when events or commands concerning abstract object 
 	 * are received.
 	 * 
-	 * @param obj, the core of the cmd parameters
+	 * @param obj the core of the cmd parameters
 	 */
 	public void onReceivedCommand(JSONObject obj);
 }

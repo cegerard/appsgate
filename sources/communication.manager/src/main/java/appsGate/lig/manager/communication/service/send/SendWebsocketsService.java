@@ -16,8 +16,8 @@ public interface SendWebsocketsService {
 
 	/**
 	 * the send method with a specific command and parameters 
-	 * @param cmd, the notification or command response
-	 * @param msg, parameters corresponding to the cmd command
+	 * @param cmd the notification or command response
+	 * @param msg parameters corresponding to the cmd command
 	 */
 	public void send(String cmd, JSONObject msg);
 	public void send(String cmd, JSONArray msg);
