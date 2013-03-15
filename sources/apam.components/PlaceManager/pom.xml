@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>PlaceManager</artifactId>
-	<version>1.0.0</version>
+<!-- 	<version>1.0.0</version> -->
 	<packaging>bundle</packaging>
 	<name>Location manager implementation</name>
 
