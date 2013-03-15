@@ -109,7 +109,6 @@ public class Location {
 			obj.put("devices", objects);
 			
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

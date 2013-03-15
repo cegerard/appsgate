@@ -216,14 +216,9 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 	}
 	
 	@Override
-	public JSONObject getTargetState() {
-		JSONObject obj = new JSONObject();
-		try {
-			obj.put("state", isOn);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return obj;
+	public boolean getTargetState() {
+	
+		return Boolean.valueOf(isOn);
 	}
 
 	@Override

@@ -672,12 +672,12 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 */
 	public void getActuator() {
 		JSONObject actuatorsJSON = new JSONObject();
-		JSONArray actuatorsProfiles = new JSONArray();
+		//JSONArray actuatorsProfiles = new JSONArray();
 		
-		actuatorsProfiles.put(EnOceanProfiles.getActuatorProfiles());
+		//actuatorsProfiles.put(EnOceanProfiles.getActuatorProfiles());
 		
 		try {
-			actuatorsJSON.put("actuatorProfiles", actuatorsProfiles);
+			actuatorsJSON.put("actuatorProfiles", EnOceanProfiles.getActuatorProfiles());
 			actuatorsJSON.put("enoceanDevices", getAllItem());
 		} catch (JSONException e) {
 			e.printStackTrace();

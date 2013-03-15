@@ -1,7 +1,5 @@
 package appsgate.lig.on_off.actuator.spec;
 
-import org.json.JSONObject;
-
 /**
  * This java interface is an ApAM specification shared by all ApAM
  * AppsGate application to handle On/Off actuator actions.
@@ -18,9 +16,9 @@ public interface OnOffActuatorSpec {
 	 * Nothing is sure that the real device is in this corresponding
 	 * state.
 	 * 
-	 * @return a JSON description of the device state
+	 * @return true if the device is on and false otherwise.
 	 */
-	public JSONObject getTargetState();
+	public boolean getTargetState();
 	
 	/**
 	 * Set the device ON state

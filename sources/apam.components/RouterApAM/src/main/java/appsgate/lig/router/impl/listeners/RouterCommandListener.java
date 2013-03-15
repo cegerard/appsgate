@@ -171,8 +171,7 @@ public class RouterCommandListener implements CommandListener {
 			Class argClass = Class.forName("java.lang." + type);
 			Object param;
 			try {
-				param = argClass.getConstructor(String.class)
-						.newInstance(value);
+				param = argClass.getConstructor(String.class).newInstance(value);
 				arguments.add(param);
 			} catch (SecurityException e) {
 				logger.debug("Security violation: " + e.getMessage());
