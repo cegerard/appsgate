@@ -9,6 +9,7 @@
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='PlaceManagerImpl' />
       <p n='provide-interfaces' v='appsgate.lig.manager.location.spec.PlaceManagerSpec' />
+      <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='PlaceManagerSpec' />
       <p n='singleton' v='true' />
       <p n='version' t='version' v='1.0.0' />

@@ -27,8 +27,6 @@
 		<!-- device specific meta data -->
 		<definition name="currentStatus" type="string" 						  field="currentStatus" method="currentStatusChanged"/>
 		
-		<!-- TODO remove this line when Adele fix message bug -->
-		<ipojo:requires field="sendToClientService"/>
 	</implementation>
 
 </apam>

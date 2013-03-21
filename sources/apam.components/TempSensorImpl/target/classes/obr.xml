@@ -8,7 +8,7 @@
       <p n='name' v='TemperatureSensorImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='TemperatureSensorImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.temperature.sensor.spec.TemperatureSensorSpec,appsgate.lig.logical.object.spec.AbstractObjectSpec' />
+      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.temperature.sensor.spec.TemperatureSensorSpec' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='TemperatureSensorSpec' />
       <p n='definition-deviceName' t='string' v='Unknown' />

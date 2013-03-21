@@ -27,8 +27,6 @@
 		<!-- device specific meta data -->
 		<definition name="currentTemperature" type="string" 			 		   field="currentTemperature" method="currentTemperatureChanged"/>
 		
-		<!-- TODO remove this line when Adele fix message bug -->
-		<ipojo:requires field="sendToClientService"/>
 	</implementation>
 
 </apam>

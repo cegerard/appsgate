@@ -50,13 +50,6 @@
 			<artifactId>AbstractObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<!--BEGIN Temporary dependency  -->
-		<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>communication.manager</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<!--END Temporary dependency  -->
 	</dependencies>
 
 	<!-- Build Description -->

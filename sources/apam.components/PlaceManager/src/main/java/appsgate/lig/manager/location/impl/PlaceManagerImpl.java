@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.manager.location.messages.MoveObjectNotification;
@@ -147,24 +145,26 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		return jsonLocationList;
 	}
 
+	/**
+	 * Use to notify that a AbstractObject has moved.
+	 * 
+	 * @param oldLocationId the former AbstractObject location
+	 * @param newLocationId the new AbstractObject location
+	 * @param object the AbstractObject which has been moved.
+	 */
 	private void notifyMove(String oldLocationId, String newLocationId, AbstractObjectSpec object) {
-		//TODO use this line when the notifications system works
-		//notifyChanged(new MoveObjectNotification(oldLocationId, newLocationId, object));
-		try {
-			sendToClientService.send(new MoveObjectNotification(oldLocationId, newLocationId, object).JSONize().toString());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		notifyChanged(new MoveObjectNotification(oldLocationId, newLocationId, object));
 	}
 	
+	/**
+	 * Use to notify that new place has been created or has changed
+	 * 
+	 * @param locationId the location identifier
+	 * @param locationName the user name of this location
+	 * @param type indicate if this notification is a place creation (0) or an update (1)
+	 */
 	private void notifyPlace(String locationId, String locationName, int type) {
-		//TODO use this line when the notification system works
-		//notifyChanged(new PlaceManagerNotification(locationId, locationName, type));
-		try {
-			sendToClientService.send(new PlaceManagerNotification(locationId, locationName, type).JSONize().toString());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		notifyChanged(new PlaceManagerNotification(locationId, locationName, type));
 	}
 	
 	/**
@@ -173,13 +173,8 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @return nothing it just notify ApAM.
 	 */
 	public NotificationMsg notifyChanged (NotificationMsg notif) {
+		logger.debug("Location Notify: "+ notif);
 		return notif;
 	}
-	
-	/**
-	 * Service to communicate with clients (TEMP)
-	 */
-	//TODO remove this class member when Adele commit the message fix.
-	private SendWebsocketsService sendToClientService;
 
 }

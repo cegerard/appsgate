@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.proxy.services.EnOceanService;
@@ -224,20 +223,7 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		//TODO remove this call when Adele fix the message bug.
-		try {
-			sendToClientService.send(new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this).JSONize().toString());
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this);
 	}
 	
-	/**
-	 * Service to communicate with clients (TEMP)
-	 */
-	//TODO remove this class member when Adele commit the message fix.
-	private SendWebsocketsService sendToClientService;
 }

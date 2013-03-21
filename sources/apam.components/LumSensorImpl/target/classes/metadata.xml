@@ -20,8 +20,6 @@
 		<definition name="isPaired" 		   type="string" value="false" 			field="isPaired" 			method="isPairedChanged"/>
 		<definition name="currentIllumination" type="string"  						field="currentIllumination" method="currentIlluminationChanged"/>
 	
-		<!-- TODO remove this line when Adele fix message bug -->
-		<ipojo:requires field="sendToClientService"/>
 	</implementation>
 
 </apam>

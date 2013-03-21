@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 import appsgate.lig.contact.sensor.messages.ContactNotificationMsg;
 import appsgate.lig.contact.sensor.spec.ContactSensorSpec;
 import appsgate.lig.logical.object.messages.NotificationMsg;
@@ -215,19 +214,7 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		//TODO remove this call when Adele fix the message bug.
-		try {
-			sendToClientService.send(new ContactNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this).JSONize().toString());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 		return new ContactNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this);
 	}
-	
-	/**
-	 * Service to communicate with clients (TEMP)
-	 */
-	//TODO remove this class member when Adele commit the message fix.
-	private SendWebsocketsService sendToClientService;
 
 }
