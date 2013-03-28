@@ -1,4 +1,4 @@
-appsGate-server
+AppsGate-server
 ===============
 
 Git repository of the server part for the AppsGate project.
