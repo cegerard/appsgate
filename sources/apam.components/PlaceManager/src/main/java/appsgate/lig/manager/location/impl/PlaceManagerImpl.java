@@ -32,14 +32,14 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	/**
 	 * This is the hash map to match the location of devices.
 	 */
-	private HashMap<String, Location> locationObjectsMap;
+	private HashMap<String, SymbolicLocation> locationObjectsMap;
 
 	/**
 	 * Called by ApAM when all dependencies are available
 	 */
 	public void newInst() {
 		logger.info("Place manager started.");
-		locationObjectsMap = new HashMap<String, Location>();
+		locationObjectsMap = new HashMap<String, SymbolicLocation>();
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 */
 	public synchronized void addPlace(String locationId, String name) {
 		if (!locationObjectsMap.containsKey(locationId)) {
-			locationObjectsMap.put(locationId, new Location(locationId, name));
+			locationObjectsMap.put(locationId, new SymbolicLocation(locationId, name));
 			notifyPlace(locationId, name, 0);
 		}
 	}
@@ -71,7 +71,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 *            , the place to removed
 	 */
 	public synchronized void removePlace(String locationId) {
-		Location loc = locationObjectsMap.get(locationId);
+		SymbolicLocation loc = locationObjectsMap.get(locationId);
 		loc.removeAll();
 		locationObjectsMap.remove(locationId);
 	}
@@ -86,7 +86,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 */
 	private synchronized void addObject(AbstractObjectSpec obj,
 			String locationId) {
-		Location loc = locationObjectsMap.get(locationId);
+		SymbolicLocation loc = locationObjectsMap.get(locationId);
 		loc.addObject(obj);
 	}
 
@@ -108,8 +108,8 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		if (locId == -1) {
 			addObject(obj, newPlaceID);
 		} else {
-			Location oldLoc = locationObjectsMap.get(oldPlaceID);
-			Location newLoc = locationObjectsMap.get(newPlaceID);
+			SymbolicLocation oldLoc = locationObjectsMap.get(oldPlaceID);
+			SymbolicLocation newLoc = locationObjectsMap.get(newPlaceID);
 			oldLoc.removeObject(obj);
 			newLoc.addObject(obj);
 		}
@@ -121,7 +121,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * Rename the location
 	 */
 	public synchronized void renameLocation(String locationId, String newName) {
-		Location loc = locationObjectsMap.get(locationId);
+		SymbolicLocation loc = locationObjectsMap.get(locationId);
 		loc.setName(newName);
 		
 		notifyPlace(locationId, newName, 1);
@@ -133,9 +133,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @return all the location as a JSONArray
 	 */
 	public synchronized JSONArray getJSONLocations() {
-		Iterator<Location> locations = locationObjectsMap.values().iterator();
+		Iterator<SymbolicLocation> locations = locationObjectsMap.values().iterator();
 		JSONArray jsonLocationList = new JSONArray();
-		Location loc;
+		SymbolicLocation loc;
 
 		while (locations.hasNext()) {
 			loc = locations.next();

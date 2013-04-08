@@ -18,7 +18,7 @@ import appsgate.lig.logical.object.spec.AbstractObjectSpec;
  * @since February 26, 2013
  *
  */
-public class Location {
+public class SymbolicLocation {
 
 	/**
 	 * The place unique identifier
@@ -35,7 +35,7 @@ public class Location {
 	 */
 	private ArrayList<AbstractObjectSpec> abstractsObjects;
 	
-	public Location(String id, String name) {
+	public SymbolicLocation(String id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
