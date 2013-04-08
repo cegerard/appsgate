@@ -15,3 +15,61 @@ to provide the source code of those bundles.
 
 By downloading the distribution you can launch the server part of the AppsGate projet on any 
 java virtual machine.
+
+
+
+
+Code guidelines
+===============
+
+• Package name appsGate: appsgate.lig.“fonction“.“type“.“ApAMConvention“
+  ex: 
+  appsgate.lig.temperature.sensor.spec.TemperatureSensorSpec
+  appsgate.lig.temperature.sensor.messages.TemperatureNotificationMsg
+  or
+  appsgate.lig.mediarenderer.service.spec.MediaRendererSpec
+  appsgate.lig.mediarenderer.service.messages.MediaRendererNotificationMsg
+
+
+• Java/ApAM conventions:
+
+  Specification
+  developer: ….Spec
+  auto-generate: _spec
+  
+  Implementation
+  developer: …Impl
+  
+  Instance
+  developer: …Inst
+  auto-generate: _inst
+
+  Interface
+  developer: nothing
+
+  Message
+  developer: …Msg
+
+  Composite
+  developer: …Composite
+  auto-generate: _compo
+
+  Composite instance
+  developer: …CompositeInst
+
+  Classe
+  developer: …Impl
+
+• Current device type code:
+
+  0: Temperature
+  1: Illumination
+  2: Switch
+  3: Contact
+  4: Key-Card
+  5: Motion
+  6: Gygogne socket
+  ?: AvTransport
+  ?: RenderingControl
+  2052964255 : ConnectionManager
+  794225618 : ContentDirectory
