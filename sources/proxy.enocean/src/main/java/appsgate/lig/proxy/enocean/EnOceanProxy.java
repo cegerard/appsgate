@@ -649,7 +649,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @param name the actuator name
 	 * @param place the place where it be
 	 */
-	public void createActuator(String profile, String name, String place) {
+	public void createActuator(String profile, String name, String place, int clientId) {
 		ActuatorProfile ap = EnOceanProfiles.getActuatorProfile(profile);
 		if(ap != null) {
 			
@@ -663,14 +663,14 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			sendToClientService.send("actuatorError", error);
+			sendToClientService.send(clientId, "actuatorError", error);
 		}
 	}
 	
 	/**
 	 * Send all paired actuators and all existing actuator profiles
 	 */
-	public void getActuator() {
+	public void getActuator(int clientId) {
 		JSONObject actuatorsJSON = new JSONObject();
 		//JSONArray actuatorsProfiles = new JSONArray();
 		
@@ -683,7 +683,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 			e.printStackTrace();
 		}
 		logger.debug(actuatorsJSON.toString());
-		sendToClientService.send("confDevices",actuatorsJSON);
+		sendToClientService.send(clientId, "confDevices",actuatorsJSON);
 	}
 
 }

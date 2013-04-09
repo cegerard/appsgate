@@ -57,7 +57,8 @@ public class RouterCommandListener implements CommandListener {
 			targetTypeTemp = obj.getString("targetType");
 
 			int targetType = Integer.parseInt(targetTypeTemp);
-
+			int clientId = obj.getInt("clientId");
+			
 			switch (targetType) {
 
 			case 0: // Router level
@@ -65,7 +66,7 @@ public class RouterCommandListener implements CommandListener {
 				String cmd = obj.getString("commandName");
 
 				if (cmd.equalsIgnoreCase("getDevices")) {
-					router.getDevices("clientID");
+					router.getDevices(clientId);
 				}
 
 				break;
@@ -92,9 +93,7 @@ public class RouterCommandListener implements CommandListener {
 						cpt++;
 					}
 
-					// Null because the call does not need a client
-					// identification for response.
-					router.executeCommand(null, id, method, arguments);
+					router.executeCommand(clientId, id, method, arguments);
 
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
@@ -110,7 +109,7 @@ public class RouterCommandListener implements CommandListener {
 				String cmdName = obj.getString("commandName");
 
 				if (cmdName.equalsIgnoreCase("getLocations")) {
-					router.getLocations();
+					router.getLocations(clientId);
 
 				} else if (cmdName.equalsIgnoreCase("newLocation")) {
 					router.newLocation(obj.getJSONObject("location"));
@@ -120,10 +119,8 @@ public class RouterCommandListener implements CommandListener {
 
 				} else if (cmdName.equalsIgnoreCase("moveDevice")) {
 					String objId = obj.getString("deviceId");
-					AbstractObjectSpec abObj = (AbstractObjectSpec) router
-							.getObjectRefFromID(objId);
-					router.moveObject(abObj, obj.getString("srcLocationId"),
-							obj.getString("destLocationId"));
+					AbstractObjectSpec abObj = (AbstractObjectSpec) router.getObjectRefFromID(objId);
+					router.moveObject(abObj, obj.getString("srcLocationId"),obj.getString("destLocationId"));
 				}
 
 				break;

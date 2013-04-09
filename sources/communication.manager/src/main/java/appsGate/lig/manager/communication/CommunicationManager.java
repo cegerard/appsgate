@@ -194,7 +194,10 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	/*****************************************/
 	
 	/**
-	 * send service
+	 * Send service for JSON object
+	 * 
+	 * @param cmd the command form AppsGate communication protocol
+	 * @param msg the JSONObject message
 	 */
 	public void send(String cmd, JSONObject msg) {
 		
@@ -207,6 +210,12 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 		this.send(jsonResponse.toString());
 	}
 	
+	/**
+	 * Send service for JSON Array
+	 * 
+	 * @param cmd the command form AppsGate communication protocol
+	 * @param msg the JSONArray message
+	 */
 	public void send(String cmd, JSONArray msg) {
 		JSONObject jsonResponse =  new JSONObject();
 		try {
@@ -218,7 +227,43 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	}
 	
 	/**
-	 * Send the msg message to all connected clients
+	 * The send method with a specific command and parameters to the specify client
+	 * 
+	 * @param clientId the targeted client identifier
+	 * @param cmd the notification or command response
+	 * @param msg parameters corresponding to the cmd command
+	 */
+	public void send(int clientId, String cmd, JSONObject msg) {
+		
+		JSONObject jsonResponse =  new JSONObject();
+		try {
+			jsonResponse.put(cmd, msg);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		this.send(clientId, jsonResponse.toString());
+	}
+	
+	/**
+	 * The send method with a specific command and parameters to the specify client
+	 * 
+	 * @param clientId the targeted client identifier
+	 * @param cmd the notification or command response
+	 * @param msg parameters corresponding to the cmd command
+	 */
+	public void send(int clientId, String cmd, JSONArray msg) {
+		
+		JSONObject jsonResponse =  new JSONObject();
+		try {
+			jsonResponse.put(cmd, msg);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		this.send(clientId, jsonResponse.toString());
+	}
+	
+	/**
+	 * Send a message to all connected clients
 	 * 
 	 * @param msg the string message to send
 	 */
@@ -235,14 +280,27 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	}
 	
 	/**
-	 * Send the msg message to only one client identify by the sock connection
+	 * Send the a message to only one client identify by the web socket connection
 	 * 
-	 * @param sock the client socket
+	 * @param clientId clientId the client identifier
 	 * @param msg the string message to send
 	 */
-	public void send(WebSocket sock, String msg) {
+	public void send(int clientId, String msg) {
+		Set<WebSocket> sockets = this.getWebSockets();
+		Iterator<WebSocket> socketIt = sockets.iterator();
+		WebSocket sock = null;
+		boolean found = false;
+		
+		while (socketIt.hasNext() && !found) {
+			sock = socketIt.next();
+			if (sock.hashCode() == clientId)
+				found = true;
+		}
+		
+		if(found) {
 			sock.send(msg);
 			logger.debug("message sent.");
+		}
 	}
 	
 	/*****************************************/
@@ -273,7 +331,8 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 			JSONObject jsObj;
 		
 			jsObj = (JSONObject)jsonParser.nextValue();
-		
+			jsObj.put("clientId", socket.hashCode());
+			
 			Iterator<CommandListener> it = commandListeners.iterator();
 			CommandListener allcmdListener;
 		
@@ -303,6 +362,7 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 			String command = keys.next().toString();
 			JSONObject value;
 			value = jsObj.getJSONObject(command);
+			value.put("clientId", socket.hashCode());
 			
 			Iterator<ConfigListener> it = configListeners.iterator();
 			ConfigListener configCommandListener;

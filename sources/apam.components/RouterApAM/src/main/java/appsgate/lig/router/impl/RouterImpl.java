@@ -129,7 +129,7 @@ public class RouterImpl {
 	 * @param methodName method to call on objectId
 	 * @param args arguments list form method methodName
 	 */
-	public void executeCommand(String clientID, String objectId, String methodName, ArrayList<Object> args) {
+	public void executeCommand(int clientID, String objectId, String methodName, ArrayList<Object> args) {
 		try {
 			Object obj = getObjectRefFromID(objectId);
 			Object ret = abstractInvoke(obj, args.toArray(), methodName);
@@ -182,15 +182,13 @@ public class RouterImpl {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		//sendToClientService.send("notification", notif.JSONize());
-		//executeCommand(null, "ENO57ce7", "getTemperature", new ArrayList<Object>());
 	}
 
 	/**
 	 * Send all the devices description to one client
 	 * @param clientId the client connection identifier
 	 */
-	public void getDevices(String clientId) {
+	public void getDevices(int clientId) {
 		Iterator<AbstractObjectSpec> devices = abstractDevice.iterator();
 		
 		AbstractObjectSpec adev = null;
@@ -205,8 +203,7 @@ public class RouterImpl {
 					e.printStackTrace();
 				}
 			}
-//			sendToClientService.send(clientId, "listDevices", jsonDeviceList);
-			sendToClientService.send("listDevices", jsonDeviceList);
+			sendToClientService.send(clientId, "listDevices", jsonDeviceList);
 		}else{
 			logger.debug("No smart object detected.");
 		}
@@ -214,9 +211,11 @@ public class RouterImpl {
 
 	/**
 	 * Resolve the location manager dependency and return the reference
+	 * 
+	 * @param clientId the client identifier
 	 */
-	public void getLocations() {
-		sendToClientService.send("listLocations", locationManager.getJSONLocations());
+	public void getLocations(int clientId) {
+		sendToClientService.send(clientId, "listLocations", locationManager.getJSONLocations());
 	}
 
 	/**
