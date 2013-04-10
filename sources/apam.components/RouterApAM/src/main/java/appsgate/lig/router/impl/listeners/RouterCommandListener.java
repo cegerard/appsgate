@@ -92,8 +92,16 @@ public class RouterCommandListener implements CommandListener {
 						addArguments(type, value, arguments);
 						cpt++;
 					}
-
-					router.executeCommand(clientId, id, method, arguments);
+					
+					String callId = null;
+					if(obj.has("callId")) {
+						callId = obj.getString("callId");
+						logger.debug("method with return, call");
+					} else {
+						logger.debug("no return method call");
+					}
+					
+					router.executeCommand(clientId, id, method, arguments, callId);
 
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());

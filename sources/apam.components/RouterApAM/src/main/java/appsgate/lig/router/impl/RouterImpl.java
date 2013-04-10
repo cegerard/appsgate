@@ -124,17 +124,21 @@ public class RouterImpl {
 	/**
 	 * Get a command description, resolve the target reference and make the call.
 	 * 
-	 * @param clientID client identifier
+	 * @param clientId client identifier
 	 * @param objectId abstract object identifier
 	 * @param methodName method to call on objectId
 	 * @param args arguments list form method methodName
 	 */
-	public void executeCommand(int clientID, String objectId, String methodName, ArrayList<Object> args) {
+	public void executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, String callId) {
 		try {
 			Object obj = getObjectRefFromID(objectId);
 			Object ret = abstractInvoke(obj, args.toArray(), methodName);
 			if(ret != null)
-				logger.debug(ret.toString()+" / return type: "+ret.getClass().getName());
+				logger.debug("remote call, "+ methodName + ", on "+ objectId + " returns " + ret.toString()+" / return type: "+ret.getClass().getName());
+				JSONObject msg = new JSONObject();
+				msg.put("value", ret.toString());
+				msg.put("callId", callId);
+				sendToClientService.send(clientId, msg.toString());
 		} catch (Exception e) {
 			logger.debug("The generic method invocation failed --> ");
 			e.printStackTrace();

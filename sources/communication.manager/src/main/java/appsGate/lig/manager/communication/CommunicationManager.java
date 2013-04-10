@@ -112,12 +112,25 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 		return true;
 	}
 	
+	/**
+	 * This method is call to create a new web socket.
+	 * it is called by the web socket engine each time a client start a connection.
+	 * 
+	 * @param handler the Protocolhandler set by the web socket engine
+	 * @param listeners the set of listeners for this sockets
+	 */
 	@Override
 	public WebSocket createSocket(ProtocolHandler handler, WebSocketListener... listeners) {
 		logger.debug("Create webSocket");
 		return new DefaultWebSocket(handler, listeners);
 	}
 	
+	/**
+	 * Call back used to notify that a new message come from a connected client.
+	 * 
+	 * @param socket the socket that send the message
+	 * @param cmd the message received
+	 */
 	@Override
 	public void onMessage(WebSocket socket, String cmd) {
 		logger.debug("msg --> " + cmd);
@@ -153,12 +166,24 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 		}
 	}
 
+	/**
+	 * Call back called when a socket connection has closed.
+	 * 
+	 * @param socket the closed socket connection
+	 * @param frame the dataFrame corresponding to the closed connection action
+	 */
 	@Override
 	public void onClose(WebSocket socket, DataFrame frame) {
 		super.onClose(socket, frame);
 		logger.info("A client has closed his connection.");
 	}
 
+	/**
+	 * Call back called when a new connection is opened
+	 * 
+	 * @param socket the new connected socket
+	 * 
+	 */
 	@Override
 	public void onConnect(WebSocket socket) {
 		super.onConnect(socket);
@@ -196,14 +221,14 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	/**
 	 * Send service for JSON object
 	 * 
-	 * @param cmd the command form AppsGate communication protocol
+	 * @param key the command form AppsGate communication protocol
 	 * @param msg the JSONObject message
 	 */
-	public void send(String cmd, JSONObject msg) {
+	public void send(String key, JSONObject msg) {
 		
 		JSONObject jsonResponse =  new JSONObject();
 		try {
-			jsonResponse.put(cmd, msg);
+			jsonResponse.put(key, msg);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -213,13 +238,13 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	/**
 	 * Send service for JSON Array
 	 * 
-	 * @param cmd the command form AppsGate communication protocol
+	 * @param key the command form AppsGate communication protocol
 	 * @param msg the JSONArray message
 	 */
-	public void send(String cmd, JSONArray msg) {
+	public void send(String key, JSONArray msg) {
 		JSONObject jsonResponse =  new JSONObject();
 		try {
-			jsonResponse.put(cmd, msg);
+			jsonResponse.put(key, msg);
 		} catch (JSONException e) {
  			e.printStackTrace();
 		}
@@ -230,14 +255,14 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	 * The send method with a specific command and parameters to the specify client
 	 * 
 	 * @param clientId the targeted client identifier
-	 * @param cmd the notification or command response
+	 * @param key the notification or command response
 	 * @param msg parameters corresponding to the cmd command
 	 */
-	public void send(int clientId, String cmd, JSONObject msg) {
+	public void send(int clientId, String key, JSONObject msg) {
 		
 		JSONObject jsonResponse =  new JSONObject();
 		try {
-			jsonResponse.put(cmd, msg);
+			jsonResponse.put(key, msg);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -248,14 +273,14 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	 * The send method with a specific command and parameters to the specify client
 	 * 
 	 * @param clientId the targeted client identifier
-	 * @param cmd the notification or command response
+	 * @param key the notification or command response
 	 * @param msg parameters corresponding to the cmd command
 	 */
-	public void send(int clientId, String cmd, JSONArray msg) {
+	public void send(int clientId, String key, JSONArray msg) {
 		
 		JSONObject jsonResponse =  new JSONObject();
 		try {
-			jsonResponse.put(cmd, msg);
+			jsonResponse.put(key, msg);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -306,14 +331,26 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	/*****************************************/
 	/** Add listener service implementation **/
 	/*****************************************/
+	
+	/**
+	 * Register a new command listener
+	 * 
+	 * @param cmdListener the command listener to add
+	 */
 	public boolean addCommandListener(CommandListener cmdListener) {
 		logger.debug("New all command listener: "+cmdListener.toString());
 		return commandListeners.add(cmdListener);
 	}
 
-	public boolean addConfigListener(ConfigListener configcmdList) {
-		logger.debug("New config listener: "+configcmdList.toString());
-		return configListeners.add(configcmdList);
+	/**
+	 * Register a new configuration listener
+	 * 
+	 * @param configCmdList the configuration listener to add
+	 * 
+	 */
+	public boolean addConfigListener(ConfigListener configCmdList) {
+		logger.debug("New config listener: "+configCmdList.toString());
+		return configListeners.add(configCmdList);
 	}
 	
 	/**

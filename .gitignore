@@ -42,3 +42,15 @@ distributions/AppsGate-distribution/load/.DS_Store
 sources/.DS_Store
 
 .DS_Store
+
+sources/apam.components/RouterApAM/target/classes/appsgate/lig/router/impl/listeners/RouterCommandListener.class
+
+sources/apam.components/RouterApAM/target/classes/appsgate/lig/router/impl/listeners/RouterCommandListener.class
+
+sources/apam.components/RouterApAM/target/classes/appsgate/lig/router/impl/RouterImpl.class
+
+sources/apam.components/ContactSensorImpl/target/classes/obr.xml
+
+sources/apam.components/KeyCardSensorImpl/target/classes/obr.xml
+
+sources/apam.components/KeyCardSensorImpl/target/classes/obr.xml

@@ -15,39 +15,45 @@ import org.json.JSONObject;
 public interface SendWebsocketsService {
 
 	/**
-	 * the send method with a specific command and parameters 
-	 * @param cmd the notification or command response
-	 * @param msg parameters corresponding to the cmd command
+	 * The send method with a specific key and parameters 
+	 * @param key the notification or key response
+	 * @param msg parameters corresponding to the key
 	 */
-	public void send(String cmd, JSONObject msg);
+	public void send(String key, JSONObject msg);
 	
 	/**
-	 * the send method with a specific command and parameters 
-	 * @param cmd the notification or command response
-	 * @param msg parameters corresponding to the cmd command
+	 * The send method with a specific key and parameters 
+	 * @param key the notification or key response
+	 * @param msg parameters corresponding to the key
 	 */
-	public void send(String cmd, JSONArray msg);
+	public void send(String key, JSONArray msg);
 	
 	/**
-	 * the send method with a specific command and parameters 
+	 * The send method with a specific key and parameters 
 	 * @param msg JSON stringify message to send
 	 */
 	public void send(String msg);
 	
 	/**
-	 * the send method with a specific command and parameters to the specify client
+	 * The send method with a specific key and parameters to the specify client
 	 * @param clientId the targeted client identifier
-	 * @param cmd the notification or command response
-	 * @param msg parameters corresponding to the cmd command
+	 * @param key the notification or key response
+	 * @param msg parameters corresponding to the key
 	 */
-	public void send(int clientId, String cmd, JSONObject msg);
+	public void send(int clientId, String key, JSONObject msg);
 	
 	/**
-	 * the send method with a specific command and parameters to the specify client
+	 * The send method with a specific key and parameters to the specify client
 	 * @param clientId the targeted client identifier
-	 * @param cmd the notification or command response
-	 * @param msg parameters corresponding to the cmd command
+	 * @param key the notification or key response
+	 * @param msg parameters corresponding to the key
 	 */
-	public void send(int clientId, String cmd, JSONArray msg);
+	public void send(int clientId, String key, JSONArray msg);
+	
+	/**
+	 * The send method to a specific client 
+	 * @param msg JSON stringify message to send
+	 */
+	public void send(int clientId, String msg);
 
 }
