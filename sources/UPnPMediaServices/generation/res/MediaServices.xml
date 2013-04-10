@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<root>
+	<serviceList>
+		<service>
+			<serviceType>urn:schemas-upnp-org:service:RenderingControl:1</serviceType>
+			<serviceId>urn:upnp-org:serviceId:RenderingControl</serviceId>
+		</service>
+		<service>
+			<serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
+			<serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId>
+		</service>
+		<service>
+			<serviceType>urn:schemas-upnp-org:service:AVTransport:1</serviceType>
+			<serviceId>urn:upnp-org:serviceId:AVTransport</serviceId>
+		</service>
+		<service>
+			<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType>
+			<serviceId>urn:upnp-org:serviceId:ContentDirectory</serviceId>
+		</service>
+	</serviceList>
+</root>
+	
