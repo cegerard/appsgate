@@ -2,6 +2,9 @@ package appsgate.lig.router.impl.listeners;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +30,11 @@ public class RouterCommandListener implements CommandListener {
 	 */
 	private static Logger logger = LoggerFactory
 			.getLogger(RouterCommandListener.class);
+	
+	/**
+	 * Service that launch method call in a dedicated thread pool
+	 */
+	private ScheduledExecutorService executorService;
 
 	/**
 	 * The parent proxy of this listener
@@ -41,6 +49,7 @@ public class RouterCommandListener implements CommandListener {
 	 */
 	public RouterCommandListener(RouterImpl router) {
 		this.router = router;
+		executorService = Executors.newScheduledThreadPool(10);
 	}
 
 	/**
@@ -100,8 +109,8 @@ public class RouterCommandListener implements CommandListener {
 					} else {
 						logger.debug("no return method call");
 					}
+					executorService.execute(router.executeCommand(clientId, id, method, arguments, callId));
 					
-					router.executeCommand(clientId, id, method, arguments, callId);
 
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());

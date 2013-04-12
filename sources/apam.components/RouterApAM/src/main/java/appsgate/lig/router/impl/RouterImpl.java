@@ -1,6 +1,5 @@
 package appsgate.lig.router.impl;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -128,50 +127,13 @@ public class RouterImpl {
 	 * @param objectId abstract object identifier
 	 * @param methodName method to call on objectId
 	 * @param args arguments list form method methodName
+	 * @param callId the remote call identifier
 	 */
-	public void executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, String callId) {
-		try {
+	public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, String callId) {
 			Object obj = getObjectRefFromID(objectId);
-			Object ret = abstractInvoke(obj, args.toArray(), methodName);
-			if(ret != null)
-				logger.debug("remote call, "+ methodName + ", on "+ objectId + " returns " + ret.toString()+" / return type: "+ret.getClass().getName());
-				JSONObject msg = new JSONObject();
-				msg.put("value", ret.toString());
-				msg.put("callId", callId);
-				sendToClientService.send(clientId, msg.toString());
-		} catch (Exception e) {
-			logger.debug("The generic method invocation failed --> ");
-			e.printStackTrace();
-		}
+			return new GenericCommand(args, obj, methodName, callId, clientId, sendToClientService);
 	}
 
-	/**
-	 * This method allow the router to invoke methods on an abstract java
-	 * object.
-	 * 
-	 * @param obj
-	 *            , the abstract object on which the method will be invoke
-	 * @param args
-	 *            , all arguments for the method call
-	 * @param methodName
-	 *            , the method to invoke
-	 * @return the result of dispatching the method represented by this object
-	 *         on obj with parameters args
-	 * @throws Exception
-	 */
-	public Object abstractInvoke(Object obj, Object[] args, String methodName)
-			throws Exception {
-		@SuppressWarnings("rawtypes")
-		Class[] paramTypes = null;
-		if (args != null) {
-			paramTypes = new Class[args.length];
-			for (int i = 0; i < args.length; ++i) {
-				paramTypes[i] = args[i].getClass();
-			}
-		}
-		Method m = obj.getClass().getMethod(methodName, paramTypes);
-		return m.invoke(obj, args);
-	}
 	
 	/**
 	 * Called by ApAM when Notification message comes
