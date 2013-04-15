@@ -129,9 +129,10 @@ public class RouterImpl {
 	 * @param args arguments list form method methodName
 	 * @param callId the remote call identifier
 	 */
-	public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, String callId) {
+	@SuppressWarnings("rawtypes")
+	public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
 			Object obj = getObjectRefFromID(objectId);
-			return new GenericCommand(args, obj, methodName, callId, clientId, sendToClientService);
+			return new GenericCommand(args, paramType, obj, methodName, callId, clientId, sendToClientService);
 	}
 
 	

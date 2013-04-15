@@ -88,6 +88,8 @@ public class RouterCommandListener implements CommandListener {
 					JSONArray args = obj.getJSONArray("args");
 
 					ArrayList<Object> arguments = new ArrayList<Object>();
+					@SuppressWarnings("rawtypes")
+					ArrayList<Class> types = new ArrayList<Class>();
 
 					// Get all arguments types and values
 					int l = args.length();
@@ -98,7 +100,7 @@ public class RouterCommandListener implements CommandListener {
 						JSONObj = args.getJSONObject(cpt);
 						value = JSONObj.getString("value");
 						type = JSONObj.getString("type");
-						addArguments(type, value, arguments);
+						addArguments(type, value, arguments, types);
 						cpt++;
 					}
 					
@@ -109,7 +111,7 @@ public class RouterCommandListener implements CommandListener {
 					} else {
 						logger.debug("no return method call");
 					}
-					executorService.execute(router.executeCommand(clientId, id, method, arguments, callId));
+					executorService.execute(router.executeCommand(clientId, id, method, arguments, types, callId));
 					
 
 				} catch (IllegalArgumentException e) {
@@ -176,17 +178,47 @@ public class RouterCommandListener implements CommandListener {
 	 */
 	@SuppressWarnings("unchecked")
 	private void addArguments(String type, String value,
-			ArrayList<Object> arguments) throws ClassNotFoundException,
+			ArrayList<Object> arguments, @SuppressWarnings("rawtypes")ArrayList<Class> types) throws ClassNotFoundException,
 			IllegalArgumentException {
-
 		if (!type.equalsIgnoreCase("ref")) {
 			// Type referred to a basic java type
-			@SuppressWarnings("rawtypes")
-			Class argClass = Class.forName("java.lang." + type);
-			Object param;
 			try {
-				param = argClass.getConstructor(String.class).newInstance(value);
-				arguments.add(param);
+				if(type.matches("\\p{javaUpperCase}.*")){
+					// Java wrapper for basic type
+					logger.debug("Wrapper type detected");
+					@SuppressWarnings("rawtypes")
+					Class argClass = Class.forName("java.lang." + type);
+					Object param = argClass.getConstructor(String.class).newInstance(value);
+					arguments.add(param);
+					types.add(param.getClass());
+				}else {
+					//Java primitive type
+					logger.debug("Full primitive type detected");
+					if(type.contentEquals("int")){
+						int intParam = new Integer(value).intValue();
+						arguments.add(intParam);
+						types.add(int.class);
+					} else if (type.contentEquals("float")) {
+						float floatParam = new Float(value).floatValue();
+						arguments.add(floatParam);
+						types.add(float.class);
+					} else if (type.contentEquals("long")) {
+						long longParam = new Long(value).longValue();
+						arguments.add(longParam);
+						types.add(long.class);
+					} else if (type.contentEquals("double")) {
+						double doubleParam = new Double(value).doubleValue();
+						arguments.add(doubleParam);
+						types.add(double.class);
+					} else if (type.contentEquals("boolean")) {
+						boolean boolParam = new Boolean(value).booleanValue();
+						arguments.add(boolParam);
+						types.add(boolean.class);
+					} else {
+						throw new ClassNotFoundException("Primitive type ("+ type +") not defined");
+					}
+				}
+				
 			} catch (SecurityException e) {
 				logger.debug("Security violation: " + e.getMessage());
 			} catch (InstantiationException e) {
