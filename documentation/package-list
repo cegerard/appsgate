@@ -8,7 +8,7 @@ appsgate.lig.button_switch.sensor.spec
 appsgate.lig.contact.sensor.impl
 appsgate.lig.contact.sensor.messages
 appsgate.lig.contact.sensor.spec
-appsgate.lig.debug.client
+appsgate.lig.eude.interpreter.impl
 appsgate.lig.keycard.sensor.impl
 appsgate.lig.keycard.sensor.messages
 appsgate.lig.keycard.sensor.spec
