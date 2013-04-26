@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>apam.components</artifactId>
+		<groupId>appsGate.bundle</groupId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>AppsGate</artifactId>
+	<version>1.0.0</version>
+	<packaging>bundle</packaging>
+
+	<name>AppsGate OSGi Bundle</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<!-- Repositories List -->
+	<repositories>
+		<repository>
+			<id>apam-repo</id>
+			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+
+	<!-- Dependencies Description -->
+	<dependencies>
+		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-core</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cyberlink.upnp</groupId>
+			<artifactId>cybergarage</artifactId>
+			<version>2.1.0</version> <!-- WARNING: use local repository you need to export it into your own -->
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>RouterApAM</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
+
+	<!-- Build Description -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Private-Package>
+							org.cybergarage.*,
+							appsgate.lig
+						</Private-Package>
+						<Export-Package></Export-Package>
+						<Import-Package>
+							javax.xml.parsers,
+							!org.kxml2.io,
+							org.w3c.dom,
+							org.xml.sax,
+							org.xmlpull.v1,
+							!org.apache.xerces.parsers,
+							org.slf4j
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>fr.imag.adele.apam</groupId>
+				<artifactId>apam-maven-plugin</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>apam-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -167,6 +167,7 @@
     <module>PlaceManagerSpec</module>
     <module>OnOffActuatorSpec</module>
     <module>OnOffActuatorImpl</module>
+    <module>AppsGate</module>
   </modules>
 
 </project>

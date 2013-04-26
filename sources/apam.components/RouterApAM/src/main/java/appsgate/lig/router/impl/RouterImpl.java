@@ -18,6 +18,11 @@ import appsgate.lig.manager.location.spec.PlaceManagerSpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
 import fr.imag.adele.apam.Instance;
 
+/**
+ * 
+ * @author cedric
+ *
+ */
 public class RouterImpl {
 
 	/**
