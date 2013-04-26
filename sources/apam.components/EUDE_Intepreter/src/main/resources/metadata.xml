@@ -1,0 +1,14 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="EUDEInterpreterImpl" classname="appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl" singleton="true">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		<dependency push="gotNotification" multiple="true"/>
+	</implementation>
+	
+	<apam-instance name="EUDEInterpreterInst" implementation="EUDEInterpreterImpl">
+	</apam-instance>
+
+</apam>

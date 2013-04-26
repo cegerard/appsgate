@@ -168,6 +168,7 @@
     <module>OnOffActuatorSpec</module>
     <module>OnOffActuatorImpl</module>
     <module>AppsGate</module>
+    <module>EUDE_Intepreter</module>
   </modules>
 
 </project>
