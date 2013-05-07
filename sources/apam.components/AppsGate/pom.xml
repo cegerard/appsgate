@@ -76,7 +76,8 @@
 							org.xml.sax,
 							org.xmlpull.v1,
 							!org.apache.xerces.parsers,
-							org.slf4j
+							org.slf4j,
+							org.osgi.service.http
 						</Import-Package>
 					</instructions>
 				</configuration>

@@ -6,7 +6,9 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Hashtable;
 
 import org.cybergarage.upnp.Action;
 import org.cybergarage.upnp.Argument;
@@ -16,6 +18,9 @@ import org.cybergarage.upnp.StateVariable;
 import org.cybergarage.upnp.control.ActionListener;
 import org.cybergarage.upnp.control.QueryListener;
 import org.cybergarage.upnp.device.InvalidDescriptionException;
+import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +45,12 @@ public class Appsgate extends Device implements ActionListener, QueryListener {
 	 * static class logger member
 	 */
 	private static Logger logger = LoggerFactory.getLogger(Appsgate.class);
+	
+	/**
+	 * HTTP service dependency resolve by iPojo. Allow to register HTML
+	 * resources to the Felix HTTP server
+	 */
+	private HttpService httpService;
 
 	/**
 	 * UPnP device description xml file relative path.
@@ -130,6 +141,18 @@ public class Appsgate extends Device implements ActionListener, QueryListener {
 	public void newInst() {
 		this.start();
 		logger.info("AppsGate is started");
+		
+		if (httpService != null) {
+			final HttpContext httpContext = httpService.createDefaultHttpContext();
+			final Dictionary<String, String> initParams = new Hashtable<String, String>();
+			initParams.put("from", "HttpService");
+			try {
+				httpService.registerResources("/appsgate", "/WEB", httpContext);
+				logger.info("Appsgate mains HTML pages registered.");
+			} catch (NamespaceException ex) {
+				logger.error("NameSpace exception");
+			}
+		}
 	}
 
 	/**
@@ -138,6 +161,7 @@ public class Appsgate extends Device implements ActionListener, QueryListener {
 	public void deleteInst() {
 		this.stop();
 		logger.info("AppsGate has stopped");
+		httpService.unregister("/appsgate");
 	}
 
 	/**
