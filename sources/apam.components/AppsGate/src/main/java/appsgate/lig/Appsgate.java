@@ -62,7 +62,7 @@ public class Appsgate extends Device implements ActionListener, QueryListener {
 	 */
 	private static String wsPort = "8080";
 
-	// private RouterSpec router; // embeded
+	// private RouterSpec router; // embedded
 
 	/**
 	 * Default constructor for Appsgate java object.
@@ -98,9 +98,8 @@ public class Appsgate extends Device implements ActionListener, QueryListener {
 			for (NetworkInterface netint : Collections.list(nets)) {
 				if (!netint.isLoopback() && !netint.isVirtual()
 						&& netint.isUp()) { // TODO check also if its the local
-											// network.
-					Enumeration<InetAddress> addresses = netint
-							.getInetAddresses();
+											// network. but It will difficult to find automatically the right network interface
+					Enumeration<InetAddress> addresses = netint.getInetAddresses();
 					for (InetAddress address : Collections.list(addresses)) {
 						if (address instanceof Inet4Address) {
 							localAddress = (Inet4Address) address;
