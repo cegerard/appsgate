@@ -5,11 +5,20 @@ import net.fortuna.ical4j.model.Calendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.contact.sensor.messages.ContactNotificationMsg;
+import appsgate.lig.agenda.core.messages.AlarmNotificationMsg;
+import appsgate.lig.agenda.core.messages.EventNotificationMsg;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.proxy.agenda.interfaces.AgendaAdapter;
 
-
+/**
+ * This class is used as a core agenda. An instance of this class will match a remote agenda on
+ * the cloud
+ * 
+ * @author Cédric Gérard
+ * @since May 14, 2013
+ * @version 0.0.1
+ * 
+ */
 public class CoreiCalImpl {
 	
 	/**
@@ -57,7 +66,7 @@ public class CoreiCalImpl {
 		
 	/**
 	 * This method uses the ApAM message model. Each call produce a
-	 * AlarmNotification or EventNotification object, that notify ApAM that a new message has
+	 * AlarmNotificationMsg or EventNotificationMsg object, that notify ApAM that a new message has
 	 * been released.
 	 * 
 	 * @return nothing, it just notifies ApAM that a new message has been
@@ -65,11 +74,10 @@ public class CoreiCalImpl {
 	 */
 	public NotificationMsg notifyEventAlarm(Byte type) {
 		if(type == 0) {
-			return new EventNotifcationMsg();
+			return new EventNotificationMsg();
 		} else {
 			return new AlarmNotificationMsg();
 		}
-		return null;
 	}
 
 
