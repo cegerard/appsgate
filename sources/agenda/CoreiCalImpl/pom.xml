@@ -9,7 +9,6 @@
 	</parent>
 
 	<artifactId>CoreiCalImpl</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<name>CoreiCalImpl OSGi Bundle</name>

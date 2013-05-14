@@ -1,0 +1,26 @@
+<obr> 
+   <capability name='maven'>
+      <p n='groupId' v='appsGate.bundle' />
+      <p n='artifactId' v='CoreiCalImpl' />
+      <p n='version' v='0.0.1-SNAPSHOT' />
+   </capability>
+   <capability name='apam-component'>
+      <p n='name' v='CoreICalImpl' />
+      <p n='component-type' v='implementation' />
+      <p n='impl-name' v='CoreICalImpl' />
+      <p n='definition-agendaName' t='string' v='' />
+      <p n='definition-account' t='string' v='' />
+      <p n='definition-pswd' t='string' v='' />
+      <p n='version' t='version' v='0.0.1.SNAPSHOT' />
+   </capability>
+   <capability name='apam-component'>
+      <p n='name' v='MainAgendaInst' />
+      <p n='component-type' v='instance' />
+      <p n='inst-name' v='MainAgendaInst' />
+      <p n='impl-name' v='CoreICalImpl' />
+      <p n='agendaName' v='Smart home' />
+      <p n='account' v='smarthome.inria@gmail.com' />
+      <p n='pswd' v='smarthome2012' />
+      <p n='version' t='version' v='0.0.1.SNAPSHOT' />
+   </capability>
+</obr> 
