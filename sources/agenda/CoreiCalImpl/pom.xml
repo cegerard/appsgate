@@ -45,6 +45,11 @@
 			<artifactId>GoogleAdapter</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			 <groupId>appsGate.bundle</groupId>
+			 <artifactId>AbstractObjectSpec</artifactId>
+			 <version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->

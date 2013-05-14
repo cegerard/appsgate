@@ -5,7 +5,9 @@ import net.fortuna.ical4j.model.Calendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.proxy.google.agenda.GoogleAdapter;
+import appsgate.lig.contact.sensor.messages.ContactNotificationMsg;
+import appsgate.lig.logical.object.messages.NotificationMsg;
+import appsgate.lig.proxy.agenda.interfaces.AgendaAdapter;
 
 
 public class CoreiCalImpl {
@@ -18,7 +20,7 @@ public class CoreiCalImpl {
 	/**
 	 * The adapter for Google account
 	 */
-	private GoogleAdapter Adapter;
+	private AgendaAdapter Adapter;
 	
 	/**
 	 * The name of the corresponding remote agenda
@@ -52,5 +54,23 @@ public class CoreiCalImpl {
 	public void deleteInst() {
 		logger.info("A core agenda instance desapeared, "+agendaName);
 	}
+		
+	/**
+	 * This method uses the ApAM message model. Each call produce a
+	 * AlarmNotification or EventNotification object, that notify ApAM that a new message has
+	 * been released.
+	 * 
+	 * @return nothing, it just notifies ApAM that a new message has been
+	 *         posted.
+	 */
+	public NotificationMsg notifyEventAlarm(Byte type) {
+		if(type == 0) {
+			return new EventNotifcationMsg();
+		} else {
+			return new AlarmNotificationMsg();
+		}
+		return null;
+	}
+
 
 }

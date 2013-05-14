@@ -1,4 +1,4 @@
-package appsgate.lig.agenda.core.impl.interfaces;
+package appsgate.lig.proxy.agenda.interfaces;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VAlarm;

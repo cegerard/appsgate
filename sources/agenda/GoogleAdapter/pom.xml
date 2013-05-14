@@ -64,7 +64,8 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Export-Package>
 							org.apache.commons.*,
-							edu.emory.mathcs.backport.*
+							edu.emory.mathcs.backport.*,
+							appsgate.lig.proxy.agenda.interfaces
 						</Export-Package>
 						<Import-Package>
 							!org.apache.avalon.framework.logger,

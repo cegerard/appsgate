@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="CoreICalImpl" classname="appsgate.lig.agenda.core.impl.CoreiCalImpl">
+	<implementation name="CoreICalImpl" classname="appsgate.lig.agenda.core.impl.CoreiCalImpl" push="notifyEventAlarm">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<ipojo:requires field="Adapter"/>
 		
@@ -13,19 +13,19 @@
 		
 	</implementation>
 
- 	<apam-instance name="MainAgendaInst" implementation="CoreICalImpl">
+ 	<apam-instance name="SmartHomeAgendaInst" implementation="CoreICalImpl">
  		<property name="agendaName" value="Smart home"/>
  		<property name="account" 	value="smarthome.inria@gmail.com"/>
  		<property name="pswd" 		value="smarthome2012"/>
    </apam-instance>
    
-   <apam-instance name="MainAgendaInst" implementation="CoreICalImpl">
+   <apam-instance name="BoulotAgendaInst" implementation="CoreICalImpl">
  		<property name="agendaName" value="Agenda boulot"/>
  		<property name="account" 	value="smarthome.inria@gmail.com"/>
  		<property name="pswd" 		value="smarthome2012"/>
    </apam-instance>
    
-   <apam-instance name="MainAgendaInst" implementation="CoreICalImpl">
+   <apam-instance name="TestAgendaInst" implementation="CoreICalImpl">
  		<property name="agendaName" value="test Agenda"/>
  		<property name="account" 	value="smarthome.inria@gmail.com"/>
  		<property name="pswd" 		value="smarthome2012"/>
