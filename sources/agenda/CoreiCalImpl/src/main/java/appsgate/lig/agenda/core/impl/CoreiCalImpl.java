@@ -1,12 +1,30 @@
 package appsgate.lig.agenda.core.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import net.fortuna.ical4j.filter.Filter;
+import net.fortuna.ical4j.filter.PeriodRule;
+import net.fortuna.ical4j.filter.Rule;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Dur;
+import net.fortuna.ical4j.model.Period;
+import net.fortuna.ical4j.model.component.VAlarm;
+import net.fortuna.ical4j.model.component.VEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.agenda.core.messages.AlarmNotificationMsg;
-import appsgate.lig.agenda.core.messages.EventNotificationMsg;
+import appsgate.lig.agenda.core.messages.EndingEventNotificationMsg;
+import appsgate.lig.agenda.core.messages.StartingEventNotificationMsg;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.proxy.agenda.interfaces.AgendaAdapter;
 
@@ -43,27 +61,141 @@ public class CoreiCalImpl {
 	private String pswd;
 	
 	/**
+	 * The refresh rate of the local agenda
+	 */
+	private String rate;
+	
+	/**
+	 * The timer that trigger the refresh task each "rate" milliseconds
+	 */
+	Timer refreshTimer = new Timer();
+	
+	/**
+	 * The start date from when to get remote calendar
+	 */
+	private Date startDate = null;
+	
+	/**
+	 * The end date to when get the remote calendar
+	 */
+	private Date endDate = null;
+	
+	/**
 	 * The iCal local representation of the remote agenda
 	 */
-	Calendar calendar;
+	private Calendar calendar;
+	
+	ArrayList<VEvent> startingEventsList;
+	Timer nextStartEventTimer = new Timer();;
+	
+	ArrayList<VEvent> endingEventsList;
+	Timer nextEndEventTimer = new Timer();;
 	
 	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
 		logger.info("New core agenda instanciated, "+agendaName);
-		calendar = Adapter.getAgenda(agendaName, account, pswd);
-		logger.debug("URL for private access to data:"+calendar.getProperty("URL").getValue());
-		logger.debug("Name of remote agenda: "+calendar.getProperty("NAME").getValue());
+		//calendar = Adapter.getAgenda(agendaName, account, pswd, startDate, endDate);
+		//logger.debug("URL for private access to data:"+calendar.getProperty("URL").getValue());
+		//logger.debug("Name of remote agenda: "+calendar.getProperty("NAME").getValue());
+		
+		startingEventsList = new ArrayList<VEvent>();
+		endingEventsList   = new ArrayList<VEvent>();
+		
+		Long refreshRate = Long.valueOf(rate);
+		refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
+		logger.debug("Refresh task initiated to "+ refreshRate/1000/60 +" minutes");
 	}
 
 	/**
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
+		refreshTimer.cancel();
+		refreshTimer.purge();
 		logger.info("A core agenda instance desapeared, "+agendaName);
 	}
+	
+	/**
+	 * This private method is use to prepare the instance to trigger ApAM notifications
+	 * concerning the beginning and the end of the next event and corresponding
+	 * alarms.
+	 */
+	private void subscribeNextEventNotifications() {
 		
+		java.util.Calendar startDate = java.util.Calendar.getInstance();
+		startDate.set(java.util.Calendar.HOUR_OF_DAY, 0);
+		startDate.clear(java.util.Calendar.MINUTE);
+		startDate.clear(java.util.Calendar.SECOND);
+		logger.debug("START DATE: "+String.format("Current Date/Time : %tc", startDate) );
+		
+		// create a period starting the current day at midnight with a duration of one month because
+		// alarm can be triggered one month before an event.
+		Period period = new Period(new DateTime(startDate.getTime()), new Dur(30, 0, 0, 0));
+		Rule[] rules = new Rule[1];
+		rules[0] = new PeriodRule(period);
+		Filter filter = new Filter(rules, Filter.MATCH_ANY);
+
+		java.util.Date today = java.util.Calendar.getInstance().getTime();
+		Date referenceStartingEventDate = null;
+		Date referenceEndingEventDate = null;
+		@SuppressWarnings("unchecked")
+		Collection<VEvent> eventsToday = filter.filter(calendar.getComponents(Component.VEVENT));
+		Iterator<VEvent> it = eventsToday.iterator();
+		while(it.hasNext()) {
+			VEvent event = it.next();
+			
+			//add next starting events and next ending events to the lists.
+			Date eventStartDate = event.getStartDate().getDate();
+			Date eventEndDate   = event.getEndDate().getDate();
+			
+			if(eventStartDate.after(today)) {
+				if(referenceStartingEventDate == null) {
+					referenceStartingEventDate = eventStartDate;
+					startingEventsList.add(event);
+				} else if (eventStartDate.before(referenceStartingEventDate)) {
+					referenceStartingEventDate = eventStartDate;
+					startingEventsList.clear();
+					startingEventsList.add(event);
+				} else if (eventStartDate.equals(referenceStartingEventDate)) {
+					startingEventsList.add(event);
+				}
+			}
+			
+			if(eventEndDate.after(today)) {
+				if(referenceEndingEventDate == null) {
+					referenceEndingEventDate = eventEndDate;
+					endingEventsList.add(event);
+				} else if (eventEndDate.before(referenceEndingEventDate)) {
+					referenceEndingEventDate = eventEndDate;
+					endingEventsList.clear();
+					endingEventsList.add(event);
+				} else if(eventEndDate.equals(referenceEndingEventDate)) {
+					endingEventsList.add(event);
+				}
+			}
+			
+			//Update timers
+			nextStartEventTimer.purge();
+			nextEndEventTimer.purge();
+			nextStartEventTimer.schedule(notifyStartingEventTask, referenceStartingEventDate);
+			nextEndEventTimer.schedule(notifyEndingEventTask, referenceEndingEventDate);
+			
+			
+			// Get all alarms for all event in one month;
+			ComponentList alarmsList = event.getAlarms();
+			Iterator<VAlarm> itAlarm = alarmsList.iterator();
+			
+			while(itAlarm.hasNext()) {
+				VAlarm alarm = itAlarm.next();
+				logger.debug("alarm: "+alarm.getSummary().getValue());
+				
+				//TODO fin the next alarms and set the correspondign timer to send alamr notifications
+			}
+		}
+	}
+	
 	/**
 	 * This method uses the ApAM message model. Each call produce a
 	 * AlarmNotificationMsg or EventNotificationMsg object, that notify ApAM that a new message has
@@ -72,13 +204,67 @@ public class CoreiCalImpl {
 	 * @return nothing, it just notifies ApAM that a new message has been
 	 *         posted.
 	 */
-	public NotificationMsg notifyEventAlarm(Byte type) {
+	public NotificationMsg notifyEventAlarm(int type, VEvent event, VAlarm alarm) {
 		if(type == 0) {
-			return new EventNotificationMsg();
+			return new StartingEventNotificationMsg(event.getSummary().getName());
+			
+		} else if(type == 1) {
+			return new EndingEventNotificationMsg(event.getSummary().getName());
+			
 		} else {
-			return new AlarmNotificationMsg();
+			return new AlarmNotificationMsg(event.getSummary().getName(), alarm.getSummary().getName());
 		}
 	}
-
+	
+	/**
+	 * Timer use to trigger notifications when events begin
+	 */
+	TimerTask notifyStartingEventTask = new TimerTask()
+	{
+		@Override
+		public void run() 
+		{
+			Iterator<VEvent> it = startingEventsList.iterator();
+			while(it.hasNext()) {
+				VEvent event = it.next();
+				notifyEventAlarm(0, event, null);
+				logger.debug("Send the starting evetn status notifcation for " + event.getSummary().getName());
+			}
+			subscribeNextEventNotifications();
+		}	
+	};
+	
+	/**
+	 * Timer use to trigger notifications when events end
+	 */
+	TimerTask notifyEndingEventTask = new TimerTask()
+	{
+		@Override
+		public void run() 
+		{
+			Iterator<VEvent> it = endingEventsList.iterator();
+			while(it.hasNext()) {
+				VEvent event = it.next();
+				notifyEventAlarm(1, event, null);
+				logger.debug("Send the ending event status notifcation for " + event.getSummary().getName());
+			}
+			subscribeNextEventNotifications();
+			logger.debug("");
+		}	
+	};
+	
+	/**
+	 * The task that is executed automatically to refresh the local agenda
+	 */
+	TimerTask refreshtask = new TimerTask()
+	{
+		@Override
+		public void run() 
+		{
+			calendar = Adapter.getAgenda(agendaName, account, pswd, startDate, endDate);
+			subscribeNextEventNotifications();
+			logger.debug("Agenda \""+calendar.getProperty("NAME").getValue()+"\" updated.");
+		}	
+	};
 
 }

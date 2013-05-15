@@ -15,7 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.proxy.agenda.interfaces.AgendaAdapter;
 
+import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
+import com.google.gdata.data.DateTime;
 import com.google.gdata.data.calendar.CalendarEntry;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
@@ -84,12 +86,19 @@ public class GoogleAdapter implements AgendaAdapter{
 
 	/**
 	 * Get the remote google agenda corresponding to "agenda" with "account" and "password" google account connection
-	 * @param agenda
-	 * @param account
-	 * @param password
+	 * 
+	 * If start date is null the getAgenda method return the whole remote agenda, if not it will return the agenda from
+	 * startDate to the last register event. It is possible to specify a end date to get the agenda between startDate and endDate.
+	 * If startDate is null the endDate will not be consider.
+	 * 
+	 * @param agenda the remote agenda you want to get
+	 * @param account the remote service account
+	 * @param password the password corresponding to the account
+	 * @param startDate the date from when you want to get events
+	 * @param endDate the date to when you want to get events
 	 * @return the google agenda convert to iCalendar standard format
 	 */
-	public synchronized Calendar getAgenda(String agenda, String account, String password) { 
+	public synchronized Calendar getAgenda(String agenda, String account, String password, java.util.Date startDate, java.util.Date endDate) { 
 		Calendar calendar = newICal();
 		try {
 			currentGoogleAgendaConnection.setUserCredentials(account, password);
@@ -110,7 +119,18 @@ public class GoogleAdapter implements AgendaAdapter{
 			
 			if(found) {
 				URL eventURL = new URL(calendarEntry.getLink("alternate", null).getHref());
-				CalendarEventFeed resulteventFeed = currentGoogleAgendaConnection.getFeed(eventURL, CalendarEventFeed.class);
+				CalendarEventFeed resulteventFeed;
+				
+				if(startDate == null) {
+					resulteventFeed = currentGoogleAgendaConnection.getFeed(eventURL, CalendarEventFeed.class);
+				} else {
+					CalendarQuery myQuery = new CalendarQuery(feedUrl);
+					myQuery.setMinimumStartTime(new DateTime(startDate));
+					if(endDate != null) {
+						myQuery.setMaximumStartTime(new DateTime(endDate));
+					}	
+					resulteventFeed = currentGoogleAgendaConnection.query(myQuery, CalendarEventFeed.class);
+				}
 				
 				//UidGenerator ug = new UidGenerator("1");
 				for (i = 0; i < resulteventFeed.getEntries().size(); i++) {
@@ -142,6 +162,7 @@ public class GoogleAdapter implements AgendaAdapter{
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+		
 		return calendar;
 	}
 	

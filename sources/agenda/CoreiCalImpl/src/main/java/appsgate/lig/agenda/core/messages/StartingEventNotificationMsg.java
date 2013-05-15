@@ -6,14 +6,12 @@ import org.json.JSONObject;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 
-public class AlarmNotificationMsg implements NotificationMsg {
-
-	private String eventName;
-	private String alarmSummary;
+public class StartingEventNotificationMsg implements NotificationMsg {
 	
-	public AlarmNotificationMsg(String eventName, String alarmSummary) {
-		this.eventName = eventName;
-		this.alarmSummary = alarmSummary;
+	private String eventName;
+
+	public StartingEventNotificationMsg(String name) {
+		eventName = name;
 	}
 
 	@Override

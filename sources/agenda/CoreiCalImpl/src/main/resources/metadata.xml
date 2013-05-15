@@ -10,6 +10,7 @@
 		<definition name="agendaName" type="string" field="agendaName"/>
 		<definition name="account" 	  type="string" field="account"/>
 		<definition name="pswd" 	  type="string" field="pswd"/>
+		<definition name="rate" 	  type="string"   field="rate" value="900000"/>
 		
 	</implementation>
 

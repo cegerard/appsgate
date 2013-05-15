@@ -8,9 +8,11 @@
       <p n='name' v='CoreICalImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='CoreICalImpl' />
+      <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='definition-agendaName' t='string' v='' />
       <p n='definition-account' t='string' v='' />
       <p n='definition-pswd' t='string' v='' />
+      <p n='definition-rate' t='string' v='900000' />
       <p n='version' t='version' v='0.0.1.SNAPSHOT' />
    </capability>
    <capability name='apam-component'>
@@ -18,6 +20,7 @@
       <p n='component-type' v='instance' />
       <p n='inst-name' v='SmartHomeAgendaInst' />
       <p n='impl-name' v='CoreICalImpl' />
+      <p n='rate' v='900000' />
       <p n='agendaName' v='Smart home' />
       <p n='account' v='smarthome.inria@gmail.com' />
       <p n='pswd' v='smarthome2012' />
@@ -28,6 +31,7 @@
       <p n='component-type' v='instance' />
       <p n='inst-name' v='BoulotAgendaInst' />
       <p n='impl-name' v='CoreICalImpl' />
+      <p n='rate' v='900000' />
       <p n='agendaName' v='Agenda boulot' />
       <p n='account' v='smarthome.inria@gmail.com' />
       <p n='pswd' v='smarthome2012' />
@@ -38,6 +42,7 @@
       <p n='component-type' v='instance' />
       <p n='inst-name' v='TestAgendaInst' />
       <p n='impl-name' v='CoreICalImpl' />
+      <p n='rate' v='900000' />
       <p n='agendaName' v='test Agenda' />
       <p n='account' v='smarthome.inria@gmail.com' />
       <p n='pswd' v='smarthome2012' />
