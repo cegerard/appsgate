@@ -4,6 +4,20 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.component.VAlarm;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Name;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
+import net.fortuna.ical4j.model.property.Version;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -22,20 +36,10 @@ import com.google.gdata.data.calendar.CalendarEntry;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
 import com.google.gdata.data.calendar.CalendarFeed;
+import com.google.gdata.data.extensions.Reminder;
 import com.google.gdata.data.extensions.When;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
-
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.component.VAlarm;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.Name;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Url;
-import net.fortuna.ical4j.model.property.Version;
 
 
 /**
@@ -98,6 +102,7 @@ public class GoogleAdapter implements AgendaAdapter{
 	 * @param endDate the date to when you want to get events
 	 * @return the google agenda convert to iCalendar standard format
 	 */
+	@SuppressWarnings("unchecked")
 	public synchronized Calendar getAgenda(String agenda, String account, String password, java.util.Date startDate, java.util.Date endDate) { 
 		Calendar calendar = newICal();
 		try {
@@ -132,7 +137,6 @@ public class GoogleAdapter implements AgendaAdapter{
 					resulteventFeed = currentGoogleAgendaConnection.query(myQuery, CalendarEventFeed.class);
 				}
 				
-				//UidGenerator ug = new UidGenerator("1");
 				for (i = 0; i < resulteventFeed.getEntries().size(); i++) {
 					CalendarEventEntry entry = resulteventFeed.getEntries().get(i);
 					//Writing the event in the iCal calendar instant
@@ -140,9 +144,45 @@ public class GoogleAdapter implements AgendaAdapter{
 					Date start = new Date(time.getStartTime().getValue());
 					Date end =  new Date(time.getEndTime().getValue());
 					VEvent icalEvent = new VEvent(start, end, entry.getTitle().getPlainText());
-					// Generate a UID for the event..
 					
-					icalEvent.getProperties().add(new Uid(entry.getIcalUID())/*ug.generateUid()*/);
+					//Get reminders from google entry
+					ArrayList<VAlarm> icalAlarmList = new ArrayList<VAlarm>();
+					List<Reminder> reminders = entry.getReminder();
+					Iterator<Reminder> it = reminders.iterator();
+					while(it.hasNext()) {
+						Reminder reminder = it.next();
+					
+						//reminder.getMethod();
+						
+						long miliOfDay = 0;
+						long miliOfHours = 0;
+						long miliOfMinutes = 0;
+						
+						if(reminder.getDays() != null) {
+							miliOfDay = (reminder.getDays()*24*3600*1000);
+						}
+						
+						if(reminder.getHours() != null) {
+							miliOfHours = (reminder.getHours()*3600*1000);
+						}
+						
+						if(reminder.getMinutes() != null) {
+							miliOfMinutes = reminder.getMinutes()*60*1000;
+						}
+						
+						logger.debug("TIME google: "+time.getStartTime().getValue());
+						logger.debug("TIME ical  : "+start.getTime());
+						logger.debug("TIME ical  : "+ String.format("Current Date/Time : %tc", start));
+						Date triggerDate = new Date(start.getTime()-miliOfDay-miliOfHours-miliOfMinutes);
+
+						VAlarm alarm = new VAlarm(new net.fortuna.ical4j.model.DateTime(triggerDate.getTime()));
+						
+						icalAlarmList.add(alarm);
+					}
+					icalEvent.getAlarms().addAll(icalAlarmList);
+					
+					// Add the icalendar UID for the event
+					icalEvent.getProperties().add(new Uid(entry.getIcalUID()));
 					calendar.getComponents().add(icalEvent);
 				}
 				Url googleAgendaURL = new Url();

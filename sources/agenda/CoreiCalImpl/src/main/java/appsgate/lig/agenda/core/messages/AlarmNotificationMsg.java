@@ -28,8 +28,11 @@ public class AlarmNotificationMsg implements NotificationMsg {
 
 	@Override
 	public JSONObject JSONize() throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject obj = new JSONObject();
+		obj.put("source", eventName);
+		obj.put("alarm", alarmSummary);
+		
+		return obj;
 	}
 
 }

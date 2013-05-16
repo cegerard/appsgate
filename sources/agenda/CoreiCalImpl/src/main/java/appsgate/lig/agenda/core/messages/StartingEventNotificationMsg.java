@@ -26,8 +26,10 @@ public class StartingEventNotificationMsg implements NotificationMsg {
 
 	@Override
 	public JSONObject JSONize() throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject obj = new JSONObject();
+		obj.put("event", eventName);
+		
+		return obj;
 	}
 
 }

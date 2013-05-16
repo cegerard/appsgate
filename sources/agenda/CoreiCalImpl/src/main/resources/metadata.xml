@@ -14,11 +14,11 @@
 		
 	</implementation>
 
- 	<apam-instance name="SmartHomeAgendaInst" implementation="CoreICalImpl">
- 		<property name="agendaName" value="Smart home"/>
- 		<property name="account" 	value="smarthome.inria@gmail.com"/>
- 		<property name="pswd" 		value="smarthome2012"/>
-   </apam-instance>
+<!--  	<apam-instance name="SmartHomeAgendaInst" implementation="CoreICalImpl"> -->
+<!--  		<property name="agendaName" value="Smart home"/> -->
+<!--  		<property name="account" 	value="smarthome.inria@gmail.com"/> -->
+<!--  		<property name="pswd" 		value="smarthome2012"/> -->
+<!--    </apam-instance> -->
    
    <apam-instance name="BoulotAgendaInst" implementation="CoreICalImpl">
  		<property name="agendaName" value="Agenda boulot"/>
@@ -26,9 +26,9 @@
  		<property name="pswd" 		value="smarthome2012"/>
    </apam-instance>
    
-   <apam-instance name="TestAgendaInst" implementation="CoreICalImpl">
- 		<property name="agendaName" value="test Agenda"/>
- 		<property name="account" 	value="smarthome.inria@gmail.com"/>
- 		<property name="pswd" 		value="smarthome2012"/>
-   </apam-instance>
+<!--    <apam-instance name="TestAgendaInst" implementation="CoreICalImpl"> -->
+<!--  		<property name="agendaName" value="test Agenda"/> -->
+<!--  		<property name="account" 	value="smarthome.inria@gmail.com"/> -->
+<!--  		<property name="pswd" 		value="smarthome2012"/> -->
+<!--    </apam-instance> -->
 </apam>
