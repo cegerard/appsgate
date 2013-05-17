@@ -9,11 +9,11 @@ import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 public class AlarmNotificationMsg implements NotificationMsg {
 
 	private String eventName;
-	private String alarmSummary;
+	private String alarmRingDate;
 	
-	public AlarmNotificationMsg(String eventName, String alarmSummary) {
+	public AlarmNotificationMsg(String eventName, String alarmRingDate) {
 		this.eventName = eventName;
-		this.alarmSummary = alarmSummary;
+		this.alarmRingDate = alarmRingDate;
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class AlarmNotificationMsg implements NotificationMsg {
 	public JSONObject JSONize() throws JSONException {
 		JSONObject obj = new JSONObject();
 		obj.put("source", eventName);
-		obj.put("alarm", alarmSummary);
+		obj.put("alarm", alarmRingDate);
 		
 		return obj;
 	}

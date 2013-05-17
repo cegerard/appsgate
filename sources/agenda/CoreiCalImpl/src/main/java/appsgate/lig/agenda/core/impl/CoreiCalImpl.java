@@ -274,8 +274,7 @@ public class CoreiCalImpl {
 		} else if (type == 1) {
 			return new EndingEventNotificationMsg(event.getSummary().getValue());
 		} else {
-			return new AlarmNotificationMsg(event.getSummary().getValue(), alarm
-					.getSummary().getValue());
+			return new AlarmNotificationMsg(event.getSummary().getValue(), alarm.getTrigger().getValue());
 		}
 	}
 
@@ -289,8 +288,7 @@ public class CoreiCalImpl {
 			while (it.hasNext()) {
 				VEvent event = it.next();
 				notifyEventAlarm(0, event, null);
-				logger.debug("Send the starting event status notifcation for "
-						+ event.getSummary().getName());
+				logger.debug("Send the starting event status notifcation for "+ event.getSummary().getValue());
 			}
 			subscribeNextEventNotifications();
 		}
@@ -306,7 +304,7 @@ public class CoreiCalImpl {
 			while (it.hasNext()) {
 				VEvent event = it.next();
 				notifyEventAlarm(1, event, null);
-				logger.debug("Send the ending event status notifcation for "+ event.getSummary().getName());
+				logger.debug("Send the ending event status notifcation for "+ event.getSummary().getValue());
 			}
 			subscribeNextEventNotifications();
 		}
@@ -321,10 +319,8 @@ public class CoreiCalImpl {
 			Iterator<Entry<VAlarm, VEvent>> it = alarmsMap.entrySet().iterator();
 			while (it.hasNext()) {
 				Entry<VAlarm, VEvent> entry = it.next();
-				notifyEventAlarm(1, entry.getValue(), entry.getKey());
-				logger.debug("Send the alarm notifcation "
-						+ entry.getKey().getSummary().getName() + " for "
-						+ entry.getValue().getSummary().getName());
+				notifyEventAlarm(2, entry.getValue(), entry.getKey());
+				logger.debug("Send the alarm notifcation at "+ entry.getKey().getTrigger().getValue()+ " for "+ entry.getValue().getSummary().getValue());
 			}
 			subscribeNextEventNotifications();
 		}
