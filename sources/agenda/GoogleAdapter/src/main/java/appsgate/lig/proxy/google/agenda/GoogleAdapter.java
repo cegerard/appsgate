@@ -2,21 +2,17 @@ package appsgate.lig.proxy.google.agenda;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.Name;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.model.property.Version;
 
 import org.apache.felix.ipojo.annotations.Component;
@@ -102,7 +98,6 @@ public class GoogleAdapter implements AgendaAdapter{
 	 * @param endDate the date to when you want to get events
 	 * @return the google agenda convert to iCalendar standard format
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized Calendar getAgenda(String agenda, String account, String password, java.util.Date startDate, java.util.Date endDate) { 
 		Calendar calendar = newICal();
 		try {
@@ -141,8 +136,8 @@ public class GoogleAdapter implements AgendaAdapter{
 					CalendarEventEntry entry = resulteventFeed.getEntries().get(i);
 					//Writing the event in the iCal calendar instant
 					When time = entry.getTimes().get(0);
-					Date start = new Date(time.getStartTime().getValue());
-					Date end =  new Date(time.getEndTime().getValue());
+					net.fortuna.ical4j.model.DateTime start = new net.fortuna.ical4j.model.DateTime(time.getStartTime().getValue());
+					net.fortuna.ical4j.model.DateTime end =  new net.fortuna.ical4j.model.DateTime(time.getEndTime().getValue());
 					VEvent icalEvent = new VEvent(start, end, entry.getTitle().getPlainText());
 					
 					//Get reminders from google entry
@@ -151,7 +146,7 @@ public class GoogleAdapter implements AgendaAdapter{
 					Iterator<Reminder> it = reminders.iterator();
 					while(it.hasNext()) {
 						Reminder reminder = it.next();
-					
+
 						//reminder.getMethod();
 						
 						long miliOfDay = 0;
@@ -170,12 +165,9 @@ public class GoogleAdapter implements AgendaAdapter{
 							miliOfMinutes = reminder.getMinutes()*60*1000;
 						}
 						
-						logger.debug("TIME google: "+time.getStartTime().getValue());
-						logger.debug("TIME ical  : "+start.getTime());
-						logger.debug("TIME ical  : "+ String.format("Current Date/Time : %tc", start));
-						Date triggerDate = new Date(start.getTime()-miliOfDay-miliOfHours-miliOfMinutes);
+						net.fortuna.ical4j.model.DateTime triggerDate = new net.fortuna.ical4j.model.DateTime(start.getTime()-miliOfDay-miliOfHours-miliOfMinutes);
 
-						VAlarm alarm = new VAlarm(new net.fortuna.ical4j.model.DateTime(triggerDate.getTime()));
+						VAlarm alarm = new VAlarm(triggerDate);
 						
 						icalAlarmList.add(alarm);
 					}
@@ -184,11 +176,19 @@ public class GoogleAdapter implements AgendaAdapter{
 					// Add the icalendar UID for the event
 					icalEvent.getProperties().add(new Uid(entry.getIcalUID()));
 					calendar.getComponents().add(icalEvent);
+					
+//					logger.debug("TIME google  : "+ time.getStartTime().getValue());
+//					logger.debug("TIME google  : "+ String.format(time.getStartTime().toStringRfc822()));
+//					logger.debug(" ical date   : "+ start.getTime());
+//					logger.debug(" ical date   : "+ start.toGMTString());
+//					logger.debug(" ical event  : "+ icalEvent.getStartDate().getDate().getTime());
+//					logger.debug(" ical event  : "+ icalEvent.getStartDate().getParameter(DtStart.DTSTART));
 				}
-				Url googleAgendaURL = new Url();
-				googleAgendaURL.setUri(eventURL.toURI());
-				calendar.getProperties().add(googleAgendaURL);
-				calendar.getProperties().add(new Name(agenda));
+				
+				//Url googleAgendaURL = new Url();
+				//googleAgendaURL.setUri(eventURL.toURI());
+				//calendar.getProperties().add(googleAgendaURL);
+				//calendar.getProperties().add(new Name(agenda));
 			}
 			
 		} catch (AuthenticationException e) {
@@ -198,8 +198,6 @@ public class GoogleAdapter implements AgendaAdapter{
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ServiceException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 		

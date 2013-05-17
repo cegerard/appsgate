@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>appsGate.bundle</groupId>
-  <artifactId>agenda</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>AppsGate Agenda Components</name>
-  
-  <properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>appsGate.bundle</groupId>
+	<artifactId>agenda</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>AppsGate Agenda Components</name>
+
+	<properties>
 		<!-- apam version -->
 		<apam.current.version>0.0.2-SNAPSHOT</apam.current.version>
 		<!-- Dependencies version -->
@@ -17,7 +18,7 @@
 		<!-- Encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>apam-plugin-repository</id>
@@ -27,13 +28,21 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<!-- Maven Repo -->
 	<repositories>
 
 		<repository>
 			<id>apam-repo</id>
 			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>ical4j-repository</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -142,8 +151,8 @@
 			</extension>
 		</extensions>
 	</build>
-  <modules>
-    <module>GoogleAdapter</module>
-    <module>CoreiCalImpl</module>
-  </modules>
+	<modules>
+		<module>GoogleAdapter</module>
+		<module>CoreiCalImpl</module>
+	</modules>
 </project>

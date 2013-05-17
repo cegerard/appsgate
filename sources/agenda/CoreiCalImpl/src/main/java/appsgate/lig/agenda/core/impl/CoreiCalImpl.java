@@ -1,14 +1,17 @@
 package appsgate.lig.agenda.core.impl;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.filter.Filter;
 import net.fortuna.ical4j.filter.PeriodRule;
 import net.fortuna.ical4j.filter.Rule;
@@ -18,9 +21,9 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Period;
+import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,12 +78,12 @@ public class CoreiCalImpl {
 	/**
 	 * The start date from when to get remote calendar
 	 */
-	private Date startDate = null;
+	private java.util.Date startDate = null;
 
 	/**
 	 * The end date to when get the remote calendar
 	 */
-	private Date endDate = null;
+	private java.util.Date endDate = null;
 
 	/**
 	 * The iCal local representation of the remote agenda
@@ -89,12 +92,15 @@ public class CoreiCalImpl {
 
 	ArrayList<VEvent> startingEventsList;
 	Timer nextStartEventTimer = new Timer();
-
+	DateTime referenceStartingEventDate = new DateTime(0);
+	
 	ArrayList<VEvent> endingEventsList;
 	Timer nextEndEventTimer = new Timer();
+	DateTime referenceEndingEventDate = new DateTime(0);
 
 	HashMap<VAlarm, VEvent> alarmsMap;
 	Timer nextAlarmTimer = new Timer();
+	DateTime referenceTriggeringAlarmDate = new DateTime(0);
 
 	/**
 	 * Called by APAM when an instance of this implementation is created
@@ -129,85 +135,87 @@ public class CoreiCalImpl {
 	 * notifications concerning the beginning and the end of the next event and
 	 * corresponding alarms.
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void subscribeNextEventNotifications() {
 
 		java.util.Calendar startDate = java.util.Calendar.getInstance();
 		startDate.set(java.util.Calendar.HOUR_OF_DAY, 0);
 		startDate.clear(java.util.Calendar.MINUTE);
 		startDate.clear(java.util.Calendar.SECOND);
-		logger.debug("START DATE: "+ String.format("Current Date/Time : %tc", startDate));
+		//logger.debug("START DATE: "+ String.format("Current Date/Time : %tc", startDate));
 
 		// create a period starting the current day at midnight with a duration
 		// of one month because
 		// alarm can be triggered one month before an event.
-		Period period = new Period(new DateTime(startDate.getTime()), new Dur(30, 0, 0, 0));
+		Period period = new Period(new DateTime(startDate.getTimeInMillis()), new Dur(30, 0, 0, 0));
 		Rule[] rules = new Rule[1];
 		rules[0] = new PeriodRule(period);
 		Filter filter = new Filter(rules, Filter.MATCH_ANY);
 
-		java.util.Date today = java.util.Calendar.getInstance().getTime();
-		Date referenceStartingEventDate = null;
-		Date referenceEndingEventDate = null;
-		Date referenceTriggeringAlarmDate = null;
-		@SuppressWarnings("unchecked")
+		DateTime today = new DateTime(java.util.Calendar.getInstance().getTime().getTime());
+		DateTime newStartingEventDate = null;
+		DateTime newEndingEventDate = null;
+		DateTime newTriggeringAlarmDate = null;
+		
 		Collection<VEvent> eventsToday = filter.filter(calendar.getComponents(Component.VEVENT));
 		Iterator<VEvent> it = eventsToday.iterator();
+		
+		startingEventsList.clear();
+		endingEventsList.clear();
+		alarmsMap.clear();
 		
 		while (it.hasNext()) {
 			VEvent event = it.next();
 			logger.debug("EVENT: "+event.getSummary().getValue());
 			// add next starting events and next ending events to the lists.
-			Date eventStartDate = event.getStartDate().getDate();
-			Date eventEndDate = event.getEndDate().getDate();
+			DateTime eventStartDate = (DateTime)event.getStartDate().getDate();
+			DateTime eventEndDate   = (DateTime)event.getEndDate().getDate();
 
 			if (eventStartDate.after(today)) {
-				if (referenceStartingEventDate == null) {
-					referenceStartingEventDate = eventStartDate;
+				if (newStartingEventDate == null) {
+					newStartingEventDate = eventStartDate;
 					startingEventsList.add(event);
-				} else if (eventStartDate.before(referenceStartingEventDate)) {
-					referenceStartingEventDate = eventStartDate;
+				} else if (eventStartDate.before(newStartingEventDate)) {
+					newStartingEventDate = eventStartDate;
 					startingEventsList.clear();
 					startingEventsList.add(event);
-				} else if (eventStartDate.equals(referenceStartingEventDate)) {
+				} else if (eventStartDate.equals(newStartingEventDate)) {
 					startingEventsList.add(event);
 				}
 			}
 
 			if (eventEndDate.after(today)) {
-				if (referenceEndingEventDate == null) {
-					referenceEndingEventDate = eventEndDate;
+				if (newEndingEventDate == null) {
+					newEndingEventDate = eventEndDate;
 					endingEventsList.add(event);
-				} else if (eventEndDate.before(referenceEndingEventDate)) {
-					referenceEndingEventDate = eventEndDate;
+				} else if (eventEndDate.before(newEndingEventDate)) {
+					newEndingEventDate = eventEndDate;
 					endingEventsList.clear();
 					endingEventsList.add(event);
-				} else if (eventEndDate.equals(referenceEndingEventDate)) {
+				} else if (eventEndDate.equals(newEndingEventDate)) {
 					endingEventsList.add(event);
 				}
 			}
 
 			// Get all alarms for all event in one month;
 			ComponentList alarmsList = event.getAlarms();
-			@SuppressWarnings("unchecked")
 			Iterator<VAlarm> itAlarm = alarmsList.iterator();
 
 			while (itAlarm.hasNext()) {
 				VAlarm alarm = itAlarm.next();
-				Date triggerAlarmDate = alarm.getTrigger().getDate();
+				DateTime triggerAlarmDate = (DateTime)alarm.getTrigger().getDate();
 				logger.debug("Reminders for "+event.getSummary().getValue()+", date: "+triggerAlarmDate.getTime());
-
-				logger.debug("TODAY: "+ String.format("Current Date/Time : %tc", today));
 				logger.debug("TRIGGER ALARM: "+ String.format("Current Date/Time : %tc", triggerAlarmDate));
 				
 				if ((triggerAlarmDate.after(today))) {
-					if (referenceTriggeringAlarmDate == null) {
-						referenceTriggeringAlarmDate = triggerAlarmDate;
+					if (newTriggeringAlarmDate == null) {
+						newTriggeringAlarmDate = triggerAlarmDate;
 						alarmsMap.put(alarm, event);
-					} else if (eventStartDate.before(referenceTriggeringAlarmDate)) {
-						referenceTriggeringAlarmDate = triggerAlarmDate;
+					} else if (eventStartDate.before(newTriggeringAlarmDate)) {
+						newTriggeringAlarmDate = triggerAlarmDate;
 						alarmsMap.clear();
 						alarmsMap.put(alarm, event);
-					} else if (eventStartDate.equals(referenceTriggeringAlarmDate)) {
+					} else if (eventStartDate.equals(newTriggeringAlarmDate)) {
 						alarmsMap.put(alarm, event);
 					}
 				}
@@ -215,31 +223,38 @@ public class CoreiCalImpl {
 		}
 
 		// Update Events timers
-//		if(!startingEventsList.isEmpty()) {
-//			nextStartEventTimer.cancel();
-//			nextStartEventTimer.purge();
-//		}
-//		
-//		if(!endingEventsList.isEmpty()) {
-//			nextEndEventTimer.cancel();
-//			nextEndEventTimer.purge();
-//		}
-		
-		if (referenceStartingEventDate != null) {
-			nextStartEventTimer.schedule(notifyStartingEventTask, referenceStartingEventDate);
+		if(newStartingEventDate != null) {
+			if (! newStartingEventDate.equals(referenceStartingEventDate)) {
+				if(! referenceStartingEventDate.equals(new DateTime(0))) {
+					nextStartEventTimer.cancel();
+					nextStartEventTimer = new Timer();
+				}
+				referenceStartingEventDate = newStartingEventDate;
+				nextStartEventTimer.schedule(new notifyStartingEventTask(), referenceStartingEventDate);
+			}
 		}
-		if (referenceEndingEventDate != null) {
-			nextEndEventTimer.schedule(notifyEndingEventTask, referenceEndingEventDate);
+		
+		if(newEndingEventDate != null ) {
+			if( ! newEndingEventDate.equals(referenceEndingEventDate)) {
+				if(! referenceEndingEventDate.equals(new DateTime(0))) {
+					nextEndEventTimer.cancel();
+					nextEndEventTimer = new Timer();
+				}
+				referenceEndingEventDate = newEndingEventDate;
+				nextEndEventTimer.schedule(new notifyEndingEventTask(), referenceEndingEventDate);
+			}
 		}
 
 		// Update alarms events
-//		if(!alarmsMap.isEmpty()) {
-//			nextAlarmTimer.cancel();
-//			nextAlarmTimer.purge();
-//		}
-		
-		if (referenceTriggeringAlarmDate != null) {
-			nextAlarmTimer.schedule(notifyAlarmRingTask, referenceTriggeringAlarmDate);
+		if(newTriggeringAlarmDate != null ) {
+			if(! newTriggeringAlarmDate.equals(referenceTriggeringAlarmDate)) {
+				if(! referenceTriggeringAlarmDate.equals(new DateTime(0))) {
+					nextAlarmTimer.cancel();
+					nextAlarmTimer = new Timer();
+				}
+				referenceTriggeringAlarmDate = newTriggeringAlarmDate;
+				nextAlarmTimer.schedule(new notifyAlarmRingTask(), referenceTriggeringAlarmDate);
+			}
 		}
 		
 		logger.debug("Calendar subscription refresh: Beggin events =  "+startingEventsList.size()+", Endding events "+endingEventsList.size()+", Alarm = "+alarmsMap.size());
@@ -255,19 +270,19 @@ public class CoreiCalImpl {
 	 */
 	public NotificationMsg notifyEventAlarm(int type, VEvent event, VAlarm alarm) {
 		if (type == 0) {
-			return new StartingEventNotificationMsg(event.getSummary().getName());
+			return new StartingEventNotificationMsg(event.getSummary().getValue());
 		} else if (type == 1) {
-			return new EndingEventNotificationMsg(event.getSummary().getName());
+			return new EndingEventNotificationMsg(event.getSummary().getValue());
 		} else {
-			return new AlarmNotificationMsg(event.getSummary().getName(), alarm
-					.getSummary().getName());
+			return new AlarmNotificationMsg(event.getSummary().getValue(), alarm
+					.getSummary().getValue());
 		}
 	}
 
 	/**
 	 * Timer use to trigger notifications when events begin
 	 */
-	TimerTask notifyStartingEventTask = new TimerTask() {
+	private class notifyStartingEventTask extends TimerTask {
 		@Override
 		public void run() {
 			Iterator<VEvent> it = startingEventsList.iterator();
@@ -284,7 +299,7 @@ public class CoreiCalImpl {
 	/**
 	 * Timer use to trigger notifications when events end
 	 */
-	TimerTask notifyEndingEventTask = new TimerTask() {
+	private class notifyEndingEventTask extends TimerTask {
 		@Override
 		public void run() {
 			Iterator<VEvent> it = endingEventsList.iterator();
@@ -300,7 +315,7 @@ public class CoreiCalImpl {
 	/**
 	 * Timer use to trigger notifications when alarms rings
 	 */
-	TimerTask notifyAlarmRingTask = new TimerTask() {
+	private class notifyAlarmRingTask extends TimerTask {
 		@Override
 		public void run() {
 			Iterator<Entry<VAlarm, VEvent>> it = alarmsMap.entrySet().iterator();
@@ -323,7 +338,20 @@ public class CoreiCalImpl {
 		public void run() {
 			calendar = Adapter.getAgenda(agendaName, account, pswd, startDate, endDate);
 			subscribeNextEventNotifications();
-			logger.debug("Agenda \"" + calendar.getProperty("NAME").getValue() + "\" updated.");
+			
+			//Save the iCal calendar representation in .ics file 
+			FileOutputStream fout;
+			try {
+				fout = new FileOutputStream(agendaName+".ics");
+				CalendarOutputter outputter = new CalendarOutputter();
+				outputter.output(calendar, fout);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ValidationException e) {
+				e.printStackTrace();
+			}	
 			logger.debug("");
 		}
 	};
