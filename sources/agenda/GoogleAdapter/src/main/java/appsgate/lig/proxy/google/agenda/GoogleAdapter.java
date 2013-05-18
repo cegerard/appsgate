@@ -28,6 +28,7 @@ import appsgate.lig.proxy.agenda.interfaces.AgendaAdapter;
 import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
 import com.google.gdata.data.DateTime;
+import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.calendar.CalendarEntry;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
@@ -210,8 +211,32 @@ public class GoogleAdapter implements AgendaAdapter{
 	 * @param newEvent, the new iCalendar event to add
 	 * @return the iCalendar event added
 	 */
-	public synchronized VEvent addEvent(VEvent newEvent) {
-		return null;
+	@Override
+	public synchronized VEvent addEvent(String agenda, String account, String password, VEvent newEvent) {
+		
+		try {
+			
+			currentGoogleAgendaConnection.setUserCredentials(account, password);
+			
+			URL postUrl = new URL(String.format("https://www.google.com/calendar/feeds/%s/private/full", account));
+			
+			CalendarEventEntry entry = new CalendarEventEntry();
+			
+			entry.setTitle(new PlainTextConstruct(newEvent.getSummary().getValue()));
+			When eventTimes = new When();
+			eventTimes.setStartTime(new DateTime(newEvent.getStartDate().getDate().getTime()));
+			eventTimes.setEndTime(new DateTime(newEvent.getEndDate().getDate().getTime()));
+			entry.addTime(eventTimes);
+			
+			CalendarEventEntry insertedEntry = currentGoogleAgendaConnection.insert(postUrl, entry);
+			
+		} catch (IOException e) {
+			logger.error("{}",e.getMessage());
+		} catch (ServiceException e) {
+			logger.error("{}",e.getMessage());
+		}
+		
+		return newEvent;
 	}
 	
 	/**
