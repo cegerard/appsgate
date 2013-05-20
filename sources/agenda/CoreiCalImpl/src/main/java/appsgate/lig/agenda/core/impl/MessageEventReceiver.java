@@ -2,19 +2,26 @@ package appsgate.lig.agenda.core.impl;
 
 import java.util.Queue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import appsgate.lig.agenda.core.messages.StartingEventNotificationMsg;
-import appsgate.lig.logical.object.messages.NotificationMsg;
 
 public class MessageEventReceiver implements Runnable {
 
 	Queue<StartingEventNotificationMsg> queue;
 	boolean started=false;
 
+	/**
+	 * Static class member uses to log what happened in each instances
+	 */
+	private static Logger logger = LoggerFactory.getLogger(MessageEventReceiver.class);
+	
 	public void start(){
-		System.out.println("MessageEventReceiver: Starting event receiver");
+		
 		started=true;
 
-		System.out.println("MessageEventReceiver: initial size of the queue:"+queue.size());
+		logger.debug("MessageEventReceiver: initial size of the queue:"+queue.size());
 		
 		Thread t=new Thread(this);
 		t.start();
@@ -23,7 +30,6 @@ public class MessageEventReceiver implements Runnable {
 	
 	public void stop(){
 		started=false;
-		System.out.println("Starting event receiver");
 	}
 
 	@Override
@@ -33,18 +39,18 @@ public class MessageEventReceiver implements Runnable {
 			
 			try {
 				
-				System.out.println("trying to fetch queue size...");
+				logger.debug("trying to fetch queue size...");
 				
 				Thread.sleep(3000);
 				
 				if(queue==null){
-					System.err.println("MessageEventReceiver: queue not injected");
+					logger.debug("MessageEventReceiver: queue not injected");
 				}else if(queue.size()==0){
-					System.err.println("MessageEventReceiver: nothing in the queue");
+					logger.debug("MessageEventReceiver: nothing in the queue");
 				}else {
 					System.out.println("**************************");
 					System.out.println("MessageEventReceiver: element found in the queue");
-					NotificationMsg message=queue.poll();
+					StartingEventNotificationMsg message=queue.poll();
 					System.out.println("MessageEventReceiver: "+message.getNewValue());
 					System.out.println("**************************");
 				}
@@ -53,7 +59,7 @@ public class MessageEventReceiver implements Runnable {
 				
 			}catch(NullPointerException e){
 				
-				System.err.println("Message empty");
+				logger.debug("Message empty");
 				
 			} catch (InterruptedException e) {
 			

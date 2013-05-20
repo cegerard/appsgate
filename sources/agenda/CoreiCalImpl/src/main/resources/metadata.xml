@@ -28,11 +28,8 @@
 
 	<implementation name="EventReceiverImpl" classname="appsgate.lig.agenda.core.impl.MessageEventReceiver">
 		<callback onInit="start" onRemove="stop" />
-		
 		<dependency pull="queue" multiple="true" /> 
-		
 	</implementation>
-   
    	
   	<apam-instance name="EventReceiverImpl-0" implementation="EventReceiverImpl"/>
 

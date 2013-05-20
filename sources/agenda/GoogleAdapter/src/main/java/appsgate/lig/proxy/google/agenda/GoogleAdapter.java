@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.CalScale;
@@ -102,6 +104,7 @@ public class GoogleAdapter implements AgendaAdapter{
 	 */
 	public synchronized Calendar getAgenda(String agenda, String account, String password, java.util.Date startDate, java.util.Date endDate) { 
 		Calendar calendar = newICal();
+		
 		try {
 			currentGoogleAgendaConnection.setUserCredentials(account, password);
 			URL feedUrl = new URL(baseURL+"owncalendars/full");
@@ -118,6 +121,13 @@ public class GoogleAdapter implements AgendaAdapter{
 				}
 				i++;
 			}
+			
+			TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+			
+//			System.out.println("************ timezone to:"+calendarEntry.getTimeZone().getValue());
+//			System.out.println("************ timezone and:"+registry.getTimeZone(calendarEntry.getTimeZone().getValue()).getVTimeZone());
+			
+			calendar.getComponents().add(registry.getTimeZone(calendarEntry.getTimeZone().getValue()).getVTimeZone());
 			
 			if(found) {
 				URL eventURL = new URL(calendarEntry.getLink("alternate", null).getHref());

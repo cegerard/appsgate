@@ -295,16 +295,15 @@ public class CoreiCalImpl {
 	 */
 	public NotificationMsg notifyEventAlarm(int type, VEvent event, VAlarm alarm) {
 		if (type == 0) {
-			return notifyStartEvent(event.getSummary().getValue());
-			//return new StartingEventNotificationMsg(event.getSummary().getValue());
+			return notifyStartEvent(event.getSummary().getValue()); //new  StartingEventNotificationMsg(event.getSummary().getValue());
 		} else if (type == 1) {
 			return new EndingEventNotificationMsg(event.getSummary().getValue());
 		} else {
 			return new AlarmNotificationMsg(event.getSummary().getValue(), alarm.getTrigger().getValue());
 		}
 		
-		
-		
+//		return notifyStartEvent(event.getSummary().getValue());
+
 	}
 
 	public StartingEventNotificationMsg notifyStartEvent(String message){
