@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.proxy.agenda.interfaces.AgendaAdapter;
 
+import com.google.gdata.client.Query;
 import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
 import com.google.gdata.data.DateTime;
@@ -223,6 +224,7 @@ public class GoogleAdapter implements AgendaAdapter{
 			CalendarEventEntry entry = new CalendarEventEntry();
 			
 			entry.setTitle(new PlainTextConstruct(newEvent.getSummary().getValue()));
+			
 			When eventTimes = new When();
 			eventTimes.setStartTime(new DateTime(newEvent.getStartDate().getDate().getTime()));
 			eventTimes.setEndTime(new DateTime(newEvent.getEndDate().getDate().getTime()));
@@ -244,7 +246,40 @@ public class GoogleAdapter implements AgendaAdapter{
 	 * @param oldEvent the event to be deleted
 	 * @return true if the event is remotely deleted
 	 */
-	public synchronized boolean delEvent (VEvent oldEvent){
+	public synchronized boolean delEvent (String agenda, String account, String password, VEvent newEvent){
+		
+		CalendarEventFeed myResultsFeed;
+		try {
+		
+			currentGoogleAgendaConnection.setUserCredentials(account, password);
+			
+			URL postUrl = new URL(String.format("https://www.google.com/calendar/feeds/%s/private/full", account));
+			
+			Query query = new Query(postUrl);
+			
+			query.setFullTextQuery(newEvent.getSummary().getValue());
+			
+			myResultsFeed = currentGoogleAgendaConnection.query(query,
+				    CalendarEventFeed.class);
+			
+			if (myResultsFeed.getEntries().size() > 0) {
+			  CalendarEventEntry firstMatchEntry = (CalendarEventEntry)
+			      myResultsFeed.getEntries().get(0);
+			  
+			  String entryTitle = firstMatchEntry.getTitle().getPlainText();
+			  
+			  firstMatchEntry.delete();
+			  
+			  logger.info("'{}' deleted",entryTitle);
+			  
+			}
+		
+		} catch (IOException e) {
+			logger.error("{}",e.getMessage());
+		} catch (ServiceException e) {
+			logger.error("{}",e.getMessage());
+		}
+		
 		return true;
 	}
 	
