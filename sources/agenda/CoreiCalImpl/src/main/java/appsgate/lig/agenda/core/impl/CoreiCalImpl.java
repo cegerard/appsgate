@@ -24,6 +24,7 @@ import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class CoreiCalImpl {
 	/**
 	 * The adapter for Google account
 	 */
-	private AgendaAdapter Adapter;
+	private AgendaAdapter serviceAdapter;
 
 	/**
 	 * The name of the corresponding remote agenda
@@ -119,6 +120,28 @@ public class CoreiCalImpl {
 		Long refreshRate = Long.valueOf(rate);
 		refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
 		logger.debug("Refresh task initiated to " + refreshRate / 1000 / 60 + " minutes");
+		
+		java.util.Calendar calbegin=java.util.Calendar.getInstance();
+		java.util.Calendar calend=java.util.Calendar.getInstance();
+		
+//		//add
+//		calbegin.add(java.util.Calendar.DAY_OF_MONTH, 1);
+//		calend.add(java.util.Calendar.DAY_OF_MONTH, 1);
+//		calend.add(java.util.Calendar.HOUR, 2);		
+//		DateTime inicio=new DateTime(calbegin.getTimeInMillis());
+//		DateTime fim=new DateTime(calbegin.getTimeInMillis());
+//		VEvent event=new VEvent(inicio,fim,"novo elemento");
+//		serviceAdapter.addEvent("Agenda boulot","smarthome.inria@gmail.com","smarthome2012",event);
+		
+//		//del
+//		calbegin.add(java.util.Calendar.DAY_OF_MONTH, 1);
+//		calend.add(java.util.Calendar.DAY_OF_MONTH, 1);
+//		calend.add(java.util.Calendar.HOUR, 2);		
+//		DateTime inicio=new DateTime(calbegin.getTimeInMillis());
+//		DateTime fim=new DateTime(calbegin.getTimeInMillis());
+//		VEvent event=new VEvent(inicio,fim,"novo elemento");
+//		serviceAdapter.delEvent("Agenda boulot","smarthome.inria@gmail.com","smarthome2012",event);
+		
 	}
 
 	/**
@@ -172,6 +195,7 @@ public class CoreiCalImpl {
 			DateTime eventEndDate   = (DateTime)event.getEndDate().getDate();
 
 			if (eventStartDate.after(today)) {
+				System.out.println("EVENT START:"+event.getSummary().getValue());
 				if (newStartingEventDate == null) {
 					newStartingEventDate = eventStartDate;
 					startingEventsList.add(event);
@@ -185,6 +209,7 @@ public class CoreiCalImpl {
 			}
 
 			if (eventEndDate.after(today)) {
+				System.out.println("EVENT END:"+event.getSummary().getValue());
 				if (newEndingEventDate == null) {
 					newEndingEventDate = eventEndDate;
 					endingEventsList.add(event);
@@ -270,14 +295,22 @@ public class CoreiCalImpl {
 	 */
 	public NotificationMsg notifyEventAlarm(int type, VEvent event, VAlarm alarm) {
 		if (type == 0) {
-			return new StartingEventNotificationMsg(event.getSummary().getValue());
+			return notifyStartEvent(event.getSummary().getValue());
+			//return new StartingEventNotificationMsg(event.getSummary().getValue());
 		} else if (type == 1) {
 			return new EndingEventNotificationMsg(event.getSummary().getValue());
 		} else {
 			return new AlarmNotificationMsg(event.getSummary().getValue(), alarm.getTrigger().getValue());
 		}
+		
+		
+		
 	}
 
+	public StartingEventNotificationMsg notifyStartEvent(String message){
+		return new StartingEventNotificationMsg(message);
+	}
+	
 	/**
 	 * Timer use to trigger notifications when events begin
 	 */
@@ -320,7 +353,7 @@ public class CoreiCalImpl {
 			while (it.hasNext()) {
 				Entry<VAlarm, VEvent> entry = it.next();
 				notifyEventAlarm(2, entry.getValue(), entry.getKey());
-				logger.debug("Send the alarm notifcation at "+ entry.getKey().getTrigger().getValue()+ " for "+ entry.getValue().getSummary().getValue());
+				logger.info("Send the alarm notifcation at "+ entry.getKey().getTrigger().getValue()+ " for "+ entry.getValue().getSummary().getValue());
 			}
 			subscribeNextEventNotifications();
 		}
@@ -332,7 +365,7 @@ public class CoreiCalImpl {
 	TimerTask refreshtask = new TimerTask() {
 		@Override
 		public void run() {
-			calendar = Adapter.getAgenda(agendaName, account, pswd, startDate, endDate);
+			calendar = serviceAdapter.getAgenda(agendaName, account, pswd, startDate, endDate);
 			subscribeNextEventNotifications();
 			
 			//Save the iCal calendar representation in .ics file 
