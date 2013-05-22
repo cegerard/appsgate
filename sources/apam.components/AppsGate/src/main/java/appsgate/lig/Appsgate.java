@@ -124,8 +124,10 @@ public class Appsgate extends Device implements ActionListener, QueryListener {
 			stateVar.setQueryListener(this);
 
 		} catch (UnknownHostException e) {
+			logger.debug("Unknown host: ");
 			e.printStackTrace();
 		} catch (SocketException e) {
+			logger.debug("Socket exception for UPnP: ");
 			e.printStackTrace();
 		}
 
