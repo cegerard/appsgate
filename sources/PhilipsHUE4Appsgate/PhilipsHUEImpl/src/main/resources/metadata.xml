@@ -3,8 +3,12 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<specification name="ColorLightSpec"
-		interfaces="appsgate.lig.colorLight.actuator.spec.ColorLightSpecSpec" messages="appsgate.lig.logical.object.messages.NotificationMsg">
-	</specification>
+	<implementation name="PhilipsHUEImpl"
+		classname="appsgate.lig.light.actuator.philips.HUE.impl.PhilipsHUEImpl" specification="ColorLightSpec" push="notifyChanges">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<ipojo:requires field="PhilipsBridge"/>
+		
+	</implementation>
 
 </apam>

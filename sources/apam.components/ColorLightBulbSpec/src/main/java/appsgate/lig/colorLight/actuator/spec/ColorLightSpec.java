@@ -11,7 +11,7 @@ import org.json.JSONObject;
  * @since May 22, 2013
  *
  */
-public interface ColorLightSpecSpec {
+public interface ColorLightSpec {
 	
 	/**
 	 * Get the current light status
