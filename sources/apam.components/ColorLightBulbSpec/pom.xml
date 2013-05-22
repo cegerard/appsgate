@@ -7,7 +7,7 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>ColorLightBulb</artifactId>
+    <artifactId>ColorLightBulbSpec</artifactId>
     <version>1.0.0</version>
     <packaging>bundle</packaging>
 
