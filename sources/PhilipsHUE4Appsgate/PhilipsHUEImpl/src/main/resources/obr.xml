@@ -1,0 +1,16 @@
+<obr> 
+   <capability name='maven'>
+      <p n='groupId' v='appsGate.bundle' />
+      <p n='artifactId' v='PhilipsHUEImpl' />
+      <p n='version' v='0.0.1-SNAPSHOT' />
+   </capability>
+   <capability name='apam-component'>
+      <p n='name' v='PhilipsHUEImpl' />
+      <p n='component-type' v='implementation' />
+      <p n='impl-name' v='PhilipsHUEImpl' />
+      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.colorLight.actuator.spec.ColorLightSpec' />
+      <p n='provide-specification' v='ColorLightSpec' />
+      <p n='version' t='version' v='0.0.1.SNAPSHOT' />
+   </capability>
+   <require name='apam-component' filter='(name=ColorLightSpec)' extend='false' multiple='false' optional='false'> specification dependency toward ColorLightSpec</require>
+</obr> 

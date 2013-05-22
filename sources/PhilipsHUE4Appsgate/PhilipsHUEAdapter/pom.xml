@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>PhilipsHUE4Appsgate</artifactId>
-        <groupId>appsGate.bundle</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>PhilipsHUE4Appsgate</artifactId>
+		<groupId>appsGate.bundle</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>PhilipesHUEAdapter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>bundle</packaging>
+	<artifactId>PhilipesHUEAdapter</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>bundle</packaging>
 
-    <name>PhilipesHUEAdapter OSGi Bundle</name>
+	<name>PhilipesHUEAdapter OSGi Bundle</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<!-- Dependencies Description -->
-    <dependencies>
+	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
@@ -29,23 +30,28 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.6</version>
 		</dependency>
-    </dependencies>
-    
- 	<!-- Dependencies Instructions -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>						
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+	</dependencies>
+
+	<!-- Dependencies Instructions -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 					</instructions>
-                </configuration>
-            </plugin>
-            <plugin>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-ipojo-plugin</artifactId>
 				<version>1.8.6</version>
@@ -57,7 +63,7 @@
 					</execution>
 				</executions>
 			</plugin>
-        </plugins>
-    </build>
-    
+		</plugins>
+	</build>
+
 </project>

@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="ColorLightSpec"
-		interfaces="appsgate.lig.colorLight.actuator.spec.ColorLightSpecSpec" messages="appsgate.lig.logical.object.messages.NotificationMsg">
+		interfaces="appsgate.lig.colorLight.actuator.spec.ColorLightSpec" messages="appsgate.lig.logical.object.messages.NotificationMsg">
 	</specification>
 
 </apam>

@@ -1,11 +1,11 @@
-package appsgate.lig.light.philips.HUE.impl;
+package appsgate.lig.light.actuator.philips.HUE.impl;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.colorLight.actuator.spec.ColorLightSpec;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
-import appsgate.lig.proxy.PhilipsHUE.PhilipsHUEAdapter;
+import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 
 /**
  * 
@@ -14,7 +14,7 @@ import appsgate.lig.proxy.PhilipsHUE.PhilipsHUEAdapter;
  */
 public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	
-	private PhilipsHUEAdapter PhilipsBridge;
+	private PhilipsHUEServices PhilipsBridge;
 
 	@Override
 	public JSONObject getLightStatus() {
