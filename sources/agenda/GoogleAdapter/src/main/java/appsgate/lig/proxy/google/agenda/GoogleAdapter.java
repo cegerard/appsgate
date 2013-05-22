@@ -240,6 +240,7 @@ public class GoogleAdapter implements AgendaAdapter{
 			eventTimes.setEndTime(new DateTime(newEvent.getEndDate().getDate().getTime()));
 			entry.addTime(eventTimes);
 			
+			@SuppressWarnings("unused")
 			CalendarEventEntry insertedEntry = currentGoogleAgendaConnection.insert(postUrl, entry);
 			
 		} catch (IOException e) {
@@ -318,8 +319,8 @@ public class GoogleAdapter implements AgendaAdapter{
 	public void validate() {
 		logger.info("Google adapter started");
 //		Calendar c = this.getAgenda("Agenda boulot", "smarthome.inria@gmail.com", "smarthome2012");
-//		logger.debug("YEAH !!!!! "+c.getProperty("URL").getValue());
-//		logger.debug("YEAH !!!!! "+c.getProperty("NAME").getValue());
+//		logger.debug("Direct access URL"+c.getProperty("URL").getValue());
+//		logger.debug("Agenda name"+c.getProperty("NAME").getValue());
 	}
 	
 	/**

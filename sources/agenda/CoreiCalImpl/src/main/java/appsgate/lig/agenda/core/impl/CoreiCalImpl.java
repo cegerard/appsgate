@@ -121,8 +121,8 @@ public class CoreiCalImpl {
 		refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
 		logger.debug("Refresh task initiated to " + refreshRate / 1000 / 60 + " minutes");
 		
-		java.util.Calendar calbegin=java.util.Calendar.getInstance();
-		java.util.Calendar calend=java.util.Calendar.getInstance();
+//		java.util.Calendar calbegin=java.util.Calendar.getInstance();
+//		java.util.Calendar calend=java.util.Calendar.getInstance();
 		
 //		//add
 //		calbegin.add(java.util.Calendar.DAY_OF_MONTH, 1);
@@ -195,7 +195,7 @@ public class CoreiCalImpl {
 			DateTime eventEndDate   = (DateTime)event.getEndDate().getDate();
 
 			if (eventStartDate.after(today)) {
-				System.out.println("EVENT START:"+event.getSummary().getValue());
+				logger.debug("EVENT START:"+event.getSummary().getValue());
 				if (newStartingEventDate == null) {
 					newStartingEventDate = eventStartDate;
 					startingEventsList.add(event);
@@ -209,7 +209,7 @@ public class CoreiCalImpl {
 			}
 
 			if (eventEndDate.after(today)) {
-				System.out.println("EVENT END:"+event.getSummary().getValue());
+				logger.debug("EVENT END:"+event.getSummary().getValue());
 				if (newEndingEventDate == null) {
 					newEndingEventDate = eventEndDate;
 					endingEventsList.add(event);
@@ -229,8 +229,7 @@ public class CoreiCalImpl {
 			while (itAlarm.hasNext()) {
 				VAlarm alarm = itAlarm.next();
 				DateTime triggerAlarmDate = (DateTime)alarm.getTrigger().getDate();
-				logger.debug("Reminders for "+event.getSummary().getValue()+", date: "+triggerAlarmDate.getTime());
-				logger.debug("TRIGGER ALARM: "+ String.format("Current Date/Time : %tc", triggerAlarmDate));
+				logger.debug("Reminders for "+event.getSummary().getValue()+String.format(" Current Date/Time : %tc", triggerAlarmDate));
 				
 				if ((triggerAlarmDate.after(today))) {
 					if (newTriggeringAlarmDate == null) {
@@ -295,19 +294,12 @@ public class CoreiCalImpl {
 	 */
 	public NotificationMsg notifyEventAlarm(int type, VEvent event, VAlarm alarm) {
 		if (type == 0) {
-			return notifyStartEvent(event.getSummary().getValue()); //new  StartingEventNotificationMsg(event.getSummary().getValue());
+			return new  StartingEventNotificationMsg(event.getSummary().getValue());
 		} else if (type == 1) {
 			return new EndingEventNotificationMsg(event.getSummary().getValue());
 		} else {
 			return new AlarmNotificationMsg(event.getSummary().getValue(), alarm.getTrigger().getValue());
 		}
-		
-//		return notifyStartEvent(event.getSummary().getValue());
-
-	}
-
-	public StartingEventNotificationMsg notifyStartEvent(String message){
-		return new StartingEventNotificationMsg(message);
 	}
 	
 	/**

@@ -3,22 +3,22 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="CoreICalImpl" classname="appsgate.lig.agenda.core.impl.CoreiCalImpl" push="notifyStartEvent"> <!-- notifyEventAlarm  -->
+	<implementation name="CoreICalImpl" classname="appsgate.lig.agenda.core.impl.CoreiCalImpl" push="notifyEventAlarm">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<ipojo:requires field="serviceAdapter"/>
 		
 		<definition name="agendaName" type="string" field="agendaName"/>
 		<definition name="account" 	  type="string" field="account"/>
 		<definition name="pswd" 	  type="string" field="pswd"/>
-		<definition name="rate" 	  type="string"   field="rate" value="3000"/>
+		<definition name="rate" 	  type="string" field="rate" value="900000"/>
 		
 	</implementation>
 
-<!--  	<apam-instance name="SmartHomeAgendaInst" implementation="CoreICalImpl"> -->
-<!--  		<property name="agendaName" value="Smart home"/> -->
-<!--  		<property name="account" 	value="smarthome.inria@gmail.com"/> -->
-<!--  		<property name="pswd" 		value="smarthome2012"/> -->
-<!--    </apam-instance> -->
+ 	<apam-instance name="SmartHomeAgendaInst" implementation="CoreICalImpl">
+ 		<property name="agendaName" value="Smart home"/>
+ 		<property name="account" 	value="smarthome.inria@gmail.com"/>
+ 		<property name="pswd" 		value="smarthome2012"/>
+   </apam-instance>
    
    <apam-instance name="BoulotAgendaInst" implementation="CoreICalImpl">
  		<property name="agendaName" value="Agenda boulot"/>
@@ -26,11 +26,11 @@
  		<property name="pswd" 		value="smarthome2012"/>
    </apam-instance>
 
-	<implementation name="EventReceiverImpl" classname="appsgate.lig.agenda.core.impl.MessageEventReceiver">
-		<callback onInit="start" onRemove="stop" />
-		<dependency pull="queue" multiple="true" /> 
-	</implementation>
+<!-- 	<implementation name="EventReceiverImpl" classname="appsgate.lig.agenda.core.impl.MessageEventReceiver"> -->
+<!-- 		<callback onInit="start" onRemove="stop" /> -->
+<!-- 		<dependency pull="queue" multiple="true" />  -->
+<!-- 	</implementation> -->
    	
-  	<apam-instance name="EventReceiverImpl-0" implementation="EventReceiverImpl"/>
+<!--   	<apam-instance name="EventReceiverImpl-0" implementation="EventReceiverImpl"/> -->
 
 </apam>

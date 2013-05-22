@@ -169,6 +169,7 @@
     <module>OnOffActuatorImpl</module>
     <module>AppsGate</module>
     <module>EUDE_Intepreter</module>
+    <module>ColorLightBulb</module>
   </modules>
 
 </project>

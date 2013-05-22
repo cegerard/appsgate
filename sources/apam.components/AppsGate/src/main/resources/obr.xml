@@ -8,7 +8,7 @@
       <p n='name' v='AppsGateImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='AppsGateImpl' />
-      <p n='provide-interfaces' v='org.cybergarage.upnp.control.ActionListener,org.cybergarage.upnp.control.QueryListener' />
+      <p n='provide-interfaces' v='org.cybergarage.upnp.control.QueryListener,org.cybergarage.upnp.control.ActionListener' />
       <p n='singleton' v='true' />
       <p n='version' t='version' v='1.0.0' />
    </capability>

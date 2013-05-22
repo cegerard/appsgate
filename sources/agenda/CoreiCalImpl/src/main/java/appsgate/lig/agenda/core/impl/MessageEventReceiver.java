@@ -5,11 +5,11 @@ import java.util.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.agenda.core.messages.StartingEventNotificationMsg;
+import appsgate.lig.logical.object.messages.NotificationMsg;
 
 public class MessageEventReceiver implements Runnable {
 
-	Queue<StartingEventNotificationMsg> queue;
+	Queue<NotificationMsg> queue;
 	boolean started=false;
 
 	/**
@@ -50,7 +50,7 @@ public class MessageEventReceiver implements Runnable {
 				}else {
 					System.out.println("**************************");
 					System.out.println("MessageEventReceiver: element found in the queue");
-					StartingEventNotificationMsg message=queue.poll();
+					NotificationMsg message=queue.poll();
 					System.out.println("MessageEventReceiver: "+message.getNewValue());
 					System.out.println("**************************");
 				}
