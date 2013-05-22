@@ -1,0 +1,24 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+    
+	<implementation name="YahooMeteoImpl" classname="appsgate.lig.meteo.yahoo.YahooMeteoImplementation" interfaces="appsgate.lig.meteo.Meteo">
+		<callback onInit="start" onRemove="stop" />
+		<definition name="woeid" type="string" field="WOEID" internal="false"/>
+		<definition name="auto-refresh" type="int" field="refreshRate" internal="false"/>
+	</implementation>
+   
+	<implementation name="YahooMeteoClientImpl" classname="appsgate.lig.meteo.yahoo.RSSReader">
+		<callback onInit="start" onRemove="stop" />
+		<dependency field="meteo" />
+	</implementation>
+	
+   <apam-instance name="meteo-0" implementation="YahooMeteoImpl">
+       <property name="woeid" value="12724717"/>
+       <property name="auto-refresh" value="60000"/>
+   </apam-instance>
+   
+   <apam-instance name="meteo-client-0" implementation="YahooMeteoClientImpl"/>
+   
+</apam>
