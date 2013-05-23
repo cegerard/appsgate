@@ -29,7 +29,7 @@ public interface ColorLightSpec {
 	 * Get the current light brightness
 	 * @return the current brightness as a long integer
 	 */
-	public long getLightBrightness();
+	public int getLightBrightness();
 	
 	/**
 	 * Get the current light state (On/Off)

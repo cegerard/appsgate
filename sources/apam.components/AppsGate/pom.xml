@@ -65,10 +65,11 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Private-Package>
-							org.cybergarage.*,
 							appsgate.lig
 						</Private-Package>
-						<Export-Package></Export-Package>
+						<Export-Package>
+							org.cybergarage.*
+						</Export-Package>
 						<Import-Package>
 							javax.xml.parsers,
 							!org.kxml2.io,

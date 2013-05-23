@@ -2,191 +2,304 @@ package appsgate.lig.light.actuator.philips.HUE.impl;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import appsgate.lig.colorLight.actuator.messages.ColorLightNotificationMsg;
 import appsgate.lig.colorLight.actuator.spec.ColorLightSpec;
+import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 
 /**
+ * This class is the AppsGate implementation of ColorLightSpec for Philips HUE technology 
  * 
- * @author cedric
- *
+ * @author Cédric Gérard
+ * @version 1.0.0
+ * @since May 22, 2013
+ * 
  */
 public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	
+	private static long HUE_RED     = 0;
+	private static long HUE_BLUE    = 46920;
+	private static long HUE_GREEN   = 25500;
+	private static long HUE_YELLOW  = 18456;
+	private static long HUE_ORANGE  = 12750;
+	private static long HUE_PURPLE  = 48765;
+	private static long HUE_PINK    = 54332;
+	
+	
+	/**
+	 * Static class member uses to log what happened in each instances
+	 */
+	private static Logger logger = LoggerFactory.getLogger(PhilipsHUEImpl.class);
+	
 	private PhilipsHUEServices PhilipsBridge;
-
+	
+	private String actuatorName;
+	private String actuatorId;
+	private String actuatorType;
+	
+	private String userName;
+	private String locationId;
+	private String pictureId;
+	private String userType;
+	
+	private String lightBridgeId;
+	
+	/**
+	 * The current sensor status.
+	 * 
+	 * 0 = Off line or out of range
+	 * 1 = In validation mode (test range for sensor for instance)
+	 * 2 = In line or connected
+	 */
+	private String status;
+	
 	@Override
 	public JSONObject getLightStatus() {
-		// TODO Auto-generated method stub
-		return null;
+		return PhilipsBridge.getLightState(lightBridgeId);
 	}
 
 	@Override
 	public long getLightColor() {
-		// TODO Auto-generated method stub
-		return 0;
+		Long colorCode = Long.valueOf(-1);
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			JSONObject state;
+			try {
+				state = jsonResponse.getJSONObject("state");
+				colorCode = state.getLong("hue");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return colorCode;
 	}
 
 	@Override
-	public long getLightBrightness() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getLightBrightness() {
+		int brightnessCode = -1;
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			JSONObject state;
+			try {
+				state = jsonResponse.getJSONObject("state");
+				brightnessCode = state.getInt("bri");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return brightnessCode;
 	}
 
 	@Override
 	public boolean getCurrentState() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean lightState = false;
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			JSONObject state;
+			try {
+				state = jsonResponse.getJSONObject("state");
+				lightState = state.getBoolean("on");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return lightState;
 	}
 
 	@Override
 	public JSONObject getManufacturerDetails() {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject manufacturerState = new JSONObject();
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			try {
+				manufacturerState.put("type", jsonResponse.get("type"));
+				manufacturerState.put("name", jsonResponse.get("name"));
+				manufacturerState.put("model", jsonResponse.get("modelid"));
+				manufacturerState.put("version", jsonResponse.get("swversion"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return manufacturerState;
 	}
 
 	@Override
 	public boolean setStatus(JSONObject newStatus) {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, newStatus);
 	}
 
 	@Override
 	public boolean On() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "on", true);
 	}
 
 	@Override
 	public boolean Off() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "on", false);
 	}
 
 	@Override
 	public boolean setColor(long color) {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "hue", color);
 	}
 
 	@Override
 	public boolean setBrightness(long brightness) {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "bri", brightness);
 	}
 
 	@Override
 	public boolean setRed() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_RED);
 	}
 
 	@Override
 	public boolean setBlue() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_BLUE);
 	}
 
 	@Override
 	public boolean setGreen() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_GREEN);
 	}
 
 	@Override
 	public boolean setYellow() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_YELLOW);
 	}
 
 	@Override
 	public boolean setOrange() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_ORANGE);
 	}
 
 	@Override
 	public boolean setPurple() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PURPLE);
 	}
 
 	@Override
 	public boolean setPink() {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PINK);
 	}
 
 	@Override
 	public boolean increaseBrightness(int step) {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "bri", getLightBrightness()+step);
 	}
 
 	@Override
 	public boolean decreaseBrightness(int step) {
-		// TODO Auto-generated method stub
-		return false;
+		return PhilipsBridge.setAttribute(lightBridgeId, "bri", getLightBrightness()-step);
+	}
+	
+	public String getSensorName() {
+		return actuatorName;
+	}
+
+	public void setSensorName(String actuatorName) {
+		this.actuatorName = actuatorName;
 	}
 	
 	@Override
 	public String getAbstractObjectId() {
-		// TODO Auto-generated method stub
-		return null;
+		return actuatorType;
 	}
 
 	@Override
 	public String getUserObjectName() {
-		// TODO Auto-generated method stub
-		return null;
+		return userName;
 	}
 
 	@Override
 	public int getLocationId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return Integer.valueOf(locationId);
 	}
 
 	@Override
 	public String getUserType() {
-		// TODO Auto-generated method stub
-		return null;
+		return userType;
 	}
 
 	@Override
 	public int getObjectStatus() {
-		// TODO Auto-generated method stub
-		return 0;
+		return Integer.valueOf(status);
 	}
 
 	@Override
 	public String getPictureId() {
-		// TODO Auto-generated method stub
-		return null;
+		return pictureId;
 	}
 
 	@Override
 	public JSONObject getDescription() throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+	
+		JSONObject descr = new JSONObject();
+		descr.put("id", actuatorId);
+		descr.put("name", userName);
+		descr.put("type", userType); // 7 for color light
+		descr.put("locationId", locationId);
+		descr.put("status", status);
+		descr.put("value", getCurrentState());
+		descr.put("color", getLightColor());
+		
+		return descr;
 	}
 
 	@Override
 	public void setUserObjectName(String userName) {
-		// TODO Auto-generated method stub
-
+		this.userName = userName;
+		notifyChanges("name", userName);
 	}
 
 	@Override
 	public void setLocationId(int locationId) {
-		// TODO Auto-generated method stub
-
+		this.locationId = String.valueOf(locationId);
 	}
 
 	@Override
 	public void setPictureId(String pictureId) {
-		// TODO Auto-generated method stub
+		this.pictureId = pictureId;
+		notifyChanges("pictureId", pictureId);
+	}
+	
+	/**
+	 * Called by ApAM when the status value changed
+	 * @param newStatus the new status value.
+	 * its a string the represent a integer value for the status code.
+	 */
+	public void statusChanged(String newStatus) {
+		logger.info("The actuator, "+ actuatorId+" / "+ userName +" status changed to "+newStatus);
+		notifyChanges("status", newStatus);
+	}
+	
+	/**
+	 * Called by APAM when an instance of this implementation is created
+	 */
+	public void newInst() {
+		logger.info("New color light actuator detected, "+actuatorId);
 	}
 
+	/**
+	 * Called by APAM when an instance of this implementation is removed
+	 */
+	public void deleteInst() {
+		logger.info("A color light actuator desapeared, "+actuatorId);
+	}
+
+	/**
+	 * This method uses the ApAM message model. Each call produce a
+	 * TemperatureNotificationMsg object and notifies ApAM that a new message has
+	 * been released.
+	 * 
+	 * @return nothing, it just notifies ApAM that a new message has been
+	 *         posted.
+	 */
+	public NotificationMsg notifyChanges(String varName, String value) {
+		return new ColorLightNotificationMsg(this, varName, value);
+	}
 }

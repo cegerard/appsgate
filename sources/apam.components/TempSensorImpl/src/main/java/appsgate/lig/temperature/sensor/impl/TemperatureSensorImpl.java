@@ -31,7 +31,7 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	/**
 	 * The sensor type (Actuator or Sensor)
 	 */
-	private String sensoreType;
+	private String sensorType;
 
 	/**
 	 * True if the device is paired with EnOcean proxy false otherwise
@@ -118,7 +118,7 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	 * @return String that represent the sensor type from EnOcean
 	 */
 	public String getSensoreType() {
-		return sensoreType;
+		return sensorType;
 	}
 	
 	@Override

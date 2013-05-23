@@ -54,15 +54,34 @@ public interface PhilipsHUEServices {
 	 * @param value the new value for the attribute
 	 * @return true if the value is set correctly, false otherwise
 	 */
+	public boolean setAttribute(String id, String attribute, boolean value);
+	
+	/**
+	 * Set the attribute value for the specified light bulb identifier
+	 * @param id the light bulb id on the bridge
+	 * @param attribute the attribute to set
+	 * @param value the new value for the attribute
+	 * @return true if the value is set correctly, false otherwise
+	 */
+	public boolean setAttribute(String id, String attribute, long value);
+	
+	/**
+	 * Set the attribute value for the specified light bulb identifier
+	 * @param id the light bulb id on the bridge
+	 * @param attribute the attribute to set
+	 * @param value the new value for the attribute
+	 * @return true if the value is set correctly, false otherwise
+	 */
 	public boolean setAttribute(String id, String attribute, String value);
 	
 	/**
 	 * Set a group of attribute (Batch mode) 
-	 * @param attributes  all attributes to set, with name, valu and the light
+	 * @param id the light bulb id on the bridge
+	 * @param attributes  all attributes to set, with name, value and the light
 	 * bulb identifier on the bridge 
 	 * @return true if all the attribute are set and false otherwise
 	 */
-	public boolean setAttribute(JSONObject attributes);
+	public boolean setAttribute(String id, JSONObject attributes);
 	
 	
 }
