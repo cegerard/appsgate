@@ -5,22 +5,55 @@ import org.json.JSONObject;
 
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
-//TODO make notification for color light
+
+
 public class ColorLightNotificationMsg implements NotificationMsg {
+
+	/**
+	 * The source sensor of this notification
+	 */
+	private AbstractObjectSpec source;
+
+	/**
+	 * The name of the change variable
+	 */
+	private String varName;
+
+	/**
+	 * The value corresponding to the varName variable
+	 */
+	private String value;
+
+	/**
+	 * Constructor of Color light ApAM message
+	 * @param source the abstract object source of this message
+	 * @param varName the variable that changed
+	 * @param value the new variable value
+	 */
+	public ColorLightNotificationMsg(AbstractObjectSpec source, String varName, String value) {
+		this.source = source;
+		this.varName = varName;
+		this.value = value;
+	}
 
 	@Override
 	public AbstractObjectSpec getSource() {
-		return null;
+		return source;
 	}
 
 	@Override
 	public String getNewValue() {
-		return null;
+		return value;
 	}
 
 	@Override
 	public JSONObject JSONize() throws JSONException {
-		return null;
+		JSONObject notif = new JSONObject();
+		notif.put("objectId", source.getAbstractObjectId());
+		notif.put("varName", varName);
+		notif.put("value", value);
+		
+		return notif;
 	}
 
 }

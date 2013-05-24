@@ -3,16 +3,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>apam.components</artifactId>
+		<artifactId>PhilipsHUE4Appsgate</artifactId>
 		<groupId>appsGate.bundle</groupId>
-		<version>1.0.0</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>AppsGate</artifactId>
-	<version>1.0.0</version>
+	<artifactId>PhilipsHUEImpl</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<name>AppsGate OSGi Bundle</name>
+	<name>Philips HUE implementation</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,9 +29,18 @@
 		</repository>
 	</repositories>
 
-
 	<!-- Dependencies Description -->
 	<dependencies>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>ColorLightBulbSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>AbstractObjectSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>
@@ -43,14 +52,9 @@
 			<version>1.8.0</version>
 		</dependency>
 		<dependency>
-			<groupId>cyberlink.upnp</groupId>
-			<artifactId>cybergarage</artifactId>
-			<version>2.1.0</version> <!-- WARNING: use local repository you need to export it into your own -->
-		</dependency>
-		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>RouterApAM</artifactId>
-			<version>1.0.0</version>
+			<artifactId>PhilipesHUEAdapter</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
@@ -64,22 +68,6 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Private-Package>
-							appsgate.lig
-						</Private-Package>
-						<Export-Package>
-							org.cybergarage.*
-						</Export-Package>
-						<Import-Package>
-							javax.xml.parsers,
-							!org.kxml2.io,
-							org.w3c.dom,
-							org.xml.sax,
-							org.xmlpull.v1,
-							!org.apache.xerces.parsers,
-							org.slf4j,
-							org.osgi.service.http
-						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
