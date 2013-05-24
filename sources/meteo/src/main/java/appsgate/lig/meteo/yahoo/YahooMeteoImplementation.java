@@ -27,6 +27,7 @@ import appsgate.lig.meteo.Meteo;
 
 /**
  * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit) but gives maximum 2 days forecast, as input its required the WOEID (http://developer.yahoo.com/geo/geoplanet/guide/concepts.html#hierarchy)
+ * which indicats the location for the forecast
  * @author jnascimento
  *
  */
@@ -36,8 +37,6 @@ public class YahooMeteoImplementation implements Meteo {
 	static final String TITLE = "title";
 	static final String ITEM = "item";
 	
-	private List<DayForecast> forecasts = new ArrayList<DayForecast>();
-	
 	private Logger logger=Logger.getLogger(YahooMeteoImplementation.class.getSimpleName());
 
 	URL url;
@@ -46,6 +45,8 @@ public class YahooMeteoImplementation implements Meteo {
 	
 	private String location;
 	private Timer refreshTimer = new Timer();
+	private List<DayForecast> forecasts = new ArrayList<DayForecast>();
+	private Calendar lastFetch;
 	
 	/**
 	 * Feed URL that returns an XML with the forecast (e.g. http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
@@ -119,6 +120,10 @@ public class YahooMeteoImplementation implements Meteo {
 				this.location = getCharacterData(reader, se);
 
 			}
+			
+			if(localpart.equals("pubDate")){
+				
+			}
 		}
 
 		if (reader.hasNext())
@@ -137,7 +142,7 @@ public class YahooMeteoImplementation implements Meteo {
 
 			String name = event.asStartElement().getName().getLocalPart();
 
-			if (name.equals("item")) {
+			if (name.equals(ITEM)) {
 				digElementItem(reader, reader.nextEvent());
 			}
 		}
@@ -150,6 +155,9 @@ public class YahooMeteoImplementation implements Meteo {
 			digElement(reader, reader.nextEvent());
 	}
 
+	/**
+	 * Update all meteo information stored here
+	 */
 	public Meteo fetch() {
 		try {
 			this.url = new URL(feedUrl);
@@ -171,6 +179,8 @@ public class YahooMeteoImplementation implements Meteo {
 			e.printStackTrace();
 		}
 
+		lastFetch=Calendar.getInstance();
+		
 		return this;
 	}
 
@@ -205,7 +215,7 @@ public class YahooMeteoImplementation implements Meteo {
 	}
 
 	public Calendar getLastFetch() {
-		return null;
+		return lastFetch;
 	}
 
 	public String getLocation() {
