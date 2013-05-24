@@ -47,7 +47,9 @@ public class GMailTest {
 	}
 
 	public void stop() {
-		mailService.removeFolderListener(listener);
+		
+		if(mailService!=null)
+			mailService.removeFolderListener(listener);
 	}
 	
 }

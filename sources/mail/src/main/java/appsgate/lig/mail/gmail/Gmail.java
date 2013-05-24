@@ -30,21 +30,27 @@ import appsgate.lig.mail.Mail;
 import com.sun.mail.imap.IMAPFolder;
 
 public class Gmail implements Mail {
-	
+
 	private Logger logger = Logger.getLogger(Gmail.class.getSimpleName());
 	private Timer refreshTimer = new Timer();
-	private TimerTask refreshtask = new TimerTask(){
+	private TimerTask refreshtask = new TimerTask() {
 		@Override
 		public void run() {
-			logger.info("Refreshing mail data");
-			Gmail.this.fetch();
+			
+			try {
+				logger.log(Level.WARNING,"Refreshing mail data");
+				Gmail.this.fetch();
+			} catch (MessagingException e) {
+				logger.log(Level.WARNING,"Refreshing mail data FAILED with the message "+e.getMessage());
+				//e.printStackTrace();
+			}
 		}
 	};
-	
+
 	private Store store;
 	private Session session;
 	private Properties properties;
-	
+
 	private final String BOX = "inbox";
 	private final String PROTOCOL_KEY = "mail.store.protocol";
 	private final String PROTOCOL_VALUE = "imaps";
@@ -55,16 +61,16 @@ public class Gmail implements Mail {
 
 	private HashMap<String, Message> messagesCached = new HashMap<String, Message>();
 	private Set<FolderChangeListener> folderListener = new HashSet<FolderChangeListener>();
-	
-	
-	
-	private Map<String,String> defaultGoogleProperties= new HashMap<String, String>(){{
-		put("mail.smtp.auth", "true");
-		put("mail.smtp.starttls.enable", "true");
-		put("mail.smtp.host", "smtp.gmail.com");
-		put("mail.smtp.port", "587");
-		put(PROTOCOL_KEY, PROTOCOL_VALUE);
-	}};
+
+	private Map<String, String> defaultGoogleProperties = new HashMap<String, String>() {
+		{
+			put("mail.smtp.auth", "true");
+			put("mail.smtp.starttls.enable", "true");
+			put("mail.smtp.host", "smtp.gmail.com");
+			put("mail.smtp.port", "587");
+			put(PROTOCOL_KEY, PROTOCOL_VALUE);
+		}
+	};
 
 	public Gmail() {
 		properties = System.getProperties();
@@ -73,21 +79,13 @@ public class Gmail implements Mail {
 
 	}
 
-	private Store getStore() {
+	private Store getStore() throws MessagingException {
 
-		if (store == null) {
-
-			try {
-				store = getSession().getStore(PROTOCOL_VALUE);
+		if (store == null || !store.isConnected()) {
 			
+				store = getSession().getStore(PROTOCOL_VALUE);
+
 				store.connect(IMAP_SERVER, USER, PASSWORD);
-
-			} catch (NoSuchProviderException e) {
-				e.printStackTrace();
-			} catch (MessagingException e) {
-				e.printStackTrace();
-			}
-
 		}
 
 		return store;
@@ -102,7 +100,7 @@ public class Gmail implements Mail {
 	public void addFolderListener(FolderChangeListener listener) {
 		this.folderListener.add(listener);
 	}
-	
+
 	public void removeFolderListener(FolderChangeListener listener) {
 		folderListener.remove(listener);
 	}
@@ -113,7 +111,10 @@ public class Gmail implements Mail {
 
 	public Session getSession() {
 
-		if (session == null) {
+		if (session == null ) {
+			
+//			session=Session.getDefaultInstance(properties, null);
+			
 			session = Session.getInstance(properties,
 					new javax.mail.Authenticator() {
 						protected PasswordAuthentication getPasswordAuthentication() {
@@ -125,11 +126,11 @@ public class Gmail implements Mail {
 
 		return session;
 	}
-	
+
 	/**
 	 * Check for possible updates in the assigned mail box
 	 */
-	public void fetch() {
+	public void fetch() throws MessagingException {
 		Folder folder = getMailBox(BOX);
 		boolean firstTime = messagesCached.size() == 0 ? true : false;
 
@@ -172,18 +173,20 @@ public class Gmail implements Mail {
 	public boolean sendMailSimple(String to, String subject, String body) {
 
 		try {
-			
+
 			Message message = new MimeMessage(getSession());
 			message.setFrom(new InternetAddress(USER));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(to));
 			message.setSubject(subject);
 			message.setText(body);
-			
+
 			sendMail(message);
-			
+
 		} catch (MessagingException e) {
-			logger.log(Level.SEVERE,String.format("Impossible to send mail from account %s due to '%s'",USER,e.getMessage()));
+			logger.log(Level.SEVERE, String.format(
+					"Impossible to send mail from account %s due to '%s'",
+					USER, e.getMessage()));
 			return false;
 		}
 
@@ -217,19 +220,14 @@ public class Gmail implements Mail {
 
 	}
 
-	public IMAPFolder getMailBox(String storeString) {
+	public IMAPFolder getMailBox(String storeString) throws MessagingException {
 
-		try {
-			IMAPFolder folder = (IMAPFolder) getStore().getFolder(storeString);
+		IMAPFolder folder = (IMAPFolder) getStore().getFolder(storeString);
 
-			if (!folder.isOpen())
-				folder.open(Folder.READ_WRITE);
+		if (!folder.isOpen())
+			folder.open(Folder.READ_ONLY);//READ_WRITE
 
-			return folder;
-
-		} catch (MessagingException e) {
-			return null;
-		}
+		return folder;
 
 	}
 
@@ -240,26 +238,32 @@ public class Gmail implements Mail {
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
-		
+
 		refreshtask.cancel();
+
+		session = null;
+		store = null;
 
 	}
 
 	public void start() {
 
-		fetch();
-		
-		if(refreshRate!=null && refreshRate!=-1){
-			logger.info("Configuring auto-refresh for :" + refreshRate);
-			refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate.longValue());
+		try {
+			fetch();
+		} catch (MessagingException e) {
+			throw new RuntimeException("unable to start component. Message "+e.getMessage());
 		}
-		
+
+		if (refreshRate != null && refreshRate != -1) {
+			logger.info("Configuring auto-refresh for :" + refreshRate);
+			refreshTimer.scheduleAtFixedRate(refreshtask, 0,
+					refreshRate.longValue());
+		}
+
 	}
 
 	public void stop() {
 		release();
 	}
-
-
 
 }
