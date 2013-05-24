@@ -93,6 +93,52 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		}
 		return brightnessCode;
 	}
+	
+	@Override
+	public int getLightColorSaturation() {
+		int saturationCode = -1;
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			JSONObject state;
+			try {
+				state = jsonResponse.getJSONObject("state");
+				saturationCode = state.getInt("sat");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return saturationCode;
+	}
+	
+	public String getLightEffect() {
+		String effect = "";
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			JSONObject state;
+			try {
+				state = jsonResponse.getJSONObject("state");
+				effect = state.getString("effect");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return effect;
+	}
+	
+	public String getLightAlert() {
+		String alert = "";
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			JSONObject state;
+			try {
+				state = jsonResponse.getJSONObject("state");
+				alert = state.getString("alert");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return alert;
+	}
 
 	@Override
 	public boolean getCurrentState() {
@@ -150,6 +196,19 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	@Override
 	public boolean setBrightness(long brightness) {
 		return PhilipsBridge.setAttribute(lightBridgeId, "bri", brightness);
+	}
+	
+	@Override
+	public boolean setSaturation(int saturation) {
+		return PhilipsBridge.setAttribute(lightBridgeId, "sat", saturation);
+	}
+	
+	public boolean setEffect(String effect) {
+		return PhilipsBridge.setAttribute(lightBridgeId, "effect", effect);
+	}
+	
+	public boolean setAlert(String alert) {
+		return PhilipsBridge.setAttribute(lightBridgeId, "alert", alert);
 	}
 
 	@Override
@@ -302,4 +361,7 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	public NotificationMsg notifyChanges(String varName, String value) {
 		return new ColorLightNotificationMsg(this, varName, value);
 	}
+
 }
+
+
