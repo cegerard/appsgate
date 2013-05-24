@@ -27,9 +27,15 @@ public interface ColorLightSpec {
 	
 	/**
 	 * Get the current light brightness
-	 * @return the current brightness as a long integer
+	 * @return the current brightness as an integer
 	 */
 	public int getLightBrightness();
+	
+	/**
+	 * Get the current light color saturation
+	 * @return the current light color saturation as an integer
+	 */
+	public int getLightColorSaturation();
 	
 	/**
 	 * Get the current light state (On/Off)
@@ -76,6 +82,13 @@ public interface ColorLightSpec {
 	 * @return true if the new brightness is set, false otherwise
 	 */
 	public boolean setBrightness(long brightness);
+	
+	/**
+	 * Put the color saturation 
+	 * @param saturation as an integer
+	 * @return true if the new saturation is set, false otherwise
+	 */
+	public boolean setSaturation(int saturation);
 	
 	/**
 	 * Set the light color to red
