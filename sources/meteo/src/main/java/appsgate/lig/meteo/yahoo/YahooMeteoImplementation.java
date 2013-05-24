@@ -27,7 +27,8 @@ import appsgate.lig.meteo.Meteo;
 
 /**
  * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit) but gives maximum 2 days forecast, as input its required the WOEID (http://developer.yahoo.com/geo/geoplanet/guide/concepts.html#hierarchy)
- * which indicats the location for the forecast
+ * which indicats the location for the forecast.
+ * This class parses the information obtained in from weather yahoo service: e.g. http://weather.yahooapis.com/forecastrss?w=12724717&u=c
  * @author jnascimento
  *
  */
@@ -55,6 +56,14 @@ public class YahooMeteoImplementation implements Meteo {
 	
 	private String feedUrl;
 
+	TimerTask refreshtask = new TimerTask(){
+		@Override
+		public void run() {
+			logger.info("Refreshing meteo data");
+			YahooMeteoImplementation.this.fetch();
+		}
+	};
+	
 	public YahooMeteoImplementation(){
 		
 	}
@@ -242,13 +251,5 @@ public class YahooMeteoImplementation implements Meteo {
 		logger.info("Meteo stopped:" + this.getClass().getSimpleName());
 		refreshtask.cancel();
 	}
-
-	TimerTask refreshtask = new TimerTask(){
-
-		@Override
-		public void run() {
-			logger.info("Refreshing meteo data");
-			YahooMeteoImplementation.this.fetch();
-		}};
 	
 }

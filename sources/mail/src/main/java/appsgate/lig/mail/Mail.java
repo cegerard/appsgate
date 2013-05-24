@@ -3,16 +3,19 @@ package appsgate.lig.mail;
 import java.util.List;
 
 import javax.mail.Message;
-
+import javax.mail.Session;
 
 import com.sun.mail.imap.IMAPFolder;
 
 public interface Mail {
 
-	public boolean sendMail(Message message);
-	public Message getMail(String messageId);
-	public List<Message> getMails();
+	public Session getSession();
 	public IMAPFolder getMailBox(String boxname);
+	public List<Message> getMails();
+	public Message getMail(String messageId);
+	public boolean sendMailSimple(String to,String subject,String body);
+	public boolean sendMail(Message message);
 	public void addFolderListener(FolderChangeListener listener);
+	public void removeFolderListener(FolderChangeListener listener);
 	
 }
