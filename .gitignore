@@ -8,3 +8,7 @@ sources/meteo/.classpath
 sources/meteo/.project
 
 *.prefs
+
+sources/mail/.classpath
+
+sources/mail/.project
