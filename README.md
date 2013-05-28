@@ -29,8 +29,8 @@ Code guidelines
   or
   appsgate.lig.mediarenderer.service.spec.MediaRendererSpec
   appsgate.lig.mediarenderer.service.messages.MediaRendererNotificationMsg
-
-
+  
+  
 • Java/ApAM conventions:
 
   Specification
@@ -43,20 +43,20 @@ Code guidelines
   Instance
   developer: …Inst
   auto-generate: _inst
-
+  
   Interface
   developer: nothing
-
+  
   Message
   developer: …Msg
-
+  
   Composite
   developer: …Composite
   auto-generate: _compo
-
+  
   Composite instance
   developer: …CompositeInst
-
+  
   Classe
   developer: …Impl
 
@@ -69,6 +69,7 @@ Code guidelines
   4: Key-Card
   5: Motion
   6: Gygogne socket
+  7: Color light
   ?: AvTransport
   ?: RenderingControl
   2052964255 : ConnectionManager

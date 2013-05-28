@@ -187,10 +187,16 @@ public class RouterCommandListener implements CommandListener {
 					// Java wrapper for basic type
 					logger.debug("Wrapper type detected");
 					@SuppressWarnings("rawtypes")
-					Class argClass = Class.forName("java.lang." + type);
+					Class argClass;
+					if(type.contains("JSON")) {
+						argClass = Class.forName("org.json." + type);
+					} else {
+						argClass = Class.forName("java.lang." + type);
+					}
 					Object param = argClass.getConstructor(String.class).newInstance(value);
 					arguments.add(param);
 					types.add(param.getClass());
+					
 				}else {
 					//Java primitive type
 					logger.debug("Full primitive type detected");

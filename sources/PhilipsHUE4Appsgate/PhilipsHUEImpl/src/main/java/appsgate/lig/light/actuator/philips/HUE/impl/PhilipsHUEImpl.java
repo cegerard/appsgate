@@ -139,6 +139,21 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		}
 		return alert;
 	}
+	
+	public long getTransitionTime() {
+		long transistion = -1;
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			JSONObject state;
+			try {
+				state = jsonResponse.getJSONObject("state");
+				transistion = state.getLong("transitiontime");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return transistion;
+	}
 
 	@Override
 	public boolean getCurrentState() {
@@ -210,6 +225,10 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	public boolean setAlert(String alert) {
 		return PhilipsBridge.setAttribute(lightBridgeId, "alert", alert);
 	}
+	
+	public boolean setTransitionTime(long transition) {
+		return PhilipsBridge.setAttribute(lightBridgeId, "transitiontime", transition);
+	}
 
 	@Override
 	public boolean setRed() {
@@ -266,7 +285,7 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	
 	@Override
 	public String getAbstractObjectId() {
-		return actuatorType;
+		return actuatorId;
 	}
 
 	@Override
@@ -326,6 +345,14 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		notifyChanges("pictureId", pictureId);
 	}
 	
+	public String getActuatorType() {
+		return actuatorType;
+	}
+
+	public void setActuatorType(String actuatorType) {
+		this.actuatorType = actuatorType;
+	}
+
 	/**
 	 * Called by ApAM when the status value changed
 	 * @param newStatus the new status value.
