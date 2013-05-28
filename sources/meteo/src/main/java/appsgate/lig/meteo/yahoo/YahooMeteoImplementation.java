@@ -26,55 +26,71 @@ import appsgate.lig.meteo.DayForecast;
 import appsgate.lig.meteo.Meteo;
 
 /**
- * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit) but gives maximum 2 days forecast, as input its required the WOEID (http://developer.yahoo.com/geo/geoplanet/guide/concepts.html#hierarchy)
- * which indicats the location for the forecast.
- * This class parses the information obtained in from weather yahoo service: e.g. http://weather.yahooapis.com/forecastrss?w=12724717&u=c
+ * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit)
+ * but gives maximum 2 days forecast, as input its required the WOEID
+ * (http://developer.yahoo.com/geo/geoplanet/guide/concepts.html#hierarchy)
+ * which indicats the location for the forecast. This class parses the
+ * information obtained in from weather yahoo service: e.g.
+ * http://weather.yahooapis.com/forecastrss?w=12724717&u=c
+ * 
  * @author jnascimento
- *
+ * 
  */
 public class YahooMeteoImplementation implements Meteo {
 
 	static final String FORECAST = "forecast";
 	static final String TITLE = "title";
 	static final String ITEM = "item";
-	
-	private Logger logger=Logger.getLogger(YahooMeteoImplementation.class.getSimpleName());
+	static final String DATEPUBLICATION = "pubDate";
+
+	private Logger logger = Logger.getLogger(YahooMeteoImplementation.class
+			.getSimpleName());
 
 	URL url;
 	String WOEID;
-	Integer refreshRate;
-	
+	public Integer refreshRate;
+	Integer temperature;
+
 	private String location;
 	private Timer refreshTimer = new Timer();
 	private List<DayForecast> forecasts = new ArrayList<DayForecast>();
+	private Calendar datePublication;
 	private Calendar lastFetch;
-	
+
 	/**
-	 * Feed URL that returns an XML with the forecast (e.g. http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
+	 * Feed URL that returns an XML with the forecast (e.g.
+	 * http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
 	 */
 	private String feedUrlTemplate = "http://weather.yahooapis.com/forecastrss?w=%s&u=c";
-	
+
 	private String feedUrl;
 
-	TimerTask refreshtask = new TimerTask(){
+	TimerTask refreshtask = new TimerTask() {
 		@Override
 		public void run() {
-			logger.info("Refreshing meteo data");
-			YahooMeteoImplementation.this.fetch();
+
+			if (YahooMeteoImplementation.this.refreshRate != -1) {
+
+				logger.info("Refreshing meteo data");
+				YahooMeteoImplementation.this.fetch();
+
+			}
 		}
 	};
-	
-	public YahooMeteoImplementation(){
-		
+
+	public YahooMeteoImplementation() {
+
 	}
-	
-	public YahooMeteoImplementation(String woeid){
-		this.WOEID=woeid;
+
+	public YahooMeteoImplementation(String woeid) {
+		this.WOEID = woeid;
 	}
-	
+
 	/**
 	 * Process an element <yweather:forecast/> of the xml
-	 * @param XMLEvent element
+	 * 
+	 * @param XMLEvent
+	 *            element
 	 * @return DayForecast
 	 */
 	private DayForecast processForecastElement(
@@ -105,7 +121,8 @@ public class YahooMeteoImplementation implements Meteo {
 	}
 
 	/**
-	 * Process element "<item>" 
+	 * Process element "<item>"
+	 * 
 	 * @param reader
 	 * @param event
 	 * @throws XMLStreamException
@@ -129,9 +146,34 @@ public class YahooMeteoImplementation implements Meteo {
 				this.location = getCharacterData(reader, se);
 
 			}
-			
-			if(localpart.equals("pubDate")){
-				
+
+			if (localpart.equals("condition")) {
+
+				this.temperature = Integer.parseInt(event.asStartElement()
+						.getAttributeByName(new QName("temp")).getValue());
+
+			}
+
+			if (localpart.equals(DATEPUBLICATION)) {
+				// Wed, 22 May 2013 3:58 pm CEST - convert this format to date
+				// EEE, d MMM yyyy h:m zzz
+				try {
+					DateFormat yahooForecastDateAttributeParser = new SimpleDateFormat(
+							"EEE, d MMM yyyy h:m a zzz", Locale.ENGLISH);
+
+					String dateString = getCharacterData(reader, event)
+							.toLowerCase();
+
+					Date date = yahooForecastDateAttributeParser
+							.parse(dateString);
+
+					this.datePublication = Calendar.getInstance();
+					this.datePublication.setTime(date);
+
+				} catch (ParseException e) {
+					logger.warning("Unable to parse (pubDate):"
+							+ getCharacterData(reader, event));
+				}
 			}
 		}
 
@@ -176,9 +218,9 @@ public class YahooMeteoImplementation implements Meteo {
 			// Setup a new eventReader
 			InputStream in = read();
 			XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
-			
+
 			forecasts = new ArrayList<DayForecast>();
-			
+
 			digElement(eventReader, eventReader.nextEvent());
 
 		} catch (XMLStreamException e) {
@@ -188,8 +230,8 @@ public class YahooMeteoImplementation implements Meteo {
 			e.printStackTrace();
 		}
 
-		lastFetch=Calendar.getInstance();
-		
+		lastFetch = Calendar.getInstance();
+
 		return this;
 	}
 
@@ -232,24 +274,29 @@ public class YahooMeteoImplementation implements Meteo {
 	}
 
 	public void start() {
-		
+
 		feedUrl = String.format(feedUrlTemplate, WOEID);
-		
+
 		fetch();
-		
+
 		/**
 		 * Configure auto-refresh meteo data
 		 */
-		if(refreshRate!=null && refreshRate!=-1){
+		if (refreshRate != null && refreshRate != -1) {
 			logger.info("Configuring auto-refresh for :" + refreshRate);
-			refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate.longValue());
+			refreshTimer.scheduleAtFixedRate(refreshtask, 0,
+					refreshRate.longValue());
 		}
-		
+
 	}
 
 	public void stop() {
 		logger.info("Meteo stopped:" + this.getClass().getSimpleName());
 		refreshtask.cancel();
 	}
-	
+
+	public Integer getCurrentTemperature() {
+		return temperature;
+	}
+
 }

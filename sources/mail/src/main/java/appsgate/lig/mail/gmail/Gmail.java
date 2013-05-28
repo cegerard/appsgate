@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -26,6 +25,7 @@ import javax.mail.internet.MimeMessage;
 
 import appsgate.lig.mail.FolderChangeListener;
 import appsgate.lig.mail.Mail;
+import appsgate.lig.mail.MailNotification;
 
 import com.sun.mail.imap.IMAPFolder;
 
@@ -91,12 +91,17 @@ public class Gmail implements Mail {
 		return store;
 	}
 
-	private void fireListeners(Folder folder, Message message) {
+	private void fireListeners(Message message) {
 		for (FolderChangeListener listener : this.folderListener) {
-			listener.mailReceivedNotification(folder, message);
+			mailReceivedNotification(listener,message);
 		}
 	}
 
+	private MailNotification mailReceivedNotification(FolderChangeListener listener, Message msg){
+		listener.mailReceivedNotification(msg);
+		return new MailNotification(msg);
+	}
+	
 	public void addFolderListener(FolderChangeListener listener) {
 		this.folderListener.add(listener);
 	}
@@ -148,7 +153,7 @@ public class Gmail implements Mail {
 				}
 
 				if (!isPresent && !firstTime) {
-					fireListeners(folder, message);
+					fireListeners(message);
 				}
 
 			}
@@ -236,7 +241,7 @@ public class Gmail implements Mail {
 		try {
 			getStore().close();
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			logger.log(Level.WARNING,"failed to release store with the message:"+e.getMessage());
 		}
 
 		refreshtask.cancel();
