@@ -19,7 +19,7 @@ import appsgate.lig.router.impl.listeners.RouterCommandListener;
 import fr.imag.adele.apam.Instance;
 
 /**
- * This class is is use to address with generic means all the devices and services recruited through
+ * This class is use to address with generic means all the devices and services recruited through
  * ApAM middleware.
  * 
  * @author Cédric Gérard
