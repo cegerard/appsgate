@@ -7,9 +7,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ContextFollower</artifactId>
+    <artifactId>ContextFollowerSpec</artifactId>
     <packaging>bundle</packaging>
-    <name>ContextFollowerImpl OSGi Bundle</name>
+    <name>ContextFollowerSpec OSGi Bundle</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,14 +25,9 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
 	<!-- Dependencies Description -->
     <dependencies>
-     	<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>ContextFollowerSpec</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
         <dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>
@@ -42,11 +37,6 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>1.8.0</version>
-		</dependency>
-		<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>AbstractObjectSpec</artifactId>
-			<version>1.0.0</version>
 		</dependency>
     </dependencies>
 
