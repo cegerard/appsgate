@@ -8,7 +8,7 @@
       <p n='name' v='SwitchSensorImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='SwitchSensorImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.button_switch.sensor.spec.SwitchSensorSpec' />
+      <p n='provide-interfaces' v='appsgate.lig.button_switch.sensor.spec.SwitchSensorSpec,appsgate.lig.logical.object.spec.AbstractObjectSpec' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='SwitchSensorSpec' />
       <p n='definition-deviceName' t='string' v='Unknown' />

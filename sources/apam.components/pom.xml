@@ -169,7 +169,7 @@
     <module>OnOffActuatorImpl</module>
     <module>AppsGate</module>
     <module>EUDE_Intepreter</module>
-    <module>ColorLightBulb</module>
+    <module>ColorLightBulbSpec</module>
     <module>RouterApAMSpec</module>
   </modules>
 
