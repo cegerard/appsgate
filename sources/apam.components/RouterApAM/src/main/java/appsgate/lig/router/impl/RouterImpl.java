@@ -16,6 +16,7 @@ import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.manager.location.spec.PlaceManagerSpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
+import appsgate.lig.router.spec.RouterApAMSpec;
 import fr.imag.adele.apam.Instance;
 
 /**
@@ -27,7 +28,7 @@ import fr.imag.adele.apam.Instance;
  * @version 1.0.0
  *
  */
-public class RouterImpl {
+public class RouterImpl implements RouterApAMSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -136,12 +137,28 @@ public class RouterImpl {
 	 * @param objectId abstract object identifier
 	 * @param methodName method to call on objectId
 	 * @param args arguments list form method methodName
+	 * @param paramType argument type list 
 	 * @param callId the remote call identifier
 	 */
 	@SuppressWarnings("rawtypes")
 	public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
 			Object obj = getObjectRefFromID(objectId);
 			return new GenericCommand(args, paramType, obj, methodName, callId, clientId, sendToClientService);
+	}
+	
+	/**
+	 * Get a command description, resolve the target reference and make the call.
+	 * The call is not associated to a specific remote client caller.
+	 * 
+	 * @param objectId abstract object identifier
+	 * @param methodName method to call on objectId
+	 * @param args arguments list form method methodName
+	 * @param paramType argument type list 
+	 */
+	@SuppressWarnings("rawtypes")
+	public Runnable executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
+			Object obj = getObjectRefFromID(objectId);
+			return new GenericCommand(args, paramType, obj, methodName);
 	}
 
 	

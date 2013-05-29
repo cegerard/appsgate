@@ -48,10 +48,9 @@
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>RouterApAM</artifactId>
+			<artifactId>RouterApAMSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		
 	</dependencies>
 
 	<!-- Build Description -->

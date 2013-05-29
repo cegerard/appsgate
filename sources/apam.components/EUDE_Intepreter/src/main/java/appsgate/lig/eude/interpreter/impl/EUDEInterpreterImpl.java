@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
+import appsgate.lig.router.spec.RouterApAMSpec;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
@@ -36,6 +37,8 @@ public class EUDEInterpreterImpl implements StartEventListener, EndEventListener
 	private ContextFollowerSpec contextFollower;
 	
 	private coreEventListener listener;
+	
+	private RouterApAMSpec router;
 	
 	/**
 	 * Vector that contains all the existing programs

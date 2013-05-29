@@ -26,6 +26,8 @@ public class GenericCommand implements Runnable {
 	private String callId;
 	private int clientId;
 	private SendWebsocketsService sendToClientService;
+	
+	private Object returnObject;
 
 	@SuppressWarnings("rawtypes")
 	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
@@ -39,6 +41,23 @@ public class GenericCommand implements Runnable {
 		this.callId = callId;
 		this.clientId = clientId;
 		this.sendToClientService = sendToClientService;
+		
+		this.returnObject = null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
+			Object obj, String methodName) {
+		
+		this.args = args;
+		this.paramType = paramType;
+		this.obj = obj;
+		this.methodName = methodName;
+		this.callId = null;
+		this.clientId = -1;
+		this.sendToClientService = null;
+		
+		this.returnObject = null;
 	}
 
 	/**
@@ -76,19 +95,32 @@ public class GenericCommand implements Runnable {
 	public void run() {
 		try {
 			Object ret = abstractInvoke(obj, args.toArray(), paramType, methodName);
+			
 			if (ret != null) {
 				logger.debug("remote call, " + methodName + " returns "
 						+ ret.toString() + " / return type: "
 						+ ret.getClass().getName());
-				JSONObject msg = new JSONObject();
-				msg.put("value", ret.toString());
-				msg.put("callId", callId);
-				sendToClientService.send(clientId, msg.toString());
+				returnObject = ret;
+				
+				if(sendToClientService != null) {
+					JSONObject msg = new JSONObject();
+					msg.put("value", returnObject.toString());
+					msg.put("callId", callId);
+					sendToClientService.send(clientId, msg.toString());
+				}
 			}
 		} catch (Exception e) {
 			logger.debug("The generic method invocation failed --> ");
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Get the return object of the last call
+	 * @return the return type of the last call
+	 */
+	public Object getReturn() {
+		return returnObject;
 	}
 
 }
