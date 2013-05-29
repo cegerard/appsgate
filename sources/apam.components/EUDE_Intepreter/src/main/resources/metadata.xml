@@ -6,6 +6,7 @@
 	<implementation name="EUDEInterpreterImpl" classname="appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<dependency push="gotNotification" multiple="true"/>
+		<dependency field="router" />
 	</implementation>
 	
 	<apam-instance name="EUDEInterpreterInst" implementation="EUDEInterpreterImpl">

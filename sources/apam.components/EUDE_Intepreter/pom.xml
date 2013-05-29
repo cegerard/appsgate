@@ -46,6 +46,12 @@
 			<artifactId>AbstractObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>RouterApAM</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
 	</dependencies>
 
 	<!-- Build Description -->
