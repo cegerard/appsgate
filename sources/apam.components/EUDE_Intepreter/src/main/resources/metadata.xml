@@ -7,6 +7,7 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
 		<dependency field="contextFollower"/>
+		<dependency field="router"/>
 		
 	</implementation>
 	

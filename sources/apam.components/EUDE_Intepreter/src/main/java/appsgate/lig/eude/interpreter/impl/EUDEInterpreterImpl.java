@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
+import appsgate.lig.router.spec.RouterApAMSpec;
 
 /**
  * This class is the interpreter component for end user development environment. 
@@ -24,6 +25,8 @@ public class EUDEInterpreterImpl {
 	private ContextFollowerSpec contextFollower;
 	
 	private coreEventListener listener;
+	
+	private RouterApAMSpec router;
 	
 	/**
 	 * Called by APAM when an instance of this implementation is created
