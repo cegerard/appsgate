@@ -71,7 +71,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
 				Map<String, String> properties = new HashMap<String, String>();
 				properties.put("deviceName", 	light.getString("name"));
-				properties.put("deviceId", 		String.valueOf(((long)(Math.random() * 9999999))+"-"+light.getString("lightId")));
+				properties.put("deviceId", 		String.valueOf(bridgeFinder.getBridgeIp()+"-"+light.getString("lightId")));
 				properties.put("lightBridgeId", light.getString("lightId"));
 				
 				/*Instance createInstance = */impl.createInstance(null, properties);
