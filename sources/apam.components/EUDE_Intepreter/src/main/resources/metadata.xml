@@ -5,7 +5,9 @@
 
 	<implementation name="EUDEInterpreterImpl" classname="appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		<dependency push="gotNotification" multiple="true"/>
+		
+		<dependency field="contextFollower"/>
+		
 	</implementation>
 	
 	<apam-instance name="EUDEInterpreterInst" implementation="EUDEInterpreterImpl">

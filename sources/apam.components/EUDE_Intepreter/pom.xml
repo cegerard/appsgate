@@ -43,8 +43,8 @@
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>AbstractObjectSpec</artifactId>
-			<version>1.0.0</version>
+			<artifactId>ContextFollowerSpec</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
