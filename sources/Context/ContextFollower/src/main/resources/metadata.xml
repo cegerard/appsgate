@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="AppsGateContextFollowerImpl" classname="appsgate.lig.context.follower.impl.ContextFollowerImpl" singleton="true">
+	<implementation name="AppsGateContextFollowerImpl" classname="appsgate.lig.context.follower.impl.ContextFollowerImpl" specification="AppsGateContextFollowerSpec" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<dependency push="gotNotification" multiple="true"/>
 	</implementation>

@@ -155,5 +155,6 @@
 
   <modules>
     <module>ContextFollower</module>
+    <module>ContextFollowerSpec</module>
   </modules>
 </project>

@@ -9,7 +9,7 @@
 
     <artifactId>ContextFollower</artifactId>
     <packaging>bundle</packaging>
-    <name>ContextFollower OSGi Bundle</name>
+    <name>ContextFollowerImpl OSGi Bundle</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,6 +28,11 @@
 	
 	<!-- Dependencies Description -->
     <dependencies>
+     	<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>ContextFollowerSpec</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
         <dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>

@@ -8,6 +8,7 @@
       <p n='name' v='EUDEInterpreterImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='EUDEInterpreterImpl' />
+      <p n='provide-interfaces' v='appsgate.lig.eude.interpreter.langage.components.EndEventListener,appsgate.lig.eude.interpreter.langage.components.StartEventListener' />
       <p n='singleton' v='true' />
       <p n='version' t='version' v='1.0.0' />
    </capability>

@@ -6,6 +6,9 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.context.follower.listeners.CoreListener;
+import appsgate.lig.context.follower.spec.ContextFollowerSpec;
+
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
@@ -29,6 +32,10 @@ public class EUDEInterpreterImpl implements StartEventListener, EndEventListener
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory.getLogger(EUDEInterpreterImpl.class);
+	
+	private ContextFollowerSpec contextFollower;
+	
+	private coreEventListener listener;
 	
 	/**
 	 * Vector that contains all the existing programs
@@ -68,22 +75,64 @@ public class EUDEInterpreterImpl implements StartEventListener, EndEventListener
 	 */
 	public void deleteInst() {
 		logger.debug("The router interpreter components has been stopped");
+		contextFollower.deleteListener(listener);
 	}
 	
-	/**
-	 * Called by ApAM when Notification message comes
-	 * and forward it to client part by calling the sendService
-	 * 
-	 * @param notif the notification message from ApAM
-	 */
-	public void gotNotification(NotificationMsg notif) {
-			try {
-				logger.debug("Interpreter message received, " + notif.JSONize());
-			} catch (JSONException e) {
-				logger.error("Notification format not recognized: ");
-				e.printStackTrace();
-			}
+	
+	public class coreEventListener implements CoreListener {
+		
+		private String objectId;
+		private String varName;
+		private String varValue;
+		
+	
+		public coreEventListener(String objectId, String varName,
+				String varValue) {
+			this.objectId = objectId;
+			this.varName = varName;
+			this.varValue = varValue;
+		}
 
+		@Override
+		public void setObjectId(String objectId) {
+			this.objectId = objectId;
+		}
+
+		@Override
+		public void setEvent(String eventVarName) {
+			this.varName = eventVarName;
+		}
+
+		@Override
+		public void setValue(String eventVarValue) {
+			this.varValue = eventVarValue;
+		}
+
+		@Override
+		public String getObjectId() {
+			return objectId;
+		}
+
+		@Override
+		public String getEvent() {
+			return varName;
+		}
+
+		@Override
+		public String getValue() {
+			return varValue;
+		}
+
+		@Override
+		public void notifyEvent() {
+			logger.debug("The event is catch by the EUDE");
+		}
+
+		@Override
+		public void notifyEvent(CoreListener listener) {
+			logger.debug("The event is catch by the EUDE "+listener);
+		}
+		
 	}
 
 	@Override

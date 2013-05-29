@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>apam.components</artifactId>
-		<groupId>appsGate.bundle</groupId>
-		<version>1.0.0</version>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>Context</artifactId>
+        <groupId>appsGate.bundle</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>EUDE_Intepreter</artifactId>
-	<version>1.0.0</version>
-	<packaging>bundle</packaging>
+    <artifactId>ContextFollowerSpec</artifactId>
+    <packaging>bundle</packaging>
+    <name>ContextFollowerSpec OSGi Bundle</name>
 
-	<name>EUDE_Intepreter OSGi Bundle</name>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
 	<!-- Repositories List -->
 	<repositories>
@@ -30,8 +27,8 @@
 	</repositories>
 
 	<!-- Dependencies Description -->
-	<dependencies>
-		<dependency>
+    <dependencies>
+        <dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
@@ -41,20 +38,9 @@
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>1.8.0</version>
 		</dependency>
-		<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>ContextFollowerSpec</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>RouterApAM</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		
-	</dependencies>
+    </dependencies>
 
-	<!-- Build Description -->
+ <!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>
