@@ -86,8 +86,9 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 				ArrayList<CoreListener> coreListenerList = eventsListeners.get(key);
 				coreListenerList.remove(coreListener);
 				if(coreListenerList.isEmpty()) {
-					eventsListeners.remove(eventKey);
+					eventsListeners.remove(key);
 				}
+				break;
 			}
 		}
 

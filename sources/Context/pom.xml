@@ -156,5 +156,7 @@
   <modules>
     <module>ContextFollower</module>
     <module>ContextFollowerSpec</module>
+    <module>DeviceNameTableSpec</module>
+    <module>DeviceNameTable</module>
   </modules>
 </project>
