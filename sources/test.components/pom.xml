@@ -145,5 +145,6 @@
   
   <modules>
     <module>ExecuteCommandTest</module>
+    <module>DeviceNameTableTester</module>
   </modules>
 </project>

@@ -118,8 +118,12 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 		public boolean equals(Object keyEntry) {
 			if (keyEntry instanceof Entry) {
 				Entry entry = (Entry) keyEntry;
-				return (entry.getObjectId().contentEquals(objectId) && entry
-						.getUserName().contentEquals(userName));
+				String usrName = entry.getUserName();
+				if(usrName != null) {
+					return (entry.getObjectId().contentEquals(objectId) && usrName.contentEquals(userName));
+				} else {
+					return (entry.getObjectId().contentEquals(objectId) && userName == null);
+				}
 			}
 			return false;
 		}
