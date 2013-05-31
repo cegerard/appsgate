@@ -171,6 +171,7 @@
     <module>EUDE_Intepreter</module>
     <module>ColorLightBulbSpec</module>
     <module>RouterApAMSpec</module>
+    <module>AppsGateSpec</module>
   </modules>
 
 </project>

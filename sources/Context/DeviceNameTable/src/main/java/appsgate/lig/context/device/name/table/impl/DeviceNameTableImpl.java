@@ -41,7 +41,7 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	}
 	
 	@Override
-	public String getUserObjectName(String objectId, String usrId) {
+	public String getName(String objectId, String usrId) {
 		Entry eventKey = new Entry(objectId, usrId);
 		
 		Set<Entry> keys = userObjectName.keySet();

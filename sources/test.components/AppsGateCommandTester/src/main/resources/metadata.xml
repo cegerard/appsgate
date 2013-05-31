@@ -3,13 +3,12 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="AppsGateImpl" classname="appsgate.lig.main.impl.Appsgate" specification="AppsGateSpec" singleton="true">
+	<implementation name="AppsGateMainTesterImpl" classname="appsgate.validation.main.command.AppsGateMainCommandTester">
 		<callback onInit="newInst" onRemove="deleteInst" />
- 		<dependency field="router"/>
-		<dependency field="deviceNameTable"/>
-		<ipojo:requires field="httpService"/>
+		<dependency field="appsgate"/>
 	</implementation>
-
-	<apam-instance name="AppsGateInst" implementation="AppsGateImpl">
+	
+	<apam-instance name="MainCommandInst" implementation="AppsGateMainTesterImpl">
 	</apam-instance>
+
 </apam>

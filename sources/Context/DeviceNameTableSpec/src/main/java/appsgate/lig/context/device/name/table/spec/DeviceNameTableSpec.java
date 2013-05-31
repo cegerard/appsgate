@@ -31,5 +31,5 @@ public interface DeviceNameTableSpec {
 	 * @param usrId the user who give the name
 	 * @return the user object name of the device
 	 */
-	public String getUserObjectName(String objectId, String usrId);
+	public String getName(String objectId, String usrId);
 }

@@ -1,4 +1,4 @@
-package appsgate.lig;
+package appsgate.lig.main.impl;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -24,7 +24,10 @@ import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import appsgate.lig.router.spec.RouterSpec;
+import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
+import appsgate.lig.main.spec.AppsGateSpec;
+import appsgate.lig.router.spec.RouterApAMSpec;
+
 
 /**
  * This class is the central component for Appsgate server.
@@ -38,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public class Appsgate extends Device implements ActionListener, QueryListener {
+public class Appsgate extends Device implements AppsGateSpec, ActionListener, QueryListener {
 
 	/**
 	 * 
@@ -61,8 +64,16 @@ public class Appsgate extends Device implements ActionListener, QueryListener {
 	 * default web socket connection port
 	 */
 	private static String wsPort = "8080";
+	
+	/**
+	 * Table for deviceId, user and device name association
+	 */
+	private DeviceNameTableSpec deviceNameTable;
 
-	// private RouterSpec router; // embedded
+	/**
+	 * Reference on the AppsGate Router to execute command on devices
+	 */
+	private RouterApAMSpec router;
 
 	/**
 	 * Default constructor for Appsgate java object.
@@ -131,9 +142,23 @@ public class Appsgate extends Device implements ActionListener, QueryListener {
 			e.printStackTrace();
 		}
 
-		// System.out.println("@@@@@@@@@@@ "+router.toString());
-
 		logger.info("AppsGate instanciated");
+	}
+	
+	@Override
+	public void setUserObjectName(String objectId, String user, String name) {
+		deviceNameTable.addName(objectId, user, name);
+		
+	}
+
+	@Override
+	public String getUserObjectName(String objectId, String user) {
+		return deviceNameTable.getName(objectId, user);
+	}
+
+	@Override
+	public void deleteUserObjectName(String objectId, String user) {
+		deviceNameTable.deleteName(objectId, user);
 	}
 
 	/**
