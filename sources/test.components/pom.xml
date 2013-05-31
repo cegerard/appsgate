@@ -147,5 +147,6 @@
     <module>ExecuteCommandTest</module>
     <module>DeviceNameTableTester</module>
     <module>AppsGateCommandTester</module>
+    <module>RouterCallTester</module>
   </modules>
 </project>

@@ -59,6 +59,11 @@
 			<artifactId>PlaceManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>AppsGateSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->

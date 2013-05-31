@@ -14,6 +14,7 @@ import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.communication.service.subscribe.AddListenerService;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.location.spec.PlaceManagerSpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -34,6 +35,8 @@ public class RouterImpl implements RouterApAMSpec {
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+	
+	private RouterCommandListener commandListener;
 
 	/**
 	 * Undefined sensors list, resolved by ApAM
@@ -54,14 +57,19 @@ public class RouterImpl implements RouterApAMSpec {
 	 * The place manager ApAM component to handle the object location
 	 */
 	private PlaceManagerSpec locationManager;
+	
+	/**
+	 * The place manager ApAM component to handle the object location
+	 */
+	private AppsGateSpec appsgate;
 
 	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
 		logger.debug("The router ApAM component has been initialized");
-
-		if (addListenerService.addCommandListener(new RouterCommandListener(this))) {
+		commandListener = new RouterCommandListener(this);
+		if (addListenerService.addCommandListener(commandListener)) {
 			logger.info("Listeners services dependency resolved.");
 		} else {
 			logger.info("Listeners services dependency resolution failed.");
@@ -142,26 +150,39 @@ public class RouterImpl implements RouterApAMSpec {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
-			Object obj = getObjectRefFromID(objectId);
-			return new GenericCommand(args, paramType, obj, methodName, callId, clientId, sendToClientService);
+		Object obj;	
+		if(objectId.contentEquals("main")) {
+			logger.info("retreive AppsGate reference: "+appsgate.toString());
+			obj = appsgate;
+		}else {
+			obj = getObjectRefFromID(objectId);
+		}
+		return new GenericCommand(args, paramType, obj, methodName, callId, clientId, sendToClientService);
 	}
 	
-	/**
-	 * Get a command description, resolve the target reference and make the call.
-	 * The call is not associated to a specific remote client caller.
-	 * 
-	 * @param objectId abstract object identifier
-	 * @param methodName method to call on objectId
-	 * @param args arguments list form method methodName
-	 * @param paramType argument type list 
-	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Runnable executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
-			Object obj = getObjectRefFromID(objectId);
+			Object obj;
+			if(objectId.contentEquals("main")) {
+				logger.info("retreive AppsGate reference: "+appsgate.toString());
+				obj = appsgate;
+			}else {
+				obj = getObjectRefFromID(objectId);
+			}
 			return new GenericCommand(args, paramType, obj, methodName);
 	}
-
+	
+	@Override
+	public Runnable executeCommand(String objectId, String methodName, JSONArray args) {
+		ArrayList<Object> arguments    = new ArrayList<Object>();
+		@SuppressWarnings("rawtypes")
+		ArrayList<Class> argumentsType = new ArrayList<Class>();
+		
+		commandListener.loadArguments(args, arguments, argumentsType);
+		
+		return executeCommand(objectId, methodName, arguments, argumentsType);
+	}
 	
 	/**
 	 * Called by ApAM when Notification message comes
@@ -248,4 +269,5 @@ public class RouterImpl implements RouterApAMSpec {
 			e.printStackTrace();
 		}
 	}
+	
 }

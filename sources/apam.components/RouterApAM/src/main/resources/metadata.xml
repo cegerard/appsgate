@@ -7,6 +7,7 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<dependency field="abstractDevice"  added="addAbstractObject" removed="removedAbstractObject"/>
 		<dependency field="locationManager"/>
+		<dependency field="appsgate"/>
 		<dependency push="gotNotification" multiple="true"/>
 		<ipojo:requires field="addListenerService"/>
 		<ipojo:requires field="sendToClientService"/>

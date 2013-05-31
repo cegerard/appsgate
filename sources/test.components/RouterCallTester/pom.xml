@@ -7,15 +7,17 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>DeviceNameTableTester</artifactId>
+    <artifactId>RouterCallTester</artifactId>
+    <version>1.0.0</version>
     <packaging>bundle</packaging>
-    <name>###### DeviceNameTableTester ######</name>
+
+    <name>RouterCallTester OSGi Bundle</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-	<!-- Repositories List -->
+ <!-- Repositories List -->
 	<repositories>
 		<repository>
 			<id>apam-repo</id>
@@ -40,12 +42,12 @@
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>DeviceNameTableSpec</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>RouterApAMSpec</artifactId>
+			<version>1.0.0</version>
 		</dependency>
     </dependencies>
 
- <!-- Build Description -->
+ 	<!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>
