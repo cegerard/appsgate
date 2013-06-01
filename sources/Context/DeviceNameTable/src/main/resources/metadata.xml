@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="AppsGateContextDeviceNameTableImpl" classname="appsgate.lig.context.device.name.table.impl.DeviceNameTableImpl" specification="AppsGateContextDeviceNameTableSpec" singleton="true">
+	<implementation name="AppsGateContextDeviceNameTableImpl" classname="appsgate.lig.context.device.name.table.impl.DeviceNameTableImpl" specification="AppsGateContextDeviceNameTableSpec" push="notifyChanges" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
 	</implementation>
 	

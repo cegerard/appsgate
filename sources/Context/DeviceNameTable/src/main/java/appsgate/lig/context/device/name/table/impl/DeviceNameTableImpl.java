@@ -7,7 +7,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.context.device.name.table.messages.TableNameNotificationMsg;
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
+import appsgate.lig.logical.object.messages.NotificationMsg;
 
 public class DeviceNameTableImpl implements DeviceNameTableSpec {
 
@@ -22,6 +24,7 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	@Override
 	public void addName(String objectId, String usrId, String newName) {
 		userObjectName.put(new Entry(objectId, usrId), newName);
+		notifyChanges(objectId, usrId, newName);
 	}
 
 	@Override
@@ -35,6 +38,7 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 			Entry key = keysIt.next();
 			if (eventKey.equals(key)) {
 				userObjectName.remove(key);
+				notifyChanges(objectId, usrId, getName(objectId, usrId));
 				break;
 			}
 		}
@@ -71,9 +75,21 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	public void deleteInst() {
 		logger.debug("The device name table has been stopped");
 	}
+	
+	/**
+	 * This method uses the ApAM message model. Each call produce a
+	 * ContactNotificationMsg object and notifies ApAM that a new message has
+	 * been released.
+	 * 
+	 * @return nothing, it just notifies ApAM that a new message has been
+	 *         posted.
+	 */
+	public NotificationMsg notifyChanges(String objectId, String userId, String name) {
+		return new TableNameNotificationMsg(objectId, userId, name);
+	}
 
 	/**
-	 * Inner class use to create a key for device di and user association
+	 * Inner class use to create a key for device and user association
 	 * 
 	 * @author Cédric Gérard
 	 * @since May 28, 2013

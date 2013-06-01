@@ -59,7 +59,7 @@ public class RouterImpl implements RouterApAMSpec {
 	private PlaceManagerSpec locationManager;
 	
 	/**
-	 * The place manager ApAM component to handle the object location
+	 * The main AppsGate component to call for every request
 	 */
 	private AppsGateSpec appsgate;
 
@@ -94,11 +94,7 @@ public class RouterImpl implements RouterApAMSpec {
 		
 		//notify that a new object appeared
 		AbstractObjectSpec newObj = (AbstractObjectSpec)inst.getServiceObject();
-		try {
-			sendToClientService.send("newDevice", newObj.getDescription());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
 	}
 
 	/**
@@ -212,11 +208,7 @@ public class RouterImpl implements RouterApAMSpec {
 			
 			while (devices.hasNext()) {
 				adev = devices.next();
-				try {
-					jsonDeviceList.put(adev.getDescription());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				jsonDeviceList.put(getObjectDescription(adev, ""));
 			}
 			sendToClientService.send(clientId, "listDevices", jsonDeviceList);
 		}else{
@@ -268,6 +260,26 @@ public class RouterImpl implements RouterApAMSpec {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * This method get the auto description of an object and add
+	 * the contextual information associate to this object for a specified user
+	 * @param obj the object from which to get the description
+	 * @param user the user from who to get the context
+	 * @return the complete contextual description of an object
+	 */
+	private JSONObject getObjectDescription(AbstractObjectSpec obj, String user) {
+		JSONObject JSONDescription = null;
+		try {
+			//Get object auto description
+			JSONDescription = obj.getDescription();
+			//Add context description for this abject
+			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return JSONDescription;
 	}
 	
 }

@@ -38,6 +38,11 @@
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>1.8.0</version>
 		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>AbstractObjectSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
     </dependencies>
 
  <!-- Build Description -->
