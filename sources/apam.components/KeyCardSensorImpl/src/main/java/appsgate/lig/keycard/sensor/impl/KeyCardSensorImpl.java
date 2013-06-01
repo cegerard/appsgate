@@ -42,11 +42,6 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	 * The current status (Card inserted/removed) = the last value received from this sensor
 	 */
 	private String currentStatus;
-	
-	/**
-	 * The name set by the end user
-	 */
-	private String userName;
 
 	/**
 	 * The location where the sensor is installed
@@ -76,7 +71,6 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
-		descr.put("name", userName);
 		descr.put("type", userType); //4 for keyCard sensor
 		descr.put("locationId", locationId);
 		descr.put("status", status);
@@ -126,11 +120,6 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	}
 
 	@Override
-	public String getUserObjectName() {
-		return userName;
-	}
-
-	@Override
 	public int getLocationId() {
 		return Integer.valueOf(locationId);
 	}
@@ -148,12 +137,6 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	@Override
 	public String getPictureId() {
 		return pictureId;
-	}
-
-	@Override
-	public void setUserObjectName(String userName) {
-		this.userName = userName;
-		notifyChanges("name", userName);
 	}
 
 	@Override
@@ -200,7 +183,7 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {
-		logger.info("The sensor, "+ sensorId+" / "+ userName +" status changed to "+newStatus);
+		logger.info("The sensor, "+ sensorId+" status changed to "+newStatus);
 		notifyChanges("status", newStatus);
 	}
 	

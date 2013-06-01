@@ -14,7 +14,6 @@
       <p n='definition-deviceName' t='string' v='Unknown' />
       <p n='definition-deviceId' t='string' v='000000' />
       <p n='definition-deviceType' t='string' v='EnOcean_DEVICE' />
-      <p n='definition-userName' t='string' v='' />
       <p n='definition-locationId' t='string' v='-1' />
       <p n='definition-pictureId' t='string' v='' />
       <p n='definition-userType' t='string' v='0' />

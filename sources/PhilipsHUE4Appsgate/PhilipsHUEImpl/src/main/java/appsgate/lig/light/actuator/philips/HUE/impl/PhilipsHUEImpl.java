@@ -41,7 +41,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	private String actuatorId;
 	private String actuatorType;
 	
-	private String userName;
 	private String locationId;
 	private String pictureId;
 	private String userType;
@@ -289,11 +288,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	}
 
 	@Override
-	public String getUserObjectName() {
-		return userName;
-	}
-
-	@Override
 	public int getLocationId() {
 		return Integer.valueOf(locationId);
 	}
@@ -318,7 +312,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	
 		JSONObject descr = new JSONObject();
 		descr.put("id", actuatorId);
-		descr.put("name", userName);
 		descr.put("type", userType); // 7 for color light
 		descr.put("locationId", locationId);
 		descr.put("status", status);
@@ -326,12 +319,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		descr.put("color", getLightColor());
 		
 		return descr;
-	}
-
-	@Override
-	public void setUserObjectName(String userName) {
-		this.userName = userName;
-		notifyChanges("name", userName);
 	}
 
 	@Override
@@ -359,7 +346,7 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {
-		logger.info("The actuator, "+ actuatorId+" / "+ userName +" status changed to "+newStatus);
+		logger.info("The actuator, "+ actuatorId+" status changed to "+newStatus);
 		notifyChanges("status", newStatus);
 	}
 	

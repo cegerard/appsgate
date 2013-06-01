@@ -31,7 +31,6 @@ import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 
 public class ContentDirectoryProxyImpl implements AbstractObjectSpec, ContentDirectory, UPnPEventListener {		
 
-	private String 		userObjectName;
 	private int			locationId;
 	private String 		pictureId;
 	
@@ -88,15 +87,6 @@ public class ContentDirectoryProxyImpl implements AbstractObjectSpec, ContentDir
 	public java.lang.String getContainerUpdateIDs() {
 		return containerUpdateIDs;
 	}
-	
-		
-	public String getUserObjectName() {
-		return userObjectName;
-	}
-
-	public void setUserObjectName(String userName) {
-		this.userObjectName = userName;
-	}
 
 	public int getLocationId() {
 		return locationId;
@@ -119,7 +109,6 @@ public class ContentDirectoryProxyImpl implements AbstractObjectSpec, ContentDir
 		
 		description.put("id", getAbstractObjectId());
 		description.put("physical-device", upnpDevice.getDescriptions(null).get(UPnPDevice.ID));
-		description.put("name", getUserObjectName());
 		description.put("type", getUserType()); 
 		description.put("locationId", getLocationId());
 		description.put("status", getObjectStatus());

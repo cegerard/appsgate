@@ -42,11 +42,6 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 	 * The current illumination = the last value received from this sensor
 	 */
 	private String currentIllumination;
-	
-	/**
-	 * The name set by the end user
-	 */
-	private String userName;
 
 	/**
 	 * The location where the sensor is installed
@@ -116,11 +111,6 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 	public String getSensoreType() {
 		return sensoreType;
 	}
-	
-	@Override
-	public String getUserObjectName() {
-		return userName;
-	}
 
 	@Override
 	public int getLocationId() {
@@ -143,12 +133,6 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 	}
 
 	@Override
-	public void setUserObjectName(String userName) {
-		this.userName = userName;
-		notifyChanges("name", userName);
-	}
-
-	@Override
 	public void setLocationId(int locationId) {
 		this.locationId = String.valueOf(locationId);
 	}
@@ -163,7 +147,6 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
-		descr.put("name", userName);
 		descr.put("type", userType); //1 for illumination sensor
 		descr.put("locationId", locationId);
 		descr.put("status", status);
@@ -205,7 +188,7 @@ public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjec
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {
-		logger.info("The sensor, "+ sensorId+" / "+ userName +" status changed to "+newStatus);
+		logger.info("The sensor, "+ sensorId+" status changed to "+newStatus);
 		notifyChanges("status", newStatus);
 	}
 	

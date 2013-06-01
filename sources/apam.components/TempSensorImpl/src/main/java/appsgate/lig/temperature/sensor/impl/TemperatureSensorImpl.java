@@ -44,11 +44,6 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	private String currentTemperature;
 
 	/**
-	 * The name set by the end user
-	 */
-	private String userName;
-
-	/**
 	 * The location where the sensor is installed
 	 */
 	private String locationId;
@@ -120,11 +115,6 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	public String getSensoreType() {
 		return sensorType;
 	}
-	
-	@Override
-	public String getUserObjectName() {
-		return userName;
-	}
 
 	@Override
 	public int getLocationId() {
@@ -147,12 +137,6 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	}
 
 	@Override
-	public void setUserObjectName(String userName) {
-		this.userName = userName;
-		notifyChanges("name", userName);
-	}
-
-	@Override
 	public void setLocationId(int locationId) {
 		this.locationId = String.valueOf(locationId);
 	}
@@ -168,7 +152,6 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 		JSONObject descr = new JSONObject();
 		
 		descr.put("id", sensorId);
-		descr.put("name", userName);
 		descr.put("type", userType); //O for temperature sensor
 		descr.put("locationId", locationId);
 		descr.put("status", status);
@@ -210,7 +193,7 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {
-		logger.info("The sensor, "+ sensorId+" / "+ userName +" status changed to "+newStatus);
+		logger.info("The sensor, "+ sensorId+" status changed to "+newStatus);
 		notifyChanges("status", newStatus);
 	}
 

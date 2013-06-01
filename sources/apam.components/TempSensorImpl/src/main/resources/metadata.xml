@@ -15,7 +15,6 @@
 		<definition name="deviceType" 		  type="string" value="EnOcean_DEVICE" field="sensorType"/>
 		
 		<!-- device client meta data -->
-		<definition name="userName" 		  type="string" value="" 			   field="userName"/>
 		<definition name="locationId" 		  type="string" value="-1" 			   field="locationId"/>
 		<definition name="pictureId" 		  type="string" value="" 			   field="pictureId"/>
 		<definition name="userType" 		  type="string" value="0" 			   field="userType"/>
