@@ -261,16 +261,20 @@ public class <xsl:value-of select="$classname"/>ProxyImpl implements AbstractObj
 </xsl:template>
 
 <xsl:template match="action"  mode="itfdefinition">
-	<xsl:variable name="actionName" select="java:GenerationUtility.variabilize(./name)"/>
+	<xsl:variable name="methodName" select="java:GenerationUtility.variabilize(./name)"/>
+	<xsl:variable name="actionName" select="./name"/>
 	/**
 	 * This method is "add description here"	
 <xsl:apply-templates select="argumentList" mode="comment"/>
 	 */
-	public void <xsl:value-of select="$actionName"/>(
+	public void <xsl:value-of select="$methodName"/>(
 		<xsl:apply-templates select="argumentList" mode="param"/>
 	) throws UPnPException {
 		
 		UPnPAction upnpAction = upnpService.getAction("<xsl:value-of select="$actionName"/>");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"<xsl:value-of select="$actionName"/>"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		

@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 22-March-2013 11:22 AM by ${author}
+// this file was generated at 3-June-2013 12:55 PM by ${author}
 package appsgate.lig.upnp.media.proxy;
 
 import org.apache.felix.upnp.devicegen.holder.*;
@@ -220,7 +220,10 @@ public class ConnectionManagerProxyImpl implements AbstractObjectSpec, Connectio
 StringHolder sink
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getProtocolInfo");
+		UPnPAction upnpAction = upnpService.getAction("GetProtocolInfo");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetProtocolInfo"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -275,7 +278,10 @@ IntegerHolder aVTransportID,
 IntegerHolder rcsID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("prepareForConnection");
+		UPnPAction upnpAction = upnpService.getAction("PrepareForConnection");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"PrepareForConnection"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -319,7 +325,10 @@ IntegerHolder rcsID
 		int connectionID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("connectionComplete");
+		UPnPAction upnpAction = upnpService.getAction("ConnectionComplete");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"ConnectionComplete"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -351,7 +360,10 @@ IntegerHolder rcsID
 		StringHolder connectionIDs
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getCurrentConnectionIDs");
+		UPnPAction upnpAction = upnpService.getAction("GetCurrentConnectionIDs");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetCurrentConnectionIDs"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -409,7 +421,10 @@ StringHolder direction,
 StringHolder status
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getCurrentConnectionInfo");
+		UPnPAction upnpAction = upnpService.getAction("GetCurrentConnectionInfo");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetCurrentConnectionInfo"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		

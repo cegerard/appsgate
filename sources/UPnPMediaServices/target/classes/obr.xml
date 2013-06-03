@@ -8,7 +8,7 @@
       <p n='name' v='RenderingControlProxyImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='RenderingControlProxyImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.upnp.media.RenderingControl,org.osgi.service.upnp.UPnPEventListener' />
+      <p n='provide-interfaces' v='org.osgi.service.upnp.UPnPEventListener,appsgate.lig.upnp.media.RenderingControl,appsgate.lig.logical.object.spec.AbstractObjectSpec' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='AbstractObjectSpec' />
       <p n='UPnP.service.type' v='urn:schemas-upnp-org:service:RenderingControl:1' />
@@ -21,7 +21,7 @@
       <p n='name' v='ConnectionManagerProxyImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='ConnectionManagerProxyImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.upnp.media.ConnectionManager,org.osgi.service.upnp.UPnPEventListener' />
+      <p n='provide-interfaces' v='org.osgi.service.upnp.UPnPEventListener,appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.upnp.media.ConnectionManager' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='AbstractObjectSpec' />
       <p n='UPnP.service.type' v='urn:schemas-upnp-org:service:ConnectionManager:1' />
@@ -34,7 +34,7 @@
       <p n='name' v='AVTransportProxyImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='AVTransportProxyImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.upnp.media.AVTransport,org.osgi.service.upnp.UPnPEventListener' />
+      <p n='provide-interfaces' v='org.osgi.service.upnp.UPnPEventListener,appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.upnp.media.AVTransport' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='AbstractObjectSpec' />
       <p n='UPnP.service.type' v='urn:schemas-upnp-org:service:AVTransport:1' />
@@ -47,7 +47,7 @@
       <p n='name' v='ContentDirectoryProxyImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='ContentDirectoryProxyImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.upnp.media.ContentDirectory,org.osgi.service.upnp.UPnPEventListener' />
+      <p n='provide-interfaces' v='org.osgi.service.upnp.UPnPEventListener,appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.upnp.media.ContentDirectory' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='AbstractObjectSpec' />
       <p n='UPnP.service.type' v='urn:schemas-upnp-org:service:ContentDirectory:1' />
@@ -56,5 +56,5 @@
       <p n='definition-UPnP.service.type' t='string' v='urn:schemas-upnp-org:service:ContentDirectory:1' />
       <p n='version' t='version' v='1.0.0' />
    </capability>
-   <require name='apam-component' filter='(&amp;(name=AbstractObjectSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification dependency toward AbstractObjectSpec</require>
+   <require name='apam-component' filter='(&amp;(name=AbstractObjectSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification relation toward AbstractObjectSpec</require>
 </obr> 

@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 22-March-2013 11:22 AM by ${author}
+// this file was generated at 3-June-2013 12:55 PM by ${author}
 package appsgate.lig.upnp.media.proxy;
 
 import org.apache.felix.upnp.devicegen.holder.*;
@@ -196,7 +196,10 @@ java.lang.String currentURI,
 java.lang.String currentURIMetaData
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setAVTransportURI");
+		UPnPAction upnpAction = upnpService.getAction("SetAVTransportURI");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetAVTransportURI"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -242,7 +245,10 @@ java.lang.String nextURI,
 java.lang.String nextURIMetaData
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setNextAVTransportURI");
+		UPnPAction upnpAction = upnpService.getAction("SetNextAVTransportURI");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetNextAVTransportURI"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -316,7 +322,10 @@ StringHolder recordMedium,
 StringHolder writeStatus
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getMediaInfo");
+		UPnPAction upnpAction = upnpService.getAction("GetMediaInfo");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetMediaInfo"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -369,7 +378,10 @@ StringHolder currentTransportStatus,
 StringHolder currentSpeed
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getTransportInfo");
+		UPnPAction upnpAction = upnpService.getAction("GetTransportInfo");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetTransportInfo"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -436,7 +448,10 @@ IntegerHolder relCount,
 IntegerHolder absCount
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getPositionInfo");
+		UPnPAction upnpAction = upnpService.getAction("GetPositionInfo");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetPositionInfo"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -488,7 +503,10 @@ StringHolder recMedia,
 StringHolder recQualityModes
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getDeviceCapabilities");
+		UPnPAction upnpAction = upnpService.getAction("GetDeviceCapabilities");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetDeviceCapabilities"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -531,7 +549,10 @@ StringHolder playMode,
 StringHolder recQualityMode
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getTransportSettings");
+		UPnPAction upnpAction = upnpService.getAction("GetTransportSettings");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetTransportSettings"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -565,7 +586,10 @@ StringHolder recQualityMode
 		long instanceID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("stop");
+		UPnPAction upnpAction = upnpService.getAction("Stop");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Stop"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -601,7 +625,10 @@ StringHolder recQualityMode
 java.lang.String speed
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("play");
+		UPnPAction upnpAction = upnpService.getAction("Play");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Play"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -636,7 +663,10 @@ java.lang.String speed
 		long instanceID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("pause");
+		UPnPAction upnpAction = upnpService.getAction("Pause");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Pause"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -668,7 +698,10 @@ java.lang.String speed
 		long instanceID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("record");
+		UPnPAction upnpAction = upnpService.getAction("Record");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Record"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -708,7 +741,10 @@ java.lang.String unit,
 java.lang.String target
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("seek");
+		UPnPAction upnpAction = upnpService.getAction("Seek");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Seek"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -746,7 +782,10 @@ java.lang.String target
 		long instanceID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("next");
+		UPnPAction upnpAction = upnpService.getAction("Next");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Next"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -778,7 +817,10 @@ java.lang.String target
 		long instanceID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("previous");
+		UPnPAction upnpAction = upnpService.getAction("Previous");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Previous"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -814,7 +856,10 @@ java.lang.String target
 java.lang.String newPlayMode
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setPlayMode");
+		UPnPAction upnpAction = upnpService.getAction("SetPlayMode");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetPlayMode"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -853,7 +898,10 @@ java.lang.String newPlayMode
 java.lang.String newRecordQualityMode
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setRecordQualityMode");
+		UPnPAction upnpAction = upnpService.getAction("SetRecordQualityMode");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetRecordQualityMode"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -892,7 +940,10 @@ java.lang.String newRecordQualityMode
 StringHolder actions
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getCurrentTransportActions");
+		UPnPAction upnpAction = upnpService.getAction("GetCurrentTransportActions");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetCurrentTransportActions"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		

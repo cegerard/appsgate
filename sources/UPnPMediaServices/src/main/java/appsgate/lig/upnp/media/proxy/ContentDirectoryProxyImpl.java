@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 22-March-2013 11:22 AM by ${author}
+// this file was generated at 3-June-2013 12:55 PM by ${author}
 package appsgate.lig.upnp.media.proxy;
 
 import org.apache.felix.upnp.devicegen.holder.*;
@@ -216,7 +216,10 @@ public class ContentDirectoryProxyImpl implements AbstractObjectSpec, ContentDir
 		StringHolder searchCaps
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getSearchCapabilities");
+		UPnPAction upnpAction = upnpService.getAction("GetSearchCapabilities");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetSearchCapabilities"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -246,7 +249,10 @@ public class ContentDirectoryProxyImpl implements AbstractObjectSpec, ContentDir
 		StringHolder sortCaps
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getSortCapabilities");
+		UPnPAction upnpAction = upnpService.getAction("GetSortCapabilities");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetSortCapabilities"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -276,7 +282,10 @@ public class ContentDirectoryProxyImpl implements AbstractObjectSpec, ContentDir
 		LongHolder id
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getSystemUpdateID");
+		UPnPAction upnpAction = upnpService.getAction("GetSystemUpdateID");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetSystemUpdateID"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -342,7 +351,10 @@ LongHolder totalMatches,
 LongHolder updateID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("browse");
+		UPnPAction upnpAction = upnpService.getAction("Browse");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Browse"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -429,7 +441,10 @@ LongHolder totalMatches,
 LongHolder updateID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("search");
+		UPnPAction upnpAction = upnpService.getAction("Search");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"Search"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -492,7 +507,10 @@ StringHolder objectID,
 StringHolder result
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("createObject");
+		UPnPAction upnpAction = upnpService.getAction("CreateObject");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"CreateObject"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -529,7 +547,10 @@ StringHolder result
 		java.lang.String objectID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("destroyObject");
+		UPnPAction upnpAction = upnpService.getAction("DestroyObject");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"DestroyObject"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -569,7 +590,10 @@ java.lang.String currentTagValue,
 java.lang.String newTagValue
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("updateObject");
+		UPnPAction upnpAction = upnpService.getAction("UpdateObject");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"UpdateObject"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -615,7 +639,10 @@ java.lang.String destinationURI,
 LongHolder transferID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("importResource");
+		UPnPAction upnpAction = upnpService.getAction("ImportResource");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"ImportResource"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -659,7 +686,10 @@ java.lang.String destinationURI,
 LongHolder transferID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("exportResource");
+		UPnPAction upnpAction = upnpService.getAction("ExportResource");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"ExportResource"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -695,7 +725,10 @@ LongHolder transferID
 		long transferID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("stopTransferResource");
+		UPnPAction upnpAction = upnpService.getAction("StopTransferResource");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"StopTransferResource"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -739,7 +772,10 @@ StringHolder transferLength,
 StringHolder transferTotal
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getTransferProgress");
+		UPnPAction upnpAction = upnpService.getAction("GetTransferProgress");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetTransferProgress"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -774,7 +810,10 @@ StringHolder transferTotal
 		java.lang.String resourceURI
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("deleteResource");
+		UPnPAction upnpAction = upnpService.getAction("DeleteResource");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"DeleteResource"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -814,7 +853,10 @@ java.lang.String objectID,
 StringHolder newID
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("createReference");
+		UPnPAction upnpAction = upnpService.getAction("CreateReference");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"CreateReference"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		

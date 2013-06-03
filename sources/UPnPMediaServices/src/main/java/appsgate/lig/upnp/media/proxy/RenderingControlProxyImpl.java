@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 22-March-2013 11:22 AM by ${author}
+// this file was generated at 3-June-2013 12:55 PM by ${author}
 package appsgate.lig.upnp.media.proxy;
 
 import org.apache.felix.upnp.devicegen.holder.*;
@@ -192,7 +192,10 @@ public class RenderingControlProxyImpl implements AbstractObjectSpec, RenderingC
 StringHolder currentPresetNameList
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("listPresets");
+		UPnPAction upnpAction = upnpService.getAction("ListPresets");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"ListPresets"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -229,7 +232,10 @@ StringHolder currentPresetNameList
 java.lang.String presetName
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("selectPreset");
+		UPnPAction upnpAction = upnpService.getAction("SelectPreset");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SelectPreset"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -268,7 +274,10 @@ java.lang.String presetName
 IntegerHolder currentBrightness
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getBrightness");
+		UPnPAction upnpAction = upnpService.getAction("GetBrightness");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetBrightness"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -305,7 +314,10 @@ IntegerHolder currentBrightness
 int desiredBrightness
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setBrightness");
+		UPnPAction upnpAction = upnpService.getAction("SetBrightness");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetBrightness"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -344,7 +356,10 @@ int desiredBrightness
 IntegerHolder currentContrast
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getContrast");
+		UPnPAction upnpAction = upnpService.getAction("GetContrast");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetContrast"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -381,7 +396,10 @@ IntegerHolder currentContrast
 int desiredContrast
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setContrast");
+		UPnPAction upnpAction = upnpService.getAction("SetContrast");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetContrast"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -420,7 +438,10 @@ int desiredContrast
 IntegerHolder currentSharpness
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getSharpness");
+		UPnPAction upnpAction = upnpService.getAction("GetSharpness");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetSharpness"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -457,7 +478,10 @@ IntegerHolder currentSharpness
 int desiredSharpness
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setSharpness");
+		UPnPAction upnpAction = upnpService.getAction("SetSharpness");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetSharpness"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -496,7 +520,10 @@ int desiredSharpness
 IntegerHolder currentRedVideoGain
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getRedVideoGain");
+		UPnPAction upnpAction = upnpService.getAction("GetRedVideoGain");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetRedVideoGain"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -533,7 +560,10 @@ IntegerHolder currentRedVideoGain
 int desiredRedVideoGain
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setRedVideoGain");
+		UPnPAction upnpAction = upnpService.getAction("SetRedVideoGain");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetRedVideoGain"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -572,7 +602,10 @@ int desiredRedVideoGain
 IntegerHolder currentGreenVideoGain
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getGreenVideoGain");
+		UPnPAction upnpAction = upnpService.getAction("GetGreenVideoGain");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetGreenVideoGain"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -609,7 +642,10 @@ IntegerHolder currentGreenVideoGain
 int desiredGreenVideoGain
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setGreenVideoGain");
+		UPnPAction upnpAction = upnpService.getAction("SetGreenVideoGain");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetGreenVideoGain"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -648,7 +684,10 @@ int desiredGreenVideoGain
 IntegerHolder currentBlueVideoGain
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getBlueVideoGain");
+		UPnPAction upnpAction = upnpService.getAction("GetBlueVideoGain");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetBlueVideoGain"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -685,7 +724,10 @@ IntegerHolder currentBlueVideoGain
 int desiredBlueVideoGain
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setBlueVideoGain");
+		UPnPAction upnpAction = upnpService.getAction("SetBlueVideoGain");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetBlueVideoGain"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -724,7 +766,10 @@ int desiredBlueVideoGain
 IntegerHolder currentRedVideoBlackLevel
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getRedVideoBlackLevel");
+		UPnPAction upnpAction = upnpService.getAction("GetRedVideoBlackLevel");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetRedVideoBlackLevel"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -761,7 +806,10 @@ IntegerHolder currentRedVideoBlackLevel
 int desiredRedVideoBlackLevel
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setRedVideoBlackLevel");
+		UPnPAction upnpAction = upnpService.getAction("SetRedVideoBlackLevel");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetRedVideoBlackLevel"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -800,7 +848,10 @@ int desiredRedVideoBlackLevel
 IntegerHolder currentGreenVideoBlackLevel
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getGreenVideoBlackLevel");
+		UPnPAction upnpAction = upnpService.getAction("GetGreenVideoBlackLevel");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetGreenVideoBlackLevel"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -837,7 +888,10 @@ IntegerHolder currentGreenVideoBlackLevel
 int desiredGreenVideoBlackLevel
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setGreenVideoBlackLevel");
+		UPnPAction upnpAction = upnpService.getAction("SetGreenVideoBlackLevel");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetGreenVideoBlackLevel"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -876,7 +930,10 @@ int desiredGreenVideoBlackLevel
 IntegerHolder currentBlueVideoBlackLevel
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getBlueVideoBlackLevel");
+		UPnPAction upnpAction = upnpService.getAction("GetBlueVideoBlackLevel");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetBlueVideoBlackLevel"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -913,7 +970,10 @@ IntegerHolder currentBlueVideoBlackLevel
 int desiredBlueVideoBlackLevel
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setBlueVideoBlackLevel");
+		UPnPAction upnpAction = upnpService.getAction("SetBlueVideoBlackLevel");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetBlueVideoBlackLevel"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -952,7 +1012,10 @@ int desiredBlueVideoBlackLevel
 IntegerHolder currentColorTemperature
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getColorTemperature");
+		UPnPAction upnpAction = upnpService.getAction("GetColorTemperature");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetColorTemperature"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -989,7 +1052,10 @@ IntegerHolder currentColorTemperature
 int desiredColorTemperature
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setColorTemperature");
+		UPnPAction upnpAction = upnpService.getAction("SetColorTemperature");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetColorTemperature"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1028,7 +1094,10 @@ int desiredColorTemperature
 IntegerHolder currentHorizontalKeystone
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getHorizontalKeystone");
+		UPnPAction upnpAction = upnpService.getAction("GetHorizontalKeystone");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetHorizontalKeystone"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1065,7 +1134,10 @@ IntegerHolder currentHorizontalKeystone
 int desiredHorizontalKeystone
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setHorizontalKeystone");
+		UPnPAction upnpAction = upnpService.getAction("SetHorizontalKeystone");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetHorizontalKeystone"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1104,7 +1176,10 @@ int desiredHorizontalKeystone
 IntegerHolder currentVerticalKeystone
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getVerticalKeystone");
+		UPnPAction upnpAction = upnpService.getAction("GetVerticalKeystone");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetVerticalKeystone"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1141,7 +1216,10 @@ IntegerHolder currentVerticalKeystone
 int desiredVerticalKeystone
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setVerticalKeystone");
+		UPnPAction upnpAction = upnpService.getAction("SetVerticalKeystone");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetVerticalKeystone"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1184,7 +1262,10 @@ java.lang.String channel,
 BooleanHolder currentMute
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getMute");
+		UPnPAction upnpAction = upnpService.getAction("GetMute");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetMute"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1228,7 +1309,10 @@ java.lang.String channel,
 boolean desiredMute
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setMute");
+		UPnPAction upnpAction = upnpService.getAction("SetMute");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetMute"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1274,7 +1358,10 @@ java.lang.String channel,
 IntegerHolder currentVolume
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getVolume");
+		UPnPAction upnpAction = upnpService.getAction("GetVolume");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetVolume"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1318,7 +1405,10 @@ java.lang.String channel,
 int desiredVolume
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setVolume");
+		UPnPAction upnpAction = upnpService.getAction("SetVolume");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetVolume"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1364,7 +1454,10 @@ java.lang.String channel,
 IntegerHolder currentVolume
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getVolumeDB");
+		UPnPAction upnpAction = upnpService.getAction("GetVolumeDB");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetVolumeDB"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1408,7 +1501,10 @@ java.lang.String channel,
 int desiredVolume
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setVolumeDB");
+		UPnPAction upnpAction = upnpService.getAction("SetVolumeDB");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetVolumeDB"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1458,7 +1554,10 @@ IntegerHolder minValue,
 IntegerHolder maxValue
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getVolumeDBRange");
+		UPnPAction upnpAction = upnpService.getAction("GetVolumeDBRange");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetVolumeDBRange"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1503,7 +1602,10 @@ java.lang.String channel,
 BooleanHolder currentLoudness
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("getLoudness");
+		UPnPAction upnpAction = upnpService.getAction("GetLoudness");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"GetLoudness"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
@@ -1547,7 +1649,10 @@ java.lang.String channel,
 boolean desiredLoudness
 	) throws UPnPException {
 		
-		UPnPAction upnpAction = upnpService.getAction("setLoudness");
+		UPnPAction upnpAction = upnpService.getAction("SetLoudness");
+
+		if (upnpAction == null)
+			throw new UnsupportedOperationException("Action "+"SetLoudness"+" is not provided by service "+getAbstractObjectId());
 
 		Dictionary _parameters = new Hashtable();
 		
