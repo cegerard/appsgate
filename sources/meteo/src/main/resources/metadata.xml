@@ -7,18 +7,23 @@
 		<callback onInit="start" onRemove="stop" />
 		<definition name="woeid" type="string" field="WOEID" internal="false"/>
 		<definition name="auto-refresh" type="int" field="refreshRate" internal="false"/>
+		<definition name="temperature" type="int" field="temperature" internal="false"/>
 	</implementation>
    
-	<implementation name="YahooMeteoClientImpl" classname="appsgate.lig.meteo.yahoo.RSSReader">
+   <apam-instance name="meteo-0" implementation="YahooMeteoImpl">
+       <property name="woeid" value="12724717"/>
+       <property name="auto-refresh" value="10000"/>
+   </apam-instance>
+   
+   <!-- 
+   
+   <implementation name="YahooMeteoClientImpl" classname="appsgate.lig.meteo.yahoo.RSSReader">
 		<callback onInit="start" onRemove="stop" />
 		<dependency field="meteo" />
 	</implementation>
-	
-   <apam-instance name="meteo-0" implementation="YahooMeteoImpl">
-       <property name="woeid" value="12724717"/>
-       <property name="auto-refresh" value="60000"/>
-   </apam-instance>
    
    <apam-instance name="meteo-client-0" implementation="YahooMeteoClientImpl"/>
+   
+    -->
    
 </apam>

@@ -63,7 +63,12 @@ public class RouterCommandListener implements CommandListener {
 		logger.debug("Client send : " + obj.toString());
 		try {
 			String targetTypeTemp;
-			targetTypeTemp = obj.getString("targetType");
+			try {
+				targetTypeTemp = obj.getString("targetType");
+			}catch (JSONException e1) {
+				targetTypeTemp = "999"; //to reach the default entry in the following switch case
+										//that correspond to call Appsgate main component
+			}
 
 			int targetType = Integer.parseInt(targetTypeTemp);
 			int clientId = obj.getInt("clientId");
@@ -86,24 +91,13 @@ public class RouterCommandListener implements CommandListener {
 					String method = obj.getString("method");
 					String id = obj.getString("objectId");
 					JSONArray args = obj.getJSONArray("args");
-
+					
 					ArrayList<Object> arguments = new ArrayList<Object>();
 					@SuppressWarnings("rawtypes")
 					ArrayList<Class> types = new ArrayList<Class>();
 
-					// Get all arguments types and values
-					int l = args.length();
-					int cpt = 0;
-					JSONObject JSONObj;
-					String value, type;
-					while (cpt < l) {
-						JSONObj = args.getJSONObject(cpt);
-						value = JSONObj.getString("value");
-						type = JSONObj.getString("type");
-						addArguments(type, value, arguments, types);
-						cpt++;
-					}
-					
+					loadArguments(args, arguments, types);
+
 					String callId = null;
 					if(obj.has("callId")) {
 						callId = obj.getString("callId");
@@ -111,15 +105,11 @@ public class RouterCommandListener implements CommandListener {
 					} else {
 						logger.debug("no return method call");
 					}
-					executorService.execute(router.executeCommand(clientId, id, method, arguments, types, callId));
 					
-
+					executorService.execute(router.executeCommand(clientId, id, method, arguments, types, callId));
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
-				} catch (ClassNotFoundException e) {
-					logger.debug("The argument type is unknown from \"java/lang\" package: "
-							+ e.getMessage());
-				}
+				} 
 
 				break;
 
@@ -149,12 +139,68 @@ public class RouterCommandListener implements CommandListener {
 				break;
 
 			default:
-				logger.debug("Not corresponding target type");
+				logger.debug("AppsGate main level message");
+				try {
+					String method = obj.getString("method");
+					JSONArray args = obj.getJSONArray("args");
+				
+					ArrayList<Object> arguments = new ArrayList<Object>();
+					@SuppressWarnings("rawtypes")
+					ArrayList<Class> types = new ArrayList<Class>();
+
+					loadArguments(args, arguments, types);
+				
+					String callId = null;
+					if(obj.has("callId")) {
+						callId = obj.getString("callId");
+						logger.debug("method with return, call");
+					} else {
+						logger.debug("no return method call");
+					}
+					executorService.execute(router.executeCommand(clientId, "main", method, arguments, types, callId));
+				} catch (IllegalArgumentException e) {
+					logger.debug("Inappropriate argument: " + e.getMessage());
+				} 
+
 				break;
 			}
 
 		} catch (JSONException e1) {
 			e1.printStackTrace();
+		}
+		
+	}
+
+	/**
+	 * Load argument describe in a JSONArray with their value and java type to two 
+	 * ArrayList one for values and the other for types
+	 * @param args the arguments JSONArray
+	 * @param arguments the value ArrayList
+	 * @param types the java types ArrayList
+	 */
+	@SuppressWarnings("rawtypes")
+	public void loadArguments(JSONArray args, ArrayList<Object> arguments,
+			ArrayList<Class> types) {
+		
+		try {
+			// Get all arguments types and values
+			int l = args.length();
+			int cpt = 0;
+			JSONObject JSONObj;
+			String value, type;
+		
+			while (cpt < l) {
+				JSONObj = args.getJSONObject(cpt);
+				value = JSONObj.getString("value");
+				type = JSONObj.getString("type");
+				addArguments(type, value, arguments, types);
+				cpt++;
+			}
+		}catch (ClassNotFoundException e) {
+			logger.debug("The argument type is unknown from \"java/lang\" package: "
+					+ e.getMessage());
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -187,10 +233,16 @@ public class RouterCommandListener implements CommandListener {
 					// Java wrapper for basic type
 					logger.debug("Wrapper type detected");
 					@SuppressWarnings("rawtypes")
-					Class argClass = Class.forName("java.lang." + type);
+					Class argClass;
+					if(type.contains("JSON")) {
+						argClass = Class.forName("org.json." + type);
+					} else {
+						argClass = Class.forName("java.lang." + type);
+					}
 					Object param = argClass.getConstructor(String.class).newInstance(value);
 					arguments.add(param);
 					types.add(param.getClass());
+					
 				}else {
 					//Java primitive type
 					logger.debug("Full primitive type detected");

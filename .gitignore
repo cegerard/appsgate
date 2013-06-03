@@ -12,3 +12,7 @@ sources/meteo/.project
 sources/mail/.classpath
 
 sources/mail/.project
+
+*.class
+
+*obr.xml

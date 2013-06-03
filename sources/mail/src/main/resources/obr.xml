@@ -25,6 +25,7 @@
       <p n='component-type' v='instance' />
       <p n='inst-name' v='GmailImpl-0' />
       <p n='impl-name' v='GmailImpl' />
+      <p n='auto-refresh' v='5000' />
       <p n='user' v='smarthome.inria@gmail.com' />
       <p n='password' v='smarthome2012' />
       <p n='version' t='version' v='0.0.1.SNAPSHOT' />

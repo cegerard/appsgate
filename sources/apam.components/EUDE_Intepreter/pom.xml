@@ -43,7 +43,12 @@
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>AbstractObjectSpec</artifactId>
+			<artifactId>ContextFollowerSpec</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>RouterApAMSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>

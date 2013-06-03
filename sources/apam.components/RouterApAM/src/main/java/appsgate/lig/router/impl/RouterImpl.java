@@ -14,12 +14,14 @@ import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.communication.service.subscribe.AddListenerService;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.location.spec.PlaceManagerSpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
+import appsgate.lig.router.spec.RouterApAMSpec;
 import fr.imag.adele.apam.Instance;
 
 /**
- * This class is is use to address with generic means all the devices and services recruited through
+ * This class is use to address with generic means all the devices and services recruited through
  * ApAM middleware.
  * 
  * @author Cédric Gérard
@@ -27,12 +29,14 @@ import fr.imag.adele.apam.Instance;
  * @version 1.0.0
  *
  */
-public class RouterImpl {
+public class RouterImpl implements RouterApAMSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+	
+	private RouterCommandListener commandListener;
 
 	/**
 	 * Undefined sensors list, resolved by ApAM
@@ -53,14 +57,19 @@ public class RouterImpl {
 	 * The place manager ApAM component to handle the object location
 	 */
 	private PlaceManagerSpec locationManager;
+	
+	/**
+	 * The main AppsGate component to call for every request
+	 */
+	private AppsGateSpec appsgate;
 
 	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
 		logger.debug("The router ApAM component has been initialized");
-
-		if (addListenerService.addCommandListener(new RouterCommandListener(this))) {
+		commandListener = new RouterCommandListener(this);
+		if (addListenerService.addCommandListener(commandListener)) {
 			logger.info("Listeners services dependency resolved.");
 		} else {
 			logger.info("Listeners services dependency resolution failed.");
@@ -85,11 +94,7 @@ public class RouterImpl {
 		
 		//notify that a new object appeared
 		AbstractObjectSpec newObj = (AbstractObjectSpec)inst.getServiceObject();
-		try {
-			sendToClientService.send("newDevice", newObj.getDescription());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
 	}
 
 	/**
@@ -136,14 +141,44 @@ public class RouterImpl {
 	 * @param objectId abstract object identifier
 	 * @param methodName method to call on objectId
 	 * @param args arguments list form method methodName
+	 * @param paramType argument type list 
 	 * @param callId the remote call identifier
 	 */
 	@SuppressWarnings("rawtypes")
 	public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
-			Object obj = getObjectRefFromID(objectId);
-			return new GenericCommand(args, paramType, obj, methodName, callId, clientId, sendToClientService);
+		Object obj;	
+		if(objectId.contentEquals("main")) {
+			logger.info("retreive AppsGate reference: "+appsgate.toString());
+			obj = appsgate;
+		}else {
+			obj = getObjectRefFromID(objectId);
+		}
+		return new GenericCommand(args, paramType, obj, methodName, callId, clientId, sendToClientService);
 	}
-
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Runnable executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
+			Object obj;
+			if(objectId.contentEquals("main")) {
+				logger.info("retreive AppsGate reference: "+appsgate.toString());
+				obj = appsgate;
+			}else {
+				obj = getObjectRefFromID(objectId);
+			}
+			return new GenericCommand(args, paramType, obj, methodName);
+	}
+	
+	@Override
+	public Runnable executeCommand(String objectId, String methodName, JSONArray args) {
+		ArrayList<Object> arguments    = new ArrayList<Object>();
+		@SuppressWarnings("rawtypes")
+		ArrayList<Class> argumentsType = new ArrayList<Class>();
+		
+		commandListener.loadArguments(args, arguments, argumentsType);
+		
+		return executeCommand(objectId, methodName, arguments, argumentsType);
+	}
 	
 	/**
 	 * Called by ApAM when Notification message comes
@@ -173,11 +208,7 @@ public class RouterImpl {
 			
 			while (devices.hasNext()) {
 				adev = devices.next();
-				try {
-					jsonDeviceList.put(adev.getDescription());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				jsonDeviceList.put(getObjectDescription(adev, ""));
 			}
 			sendToClientService.send(clientId, "listDevices", jsonDeviceList);
 		}else{
@@ -230,4 +261,25 @@ public class RouterImpl {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * This method get the auto description of an object and add
+	 * the contextual information associate to this object for a specified user
+	 * @param obj the object from which to get the description
+	 * @param user the user from who to get the context
+	 * @return the complete contextual description of an object
+	 */
+	private JSONObject getObjectDescription(AbstractObjectSpec obj, String user) {
+		JSONObject JSONDescription = null;
+		try {
+			//Get object auto description
+			JSONDescription = obj.getDescription();
+			//Add context description for this abject
+			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return JSONDescription;
+	}
+	
 }

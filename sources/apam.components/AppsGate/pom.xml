@@ -48,8 +48,23 @@
 			<version>2.1.0</version> <!-- WARNING: use local repository you need to export it into your own -->
 		</dependency>
 		<dependency>
+			<groupId>org.glassfish.grizzly.osgi</groupId>
+			<artifactId>grizzly-httpservice-bundle</artifactId>
+			<version>2.2.8</version>
+		</dependency>
+		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>RouterApAM</artifactId>
+			<artifactId>RouterApAMSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>DeviceNameTableSpec</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>AppsGateSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
@@ -65,7 +80,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Private-Package>
-							appsgate.lig
+							appsgate.lig.main.impl
 						</Private-Package>
 						<Export-Package>
 							org.cybergarage.*
@@ -78,7 +93,10 @@
 							org.xmlpull.v1,
 							!org.apache.xerces.parsers,
 							org.slf4j,
-							org.osgi.service.http
+							org.osgi.service.http,
+							appsgate.lig.main.spec,
+							appsgate.lig.context.device.name.table.spec,
+							appsgate.lig.router.spec
 						</Import-Package>
 					</instructions>
 				</configuration>

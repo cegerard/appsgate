@@ -215,7 +215,7 @@ public class <xsl:value-of select="$classname"/>ProxyImpl implements AbstractObj
 <xsl:template match="serviceStateTable/stateVariable" mode="getterdefinition">
 	<xsl:variable name="addStateVariable" 	select="java:UPnPStateVariableTable.add(./name,./dataType)"/>
 	<xsl:variable name="stateVariableType" 	select="java:UPnPStateVariableTable.getInputJavaType(./name)"/>
-	<xsl:variable name="stateVariableName" 	select="java:GenerationUtility.capitalize(./name)"/>
+	<xsl:variable name="stateVariableCapitalizedName" 	select="java:GenerationUtility.capitalize(./name)"/>
 	<xsl:variable name="stateVariableField" select="java:GenerationUtility.variabilize(./name)"/>
 	<xsl:choose>
 	<xsl:when test="self::node()[starts-with(name,'A_ARG')]"></xsl:when>
@@ -224,7 +224,7 @@ public class <xsl:value-of select="$classname"/>ProxyImpl implements AbstractObj
 	private <xsl:value-of select="$stateVariableType"/><xsl:text> </xsl:text><xsl:value-of select="$stateVariableField"/>;
 	
 	@Override
-	public <xsl:value-of select="$stateVariableType"/> get<xsl:value-of select="$stateVariableName"/>() {
+	public <xsl:value-of select="$stateVariableType"/> get<xsl:value-of select="$stateVariableCapitalizedName"/>() {
 		return <xsl:value-of select="$stateVariableField"/>;
 	}
 	
@@ -234,20 +234,20 @@ public class <xsl:value-of select="$classname"/>ProxyImpl implements AbstractObj
 	
 <xsl:template match="serviceStateTable/stateVariable" mode="description">
 	<xsl:variable name="stateVariableType" 	select="java:UPnPStateVariableTable.getClassName(./name)"/>
-	<xsl:variable name="stateVariableName" 	select="java:GenerationUtility.capitalize(./name)"/>
+	<xsl:variable name="stateVariableCapitalizedName" 	select="java:GenerationUtility.capitalize(./name)"/>
 	<xsl:variable name="stateVariableField" select="java:GenerationUtility.variabilize(./name)"/>
 	<xsl:choose>
 	<xsl:when test="self::node()[starts-with(name,'A_ARG')]"></xsl:when>
 	<xsl:when test="self::node()[sendEventsAttribute='no']"></xsl:when>
 	<xsl:otherwise>
-		description.put("<xsl:value-of select="$stateVariableField"/>", get<xsl:value-of select="$stateVariableName"/>());
+		description.put("<xsl:value-of select="$stateVariableField"/>", get<xsl:value-of select="$stateVariableCapitalizedName"/>());
 	</xsl:otherwise>	
 	</xsl:choose>	
 </xsl:template>
 
 <xsl:template match="serviceStateTable/stateVariable" mode="update">
 	<xsl:variable name="stateVariableType" 	select="java:UPnPStateVariableTable.getClassName(./name)"/>
-	<xsl:variable name="stateVariableName" 	select="java:GenerationUtility.capitalize(./name)"/>
+	<xsl:variable name="stateVariableName" 	select="./name"/>
 	<xsl:variable name="stateVariableField" select="java:GenerationUtility.variabilize(./name)"/>
 	<xsl:choose>
 	<xsl:when test="self::node()[starts-with(name,'A_ARG')]"></xsl:when>

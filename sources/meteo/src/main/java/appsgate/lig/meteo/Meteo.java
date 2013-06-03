@@ -13,6 +13,8 @@ public interface Meteo {
 	
 	String getLocation();
 	
+	Integer getCurrentTemperature();
+	
 	Calendar getDatePublication();
 	
 	Calendar getLastFetch();

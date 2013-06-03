@@ -41,7 +41,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	private String actuatorId;
 	private String actuatorType;
 	
-	private String userName;
 	private String locationId;
 	private String pictureId;
 	private String userType;
@@ -139,6 +138,21 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		}
 		return alert;
 	}
+	
+	public long getTransitionTime() {
+		long transistion = -1;
+		JSONObject jsonResponse = getLightStatus();
+		if(jsonResponse != null) {
+			JSONObject state;
+			try {
+				state = jsonResponse.getJSONObject("state");
+				transistion = state.getLong("transitiontime");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return transistion;
+	}
 
 	@Override
 	public boolean getCurrentState() {
@@ -210,6 +224,10 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	public boolean setAlert(String alert) {
 		return PhilipsBridge.setAttribute(lightBridgeId, "alert", alert);
 	}
+	
+	public boolean setTransitionTime(long transition) {
+		return PhilipsBridge.setAttribute(lightBridgeId, "transitiontime", transition);
+	}
 
 	@Override
 	public boolean setRed() {
@@ -266,12 +284,7 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	
 	@Override
 	public String getAbstractObjectId() {
-		return actuatorType;
-	}
-
-	@Override
-	public String getUserObjectName() {
-		return userName;
+		return actuatorId;
 	}
 
 	@Override
@@ -299,7 +312,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	
 		JSONObject descr = new JSONObject();
 		descr.put("id", actuatorId);
-		descr.put("name", userName);
 		descr.put("type", userType); // 7 for color light
 		descr.put("locationId", locationId);
 		descr.put("status", status);
@@ -307,12 +319,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		descr.put("color", getLightColor());
 		
 		return descr;
-	}
-
-	@Override
-	public void setUserObjectName(String userName) {
-		this.userName = userName;
-		notifyChanges("name", userName);
 	}
 
 	@Override
@@ -326,13 +332,21 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		notifyChanges("pictureId", pictureId);
 	}
 	
+	public String getActuatorType() {
+		return actuatorType;
+	}
+
+	public void setActuatorType(String actuatorType) {
+		this.actuatorType = actuatorType;
+	}
+
 	/**
 	 * Called by ApAM when the status value changed
 	 * @param newStatus the new status value.
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {
-		logger.info("The actuator, "+ actuatorId+" / "+ userName +" status changed to "+newStatus);
+		logger.info("The actuator, "+ actuatorId+" status changed to "+newStatus);
 		notifyChanges("status", newStatus);
 	}
 	

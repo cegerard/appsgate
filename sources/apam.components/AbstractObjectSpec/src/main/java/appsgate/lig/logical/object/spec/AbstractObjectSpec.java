@@ -23,14 +23,6 @@ public interface AbstractObjectSpec {
 	public String getAbstractObjectId();
 	
 	/**
-	 * This method allow caller to get the name set by the user,
-	 * whatever the object type.
-	 * 
-	 * @return the current user name
-	 */
-	public String getUserObjectName();
-	
-	/**
 	 * This method allow the caller to get the location id of
 	 * the current place where it was installed.
 	 * 
@@ -73,13 +65,6 @@ public interface AbstractObjectSpec {
 	 * @return the description as an JSONObject
 	 */
 	public JSONObject getDescription() throws JSONException;
-	
-	/**
-	 * Change the current user name
-	 * 
-	 * @param userName the new user name
-	 */
-	public void setUserObjectName(String userName);
 	
 	/**
 	 * Change the current location for this object

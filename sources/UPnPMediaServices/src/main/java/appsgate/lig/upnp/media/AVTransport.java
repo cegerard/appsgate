@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 3-June-2013 12:55 PM by ${author}
+// this file was generated at 3-June-2013 01:38 PM by ${author}
 package appsgate.lig.upnp.media;
 
 import org.apache.felix.upnp.devicegen.holder.*;

@@ -8,6 +8,8 @@
       <p n='name' v='AppsGateRouterImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='AppsGateRouterImpl' />
+      <p n='provide-interfaces' v='appsgate.lig.router.spec.RouterApAMSpec' />
+      <p n='provide-specification' v='AppsGateRouterSpec' />
       <p n='singleton' v='true' />
       <p n='version' t='version' v='1.0.0' />
    </capability>
@@ -19,4 +21,5 @@
       <p n='singleton' v='true' />
       <p n='version' t='version' v='1.0.0' />
    </capability>
+   <require name='apam-component' filter='(name=AppsGateRouterSpec)' extend='false' multiple='false' optional='false'> specification dependency toward AppsGateRouterSpec</require>
 </obr> 

@@ -44,11 +44,6 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 	private String isOn;
 
 	/**
-	 * The name set by the end user
-	 */
-	private String userName;
-
-	/**
 	 * The location where the sensor is installed
 	 */
 	private String locationId;
@@ -112,11 +107,6 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 	}
 
 	@Override
-	public String getUserObjectName() {
-		return userName;
-	}
-
-	@Override
 	public int getLocationId() {
 		return Integer.valueOf(locationId);
 	}
@@ -141,7 +131,6 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 		JSONObject descr = new JSONObject();
 		
 		descr.put("id", actuatorId);
-		descr.put("name", userName);
 		descr.put("type", userType); //6 for On_Off device
 		descr.put("locationId", locationId);
 		descr.put("status", status);
@@ -149,13 +138,7 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 		
 		return descr;
 	}
-
-	@Override
-	public void setUserObjectName(String userName) {
-		this.userName = userName;
-		notifyChanges("name", userName);
-	}
-
+	
 	@Override
 	public void setLocationId(int locationId) {
 		this.locationId = String.valueOf(locationId) ;
@@ -199,7 +182,7 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 	 * its a string the represent a integer value for the status code.
 	 */
 	public void statusChanged(String newStatus) {
-		logger.info("The sensor, "+ actuatorId+" / "+ userName +" status changed to "+newStatus);
+		logger.info("The sensor, "+ actuatorId+" status changed to "+newStatus);
 		notifyChanges("status", newStatus);
 	}
 	

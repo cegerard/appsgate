@@ -3,10 +3,11 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="AppsGateRouterImpl" classname="appsgate.lig.router.impl.RouterImpl" singleton="true">
+	<implementation name="AppsGateRouterImpl" classname="appsgate.lig.router.impl.RouterImpl" specification="AppsGateRouterSpec"  singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<dependency field="abstractDevice"  added="addAbstractObject" removed="removedAbstractObject"/>
 		<dependency field="locationManager"/>
+		<dependency field="appsgate"/>
 		<dependency push="gotNotification" multiple="true"/>
 		<ipojo:requires field="addListenerService"/>
 		<ipojo:requires field="sendToClientService"/>
