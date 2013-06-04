@@ -1,0 +1,25 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="CoreVirtualTemperatureSensorImpl"
+		classname="appsgate.lig.core.virtual.temperature.sensor.impl.CoreVirtualTemperatureSensorImpl" specification="TemperatureSensorSpec" push="notifyChanges">
+		<callback onInit="newInst" onRemove="deleteInst" />
+			
+		<!-- device kernel meta data -->
+		<definition name="deviceName" 		  type="string" value="VirtualTemperatureSensor" field="sensorName"/>
+		<definition name="deviceId" 		  type="string" value="000000"		   			 field="sensorId"/>
+		
+		<!-- device client meta data -->
+		<definition name="locationId" 		  type="string" value="-1" 			   			 field="locationId"/>
+		<definition name="pictureId" 		  type="string" value="" 			   			 field="pictureId"/>
+		<definition name="userType" 		  type="string" value="99" 			   			 field="userType"/>
+		<definition name="status" 			  type="string"		 				   			 field="status"				method="statusChanged"/>
+		
+		<!-- device specific meta data -->
+		<definition name="currentTemperature" type="string" 			 		   			 field="currentTemperature" method="currentTemperatureChanged"/>
+		
+	</implementation>
+
+</apam>

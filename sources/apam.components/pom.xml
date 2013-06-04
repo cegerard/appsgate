@@ -172,6 +172,7 @@
     <module>ColorLightBulbSpec</module>
     <module>RouterApAMSpec</module>
     <module>AppsGateSpec</module>
+    <module>CoreVirtualTempSensorImpl</module>
   </modules>
 
 </project>
