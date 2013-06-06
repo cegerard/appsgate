@@ -12,7 +12,7 @@
 		<definition name="deviceName" type="string" value="Unknown" field="sensorName"/>
 		<definition name="deviceId" type="string" value="000000" field="sensorId"/>
 		<definition name="deviceType" type="string" value="Sensor_DEVICE" field="sensoreType"/>
-		<definition name="pictureId" type="string" value="" field="pictureId"/>
+		<definition name="pictureId" type="string" field="pictureId"/>
 		<definition name="userType" type="string" value="undefined" field="userType"/>
 		<definition name="status" type="string" value="1" field="status" method="statusChanged"/>
 	</implementation>

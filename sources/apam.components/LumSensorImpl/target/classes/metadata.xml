@@ -13,7 +13,7 @@
 		<definition name="deviceId" 		   type="string" value="000000" 		field="sensorId"/>
 		<definition name="deviceType" 		   type="string" value="EnOcean_DEVICE" field="sensoreType"/>
 		<definition name="locationId" 		   type="string" value="-1"				field="locationId"/>
-		<definition name="pictureId" 		   type="string" value=""				field="pictureId"/>
+		<definition name="pictureId" 		   type="string"						field="pictureId"/>
 		<definition name="userType" 		   type="string" value="1" 				field="userType"/>
 		<definition name="status" 			   type="string" value="2" 				field="status" 				method="statusChanged"/>
 		<definition name="isPaired" 		   type="string" value="false" 			field="isPaired" 			method="isPairedChanged"/>

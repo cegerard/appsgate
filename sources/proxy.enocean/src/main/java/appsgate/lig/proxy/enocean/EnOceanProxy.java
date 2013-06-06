@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -327,7 +328,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		while(it.hasNext()) {
 			pei = it.next();
 			apamInst = sidToInstanceName.get(pei.getUID());
-			//logger.debug(apamInst.getAllProperties().keySet().toString());
+			logger.debug(apamInst.getAllProperties().keySet().toString());
 			allJSONItem.put(pei.getUID());
 		}
 		
@@ -525,12 +526,13 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 			String capabilitie = addItEvent.getCapabilities()[0];
 			ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
 			properties.put("isPaired", "false");
-			try {
-				org.json.JSONObject obj = addItEvent.getUserProperties();
-				properties.put("userName", obj.getString("CustomName"));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				org.json.JSONObject obj = addItEvent.getUserProperties();
+//				properties.put("userName", obj.getString("CustomName"));
+			//TODO add the name set by the user to the device name table
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
 		}
 		
 		impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
@@ -539,6 +541,13 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		properties.put("deviceId", addItEvent.getSourceItemUID());
 		properties.put("deviceType", ep.name());
 		
+		Set<String> keys = properties.keySet();
+		Iterator<String> it = keys.iterator();
+		while(it.hasNext()) {
+			String st = it.next();
+			System.out.println("prop: <"+st+", "+properties.get(st)+">");
+		}
+		
 		Instance createInstance = impl.createInstance(null, properties);
 		sidToInstanceName.put(addItEvent.getSourceItemUID(), createInstance);
 		
@@ -546,7 +555,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		JSONObject jsonObj = new JSONObject();
 		try {
 			jsonObj.put("id", addItEvent.getSourceItemUID());
-			jsonObj.put("name", properties.get("userName"));
+			//jsonObj.put("name", properties.get("userName"));
 			jsonObj.put("type", addItEvent.getItemType().name());
 			jsonObj.put("deviceType", ep.name());
 			jsonObj.put("paired", properties.get("isPaired"));
