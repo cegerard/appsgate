@@ -8,7 +8,7 @@
       <p n='name' v='KeyCardSensorImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='KeyCardSensorImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.keycard.sensor.spec.KeyCardSensorSpec,appsgate.lig.logical.object.spec.AbstractObjectSpec' />
+      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.keycard.sensor.spec.KeyCardSensorSpec' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='KeyCardSensorSpec' />
       <p n='definition-deviceName' t='string' v='Unknown' />
