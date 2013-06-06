@@ -1,0 +1,26 @@
+Mandatory dependencies for AppsGate component (UPnP Cyberlink)
+	- kxml-2.3.0.kf3.jar
+	
+-----------------------
+
+Mandatory dependencies for coreICalImpl
+	- ical4j-2.0-beta1-20130509.132603-57.jar
+
+Mandatory dependencies for GoogleAdapter
+	- ical4j-2.0-beta1-20130509.132603-57.jar
+	- com.google.gdata-calendar-1.41.5.w1.jar
+	
+Mandatory dependencies for ical4j bundle
+	- commons-lang3-3.1.jar
+	- commons-logging-1.1.2.jar
+	
+Mandatory dependencies for om.google.gdata-calendar-1.41.5.w1.jar
+	- guava-sogi-10.0.1.jar
+	
+-----------------------
+	
+Mandatory dependencies for UPnPMediaService
+	- org.apache.felix.upnp.devicegen.util-0.1.0.jar
+	
+Mandatory dependencies for UPnPApAMDiscovery
+	- org.apache.felix.upnp.basedriver-0.8.0.jar
