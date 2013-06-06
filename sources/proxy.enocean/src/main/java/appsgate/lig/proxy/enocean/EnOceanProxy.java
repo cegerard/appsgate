@@ -327,7 +327,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		while(it.hasNext()) {
 			pei = it.next();
 			apamInst = sidToInstanceName.get(pei.getUID());
-			logger.debug(apamInst.getAllProperties().keySet().toString());
+			//logger.debug(apamInst.getAllProperties().keySet().toString());
 			allJSONItem.put(pei.getUID());
 		}
 		

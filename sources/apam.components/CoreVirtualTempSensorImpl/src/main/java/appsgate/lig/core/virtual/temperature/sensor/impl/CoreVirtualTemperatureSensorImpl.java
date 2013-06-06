@@ -34,6 +34,11 @@ public class CoreVirtualTemperatureSensorImpl implements AbstractObjectSpec,
 	private String currentTemperature;
 
 	/**
+	 * The temperature notification rate
+	 */
+	private String notifRate;
+	
+	/**
 	 * The location where the sensor is installed
 	 */
 	private String locationId;
@@ -164,6 +169,12 @@ public class CoreVirtualTemperatureSensorImpl implements AbstractObjectSpec,
 	public void statusChanged(String newStatus) {
 		logger.info("The sensor, "+ sensorId+" status changed to "+newStatus);
 		notifyChanges("status", newStatus);
+	}
+	
+	public void rateChanged (String newRate) {
+		logger.info("The sensor, "+ sensorId+" notification rate changed to "+newRate);
+		//TODO rescheduler l'envoi de notifs
+		notifyChanges("notifRate", newRate);
 	}
 
 	/**

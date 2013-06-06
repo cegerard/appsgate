@@ -19,6 +19,7 @@
 		
 		<!-- device specific meta data -->
 		<definition name="currentTemperature" type="string" 			 		   			 field="currentTemperature" method="currentTemperatureChanged"/>
+		<definition name="notifRate" 		  type="string"		 				   			 field="notifRate"			method="rateChanged"/>
 		
 	</implementation>
 
