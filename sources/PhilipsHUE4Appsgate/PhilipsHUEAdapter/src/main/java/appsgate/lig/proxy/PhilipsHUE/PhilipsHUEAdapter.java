@@ -42,7 +42,7 @@ import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 	private static String ApAMIMPL = "PhilipsHUEImpl";
-	
+
 	private PhilipsBridgeUPnPFinder bridgeFinder;
 	private String currentUserName = "AppsGateUJF";
 
@@ -61,7 +61,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		bridgeFinder.start();
 		logger.debug("Philips finder started");
 		logger.debug("PhilipsHUE IP: " + bridgeFinder.getBridgeIp());
-		
+
 		JSONArray lightsArray = getLightList();
 		int size = lightsArray.length();
 		int i = 0;
@@ -73,15 +73,15 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				properties.put("deviceName", 	light.getString("name"));
 				properties.put("deviceId", 		String.valueOf(bridgeFinder.getBridgeIp()+"-"+light.getString("lightId")));
 				properties.put("lightBridgeId", light.getString("lightId"));
-				
+
 				/*Instance createInstance = */impl.createInstance(null, properties);
-				
+
 				i++;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		//String body = new String("{\"hue\": 23000,\"on\": true,\"bri\": 10}");
 		//setAttribute("2", "on", true);
 		//setAttribute("2", "hue", 45600);
@@ -110,7 +110,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			server.setDoInput(true);
 			server.setRequestMethod("GET");
 			server.connect();
-			
+
 			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
 			String line = response.readLine();
 			String BridgeResponse = "";
@@ -119,9 +119,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				line = response.readLine();
 			}
 			response.close();
-			
+
 			JSONObject temp_response = new JSONObject(BridgeResponse);
-			
+
 			@SuppressWarnings("unchecked")
 			Iterator<String> it = temp_response.keys();
 			while(it.hasNext()) {
@@ -130,9 +130,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				lightObj.put("lightId", lightID);
 				jsonResponse.put(lightObj);
 			}
-	
+
 			logger.debug(jsonResponse.toString());
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -152,7 +152,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			server.setDoInput(true);
 			server.setRequestMethod("GET");
 			server.connect();
-			
+
 			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
 			String line = response.readLine();
 			String BridgeResponse = "";
@@ -161,7 +161,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				line = response.readLine();
 			}
 			response.close();
-			
+
 			JSONObject temp_response = new JSONObject(BridgeResponse);
 			@SuppressWarnings("unchecked")
 			Iterator<String> it = temp_response.keys();
@@ -173,9 +173,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				}
 				jsonResponse.put(lightObj);
 			}
-	
+
 			logger.debug(jsonResponse.toString());
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -194,7 +194,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			server.setDoInput(true);
 			server.setRequestMethod("POST");
 			server.connect();
-			
+
 			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
 			String line = response.readLine();
 			String BridgeResponse = "";
@@ -203,7 +203,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				line = response.readLine();
 			}
 			response.close();
-			
+
 			return isSuccess(BridgeResponse);
 
 		} catch (MalformedURLException e) {
@@ -213,7 +213,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 
@@ -227,7 +227,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			server.setDoInput(true);
 			server.setRequestMethod("GET");
 			server.connect();
-			
+
 			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
 			String line = response.readLine();
 			String BridgeResponse = "";
@@ -236,10 +236,10 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				line = response.readLine();
 			}
 			response.close();
-			
+
 			jsonResponse = new JSONObject(BridgeResponse);
 			logger.debug(jsonResponse.toString());
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -267,7 +267,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			bw.write(JSONAttribute.toString(), 0, JSONAttribute.toString().length());
 			bw.flush();
 			bw.close();
-			
+
 			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
 			String line = response.readLine();
 			String BridgeResponse = "";
@@ -288,7 +288,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean setAttribute(String id, String attribute, long value) {
 		try {
@@ -306,7 +306,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			bw.write(JSONAttribute.toString(), 0, JSONAttribute.toString().length());
 			bw.flush();
 			bw.close();
-			
+
 			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
 			String line = response.readLine();
 			String BridgeResponse = "";
@@ -327,7 +327,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean setAttribute(String id, String attribute, String value) {
 		try {
@@ -345,7 +345,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			bw.write(JSONAttribute.toString(), 0, JSONAttribute.toString().length());
 			bw.flush();
 			bw.close();
-			
+
 			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
 			String line = response.readLine();
 			String BridgeResponse = "";
@@ -382,7 +382,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			bw.write(JSONAttribute.toString(), 0, JSONAttribute.toString().length());
 			bw.flush();
 			bw.close();
-			
+
 			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
 			String line = response.readLine();
 			String BridgeResponse = "";
@@ -403,7 +403,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Indicate if the request is a success or not.
 	 * @param BridgeResponse the request to check
@@ -413,12 +413,12 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	private boolean isSuccess(String BridgeResponse) throws JSONException {
 		JSONArray temp_response = new JSONArray(BridgeResponse);
 		logger.debug(temp_response.toString());
-		
+
 		if(temp_response.length() > 0) {
 			String success = temp_response.getJSONObject(0).getString("success");
 			return (success != null);
 		}
-		
+
 		return false;
 	}
 

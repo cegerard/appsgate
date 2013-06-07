@@ -16,17 +16,17 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChangeListener {
-	
+
 	private static String PHILIPS_BRIDGE_UPNP_TYPE = "urn:schemas-upnp-org:device:Basic:1";
 	private static String BRIDGE_NAME 			   = "Philips hue";
-	
+
 	private String bridgeIP = "127.0.0.0.1";
-	
+
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory.getLogger(PhilipsBridgeUPnPFinder.class);
-	
+
 	public PhilipsBridgeUPnPFinder() {
 		super();
 		addDeviceChangeListener(this);
@@ -52,7 +52,7 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 			bridgeIP = "127.0.0.0.1";
 		}
 	}
-	
+
 	public String getBridgeIp() {
 		return bridgeIP;
 	}
