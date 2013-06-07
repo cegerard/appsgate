@@ -27,10 +27,6 @@
 		</repository>
 	</repositories>
 
-    <!-- Dependencies Description -->
-	<dependencies>
-	</dependencies>
-
 	<!-- Build Description -->
 	<build>
 		<plugins>

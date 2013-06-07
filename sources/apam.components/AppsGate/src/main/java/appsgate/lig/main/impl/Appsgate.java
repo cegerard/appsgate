@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
-import appsgate.lig.router.spec.RouterApAMSpec;
 
 
 /**
@@ -73,7 +72,7 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener, Qu
 	/**
 	 * Reference on the AppsGate Router to execute command on devices
 	 */
-	private RouterApAMSpec router;
+	//private RouterApAMSpec router;
 
 	/**
 	 * Default constructor for Appsgate java object.

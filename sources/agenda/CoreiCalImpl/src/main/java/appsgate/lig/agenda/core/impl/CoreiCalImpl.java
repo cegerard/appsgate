@@ -365,6 +365,7 @@ public class CoreiCalImpl {
 				fout = new FileOutputStream(agendaName+".ics");
 				CalendarOutputter outputter = new CalendarOutputter();
 				outputter.output(calendar, fout);
+				fout.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
