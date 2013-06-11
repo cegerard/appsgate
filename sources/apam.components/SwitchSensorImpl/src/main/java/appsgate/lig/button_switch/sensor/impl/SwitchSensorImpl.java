@@ -47,6 +47,11 @@ public class SwitchSensorImpl implements SwitchSensorSpec, AbstractObjectSpec {
 	 * the button last status (On=true / Off=false)
 	 */
 	private String buttonStatus;
+	
+	/**
+	 * Attribute use to indicate that the status change
+	 */
+	private boolean switchState;
 
 	/**
 	 * The location where the sensor is installed
@@ -180,22 +185,36 @@ public class SwitchSensorImpl implements SwitchSensorSpec, AbstractObjectSpec {
 		logger.info("New Paired status, "+newPairedState);
 	}
 	
-	/**
-	 * Called by APAM when a new switch is pressed.
-	 * @param newSwitchNumber the new switch number
-	 */
-	public void switchNumberChanged(String newSwitchNumber) {
-		logger.info("New switch value from "+sensorId+"/"+sensorName+", "+newSwitchNumber);
-		notifyChanges("switchNumber", newSwitchNumber);
-	}
+//	/**
+//	 * Called by APAM when a new switch is pressed.
+//	 * @param newSwitchNumber the new switch number
+//	 */
+//	public void switchNumberChanged(String newSwitchNumber) {
+//		logger.info("New switch value from "+sensorId+"/"+sensorName+", "+newSwitchNumber);
+//		notifyChanges("switchNumber", newSwitchNumber);
+//	}
+//	
+//	/**
+//	 *  Called by APAM when a switch status changed.
+//	 * @param status the new status
+//	 */
+//	public void buttonStatusChanged(String status) {
+//		logger.info("New switch value from "+sensorId+"/"+sensorName+", "+status);
+//		notifyChanges("buttonStatus", status);
+//	}
 	
 	/**
-	 *  Called by APAM when a switch status changed.
-	 * @param status the new status
+	 *  Called by APAM when a switch state changed.
+	 * @param justuse to trigger the state change
 	 */
-	public void buttonStatusChanged(String status) {
-		logger.info("New switch value from "+sensorId+"/"+sensorName+", "+status);
-		notifyChanges("buttonStatus", status);
+	public void switchChanged(String status) {
+		if(switchState) {
+			notifyChanges("switchNumber", this.switchNumber);
+			logger.info("New switch value from "+sensorId+"/"+sensorName+", "+this.switchNumber);
+			notifyChanges("buttonStatus", this.buttonStatus);
+			logger.info("New switch value from "+sensorId+"/"+sensorName+", "+this.buttonStatus);
+			switchState = false;
+		}
 	}
 	
 	/**

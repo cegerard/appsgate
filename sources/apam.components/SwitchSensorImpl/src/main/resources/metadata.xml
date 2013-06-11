@@ -24,8 +24,10 @@
 		<definition name="isPaired" 	type="string" value="false" 		 field="isPaired" 	  method="isPairedChanged"/>
 		
 		<!-- device specific meta data -->
-		<definition name="switchNumber" type="string" value="-1" 			 field="switchNumber" method="switchNumberChanged"/>
-		<definition name="buttonStatus" type="string" value="false" 		 field="buttonStatus" method="buttonStatusChanged"/>
+		<definition name="switchState"  type="boolean" value="false" 		 field="switchState"  method="switchChanged"/>
+		
+		<definition name="switchNumber" type="string" value="-1" 			 field="switchNumber"/>
+		<definition name="buttonStatus" type="string" value="false" 		 field="buttonStatus"/>
 		
 	</implementation>
 
