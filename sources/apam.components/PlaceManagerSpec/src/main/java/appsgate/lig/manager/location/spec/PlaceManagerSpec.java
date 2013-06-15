@@ -11,4 +11,5 @@ public interface PlaceManagerSpec {
 	public void moveObject(AbstractObjectSpec obj, String oldPlaceID, String newPlaceID);
 	public void renameLocation(String locationId, String newName);
 	public JSONArray getJSONLocations();
+	public String getCoreObjectLocationId(AbstractObjectSpec obj);
 }

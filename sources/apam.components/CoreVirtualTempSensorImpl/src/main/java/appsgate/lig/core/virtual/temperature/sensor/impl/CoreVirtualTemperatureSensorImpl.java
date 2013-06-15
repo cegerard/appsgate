@@ -37,11 +37,6 @@ public class CoreVirtualTemperatureSensorImpl implements AbstractObjectSpec,
 	 * The temperature notification rate
 	 */
 	private String notifRate;
-	
-	/**
-	 * The location where the sensor is installed
-	 */
-	private String locationId;
 
 	/**
 	 * The type for user of this sensor
@@ -86,11 +81,6 @@ public class CoreVirtualTemperatureSensorImpl implements AbstractObjectSpec,
 	}
 
 	@Override
-	public int getLocationId() {
- 		return Integer.valueOf(locationId);
-	}
-
-	@Override
 	public String getUserType() {
 		return userType;
 	}
@@ -115,16 +105,10 @@ public class CoreVirtualTemperatureSensorImpl implements AbstractObjectSpec,
 		
 		descr.put("id", sensorId);
 		descr.put("type", userType); //99 for virtual temperature sensor
-		descr.put("locationId", locationId);
 		descr.put("status", status);
 		descr.put("value", currentTemperature);
 		
 		return descr;
-	}
-
-	@Override
-	public void setLocationId(int locationId) {
-		this.locationId = String.valueOf(locationId);
 	}
 
 	@Override

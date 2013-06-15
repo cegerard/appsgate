@@ -41,7 +41,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	private String actuatorId;
 	private String actuatorType;
 	
-	private String locationId;
 	private String pictureId;
 	private String userType;
 	
@@ -288,11 +287,6 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	}
 
 	@Override
-	public int getLocationId() {
-		return Integer.valueOf(locationId);
-	}
-
-	@Override
 	public String getUserType() {
 		return userType;
 	}
@@ -313,17 +307,11 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		JSONObject descr = new JSONObject();
 		descr.put("id", actuatorId);
 		descr.put("type", userType); // 7 for color light
-		descr.put("locationId", locationId);
 		descr.put("status", status);
 		descr.put("value", getCurrentState());
 		descr.put("color", getLightColor());
 		
 		return descr;
-	}
-
-	@Override
-	public void setLocationId(int locationId) {
-		this.locationId = String.valueOf(locationId);
 	}
 
 	@Override

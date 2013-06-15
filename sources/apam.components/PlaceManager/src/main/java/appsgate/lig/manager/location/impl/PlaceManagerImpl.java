@@ -103,9 +103,8 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	public synchronized void moveObject(AbstractObjectSpec obj,
 			String oldPlaceID, String newPlaceID) {
 
-		int locId = obj.getLocationId();
 
-		if (locId == -1) {
+		if (Integer.getInteger(oldPlaceID) == -1) {
 			addObject(obj, newPlaceID);
 		} else {
 			SymbolicLocation oldLoc = locationObjectsMap.get(oldPlaceID);
@@ -175,6 +174,32 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	public NotificationMsg notifyChanged (NotificationMsg notif) {
 		logger.debug("Location Notify: "+ notif);
 		return notif;
+	}
+
+	/**
+	 * Get the location identifier of the core object give in parameter.
+	 * @param the object from which get the location
+	 */
+	@Override
+	public String getCoreObjectLocationId(AbstractObjectSpec obj) {
+		Iterator<SymbolicLocation>  it = locationObjectsMap.values().iterator();
+		
+		SymbolicLocation loc = null;
+		boolean found = false;
+		
+		while(it.hasNext() && !found) {
+			
+			loc = it.next();
+			if(loc.isHere(obj)) {
+				found = true;
+			}
+		}
+		
+		if(found) {
+			return loc.getId();
+		} else {
+			return "-1";
+		}
 	}
 
 }

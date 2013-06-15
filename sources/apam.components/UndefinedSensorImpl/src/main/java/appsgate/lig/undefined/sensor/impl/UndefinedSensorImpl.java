@@ -82,11 +82,6 @@ public class UndefinedSensorImpl implements UndefinedSensorSpec, AbstractObjectS
 	}
 
 	@Override
-	public int getLocationId() {
-		return -1;
-	}
-
-	@Override
 	public String getUserType() {
 		return userType;
 	}
@@ -111,11 +106,6 @@ public class UndefinedSensorImpl implements UndefinedSensorSpec, AbstractObjectS
 		descr.put("status", status);
 		
 		return descr;
-	}
-
-	@Override
-	public void setLocationId(int locationId) {
-		;
 	}
 
 	@Override

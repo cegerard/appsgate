@@ -15,7 +15,6 @@
 		<definition name="deviceType" 		  type="string" value="PHILIPS_HUE_LIGHT" field="actuatorType"/>
 		
 		<!-- device client meta data -->
-		<definition name="locationId" 		  type="string" value="-1" 			   field="locationId"/>
 		<definition name="pictureId" 		  type="string"			 			   field="pictureId"/>
 		<definition name="userType" 		  type="string" value="7" 			   field="userType"/>
 		<definition name="status" 			  type="string" value="2" 			   field="status"		method="statusChanged"/>

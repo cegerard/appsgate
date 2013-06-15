@@ -6,6 +6,8 @@ import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 
@@ -19,6 +21,11 @@ import appsgate.lig.logical.object.spec.AbstractObjectSpec;
  *
  */
 public class SymbolicLocation {
+	
+	/**
+	 * class logger member
+	 */
+	private static Logger logger = LoggerFactory.getLogger(SymbolicLocation.class);
 
 	/**
 	 * The place unique identifier
@@ -54,13 +61,19 @@ public class SymbolicLocation {
 		this.name = name;
 	}
 	
+	public boolean isHere(AbstractObjectSpec obj) {
+		return abstractsObjects.contains(obj);
+	}
+	
 	/**
 	 * Add on object to this place
 	 * @param obj the new abstract object
 	 */
 	public void addObject(AbstractObjectSpec obj) {
 		if(abstractsObjects.add(obj)){
-			obj.setLocationId(Integer.valueOf(id));
+			logger.debug("Core device "+obj.getAbstractObjectId()+ " added to "+name+ "/ "+id);
+		} else {
+			logger.error("Error adding "+obj.getAbstractObjectId()+" to "+id);
 		}
 	}
 	
@@ -71,7 +84,9 @@ public class SymbolicLocation {
 	 */
 	public void removeObject(AbstractObjectSpec obj) {
 		if(abstractsObjects.remove(obj)) {
-			obj.setLocationId(-1);
+			logger.debug("Core device "+obj.getAbstractObjectId()+ " remove from "+name+ "/ "+id);
+		} else {
+			logger.error("Error removing "+obj.getAbstractObjectId()+" to "+id);
 		}
 	}
 
@@ -83,8 +98,9 @@ public class SymbolicLocation {
 		AbstractObjectSpec abObj;
 		while(it.hasNext()) {
 			abObj = it.next();
-			abObj.setLocationId(-1);
+			//TODO notify that this object move to -1
 		}
+		abstractsObjects.clear();
 	}
 
 	/**

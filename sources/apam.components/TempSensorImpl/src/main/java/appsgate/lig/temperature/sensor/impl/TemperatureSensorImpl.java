@@ -44,11 +44,6 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	private String currentTemperature;
 
 	/**
-	 * The location where the sensor is installed
-	 */
-	private String locationId;
-
-	/**
 	 * The type for user of this sensor
 	 */
 	private String userType;
@@ -115,12 +110,7 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	public String getSensoreType() {
 		return sensorType;
 	}
-
-	@Override
-	public int getLocationId() {
-		return Integer.valueOf(locationId);
-	}
-
+	
 	@Override
 	public String getUserType() {
 		return userType;
@@ -137,11 +127,6 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 	}
 
 	@Override
-	public void setLocationId(int locationId) {
-		this.locationId = String.valueOf(locationId);
-	}
-
-	@Override
 	public void setPictureId(String pictureId) {
 		this.pictureId = pictureId;
 		notifyChanges("pictureId", pictureId);
@@ -153,7 +138,6 @@ public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObj
 		
 		descr.put("id", sensorId);
 		descr.put("type", userType); //O for temperature sensor
-		descr.put("locationId", locationId);
 		descr.put("status", status);
 		descr.put("value", currentTemperature);
 		

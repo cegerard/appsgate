@@ -44,11 +44,6 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 	private String isOn;
 
 	/**
-	 * The location where the sensor is installed
-	 */
-	private String locationId;
-
-	/**
 	 * The type for user of this sensor
 	 */
 	private String userType;
@@ -107,11 +102,6 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 	}
 
 	@Override
-	public int getLocationId() {
-		return Integer.valueOf(locationId);
-	}
-
-	@Override
 	public String getUserType() {
 		return userType;
 	}
@@ -132,16 +122,10 @@ public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 		
 		descr.put("id", actuatorId);
 		descr.put("type", userType); //6 for On_Off device
-		descr.put("locationId", locationId);
 		descr.put("status", status);
 		descr.put("isOn", isOn);
 		
 		return descr;
-	}
-	
-	@Override
-	public void setLocationId(int locationId) {
-		this.locationId = String.valueOf(locationId) ;
 	}
 
 	@Override

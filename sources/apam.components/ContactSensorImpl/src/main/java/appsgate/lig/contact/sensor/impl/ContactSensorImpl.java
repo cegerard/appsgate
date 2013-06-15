@@ -44,11 +44,6 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 	private String currentStatus;
 
 	/**
-	 * The location where the sensor is installed
-	 */
-	private String locationId;
-
-	/**
 	 * The type for user of this sensor
 	 */
 	private String userType;
@@ -108,11 +103,6 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 	}
 
 	@Override
-	public int getLocationId() {
-		return Integer.valueOf(locationId);
-	}
-
-	@Override
 	public String getUserType() {
 		return userType;
 	}
@@ -128,11 +118,6 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 	}
 
 	@Override
-	public void setLocationId(int locationId) {
-		this.locationId = String.valueOf(locationId);
-	}
-
-	@Override
 	public void setPictureId(String pictureId) {
 		this.pictureId = pictureId;
 		notifyChanges("pictureId",  pictureId);
@@ -144,7 +129,6 @@ public class ContactSensorImpl implements ContactSensorSpec, AbstractObjectSpec 
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
 		descr.put("type", userType); //3 for contact sensor
-		descr.put("locationId", locationId);
 		descr.put("status", status);
 		descr.put("contact", currentStatus);
 		

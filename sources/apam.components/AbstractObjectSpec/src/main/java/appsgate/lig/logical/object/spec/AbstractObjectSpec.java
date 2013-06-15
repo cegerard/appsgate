@@ -21,14 +21,7 @@ public interface AbstractObjectSpec {
 	 * @return the real object identifier
 	 */
 	public String getAbstractObjectId();
-	
-	/**
-	 * This method allow the caller to get the location id of
-	 * the current place where it was installed.
-	 * 
-	 * @return the identifier of the corresponding place
-	 */
-	public int getLocationId();
+
 	
 	/**
 	 * This method allow the caller to get a user friendly 
@@ -65,13 +58,6 @@ public interface AbstractObjectSpec {
 	 * @return the description as an JSONObject
 	 */
 	public JSONObject getDescription() throws JSONException;
-	
-	/**
-	 * Change the current location for this object
-	 * 
-	 * @param locationId the new location identifier
-	 */
-	public void setLocationId(int locationId);
 	
 	/**
 	 * Change the current picture for this device

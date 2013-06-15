@@ -1,42 +1,60 @@
-<apam xmlns="fr.imag.adele.apam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipojo="org.apache.felix.ipojo" xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd">
-<implementation push="stateChanged" specification="AbstractObjectSpec" name="RenderingControlProxyImpl" classname="appsgate.lig.upnp.media.proxy.RenderingControlProxyImpl">
-<callback onInit="initialize"/>
-<property name="UPnP.service.type" type="string" value="urn:schemas-upnp-org:service:RenderingControl:1"/>
-<definition type="string" name="UPnP.device.UDN"/>
-<definition type="string" name="UPnP.service.id"/>
-<ipojo:provides specifications="org.osgi.service.upnp.UPnPEventListener">
-<ipojo:property mandatory="true" type="org.osgi.framework.Filter" field="upnpEventFilter" name="upnp.filter"/>
-</ipojo:provides>
-<ipojo:requires optional="false" field="upnpDevice" id="UPnP.device.UDN"/>
-</implementation>
-<implementation push="stateChanged" specification="AbstractObjectSpec" name="ConnectionManagerProxyImpl" classname="appsgate.lig.upnp.media.proxy.ConnectionManagerProxyImpl">
-<callback onInit="initialize"/>
-<property name="UPnP.service.type" type="string" value="urn:schemas-upnp-org:service:ConnectionManager:1"/>
-<definition type="string" name="UPnP.device.UDN"/>
-<definition type="string" name="UPnP.service.id"/>
-<ipojo:provides specifications="org.osgi.service.upnp.UPnPEventListener">
-<ipojo:property mandatory="true" type="org.osgi.framework.Filter" field="upnpEventFilter" name="upnp.filter"/>
-</ipojo:provides>
-<ipojo:requires optional="false" field="upnpDevice" id="UPnP.device.UDN"/>
-</implementation>
-<implementation push="stateChanged" specification="AbstractObjectSpec" name="AVTransportProxyImpl" classname="appsgate.lig.upnp.media.proxy.AVTransportProxyImpl">
-<callback onInit="initialize"/>
-<property name="UPnP.service.type" type="string" value="urn:schemas-upnp-org:service:AVTransport:1"/>
-<definition type="string" name="UPnP.device.UDN"/>
-<definition type="string" name="UPnP.service.id"/>
-<ipojo:provides specifications="org.osgi.service.upnp.UPnPEventListener">
-<ipojo:property mandatory="true" type="org.osgi.framework.Filter" field="upnpEventFilter" name="upnp.filter"/>
-</ipojo:provides>
-<ipojo:requires optional="false" field="upnpDevice" id="UPnP.device.UDN"/>
-</implementation>
-<implementation push="stateChanged" specification="AbstractObjectSpec" name="ContentDirectoryProxyImpl" classname="appsgate.lig.upnp.media.proxy.ContentDirectoryProxyImpl">
-<callback onInit="initialize"/>
-<property name="UPnP.service.type" type="string" value="urn:schemas-upnp-org:service:ContentDirectory:1"/>
-<definition type="string" name="UPnP.device.UDN"/>
-<definition type="string" name="UPnP.service.id"/>
-<ipojo:provides specifications="org.osgi.service.upnp.UPnPEventListener">
-<ipojo:property mandatory="true" type="org.osgi.framework.Filter" field="upnpEventFilter" name="upnp.filter"/>
-</ipojo:provides>
-<ipojo:requires optional="false" field="upnpDevice" id="UPnP.device.UDN"/>
-</implementation>
+<apam xmlns="fr.imag.adele.apam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ipojo="org.apache.felix.ipojo"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd">
+	<implementation push="stateChanged" specification="AbstractObjectSpec"
+		name="RenderingControlProxyImpl" classname="appsgate.lig.upnp.media.proxy.RenderingControlProxyImpl">
+		<callback onInit="initialize" />
+		<property name="UPnP.service.type" type="string"
+			value="urn:schemas-upnp-org:service:RenderingControl:1" />
+		<definition type="string" name="UPnP.device.UDN" />
+		<definition type="string" name="UPnP.service.id" />
+		<ipojo:provides specifications="org.osgi.service.upnp.UPnPEventListener">
+			<ipojo:property mandatory="true" type="org.osgi.framework.Filter"
+				field="upnpEventFilter" name="upnp.filter" />
+		</ipojo:provides>
+		<ipojo:requires optional="false" field="upnpDevice"
+			id="UPnP.device.UDN" />
+	</implementation>
+	<implementation push="stateChanged" specification="AbstractObjectSpec"
+		name="ConnectionManagerProxyImpl" classname="appsgate.lig.upnp.media.proxy.ConnectionManagerProxyImpl">
+		<callback onInit="initialize" />
+		<property name="UPnP.service.type" type="string"
+			value="urn:schemas-upnp-org:service:ConnectionManager:1" />
+		<definition type="string" name="UPnP.device.UDN" />
+		<definition type="string" name="UPnP.service.id" />
+		<ipojo:provides specifications="org.osgi.service.upnp.UPnPEventListener">
+			<ipojo:property mandatory="true" type="org.osgi.framework.Filter"
+				field="upnpEventFilter" name="upnp.filter" />
+		</ipojo:provides>
+		<ipojo:requires optional="false" field="upnpDevice"
+			id="UPnP.device.UDN" />
+	</implementation>
+	<implementation push="stateChanged" specification="AbstractObjectSpec"
+		name="AVTransportProxyImpl" classname="appsgate.lig.upnp.media.proxy.AVTransportProxyImpl">
+		<callback onInit="initialize" />
+		<property name="UPnP.service.type" type="string"
+			value="urn:schemas-upnp-org:service:AVTransport:1" />
+		<definition type="string" name="UPnP.device.UDN" />
+		<definition type="string" name="UPnP.service.id" />
+		<ipojo:provides specifications="org.osgi.service.upnp.UPnPEventListener">
+			<ipojo:property mandatory="true" type="org.osgi.framework.Filter"
+				field="upnpEventFilter" name="upnp.filter" />
+		</ipojo:provides>
+		<ipojo:requires optional="false" field="upnpDevice"
+			id="UPnP.device.UDN" />
+	</implementation>
+	<implementation push="stateChanged" specification="AbstractObjectSpec"
+		name="ContentDirectoryProxyImpl" classname="appsgate.lig.upnp.media.proxy.ContentDirectoryProxyImpl">
+		<callback onInit="initialize" />
+		<property name="UPnP.service.type" type="string"
+			value="urn:schemas-upnp-org:service:ContentDirectory:1" />
+		<definition type="string" name="UPnP.device.UDN" />
+		<definition type="string" name="UPnP.service.id" />
+		<ipojo:provides specifications="org.osgi.service.upnp.UPnPEventListener">
+			<ipojo:property mandatory="true" type="org.osgi.framework.Filter"
+				field="upnpEventFilter" name="upnp.filter" />
+		</ipojo:provides>
+		<ipojo:requires optional="false" field="upnpDevice"
+			id="UPnP.device.UDN" />
+	</implementation>
 </apam>

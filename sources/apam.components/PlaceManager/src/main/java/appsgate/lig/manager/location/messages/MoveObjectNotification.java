@@ -24,7 +24,7 @@ public class MoveObjectNotification implements NotificationMsg {
 	private AbstractObjectSpec object;
 	
 	/**
-	 * Build a new notification message frome place manager
+	 * Build a new notification message from place manager
 	 * 
 	 * @param oldLocationId
 	 * @param newLocationId

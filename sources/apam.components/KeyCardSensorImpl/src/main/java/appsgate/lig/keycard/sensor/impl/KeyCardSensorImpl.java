@@ -44,11 +44,6 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	private String currentStatus;
 
 	/**
-	 * The location where the sensor is installed
-	 */
-	private String locationId;
-
-	/**
 	 * The type for user of this sensor
 	 */
 	private String userType;
@@ -72,7 +67,6 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 		JSONObject descr = new JSONObject();
 		descr.put("id", sensorId);
 		descr.put("type", userType); //4 for keyCard sensor
-		descr.put("locationId", locationId);
 		descr.put("status", status);
 		descr.put("inserted", currentStatus);
 		
@@ -120,11 +114,6 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	}
 
 	@Override
-	public int getLocationId() {
-		return Integer.valueOf(locationId);
-	}
-
-	@Override
 	public String getUserType() {
 		return userType;
 	}
@@ -137,11 +126,6 @@ public class KeyCardSensorImpl implements KeyCardSensorSpec, AbstractObjectSpec 
 	@Override
 	public String getPictureId() {
 		return pictureId;
-	}
-
-	@Override
-	public void setLocationId(int locationId) {
-		this.locationId = String.valueOf(locationId);
 	}
 
 	@Override
