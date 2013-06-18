@@ -18,7 +18,8 @@ java virtual machine.
 The third one is the java documentation for all components.
 
 The master branch correspond to the current release version of the appsGate projet so it
-has been tested and it is considered as stable version.
+has been tested and it is considered as stable version. It merge the ApAM and IPojo AppsGate
+server.
 
 If you encountered problems, please report bug to any appsgate contributor.  
 
