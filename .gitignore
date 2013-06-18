@@ -14,3 +14,7 @@ deployToAppsGateDistribution.sh
 *obr.xml
 
 *.jar
+
+sources/apam.components/EUDE_InterpreterSpec/target/classes/META-INF/MANIFEST.MF
+
+sources/apam.components/EUDE_InterpreterSpec/target/classes/META-INF/MANIFEST.MF

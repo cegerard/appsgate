@@ -180,7 +180,13 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		}else{
 			logger.info("Listeners services dependency resolution failed.");
 		}
-
+		
+		//Retrieve existing paired sensors from Ubikit and instanciate them.
+		Collection<PhysicalEnvironmentItem> itemList = enoceanBridge.getAllItems();
+		for (PhysicalEnvironmentItem item : itemList) {
+			instanciateItem(item);
+		}
+		
 	}
 
 	/**
@@ -232,12 +238,12 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	}
 
 	/**
-	 * Get the subcribe service form OSGi/iPOJO. This service is optional.
+	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
 	 * 
 	 * @param addListenerService
 	 *            , the subscription service
 	 */
-	@Bind(optional = true)
+	@Bind(optional = false)
 	public void bindSubscriptionService(AddListenerService addListenerService) {
 		this.addListenerService = addListenerService;
 		logger.debug("Communication subscription service dependency resolved");
@@ -249,7 +255,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 * @param addListenerService
 	 *            , the released subscription service
 	 */
-	@Unbind(optional = true)
+	@Unbind(optional = false)
 	public void unbindSubscriptionService(AddListenerService addListenerService) {
 		this.addListenerService = null;
 		logger.debug("Subscription service dependency not available");
@@ -526,13 +532,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 			String capabilitie = addItEvent.getCapabilities()[0];
 			ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
 			properties.put("isPaired", "false");
-//			try {
-//				org.json.JSONObject obj = addItEvent.getUserProperties();
-//				properties.put("userName", obj.getString("CustomName"));
-			//TODO add the name set by the user to the device name table
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
 		}
 		
 		impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
@@ -541,13 +540,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		properties.put("deviceId", addItEvent.getSourceItemUID());
 		properties.put("deviceType", ep.name());
 		
-		Set<String> keys = properties.keySet();
-		Iterator<String> it = keys.iterator();
-		while(it.hasNext()) {
-			String st = it.next();
-			System.out.println("prop: <"+st+", "+properties.get(st)+">");
-		}
-		
 		Instance createInstance = impl.createInstance(null, properties);
 		sidToInstanceName.put(addItEvent.getSourceItemUID(), createInstance);
 		
@@ -555,7 +547,6 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		JSONObject jsonObj = new JSONObject();
 		try {
 			jsonObj.put("id", addItEvent.getSourceItemUID());
-			//jsonObj.put("name", properties.get("userName"));
 			jsonObj.put("type", addItEvent.getItemType().name());
 			jsonObj.put("deviceType", ep.name());
 			jsonObj.put("paired", properties.get("isPaired"));
@@ -623,6 +614,39 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		}
 		
 		eventGate.postEvent(addItEvent);
+	}
+	
+	private void instanciateItem (PhysicalEnvironmentItem item) {
+		EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
+		Implementation impl = null;
+		Map<String, String> properties = new HashMap<String, String>();
+		
+		if(item.getType().equals(Type.SENSOR)) {
+			if (item.getCapabilities().length == 1) {
+				String capabilitie = item.getCapabilities()[0];
+				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);	
+			} else {
+				ArrayList<EnOceanProfiles> profilesList = tempEventCapabilitiesMap.get(item.getUID());
+				//TODO manage for multiple profiles sensors.
+				ep = profilesList.iterator().next();
+				tempEventCapabilitiesMap.remove(item.getUID());
+			}
+			properties.put("isPaired", "true");
+			
+		}else if(item.getType().equals(Type.ACTUATOR)) {
+			String capabilitie = item.getCapabilities()[0];
+			ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
+			properties.put("isPaired", "false");
+		}
+		
+		impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
+		
+		properties.put("deviceName", ep.getUserFriendlyName());
+		properties.put("deviceId", item.getUID());
+		properties.put("deviceType", ep.name());
+		
+		Instance createInstance = impl.createInstance(null, properties);
+		sidToInstanceName.put(item.getUID(), createInstance);
 	}
 
 	/**
