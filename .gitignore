@@ -1,17 +1,13 @@
 
-.DS_Store
+*.DS_Store
 
 deployToAppsGateDistribution.sh
 
-sources/meteo/.classpath
+*.classpath
 
-sources/meteo/.project
+*.project
 
 *.prefs
-
-sources/mail/.classpath
-
-sources/mail/.project
 
 *.class
 
