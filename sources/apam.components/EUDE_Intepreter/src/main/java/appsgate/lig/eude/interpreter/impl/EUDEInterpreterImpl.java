@@ -1,23 +1,23 @@
 package appsgate.lig.eude.interpreter.impl;
 
-import java.util.Vector;
+import java.util.HashMap;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
-import appsgate.lig.router.spec.RouterApAMSpec;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeExpBool;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.router.impl.RouterImpl;
+import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.router.spec.RouterApAMSpec;
 
 /**
  * This class is the interpreter component for end user development environment. 
@@ -27,28 +27,34 @@ import appsgate.lig.router.impl.RouterImpl;
  * @version 1.0.0
  *
  */
-public class EUDEInterpreterImpl implements StartEventListener, EndEventListener {
+public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventListener, EndEventListener {
 	
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory.getLogger(EUDEInterpreterImpl.class);
-	
+
 	private ContextFollowerSpec contextFollower;
 	
 	private coreEventListener listener;
 	
-	private RouterApAMSpec router;
-	
 	/**
-	 * Vector that contains all the existing programs
+	 * HashMap that contains all the existing programs under a JSON format
 	 */
-	private Vector<NodeProgram> listPrograms;
-	
+	private HashMap<String, NodeProgram> mapPrograms;
+	public HashMap<String, JSONObject> getListPrograms() {
+		HashMap <String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
+		for (NodeProgram p : mapPrograms.values()) {
+			mapProgramJSON.put(p.getName(), p.getProgramJSON());
+		}
+		
+		return mapProgramJSON;
+	}
+
 	/**
 	 * Reference to the ApAM router. Used to send action to the objects
 	 */
-	private RouterImpl router;
+	private RouterApAMSpec router;
 	
 	/**
 	 * Initialize the list of the programs
@@ -56,21 +62,69 @@ public class EUDEInterpreterImpl implements StartEventListener, EndEventListener
 	 * @constructor
 	 */
 	public EUDEInterpreterImpl() {
-		listPrograms = new Vector<NodeProgram>();
-		
-		// for the tests - remove on production
-		listPrograms.add(new NodeProgram());
-		
-		// deploy the first program
-		listPrograms.get(0).addEndEventListener(this);
-		listPrograms.get(0).call();
+		mapPrograms = new HashMap<String, NodeProgram>();
 	}
 	
 	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		logger.debug("The interpreter component is initialized");
+		logger.debug("The interpreter component is initialized");;
+		contextFollower.addListener(listener);
+	}
+	
+	/**
+	 * Initialize a program from its JSON representation
+	 * 
+	 * @param programJSON Abstract tree of the program in JSON
+	 * @return true when succeeded, false when failed a JSON error has been detected
+	 */
+	public boolean addProgram(JSONObject programJSON) {
+		NodeProgram p;
+		
+		// initialize a program node from the JSON
+		try {
+			p = new NodeProgram(this, programJSON);
+		} catch (JSONException e) {
+			logger.debug("JSON error detected while loading a program");
+			return false;
+		}
+		
+		mapPrograms.put(p.getName(), p);
+
+		return true;
+	}
+	
+	/**
+	 * Launch the interpretation of a program
+	 * 
+	 * @param programName Name of the program to launch
+	 * @return true if the program has been successfully launched, false otherwise
+	 */
+	public boolean callProgram(String programName) {
+		NodeProgram p = mapPrograms.get(programName);
+		
+		if (p != null) {
+			p.addEndEventListener(this);
+			p.call();
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Execute a method call on the router
+	 * 
+	 * @param objectId
+	 * @param methodName
+	 * @param args
+	 * @param paramType
+	 * @return
+	 */
+	public Runnable executeCommand(String objectId, String methodName, JSONArray args) {
+		return router.executeCommand(objectId, methodName, args);
 	}
 
 	/**
@@ -80,7 +134,6 @@ public class EUDEInterpreterImpl implements StartEventListener, EndEventListener
 		logger.debug("The router interpreter components has been stopped");
 		contextFollower.deleteListener(listener);
 	}
-	
 	
 	public class coreEventListener implements CoreListener {
 		
@@ -141,7 +194,6 @@ public class EUDEInterpreterImpl implements StartEventListener, EndEventListener
 	@Override
 	public void endEventFired(EndEvent e) {
 		NodeProgram p = (NodeProgram)e.getSource();
-		System.out.println(p.getName() + " has ended");
 		p.removeEndEventListener(this);
 	}
 

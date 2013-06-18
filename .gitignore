@@ -12,3 +12,5 @@ deployToAppsGateDistribution.sh
 *.class
 
 *obr.xml
+
+*.jar

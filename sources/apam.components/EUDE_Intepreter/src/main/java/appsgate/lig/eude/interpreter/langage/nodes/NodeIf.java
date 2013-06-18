@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 
@@ -15,12 +16,13 @@ public class NodeIf extends Node {
 	private Node seqRulesTrue;
 	private Node seqRulesFalse;
 	
-	public NodeIf(JSONObject ruleIfJSON) {
-		System.out.println("initializing NodeIf");
+	public NodeIf(EUDEInterpreterImpl interpreter, JSONObject ruleIfJSON) {
+		super(interpreter);
+		
 		try {
-			this.expBool = new NodeExpBool(ruleIfJSON.getString("expBool"));
-			this.seqRulesTrue = new NodeSeqRules(ruleIfJSON.getJSONArray("seqRulesTrue"));
-			this.seqRulesFalse = new NodeSeqRules(ruleIfJSON.getJSONArray("seqRulesFalse"));
+			this.expBool = new NodeExpBool(interpreter, ruleIfJSON.getString("expBool"));
+			this.seqRulesTrue = new NodeSeqRules(interpreter, ruleIfJSON.getJSONArray("seqRulesTrue"));
+			this.seqRulesFalse = new NodeSeqRules(interpreter, ruleIfJSON.getJSONArray("seqRulesFalse"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -31,8 +33,6 @@ public class NodeIf extends Node {
 		 * All the steps of the NodeIf are sequential: 1) expBool 2) trueBranch or falseBranch
 		 */
 		pool = Executors.newSingleThreadExecutor();
-		
-		System.out.println("NodeIf initialized");
 	}
 
 	public void startEventFired(StartEvent e) {
@@ -40,17 +40,19 @@ public class NodeIf extends Node {
 	}
 
 	public void endEventFired(EndEvent e) {
-		System.out.println("NodeIf - EndEvent received!!");
-		
 		Node nodeEnded = (Node)e.getSource();
 		nodeEnded.removeEndEventListener(this);
 		
 		if (nodeEnded == expBool) {
 			if (expBool.getResult()) {
 				seqRulesTrue.addEndEventListener(this);
+				currentNode = seqRulesTrue;
+				
 				pool.submit(seqRulesTrue);
 			} else {
 				seqRulesFalse.addEndEventListener(this);
+				currentNode = seqRulesFalse;
+				
 				pool.submit(seqRulesFalse);
 			}
 		} else {
@@ -60,9 +62,11 @@ public class NodeIf extends Node {
 
 	@Override
 	public Integer call() {
-		System.out.println("deploy NodeIf!");
 		fireStartEvent(new StartEvent(this));
+		
 		expBool.addEndEventListener(this);
+		currentNode = expBool;
+		
 		pool.submit(expBool);
 		
 		return null;

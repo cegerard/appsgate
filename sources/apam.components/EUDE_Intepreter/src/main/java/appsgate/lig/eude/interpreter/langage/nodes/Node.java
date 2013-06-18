@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
@@ -36,6 +37,8 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * Pool to execute the children. Possibly a single thread
 	 */
 	protected ExecutorService pool;
+	
+	protected EUDEInterpreterImpl interpreter;
 
 	/**
 	 * Symbol table of the node containing the local symbols
@@ -46,6 +49,13 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * Node parent in the abstract tree of a program
 	 */
 	protected Node parent;
+	
+	/**
+	 * Default constructor
+	 */
+	public Node(EUDEInterpreterImpl interpreter) {
+		this.interpreter = interpreter;
+	}
 
 	//Abstract Methods
 

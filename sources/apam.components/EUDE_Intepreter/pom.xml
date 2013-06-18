@@ -43,6 +43,11 @@
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>
+			<artifactId>EUDE_InterpreterSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
 			<artifactId>ContextFollowerSpec</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
