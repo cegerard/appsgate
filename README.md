@@ -3,7 +3,7 @@ AppsGate-server
 
 Git repository of the server part for the AppsGate project.
 
-This Git reposiroty is devided in two parts.
+This Git reposiroty is devided in three parts.
 
 The first one named sources contain all the source code for the serveur part of
 the AppsGate project.
@@ -12,11 +12,15 @@ The second part named distribution is the current valid distribution for the ser
 It contain an OSGi felix distribution with all working bundles. Some bundle coming from
 maven repositories others from industrial partners of the Appsgate projet so that impossible
 to provide the source code of those bundles.
-
 By downloading the distribution you can launch the server part of the AppsGate projet on any 
 java virtual machine.
 
+The third one is the java documentation for all components.
 
+The master branch correspond to the current release version of the appsGate projet so it
+has been tested and it is considered as stable version.
+
+If you encountered problems, please report bug to any appsgate contributor.  
 
 
 Code guidelines
