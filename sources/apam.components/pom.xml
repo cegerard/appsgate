@@ -173,6 +173,7 @@
     <module>RouterApAMSpec</module>
     <module>AppsGateSpec</module>
     <module>CoreVirtualTempSensorImpl</module>
+    <module>EUDE_InterpreterSpec</module>
   </modules>
 
 </project>
