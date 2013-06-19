@@ -2,12 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>apam.components</artifactId>
+		<groupId>appsGate.bundle</groupId>
+		<version>1.0.0</version>
+	</parent>
 
-	<groupId>appsgate.app</groupId>
-	<artifactId>appsgate-app-mail</artifactId>
+	<artifactId>EUDEInterpreter</artifactId>
+	<version>1.0.0</version>
 	<packaging>bundle</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Mail OSGi Bundle</name>
+
+	<name>EUDEInterpreter OSGi Bundle</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,13 +20,6 @@
 
 	<!-- Repositories List -->
 	<repositories>
-	    <repository>
-	      <id>Java.net snapshots</id>  
-	      <url>https://maven.java.net/content/repositories/snapshots/</url>
-	      <snapshots>
-		<enabled>true</enabled>
-	      </snapshots>
-	    </repository> 
 		<repository>
 			<id>apam-repo</id>
 			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
@@ -34,20 +32,30 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.6</version>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-core</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
-		    <dependency>
-		      <groupId>com.sun.mail</groupId>
-		      <artifactId>javax.mail</artifactId>
-		      <version>1.4.6-SNAPSHOT</version>
-		    </dependency>
-		    <dependency>
-		      <groupId>com.sun.mail</groupId>
-		      <artifactId>gimap</artifactId>
-		      <version>1.4.6-SNAPSHOT</version>
-		    </dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>EUDEInterpreterSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>ContextFollowerSpec</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>RouterApAMSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->
