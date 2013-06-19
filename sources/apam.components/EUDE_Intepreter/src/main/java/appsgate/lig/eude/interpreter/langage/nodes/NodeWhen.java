@@ -1,14 +1,19 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 
 public class NodeWhen extends Node {
 
+	public NodeWhen(EUDEInterpreterImpl interpreter) {
+		super(interpreter);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void startEventFired(StartEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
