@@ -168,7 +168,8 @@
     <module>OnOffActuatorSpec</module>
     <module>OnOffActuatorImpl</module>
     <module>AppsGate</module>
-    <module>EUDE_Intepreter</module>
+    <module>EUDEInterpreter</module>
+    <module>EUDEInterpreterSpec</module>
     <module>ColorLightBulbSpec</module>
     <module>RouterApAMSpec</module>
     <module>AppsGateSpec</module>
