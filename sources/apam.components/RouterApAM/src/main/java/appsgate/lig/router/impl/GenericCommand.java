@@ -3,6 +3,10 @@ package appsgate.lig.router.impl;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -10,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 
-public class GenericCommand implements Runnable {
+public class GenericCommand implements RunnableFuture<Object> {
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -109,6 +113,8 @@ public class GenericCommand implements Runnable {
 					sendToClientService.send(clientId, msg.toString());
 				}
 			}
+			
+			done = true;
 		} catch (Exception e) {
 			logger.debug("The generic method invocation failed --> ");
 			e.printStackTrace();
@@ -121,6 +127,42 @@ public class GenericCommand implements Runnable {
 	 */
 	public Object getReturn() {
 		return returnObject;
+	}
+	
+	private boolean cancelled = false;
+	private boolean done 	  = false;
+
+	@Override
+	public boolean cancel(boolean mayInterruptIfRunning) {
+		if(mayInterruptIfRunning) {
+			cancelled = true;
+			done = true;
+		} else {
+			cancelled = false;
+		}
+		return cancelled;
+	}
+
+	@Override
+	public Object get() throws InterruptedException, ExecutionException {
+		return getReturn();
+	}
+
+	@Override
+	public Object get(long timeout, TimeUnit unit) throws InterruptedException,
+			ExecutionException, TimeoutException {
+		//TODO Implements waiting time
+		return get();
+	}
+
+	@Override
+	public boolean isCancelled(){
+		return cancelled;
+	}
+
+	@Override
+	public boolean isDone() {
+		return done;
 	}
 
 }
