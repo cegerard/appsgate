@@ -7,17 +7,17 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>RouterCallTester</artifactId>
+    <artifactId>ContextHistoryTester</artifactId>
     <version>1.0.0</version>
     <packaging>bundle</packaging>
 
-    <name>###### RouterCallTester OSGi Bundle ######</name>
+    <name>###### ContextHistoryTester OSGi Bundle ######</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
- <!-- Repositories List -->
+    
+     <!-- Repositories List -->
 	<repositories>
 		<repository>
 			<id>apam-repo</id>
@@ -27,10 +27,10 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
 	<!-- Dependencies Description -->
     <dependencies>
-        <dependency>
+		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
@@ -42,25 +42,25 @@
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>RouterApAMSpec</artifactId>
+			<artifactId>ContextHistory</artifactId>
 			<version>1.0.0</version>
 		</dependency>
     </dependencies>
 
  	<!-- Build Description -->
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                   		<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
 				<groupId>fr.imag.adele.apam</groupId>
 				<artifactId>apam-maven-plugin</artifactId>
 				<version>0.0.2-SNAPSHOT</version>
@@ -72,7 +72,7 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 
 </project>

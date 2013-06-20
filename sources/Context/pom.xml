@@ -158,5 +158,6 @@
     <module>ContextFollowerSpec</module>
     <module>DeviceNameTableSpec</module>
     <module>DeviceNameTable</module>
+    <module>ContextHistoy</module>
   </modules>
 </project>

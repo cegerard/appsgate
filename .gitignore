@@ -118,3 +118,7 @@ sources/proxy.enocean/.classpath
 sources/proxy.enocean/.project
 
 sources/proxy.enocean/.project
+
+sources/Context/ContextHistoy/nbactions.xml
+
+sources/test.components/ContextHistoryTester/nbactions.xml
