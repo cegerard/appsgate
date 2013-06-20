@@ -1,14 +1,22 @@
 package appsgate.lig.context.device.name.table.impl;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.messages.TableNameNotificationMsg;
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
+import appsgate.lig.context.history.services.DataBasePullService;
+import appsgate.lig.context.history.services.DataBasePushService;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 
 public class DeviceNameTableImpl implements DeviceNameTableSpec {
@@ -19,12 +27,36 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	private static Logger logger = LoggerFactory
 			.getLogger(DeviceNameTableImpl.class);
 
+	/**
+	 * Map of user of all name given for an core object or service by an end user
+	 */
 	HashMap<Entry, String> userObjectName = new HashMap<Entry, String>();
+	
+	/**
+	 * Context history pull service to get past table state
+	 */
+	private DataBasePullService contextHistory_pull;
+	
+	/**
+	 * Context history push service to save the current state
+	 */
+	private DataBasePushService contextHistory_push;
 
 	@Override
 	public void addName(String objectId, String usrId, String newName) {
 		userObjectName.put(new Entry(objectId, usrId), newName);
 		notifyChanges(objectId, usrId, newName);
+		
+		// save the new devices name table 
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+		
+		Set<Entry> keys = userObjectName.keySet();
+		for(Entry e : keys) {
+			String dbKey = e.userName+"-"+e.objectId;
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(dbKey, userObjectName.get(e)));
+		}
+		
+		contextHistory_push.pushData_add(this.getClass().getSimpleName(), usrId, objectId, newName, properties);
 	}
 
 	@Override
@@ -33,15 +65,27 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 
 		Set<Entry> keys = userObjectName.keySet();
 		Iterator<Entry> keysIt = keys.iterator();
-
+		String removedValue = "";
+		
 		while (keysIt.hasNext()) {
 			Entry key = keysIt.next();
 			if (eventKey.equals(key)) {
+				removedValue = userObjectName.get(key);
 				userObjectName.remove(key);
 				notifyChanges(objectId, usrId, getName(objectId, usrId));
 				break;
 			}
 		}
+		
+		// save the new devices name table
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+		
+		for(Entry e : keys) {
+			String dbKey = e.userName+"-"+e.objectId;
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(dbKey, userObjectName.get(e)));
+		}
+		
+		contextHistory_push.pushData_remove(this.getClass().getSimpleName(), usrId, objectId, removedValue, properties);
 	}
 	
 	@Override
@@ -66,6 +110,24 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
+		logger.debug("The device name table has been instanciated");
+		JSONObject table = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+		if(table != null){
+			try {
+				JSONArray state = table.getJSONArray("state");
+				int length = state.length();
+				int i = 0;
+				while(i < length) {
+					JSONObject obj = state.getJSONObject(i);
+					String key = (String)obj.keys().next();
+					String[] splitted = key.split("-");
+					userObjectName.put(new Entry(splitted[1], splitted[0]), obj.getString(key));
+					i++;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 		logger.debug("The device name table has been initialized");
 	}
 
