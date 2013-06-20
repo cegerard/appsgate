@@ -50,6 +50,11 @@
 			<artifactId>AbstractObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>appsGate.bundle</groupId>
+			<artifactId>ContextHistory</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->
