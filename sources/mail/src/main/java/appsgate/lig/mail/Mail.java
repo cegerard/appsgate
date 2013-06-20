@@ -8,6 +8,11 @@ import javax.mail.Session;
 
 import com.sun.mail.imap.IMAPFolder;
 
+/**
+ * Main mail interface to access the mailbox
+ * @author jnascimento
+ *
+ */
 public interface Mail {
 
 	public Session getSession();

@@ -7,6 +7,11 @@ import javax.mail.internet.AddressException;
 import appsgate.lig.mail.FolderChangeListener;
 import appsgate.lig.mail.Mail;
 
+/**
+ * Dummie class for testing the mail service
+ * @author jnascimento
+ *
+ */
 public class GMailTest {
 
 	private Mail mailService;
