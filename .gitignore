@@ -122,3 +122,9 @@ sources/proxy.enocean/.project
 sources/Context/ContextHistoy/nbactions.xml
 
 sources/test.components/ContextHistoryTester/nbactions.xml
+
+sources/apam.components/PlaceManager/target/classes/metadata.xml
+
+sources/mail/src/main/resources/obr.xml
+
+sources/mail/src/main/resources/obr.xml
