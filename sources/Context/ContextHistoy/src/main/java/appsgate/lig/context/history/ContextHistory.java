@@ -111,12 +111,17 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 					.append("objectID", objectID)
 					.append("addedValue", addedValue);
 
+			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+			
 			for (Map.Entry<String, Object> e : properties) {
-				newVal.append(e.getKey(), e.getValue());
+				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
+			
+			newVal.append("state", stateArray);
 			
 			context.insert(newVal);
 			return true;
+			
 		} catch (MongoException e) {
 			stop();
 		}
@@ -139,9 +144,13 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 					.append("objectID", objectID)
 					.append("removedValue", removedValue);
 
+			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+			
 			for (Map.Entry<String, Object> e : properties) {
-				newVal.append(e.getKey(), e.getValue());
+				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
+			
+			newVal.append("state", stateArray);
 			
 			context.insert(newVal);
 			return true;
@@ -168,9 +177,13 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 					.append("oldValue", oldValue)
 					.append("newValue", newValue);
 
+			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+			
 			for (Map.Entry<String, Object> e : properties) {
-				newVal.append(e.getKey(), e.getValue());
+				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
+			
+			newVal.append("state", stateArray);
 			
 			context.insert(newVal);
 			return true;

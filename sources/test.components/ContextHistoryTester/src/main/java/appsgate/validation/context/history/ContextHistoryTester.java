@@ -1,5 +1,6 @@
 package appsgate.validation.context.history;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -31,7 +32,12 @@ public class ContextHistoryTester {
 		
 		//Try to push something in the database
 		logger.debug("#########  Try to push data into data base");
-		if( contextHistory_push.pushData_add("baseTest", "plop", "090398494", "nameTEST", new ArrayList<Entry<String, Object>>())) {
+		ArrayList<Entry<String, Object>> state = new ArrayList<Entry<String, Object>>();
+		state.add(new AbstractMap.SimpleEntry<String, Object>("plop",new Integer(474745)));
+		state.add(new AbstractMap.SimpleEntry<String, Object>("plup",new Integer(474734)));
+		state.add(new AbstractMap.SimpleEntry<String, Object>("plip",new Integer(476543)));
+		state.add(new AbstractMap.SimpleEntry<String, Object>("plap",new Integer(474535)));
+		if( contextHistory_push.pushData_add("baseTest", "plop", "090398494", "nameTEST", state)) {
 			logger.debug("#########  Data correctly pushed");
 		} else {
 			logger.debug("#########  ERROR DATA NOT PUSHED");
