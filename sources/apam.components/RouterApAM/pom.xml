@@ -51,11 +51,6 @@
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>communication.manager</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>appsGate.bundle</groupId>
 			<artifactId>PlaceManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>

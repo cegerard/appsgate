@@ -17,6 +17,7 @@ import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.location.spec.PlaceManagerSpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
+import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
 import fr.imag.adele.apam.Instance;
 
@@ -158,7 +159,7 @@ public class RouterImpl implements RouterApAMSpec {
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Runnable executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
+	public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
 			Object obj;
 			if(objectId.contentEquals("main")) {
 				logger.info("retreive AppsGate reference: "+appsgate.toString());
@@ -170,7 +171,7 @@ public class RouterImpl implements RouterApAMSpec {
 	}
 	
 	@Override
-	public Runnable executeCommand(String objectId, String methodName, JSONArray args) {
+	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
 		ArrayList<Object> arguments    = new ArrayList<Object>();
 		@SuppressWarnings("rawtypes")
 		ArrayList<Class> argumentsType = new ArrayList<Class>();

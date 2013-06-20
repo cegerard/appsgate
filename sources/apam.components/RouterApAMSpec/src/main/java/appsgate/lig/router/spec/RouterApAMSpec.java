@@ -23,7 +23,7 @@ public interface RouterApAMSpec {
 	 * @return a Runnable object that can be execute everywhere.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Runnable executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType);
+	public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType);
 
 	/**
 	 * Execute command from outside to a specific device
@@ -32,5 +32,5 @@ public interface RouterApAMSpec {
 	 * @param args arguments and their type as an JSONArray
 	 * @return a Runnable object that can be execute everywhere.
 	 */
-	public Runnable executeCommand(String objectId, String methodName, JSONArray args);
+	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args);
 }
