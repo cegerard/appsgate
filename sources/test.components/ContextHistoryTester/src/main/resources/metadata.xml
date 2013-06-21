@@ -3,14 +3,13 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="PlaceManagerImpl"
-		classname="appsgate.lig.manager.location.impl.PlaceManagerImpl" specification ="PlaceManagerSpec" singleton="true" push="notifyChanged" >
+	<implementation name="ContextHistoryTesterImpl" classname="appsgate.validation.context.history.ContextHistoryTester">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<ipojo:requires field="contextHistory_pull"/>
 		<ipojo:requires field="contextHistory_push"/>
 	</implementation>
-
-	<apam-instance name="PlaceManagerInst" implementation="PlaceManagerImpl">
+	
+	<apam-instance name="ContextHistoryTesterInst" implementation="ContextHistoryTesterImpl">
 	</apam-instance>
 
 </apam>

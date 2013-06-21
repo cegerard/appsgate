@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.context.history.services.DataBasePullService;
+import appsgate.lig.context.history.services.DataBasePushService;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.manager.location.messages.MoveObjectNotification;
@@ -33,6 +35,16 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * This is the hash map to match the location of devices.
 	 */
 	private HashMap<String, SymbolicLocation> locationObjectsMap;
+	
+	/**
+	 * Context history pull service to get past locations state
+	 */
+	private DataBasePullService contextHistory_pull;
+	
+	/**
+	 * Context history push service to save the current locations
+	 */
+	private DataBasePushService contextHistory_push;
 
 	/**
 	 * Called by ApAM when all dependencies are available

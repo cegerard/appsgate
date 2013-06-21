@@ -149,5 +149,6 @@
     <module>AppsGateCommandTester</module>
     <module>RouterCallTester</module>
     <module>InterpreterProgramTester</module>
+    <module>ContextHistoryTester</module>
   </modules>
 </project>

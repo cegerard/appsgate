@@ -29,11 +29,17 @@ import appsgate.lig.mail.MailNotification;
 
 import com.sun.mail.imap.IMAPFolder;
 
+/**
+ * Gmail implementation for mail service
+ * @author jnascimento
+ *
+ */
 public class Gmail implements Mail {
 
 	private Logger logger = Logger.getLogger(Gmail.class.getSimpleName());
 	private Timer refreshTimer = new Timer();
 	private TimerTask refreshtask = new TimerTask() {
+		
 		@Override
 		public void run() {
 			
@@ -42,9 +48,9 @@ public class Gmail implements Mail {
 				Gmail.this.fetch();
 			} catch (MessagingException e) {
 				logger.log(Level.WARNING,"Refreshing mail data FAILED with the message "+e.getMessage());
-				//e.printStackTrace();
 			}
 		}
+		
 	};
 
 	private Store store;
