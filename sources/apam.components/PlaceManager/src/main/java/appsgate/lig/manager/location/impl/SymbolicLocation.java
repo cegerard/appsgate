@@ -40,13 +40,13 @@ public class SymbolicLocation {
 	/**
 	 * The abstract device list
 	 */
-	private ArrayList<AbstractObjectSpec> abstractsObjects;
+	private ArrayList<String> abstractsObjects;
 	
 	public SymbolicLocation(String id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
-		abstractsObjects = new ArrayList<AbstractObjectSpec>();
+		abstractsObjects = new ArrayList<String>();
 	}
 
 	public String getId() {
@@ -62,7 +62,7 @@ public class SymbolicLocation {
 	}
 	
 	public boolean isHere(AbstractObjectSpec obj) {
-		return abstractsObjects.contains(obj);
+		return abstractsObjects.contains(obj.getAbstractObjectId());
 	}
 	
 	/**
@@ -70,10 +70,18 @@ public class SymbolicLocation {
 	 * @param obj the new abstract object
 	 */
 	public void addObject(AbstractObjectSpec obj) {
-		if(abstractsObjects.add(obj)){
-			logger.debug("Core device "+obj.getAbstractObjectId()+ " added to "+name+ "/ "+id);
+		addObject(obj.getAbstractObjectId());
+	}
+	
+	/**
+	 * Add on object to this place
+	 * @param obj the new abstract object identifier
+	 */
+	public void addObject(String objId) {
+		if(abstractsObjects.add(objId)){
+			logger.debug("Core device "+objId+ " added to "+name+ "/ "+id);
 		} else {
-			logger.error("Error adding "+obj.getAbstractObjectId()+" to "+id);
+			logger.error("Error adding "+objId+" to "+id);
 		}
 	}
 	
@@ -83,7 +91,7 @@ public class SymbolicLocation {
 	 * @param obj the object to remove
 	 */
 	public void removeObject(AbstractObjectSpec obj) {
-		if(abstractsObjects.remove(obj)) {
+		if(abstractsObjects.remove(obj.getAbstractObjectId())) {
 			logger.debug("Core device "+obj.getAbstractObjectId()+ " remove from "+name+ "/ "+id);
 		} else {
 			logger.error("Error removing "+obj.getAbstractObjectId()+" to "+id);
@@ -94,8 +102,8 @@ public class SymbolicLocation {
 	 * Remove all the objects from this place 
 	 */
 	public void removeAll() {
-		Iterator<AbstractObjectSpec> it = abstractsObjects.iterator();
-		AbstractObjectSpec abObj;
+		Iterator<String> it = abstractsObjects.iterator();
+		String abObj;
 		while(it.hasNext()) {
 			abObj = it.next();
 			//TODO notify that this object move to -1
@@ -114,12 +122,12 @@ public class SymbolicLocation {
 			obj.put("name", name);
 		
 			JSONArray objects = new JSONArray();
-			AbstractObjectSpec abObj;
-			Iterator<AbstractObjectSpec> it = abstractsObjects.iterator();
+			String abObj;
+			Iterator<String> it = abstractsObjects.iterator();
 		
 			while(it.hasNext()) {
 				abObj = it.next();
-				objects.put(abObj.getAbstractObjectId());
+				objects.put(abObj);
 			}
 		
 			obj.put("devices", objects);

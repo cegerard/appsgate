@@ -219,5 +219,103 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 		
 		return null;
 	}
+
+	@Override
+	public boolean pushData_add(String name, String objectID,
+			String addedValue, ArrayList<Entry<String, Object>> properties) {
+		try {
+
+			//force connection to be established
+			mongoClient.getDatabaseNames();
+
+			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
+
+			BasicDBObject newVal = new BasicDBObject("name", name)
+					.append("time", System.currentTimeMillis())
+					.append("op", DataBasePushService.OP.ADD.toString())
+					.append("objectID", objectID)
+					.append("addedValue", addedValue);
+
+			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+			
+			for (Map.Entry<String, Object> e : properties) {
+				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+			}
+			
+			newVal.append("state", stateArray);
+			
+			context.insert(newVal);
+			return true;
+		} catch (MongoException e) {
+			stop();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean pushData_remove(String name, String objectID,
+			String removedValue, ArrayList<Entry<String, Object>> properties) {
+		try {
+
+			//force connection to be established
+			mongoClient.getDatabaseNames();
+
+			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
+
+			BasicDBObject newVal = new BasicDBObject("name", name)
+					.append("time", System.currentTimeMillis())
+					.append("op", DataBasePushService.OP.REMOVE.toString())
+					.append("objectID", objectID)
+					.append("removedValue", removedValue);
+
+			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+			
+			for (Map.Entry<String, Object> e : properties) {
+				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+			}
+			
+			newVal.append("state", stateArray);
+			
+			context.insert(newVal);
+			return true;
+		} catch (MongoException e) {
+			stop();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean pushData_change(String name, String objectID,
+			String oldValue, String newValue,
+			ArrayList<Entry<String, Object>> properties) {
+		try {
+
+			//force connection to be established
+			mongoClient.getDatabaseNames();
+
+			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
+
+			BasicDBObject newVal = new BasicDBObject("name", name)
+					.append("time", System.currentTimeMillis())
+					.append("op", DataBasePushService.OP.CHANGE.toString())
+					.append("objectID", objectID)
+					.append("oldValue", oldValue)
+					.append("newValue", newValue);
+
+			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
+			
+			for (Map.Entry<String, Object> e : properties) {
+				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
+			}
+			
+			newVal.append("state", stateArray);
+			
+			context.insert(newVal);
+			return true;
+		} catch (MongoException e) {
+			stop();
+		}
+		return false;
+	}
 	
 }

@@ -1,9 +1,15 @@
 package appsgate.lig.manager.location.impl;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +58,39 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	public void newInst() {
 		logger.info("Place manager started.");
 		locationObjectsMap = new HashMap<String, SymbolicLocation>();
+		
+		JSONObject locationMap = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+		if(locationMap != null){
+			try {
+				JSONArray state = locationMap.getJSONArray("state");
+				int length = state.length();
+				int i = 0;
+				
+				while(i < length) {
+					JSONObject obj = state.getJSONObject(i);
+					
+					String locationId = (String)obj.keys().next();
+					JSONObject jsonLocation = new JSONObject(obj.getString(locationId));
+					SymbolicLocation loc = new SymbolicLocation(locationId, jsonLocation.getString("name"));
+					
+					JSONArray objects = jsonLocation.getJSONArray("devices");
+					
+					int l = objects.length();
+					int j = 0;
+					
+					while(j < l) {
+						loc.addObject(objects.getString(j));
+						j++;
+					}
+
+					locationObjectsMap.put(locationId, loc);
+					i++;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		logger.debug("The place manager has been initialized");
 	}
 
 	/**
@@ -73,6 +112,17 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		if (!locationObjectsMap.containsKey(locationId)) {
 			locationObjectsMap.put(locationId, new SymbolicLocation(locationId, name));
 			notifyPlace(locationId, name, 0);
+			
+			// save the new devices name table 
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+			
+			Set<String> keys = locationObjectsMap.keySet();
+			for(String e : keys) {
+				SymbolicLocation sl = locationObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}
+			
+			contextHistory_push.pushData_add(this.getClass().getSimpleName(), locationId, name, properties);
 		}
 	}
 
@@ -86,6 +136,17 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		SymbolicLocation loc = locationObjectsMap.get(locationId);
 		loc.removeAll();
 		locationObjectsMap.remove(locationId);
+		
+		// save the new devices name table 
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+					
+		Set<String> keys = locationObjectsMap.keySet();
+		for(String e : keys) {
+			SymbolicLocation sl = locationObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+		}
+					
+		contextHistory_push.pushData_remove(this.getClass().getSimpleName(), locationId, loc.getName(), properties);		
 	}
 
 	/**
@@ -100,6 +161,18 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 			String locationId) {
 		SymbolicLocation loc = locationObjectsMap.get(locationId);
 		loc.addObject(obj);
+		
+		// save the new devices name table 
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+							
+		Set<String> keys = locationObjectsMap.keySet();
+		for(String e : keys) {
+			SymbolicLocation sl = locationObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+		}
+							
+		contextHistory_push.pushData_add(this.getClass().getSimpleName(), locationId, obj.getAbstractObjectId(), properties);
+		
 	}
 
 	/**
@@ -114,9 +187,8 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 */
 	public synchronized void moveObject(AbstractObjectSpec obj,
 			String oldPlaceID, String newPlaceID) {
-
-
-		if (Integer.getInteger(oldPlaceID) == -1) {
+		
+		if (oldPlaceID.contentEquals("-1")) {
 			addObject(obj, newPlaceID);
 		} else {
 			SymbolicLocation oldLoc = locationObjectsMap.get(oldPlaceID);
@@ -124,8 +196,18 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 			oldLoc.removeObject(obj);
 			newLoc.addObject(obj);
 		}
-
 		notifyMove(oldPlaceID, newPlaceID, obj);
+		
+		// save the new devices name table 
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+									
+		Set<String> keys = locationObjectsMap.keySet();
+		for(String e : keys) {
+			SymbolicLocation sl = locationObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+		}
+									
+		contextHistory_push.pushData_change(this.getClass().getSimpleName(), obj.getAbstractObjectId(), oldPlaceID, newPlaceID, properties);
 	}
 
 	/**
@@ -133,9 +215,21 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 */
 	public synchronized void renameLocation(String locationId, String newName) {
 		SymbolicLocation loc = locationObjectsMap.get(locationId);
+		String oldName = loc.getName();
 		loc.setName(newName);
 		
 		notifyPlace(locationId, newName, 1);
+		
+		// save the new devices name table 
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+							
+		Set<String> keys = locationObjectsMap.keySet();
+		for(String e : keys) {
+			SymbolicLocation sl = locationObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+		}
+							
+		contextHistory_push.pushData_change(this.getClass().getSimpleName(), locationId, oldName, newName, properties);		
 	}
 
 	/**
