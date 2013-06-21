@@ -128,3 +128,5 @@ sources/apam.components/PlaceManager/target/classes/metadata.xml
 sources/mail/src/main/resources/obr.xml
 
 sources/mail/src/main/resources/obr.xml
+
+sources/test.components/InterpreterProgramTester/target/classes/META-INF/MANIFEST.MF
