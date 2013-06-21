@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1371821038687
+Build-Jdk: 1.6.0_45
+Built-By: remy
+Bundle-ManifestVersion: 2
+Bundle-Name: ###### InterpreterProgramTester ######
+Bundle-SymbolicName: InterpreterProgramTester
+Bundle-Version: 1.0.0
+Created-By: Apache Maven Bundle Plugin
+Export-Package: appsgate.validation.interpreter.command;uses:="appsgate.
+ lig.eude.interpreter.spec,org.json,org.slf4j";version="1.0.0"
+Import-Package: appsgate.lig.eude.interpreter.spec;version="[1.0,2)",org
+ .json,org.slf4j;version="[1.6,2)"
+Tool: Bnd-1.50.0
