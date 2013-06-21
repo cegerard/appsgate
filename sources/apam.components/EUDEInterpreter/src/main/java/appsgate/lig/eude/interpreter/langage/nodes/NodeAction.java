@@ -11,6 +11,11 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.router.spec.GenericCommand;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node for the actions
@@ -25,7 +30,8 @@ public class NodeAction extends Node {
 	private String deviceId;
 	private String methodName;
 	private JSONArray args;
-	
+	private GenericCommand command;
+
 	/**
 	 * Default constructor
 	 * 
@@ -41,6 +47,7 @@ public class NodeAction extends Node {
 		args = ruleJSON.getJSONArray("args");
 		
 		pool = Executors.newSingleThreadExecutor();
+		command = null;
 	}
 
 	@Override
@@ -54,23 +61,27 @@ public class NodeAction extends Node {
 	}
 
 	@Override
-	public Integer call() {
-		fireStartEvent(new StartEvent(this));
-		
-		Future<?> f = pool.submit(interpreter.executeCommand(deviceId, methodName, args));
-		try {
-			f.get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public Integer call() {    
+	    fireStartEvent(new StartEvent(this));
+	
+	    // get the runnable from the interpreter
+	    command = interpreter.executeCommand(deviceId, methodName, args);
+	    pool.submit(command);
+	    
+	    // manage the pool
+	    super.call();
 		
 		fireEndEvent(new EndEvent(this));
-
+		
 		return null;
+	}
+	
+	public Object getResult() {
+	    if (command != null) {
+			return command.getReturn();
+	    } else {
+			return null;
+	    }
 	}
 
 	@Override

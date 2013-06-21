@@ -17,6 +17,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
 /**
@@ -64,7 +65,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	public EUDEInterpreterImpl() {
 		mapPrograms = new HashMap<String, NodeProgram>();
 	}
-	
+
 	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
@@ -72,7 +73,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		logger.debug("The interpreter component is initialized");;
 		contextFollower.addListener(listener);
 	}
-	
+
 	/**
 	 * Initialize a program from its JSON representation
 	 * 
@@ -123,7 +124,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	 * @param paramType
 	 * @return
 	 */
-	public Runnable executeCommand(String objectId, String methodName, JSONArray args) {
+	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
 		return router.executeCommand(objectId, methodName, args);
 	}
 

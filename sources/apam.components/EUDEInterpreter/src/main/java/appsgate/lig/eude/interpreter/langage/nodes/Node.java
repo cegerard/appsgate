@@ -12,6 +12,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import java.util.concurrent.TimeUnit;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class for all the nodes of the interpreter
@@ -52,9 +54,40 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	
 	/**
 	 * Default constructor
+	 * 
+	 * @param interpreter interpreter pointer for the nodes
 	 */
 	public Node(EUDEInterpreterImpl interpreter) {
-		this.interpreter = interpreter;
+	    this.interpreter = interpreter;
+	}
+	
+	/**
+	 * Manage the pool for the node. Wait for the pool to finish before a timeout.
+	 * If the timeout occurs, shutdown the pool
+	 * 
+	 * @return 
+	 */
+	public Integer call() {
+		
+		// disable new tasks from being submitted
+	    pool.shutdown();
+		
+	    try {
+			// wait 1 minute
+			if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+				// cancel running task after 1 minute
+				pool.shutdownNow();
+				
+				// wait 1 minute for the tasks to respond being cancelled
+				if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+					LoggerFactory.getLogger(Node.class.getName()).error("pool did not terminate");
+				}
+			}
+	    } catch (InterruptedException ex) {
+			LoggerFactory.getLogger(Node.class.getName()).error("pool execution interrupted");
+	    }
+	    
+	    return null;
 	}
 
 	//Abstract Methods
@@ -81,9 +114,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * @param e The start event to fire for all the listeners
 	 */
 	protected void fireStartEvent(StartEvent e) {
-		for (int i = 0; i < startEventListeners.size(); i++) {
+	    for (int i = 0; i < startEventListeners.size(); i++) {
 			startEventListeners.get(i).startEventFired(e);
-		}
+	    }
 	}
 
 	/**
@@ -92,9 +125,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * @param e The end event to fire for all the listeners
 	 */
 	protected void fireEndEvent(EndEvent e) {
-		for (int i = 0; i < endEventListeners.size(); i++) {
+	    for (int i = 0; i < endEventListeners.size(); i++) {
 			endEventListeners.get(i).endEventFired(e);
-		}
+	    }
 	}
 
 	/**
@@ -102,8 +135,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * 
 	 * @param listener Listener to add
 	 */
+	@Override
 	public void addStartEventListener(StartEventListener listener) {
-		startEventListeners.add(listener);
+	    startEventListeners.add(listener);
 	}
 
 	/**
@@ -111,8 +145,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * 
 	 * @param listener Listener to remove
 	 */
+	@Override
 	public void removeStartEventListener(StartEventListener listener) {
-		startEventListeners.remove(listener);
+	    startEventListeners.remove(listener);
 	}
 
 	/**
@@ -120,8 +155,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * 
 	 * @param listener Listener to add
 	 */
+	@Override
 	public void addEndEventListener(EndEventListener listener) {
-		endEventListeners.add(listener);
+	    endEventListeners.add(listener);
 	}
 
 	/**
@@ -129,8 +165,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * 
 	 * @param listener Listener to remove
 	 */
+	@Override
 	public void removeEndEventListener(EndEventListener listener) {
-		endEventListeners.remove(listener);
+	    endEventListeners.remove(listener);
 	}
 
 	/**
@@ -139,7 +176,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * @return the symbol table of the node that contains the symbols defined by the node
 	 */
 	public SymbolTable getSymbolTable() {
-		return symbolTable;
+	    return symbolTable;
 	}
 
 	/**
@@ -148,11 +185,11 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * @return the symbol table of the parent node if the node has a parent, null otherwise
 	 */
 	public SymbolTable getParentSymbolTable() {
-		if (parent != null) {
+	    if (parent != null) {
 			return parent.getSymbolTable();
-		} else {
+	    } else {
 			return null;
-		}
+	    }
 	}
 
 }
