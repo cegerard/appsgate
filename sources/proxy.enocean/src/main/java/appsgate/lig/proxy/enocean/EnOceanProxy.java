@@ -7,20 +7,19 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.felix.ipojo.annotations.Bind;
-import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.json.JSONException;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
@@ -28,12 +27,18 @@ import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ubikit.PhysicalEnvironmentItem;
-import org.ubikit.PhysicalEnvironmentModelObserver;
-import org.ubikit.pem.event.*;
-import org.ubikit.pem.event.NewItemEvent.CapabilitySelection;
-import org.ubikit.service.PhysicalEnvironmentModelService;
 import org.ubikit.PhysicalEnvironmentItem.Type;
+import org.ubikit.PhysicalEnvironmentModelObserver;
 import org.ubikit.event.impl.EventGateImpl;
+import org.ubikit.pem.event.AddItemEvent;
+import org.ubikit.pem.event.EnterPairingModeEvent;
+import org.ubikit.pem.event.ExitPairingModeEvent;
+import org.ubikit.pem.event.ItemAddedEvent;
+import org.ubikit.pem.event.ItemAddingFailedEvent;
+import org.ubikit.pem.event.NewItemEvent;
+import org.ubikit.pem.event.NewItemEvent.CapabilitySelection;
+import org.ubikit.pem.event.UnsupportedNewItemEvent;
+import org.ubikit.service.PhysicalEnvironmentModelService;
 
 import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.communication.service.subscribe.AddListenerService;
@@ -48,14 +53,13 @@ import appsgate.lig.proxy.enocean.source.event.TempEvent;
 import appsgate.lig.proxy.listeners.EnOceanConfigListener;
 import appsgate.lig.proxy.services.EnOceanPairingService;
 import appsgate.lig.proxy.services.EnOceanService;
-
+import fr.imag.adele.apam.CST;
+import fr.imag.adele.apam.Implementation;
+import fr.imag.adele.apam.Instance;
 import fr.immotronic.ubikit.pems.enocean.ActuatorProfile;
 import fr.immotronic.ubikit.pems.enocean.event.in.CreateNewActuatorEvent;
 import fr.immotronic.ubikit.pems.enocean.event.in.TurnOffActuatorEvent;
 import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
-import fr.imag.adele.apam.CST;
-import fr.imag.adele.apam.Implementation;
-import fr.imag.adele.apam.Instance;
 
 /**
  * This class is used to connect the ubikit system to the ApAM environment. An
@@ -91,6 +95,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	 */
 	private EventGateImpl eventGate;
 	private ScheduledExecutorService executorService;
+	private ScheduledExecutorService instanciationService;
 	private HashMap<String, Instance> sidToInstanceName;
 	private HashMap<String, ArrayList<EnOceanProfiles>> tempEventCapabilitiesMap;
 
@@ -130,6 +135,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 																// thread for
 																// the events
 																// gate
+		instanciationService = Executors.newScheduledThreadPool(1);
 		logger.debug("ExecutorService instanciated.");
 		sidToInstanceName = new HashMap<String, Instance>();
 		tempEventCapabilitiesMap = new HashMap<String, ArrayList<EnOceanProfiles>>();
@@ -180,11 +186,11 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		}else{
 			logger.info("Listeners services dependency resolution failed.");
 		}
-		
 		//Retrieve existing paired sensors from Ubikit and instanciate them.
 		Collection<PhysicalEnvironmentItem> itemList = enoceanBridge.getAllItems();
-		for (PhysicalEnvironmentItem item : itemList) {
-			instanciateItem(item);
+		if(itemList != null && !itemList.isEmpty()) {
+			//Create thread that take the list in parameter and instanciate all Ubikit items
+			instanciationService.execute(new ItemInstanciation(itemList));
 		}
 		
 	}
@@ -198,8 +204,10 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 
 		eventGate.unlinkAll();
 		executorService.shutdownNow();
+		instanciationService.shutdown();
 		try {
 			executorService.awaitTermination(5, TimeUnit.SECONDS);
+			instanciationService.awaitTermination(5, TimeUnit.SECONDS);
 			executorService = null;
 			// executorService has terminated.
 			logger.debug("Event gate thread terminated");
@@ -717,6 +725,29 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		}
 		logger.debug(actuatorsJSON.toString());
 		sendToClientService.send(clientId, "confDevices",actuatorsJSON);
+	}
+	
+	/**
+	 * Inner class for Ubikit items instanciation thread
+	 * @author Cédric Gérard
+	 * @since January 8, 2013
+	 * @version 1.0.0
+	 */
+	private class ItemInstanciation implements Runnable {
+
+		Collection<PhysicalEnvironmentItem> itemList;
+		
+		public ItemInstanciation(Collection<PhysicalEnvironmentItem> itemList) {
+			super();
+			this.itemList = itemList;
+		}
+
+		public void run() {
+			for (PhysicalEnvironmentItem item : itemList) {
+				instanciateItem(item);
+			}
+		}
+		
 	}
 
 }
