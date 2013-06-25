@@ -1,17 +1,14 @@
 package appsGate.lig.manager.communication;
 
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.glassfish.grizzly.http.HttpRequestPacket;
 import org.glassfish.grizzly.websockets.DataFrame;
@@ -25,16 +22,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.HttpService;
-import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory; 
+import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.communication.service.subscribe.AddListenerService;
 import appsGate.lig.manager.communication.service.subscribe.CommandListener;
 import appsGate.lig.manager.communication.service.subscribe.ConfigListener;
+//import org.osgi.service.http.HttpContext;
+//import org.osgi.service.http.HttpService;
+//import org.osgi.service.http.NamespaceException;
 
 
 /**
@@ -68,7 +65,7 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	 * HTTP service dependency resolve by iPOJO.
 	 * Allow to register HTML resources to the Felix HTTP server 
 	 */
-	private HttpService httpService;
+	//private HttpService httpService;
 	
 	
 	/**
@@ -77,18 +74,18 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	@Validate
 	public void newInst() {
 		logger.info("initiating the web communication manager...");
-		if (httpService != null) {
-			final HttpContext httpContext = httpService.createDefaultHttpContext();
-			final Dictionary<String, String> initParams = new Hashtable<String, String>();
-			initParams.put("from", "HttpService");
-			try {
-				// register HTML pages as resources
-				httpService.registerResources("/", "WEB/", httpContext);
-			} catch (NamespaceException ex) {
-				logger.error("NameSpace exception");
-			}
-		}
-		// initialize web socket engine and register web socket java application
+//		if (httpService != null) {
+//			final HttpContext httpContext = httpService.createDefaultHttpContext();
+//			final Dictionary<String, String> initParams = new Hashtable<String, String>();
+//			initParams.put("from", "HttpService");
+//			try {
+//				// register HTML pages as resources
+//				httpService.registerResources("/", "WEB/", httpContext);
+//			} catch (NamespaceException ex) {
+//				logger.error("NameSpace exception");
+//			}
+//		}
+//		// initialize web socket engine and register web socket java application
 		WebSocketEngine.getEngine().register(this);
 		logger.info("The communication manager is ready.");
 	}
@@ -99,10 +96,10 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	@Invalidate
 	public void deleteInst() {
 		logger.info("Releasing the communication manager...");
-		if (httpService != null) {
-			httpService.unregister("/");
+//		if (httpService != null) {
+//			httpService.unregister("/");
 			WebSocketEngine.getEngine().unregister(this);
-		}
+//		}
 		logger.info("The communication manager is now stopped.");
 	}
 
@@ -196,11 +193,11 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	 * @param httpService
 	 *            , the HTTP OSGi service
 	 */
-	@Bind(optional = false)
-	public void bindHttpService(HttpService httpService) {
-		this.httpService = httpService;
-		logger.debug("httpService service dependency resolved");
-	}
+//	@Bind(optional = false)
+//	public void bindHttpService(HttpService httpService) {
+//		this.httpService = httpService;
+//		logger.debug("httpService service dependency resolved");
+//	}
 
 	/**
 	 * Call when the communication manager release the required HTTP service.
@@ -208,11 +205,11 @@ public class CommunicationManager extends WebSocketApplication implements AddLis
 	 * @param httpService
 	 *            , the released HTTP OSGi service
 	 */
-	@Unbind(optional = false)
-	public void unbindHttpService(HttpService httpService) {
-		this.httpService = null;
-		logger.debug("httpService service dependency not available");
-	}
+//	@Unbind(optional = false)
+//	public void unbindHttpService(HttpService httpService) {
+//		this.httpService = null;
+//		logger.debug("httpService service dependency not available");
+//	}
 	
 	/*****************************************/
 	/** Send message service implementation **/
