@@ -232,7 +232,16 @@ public class RouterImpl implements RouterApAMSpec {
 	 */
 	public void newLocation(JSONObject jsonObject) {
 		try {
-			locationManager.addPlace(jsonObject.getString("id"), jsonObject.getString("name"));
+			String placeId = jsonObject.getString("id");
+			locationManager.addPlace(placeId, jsonObject.getString("name"));
+			JSONArray devices = jsonObject.getJSONArray("devices");
+			int size = devices.length();
+			int i = 0;
+			while(i < size) {
+				String objId = (String)devices.get(i);
+				locationManager.moveObject(objId, locationManager.getCoreObjectLocationId(objId), placeId);
+				i++;
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -241,12 +250,12 @@ public class RouterImpl implements RouterApAMSpec {
 	/**
 	 * Move an object from source location to destination location.
 	 * 
-	 * @param objectId the object reference
+	 * @param object the object referenced
 	 * @param srcLocationId the source location identifier
 	 * @param destLocationId the destination location identifier
 	 */
-	public void moveObject(AbstractObjectSpec objectId, String srcLocationId, String destLocationId) {
-		locationManager.moveObject(objectId, srcLocationId, destLocationId);
+	public void moveObject(AbstractObjectSpec object, String srcLocationId, String destLocationId) {
+		locationManager.moveObject(object.getAbstractObjectId(), srcLocationId, destLocationId);
 	}
 
 	/**
@@ -277,7 +286,7 @@ public class RouterImpl implements RouterApAMSpec {
 			JSONDescription = obj.getDescription();
 			//Add context description for this abject
 			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
-			JSONDescription.put("locationId", locationManager.getCoreObjectLocationId(obj));
+			JSONDescription.put("locationId", locationManager.getCoreObjectLocationId(obj.getAbstractObjectId()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

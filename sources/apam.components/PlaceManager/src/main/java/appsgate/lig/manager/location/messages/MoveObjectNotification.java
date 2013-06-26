@@ -21,7 +21,7 @@ public class MoveObjectNotification implements NotificationMsg {
 	/**
 	 * The abstract object it moved
 	 */
-	private AbstractObjectSpec object;
+	private String objId;
 	
 	/**
 	 * Build a new notification message from place manager
@@ -31,11 +31,11 @@ public class MoveObjectNotification implements NotificationMsg {
 	 * @param object
 	 */
 	public MoveObjectNotification(String oldLocationId, String newLocationId,
-			AbstractObjectSpec object) {
+			String objId) {
 		super();
 		this.oldLocationId = oldLocationId;
 		this.newLocationId = newLocationId;
-		this.object = object;
+		this.objId = objId;
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class MoveObjectNotification implements NotificationMsg {
 		
 		content.put("srcLocationId", oldLocationId);
 		content.put("destLocationId", newLocationId);
-		content.put("deviceId", object.getAbstractObjectId());
+		content.put("deviceId", objId);
 		
 		notif.put("moveDevice", content);
 		

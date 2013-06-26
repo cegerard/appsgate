@@ -30,9 +30,9 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>AbstractObjectSpec</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
 		</dependency>
 	</dependencies>
 

@@ -130,3 +130,17 @@ sources/mail/src/main/resources/obr.xml
 sources/mail/src/main/resources/obr.xml
 
 sources/test.components/InterpreterProgramTester/target/classes/META-INF/MANIFEST.MF
+
+sources/apam.components/RouterApAM/target/classes/appsgate/lig/router/impl/RouterImpl.class
+
+sources/apam.components/RouterApAM/target/classes/appsgate/lig/router/impl/RouterImpl.class
+
+sources/apam.components/PlaceManagerSpec/target/classes/appsgate/lig/manager/location/spec/PlaceManagerSpec.class
+
+sources/apam.components/PlaceManagerSpec/target/classes/appsgate/lig/manager/location/spec/PlaceManagerSpec.class
+
+sources/apam.components/PlaceManagerSpec/target/classes/appsgate/lig/manager/location/spec/PlaceManagerSpec.class
+
+sources/apam.components/RouterApAM/target/classes/appsgate/lig/router/impl/RouterImpl.class
+
+sources/apam.components/RouterApAM/target/classes/appsgate/lig/router/impl/RouterImpl.class

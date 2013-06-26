@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.context.history.services.DataBasePullService;
 import appsgate.lig.context.history.services.DataBasePushService;
 import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.manager.location.messages.MoveObjectNotification;
 import appsgate.lig.manager.location.messages.PlaceManagerNotification;
 import appsgate.lig.manager.location.spec.PlaceManagerSpec;
@@ -157,10 +156,10 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @param locationId
 	 *            , the target place
 	 */
-	private synchronized void addObject(AbstractObjectSpec obj,
+	private synchronized void addObject(String objId,
 			String locationId) {
 		SymbolicLocation loc = locationObjectsMap.get(locationId);
-		loc.addObject(obj);
+		loc.addObject(objId);
 		
 		// save the new devices name table 
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -171,7 +170,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
 		}
 							
-		contextHistory_push.pushData_add(this.getClass().getSimpleName(), locationId, obj.getAbstractObjectId(), properties);
+		contextHistory_push.pushData_add(this.getClass().getSimpleName(), locationId, objId, properties);
 		
 	}
 
@@ -185,18 +184,18 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @param newPlaceID
 	 *            , the new place where obj is locate.
 	 */
-	public synchronized void moveObject(AbstractObjectSpec obj,
+	public synchronized void moveObject(String objId,
 			String oldPlaceID, String newPlaceID) {
 		
 		if (oldPlaceID.contentEquals("-1")) {
-			addObject(obj, newPlaceID);
+			addObject(objId, newPlaceID);
 		} else {
 			SymbolicLocation oldLoc = locationObjectsMap.get(oldPlaceID);
 			SymbolicLocation newLoc = locationObjectsMap.get(newPlaceID);
-			oldLoc.removeObject(obj);
-			newLoc.addObject(obj);
+			oldLoc.removeObject(objId);
+			newLoc.addObject(objId);
 		}
-		notifyMove(oldPlaceID, newPlaceID, obj);
+		notifyMove(oldPlaceID, newPlaceID, objId);
 		
 		// save the new devices name table 
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -207,7 +206,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
 		}
 									
-		contextHistory_push.pushData_change(this.getClass().getSimpleName(), obj.getAbstractObjectId(), oldPlaceID, newPlaceID, properties);
+		contextHistory_push.pushData_change(this.getClass().getSimpleName(), objId, oldPlaceID, newPlaceID, properties);
 	}
 
 	/**
@@ -257,8 +256,8 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @param newLocationId the new AbstractObject location
 	 * @param object the AbstractObject which has been moved.
 	 */
-	private void notifyMove(String oldLocationId, String newLocationId, AbstractObjectSpec object) {
-		notifyChanged(new MoveObjectNotification(oldLocationId, newLocationId, object));
+	private void notifyMove(String oldLocationId, String newLocationId, String objId) {
+		notifyChanged(new MoveObjectNotification(oldLocationId, newLocationId, objId));
 	}
 	
 	/**
@@ -287,7 +286,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @param the object from which get the location
 	 */
 	@Override
-	public String getCoreObjectLocationId(AbstractObjectSpec obj) {
+	public String getCoreObjectLocationId(String objId) {
 		Iterator<SymbolicLocation>  it = locationObjectsMap.values().iterator();
 		
 		SymbolicLocation loc = null;
@@ -296,7 +295,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		while(it.hasNext() && !found) {
 			
 			loc = it.next();
-			if(loc.isHere(obj)) {
+			if(loc.isHere(objId)) {
 				found = true;
 			}
 		}

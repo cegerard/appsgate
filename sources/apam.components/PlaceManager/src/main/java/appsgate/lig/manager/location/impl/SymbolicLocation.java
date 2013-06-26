@@ -9,8 +9,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
-
 /**
  * This class is an abstract representation of
  * a place
@@ -61,16 +59,8 @@ public class SymbolicLocation {
 		this.name = name;
 	}
 	
-	public boolean isHere(AbstractObjectSpec obj) {
-		return abstractsObjects.contains(obj.getAbstractObjectId());
-	}
-	
-	/**
-	 * Add on object to this place
-	 * @param obj the new abstract object
-	 */
-	public void addObject(AbstractObjectSpec obj) {
-		addObject(obj.getAbstractObjectId());
+	public boolean isHere(String objId) {
+		return abstractsObjects.contains(objId);
 	}
 	
 	/**
@@ -90,11 +80,11 @@ public class SymbolicLocation {
 	 * 
 	 * @param obj the object to remove
 	 */
-	public void removeObject(AbstractObjectSpec obj) {
-		if(abstractsObjects.remove(obj.getAbstractObjectId())) {
-			logger.debug("Core device "+obj.getAbstractObjectId()+ " remove from "+name+ "/ "+id);
+	public void removeObject(String objId) {
+		if(abstractsObjects.remove(objId)) {
+			logger.debug("Core device "+objId+ " remove from "+name+ "/ "+id);
 		} else {
-			logger.error("Error removing "+obj.getAbstractObjectId()+" to "+id);
+			logger.error("Error removing "+objId+" to "+id);
 		}
 	}
 
