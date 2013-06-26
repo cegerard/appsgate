@@ -730,7 +730,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Inner class for Ubikit items instanciation thread
 	 * @author Cédric Gérard
-	 * @since January 8, 2013
+	 * @since June 25, 2013
 	 * @version 1.0.0
 	 */
 	private class ItemInstanciation implements Runnable {

@@ -11,6 +11,10 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
@@ -22,9 +26,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
-import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 
 /**
  * This is the adapter for Philips HUE color light technologies. It allows
@@ -45,6 +49,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 	private PhilipsBridgeUPnPFinder bridgeFinder;
 	private String currentUserName = "AppsGateUJF";
+	private ScheduledExecutorService instanciationService = Executors.newScheduledThreadPool(1);
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -62,34 +67,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		logger.debug("Philips finder started");
 		logger.debug("PhilipsHUE IP: " + bridgeFinder.getBridgeIp());
 
-		JSONArray lightsArray = getLightList();
-		int size = lightsArray.length();
-		int i = 0;
-		try {
-			while(i < size) {
-				JSONObject light = lightsArray.getJSONObject(i);
-				Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
-				Map<String, String> properties = new HashMap<String, String>();
-				properties.put("deviceName", 	light.getString("name"));
-				properties.put("deviceId", 		String.valueOf(bridgeFinder.getBridgeIp()+"-"+light.getString("lightId")));
-				properties.put("lightBridgeId", light.getString("lightId"));
-
-				/*Instance createInstance = */impl.createInstance(null, properties);
-
-				i++;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		//String body = new String("{\"hue\": 23000,\"on\": true,\"bri\": 10}");
-		//setAttribute("2", "on", true);
-		//setAttribute("2", "hue", 45600);
-//		try {
-//			setAttribute("2", new JSONObject("{\"hue\": 23000,\"on\": true,\"bri\": 10}"));
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
+		instanciationService.execute(new LightsInstanciation());
 	}
 
 	/**
@@ -98,6 +76,12 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	@Invalidate
 	public void delInst() {
 		bridgeFinder.stop();
+		instanciationService.shutdown();
+		try {
+			instanciationService.awaitTermination(5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			logger.debug("PhilipsHUEAdapter instanciationService thread crash at termination");
+		}
 		logger.debug("PhilipsHUEAdapter stopped");
 	}
 
@@ -131,7 +115,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				jsonResponse.put(lightObj);
 			}
 
-			logger.debug(jsonResponse.toString());
+			logger.debug("getLightList : "+jsonResponse.toString());
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -420,6 +404,42 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * Inner class for Philips HUE lights instanciation thread
+	 * @author Cédric Gérard
+	 * @since June 26, 2013
+	 * @version 1.0.0
+	 */
+	private class LightsInstanciation implements Runnable {
+		
+		public LightsInstanciation() {
+			super();
+		}
+
+		public void run() {
+			JSONArray lightsArray = getLightList();
+			int size = lightsArray.length();
+			int i = 0;
+			try {
+				while(i < size) {
+					JSONObject light = lightsArray.getJSONObject(i);
+					Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
+					Map<String, String> properties = new HashMap<String, String>();
+					properties.put("deviceName", 	light.getString("name"));
+					properties.put("deviceId", 		String.valueOf(bridgeFinder.getBridgeIp()+"-"+light.getString("lightId")));
+					properties.put("lightBridgeId", light.getString("lightId"));
+
+					/*Instance createInstance = */impl.createInstance(null, properties);//<- It is possible that the thread stop a this line so some instances are not created.
+																						//dynaman ?
+					i++;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }
