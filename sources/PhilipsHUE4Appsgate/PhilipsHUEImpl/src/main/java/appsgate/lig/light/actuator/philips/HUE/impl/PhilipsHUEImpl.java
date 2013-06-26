@@ -188,89 +188,188 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 
 	@Override
 	public boolean setStatus(JSONObject newStatus) {
-		return PhilipsBridge.setAttribute(lightBridgeId, newStatus);
+		
+		if(PhilipsBridge.setAttribute(lightBridgeId, newStatus)) {
+			notifyChanges("status", newStatus.toString());
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean On() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "on", true);
+		
+		if(PhilipsBridge.setAttribute(lightBridgeId, "on", true)) {
+			notifyChanges("state", "on");
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
-	public boolean Off() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "on", false);
+	public boolean Off() {		
+		if(PhilipsBridge.setAttribute(lightBridgeId, "on", false)) {
+			notifyChanges("state", "off");
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean setColor(long color) {
-		return PhilipsBridge.setAttribute(lightBridgeId, "hue", color);
+		
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", color)) {
+			notifyChanges("color", String.valueOf(color));
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean setBrightness(long brightness) {
-		return PhilipsBridge.setAttribute(lightBridgeId, "bri", brightness);
+		
+		if(PhilipsBridge.setAttribute(lightBridgeId, "bri", brightness)) {
+			notifyChanges("brightness", String.valueOf(brightness));
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
 	public boolean setSaturation(int saturation) {
-		return PhilipsBridge.setAttribute(lightBridgeId, "sat", saturation);
+		
+		if(PhilipsBridge.setAttribute(lightBridgeId, "sat", saturation)) {
+			notifyChanges("saturation", String.valueOf(saturation));
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean setEffect(String effect) {
-		return PhilipsBridge.setAttribute(lightBridgeId, "effect", effect);
+		
+		if(PhilipsBridge.setAttribute(lightBridgeId, "effect", effect)) {
+			notifyChanges("effect", String.valueOf(effect));
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean setAlert(String alert) {
-		return PhilipsBridge.setAttribute(lightBridgeId, "alert", alert);
+		
+		if(PhilipsBridge.setAttribute(lightBridgeId, "alert", alert)) {
+			notifyChanges("alert", String.valueOf(alert));
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean setTransitionTime(long transition) {
-		return PhilipsBridge.setAttribute(lightBridgeId, "transitiontime", transition);
+		
+		if(PhilipsBridge.setAttribute(lightBridgeId, "transitiontime", transition)) {
+			notifyChanges("transitiontime", String.valueOf(transition));
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean setRed() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_RED);
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_RED)) {
+			notifyChanges("color", String.valueOf(HUE_RED));
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean setBlue() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_BLUE);
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_BLUE)) {
+			notifyChanges("color", String.valueOf(HUE_BLUE));
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean setGreen() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_GREEN);
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_GREEN)) {
+			notifyChanges("color", String.valueOf(HUE_GREEN));
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean setYellow() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_YELLOW);
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_YELLOW)) {
+			notifyChanges("color", String.valueOf(HUE_YELLOW));
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean setOrange() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_ORANGE);
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_ORANGE)) {
+			notifyChanges("color", String.valueOf(HUE_ORANGE));
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean setPurple() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PURPLE);
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PURPLE)) {
+			notifyChanges("color", String.valueOf(HUE_PURPLE));
+			return true;
+		}
+		
+		return false;
+		
 	}
 
 	@Override
 	public boolean setPink() {
-		return PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PINK);
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PINK)) {
+			notifyChanges("color", String.valueOf(HUE_PINK));
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean increaseBrightness(int step) {
-		return PhilipsBridge.setAttribute(lightBridgeId, "bri", getLightBrightness()+step);
+		int newBri = getLightBrightness()+step;
+		if(PhilipsBridge.setAttribute(lightBridgeId, "bri", newBri)) {
+			notifyChanges("brightness", String.valueOf((newBri)));
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean decreaseBrightness(int step) {
-		return PhilipsBridge.setAttribute(lightBridgeId, "bri", getLightBrightness()-step);
+		int newBri = getLightBrightness()-step;
+		if( PhilipsBridge.setAttribute(lightBridgeId, "bri", newBri)) {
+			notifyChanges("brightness", String.valueOf((newBri)));
+			return true;
+		}
+		return false;
 	}
 	
 	public String getSensorName() {

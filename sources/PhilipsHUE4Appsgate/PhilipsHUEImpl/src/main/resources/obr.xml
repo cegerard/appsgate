@@ -8,7 +8,7 @@
       <p n='name' v='PhilipsHUEImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='PhilipsHUEImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.colorLight.actuator.spec.ColorLightSpec' />
+      <p n='provide-interfaces' v='appsgate.lig.colorLight.actuator.spec.ColorLightSpec,appsgate.lig.logical.object.spec.AbstractObjectSpec' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='ColorLightSpec' />
       <p n='definition-deviceName' t='string' v='Unknown' />

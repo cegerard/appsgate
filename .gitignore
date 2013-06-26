@@ -134,3 +134,9 @@ sources/apam.components/PlaceManagerSpec/target/classes/appsgate/lig/manager/loc
 sources/apam.components/RouterApAM/target/classes/appsgate/lig/router/impl/RouterImpl.class
 
 *.class
+
+sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
+
+sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
+
+sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
