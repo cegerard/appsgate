@@ -26,9 +26,9 @@ public class NodeIf extends Node {
 	/** node representing the boolean expression */
 	private NodeExpBool expBool;
 	/** sequence of nodes to interpret if the boolean expression is true */
-	private Node seqRulesTrue;
+	private NodeSeqRules seqRulesTrue;
 	/** sequence of nodes to interpret if the boolean expression is false */
-	private Node seqRulesFalse;
+	private NodeSeqRules seqRulesFalse;
 	
 	/**
 	 * Default constructor. Instantiate a node if

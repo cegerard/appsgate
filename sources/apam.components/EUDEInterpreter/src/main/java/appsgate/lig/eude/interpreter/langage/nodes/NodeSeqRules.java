@@ -1,7 +1,5 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import java.util.Vector;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.json.JSONArray;
@@ -10,6 +8,7 @@ import org.json.JSONException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import java.util.ArrayList;
 
 /**
  * This class represents a sequence of rules to evaluate
@@ -22,11 +21,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 public class NodeSeqRules extends Node {
 	// <seqRules> ::= <seqAndRules> { <opThenRule> <seqAndRules> }
 	
-	/**
-	 * Contains the block of rules separated by a "THEN" operator
-	 */
-	private Vector<Node> seqAndRules;
-	
+	/** Contains the block of rules separated by a "THEN" operator */
+	private ArrayList<NodeSeqAndRules> seqAndRules;
+	/** */
 	private int idCurrentSeqAndRules;
 	
 	/**
@@ -37,7 +34,7 @@ public class NodeSeqRules extends Node {
 	public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON) {
 		super(interpreter);
 		
-		seqAndRules = new Vector<Node>();
+		seqAndRules = new ArrayList<NodeSeqAndRules>();
 		
 		for (int i = 0; i < seqRulesJSON.length(); i++) {
 			try {
@@ -56,6 +53,28 @@ public class NodeSeqRules extends Node {
 		 */
 		pool = Executors.newSingleThreadExecutor();
 	}
+	
+	private void launchNextSeqAndRules() {
+		// get the next sequence of rules to launch
+		NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+		
+		// launch the sequence of rules
+		seqAndRule.addEndEventListener(this);
+		pool.submit(seqAndRule);
+		
+		// manage the interpretation
+		super.call();
+	}
+	
+	@Override
+	public Integer call() {
+		idCurrentSeqAndRules = 0;
+		fireStartEvent(new StartEvent(this));
+		
+		launchNextSeqAndRules();
+	
+		return null;
+	}
 
 	@Override
 	public void startEventFired(StartEvent e) {
@@ -66,27 +85,13 @@ public class NodeSeqRules extends Node {
 	@Override
 	public void endEventFired(EndEvent e) {
 		((Node)e.getSource()).removeEndEventListener(this);
-	}
-	
-	@Override
-	public Integer call() {
-		idCurrentSeqAndRules = 0;
-		fireStartEvent(new StartEvent(this));
+		idCurrentSeqAndRules++;
 		
-		for (Node n : seqAndRules) {
-			n.addEndEventListener(this);
-			try {
-				// temporaire - utiliser future<t> pour controler l'execution du thread
-				n.call();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (idCurrentSeqAndRules < seqAndRules.size()) {
+			launchNextSeqAndRules();
+		} else {
+			fireEndEvent(new EndEvent(this));
 		}
-		
-		fireEndEvent(new EndEvent(this));
-		
-		return null;
 	}
 
 	@Override

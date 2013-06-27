@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import java.util.logging.Level;
 
 public class InterpreterProgramTester {
 
@@ -27,13 +28,20 @@ public class InterpreterProgramTester {
 	public void newInst() {
 		try {
 			// interpreter.addProgram(loadFileJSON("test/simpleRuleJSON.js"));
-			interpreter.addProgram(loadFileJSON("test/philipsActionRuleJSON.js"));
-			interpreter.addProgram(loadFileJSON("test/testIfJSON.js"));
+			/* interpreter.addProgram(loadFileJSON("test/philipsActionRuleJSON.js"));
+			interpreter.addProgram(loadFileJSON("test/testIfJSON.js")); */
+			interpreter.addProgram(loadFileJSON("test/testWhenJSON.js"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		interpreter.callProgram("TestIf");
+		interpreter.callProgram("TestWhen");
+		/* try {
+			Thread.sleep(2000);
+		} catch (InterruptedException ex) {
+			java.util.logging.Logger.getLogger(InterpreterProgramTester.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		interpreter.callProgram("SimpleRule"); */
 	}
 	
 	/**

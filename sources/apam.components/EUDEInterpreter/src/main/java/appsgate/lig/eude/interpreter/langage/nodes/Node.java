@@ -67,6 +67,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * 
 	 * @return 
 	 */
+	@Override
 	public Integer call() {
 		
 		// disable new tasks from being submitted
@@ -124,8 +125,26 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * 
 	 * @param e The end event to fire for all the listeners
 	 */
-	protected void fireEndEvent(EndEvent e) {
+	protected synchronized void fireEndEvent(EndEvent e) {
+		Node n = (Node)e.getSource();
+		if (n instanceof NodeProgram) {
+			System.out.println("NodeProgram " + ((NodeProgram)n).getName() + " waking " + endEventListeners.size() + " nodes...");
+			for (int i = 0; i < endEventListeners.size(); i++) {
+				if (endEventListeners.get(i) instanceof NodeEvent) {
+					System.out.println("////// ###waking a node event...");
+					((NodeEvent)endEventListeners.get(i)).endEventFired(e);
+				}
+			}
+		}
+		
 	    for (int i = 0; i < endEventListeners.size(); i++) {
+			if (endEventListeners.get(i) instanceof Node) {
+				System.out.println("###waking a node...");
+			}
+			if (endEventListeners.get(i) instanceof NodeEvent) {
+				System.out.println("###### Waking up a NodeEvent");
+				// endEventListeners.get(i).notify();
+			}
 			endEventListeners.get(i).endEventFired(e);
 	    }
 	}
