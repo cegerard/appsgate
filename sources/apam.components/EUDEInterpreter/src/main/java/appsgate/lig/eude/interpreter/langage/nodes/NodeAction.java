@@ -27,7 +27,8 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeAction extends Node {
 	
-	private String deviceId;
+	private String targetType;
+	private String targetId;
 	private String methodName;
 	private JSONArray args;
 	private GenericCommand command;
@@ -42,7 +43,8 @@ public class NodeAction extends Node {
 	public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON) throws JSONException {
 		super(interpreter);
 
-		deviceId = ruleJSON.getString("deviceId");
+		targetType = ruleJSON.getString("targetType");
+		targetId = ruleJSON.getString("targetId");
 		methodName = ruleJSON.getString("methodName");
 		args = ruleJSON.getJSONArray("args");
 		
@@ -57,21 +59,36 @@ public class NodeAction extends Node {
 
 	@Override
 	public void endEventFired(EndEvent e) {
-		// TODO Auto-generated method stub
+		System.out.println("##### NodeAction - End event received!");
+		((Node)e.getSource()).removeEndEventListener(this);
+		fireEndEvent(new EndEvent(this));
 	}
 
 	@Override
 	public Integer call() {    
 	    fireStartEvent(new StartEvent(this));
 	
-	    // get the runnable from the interpreter
-	    command = interpreter.executeCommand(deviceId, methodName, args);
-	    pool.submit(command);
-	    
-	    // manage the pool
-	    super.call();
-		
-		fireEndEvent(new EndEvent(this));
+		if (targetType.equals("device")) {
+			// get the runnable from the interpreter
+			command = interpreter.executeCommand(targetId, methodName, args);
+			pool.submit(command);
+
+			// manage the pool
+			super.call();
+
+			fireEndEvent(new EndEvent(this));
+		} else if (targetType.equals("program")) {
+			NodeProgram p = interpreter.getNodeProgram(targetId);
+			if (p != null) {	
+				// listen to the end of the program
+				p.addEndEventListener(this);
+				
+				// launch the program
+				interpreter.callProgram(targetId);
+			} else {
+				fireEndEvent(new EndEvent(this));
+			}
+		}
 		
 		return null;
 	}

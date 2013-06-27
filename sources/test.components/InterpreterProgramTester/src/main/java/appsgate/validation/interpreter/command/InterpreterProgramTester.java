@@ -27,15 +27,16 @@ public class InterpreterProgramTester {
 	 */
 	public void newInst() {
 		try {
-			// interpreter.addProgram(loadFileJSON("test/simpleRuleJSON.js"));
+			interpreter.addProgram(loadFileJSON("test/simpleRuleJSON.js"));
+			interpreter.addProgram(loadFileJSON("test/testCallProgramJSON.js"));
 			/* interpreter.addProgram(loadFileJSON("test/philipsActionRuleJSON.js"));
 			interpreter.addProgram(loadFileJSON("test/testIfJSON.js")); */
-			interpreter.addProgram(loadFileJSON("test/testWhenJSON.js"));
+			// interpreter.addProgram(loadFileJSON("test/testWhenJSON.js"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		interpreter.callProgram("TestWhen");
+		interpreter.callProgram("TestCallProgram");
 		/* try {
 			Thread.sleep(2000);
 		} catch (InterruptedException ex) {

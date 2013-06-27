@@ -47,6 +47,8 @@ public class NodeSeqRules extends Node {
 			}
 		}
 		
+		System.out.println("###### nb SeqAndRules: " + seqAndRules.size());
+		
 		/*
 		 * Initialize the thread pool. This is a single thread pool because
 		 * the sequences of AndRules are separated by a "then", to be executed sequentially
@@ -63,7 +65,7 @@ public class NodeSeqRules extends Node {
 		pool.submit(seqAndRule);
 		
 		// manage the interpretation
-		super.call();
+		// super.call();
 	}
 	
 	@Override
@@ -88,8 +90,10 @@ public class NodeSeqRules extends Node {
 		idCurrentSeqAndRules++;
 		
 		if (idCurrentSeqAndRules < seqAndRules.size()) {
+			System.out.println("###### launching the next sequence of rules...");
 			launchNextSeqAndRules();
 		} else {
+			System.out.println("###### SeqThenRules ended...");
 			fireEndEvent(new EndEvent(this));
 		}
 	}
