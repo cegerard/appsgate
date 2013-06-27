@@ -10,6 +10,19 @@ import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
 
+/**
+ * 
+ * A generic command is generic representation of a method call.
+ * An instance of this class i a runnable object that contain all information
+ * of a method call.
+ * 
+ * The run method when it execute make a java introspection method call and return, if any,
+ * the response to the client who made the call.
+ * 
+ * @author Cédric Gérard
+ * @version 1.0.0
+ *
+ */
 public class GenericCommand implements Runnable {
 
 	/**

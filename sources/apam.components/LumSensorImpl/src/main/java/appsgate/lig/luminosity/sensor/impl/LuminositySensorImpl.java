@@ -11,6 +11,16 @@ import appsgate.lig.luminosity.sensor.messages.IlluminationNotificationMsg;
 import appsgate.lig.luminosity.sensor.spec.LuminositySensorSpec;
 import appsgate.lig.proxy.services.EnOceanService;
 
+/**
+ * This is the class that represent the EnOcean implementation of illumination sensor.
+ * 
+ * @author Cédric Gérard
+ * @since December 1, 2012
+ * @version 1.0.0
+ * 
+ * @see LuminositySensorSpec
+ * @see AbstractObjectSpec
+ */
 public class LuminositySensorImpl implements LuminositySensorSpec, AbstractObjectSpec {
 
 	/**

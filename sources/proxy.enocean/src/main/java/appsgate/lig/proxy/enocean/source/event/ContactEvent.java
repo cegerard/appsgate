@@ -9,20 +9,38 @@ import fr.imag.adele.apam.Instance;
 import fr.immotronic.ubikit.pems.enocean.event.out.ContactCloseEvent;
 import fr.immotronic.ubikit.pems.enocean.event.out.ContactOpenEvent;
 
+/**
+ * This class is a wrapper of enocean pem (Ubikit) events for contact sensors.
+ * 
+ * @author Cédric Gérard
+ * @since January 8, 2013
+ * @version 1.0.0
+ * 
+ */
 public class ContactEvent implements ContactCloseEvent.Listener,
 		ContactOpenEvent.Listener {
 
-	// class logger member
+	/**
+	 * class logger member
+	 */
 	private static Logger logger = LoggerFactory.getLogger(ContactEvent.class);
-	
+
+	/**
+	 * EnOcean iPojo Adapter
+	 */
 	private EnOceanProxy enocean;
 
+	/**
+	 * Build a new contact event
+	 * 
+	 * @param enocean
+	 */
 	public ContactEvent(EnOceanProxy enocean) {
 		super();
 		this.enocean = enocean;
 	}
 
-	//@Override
+	// @Override
 	public void onEvent(ContactOpenEvent arg0) {
 		logger.info("This is contact state change from "
 				+ arg0.getSourceItemUID() + " the contact sensor is now open.");
@@ -30,7 +48,7 @@ public class ContactEvent implements ContactCloseEvent.Listener,
 		instRef.setProperty("currentStatus", "false");
 	}
 
-	//@Override
+	// @Override
 	public void onEvent(ContactCloseEvent arg0) {
 		logger.info("This is contact state change from "
 				+ arg0.getSourceItemUID() + " the contact sensor is now close.");

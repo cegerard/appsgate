@@ -9,14 +9,32 @@ import fr.imag.adele.apam.Instance;
 import fr.immotronic.ubikit.pems.enocean.event.out.KeyCardInsertedEvent;
 import fr.immotronic.ubikit.pems.enocean.event.out.KeyCardTakenOutEvent;
 
+/**
+ * This class is a wrapper of enocean pem (Ubikit) events
+ * for key card sensors.
+ * 
+ * @author Cédric Gérard
+ * @since January 8, 2013
+ * @version 1.0.0
+ *
+ */
 public class KeyCardEvent implements KeyCardInsertedEvent.Listener,
 		KeyCardTakenOutEvent.Listener {
 
-	// class logger member
+	/**
+	 * class logger member
+	 */
 	private static Logger logger = LoggerFactory.getLogger(KeyCardEvent.class);
 
+	/**
+	 * EnOcean iPojo Adapter
+	 */
 	private EnOceanProxy enocean;
 
+	/**
+	 * Build a new key card event
+	 * @param enocean
+	 */
 	public KeyCardEvent(EnOceanProxy enocean) {
 		super();
 		this.enocean = enocean;

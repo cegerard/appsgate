@@ -7,6 +7,13 @@ import org.json.JSONObject;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 
+/**
+ * This class is an ApAM message for place notification
+ * 
+ * @author Cédric Gérard
+ * version 1.0.0
+ * @since February 26, 2013
+ */
 public class PlaceManagerNotification implements NotificationMsg {
 	
 	/**
@@ -24,7 +31,12 @@ public class PlaceManagerNotification implements NotificationMsg {
 	 */
 	private int type;
 
-	
+	/**
+	 * Build a new place notification object
+	 * @param locationId the identifier of the location
+	 * @param name the name of the location
+	 * @param type the type of the notification (Add, Remove or Update)
+	 */
 	public PlaceManagerNotification(String locationId, String name, int type) {
 		super();
 		this.locationId = locationId;

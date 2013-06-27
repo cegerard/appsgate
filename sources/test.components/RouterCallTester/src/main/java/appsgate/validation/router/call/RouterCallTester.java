@@ -8,7 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.router.spec.RouterApAMSpec;
 
-
+/**
+ * This class is use to validate the router return call
+ * @author Cédric Gérard
+ *
+ */
 public class RouterCallTester {
 	
 	private static String testDeviceId = "194.199.23.136-1";

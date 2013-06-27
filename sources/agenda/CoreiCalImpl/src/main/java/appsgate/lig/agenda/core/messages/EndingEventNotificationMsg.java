@@ -6,10 +6,25 @@ import org.json.JSONObject;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 
+/**
+ * instance of this class are ending agenda event notification.
+ * @author Cédric Gérard
+ * @since May 16, 2013
+ * @version 1.0.0
+ * 
+ * @see NotificationMsg
+ */
 public class EndingEventNotificationMsg implements NotificationMsg {
 
+	/**
+	 * attach event name
+	 */
 	private String eventName;
 	
+	/**
+	 * build a new ending event notification object 
+	 * @param name the ending event name
+	 */
 	public EndingEventNotificationMsg(String name) {
 		eventName = name;
 	}

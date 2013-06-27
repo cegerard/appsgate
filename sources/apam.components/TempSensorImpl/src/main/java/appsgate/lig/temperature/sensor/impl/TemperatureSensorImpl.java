@@ -11,6 +11,16 @@ import appsgate.lig.proxy.services.EnOceanService;
 import appsgate.lig.temperature.sensor.messages.TemperatureNotificationMsg;
 import appsgate.lig.temperature.sensor.spec.TemperatureSensorSpec;
 
+/**
+ * This is the class that represent the EnOcean implementation of temperature sensor.
+ * 
+ * @author Cédric Gérard
+ * @since December 1, 2012
+ * @version 1.0.0
+ * 
+ * @see TemperatureSensorSpec
+ * @see AbstractObjectSpec
+ */
 public class TemperatureSensorImpl implements TemperatureSensorSpec, AbstractObjectSpec {
 	
 	/**

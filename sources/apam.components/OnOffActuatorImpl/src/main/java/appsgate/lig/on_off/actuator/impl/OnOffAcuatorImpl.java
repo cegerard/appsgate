@@ -11,6 +11,16 @@ import appsgate.lig.on_off.actuator.messages.OnOffActuatorNotificationMsg;
 import appsgate.lig.on_off.actuator.spec.OnOffActuatorSpec;
 import appsgate.lig.proxy.services.EnOceanService;
 
+/**
+ * This is the class that represent the EnOcean implementation of On/Off actuator.
+ * 
+ * @author Cédric Gérard
+ * @since January 17, 2013
+ * @version 1.0.0
+ * 
+ * @see OnOffActuatorSpec
+ * @see AbstractObjectSpec
+ */
 public class OnOffAcuatorImpl implements OnOffActuatorSpec, AbstractObjectSpec {
 	
 	/**

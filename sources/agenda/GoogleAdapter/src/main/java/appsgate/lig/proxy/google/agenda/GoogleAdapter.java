@@ -49,6 +49,8 @@ import com.google.gdata.util.ServiceException;
  * @author Cédric Gérard
  * @since May 14, 2013
  * @version 0.0.1
+ * 
+ * @see AgendaAdapter
  */
 @Component
 @Instantiate

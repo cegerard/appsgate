@@ -6,7 +6,11 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.main.spec.AppsGateSpec;
 
 
-
+/**
+ * Class use to test Appgate command
+ * @author Cédric Gérard
+ *
+ */
 public class AppsGateMainCommandTester {
 	
 	private static String testDeviceId = "194.199.23.136-1";

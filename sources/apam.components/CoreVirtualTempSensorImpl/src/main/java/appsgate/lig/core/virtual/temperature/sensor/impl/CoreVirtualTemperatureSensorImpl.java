@@ -10,6 +10,16 @@ import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.temperature.sensor.messages.TemperatureNotificationMsg;
 import appsgate.lig.temperature.sensor.spec.TemperatureSensorSpec;
 
+/**
+ * This is the class that represent the virtual implementation of temperature sensor.
+ * 
+ * @author Cédric Gérard
+ * @since June 18, 2013
+ * @version 1.0.0
+ * 
+ * @see TemperatureSensorSpec
+ * @see AbstractObjectSpec
+ */
 public class CoreVirtualTemperatureSensorImpl implements AbstractObjectSpec,
 		TemperatureSensorSpec {
 

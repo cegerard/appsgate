@@ -19,6 +19,17 @@ import appsgate.lig.context.history.services.DataBasePullService;
 import appsgate.lig.context.history.services.DataBasePushService;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 
+/**
+ * The device name table implementation is an ApAM component to map
+ * core devices end user names.
+ * 
+ * @author Cédric Gérard
+ * @since June 7, 2013
+ * @version 1.0.0
+ *
+ *@see DeviceNameTableSpec
+ *
+ */
 public class DeviceNameTableImpl implements DeviceNameTableSpec {
 
 	/**

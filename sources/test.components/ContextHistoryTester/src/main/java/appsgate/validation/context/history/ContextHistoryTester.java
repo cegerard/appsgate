@@ -13,7 +13,11 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.context.history.services.DataBasePullService;
 import appsgate.lig.context.history.services.DataBasePushService;
 
-
+/**
+ * This class is use to validate the context history.
+ * @author Cédric Gérard
+ *
+ */
 public class ContextHistoryTester {
 	
 	/**

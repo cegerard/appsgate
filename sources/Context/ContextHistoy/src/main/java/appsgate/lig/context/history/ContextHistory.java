@@ -26,6 +26,19 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientOptions.Builder;
 import com.mongodb.MongoException;
 
+/**
+ * The context history is use to all every context component to save its state.
+ * It offer services to save the current state and to get the last state save
+ * to/from a mongo data base
+ * 
+ * @author Cédric Gérard
+ * @since June 16, 2013
+ * @version 1.0.0
+ * 
+ * @see DataBasePullService
+ * @see DataBasePushService
+ *
+ */
 @Component
 @Instantiate
 @Provides(specifications = { DataBasePullService.class, DataBasePushService.class })

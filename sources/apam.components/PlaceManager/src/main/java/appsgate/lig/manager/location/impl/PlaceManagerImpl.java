@@ -28,6 +28,8 @@ import appsgate.lig.manager.location.spec.PlaceManagerSpec;
  * @version 1.0.0
  * @since February 26, 2013
  * 
+ * @see PlaceManagerSpec
+ * 
  */
 public class PlaceManagerImpl implements PlaceManagerSpec {
 

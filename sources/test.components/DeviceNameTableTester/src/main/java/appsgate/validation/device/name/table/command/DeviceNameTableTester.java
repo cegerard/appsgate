@@ -4,7 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
-
+/**
+ * This is class is use to validate the device name table
+ * @author Cédric Gérard
+ *
+ */
 public class DeviceNameTableTester {
 	
 	private static String testDeviceId = "194.199.23.136-1";

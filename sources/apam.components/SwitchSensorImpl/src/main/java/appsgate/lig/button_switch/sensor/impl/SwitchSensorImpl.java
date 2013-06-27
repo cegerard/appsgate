@@ -11,6 +11,16 @@ import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.proxy.services.EnOceanService;
 
+/**
+ * This is the class that represent the EnOcean implementation of switch sensor.
+ * 
+ * @author Cédric Gérard
+ * @since December 1, 2012
+ * @version 1.0.0
+ * 
+ * @see SwitchSensorSpec
+ * @see AbstractObjectSpec
+ */
 public class SwitchSensorImpl implements SwitchSensorSpec, AbstractObjectSpec {
 	
 	/**

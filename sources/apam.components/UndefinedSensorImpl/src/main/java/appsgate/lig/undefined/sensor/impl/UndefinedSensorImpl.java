@@ -12,6 +12,16 @@ import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 import appsgate.lig.proxy.services.EnOceanService;
 import appsgate.lig.undefined.sensor.spec.UndefinedSensorSpec;
 
+/**
+ * This is the class that represent the EnOcean implementation of an undefined sensor.
+ * 
+ * @author Cédric Gérard
+ * @since December 1, 2012
+ * @version 1.0.0
+ * 
+ * @see UndefinedSensorSpec
+ * @see AbstractObjectSpec
+ */
 public class UndefinedSensorImpl implements UndefinedSensorSpec, AbstractObjectSpec {
 	
 	/**

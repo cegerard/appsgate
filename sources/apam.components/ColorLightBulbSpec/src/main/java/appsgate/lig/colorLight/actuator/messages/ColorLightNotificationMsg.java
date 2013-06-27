@@ -6,7 +6,13 @@ import org.json.JSONObject;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 
-
+/**
+ * This class is an ApAM message for color light event notification
+ * 
+ * @author Cédric Gérard
+ * version 1.0.0
+ * @since June 6, 2013
+ */
 public class ColorLightNotificationMsg implements NotificationMsg {
 
 	/**

@@ -7,6 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.router.spec.RouterApAMSpec;
 
+/**
+ * This class is use to validate the router command execution
+ * @author Cédric Gérard
+ *
+ */
 public class ExecuteCommandTester {
 
 	/**

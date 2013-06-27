@@ -6,6 +6,13 @@ import org.json.JSONObject;
 import appsgate.lig.logical.object.messages.NotificationMsg;
 import appsgate.lig.logical.object.spec.AbstractObjectSpec;
 
+/**
+ * This class is an ApAM message for move object notification
+ * 
+ * @author Cédric Gérard
+ * version 1.0.0
+ * @since February 26, 2013
+ */
 public class MoveObjectNotification implements NotificationMsg {
 	
 	/**
