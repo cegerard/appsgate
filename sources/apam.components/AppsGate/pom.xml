@@ -48,11 +48,6 @@
 			<version>2.1.0</version> <!-- WARNING: use local repository you need to export it into your own -->
 		</dependency>
 		<dependency>
-			<groupId>org.glassfish.grizzly.osgi</groupId>
-			<artifactId>grizzly-httpservice-bundle</artifactId>
-			<version>2.2.8</version>
-		</dependency>
-		<dependency>
 			<groupId>appsGate.bundle</groupId>
 			<artifactId>RouterApAMSpec</artifactId>
 			<version>1.0.0</version>
