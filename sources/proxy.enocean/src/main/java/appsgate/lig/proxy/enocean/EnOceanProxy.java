@@ -323,6 +323,40 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 	// @Override
 	public void log(String arg0) {
 		logger.info("!EnOcean event! " + arg0);
+		
+		/****************************
+		 * EnOcean telegram parsing * 
+		 * for not supported event	*				
+		 ****************************/
+		//RECV < a5 5a b 5 0 0 0 0 0 27 b3 ed 20 f7 > RRT from 27b3ed, RPS MSB [ 0 0 0 0 ] LSB
+		String[] splited = arg0.split("from");
+		String split1 = splited[1];
+		String id = "";
+		for(int i=1; i<7; i++ ) {
+			id += split1.charAt(i);
+		}
+		id= "ENO"+id;
+		Instance inst = getSensorInstance(id);
+		if(inst != null){
+			logger.info("Paired sensor found "+id);
+			//TODO replace the use of userTyper by something directly on EnOceanProfile
+			String userType = inst.getProperty("userType");
+			if(userType.contentEquals("2")) { // Switch sensor
+				//Check the event
+				String split0 = splited[0];
+				String[] splited1 = split0.split("<");
+				String enoceanTg = splited1[1].trim();
+				if(enoceanTg.charAt(10) == '0') {
+					//The switch is set to neutral position
+					String switchNumber = inst.getProperty("switchNumber");
+					logger.info("The switch " + id + ", state changed to neutral with button  " + switchNumber);
+					inst.setProperty("buttonStatus", "none");
+					inst.setProperty("switchNumber", switchNumber);
+					inst.setProperty("switchState", true);
+				}
+			}
+			
+		}
 	}
 
 	/**
@@ -607,6 +641,7 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 		AddItemEvent addItEvent = new AddItemEvent(sensorID);
 
 		if (doesCapabilitiesHaveToBeSelected) {
+			logger.debug("item which capabilities have to be selected");
 			addItEvent.addCapabilities(capList.toArray(new String[2]));
 			
 			ArrayList<EnOceanProfiles> profilesList = new ArrayList<EnOceanProfiles>();
@@ -619,9 +654,11 @@ public class EnOceanProxy implements PhysicalEnvironmentModelObserver,
 			}
 			
 			tempEventCapabilitiesMap.put(sensorID, profilesList);
+			logger.debug("Capability selected");
 		}
 		
 		eventGate.postEvent(addItEvent);
+		logger.debug("item validated "+sensorID);
 	}
 	
 	private void instanciateItem (PhysicalEnvironmentItem item) {
