@@ -201,7 +201,7 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	public boolean On() {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeId, "on", true)) {
-			notifyChanges("value", "on");
+			notifyChanges("value", "true");
 			return true;
 		}
 		
@@ -211,7 +211,7 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 	@Override
 	public boolean Off() {		
 		if(PhilipsBridge.setAttribute(lightBridgeId, "on", false)) {
-			notifyChanges("value", "off");
+			notifyChanges("value", "false");
 			return true;
 		}
 		
