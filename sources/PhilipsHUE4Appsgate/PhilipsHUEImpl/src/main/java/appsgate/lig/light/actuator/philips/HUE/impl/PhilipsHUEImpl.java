@@ -409,6 +409,8 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		descr.put("status", status);
 		descr.put("value", getCurrentState());
 		descr.put("color", getLightColor());
+		descr.put("saturation", getLightColorSaturation());
+		descr.put("brightness", getLightBrightness());
 		
 		return descr;
 	}
