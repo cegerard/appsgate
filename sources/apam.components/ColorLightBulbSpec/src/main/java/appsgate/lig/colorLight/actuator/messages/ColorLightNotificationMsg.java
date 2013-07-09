@@ -57,7 +57,7 @@ public class ColorLightNotificationMsg implements NotificationMsg {
 		JSONObject notif = new JSONObject();
 		notif.put("objectId", source.getAbstractObjectId());
 		notif.put("varName", varName);
-		notif.put("value", value.equalsIgnoreCase("true"));
+		notif.put("value", value);
 		
 		return notif;
 	}

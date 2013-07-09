@@ -29,7 +29,7 @@ import appsgate.lig.main.spec.AppsGateSpec;
 
 
 /**
- * This class is the central component for Appsgate server.
+ * This class is the central component for AppsGate server.
  * It allow client part to make methods call from HMI managers.
  * 
  *  It expose Appsgate server as an UPnP device to gather informations about

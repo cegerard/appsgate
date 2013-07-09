@@ -1,7 +1,7 @@
 package appsgate.lig.main.spec;
 
 /**
- * AppsGate specification that define all method that a client ca remote call
+ * AppsGate specification that define all method that a client can remote call
  * to interact with the Appsgate system.
  * 
  * @author Cedric Gérard
