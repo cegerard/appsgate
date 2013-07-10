@@ -145,4 +145,10 @@ public interface ColorLightSpec {
 	 * @return true if the light brightness has decreased, false otherwise
 	 */
 	public boolean decreaseBrightness(int step);
+	
+	/**
+	 * Invert the light mode
+	 * @return true if the light state changed, false otherwise
+	 */
+	public boolean toggle();
 }

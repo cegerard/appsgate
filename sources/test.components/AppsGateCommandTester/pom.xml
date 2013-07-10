@@ -10,7 +10,8 @@
     <artifactId>AppsGateCommandTester</artifactId>
     <version>1.0.0</version>
     <packaging>bundle</packaging>
-    <name>AppsGateCommandTester OSGi Bundle</name>
+    
+    <name>###### AppsGateCommandTester OSGi Bundle ######</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,9 +35,9 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.imag.adele.apam</groupId>
-			<artifactId>apam-core</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -61,7 +62,7 @@
 			<plugin>
 				<groupId>fr.imag.adele.apam</groupId>
 				<artifactId>apam-maven-plugin</artifactId>
-				<version>0.0.2-SNAPSHOT</version>
+				<version>${apam.current.version}</version>
 				<executions>
 					<execution>
 						<goals>

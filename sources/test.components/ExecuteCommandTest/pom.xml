@@ -9,6 +9,7 @@
     
     <artifactId>ExecuteCommandTest</artifactId>
     <packaging>bundle</packaging>
+    
     <name>###### ExecuteCommandTest ######</name>
 
     <properties>
@@ -34,11 +35,6 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.imag.adele.apam</groupId>
-			<artifactId>apam-core</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>1.8.0</version>
@@ -61,7 +57,7 @@
 			<plugin>
 				<groupId>fr.imag.adele.apam</groupId>
 				<artifactId>apam-maven-plugin</artifactId>
-				<version>0.0.2-SNAPSHOT</version>
+				<version>${apam.current.version}</version>
 				<executions>
 					<execution>
 						<goals>

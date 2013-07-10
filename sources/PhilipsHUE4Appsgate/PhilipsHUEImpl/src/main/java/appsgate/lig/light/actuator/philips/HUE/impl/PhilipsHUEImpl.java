@@ -217,6 +217,15 @@ public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
 		
 		return false;
 	}
+	
+	@Override
+	public boolean toggle() {
+		if(getCurrentState()) {
+			return Off();
+		} else {
+			return On();
+		}
+	}
 
 	@Override
 	public boolean setColor(long color) {

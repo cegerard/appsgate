@@ -10,36 +10,55 @@
 	<name>Mail OSGi Bundle</name>
 
 	<properties>
+		<!-- apam version -->
+		<apam.current.version>0.0.2</apam.current.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<!-- Repositories List -->
-	<repositories>
-	    <repository>
-	      <id>Java.net snapshots</id>  
-	      <url>https://maven.java.net/content/repositories/snapshots/</url>
-	      <snapshots>
-			<enabled>true</enabled>
-	      </snapshots>
-	    </repository>
-	    
-	    <repository>
-	      <id>Java.net public</id>  
-	      <url>https://maven.java.net/content/groups/public/</url>
-	      <snapshots>
-			<enabled>true</enabled>
-	      </snapshots>
-	    </repository>
-	    
-	    
-	    
-		<repository>
-			<id>apam-repo</id>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apam-plugin-repository</id>
 			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>apam-plugin-repository-release</id>
+			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- Repositories List -->
+	<repositories>
+		<repository>
+			<id>Java.net snapshots</id>
+			<url>https://maven.java.net/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
+
+		<repository>
+			<id>Java.net public</id>
+			<url>https://maven.java.net/content/groups/public/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+		<!-- cloudbee repo -->
+		<repository>
+			<id>cloudbees-ApAM-release</id>
+			<name>Cloudbees Private Repository - ApAM - Release </name>
+			<url>https://repository-apam.forge.cloudbees.com/release/</url>
+		</repository>
+		<repository>
+			<id>cloudbees-ApAM-snapshot</id>
+			<name>Cloudbees Private Repository - ApAM - Snapshot</name>
+			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
+		</repository>
+
 	</repositories>
 
 	<!-- Dependencies Description -->
@@ -54,8 +73,8 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-		
-		
+
+
 	</dependencies>
 
 	<!-- Build Description -->
@@ -74,7 +93,7 @@
 			<plugin>
 				<groupId>fr.imag.adele.apam</groupId>
 				<artifactId>apam-maven-plugin</artifactId>
-				<version>0.0.2-SNAPSHOT</version>
+				<version>${apam.current.version}</version>
 				<executions>
 					<execution>
 						<goals>

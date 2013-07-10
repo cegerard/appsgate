@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>appsGate.bundle</groupId>
@@ -10,7 +11,7 @@
 
 	<properties>
 		<!-- apam version -->
-		<apam.current.version>0.0.2-SNAPSHOT</apam.current.version>
+		<apam.current.version>0.0.2</apam.current.version>
 		<!-- Dependencies version -->
 		<ipojo.plugin.version>1.8.0</ipojo.plugin.version>
 		<bundle.plugin.version>2.3.7</bundle.plugin.version>
@@ -26,6 +27,10 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>apam-plugin-repository-release</id>
+			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -146,9 +151,6 @@
 
 
 	<modules>
-
-
-
 		<module>AbstractObjectSpec</module>
 		<module>TempSensorSpec</module>
 		<module>LumSensorSpec</module>
@@ -163,18 +165,17 @@
 		<module>UndefinedSensorImpl</module>
 		<module>UndefinedSensorSpec</module>
 		<module>RouterApAM</module>
-    <module>PlaceManager</module>
-    <module>PlaceManagerSpec</module>
-    <module>OnOffActuatorSpec</module>
-    <module>OnOffActuatorImpl</module>
-    <module>AppsGate</module>
-    <module>EUDEInterpreter</module>
-    <module>EUDEInterpreterSpec</module>
-    <module>ColorLightBulbSpec</module>
-    <module>RouterApAMSpec</module>
-    <module>AppsGateSpec</module>
-    <module>CoreVirtualTempSensorImpl</module>
-    <module>EUDE_InterpreterSpec</module>
-  </modules>
+		<module>PlaceManager</module>
+		<module>PlaceManagerSpec</module>
+		<module>OnOffActuatorSpec</module>
+		<module>OnOffActuatorImpl</module>
+		<module>AppsGate</module>
+		<module>EUDEInterpreter</module>
+		<module>EUDEInterpreterSpec</module>
+		<module>ColorLightBulbSpec</module>
+		<module>RouterApAMSpec</module>
+		<module>AppsGateSpec</module>
+		<module>CoreVirtualTempSensorImpl</module>
+	</modules>
 
 </project>

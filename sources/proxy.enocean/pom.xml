@@ -13,6 +13,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<!-- Maven Repo -->
+	<repositories>
+		<!-- cloudbee repo -->
+		<repository>
+			<id>cloudbees-ApAM-release</id>
+			<name>Cloudbees Private Repository - ApAM - Release </name>
+			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
+		</repository>
+	</repositories>
+
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
@@ -33,7 +43,7 @@
 		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>

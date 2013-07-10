@@ -114,6 +114,10 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 			}
 		}
 		
+		if(name.contentEquals("") && !usrId.contentEquals("")) {
+			return getName(objectId, "");
+		}
+		
 		return name;
 	}
 

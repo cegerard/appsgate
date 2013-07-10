@@ -52,17 +52,6 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-<!-- 						<Export-Package> -->
-<!-- 							org.apache.commons.*, -->
-<!-- 							appsgate.lig.proxy.agenda.interfaces -->
-<!-- 						</Export-Package> -->
-<!-- 						<Import-Package> -->
-<!-- 							com.google.gdata.*, -->
-<!-- 							net.fortuna.ical4j.*, -->
-<!-- 							javax.servlet, -->
-<!-- 							org.apache.log4j, -->
-<!-- 							org.slf4j -->
-<!-- 						</Import-Package> -->
 					</instructions>
 				</configuration>
 			</plugin>

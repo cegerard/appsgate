@@ -9,7 +9,7 @@
   
   <properties>
 		<!-- apam version -->
-		<apam.current.version>0.0.2-SNAPSHOT</apam.current.version>
+		<apam.current.version>0.0.2</apam.current.version>
 		<!-- Dependencies version -->
 		<ipojo.plugin.version>1.8.0</ipojo.plugin.version>
 		<bundle.plugin.version>2.3.7</bundle.plugin.version>
@@ -25,6 +25,10 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>apam-plugin-repository-release</id>
+			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
 		</pluginRepository>
 	</pluginRepositories>
 

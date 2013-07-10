@@ -10,17 +10,36 @@
 	<name>Meteo OSGi Bundle</name>
 
 	<properties>
+		<!-- apam version -->
+		<apam.current.version>0.0.2</apam.current.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<!-- Repositories List -->
-	<repositories>
-		<repository>
-			<id>apam-repo</id>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apam-plugin-repository</id>
 			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>apam-plugin-repository-release</id>
+			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- Repositories List -->
+	<repositories>
+		<repository>
+			<id>cloudbees-ApAM-release</id>
+			<name>Cloudbees Private Repository - ApAM - Release </name>
+			<url>https://repository-apam.forge.cloudbees.com/release/</url>
+		</repository>
+		<repository>
+			<id>cloudbees-ApAM-snapshot</id>
+			<name>Cloudbees Private Repository - ApAM - Snapshot</name>
+			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
 		</repository>
 	</repositories>
 
@@ -49,7 +68,7 @@
 			<plugin>
 				<groupId>fr.imag.adele.apam</groupId>
 				<artifactId>apam-maven-plugin</artifactId>
-				<version>0.0.2-SNAPSHOT</version>
+				<version>${apam.current.version}</version>
 				<executions>
 					<execution>
 						<goals>
