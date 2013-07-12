@@ -22,5 +22,5 @@
       <p n='singleton' v='true' />
       <p n='version' t='version' v='1.0.0' />
    </capability>
-   <require name='apam-component' filter='(&amp;(name=PlaceManagerSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification dependency toward PlaceManagerSpec</require>
+   <require name='apam-component' filter='(&amp;(name=PlaceManagerSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification relation toward PlaceManagerSpec</require>
 </obr> 

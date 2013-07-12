@@ -20,5 +20,5 @@
       <p n='definition-lightBridgeId' t='string' v='' />
       <p n='version' t='version' v='0.0.1.SNAPSHOT' />
    </capability>
-   <require name='apam-component' filter='(name=ColorLightSpec)' extend='false' multiple='false' optional='false'> specification dependency toward ColorLightSpec</require>
+   <require name='apam-component' filter='(name=ColorLightSpec)' extend='false' multiple='false' optional='false'> specification relation toward ColorLightSpec</require>
 </obr> 

@@ -18,5 +18,5 @@
       <p n='definition-status' t='string' v='1' />
       <p n='version' t='version' v='1.0.0' />
    </capability>
-   <require name='apam-component' filter='(&amp;(name=UndefinedSensorSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification dependency toward UndefinedSensorSpec</require>
+   <require name='apam-component' filter='(&amp;(name=UndefinedSensorSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification relation toward UndefinedSensorSpec</require>
 </obr> 

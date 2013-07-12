@@ -18,17 +18,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<!-- Repositories List -->
-	<repositories>
-		<repository>
-			<id>apam-repo</id>
-			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
@@ -48,7 +37,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>
-			<artifactId>PhilipesHUEAdapter</artifactId>
+			<artifactId>PhilipsHUEAdapter</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

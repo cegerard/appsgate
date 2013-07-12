@@ -10,6 +10,8 @@
 	<name>EnOcean proxy OSGi Bundle</name>
 
 	<properties>
+		<!-- apam version -->
+		<apam.current.version>0.0.3</apam.current.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -21,6 +23,11 @@
 			<name>Cloudbees Private Repository - ApAM - Release </name>
 			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
 		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>cloudbees-ApAM-snapshot</id> -->
+<!-- 			<name>Cloudbees Private Repository - ApAM - Snapshot</name> -->
+<!-- 			<url>https://repository-apam.forge.cloudbees.com/snapshot/repository/</url> -->
+<!-- 		</repository> -->
 	</repositories>
 
 	<!-- Dependencies Description -->
@@ -43,7 +50,7 @@
 		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>
-			<version>0.0.2</version>
+			<version>${apam.current.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsGate.bundle</groupId>

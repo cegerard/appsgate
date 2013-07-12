@@ -8,7 +8,7 @@
       <p n='name' v='SwitchSensorImpl' />
       <p n='component-type' v='implementation' />
       <p n='impl-name' v='SwitchSensorImpl' />
-      <p n='provide-interfaces' v='appsgate.lig.button_switch.sensor.spec.SwitchSensorSpec,appsgate.lig.logical.object.spec.AbstractObjectSpec' />
+      <p n='provide-interfaces' v='appsgate.lig.logical.object.spec.AbstractObjectSpec,appsgate.lig.button_switch.sensor.spec.SwitchSensorSpec' />
       <p n='provide-messages' v='appsgate.lig.logical.object.messages.NotificationMsg' />
       <p n='provide-specification' v='SwitchSensorSpec' />
       <p n='definition-deviceName' t='string' v='Unknown' />
@@ -23,5 +23,5 @@
       <p n='definition-buttonStatus' t='string' v='false' />
       <p n='version' t='version' v='1.0.0' />
    </capability>
-   <require name='apam-component' filter='(&amp;(name=SwitchSensorSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification dependency toward SwitchSensorSpec</require>
+   <require name='apam-component' filter='(&amp;(name=SwitchSensorSpec)(version&gt;=1.0.0))' extend='false' multiple='false' optional='false'> specification relation toward SwitchSensorSpec</require>
 </obr> 

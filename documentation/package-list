@@ -34,11 +34,16 @@ appsgate.lig.logical.object.spec
 appsgate.lig.luminosity.sensor.impl
 appsgate.lig.luminosity.sensor.messages
 appsgate.lig.luminosity.sensor.spec
+appsgate.lig.mail
+appsgate.lig.mail.gmail
+appsgate.lig.mail.gmail.main
 appsgate.lig.main.impl
 appsgate.lig.main.spec
 appsgate.lig.manager.location.impl
 appsgate.lig.manager.location.messages
 appsgate.lig.manager.location.spec
+appsgate.lig.meteo
+appsgate.lig.meteo.yahoo
 appsgate.lig.on_off.actuator.impl
 appsgate.lig.on_off.actuator.messages
 appsgate.lig.on_off.actuator.spec
@@ -63,5 +68,6 @@ appsgate.lig.upnp.media.proxy
 appsgate.validation.context.history
 appsgate.validation.device.name.table.command
 appsgate.validation.interpreter.command
+appsgate.validation.main.command
 appsgate.validation.router.call
 appsgate.validation.router.command
