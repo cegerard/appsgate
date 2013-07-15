@@ -13,6 +13,8 @@ public interface Meteo {
 	
 	String getLocation();
 	
+	void setLocation(String placeName);
+	
 	Integer getCurrentTemperature();
 	
 	Calendar getDatePublication();

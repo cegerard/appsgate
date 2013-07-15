@@ -6,10 +6,12 @@
 	<implementation name="YahooMeteoImpl" classname="appsgate.lig.meteo.yahoo.YahooMeteoImplementation" interfaces="appsgate.lig.meteo.Meteo">
 		<callback onInit="start" onRemove="stop" />
 		<definition name="woeid" type="string" field="WOEID" internal="false"/>
+        <definition name="location" type="string" field="location" internal="false" method="setLocation"/>
 		<definition name="auto-refresh" type="int" field="refreshRate" internal="false"/>
 		<definition name="temperature" type="int" field="temperature" internal="false"/>
 	</implementation>
    
+   <!-- Old Instance to check if still working -->
    <apam-instance name="meteo-0" implementation="YahooMeteoImpl">
        <property name="woeid" value="12724717"/>
        <property name="auto-refresh" value="10000"/>

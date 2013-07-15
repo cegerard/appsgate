@@ -24,6 +24,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import appsgate.lig.meteo.DayForecast;
 import appsgate.lig.meteo.Meteo;
+import appsgate.lig.meteo.YahooGeoPlanet;
 
 /**
  * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit)
@@ -79,6 +80,8 @@ public class YahooMeteoImplementation implements Meteo {
 	};
 
 	public YahooMeteoImplementation() {
+	    // Setting default location to Grenoble
+	    this("593720");
 
 	}
 
@@ -297,6 +300,18 @@ public class YahooMeteoImplementation implements Meteo {
 
 	public Integer getCurrentTemperature() {
 		return temperature;
+	}
+
+	/* (non-Javadoc)
+	 * @see appsgate.lig.meteo.Meteo#setLocation(java.lang.String)
+	 */
+	public void setLocation(String placeName) {
+	    YahooGeoPlanet geoPlanet = new YahooGeoPlanetImpl();
+	    String newWOEID = geoPlanet.getWOEIDFromPlaceName(placeName);
+	    if(newWOEID!= null) {
+		WOEID = newWOEID;
+		location=placeName;
+	    }
 	}
 
 }
