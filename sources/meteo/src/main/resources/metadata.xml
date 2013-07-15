@@ -3,7 +3,11 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
     
-	<implementation name="YahooMeteoImpl" classname="appsgate.lig.meteo.yahoo.YahooMeteoImplementation" interfaces="appsgate.lig.meteo.Meteo">
+	<specification name="meteo-service-specification"
+		interfaces="appsgate.lig.meteo.Meteo">
+	</specification>
+    
+	<implementation name="YahooMeteoImpl" classname="appsgate.lig.meteo.yahoo.YahooMeteoImplementation" specification="meteo-service-specification">
 		<callback onInit="start" onRemove="stop" />
 		<definition name="woeid" type="string" field="WOEID" internal="false"/>
         <definition name="location" type="string" field="location" internal="false" method="setLocation"/>

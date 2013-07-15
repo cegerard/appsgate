@@ -15,6 +15,10 @@ import fr.imag.adele.apam.Instance;
 @Instantiate
 @org.apache.felix.ipojo.annotations.Component(public_factory = false, immediate = true, name = "apam.universal.shell")
 @Provides(specifications = YahooMeteoGogoCommand.class)
+/**
+ * Gogo command that helps show retrieve information from the service without having to implement a client
+ * @author jnascimento
+ */
 public class YahooMeteoGogoCommand {
 
 	@Requires
@@ -34,19 +38,35 @@ public class YahooMeteoGogoCommand {
 
 	public void meteoShow(PrintWriter out, String... args){
 		
-		Instance instance=CST.apamResolver.findInstByName(null, "meteo-0");
-		Meteo meteo=(Meteo)instance.getServiceObject();
+		for(Instance instance:CST.componentBroker.getInsts()){
+			
+			//Only those services that implement this spec are acceptable
+			if(!instance.getSpec().getName().equals("meteo-service-specification")) continue;
+			
+			out.print(String.format("Apam-Instance: %s\n", instance.getName()));
+			
+			Meteo meteo=(Meteo)instance.getServiceObject();
 		
-		out.println(meteo);
+			out.println(meteo);
+			
+			out.print(String.format("/Apam-Instance: %s \n", instance.getName()));
+			
+		}
 		
 	}
 	
 	public void meteoFetch(PrintWriter out, String... args){
-		
-		Instance instance=CST.apamResolver.findInstByName(null, "meteo-0");
-		Meteo meteo=(Meteo)instance.getServiceObject();
-		
-		meteo.fetch();
+	
+		for(Instance instance:CST.componentBroker.getInsts()){
+			
+			//Only those services that implement this spec are acceptable
+			if(!instance.getSpec().getName().equals("meteo-service-specification")) continue;
+			
+			Meteo meteo=(Meteo)instance.getServiceObject();
+			
+			meteo.fetch();
+			
+		}
 		
 	}
 	
