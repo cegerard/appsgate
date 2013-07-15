@@ -10,49 +10,64 @@
 	<name>Meteo OSGi Bundle</name>
 
 	<properties>
-		<!-- apam version -->
 		<apam.current.version>0.0.3</apam.current.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<pluginRepositories>
-<!-- 		<pluginRepository> -->
-<!-- 			<id>apam-plugin-repository</id> -->
-<!-- 			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url> -->
-<!-- 			<snapshots> -->
-<!-- 				<enabled>true</enabled> -->
-<!-- 			</snapshots> -->
-<!-- 		</pluginRepository> -->
 		<pluginRepository>
 			<id>apam-plugin-repository-release</id>
 			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
-	<!-- Repositories List -->
 	<repositories>
 		<repository>
 			<id>cloudbees-ApAM-release</id>
 			<name>Cloudbees Private Repository - ApAM - Release </name>
 			<url>https://repository-apam.forge.cloudbees.com/release/</url>
 		</repository>
-<!-- 		<repository> -->
-<!-- 			<id>cloudbees-ApAM-snapshot</id> -->
-<!-- 			<name>Cloudbees Private Repository - ApAM - Snapshot</name> -->
-<!-- 			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url> -->
-<!-- 		</repository> -->
 	</repositories>
 
-	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.8.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.knowhowlab.osgi.shell</groupId>
+			<artifactId>felix-gogo</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.knowhowlab.osgi.shell</groupId>
+			<artifactId>felix</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>apam-core</artifactId>
+			<groupId>fr.imag.adele.apam</groupId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
-	<!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>

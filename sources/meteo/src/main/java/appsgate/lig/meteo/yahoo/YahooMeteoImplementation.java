@@ -30,7 +30,7 @@ import appsgate.lig.meteo.YahooGeoPlanet;
  * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit)
  * but gives maximum 2 days forecast, as input its required the WOEID
  * (http://developer.yahoo.com/geo/geoplanet/guide/concepts.html#hierarchy)
- * which indicats the location for the forecast. This class parses the
+ * which indicates the location for the forecast. This class parses the
  * information obtained in from weather yahoo service: e.g.
  * http://weather.yahooapis.com/forecastrss?w=12724717&u=c
  * 
@@ -46,10 +46,11 @@ public class YahooMeteoImplementation implements Meteo {
 
 	private Logger logger = Logger.getLogger(YahooMeteoImplementation.class
 			.getSimpleName());
+	
+	public Integer refreshRate;
 
 	URL url;
 	String WOEID;
-	public Integer refreshRate;
 	Integer temperature;
 
 	private String location;
@@ -72,7 +73,7 @@ public class YahooMeteoImplementation implements Meteo {
 
 			if (YahooMeteoImplementation.this.refreshRate != -1) {
 
-				logger.info("Refreshing meteo data");
+				logger.fine("Refreshing meteo data");
 				YahooMeteoImplementation.this.fetch();
 
 			}
@@ -214,6 +215,9 @@ public class YahooMeteoImplementation implements Meteo {
 	 */
 	public Meteo fetch() {
 		try {
+			
+			feedUrl = String.format(feedUrlTemplate, WOEID);
+			
 			this.url = new URL(feedUrl);
 
 			// First create a new XMLInputFactory
@@ -229,7 +233,6 @@ public class YahooMeteoImplementation implements Meteo {
 		} catch (XMLStreamException e) {
 			throw new RuntimeException(e);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -261,7 +264,7 @@ public class YahooMeteoImplementation implements Meteo {
 	}
 
 	public Calendar getDatePublication() {
-		return null;
+		return this.datePublication;
 	}
 
 	public List<DayForecast> getForecast() {
@@ -278,15 +281,13 @@ public class YahooMeteoImplementation implements Meteo {
 
 	public void start() {
 
-		feedUrl = String.format(feedUrlTemplate, WOEID);
-
 		fetch();
 
 		/**
 		 * Configure auto-refresh meteo data
 		 */
 		if (refreshRate != null && refreshRate != -1) {
-			logger.info("Configuring auto-refresh for :" + refreshRate);
+			logger.fine("Configuring auto-refresh for :" + refreshRate);
 			refreshTimer.scheduleAtFixedRate(refreshtask, 0,
 					refreshRate.longValue());
 		}
@@ -300,6 +301,28 @@ public class YahooMeteoImplementation implements Meteo {
 
 	public Integer getCurrentTemperature() {
 		return temperature;
+	}
+	
+	@Override
+	public String toString(){
+		
+		if(this.getLastFetch()==null){
+			return "No info retrieved, wait for the next fetch";
+		}
+		
+		StringBuffer sb=new StringBuffer();
+		sb.append(String.format("location %s \n",this.location));
+		sb.append(String.format("current temperature %s \n",this.getCurrentTemperature()));
+		if(this.getDatePublication()!=null)
+			sb.append(String.format("meteo report from %1$te/%1$tm/%1$tY %1$tH:%1$tM \n",this.getDatePublication()));
+		sb.append(String.format("osgi meteo polled report at %1$te/%1$tm/%1$tY %1$tH:%1$tM:%1$tS \n",this.getLastFetch().getTime()));
+		sb.append("-- forecasts --\n");
+		for(DayForecast forecast:this.getForecast()){
+			sb.append(String.format("Date: %1$te/%1$tm/%1$tY (min:%2$s,max:%3$s) \n",forecast.getDate(),forecast.getMin(),forecast.getMax()));
+		}
+		sb.append("-- /forecasts --\n");
+		
+		return sb.toString();
 	}
 
 	/* (non-Javadoc)

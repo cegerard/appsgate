@@ -19,7 +19,7 @@
    
    <!-- 
    
-   <implementation name="YahooMeteoClientImpl" classname="appsgate.lig.meteo.yahoo.RSSReader">
+   <implementation name="YahooMeteoClientImpl" classname="appsgate.lig.meteo.yahoo.main.YahooMeteoTest">
 		<callback onInit="start" onRemove="stop" />
 		<dependency field="meteo" />
 	</implementation>

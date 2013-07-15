@@ -1,9 +1,10 @@
-package appsgate.lig.meteo.yahoo;
+package appsgate.lig.meteo.yahoo.main;
 
 import appsgate.lig.meteo.DayForecast;
 import appsgate.lig.meteo.Meteo;
+import appsgate.lig.meteo.yahoo.YahooMeteoImplementation;
 
-public class RSSReader {
+public class YahooMeteoTest {
 
 	Meteo meteo;
 	
@@ -23,14 +24,17 @@ public class RSSReader {
 	}	
 
 	/**
-	 * Main method to test statically without deplaying this instance
+	 * Main method to test statically without displaying this instance
 	 * @param args
 	 */
 	
 	public static void main(String[] args) {
 
 		YahooMeteoImplementation meteo = new YahooMeteoImplementation("593720");//12724717
+
 		meteo.start();
+		
+		System.out.println(meteo);
 		
 		System.out.println(meteo.getLocation());
 		for (DayForecast pre : meteo.getForecast()) {
