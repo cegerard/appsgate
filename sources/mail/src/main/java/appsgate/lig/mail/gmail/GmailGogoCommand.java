@@ -41,7 +41,10 @@ public class GmailGogoCommand {
 
 	@ServiceProperty(name = "org.knowhowlab.osgi.shell.commands", value = "{}")
 	String[] universalShell_groupCommands = new String[] {
-			"mailShow#show last 5 mails", "mailSend#send mail" };
+			"mailShow#show last 5 mails", 
+			"mailSend#send mail", 
+			"mailFetch#fetch mail from the mail server",
+			"mailInfo#shows information about mail service"};
 
 	public void mailShow(PrintWriter out, String... args)
 			throws MessagingException {
@@ -133,7 +136,69 @@ public class GmailGogoCommand {
 		}
 
 	}
+	
+	public void mailFetch(PrintWriter out, String... args)
+			throws AddressException, MessagingException {
 
+		Set<Instance> instances = new HashSet<Instance>();
+
+		String instanceParam = getArgumentValue("-instance", args);
+
+		if (instanceParam != null) {
+			Instance instance = CST.componentBroker.getInst(instanceParam);
+			instances.add(instance);
+		} else {
+			for (Instance instance : CST.componentBroker.getInsts()) {
+				if (!instance.getSpec().getName()
+						.equals("mail-service-specification"))
+					continue;
+				instances.add(instance);
+			}
+		}
+
+		for (Instance inst : instances) {
+
+			Mail mailService = (Mail) inst.getServiceObject();
+
+			mailService.fetch();
+			
+			out.println("fetch performed.");
+
+		}
+
+	}
+
+	public void mailInfo(PrintWriter out, String... args){
+		
+		Set<Instance> instances = new HashSet<Instance>();
+
+		String instanceParam = getArgumentValue("-instance", args);
+
+		if (instanceParam != null) {
+			Instance instance = CST.componentBroker.getInst(instanceParam);
+			instances.add(instance);
+		} else {
+			for (Instance instance : CST.componentBroker.getInsts()) {
+				if (!instance.getSpec().getName()
+						.equals("mail-service-specification"))
+					continue;
+				instances.add(instance);
+			}
+		}
+		
+		for (Instance instance : instances) {
+
+			Mail mailService = (Mail) instance.getServiceObject();
+			
+			out.println("-- Mail Info --");
+			out.println(String.format("\tLast fetch was done at %1$te/%1$tm/%1$tY %1$tH:%1$tM:%1$tS",mailService.getLastFetchDateTime()));
+			out.println(String.format("\tUsername %s",instance.getProperty("user")));
+			out.println(String.format("\tAuto-refresh every %s ms",instance.getProperty("auto-refresh")));
+			out.println("-- /Mail Info --");
+		}
+		
+	}
+	
 	private String getArgumentValue(String option, String... params) {
 
 		boolean found = false;
