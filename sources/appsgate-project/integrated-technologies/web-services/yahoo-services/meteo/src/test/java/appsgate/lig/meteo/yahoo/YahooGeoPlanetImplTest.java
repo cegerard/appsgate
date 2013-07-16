@@ -30,7 +30,7 @@ public class YahooGeoPlanetImplTest {
 
 //    @Test
     public void test() {
-	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
+//	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
 //	assertEquals("593720", planet.getWOEIDFromPlaceName("Grenoble"));
     }
 

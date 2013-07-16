@@ -4,7 +4,7 @@ import appsgate.lig.meteo.DayForecast;
 import appsgate.lig.meteo.Meteo;
 import appsgate.lig.meteo.yahoo.YahooMeteoImplementation;
 
-public class YahooMeteoTest {
+public class YahooMeteoForecastTest {
 
 	Meteo meteo;
 	
