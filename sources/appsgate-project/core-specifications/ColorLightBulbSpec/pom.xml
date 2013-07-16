@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>apam.components</artifactId>
-        <groupId>appsGate.bundle</groupId>
-        <version>1.0.0</version>
-    </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>core-specifications</artifactId>
+		<version>1.0.0</version>
+	</parent>
 
-    <artifactId>ColorLightBulbSpec</artifactId>
-    <version>1.0.0</version>
-    <packaging>bundle</packaging>
+	<artifactId>ColorLightBulbSpec</artifactId>
+	<packaging>bundle</packaging>
+	<name>Color light bulb specification</name>
 
-    <name>Color light bulb specification</name>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
-    <!-- Repositories List -->
-	<repositories>
-		<repository>
-			<id>apam-repo</id>
-			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+	<!-- Repositories List -->
 
 	<!-- Dependencies Description -->
 	<dependencies>
@@ -37,7 +28,7 @@
 		</dependency>
 	</dependencies>
 
-<!-- Build Description -->
+	<!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>
