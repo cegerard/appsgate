@@ -14,4 +14,8 @@
 	
 	<description>This sub project contain all component related to the end user development and end user programs interpretation.</description>
 
+	<modules>
+		<module>EUDEInterpreterSpec</module>
+ 		<module>EUDEInterpreter</module>
+	</modules>
 </project>
