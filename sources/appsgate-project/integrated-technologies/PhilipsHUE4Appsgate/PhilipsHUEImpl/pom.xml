@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
+		<groupId>appsgate.components</groupId>
 		<artifactId>PhilipsHUE4Appsgate</artifactId>
-		<groupId>appsGate.bundle</groupId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>PhilipsHUEAdapter</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>PhilipsHUEImpl</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>PhilipsHUEAdapter OSGi Bundle</name>
+	<name>Philips HUE implementation</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,39 +21,33 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ColorLightBulbSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>AbstractObjectSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>1.8.2</version>
+			<version>1.8.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-		</dependency>
-		<dependency>
-			<groupId>cyberlink.upnp</groupId>
-			<artifactId>cybergarage</artifactId>
-			<version>2.1.0</version> <!-- WARNING: use local repository you need to export it into your own -->
-		</dependency>
-		<dependency>
-			<groupId>fr.imag.adele.apam</groupId>
-			<artifactId>apam-core</artifactId>
-			<version>${apam.current.version}</version>
+			<groupId>appsgate.components</groupId>
+			<artifactId>PhilipsHUEAdapter</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
-	<!-- Dependencies Instructions -->
+	<!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -62,13 +56,13 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-				<version>1.8.6</version>
+				<groupId>fr.imag.adele.apam</groupId>
+				<artifactId>apam-maven-plugin</artifactId>
+				<version>${apam.current.version}</version>
 				<executions>
 					<execution>
 						<goals>
-							<goal>ipojo-bundle</goal>
+							<goal>apam-bundle</goal>
 						</goals>
 					</execution>
 				</executions>

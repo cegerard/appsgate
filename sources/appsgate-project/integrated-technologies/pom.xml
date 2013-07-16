@@ -12,6 +12,10 @@
 	<packaging>pom</packaging>
 	<name>Appsgate integrated technologies project</name>
 	
-	<description>This sub project contain all component for all supported tehcnologies in Appsgate</description>
+	<description>This sub project contain all component for all supported technologies in Appsgate</description>
+	
+	<modules>
+		<module>PhilipsHUE4Appsgate</module>
+	</modules>
 	
 </project>
