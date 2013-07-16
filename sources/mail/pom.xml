@@ -16,13 +16,6 @@
 	</properties>
 
 	<pluginRepositories>
-<!-- 		<pluginRepository> -->
-<!-- 			<id>apam-plugin-repository</id> -->
-<!-- 			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url> -->
-<!-- 			<snapshots> -->
-<!-- 				<enabled>true</enabled> -->
-<!-- 			</snapshots> -->
-<!-- 		</pluginRepository> -->
 		<pluginRepository>
 			<id>apam-plugin-repository-release</id>
 			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
@@ -53,11 +46,6 @@
 			<name>Cloudbees Private Repository - ApAM - Release </name>
 			<url>https://repository-apam.forge.cloudbees.com/release/</url>
 		</repository>
-<!-- 		<repository> -->
-<!-- 			<id>cloudbees-ApAM-snapshot</id> -->
-<!-- 			<name>Cloudbees Private Repository - ApAM - Snapshot</name> -->
-<!-- 			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url> -->
-<!-- 		</repository> -->
 
 	</repositories>
 
@@ -73,8 +61,37 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.8.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.knowhowlab.osgi.shell</groupId>
+			<artifactId>felix-gogo</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.knowhowlab.osgi.shell</groupId>
+			<artifactId>felix</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>apam-core</artifactId>
+			<groupId>fr.imag.adele.apam</groupId>
+			<version>0.0.3</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->

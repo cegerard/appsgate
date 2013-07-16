@@ -24,7 +24,6 @@ public class GMailTest {
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
-			
 		}
 	};
 	
