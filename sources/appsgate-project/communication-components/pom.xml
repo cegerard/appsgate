@@ -14,4 +14,12 @@
 	
 	<description>This sub-project contain all components for communication between Appsgate components in the OSGi framework or with the remote client.</description>
 	
+	<modules>
+		<module>AppsGateSpec</module>
+		<module>RouterApAMSpec</module>
+		<module>AppsGate</module>
+		<module>RouterApAM</module>
+		<module>communication.manager</module>
+	</modules>
+	
 </project>

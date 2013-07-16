@@ -2,60 +2,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>apam.components</artifactId>
-		<groupId>appsGate.bundle</groupId>
+	
+    <parent>
+    	<groupId>appsgate.components</groupId>        
+		<artifactId>communication-components</artifactId>
 		<version>1.0.0</version>
-	</parent>
+    </parent>
 
-	<artifactId>RouterApAM</artifactId>
+	<artifactId>AppsGate</artifactId>
 	<packaging>bundle</packaging>
-	<name>Router ApAM</name>
+
+	<name>AppsGate OSGi Bundle</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<!-- Repositories List -->
-	<repositories>
-		<repository>
-			<id>apam-repo</id>
-			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
 	<!-- Dependencies Description -->
 	<dependencies>
-		<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>RouterApAMSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.imag.adele.apam</groupId>
-			<artifactId>apam-core</artifactId>
-			<version>${apam.current.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>1.8.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>AbstractObjectSpec</artifactId>
+			<groupId>cyberlink.upnp</groupId>
+			<artifactId>cybergarage</artifactId>
+			<version>2.1.0</version> <!-- WARNING: use local repository you need to export it into your own -->
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>RouterApAMSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
-			<artifactId>PlaceManagerSpec</artifactId>
+			<groupId>appsgate.components</groupId>
+			<artifactId>DeviceNameTableSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>AppsGateSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
@@ -71,6 +59,25 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Private-Package>
+							appsgate.lig.main.impl
+						</Private-Package>
+						<Export-Package>
+							org.cybergarage.*
+						</Export-Package>
+						<Import-Package>
+							javax.xml.parsers,
+							!org.kxml2.io,
+							org.w3c.dom,
+							org.xml.sax,
+							org.xmlpull.v1,
+							!org.apache.xerces.parsers,
+							org.slf4j,
+							org.osgi.service.http,
+							appsgate.lig.main.spec,
+							appsgate.lig.context.device.name.table.spec,
+							appsgate.lig.router.spec
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

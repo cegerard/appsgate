@@ -22,17 +22,17 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>PlaceManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>AbstractObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>ContextHistory</artifactId>
 			<version>1.0.0</version>
 		</dependency>

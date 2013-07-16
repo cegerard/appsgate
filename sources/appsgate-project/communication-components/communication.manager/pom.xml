@@ -2,9 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>appsGate.bundle</groupId>
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>communication-components</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
 	<artifactId>communication.manager</artifactId>
-	<version>1.0.0</version>
 	<packaging>bundle</packaging>
 
 	<name>Communication manager OSGi Bundle</name>

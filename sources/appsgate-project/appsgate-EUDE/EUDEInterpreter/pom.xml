@@ -28,17 +28,17 @@
 			<version>1.8.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>EUDEInterpreterSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>ContextFollowerSpec</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>RouterApAMSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>

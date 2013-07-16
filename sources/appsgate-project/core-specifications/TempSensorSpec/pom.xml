@@ -22,7 +22,7 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>AbstractObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
