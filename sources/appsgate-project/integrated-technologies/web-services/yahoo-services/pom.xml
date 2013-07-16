@@ -4,18 +4,17 @@
 	
 	<parent>
 		<groupId>appsgate.components</groupId>
-		<artifactId>integrated-technologies</artifactId>
+		<artifactId>web-services</artifactId>
 		<version>1.0.0</version>
 	</parent>
 	
-	<artifactId>web-services</artifactId>
+	<artifactId>yahoo-services</artifactId>
 	<packaging>pom</packaging>
-	<name>Web services projects</name>
+	<name>Yahoo services projects</name>
 	
-	<description>This sub-project contain all integrated web services components for Appsgate</description>
+	<description>This sub-project contain Yahoo services integration components for Appsgate</description>
 	
 	<modules>
-		<module>google-services</module>
-		<module>yahoo-services</module>
+		<module>meteo</module>
 	</modules>
 </project>

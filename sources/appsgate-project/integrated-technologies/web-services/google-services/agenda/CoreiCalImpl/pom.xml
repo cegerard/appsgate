@@ -2,20 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
+		<groupId>appsgate.components</groupId>
 		<artifactId>agenda</artifactId>
-		<groupId>appsGate.bundle</groupId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<artifactId>CoreiCalImpl</artifactId>
 	<packaging>bundle</packaging>
-
 	<name>CoreiCalImpl OSGi Bundle</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 
 	<!-- Dependencies Description -->
 	<dependencies>
@@ -30,12 +27,12 @@
 			<version>1.6.6</version>
 		</dependency>
 		<dependency>
-			<groupId>appsGate.bundle</groupId>
+			<groupId>appsgate.components</groupId>
 			<artifactId>GoogleAdapter</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			 <groupId>appsGate.bundle</groupId>
+			 <groupId>appsgate.components</groupId>
 			 <artifactId>AbstractObjectSpec</artifactId>
 			 <version>1.0.0</version>
 		</dependency>
