@@ -17,10 +17,8 @@
    <apam-instance name="GmailImpl-0" implementation="GmailImpl">
        <property name="user" value="smarthome.inria@gmail.com"/>
        <property name="password" value="smarthome2012"/>
-       <property name="auto-refresh" value="8000"/>
+       <property name="auto-refresh" value="2000"/>
    </apam-instance>
-
-   <!--  --> 
    
    	<implementation name="GMailTest" classname="appsgate.lig.mail.gmail.main.GMailTest">
 		<callback onInit="start" onRemove="stop" />
@@ -28,7 +26,5 @@
 	</implementation>
    
    <apam-instance name="meteo-client-0" implementation="GMailTest"/>
-   
-   
    
 </apam>
