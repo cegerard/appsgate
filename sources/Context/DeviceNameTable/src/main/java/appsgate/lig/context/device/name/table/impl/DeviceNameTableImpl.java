@@ -41,7 +41,7 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	/**
 	 * Map of user of all name given for an core object or service by an end user
 	 */
-	HashMap<Entry, String> userObjectName = new HashMap<Entry, String>();
+	HashMap<String, String> userObjectName = new HashMap<String, String>();
 	
 	/**
 	 * Context history pull service to get past table state
@@ -55,16 +55,15 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 
 	@Override
 	public void addName(String objectId, String usrId, String newName) {
-		userObjectName.put(new Entry(objectId, usrId), newName);
+		userObjectName.put(usrId+"-"+objectId, newName);
 		notifyChanges(objectId, usrId, newName);
 		
 		// save the new devices name table 
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
 		
-		Set<Entry> keys = userObjectName.keySet();
-		for(Entry e : keys) {
-			String dbKey = e.userName+"-"+e.objectId;
-			properties.add(new AbstractMap.SimpleEntry<String,Object>(dbKey, userObjectName.get(e)));
+		Set<String> keys = userObjectName.keySet();
+		for(String key : keys) {
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userObjectName.get(key)));
 		}
 		
 		contextHistory_push.pushData_add(this.getClass().getSimpleName(), usrId, objectId, newName, properties);
@@ -72,15 +71,15 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 
 	@Override
 	public void deleteName(String objectId, String usrId) {
-		Entry eventKey = new Entry(objectId, usrId);
+		String eventKey = usrId+"-"+objectId;
 
-		Set<Entry> keys = userObjectName.keySet();
-		Iterator<Entry> keysIt = keys.iterator();
+		Set<String> keys = userObjectName.keySet();
+		Iterator<String> keysIt = keys.iterator();
 		String removedValue = "";
 		
 		while (keysIt.hasNext()) {
-			Entry key = keysIt.next();
-			if (eventKey.equals(key)) {
+			String key = keysIt.next();
+			if (eventKey.contentEquals(key)) {
 				removedValue = userObjectName.get(key);
 				userObjectName.remove(key);
 				notifyChanges(objectId, usrId, getName(objectId, usrId));
@@ -91,9 +90,8 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 		// save the new devices name table
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
 		
-		for(Entry e : keys) {
-			String dbKey = e.userName+"-"+e.objectId;
-			properties.add(new AbstractMap.SimpleEntry<String,Object>(dbKey, userObjectName.get(e)));
+		for(String key : keys) {
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userObjectName.get(key)));
 		}
 		
 		contextHistory_push.pushData_remove(this.getClass().getSimpleName(), usrId, objectId, removedValue, properties);
@@ -101,14 +99,14 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	
 	@Override
 	public String getName(String objectId, String usrId) {
-		Entry eventKey = new Entry(objectId, usrId);
+		String eventKey = usrId+"-"+objectId;
 		
-		Set<Entry> keys = userObjectName.keySet();
-		Iterator<Entry> keysIt = keys.iterator();
+		Set<String> keys = userObjectName.keySet();
+		Iterator<String> keysIt = keys.iterator();
 		String name="";
 		while (keysIt.hasNext()) {
-			Entry key = keysIt.next();
-			if (eventKey.equals(key)) {
+			String key = keysIt.next();
+			if (eventKey.contentEquals(key)) {
 				name = userObjectName.get(key);
 				break;
 			}
@@ -126,7 +124,9 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	 */
 	public void newInst() {
 		logger.debug("The device name table has been instanciated");
+		
 		JSONObject table = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+		logger.debug("Restore device name table from database");
 		if(table != null){
 			try {
 				JSONArray state = table.getJSONArray("state");
@@ -135,8 +135,8 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 				while(i < length) {
 					JSONObject obj = state.getJSONObject(i);
 					String key = (String)obj.keys().next();
-					String[] splitted = key.split("-");
-					userObjectName.put(new Entry(splitted[1], splitted[0]), obj.getString(key));
+					userObjectName.put(key, obj.getString(key));
+					logger.debug("PLOP: "+obj.getString(key));
 					i++;
 				}
 			} catch (JSONException e) {
@@ -163,64 +163,6 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 	 */
 	public NotificationMsg notifyChanges(String objectId, String userId, String name) {
 		return new TableNameNotificationMsg(objectId, userId, name);
-	}
-
-	/**
-	 * Inner class use to create a key for device and user association
-	 * 
-	 * @author Cédric Gérard
-	 * @since May 28, 2013
-	 * @version 1.0.0
-	 */
-	private class Entry {
-
-		/**
-		 * Identifier of the source f the event
-		 */
-		private String objectId;
-
-		/**
-		 * The variable name to follow
-		 */
-		private String userName;
-
-		/**
-		 * Constructor for an Entry
-		 * 
-		 * @param objectId
-		 * @param userName
-		 */
-		public Entry(String objectId, String userName) {
-			this.objectId = objectId;
-			this.userName = userName;
-		}
-
-		public String getObjectId() {
-			return objectId;
-		}
-
-		public String getUserName() {
-			return userName;
-		}
-
-		/**
-		 * Override the equals method to compare two entry together but compare
-		 * their contents
-		 */
-		@Override
-		public boolean equals(Object keyEntry) {
-			if (keyEntry instanceof Entry) {
-				Entry entry = (Entry) keyEntry;
-				String usrName = entry.getUserName();
-				if(usrName != null) {
-					return (entry.getObjectId().contentEquals(objectId) && usrName.contentEquals(userName));
-				} else {
-					return (entry.getObjectId().contentEquals(objectId) && userName == null);
-				}
-			}
-			return false;
-		}
-
 	}
 
 }
