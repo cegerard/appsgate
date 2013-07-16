@@ -8,7 +8,7 @@
 		<definition name="woeid" type="string" field="WOEID" internal="false"/>
         <definition name="location" type="string" field="location" internal="false" method="setLocation"/>
 		<definition name="auto-refresh" type="int" field="refreshRate" internal="false"/>
-		<definition name="temperature" type="int" field="temperature" internal="false"/>
+		<definition name="temperature" type="int" field="currentTemperature" internal="false"/>
 	</implementation>
    
    <!-- Old Instance to check if still working -->

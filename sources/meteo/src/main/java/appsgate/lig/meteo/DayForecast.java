@@ -12,11 +12,13 @@ public class DayForecast {
 	private Date date;
 	private Float min;
 	private Float max;
+	private int code;
 	
-	public DayForecast(Date date,Float min,Float max){
+	public DayForecast(Date date,Float min,Float max, int code){
 		this.date=date;
 		this.min=min;
 		this.max=max;
+		this.code=code;
 	}
 
 	public Date getDate() {
@@ -31,10 +33,15 @@ public class DayForecast {
 	public Float getMax() {
 		return max;
 	}
+	
+	public int getCode() {
+		return code;
+	}
+
 
 	@Override
 	public String toString() {
-		return String.format("%s min:%s max:%s", date,min,max);
+		return String.format("%s , code:%s min:%s max:%s", code, date,min,max);
 	}
 	
 	

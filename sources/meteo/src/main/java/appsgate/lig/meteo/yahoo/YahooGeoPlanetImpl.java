@@ -25,7 +25,6 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.XMLEvent;
 
-import appsgate.lig.meteo.YahooGeoPlanet;
 
 /**
  * @author thibaud
