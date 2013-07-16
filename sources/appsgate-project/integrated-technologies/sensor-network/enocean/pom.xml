@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>sensor-network</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
+	<artifactId>enocean</artifactId>
+	<packaging>pom</packaging>
+	<name>EnOcean integration project</name>
+	
+	<description>This sub-project contain all component for EnOcean Appsgate integration.</description>
+	
+	<modules>
+		<module>TempSensorImpl</module>
+		<module>SwitchSensorImpl</module>
+		<module>LumSensorImpl</module>
+		<module>KeyCardSensorImpl</module>
+		<module>ContactSensorImpl</module>
+		<module>UndefinedSensorImpl</module>
+		<module>OnOffActuatorImpl</module>
+		<module>proxy.enocean</module>
+	</modules>
+</project>

@@ -4,21 +4,18 @@
 	
 	<parent>
 		<groupId>appsgate.components</groupId>
-		<artifactId>appsgate-project</artifactId>
+		<artifactId>integrated-technologies</artifactId>
 		<version>1.0.0</version>
 	</parent>
 	
-	<artifactId>integrated-technologies</artifactId>
+
+	<artifactId>upnp-dlna</artifactId>
 	<packaging>pom</packaging>
-	<name>Appsgate integrated technologies project</name>
+	<name>UPnP services project</name>
 	
-	<description>This sub project contain all component for all supported technologies in Appsgate</description>
+	<description>This sub-project containt components for UPnP Appsgate integration.</description>
 	
 	<modules>
-		<module>PhilipsHUE4Appsgate</module>
-		<module>sensor-network</module>
-		<module>upnp-dlna</module>
-		<module>web-services</module>
+		<module>UPnPMediaServices</module>
 	</modules>
-	
 </project>
