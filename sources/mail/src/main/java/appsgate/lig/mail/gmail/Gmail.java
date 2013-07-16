@@ -109,6 +109,7 @@ public class Gmail implements Mail {
 
 	public void stop() {
 		release();
+		refreshtask.cancel();
 	}
 	
 	public void release() {
@@ -118,8 +119,6 @@ public class Gmail implements Mail {
 		} catch (MessagingException e) {
 			logger.log(Level.WARNING,"failed to release store with the message:"+e.getMessage());
 		}
-
-		refreshtask.cancel();
 
 		session = null;
 		store = null;
