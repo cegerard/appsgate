@@ -64,7 +64,7 @@
 		<dependency>
 			<artifactId>apam-core</artifactId>
 			<groupId>fr.imag.adele.apam</groupId>
-			<version>0.0.3</version>
+			<version>${apam.current.version}</version>
 		</dependency>
 	</dependencies>
 
