@@ -1,0 +1,17 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>appsgate-project</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
+	<artifactId>test-components</artifactId>
+	<packaging>pom</packaging>
+	<name>Test and validation project</name>
+	
+	<description>This sub-project contain all maven project use to test automatically and validate other Appsgate module.</description>
+	
+</project>
