@@ -44,7 +44,7 @@ public class Gmail implements Mail {
 		public void run() {
 			
 			try {
-				logger.log(Level.WARNING,"Refreshing mail data");
+				logger.log(Level.FINE,"Refreshing mail data");
 				Gmail.this.fetch();
 			} catch (MessagingException e) {
 				logger.log(Level.WARNING,"Refreshing mail data FAILED with the message "+e.getMessage());

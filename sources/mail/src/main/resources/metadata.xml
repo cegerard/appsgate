@@ -3,7 +3,11 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
     
-	<implementation name="GmailImpl" classname="appsgate.lig.mail.gmail.Gmail" interfaces="appsgate.lig.mail.Mail" push="mailReceivedNotification">
+    <specification name="mail-service-specification"
+		interfaces="appsgate.lig.mail.Mail">
+	</specification>
+    
+	<implementation name="GmailImpl" classname="appsgate.lig.mail.gmail.Gmail" specification="mail-service-specification" push="mailReceivedNotification">
 		<callback onInit="start" onRemove="stop" />
 		<definition name="user" type="string" field="USER" internal="false"/>
 		<definition name="password" type="string" field="PASSWORD" internal="false"/>

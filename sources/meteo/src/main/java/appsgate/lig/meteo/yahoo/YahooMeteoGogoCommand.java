@@ -13,7 +13,7 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Instance;
 
 @Instantiate
-@org.apache.felix.ipojo.annotations.Component(public_factory = false, immediate = true, name = "apam.universal.shell")
+@org.apache.felix.ipojo.annotations.Component(public_factory = false, immediate = true, name = "appsgate.universal.shell")
 @Provides(specifications = YahooMeteoGogoCommand.class)
 /**
  * Gogo command that helps show retrieve information from the service without having to implement a client
