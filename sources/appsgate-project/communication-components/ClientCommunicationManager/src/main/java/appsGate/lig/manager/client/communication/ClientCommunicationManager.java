@@ -1,4 +1,4 @@
-package appsGate.lig.manager.communication;
+package appsGate.lig.manager.client.communication;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -25,13 +25,10 @@ import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.communication.service.subscribe.AddListenerService;
-import appsGate.lig.manager.communication.service.subscribe.CommandListener;
-import appsGate.lig.manager.communication.service.subscribe.ConfigListener;
-//import org.osgi.service.http.HttpContext;
-//import org.osgi.service.http.HttpService;
-//import org.osgi.service.http.NamespaceException;
+import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsGate.lig.manager.client.communication.service.subscribe.AddListenerService;
+import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
+import appsGate.lig.manager.client.communication.service.subscribe.ConfigListener;
 
 
 /**
@@ -54,12 +51,12 @@ import appsGate.lig.manager.communication.service.subscribe.ConfigListener;
 @Component
 @Instantiate
 @Provides(specifications = { AddListenerService.class, SendWebsocketsService.class })
-public class CommunicationManager extends WebSocketApplication implements AddListenerService, SendWebsocketsService {
+public class ClientCommunicationManager extends WebSocketApplication implements AddListenerService, SendWebsocketsService {
 	
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory.getLogger(CommunicationManager.class);
+	private static Logger logger = LoggerFactory.getLogger(ClientCommunicationManager.class);
 	
 	/**
 	 * HTTP service dependency resolve by iPOJO.

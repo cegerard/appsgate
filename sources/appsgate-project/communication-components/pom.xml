@@ -19,7 +19,7 @@
 		<module>RouterApAMSpec</module>
 		<module>AppsGate</module>
 		<module>RouterApAM</module>
-		<module>communication.manager</module>
+		<module>ClientCommunicationManager</module>
 	</modules>
 	
 </project>

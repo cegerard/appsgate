@@ -8,10 +8,10 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>communication.manager</artifactId>
+	<artifactId>ClientCommunicationManager</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>Communication manager OSGi Bundle</name>
+	<name>Client Communication manager OSGi Bundle</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,7 +47,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
+				<version>${bundle.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>

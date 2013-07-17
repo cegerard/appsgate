@@ -1,4 +1,4 @@
-package appsGate.lig.manager.communication.service.subscribe;
+package appsGate.lig.manager.client.communication.service.subscribe;
 
 /**
  * This interface is the specification of service for subscribe notification, message
