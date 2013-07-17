@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.communication.service.subscribe.CommandListener;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.router.impl.RouterImpl;
 
 /**
@@ -128,7 +128,7 @@ public class RouterCommandListener implements CommandListener {
 
 				} else if (cmdName.equalsIgnoreCase("moveDevice")) {
 					String objId = obj.getString("deviceId");
-					AbstractObjectSpec abObj = (AbstractObjectSpec) router.getObjectRefFromID(objId);
+					CoreObjectSpec abObj = (CoreObjectSpec) router.getObjectRefFromID(objId);
 					router.moveObject(abObj, obj.getString("srcLocationId"),obj.getString("destLocationId"));
 				}
 

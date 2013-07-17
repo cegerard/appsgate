@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
-import appsgate.lig.logical.object.messages.NotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
 
 /**
  * This class is use to allow other components to subscribe for specific

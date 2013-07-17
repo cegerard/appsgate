@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="PhilipsHUEImpl"
-		classname="appsgate.lig.light.actuator.philips.HUE.impl.PhilipsHUEImpl" specification="ColorLightSpec" push="notifyChanges">
+		classname="appsgate.lig.light.actuator.philips.HUE.impl.PhilipsHUEImpl" specification="CoreColorLightSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
 		<ipojo:requires field="PhilipsBridge"/>

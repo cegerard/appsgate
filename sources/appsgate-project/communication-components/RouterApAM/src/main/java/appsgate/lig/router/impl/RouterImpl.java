@@ -10,10 +10,10 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.communication.service.subscribe.AddListenerService;
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsGate.lig.manager.client.communication.service.subscribe.AddListenerService;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.location.spec.PlaceManagerSpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
@@ -42,7 +42,7 @@ public class RouterImpl implements RouterApAMSpec {
 	/**
 	 * Undefined sensors list, resolved by ApAM
 	 */
-	Set<AbstractObjectSpec> abstractDevice;
+	Set<CoreObjectSpec> abstractDevice;
 
 	/**
 	 * Service to be notified when clients send commands
@@ -94,7 +94,7 @@ public class RouterImpl implements RouterApAMSpec {
 		logger.debug("New abstract device added: " + inst.getName());
 		
 		//notify that a new object appeared
-		AbstractObjectSpec newObj = (AbstractObjectSpec)inst.getServiceObject();
+		CoreObjectSpec newObj = (CoreObjectSpec)inst.getServiceObject();
 		sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
 	}
 
@@ -116,8 +116,8 @@ public class RouterImpl implements RouterApAMSpec {
 	 * @return an AbstractObjectSpec object that have objectID as identifier
 	 */
 	public Object getObjectRefFromID(String objectID) {
-		Iterator<AbstractObjectSpec> it = abstractDevice.iterator();
-		AbstractObjectSpec tempAbstarctObjet = null;
+		Iterator<CoreObjectSpec> it = abstractDevice.iterator();
+		CoreObjectSpec tempAbstarctObjet = null;
 		String id;
 		boolean notFound = true;
 
@@ -201,9 +201,9 @@ public class RouterImpl implements RouterApAMSpec {
 	 * @param clientId the client connection identifier
 	 */
 	public void getDevices(int clientId) {
-		Iterator<AbstractObjectSpec> devices = abstractDevice.iterator();
+		Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
 		
-		AbstractObjectSpec adev = null;
+		CoreObjectSpec adev = null;
 		if (devices != null) {
 			JSONArray jsonDeviceList =  new JSONArray();
 			
@@ -254,7 +254,7 @@ public class RouterImpl implements RouterApAMSpec {
 	 * @param srcLocationId the source location identifier
 	 * @param destLocationId the destination location identifier
 	 */
-	public void moveObject(AbstractObjectSpec object, String srcLocationId, String destLocationId) {
+	public void moveObject(CoreObjectSpec object, String srcLocationId, String destLocationId) {
 		locationManager.moveObject(object.getAbstractObjectId(), srcLocationId, destLocationId);
 	}
 
@@ -279,7 +279,7 @@ public class RouterImpl implements RouterApAMSpec {
 	 * @param user the user from who to get the context
 	 * @return the complete contextual description of an object
 	 */
-	private JSONObject getObjectDescription(AbstractObjectSpec obj, String user) {
+	private JSONObject getObjectDescription(CoreObjectSpec obj, String user) {
 		JSONObject JSONDescription = null;
 		try {
 			//Get object auto description

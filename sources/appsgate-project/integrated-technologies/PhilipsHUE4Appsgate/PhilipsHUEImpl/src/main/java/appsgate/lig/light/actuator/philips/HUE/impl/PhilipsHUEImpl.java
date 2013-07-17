@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.colorLight.actuator.messages.ColorLightNotificationMsg;
-import appsgate.lig.colorLight.actuator.spec.ColorLightSpec;
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.colorLight.actuator.spec.CoreColorLightSpec;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 
 /**
@@ -19,7 +19,7 @@ import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
  * @since May 22, 2013
  * 
  */
-public class PhilipsHUEImpl implements ColorLightSpec, AbstractObjectSpec {
+public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	private static long HUE_RED     = 0;
 	private static long HUE_BLUE    = 46920;

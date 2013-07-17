@@ -3,8 +3,8 @@ package appsgate.lig.agenda.core.messages;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 /**
  * instance of this class are ending agenda event notification.
@@ -30,7 +30,7 @@ public class EndingEventNotificationMsg implements NotificationMsg {
 	}
 
 	@Override
-	public AbstractObjectSpec getSource() {
+	public CoreObjectSpec getSource() {
 		return null;
 	}
 

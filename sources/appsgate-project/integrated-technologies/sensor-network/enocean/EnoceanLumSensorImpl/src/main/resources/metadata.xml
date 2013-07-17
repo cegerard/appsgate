@@ -1,0 +1,23 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="EnoceanLuminositySensorImpl"
+		classname="appsgate.lig.luminosity.sensor.enocean.impl.EnoceanLuminositySensorImpl" specification="CoreLuminositySensorSpec" push="notifyChanges">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<ipojo:requires field="enoceanProxy"/>
+		
+		<definition name="deviceName" 		   type="string" value="Unknown" 		field="sensorName"/>
+		<definition name="deviceId" 		   type="string" value="000000" 		field="sensorId"/>
+		<definition name="deviceType" 		   type="string" value="EnOcean_DEVICE" field="sensoreType"/>
+		<definition name="pictureId" 		   type="string"						field="pictureId"/>
+		<definition name="userType" 		   type="string" value="1" 				field="userType"/>
+		<definition name="status" 			   type="string" value="2" 				field="status" 				method="statusChanged"/>
+		<definition name="isPaired" 		   type="string" value="false" 			field="isPaired" 			method="isPairedChanged"/>
+		<definition name="currentIllumination" type="string"  						field="currentIllumination" method="currentIlluminationChanged"/>
+	
+	</implementation>
+
+</apam>

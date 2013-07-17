@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.agenda.core.messages.AlarmNotificationMsg;
 import appsgate.lig.agenda.core.messages.EndingEventNotificationMsg;
 import appsgate.lig.agenda.core.messages.StartingEventNotificationMsg;
-import appsgate.lig.logical.object.messages.NotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.proxy.agenda.interfaces.AgendaAdapter;
 
 /**

@@ -25,11 +25,11 @@ import org.osgi.service.upnp.UPnPService;
 
 import fr.imag.adele.apam.Instance;
 
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 
-public class ContentDirectoryProxyImpl implements AbstractObjectSpec, ContentDirectory, UPnPEventListener {		
+public class ContentDirectoryProxyImpl implements CoreObjectSpec, ContentDirectory, UPnPEventListener {		
 
 	private String 		userObjectName;
 	private int			locationId;
@@ -181,7 +181,7 @@ public class ContentDirectoryProxyImpl implements AbstractObjectSpec, ContentDir
 		}
 		
 		@Override
-		public AbstractObjectSpec getSource() {
+		public CoreObjectSpec getSource() {
 			return ContentDirectoryProxyImpl.this;
 		}
 

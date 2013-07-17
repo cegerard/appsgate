@@ -1,0 +1,20 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="EnoceanUndefinedSensorImpl"
+		classname="appsgate.lig.undefined.sensor.enocean.impl.EnoceanUndefinedSensorImpl" specification="CoreUndefinedSensorSpec">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<ipojo:requires field="enoceanProxy"/>
+		
+		<definition name="deviceName" type="string" value="Unknown" field="sensorName"/>
+		<definition name="deviceId" type="string" value="000000" field="sensorId"/>
+		<definition name="deviceType" type="string" value="Sensor_DEVICE" field="sensoreType"/>
+		<definition name="pictureId" type="string" field="pictureId"/>
+		<definition name="userType" type="string" value="undefined" field="userType"/>
+		<definition name="status" type="string" value="1" field="status" method="statusChanged"/>
+	</implementation>
+
+</apam>

@@ -28,7 +28,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>AbstractObjectSpec</artifactId>
+			<artifactId>CoreObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

@@ -15,15 +15,15 @@
 	<description>ApAM specifications = core objects supported in Appsgate</description>
 
 	<modules>
-		<module>AbstractObjectSpec</module>
-		<module>ColorLightBulbSpec</module>
-		<module>ContactSensorSpec</module>
-		<module>KeyCardSensorSpec</module>
-		<module>LumSensorSpec</module>
-		<module>OnOffActuatorSpec</module>
-		<module>SwitchSensorSpec</module>
-		<module>TempSensorSpec</module>
-		<module>UndefinedSensorSpec</module>
+		<module>CoreObjectSpec</module>
+		<module>CoreColorLightBulbSpec</module>
+		<module>CoreContactSensorSpec</module>
+		<module>CoreKeyCardSensorSpec</module>
+		<module>CoreLumSensorSpec</module>
+		<module>CoreOnOffActuatorSpec</module>
+		<module>CoreSwitchSensorSpec</module>
+		<module>CoreTempSensorSpec</module>
+		<module>CoreUndefinedSensorSpec</module>
 	</modules>
 
 </project>

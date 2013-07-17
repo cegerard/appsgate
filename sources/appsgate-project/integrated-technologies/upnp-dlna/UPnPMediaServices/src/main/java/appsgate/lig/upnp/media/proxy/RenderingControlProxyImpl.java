@@ -25,11 +25,11 @@ import org.osgi.service.upnp.UPnPService;
 
 import fr.imag.adele.apam.Instance;
 
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 
-public class RenderingControlProxyImpl implements AbstractObjectSpec, RenderingControl, UPnPEventListener {		
+public class RenderingControlProxyImpl implements CoreObjectSpec, RenderingControl, UPnPEventListener {		
 
 	private String 		userObjectName;
 	private int			locationId;
@@ -153,7 +153,7 @@ public class RenderingControlProxyImpl implements AbstractObjectSpec, RenderingC
 		}
 		
 		@Override
-		public AbstractObjectSpec getSource() {
+		public CoreObjectSpec getSource() {
 			return RenderingControlProxyImpl.this;
 		}
 

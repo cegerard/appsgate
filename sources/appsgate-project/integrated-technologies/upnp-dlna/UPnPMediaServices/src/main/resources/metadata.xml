@@ -1,7 +1,7 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:ipojo="org.apache.felix.ipojo"
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd">
-	<implementation push="stateChanged" specification="AbstractObjectSpec"
+	<implementation push="stateChanged" specification="CoreObjectSpec"
 		name="RenderingControlProxyImpl" classname="appsgate.lig.upnp.media.proxy.RenderingControlProxyImpl">
 		<callback onInit="initialize" />
 		<property name="UPnP.service.type" type="string"
@@ -15,7 +15,7 @@
 		<ipojo:requires optional="false" field="upnpDevice"
 			id="UPnP.device.UDN" />
 	</implementation>
-	<implementation push="stateChanged" specification="AbstractObjectSpec"
+	<implementation push="stateChanged" specification="CoreObjectSpec"
 		name="ConnectionManagerProxyImpl" classname="appsgate.lig.upnp.media.proxy.ConnectionManagerProxyImpl">
 		<callback onInit="initialize" />
 		<property name="UPnP.service.type" type="string"
@@ -29,7 +29,7 @@
 		<ipojo:requires optional="false" field="upnpDevice"
 			id="UPnP.device.UDN" />
 	</implementation>
-	<implementation push="stateChanged" specification="AbstractObjectSpec"
+	<implementation push="stateChanged" specification="CoreObjectSpec"
 		name="AVTransportProxyImpl" classname="appsgate.lig.upnp.media.proxy.AVTransportProxyImpl">
 		<callback onInit="initialize" />
 		<property name="UPnP.service.type" type="string"
@@ -43,7 +43,7 @@
 		<ipojo:requires optional="false" field="upnpDevice"
 			id="UPnP.device.UDN" />
 	</implementation>
-	<implementation push="stateChanged" specification="AbstractObjectSpec"
+	<implementation push="stateChanged" specification="CoreObjectSpec"
 		name="ContentDirectoryProxyImpl" classname="appsgate.lig.upnp.media.proxy.ContentDirectoryProxyImpl">
 		<callback onInit="initialize" />
 		<property name="UPnP.service.type" type="string"

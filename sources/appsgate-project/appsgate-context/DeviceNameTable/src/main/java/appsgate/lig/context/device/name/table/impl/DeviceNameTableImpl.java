@@ -17,7 +17,7 @@ import appsgate.lig.context.device.name.table.messages.TableNameNotificationMsg;
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.context.history.services.DataBasePullService;
 import appsgate.lig.context.history.services.DataBasePushService;
-import appsgate.lig.logical.object.messages.NotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
 
 /**
  * The device name table implementation is an ApAM component to map

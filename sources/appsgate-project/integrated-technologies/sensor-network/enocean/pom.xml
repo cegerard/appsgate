@@ -15,13 +15,13 @@
 	<description>This sub-project contain all component for EnOcean Appsgate integration.</description>
 	
 	<modules>
-		<module>TempSensorImpl</module>
-		<module>SwitchSensorImpl</module>
-		<module>LumSensorImpl</module>
-		<module>KeyCardSensorImpl</module>
-		<module>ContactSensorImpl</module>
-		<module>UndefinedSensorImpl</module>
-		<module>OnOffActuatorImpl</module>
-		<module>proxy.enocean</module>
+		<module>EnoceanTempSensorImpl</module>
+		<module>EnoceanSwitchSensorImpl</module>
+		<module>EnoceanLumSensorImpl</module>
+		<module>EnoceanKeyCardSensorImpl</module>
+		<module>EnoceanContactSensorImpl</module>
+		<module>EnoceanUndefinedSensorImpl</module>
+		<module>EnoceanOnOffActuatorImpl</module>
+		<module>UbikitAdapter</module>
 	</modules>
 </project>

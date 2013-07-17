@@ -5,7 +5,7 @@ import java.util.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.logical.object.messages.NotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
 
 public class MessageEventReceiver implements Runnable {
 

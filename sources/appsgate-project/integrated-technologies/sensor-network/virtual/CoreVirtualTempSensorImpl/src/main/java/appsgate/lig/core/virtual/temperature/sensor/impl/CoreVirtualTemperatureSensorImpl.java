@@ -5,10 +5,10 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.temperature.sensor.messages.TemperatureNotificationMsg;
-import appsgate.lig.temperature.sensor.spec.TemperatureSensorSpec;
+import appsgate.lig.temperature.sensor.spec.CoreTemperatureSensorSpec;
 
 /**
  * This is the class that represent the virtual implementation of temperature sensor.
@@ -20,8 +20,8 @@ import appsgate.lig.temperature.sensor.spec.TemperatureSensorSpec;
  * @see TemperatureSensorSpec
  * @see AbstractObjectSpec
  */
-public class CoreVirtualTemperatureSensorImpl implements AbstractObjectSpec,
-		TemperatureSensorSpec {
+public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
+		CoreTemperatureSensorSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances

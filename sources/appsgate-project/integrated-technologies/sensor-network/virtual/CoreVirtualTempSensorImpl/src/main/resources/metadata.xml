@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="CoreVirtualTemperatureSensorImpl"
-		classname="appsgate.lig.core.virtual.temperature.sensor.impl.CoreVirtualTemperatureSensorImpl" specification="TemperatureSensorSpec" push="notifyChanges">
+		classname="appsgate.lig.core.virtual.temperature.sensor.impl.CoreVirtualTemperatureSensorImpl" specification="CoreTemperatureSensorSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 			
 		<!-- device kernel meta data -->

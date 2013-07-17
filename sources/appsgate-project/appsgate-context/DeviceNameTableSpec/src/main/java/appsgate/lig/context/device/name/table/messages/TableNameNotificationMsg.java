@@ -3,8 +3,8 @@ package appsgate.lig.context.device.name.table.messages;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 /**
  * This class is an ApAM message for object name notification
@@ -45,7 +45,7 @@ public class TableNameNotificationMsg implements NotificationMsg {
 	}
 
 	@Override
-	public AbstractObjectSpec getSource() {
+	public CoreObjectSpec getSource() {
 		return null;
 	}
 
