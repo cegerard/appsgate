@@ -15,6 +15,6 @@
 	<description>This sub-project contain Yahoo services integration components for Appsgate</description>
 	
 	<modules>
-		<module>meteo</module>
+		<module>weather</module>
 	</modules>
 </project>
