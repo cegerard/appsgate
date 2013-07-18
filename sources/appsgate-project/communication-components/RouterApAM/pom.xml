@@ -38,11 +38,6 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>PlaceManagerSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
 			<artifactId>AppsGateSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>

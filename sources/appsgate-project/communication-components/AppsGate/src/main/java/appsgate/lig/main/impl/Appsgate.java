@@ -18,6 +18,9 @@ import org.cybergarage.upnp.StateVariable;
 import org.cybergarage.upnp.control.ActionListener;
 import org.cybergarage.upnp.control.QueryListener;
 import org.cybergarage.upnp.device.InvalidDescriptionException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -26,28 +29,29 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
-
+import appsgate.lig.manager.location.spec.PlaceManagerSpec;
 
 /**
- * This class is the central component for AppsGate server.
- * It allow client part to make methods call from HMI managers.
+ * This class is the central component for AppsGate server. It allow client part
+ * to make methods call from HMI managers.
  * 
- *  It expose Appsgate server as an UPnP device to gather informations about
- *  it through the SSDP discovery protocol
+ * It expose Appsgate server as an UPnP device to gather informations about it
+ * through the SSDP discovery protocol
  * 
  * @author Cédric Gérard
  * @since April 23, 2013
  * @version 1.0.0
- *
+ * 
  */
-public class Appsgate extends Device implements AppsGateSpec, ActionListener, QueryListener {
+public class Appsgate extends Device implements AppsGateSpec, ActionListener,
+		QueryListener {
 
 	/**
 	 * 
 	 * static class logger member
 	 */
 	private static Logger logger = LoggerFactory.getLogger(Appsgate.class);
-	
+
 	/**
 	 * HTTP service dependency resolve by iPojo. Allow to register HTML
 	 * resources to the Felix HTTP server
@@ -58,26 +62,30 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener, Qu
 	 * UPnP device description xml file relative path.
 	 */
 	private static String descriptionFileName = "/conf/device/description.xml";
-	
+
 	/**
 	 * default web socket connection port
 	 */
 	private static String wsPort = "8080";
-	
+
 	/**
 	 * Table for deviceId, user and device name association
 	 */
 	private DeviceNameTableSpec deviceNameTable;
 
 	/**
-	 * Reference on the AppsGate Router to execute command on devices
+	 * The place manager ApAM component to handle the object location
 	 */
-	//private RouterApAMSpec router;
+	private PlaceManagerSpec locationManager;
 
 	/**
-	 * Default constructor for Appsgate java object.
-	 * it load UPnP device and services profiles
-	 * and subscribes the corresponding listeners. 
+	 * Reference on the AppsGate Router to execute command on devices
+	 */
+	// private RouterApAMSpec router;
+
+	/**
+	 * Default constructor for Appsgate java object. it load UPnP device and
+	 * services profiles and subscribes the corresponding listeners.
 	 * 
 	 * @throws InvalidDescriptionException
 	 */
@@ -108,8 +116,11 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener, Qu
 			for (NetworkInterface netint : Collections.list(nets)) {
 				if (!netint.isLoopback() && !netint.isVirtual()
 						&& netint.isUp()) { // TODO check also if its the local
-											// network. but It will difficult to find automatically the right network interface
-					Enumeration<InetAddress> addresses = netint.getInetAddresses();
+											// network. but It will difficult to
+											// find automatically the right
+											// network interface
+					Enumeration<InetAddress> addresses = netint
+							.getInetAddresses();
 					for (InetAddress address : Collections.list(addresses)) {
 						if (address instanceof Inet4Address) {
 							localAddress = (Inet4Address) address;
@@ -143,22 +154,6 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener, Qu
 
 		logger.info("AppsGate instanciated");
 	}
-	
-	@Override
-	public void setUserObjectName(String objectId, String user, String name) {
-		deviceNameTable.addName(objectId, user, name);
-		
-	}
-
-	@Override
-	public String getUserObjectName(String objectId, String user) {
-		return deviceNameTable.getName(objectId, user);
-	}
-
-	@Override
-	public void deleteUserObjectName(String objectId, String user) {
-		deviceNameTable.deleteName(objectId, user);
-	}
 
 	/**
 	 * Called by APAM when an instance of this implementation is created
@@ -166,9 +161,10 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener, Qu
 	public void newInst() {
 		this.start();
 		logger.info("AppsGate is started");
-		
+
 		if (httpService != null) {
-			final HttpContext httpContext = httpService.createDefaultHttpContext();
+			final HttpContext httpContext = httpService
+					.createDefaultHttpContext();
 			final Dictionary<String, String> initParams = new Hashtable<String, String>();
 			initParams.put("from", "HttpService");
 			try {
@@ -231,6 +227,65 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener, Qu
 
 		action.setStatus(401, "invalid action");
 		return false;
+	}
+
+	@Override
+	public void setUserObjectName(String objectId, String user, String name) {
+		deviceNameTable.addName(objectId, user, name);
+
+	}
+
+	@Override
+	public String getUserObjectName(String objectId, String user) {
+		return deviceNameTable.getName(objectId, user);
+	}
+
+	@Override
+	public void deleteUserObjectName(String objectId, String user) {
+		deviceNameTable.deleteName(objectId, user);
+	}
+
+	@Override
+	public JSONArray getLocations() {
+		return locationManager.getJSONLocations();
+	}
+
+	@Override
+	public void newLocation(JSONObject location) {
+		try {
+			String placeId = location.getString("id");
+			locationManager.addPlace(placeId, location.getString("name"));
+			JSONArray devices = location.getJSONArray("devices");
+			int size = devices.length();
+			int i = 0;
+			while (i < size) {
+				String objId = (String) devices.get(i);
+				locationManager.moveObject(objId, locationManager.getCoreObjectLocationId(objId), placeId);
+				i++;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void updateLocation(JSONObject location) {
+		// for now we could just rename a location
+		try {
+			locationManager.renameLocation(location.getString("id"),location.getString("name"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void moveDevice(String objId, String srcLocationId, String destLocationId) {
+		locationManager.moveObject(objId, srcLocationId, destLocationId);
+	}
+
+	@Override
+	public String getCoreObjectLocationId(String objId) {
+		return locationManager.getCoreObjectLocationId(objId);
 	}
 
 }

@@ -6,7 +6,6 @@
 	<implementation name="AppsGateRouterImpl" classname="appsgate.lig.router.impl.RouterImpl" specification="AppsGateRouterSpec"  singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<dependency field="abstractDevice"  added="addAbstractObject" removed="removedAbstractObject"/>
-		<dependency field="locationManager"/>
 		<dependency field="appsgate"/>
 		<dependency push="gotNotification" multiple="true"/>
 		<ipojo:requires field="addListenerService"/>

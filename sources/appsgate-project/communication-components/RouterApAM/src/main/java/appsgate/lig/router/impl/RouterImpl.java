@@ -15,7 +15,6 @@ import appsGate.lig.manager.client.communication.service.subscribe.AddListenerSe
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
-import appsgate.lig.manager.location.spec.PlaceManagerSpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -53,11 +52,6 @@ public class RouterImpl implements RouterApAMSpec {
 	 * Service to communicate with clients
 	 */
 	private SendWebsocketsService sendToClientService;
-	
-	/**
-	 * The place manager ApAM component to handle the object location
-	 */
-	private PlaceManagerSpec locationManager;
 	
 	/**
 	 * The main AppsGate component to call for every request
@@ -216,61 +210,6 @@ public class RouterImpl implements RouterApAMSpec {
 			logger.debug("No smart object detected.");
 		}
 	}
-
-	/**
-	 * Resolve the location manager dependency and return the reference
-	 * 
-	 * @param clientId the client identifier
-	 */
-	public void getLocations(int clientId) {
-		sendToClientService.send(clientId, "listLocations", locationManager.getJSONLocations());
-	}
-
-	/**
-	 * Add new location in the place manager
-	 * @param jsonObject the JSON of the new location
-	 */
-	public void newLocation(JSONObject jsonObject) {
-		try {
-			String placeId = jsonObject.getString("id");
-			locationManager.addPlace(placeId, jsonObject.getString("name"));
-			JSONArray devices = jsonObject.getJSONArray("devices");
-			int size = devices.length();
-			int i = 0;
-			while(i < size) {
-				String objId = (String)devices.get(i);
-				locationManager.moveObject(objId, locationManager.getCoreObjectLocationId(objId), placeId);
-				i++;
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Move an object from source location to destination location.
-	 * 
-	 * @param object the object referenced
-	 * @param srcLocationId the source location identifier
-	 * @param destLocationId the destination location identifier
-	 */
-	public void moveObject(CoreObjectSpec object, String srcLocationId, String destLocationId) {
-		locationManager.moveObject(object.getAbstractObjectId(), srcLocationId, destLocationId);
-	}
-
-	/**
-	 * update the specified location
-	 * 
-	 * @param jsonObject the location update details
-	 */
-	public void updateLocation(JSONObject jsonObject) {
-		//for now we could just rename a location
-		try {
-			locationManager.renameLocation(jsonObject.getString("id"), jsonObject.getString("name"));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	/**
 	 * This method get the auto description of an object and add
@@ -286,7 +225,7 @@ public class RouterImpl implements RouterApAMSpec {
 			JSONDescription = obj.getDescription();
 			//Add context description for this abject
 			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
-			JSONDescription.put("locationId", locationManager.getCoreObjectLocationId(obj.getAbstractObjectId()));
+			JSONDescription.put("locationId", appsgate.getCoreObjectLocationId(obj.getAbstractObjectId()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

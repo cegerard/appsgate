@@ -23,6 +23,11 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>AppsGateSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>1.8.0</version>
@@ -39,12 +44,12 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>DeviceNameTableSpec</artifactId>
+			<artifactId>PlaceManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>AppsGateSpec</artifactId>
+			<artifactId>DeviceNameTableSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
@@ -73,9 +78,11 @@
 							org.xmlpull.v1,
 							!org.apache.xerces.parsers,
 							org.slf4j,
+							org.json,
 							org.osgi.service.http,
 							appsgate.lig.main.spec,
-							appsgate.lig.context.device.name.table.spec,
+							appsgate.lig.context.device.name.table.spec,,
+							appsgate.lig.manager.location.spec,
 							appsgate.lig.router.spec
 						</Import-Package>
 					</instructions>

@@ -113,27 +113,6 @@ public class RouterCommandListener implements CommandListener {
 
 				break;
 
-			case 2: // Location level
-				logger.debug("Location level message");
-				String cmdName = obj.getString("commandName");
-
-				if (cmdName.equalsIgnoreCase("getLocations")) {
-					router.getLocations(clientId);
-
-				} else if (cmdName.equalsIgnoreCase("newLocation")) {
-					router.newLocation(obj.getJSONObject("location"));
-
-				} else if (cmdName.equalsIgnoreCase("updateLocation")) {
-					router.updateLocation(obj.getJSONObject("location"));
-
-				} else if (cmdName.equalsIgnoreCase("moveDevice")) {
-					String objId = obj.getString("deviceId");
-					CoreObjectSpec abObj = (CoreObjectSpec) router.getObjectRefFromID(objId);
-					router.moveObject(abObj, obj.getString("srcLocationId"),obj.getString("destLocationId"));
-				}
-
-				break;
-
 			case 3: // Interpreter
 				logger.debug("Interpreter level message");
 				break;
