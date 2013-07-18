@@ -1,4 +1,4 @@
-package appsgate.lig.meteo.yahoo;
+package appsgate.lig.weather.yahoo;
 
 import java.io.PrintWriter;
 
@@ -7,19 +7,20 @@ import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 
-import appsgate.lig.meteo.Meteo;
+import appsgate.lig.weather.WeatherForecast;
+import appsgate.lig.weather.WeatherForecastException;
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Instance;
 
 @Instantiate
 @org.apache.felix.ipojo.annotations.Component(public_factory = false, immediate = true, name = "appsgate.universal.shell")
-@Provides(specifications = YahooMeteoGogoCommand.class)
+@Provides(specifications = YahooWeatherGogoCommand.class)
 /**
  * Gogo command that helps show retrieve information from the service without having to implement a client
  * @author jnascimento
  */
-public class YahooMeteoGogoCommand {
+public class YahooWeatherGogoCommand {
 
 	@Requires
 	Apam apam;
@@ -41,11 +42,11 @@ public class YahooMeteoGogoCommand {
 		for(Instance instance:CST.componentBroker.getInsts()){
 			
 			//Only those services that implement this spec are acceptable
-			if(!instance.getSpec().getName().equals("meteo-service-specification")) continue;
+			if(!instance.getSpec().getName().equals("weather-service-specification")) continue;
 			
 			out.print(String.format("Apam-Instance: %s\n", instance.getName()));
 			
-			Meteo meteo=(Meteo)instance.getServiceObject();
+			WeatherForecast meteo=(WeatherForecast)instance.getServiceObject();
 		
 			out.println(meteo);
 			
@@ -60,11 +61,14 @@ public class YahooMeteoGogoCommand {
 		for(Instance instance:CST.componentBroker.getInsts()){
 			
 			//Only those services that implement this spec are acceptable
-			if(!instance.getSpec().getName().equals("meteo-service-specification")) continue;
+			if(!instance.getSpec().getName().equals("weather-service-specification")) continue;
 			
-			Meteo meteo=(Meteo)instance.getServiceObject();
-			
-			meteo.fetch();
+			WeatherForecast meteo=(WeatherForecast)instance.getServiceObject();
+			try {
+			    meteo.fetch();
+			} catch(WeatherForecastException exc) {
+			    exc.printStackTrace();
+			}
 			
 		}
 		

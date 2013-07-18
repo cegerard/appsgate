@@ -1,9 +1,9 @@
-package appsgate.lig.meteo;
+package appsgate.lig.weather;
 
 import java.util.Date;
 
 /**
- * Forecast for a given moment (java.util.Date) of the day
+ * Forecast for a given Day (java.util.Date)
  * @author jnascimento
  *
  */

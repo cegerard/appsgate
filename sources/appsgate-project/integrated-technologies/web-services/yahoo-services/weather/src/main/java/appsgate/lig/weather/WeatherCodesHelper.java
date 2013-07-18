@@ -14,7 +14,7 @@
  *
  * YahooMeteoCodesHelper.java - 15 juil. 2013
  */
-package appsgate.lig.meteo;
+package appsgate.lig.weather;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,7 +89,7 @@ public class WeatherCodesHelper {
 	}
 
 /*
- * Yahoo Meteo Codes
+ * Yahoo WeatherForecast Codes
  * from http://developer.yahoo.com/weather/#req	
 	    0 	tornado
 	    1 	tropical storm

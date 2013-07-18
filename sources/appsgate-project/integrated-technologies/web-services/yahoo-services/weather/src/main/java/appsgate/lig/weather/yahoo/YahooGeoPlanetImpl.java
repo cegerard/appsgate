@@ -14,7 +14,7 @@
  *
  * YahooGeoPlanetImpl.java - 15 juil. 2013
  */
-package appsgate.lig.meteo.yahoo;
+package appsgate.lig.weather.yahoo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +50,7 @@ public class YahooGeoPlanetImpl implements YahooGeoPlanet {
      * (non-Javadoc)
      * 
      * @see
-     * appsgate.lig.meteo.YahooGeoPlanet#GetWOEIDFromPlaceName(java.lang.String)
+     * appsgate.lig.weather.YahooGeoPlanet#GetWOEIDFromPlaceName(java.lang.String)
      */
     public String getWOEIDFromPlaceName(String placeName) {
 	logger.fine("GetWOEIDFromPlaceName(String placeName : "

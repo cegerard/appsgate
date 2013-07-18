@@ -12,25 +12,23 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  *
- * YahooGeoPlanet.java - 15 juil. 2013
+ * WeatherException.java - 16 juil. 2013
  */
-package appsgate.lig.meteo.yahoo;
+package appsgate.lig.weather;
 
 /**
- * Java Interface to use Yahoo GeoPlanet WebService API
- * @see http://developer.yahoo.com/geo/geoplanet/
  * @author thibaud
  *
  */
-public interface YahooGeoPlanet {
+public class WeatherForecastException extends Exception {
     
+    public WeatherForecastException(String message) {
+	super(message);
+    }
+
     /**
-     * Retrieving the Most Likely Place for a Given Place Name :
-     * http://where.yahooapis.com/v1/places.q(placeName)?appid=[YahooAppID]
-     * @see http://developer.yahoo.com/geo/geoplanet/guide/api-reference.html
-     * @param placeName is a Human friendly place name
-     * @return the most likely valid WOEID (Where On Earth ID) - to be used by Yahoo services 
+     * 
      */
-    public String getWOEIDFromPlaceName(String placeName);
+    private static final long serialVersionUID = 429366958859520002L;
 
 }

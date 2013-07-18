@@ -14,7 +14,7 @@
  *
  * YahooGeoPlanet.java - 15 juil. 2013
  */
-package appsgate.lig.meteo;
+package appsgate.lig.weather.yahoo;
 
 /**
  * Java Interface to use Yahoo GeoPlanet WebService API

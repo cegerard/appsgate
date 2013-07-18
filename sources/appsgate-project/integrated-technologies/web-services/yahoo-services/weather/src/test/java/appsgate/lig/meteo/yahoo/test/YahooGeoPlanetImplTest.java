@@ -12,14 +12,27 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  *
- * WeatherException.java - 16 juil. 2013
+ * YahooGeoPlanetImplTest.java - 15 juil. 2013
  */
-package appsgate.lig.meteo;
+package appsgate.lig.meteo.yahoo.test;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import appsgate.lig.weather.yahoo.YahooGeoPlanet;
+import appsgate.lig.weather.yahoo.YahooGeoPlanetImpl;
 
 /**
  * @author thibaud
  *
  */
-public class WeatherException extends Exception {
+public class YahooGeoPlanetImplTest {
+
+    @Test
+    public void test() {
+	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
+	assertEquals("593720", planet.getWOEIDFromPlaceName("Grenoble"));
+    }
 
 }
