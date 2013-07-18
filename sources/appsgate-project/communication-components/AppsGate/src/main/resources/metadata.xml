@@ -7,7 +7,7 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
  		<!--<dependency field="router"/> -->
 		<dependency field="deviceNameTable"/>
-		<dependency field="locationManager"/>
+		<dependency field="placeManager"/>
 		<ipojo:requires field="httpService"/>
 	</implementation>
 

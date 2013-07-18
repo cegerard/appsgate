@@ -41,41 +41,41 @@ public interface AppsGateSpec {
 	public void deleteUserObjectName(String objectId, String user);
 	
 	/***************************/
-	/**  Location management   */
+	/**  Place management   */
 	/***************************/
 	
 	/**
-	 * Call AppsGate to get all existing location definition.
+	 * Call AppsGate to get all existing place definition.
 	 * @return a JSON array that describe each place.
 	 */
-	public JSONArray getLocations();
+	public JSONArray getPlaces();
 	
 	/**
-	 * Add a new location and move object in it.
-	 * @param location the new location description and the list of object to move in
+	 * Add a new place and move object in it.
+	 * @param place the new place description and the list of object to move in
 	 */
-	public void newLocation(JSONObject location);
+	public void newPlace(JSONObject place);
 	
 	/**
-	 * Update a location on the smart space
-	 * @param location the new location description
+	 * Update a place on the smart space
+	 * @param place the new place description
 	 */
-	public void updateLocation(JSONObject location);
+	public void updatePlace(JSONObject place);
 	
 	/**
-	 * Move a device in a specified location
+	 * Move a device in a specified place
 	 * @param objId the object to move
-	 * @param srcLocationId the previous location of this object
-	 * @param destLocationId the destination of this object
+	 * @param srcPlaceId the previous place of this object
+	 * @param destPlaceId the destination of this object
 	 */
-	public void moveDevice(String objId, String srcLocationId, String destLocationId);
+	public void moveDevice(String objId, String srcPlaceId, String destPlaceId);
 	
 	/**
-	 * Get the location identifier of a core object
+	 * Get the place identifier of a core object
 	 * @param objId the core object identifier 
-	 * @return the identifier of the location where the core object is placed.
+	 * @return the identifier of the place where the core object is placed.
 	 */
-	public String getCoreObjectLocationId(String objId);
+	public String getCoreObjectPlaceId(String objId);
 	
 	
 }

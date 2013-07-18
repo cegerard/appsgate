@@ -1,4 +1,4 @@
-package appsgate.lig.manager.location.spec;
+package appsgate.lig.manager.place.spec;
 
 import org.json.JSONArray;
 
@@ -14,16 +14,16 @@ public interface PlaceManagerSpec {
 	
 	/**
 	 * Add a new place to the numeric representation of the smart space.
-	 * @param locationId the place identifier
+	 * @param placeId the place identifier
 	 * @param name the place name
 	 */
-	public void addPlace(String locationId, String name);
+	public void addPlace(String placeId, String name);
 	
 	/**
 	 * Remove a place from the numeric representation of the smart space.
-	 * @param locationId the identifier of the place
+	 * @param placeId the identifier of the place
 	 */
-	public void removePlace(String locationId);
+	public void removePlace(String placeId);
 	
 	/**
 	 * Move a core object to a specify place.
@@ -34,22 +34,22 @@ public interface PlaceManagerSpec {
 	public void moveObject(String objId, String oldPlaceID, String newPlaceID);
 	
 	/**
-	 * Rename a location on the smart space
-	 * @param locationId the identifier of the place to rename
+	 * Rename a place on the smart space
+	 * @param placeId the identifier of the place to rename
 	 * @param newName the new name of the place
 	 */
-	public void renameLocation(String locationId, String newName);
+	public void renamePlace(String placeId, String newName);
 	
 	/**
 	 * Get a JSON formatted representation of the smart space.
 	 * @return a JSON array that describe each place.
 	 */
-	public JSONArray getJSONLocations();
+	public JSONArray getJSONPlaces();
 	
 	/**
-	 * Get the location identifier of a core object
+	 * Get the place identifier of a core object
 	 * @param objId the core object identifier 
-	 * @return the identifier of the location where the core object is placed.
+	 * @return the identifier of the place where the core object is placed.
 	 */
-	public String getCoreObjectLocationId(String objId);
+	public String getCoreObjectPlaceId(String objId);
 }

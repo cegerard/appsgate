@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
-import appsgate.lig.manager.location.spec.PlaceManagerSpec;
+import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 
 /**
  * This class is the central component for AppsGate server. It allow client part
@@ -74,9 +74,9 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	private DeviceNameTableSpec deviceNameTable;
 
 	/**
-	 * The place manager ApAM component to handle the object location
+	 * The place manager ApAM component to handle the object place
 	 */
-	private PlaceManagerSpec locationManager;
+	private PlaceManagerSpec placeManager;
 
 	/**
 	 * Reference on the AppsGate Router to execute command on devices
@@ -246,21 +246,21 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	}
 
 	@Override
-	public JSONArray getLocations() {
-		return locationManager.getJSONLocations();
+	public JSONArray getPlaces() {
+		return placeManager.getJSONPlaces();
 	}
 
 	@Override
-	public void newLocation(JSONObject location) {
+	public void newPlace(JSONObject place) {
 		try {
-			String placeId = location.getString("id");
-			locationManager.addPlace(placeId, location.getString("name"));
-			JSONArray devices = location.getJSONArray("devices");
+			String placeId = place.getString("id");
+			placeManager.addPlace(placeId, place.getString("name"));
+			JSONArray devices = place.getJSONArray("devices");
 			int size = devices.length();
 			int i = 0;
 			while (i < size) {
 				String objId = (String) devices.get(i);
-				locationManager.moveObject(objId, locationManager.getCoreObjectLocationId(objId), placeId);
+				placeManager.moveObject(objId, placeManager.getCoreObjectPlaceId(objId), placeId);
 				i++;
 			}
 		} catch (JSONException e) {
@@ -269,23 +269,23 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	}
 
 	@Override
-	public void updateLocation(JSONObject location) {
-		// for now we could just rename a location
+	public void updatePlace(JSONObject place) {
+		// for now we could just rename a place
 		try {
-			locationManager.renameLocation(location.getString("id"),location.getString("name"));
+			placeManager.renamePlace(place.getString("id"),place.getString("name"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void moveDevice(String objId, String srcLocationId, String destLocationId) {
-		locationManager.moveObject(objId, srcLocationId, destLocationId);
+	public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
+		placeManager.moveObject(objId, srcPlaceId, destPlaceId);
 	}
 
 	@Override
-	public String getCoreObjectLocationId(String objId) {
-		return locationManager.getCoreObjectLocationId(objId);
+	public String getCoreObjectPlaceId(String objId) {
+		return placeManager.getCoreObjectPlaceId(objId);
 	}
 
 }
