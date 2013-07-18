@@ -20,6 +20,7 @@ public interface Mail {
 	public IMAPFolder getMailBox(String boxname) throws MessagingException;
 	public void fetch() throws MessagingException;
 	public List<Message> getMails();
+	public List<Message> getMails(int size);
 	public Message getMail(String messageId);
 	public boolean sendMailSimple(String to,String subject,String body);
 	public boolean sendMail(Message message);
