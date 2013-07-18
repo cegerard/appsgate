@@ -52,6 +52,8 @@ public class GmailGogoCommand {
 		Set<Instance> instances = new HashSet<Instance>();
 
 		String instanceParam = getArgumentValue("-instance", args);
+		
+		Integer size=Integer.parseInt(getArgumentValueDefault("-size","10", args));
 
 		if (instanceParam != null) {
 			Instance instance = CST.componentBroker.getInst(instanceParam);
@@ -69,23 +71,14 @@ public class GmailGogoCommand {
 
 			Mail mail = (Mail) inst.getServiceObject();
 
-			out.println(mail.getMails().size());
+			out.println(String.format("-- Mailbox (only last %d are shown up) --",size));
 
-			out.println("-- Mailbox (only last 10 are shown up) --");
-
-			Iterator it = mail.getMails().iterator();
-			int size = 10;
-
-			for (; it.hasNext(); size--) {
-
-				if (size == 0)
-					break;
-
-				Message message = (Message) it.next();
+			for (Message message:mail.getMails(size)) {
+				
 				List froms = Arrays.asList(message.getFrom());
-				out.println("> From :" + froms);
-				out.println("> Subject :" + message.getSubject());
-				out.println("----");
+				out.println("Start Message from :" + froms);
+				out.println("\t> Subject :" + message.getSubject());
+				out.println(String.format("\t> Sent: %1$te/%1$tm/%1$tY %1$tH:%1$tM:%1$tS",message.getSentDate()));
 
 			}
 
@@ -191,11 +184,20 @@ public class GmailGogoCommand {
 			Mail mailService = (Mail) instance.getServiceObject();
 			
 			out.println("-- Mail Info --");
+			out.println(String.format("\tApam instance name %s",instance.getName()));
 			out.println(String.format("\tLast fetch was done at %1$te/%1$tm/%1$tY %1$tH:%1$tM:%1$tS",mailService.getLastFetchDateTime()));
 			out.println(String.format("\tUsername %s",instance.getProperty("user")));
 			out.println(String.format("\tAuto-refresh every %s ms",instance.getProperty("auto-refresh")));
 			out.println("-- /Mail Info --");
 		}
+		
+	}
+	
+	private String getArgumentValueDefault(String option, String defaults, String... params){
+		
+		String value=getArgumentValue(option,params);
+		
+		return value==null?defaults:value;
 		
 	}
 	

@@ -29,7 +29,7 @@ public class GMailTest {
 	
 	public void start() throws AddressException, MessagingException {
 		
-		System.out.println("----->Total of emails in the inbox:"+mailService.getMails().size());
+		System.out.println("Gmail notifier ready to go.");
 		
 //		Message message = new MimeMessage(mailService.getSession());
 //		message.setFrom(new InternetAddress("from-email@gmail.com"));

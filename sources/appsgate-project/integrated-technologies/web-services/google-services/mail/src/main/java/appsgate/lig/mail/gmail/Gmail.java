@@ -3,6 +3,7 @@ package appsgate.lig.mail.gmail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +31,8 @@ import appsgate.lig.mail.MailNotification;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import fr.imag.adele.apam.Apam;
+
 /**
  * Gmail implementation for mail service
  * @author jnascimento
@@ -37,6 +40,9 @@ import com.sun.mail.imap.IMAPFolder;
  */
 public class Gmail implements Mail {
 
+	
+	private Apam apam;
+	
 	private Logger logger = Logger.getLogger(Gmail.class.getSimpleName());
 	private Timer refreshTimer = new Timer();
 	private Calendar lastFetchDateTime = null;
@@ -48,13 +54,14 @@ public class Gmail implements Mail {
 	private String USER;
 	private String PASSWORD;
 	private Integer refreshRate = -1;
+	private IMAPFolder lastIMAPFolder=null;
 	
 	//Last list of messages cached (so we can findout when there are new messages in the mailbox)
 	private HashMap<String, Message> messagesCached = new HashMap<String, Message>();
 	
 	private Set<FolderChangeListener> folderListener = new HashSet<FolderChangeListener>();
 
-	private final String BOX = "inbox";
+	private final String DEFAULT_INBOX = "inbox";
 	private final String PROTOCOL_KEY = "mail.store.protocol";
 	private final String PROTOCOL_VALUE = "imaps";
 	private final String IMAP_SERVER = "imap.googlemail.com";
@@ -110,6 +117,12 @@ public class Gmail implements Mail {
 	public void stop() {
 		release();
 		refreshtask.cancel();
+		if(lastIMAPFolder!=null)
+			try {
+				lastIMAPFolder.close(false);
+			} catch (MessagingException e) {
+				// Error closing the mail, nothing you can do about it, sorry
+			}
 	}
 	
 	public void release() {
@@ -166,16 +179,18 @@ public class Gmail implements Mail {
 	public void fetch() throws MessagingException {
 
 		boolean firstTime = messagesCached.size() == 0 ? true : false;
-
+		
 		try {
 
-			for (Message message : getMailBox(BOX).getMessages()) {
+			IMAPFolder box=getMailBox(DEFAULT_INBOX);
+			
+			for (Message message : box.getMessages()) {
 
 				String messageId = message.getHeader("message-id")[0];
 
 				boolean isPresent = messagesCached.keySet().contains(messageId);
 
-				if (!isPresent || firstTime) {
+				if (!isPresent || firstTime ) {
 					messagesCached.put(messageId, message);
 
 				}
@@ -191,7 +206,7 @@ public class Gmail implements Mail {
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		} finally {
-			release();
+			//release();
 		}
 
 	}
@@ -247,32 +262,51 @@ public class Gmail implements Mail {
 		return null;
 	}
 
-	public List<Message> getMails() {
-
+	public List<Message> getMails(int size){
 		try {
 
-			IMAPFolder folder = getMailBox(BOX);
+			IMAPFolder folder = getMailBox(DEFAULT_INBOX);
 
-			Message[] messages = folder.getMessages();
+			Message[] messages;
+			
+			if(size==0)
+				messages = folder.getMessages();
+			else
+				messages = folder.getMessages(folder.getMessageCount()-size+1,folder.getMessageCount());
 
-			return Arrays.asList(messages);
+			List<Message> imapMessages=Arrays.asList(messages);
+			
+			Collections.reverse(imapMessages);
+			
+			return imapMessages;
 
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
 
 		return new ArrayList<Message>();
+	}
+	
+	public List<Message> getMails() {
+
+		return getMails(0);
 
 	}
 
 	public IMAPFolder getMailBox(String storeString) throws MessagingException {
 
-		IMAPFolder folder = (IMAPFolder) getStore().getFolder(storeString);
+		if(lastIMAPFolder!=null && lastIMAPFolder.getName().equals(storeString)){
+			return lastIMAPFolder;
+		}else if (lastIMAPFolder!=null){
+			lastIMAPFolder.close(false);
+		}
+			
+		lastIMAPFolder = (IMAPFolder) getStore().getFolder(storeString);
 
-		if (!folder.isOpen())
-			folder.open(Folder.READ_ONLY);//READ_WRITE
+		if (!lastIMAPFolder.isOpen())
+			lastIMAPFolder.open(Folder.READ_ONLY);//READ_WRITE
 
-		return folder;
+		return lastIMAPFolder;
 
 	}
 
