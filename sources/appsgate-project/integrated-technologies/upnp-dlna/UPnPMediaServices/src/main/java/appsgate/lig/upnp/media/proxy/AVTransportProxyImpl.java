@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 3-June-2013 01:39 PM by ${author}
+// this file was generated at 18-July-2013 04:15 PM by ${author}
 package appsgate.lig.upnp.media.proxy;
 
 import org.apache.felix.upnp.devicegen.holder.*;
@@ -188,6 +188,7 @@ public class AVTransportProxyImpl implements CoreObjectSpec, AVTransport, UPnPEv
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setAVTransportURI(
 		long instanceID,
 
@@ -237,6 +238,7 @@ java.lang.String currentURIMetaData
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setNextAVTransportURI(
 		long instanceID,
 
@@ -300,6 +302,7 @@ java.lang.String nextURIMetaData
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getMediaInfo(
 		long instanceID,
 
@@ -368,6 +371,7 @@ StringHolder writeStatus
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getTransportInfo(
 		long instanceID,
 
@@ -428,6 +432,7 @@ StringHolder currentSpeed
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getPositionInfo(
 		long instanceID,
 
@@ -493,6 +498,7 @@ IntegerHolder absCount
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getDeviceCapabilities(
 		long instanceID,
 
@@ -541,6 +547,7 @@ StringHolder recQualityModes
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getTransportSettings(
 		long instanceID,
 
@@ -582,6 +589,7 @@ StringHolder recQualityMode
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void stop(
 		long instanceID
 	) throws UPnPException {
@@ -619,6 +627,7 @@ StringHolder recQualityMode
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void play(
 		long instanceID,
 
@@ -659,6 +668,7 @@ java.lang.String speed
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void pause(
 		long instanceID
 	) throws UPnPException {
@@ -694,6 +704,7 @@ java.lang.String speed
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void record(
 		long instanceID
 	) throws UPnPException {
@@ -733,6 +744,7 @@ java.lang.String speed
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void seek(
 		long instanceID,
 
@@ -778,6 +790,7 @@ java.lang.String target
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void next(
 		long instanceID
 	) throws UPnPException {
@@ -813,6 +826,7 @@ java.lang.String target
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void previous(
 		long instanceID
 	) throws UPnPException {
@@ -850,6 +864,7 @@ java.lang.String target
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setPlayMode(
 		long instanceID,
 
@@ -892,6 +907,7 @@ java.lang.String newPlayMode
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setRecordQualityMode(
 		long instanceID,
 
@@ -934,6 +950,7 @@ java.lang.String newRecordQualityMode
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getCurrentTransportActions(
 		long instanceID,
 

@@ -16,6 +16,7 @@
 	<description>This sub-project containt components for UPnP Appsgate integration.</description>
 	
 	<modules>
+		<module>UPnPDiscoveryAPAM</module>
 		<module>UPnPMediaServices</module>
 	</modules>
 </project>

@@ -63,14 +63,14 @@ import org.osgi.service.upnp.UPnPService;
 
 import fr.imag.adele.apam.Instance;
 
-import appsgate.lig.logical.object.messages.NotificationMsg;
-import appsgate.lig.logical.object.spec.AbstractObjectSpec;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 <xsl:apply-templates select="*"/>
 </xsl:template>
 
 <xsl:template match="scpd">
 
-public class <xsl:value-of select="$classname"/>ProxyImpl implements AbstractObjectSpec, <xsl:value-of select="$classname"/>, UPnPEventListener {		
+public class <xsl:value-of select="$classname"/>ProxyImpl implements CoreObjectSpec, <xsl:value-of select="$classname"/>, UPnPEventListener {		
 
 	private String 		userObjectName;
 	private int			locationId;
@@ -181,7 +181,7 @@ public class <xsl:value-of select="$classname"/>ProxyImpl implements AbstractObj
 		}
 		
 		@Override
-		public AbstractObjectSpec getSource() {
+		public CoreObjectSpec getSource() {
 			return <xsl:value-of select="$classname"/>ProxyImpl.this;
 		}
 
@@ -267,6 +267,7 @@ public class <xsl:value-of select="$classname"/>ProxyImpl implements AbstractObj
 	 * This method is "add description here"	
 <xsl:apply-templates select="argumentList" mode="comment"/>
 	 */
+	@SuppressWarnings("rawtypes")
 	public void <xsl:value-of select="$methodName"/>(
 		<xsl:apply-templates select="argumentList" mode="param"/>
 	) throws UPnPException {

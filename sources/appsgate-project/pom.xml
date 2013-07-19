@@ -24,7 +24,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>apam-plugin-repository-release</id>
-			<url>https://repository-apam.forge.cloudbees.com/release/repository/</url>
+			<url>https://repository-apam.forge.cloudbees.com/release/repository</url>
 		</pluginRepository>
 	</pluginRepositories>
 	
@@ -33,7 +33,7 @@
 
 		<repository>
 			<id>apam-repo</id>
-			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
+			<url>https://repository-apam.forge.cloudbees.com/release/repository</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>

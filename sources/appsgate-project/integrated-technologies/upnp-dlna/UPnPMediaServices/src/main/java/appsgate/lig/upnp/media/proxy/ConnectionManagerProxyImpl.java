@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 3-June-2013 01:39 PM by ${author}
+// this file was generated at 18-July-2013 04:15 PM by ${author}
 package appsgate.lig.upnp.media.proxy;
 
 import org.apache.felix.upnp.devicegen.holder.*;
@@ -214,6 +214,7 @@ public class ConnectionManagerProxyImpl implements CoreObjectSpec, ConnectionMan
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getProtocolInfo(
 		StringHolder source,
 
@@ -262,6 +263,7 @@ StringHolder sink
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void prepareForConnection(
 		java.lang.String remoteProtocolInfo,
 
@@ -321,6 +323,7 @@ IntegerHolder rcsID
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void connectionComplete(
 		int connectionID
 	) throws UPnPException {
@@ -356,6 +359,7 @@ IntegerHolder rcsID
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getCurrentConnectionIDs(
 		StringHolder connectionIDs
 	) throws UPnPException {
@@ -403,6 +407,7 @@ IntegerHolder rcsID
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getCurrentConnectionInfo(
 		int connectionID,
 
