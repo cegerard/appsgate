@@ -1,0 +1,19 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="EndUsermpl" classname="EndUsermpl">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<!-- device kernel meta data -->	
+		<definition name="id"	  		   type="string" value="" 		 	  field="id"/>
+		<definition name="hashPSWD" 	   type="string" value="" 		  	  field="hashPSWD"/>
+		<definition name="lastName" 	   type="string" value="" 			  field="lastName"/>
+		<definition name="firstName" 	   type="string" value="" 			  field="firstName"/>
+		<definition name="role" 	 	   type="string" value="" 			  field="role"/>
+		<definition name="firstName" 	   type="string" value="" 			  field="firstName"/>
+		
+	</implementation>
+
+</apam>
