@@ -1,4 +1,4 @@
-package fr.imag.adele.apam.apform.upnp;
+package appsgate.lig.upnp.adapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
