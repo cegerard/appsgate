@@ -40,7 +40,7 @@ import appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter;
  * 
  * @author Cédric Gérard
  * @since May 14, 2013
- * @version 0.0.1
+ * @version 1.0.0
  * 
  */
 public class CoreiCalImpl {
