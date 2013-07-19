@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.router.impl.RouterImpl;
 
 /**
@@ -74,16 +73,6 @@ public class RouterCommandListener implements CommandListener {
 			int clientId = obj.getInt("clientId");
 			
 			switch (targetType) {
-
-			case 0: // Router level
-				logger.debug("Router level message");
-				String cmd = obj.getString("commandName");
-
-				if (cmd.equalsIgnoreCase("getDevices")) {
-					router.getDevices(clientId);
-				}
-
-				break;
 
 			case 1:// Abstract object level
 				logger.debug("Abstract object level message");
