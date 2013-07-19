@@ -14,6 +14,15 @@ import org.json.JSONObject;
 public interface AppsGateSpec {
 	
 	/***************************/
+	/**   Device management    */
+	/***************************/
+	
+	/**
+	 * Get all the devices description
+	 */
+	public JSONArray getDevices();
+	
+	/***************************/
 	/** Device name management */
 	/***************************/
 	

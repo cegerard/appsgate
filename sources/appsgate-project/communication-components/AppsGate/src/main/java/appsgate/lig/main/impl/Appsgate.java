@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
+import appsgate.lig.router.spec.RouterApAMSpec;
 
 /**
  * This class is the central component for AppsGate server. It allow client part
@@ -81,7 +82,7 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	/**
 	 * Reference on the AppsGate Router to execute command on devices
 	 */
-	// private RouterApAMSpec router;
+	private RouterApAMSpec router;
 
 	/**
 	 * Default constructor for Appsgate java object. it load UPnP device and
@@ -227,6 +228,11 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 
 		action.setStatus(401, "invalid action");
 		return false;
+	}
+	
+	@Override
+	public JSONArray getDevices() {
+		return router.getDevices();
 	}
 
 	@Override

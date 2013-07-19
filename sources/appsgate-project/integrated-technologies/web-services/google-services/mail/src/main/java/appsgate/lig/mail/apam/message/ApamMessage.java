@@ -1,4 +1,4 @@
-package appsgate.lig.mail;
+package appsgate.lig.mail.apam.message;
 
 import javax.mail.Message;
 
@@ -7,11 +7,11 @@ import javax.mail.Message;
  * @author jnascimento
  *
  */
-public class MailNotification {
+public class ApamMessage {
 
 	Message msg;
 	
-	public MailNotification(Message msg){
+	public ApamMessage(Message msg){
 		this.msg=msg;
 	}
 

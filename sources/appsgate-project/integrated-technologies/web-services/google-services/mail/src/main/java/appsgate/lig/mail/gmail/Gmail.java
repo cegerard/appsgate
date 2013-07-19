@@ -5,11 +5,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -25,9 +22,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import appsgate.lig.mail.FolderChangeListener;
 import appsgate.lig.mail.Mail;
-import appsgate.lig.mail.MailNotification;
+import appsgate.lig.mail.apam.message.ApamMessage;
 
 import com.sun.mail.imap.IMAPFolder;
 
@@ -44,57 +40,34 @@ public class Gmail implements Mail {
 	private Apam apam;
 	
 	private Logger logger = Logger.getLogger(Gmail.class.getSimpleName());
-	private Timer refreshTimer = new Timer();
-	private Calendar lastFetchDateTime = null;
-
-	private Store store;
-	private Session session;
-	private Properties properties;
+	private Timer refreshTimer;
 	
+	/*
+	 * Connection information variables
+	 */
 	private String USER;
 	private String PASSWORD;
-	private Integer refreshRate = -1;
-	private IMAPFolder lastIMAPFolder=null;
 	
-	//Last list of messages cached (so we can findout when there are new messages in the mailbox)
+	/*
+	 * State variables
+	 */
+	private Calendar lastFetchDateTime = null;
+	private Integer refreshRate = -1;
+	private Properties properties;
 	private HashMap<String, Message> messagesCached = new HashMap<String, Message>();
 	
-	private Set<FolderChangeListener> folderListener = new HashSet<FolderChangeListener>();
+	/*
+	 * IMAP variables
+	 */
+	private Store store;
+	private Session session;
+	private IMAPFolder lastIMAPFolder=null;
 
-	private final String DEFAULT_INBOX = "inbox";
-	private final String PROTOCOL_KEY = "mail.store.protocol";
-	private final String PROTOCOL_VALUE = "imaps";
-	private final String IMAP_SERVER = "imap.googlemail.com";
-
-	private TimerTask refreshtask = new TimerTask() {
-		
-		@Override
-		public void run() {
-			
-			try {
-				logger.log(Level.FINE,"Refreshing mail data");
-				Gmail.this.fetch();
-			} catch (MessagingException e) {
-				logger.log(Level.WARNING,"Refreshing mail data FAILED with the message "+e.getMessage());
-			}
-		}
-		
-	};
-	
-	private Map<String, String> defaultGoogleProperties = new HashMap<String, String>() {
-		{
-			put("mail.smtp.auth", "true");
-			put("mail.smtp.starttls.enable", "true");
-			put("mail.smtp.host", "smtp.gmail.com");
-			put("mail.smtp.port", "587");
-			put(PROTOCOL_KEY, PROTOCOL_VALUE);
-		}
-	};
+	private TimerTask refreshtask;
 
 	public Gmail() {
 		properties = System.getProperties();
-		properties.setProperty(PROTOCOL_KEY, PROTOCOL_VALUE);
-		properties.putAll(defaultGoogleProperties);
+		properties.putAll(GMailConstants.defaultGoogleProperties);
 
 	}
 
@@ -106,17 +79,16 @@ public class Gmail implements Mail {
 			throw new RuntimeException("unable to start component. Message "+e.getMessage());
 		}
 
-		if (refreshRate != null && refreshRate != -1) {
-			logger.fine("Configuring auto-refresh to:" + refreshRate + "ms");
-			refreshTimer.scheduleAtFixedRate(refreshtask, 0,
-					refreshRate.longValue());
-		}
-
+		configureAutoRefreshTask();
+		
 	}
 
 	public void stop() {
-		release();
+		
 		refreshtask.cancel();
+		
+		release();
+		
 		if(lastIMAPFolder!=null)
 			try {
 				lastIMAPFolder.close(false);
@@ -145,14 +117,41 @@ public class Gmail implements Mail {
 
 		if (store == null || !store.isConnected()) {
 			
-				store = getSession().getStore(PROTOCOL_VALUE);
+				store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
 
-				store.connect(IMAP_SERVER, USER, PASSWORD);
+				store.connect(GMailConstants.IMAP_SERVER, USER, PASSWORD);
 		}
 
 		return store;
 	}
 
+	private void configureAutoRefreshTask(){
+		
+		refreshTimer = new Timer();
+		
+		refreshtask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				
+				try {
+					logger.log(Level.FINE,"Refreshing mail data");
+					Gmail.this.fetch();
+				} catch (MessagingException e) {
+					logger.log(Level.WARNING,"Refreshing mail data FAILED with the message "+e.getMessage());
+				}
+			}
+			
+		};
+		
+		if (refreshRate != null && refreshRate != -1) {
+			logger.fine("Configuring auto-refresh to:" + refreshRate + "ms");
+			refreshTimer.scheduleAtFixedRate(refreshtask, 0,
+					refreshRate.longValue());
+		}
+		
+	}
+	
 	public Session getSession() {
 
 		if (session == null ) {
@@ -182,7 +181,7 @@ public class Gmail implements Mail {
 		
 		try {
 
-			IMAPFolder box=getMailBox(DEFAULT_INBOX);
+			IMAPFolder box=getMailBox(GMailConstants.DEFAULT_INBOX);
 			
 			for (Message message : box.getMessages()) {
 
@@ -196,7 +195,8 @@ public class Gmail implements Mail {
 				}
 
 				if (!isPresent && !firstTime) {
-					fireListeners(message);
+					mailReceivedNotification(message);
+					//fireListeners(message);
 				}
 
 			}
@@ -212,11 +212,26 @@ public class Gmail implements Mail {
 	}
 
 	/*
-	 * Sends an email with a Message type, which allows to add specialized modification in the mailcontent, like add an attachment
+	 * Sends an email with a Message type, which allows to add specialized modification in the mailcontent, like add an attachment. Example of usage:
+	 * 
+	 *	Message message = new MimeMessage(mailService.getSession());
+	 *	message.setFrom(new InternetAddress("from-email@gmail.com"));
+	 *	message.setRecipients(Message.RecipientType.TO,
+	 *	InternetAddress.parse("jbotnascimento@gmail.com"));
+	 *	message.setSubject("Testing sender");
+	 *	message.setText("Message body!");
+	 *	mailService.sendMail(message);
+	 *	mailService.sendMailSimple("jbotnascimento@gmail.com", "ping","ping body");
+	 *	mailService.addFolderListener(listener);
+	 *	
 	 * @see appsgate.lig.mail.Mail#sendMail(javax.mail.Message)
 	 */
 	public boolean sendMail(Message message) {
 
+		/*
+		 * Example
+		 */
+		
 		try {
 			Transport.send(message);
 		} catch (MessagingException e) {
@@ -265,7 +280,7 @@ public class Gmail implements Mail {
 	public List<Message> getMails(int size){
 		try {
 
-			IMAPFolder folder = getMailBox(DEFAULT_INBOX);
+			IMAPFolder folder = getMailBox(GMailConstants.DEFAULT_INBOX);
 
 			Message[] messages;
 			
@@ -310,34 +325,24 @@ public class Gmail implements Mail {
 
 	}
 
-	/** Message related methods **/
-	private void fireListeners(Message message) {
-		for (FolderChangeListener listener : this.folderListener) {
-			mailReceivedNotification(listener,message);
-		}
+	private ApamMessage mailReceivedNotification(Message msg){
+		//listener.mailReceivedNotification(msg);
+		System.out.println("sending notification:"+msg);
+		return new ApamMessage(msg);
 	}
-
-	private MailNotification mailReceivedNotification(FolderChangeListener listener, Message msg){
-		listener.mailReceivedNotification(msg);
-		return new MailNotification(msg);
-	}
-	
-	public void addFolderListener(FolderChangeListener listener) {
-		this.folderListener.add(listener);
-	}
-
-	public void removeFolderListener(FolderChangeListener listener) {
-		folderListener.remove(listener);
-	}
-
-	public Set<FolderChangeListener> getFolderListener() {
-		return folderListener;
-	}
-
-	/** END:Message related methods **/
 	
 	public Calendar getLastFetchDateTime() {
 		return lastFetchDateTime;
+	}
+	
+	public void autoRefreshValueChanged(String newValue) {
+		
+		refreshtask.cancel();
+		
+		System.out.println("Auto-refresh changed to:"+refreshRate);
+		
+		configureAutoRefreshTask();
+		
 	}
 	
 }
