@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="PlaceManagerSpec"
-		interfaces="appsgate.lig.manager.location.spec.PlaceManagerSpec"> <!--messages="appsgate.lig.logical.object.messages.NotificationMsg"-->
+		interfaces="appsgate.lig.manager.place.spec.PlaceManagerSpec"> <!--messages="appsgate.lig.logical.object.messages.NotificationMsg"-->
 	</specification>
 
 </apam>

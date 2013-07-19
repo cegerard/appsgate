@@ -13,7 +13,7 @@ deployToAppsGateDistribution.sh
 
 *obr.xml
 
-*.jar
+*/target/*
 
 nbaction.xml
 
