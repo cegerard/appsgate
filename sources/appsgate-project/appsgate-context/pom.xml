@@ -41,7 +41,7 @@
 		<module>DeviceNameTableSpec</module>
 		<module>DeviceNameTable</module>
 		<module>ContextHistoy</module>
-		<module>AppsgateUserImpl</module>
+		<module>appsgate-enduser</module>
 	</modules>
 
 </project>
