@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="EndUsermpl" classname="EndUsermpl">
+	<implementation name="EndUsermpl" classname="appsgate.lig.context.user.impl.AppsgateEndUser">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
 		<!-- device kernel meta data -->	
@@ -12,7 +12,6 @@
 		<definition name="lastName" 	   type="string" value="" 			  field="lastName"/>
 		<definition name="firstName" 	   type="string" value="" 			  field="firstName"/>
 		<definition name="role" 	 	   type="string" value="" 			  field="role"/>
-		<definition name="firstName" 	   type="string" value="" 			  field="firstName"/>
 		
 	</implementation>
 

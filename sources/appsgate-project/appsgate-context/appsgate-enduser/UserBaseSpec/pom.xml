@@ -1,27 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
+	
 	<parent>
 		<groupId>appsgate.components</groupId>
 		<artifactId>appsgate-enduser</artifactId>
 		<version>1.0.0</version>
 	</parent>
-
-	<artifactId>AppsgateUserImpl</artifactId>
-	<name>Appsgate user implementation</name>
+	
+	<artifactId>UserBaseSpec</artifactId>
+	<name>User base specification</name>
 	<packaging>bundle</packaging>
+	
+	<description>ApAM specification for Appsgate users base.</description>
+	
+	<!-- Repositories List -->
 
 	<!-- Dependencies Description -->
 	<dependencies>
-
 		<dependency>
-			<groupId>org.mindrot</groupId>
-			<artifactId>jbcrypt</artifactId>
-			<version>0.3m</version>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ContextHistory</artifactId>
+			<version>1.0.0</version>
 		</dependency>
-
 	</dependencies>
 	
 	<!-- Build Description -->
@@ -34,14 +35,6 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Export-Package>
-							appsgate.lig.context.user.impl.*,
-							org.mindrot.jbcrypt
-						</Export-Package>
-						<Import-Package>
-							org.slf4j,
-							org.json
-						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -59,5 +52,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	
 </project>

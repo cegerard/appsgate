@@ -3,15 +3,13 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="AppsGateImpl" classname="appsgate.lig.main.impl.Appsgate" specification="AppsGateSpec" singleton="true">
+	<implementation name="AppsGateContextuserBaseImpl" classname="appsgate.lig.context.userbase.impl.UserBaseImpl" specification="AppsGateContextUseBaseSpec" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
- 		<dependency field="router"/>
-		<dependency field="deviceNameTable"/>
-		<dependency field="placeManager"/>
-		<dependency field="userManager"/>
-		<ipojo:requires field="httpService"/>
+		<ipojo:requires field="contextHistory_pull"/>
+		<ipojo:requires field="contextHistory_push"/>
 	</implementation>
-
-	<apam-instance name="AppsGateInst" implementation="AppsGateImpl">
+	
+	<apam-instance name="AppsGateContextUserBaseInst" implementation="AppsGateContextuserBaseImpl">
 	</apam-instance>
+
 </apam>

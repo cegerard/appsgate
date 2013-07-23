@@ -14,7 +14,17 @@
 	
 	<description>This sub-project contain all end user management components</description>
 	
+	<dependencies>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+	</dependencies>
+	
 	<modules>
 		<module>AppsgateUserImpl</module>
+		<module>UserBaseSpec</module>
+		<module>UserBaseImpl</module>
 	</modules>
 </project>

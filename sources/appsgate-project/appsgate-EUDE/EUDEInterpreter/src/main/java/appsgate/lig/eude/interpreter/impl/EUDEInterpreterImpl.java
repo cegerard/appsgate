@@ -270,7 +270,12 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	@Override
 	public void endEventFired(EndEvent e) {
 		NodeProgram p = (NodeProgram)e.getSource();
-		p.removeEndEventListener(this);
+		if(p.getDeamon().contentEquals("true")) {
+			logger.debug("Deamon "+ p.getName() +" looping...");
+			p.call();
+		}else {
+			p.removeEndEventListener(this);
+		}
 	}
 
 	@Override
