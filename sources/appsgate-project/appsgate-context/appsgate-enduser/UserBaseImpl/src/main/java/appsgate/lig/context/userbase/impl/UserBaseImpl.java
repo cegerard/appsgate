@@ -65,7 +65,7 @@ public class UserBaseImpl implements UserBaseSpec {
 				while(i < length) {
 					JSONObject obj = state.getJSONObject(i);
 					String key = (String)obj.keys().next();
-					userList.put(key, new AppsgateEndUser(obj.getJSONObject(key)));
+					userList.put(key, new AppsgateEndUser(new JSONObject(obj.getString(key))));
 					i++;
 				}
 			} catch (JSONException e) {
@@ -93,15 +93,16 @@ public class UserBaseImpl implements UserBaseSpec {
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();		
 			Set<String> keys = userList.keySet();
 			for(String key : keys) {
-				properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize()));
+				properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize().toString()));
 			}
 			contextHistory_push.pushData_add(this.getClass().getSimpleName(), id, lastName+"-"+firstName, properties);
 		
 			return true;
 		
 		}catch(Exception e){
-			return false;
+			e.printStackTrace();
 		}
+		return false;
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class UserBaseImpl implements UserBaseSpec {
 				ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();		
 				Set<String> keys = userList.keySet();
 				for(String key : keys) {
-					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize()));
+					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize().toString()));
 				}
 				contextHistory_push.pushData_remove(this.getClass().getSimpleName(), id, aeu.getLastName()+"-"+aeu.getFirstName(), properties);
 		
@@ -145,7 +146,7 @@ public class UserBaseImpl implements UserBaseSpec {
 
 	@Override
 	public boolean checkIfIdIsFree(String id) {
-		return (userList.get(id) != null);
+		return (userList.get(id) == null);
 	}
 
 	@Override
@@ -160,10 +161,10 @@ public class UserBaseImpl implements UserBaseSpec {
 				ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();		
 				Set<String> keys = userList.keySet();
 				for(String key : keys) {
-					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize()));
+					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize().toString()));
 				}
 				try {
-					contextHistory_push.pushData_add(this.getClass().getSimpleName(),id, accountDetails.getString("id"), accountDetails.getString("login"), properties);
+					contextHistory_push.pushData_add(this.getClass().getSimpleName(),id, accountDetails.getString("login"), accountDetails.getString("implem"), properties);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -186,10 +187,10 @@ public class UserBaseImpl implements UserBaseSpec {
 				ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();		
 				Set<String> keys = userList.keySet();
 				for(String key : keys) {
-					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize()));
+					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize().toString()));
 				}
 				try {
-					contextHistory_push.pushData_remove(this.getClass().getSimpleName(),id, accountDetails.getString("id"), accountDetails.getString("login"), properties);
+					contextHistory_push.pushData_remove(this.getClass().getSimpleName(),id, accountDetails.getString("login"), accountDetails.getString("implem"), properties);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -198,6 +199,16 @@ public class UserBaseImpl implements UserBaseSpec {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public JSONArray getAccountsDetails(String id) {
+		try {
+			return userList.get(id).getAccountsDetailsJSONArray();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new JSONArray();
 	}
 
 	@Override
@@ -210,7 +221,7 @@ public class UserBaseImpl implements UserBaseSpec {
 				ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();		
 				Set<String> keys = userList.keySet();
 				for(String key : keys) {
-					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize()));
+					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize().toString()));
 				}
 
 				contextHistory_push.pushData_add(this.getClass().getSimpleName(),id, deviceId, "device", properties);
@@ -231,7 +242,7 @@ public class UserBaseImpl implements UserBaseSpec {
 				ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();		
 				Set<String> keys = userList.keySet();
 				for(String key : keys) {
-					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize()));
+					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize().toString()));
 				}
 
 				contextHistory_push.pushData_remove(this.getClass().getSimpleName(),id, deviceId, "device", properties);
@@ -240,6 +251,16 @@ public class UserBaseImpl implements UserBaseSpec {
 		}
 		
 		return false;
+	}
+
+	@Override
+	public JSONArray getAssociatedDevices(String id) {
+		try {
+			return userList.get(id).getDeviceListJSONArray();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new JSONArray();
 	}
 
 }

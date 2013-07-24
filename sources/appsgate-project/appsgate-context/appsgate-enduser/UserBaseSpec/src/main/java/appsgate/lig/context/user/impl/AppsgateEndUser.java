@@ -56,12 +56,20 @@ public class AppsgateEndUser {
 	/**
 	 * List of synchronized services
 	 */
-	ArrayList<ServiceAccount> serviceAccountList;
+	ArrayList<ServiceAccount> serviceAccountList = new ArrayList<ServiceAccount>();
 	
 	/**
 	 * List of owned devices
 	 */
-	ArrayList<String> deviceOwnedList;
+	ArrayList<String> deviceOwnedList = new ArrayList<String>();
+	
+	/**
+	 * default constructor it
+	 * just initialize the password hash with empty string hash
+	 */
+	public AppsgateEndUser() {
+		this.hashPSWD = BCrypt.hashpw("", BCrypt.gensalt(11));
+	}
 	
 	/**
 	 * Build a new end user instance
@@ -93,6 +101,33 @@ public class AppsgateEndUser {
 			this.lastName  = jsonObject.getString("lastName");
 			this.firstName = jsonObject.getString("firstName");
 			this.role 	   = jsonObject.getString("role");
+			
+			JSONArray devices = jsonObject.getJSONArray("devices");
+			int size = devices.length();
+			int i = 0;
+			while (i<size){
+				deviceOwnedList.add(devices.getString(i));
+				i++;
+			}
+			
+			JSONArray accounts = jsonObject.getJSONArray("accounts");
+			JSONObject acc;
+			ServiceAccount sa;
+			size = accounts.length();
+			i=0;
+			while (i<size){
+				acc = accounts.getJSONObject(i);
+				
+				String login = acc.getString("login");
+				String hashPswd = acc.getString("hasPSWD");
+				String accountImplementation = acc.getString("implem");
+				JSONObject accountSynchDetails = acc.getJSONObject("synchDetails");
+				
+				sa = new ServiceAccount(login, hashPswd, accountImplementation, accountSynchDetails);
+				serviceAccountList.add(sa);
+				i++;
+			}
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -130,7 +165,7 @@ public class AppsgateEndUser {
 		JSONObject obj =  new JSONObject();
 		try {
 			obj.put("id", id);
-			obj.put("hashPswd", hashPSWD);
+			obj.put("hashPSWD", hashPSWD);
 			obj.put("lastName", lastName);
 			obj.put("firstName", firstName);
 			obj.put("role", role);
@@ -147,11 +182,14 @@ public class AppsgateEndUser {
 	 * Get the JSONArray of synchronized accounts
 	 * @return synchronized accounts as a JSONArray
 	 */
-	private JSONArray getAccountsDetailsJSONArray() {
+	public JSONArray getAccountsDetailsJSONArray() {
 		JSONArray array = new JSONArray();
-		
-		for(ServiceAccount sa : serviceAccountList) {
-			array.put(sa.getAccountSynchDetails());
+		try{
+			for(ServiceAccount sa : serviceAccountList) {
+				array.put(sa.getAccountJSONDescription());
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 		
 		return array;
@@ -161,7 +199,7 @@ public class AppsgateEndUser {
 	 * Get the device list as a JSON array
 	 * @return associated device list as a JSONArray
 	 */
-	private JSONArray getDeviceListJSONArray() {
+	public JSONArray getDeviceListJSONArray() {
 		return new JSONArray(deviceOwnedList);
 	}
 
@@ -211,11 +249,11 @@ public class AppsgateEndUser {
 
 		try {
 			String saLogin = accountDetails.getString("login");
-			String saHashPswd =  BCrypt.hashpw(accountDetails.getString("password"), BCrypt.gensalt(11));
+			String saPswd =  accountDetails.getString("password");
 			String saAccountImplementation = accountDetails.getString("implem");
 			JSONObject saAccountSynchDetails = accountDetails.getJSONObject("details");
 		
-			ServiceAccount sa = new ServiceAccount(saLogin, saHashPswd, saAccountImplementation, saAccountSynchDetails); 
+			ServiceAccount sa = new ServiceAccount(saLogin, saPswd, saAccountImplementation, saAccountSynchDetails); 
 	
 			return serviceAccountList.add(sa);
 			
@@ -247,20 +285,50 @@ public class AppsgateEndUser {
 		return false;
 	}
 
+	/**
+	 * Get the user identifier 
+	 * @return the user identifier as a string
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Get the user last name
+	 * @return the user last name as a string
+	 */
 	public String getLastName() {
 		return lastName;
 	}
 
+	/**
+	 * Get the user first name
+	 * @return the user first name as a string
+	 */
 	public String getFirstName() {
 		return firstName;
 	}
 
+	/**
+	 * Get the user role
+	 * @return the user role as a string
+	 */
 	public String getRole() {
 		return role;
+	}
+	
+	/**
+	 * Change the current password method
+	 * @param oldPass the former user password
+	 * @param newPass the new user password
+	 * @return true if the password has change, false otherwise
+	 */
+	public boolean setPassword(String oldPass, String newPass) {
+		if(authenticate(oldPass)) {
+			this.hashPSWD = BCrypt.hashpw(newPass, BCrypt.gensalt(11));
+			return true;
+		}
+		return false;
 	}
 	
 }

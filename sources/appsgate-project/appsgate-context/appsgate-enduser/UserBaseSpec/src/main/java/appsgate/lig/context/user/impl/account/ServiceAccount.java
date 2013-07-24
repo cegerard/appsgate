@@ -1,6 +1,12 @@
 package appsgate.lig.context.user.impl.account;
 
+import java.util.HashMap;
+
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import fr.imag.adele.apam.CST;
+import fr.imag.adele.apam.Implementation;
 
 /**
  * This class is a representation of an service account
@@ -31,14 +37,7 @@ public class ServiceAccount {
 	 * Account details for synchronization
 	 */
 	private JSONObject accountSynchDetails;
-
-	public ServiceAccount(String login, String hashPswd,
-			String accountImplementation) {
-		super();
-		this.login = login;
-		this.hashPswd = hashPswd;
-		this.accountImplementation = accountImplementation;
-	}
+	
 
 	public ServiceAccount(String login, String hashPswd,
 			String accountImplementation, JSONObject accountSynchDetails) {
@@ -47,6 +46,17 @@ public class ServiceAccount {
 		this.hashPswd = hashPswd;
 		this.accountImplementation = accountImplementation;
 		this.accountSynchDetails = accountSynchDetails;
+		
+		try {
+			Implementation impl = CST.apamResolver.findImplByName(null, accountImplementation);
+			HashMap<String,String> properties = new HashMap<String, String>();
+		
+			properties.put("account", login);
+			properties.put("pswd", hashPswd);
+			properties.put("calendarName", accountSynchDetails.getString("calendarName"));
+			impl.createInstance(null, properties);
+			
+		} catch (JSONException e) {e.printStackTrace();}
 	}
 
 	public String getLogin() {
@@ -79,6 +89,19 @@ public class ServiceAccount {
 
 	public void setAccountSynchDetails(JSONObject accountSynchDetails) {
 		this.accountSynchDetails = accountSynchDetails;
+	}
+	
+	public JSONObject getAccountJSONDescription() {
+		JSONObject obj = new JSONObject();
+		
+		try {
+			obj.put("login", login);
+			obj.put("hasPSWD", hashPswd);
+			obj.put("implem", accountImplementation);
+			obj.put("synchDetails", accountSynchDetails);
+		} catch (JSONException e) {e.printStackTrace();}
+		
+		return obj;
 	}
 
 

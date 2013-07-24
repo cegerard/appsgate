@@ -70,6 +70,13 @@ public interface UserBaseSpec {
 	public boolean removeAccount(String id, String password, JSONObject accountDetails);
 	
 	/**
+	 * Get all account details
+	 * @param id the end user identifier
+	 * @return accounts details as a JSONArray
+	 */
+	public JSONArray getAccountsDetails(String id);
+	
+	/**
 	 * Associate a device to the user
 	 * @param id the user identifier
 	 * @param password the user password
@@ -86,5 +93,12 @@ public interface UserBaseSpec {
 	 * @return true if the device is correctly removed
 	 */
 	public boolean removeDevice(String id, String password, String deviceId);
+	
+	/**
+	 * Get all associated device id
+	 * @param id the end user identifier
+	 * @return the device id as a JSONArray
+	 */
+	public JSONArray getAssociatedDevices(String id);
 
 }

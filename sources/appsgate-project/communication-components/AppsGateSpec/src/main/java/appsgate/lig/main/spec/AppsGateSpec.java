@@ -117,11 +117,18 @@ public interface AppsGateSpec {
 	public boolean deleteUser(String id, String password);
 	
 	/**
-	 * Get details of a specify user
+	 * Get details on a specify user
 	 * @param id the identifier of the user
 	 * @return user details as a JSONObject
 	 */
 	public JSONObject getUserDetails(String id);
+	
+	/**
+	 * Get all information on a specify user
+	 * @param id the identifier of the user
+	 * @return user information as a JSONObject
+	 */
+	public JSONObject getUserFullDetails(String id);
 	
 	/**
 	 * Check if the wanted identifier already existing.

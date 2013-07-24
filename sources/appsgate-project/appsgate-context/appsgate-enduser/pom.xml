@@ -23,7 +23,6 @@
 	</dependencies>
 	
 	<modules>
-		<module>AppsgateUserImpl</module>
 		<module>UserBaseSpec</module>
 		<module>UserBaseImpl</module>
 	</modules>

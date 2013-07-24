@@ -319,6 +319,19 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	public JSONObject getUserDetails(String id) {
 		return userManager.getUserDetails(id);
 	}
+	
+	@Override
+	public JSONObject getUserFullDetails(String id) {
+		JSONObject obj = new JSONObject();
+		
+		try {
+			obj.put("user", userManager.getUserDetails(id));
+			obj.put("devices", userManager.getAssociatedDevices(id));
+			obj.put("accounts", userManager.getAccountsDetails(id));
+		} catch (JSONException e) {e.printStackTrace();}
+		
+		return obj;
+	}
 
 	@Override
 	public boolean checkIfIdIsFree(String id) {
