@@ -11,11 +11,6 @@
 	<name>UPnP Adapter (based on UPnP BaseDriver)</name>
 	<packaging>bundle</packaging>
 
-	<properties>
-		<osgi.version>4.2.0</osgi.version>
-		<ipojo.version>1.8.0</ipojo.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.osgi</groupId>

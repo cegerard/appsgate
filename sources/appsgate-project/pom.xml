@@ -14,11 +14,14 @@
 		<!-- apam version -->
 		<apam.current.version>0.0.3</apam.current.version>
 		<!-- Dependencies version -->
+		<osgi.version>4.2.0</osgi.version>
+		<ipojo.version>1.8.0</ipojo.version>
+		<!-- Encoding -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- plugins -->
 		<ipojo.plugin.version>1.8.0</ipojo.plugin.version>
 		<bundle.plugin.version>2.3.7</bundle.plugin.version>
 		<compiler.plugin.version>2.5.1</compiler.plugin.version>
-		<!-- Encoding -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
 	<pluginRepositories>
