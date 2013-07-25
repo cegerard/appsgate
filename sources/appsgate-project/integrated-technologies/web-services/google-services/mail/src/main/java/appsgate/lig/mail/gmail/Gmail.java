@@ -326,8 +326,6 @@ public class Gmail implements Mail {
 	}
 
 	private ApamMessage mailReceivedNotification(Message msg){
-		//listener.mailReceivedNotification(msg);
-		System.out.println("sending notification:"+msg);
 		return new ApamMessage(msg);
 	}
 	
