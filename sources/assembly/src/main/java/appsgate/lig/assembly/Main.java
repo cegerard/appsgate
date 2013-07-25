@@ -5,12 +5,12 @@ import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import appsgate.lig.mail.Mail;
-import appsgate.lig.meteo.Meteo;
+import appsgate.lig.weather.*;;
 
 public class Main {
 
 	Integer refreshRate=5000;
-	Meteo meteo;
+	WeatherForecast meteo;
 	Mail mail;
 	Integer lastNotifiedValue=-1;
 	
@@ -39,13 +39,17 @@ public class Main {
 	
 	public void check(){
 		
-		Integer temperature=meteo.getCurrentTemperature();
-		
-		if(temperature.intValue()>35 && lastNotifiedValue!=temperature){
-			System.out.println(String.format("Temperature is too right %s, sending alert!",  temperature));
-			lastNotifiedValue=meteo.getCurrentTemperature();
-			mail.sendMailSimple("jbotnascimento@gmail.com", "alert!", "temperature is too high!");
+		try {
+			Integer  temperature = meteo.getCurrentTemperature();
+			if(temperature.intValue()>35 && lastNotifiedValue!=temperature){
+				System.out.println(String.format("Temperature is too right %s, sending alert!",  temperature));
+				lastNotifiedValue=meteo.getCurrentTemperature();
+				mail.sendMailSimple("jbotnascimento@gmail.com", "alert!", "temperature is too high!");
+			}
+		} catch (WeatherForecastException e) {
+			e.printStackTrace();
 		}
+		
 		
 	}
 	

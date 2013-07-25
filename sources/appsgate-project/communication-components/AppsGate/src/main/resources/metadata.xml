@@ -5,9 +5,10 @@
 
 	<implementation name="AppsGateImpl" classname="appsgate.lig.main.impl.Appsgate" specification="AppsGateSpec" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
- 		<!--<dependency field="router"/> -->
+ 		<dependency field="router"/>
 		<dependency field="deviceNameTable"/>
-		<dependency field="locationManager"/>
+		<dependency field="placeManager"/>
+		<dependency field="userManager"/>
 		<ipojo:requires field="httpService"/>
 	</implementation>
 

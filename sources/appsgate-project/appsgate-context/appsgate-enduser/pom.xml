@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>appsgate-context</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
+	<artifactId>appsgate-enduser</artifactId>
+	<packaging>pom</packaging>
+	<name>Appsgate end user project</name>
+	
+	<description>This sub-project contain all end user management components</description>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+	</dependencies>
+	
+	<modules>
+		<module>UserBaseSpec</module>
+		<module>UserBaseImpl</module>
+	</modules>
+</project>

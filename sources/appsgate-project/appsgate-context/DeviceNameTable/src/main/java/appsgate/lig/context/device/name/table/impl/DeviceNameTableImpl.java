@@ -136,7 +136,6 @@ public class DeviceNameTableImpl implements DeviceNameTableSpec {
 					JSONObject obj = state.getJSONObject(i);
 					String key = (String)obj.keys().next();
 					userObjectName.put(key, obj.getString(key));
-					logger.debug("PLOP: "+obj.getString(key));
 					i++;
 				}
 			} catch (JSONException e) {

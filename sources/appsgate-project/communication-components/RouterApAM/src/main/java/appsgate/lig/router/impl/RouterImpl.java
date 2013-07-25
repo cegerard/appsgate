@@ -192,12 +192,13 @@ public class RouterImpl implements RouterApAMSpec {
 
 	/**
 	 * Send all the devices description to one client
-	 * @param clientId the client connection identifier
 	 */
-	public void getDevices(int clientId) {
+	@Override
+	public JSONArray getDevices() {
 		Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
 		
 		CoreObjectSpec adev = null;
+		
 		if (devices != null) {
 			JSONArray jsonDeviceList =  new JSONArray();
 			
@@ -205,9 +206,12 @@ public class RouterImpl implements RouterApAMSpec {
 				adev = devices.next();
 				jsonDeviceList.put(getObjectDescription(adev, ""));
 			}
-			sendToClientService.send(clientId, "listDevices", jsonDeviceList);
+			
+			return jsonDeviceList;
+			
 		}else{
 			logger.debug("No smart object detected.");
+			return new JSONArray();
 		}
 	}
 	
@@ -225,7 +229,7 @@ public class RouterImpl implements RouterApAMSpec {
 			JSONDescription = obj.getDescription();
 			//Add context description for this abject
 			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
-			JSONDescription.put("locationId", appsgate.getCoreObjectLocationId(obj.getAbstractObjectId()));
+			JSONDescription.put("locationId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

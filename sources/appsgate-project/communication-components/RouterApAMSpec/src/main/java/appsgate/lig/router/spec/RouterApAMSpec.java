@@ -33,4 +33,9 @@ public interface RouterApAMSpec {
 	 * @return a Runnable object that can be execute everywhere.
 	 */
 	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args);
+	
+	/**
+	 * Get all the devices description as JSONArray
+	 */
+	public JSONArray getDevices();
 }

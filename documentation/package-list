@@ -43,10 +43,9 @@ appsgate.lig.mail.gmail
 appsgate.lig.mail.gmail.main
 appsgate.lig.main.impl
 appsgate.lig.main.spec
-appsgate.lig.manager.location.impl
-appsgate.lig.manager.location.messages
-appsgate.lig.manager.location.spec
-appsgate.lig.meteo
+appsgate.lig.manager.place.impl
+appsgate.lig.manager.place.messages
+appsgate.lig.manager.place.spec
 appsgate.lig.meteo.yahoo
 appsgate.lig.meteo.yahoo.main
 appsgate.lig.meteo.yahoo.test
@@ -67,6 +66,9 @@ appsgate.lig.undefined.sensor.enocean.impl
 appsgate.lig.undefined.sensor.spec
 appsgate.lig.upnp.media
 appsgate.lig.upnp.media.proxy
+appsgate.lig.weather
+appsgate.lig.weather.yahoo
+appsgate.lig.weather.yahoo.main
 appsgate.validation.context.history
 appsgate.validation.device.name.table.command
 appsgate.validation.interpreter.command

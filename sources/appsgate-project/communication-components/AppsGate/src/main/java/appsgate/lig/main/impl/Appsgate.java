@@ -28,8 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
+import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
-import appsgate.lig.manager.location.spec.PlaceManagerSpec;
+import appsgate.lig.manager.place.spec.PlaceManagerSpec;
+import appsgate.lig.router.spec.RouterApAMSpec;
 
 /**
  * This class is the central component for AppsGate server. It allow client part
@@ -74,14 +76,19 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	private DeviceNameTableSpec deviceNameTable;
 
 	/**
-	 * The place manager ApAM component to handle the object location
+	 * The place manager ApAM component to handle the object place
 	 */
-	private PlaceManagerSpec locationManager;
+	private PlaceManagerSpec placeManager;
+	
+	/**
+	 * The user manager ApAM component to handle the user base
+	 */
+	private UserBaseSpec userManager;
 
 	/**
 	 * Reference on the AppsGate Router to execute command on devices
 	 */
-	// private RouterApAMSpec router;
+	private RouterApAMSpec router;
 
 	/**
 	 * Default constructor for Appsgate java object. it load UPnP device and
@@ -228,6 +235,11 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 		action.setStatus(401, "invalid action");
 		return false;
 	}
+	
+	@Override
+	public JSONArray getDevices() {
+		return router.getDevices();
+	}
 
 	@Override
 	public void setUserObjectName(String objectId, String user, String name) {
@@ -246,21 +258,21 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	}
 
 	@Override
-	public JSONArray getLocations() {
-		return locationManager.getJSONLocations();
+	public JSONArray getPlaces() {
+		return placeManager.getJSONPlaces();
 	}
 
 	@Override
-	public void newLocation(JSONObject location) {
+	public void newPlace(JSONObject place) {
 		try {
-			String placeId = location.getString("id");
-			locationManager.addPlace(placeId, location.getString("name"));
-			JSONArray devices = location.getJSONArray("devices");
+			String placeId = place.getString("id");
+			placeManager.addPlace(placeId, place.getString("name"));
+			JSONArray devices = place.getJSONArray("devices");
 			int size = devices.length();
 			int i = 0;
 			while (i < size) {
 				String objId = (String) devices.get(i);
-				locationManager.moveObject(objId, locationManager.getCoreObjectLocationId(objId), placeId);
+				placeManager.moveObject(objId, placeManager.getCoreObjectPlaceId(objId), placeId);
 				i++;
 			}
 		} catch (JSONException e) {
@@ -269,23 +281,83 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	}
 
 	@Override
-	public void updateLocation(JSONObject location) {
-		// for now we could just rename a location
+	public void updatePlace(JSONObject place) {
+		// for now we could just rename a place
 		try {
-			locationManager.renameLocation(location.getString("id"),location.getString("name"));
+			placeManager.renamePlace(place.getString("id"),place.getString("name"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void moveDevice(String objId, String srcLocationId, String destLocationId) {
-		locationManager.moveObject(objId, srcLocationId, destLocationId);
+	public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
+		placeManager.moveObject(objId, srcPlaceId, destPlaceId);
 	}
 
 	@Override
-	public String getCoreObjectLocationId(String objId) {
-		return locationManager.getCoreObjectLocationId(objId);
+	public String getCoreObjectPlaceId(String objId) {
+		return placeManager.getCoreObjectPlaceId(objId);
+	}
+
+	@Override
+	public JSONArray getUsers() {
+		return userManager.getUsers();
+	}
+
+	@Override
+	public boolean createUser(String id, String password, String lastName, String firstName, String role) {
+		return userManager.adduser(id, password, lastName, lastName, role);
+	}
+
+	@Override
+	public boolean deleteUser(String id, String password) {
+		return userManager.removeUser(id, password);
+	}
+
+	@Override
+	public JSONObject getUserDetails(String id) {
+		return userManager.getUserDetails(id);
+	}
+	
+	@Override
+	public JSONObject getUserFullDetails(String id) {
+		JSONObject obj = new JSONObject();
+		
+		try {
+			obj.put("user", userManager.getUserDetails(id));
+			obj.put("devices", userManager.getAssociatedDevices(id));
+			obj.put("accounts", userManager.getAccountsDetails(id));
+		} catch (JSONException e) {e.printStackTrace();}
+		
+		return obj;
+	}
+
+	@Override
+	public boolean checkIfIdIsFree(String id) {
+		return userManager.checkIfIdIsFree(id);
+	}
+
+	@Override
+	public boolean synchronizeAccount(String id, String password,
+			JSONObject accountDetails) {
+		return userManager.addAccount(id, password, accountDetails);
+	}
+
+	@Override
+	public boolean desynchronizedAccount(String id, String password,
+			JSONObject accountDetails) {
+		return userManager.removeAccount(id, password, accountDetails);
+	}
+
+	@Override
+	public boolean associateDevice(String id, String password, String deviceId) {
+		return userManager.addDevice(id, password, deviceId);
+	}
+
+	@Override
+	public boolean separateDevice(String id, String password, String deviceId) {
+		return userManager.removeDevice(id, password, deviceId);
 	}
 
 }

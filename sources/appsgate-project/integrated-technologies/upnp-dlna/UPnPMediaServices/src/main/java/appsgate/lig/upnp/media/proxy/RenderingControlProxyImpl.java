@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 3-June-2013 01:39 PM by ${author}
+// this file was generated at 18-July-2013 04:15 PM by ${author}
 package appsgate.lig.upnp.media.proxy;
 
 import org.apache.felix.upnp.devicegen.holder.*;
@@ -186,6 +186,7 @@ public class RenderingControlProxyImpl implements CoreObjectSpec, RenderingContr
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void listPresets(
 		long instanceID,
 
@@ -226,6 +227,7 @@ StringHolder currentPresetNameList
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void selectPreset(
 		long instanceID,
 
@@ -268,6 +270,7 @@ java.lang.String presetName
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getBrightness(
 		long instanceID,
 
@@ -308,6 +311,7 @@ IntegerHolder currentBrightness
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setBrightness(
 		long instanceID,
 
@@ -350,6 +354,7 @@ int desiredBrightness
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getContrast(
 		long instanceID,
 
@@ -390,6 +395,7 @@ IntegerHolder currentContrast
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setContrast(
 		long instanceID,
 
@@ -432,6 +438,7 @@ int desiredContrast
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getSharpness(
 		long instanceID,
 
@@ -472,6 +479,7 @@ IntegerHolder currentSharpness
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setSharpness(
 		long instanceID,
 
@@ -514,6 +522,7 @@ int desiredSharpness
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getRedVideoGain(
 		long instanceID,
 
@@ -554,6 +563,7 @@ IntegerHolder currentRedVideoGain
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setRedVideoGain(
 		long instanceID,
 
@@ -596,6 +606,7 @@ int desiredRedVideoGain
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getGreenVideoGain(
 		long instanceID,
 
@@ -636,6 +647,7 @@ IntegerHolder currentGreenVideoGain
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setGreenVideoGain(
 		long instanceID,
 
@@ -678,6 +690,7 @@ int desiredGreenVideoGain
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getBlueVideoGain(
 		long instanceID,
 
@@ -718,6 +731,7 @@ IntegerHolder currentBlueVideoGain
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setBlueVideoGain(
 		long instanceID,
 
@@ -760,6 +774,7 @@ int desiredBlueVideoGain
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getRedVideoBlackLevel(
 		long instanceID,
 
@@ -800,6 +815,7 @@ IntegerHolder currentRedVideoBlackLevel
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setRedVideoBlackLevel(
 		long instanceID,
 
@@ -842,6 +858,7 @@ int desiredRedVideoBlackLevel
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getGreenVideoBlackLevel(
 		long instanceID,
 
@@ -882,6 +899,7 @@ IntegerHolder currentGreenVideoBlackLevel
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setGreenVideoBlackLevel(
 		long instanceID,
 
@@ -924,6 +942,7 @@ int desiredGreenVideoBlackLevel
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getBlueVideoBlackLevel(
 		long instanceID,
 
@@ -964,6 +983,7 @@ IntegerHolder currentBlueVideoBlackLevel
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setBlueVideoBlackLevel(
 		long instanceID,
 
@@ -1006,6 +1026,7 @@ int desiredBlueVideoBlackLevel
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getColorTemperature(
 		long instanceID,
 
@@ -1046,6 +1067,7 @@ IntegerHolder currentColorTemperature
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setColorTemperature(
 		long instanceID,
 
@@ -1088,6 +1110,7 @@ int desiredColorTemperature
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getHorizontalKeystone(
 		long instanceID,
 
@@ -1128,6 +1151,7 @@ IntegerHolder currentHorizontalKeystone
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setHorizontalKeystone(
 		long instanceID,
 
@@ -1170,6 +1194,7 @@ int desiredHorizontalKeystone
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getVerticalKeystone(
 		long instanceID,
 
@@ -1210,6 +1235,7 @@ IntegerHolder currentVerticalKeystone
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setVerticalKeystone(
 		long instanceID,
 
@@ -1254,6 +1280,7 @@ int desiredVerticalKeystone
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getMute(
 		long instanceID,
 
@@ -1301,6 +1328,7 @@ BooleanHolder currentMute
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setMute(
 		long instanceID,
 
@@ -1350,6 +1378,7 @@ boolean desiredMute
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getVolume(
 		long instanceID,
 
@@ -1397,6 +1426,7 @@ IntegerHolder currentVolume
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setVolume(
 		long instanceID,
 
@@ -1446,6 +1476,7 @@ int desiredVolume
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getVolumeDB(
 		long instanceID,
 
@@ -1493,6 +1524,7 @@ IntegerHolder currentVolume
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setVolumeDB(
 		long instanceID,
 
@@ -1544,6 +1576,7 @@ int desiredVolume
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getVolumeDBRange(
 		long instanceID,
 
@@ -1594,6 +1627,7 @@ IntegerHolder maxValue
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getLoudness(
 		long instanceID,
 
@@ -1641,6 +1675,7 @@ BooleanHolder currentLoudness
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setLoudness(
 		long instanceID,
 

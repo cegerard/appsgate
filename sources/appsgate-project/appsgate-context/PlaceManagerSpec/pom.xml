@@ -11,7 +11,7 @@
 
 	<artifactId>PlaceManagerSpec</artifactId>
 	<packaging>bundle</packaging>
-	<name>Location manager specification</name>
+	<name>Place manager specification</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
