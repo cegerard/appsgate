@@ -1,4 +1,4 @@
-package appsgate.lig.weather.yahoo.main;
+package appsgate.lig.meteo.yahoo.test;
 
 import appsgate.lig.weather.DayForecast;
 import appsgate.lig.weather.WeatherForecast;
@@ -10,18 +10,18 @@ public class YahooMeteoTest {
 	WeatherForecast meteo;
 	
 	    public void start() {
-		try {
-		    WeatherForecast meo = meteo.fetch();
-
-		    System.out.println(meteo.getCurrentLocation());
-		    for (DayForecast pre : meteo.getForecast()) {
-			System.out.println(pre.toString());
-		    }
-
-		} catch (WeatherForecastException exc) {
-		    exc.printStackTrace();
-		}
-
+//		try {
+//		    WeatherForecast meo = meteo.fetch();
+//
+//		    System.out.println(meteo.getCurrentLocation());
+//		    for (DayForecast pre : meteo.getForecast()) {
+//			System.out.println(pre.toString());
+//		    }
+//
+//		} catch (WeatherForecastException exc) {
+//		    exc.printStackTrace();
+//		}
+//
 	    }
 
 	    public void stop() {
@@ -36,17 +36,18 @@ public class YahooMeteoTest {
 
 	    public static void main(String[] args) {
 
-		YahooWeatherImpl meteo = new YahooWeatherImpl("593720");// 12724717
+		YahooWeatherImpl meteo = new YahooWeatherImpl();// 12724717 "593720"
 
 		meteo.start();
 
 		System.out.println(meteo);
 		try {
-		    System.out.println(meteo.getCurrentLocation());
-		    for (DayForecast pre : meteo.getForecast()) {
-			System.out.println(pre.toString());
-		    }
-		} catch (WeatherForecastException exc) {
+		    meteo.addLocation("Grenoble");
+		    meteo.addLocation("New York");
+		    meteo.fetch();
+		    
+		    System.out.println(meteo);
+		} catch (Exception exc) {
 		    exc.printStackTrace();
 		}
 
