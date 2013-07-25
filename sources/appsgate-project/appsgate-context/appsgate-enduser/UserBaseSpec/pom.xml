@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>appsgate-enduser</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
+	<artifactId>UserBaseSpec</artifactId>
+	<name>User base specification</name>
+	<packaging>bundle</packaging>
+	
+	<description>ApAM specification for Appsgate users base.</description>
+	
+	<!-- Repositories List -->
+
+	<!-- Dependencies Description -->
+	<dependencies>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ContextHistory</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mindrot</groupId>
+			<artifactId>jbcrypt</artifactId>
+			<version>0.3m</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-core</artifactId>
+			<version>${apam.current.version}</version>
+		</dependency>
+	</dependencies>
+	
+	<!-- Build Description -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Export-Package>
+							appsgate.lig.context.*,
+							org.mindrot.jbcrypt
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>fr.imag.adele.apam</groupId>
+				<artifactId>apam-maven-plugin</artifactId>
+				<version>${apam.current.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>apam-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

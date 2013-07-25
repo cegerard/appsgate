@@ -3,6 +3,8 @@ package appsgate.lig.mail.gmail.main;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import org.apache.felix.ipojo.annotations.Requires;
+
 import appsgate.lig.mail.Mail;
 import appsgate.lig.mail.apam.message.ApamMessage;
 import fr.imag.adele.apam.Apam;
@@ -16,6 +18,8 @@ import fr.imag.adele.apam.Apam;
 public class GMailTest {
 
 	private Mail mailService;
+	
+	@Requires
 	private Apam apam;
 
 	public void start() throws AddressException, MessagingException {
@@ -32,7 +36,7 @@ public class GMailTest {
 	public void messageReceived(ApamMessage message)
 			throws MessagingException {
 
-		System.out.println("APAM2: Mail received, subject:"
+		System.out.println("APAM: Mail received, subject:"
 				+ message.getMessage().getSubject());
 
 	}

@@ -39,6 +39,13 @@ public class NodeProgram extends Node {
 	private String target;
 	public String getTarget() { return target; }
 	public void setTarget(String target) { this.target = target; }
+	
+	/**
+	 * Deamon attribute
+	 */
+	private String deamon;
+	public String getDeamon() {return deamon;}
+	public void setDeamon(String deamon) { this.deamon = deamon;}
 
 	/**
 	 * Sequence of rules to interpret
@@ -49,6 +56,7 @@ public class NodeProgram extends Node {
 	 * JSON representation of the program
 	 */
 	private JSONObject programJSON;
+	
 	public JSONObject getProgramJSON() { return programJSON; }
 
 	/**
@@ -79,6 +87,7 @@ public class NodeProgram extends Node {
 		name = programJSON.getString("programName");
 		author = programJSON.getString("author");
 		target = programJSON.getString("target");
+		deamon = programJSON.getString("deamon");
 		seqRules = new NodeSeqRules(interpreter, programJSON.getJSONArray("seqRules"));
 	}
 	

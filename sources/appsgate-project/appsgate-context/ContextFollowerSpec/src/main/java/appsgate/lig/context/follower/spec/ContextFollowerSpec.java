@@ -7,7 +7,7 @@ import appsgate.lig.context.follower.listeners.CoreListener;
  * 
  * @author Cédric Gérard
  * @since  May 28, 2013
- * @version 0.0.1
+ * @version 1.0.0
  */
 public interface ContextFollowerSpec {
 

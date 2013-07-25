@@ -21,6 +21,7 @@
 		<module>RouterCallTester</module>
 		<module>InterpreterProgramTester</module>
 		<module>ContextHistoryTester</module>
+		<module>UserBaseTester</module>
 	</modules>
 
 </project>

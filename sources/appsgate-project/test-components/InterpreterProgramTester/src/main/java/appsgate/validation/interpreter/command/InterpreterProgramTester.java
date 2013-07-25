@@ -27,8 +27,11 @@ public class InterpreterProgramTester {
 	 */
 	public void newInst() {
 		try {
-			interpreter.addProgram(loadFileJSON("test/simpleRuleJSON.js"));
-			interpreter.addProgram(loadFileJSON("test/testCallProgramJSON.js"));
+			//interpreter.addProgram(loadFileJSON("test/simpleRuleJSON.js"));
+			//interpreter.addProgram(loadFileJSON("test/testCallProgramJSON.js"));
+			interpreter.addProgram(loadFileJSON("test/demo220713JSON_1.js"));
+			interpreter.addProgram(loadFileJSON("test/demo220713JSON_2.js"));
+			interpreter.addProgram(loadFileJSON("test/demo220713JSON_3.js"));
 			/* interpreter.addProgram(loadFileJSON("test/philipsActionRuleJSON.js"));
 			interpreter.addProgram(loadFileJSON("test/testIfJSON.js")); */
 			// interpreter.addProgram(loadFileJSON("test/testWhenJSON.js"));
@@ -36,7 +39,9 @@ public class InterpreterProgramTester {
 			e.printStackTrace();
 		}
 		
-		interpreter.callProgram("TestCallProgram");
+		interpreter.callProgram("Demo220713_1");
+		interpreter.callProgram("Demo220713_2");
+		interpreter.callProgram("Demo220713_3");
 		/* try {
 			Thread.sleep(2000);
 		} catch (InterruptedException ex) {

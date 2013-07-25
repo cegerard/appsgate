@@ -15,7 +15,7 @@
 	<description>This sub-project contain Google services integration components</description>
 	
 	<modules>
-	 <module>agenda</module>
+	 <module>calendar</module>
 	 <module>mail</module>
 	</modules>
 </project>

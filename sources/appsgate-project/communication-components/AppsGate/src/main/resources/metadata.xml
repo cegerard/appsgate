@@ -8,6 +8,7 @@
  		<dependency field="router"/>
 		<dependency field="deviceNameTable"/>
 		<dependency field="placeManager"/>
+		<dependency field="userManager"/>
 		<ipojo:requires field="httpService"/>
 	</implementation>
 

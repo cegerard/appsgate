@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
+import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -78,6 +79,11 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	 * The place manager ApAM component to handle the object place
 	 */
 	private PlaceManagerSpec placeManager;
+	
+	/**
+	 * The user manager ApAM component to handle the user base
+	 */
+	private UserBaseSpec userManager;
 
 	/**
 	 * Reference on the AppsGate Router to execute command on devices
@@ -292,6 +298,66 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	@Override
 	public String getCoreObjectPlaceId(String objId) {
 		return placeManager.getCoreObjectPlaceId(objId);
+	}
+
+	@Override
+	public JSONArray getUsers() {
+		return userManager.getUsers();
+	}
+
+	@Override
+	public boolean createUser(String id, String password, String lastName, String firstName, String role) {
+		return userManager.adduser(id, password, lastName, lastName, role);
+	}
+
+	@Override
+	public boolean deleteUser(String id, String password) {
+		return userManager.removeUser(id, password);
+	}
+
+	@Override
+	public JSONObject getUserDetails(String id) {
+		return userManager.getUserDetails(id);
+	}
+	
+	@Override
+	public JSONObject getUserFullDetails(String id) {
+		JSONObject obj = new JSONObject();
+		
+		try {
+			obj.put("user", userManager.getUserDetails(id));
+			obj.put("devices", userManager.getAssociatedDevices(id));
+			obj.put("accounts", userManager.getAccountsDetails(id));
+		} catch (JSONException e) {e.printStackTrace();}
+		
+		return obj;
+	}
+
+	@Override
+	public boolean checkIfIdIsFree(String id) {
+		return userManager.checkIfIdIsFree(id);
+	}
+
+	@Override
+	public boolean synchronizeAccount(String id, String password,
+			JSONObject accountDetails) {
+		return userManager.addAccount(id, password, accountDetails);
+	}
+
+	@Override
+	public boolean desynchronizedAccount(String id, String password,
+			JSONObject accountDetails) {
+		return userManager.removeAccount(id, password, accountDetails);
+	}
+
+	@Override
+	public boolean associateDevice(String id, String password, String deviceId) {
+		return userManager.addDevice(id, password, deviceId);
+	}
+
+	@Override
+	public boolean separateDevice(String id, String password, String deviceId) {
+		return userManager.removeDevice(id, password, deviceId);
 	}
 
 }
