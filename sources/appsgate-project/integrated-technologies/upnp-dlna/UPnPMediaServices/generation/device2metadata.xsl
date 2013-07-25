@@ -56,7 +56,7 @@
 	<implementation specification="" push="">
 		<xsl:attribute name="name"><xsl:value-of select="$classname"/>ProxyImpl</xsl:attribute>	
 		<xsl:attribute name="classname"><xsl:value-of select='$package'/>.proxy.<xsl:value-of select='$classname'/>ProxyImpl</xsl:attribute>	
-		<xsl:attribute name="specification">AbstractObjectSpec</xsl:attribute>	
+		<xsl:attribute name="specification">CoreObjectSpec</xsl:attribute>	
 		<xsl:attribute name="push">stateChanged</xsl:attribute>	
 
 		<callback onInit="initialize"/>

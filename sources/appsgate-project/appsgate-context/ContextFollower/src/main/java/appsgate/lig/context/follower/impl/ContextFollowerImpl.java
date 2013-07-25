@@ -20,7 +20,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
  * 
  * @author Cédric Gérard
  * @since May 28, 2013
- * @version 0.0.1-SNAPSHOT
+ * @version 1.0.0
  */
 public class ContextFollowerImpl implements ContextFollowerSpec {
 

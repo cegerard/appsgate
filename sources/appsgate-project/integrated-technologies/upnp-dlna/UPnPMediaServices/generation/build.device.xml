@@ -41,7 +41,7 @@
 
 	<target name="generate.class">
 		
-		<echo>Generation of ${device.name} ...</echo>
+		<echo>Generation of ${service.description.xml.file} ...</echo>
 
 			<delete file="${generation.dir}/build.sources.xml"/>
 
@@ -57,7 +57,7 @@
 
 		<ant antfile="${generation.dir}/build.sources.xml" dir="."/>
 
-		<echo>Generation of ${device.name} Completed</echo>
+		<echo>Generation of ${service.description.xml.file} Completed</echo>
 
 		<copy todir="../src/main/resources">
 			<fileset dir="${generation.dir}/res"/>

@@ -6,11 +6,10 @@ import java.util.List;
 /**
  * Interface for weather forecast service
  * 
- * @author jnascimento
+ * @author thibaud
  * 
  */
 public interface WeatherForecast {
-    
     
     /**
      * Units defined for Weather Conditions
@@ -28,86 +27,80 @@ public interface WeatherForecast {
 	 * English measure units (temperature °F, distance mi, pressure in, speed mph)
 	 */
 	US;
-    }
+    }    
     
     /**
-     * Try to resolve the place with an human friendly name
+     * @return The currently defined locations for Weather Forecast as they were entered
+     */
+    String[] getLocations();
+
+    
+    /**
+     * Try add the place with an human friendly name to fetch Weather conditions
      * 
      * @param placeName
-     *            A human place name (a town, a country, a particular place)
-     * @throws WeatherForecastException If place name in incorrect, misspelled or cannot be found
+     *            A human place name : a town, a country, a particular place or point of interest (poi)
+     * @throws WeatherForecastException If place name in incorrect, misspelled, cannot be found or if weather cannot be retrieved for this place
      */
-    void setLocation(String placeName) throws WeatherForecastException;
+    void addLocation(String placeName) throws WeatherForecastException;
+    
+    /**
+     * Try to remove a place previously added
+     * 
+     * @param the placeName as it was previously added
+     * @return true if the place was found and was successfully removed
+     * @throws WeatherForecastException If place name in incorrect, misspelled, or cannot be found
+     */
+    boolean removeLocation(String placeName) throws WeatherForecastException;
+    
+    /**
+     * Check if a location is monitored
+     *  
+     * @param placeName
+     *            A human place name : a town, a country, a particular place or point of interest (poi)
+     * @return true if the place is currently monitored, false otherwise
+     * @throws WeatherForecastException If place name in incorrect, misspelled, or cannot be found (as a valid location)
+     */
+    boolean containLocation(String placeName) throws WeatherForecastException;
     
     /**
      * @param unit US or EU
      */
     void setUnit(Unit unit);
-    
-    /**
-     * @return the currently defined unit (EU by default)
-     */
-    Unit getUnit();
-    
-
-    /**
-     * @return The current defined location for Weather Forecast (Human Readable),
-     * by default location is set to Grenoble
-     * @throws WeatherForecastException if no weather forecast have been fetch
-     */
-    String getCurrentLocation() throws WeatherForecastException;
-
-    /**
-     * @return The current temperature (accordingly to current temperature unit °C or °F)
-     * @throws WeatherForecastException if no weather forecast have been fetch
-     */
-    int getCurrentTemperature() throws WeatherForecastException;
-
-    /**
-     * @return The code describing current weather condition 
-     * @see appsgate.lig.weather.WeatherCodesHelper
-     * @throws WeatherForecastException if no weather forecast have been fetch
-     */
-    int getCurrentWeatherCode() throws WeatherForecastException;
-    
-    /**
-     * @return The current wind speed (accordingly to current unit mph or km/h)
-     * @throws WeatherForecastException if no weather forecast have been fetch
-     */
-    float getCurrentWindSpeed() throws WeatherForecastException;
-    
-    
-    /**
-     * @return The current wind direction (in degree)
-     * @throws WeatherForecastException if no weather forecast have been fetch
-     */
-    int getCurrentWindDirection() throws WeatherForecastException;
-    
-    
+        
     /**
      * @return The Forecast for the next days (number of days might vary),
-     * including min and max temperature weather code
-     * @throws WeatherForecastException if no weather forecast have been fetch
+     * including min and max temperature weather code, for a particular location
+     * @param the placeName as it was previously added
+     * @throws WeatherForecastException if no weather forecast have been fetch or if place cannot be found
      */
-    List<DayForecast> getForecast() throws WeatherForecastException;
+    List<DayForecast> getForecast(String placeName) throws WeatherForecastException;
+
+    /**
+     * @return The current weather conditions for a particular location
+     * , for a particular location
+     * @param the placeName as it was previously added
+     * @throws WeatherForecastException if no weather forecast have been fetch or if place cannot be found
+     */    
+    CurrentWeather getCurrentWeather(String placeName) throws WeatherForecastException;
     
     /**
      * @return The Date at which weather forecast data were initially published
-     * (do not confuse with getLastFetch date)
-     * @throws WeatherForecastException if no weather forecast have been fetch
+     * (do not confuse with getLastFetch date) , for a particular location
+     * @param the placeName as it was previously added
+     * @throws WeatherForecastException if no weather forecast have been fetch or if place cannot be found
      */
-    Calendar getPublicationDate() throws WeatherForecastException;
+    Calendar getPublicationDate(String placeName) throws WeatherForecastException;
 
     /**
      * @return The Date at which the Weather web-service was requested for the last time
      * or null if no data been fetched 
      */
-    Calendar getLastFetch();
+    public Calendar getLastFetchDate();
 
     /**
-     * Try to connect to a weather web-service and fetch the latest weather forecast
-     * @return a forecast object
+     * Try to connect to a weather web-service and fetch the latest weather forecast for all location monitored
      * @throws WeatherForecastException if impossible to retrieve weather forecast (web-service unavailable, ...)
      */
-    WeatherForecast fetch() throws WeatherForecastException;
+    void fetch() throws WeatherForecastException;
 } 

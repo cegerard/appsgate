@@ -2,7 +2,7 @@
 /*
 __BANNER__
 */
-// this file was generated at 3-June-2013 01:39 PM by ${author}
+// this file was generated at 18-July-2013 04:15 PM by ${author}
 package appsgate.lig.upnp.media.proxy;
 
 import org.apache.felix.upnp.devicegen.holder.*;
@@ -212,6 +212,7 @@ public class ContentDirectoryProxyImpl implements CoreObjectSpec, ContentDirecto
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getSearchCapabilities(
 		StringHolder searchCaps
 	) throws UPnPException {
@@ -245,6 +246,7 @@ public class ContentDirectoryProxyImpl implements CoreObjectSpec, ContentDirecto
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getSortCapabilities(
 		StringHolder sortCaps
 	) throws UPnPException {
@@ -278,6 +280,7 @@ public class ContentDirectoryProxyImpl implements CoreObjectSpec, ContentDirecto
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getSystemUpdateID(
 		LongHolder id
 	) throws UPnPException {
@@ -329,6 +332,7 @@ public class ContentDirectoryProxyImpl implements CoreObjectSpec, ContentDirecto
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void browse(
 		java.lang.String objectID,
 
@@ -419,6 +423,7 @@ LongHolder updateID
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void search(
 		java.lang.String containerID,
 
@@ -497,6 +502,7 @@ LongHolder updateID
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void createObject(
 		java.lang.String containerID,
 
@@ -543,6 +549,7 @@ StringHolder result
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void destroyObject(
 		java.lang.String objectID
 	) throws UPnPException {
@@ -582,6 +589,7 @@ StringHolder result
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void updateObject(
 		java.lang.String objectID,
 
@@ -631,6 +639,7 @@ java.lang.String newTagValue
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void importResource(
 		java.lang.String sourceURI,
 
@@ -678,6 +687,7 @@ LongHolder transferID
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void exportResource(
 		java.lang.String sourceURI,
 
@@ -721,6 +731,7 @@ LongHolder transferID
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void stopTransferResource(
 		long transferID
 	) throws UPnPException {
@@ -762,6 +773,7 @@ LongHolder transferID
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void getTransferProgress(
 		long transferID,
 
@@ -806,6 +818,7 @@ StringHolder transferTotal
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void deleteResource(
 		java.lang.String resourceURI
 	) throws UPnPException {
@@ -845,6 +858,7 @@ StringHolder transferTotal
 
 
 	 */
+	@SuppressWarnings("rawtypes")
 	public void createReference(
 		java.lang.String containerID,
 
