@@ -56,6 +56,12 @@ public interface Mail {
 	 * @return
 	 */
 	public boolean sendMailSimple(String to,String subject,String body);
+	
+	/**
+	 * Send mail based on Message class from javax.mail API
+	 * @param message
+	 * @return
+	 */
 	public boolean sendMail(Message message);
 	
 	/**

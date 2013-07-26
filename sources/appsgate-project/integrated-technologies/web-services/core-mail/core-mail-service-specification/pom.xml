@@ -5,14 +5,13 @@
 	
 	<parent>
 		<groupId>appsgate.components</groupId>
-		<artifactId>google-services</artifactId>
+		<artifactId>core-mail</artifactId>
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>appsgate-app-mail</artifactId>
+	<artifactId>core-mail-service-specification</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Mail OSGi Bundle</name>
+	<name>CoreMail specification</name>
 
 	<!-- Dependencies Description -->
 	<dependencies>

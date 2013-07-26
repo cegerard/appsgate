@@ -15,7 +15,7 @@ import fr.imag.adele.apam.Apam;
  * @author jnascimento
  * 
  */
-public class GMailTest {
+public class MailReceivedConsoleNotification {
 
 	private Mail mailService;
 	

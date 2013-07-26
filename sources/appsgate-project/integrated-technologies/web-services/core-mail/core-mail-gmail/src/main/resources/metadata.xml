@@ -1,9 +1,5 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.3.xsd">
-    
-    <specification name="mail-service-specification"
-		interfaces="appsgate.lig.mail.Mail" messages="appsgate.lig.mail.apam.message.ApamMessage">
-	</specification>
+    xsi:schemaLocation="fr.imag.adele.apam http://raw.github.com/AdeleResearchGroup/ApAM/master/runtime/core/src/main/resources/xsd/ApamCore.xsd">
     
 	<implementation name="GmailImpl" classname="appsgate.lig.mail.gmail.Gmail" specification="mail-service-specification" push="mailReceivedNotification">
 	    <dependency field="apam"/>	
@@ -12,22 +8,21 @@
 		<definition name="password" type="string" field="PASSWORD" internal="false"/>
 		<definition name="auto-refresh" type="int" field="refreshRate" internal="false" method="autoRefreshValueChanged"/>
 	</implementation>
-	
+   
+   	<implementation name="MailReceivedConsoleNotification" classname="appsgate.lig.mail.gmail.main.MailReceivedConsoleNotification">
+   	    <dependency field="apam"/>
+		<callback onInit="start" onRemove="stop" />
+		<dependency field="mailService" specification="mail-service-specification">
+		    	<message push="messageReceived" />
+		</dependency>
+	</implementation>
+
    <apam-instance name="GmailImpl-0" implementation="GmailImpl">
        <property name="user" value="smarthome.inria@gmail.com"/>
        <property name="password" value="smarthome2012"/>
        <property name="auto-refresh" value="2000"/>
    </apam-instance>
-   
-   	<implementation name="GMailTest" classname="appsgate.lig.mail.gmail.main.GMailTest">
-   	    <dependency field="apam"/>	
-		<callback onInit="start" onRemove="stop" />
-		<dependency field="mailService" specification="mail-service-specification">
-		    	<message push="messageReceived" />
-		</dependency>
-		
-	</implementation>
-   
-   <apam-instance name="GMailReceivedMessageNotifier-0" implementation="GMailTest"/>
+   	
+   <apam-instance implementation="MailReceivedConsoleNotification" name="MailReceivedConsoleNotification-0"/>
    
 </apam>
