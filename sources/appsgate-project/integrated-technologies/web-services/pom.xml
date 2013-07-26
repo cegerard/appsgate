@@ -16,6 +16,7 @@
 	
 	<modules>
 		<module>google-services</module>
+		<module>core-mail</module>
 		<module>yahoo-services</module>
 	</modules>
 </project>

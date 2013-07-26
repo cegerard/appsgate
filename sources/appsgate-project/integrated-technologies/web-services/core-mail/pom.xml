@@ -8,13 +8,13 @@
 		<version>1.0.0</version>
 	</parent>
 	
-	<artifactId>google-services</artifactId>
+	<artifactId>core-mail</artifactId>
 	<packaging>pom</packaging>
-	<name>Google services project</name>
-	
-	<description>This sub-project contain Google services integration components</description>
+	<name>CoreMail bundle</name>
 	
 	<modules>
-	 <module>calendar</module>
+		<module>core-mail-gmail</module>
+		<module>core-mail-service-specification</module>
 	</modules>
+	
 </project>
