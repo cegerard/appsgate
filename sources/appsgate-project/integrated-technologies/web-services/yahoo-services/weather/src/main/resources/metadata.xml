@@ -2,21 +2,33 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
-    
-	<specification name="weather-service-specification"
-		interfaces="appsgate.lig.weather.WeatherForecast">
-	</specification>
-    
-	<implementation name="YahooWeatherImpl" classname="appsgate.lig.weather.yahoo.YahooWeatherImpl" specification="weather-service-specification">
+        
+	<implementation name="YahooWeatherImpl"
+    classname="appsgate.lig.weather.yahoo.YahooWeatherImpl"
+    specification="CoreWeatherServiceSpec"
+    push="fireWeatherUpdateMessage">
 		<callback onInit="start" onRemove="stop" />
-<!--         <definition name="location" type="string" field="location" internal="false" method="setLocation"/> -->
-		<definition name="auto-refresh" type="int" field="refreshRate" internal="false"/>
-<!-- 		<definition name="temperature" type="int" field="currentTemperature" internal="false"/> -->
+        
+        
+        
+
+        <!-- device kernel meta data -->
+<!--         <definition name="deviceName"    type="string" value="Unknown"        field="sensorName"/>  -->
+        <definition name="deviceId"      type="string" value="000000"         field="appsgateObjectId"/>
+
+        <!-- device client meta data -->
+        <definition name="pictureId"     type="string"                        field="appsgatePictureId"/>
+        <definition name="userType"      type="string" value="20"              field="appsgateUserType"/>
+        <definition name="status"        type="string" value="2"              field="appsgateStatus" /> <!--       method="statusChanged"/>  -->
+        
+        <!-- device specific meta data -->
+        <definition name="auto-refresh" type="int" field="refreshRate" />
+        
 	</implementation>
    
    <!-- Old Instance to check if still working -->
    <apam-instance name="weather-0" implementation="YahooWeatherImpl">
-       <property name="auto-refresh" value="10000"/>
+       <property name="auto-refresh" value="100000"/>
    </apam-instance>
    
 </apam>
