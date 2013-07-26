@@ -4,9 +4,10 @@ import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
 import org.apache.felix.ipojo.annotations.Requires;
+import org.json.JSONException;
 
+import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.mail.Mail;
-import appsgate.lig.mail.apam.message.ApamMessage;
 import fr.imag.adele.apam.Apam;
 
 /**
@@ -33,11 +34,11 @@ public class MailReceivedConsoleNotification {
 
 	}
 
-	public void messageReceived(ApamMessage message)
-			throws MessagingException {
+	public void messageReceived(NotificationMsg message)
+			throws MessagingException, JSONException {
 
 		System.out.println("APAM: Mail received, subject:"
-				+ message.getMessage().getSubject());
-
+				+ message.JSONize().toString());
+		
 	}
 }

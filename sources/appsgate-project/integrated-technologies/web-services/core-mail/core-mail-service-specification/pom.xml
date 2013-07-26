@@ -55,7 +55,25 @@
 			<artifactId>apam-core</artifactId>
 			<groupId>fr.imag.adele.apam</groupId>
 			<version>${apam.current.version}</version>
+		</dependency> 
+		<!--  
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.12</version>
 		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.12</version>
+		</dependency>
+		-->
+		<dependency>
+			<artifactId>CoreObjectSpec</artifactId>
+			<groupId>appsgate.components</groupId>
+			<version>1.0.0</version>	        
+	    </dependency>
+		  
 	</dependencies>
 
 	<!-- Build Description -->
@@ -83,6 +101,21 @@
 					</execution>
 				</executions>
 			</plugin>
+			               <!-- 
+           <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+		           		<Bundle-ClassPath>json-20090911.jar,.</Bundle-ClassPath>
+		           		<Import-Package>!org.json.*,*</Import-Package>
+		            </instructions>
+                    <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                    <Embed-Transitive>false</Embed-Transitive>
+                </configuration>  
+            </plugin>
+            -->
 		</plugins>
 	</build>
 

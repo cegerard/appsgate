@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -22,6 +23,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.mail.Mail;
 import appsgate.lig.mail.apam.message.ApamMessage;
 
@@ -325,8 +331,55 @@ public class Gmail implements Mail {
 
 	}
 
-	private ApamMessage mailReceivedNotification(Message msg){
-		return new ApamMessage(msg);
+	private NotificationMsg mailReceivedNotification(final Message msg){
+		return new NotificationMsg() {
+			
+			@Override
+			public CoreObjectSpec getSource() {
+				return null;
+			}
+			
+			@Override
+			public String getNewValue() {
+				return null;
+			}
+			
+			@Override
+			public JSONObject JSONize() throws JSONException {
+				
+				JSONObject result = new JSONObject();
+				
+				try {
+
+					result.put("objectId", this.hashCode());
+					result.put("varName", "");
+					result.put("value", "");
+
+					result.put("subject", msg.getSubject());
+					result.put("from", msg.getFrom());
+
+					result.put("message-id", msg.getHeader("message-id")[0]);
+					
+					List<String> list=new ArrayList<String>();
+					
+					Enumeration enume = msg.getAllHeaders();
+					
+					while (enume.hasMoreElements()) {
+						String param = (String) enume.nextElement();
+						System.out.println(param);
+						list.add(param);
+					}
+					
+					result.put("headers", list);
+
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				} finally {
+					return result;
+				}
+				
+			}
+		};
 	}
 	
 	public Calendar getLastFetchDateTime() {

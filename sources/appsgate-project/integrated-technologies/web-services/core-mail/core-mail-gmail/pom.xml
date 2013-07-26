@@ -61,6 +61,11 @@
 			<groupId>fr.imag.adele.apam</groupId>
 			<version>${apam.current.version}</version>
 		</dependency>
+		<dependency>
+			<artifactId>CoreObjectSpec</artifactId>
+			<groupId>appsgate.components</groupId>
+			<version>1.0.0</version>	        
+	    </dependency>
 	</dependencies>
 
 	<!-- Build Description -->

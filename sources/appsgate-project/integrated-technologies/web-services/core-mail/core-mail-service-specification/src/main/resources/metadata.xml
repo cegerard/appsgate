@@ -2,7 +2,7 @@
     xsi:schemaLocation="fr.imag.adele.apam http://raw.github.com/AdeleResearchGroup/ApAM/master/runtime/core/src/main/resources/xsd/ApamCore.xsd">
     
     <specification name="mail-service-specification"
-		interfaces="appsgate.lig.mail.Mail" messages="appsgate.lig.mail.apam.message.ApamMessage">
+		interfaces="appsgate.lig.mail.Mail" messages="appsgate.lig.core.object.messages.NotificationMsg">
 		<definition name="user" type="string" />
 		<definition name="password" type="string" />
 		<definition name="auto-refresh" type="int" />
