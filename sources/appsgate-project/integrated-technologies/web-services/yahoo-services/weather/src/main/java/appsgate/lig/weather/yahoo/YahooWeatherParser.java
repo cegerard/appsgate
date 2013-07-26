@@ -1,28 +1,14 @@
 package appsgate.lig.weather.yahoo;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.XMLEvent;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -31,15 +17,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
-import appsgate.lig.weather.CurrentWeather;
-import appsgate.lig.weather.DayForecast;
-import appsgate.lig.weather.WeatherCodesHelper;
-import appsgate.lig.weather.WeatherForecast;
-import appsgate.lig.weather.WeatherForecastException;
+import appsgate.lig.weather.utils.CurrentWeather;
+import appsgate.lig.weather.utils.DayForecast;
+import appsgate.lig.weather.utils.WeatherCodesHelper;
 
 /**
  * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit)
- * but gives maximum 2 days forecast, as input its required the WOEID
  * (http://developer.yahoo.com/geo/geoplanet/guide/concepts.html#hierarchy)
  * which indicates the location for the forecast. This class parses the
  * information obtained in from weather yahoo service: e.g.

@@ -14,7 +14,8 @@
  *
  * CurrentWeather.java - 25 juil. 2013
  */
-package appsgate.lig.weather;
+package appsgate.lig.weather.utils;
+
 
 /**
  * Helper class to represents current weather information
@@ -54,7 +55,7 @@ public class CurrentWeather {
 
     /**
      * @return The code describing current weather condition 
-     * @see appsgate.lig.weather.WeatherCodesHelper
+     * @see appsgate.lig.weather.utils.WeatherCodesHelper
      */
     public int getWeatherCode() {
 	return currentCode;

@@ -14,7 +14,7 @@
  *
  * WeatherException.java - 16 juil. 2013
  */
-package appsgate.lig.weather;
+package appsgate.lig.weather.exception;
 
 /**
  * @author thibaud

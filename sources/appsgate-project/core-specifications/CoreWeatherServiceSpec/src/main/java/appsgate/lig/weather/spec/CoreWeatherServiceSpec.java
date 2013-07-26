@@ -1,7 +1,13 @@
-package appsgate.lig.weather;
+package appsgate.lig.weather.spec;
 
 import java.util.Calendar;
 import java.util.List;
+
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.weather.exception.WeatherForecastException;
+import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
+import appsgate.lig.weather.utils.CurrentWeather;
+import appsgate.lig.weather.utils.DayForecast;
 
 /**
  * Interface for weather forecast service
@@ -9,7 +15,7 @@ import java.util.List;
  * @author thibaud
  * 
  */
-public interface WeatherForecast {
+public interface CoreWeatherServiceSpec {
     
     /**
      * Units defined for Weather Conditions
@@ -103,4 +109,9 @@ public interface WeatherForecast {
      * @throws WeatherForecastException if impossible to retrieve weather forecast (web-service unavailable, ...)
      */
     void fetch() throws WeatherForecastException;
+    
+    /**
+     * @return The corresponding notification message
+     */
+    NotificationMsg fireWeatherUpdateMessage(String property, String value);
 } 

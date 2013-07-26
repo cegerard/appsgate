@@ -14,7 +14,7 @@
  *
  * YahooMeteoCodesHelper.java - 15 juil. 2013
  */
-package appsgate.lig.weather;
+package appsgate.lig.weather.utils;
 
 import java.util.HashMap;
 import java.util.Map;

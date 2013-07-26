@@ -1,4 +1,4 @@
-package appsgate.lig.weather;
+package appsgate.lig.weather.utils;
 
 import java.util.Date;
 
