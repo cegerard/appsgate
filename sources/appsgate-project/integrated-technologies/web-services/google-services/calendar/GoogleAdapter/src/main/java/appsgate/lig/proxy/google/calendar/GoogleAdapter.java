@@ -219,6 +219,135 @@ public class GoogleAdapter implements GoogleCalendarAdapter{
 	}
 	
 	/**
+	 * Get the remote google calendar corresponding to "calendar" with "account" and "password" google account connection
+	 * 
+	 * If start date is null the getCalendar method return the whole remote calendar, if not it will return the calendar from
+	 * startDate to the last register event. It is possible to specify a end date to get the calendar between startDate and endDate.
+	 * If startDate is null the endDate will not be consider.
+	 * 
+	 * @param calendar the remote calendar you want to get
+	 * @param account the remote service account
+	 * @param password the password corresponding to the account
+	 * @param startDate the date from when you want to get events
+	 * @param endDate the date to when you want to get events
+	 * @return the google calendar convert to iCalendar standard format
+	 */
+	@Override
+	public Calendar getCalendar(String calendarName, String account, String pswd, long from, long to) {
+		Calendar calendar = newICal();
+		
+		try {
+			currentGoogleCalendarConnection.setUserCredentials(account, pswd);
+			URL feedUrl = new URL(baseURL+"owncalendars/full");
+			CalendarFeed resultFeed = currentGoogleCalendarConnection.getFeed(feedUrl, CalendarFeed.class);
+			CalendarEntry calendarEntry = null;
+			int size = resultFeed.getEntries().size();
+			int i = 0;
+			boolean found = false;
+			
+			while (i < size && !found ) {
+				calendarEntry = resultFeed.getEntries().get(i);
+				if(calendarEntry.getTitle().getPlainText().contentEquals(calendarName)) {
+					found = true;
+				}
+				i++;
+			}
+			
+			TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+			
+//			System.out.println("************ timezone to:"+calendarEntry.getTimeZone().getValue());
+//			System.out.println("************ timezone and:"+registry.getTimeZone(calendarEntry.getTimeZone().getValue()).getVTimeZone());
+			
+			calendar.getComponents().add(registry.getTimeZone(calendarEntry.getTimeZone().getValue()).getVTimeZone());
+			
+			if(found) {
+				URL eventURL = new URL(calendarEntry.getLink("alternate", null).getHref());
+				CalendarEventFeed resulteventFeed;
+				
+				if(from == 0) {
+					resulteventFeed = currentGoogleCalendarConnection.getFeed(eventURL, CalendarEventFeed.class);
+				} else {
+					CalendarQuery myQuery = new CalendarQuery(feedUrl);
+					myQuery.setMinimumStartTime(new DateTime(from));
+					if(to != 0) {
+						myQuery.setMaximumStartTime(new DateTime(to));
+					}	
+					resulteventFeed = currentGoogleCalendarConnection.query(myQuery, CalendarEventFeed.class);
+				}
+				
+				for (i = 0; i < resulteventFeed.getEntries().size(); i++) {
+					CalendarEventEntry entry = resulteventFeed.getEntries().get(i);
+					//Writing the event in the iCal calendar instant
+					When time = entry.getTimes().get(0);
+					net.fortuna.ical4j.model.DateTime start = new net.fortuna.ical4j.model.DateTime(time.getStartTime().getValue());
+					net.fortuna.ical4j.model.DateTime end =  new net.fortuna.ical4j.model.DateTime(time.getEndTime().getValue());
+					VEvent icalEvent = new VEvent(start, end, entry.getTitle().getPlainText());
+					
+					//Get reminders from google entry
+					ArrayList<VAlarm> icalAlarmList = new ArrayList<VAlarm>();
+					List<Reminder> reminders = entry.getReminder();
+					Iterator<Reminder> it = reminders.iterator();
+					while(it.hasNext()) {
+						Reminder reminder = it.next();
+
+						//reminder.getMethod();
+						
+						long miliOfDay = 0;
+						long miliOfHours = 0;
+						long miliOfMinutes = 0;
+						
+						if(reminder.getDays() != null) {
+							miliOfDay = (reminder.getDays()*24*3600*1000);
+						}
+						
+						if(reminder.getHours() != null) {
+							miliOfHours = (reminder.getHours()*3600*1000);
+						}
+						
+						if(reminder.getMinutes() != null) {
+							miliOfMinutes = reminder.getMinutes()*60*1000;
+						}
+						
+						net.fortuna.ical4j.model.DateTime triggerDate = new net.fortuna.ical4j.model.DateTime(start.getTime()-miliOfDay-miliOfHours-miliOfMinutes);
+
+						VAlarm alarm = new VAlarm(triggerDate);
+						
+						icalAlarmList.add(alarm);
+					}
+					icalEvent.getAlarms().addAll(icalAlarmList);
+					
+					// Add the icalendar UID for the event
+					icalEvent.getProperties().add(new Uid(entry.getIcalUID()));
+					calendar.getComponents().add(icalEvent);
+					
+//					logger.debug("TIME google  : "+ time.getStartTime().getValue());
+//					logger.debug("TIME google  : "+ String.format(time.getStartTime().toStringRfc822()));
+//					logger.debug(" ical date   : "+ start.getTime());
+//					logger.debug(" ical date   : "+ start.toGMTString());
+//					logger.debug(" ical event  : "+ icalEvent.getStartDate().getDate().getTime());
+//					logger.debug(" ical event  : "+ icalEvent.getStartDate().getParameter(DtStart.DTSTART));
+				}
+				
+				//Url googleCalendarURL = new Url();
+				//googleCalendarURL.setUri(eventURL.toURI());
+				//calendar.getProperties().add(googleCalendarURL);
+				//calendar.getProperties().add(new Name(calendar));
+			}
+			
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+		
+		return calendar;
+	}
+	
+	/**
 	 * Add a new event to the remote calendar and return an new VEvent if the event is correctly added
 	 * to the remote service
 	 * @param newEvent, the new iCalendar event to add

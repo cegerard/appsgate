@@ -349,6 +349,11 @@ public class CoreiCalImpl {
 			subscribeNextEventNotifications();
 		}
 	};
+	
+	public Calendar getCalendar(java.util.Date From, java.util.Date to) {
+		
+		return serviceAdapter.getCalendar(calendarName, account, pswd, From.getTime(), to.getTime());
+	}
 
 	/**
 	 * The task that is executed automatically to refresh the local calendar

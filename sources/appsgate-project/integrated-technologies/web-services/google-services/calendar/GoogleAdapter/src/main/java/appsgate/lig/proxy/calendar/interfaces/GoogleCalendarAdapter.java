@@ -23,6 +23,17 @@ public interface GoogleCalendarAdapter {
 	public Calendar getCalendar(String calendarName, String account, String password, java.util.Date startDate, java.util.Date endDate);
 	
 	/**
+	 * Get the remote calendar events between a specify date interval
+	 * @param calendarName the targeted calendar
+	 * @param account the corresponding service account
+	 * @param pswd the service password
+	 * @param from the starting date
+	 * @param to the ending date
+	 * @return the calendar in iCal format
+	 */
+	public Calendar getCalendar(String calendarName, String account, String pswd, long from, long to);
+	
+	/**
 	 * Add an event to the remote calendar
 	 * @param calendar the targeted calendar
 	 * @param account the remote service account
