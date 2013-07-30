@@ -118,7 +118,7 @@ public class CoreiCalImpl {
 		alarmsMap = new HashMap<VAlarm, VEvent>();
 
 		Long refreshRate = Long.valueOf(rate);
-		refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
+		refreshTimer.scheduleAtFixedRate(refreshtask, 30000, refreshRate);
 		logger.debug("Refresh task initiated to " + refreshRate / 1000 / 60 + " minutes");
 		
 //		java.util.Calendar calbegin=java.util.Calendar.getInstance();

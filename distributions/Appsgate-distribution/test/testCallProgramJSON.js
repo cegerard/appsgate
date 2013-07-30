@@ -14,7 +14,7 @@
 					{
 						type : "NodeEvent",
 						sourceType : "device",
-						sourceId : "ENO27b3ed",
+						sourceId : "ENO2796f3",
 						eventName : "switchNumber",
 						eventValue : "1"
 					}
@@ -40,7 +40,7 @@
 					{
 						type : "NodeEvent",
 						sourceType : "device",
-						sourceId : "ENO27b3ed",
+						sourceId : "ENO2796f3",
 						eventName : "switchNumber",
 						eventValue : "0"
 					}
