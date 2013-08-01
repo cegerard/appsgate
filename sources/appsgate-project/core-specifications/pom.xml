@@ -25,6 +25,7 @@
 		<module>CoreTempSensorSpec</module>
 		<module>CoreUndefinedSensorSpec</module>
 		<module>CoreWeatherServiceSpec</module>
+		<module>CoreClockSpec</module>
 	</modules>
 
 </project>

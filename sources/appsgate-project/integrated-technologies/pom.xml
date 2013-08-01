@@ -19,6 +19,7 @@
 		<module>sensor-network</module>
 		<module>upnp-dlna</module>
 		<module>web-services</module>
+		<module>device-mockups</module>
 	</modules>
 	
 </project>

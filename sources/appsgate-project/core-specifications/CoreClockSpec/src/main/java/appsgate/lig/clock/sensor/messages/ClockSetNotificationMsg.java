@@ -8,7 +8,7 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 /**
  * This class is an ApAM message thrown when current Time has been
- * set for the clock (TimeZone change, Delay reset, ...)
+ * set for the clock (TimeZone change, Delay reset, specific time setting, ...)
  */
 
 public class ClockSetNotificationMsg implements NotificationMsg{
@@ -23,6 +23,7 @@ public class ClockSetNotificationMsg implements NotificationMsg{
 	/**
 	 * Constructor for this ApAM message.
 	 * @param source the CoreObjectSource for this message 
+	 * @param currentDate a String representation of the current date and time 
 	 */
 	public ClockSetNotificationMsg (CoreObjectSpec source, String currentDate) {
 		this.source = source;

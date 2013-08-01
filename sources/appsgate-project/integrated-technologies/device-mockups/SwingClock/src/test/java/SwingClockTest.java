@@ -27,9 +27,9 @@ public class SwingClockTest {
      * @param args
      */
     public static void main(String[] args) {
-	SwingClock clock = new SwingClock();
-	clock.start();
-	clock.show();
+//	SwingClock clock = new SwingClock();
+//	clock.start();
+//	clock.show();
 
     }
 

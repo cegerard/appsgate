@@ -11,7 +11,6 @@ import org.apache.felix.ipojo.annotations.ServiceProperty;
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
-import fr.imag.adele.apam.Instance;
 
 import appsgate.lig.clock.sensor.impl.SwingClock;
 
@@ -21,14 +20,14 @@ import appsgate.lig.clock.sensor.impl.SwingClock;
  *
  */
 @Instantiate
-@Component(public_factory = false, immediate = true, name = "apam.universal.shell")
+@Component(public_factory = false, immediate = true, name = "appsgate.lig.calendar.core.command")
 @Provides(specifications = ClockShell.class)
 public class ClockShell {
     
     @Requires
     Apam apam;
 
-	@ServiceProperty(name = "org.knowhowlab.osgi.shell.group.id", value = "clock")
+	@ServiceProperty(name = "org.knowhowlab.osgi.shell.group.id", value = "ClockShell")
 	String universalShell_groupID;
 
 	@ServiceProperty(name = "org.knowhowlab.osgi.shell.group.name", value = "Swing Clock commands")
@@ -36,9 +35,10 @@ public class ClockShell {
 
 	@ServiceProperty(name = "org.knowhowlab.osgi.shell.commands", value = "{}")
 	    String[] universalShell_groupCommands = new String[] {
-	    "show#show Swing Interface of the clock",
-	    "hide#hide the Swing Interface",
-	    "reset#reset clock to current system date and time" };
+	    "showClock#show Swing Interface of the clock",
+	    "hideClock#hide the Swing Interface",
+	    "getTime#hide the Swing Interface",
+	    "resetTime#reset clock to current system date and time" };
 
 	private SwingClock retrieveSwingClockInstance() {
 		Implementation implementation = CST.apamResolver.findImplByName(null,
@@ -47,7 +47,7 @@ public class ClockShell {
 	    
 	}
 
-	public void show(PrintWriter out, String... args) {
+	public void showClock(PrintWriter out, String... args) {
 	    SwingClock myClock=retrieveSwingClockInstance();
 	    if(myClock!= null) {
 		myClock.show();
@@ -55,7 +55,7 @@ public class ClockShell {
 		
 	}
 	
-	public void hide(PrintWriter out, String... args) {
+	public void hideClock(PrintWriter out, String... args) {
 	    SwingClock myClock=retrieveSwingClockInstance();
 	    if(myClock!= null) {
 		myClock.hide();
@@ -63,13 +63,22 @@ public class ClockShell {
 		
 	}
 	
-	public void reset(PrintWriter out, String... args) {
+	public void getTime(PrintWriter out, String... args) {
+	    SwingClock myClock=retrieveSwingClockInstance();
+	    if(myClock!= null) {
+		out.println("Clock currently defined time : "+myClock.getCurrentDate().getTime());
+	    }
+		
+	}
+	
+	public void resetTime(PrintWriter out, String... args) {
 	    SwingClock myClock=retrieveSwingClockInstance();
 	    if(myClock!= null) {
 		myClock.resetClock();
 	    }
 		
 	}
+
 
 
 		

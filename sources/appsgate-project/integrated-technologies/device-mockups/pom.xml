@@ -16,5 +16,6 @@
 	
 	<modules>
 		<module>SwingSwitchSensor</module>
+		<module>SwingClock</module>
 	</modules>
 </project>
