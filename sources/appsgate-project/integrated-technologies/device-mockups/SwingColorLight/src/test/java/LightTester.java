@@ -82,12 +82,22 @@ public class LightTester {
 		Thread.sleep(50);
 	    }
 	    
+	    System.out.println("Testing Gray");
+	    myLight.setSaturation(0);
+	    myLight.setBrightness(120);
+	    Thread.sleep(500);
+	    
+	    
 	    System.out.println("Playing with color");
-	    for(int i=0; i<6335;i+=10) {
+	    myLight.setSaturation(250);
+	    for(int i=0; i<65535;i+=10) {
 		myLight.setColor(i);
-		Thread.sleep(10);
+		Thread.sleep(5);
 	    }
 	    
+	    System.out.println("Off");
+	    myLight.Off();
+	    Thread.sleep(500);
 
 	    myLight.hide();
 	    

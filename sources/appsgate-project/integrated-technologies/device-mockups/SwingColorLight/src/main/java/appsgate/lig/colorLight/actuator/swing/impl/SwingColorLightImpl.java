@@ -26,7 +26,7 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
     private static long HUE_BLUE = 46920;
     private static long HUE_GREEN = 25500;
     private static long HUE_YELLOW = 18456;
-    private static long HUE_ORANGE = 12750;
+    private static long HUE_ORANGE = 8900;
     private static long HUE_PURPLE = 48765;
     private static long HUE_PINK = 54332;
 
