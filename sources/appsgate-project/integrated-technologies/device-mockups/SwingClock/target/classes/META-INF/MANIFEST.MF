@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1375287144554
-Build-Jdk: 1.6.0_27
-Built-By: thibaud
+Bnd-LastModified: 1375687229721
+Build-Jdk: 1.6.0_51
+Built-By: cedric
 Bundle-Description: Mockups and Simulators for appsgate sensors and actu
  ators
 Bundle-ManifestVersion: 2
