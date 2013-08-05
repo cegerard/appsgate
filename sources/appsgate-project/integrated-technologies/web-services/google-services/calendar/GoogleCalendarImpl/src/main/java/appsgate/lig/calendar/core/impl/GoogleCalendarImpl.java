@@ -28,9 +28,10 @@ import net.fortuna.ical4j.model.component.VEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.calendar.core.messages.AlarmNotificationMsg;
-import appsgate.lig.calendar.core.messages.EndingEventNotificationMsg;
-import appsgate.lig.calendar.core.messages.StartingEventNotificationMsg;
+import appsgate.lig.calendar.service.messages.AlarmNotificationMsg;
+import appsgate.lig.calendar.service.messages.EndingEventNotificationMsg;
+import appsgate.lig.calendar.service.messages.StartingEventNotificationMsg;
+import appsgate.lig.calendar.service.spec.CoreCalendarSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter;
 
@@ -43,12 +44,12 @@ import appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter;
  * @version 1.0.0
  * 
  */
-public class CoreiCalImpl {
+public class GoogleCalendarImpl implements CoreCalendarSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory.getLogger(CoreiCalImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(GoogleCalendarImpl.class);
 
 	/**
 	 * The adapter for Google account
@@ -160,7 +161,7 @@ public class CoreiCalImpl {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void subscribeNextEventNotifications() {
-
+		//TODO use core clock Spec (message and ref)
 		java.util.Calendar startDate = java.util.Calendar.getInstance();
 		startDate.set(java.util.Calendar.HOUR_OF_DAY, 0);
 		startDate.clear(java.util.Calendar.MINUTE);
@@ -350,9 +351,9 @@ public class CoreiCalImpl {
 		}
 	};
 	
-	public Calendar getCalendar(java.util.Date From, java.util.Date to) {
+	public Calendar getCalendar(java.util.Date from, java.util.Date to) {
 		
-		return serviceAdapter.getCalendar(calendarName, account, pswd, From.getTime(), to.getTime());
+		return serviceAdapter.getCalendar(calendarName, account, pswd, from.getTime(), to.getTime());
 	}
 
 	/**

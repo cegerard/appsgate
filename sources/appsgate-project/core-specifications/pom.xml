@@ -26,6 +26,7 @@
 		<module>CoreUndefinedSensorSpec</module>
 		<module>CoreWeatherServiceSpec</module>
 		<module>CoreClockSpec</module>
+		<module>CoreCalendarSpec</module>
 	</modules>
 
 </project>

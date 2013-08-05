@@ -1,4 +1,4 @@
-package appsgate.lig.calendar.core.messages;
+package appsgate.lig.calendar.service.messages;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="CoreICalImpl" classname="appsgate.lig.calendar.core.impl.CoreiCalImpl" push="notifyEventAlarm">
+	<implementation name="GoogleCalendarImpl" classname="appsgate.lig.calendar.core.impl.GoogleCalendarImpl" specification="CoreCalendarSpec" push="notifyEventAlarm">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<ipojo:requires field="serviceAdapter"/>
 		
@@ -14,13 +14,13 @@
 		
 	</implementation>
 
-<!--    <apam-instance name="SmartHomeAgendaInst" implementation="CoreICalImpl"> -->
+<!--    <apam-instance name="SmartHomeAgendaInst" implementation="GoogleCalendarImpl"> -->
 <!--  		<property name="calendarName" 	value="Smart home"/> -->
 <!--  		<property name="account" 		value="smarthome.inria@gmail.com"/> -->
 <!--  		<property name="pswd" 			value="smarthome2012"/> -->
 <!--    </apam-instance> -->
    
-<!--    <apam-instance name="BoulotAgendaInst" implementation="CoreICalImpl"> -->
+<!--    <apam-instance name="BoulotAgendaInst" implementation="GoogleCalendarImpl"> -->
 <!--  		<property name="calendarName" 	value="Agenda boulot"/> -->
 <!--  		<property name="account" 		value="smarthome.inria@gmail.com"/> -->
 <!--  		<property name="pswd" 			value="smarthome2012"/> -->
