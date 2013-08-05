@@ -12,6 +12,10 @@
 		<definition name="pswd" 	  	type="string" field="pswd"/>
 		<definition name="rate" 	 	type="string" field="rate" value="900000"/>
 		
+		<definition name="deviceId" 	type="string" value="666666666" field="serviceId"/>
+		<definition name="userType" 	type="string" value="101"	field="userType"/>
+		<definition name="status" 		type="string" value="2" 	field="status"/>
+		
 	</implementation>
 
 <!--    <apam-instance name="SmartHomeAgendaInst" implementation="GoogleCalendarImpl"> -->

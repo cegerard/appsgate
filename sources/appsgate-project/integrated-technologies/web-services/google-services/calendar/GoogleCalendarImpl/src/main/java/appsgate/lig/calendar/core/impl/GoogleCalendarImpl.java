@@ -3,6 +3,8 @@ package appsgate.lig.calendar.core.impl;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +27,8 @@ import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +37,7 @@ import appsgate.lig.calendar.service.messages.EndingEventNotificationMsg;
 import appsgate.lig.calendar.service.messages.StartingEventNotificationMsg;
 import appsgate.lig.calendar.service.spec.CoreCalendarSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter;
 
 /**
@@ -44,7 +49,7 @@ import appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter;
  * @version 1.0.0
  * 
  */
-public class GoogleCalendarImpl implements CoreCalendarSpec {
+public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -75,7 +80,7 @@ public class GoogleCalendarImpl implements CoreCalendarSpec {
 	/**
 	 * The timer that trigger the refresh task each "rate" milliseconds
 	 */
-	Timer refreshTimer = new Timer();
+	private Timer refreshTimer = new Timer();
 
 	/**
 	 * The start date from when to get remote calendar
@@ -91,6 +96,21 @@ public class GoogleCalendarImpl implements CoreCalendarSpec {
 	 * The iCal local representation of the remote calendar
 	 */
 	private Calendar calendar;
+	
+	/**
+	 * The service identifier
+	 */
+	private String serviceId;
+
+	/**
+	 * The end user service type
+	 */
+	private String userType;
+
+	/**
+	 * The current service status
+	 */
+	private String status;
 
 	ArrayList<VEvent> startingEventsList;
 	Timer nextStartEventTimer = new Timer();
@@ -113,7 +133,13 @@ public class GoogleCalendarImpl implements CoreCalendarSpec {
 		// endDate);
 		// logger.debug("URL for private access to data:"+calendar.getProperty("URL").getValue());
 		// logger.debug("Name of remote calendar: "+calendar.getProperty("NAME").getValue());
-
+		
+		//Identifier generation with MD5 method
+		String target = calendarName+account;
+		try {
+			serviceId = new String(MessageDigest.getInstance("MD5").digest(target.getBytes()));
+		} catch (NoSuchAlgorithmException e) {e.printStackTrace();}
+		
 		startingEventsList = new ArrayList<VEvent>();
 		endingEventsList = new ArrayList<VEvent>();
 		alarmsMap = new HashMap<VAlarm, VEvent>();
@@ -152,6 +178,36 @@ public class GoogleCalendarImpl implements CoreCalendarSpec {
 		refreshTimer.cancel();
 		refreshTimer.purge();
 		logger.info("A core calendar instance desapeared, " + calendarName);
+	}
+	
+	@Override
+	public Calendar getCalendar(java.util.Date from, java.util.Date to) {
+		
+		return serviceAdapter.getCalendar(calendarName, account, pswd, from.getTime(), to.getTime());
+	}
+	
+	@Override
+	public String getRate() {
+		return rate;
+	}
+
+	@Override
+	public void setRate(String rate) {
+		this.rate = rate;
+		reScheduleRefreshTask();
+	}
+	
+	/**
+	 * Reschedule the refresh task with the rate
+	 * member value
+	 */
+	private void reScheduleRefreshTask() {
+		refreshtask.cancel();
+		refreshtask = new RefreshTask();
+		
+		Long refreshRate = Long.valueOf(rate);
+		refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
+		logger.debug("Refresh task initiated to " + refreshRate / 1000 / 60 + " minutes");
 	}
 
 	/**
@@ -351,15 +407,12 @@ public class GoogleCalendarImpl implements CoreCalendarSpec {
 		}
 	};
 	
-	public Calendar getCalendar(java.util.Date from, java.util.Date to) {
-		
-		return serviceAdapter.getCalendar(calendarName, account, pswd, from.getTime(), to.getTime());
-	}
 
 	/**
 	 * The task that is executed automatically to refresh the local calendar
 	 */
-	TimerTask refreshtask = new TimerTask() {
+	private class RefreshTask extends TimerTask {
+
 		@Override
 		public void run() {
 			calendar = serviceAdapter.getCalendar(calendarName, account, pswd, startDate, endDate);
@@ -381,6 +434,49 @@ public class GoogleCalendarImpl implements CoreCalendarSpec {
 			}	
 			logger.debug("");
 		}
-	};
+		
+	}
+	
+	/**
+	 * The RefreshTask member
+	 */
+	RefreshTask refreshtask = new RefreshTask();
+
+	@Override
+	public String getAbstractObjectId() {
+		return serviceId;
+	}
+
+	@Override
+	public String getUserType() {
+		return userType;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		return Integer.valueOf(status);
+	}
+
+	@Override
+	public String getPictureId() {
+		return null;
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+		JSONObject descr = new JSONObject();
+		
+		descr.put("id", serviceId);
+		descr.put("type", userType); //? for Google calendar
+		descr.put("status", status);
+		descr.put("calendarName", calendarName);
+		descr.put("owner", account);
+		descr.put("refreshRate", rate);
+		
+		return descr;
+	}
+
+	@Override
+	public void setPictureId(String pictureId) {}
 
 }

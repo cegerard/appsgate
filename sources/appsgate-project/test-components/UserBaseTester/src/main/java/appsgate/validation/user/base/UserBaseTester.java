@@ -62,7 +62,7 @@ public class UserBaseTester {
 			try {
 				account.put("login", "smarthome.inria@gmail.com");
 				account.put("password", "smarthome2012");
-				account.put("implem", "CoreICalImpl");
+				account.put("implem", "GoogleCalendarImpl");
 				account.put("details", new JSONObject().put("calendarName", "Agenda boulot"));
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -77,7 +77,7 @@ public class UserBaseTester {
 			try {
 				account.put("login", "smarthome.inria@gmail.com");
 				account.put("password", "smarthome2012");
-				account.put("implem", "CoreICalImpl");
+				account.put("implem", "GoogleCalendarImpl");
 				account.put("details", new JSONObject().put("calendarName", "Smart home"));
 			} catch (JSONException e) {
 				e.printStackTrace();

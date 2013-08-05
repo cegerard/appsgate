@@ -20,5 +20,17 @@ public interface CoreCalendarSpec {
 	 * @return a sub calendar in iCal format.
 	 */
 	public Calendar getCalendar(java.util.Date from, java.util.Date to);
+	
+	/**
+	 * Return the refresh rate of this service
+	 * @return the rate as a String
+	 */
+	public String getRate();
 
+	/**
+	 * Set the refresh rate of this service
+	 * and reschedule refresh task
+	 * @param rate the new refresh rate
+	 */
+	public void setRate(String rate);
 }
