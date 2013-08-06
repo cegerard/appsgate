@@ -51,7 +51,7 @@ public interface AppsGateSpec {
 	public void deleteUserObjectName(String objectId, String user);
 	
 	/***************************/
-	/**  Place management   */
+	/**    Place management    */
 	/***************************/
 	
 	/**
