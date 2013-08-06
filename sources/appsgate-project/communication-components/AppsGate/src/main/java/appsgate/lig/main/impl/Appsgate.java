@@ -279,6 +279,11 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void removePlace(String id) {
+		placeManager.removePlace(id);
+	}
 
 	@Override
 	public void updatePlace(JSONObject place) {

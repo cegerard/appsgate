@@ -73,6 +73,12 @@ public interface AppsGateSpec {
 	public void updatePlace(JSONObject place);
 	
 	/**
+	 * Remove a place from the smart space
+	 * @param id the place identifier
+	 */
+	public void removePlace(String id);
+	
+	/**
 	 * Move a device in a specified place
 	 * @param objId the object to move
 	 * @param srcPlaceId the previous place of this object
