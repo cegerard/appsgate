@@ -1,31 +1,26 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
-        
-	<implementation name="SwingClockImpl"
-    classname="appsgate.lig.clock.sensor.impl.SwingClock"
-    specification="CoreClockSpec"
-    push="fireClockSetNotificationMsg">
-		<callback onInit="start" onRemove="stop"/>
-        
-        
-        
+
+    <implementation name="SwingClockImpl"
+        classname="appsgate.lig.clock.sensor.impl.SwingClock"
+        specification="CoreClockSpec" push="fireClockSetNotificationMsg">
+        <callback onInit="start" onRemove="stop" />
+
+
+
 
         <!-- device kernel meta data -->
-<!--         <definition name="deviceName"    type="string" value="Unknown"        field="sensorName"/>  -->
-        <definition name="deviceId"      type="string" value="000000"         field="appsgateObjectId"/>
+        <definition name="deviceName" type="string"
+            field="appsgateServiceName" />
+        <definition name="deviceId" type="string" field="appsgateObjectId" />
 
         <!-- device client meta data -->
-        <definition name="pictureId"     type="string"                        field="appsgatePictureId"/>
-        <definition name="userType"      type="string" value="21"              field="appsgateUserType"/>
-        <definition name="status"        type="string" value="2"              field="appsgateStatus" /> <!--       method="statusChanged"/>  -->
-                
-	</implementation>
-   
-   <!-- Old Instance to check if still working -->
-<!--    <apam-instance name="weather-0" implementation="YahooWeatherImpl"> -->
-<!--        <property name="auto-refresh" value="100000"/> -->
-<!--    </apam-instance> -->
-   
+        <definition name="pictureId" type="string" field="appsgatePictureId" />
+        <definition name="userType" type="string" field="appsgateUserType" />
+        <definition name="status" type="string" field="appsgateStatus" />
+
+    </implementation>
+
 </apam>

@@ -37,8 +37,6 @@ import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
  */
 public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec {
 
-    static final String DATEPUBLICATION = "pubDate";
-
     private Logger logger = Logger.getLogger(YahooWeatherImpl.class
 	    .getSimpleName());
 
@@ -74,26 +72,6 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
     private Map<String, CurrentWeather> currentWeathers;
     private Map<String, List<DayForecast>> forecasts;
 
-    // *******
-    // Specific fields for appsgate properties :
-
-    /**
-     * The current picture identifier
-     */
-    private String appsgatePictureId;
-    /**
-     * The type for user of this sensor
-     */
-    private String appsgateUserType;
-    /**
-     * The current sensor status.
-     * 
-     * 0 = Off line or out of range 1 = In validation mode (test range for
-     * sensor for instance) 2 = In line or connected
-     */
-    private String appsgateStatus;
-
-    private String appsgateObjectId;
     
 
     TimerTask refreshtask = new TimerTask() {
@@ -114,6 +92,9 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
     };
 
     public YahooWeatherImpl() {
+	initAppsgateFields();
+	
+	
 	woeidFromePlaceName = new HashMap<String, String>();
 	lastPublicationDates = new HashMap<String, Calendar>();
 	currentWeathers = new HashMap<String, CurrentWeather>();
@@ -204,6 +185,8 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	    lastPublicationDates.put(newWOEID, null);
 	    currentWeathers.put(newWOEID, null);
 	    forecasts.put(newWOEID, null);
+	    fireWeatherUpdateMessage("location", placeName,WeatherUpdateNotificationMsg.EVENTTYPE_ADDLOCATION);
+	    
 	} else
 	    throw new WeatherForecastException("Place was not found");
     }
@@ -219,7 +202,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	    throws WeatherForecastException {
 	if (!woeidFromePlaceName.containsKey(placeName))
 	    throw new WeatherForecastException(
-		    "Already monitoring this location");
+		    "Not monitoring this location");
 	else {
 	    String woeid = woeidFromePlaceName.remove(placeName);
 	    if (woeid == null)
@@ -227,6 +210,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	    lastPublicationDates.remove(woeid);
 	    currentWeathers.remove(woeid);
 	    forecasts.remove(woeid);
+	    fireWeatherUpdateMessage("location", placeName,WeatherUpdateNotificationMsg.EVENTTYPE_REMOVELOCATION);
 	    return true;
 	}
     }
@@ -244,6 +228,8 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
     }
 
     public void start() {
+	initAppsgateFields();
+	
 
 	try {
 	    fetch();
@@ -349,7 +335,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 			    YahooWeatherParser.parseCurrentConditions(doc));
 		    forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
 		    lastPublicationDates.put(woeid, newPubDate);
-		    fireWeatherUpdateMessage("location", placeName);
+		    fireWeatherUpdateMessage("location", placeName,WeatherUpdateNotificationMsg.EVENTTYPE_FETCHLOCATION);
 
 		} else
 		    logger.info("Publication date for " + placeName
@@ -381,7 +367,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	    currentUnit = 'f';
 	    break;
 	}
-	fireWeatherUpdateMessage("unit", String.valueOf(currentUnit));
+	fireWeatherUpdateMessage("unit", String.valueOf(currentUnit),WeatherUpdateNotificationMsg.EVENTTYPE_SETUNIT);
     }
 
     /*
@@ -393,12 +379,30 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
      */
     @Override
     public NotificationMsg fireWeatherUpdateMessage(String property,
-	    String value) {
+	    String value, String eventType) {
 	// TODO this one is very basic
-	return new WeatherUpdateNotificationMsg(this, property, value);
+	return new WeatherUpdateNotificationMsg(this, property, value, eventType);
     }
 
 
+    
+    // *******
+    // Specific fields for appsgate properties :
+
+    private String appsgatePictureId;
+    private String appsgateUserType;
+    private String appsgateDeviceStatus;
+    private String appsgateObjectId;
+    private String appsgateServiceName;
+    
+    private void initAppsgateFields() {
+	    appsgatePictureId=null;
+	    appsgateUserType="20"; //20 stands for weather forecast service
+	    appsgateDeviceStatus="2"; // 2 means device paired (for a device, not relevant for service)
+	    appsgateObjectId=appsgateUserType+String.valueOf(this.hashCode()); // Object id prefixed by the user type
+	    appsgateServiceName="Yahoo Weather Forecast";
+    }
+    
 
     /*
      * (non-Javadoc)
@@ -412,13 +416,19 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	// mandatory appsgate properties
 	descr.put("id", appsgateObjectId);
 	descr.put("type", appsgateUserType); //20 for weather service
-	descr.put("status", appsgateStatus);
-	
+	descr.put("status", appsgateDeviceStatus); // always 2 (because this is not a service)
+	descr.put("pictureId", appsgatePictureId);
+	descr.put("name", appsgateServiceName);
 	
 	//specific weather service properties
 	descr.put("unit", currentUnit);	
-	descr.put("lastFetchDate",String.format("$te/%1$tm/%1$tY %1$tH:%1$tM:%1$tS",
+	if(getLastFetchDate()!=null)
+	    descr.put("lastFetchDate",String.format("$te/%1$tm/%1$tY %1$tH:%1$tM:%1$tS",
 		this.getLastFetchDate().getTime()));
+	else 	    
+	    descr.put("lastFetchDate","null");
+
+	    
 	descr.put("locations", woeidFromePlaceName.keySet());
 	
 	return descr;
@@ -456,7 +466,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
     @Override
     public void setPictureId(String pictureId) {
 	this.appsgatePictureId = pictureId;
-	fireWeatherUpdateMessage("picturedId", pictureId);
+	fireWeatherUpdateMessage("picturedId", pictureId, "setPictureId");
     }
 
     /*
@@ -476,7 +486,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
      */
     @Override
     public int getObjectStatus() {
-	return Integer.parseInt(appsgateStatus);
+	return Integer.parseInt(appsgateDeviceStatus);
     }
     
 

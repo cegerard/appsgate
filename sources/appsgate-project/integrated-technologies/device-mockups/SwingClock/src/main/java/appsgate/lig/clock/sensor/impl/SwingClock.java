@@ -34,14 +34,6 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
 	ChangeListener {
 
     /**
-     * The current picture identifier
-     */
-    private String appsgatePictureId;
-    private String appsgateObjectId;
-    private String appsgateUserType;
-    private String appsgateStatus;
-
-    /**
      * Lag between the real current Date and the one setted in the GUI
      */
     long currentLag;
@@ -83,6 +75,7 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     public void start() {
 	logger.info("New swing clock created");
+	initAppsgateFields();
 
 	refreshClock();
 	Timer timer = new Timer();
@@ -325,6 +318,21 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
     public void setCurrentTimeInMillis(long millis) {
 	currentLag = millis - Calendar.getInstance().getTimeInMillis();
     }
+    
+    private String appsgatePictureId;
+    private String appsgateObjectId;
+    private String appsgateUserType;
+    private String appsgateStatus;
+    private String appsgateServiceName;
+
+    
+    private void initAppsgateFields() {
+	    appsgatePictureId=null;
+	    appsgateServiceName="Swing Clock";
+	    appsgateUserType="21";
+	    appsgateStatus="2";
+	    appsgateObjectId=appsgateUserType+String.valueOf(this.hashCode());
+    }
 
     /*
      * (non-Javadoc)
@@ -333,7 +341,6 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public String getAbstractObjectId() {
-	// TODO Auto-generated method stub
 	return appsgateObjectId;
     }
 
@@ -344,13 +351,13 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public JSONObject getDescription() throws JSONException {
-	// TODO Auto-generated method stub
 	JSONObject descr = new JSONObject();
 
 	// mandatory appsgate properties
 	descr.put("id", appsgateObjectId);
-	descr.put("type", appsgateUserType); // 20 for weather service
+	descr.put("type", appsgateUserType); // 21 for clok
 	descr.put("status", appsgateStatus);
+	descr.put("name", appsgateServiceName);
 
 	descr.put("varName", "ClockSet");
 	Calendar cal = Calendar.getInstance();
@@ -367,7 +374,6 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public int getObjectStatus() {
-	// TODO Auto-generated method stub
 	return Integer.parseInt(appsgateStatus);
     }
 
@@ -378,7 +384,6 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public String getPictureId() {
-	// TODO Auto-generated method stub
 	return appsgatePictureId;
     }
 
@@ -389,7 +394,6 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public String getUserType() {
-	// TODO Auto-generated method stub
 	return appsgateUserType;
     }
 
@@ -403,7 +407,6 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
     @Override
     public void setPictureId(String pictureId) {
 	this.appsgatePictureId = pictureId;
-
     }
 
 }

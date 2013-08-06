@@ -2,13 +2,9 @@ package appsgate.lig.colorLight.actuator.swing.impl;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.plaf.DimensionUIResource;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,39 +32,6 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
     private static Logger logger = LoggerFactory
 	    .getLogger(SwingColorLightImpl.class);
 
-    /**
-     * the system name of this sensor.
-     */
-    private String sensorName;
-
-    /**
-     * The network sensor id
-     */
-    private String sensorId;
-
-    /**
-     * The sensor type (Actuator or Sensor)
-     */
-    private String sensorType;
-
-
-    /**
-     * The type for user of this sensor
-     */
-    private String userType;
-
-    /**
-     * The current sensor status.
-     * 
-     * 0 = Off line or out of range 1 = In validation mode (test range for
-     * sensor for instance) 2 = In line or connected
-     */
-    private String status;
-
-    /**
-     * The current picture identifier
-     */
-    private String pictureId;
 
     private JLabel lightStatus;
     private JFrame frameLight;
@@ -97,12 +60,30 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
      */
     private long color;
 
+    
+    private String appsgateDeviceName;
+    private String appsgateObjectId;
+    private String appsgateSensorType;
+    private String appsgateUserType;
+    private String appsgateStatus;
+    private String appsgatePictureId;
+
+    private void initAppsgateFields() {
+	    appsgatePictureId=null;
+	    appsgateDeviceName="Swnig Color Lamp";
+	    appsgateUserType="7";
+	    appsgateStatus="2";
+	    appsgateObjectId=appsgateUserType+String.valueOf(this.hashCode());
+	    appsgateSensorType="PHILIPS_HUE_LIGHT";
+	    
+}
+    
     @Override
     public JSONObject getDescription() throws JSONException {
 	JSONObject descr = new JSONObject();
-	descr.put("id", sensorId);
-	descr.put("type", userType); // 7 for color light
-	descr.put("status", status);
+	descr.put("id", appsgateObjectId);
+	descr.put("type", appsgateUserType); // 7 for color light
+	descr.put("status", appsgateStatus);
 	descr.put("value", getCurrentState());
 	descr.put("color", getLightColor());
 	descr.put("saturation", getLightColorSaturation());
@@ -112,15 +93,15 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
     }
 
     public String getSensorName() {
-	return sensorName;
+	return appsgateDeviceName;
     }
 
     public void setSensorName(String sensorName) {
-	this.sensorName = sensorName;
+	this.appsgateDeviceName = sensorName;
     }
 
     public String getSensorId() {
-	return sensorId;
+	return appsgateObjectId;
     }
 
     @Override
@@ -128,28 +109,28 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
 	return getSensorId();
     }
 
-    public String getSensoreType() {
-	return sensorType;
+    public String getSensorType() {
+	return appsgateSensorType;
     }
 
     @Override
     public String getUserType() {
-	return userType;
+	return appsgateUserType;
     }
 
     @Override
     public int getObjectStatus() {
-	return Integer.valueOf(status);
+	return Integer.valueOf(appsgateStatus);
     }
 
     @Override
     public String getPictureId() {
-	return pictureId;
+	return appsgatePictureId;
     }
 
     @Override
     public void setPictureId(String pictureId) {
-	this.pictureId = pictureId;
+	this.appsgatePictureId = pictureId;
 	notifyChanges("pictureId", pictureId);
     }
 
@@ -157,12 +138,13 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
      * Called by APAM when an instance of this implementation is created
      */
     public void show() {
+	initAppsgateFields();
 	isOn = false;
 	brightness = 0;
 	saturation = 0;
 	color = 0;
 
-	logger.info("New swing Light added, " + sensorId);
+	logger.info("New swing Light added, " + appsgateObjectId);
 	frameLight = new JFrame("AppsGate Swing ColorLight");
 	lightStatus = new JLabel();
 	lightStatus.setPreferredSize(new Dimension(260, 60));
@@ -173,7 +155,7 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
     }
 
     private void refreshLight() {
-	lightStatus.setText("Light " + sensorId);
+	lightStatus.setText("Light " + appsgateObjectId);
 
 	lightStatus.setOpaque(true);
 	if (isOn) {
@@ -189,7 +171,7 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
      * Called by APAM when an instance of this implementation is removed
      */
     public void hide() {
-	logger.info("Swing Light removed, " + sensorId);
+	logger.info("Swing Light removed, " + appsgateObjectId);
 	frameLight.dispose();
 	frameLight = null;
     }
