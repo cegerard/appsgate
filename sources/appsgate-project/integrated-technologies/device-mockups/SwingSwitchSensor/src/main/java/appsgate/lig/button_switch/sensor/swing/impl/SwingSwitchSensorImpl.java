@@ -1,11 +1,24 @@
 package appsgate.lig.button_switch.sensor.swing.impl;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Set;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JToggleButton;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,195 +30,233 @@ import appsgate.lig.button_switch.sensor.spec.CoreSwitchSensorSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 
-public class SwingSwitchSensorImpl implements CoreSwitchSensorSpec, CoreObjectSpec, ActionListener {
+public class SwingSwitchSensorImpl implements CoreSwitchSensorSpec,
+	CoreObjectSpec, ActionListener {
+
+    /**
+     * Static class member uses to log what happened in each instances
+     */
+    private static Logger logger = LoggerFactory
+	    .getLogger(SwingSwitchSensorImpl.class);
+
+    private String switchNumber;
+    private String buttonStatus;
+
+    private String appsgateDeviceName;
+    private String appsgateObjectId;
+    private String appsgateSensorType;
+    private String appsgateUserType;
+    private String appsgateStatus;
+    private String appsgatePictureId;
+
+    private void initAppsgateFields() {
+	appsgatePictureId = null;
+	switchNumber = "-1";
+	buttonStatus = "false";
+	appsgateDeviceName = "Unknown";
+	appsgateUserType = "2";
+	appsgateStatus = "2";
+	appsgateObjectId = appsgateUserType + String.valueOf(this.hashCode());
+	appsgateSensorType = "SwingSwitchSensor";
+
+    }
+
+    // private List<JToggleButton> theButtons;
+    // private JSpinner spinNbSwitchs;
+    private JToggleButton buttonOn;
+    private JToggleButton buttonOff;
+
+    private JFrame frameMultiSwitchButtons;
+//    private JPanel panelButtons;
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
+	JSONObject descr = new JSONObject();
+	descr.put("id", appsgateObjectId);
+	descr.put("type", appsgateUserType); // 2 for switch sensor
+	descr.put("status", appsgateStatus);
+	descr.put("switchNumber", switchNumber);
+	boolean stateBtn = Boolean.valueOf(buttonStatus);
+	if (stateBtn) {
+	    descr.put("buttonStatus", 1);
+	} else {
+	    descr.put("buttonStatus", 0);
+	}
+	return descr;
+    }
+
+    @Override
+    public Action getLastAction() {
+	Integer switchButton = new Integer(switchNumber);
+	return new Action(switchButton.byteValue(),
+		Boolean.valueOf(buttonStatus));
+    }
+
+    public String getSensorName() {
+	return appsgateDeviceName;
+    }
+
+    public void setSensorName(String sensorName) {
+	this.appsgateDeviceName = sensorName;
+    }
+
+    public String getSensorId() {
+	return appsgateObjectId;
+    }
+
+    @Override
+    public String getAbstractObjectId() {
+	return getSensorId();
+    }
+
+    public String getSensoreType() {
+	return appsgateSensorType;
+    }
+
+    @Override
+    public String getUserType() {
+	return appsgateUserType;
+    }
+
+    @Override
+    public int getObjectStatus() {
+	return Integer.valueOf(appsgateStatus);
+    }
+
+    @Override
+    public String getPictureId() {
+	return appsgatePictureId;
+    }
+
+    @Override
+    public void setPictureId(String pictureId) {
+	this.appsgatePictureId = pictureId;
+	notifyChanges("pictureId", pictureId);
+    }
+
+    /**
+     * Called by APAM when an instance of this implementation is created
+     */
+    public void show() {
+	initAppsgateFields();
+	logger.info("New swing switch sensor added, " + appsgateObjectId);
+	frameMultiSwitchButtons = new JFrame("AppsGate Swing Switch Sensor "
+		+ appsgateObjectId);
+	frameMultiSwitchButtons.setLayout(new BorderLayout());
+
+//	panelButtons = new JPanel();
+//	panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.Y_AXIS));
+	// panelButtons.setBorder(BorderFactory
+	// .createTitledBorder("Switch Buttons"));
+
+	// JPanel panelControl = new JPanel();
+	// panelControl.setLayout(new BoxLayout(panelControl,
+	// BoxLayout.X_AXIS));
+	//
+	//
+	// SpinnerModel nbModel = new SpinnerNumberModel(1, 1, 9, 1);
+	// panelControl.add(new JLabel("Nb of buttons:"));
+	// spinNbSwitchs = new JSpinner(nbModel);
+	// nbModel.addChangeListener(this);
+	// panelControl.add(spinNbSwitchs);
+
+	buttonOff = new JToggleButton(" OFF ");
+	buttonOff.setPreferredSize(new Dimension(240, 60));
+	buttonOff.addActionListener(this);
+
+
+	buttonOn = new JToggleButton(" ON  ");
+	buttonOn.setPreferredSize(new Dimension(240, 60));
+	buttonOn.addActionListener(this);
 	
-	/**
-	 * Static class member uses to log what happened in each instances
-	 */
-	private static Logger logger = LoggerFactory.getLogger(SwingSwitchSensorImpl.class);
-	
-	/**
-	 * the system name of this sensor.
-	 */
-	private String sensorName;
+	frameMultiSwitchButtons.add(buttonOff,BorderLayout.NORTH);
+	frameMultiSwitchButtons.add(buttonOn,BorderLayout.SOUTH);
 
-	/**
-	 * The network sensor id
-	 */
-	private String sensorId;
+	//frameMultiSwitchButtons.add(panelButtons);
+	// frameMultiSwitchButtons.add(panelControl);
 
-	/**
-	 * The sensor type (Actuator or Sensor)
-	 */
-	private String sensoreType;
+	// changeNbOfSwitchs(2);
 
-	
-	/**
-	 * the switch number
-	 */
-	private String switchNumber;
-	
-	/**
-	 * the button last status (On=true / Off=false)
-	 */
-	private String buttonStatus;
-	
-	/**
-	 * Attribute use to indicate that the status change
-	 */
-	private boolean switchState;
+	frameMultiSwitchButtons.pack();
+	frameMultiSwitchButtons.setVisible(true);
+    }
 
-	/**
-	 * The type for user of this sensor
-	 */
-	private String userType;
+    /**
+     * Called by APAM when an instance of this implementation is removed
+     */
+    public void hide() {
+	logger.info("Swing Switch sensor removed, " + appsgateObjectId);
+	frameMultiSwitchButtons.dispose();
+    }
 
-	/**
-	 * The current sensor status.
-	 * 
-	 * 0 = Off line or out of range
-	 * 1 = In validation mode (test range for sensor for instance)
-	 * 2 = In line or connected
-	 */
-	private String status;
+    /**
+     * Called by APAM when a switch state changed.
+     * 
+     * @param justuse
+     *            to trigger the state change
+     */
+    public void switchChanged(String status) {
+	notifyChanges("switchNumber", this.switchNumber);
+	logger.info("New switch value from " + appsgateObjectId + " / "
+		+ appsgateDeviceName + ", " + this.switchNumber);
+	notifyChanges("buttonStatus", this.buttonStatus);
+	logger.info("New switch value from " + appsgateObjectId + " / "
+		+ appsgateDeviceName + ", " + this.buttonStatus);
+    }
 
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
-	
-	private JButton swingButton;
-	private JFrame frameButton;
-	
-	
-	@Override
-	public JSONObject getDescription() throws JSONException {
-		JSONObject descr = new JSONObject();
-		descr.put("id", sensorId);
-		descr.put("type", userType); //2 for switch sensor
-		descr.put("status", status);
-		descr.put("switchNumber", switchNumber);
-		boolean stateBtn = Boolean.valueOf(buttonStatus);
-		if(stateBtn){
-			descr.put("buttonStatus", 1);
-		} else {
-			descr.put("buttonStatus", 0);
-		}
-		return descr;
-	}
+    // Previous attempt to make multi-buttons switch, but quite useless
+    // public void changeNbOfSwitchs(int newNumber) {
+    // if (newNumber > 0 || newNumber < 10)
+    // nbOfSwitchs = newNumber;
+    // else
+    // nbOfSwitchs = 2;
+    // for(int i=0;i<nbOfSwitchs;i++) {
+    // JToggleButton button= new JToggleButton();
+    // button.setText("Button n° "
+    // + i + ", status " + buttonStatus);
+    // button.addActionListener(this);
+    //
+    // }
+    //
+    // }
 
-	@Override
-	public Action getLastAction() {
-		Integer switchButton = new Integer(switchNumber);
-		return new Action(switchButton.byteValue(), Boolean.valueOf(buttonStatus));
-	}
-	
-	public String getSensorName() {
-		return sensorName;
-	}
+    /**
+     * This method uses the ApAM message model. Each call produce a
+     * SwitchNotificationMsg object and notifies ApAM that a new message has
+     * been released.
+     * 
+     * @return nothing, it just notifies ApAM that a new message has been
+     *         posted.
+     */
+    public NotificationMsg notifyChanges(String varName, String value) {
+	return new SwitchNotificationMsg(new Integer(switchNumber),
+		Boolean.valueOf(buttonStatus), varName, value, this);
+    }
 
-	public void setSensorName(String sensorName) {
-		this.sensorName = sensorName;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+	if (e.getSource() == buttonOn) {
+		switchNumber = "1";
+	    if (buttonOn.isSelected()) {
+		buttonOff.setSelected(false);
+		buttonStatus = "true";
+	    } else
+		buttonStatus = "false";
+	} else if (e.getSource() == buttonOff) {
+	    switchNumber = "0";
+	    if (buttonOff.isSelected()) {
+		buttonOn.setSelected(false);
+		buttonStatus = "true";
+	    } else
+		buttonStatus = "false";
 	}
-
-	public String getSensorId() {
-		return sensorId;
-	}
-	
-	@Override
-	public String getAbstractObjectId() {
-		return getSensorId();
-	}
-
-	public String getSensoreType() {
-		return sensoreType;
-	}
-
-	@Override
-	public String getUserType() {
-		return userType;
-	}
-
-	@Override
-	public int getObjectStatus() {
-		return Integer.valueOf(status);
-	}
-
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
-
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
-	}
-	
-	/**
-	 * Called by APAM when an instance of this implementation is created
-	 */
-	public void show() {
-		logger.info("New swing switch sensor added, "+sensorId);
-		frameButton=new JFrame("AppsGate SwingSwitchSensor");
-		swingButton = new JButton();
-		swingButton.setPreferredSize(new Dimension(240, 60));
-		swingButton.addActionListener(this);
-		refreshButton();
-		frameButton.add(swingButton);
-		frameButton.pack();
-		frameButton.setVisible(true);
-	}
-	
-	private void refreshButton() {
-	    swingButton.setText("Button "+sensorId+", n° "+switchNumber+" status "+buttonStatus);
-	}
-
-	/**
-	 * Called by APAM when an instance of this implementation is removed
-	 */
-	public void hide() {
-		logger.info("Swing Switch sensor removed, "+sensorId);
-		frameButton.dispose();
-	}
-	
-	/**
-	 *  Called by APAM when a switch state changed.
-	 * @param justuse to trigger the state change
-	 */
-	public void switchChanged(String status) {
-		if(switchState) {
-			notifyChanges("switchNumber", this.switchNumber);
-			logger.info("New switch value from "+sensorId+"/"+sensorName+", "+this.switchNumber);
-			notifyChanges("buttonStatus", this.buttonStatus);
-			logger.info("New switch value from "+sensorId+"/"+sensorName+", "+this.buttonStatus);
-			switchState = false;
-		}
-	}
-	
-	/**
-	 * This method uses the ApAM message model. Each call produce a
-	 * SwitchNotificationMsg object and notifies ApAM that a new message has
-	 * been released.
-	 * 
-	 * @return nothing, it just notifies ApAM that a new message has been
-	 *         posted.
-	 */
-	public NotificationMsg notifyChanges(String varName, String value) {
-		return new SwitchNotificationMsg(new Integer(switchNumber), Boolean.valueOf(buttonStatus), varName, value, this);
-	}
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	    if(Boolean.valueOf(buttonStatus))
-		buttonStatus="false";
-	    else 
-		buttonStatus="true";
-	    refreshButton();
-	    switchChanged(buttonStatus);
-	}
+	switchChanged(buttonStatus);
+    }
 
 }
