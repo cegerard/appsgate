@@ -113,5 +113,5 @@ public interface CoreWeatherServiceSpec {
     /**
      * @return The corresponding notification message
      */
-    NotificationMsg fireWeatherUpdateMessage(String property, String value);
+    NotificationMsg fireWeatherUpdateMessage(String property, String value, String eventType);
 } 

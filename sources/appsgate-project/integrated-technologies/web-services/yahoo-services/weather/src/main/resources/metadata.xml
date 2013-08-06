@@ -8,22 +8,18 @@
     specification="CoreWeatherServiceSpec"
     push="fireWeatherUpdateMessage">
 		<callback onInit="start" onRemove="stop" />
-        
-        
-        
 
-        <!-- device kernel meta data -->
-<!--         <definition name="deviceName"    type="string" value="Unknown"        field="sensorName"/>  -->
-        <definition name="deviceId"      type="string" value="000000"         field="appsgateObjectId"/>
+        <!-- Appsgate mandatory property -->
+        <definition name="deviceName"    type="string" field="appsgateServiceName"/> 
+<!--         <definition name="deviceId"      type="string" field="appsgateObjectId" /> -->
 
         <!-- device client meta data -->
-        <definition name="pictureId"     type="string"                        field="appsgatePictureId"/>
-        <definition name="userType"      type="string" value="20"              field="appsgateUserType"/>
-        <definition name="status"        type="string" value="2"              field="appsgateStatus" /> <!--       method="statusChanged"/>  -->
+        <definition name="pictureId"     type="string" field="appsgatePictureId"/>
+        <definition name="userType"      type="string" field="appsgateUserType"/>
+        <definition name="status"        type="string" field="appsgateDeviceStatus" />
         
-        <!-- device specific meta data -->
-        <definition name="auto-refresh" type="int" field="refreshRate" />
-        
+        <!-- Service specific meta data -->
+        <definition name="auto-refresh" type="int" value="100000" field="refreshRate" />
 	</implementation>
    
    <!-- Old Instance to check if still working -->
