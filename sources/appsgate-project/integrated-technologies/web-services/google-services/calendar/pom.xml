@@ -13,19 +13,6 @@
 	<packaging>pom</packaging>
 	<name>Appsgate calendar components</name>
 
-	<!-- Maven Repo -->
-	<repositories>
-
-		<repository>
-			<id>ical4j-repository</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		
-	</repositories>
-
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -81,8 +68,7 @@
 	</build>
 
 	<modules>
-		<module>GoogleAdapter</module>
-		<module>CoreiCalImpl</module>
+		<module>GoogleCalendarImpl</module>
 	</modules>
 
 </project>

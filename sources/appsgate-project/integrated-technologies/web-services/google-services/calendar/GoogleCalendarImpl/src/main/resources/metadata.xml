@@ -1,0 +1,40 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="GoogleCalendarImpl" classname="appsgate.lig.calendar.core.impl.GoogleCalendarImpl" specification="CoreCalendarSpec" push="notifyEventAlarm">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		<ipojo:requires field="serviceAdapter"/>
+		
+		<definition name="calendarName" type="string" field="calendarName"/>
+		<definition name="account" 	  	type="string" field="account"/>
+		<definition name="pswd" 	  	type="string" field="pswd"/>
+		<definition name="rate" 	 	type="string" field="rate" value="900000"/>
+		
+		<definition name="deviceId" 	type="string" value="666666666" field="serviceId"/>
+		<definition name="userType" 	type="string" value="101"	field="userType"/>
+		<definition name="status" 		type="string" value="2" 	field="status"/>
+		
+	</implementation>
+
+<!--    <apam-instance name="SmartHomeAgendaInst" implementation="GoogleCalendarImpl"> -->
+<!--  		<property name="calendarName" 	value="Smart home"/> -->
+<!--  		<property name="account" 		value="smarthome.inria@gmail.com"/> -->
+<!--  		<property name="pswd" 			value="smarthome2012"/> -->
+<!--    </apam-instance> -->
+   
+<!--    <apam-instance name="BoulotAgendaInst" implementation="GoogleCalendarImpl"> -->
+<!--  		<property name="calendarName" 	value="Agenda boulot"/> -->
+<!--  		<property name="account" 		value="smarthome.inria@gmail.com"/> -->
+<!--  		<property name="pswd" 			value="smarthome2012"/> -->
+<!--    </apam-instance> -->
+
+<!-- 	<implementation name="EventReceiverImpl" classname="appsgate.lig.agenda.core.impl.MessageEventReceiver"> -->
+<!-- 		<callback onInit="start" onRemove="stop" /> -->
+<!-- 		<dependency pull="queue" multiple="true" />  -->
+<!-- 	</implementation> -->
+   	
+<!--   	<apam-instance name="EventReceiverImpl-0" implementation="EventReceiverImpl"/> -->
+
+</apam>
