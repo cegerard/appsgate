@@ -21,6 +21,13 @@ public interface EUDE_InterpreterSpec {
 	public boolean addProgram(JSONObject programJSON);
 	
 	/**
+	 * Remove an existing program.
+	 * @param programName the name of the program to remove
+	 * @return true if the program has been removed, false otherwise
+	 */
+	public boolean removeProgram(String programName);
+	
+	/**
 	 * Launch the interpretation of a program
 	 * 
 	 * @param programName Name of the program to launch

@@ -112,10 +112,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		return true;
 	}
 	
-	/**
-	 * 
-	 * @param name
-	 */
+	@Override
 	public boolean removeProgram(String programName) {
 		NodeProgram p = mapPrograms.get(programName);
 		

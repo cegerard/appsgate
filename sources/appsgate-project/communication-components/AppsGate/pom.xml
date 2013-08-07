@@ -57,6 +57,11 @@
 			<artifactId>UserBaseSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>EUDEInterpreterSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->
@@ -89,6 +94,7 @@
 							appsgate.lig.context.device.name.table.spec,,
 							appsgate.lig.manager.place.spec,
 							appsgate.lig.context.userbase.spec,
+							appsgate.lig.eude.interpreter.spec,
 							appsgate.lig.router.spec
 						</Import-Package>
 					</instructions>
