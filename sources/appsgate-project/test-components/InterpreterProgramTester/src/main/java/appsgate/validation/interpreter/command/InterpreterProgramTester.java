@@ -29,9 +29,15 @@ public class InterpreterProgramTester {
 		try {
 			//interpreter.addProgram(loadFileJSON("test/simpleRuleJSON.js"));
 			//interpreter.addProgram(loadFileJSON("test/testCallProgramJSON.js"));
-			interpreter.addProgram(loadFileJSON("test/demo220713JSON_1.js"));
-			interpreter.addProgram(loadFileJSON("test/demo220713JSON_2.js"));
-			interpreter.addProgram(loadFileJSON("test/demo220713JSON_3.js"));
+			
+			//Programs on key card switch
+			interpreter.addProgram(loadFileJSON("test/switchLightsOnCard.js"));
+			interpreter.addProgram(loadFileJSON("test/switchLightsOffCard.js"));
+			
+			//Programs on single switch
+			interpreter.addProgram(loadFileJSON("test/defautLightModeSingleSwitch.js"));
+			interpreter.addProgram(loadFileJSON("test/colorLooplightModeSingleSwitch.js"));
+			
 			/* interpreter.addProgram(loadFileJSON("test/philipsActionRuleJSON.js"));
 			interpreter.addProgram(loadFileJSON("test/testIfJSON.js")); */
 			// interpreter.addProgram(loadFileJSON("test/testWhenJSON.js"));
@@ -39,9 +45,11 @@ public class InterpreterProgramTester {
 			e.printStackTrace();
 		}
 		
-		interpreter.callProgram("Demo220713_1");
-		interpreter.callProgram("Demo220713_2");
-		interpreter.callProgram("Demo220713_3");
+		interpreter.callProgram("LightsOn");
+		interpreter.callProgram("LightsOff");
+		interpreter.callProgram("DefaultLightMode");
+		interpreter.callProgram("ColorLoopMode");
+
 		/* try {
 			Thread.sleep(2000);
 		} catch (InterruptedException ex) {
