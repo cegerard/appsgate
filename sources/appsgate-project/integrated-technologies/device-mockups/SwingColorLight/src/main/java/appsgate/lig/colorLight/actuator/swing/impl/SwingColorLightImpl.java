@@ -25,6 +25,7 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
     private static long HUE_ORANGE = 8900;
     private static long HUE_PURPLE = 48765;
     private static long HUE_PINK = 54332;
+    private static long HUE_DEFAULT = 14922;
 
     /**
      * Static class member uses to log what happened in each instances
@@ -461,6 +462,15 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
 	refreshLight();
 	return true;
     }
+    
+	@Override
+	public boolean setDefault() {
+		color = HUE_DEFAULT;
+		notifyChanges("color", String.valueOf(color));
+		refreshLight();
+		return true;
+	}
+
 
     /*
      * (non-Javadoc)
@@ -518,5 +528,4 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
 	else
 	    return On();
     }
-
 }
