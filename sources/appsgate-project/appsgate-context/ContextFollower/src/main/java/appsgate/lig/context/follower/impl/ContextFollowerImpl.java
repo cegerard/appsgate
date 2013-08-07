@@ -105,6 +105,15 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		try {
 			logger.debug("Event message receive, " + notif.JSONize());
 			JSONObject event = notif.JSONize();
+			
+			//TODO delete this exception when the notification
+			//mechanism will be totally define
+			try{
+				event.getString("objectId");
+			}catch(JSONException e) {
+				return;
+			}
+				
 			Entry eventKey = new Entry(event.getString("objectId"), event.getString("varName"), event.getString("value"));
 			
 			Set<Entry> keys = eventsListeners.keySet();
