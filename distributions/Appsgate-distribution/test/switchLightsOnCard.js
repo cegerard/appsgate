@@ -1,5 +1,5 @@
 {
-	programName : "Demo220713_2",
+	programName : "LightsOn",
 	seqParameters : [
 	],
 	author : "Bob",
@@ -15,13 +15,37 @@
 					{
 						type : "NodeEvent",
 						sourceType : "device",
-						sourceId : "ENO1645c",
-						eventName : "value",
-						eventValue : "0"
+						sourceId : "ENO2840bb",
+						eventName : "inserted",
+						eventValue : true
 					}
 				],
 				seqRulesThen : [
 					[
+						{
+							type : "NodeAction",
+							targetType : "device",
+							targetId : "194.199.23.136-1",
+							methodName : "On",
+							args : [
+							]
+						 },
+					     {
+						     type : "NodeAction",
+						     targetType : "device",
+						     targetId : "194.199.23.136-2",
+					             methodName : "On",
+						     args : [
+						     ]
+					     },
+				    	     {
+						     type : "NodeAction",
+						     targetType : "device",
+						     targetId : "194.199.23.136-3",
+					             methodName : "On",
+						     args : [
+						     ]
+					     },
 				    	     {
 						     type : "NodeAction",
 						     targetType : "device",
@@ -33,35 +57,8 @@
 				    	     {
 						     type : "NodeAction",
 						     targetType : "device",
-						     targetId : "194.199.23.136-6",
+						     targetId : "194.199.23.136-5",
 					             methodName : "On",
-						     args : [
-						     ]
-					     }
-						  
-					]
-				]
-			}
-		],
-		[
-			{
-				type : "NodeWhen",
-				events : [
-					{
-						type : "NodeEvent",
-						sourceType : "device",
-						sourceId : "ENO1645c",
-						eventName : "value",
-						eventValue : "900"
-					}
-				],
-				seqRulesThen : [
-					[
-				    	     {
-						     type : "NodeAction",
-						     targetType : "device",
-						     targetId : "194.199.23.136-4",
-					             methodName : "Off",
 						     args : [
 						     ]
 					     },
@@ -69,7 +66,7 @@
 						     type : "NodeAction",
 						     targetType : "device",
 						     targetId : "194.199.23.136-6",
-					             methodName : "Off",
+					             methodName : "On",
 						     args : [
 						     ]
 					     }
