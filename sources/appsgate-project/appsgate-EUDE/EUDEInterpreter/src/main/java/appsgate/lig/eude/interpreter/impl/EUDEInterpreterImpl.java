@@ -103,13 +103,29 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		try {
 			p = new NodeProgram(this, programJSON);
 		} catch (JSONException e) {
-			logger.debug("JSON error detected while loading a program");
+			logger.error("JSON error detected while loading a program");
 			return false;
 		}
 		
 		mapPrograms.put(p.getName(), p);
 
 		return true;
+	}
+	
+	@Override
+	public boolean removeProgram(String programName) {
+		NodeProgram p = mapPrograms.get(programName);
+		
+		if(p != null) {
+			p.stop();
+			p.undeploy();
+			p.removeEndEventListener(this);
+			mapPrograms.remove(programName);
+			return true;
+		}else {
+			logger.error("The programme "+programName+" does not exist.");
+			return false;
+		}
 	}
 	
 	/**
@@ -271,8 +287,21 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	public void endEventFired(EndEvent e) {
 		NodeProgram p = (NodeProgram)e.getSource();
 		if(p.getDeamon().contentEquals("true")) {
-			logger.debug("Deamon "+ p.getName() +" looping...");
-			p.call();
+			logger.debug("Deamon execution"+ p.getName() +" removing...");
+			if(removeProgram(p.getName())) {
+				logger.debug("Deamon "+ p.getName() +" reloading...");
+				if(addProgram(p.getProgramJSON())) {
+					logger.debug("Deamon "+ p.getName() +" restarting...");
+					if(callProgram(p.getName())) {
+						logger.debug("Deamon "+ p.getName() +" started.");
+					}else {
+						logger.debug("Deamon "+ p.getName() +" execution failed.");
+					}
+				}
+				
+			} else {
+				logger.error("Fail to remove "+ p.getName() +" ! The deamon has not been reloaded.");
+			}
 		}else {
 			p.removeEndEventListener(this);
 		}

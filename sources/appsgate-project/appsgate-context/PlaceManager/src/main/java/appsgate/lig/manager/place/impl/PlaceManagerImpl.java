@@ -137,6 +137,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		SymbolicPlace loc = placeObjectsMap.get(placeId);
 		loc.removeAll();
 		placeObjectsMap.remove(placeId);
+		notifyPlace(placeId, "", 2);
 		
 		// save the new devices name table 
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();

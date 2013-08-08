@@ -229,7 +229,7 @@ public class RouterImpl implements RouterApAMSpec {
 			JSONDescription = obj.getDescription();
 			//Add context description for this abject
 			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
-			JSONDescription.put("locationId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
+			JSONDescription.put("placeId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

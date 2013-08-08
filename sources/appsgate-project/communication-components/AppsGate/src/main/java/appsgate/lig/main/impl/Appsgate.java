@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.cybergarage.upnp.Action;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
+import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -89,6 +91,11 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	 * Reference on the AppsGate Router to execute command on devices
 	 */
 	private RouterApAMSpec router;
+	
+	/**
+	 * Reference to the EUDE interpreter to manage end user programs
+	 */
+	private EUDE_InterpreterSpec interpreter;
 
 	/**
 	 * Default constructor for Appsgate java object. it load UPnP device and
@@ -279,6 +286,11 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void removePlace(String id) {
+		placeManager.removePlace(id);
+	}
 
 	@Override
 	public void updatePlace(JSONObject place) {
@@ -358,6 +370,47 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	@Override
 	public boolean separateDevice(String id, String password, String deviceId) {
 		return userManager.removeDevice(id, password, deviceId);
+	}
+
+	@Override
+	public boolean addProgram(JSONObject jsonProgram) {
+		return interpreter.addProgram(jsonProgram);
+	}
+	
+	@Override
+	public boolean removeProgram(String programName) {
+		return interpreter.removeProgram(programName);
+	}
+
+	@Override
+	public boolean updateProgram(JSONObject jsonProgram) {
+		try {
+			if (interpreter.removeProgram(jsonProgram.getString("programName"))) {
+				return interpreter.addProgram(jsonProgram);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean callProgram(String programName) {
+		return interpreter.callProgram(programName);
+	}
+
+	@Override
+	public JSONArray getPrograms() {
+		HashMap<String, JSONObject> map = interpreter.getListPrograms();
+		JSONArray programList = new JSONArray();
+		for(String key : map.keySet()) {
+			try {
+				programList.put(new JSONObject().put(key, map.get(key)));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return programList;
 	}
 
 }

@@ -64,9 +64,11 @@ public class PlaceManagerNotification implements NotificationMsg {
 		content.put("devices", new JSONArray());
 		
 		if(type == 0) {
-			notif.put("newLocation", content);
+			notif.put("newPlace", content);
 		} else if(type == 1) {
-			notif.put("updateLocation", content);
+			notif.put("updatePlace", content);
+		} else if(type == 2) {
+			notif.put("removePlace", content);
 		}
 		
 		return notif;

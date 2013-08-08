@@ -51,7 +51,7 @@ public interface AppsGateSpec {
 	public void deleteUserObjectName(String objectId, String user);
 	
 	/***************************/
-	/**  Place management   */
+	/**    Place management    */
 	/***************************/
 	
 	/**
@@ -71,6 +71,12 @@ public interface AppsGateSpec {
 	 * @param place the new place description
 	 */
 	public void updatePlace(JSONObject place);
+	
+	/**
+	 * Remove a place from the smart space
+	 * @param id the place identifier
+	 */
+	public void removePlace(String id);
 	
 	/**
 	 * Move a device in a specified place
@@ -172,5 +178,44 @@ public interface AppsGateSpec {
 	 * @return true if the association has been deleted, false otherwise
 	 */
 	public boolean separateDevice(String id, String password, String deviceId);
+	
+	/************************************/
+	/**   End User programs management  */
+	/************************************/
+	
+	/**
+	 * Deploy a new end user program in Appsgate system
+	 * @param jsonProgram the JSONtree of the program
+	 * @return true if the program has been deployed, false otherwise
+	 */
+	public boolean addProgram(JSONObject jsonProgram);
+	
+	/**
+	 * Remove a currently deployed program.
+	 * Stop it, if it is running.
+	 * @param programName the name of the program to remove.
+	 * @return true if the program has been removed, false otherwise.
+	 */
+	public boolean removeProgram(String programName);
+	
+	/**
+	 * Update an existing program
+	 * @param jsonProgram the JSONtree of the program
+	 * @return true if the program has been udpated, false otherwise
+	 */
+	public boolean updateProgram(JSONObject jsonProgram);
+	
+	/**
+	 * Run a deployed end user program 
+	 * @param programName the name of the program to run
+	 * @return true if the program has been launched, false otherwise
+	 */
+	public boolean callProgram(String programName);
+	
+	/**
+	 * Get the list of current deployed programs
+	 * @return the programs list as a JSONArray
+	 */
+	public JSONArray getPrograms();
 	
 }

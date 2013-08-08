@@ -1,13 +1,11 @@
 package appsgate.lig.meteo.yahoo.test;
 
-import appsgate.lig.weather.DayForecast;
-import appsgate.lig.weather.WeatherForecast;
-import appsgate.lig.weather.WeatherForecastException;
+import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import appsgate.lig.weather.yahoo.YahooWeatherImpl;
 
 public class YahooMeteoTest {
 
-	WeatherForecast meteo;
+    CoreWeatherServiceSpec meteo;
 	
 	    public void start() {
 //		try {
@@ -44,6 +42,7 @@ public class YahooMeteoTest {
 		try {
 		    meteo.addLocation("Grenoble");
 		    meteo.addLocation("New York");
+		    meteo.fetch();
 		    meteo.fetch();
 		    
 		    System.out.println(meteo);

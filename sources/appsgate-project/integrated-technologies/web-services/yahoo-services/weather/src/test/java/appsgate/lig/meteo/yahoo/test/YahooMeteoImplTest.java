@@ -22,7 +22,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import appsgate.lig.weather.WeatherForecastException;
 import appsgate.lig.weather.yahoo.YahooWeatherImpl;
 
 
@@ -58,7 +57,7 @@ public class YahooMeteoImplTest {
 	try {
 	testedMeteo.fetch();
 	assertNotNull(testedMeteo);
-	} catch(WeatherForecastException exc) {
+	} catch(Exception exc) {
 	    fail(exc.getMessage());
 	}
 	//fail("Not yet implemented");

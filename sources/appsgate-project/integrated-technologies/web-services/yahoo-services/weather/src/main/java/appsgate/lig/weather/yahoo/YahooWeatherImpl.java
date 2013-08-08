@@ -1,8 +1,6 @@
 package appsgate.lig.weather.yahoo;
 
-import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -13,14 +11,18 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.stream.XMLInputFactory;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 
-import appsgate.lig.weather.CurrentWeather;
-import appsgate.lig.weather.DayForecast;
-import appsgate.lig.weather.WeatherForecast;
-import appsgate.lig.weather.WeatherForecastException;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.weather.utils.CurrentWeather;
+import appsgate.lig.weather.utils.DayForecast;
+import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
+import appsgate.lig.weather.exception.WeatherForecastException;
+import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
 
 /**
  * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit)
@@ -33,16 +35,22 @@ import appsgate.lig.weather.WeatherForecastException;
  * @author thibaud
  * 
  */
-public class YahooWeatherImpl implements WeatherForecast {
-
-    static final String DATEPUBLICATION = "pubDate";
+public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec {
 
     private Logger logger = Logger.getLogger(YahooWeatherImpl.class
 	    .getSimpleName());
 
-    public Integer refreshRate;
+    private int refreshRate;
 
     URL url;
+
+    /**
+     * Feed URL that returns an XML with the forecast (e.g.
+     * http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
+     */
+    private String feedUrlTemplate = "http://weather.yahooapis.com/forecastrss?w=%s&u=%c";
+
+    private String feedUrl;
 
     boolean noFetch;
     private char currentUnit;
@@ -64,13 +72,7 @@ public class YahooWeatherImpl implements WeatherForecast {
     private Map<String, CurrentWeather> currentWeathers;
     private Map<String, List<DayForecast>> forecasts;
 
-    /**
-     * Feed URL that returns an XML with the forecast (e.g.
-     * http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
-     */
-    private String feedUrlTemplate = "http://weather.yahooapis.com/forecastrss?w=%s&u=%c";
-
-    private String feedUrl;
+    
 
     TimerTask refreshtask = new TimerTask() {
 	@Override
@@ -90,6 +92,9 @@ public class YahooWeatherImpl implements WeatherForecast {
     };
 
     public YahooWeatherImpl() {
+	initAppsgateFields();
+	
+	
 	woeidFromePlaceName = new HashMap<String, String>();
 	lastPublicationDates = new HashMap<String, Calendar>();
 	currentWeathers = new HashMap<String, CurrentWeather>();
@@ -98,6 +103,8 @@ public class YahooWeatherImpl implements WeatherForecast {
 	lastFetchDate = null;
 	currentUnit = 'c';
 	noFetch = true;
+	// default value : does not refresh
+	refreshRate = -1;
 
 	geoPlanet = new YahooGeoPlanetImpl();
     }
@@ -178,6 +185,8 @@ public class YahooWeatherImpl implements WeatherForecast {
 	    lastPublicationDates.put(newWOEID, null);
 	    currentWeathers.put(newWOEID, null);
 	    forecasts.put(newWOEID, null);
+	    fireWeatherUpdateMessage("location", placeName,WeatherUpdateNotificationMsg.EVENTTYPE_ADDLOCATION);
+	    
 	} else
 	    throw new WeatherForecastException("Place was not found");
     }
@@ -193,7 +202,7 @@ public class YahooWeatherImpl implements WeatherForecast {
 	    throws WeatherForecastException {
 	if (!woeidFromePlaceName.containsKey(placeName))
 	    throw new WeatherForecastException(
-		    "Already monitoring this location");
+		    "Not monitoring this location");
 	else {
 	    String woeid = woeidFromePlaceName.remove(placeName);
 	    if (woeid == null)
@@ -201,6 +210,7 @@ public class YahooWeatherImpl implements WeatherForecast {
 	    lastPublicationDates.remove(woeid);
 	    currentWeathers.remove(woeid);
 	    forecasts.remove(woeid);
+	    fireWeatherUpdateMessage("location", placeName,WeatherUpdateNotificationMsg.EVENTTYPE_REMOVELOCATION);
 	    return true;
 	}
     }
@@ -218,6 +228,8 @@ public class YahooWeatherImpl implements WeatherForecast {
     }
 
     public void start() {
+	initAppsgateFields();
+	
 
 	try {
 	    fetch();
@@ -228,10 +240,9 @@ public class YahooWeatherImpl implements WeatherForecast {
 	/**
 	 * Configure auto-refresh meteo data
 	 */
-	if (refreshRate != null && refreshRate != -1) {
+	if (refreshRate > 0) {
 	    logger.fine("Configuring auto-refresh for :" + refreshRate);
-	    refreshTimer.scheduleAtFixedRate(refreshtask, 0,
-		    refreshRate.longValue());
+	    refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
 	}
 
     }
@@ -250,7 +261,7 @@ public class YahooWeatherImpl implements WeatherForecast {
 	    return Unit.US;
 	default:
 	    currentUnit = 'c';
-	    return WeatherForecast.Unit.EU;
+	    return CoreWeatherServiceSpec.Unit.EU;
 	}
     }
 
@@ -273,14 +284,14 @@ public class YahooWeatherImpl implements WeatherForecast {
 			    .format("meteo report from %1$te/%1$tm/%1$tY %1$tH:%1$tM \n",
 				    this.getPublicationDate(placeName)));
 		sb.append("-- forecasts --\n");
-		for (DayForecast forecast : getForecast(placeName)) {
-		    sb.append(String
-			    .format("Date: %1$te/%1$tm/%1$tY (min:%2$s,max:%3$s, code:%4$s) \n",
-				    forecast.getDate(), forecast.getMin(),
-				    forecast.getMax(), forecast.getCode()));
-		}
+		if (getForecast(placeName) != null)
+		    for (DayForecast forecast : getForecast(placeName)) {
+			sb.append(String
+				.format("Date: %1$te/%1$tm/%1$tY (min:%2$s,max:%3$s, code:%4$s) \n",
+					forecast.getDate(), forecast.getMin(),
+					forecast.getMax(), forecast.getCode()));
+		    }
 	    } catch (WeatherForecastException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	    }
 
@@ -301,25 +312,34 @@ public class YahooWeatherImpl implements WeatherForecast {
     public void fetch() throws WeatherForecastException {
 	try {
 
-	    for (String woeid : woeidFromePlaceName.values()) {
-		logger.fine("Fetching Weather for " + woeid);
+	    for (String placeName : woeidFromePlaceName.keySet()) {
+		String woeid = woeidFromePlaceName.get(placeName);
+		logger.fine("Fetching Weather for " + placeName);
 
 		feedUrl = String.format(feedUrlTemplate, woeid, currentUnit);
 
 		this.url = new URL(feedUrl);
 
-		// First create a new XMLInputFactory
-		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-
 		DocumentBuilder db = null;
 		db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document doc = db.parse(url.openStream());
+		Calendar newPubDate = YahooWeatherParser
+			.parsePublicationDate(doc);
 
-		currentWeathers.put(woeid,
-			YahooWeatherParser.parseCurrentConditions(doc));
-		forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
-		lastPublicationDates.put(woeid,
-			YahooWeatherParser.parsePublicationDate(doc));
+		if (newPubDate != null
+			&& (newPubDate.after(lastPublicationDates.get(woeid)) || lastPublicationDates
+				.get(woeid) == null)) {
+		    logger.info("Publication date for " + placeName
+			    + " is newer, parsing new Weather Data !");
+		    currentWeathers.put(woeid,
+			    YahooWeatherParser.parseCurrentConditions(doc));
+		    forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
+		    lastPublicationDates.put(woeid, newPubDate);
+		    fireWeatherUpdateMessage("location", placeName,WeatherUpdateNotificationMsg.EVENTTYPE_FETCHLOCATION);
+
+		} else
+		    logger.info("Publication date for " + placeName
+			    + " is NOT newer, does nothing");
 	    }
 
 	} catch (Exception e) {
@@ -347,6 +367,127 @@ public class YahooWeatherImpl implements WeatherForecast {
 	    currentUnit = 'f';
 	    break;
 	}
+	fireWeatherUpdateMessage("unit", String.valueOf(currentUnit),WeatherUpdateNotificationMsg.EVENTTYPE_SETUNIT);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * appsgate.lig.weather.spec.CoreWeatherServiceSpec#fireWeatherUpdateMessage
+     * (java.lang.String)
+     */
+    @Override
+    public NotificationMsg fireWeatherUpdateMessage(String property,
+	    String value, String eventType) {
+	// TODO this one is very basic
+	return new WeatherUpdateNotificationMsg(this, property, value, eventType);
+    }
+
+
+    
+    // *******
+    // Specific fields for appsgate properties :
+
+    private String appsgatePictureId;
+    private String appsgateUserType;
+    private String appsgateDeviceStatus;
+    private String appsgateObjectId;
+    private String appsgateServiceName;
+    
+    private void initAppsgateFields() {
+	    appsgatePictureId=null;
+	    appsgateUserType="20"; //20 stands for weather forecast service
+	    appsgateDeviceStatus="2"; // 2 means device paired (for a device, not relevant for service)
+	    appsgateObjectId=appsgateUserType+String.valueOf(this.hashCode()); // Object id prefixed by the user type
+	    appsgateServiceName="Yahoo Weather Forecast";
+    }
+    
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getDescription()
+     */
+    @Override
+    public JSONObject getDescription() throws JSONException {
+	JSONObject descr = new JSONObject();
+	
+	// mandatory appsgate properties
+	descr.put("id", appsgateObjectId);
+	descr.put("type", appsgateUserType); //20 for weather service
+	descr.put("status", appsgateDeviceStatus); // always 2 (because this is not a service)
+	descr.put("pictureId", appsgatePictureId);
+	descr.put("name", appsgateServiceName);
+	
+	//specific weather service properties
+	descr.put("unit", currentUnit);	
+	if(getLastFetchDate()!=null)
+	    descr.put("lastFetchDate",String.format("$te/%1$tm/%1$tY %1$tH:%1$tM:%1$tS",
+		this.getLastFetchDate().getTime()));
+	else 	    
+	    descr.put("lastFetchDate","null");
+
+	    
+	descr.put("locations", woeidFromePlaceName.keySet());
+	
+	return descr;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getAbstractObjectId()
+     */
+    @Override
+    public String getAbstractObjectId() {
+	return appsgateObjectId;
+    }
+    
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getPictureId()
+     */
+    @Override
+    public String getPictureId() {
+
+	return appsgatePictureId;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * appsgate.lig.core.object.spec.CoreObjectSpec#setPictureId(java.lang.String
+     * )
+     */
+    @Override
+    public void setPictureId(String pictureId) {
+	this.appsgatePictureId = pictureId;
+	fireWeatherUpdateMessage("picturedId", pictureId, "setPictureId");
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getUserType()
+     */
+    @Override
+    public String getUserType() {
+	return appsgateUserType;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getObjectStatus()
+     */
+    @Override
+    public int getObjectStatus() {
+	return Integer.parseInt(appsgateDeviceStatus);
+    }
+    
 
 }

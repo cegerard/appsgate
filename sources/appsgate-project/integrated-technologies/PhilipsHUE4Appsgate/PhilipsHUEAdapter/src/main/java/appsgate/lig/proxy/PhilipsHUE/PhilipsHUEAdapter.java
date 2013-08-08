@@ -63,11 +63,10 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	public void newInst() {
 		logger.debug("PhilipsHUEAdapter instanciated");
 		bridgeFinder = new PhilipsBridgeUPnPFinder();
+		bridgeFinder.registrer(this);
 		bridgeFinder.start();
 		logger.debug("Philips finder started");
 		logger.debug("PhilipsHUE IP: " + bridgeFinder.getBridgeIp());
-
-		instanciationService.execute(new LightsInstanciation());
 	}
 
 	/**
@@ -76,6 +75,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	@Invalidate
 	public void delInst() {
 		bridgeFinder.stop();
+		bridgeFinder.unregistrer(this);
 		instanciationService.shutdown();
 		try {
 			instanciationService.awaitTermination(5, TimeUnit.SECONDS);
@@ -440,6 +440,14 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			}
 		}
 		
+	}
+
+	public void notifyNewBridge(String bridgeIP) {
+		instanciationService.execute(new LightsInstanciation());
+	}
+
+	public void notifyOldBridge(String bridgeIP) {
+		//TODO change the light instance status to unreachable
 	}
 
 }

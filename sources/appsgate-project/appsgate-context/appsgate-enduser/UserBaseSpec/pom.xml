@@ -19,11 +19,6 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>ContextHistory</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.mindrot</groupId>
 			<artifactId>jbcrypt</artifactId>
 			<version>0.3m</version>

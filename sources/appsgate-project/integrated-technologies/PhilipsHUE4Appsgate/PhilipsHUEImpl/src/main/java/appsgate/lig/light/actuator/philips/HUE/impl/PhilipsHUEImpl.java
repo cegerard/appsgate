@@ -28,6 +28,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	private static long HUE_ORANGE  = 12750;
 	private static long HUE_PURPLE  = 48765;
 	private static long HUE_PINK    = 54332;
+	private static long HUE_DEFAULT = 14922;
 	
 	
 	/**
@@ -355,6 +356,16 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	public boolean setPink() {
 		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PINK)) {
 			notifyChanges("color", String.valueOf(HUE_PINK));
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean setDefault() {
+		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_DEFAULT)) {
+			notifyChanges("color", String.valueOf(HUE_DEFAULT));
 			return true;
 		}
 		

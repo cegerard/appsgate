@@ -20,7 +20,11 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 	private static String PHILIPS_BRIDGE_UPNP_TYPE = "urn:schemas-upnp-org:device:Basic:1";
 	private static String BRIDGE_NAME 			   = "Philips hue";
 
+	//TODO manage for multiple Philips HUE bridge
 	private String bridgeIP = "127.0.0.0.1";
+	
+	private PhilipsHUEAdapter adapter;
+	
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -30,6 +34,7 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 	public PhilipsBridgeUPnPFinder() {
 		super();
 		addDeviceChangeListener(this);
+		adapter = null;
 	}
 
 	@Override
@@ -41,6 +46,9 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 			CharSequence splitString = device.getFriendlyName().subSequence(13, philipsNameIP.length()-1);
 			logger.debug("Current bridge IP: "+splitString);
 			bridgeIP = splitString.toString();
+			if(adapter != null) {
+				adapter.notifyNewBridge(bridgeIP);
+			}
 		}
 	}
 
@@ -50,10 +58,21 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 				device.getFriendlyName().contains(BRIDGE_NAME)) {
 			logger.debug("The Philips bridge on local netork is not reachable, former IP was "+ bridgeIP);
 			bridgeIP = "127.0.0.0.1";
+			if(adapter != null ) {
+				adapter.notifyOldBridge(bridgeIP);
+			}
 		}
 	}
 
 	public String getBridgeIp() {
 		return bridgeIP;
+	}
+
+	public void registrer(PhilipsHUEAdapter philipsHUEAdapter) {
+		adapter = philipsHUEAdapter;
+	}
+
+	public void unregistrer(PhilipsHUEAdapter philipsHUEAdapter) {
+		adapter = null;
 	}
 }

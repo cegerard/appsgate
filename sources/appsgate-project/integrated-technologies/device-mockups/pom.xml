@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>integrated-technologies</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
+	<artifactId>device-mockups</artifactId>
+	<packaging>pom</packaging>
+	<name>Devices Mockups and Simulator</name>
+	
+	<description>Mockups and Simulators for appsgate sensors and actuators</description>
+	
+	<modules>
+		<module>SwingSwitchSensor</module>
+		<module>SwingClock</module>
+		<module>SwingColorLight</module>
+	</modules>
+</project>

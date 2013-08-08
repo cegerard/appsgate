@@ -133,6 +133,12 @@ public interface CoreColorLightSpec {
 	public boolean setPink();
 	
 	/**
+	 * Set the default light color
+	 * @return true if the light turn to default color, false otherwise
+	 */
+	public boolean setDefault();
+	
+	/**
 	 * Increase the light brightness by step
 	 * @param step the increase brightness step as an integer
 	 * @return true if the light brightness has increased, false otherwise
