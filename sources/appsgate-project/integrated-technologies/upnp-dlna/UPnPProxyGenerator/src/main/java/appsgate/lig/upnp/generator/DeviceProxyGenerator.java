@@ -14,6 +14,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.osgi.service.upnp.UPnPDevice;
 
 import appsgate.lig.upnp.generator.util.XSLTransformationGenerator;
 
@@ -89,7 +90,8 @@ public class DeviceProxyGenerator {
 		output.write("\n");
 		output.write("	@SuppressWarnings(\"unused\")\n");
 		output.write("	private void initialize(Instance instance) {\n");
-		output.write("		deviceType = instance.getProperty(UPnPDevice.TYPE);\n");
+		output.write("		deviceType	= instance.getProperty(UPnPDevice.TYPE);\n");
+		output.write("		deviceId 	= instance.getProperty(UPnPDevice.ID);\n");
 		output.write("	}\n");
 		output.write("\n");
 		output.write("	private class Notification implements NotificationMsg {\n");
