@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
+import fr.imag.adele.apam.Instance;
+import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 
 /**
  * This is the adapter for Philips HUE color light technologies. It allows
@@ -66,7 +69,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		bridgeFinder.registrer(this);
 		bridgeFinder.start();
 		logger.debug("Philips finder started");
-		logger.debug("PhilipsHUE IP: " + bridgeFinder.getBridgeIp());
 	}
 
 	/**
@@ -89,32 +91,36 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	public JSONArray getLightList() {
 		JSONArray jsonResponse = new JSONArray();
 		try {
-			URL url = new URL("http://" + bridgeFinder.getBridgeIp() + "/api/"+ currentUserName + "/lights/");
-			HttpURLConnection server = (HttpURLConnection) url.openConnection();
-			server.setDoInput(true);
-			server.setRequestMethod("GET");
-			server.connect();
+			
+			for(String bridgeIP : bridgeFinder.getBridgesIp()) {
+			
+				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/");
+				HttpURLConnection server = (HttpURLConnection) url.openConnection();
+				server.setDoInput(true);
+				server.setRequestMethod("GET");
+				server.connect();
 
-			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-			String line = response.readLine();
-			String BridgeResponse = "";
-			while (line != null) {
-				BridgeResponse += line;
-				line = response.readLine();
+				BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
+				String line = response.readLine();
+				String BridgeResponse = "";
+				while (line != null) {
+					BridgeResponse += line;
+					line = response.readLine();
+				}
+				response.close();
+				server.disconnect();
+
+				JSONObject temp_response = new JSONObject(BridgeResponse);
+
+				@SuppressWarnings("unchecked")
+				Iterator<String> it = temp_response.keys();
+				while(it.hasNext()) {
+					String lightID = it.next();
+					JSONObject lightObj = temp_response.getJSONObject(lightID);
+					lightObj.put("lightId", lightID);
+					jsonResponse.put(lightObj);
+				}
 			}
-			response.close();
-
-			JSONObject temp_response = new JSONObject(BridgeResponse);
-
-			@SuppressWarnings("unchecked")
-			Iterator<String> it = temp_response.keys();
-			while(it.hasNext()) {
-				String lightID = it.next();
-				JSONObject lightObj = temp_response.getJSONObject(lightID);
-				lightObj.put("lightId", lightID);
-				jsonResponse.put(lightObj);
-			}
-
 			logger.debug("getLightList : "+jsonResponse.toString());
 
 		} catch (MalformedURLException e) {
@@ -131,33 +137,37 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	public JSONArray getNewLights() {
 		JSONArray jsonResponse = new JSONArray();
 		try {
-			URL url = new URL("http://" + bridgeFinder.getBridgeIp() + "/api/"+ currentUserName + "/lights/new");
-			HttpURLConnection server = (HttpURLConnection) url.openConnection();
-			server.setDoInput(true);
-			server.setRequestMethod("GET");
-			server.connect();
+			
+			for(String bridgeIP : bridgeFinder.getBridgesIp()) {
+			
+				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/new");
+				HttpURLConnection server = (HttpURLConnection) url.openConnection();
+				server.setDoInput(true);
+				server.setRequestMethod("GET");
+				server.connect();
 
-			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-			String line = response.readLine();
-			String BridgeResponse = "";
-			while (line != null) {
-				BridgeResponse += line;
-				line = response.readLine();
-			}
-			response.close();
-
-			JSONObject temp_response = new JSONObject(BridgeResponse);
-			@SuppressWarnings("unchecked")
-			Iterator<String> it = temp_response.keys();
-			while(it.hasNext()) {
-				String lightID = it.next();
-				Object lightObj = temp_response.get(lightID);
-				if(lightObj instanceof JSONObject) {
-					((JSONObject)lightObj).put("lightId", lightID);
+				BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
+				String line = response.readLine();
+				String BridgeResponse = "";
+				while (line != null) {
+					BridgeResponse += line;
+					line = response.readLine();
 				}
-				jsonResponse.put(lightObj);
-			}
+				response.close();
+				server.disconnect();
 
+				JSONObject temp_response = new JSONObject(BridgeResponse);
+				@SuppressWarnings("unchecked")
+				Iterator<String> it = temp_response.keys();
+				while(it.hasNext()) {
+					String lightID = it.next();
+					Object lightObj = temp_response.get(lightID);
+					if(lightObj instanceof JSONObject) {
+						((JSONObject)lightObj).put("lightId", lightID);
+					}
+					jsonResponse.put(lightObj);
+				}
+			}
 			logger.debug(jsonResponse.toString());
 
 		} catch (MalformedURLException e) {
@@ -173,22 +183,30 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	@Override
 	public boolean searchForNewLights() {
 		try {
-			URL url = new URL("http://" + bridgeFinder.getBridgeIp() + "/api/"+ currentUserName + "/lights/");
-			HttpURLConnection server = (HttpURLConnection) url.openConnection();
-			server.setDoInput(true);
-			server.setRequestMethod("POST");
-			server.connect();
+			
+			boolean successState = true;
+			
+			for(String bridgeIP : bridgeFinder.getBridgesIp()) {
+			
+				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/");
+				HttpURLConnection server = (HttpURLConnection) url.openConnection();
+				server.setDoInput(true);
+				server.setRequestMethod("POST");
+				server.connect();
 
-			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-			String line = response.readLine();
-			String BridgeResponse = "";
-			while (line != null) {
-				BridgeResponse += line;
-				line = response.readLine();
+				BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
+				String line = response.readLine();
+				String BridgeResponse = "";
+				while (line != null) {
+					BridgeResponse += line;
+					line = response.readLine();
+				}
+				response.close();
+				server.disconnect();
+				successState &= isSuccess(BridgeResponse);
 			}
-			response.close();
 
-			return isSuccess(BridgeResponse);
+			return successState;
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -203,10 +221,11 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 
 	@Override
-	public JSONObject getLightState(String id) {
+	public JSONObject getLightState(String bridgeIP, String id) {
 		JSONObject jsonResponse = null;
+		
 		try {
-			URL url = new URL("http://" + bridgeFinder.getBridgeIp() + "/api/"+ currentUserName + "/lights/"+id);
+			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id);
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setRequestMethod("GET");
@@ -235,9 +254,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 
 	@Override
-	public boolean setAttribute(String id, String attribute, boolean value) {
+	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value) {
 		try {
-			URL url = new URL("http://" + bridgeFinder.getBridgeIp() + "/api/"+ currentUserName + "/lights/"+id+"/state");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id+"/state");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setDoOutput(true);
@@ -274,9 +293,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 
 	@Override
-	public boolean setAttribute(String id, String attribute, long value) {
+	public boolean setAttribute(String bridgeIP, String id, String attribute, long value) {
 		try {
-			URL url = new URL("http://" + bridgeFinder.getBridgeIp() + "/api/"+ currentUserName + "/lights/"+id+"/state");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id+"/state");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setDoOutput(true);
@@ -313,9 +332,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 
 	@Override
-	public boolean setAttribute(String id, String attribute, String value) {
+	public boolean setAttribute(String bridgeIP, String id, String attribute, String value) {
 		try {
-			URL url = new URL("http://" + bridgeFinder.getBridgeIp() + "/api/"+ currentUserName + "/lights/"+id+"/state");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id+"/state");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setDoOutput(true);
@@ -352,9 +371,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 
 	@Override
-	public boolean setAttribute(String id, JSONObject JSONAttribute) {
+	public boolean setAttribute(String bridgeIP, String id, JSONObject JSONAttribute) {
 		try {
-			URL url = new URL("http://" + bridgeFinder.getBridgeIp() + "/api/"+ currentUserName + "/lights/"+id+"/state");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id+"/state");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setDoOutput(true);
@@ -414,8 +433,11 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 */
 	private class LightsInstanciation implements Runnable {
 		
-		public LightsInstanciation() {
+		private String bridgeIP;
+		
+		public LightsInstanciation(String bridgeIP) {
 			super();
+			this.bridgeIP = bridgeIP;
 		}
 
 		public void run() {
@@ -428,11 +450,11 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 					Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
 					Map<String, String> properties = new HashMap<String, String>();
 					properties.put("deviceName", 	light.getString("name"));
-					properties.put("deviceId", 		String.valueOf(bridgeFinder.getBridgeIp()+"-"+light.getString("lightId")));
+					properties.put("deviceId", 		bridgeIP+"-"+light.getString("lightId"));
 					properties.put("lightBridgeId", light.getString("lightId"));
+					properties.put("lightBridgeIP", bridgeIP);
 
-					/*Instance createInstance = */impl.createInstance(null, properties);//<- It is possible that the thread stop a this line so some instances are not created.
-																						//dynaman ?
+					/*Instance createInstance = */impl.createInstance(null, properties);
 					i++;
 				}
 			} catch (Exception e) {
@@ -442,12 +464,26 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		
 	}
 
+	/**
+	 * Method call to notify that a new Philips HUE bridge
+	 * has been discovered.
+	 * @param bridgeIP the Philips HUE bridge IP address
+	 */
 	public void notifyNewBridge(String bridgeIP) {
-		instanciationService.execute(new LightsInstanciation());
+		instanciationService.execute(new LightsInstanciation(bridgeIP));
 	}
-
+	
+	/**
+	 * Method call to notify that a bridge is not yet reachable
+	 * @param bridgeIP the former bridge IP address
+	 */
 	public void notifyOldBridge(String bridgeIP) {
-		//TODO change the light instance status to unreachable
+		Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
+		Set<Instance> insts = impl.getInsts();
+		for(Instance inst : insts) {
+			//TODO filter HUE instance that have the correct bridge IP
+			ComponentBrokerImpl.disappearedComponent(inst.getName());
+		}
 	}
 
 }

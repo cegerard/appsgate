@@ -46,6 +46,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	private String userType;
 	
 	private String lightBridgeId;
+	private String lightBridgeIP;
 	
 	/**
 	 * The current sensor status.
@@ -58,7 +59,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	@Override
 	public JSONObject getLightStatus() {
-		return PhilipsBridge.getLightState(lightBridgeId);
+		return PhilipsBridge.getLightState(lightBridgeIP, lightBridgeId);
 	}
 
 	@Override
@@ -190,7 +191,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	@Override
 	public boolean setStatus(JSONObject newStatus) {
 		
-		if(PhilipsBridge.setAttribute(lightBridgeId, newStatus)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, newStatus)) {
 			notifyChanges("status", newStatus.toString());
 			return true;
 		}
@@ -201,7 +202,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	@Override
 	public boolean On() {
 		
-		if(PhilipsBridge.setAttribute(lightBridgeId, "on", true)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", true)) {
 			notifyChanges("value", "true");
 			return true;
 		}
@@ -211,7 +212,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean Off() {		
-		if(PhilipsBridge.setAttribute(lightBridgeId, "on", false)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", false)) {
 			notifyChanges("value", "false");
 			return true;
 		}
@@ -231,7 +232,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	@Override
 	public boolean setColor(long color) {
 		
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", color)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", color)) {
 			notifyChanges("color", String.valueOf(color));
 			return true;
 		}
@@ -242,7 +243,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	@Override
 	public boolean setBrightness(long brightness) {
 		
-		if(PhilipsBridge.setAttribute(lightBridgeId, "bri", brightness)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", brightness)) {
 			notifyChanges("brightness", String.valueOf(brightness));
 			return true;
 		}
@@ -253,7 +254,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	@Override
 	public boolean setSaturation(int saturation) {
 		
-		if(PhilipsBridge.setAttribute(lightBridgeId, "sat", saturation)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "sat", saturation)) {
 			notifyChanges("saturation", String.valueOf(saturation));
 			return true;
 		}
@@ -263,7 +264,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	public boolean setEffect(String effect) {
 		
-		if(PhilipsBridge.setAttribute(lightBridgeId, "effect", effect)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "effect", effect)) {
 			notifyChanges("effect", String.valueOf(effect));
 			return true;
 		}
@@ -273,7 +274,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	public boolean setAlert(String alert) {
 		
-		if(PhilipsBridge.setAttribute(lightBridgeId, "alert", alert)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "alert", alert)) {
 			notifyChanges("alert", String.valueOf(alert));
 			return true;
 		}
@@ -283,7 +284,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	public boolean setTransitionTime(long transition) {
 		
-		if(PhilipsBridge.setAttribute(lightBridgeId, "transitiontime", transition)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "transitiontime", transition)) {
 			notifyChanges("transitiontime", String.valueOf(transition));
 			return true;
 		}
@@ -293,7 +294,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setRed() {
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_RED)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_RED)) {
 			notifyChanges("color", String.valueOf(HUE_RED));
 			return true;
 		}
@@ -303,7 +304,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setBlue() {
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_BLUE)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_BLUE)) {
 			notifyChanges("color", String.valueOf(HUE_BLUE));
 			return true;
 		}
@@ -313,7 +314,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setGreen() {
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_GREEN)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_GREEN)) {
 			notifyChanges("color", String.valueOf(HUE_GREEN));
 			return true;
 		}
@@ -323,7 +324,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setYellow() {
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_YELLOW)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_YELLOW)) {
 			notifyChanges("color", String.valueOf(HUE_YELLOW));
 			return true;
 		}
@@ -333,7 +334,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setOrange() {
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_ORANGE)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_ORANGE)) {
 			notifyChanges("color", String.valueOf(HUE_ORANGE));
 			return true;
 		}
@@ -343,7 +344,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setPurple() {
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PURPLE)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_PURPLE)) {
 			notifyChanges("color", String.valueOf(HUE_PURPLE));
 			return true;
 		}
@@ -354,7 +355,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setPink() {
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_PINK)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_PINK)) {
 			notifyChanges("color", String.valueOf(HUE_PINK));
 			return true;
 		}
@@ -364,7 +365,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	@Override
 	public boolean setDefault() {
-		if(PhilipsBridge.setAttribute(lightBridgeId, "hue", HUE_DEFAULT)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_DEFAULT)) {
 			notifyChanges("color", String.valueOf(HUE_DEFAULT));
 			return true;
 		}
@@ -375,7 +376,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	@Override
 	public boolean increaseBrightness(int step) {
 		int newBri = getLightBrightness()+step;
-		if(PhilipsBridge.setAttribute(lightBridgeId, "bri", newBri)) {
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", newBri)) {
 			notifyChanges("brightness", String.valueOf((newBri)));
 			return true;
 		}
@@ -385,7 +386,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	@Override
 	public boolean decreaseBrightness(int step) {
 		int newBri = getLightBrightness()-step;
-		if( PhilipsBridge.setAttribute(lightBridgeId, "bri", newBri)) {
+		if( PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", newBri)) {
 			notifyChanges("brightness", String.valueOf((newBri)));
 			return true;
 		}
