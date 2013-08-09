@@ -12,6 +12,8 @@ import java.util.List;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
+import appsgate.lig.upnp.generator.templates.MetadataGenerator;
+
 /**
  * This plugin generates the APAM metadata corresponding to the 
  * generated proxies
@@ -60,9 +62,6 @@ public class ServiceMetadataGeneratorMojo extends UPnPGeneratorMojo {
 		projectHelper.addResource(project, makeRelative(resourceOutputDirectory).getPath(),Collections.singletonList("**/*"), null);
 		
 		File metadataFile	= new File(resourceOutputDirectory,"metadata.xml");
-		if (metadataFile.exists())
-			metadataFile.delete();
-		
 		
 		try {
 			Writer metadata = new FileWriter(metadataFile,false);

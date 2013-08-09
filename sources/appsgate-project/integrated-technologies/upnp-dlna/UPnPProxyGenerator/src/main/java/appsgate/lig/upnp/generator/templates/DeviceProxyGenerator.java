@@ -1,4 +1,4 @@
-package appsgate.lig.upnp.generator;
+package appsgate.lig.upnp.generator.templates;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +14,11 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.osgi.service.upnp.UPnPDevice;
 
+import appsgate.lig.upnp.generator.Device;
+import appsgate.lig.upnp.generator.Mapping;
+import appsgate.lig.upnp.generator.Service;
+import appsgate.lig.upnp.generator.UPnPGeneratorMojo;
 import appsgate.lig.upnp.generator.util.XSLTransformationGenerator;
 
 /**

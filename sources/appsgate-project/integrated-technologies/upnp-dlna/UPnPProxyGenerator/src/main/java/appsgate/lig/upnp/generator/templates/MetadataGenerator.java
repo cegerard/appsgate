@@ -1,8 +1,10 @@
-package appsgate.lig.upnp.generator;
+package appsgate.lig.upnp.generator.templates;
 
 import java.io.IOException;
 import java.io.Writer;
 
+import appsgate.lig.upnp.generator.Device;
+import appsgate.lig.upnp.generator.Service;
 import appsgate.lig.upnp.generator.util.Naming;
 
 /**
@@ -99,17 +101,4 @@ public class MetadataGenerator  {
 		return quoted.toString();
 	}
 	
-	/*
-	
-			metadata.close();
-	
-	
-					
-					
-					
-					
-		 * 
-	 * 
-	 * 
-	 */
 }

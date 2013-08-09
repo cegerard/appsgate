@@ -93,7 +93,7 @@ public class ProxyDiscovery  {
 	}
 	
 	/**
-	 * The list of created proxies for each service in the discovered devices
+	 * The list of created proxies for each discovered device
 	 * 
 	 */
 	private Map<UPnPDevice,List<ApformInstance>> deviceMap = new HashMap<UPnPDevice, List<ApformInstance>>() ;

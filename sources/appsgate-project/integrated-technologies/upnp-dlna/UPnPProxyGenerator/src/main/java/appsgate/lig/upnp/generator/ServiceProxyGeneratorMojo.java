@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
+import appsgate.lig.upnp.generator.templates.DeviceProxyGenerator;
 import appsgate.lig.upnp.generator.util.XSLTransformationGenerator;
 
 /**
@@ -94,8 +95,6 @@ public class ServiceProxyGeneratorMojo extends UPnPGeneratorMojo {
 
 
 				File deviceProxy = new File(outputPackageDirectory, device.getMapping().getClassName()+".java");
-				if (deviceProxy.exists())
-					deviceProxy.delete();
 				
 				try {
 				
@@ -172,8 +171,6 @@ public class ServiceProxyGeneratorMojo extends UPnPGeneratorMojo {
 
 
 				File outputFile = new File(outputPackageDirectory, service.getMapping().getClassName()+".java");
-				if (outputFile.exists())
-					outputFile.delete();
 				
 				/*
 				 * Avoid regenerating proxies
@@ -187,7 +184,7 @@ public class ServiceProxyGeneratorMojo extends UPnPGeneratorMojo {
 				try {
 				
 					InputStream input				= serviceLocation.toURL().openStream();
-					OutputStream output				= new FileOutputStream(outputFile);
+					OutputStream output				= new FileOutputStream(outputFile,false);
 					Map<String,Object> parameters 	= new HashMap<String,Object>();
 					
 					parameters.put("servicetype", service.getType());

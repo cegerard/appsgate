@@ -91,8 +91,6 @@ public class ServiceMappingGeneratorMojo extends UPnPGeneratorMojo {
 
 
 			File outputFile = new File(outputPackageDirectory, service.getMapping().getClassName()+".java");
-			if (outputFile.exists())
-				outputFile.delete();
 			
 			/*
 			 * try to load and execute transformation 
@@ -100,7 +98,7 @@ public class ServiceMappingGeneratorMojo extends UPnPGeneratorMojo {
 			try {
 			
 				InputStream input 				= serviceLocation.toURL().openStream();
-				OutputStream output				= new FileOutputStream(outputFile);
+				OutputStream output				= new FileOutputStream(outputFile,false);
 				Map<String,Object> parameters	= new HashMap<String,Object>();
 
 				parameters.put("servicetype", service.getType());
