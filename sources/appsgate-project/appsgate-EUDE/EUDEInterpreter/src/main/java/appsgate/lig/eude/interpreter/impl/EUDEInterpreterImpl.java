@@ -37,29 +37,26 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	 */
 	private static Logger logger = LoggerFactory.getLogger(EUDEInterpreterImpl.class);
 
+	/** 
+	 * Reference to the ApAM context follower. Used to be notified when
+	 * something happen.
+	 */
 	private ContextFollowerSpec contextFollower;
 	
-	/** Hash map containing the nodes and the events they are listening */
+	/**
+	 * Reference to the ApAM router. Used to send action to the objects
+	 */
+	private RouterApAMSpec router;
+	
+	/** 
+	 * Hash map containing the nodes and the events they are listening 
+	 */
 	private HashMap<CoreEventListener, ArrayList<NodeEvent>> mapCoreNodeEvent;
 	
 	/**
 	 * HashMap that contains all the existing programs under a JSON format
 	 */
 	private HashMap<String, NodeProgram> mapPrograms;
-	@Override
-	public HashMap<String, JSONObject> getListPrograms() {
-		HashMap <String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
-		for (NodeProgram p : mapPrograms.values()) {
-			mapProgramJSON.put(p.getName(), p.getProgramJSON());
-		}
-		
-		return mapProgramJSON;
-	}
-
-	/**
-	 * Reference to the ApAM router. Used to send action to the objects
-	 */
-	private RouterApAMSpec router;
 	
 	/**
 	 * Initialize the list of programs and of events
@@ -190,6 +187,20 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Get the end user programs list 
+	 * @return the end user program list as an HashMap<String,,JSONObject>
+	 */
+	@Override
+	public HashMap<String, JSONObject> getListPrograms() {
+		HashMap <String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
+		for (NodeProgram p : mapPrograms.values()) {
+			mapProgramJSON.put(p.getName(), p.getProgramJSON());
+		}
+		
+		return mapProgramJSON;
 	}
 	
 	/**
