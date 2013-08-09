@@ -82,8 +82,8 @@ import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
  * @see EnOceanService
  * 
  */
-@Component
-@Instantiate
+@Component(publicFactory=false)
+@Instantiate(name="AppsgateUbikitAdapter")
 @Provides(specifications = { EnOceanPairingService.class, EnOceanService.class })
 public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		EnOceanService, EnOceanPairingService, NewItemEvent.Listener,

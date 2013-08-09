@@ -18,8 +18,8 @@ import appsGate.lig.manager.client.communication.service.send.SendWebsocketsServ
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.virtual.adapter.services.VirtualObjectManagementService;
 
-@Component
-@Instantiate
+@Component(publicFactory=false)
+@Instantiate(name="AppsgatesensorVirtualAdapter")
 @Provides(specifications= {VirtualObjectManagementService.class})
 public class VirtualAdapter implements VirtualObjectManagementService {
 	

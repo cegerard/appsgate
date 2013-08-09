@@ -43,8 +43,8 @@ import fr.imag.adele.apam.impl.ComponentBrokerImpl;
  * @since May 22, 2013
  * 
  */
-@Component
-@Instantiate
+@Component(publicFactory=false)
+@Instantiate(name="AppsgatePhilipsHUEAdapter")
 @Provides(specifications = { PhilipsHUEServices.class })
 public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
