@@ -78,6 +78,9 @@ appsgate.lig.undefined.sensor.spec
 appsgate.lig.upnp.adapter
 appsgate.lig.upnp.generator
 appsgate.lig.upnp.generator.util
+appsgate.lig.virtual.adapter
+appsgate.lig.virtual.adapter.listener
+appsgate.lig.virtual.adapter.services
 appsgate.lig.weather
 appsgate.lig.weather.exception
 appsgate.lig.weather.messages
@@ -91,3 +94,4 @@ appsgate.validation.main.command
 appsgate.validation.router.call
 appsgate.validation.router.command
 appsgate.validation.user.base
+appsgate.validation.virtual.adapter
