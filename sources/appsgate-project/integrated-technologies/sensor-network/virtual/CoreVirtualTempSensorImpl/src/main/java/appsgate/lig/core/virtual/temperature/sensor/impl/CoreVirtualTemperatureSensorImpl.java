@@ -1,5 +1,8 @@
 package appsgate.lig.core.virtual.temperature.sensor.impl;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,6 +50,16 @@ public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
 	 * The temperature notification rate
 	 */
 	private String notifRate;
+	
+	/**
+	 * The simulation refresh rate
+	 */
+	private String evolutionRate;
+	
+	/**
+	 * The simulation step value
+	 */
+	private String evolutionValue;
 
 	/**
 	 * The type for user of this sensor
@@ -66,6 +79,26 @@ public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
 	 * The current picture identifier
 	 */
 	private String pictureId;
+	
+	/**
+	 * The timer that trigger the refresh task each "rate" milliseconds
+	 */
+	private Timer refreshTimer = new Timer();
+	
+	/**
+	 * The RefreshTask member
+	 */
+	private RefreshTask refreshtask = new RefreshTask();
+	
+	/**
+	 * The timer that trigger the simulation refresh task
+	 */
+	private Timer simulationTimer = new Timer();
+	
+	/**
+	 * The RefreshTask member
+	 */
+	private SimulationTask simulationtask = new SimulationTask();
 	
 	@Override
 	public TemperatureUnit getTemperatureUnit() {
@@ -99,6 +132,15 @@ public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
 	public int getObjectStatus() {
 		return Integer.valueOf(status);
 	}
+	
+	/**
+	 * Set the sensor status by java method call.
+	 * @param newStatus the new status as a String
+	 */
+	public void setObjectStatus(String newStatus) {
+		status = newStatus;
+		statusChanged(newStatus);
+	}
 
 	@Override
 	public String getPictureId() {
@@ -114,7 +156,7 @@ public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
 		JSONObject descr = new JSONObject();
 		
 		descr.put("id", sensorId);
-		descr.put("type", userType); //99 for virtual temperature sensor
+		descr.put("type", userType); //2 for temperature sensor
 		descr.put("status", status);
 		descr.put("value", currentTemperature);
 		
@@ -132,17 +174,25 @@ public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
 	 */
 	public void newInst() {
 		logger.info("New virtual temperature sensor detected, "+sensorId);
-		long id = (long)Math.random()*100000;
-		sensorName += "-"+id;
-	    sensorId = "0-"+id;
-	    status = "2";
-			
+//		long id = (long)Math.random()*100000;
+//		sensorName += "-"+id;
+//	    sensorId = "0-"+id;
+		refreshTimer.scheduleAtFixedRate(refreshtask, 5000, Long.valueOf(notifRate));
+		simulationTimer.scheduleAtFixedRate(simulationtask, 5000, Long.valueOf(evolutionRate));
 	}
 
 	/**
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
+		refreshtask.cancel();
+		refreshTimer.cancel();
+		refreshTimer.purge();
+		
+		simulationtask.cancel();
+		simulationTimer.cancel();
+		simulationTimer.purge();
+		
 		logger.info("Virtual Temperature sensor desapeared, "+sensorId);
 	}
 	
@@ -156,7 +206,7 @@ public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
 	}
 	
 	/**
-	 * Called by ApAM when the status value changed
+	 * Called by ApAM when the status value change
 	 * @param newStatus the new status value.
 	 * its a string the represent a integer value for the status code.
 	 */
@@ -165,10 +215,59 @@ public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
 		notifyChanges("status", newStatus);
 	}
 	
+	/**
+	 * Called by ApAM when the refresh rate change.
+	 * @param newRate the new refresh rate as a String
+	 */
 	public void rateChanged (String newRate) {
 		logger.info("The sensor, "+ sensorId+" notification rate changed to "+newRate);
-		//TODO rescheduler l'envoi de notifs
+		reScheduleRefreshTask();
 		notifyChanges("notifRate", newRate);
+	}
+	
+	/**
+	 * Called by ApAM when the simulation rate change.
+	 * @param newRate the new simulation rate as a String
+	 */
+	public void SimulationRateChanged (String newRate) {
+		logger.debug("The sensor, "+ sensorId+" evolution rate changed to "+newRate);
+		reScheduleEvolutionTask();
+	}
+	
+	/**
+	 * Set the virtual temperature from java method call
+	 * @param newTemperatureValue the new temperature as a String
+	 */
+	public void setTemperature(String newTemperatureValue) {
+		this.currentTemperature = newTemperatureValue;
+		notifyChanges("value", newTemperatureValue);
+	}
+	
+	/**
+	 * Set the refresh rate with a Java method call
+	 * @param newRate the new refresh rate as a String
+	 */
+	public void setRefreshRate(String newRate) {
+		notifRate = newRate;
+		rateChanged(newRate);
+	}
+	
+	/**
+	 * Set the refresh simulation rate with a Java method call
+	 * @param newRate the new refresh rate as a String
+	 */
+	public void setSimulationRate(String newRate) {
+		evolutionRate = newRate;
+		SimulationRateChanged(newRate);
+	}
+	
+	/**
+	 * Set the evolutionValue
+	 * @param value the new evolution value
+	 */
+	public void setSimulationValue(String value) {
+		logger.debug("The sensor, "+ sensorId+" evolution value changed to "+value);
+		evolutionValue = value;
 	}
 
 	/**
@@ -182,5 +281,48 @@ public class CoreVirtualTemperatureSensorImpl implements CoreObjectSpec,
 	public NotificationMsg notifyChanges(String varName, String value) {
 		return new TemperatureNotificationMsg(Float.valueOf(currentTemperature), varName, value, this);
 	}
+	
+	/**
+	 * Reschedule the refresh task with the rate
+	 * member value
+	 */
+	private void reScheduleRefreshTask() {
+		refreshtask.cancel();
+		refreshtask = new RefreshTask();
+		refreshTimer.scheduleAtFixedRate(refreshtask, 0, Long.valueOf(notifRate));
+	}
+	
+	/**
+	 * Reschedule the simulation task with the rate
+	 * member value
+	 */
+	private void reScheduleEvolutionTask() {
+		simulationtask.cancel();
+		simulationtask = new SimulationTask();
+		simulationTimer.scheduleAtFixedRate(simulationtask, 0, Long.valueOf(evolutionRate));
+	}
+	
+	/**
+	 * The task that is executed automatically to notify the temperature
+	 */
+	private class RefreshTask extends TimerTask {
 
+		@Override
+		public void run() {
+			notifyChanges("value", currentTemperature);
+		}
+	}
+
+	/**
+	 * The task that is executed automatically to notify the temperature
+	 */
+	private class SimulationTask extends TimerTask {
+
+		@Override
+		public void run() {
+			float val = Float.valueOf(evolutionValue);
+			float res = getTemperature()+val;
+			setTemperature(String.valueOf(res));
+		}
+	}
 }

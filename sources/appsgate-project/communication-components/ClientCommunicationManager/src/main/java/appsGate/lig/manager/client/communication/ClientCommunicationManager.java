@@ -48,8 +48,8 @@ import appsGate.lig.manager.client.communication.service.subscribe.ConfigListene
  * @see SendWebsocketsService
  *
  */
-@Component
-@Instantiate
+@Component(publicFactory=false)
+@Instantiate(name="AppsgateClientCommunicationManager")
 @Provides(specifications = { AddListenerService.class, SendWebsocketsService.class })
 public class ClientCommunicationManager extends WebSocketApplication implements AddListenerService, SendWebsocketsService {
 	

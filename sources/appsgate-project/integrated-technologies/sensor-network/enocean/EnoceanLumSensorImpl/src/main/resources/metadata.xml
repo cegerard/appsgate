@@ -16,7 +16,7 @@
 		<definition name="userType" 		   type="string" value="1" 				field="userType"/>
 		<definition name="status" 			   type="string" value="2" 				field="status" 				method="statusChanged"/>
 		<definition name="isPaired" 		   type="string" value="false" 			field="isPaired" 			method="isPairedChanged"/>
-		<definition name="currentIllumination" type="string"  						field="currentIllumination" method="currentIlluminationChanged"/>
+		<definition name="currentIllumination" type="string" value="9999" 			field="currentIllumination" method="currentIlluminationChanged"/>
 	
 	</implementation>
 

@@ -23,7 +23,7 @@
 		<definition name="isPaired" 		  type="string" value="false" 		   field="isPaired" 		  method="isPairedChanged"/>
 		
 		<!-- device specific meta data -->
-		<definition name="currentTemperature" type="string" 			 		   field="currentTemperature" method="currentTemperatureChanged"/>
+		<definition name="currentTemperature" type="string" value="999" 		   field="currentTemperature" method="currentTemperatureChanged"/>
 		
 	</implementation>
 

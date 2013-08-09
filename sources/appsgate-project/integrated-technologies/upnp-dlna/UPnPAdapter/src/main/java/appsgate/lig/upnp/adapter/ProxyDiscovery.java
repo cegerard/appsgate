@@ -38,8 +38,8 @@ import fr.imag.adele.apam.impl.InstanceImpl;
  * @author vega
  *
  */
-@Component
-@Instantiate
+@Component(publicFactory=false)
+@Instantiate(name="AppsgateUPnPAdapter")
 public class ProxyDiscovery  {		
 
 	/**

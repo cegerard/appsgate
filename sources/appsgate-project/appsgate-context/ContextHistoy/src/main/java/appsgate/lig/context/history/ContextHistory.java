@@ -39,8 +39,8 @@ import com.mongodb.MongoException;
  * @see DataBasePushService
  *
  */
-@Component
-@Instantiate
+@Component(publicFactory=false)
+@Instantiate(name="AppsgateContextHistory")
 @Provides(specifications = { DataBasePullService.class, DataBasePushService.class })
 public class ContextHistory implements DataBasePullService, DataBasePushService {
 

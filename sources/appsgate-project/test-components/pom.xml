@@ -22,6 +22,7 @@
 		<module>InterpreterProgramTester</module>
 		<module>ContextHistoryTester</module>
 		<module>UserBaseTester</module>
+		<module>VituralAdapterTester</module>
 	</modules>
 
 </project>

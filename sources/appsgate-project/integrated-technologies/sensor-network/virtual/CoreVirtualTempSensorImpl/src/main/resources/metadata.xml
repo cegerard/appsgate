@@ -13,12 +13,16 @@
 		
 		<!-- device client meta data -->
 		<definition name="pictureId" 		  type="string" 		 			   			 field="pictureId"/>
-		<definition name="userType" 		  type="string" value="99" 			   			 field="userType"/>
-		<definition name="status" 			  type="string"		 				   			 field="status"				method="statusChanged"/>
+		<definition name="userType" 		  type="string" value="0" 			   			 field="userType"/>
+		<definition name="status" 			  type="string"	value="2" 				   		 field="status"				method="statusChanged"/>
 		
 		<!-- device specific meta data -->
-		<definition name="currentTemperature" type="string" 			 		   			 field="currentTemperature" method="currentTemperatureChanged"/>
-		<definition name="notifRate" 		  type="string"		 				   			 field="notifRate"			method="rateChanged"/>
+		<definition name="currentTemperature" type="string" value="20"			 		   	 field="currentTemperature" method="currentTemperatureChanged"/>
+		<definition name="notifRate" 		  type="string" value="600000"				   	 field="notifRate"			method="rateChanged"/>
+		
+		<!-- virtual device meta data -->
+		<definition name="evolutionValue" 	  type="string" value="0.5"			 		     field="evolutionValue" />
+		<definition name="evolutionRate" 	  type="string"	value="90000000"	 			 field="evolutionRate"		method="SimulationRateChanged"/>
 		
 	</implementation>
 

@@ -1,5 +1,7 @@
 package appsgate.lig.proxy.PhilipsHUE;
 
+import java.util.ArrayList;
+
 import org.cybergarage.upnp.ControlPoint;
 import org.cybergarage.upnp.Device;
 import org.cybergarage.upnp.device.DeviceChangeListener;
@@ -17,12 +19,25 @@ import org.slf4j.LoggerFactory;
  */
 public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChangeListener {
 
+	/**
+	 * UPnP device UDN
+	 */
 	private static String PHILIPS_BRIDGE_UPNP_TYPE = "urn:schemas-upnp-org:device:Basic:1";
+	
+	/**
+	 * Philips HUE friendly device name
+	 */
 	private static String BRIDGE_NAME 			   = "Philips hue";
 
-	//TODO manage for multiple Philips HUE bridge
-	private String bridgeIP = "127.0.0.0.1";
+	/**
+	 * Philips HUE bridge IP address list
+	 */
+	private ArrayList<String> bridgeIP = new ArrayList<String>();
 	
+	/**
+	 * Java reference on the Philips HUE adapter that
+	 * manage Philips HUE lights
+	 */
 	private PhilipsHUEAdapter adapter;
 	
 
@@ -31,6 +46,9 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 	 */
 	private static Logger logger = LoggerFactory.getLogger(PhilipsBridgeUPnPFinder.class);
 
+	/**
+	 * Default constructor for Philips HUE finder
+	 */
 	public PhilipsBridgeUPnPFinder() {
 		super();
 		addDeviceChangeListener(this);
@@ -44,10 +62,10 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 			logger.debug("Finder found a Philips bridge on local network");
 			String philipsNameIP = device.getFriendlyName();
 			CharSequence splitString = device.getFriendlyName().subSequence(13, philipsNameIP.length()-1);
-			logger.debug("Current bridge IP: "+splitString);
-			bridgeIP = splitString.toString();
+			logger.debug("New bridge with IP: "+splitString);
+			bridgeIP.add(splitString.toString());
 			if(adapter != null) {
-				adapter.notifyNewBridge(bridgeIP);
+				adapter.notifyNewBridge(splitString.toString());
 			}
 		}
 	}
@@ -56,22 +74,32 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 	public void deviceRemoved(Device device) {
 		if(device.getDeviceType().contentEquals(PHILIPS_BRIDGE_UPNP_TYPE) &&
 				device.getFriendlyName().contains(BRIDGE_NAME)) {
-			logger.debug("The Philips bridge on local netork is not reachable, former IP was "+ bridgeIP);
-			bridgeIP = "127.0.0.0.1";
+			String philipsNameIP = device.getFriendlyName();
+			CharSequence splitString = device.getFriendlyName().subSequence(13, philipsNameIP.length()-1);
+			logger.debug("A Philips bridge on local netork is not reachable, former IP was "+ splitString);
+			bridgeIP.remove(splitString.toString());
 			if(adapter != null ) {
-				adapter.notifyOldBridge(bridgeIP);
+				adapter.notifyOldBridge(splitString.toString());
 			}
 		}
 	}
 
-	public String getBridgeIp() {
+	public ArrayList<String> getBridgesIp() {
 		return bridgeIP;
 	}
 
+	/**
+	 * Register the Philips HUE adapter reference
+	 * @param philipsHUEAdapter the Philips HUE reference to register
+	 */
 	public void registrer(PhilipsHUEAdapter philipsHUEAdapter) {
 		adapter = philipsHUEAdapter;
 	}
 
+	/**
+	 * Unregister the current Philips HUE reference
+	 * @param philipsHUEAdapter the Philips HUE reference that have been deleted
+	 */
 	public void unregistrer(PhilipsHUEAdapter philipsHUEAdapter) {
 		adapter = null;
 	}

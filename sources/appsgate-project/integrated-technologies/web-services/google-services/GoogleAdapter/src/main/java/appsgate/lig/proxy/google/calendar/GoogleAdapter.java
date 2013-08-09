@@ -52,8 +52,8 @@ import com.google.gdata.util.ServiceException;
  * 
  * @see GoogleCalendarAdapter
  */
-@Component
-@Instantiate
+@Component(publicFactory=false)
+@Instantiate(name="AppsgateGoogleAdapter")
 @Provides(specifications = {GoogleCalendarAdapter.class})
 public class GoogleAdapter implements GoogleCalendarAdapter{
 	
