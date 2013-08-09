@@ -46,6 +46,8 @@ public class NodeProgram extends Node {
 	private String deamon;
 	public String getDeamon() {return deamon;}
 	public void setDeamon(String deamon) { this.deamon = deamon;}
+	public boolean isDeamon() { return deamon.contentEquals("true");}
+
 
 	/**
 	 * Sequence of rules to interpret
@@ -58,6 +60,14 @@ public class NodeProgram extends Node {
 	private JSONObject programJSON;
 	
 	public JSONObject getProgramJSON() { return programJSON; }
+	
+	/**
+	 * the current running state of this program
+	 * 	- STARTED
+	 *  - STOPPED
+	 *  - PAUSED
+	 */
+	private String runningState = "STOPPED";
 
 	/**
 	 * Default constructor
@@ -112,6 +122,8 @@ public class NodeProgram extends Node {
 		
 		pool.submit(seqRules);
 		
+		runningState = "STARTED";
+		
 		return null;
 	}
 
@@ -124,19 +136,23 @@ public class NodeProgram extends Node {
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
-		
+		runningState = "STOPPED";
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+		runningState = "STARTED";
 	}
 
 	@Override
 	public void getState() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public String getRunningState() {
+		return runningState;
 	}
 
 	@Override
@@ -149,6 +165,7 @@ public class NodeProgram extends Node {
 	public void endEventFired(EndEvent e) {
 		seqRules.removeEndEventListener(this);
 		fireEndEvent(new EndEvent(this));
+		runningState = "STOPPED";
 	}
 
 }
