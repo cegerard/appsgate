@@ -10,6 +10,8 @@ package smartplug.data;
  */
 public class SmartPlugValue {
 
+	//TODO: add field for raw byte value?
+
 	/** Summation of the active energy in W.h */
 	public int activeEnergy = 0;
 	
