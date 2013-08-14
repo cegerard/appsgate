@@ -47,7 +47,7 @@
 		</dependency>
 	</dependencies>
 
-	<!-- Dependencies Instructions -->
+	<!-- Build Instructions -->
 	<build>
 		<plugins>
 			<plugin>
