@@ -101,14 +101,24 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	
 	@Override
 	public void on() {
-		// TODO Auto-generated method stub
 		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
 	}
 
 	@Override
 	public void off() {
-		// TODO Auto-generated method stub
 		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
+	}
+	
+	@Override
+	public int activePower() {
+		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
+		return 0;
+	}
+
+	@Override
+	public int activeEnergy() {
+		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
+		return 0;
 	}
 	
 	/* ***********************************************************************
