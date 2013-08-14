@@ -27,6 +27,7 @@
 		<module>CoreWeatherServiceSpec</module>
 		<module>CoreClockSpec</module>
 		<module>CoreCalendarSpec</module>
+		<module>CoreSmartPlugSpec</module>
 	</modules>
 
 </project>
