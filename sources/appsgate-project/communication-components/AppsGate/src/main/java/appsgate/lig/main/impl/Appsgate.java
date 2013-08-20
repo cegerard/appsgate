@@ -404,11 +404,14 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 		HashMap<String, JSONObject> map = interpreter.getListPrograms();
 		JSONArray programList = new JSONArray();
 		for(String key : map.keySet()) {
+			JSONObject pgmJSON = new JSONObject();
 			try {
-				programList.put(new JSONObject().put(key, map.get(key)));
+				pgmJSON.put("name", key);
+				pgmJSON.put("source", map.get(key));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+			programList.put(pgmJSON);
 		}
 		return programList;
 	}

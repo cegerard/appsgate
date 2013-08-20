@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>sensor.integration</groupId>
+	<artifactId>watteco.smartplug</artifactId>
+	<version>1.0.0</version>
+	<packaging>bundle</packaging>
+	<name>watteco.smartplug</name>
+  
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>sensor.integration</groupId>
+			<artifactId>watteco.adapter</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
+	 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+				        <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+				        <Export-Package>smartplug.data, smartplug.interfaces</Export-Package>
+				    </instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.8.6</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

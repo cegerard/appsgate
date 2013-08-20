@@ -19,7 +19,7 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.virtual.adapter.services.VirtualObjectManagementService;
 
 @Component(publicFactory=false)
-@Instantiate(name="AppsgatesensorVirtualAdapter")
+@Instantiate(name="AppsgateSensorVirtualAdapter")
 @Provides(specifications= {VirtualObjectManagementService.class})
 public class VirtualAdapter implements VirtualObjectManagementService {
 	

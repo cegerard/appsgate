@@ -1,6 +1,10 @@
 package appsgate.lig.eude.interpreter.impl;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,7 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
-
+import appsgate.lig.context.history.services.DataBasePullService;
+import appsgate.lig.context.history.services.DataBasePushService;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
@@ -20,7 +25,6 @@ import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
-import java.util.ArrayList;
 
 /**
  * This class is the interpreter component for end user development environment. 
@@ -37,29 +41,36 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	 */
 	private static Logger logger = LoggerFactory.getLogger(EUDEInterpreterImpl.class);
 
+	/** 
+	 * Reference to the ApAM context follower. Used to be notified when
+	 * something happen.
+	 */
 	private ContextFollowerSpec contextFollower;
 	
-	/** Hash map containing the nodes and the events they are listening */
+	/**
+	 * Reference to the ApAM router. Used to send action to the objects
+	 */
+	private RouterApAMSpec router;
+	
+	/**
+	 * Context history pull service to get past table state
+	 */
+	private DataBasePullService contextHistory_pull;
+	
+	/**
+	 * Context history push service to save the current state
+	 */
+	private DataBasePushService contextHistory_push;
+	
+	/** 
+	 * Hash map containing the nodes and the events they are listening 
+	 */
 	private HashMap<CoreEventListener, ArrayList<NodeEvent>> mapCoreNodeEvent;
 	
 	/**
 	 * HashMap that contains all the existing programs under a JSON format
 	 */
 	private HashMap<String, NodeProgram> mapPrograms;
-	@Override
-	public HashMap<String, JSONObject> getListPrograms() {
-		HashMap <String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
-		for (NodeProgram p : mapPrograms.values()) {
-			mapProgramJSON.put(p.getName(), p.getProgramJSON());
-		}
-		
-		return mapProgramJSON;
-	}
-
-	/**
-	 * Reference to the ApAM router. Used to send action to the objects
-	 */
-	private RouterApAMSpec router;
 	
 	/**
 	 * Initialize the list of programs and of events
@@ -75,6 +86,32 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
+		
+		logger.debug("Restore interpreter program list from database");
+		JSONObject userbase = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+		if(userbase != null){
+			try {
+				JSONArray state = userbase.getJSONArray("state");
+				int length = state.length();
+				int i = 0;
+				NodeProgram np;
+				while(i < length) {
+					JSONObject obj = state.getJSONObject(i);
+					String key = (String)obj.keys().next();
+					np = new NodeProgram(this, new JSONObject(obj.getString(key)));
+					mapPrograms.put(key, np);
+					if(np.isDeamon()) {
+						//TODO check for previously running program
+						//Restore complete interpreter and programs state
+						this.callProgram(np.getName());
+					}
+					i++;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		logger.debug("The interpreter component is initialized");
 	}
 	
@@ -87,6 +124,14 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		for (CoreEventListener listener : mapCoreNodeEvent.keySet()) {
 			contextFollower.deleteListener(listener);
 		}
+		
+		//save program map state
+		ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String,Object>>();	
+		Set<String> keys = mapPrograms.keySet();
+		for(String key : keys) {
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
+		}
+		contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", properties);
 	}
 
 	/**
@@ -108,8 +153,14 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		}
 		
 		mapPrograms.put(p.getName(), p);
-
-		return true;
+		
+		//save program map state
+		ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String,Object>>();	
+		Set<String> keys = mapPrograms.keySet();
+		for(String key : keys) {
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
+		}
+		return contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getName(), p.getInformation().toString(), properties);
 	}
 	
 	@Override
@@ -121,7 +172,16 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 			p.undeploy();
 			p.removeEndEventListener(this);
 			mapPrograms.remove(programName);
-			return true;
+			
+			//save program map state
+			ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String,Object>>();	
+			Set<String> keys = mapPrograms.keySet();
+			for(String key : keys) {
+				properties.add(new AbstractMap.SimpleEntry<String,Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
+			}
+			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getName(), p.getInformation().toString(), properties);
+			
+			
 		}else {
 			logger.error("The programme "+programName+" does not exist.");
 			return false;
@@ -190,6 +250,20 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Get the end user programs list 
+	 * @return the end user program list as an HashMap<String,,JSONObject>
+	 */
+	@Override
+	public HashMap<String, JSONObject> getListPrograms() {
+		HashMap <String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
+		for (NodeProgram p : mapPrograms.values()) {
+			mapProgramJSON.put(p.getName(), p.getProgramJSON());
+		}
+		
+		return mapProgramJSON;
 	}
 	
 	/**
