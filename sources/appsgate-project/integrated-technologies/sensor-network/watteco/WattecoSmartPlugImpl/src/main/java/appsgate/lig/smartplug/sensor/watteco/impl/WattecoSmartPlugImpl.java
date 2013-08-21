@@ -9,6 +9,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.smartplug.actuator_sensor.messages.SmartPlugNotificationMsg;
 import appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec;
+import appsgate.lig.watteco.adapter.WattecoAdapter;
 import appsgate.lig.watteco.adapter.services.WattecoIOService;
 
 
@@ -29,7 +30,10 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	private String route;
 	
 	private String plugState;
+	
 	private String consumption;
+	
+	private SmartPlugValue spv;
 	
 	/** the main border router */
 	WattecoIOService wattecoAdapter;
@@ -89,36 +93,37 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	 * 							 PUBLIC FUNCTIONS                            *
 	 *********************************************************************** */
 	
+	@Override
 	public void toggle() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
-	}
-	
-	public SmartPlugValue readAttribute() {
-		byte[] b = null;
-		b = wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_READ_ATTRIBUTE$*/);
-		return extractValues(b);
+		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_TOGGLE, false);
 	}
 	
 	@Override
 	public void on() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
+		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_ON, false);
 	}
 
 	@Override
 	public void off() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
+		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_OFF, false);
 	}
 	
 	@Override
 	public int activePower() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
-		return 0;
+		return readAttribute().activePower;
 	}
 
 	@Override
 	public int activeEnergy() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
-		return 0;
+		return readAttribute().activeEnergy;
+	}
+	
+	public SmartPlugValue readAttribute() {
+		byte[] b = null;
+		b = wattecoAdapter.sendCommand(route, WattecoAdapter.SIMPLE_METERING_READ_ATTRIBUTE, true);
+		spv = extractValues(b);
+		consumption = String.valueOf(spv.activePower);
+		return spv;
 	}
 	
 	/* ***********************************************************************

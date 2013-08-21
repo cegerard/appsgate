@@ -150,7 +150,12 @@ public class BorderRouter {
 		System.out.println();
 	}
 	
-	private static String byteToHexString(byte b) {
+	/**
+	 * convert a byte to its hexadecimal string representation
+	 * @param b the byte to be converted
+	 * @return the hexadecimal string representation of a byte
+	 */
+	public static String byteToHexString(byte b) {
 		
 		final char[] hexArray = {'0','1','2','3','4','5','6','7',
 								 '8','9','A','B','C','D','E','F'};
@@ -166,16 +171,7 @@ public class BorderRouter {
 	 * 
 	 * @author thalgott
 	 */
-	public enum BorderRouterCommand {
-		
-		/* ***********************************************************************
-		 * 							SMART PLUG COMMANDS                          *
-		 *********************************************************************** */
-		
-		/** Toggle command, switching the smart plug's On/Off state */
-		SP_TOGGLE			("$11$50$00$06$02", 	false),
-		/** Read attribute command, getting the smart plug's power/energy values */
-		SP_READ_ATTRIBUTE	("$11$00$00$52$00$00", 	true);
+	public class BorderRouterCommand {
 		
 		private String value;
 		private boolean response;
@@ -187,7 +183,7 @@ public class BorderRouter {
 		 * @param reponse whether this command triggers a response from the border
 		 * 		router 
 		 */
-		private BorderRouterCommand(String value, boolean response) {
+		public BorderRouterCommand(String value, boolean response) {
 			this.value = value;
 			this.response = response;
 		}
