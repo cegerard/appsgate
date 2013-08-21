@@ -352,7 +352,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 					logger.info("The switch " + id + ", state changed to neutral with button  " + switchNumber);
 					inst.setProperty("buttonStatus", "none");
 					inst.setProperty("switchNumber", switchNumber);
-					inst.setProperty("switchState", true);
+					inst.setProperty("switchState", "true");
 				}
 			}
 			
