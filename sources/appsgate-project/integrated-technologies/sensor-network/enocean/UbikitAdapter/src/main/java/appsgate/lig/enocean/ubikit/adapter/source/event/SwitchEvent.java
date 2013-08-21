@@ -49,7 +49,7 @@ public class SwitchEvent implements SwitchOnEvent.Listener,
 		instRef.setProperty("buttonStatus", "true");
 		instRef.setProperty("switchNumber",
 				String.valueOf(arg0.getSwitchNumber()));
-		instRef.setProperty("switchState", true);
+		instRef.setProperty("switchState", "true");
 	}
 
 	// @Override
@@ -61,7 +61,7 @@ public class SwitchEvent implements SwitchOnEvent.Listener,
 		instRef.setProperty("buttonStatus", "false");
 		instRef.setProperty("switchNumber",
 				String.valueOf(arg0.getSwitchNumber()));
-		instRef.setProperty("switchState", true);
+		instRef.setProperty("switchState", "true");
 	}
 
 }

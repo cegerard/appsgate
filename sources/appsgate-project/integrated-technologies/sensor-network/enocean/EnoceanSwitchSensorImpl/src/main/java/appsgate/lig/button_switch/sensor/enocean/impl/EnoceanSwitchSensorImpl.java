@@ -60,7 +60,7 @@ public class EnoceanSwitchSensorImpl implements CoreSwitchSensorSpec, CoreObject
 	/**
 	 * Attribute use to indicate that the status change
 	 */
-	private boolean switchState;
+	private String switchState;
 
 	/**
 	 * The type for user of this sensor
@@ -201,12 +201,12 @@ public class EnoceanSwitchSensorImpl implements CoreSwitchSensorSpec, CoreObject
 	 * @param justuse to trigger the state change
 	 */
 	public void switchChanged(String status) {
-		if(switchState) {
+		if(Boolean.valueOf(switchState)) {
 			notifyChanges("switchNumber", this.switchNumber);
 			logger.info("New switch value from "+sensorId+"/"+sensorName+", "+this.switchNumber);
 			notifyChanges("buttonStatus", this.buttonStatus);
 			logger.info("New switch value from "+sensorId+"/"+sensorName+", "+this.buttonStatus);
-			switchState = false;
+			switchState = "false";
 		}
 	}
 	
