@@ -53,7 +53,7 @@ import fr.imag.adele.apam.Implementation;
  */
 @Component(publicFactory = false)
 @Instantiate(name = "AppsgateWattecoAdapter")
-@Provides(specifications = { WattecoIOService.class })
+@Provides(specifications = { WattecoIOService.class, WattecoDiscoveryService.class })
 public class WattecoAdapter implements WattecoIOService,
 		WattecoDiscoveryService, WattecoTunSlipManagement {
 
@@ -79,7 +79,7 @@ public class WattecoAdapter implements WattecoIOService,
 		super();
 		this.borderRouter = new BorderRouter();
 		instanciationService = Executors.newScheduledThreadPool(1);
-		logger.debug("ExecutorService instanciated.");
+		logger.debug("Appsgate Watteco adapter instanciated.");
 	}
 	
 	/* ***********************************************************************
@@ -91,16 +91,11 @@ public class WattecoAdapter implements WattecoIOService,
 	 */
 	@Validate
 	public void newInst() {
-		//Get all sensors IPv6 list 
-		ArrayList<String> ipList = discover("http://["+"aaaa::ff:ff00:2bf9]"+"/");
-		for(String ip : ipList) {
-			logger.debug("@@@@@@@@@@@@@ Sensor ip: "+ip);
-		}
 		
-		//TODO don't instanciate existing sensors
-		//Instantiate sensor with corresponding ApAM implementation
-		instanciationService.schedule(new sensorInstanciation(ipList), 10, TimeUnit.SECONDS);
-	//	instanciationService.execute(new sensorInstanciation(ipList));
+		
+		//TODO launch the discovery phase and save specific sensors configuration
+		//load default conf for other sensors.
+		//the discovery phase has to be launch with differed time like 10 seconds
 		
 		logger.info("Appsgate Watteco adapter intiated.");
 	}
@@ -137,8 +132,27 @@ public class WattecoAdapter implements WattecoIOService,
 	}
 
 	@Override
-	public ArrayList<String> discover(String borderRouterAddress) {
+	public void discover(String borderRouterAddress) {
 
+		ArrayList<String> ip6 = getSensorList(borderRouterAddress);
+		for(String ip : ip6) {
+			logger.debug("@@@@@@@@@@@@@ Sensor ip: "+ip);
+		}
+		
+		if(! ip6.isEmpty()){
+			//TODO don't instantiate already instantiate sensors
+			instanciationService.schedule(new sensorInstanciation(ip6), 10, TimeUnit.SECONDS);
+		}
+	
+	}
+	
+	@Override
+	public void discover() {
+		discover("http://["+BORDER_ROUTER_ADDR+"]/");
+	}
+	
+	@Override
+	public ArrayList<String> getSensorList (String borderRouterAddress) {
 		ArrayList<String> ip6 = new ArrayList<String>();
 
 		try {
@@ -329,10 +343,13 @@ public class WattecoAdapter implements WattecoIOService,
 		}
 			
 	}
+
 	
 	/* ***********************************************************************
 	 * 							WATTECO COMMANDS                             *
 	 *********************************************************************** */
+	
+	public static final String BORDER_ROUTER_ADDR 					   = "aaaa::ff:ff00:2bf9";
 	
 	//ON/OFF cluster commands
 	public static final String ON_OFF_CLUSTER				   		   = "6";
