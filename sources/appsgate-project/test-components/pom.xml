@@ -23,6 +23,7 @@
 		<module>ContextHistoryTester</module>
 		<module>UserBaseTester</module>
 		<module>VituralAdapterTester</module>
+		<module>WattecoAdapterTester</module>
 	</modules>
 
 </project>
