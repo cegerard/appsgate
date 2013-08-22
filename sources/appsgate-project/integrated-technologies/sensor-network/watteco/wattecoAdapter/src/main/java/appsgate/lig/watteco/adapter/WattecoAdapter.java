@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -26,6 +28,7 @@ import appsgate.lig.watteco.adapter.services.WattecoIOService;
 import appsgate.lig.watteco.adapter.services.WattecoTunSlipManagement;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
+import fr.imag.adele.apam.Instance;
 
 /**
  * This class is used to connect the Watteco WSN to the ApAM environment. An
@@ -73,12 +76,24 @@ public class WattecoAdapter implements WattecoIOService,
 	private BorderRouter borderRouter;
 
 	/**
+	 * Stand for the SLIP tunnel status
+	 */
+	private boolean slipTunnelOn;
+	
+	/**
+	 * Keep the Ipv6 sensor Adresses
+	 */
+	private HashMap<String, Instance> ipv6AddressToInstance;
+
+	/**
 	 * Default constructor
 	 */
 	public WattecoAdapter() {
 		super();
 		this.borderRouter = new BorderRouter();
-		instanciationService = Executors.newScheduledThreadPool(1);
+		instanciationService = Executors.newScheduledThreadPool(2);
+		slipTunnelOn = false;
+		ipv6AddressToInstance = new HashMap<String, Instance>();
 		logger.debug("Appsgate Watteco adapter instanciated.");
 	}
 	
@@ -92,10 +107,55 @@ public class WattecoAdapter implements WattecoIOService,
 	@Validate
 	public void newInst() {
 		
-		
-		//TODO launch the discovery phase and save specific sensors configuration
-		//load default conf for other sensors.
-		//the discovery phase has to be launch with differed time like 10 seconds
+		//Initiate the SLIP tunnel from C source from Watteco
+		// /!\ this use native source code so it must be compile to the targeted platform
+		// 1- Find where the EnOcean transceiver is plug (USB0 or USB1  serial port
+		String osName =System.getProperty("os.name");
+		if (osName.contentEquals("Linux")) {
+			try {
+				char port ='0';
+				Process searchCMD = Runtime.getRuntime().exec("ls -l /dev");
+				BufferedReader read = new BufferedReader(new InputStreamReader(searchCMD.getInputStream()));
+	            try {
+	            	searchCMD.waitFor();
+	            } catch (InterruptedException e) {
+	                logger.error(e.getMessage());
+	            }
+	            while (read.ready()) {
+	            	String result = read.readLine();
+	            	if(result.contains("tty.usbserial")) {
+	            		int invalidPort = result.charAt(result.length()-1);
+	            		if(invalidPort == port) {
+	            			port++;
+	            		}
+	            		
+	            	}
+	            }
+	          // 2- Run the tunslip configuration program to the free serial port
+	          String cmd = "./conf/watteco/tunslip6 -L -v2 -s ttyUSB"+port+" aaaa::1/64 &";
+	          Runtime.getRuntime().exec(cmd);
+	          
+	          //3- check if the tun0 network interface is On
+	          Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+	          while(nets.hasMoreElements()){
+	        	  NetworkInterface netInt = nets.nextElement();
+	        	  if(netInt.getDisplayName().contentEquals("tun0")){
+	        		  slipTunnelOn = true;
+	        		  logger.info("tun0 interface for Watteco sensors UP");
+	        		  break;
+	        	  }
+	          }
+	          
+	          //4- launch the discovery phase of Watteco sensors
+	          //TODO fix this
+	          //instanciationService.schedule(new sensorDiscovery(BORDER_ROUTER_ADDR), 20, TimeUnit.SECONDS);
+	          
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
+		} else {
+			logger.error("This bundle embbeded native C lib executing code and only Linux system are supported.");
+		}  
 		
 		logger.info("Appsgate Watteco adapter intiated.");
 	}
@@ -105,13 +165,21 @@ public class WattecoAdapter implements WattecoIOService,
 	 */
 	@Invalidate
 	public void delInst() {
-		logger.info("Appsgate Watteco adapter stopped.");
-//		//TODO delete all sensor instances
+		//slipTunnelOn = false;
+		instanciationService.shutdown();
+		try {
+			instanciationService.awaitTermination(5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			logger.debug("Watteco Adapter instanciation service thread crash at termination");
+		}
+		//TODO delete all sensor instances
 //		Implementation impl = CST.apamResolver.findImplByName(null, WattecoAdapter.SMART_PLUG_IMPL);
 //		Set<Instance> insts = impl.getInsts();
 //		for(Instance inst : insts) {
 //			ComponentBrokerImpl.disappearedComponent(inst.getName());
 //		}
+		//TODO stop slip tunnel
+		logger.info("Appsgate Watteco adapter stopped.");	
 	}
 
 	/* ***********************************************************************
@@ -120,30 +188,32 @@ public class WattecoAdapter implements WattecoIOService,
 	
 	@Override
 	public byte[] sendCommand(String addr, String cmd, boolean resp) {
-		InetAddress address;
-		try {
-			address = InetAddress.getByName(addr);
-			return borderRouter.sendCommand(address, borderRouter.new BorderRouterCommand(cmd, resp));
-		} catch (UnknownHostException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
+		if(slipTunnelOn) {
+			InetAddress address;
+			try {
+				address = InetAddress.getByName(addr);
+				return borderRouter.sendCommand(address, borderRouter.new BorderRouterCommand(cmd, resp));
+			} catch (UnknownHostException e) {
+				logger.error(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public void discover(String borderRouterAddress) {
-
 		ArrayList<String> ip6 = getSensorList(borderRouterAddress);
-		for(String ip : ip6) {
-			logger.debug("@@@@@@@@@@@@@ Sensor ip: "+ip);
+		
+		for(String key : ipv6AddressToInstance.keySet()) {
+			ip6.remove(key);
 		}
 		
 		if(! ip6.isEmpty()){
-			//TODO don't instantiate already instantiate sensors
-			instanciationService.schedule(new sensorInstanciation(ip6), 10, TimeUnit.SECONDS);
+			instanciationService.execute(new sensorInstanciation(ip6));
+		}else {
+			logger.info("No new Watteco sensor detected. All are already set up or are out of range from the border router");
 		}
-	
 	}
 	
 	@Override
@@ -154,35 +224,35 @@ public class WattecoAdapter implements WattecoIOService,
 	@Override
 	public ArrayList<String> getSensorList (String borderRouterAddress) {
 		ArrayList<String> ip6 = new ArrayList<String>();
+		if(slipTunnelOn) {
+			try {
+				String s;
+				String indexPage = "";
+			
+				//get the index.html page of the border router
+				BufferedReader r = new BufferedReader(new InputStreamReader(new URL(borderRouterAddress).openStream()));
+				while ((s = r.readLine()) != null) {
+					indexPage += s;
+				}
+				r.close();
+			
+				//split the index.html string by <h2> HTML tag
+				String[] splitH2 = indexPage.split("h2>");
+				//split the result of the previous split with <br> HTML tag to get the ipv6 sensor addresses
+				String[] splitBR = splitH2[2].split("<br>");
+			
+				//Fill the ArrayList with all ipv6 address get from the border router
+				int loopSize = splitBR.length-1;
+				int i = 0;
+				while(i < loopSize) {
+					ip6.add(splitBR[i]);
+					i++;
+				}
 
-		try {
-			String s;
-			String indexPage = "";
-			
-			//get the index.html page of the border router
-			BufferedReader r = new BufferedReader(new InputStreamReader(new URL(borderRouterAddress).openStream()));
-			while ((s = r.readLine()) != null) {
-				indexPage += s;
+			} catch (IOException ioE) {
+				ioE.printStackTrace();
 			}
-			r.close();
-			
-			//split the index.html string by <h2> HTML tag
-			String[] splitH2 = indexPage.split("h2>");
-			//split the result of the previous split with <br> HTML tag to get the ipv6 sensor addresses
-			String[] splitBR = splitH2[2].split("<br>");
-			
-			//Fill the ArrayList with all ipv6 address get from the border router
-			int loopSize = splitBR.length-1;
-			int i = 0;
-			while(i < loopSize) {
-				ip6.add(splitBR[i]);
-				i++;
-			}
-
-		} catch (IOException ioE) {
-			ioE.printStackTrace();
 		}
-		
 		return ip6;
 	}
 	
@@ -192,9 +262,9 @@ public class WattecoAdapter implements WattecoIOService,
 	 *********************************************************************** */
 	
 	/**
-	 * Inner class for Ubikit items instanciation thread
+	 * Inner class for Watteco sensor instanciation thread
 	 * @author Cédric Gérard
-	 * @since June 25, 2013
+	 * @since August 17, 2013
 	 * @version 1.0.0
 	 */
 	private class sensorInstanciation implements Runnable {
@@ -212,6 +282,27 @@ public class WattecoAdapter implements WattecoIOService,
 			}
 		}
 	}
+	
+	/**
+	 * Inner class for Watteco sensor discovery
+	 * @author Cédric Gérard
+	 * @since August 22, 2013
+	 * @version 1.0.0
+	 */
+	private class sensorDiscovery implements Runnable {
+
+		String address;
+		
+		public sensorDiscovery(String address) {
+			super();
+			this.address = address;
+		}
+
+		public void run() {
+			discover("http://["+address+"]/");
+		}
+	}
+	
 	
 	/* ***********************************************************************
 	 * 							PRIVATE METHODS                              *
@@ -245,7 +336,10 @@ public class WattecoAdapter implements WattecoIOService,
 			initiateSensorValues(implName, route, initialproperties);
 			
 			//Sensor ApAM instanciation
-			impl.createInstance(null, initialproperties);
+			Instance inst = impl.createInstance(null, initialproperties);
+			
+			//Keep the correspondence between address and ApAm instance
+			ipv6AddressToInstance.put(address, inst);
 		}
 	}
 
