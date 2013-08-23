@@ -147,7 +147,7 @@ public class WattecoAdapter implements WattecoIOService,
 			logger.error("This bundle embbeded native C lib executing code and only Linux system are supported.");
 		}  
 		
-		logger.info("Appsgate Watteco adapter intiated.");
+		logger.info("Appsgate Watteco adapter initiated.");
 	}
 
 	/**

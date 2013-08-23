@@ -29,4 +29,10 @@ public interface CoreSmartPlugSpec {
 	 * @return consumption in W/h
 	 */
 	public int activeEnergy();
+	
+	/**
+	 * get the relay state
+	 * @return true if the smart plug let the current pass through the relay, false otherwise
+	 */
+	public boolean getRelayState();
 }

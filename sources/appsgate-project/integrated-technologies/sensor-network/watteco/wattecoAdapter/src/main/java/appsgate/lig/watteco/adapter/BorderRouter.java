@@ -151,7 +151,7 @@ public class BorderRouter {
 	}
 	
 	/**
-	 * convert a byte to its hexadecimal string representation
+	 * Convert a byte to its hexadecimal string representation
 	 * @param b the byte to be converted
 	 * @return the hexadecimal string representation of a byte
 	 */

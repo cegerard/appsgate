@@ -53,6 +53,10 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 		logger.info("Smart plug sensor desapeared, "+sensorId);
 	}
 	
+	/**
+	 * Called by ApAM when the isPaired property is changed
+	 * @param newPairedState the new paired state
+	 */
 	public void isPairedChanged(String newPairedState){
 		logger.info("New Paired status, "+newPairedState+", for "+sensorId);
 	}
@@ -118,6 +122,15 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 		return readAttribute().activeEnergy;
 	}
 	
+	@Override
+	public boolean getRelayState() {
+		byte[] b = wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_READ_ATTRIBUTE, true);
+		boolean state = extractState(b);
+		plugState = Boolean.toString(state);
+		return state;
+	}
+
+	@Override
 	public SmartPlugValue readAttribute() {
 		byte[] b = null;
 		b = wattecoAdapter.sendCommand(route, WattecoAdapter.SIMPLE_METERING_READ_ATTRIBUTE, true);
@@ -156,6 +169,10 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 		spv.activePower += b;
 		
 		return spv;
+	}
+	
+	private boolean extractState(byte[] ba) {
+		return (ba[8] == new Byte("1").byteValue());
 	}
 	
 	/* ***********************************************************************
