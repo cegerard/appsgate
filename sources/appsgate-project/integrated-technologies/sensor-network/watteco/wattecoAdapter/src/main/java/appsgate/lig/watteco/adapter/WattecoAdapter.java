@@ -156,6 +156,7 @@ public class WattecoAdapter implements WattecoIOService,
 	@Invalidate
 	public void delInst() {
 		//slipTunnelOn = false;
+		borderRouter.stopBorderRouter();
 		instanciationService.shutdown();
 		try {
 			instanciationService.awaitTermination(5, TimeUnit.SECONDS);
@@ -182,7 +183,7 @@ public class WattecoAdapter implements WattecoIOService,
 			InetAddress address;
 			try {
 				address = InetAddress.getByName(addr);
-				return borderRouter.sendCommand(address, borderRouter.new BorderRouterCommand(cmd, resp));
+				return borderRouter.sendCommand(borderRouter.new BorderRouterCommand(address, cmd, resp));
 			} catch (UnknownHostException e) {
 				logger.error(e.getMessage());
 				e.printStackTrace();
