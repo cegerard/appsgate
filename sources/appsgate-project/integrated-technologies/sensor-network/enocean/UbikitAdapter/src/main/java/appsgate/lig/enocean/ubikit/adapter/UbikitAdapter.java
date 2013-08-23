@@ -370,13 +370,13 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		
 		Iterator<PhysicalEnvironmentItem> it = enOceanDeviceList.iterator();
 		PhysicalEnvironmentItem pei;
-		Instance apamInst;
+		//Instance apamInst;
 		JSONArray allJSONItem = new JSONArray();
 		
 		while(it.hasNext()) {
 			pei = it.next();
-			apamInst = sidToInstanceName.get(pei.getUID());
-			logger.debug(apamInst.getAllProperties().keySet().toString());
+			//apamInst = sidToInstanceName.get(pei.getUID());
+			//logger.debug(apamInst.getAllProperties().keySet().toString());
 			allJSONItem.put(pei.getUID());
 		}
 		
