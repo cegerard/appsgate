@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -135,20 +136,9 @@ public class WattecoAdapter implements WattecoIOService,
 	          String cmd = "./conf/watteco/tunslip6 -L -v2 -s ttyUSB"+port+" aaaa::1/64 &";
 	          Runtime.getRuntime().exec(cmd);
 	          
-	          //3- check if the tun0 network interface is On
-	          Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-	          while(nets.hasMoreElements()){
-	        	  NetworkInterface netInt = nets.nextElement();
-	        	  if(netInt.getDisplayName().contentEquals("tun0")){
-	        		  slipTunnelOn = true;
-	        		  logger.info("tun0 interface for Watteco sensors UP");
-	        		  break;
-	        	  }
-	          }
-	          
-	          //4- launch the discovery phase of Watteco sensors
-	          //TODO fix this
-	          //instanciationService.schedule(new sensorDiscovery(BORDER_ROUTER_ADDR), 20, TimeUnit.SECONDS);
+	          //4- launch the discovery phase of Watteco sensors desynchronized by 15 seconds to give 
+	          //enough time to the tun0 network interface to be up.
+	          instanciationService.schedule(new sensorDiscovery(BORDER_ROUTER_ADDR), 15, TimeUnit.SECONDS);
 	          
 			} catch (IOException e) {
 				logger.error(e.getMessage());
@@ -205,10 +195,12 @@ public class WattecoAdapter implements WattecoIOService,
 	public void discover(String borderRouterAddress) {
 		ArrayList<String> ip6 = getSensorList(borderRouterAddress);
 		
+		//Strip exiting sensor IPv6 address
 		for(String key : ipv6AddressToInstance.keySet()) {
 			ip6.remove(key);
 		}
 		
+		//If a sensor is not yet instanciate, instanciate it
 		if(! ip6.isEmpty()){
 			instanciationService.execute(new sensorInstanciation(ip6));
 		}else {
@@ -299,7 +291,20 @@ public class WattecoAdapter implements WattecoIOService,
 		}
 
 		public void run() {
-			discover("http://["+address+"]/");
+			try {
+				Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+				while(nets.hasMoreElements()){
+		        	  NetworkInterface netInt = nets.nextElement();
+		        	  if(netInt.getDisplayName().contentEquals("tun0")){
+		        		  slipTunnelOn = true;
+		        		  logger.info("tun0 interface for Watteco sensors UP");
+		        		  logger.info("searching for new Watteco sensors...");
+		        		  //launch sensor discovery thread
+		        		  discover("http://["+address+"]/");
+		        		  break;
+		        	  }
+		         }
+			} catch (SocketException e) {logger.error(e.getMessage());}
 		}
 	}
 	
@@ -404,6 +409,8 @@ public class WattecoAdapter implements WattecoIOService,
 	private String getApAMImplFromClusterList(ArrayList<String> clusterList) {
 		if(clusterList.contains(ON_OFF_CLUSTER) && clusterList.contains(SIMPLE_METERING_CLUSTER)) {
 			return WattecoAdapter.SMART_PLUG_IMPL;
+		} else if(clusterList.contains(OCCUPANCY_SENSING_CLUSTER)) {
+			return WattecoAdapter.OCCUPANCY_IMPL;
 		}
 		return "NOIMPLEM";
 	}
