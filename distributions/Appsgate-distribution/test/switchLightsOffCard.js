@@ -25,7 +25,7 @@
 						{
 						    type : "NodeAction",
 						    targetType : "device",
-						    targetId : "194.199.23.136-1",
+						    targetId : "194.199.23.135-1",
 						    methodName : "Off",
 						    args : [
 						    ]
@@ -33,7 +33,7 @@
 					     {
 						     type : "NodeAction",
 						     targetType : "device",
-						     targetId : "194.199.23.136-2",
+						     targetId : "194.199.23.135-2",
 					             methodName : "Off",
 						     args : [
 						     ]
@@ -41,7 +41,7 @@
 				    	     {
 						     type : "NodeAction",
 						     targetType : "device",
-						     targetId : "194.199.23.136-3",
+						     targetId : "194.199.23.135-3",
 					             methodName : "Off",
 						     args : [
 						     ]
@@ -49,7 +49,7 @@
 				    	     {
 						     type : "NodeAction",
 						     targetType : "device",
-						     targetId : "194.199.23.136-4",
+						     targetId : "194.199.23.135-4",
 					             methodName : "Off",
 						     args : [
 						     ]
@@ -57,7 +57,7 @@
 				    	     {
 						     type : "NodeAction",
 						     targetType : "device",
-						     targetId : "194.199.23.136-5",
+						     targetId : "194.199.23.135-5",
 					             methodName : "Off",
 						     args : [
 						     ]
@@ -65,7 +65,7 @@
 				    	     {
 						     type : "NodeAction",
 						     targetType : "device",
-						     targetId : "194.199.23.136-6",
+						     targetId : "194.199.23.135-6",
 					             methodName : "Off",
 						     args : [
 						     ]
