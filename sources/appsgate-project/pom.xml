@@ -12,7 +12,7 @@
 	
 	<properties>
 		<!-- apam version -->
-		<apam.current.version>0.0.4-SNAPSHOT</apam.current.version>
+		<apam.current.version>0.0.4</apam.current.version>
 		<!-- Dependencies version -->
 		<osgi.version>4.2.0</osgi.version>
 		<ipojo.version>1.8.0</ipojo.version>
@@ -38,13 +38,13 @@
 	<!-- Maven Repo -->
 	<repositories>
 
-		<repository>
-			<id>apam-repo</id>
-			<url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>apam-repo</id> -->
+<!-- 			<url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> -->
+<!-- 			<snapshots> -->
+<!-- 				<enabled>true</enabled> -->
+<!-- 			</snapshots> -->
+<!-- 		</repository> -->
 
 		<!-- OW2 Repo -->
 		<repository>

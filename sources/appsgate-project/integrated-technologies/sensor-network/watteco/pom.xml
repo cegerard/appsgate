@@ -16,6 +16,7 @@
 	<description>This sub-project contain Watteco tehcnology integration components for Appsgate</description>
 	
 	<modules>
+		<module>wattecoAdapter</module>
 		<module>WattecoSmartPlugImpl</module>
 	</modules>
 </project>
