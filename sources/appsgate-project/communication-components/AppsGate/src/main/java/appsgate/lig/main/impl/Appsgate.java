@@ -22,6 +22,10 @@ import org.cybergarage.upnp.device.InvalidDescriptionException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -415,5 +419,26 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 		}
 		return programList;
 	}
+	
+	@Override
+	public void shutdown() {
+		BundleContext ctx = FrameworkUtil.getBundle(Appsgate.class).getBundleContext();
+		Bundle systemBundle = ctx.getBundle(0);
+		try {
+			systemBundle.stop();
+		} catch (BundleException e) {
+			e.printStackTrace();
+		}
+	}
 
+	@Override
+	public void restart() {
+		BundleContext ctx = FrameworkUtil.getBundle(Appsgate.class).getBundleContext();
+		Bundle systemBundle = ctx.getBundle(0);
+		try {
+			systemBundle.update();
+		} catch (BundleException e) {
+			e.printStackTrace();
+		}
+	}
 }
