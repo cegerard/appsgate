@@ -685,14 +685,25 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			properties.put("isPaired", "false");
 		}
 		
-		impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
+		int nbTry = 0;
+		while(nbTry < 5){
+			impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
+			if(impl != null) {
+				properties.put("deviceName", ep.getUserFriendlyName());
+				properties.put("deviceId", item.getUID());
+				properties.put("deviceType", ep.name());
 		
-		properties.put("deviceName", ep.getUserFriendlyName());
-		properties.put("deviceId", item.getUID());
-		properties.put("deviceType", ep.name());
-		
-		Instance createInstance = impl.createInstance(null, properties);
-		sidToInstanceName.put(item.getUID(), createInstance);
+				Instance createInstance = impl.createInstance(null, properties);
+				sidToInstanceName.put(item.getUID(), createInstance);
+				nbTry = 5;
+			}else {
+				synchronized(this){try {
+					logger.error("No "+ep.getApAMImplementation()+" found ! -- "+nbTry+" try");
+					wait(3000);
+				} catch (InterruptedException e) {e.printStackTrace();}}
+				nbTry++;
+			}
+		}
 	}
 
 	/**

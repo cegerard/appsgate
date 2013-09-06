@@ -218,4 +218,20 @@ public interface AppsGateSpec {
 	 */
 	public JSONArray getPrograms();
 	
+	/************************************/
+	/**    General Appsgate commands    */
+	/************************************/
+	
+	/**
+	 * Shutdown the Appsgate system
+	 * (Shutdown the OSGi distribution)
+	 */
+	public void shutdown();
+	
+	/**
+	 * restart the Appsgate system
+	 * (Restart the system bundle from OSGi)
+	 */
+	public void restart();
+	
 }

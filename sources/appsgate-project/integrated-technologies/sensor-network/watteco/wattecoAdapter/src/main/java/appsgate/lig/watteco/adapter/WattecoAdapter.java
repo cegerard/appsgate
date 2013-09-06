@@ -342,10 +342,22 @@ public class WattecoAdapter implements WattecoIOService,
 			initiateSensorValues(implName, route, initialproperties);
 			
 			//Sensor ApAM instanciation
-			Instance inst = impl.createInstance(null, initialproperties);
-			
-			//Keep the correspondence between address and ApAm instance
-			ipv6AddressToInstance.put(address, inst);
+			int nbTry = 0;
+			while(nbTry < 5){
+				if(impl != null) {
+					Instance inst = impl.createInstance(null, initialproperties);
+					nbTry = 5;
+					//Keep the correspondence between address and ApAm instance
+					ipv6AddressToInstance.put(address, inst);
+				}else{
+					synchronized(this){try {
+						logger.error("No "+implName+" found ! -- "+nbTry+" try");
+						wait(3000);
+					} catch (InterruptedException e) {e.printStackTrace();}}
+					nbTry++;
+					impl = CST.apamResolver.findImplByName(null, implName);
+				}
+			}
 		}
 	}
 

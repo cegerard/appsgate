@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
@@ -38,7 +40,18 @@ public class ServiceAccount {
 	 */
 	private JSONObject accountSynchDetails;
 	
+	/**
+	 * Static class member uses to log what happened in each instances
+	 */
+	private static Logger logger = LoggerFactory.getLogger(ServiceAccount.class);
 
+	/**
+	 * Default constructor for user synchronized service account
+	 * @param login the user login for the service
+	 * @param hashPswd the corresponding password
+	 * @param accountImplementation the Appsgate implementation
+	 * @param accountSynchDetails all requires details for connection as a JSONObject
+	 */
 	public ServiceAccount(String login, String hashPswd,
 			String accountImplementation, JSONObject accountSynchDetails) {
 		super();
@@ -48,14 +61,26 @@ public class ServiceAccount {
 		this.accountSynchDetails = accountSynchDetails;
 		
 		try {
-			Implementation impl = CST.apamResolver.findImplByName(null, accountImplementation);
-			HashMap<String,String> properties = new HashMap<String, String>();
+			int nbTry = 0;
+			while(nbTry < 5 ) {
+				Implementation impl = CST.apamResolver.findImplByName(null, accountImplementation);
+				
+				if(impl != null) {
+					HashMap<String,String> properties = new HashMap<String, String>();
 		
-			properties.put("account", login);
-			properties.put("pswd", hashPswd);
-			properties.put("calendarName", accountSynchDetails.getString("calendarName"));
-			impl.createInstance(null, properties);
-			
+					properties.put("account", login);
+					properties.put("pswd", hashPswd);
+					properties.put("calendarName", accountSynchDetails.getString("calendarName"));
+					impl.createInstance(null, properties);
+					nbTry = 5;
+				} else {
+					synchronized(this){try {
+						logger.error("No "+accountImplementation+" found ! -- "+nbTry+" try");
+						wait(3000);
+					} catch (InterruptedException e) {e.printStackTrace();}}
+					nbTry++;
+				}
+			}
 		} catch (JSONException e) {e.printStackTrace();}
 	}
 
