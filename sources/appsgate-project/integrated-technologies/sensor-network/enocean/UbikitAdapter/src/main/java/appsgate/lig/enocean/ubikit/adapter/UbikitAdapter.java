@@ -190,7 +190,8 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		Collection<PhysicalEnvironmentItem> itemList = enoceanBridge.getAllItems();
 		if(itemList != null && !itemList.isEmpty()) {
 			//Create thread that take the list in parameter and instanciate all Ubikit items
-			instanciationService.execute(new ItemInstanciation(itemList));
+			//TODO Schedule instanciation to avoid dependency collision
+			instanciationService.schedule(new ItemInstanciation(itemList), 15, TimeUnit.SECONDS);
 		}
 		
 	}

@@ -231,7 +231,10 @@ public class RouterImpl implements RouterApAMSpec {
 			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
 			JSONDescription.put("placeId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
 		} catch (JSONException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
+		} catch (Exception e) {
+			logger.error("ApAM error");
+			logger.error(e.getMessage());
 		}
 		return JSONDescription;
 	}
