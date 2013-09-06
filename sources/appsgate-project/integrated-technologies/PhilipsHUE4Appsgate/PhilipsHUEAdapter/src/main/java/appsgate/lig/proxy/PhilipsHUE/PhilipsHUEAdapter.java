@@ -444,6 +444,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			JSONArray lightsArray = getLightList();
 			int size = lightsArray.length();
 			int i = 0;
+			int nbTry = 0;
+			
 			try {
 				while(i < size) {
 					JSONObject light = lightsArray.getJSONObject(i);
@@ -454,11 +456,22 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 					properties.put("lightBridgeId", light.getString("lightId"));
 					properties.put("lightBridgeIP", bridgeIP);
 
-					/*Instance createInstance = */impl.createInstance(null, properties);
-					i++;
+					if(impl != null) {
+						/*Instance createInstance = */impl.createInstance(null, properties);
+						i++;
+						nbTry = 0;
+					}else {
+						synchronized(this){wait(3000);}
+						nbTry++;
+						if(nbTry == 5){
+							logger.error("No "+ApAMIMPL+" found !");
+							logger.error("Stop the HUE light instanciation thread !");
+							break;
+						}
+					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 		
@@ -470,7 +483,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param bridgeIP the Philips HUE bridge IP address
 	 */
 	public void notifyNewBridge(String bridgeIP) {
-		instanciationService.execute(new LightsInstanciation(bridgeIP));
+		instanciationService.schedule(new LightsInstanciation(bridgeIP), 15, TimeUnit.SECONDS);
 	}
 	
 	/**
