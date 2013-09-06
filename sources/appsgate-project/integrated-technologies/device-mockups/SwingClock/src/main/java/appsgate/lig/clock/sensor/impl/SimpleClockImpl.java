@@ -1,8 +1,12 @@
 package appsgate.lig.clock.sensor.impl;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -22,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
+import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
@@ -30,13 +35,32 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
  * This java interface is an ApAM specification shared by all ApAM AppsGate
  * application to provide current Time and Date information
  */
-public class SwingClock implements CoreClockSpec, CoreObjectSpec,
+public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 	ChangeListener {
 
     /**
      * Lag between the real current Date and the one setted in the GUI
      */
     long currentLag;
+
+    /**
+     * current flow rate, "1" is the default value
+     */
+    double flowRate;
+    long timeFlowBreakPoint;
+
+    private int currentAlarmId;
+
+    /**
+     * A sorted map between the times in millis at which are registered alarms
+     * and the corresponding alarm Id and observers
+     */
+    private SortedMap<Long, Map<Integer,AlarmEventObserver>> alarms;
+
+    /**
+     * Convenient to unregister alarms (avoid complexity)
+     */
+    private Map<Integer, Long> reverseAlarmMap;
 
     // Calendar currentCalendar;
 
@@ -55,17 +79,22 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
     int oldHour;
     int oldMinute;
 
+    long nextAlarm;
+    Timer timer = new Timer();
+    
+
     /**
      * Static class member uses to log what happened in each instances
      */
-    private static Logger logger = LoggerFactory.getLogger(SwingClock.class);
+    private static Logger logger = LoggerFactory.getLogger(SimpleClockImpl.class);
 
-    public SwingClock() {
+    public SimpleClockImpl() {
 	oldDay = -1;
 	oldMonth = -1;
 	oldYear = -1;
 	oldHour = -1;
 	oldMinute = -1;
+	initAppsgateFields();
 
 	resetClock();
     }
@@ -75,12 +104,12 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     public void start() {
 	logger.info("New swing clock created");
-	initAppsgateFields();
+
 
 	refreshClock();
-	Timer timer = new Timer();
-	timer.scheduleAtFixedRate(refreshtask,
-		Calendar.getInstance().getTime(), 1000);
+	Timer refreshTimer = new Timer();
+	refreshTimer.scheduleAtFixedRate(refreshtask, Calendar.getInstance()
+		.getTime(), 1000);
     }
 
     public void stop() {
@@ -234,11 +263,11 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
 	    currentLag = cal.getTimeInMillis()
 		    - Calendar.getInstance().getTimeInMillis();
 
-	    if(currentLag>500) {
-		    logger.info("Clock lag updated to simulate a false date : "
-			    + (long) currentLag / 1000);
-		    refreshClock();
-		    fireClockSetNotificationMsg(cal);		
+	    if (currentLag > 500) {
+		logger.info("Clock lag updated to simulate a false date : "
+			+ (long) currentLag / 1000);
+		refreshClock();
+		fireClockSetNotificationMsg(cal);
 	    }
 
 	} catch (NumberFormatException exc) {
@@ -256,7 +285,16 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public void resetClock() {
-	currentLag = 0;
+	synchronized (appsgateObjectId) {
+	    currentLag = 0;
+	    flowRate = 1;
+	    currentAlarmId = 0;
+	    alarms = new TreeMap<Long, Map<Integer,AlarmEventObserver>>();
+	    reverseAlarmMap = new HashMap<Integer, Long>();
+	    nextAlarm = -1;
+	    timer.purge();
+	    timeFlowBreakPoint=-1;
+	}
 	fireClockSetNotificationMsg(Calendar.getInstance());
     }
 
@@ -278,11 +316,12 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
     @Override
     public Calendar getCurrentDate() {
 	Calendar cal = Calendar.getInstance();
-	cal.setTimeInMillis(cal.getTimeInMillis() + currentLag);
+	cal.setTimeInMillis(getCurrentTimeInMillis());
 	return cal;
     }
 
-    /*
+    /*	if
+
      * (non-Javadoc)
      * 
      * @see
@@ -290,9 +329,21 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public long getCurrentTimeInMillis() {
-	Calendar cal = Calendar.getInstance();
-	cal.setTimeInMillis(cal.getTimeInMillis() + currentLag);
-	return cal.getTimeInMillis();
+	// TODO with flow might be more difficult
+	
+	long systemTime = System.currentTimeMillis();
+	long simulatedTime = currentLag;
+	if(timeFlowBreakPoint>0 && timeFlowBreakPoint<=systemTime) {
+	    long elapsedTime = (long)((systemTime - timeFlowBreakPoint)*flowRate);
+		logger.debug("getCurrentTimeInMillis(), system time : "+systemTime
+			+", time flow breakpoint : "+ timeFlowBreakPoint
+			+", elasped time : "+elapsedTime);
+	    
+	    simulatedTime += timeFlowBreakPoint+elapsedTime;
+	} else 
+	    simulatedTime+=systemTime;
+	logger.debug("getCurrentTimeInMillis(), simulated time : "+simulatedTime);
+	return simulatedTime;
     }
 
     /*
@@ -304,8 +355,7 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public void setCurrentDate(Calendar calendar) {
-	currentLag = calendar.getTimeInMillis()
-		- Calendar.getInstance().getTimeInMillis();
+	setCurrentTimeInMillis(calendar.getTimeInMillis());
     }
 
     /*
@@ -317,21 +367,22 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
     @Override
     public void setCurrentTimeInMillis(long millis) {
 	currentLag = millis - Calendar.getInstance().getTimeInMillis();
+	setTimeFlowRate(flowRate);
+	calculateNextTimer();
     }
-    
+
     private String appsgatePictureId;
     private String appsgateObjectId;
     private String appsgateUserType;
     private String appsgateStatus;
     private String appsgateServiceName;
 
-    
     private void initAppsgateFields() {
-	    appsgatePictureId=null;
-	    appsgateServiceName="Swing Clock";
-	    appsgateUserType="21";
-	    appsgateStatus="2";
-	    appsgateObjectId=appsgateUserType+String.valueOf(this.hashCode());
+	appsgatePictureId = null;
+	appsgateServiceName = "Swing Clock";
+	appsgateUserType = "21";
+	appsgateStatus = "2";
+	appsgateObjectId = appsgateUserType + String.valueOf(this.hashCode());
     }
 
     /*
@@ -355,7 +406,7 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
 
 	// mandatory appsgate properties
 	descr.put("id", appsgateObjectId);
-	descr.put("type", appsgateUserType); // 21 for clok
+	descr.put("type", appsgateUserType); // 21 for clock
 	descr.put("status", appsgateStatus);
 	descr.put("name", appsgateServiceName);
 
@@ -407,6 +458,147 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
     @Override
     public void setPictureId(String pictureId) {
 	this.appsgatePictureId = pictureId;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#goAlongUntil(long)
+     */
+    @Override
+    public void goAlongUntil(long millis) {
+	synchronized (appsgateObjectId) {
+		Long currentTime = getCurrentTimeInMillis();
+		SortedMap<Long, Map<Integer,AlarmEventObserver>> alarmsToFire= alarms.subMap(currentTime, currentTime+millis);
+		if(alarmsToFire!=null)
+		    for(Map<Integer, AlarmEventObserver> obs : alarmsToFire.values())
+			fireClockAlarms(obs);
+		
+		setCurrentTimeInMillis(currentTime+millis);
+	}
+	calculateNextTimer();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * appsgate.lig.clock.sensor.spec.CoreClockSpec#registerAlarm(java.util.
+     * Calendar, appsgate.lig.clock.sensor.spec.AlarmEventObserver)
+     */
+    @Override
+    public int registerAlarm(Calendar calendar, AlarmEventObserver observer) {
+	if (calendar != null && observer != null) {
+	    synchronized (appsgateObjectId) {
+		Long time = getCurrentTimeInMillis();
+		if (alarms.containsKey(time)) {
+		    logger.debug("registerAlarm(...), alarm events already registered for this time, adding this one");
+		    Map<Integer, AlarmEventObserver> observers = alarms
+			    .get(time);
+		    observers.put(++currentAlarmId, observer);
+		    reverseAlarmMap.put(currentAlarmId, time);
+		} else {
+		    logger.debug("registerAlarm(...), alarm events not registered for this time, creating a new one");
+		    /**
+		     * An map between the alarm event ID and the associated
+		     * observers
+		     */
+		    Map<Integer, AlarmEventObserver> observers = new HashMap<Integer, AlarmEventObserver>();
+		    observers.put(++currentAlarmId, observer);
+		    alarms.put(time, observers);
+		    reverseAlarmMap.put(currentAlarmId, time);
+		}
+		logger.debug("registerAlarm(...), alarm events id created : "
+			+ currentAlarmId);
+		calculateNextTimer();
+		return currentAlarmId;
+	    }
+	} else {
+	    logger.debug("registerAlarm(...), calendar or oberver is null, does not register the alarm");
+	    return -1;
+	}
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#unregisterAlarm(int)
+     */
+    @Override
+    public void unregisterAlarm(int alarmEventId) {
+	synchronized (appsgateObjectId) {
+	    Long time = reverseAlarmMap.get(alarmEventId);
+	    Map<Integer, AlarmEventObserver> observers = alarms.get(time);
+	    observers.remove(alarmEventId);
+	    if (observers.size() < 1)
+		alarms.remove(time);
+	    reverseAlarmMap.remove(alarmEventId);
+	    calculateNextTimer();
+	}
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#setTimeFlowRate(double)
+     */
+    @Override
+    public double setTimeFlowRate(double rate) {
+	if(rate>0 && rate!=1) {
+	    // avoid value that could lead to strange behavior
+	    timeFlowBreakPoint=System.currentTimeMillis();
+	    if(flowRate<0.01)
+		flowRate=0.01;
+	    if(flowRate>100)
+		flowRate=100;
+	    else flowRate=rate;
+	} else {
+		flowRate = 1;
+		timeFlowBreakPoint=-1;
+	}
+	logger.debug("setTimeFlowRate(double rate), new time flow rate : "+flowRate);
+	return flowRate;
+
+    }
+
+    private void calculateNextTimer() {
+	synchronized (appsgateObjectId) {
+	    Long currentTime = getCurrentTimeInMillis();
+	    if (alarms != null && !alarms.isEmpty()
+		    && alarms.lastKey() >= currentTime) {
+		nextAlarm = alarms.tailMap(currentTime).firstKey();
+		long nextAlarmDelay = nextAlarm - currentTime;
+		nextAlarmDelay = (long) (nextAlarmDelay / flowRate);
+		logger.debug("calculateNextTimer(), next alarm should ring in : "
+			+ nextAlarmDelay / 1000 + "s");
+		timer.cancel();
+		timer.schedule(alarmFiringTask, nextAlarmDelay);
+	    }
+	}
+
+    }
+
+    TimerTask alarmFiringTask = new TimerTask() {
+	@Override
+	public void run() {
+	    logger.debug("Firing current clock alarms");
+	    if (nextAlarm > 0) {
+		Map<Integer, AlarmEventObserver> observers = alarms
+			.remove(nextAlarm);
+		fireClockAlarms(observers);
+		nextAlarm = -1;
+		calculateNextTimer();
+	    }
+	}
+    };
+    
+    public void fireClockAlarms(Map<Integer, AlarmEventObserver> observers) {
+	for (Integer i : observers.keySet()) {
+	    logger.debug("fireClockAlarms(...), AlarmEventId : " + i);
+	    AlarmEventObserver obs = observers.remove(i);
+	    if (obs != null)
+		obs.alarmEventFired(i.intValue());
+	}
     }
 
 }

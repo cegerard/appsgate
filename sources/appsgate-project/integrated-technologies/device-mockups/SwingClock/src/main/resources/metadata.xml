@@ -3,8 +3,8 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-    <implementation name="SwingClockImpl"
-        classname="appsgate.lig.clock.sensor.impl.SwingClock"
+    <implementation name="SimpleClockImpl"
+        classname="appsgate.lig.clock.sensor.impl.SimpleClockImpl"
         specification="CoreClockSpec" push="fireClockSetNotificationMsg">
         <callback onInit="start" onRemove="stop" />
 

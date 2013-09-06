@@ -49,7 +49,7 @@ public interface CoreClockSpec {
      * register a new Alarm at specified calendar date
      * @param calendar The date when clock event must be generated
      * @param observer The observer that must be called
-     * @return An unique identifier for the Alarm (allow unregister and distinction between multiple alarm for a single observer)
+     * @return An unique identifier for the Alarm (allow unregister and distinction between multiple alarm for a single observer) or -1 if registration impossible
      */
     int registerAlarm(Calendar calendar, AlarmEventObserver observer);
     
@@ -64,11 +64,12 @@ public interface CoreClockSpec {
      * Sets the time flow rate (to speed-up or slow down time events)
      * 
      * @param rate Default is "1" (real time),
-     * if inferior to "1", simulated time will flow faster (0,5 means that a day will be done in 12 hrs),
-     * if superior to "1", simulated time will flow slower (2 means than a day will be done in 48 hrs)
+     * if inferior to "1", simulated time will flow slower (0,5 means that a day will be done in 48 hrs),
+     * if superior to "1", simulated time will flow faster (2 means than a day will be done in 12 hrs)
      * if less or equal to "0", value is invalid and will not be taken into account
+     * @return the setted time flow (best effort: might be different from the desired value, depends on the implementation and the hardware possibilities)
      */
-    void setTimeFlowRate(double rate);
+    double setTimeFlowRate(double rate);
     
 
     /**
