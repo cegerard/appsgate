@@ -125,11 +125,10 @@ public class WattecoAdapter implements WattecoIOService,
 	            while (read.ready()) {
 	            	String result = read.readLine();
 	            	if(result.contains("tty.usbserial")) {
-	            		int invalidPort = result.charAt(result.length()-1);
+	            		char invalidPort = result.charAt(result.length()-1);
 	            		if(invalidPort == port) {
-	            			port++;
+	            			port = '1';
 	            		}
-	            		
 	            	}
 	            }
 	          // 2- Run the tunslip configuration program to the free serial port
