@@ -9,6 +9,7 @@ import javax.print.attribute.HashAttributeSet;
 import appsgate.lig.clock.sensor.impl.SimpleClockImpl;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;  
@@ -61,6 +62,12 @@ public class SimpleClockTest implements AlarmEventObserver{
 	clock = new SimpleClockImpl();
 	clock.start();
 	receivedAlarm = new HashSet<Integer>();
+    }
+    
+    @After
+    public void stop() {
+	clock.stop();
+	clock = null;
     }
     
 
@@ -214,6 +221,7 @@ public class SimpleClockTest implements AlarmEventObserver{
 	}catch (Exception exc) {
 	    exc.printStackTrace();
 	}
+	System.out.println("received alarms : "+receivedAlarm);
 	
 	Assert.assertTrue("received alarm set should be empty",receivedAlarm.isEmpty());
 	
@@ -271,6 +279,38 @@ public class SimpleClockTest implements AlarmEventObserver{
 	Assert.assertEquals("received alarm set should contain only one element",1,receivedAlarm.size());
 	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID));
 
+    }
+    
+    @Test
+    public void testGoAlongUntil() {
+	System.out.println("testGoAlongUntil(), adding a 6 events in the future (one for each hour, and jump into 4,5 hours)");
+	long current = clock.getCurrentTimeInMillis();
+	Calendar[] tabCalendar= new Calendar[6];
+	
+	int lastAlarmId=-1;
+	for(int i=0;i<tabCalendar.length; i++) {
+	    tabCalendar[i]=Calendar.getInstance();
+	    tabCalendar[i].setTimeInMillis(current+((i+1)*1000*60*60));
+	    lastAlarmId=clock.registerAlarm(tabCalendar[i], this);
+	}
+
+	
+	try{
+	    Thread.sleep(4321);
+	}catch (Exception exc) {
+	    exc.printStackTrace();
+	}
+	
+	Assert.assertTrue("received alarm set should be empty",receivedAlarm.isEmpty());
+	
+	clock.goAlongUntil((long)(4.5*1000*60*60));
+	Assert.assertEquals("received alarm set should contain 4 elements",4,receivedAlarm.size());
+	clock.goAlongUntil((1000*60*60));
+	Assert.assertEquals("received alarm set should contain 5 elements",5,receivedAlarm.size());
+	
+	clock.unregisterAlarm(lastAlarmId);
+	clock.goAlongUntil((1000*60*60));
+	Assert.assertEquals("received alarm set should still contain 5 elements (last alarm unregistered)",5,receivedAlarm.size());	
     }
     
 

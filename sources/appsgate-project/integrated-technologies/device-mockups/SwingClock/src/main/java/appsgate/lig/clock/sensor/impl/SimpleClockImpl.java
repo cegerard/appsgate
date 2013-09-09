@@ -44,6 +44,13 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
     long currentLag;
 
     /**
+     * In case we miss an alarm because of delay took for processing, we allow
+     * to fire alarms that that should have occurred until 50 ms before current
+     * time
+     */
+    long alarmLagTolerance = 50;
+
+    /**
      * current flow rate, "1" is the default value
      */
     double flowRate;
@@ -55,7 +62,7 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
      * A sorted map between the times in millis at which are registered alarms
      * and the corresponding alarm Id and observers
      */
-    private SortedMap<Long, Map<Integer,AlarmEventObserver>> alarms;
+    private SortedMap<Long, Map<Integer, AlarmEventObserver>> alarms;
 
     /**
      * Convenient to unregister alarms (avoid complexity)
@@ -81,12 +88,12 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 
     long nextAlarm;
     Timer timer = new Timer();
-    
 
     /**
      * Static class member uses to log what happened in each instances
      */
-    private static Logger logger = LoggerFactory.getLogger(SimpleClockImpl.class);
+    private static Logger logger = LoggerFactory
+	    .getLogger(SimpleClockImpl.class);
 
     public SimpleClockImpl() {
 	oldDay = -1;
@@ -105,7 +112,6 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
     public void start() {
 	logger.info("New swing clock created");
 
-
 	refreshClock();
 	Timer refreshTimer = new Timer();
 	refreshTimer.scheduleAtFixedRate(refreshtask, Calendar.getInstance()
@@ -114,7 +120,9 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 
     public void stop() {
 	logger.info("Swing Clock removed");
-	frameClock.dispose();
+	timer.cancel();
+	timer=null;
+	//frameClock.dispose();
 
     }
 
@@ -289,11 +297,11 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 	    currentLag = 0;
 	    flowRate = 1;
 	    currentAlarmId = 0;
-	    alarms = new TreeMap<Long, Map<Integer,AlarmEventObserver>>();
+	    alarms = new TreeMap<Long, Map<Integer, AlarmEventObserver>>();
 	    reverseAlarmMap = new HashMap<Integer, Long>();
 	    nextAlarm = -1;
 	    timer.purge();
-	    timeFlowBreakPoint=-1;
+	    timeFlowBreakPoint = -1;
 	}
 	fireClockSetNotificationMsg(Calendar.getInstance());
     }
@@ -320,8 +328,9 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 	return cal;
     }
 
-    /*	if
-
+    /*
+     * if
+     * 
      * (non-Javadoc)
      * 
      * @see
@@ -330,19 +339,20 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
     @Override
     public long getCurrentTimeInMillis() {
 	// TODO with flow might be more difficult
-	
+
 	long systemTime = System.currentTimeMillis();
 	long simulatedTime = currentLag;
-	if(timeFlowBreakPoint>0 && timeFlowBreakPoint<=systemTime) {
-	    long elapsedTime = (long)((systemTime - timeFlowBreakPoint)*flowRate);
-		logger.debug("getCurrentTimeInMillis(), system time : "+systemTime
-			+", time flow breakpoint : "+ timeFlowBreakPoint
-			+", elasped time : "+elapsedTime);
-	    
-	    simulatedTime += timeFlowBreakPoint+elapsedTime;
-	} else 
-	    simulatedTime+=systemTime;
-	logger.debug("getCurrentTimeInMillis(), simulated time : "+simulatedTime);
+	if (timeFlowBreakPoint > 0 && timeFlowBreakPoint <= systemTime) {
+	    long elapsedTime = (long) ((systemTime - timeFlowBreakPoint) * flowRate);
+	    logger.debug("getCurrentTimeInMillis(), system time : "
+		    + systemTime + ", time flow breakpoint : "
+		    + timeFlowBreakPoint + ", elasped time : " + elapsedTime);
+
+	    simulatedTime += timeFlowBreakPoint + elapsedTime;
+	} else
+	    simulatedTime += systemTime;
+	logger.debug("getCurrentTimeInMillis(), simulated time : "
+		+ simulatedTime);
 	return simulatedTime;
     }
 
@@ -468,13 +478,15 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
     @Override
     public void goAlongUntil(long millis) {
 	synchronized (appsgateObjectId) {
-		Long currentTime = getCurrentTimeInMillis();
-		SortedMap<Long, Map<Integer,AlarmEventObserver>> alarmsToFire= alarms.subMap(currentTime, currentTime+millis);
-		if(alarmsToFire!=null)
-		    for(Map<Integer, AlarmEventObserver> obs : alarmsToFire.values())
-			fireClockAlarms(obs);
-		
-		setCurrentTimeInMillis(currentTime+millis);
+	    Long currentTime = getCurrentTimeInMillis();
+	    SortedMap<Long, Map<Integer, AlarmEventObserver>> alarmsToFire = alarms
+		    .subMap(currentTime, currentTime + millis);
+	    if (alarmsToFire != null)
+		for (Map<Integer, AlarmEventObserver> obs : alarmsToFire
+			.values())
+		    fireClockAlarms(obs);
+
+	    setCurrentTimeInMillis(currentTime + millis);
 	}
 	calculateNextTimer();
     }
@@ -494,9 +506,10 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 		if (alarms.containsKey(time)) {
 		    logger.debug("registerAlarm(...), alarm events already registered for this time, adding this one");
 		    Map<Integer, AlarmEventObserver> observers = alarms
-			    .get(time);
+			    .get(calendar.getTimeInMillis());
 		    observers.put(++currentAlarmId, observer);
-		    reverseAlarmMap.put(currentAlarmId, time);
+		    reverseAlarmMap.put(currentAlarmId,
+			    calendar.getTimeInMillis());
 		} else {
 		    logger.debug("registerAlarm(...), alarm events not registered for this time, creating a new one");
 		    /**
@@ -505,8 +518,9 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 		     */
 		    Map<Integer, AlarmEventObserver> observers = new HashMap<Integer, AlarmEventObserver>();
 		    observers.put(++currentAlarmId, observer);
-		    alarms.put(time, observers);
-		    reverseAlarmMap.put(currentAlarmId, time);
+		    alarms.put(calendar.getTimeInMillis(), observers);
+		    reverseAlarmMap.put(currentAlarmId,
+			    calendar.getTimeInMillis());
 		}
 		logger.debug("registerAlarm(...), alarm events id created : "
 			+ currentAlarmId);
@@ -544,19 +558,21 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
      */
     @Override
     public double setTimeFlowRate(double rate) {
-	if(rate>0 && rate!=1) {
+	if (rate > 0 && rate != 1) {
 	    // avoid value that could lead to strange behavior
-	    timeFlowBreakPoint=System.currentTimeMillis();
-	    if(flowRate<0.01)
-		flowRate=0.01;
-	    if(flowRate>100)
-		flowRate=100;
-	    else flowRate=rate;
+	    timeFlowBreakPoint = System.currentTimeMillis();
+	    if (flowRate < 0.01)
+		flowRate = 0.01;
+	    if (flowRate > 100)
+		flowRate = 100;
+	    else
+		flowRate = rate;
 	} else {
-		flowRate = 1;
-		timeFlowBreakPoint=-1;
+	    flowRate = 1;
+	    timeFlowBreakPoint = -1;
 	}
-	logger.debug("setTimeFlowRate(double rate), new time flow rate : "+flowRate);
+	logger.debug("setTimeFlowRate(double rate), new time flow rate : "
+		+ flowRate);
 	return flowRate;
 
     }
@@ -565,20 +581,35 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 	synchronized (appsgateObjectId) {
 	    Long currentTime = getCurrentTimeInMillis();
 	    if (alarms != null && !alarms.isEmpty()
-		    && alarms.lastKey() >= currentTime) {
-		nextAlarm = alarms.tailMap(currentTime).firstKey();
+		    && alarms.lastKey() >= (currentTime - alarmLagTolerance)) {
+		logger.debug("calculateNextTimer(), alarms last : "
+			+ alarms.lastKey() + ", current time : " + currentTime);
+		nextAlarm = alarms.tailMap(currentTime - alarmLagTolerance)
+			.firstKey();
 		long nextAlarmDelay = nextAlarm - currentTime;
+		if (nextAlarmDelay < 0)
+		    nextAlarmDelay = 0;
 		nextAlarmDelay = (long) (nextAlarmDelay / flowRate);
 		logger.debug("calculateNextTimer(), next alarm should ring in : "
-			+ nextAlarmDelay / 1000 + "s");
-		timer.cancel();
-		timer.schedule(alarmFiringTask, nextAlarmDelay);
+			+ nextAlarmDelay + "ms");
+		AlarmFiringTask nextAlarm = new AlarmFiringTask();
+		timer.schedule(nextAlarm, nextAlarmDelay);
 	    }
 	}
 
     }
 
-    TimerTask alarmFiringTask = new TimerTask() {
+    public void fireClockAlarms(Map<Integer, AlarmEventObserver> observers) {
+	if (observers != null && !observers.isEmpty())
+	    for (Integer i : observers.keySet()) {
+		logger.debug("fireClockAlarms(...), AlarmEventId : " + i);
+		AlarmEventObserver obs = observers.remove(i);
+		if (obs != null)
+		    obs.alarmEventFired(i.intValue());
+	    }
+    }
+
+    class AlarmFiringTask extends TimerTask {
 	@Override
 	public void run() {
 	    logger.debug("Firing current clock alarms");
@@ -587,18 +618,10 @@ public class SimpleClockImpl implements CoreClockSpec, CoreObjectSpec,
 			.remove(nextAlarm);
 		fireClockAlarms(observers);
 		nextAlarm = -1;
+		this.cancel();
 		calculateNextTimer();
 	    }
 	}
     };
-    
-    public void fireClockAlarms(Map<Integer, AlarmEventObserver> observers) {
-	for (Integer i : observers.keySet()) {
-	    logger.debug("fireClockAlarms(...), AlarmEventId : " + i);
-	    AlarmEventObserver obs = observers.remove(i);
-	    if (obs != null)
-		obs.alarmEventFired(i.intValue());
-	}
-    }
 
 }
