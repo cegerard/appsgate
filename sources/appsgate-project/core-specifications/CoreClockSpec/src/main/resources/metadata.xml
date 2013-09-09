@@ -4,7 +4,8 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreClockSpec"
-		interfaces="appsgate.lig.clock.sensor.spec.CoreClockSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
+		interfaces="appsgate.lig.clock.sensor.spec.CoreClockSpec, appsgate.lig.clock.sensor.spec.AlarmEventObserver"
+        messages="appsgate.lig.core.object.messages.NotificationMsg">
 	</specification>
 
 </apam>

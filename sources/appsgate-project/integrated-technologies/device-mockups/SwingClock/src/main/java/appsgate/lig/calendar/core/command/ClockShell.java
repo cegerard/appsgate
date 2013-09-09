@@ -12,7 +12,7 @@ import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 
-import appsgate.lig.clock.sensor.impl.SimpleClockImpl;
+import appsgate.lig.clock.sensor.impl.SwingClockImpl;
 
 /**
  * Universal shell command for the SwingClock 
@@ -40,15 +40,15 @@ public class ClockShell {
 	    "getTime#hide the Swing Interface",
 	    "resetTime#reset clock to current system date and time" };
 
-	private SimpleClockImpl retrieveSwingClockInstance() {
+	private SwingClockImpl retrieveSwingClockInstance() {
 		Implementation implementation = CST.apamResolver.findImplByName(null,
 			"SwingClockImpl");
-		return (SimpleClockImpl) implementation.getInst().getServiceObject();
+		return (SwingClockImpl) implementation.getInst().getServiceObject();
 	    
 	}
 
 	public void showClock(PrintWriter out, String... args) {
-	    SimpleClockImpl myClock=retrieveSwingClockInstance();
+	    SwingClockImpl myClock=retrieveSwingClockInstance();
 	    if(myClock!= null) {
 		myClock.show();
 	    }
@@ -56,7 +56,7 @@ public class ClockShell {
 	}
 	
 	public void hideClock(PrintWriter out, String... args) {
-	    SimpleClockImpl myClock=retrieveSwingClockInstance();
+	    SwingClockImpl myClock=retrieveSwingClockInstance();
 	    if(myClock!= null) {
 		myClock.hide();
 	    }
@@ -64,7 +64,7 @@ public class ClockShell {
 	}
 	
 	public void getTime(PrintWriter out, String... args) {
-	    SimpleClockImpl myClock=retrieveSwingClockInstance();
+	    SwingClockImpl myClock=retrieveSwingClockInstance();
 	    if(myClock!= null) {
 		out.println("Clock currently defined time : "+myClock.getCurrentDate().getTime());
 	    }
@@ -72,7 +72,7 @@ public class ClockShell {
 	}
 	
 	public void resetTime(PrintWriter out, String... args) {
-	    SimpleClockImpl myClock=retrieveSwingClockInstance();
+	    SwingClockImpl myClock=retrieveSwingClockInstance();
 	    if(myClock!= null) {
 		myClock.resetClock();
 	    }

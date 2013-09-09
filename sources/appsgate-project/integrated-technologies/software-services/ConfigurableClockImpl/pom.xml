@@ -2,12 +2,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>device-mockups</artifactId>
+        <artifactId>software-services</artifactId>
         <groupId>appsgate.components</groupId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>SwingClock</artifactId>
+    <artifactId>ConfigurableClockImpl</artifactId>
 
     <packaging>bundle</packaging>
 
@@ -41,48 +41,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo</artifactId>
-            <version>1.8.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-            <version>1.8.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.knowhowlab.osgi.shell</groupId>
-            <artifactId>felix-gogo</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.knowhowlab.osgi.shell</groupId>
-            <artifactId>felix</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-        <dependency>
-            <artifactId>apam-core</artifactId>
-            <groupId>fr.imag.adele.apam</groupId>
-            <version>${apam.current.version}</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>ConfigurableClockImpl</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+
+
 
     </dependencies>
 

@@ -3,23 +3,13 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-    <implementation name="SimpleClockImpl"
-        classname="appsgate.lig.clock.sensor.impl.SimpleClockImpl"
+    <implementation name="SwingClockImpl"
+        classname="appsgate.lig.clock.sensor.impl.SwingClockImpl"
         specification="CoreClockSpec" push="fireClockSetNotificationMsg">
         <callback onInit="start" onRemove="stop" />
 
 
 
-
-        <!-- device kernel meta data -->
-        <definition name="deviceName" type="string"
-            field="appsgateServiceName" />
-        <definition name="deviceId" type="string" field="appsgateObjectId" />
-
-        <!-- device client meta data -->
-        <definition name="pictureId" type="string" field="appsgatePictureId" />
-        <definition name="userType" type="string" field="appsgateUserType" />
-        <definition name="status" type="string" field="appsgateStatus" />
 
     </implementation>
 

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import javax.print.attribute.HashAttributeSet;
 
-import appsgate.lig.clock.sensor.impl.SimpleClockImpl;
+import appsgate.lig.clock.sensor.impl.ConfigurableClockImpl;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 
 import org.junit.After;
@@ -43,7 +43,7 @@ public class SimpleClockTest implements AlarmEventObserver{
     long errorTolerance=10;
     long systemTime;
     long clockTime;
-    SimpleClockImpl clock;
+    ConfigurableClockImpl clock;
     Set<Integer> receivedAlarm;
     private static Logger logger = LoggerFactory.getLogger(SimpleClockTest.class);
     
@@ -59,7 +59,7 @@ public class SimpleClockTest implements AlarmEventObserver{
     
     @Before
     public void setUp() {
-	clock = new SimpleClockImpl();
+	clock = new ConfigurableClockImpl();
 	clock.start();
 	receivedAlarm = new HashSet<Integer>();
     }

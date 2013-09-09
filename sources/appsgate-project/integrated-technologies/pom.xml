@@ -20,6 +20,7 @@
 		<module>upnp-dlna</module>
 		<module>web-services</module>
 		<module>device-mockups</module>
+		<module>software-services</module>
 	</modules>
 	
 </project>
