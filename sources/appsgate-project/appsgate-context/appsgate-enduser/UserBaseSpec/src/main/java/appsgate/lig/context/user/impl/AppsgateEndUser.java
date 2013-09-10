@@ -1,6 +1,9 @@
 package appsgate.lig.context.user.impl;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +28,11 @@ public class AppsgateEndUser {
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory.getLogger(AppsgateEndUser.class);
+	
+	/**
+	 * Executor use to manage user service account instanciation
+	 */
+	private ScheduledExecutorService instanciationService;
 
 	/**
 	 * The end user identifier use in in
@@ -69,6 +77,7 @@ public class AppsgateEndUser {
 	 */
 	public AppsgateEndUser() {
 		this.hashPSWD = BCrypt.hashpw("", BCrypt.gensalt(11));
+		this.instanciationService = Executors.newScheduledThreadPool(1);
 	}
 	
 	/**
@@ -83,6 +92,8 @@ public class AppsgateEndUser {
 	public AppsgateEndUser(String id, String pswd, String lastName, String firstName, String role) {
 		super();
 		
+		this.instanciationService = Executors.newScheduledThreadPool(1);
+		
 		this.id	   	   = id;
 		this.hashPSWD  = BCrypt.hashpw(pswd, BCrypt.gensalt(11));
 		this.lastName  = lastName;
@@ -95,6 +106,9 @@ public class AppsgateEndUser {
 	 * @param jsonObject the JSONObject description
 	 */
 	public AppsgateEndUser(JSONObject jsonObject) {
+		
+		this.instanciationService = Executors.newScheduledThreadPool(1);
+		
 		try {
 			this.id 	   = jsonObject.getString("id");
 			this.hashPSWD  = jsonObject.getString("hashPSWD");
@@ -110,24 +124,10 @@ public class AppsgateEndUser {
 				i++;
 			}
 			
-			JSONArray accounts = jsonObject.getJSONArray("accounts");
-			JSONObject acc;
-			ServiceAccount sa;
-			size = accounts.length();
-			i=0;
-			while (i<size){
-				acc = accounts.getJSONObject(i);
-				
-				String login = acc.getString("login");
-				String hashPswd = acc.getString("hasPSWD");
-				String accountImplementation = acc.getString("implem");
-				JSONObject accountSynchDetails = acc.getJSONObject("synchDetails");
-				
-				sa = new ServiceAccount(login, hashPswd, accountImplementation, accountSynchDetails);
-				serviceAccountList.add(sa);
-				i++;
-			}
-			
+			//Create thread that take the account list in parameter and instanciate all account
+			//TODO Schedule instanciation to avoid dependency collision
+			instanciationService.schedule(new accountInstanciation(jsonObject.getJSONArray("accounts")), 15, TimeUnit.SECONDS);
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -145,6 +145,16 @@ public class AppsgateEndUser {
 	 */
 	public void deleteInst() {
 		logger.info("A user instance desapeared");
+		
+		instanciationService.shutdown();
+		try {
+			instanciationService.awaitTermination(5, TimeUnit.SECONDS);
+			logger.debug("instanciation acocunt service terminate.");
+		} catch (InterruptedException e) {
+			// instanciationService has probably terminated, but some problem
+			// happened.
+			logger.debug("Account instanciation service thread crash at termination");
+		}
 	}
 
 	/**
@@ -331,4 +341,46 @@ public class AppsgateEndUser {
 		return false;
 	}
 	
+	
+	
+	/**
+	 * Inner class for user account instanciation thread
+	 * @author Cédric Gérard
+	 * @since Septembre 10, 2013
+	 * @version 1.0.0
+	 */
+	private class accountInstanciation implements Runnable {
+
+		JSONArray accounts;
+		
+		public accountInstanciation(JSONArray accounts) {
+			super();
+			this.accounts = accounts;
+			logger.info("user account instanciation service ready.");
+		}
+
+		public void run() {
+			JSONObject acc;
+			ServiceAccount sa;
+			int size = accounts.length();
+			int i=0;
+			while (i<size){
+				try {
+					acc = accounts.getJSONObject(i);
+
+					String login = acc.getString("login");
+					String hashPswd = acc.getString("hasPSWD");
+					String accountImplementation = acc.getString("implem");
+					JSONObject accountSynchDetails = acc.getJSONObject("synchDetails");
+				
+					sa = new ServiceAccount(login, hashPswd, accountImplementation, accountSynchDetails);
+					serviceAccountList.add(sa);
+					i++;
+					
+				} catch (JSONException e) {logger.error(e.getMessage());}
+			}
+		}
+		
+		
+	}
 }
