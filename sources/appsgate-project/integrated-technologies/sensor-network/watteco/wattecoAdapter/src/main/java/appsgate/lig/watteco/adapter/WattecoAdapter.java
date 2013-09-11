@@ -91,7 +91,7 @@ public class WattecoAdapter implements WattecoIOService,
 	 */
 	public WattecoAdapter() {
 		super();
-		this.borderRouter = new BorderRouter();
+		this.borderRouter = new BorderRouter(this);
 		instanciationService = Executors.newScheduledThreadPool(2);
 		slipTunnelOn = false;
 		ipv6AddressToInstance = new HashMap<String, Instance>();
@@ -266,6 +266,27 @@ public class WattecoAdapter implements WattecoIOService,
 		return ip6;
 	}
 	
+	/**
+	 * Get the ApAm instance corresponding to an IPv6 address
+	 * @param address the sensor Ipv6 address
+	 * @return the ApAM instance if exist, null otherwise
+	 */
+	public Instance getInstanceFormAddress(String address) {
+		return ipv6AddressToInstance.get(address);
+	}
+	
+	/**
+	 * Convert bytes array to integer
+	 * @param bytes the bytes array
+	 * @return the value as an integer
+	 */
+	public int bytesToInt(byte[] bytes) {
+        int integer = 0;
+        for(int i = 0; i < bytes.length; i ++) {
+            integer += ((256 + bytes[i]) % 256) * (int)Math.pow(256, i);
+        }
+        return integer;
+    }
 
 	/* ***********************************************************************
 	 * 						   	 INNER CLASS                                 *
@@ -284,6 +305,7 @@ public class WattecoAdapter implements WattecoIOService,
 		public sensorInstanciation(ArrayList<String> addressList) {
 			super();
 			this.addressList = addressList;
+			logger.debug(addressList.size()+ " Watteco sensor(s) to instanciate.");
 		}
 
 		public void run() {
@@ -377,19 +399,6 @@ public class WattecoAdapter implements WattecoIOService,
 			}
 		}
 	}
-
-	/**
-	 * Convert bytes array to integer
-	 * @param bytes the bytes array
-	 * @return the value as an integer
-	 */
-	private int bytesToInt(byte[] bytes) {
-        int integer = 0;
-        for(int i = 0; i < bytes.length; i ++) {
-            integer += ((256 + bytes[i]) % 256) * (int)Math.pow(256, i);
-        }
-        return integer;
-    }
 	
 	/**
 	 * Extract input cluster list from sensor configuration description
@@ -463,6 +472,8 @@ public class WattecoAdapter implements WattecoIOService,
 				state = "true";
 			}
 			initialproperties.put("plugState", state);
+			//Configure ON/OFF cluster reporting
+			sendCommand(route, WattecoAdapter.ON_OFF_CONF_REPORTING, false);
 			
 			//Extract consumption value
 			ret = sendCommand(route, WattecoAdapter.SIMPLE_METERING_READ_ATTRIBUTE, true);
@@ -471,6 +482,8 @@ public class WattecoAdapter implements WattecoIOService,
 			b = new Byte(ret[18]);
 			cons += b;
 			initialproperties.put("consumption", String.valueOf(cons));
+			//Configure simple metering cluster reporting
+			sendCommand(route, WattecoAdapter.SIMPLE_METERING_CONF_REPORTING, false);
 		}
 			
 	}
@@ -488,10 +501,12 @@ public class WattecoAdapter implements WattecoIOService,
 	public static final String ON_OFF_ON 	 				   		   = "$11$50$00$06$01";
 	public static final String ON_OFF_TOGGLE 				   		   = "$11$50$00$06$02";
 	public static final String ON_OFF_READ_ATTRIBUTE  		   		   = "$11$00$00$06$00$00";
+	public static final String ON_OFF_CONF_REPORTING  		   		   = "$11$06$00$06$00$00$00$10$00$00$FF$FF$01";
 	
 	//Simple metering cluster commands
 	public static final String SIMPLE_METERING_CLUSTER				   = "52";
 	public static final String SIMPLE_METERING_READ_ATTRIBUTE  		   = "$11$00$00$52$00$00";
+	public static final String SIMPLE_METERING_CONF_REPORTING  		   = "$11$06$00$52$00$00$00$41$01$2C$01$6C$0C$00$00$01$00$00$00$00$01$00$01$00$00";
 	
 	//Temperature measurement cluster commands
 	public static final String TEMPERATURE_MEASUREMENT_CLUSTER		   = "402";

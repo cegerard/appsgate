@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.imag.adele.apam.Instance;
+
 
 /**
  * A class representing a border router.
@@ -41,6 +43,9 @@ public class BorderRouter {
 	/** class logger member */
 	private static Logger logger = LoggerFactory.getLogger(BorderRouter.class);
 	
+	/** The reference to the WattecoAdapter master instance */
+	private WattecoAdapter wattecoAdapter;
+	
 	/** Executor scheduler for reporting listening */
 	private ScheduledExecutorService listenningService;
 	
@@ -58,12 +63,13 @@ public class BorderRouter {
 	 * 							 PUBLIC FUNCTIONS                            *
 	 *********************************************************************** */
 	
-	public BorderRouter() {
+	public BorderRouter(WattecoAdapter adapter) {
 		super();
 		returnCallList = new ArrayList<BorderRouterCommand>();
 		listenningService = Executors.newScheduledThreadPool(1);
 		started = true;
 		listenningService.execute(new ListeningService());
+		wattecoAdapter = adapter;
 	}
 	
 
@@ -87,14 +93,13 @@ public class BorderRouter {
 			
 			// wait for the answer, if any
 			if (c.sendsBack()) {
-				synchronized(c) {
+				
 					addToReturnCallList(c);
 					// send the command
 					sender.send(sendPacket);
-					c.wait(30000);
+					synchronized(c) {c.wait(15000);}
 					result = c.getData();
 					removeToReturnCallList(c);
-				}
 			}else {
 				// send the command
 				sender.send(sendPacket);
@@ -169,26 +174,70 @@ public class BorderRouter {
 	 * @param idDatagram the packet header
 	 * @return the border router command that correspond to the response packet received 
 	 */
-	private synchronized BorderRouterCommand findReturnCommand(InetAddress addr, String idDatagram) {
+	private BorderRouterCommand findReturnCommand(InetAddress addr, String idDatagram) {
 		BorderRouterCommand cmd = null;
-		
-		for(BorderRouterCommand brcmd : returnCallList) {
-			if(brcmd.getAddress().getHostAddress().contentEquals(addr.getHostAddress())) {
-				if(brcmd.getValue().contains(idDatagram)) {
-					cmd = brcmd;
-					break;
+		synchronized(returnCallList) {
+			for(BorderRouterCommand brcmd : returnCallList) {
+				if(brcmd.getAddress().getHostAddress().contentEquals(addr.getHostAddress())) {
+					if(brcmd.getValue().contains(idDatagram)) {
+						cmd = brcmd;
+						break;
+					}
 				}
 			}
 		}
 		return cmd;
 	}
 	
-	private synchronized void  addToReturnCallList (BorderRouterCommand c) {
-		returnCallList.add(c);
+	private void addToReturnCallList (BorderRouterCommand c) {
+		synchronized(returnCallList) {
+			returnCallList.add(c);
+		}
 	}
 	
-	private synchronized void  removeToReturnCallList (BorderRouterCommand c) {
-		returnCallList.remove(c);
+	private void removeToReturnCallList (BorderRouterCommand c) {
+		synchronized(returnCallList) {
+			returnCallList.remove(c);
+		}
+	}
+	
+	private void setInstanceProperties(Instance inst, byte[] result) {
+		// TODO and set the corresponding properties or send notifications
+		try{
+			
+			String implName = inst.getImpl().getName(); 
+			
+			if(implName.contentEquals(WattecoAdapter.SMART_PLUG_IMPL)) {
+				byte[] clusterByteId = new byte[2];
+				clusterByteId[1] = result[2];
+				clusterByteId[0] = result[3];
+				int clustInt = wattecoAdapter.bytesToInt(clusterByteId);
+				String clusterId = Integer.toHexString(clustInt);
+				logger.debug("new value from: "+inst.getName() + ", clusterID: "+clusterId);
+				
+				//Set the plug relay state property
+				if(clusterId.contentEquals(WattecoAdapter.ON_OFF_CLUSTER)) {
+					String state = byteToHexString(result[7]);
+					String plugState = "true";
+					if(state.contentEquals("00")){plugState = "false";}
+					inst.setProperty("plugState", plugState);
+				}
+				
+				//set the plug consumption property
+				if(clusterId.contentEquals(WattecoAdapter.SIMPLE_METERING_CLUSTER)) {
+					// calculation of the 'active power in W'
+					byte b = new Byte(result[16]);
+					int activePower = (b << 8);
+					b = new Byte(result[17]);
+					activePower += b;
+					inst.setProperty("consumption", String.valueOf(activePower));
+				}
+				
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/* ***********************************************************************
@@ -216,18 +265,22 @@ public class BorderRouter {
 			try{
 				recver		= new DatagramSocket(RC_FROM_PORT);
 				//recver.setSoTimeout(20000);
+				
 				while (started) {
 					recver.receive(recvPacket);
 					result = recvPacket.getData();
 					// debug purpose only: display the received data
 					displayReceivedData(result, recvPacket.getLength());
 					
-//					if(result[1] == new Byte("0A").byteValue()){
-//						logger.info("Watteco notification sensor received.");
-//						String route  = recvPacket.getAddress().getHostAddress();
-//						//TODO notify phase
-//						
-//					} else {
+					if(result[1] == Byte.valueOf("0A", 16)){
+						logger.info("Watteco notification sensor received.");
+						String route  = recvPacket.getAddress().getHostAddress();
+						String address = "fe80:"+route.subSequence(12, route.length());
+						logger.debug("sensor IPV6 address: "+address);
+						Instance inst = wattecoAdapter.getInstanceFormAddress(address);
+						setInstanceProperties(inst, result);
+
+					} else {
 						logger.info("Watteco command response received.");
 						byte[] tabB = new byte[5];
 						tabB[0] = (byte) (result[1] - (new Byte("1").byteValue()));
@@ -243,12 +296,10 @@ public class BorderRouter {
 						
 						BorderRouterCommand cmd = findReturnCommand(recvPacket.getAddress(), idDatagram);
 						if( cmd != null ) {
-							synchronized(cmd) {
-								cmd.setData(result.clone());
-								cmd.notify();
-							}
+							cmd.setData(result.clone());
+							synchronized(cmd) {cmd.notify();}
 						}
-					//}
+					}
 				}
 				
 			} catch(SocketException e) {
@@ -257,6 +308,7 @@ public class BorderRouter {
 				logger.error(e.getMessage());
 			} catch( Exception e){
 				logger.error(e.getMessage());
+				e.printStackTrace();
 			}
 			
 			if(recver != null) {
@@ -265,7 +317,6 @@ public class BorderRouter {
 			}
 			logger.info("Watteco reporting service OFF.");
 		}
-		
 	}
 	
 	/* ***********************************************************************
