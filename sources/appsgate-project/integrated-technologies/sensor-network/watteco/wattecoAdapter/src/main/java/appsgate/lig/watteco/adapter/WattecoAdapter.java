@@ -506,7 +506,7 @@ public class WattecoAdapter implements WattecoIOService,
 	//Simple metering cluster commands
 	public static final String SIMPLE_METERING_CLUSTER				   = "52";
 	public static final String SIMPLE_METERING_READ_ATTRIBUTE  		   = "$11$00$00$52$00$00";
-	public static final String SIMPLE_METERING_CONF_REPORTING  		   = "$11$06$00$52$00$00$00$41$01$2C$01$6C$0C$00$00$01$00$00$00$00$01$00$01$00$00";
+	public static final String SIMPLE_METERING_CONF_REPORTING  		   = "$11$06$00$52$00$00$00$41$00$00$02$58$0C$00$00$00$00$00$00$00$00$00$02$00$00"; // 10 minutes reporting or 2W variation.
 	
 	//Temperature measurement cluster commands
 	public static final String TEMPERATURE_MEASUREMENT_CLUSTER		   = "402";
