@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +14,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  * Node program for the interpreter. Contains the metadatas of the program, the parameters, the variables and the rules
  * 
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since May 22, 2013
  * @version 1.0.0
  *
@@ -66,8 +69,15 @@ public class NodeProgram extends Node {
 	 * 	- STARTED
 	 *  - STOPPED
 	 *  - PAUSED
+	 *  - FAILED
+	 *  - LOADED
 	 */
 	private String runningState = "STOPPED";
+	
+	/**
+	 * Future Java object to manage the program thread
+	 */
+	private Future<Integer> seqRulesThread ;
 
 	/**
 	 * Default constructor
@@ -120,11 +130,15 @@ public class NodeProgram extends Node {
 		seqRules.addStartEventListener(this);
 		seqRules.addEndEventListener(this);
 		
-		pool.submit(seqRules);
+		seqRulesThread = pool.submit(seqRules);
 		
-		runningState = "STARTED";
-		
-		return null;
+		if(seqRulesThread != null) {
+			runningState = "LOADED";
+			return 1;
+		}else {
+			runningState = "FAILED";
+			return -1;
+		}
 	}
 
 	@Override
@@ -157,15 +171,15 @@ public class NodeProgram extends Node {
 
 	@Override
 	public void startEventFired(StartEvent e) {
+		runningState = "STARTED";
 		seqRules.removeStartEventListener(this);
-		
 	}
 
 	@Override
 	public void endEventFired(EndEvent e) {
+		runningState = "STOPPED";
 		seqRules.removeEndEventListener(this);
 		fireEndEvent(new EndEvent(this));
-		runningState = "STOPPED";
 	}
 
 }

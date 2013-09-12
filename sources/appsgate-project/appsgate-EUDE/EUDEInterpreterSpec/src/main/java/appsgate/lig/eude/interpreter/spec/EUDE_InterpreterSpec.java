@@ -13,10 +13,10 @@ import org.json.JSONObject;
 public interface EUDE_InterpreterSpec {
 
 	/**
-	 * Add a new program to the interpreter. Instantiate the program from its JSON representation
+	 * Initialize a program from its JSON representation
 	 * 
-	 * @param programJSON
-	 * @return
+	 * @param programJSON Abstract tree of the program in JSON
+	 * @return true when succeeded, false when failed a JSON error has been detected
 	 */
 	public boolean addProgram(JSONObject programJSON);
 	

@@ -1,15 +1,16 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 
 /**
  * Node for the sequence of boolean relations separated by a "and"
@@ -59,7 +60,7 @@ public class NodeSeqAndBool extends Node {
 		result = null;
 		
 		// initialize the pool of threads
-		pool = Executors.newFixedThreadPool(relationsBool.size());
+		//pool = Executors.newFixedThreadPool(relationsBool.size());
 	}
 
 	@Override
@@ -100,17 +101,18 @@ public class NodeSeqAndBool extends Node {
 		// add listener to the end of each node
 		for (NodeRelationBool n : relationsBool) {
 			n.addEndEventListener(this);
+			n.call();
 		}
 		
 		// launch the interpretation of the boolean relations
-		try {
-			pool.invokeAll(relationsBool);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
-		}
+//		try {
+//			pool.invokeAll(relationsBool);
+//		} catch (InterruptedException ex) {
+//			Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 		
 		// manage the pool
-		super.call();
+//		super.call();
 
 		return null;
 	}

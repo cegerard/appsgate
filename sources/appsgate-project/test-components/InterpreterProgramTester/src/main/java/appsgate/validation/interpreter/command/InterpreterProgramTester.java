@@ -49,6 +49,7 @@ public class InterpreterProgramTester {
 		interpreter.callProgram("LightsOff");
 		interpreter.callProgram("DefaultLightMode");
 		interpreter.callProgram("ColorLoopMode");
+//		interpreter.callProgram("PhilipsLights");
 
 		/* try {
 			Thread.sleep(2000);

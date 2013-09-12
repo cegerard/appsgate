@@ -1,20 +1,20 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 /**
  * Node for a list of events
  *
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since June 26, 2013
  * @version 1.0.0
  */
@@ -42,7 +42,7 @@ public class NodeSeqEvent extends Node {
 		}
 		
 		// initialize the thread pool
-		pool = Executors.newFixedThreadPool(seqEvent.size());
+		//pool = Executors.newFixedThreadPool(seqEvent.size());
 	}
 	
 	@Override
@@ -56,13 +56,14 @@ public class NodeSeqEvent extends Node {
 		// add an end event listener to each event
 		for (NodeEvent e : seqEvent) {
 			e.addEndEventListener(this);
+			e.call();
 		}
 		
-		try {
-			pool.invokeAll(seqEvent);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(NodeSeqEvent.class.getName()).log(Level.SEVERE, null, ex);
-		}
+//		try {
+//			pool.invokeAll(seqEvent);
+//		} catch (InterruptedException ex) {
+//			Logger.getLogger(NodeSeqEvent.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 
 		return null;
 	}

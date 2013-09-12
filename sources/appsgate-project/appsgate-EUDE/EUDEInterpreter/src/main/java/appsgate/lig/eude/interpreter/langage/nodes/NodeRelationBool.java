@@ -1,24 +1,18 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.router.spec.GenericCommand;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
 
 /**
  * Node for the boolean relations
  *
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since June 19, 2013
  * @version 1.0.0
  */
@@ -102,7 +96,7 @@ public class NodeRelationBool extends Node {
 		}
 
 		// two thread - one for each operand
-		pool = Executors.newFixedThreadPool(2);
+		//pool = Executors.newFixedThreadPool(2);
 
 		// nothing has been computed yet
 		result = null;
@@ -173,10 +167,12 @@ public class NodeRelationBool extends Node {
 		// interpret the left operand first if possible
 		if (leftNodeAction != null) {
 			leftNodeAction.addEndEventListener(this);
-			pool.submit(leftNodeAction);
+			//pool.submit(leftNodeAction);
+			leftNodeAction.call();
 		} else {
 			rightNodeAction.addEndEventListener(this);
-			pool.submit(rightNodeAction);
+			//pool.submit(rightNodeAction);
+			rightNodeAction.call();
 		}
 		
 		return null;
@@ -220,7 +216,8 @@ public class NodeRelationBool extends Node {
 			// if the right operand is not a direct value, launch its interpretation...
 			if (rightNodeAction != null) {
 				rightNodeAction.addEndEventListener(this);
-				pool.submit(rightNodeAction);
+				rightNodeAction.call();
+				//pool.submit(rightNodeAction);
 			// ... compute the final result and fire the end event otherwise
 			} else {
 				computeResult();

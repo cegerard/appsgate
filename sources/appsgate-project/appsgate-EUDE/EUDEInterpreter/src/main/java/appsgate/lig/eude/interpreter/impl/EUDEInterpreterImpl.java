@@ -134,12 +134,6 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", properties);
 	}
 
-	/**
-	 * Initialize a program from its JSON representation
-	 * 
-	 * @param programJSON Abstract tree of the program in JSON
-	 * @return true when succeeded, false when failed a JSON error has been detected
-	 */
 	@Override
 	public boolean addProgram(JSONObject programJSON) {
 		NodeProgram p;
@@ -180,7 +174,6 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 				properties.add(new AbstractMap.SimpleEntry<String,Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
 			}
 			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getName(), p.getInformation().toString(), properties);
-			
 			
 		}else {
 			logger.error("The programme "+programName+" does not exist.");

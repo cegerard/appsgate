@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,12 +8,13 @@ import org.json.JSONException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.ArrayList;
 
 /**
  * This class represents a sequence of rules to evaluate
  * 
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since May 22, 2013
  * @version 1.0.0
  *
@@ -53,7 +54,7 @@ public class NodeSeqRules extends Node {
 		 * Initialize the thread pool. This is a single thread pool because
 		 * the sequences of AndRules are separated by a "then", to be executed sequentially
 		 */
-		pool = Executors.newSingleThreadExecutor();
+		//pool = Executors.newSingleThreadExecutor();
 	}
 	
 	private void launchNextSeqAndRules() {
@@ -62,8 +63,8 @@ public class NodeSeqRules extends Node {
 		
 		// launch the sequence of rules
 		seqAndRule.addEndEventListener(this);
-		pool.submit(seqAndRule);
-		
+		//pool.submit(seqAndRule);
+		seqAndRule.call();
 		// manage the interpretation
 		// super.call();
 	}

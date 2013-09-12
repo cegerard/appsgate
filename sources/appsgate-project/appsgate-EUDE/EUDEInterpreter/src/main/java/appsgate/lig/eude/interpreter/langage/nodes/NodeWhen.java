@@ -1,17 +1,18 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Node for the when
  * 
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since June 25, 2013
  * @version 1.0.0
  */
@@ -35,7 +36,7 @@ public class NodeWhen extends Node {
 		seqRules = new NodeSeqRules(interpreter, ruleWhenJSON.getJSONArray("seqRulesThen"));
 		
 		// initialize the pool
-		pool = Executors.newCachedThreadPool();
+		//pool = Executors.newCachedThreadPool();
 	}
 	
 	@Override
@@ -43,7 +44,8 @@ public class NodeWhen extends Node {
 		fireStartEvent(new StartEvent(this));
 		
 		seqEvent.addEndEventListener(this);
-		pool.submit(seqEvent);
+		seqEvent.call();
+		//pool.submit(seqEvent);
 		// super.call();
 
 		return null;
@@ -64,8 +66,9 @@ public class NodeWhen extends Node {
 			seqRules.addEndEventListener(this);
 
 			System.out.println("###### all the events are received, launching the sequence of rules #######");
-			pool.submit(seqRules);
-			super.call();
+			seqRules.call();
+			//pool.submit(seqRules);
+			//super.call();
 			fireEndEvent(new EndEvent(this));
 		// if the sequence of rules is terminated, fire the event event
 		} else {

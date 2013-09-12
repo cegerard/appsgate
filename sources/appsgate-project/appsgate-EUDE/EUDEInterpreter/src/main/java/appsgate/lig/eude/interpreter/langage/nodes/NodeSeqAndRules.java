@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,10 +9,16 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+/**
+ * 
+ * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
+ * @since May 22, 2013
+ * @version 1.0.0
+ *
+ */
 public class NodeSeqAndRules extends Node {
 	
 	private ArrayList<Node> rules;
@@ -44,7 +49,7 @@ public class NodeSeqAndRules extends Node {
 		}
 
 		// initialize the thread pool
-		pool = Executors.newFixedThreadPool(rules.size());
+		//pool = Executors.newFixedThreadPool(rules.size());
 	}
 
 	@Override
@@ -54,14 +59,15 @@ public class NodeSeqAndRules extends Node {
 		
 		for (Node n : rules) {
 			n.addEndEventListener(this);
+			n.call();
 		}
 		
-		try {
-			pool.invokeAll(rules);
-			super.call();
-		} catch (InterruptedException ex) {
-			Logger.getLogger(NodeSeqAndRules.class.getName()).log(Level.SEVERE, null, ex);
-		}
+//		try {
+//			pool.invokeAll(rules);
+//			super.call();
+//		} catch (InterruptedException ex) {
+//			Logger.getLogger(NodeSeqAndRules.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 		
 		return null;
 	}

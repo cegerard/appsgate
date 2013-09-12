@@ -1,18 +1,18 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Node representing the events
  *
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since June 25, 2013
  * @version 1.0.0
  */
@@ -45,7 +45,7 @@ public class NodeEvent extends Node {
 		eventName = eventJSON.getString("eventName");
 		eventValue = eventJSON.getString("eventValue");
 		
-		pool = Executors.newSingleThreadExecutor();
+		//pool = Executors.newSingleThreadExecutor();
 	}
 	
 	@Override
