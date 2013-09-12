@@ -27,7 +27,7 @@ public class ExecuteCommandTester {
 	 */
 	@SuppressWarnings("rawtypes")
 	public void newInst() {
-		logger.debug("ExecuteCommandTester has been initialized");
+		logger.debug("ExecuteCommandTester has been initialized");  
 		
 		router.executeCommand("194.199.23.135-1", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
 		router.executeCommand("194.199.23.135-2", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
