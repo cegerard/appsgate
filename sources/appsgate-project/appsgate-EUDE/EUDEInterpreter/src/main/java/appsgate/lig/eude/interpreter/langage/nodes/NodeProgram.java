@@ -54,10 +54,10 @@ public class NodeProgram extends Node {
 	/**
 	 * Deamon attribute
 	 */
-	private String deamon;
-	public String getDeamon() {return deamon;}
-	public void setDeamon(String deamon) { this.deamon = deamon;}
-	public boolean isDeamon() { return deamon.contentEquals("true");}
+	private String daemon;
+	public String getDeamon() {return daemon;}
+	public void setDeamon(String deamon) { this.daemon = deamon;}
+	public boolean isDeamon() { return daemon.contentEquals("true");}
 	
 	/**
 	 * Use for simplify user interface reverse compute
@@ -134,7 +134,7 @@ public class NodeProgram extends Node {
 		name   = source.getString("programName");
 		author = source.getString("author");
 		target = source.getString("target");
-		deamon = source.getString("deamon");
+		daemon = source.getString("daemon");
 		seqRules = new NodeSeqRules(interpreter, source.getJSONArray("seqRules"));
 	}
 	
@@ -155,7 +155,7 @@ public class NodeProgram extends Node {
 			name   = source.getString("programName");
 			author = source.getString("author");
 			target = source.getString("target");
-			deamon = source.getString("deamon");
+			daemon = source.getString("daemon");
 			seqRules = new NodeSeqRules(interpreter, source.getJSONArray("seqRules"));
 			
 			return true;
