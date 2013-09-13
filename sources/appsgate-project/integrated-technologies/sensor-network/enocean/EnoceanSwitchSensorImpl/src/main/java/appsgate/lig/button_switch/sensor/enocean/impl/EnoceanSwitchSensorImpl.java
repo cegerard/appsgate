@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.button_switch.sensor.messages.SwitchNotificationMsg;
 import appsgate.lig.button_switch.sensor.spec.CoreSwitchSensorSpec;
+
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
@@ -20,7 +21,7 @@ import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
  * @see SwitchSensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanSwitchSensorImpl implements CoreSwitchSensorSpec, CoreObjectSpec {
+public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensorSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances

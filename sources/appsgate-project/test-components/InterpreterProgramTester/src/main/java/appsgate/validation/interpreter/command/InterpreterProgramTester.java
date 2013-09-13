@@ -45,10 +45,10 @@ public class InterpreterProgramTester {
 			e.printStackTrace();
 		}
 		
-		interpreter.callProgram("LightsOn");
-		interpreter.callProgram("LightsOff");
-		interpreter.callProgram("DefaultLightMode");
-		interpreter.callProgram("ColorLoopMode");
+		interpreter.callProgram("0000000001");
+		interpreter.callProgram("0000000002");
+		interpreter.callProgram("0000000003");
+		interpreter.callProgram("0000000004");
 //		interpreter.callProgram("PhilipsLights");
 
 		/* try {

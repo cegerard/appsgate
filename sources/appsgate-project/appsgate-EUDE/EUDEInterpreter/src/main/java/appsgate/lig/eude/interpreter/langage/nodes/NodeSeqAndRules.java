@@ -56,10 +56,11 @@ public class NodeSeqAndRules extends Node {
 	public Integer call() {
 		// no rules are done
 		nbRulesEnded = 0;
-		
+		started = true;
 		for (Node n : rules) {
 			n.addEndEventListener(this);
 			n.call();
+			if(stopping) { break;}
 		}
 		
 //		try {
@@ -79,8 +80,15 @@ public class NodeSeqAndRules extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		if(started) {
+			stopping = true;
+			for (Node n : rules) {
+				n.stop();
+				n.removeEndEventListener(this);
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -108,6 +116,7 @@ public class NodeSeqAndRules extends Node {
 		
 		// if all the rules are terminated, fire the end event
 		if (nbRulesEnded == rules.size()) {
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}

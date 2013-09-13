@@ -71,7 +71,15 @@ public class NodeExpBool extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
+		if(started) {
+			stopping = true;
+			for (NodeSeqAndBool n : listSeqAndBool) {
+				n.removeEndEventListener(this);
+				n.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -110,7 +118,7 @@ public class NodeExpBool extends Node {
 					Logger.getLogger(NodeExpBool.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
-
+			started = false;
 			// fire the end event
 			fireEndEvent(new EndEvent(this));
 		}
@@ -126,7 +134,7 @@ public class NodeExpBool extends Node {
 	public Integer call() {
 		// fire the start event
 		fireStartEvent(new StartEvent(this));
-
+		started = true;
 		// initialize the attributes to control the evaluation
 		nbSeqAndBoolDone = 0;
 		result = null;
@@ -135,6 +143,7 @@ public class NodeExpBool extends Node {
 		for (NodeSeqAndBool n : listSeqAndBool) {
 			n.addEndEventListener(this);
 			n.call();
+			if(stopping){break;}
 		}
 
 		// interpret the nodes

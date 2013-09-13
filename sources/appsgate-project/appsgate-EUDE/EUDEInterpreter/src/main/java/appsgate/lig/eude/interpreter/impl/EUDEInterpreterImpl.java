@@ -16,12 +16,14 @@ import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
 import appsgate.lig.context.history.services.DataBasePullService;
 import appsgate.lig.context.history.services.DataBasePushService;
+import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -30,6 +32,8 @@ import appsgate.lig.router.spec.RouterApAMSpec;
  * This class is the interpreter component for end user development environment. 
  * 
  * @author Cédric Gérard
+ * @author Rémy Dautriche
+ * 
  * @since  April 26, 2013
  * @version 1.0.0
  *
@@ -74,7 +78,6 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	
 	/**
 	 * Initialize the list of programs and of events
-	 * 
 	 * @constructor
 	 */
 	public EUDEInterpreterImpl() {
@@ -100,10 +103,9 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 					String key = (String)obj.keys().next();
 					np = new NodeProgram(this, new JSONObject(obj.getString(key)));
 					mapPrograms.put(key, np);
-					if(np.isDeamon()) {
-						//TODO check for previously running program
-						//Restore complete interpreter and programs state
-						this.callProgram(np.getName());
+					if(np.getRunningState() == RUNNING_STATE.STARTED) {
+						//TODO:Restore complete interpreter and programs state
+						this.callProgram(np.getId());
 					}
 					i++;
 				}
@@ -146,7 +148,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 			return false;
 		}
 		
-		mapPrograms.put(p.getName(), p);
+		mapPrograms.put(p.getId(), p);
 		
 		//save program map state
 		ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String,Object>>();	
@@ -154,18 +156,26 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		for(String key : keys) {
 			properties.add(new AbstractMap.SimpleEntry<String,Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
 		}
-		return contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getName(), p.getInformation().toString(), properties);
+		
+		if(contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), properties)) {
+			p.setDeployed();
+			try {
+				notifyAddProgram(p.getId(), p.getRunningState().toString(), p.getProgramJSON().getJSONObject("source"), p.getUserInputSource());
+			} catch (JSONException e) {e.printStackTrace();}
+			return true;
+		}else {
+			mapPrograms.remove(p.getId());
+			return false;
+		}
 	}
 	
 	@Override
-	public boolean removeProgram(String programName) {
-		NodeProgram p = mapPrograms.get(programName);
+	public boolean removeProgram(String programId) {
+		NodeProgram p = mapPrograms.get(programId);
 		
 		if(p != null) {
 			p.stop();
-			p.undeploy();
 			p.removeEndEventListener(this);
-			mapPrograms.remove(programName);
 			
 			//save program map state
 			ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String,Object>>();	
@@ -173,12 +183,128 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 			for(String key : keys) {
 				properties.add(new AbstractMap.SimpleEntry<String,Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
 			}
-			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getName(), p.getInformation().toString(), properties);
+			if(contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getName(), properties)) {
+				mapPrograms.remove(programId);
+				return true;
+			}
 			
 		}else {
-			logger.error("The programme "+programName+" does not exist.");
-			return false;
+			logger.error("The programme "+programId+" does not exist.");
 		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean update(JSONObject jsonProgram) {
+		try {
+			NodeProgram p = mapPrograms.get(jsonProgram.getString("id"));
+			
+			if(p != null) {
+				
+				if(p.getRunningState() == NodeProgram.RUNNING_STATE.STARTED ||
+				   p.getRunningState() == NodeProgram.RUNNING_STATE.PAUSED) {
+					p.stop();
+					p.removeEndEventListener(this);
+				}
+				
+				if(p.update(jsonProgram)) {
+					notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getProgramJSON().getJSONObject("source"), p.getUserInputSource());
+					//save program map state
+					ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String,Object>>();	
+					Set<String> keys = mapPrograms.keySet();
+					for(String key : keys) {
+						properties.add(new AbstractMap.SimpleEntry<String,Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
+					}
+					
+					if(contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), properties)) {
+						return true;
+					}
+				}
+				
+			}else {
+				logger.error("The programme "+jsonProgram.getString("id") +" does not exist.");
+			}
+			
+		} catch (JSONException e) {
+			logger.error("EUDE error - updating programm - NO ID in JSON DESCRIPTION");
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean callProgram(String programId) {
+		NodeProgram p = mapPrograms.get(programId);
+		int calledStatus = -1;
+		
+		if (p != null) {
+			p.addEndEventListener(this);
+			calledStatus = p.call();
+		}
+		
+		return (calledStatus==1);
+	}
+	
+	@Override
+	public boolean stopProgram(String programId) {
+		NodeProgram p = mapPrograms.get(programId);
+		
+		if(p!= null){
+			p.stop();
+			return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean pauseProgram(String programId) {
+		NodeProgram p = mapPrograms.get(programId);
+		
+		if(p!= null){
+			return p.pause();
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Get the end user programs list 
+	 * @return the end user program list as an HashMap<String, JSONObject>
+	 */
+	@Override
+	public HashMap<String, JSONObject> getListPrograms() {
+		HashMap <String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
+		for (NodeProgram p : mapPrograms.values()) {
+			mapProgramJSON.put(p.getId(), p.getProgramJSON());
+		}
+		
+		return mapProgramJSON;
+	}
+	
+	/**
+	 * Getter for a node program. Used for the event
+	 * 
+	 * @param programId identifier of program to get
+	 * @return Node of the program if found, null otherwise
+	 */
+	public NodeProgram getNodeProgram(String programId) {
+		return mapPrograms.get(programId);
+	}
+	
+	/**
+	 * Execute a method call on the router
+	 * 
+	 * @param objectId
+	 * @param methodName
+	 * @param args
+	 * @param paramType
+	 * @return
+	 */
+	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
+		return router.executeCommand(objectId, methodName, args);
 	}
 	
 	/**
@@ -225,61 +351,24 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		}
 	}
 	
-	/**
-	 * Launch the interpretation of a program
-	 * 
-	 * @param programName Name of the program to launch
-	 * @return true if the program has been successfully launched, false otherwise
-	 */
-	@Override
-	public boolean callProgram(String programName) {
-		NodeProgram p = mapPrograms.get(programName);
-		
-		if (p != null) {
-			p.addEndEventListener(this);
-			p.call();
-			
-			return true;
-		}
-		
-		return false;
+	private void notifyUpdateProgram(String id, String runningState, JSONObject source, String userInputSource) {
+		notifyChanges(new ProgramNotification("updateProgram", id, runningState, source, userInputSource));
+	}
+	
+	private void notifyAddProgram(String id, String runningState, JSONObject source, String userInputSource) {
+		notifyChanges(new ProgramNotification("newProgram", id, runningState, source, userInputSource));
 	}
 	
 	/**
-	 * Get the end user programs list 
-	 * @return the end user program list as an HashMap<String,,JSONObject>
-	 */
-	@Override
-	public HashMap<String, JSONObject> getListPrograms() {
-		HashMap <String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
-		for (NodeProgram p : mapPrograms.values()) {
-			mapProgramJSON.put(p.getName(), p.getProgramJSON());
-		}
-		
-		return mapProgramJSON;
-	}
-	
-	/**
-	 * Getter for a node program. Used for the event
+	 * This method uses the ApAM message model. Each call produce a
+	 * ProgramStateNotificationMsg object and notifies ApAM that a new message has
+	 * been released.
 	 * 
-	 * @param programName Name of program to get
-	 * @return Node of the program if found, null otherwise
+	 * @return nothing, it just notifies ApAM that a new message has been
+	 *         posted.
 	 */
-	public NodeProgram getNodeProgram(String programName) {
-		return mapPrograms.get(programName);
-	}
-	
-	/**
-	 * Execute a method call on the router
-	 * 
-	 * @param objectId
-	 * @param methodName
-	 * @param args
-	 * @param paramType
-	 * @return
-	 */
-	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
-		return router.executeCommand(objectId, methodName, args);
+	public NotificationMsg notifyChanges(NotificationMsg notif) {
+		return notif;
 	}
 	
 	public class CoreEventListener implements CoreListener {
@@ -353,25 +442,26 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	@Override
 	public void endEventFired(EndEvent e) {
 		NodeProgram p = (NodeProgram)e.getSource();
-		if(p.getDeamon().contentEquals("true")) {
-			logger.debug("Deamon execution"+ p.getName() +" removing...");
-			if(removeProgram(p.getName())) {
-				logger.debug("Deamon "+ p.getName() +" reloading...");
-				if(addProgram(p.getProgramJSON())) {
-					logger.debug("Deamon "+ p.getName() +" restarting...");
-					if(callProgram(p.getName())) {
-						logger.debug("Deamon "+ p.getName() +" started.");
-					}else {
-						logger.debug("Deamon "+ p.getName() +" execution failed.");
-					}
-				}
-				
-			} else {
-				logger.error("Fail to remove "+ p.getName() +" ! The deamon has not been reloaded.");
-			}
-		}else {
+		logger.info("program "+p.getName()+" ended.");
+//		if(p.getDeamon().contentEquals("true")) {
+//			logger.debug("Deamon execution"+ p.getName() +" removing...");
+//			if(removeProgram(p.getName())) {
+//				logger.debug("Deamon "+ p.getName() +" reloading...");
+//				if(addProgram(p.getProgramJSON())) {
+//					logger.debug("Deamon "+ p.getName() +" restarting...");
+//					if(callProgram(p.getName())) {
+//						logger.debug("Deamon "+ p.getName() +" started.");
+//					}else {
+//						logger.debug("Deamon "+ p.getName() +" execution failed.");
+//					}
+//				}
+//				
+//			} else {
+//				logger.error("Fail to remove "+ p.getName() +" ! The deamon has not been reloaded.");
+//			}
+//		}else {
 			p.removeEndEventListener(this);
-		}
+//		}
 	}
 
 	@Override

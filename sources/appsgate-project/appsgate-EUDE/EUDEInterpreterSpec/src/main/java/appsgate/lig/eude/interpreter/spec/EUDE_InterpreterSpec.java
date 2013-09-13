@@ -8,6 +8,7 @@ import org.json.JSONObject;
  * Interpreter component for end-user development
  * 
  * @author Rémy Dautriche
+ * @author Cédric Gérard
  * @version 1.0.0
  */
 public interface EUDE_InterpreterSpec {
@@ -22,18 +23,43 @@ public interface EUDE_InterpreterSpec {
 	
 	/**
 	 * Remove an existing program.
-	 * @param programName the name of the program to remove
+	 * 
+	 * @param programId the identifier of the program to remove
 	 * @return true if the program has been removed, false otherwise
 	 */
-	public boolean removeProgram(String programName);
+	public boolean removeProgram(String programId);
+	
+	/**
+	 * Update the program name or sources
+	 * 
+	 * @param jsonProgram the updated JSON program
+	 * @return true if the program has been updated, false otherwise
+	 */
+	public boolean update(JSONObject jsonProgram);
 	
 	/**
 	 * Launch the interpretation of a program
 	 * 
-	 * @param programName Name of the program to launch
+	 * @param programId identifier of the program to launch
 	 * @return true if the program has been successfully launched, false otherwise
 	 */
-	public boolean callProgram(String programName);
+	public boolean callProgram(String programId);
+	
+	/**
+	 * Stop the program interpretation
+	 * 
+	 * @param progamId identifier of the program
+	 * @return true if the program has been stopped, false otherwise
+	 */
+	public boolean stopProgram(String progamId);
+	
+	/**
+	 * Stop the program execution but keep its last state
+	 * 
+	 * @param programId identifier of the program
+	 * @return true if the program has been paused, false otherwise
+	 */
+	public boolean pauseProgram(String programId);
 	
 	/**
 	 * Return a hash map containing all the programs known by the interpreter.
@@ -43,5 +69,5 @@ public interface EUDE_InterpreterSpec {
 	 * @return HashMap with all the existing programs
 	 */
 	public HashMap<String, JSONObject> getListPrograms();
-	
+
 }

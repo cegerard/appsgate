@@ -95,6 +95,7 @@ public class NodeIf extends Node {
 			}
 		// the true branch or the false one has completed - nothing to do more
 		} else {
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}
@@ -107,7 +108,7 @@ public class NodeIf extends Node {
 	@Override
 	public Integer call() {
 		fireStartEvent(new StartEvent(this));
-		
+		started = true;
 		expBool.addEndEventListener(this);
 		currentNode = expBool;
 		expBool.call();
@@ -124,7 +125,19 @@ public class NodeIf extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
+		if(started) {
+			stopping = true;
+			
+			expBool.removeEndEventListener(this);
+			expBool.stop();
+			seqRulesTrue.removeEndEventListener(this);
+			seqRulesTrue.stop();
+			seqRulesFalse.removeEndEventListener(this);
+			seqRulesFalse.stop();
+			
+			started = false;
+			stopping = false;
+		}
 		
 	}
 

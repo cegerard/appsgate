@@ -57,13 +57,14 @@ public class NodeAction extends Node {
 	public void endEventFired(EndEvent e) {
 		System.out.println("##### NodeAction - End event received!");
 		((Node)e.getSource()).removeEndEventListener(this);
+		started = false;
 		fireEndEvent(new EndEvent(this));
 	}
 
 	@Override
 	public Integer call() {    
 	    fireStartEvent(new StartEvent(this));
-	
+	    started = true;
 		if (targetType.equals("device")) {
 			// get the runnable from the interpreter
 			command = interpreter.executeCommand(targetId, methodName, args);
@@ -72,7 +73,7 @@ public class NodeAction extends Node {
 			
 			// manage the pool
 			//super.call();
-
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		} else if (targetType.equals("program")) {
 			NodeProgram p = interpreter.getNodeProgram(targetId);
@@ -83,6 +84,7 @@ public class NodeAction extends Node {
 				// launch the program
 				interpreter.callProgram(targetId);
 			} else {
+				started = false;
 				fireEndEvent(new EndEvent(this));
 			}
 		}
@@ -105,7 +107,13 @@ public class NodeAction extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
+		if(started && targetType.equals("program")) {
+			stopping = true;
+			NodeProgram p = interpreter.getNodeProgram(targetId);
+			p.stop();
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override

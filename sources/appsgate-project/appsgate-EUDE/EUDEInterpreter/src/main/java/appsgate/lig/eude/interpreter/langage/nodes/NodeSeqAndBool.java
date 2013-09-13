@@ -53,6 +53,7 @@ public class NodeSeqAndBool extends Node {
 			} catch (JSONException ex) {
 				Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
 			}
+			if(stopping){break;}
 		}
 		
 		// nothing has been computed yet
@@ -70,7 +71,14 @@ public class NodeSeqAndBool extends Node {
 
 	@Override
 	public void stop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(started) {
+			stopping = true;
+			for(NodeRelationBool nr : relationsBool) {
+				nr.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -93,6 +101,7 @@ public class NodeSeqAndBool extends Node {
 	public Integer call() {
 		// fire the start event
 		fireStartEvent(new StartEvent(this));
+		started=true;
 		
 		// initialize the attribute to control the interpretation
 		result = null;
@@ -150,6 +159,7 @@ public class NodeSeqAndBool extends Node {
 		// if all the relations are done, compute the final result
 		if (nbRelationBoolEnded == relationsBool.size()) {
 			computeResult();
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}

@@ -42,6 +42,7 @@ public class NodeWhen extends Node {
 	@Override
 	public Integer call() {
 		fireStartEvent(new StartEvent(this));
+		started = true;
 		
 		seqEvent.addEndEventListener(this);
 		seqEvent.call();
@@ -61,18 +62,22 @@ public class NodeWhen extends Node {
 		Node nodeEnded = (Node)e.getSource();
 		nodeEnded.removeEndEventListener(this);
 		
-		// if all the events are received, launch the sequence of rules
-		if (nodeEnded == seqEvent) {
-			seqRules.addEndEventListener(this);
+		if(! stopping) {
+			// if all the events are received, launch the sequence of rules
+			if (nodeEnded == seqEvent) {
+				seqRules.addEndEventListener(this);
 
-			System.out.println("###### all the events are received, launching the sequence of rules #######");
-			seqRules.call();
-			//pool.submit(seqRules);
-			//super.call();
-			fireEndEvent(new EndEvent(this));
-		// if the sequence of rules is terminated, fire the event event
-		} else {
-			fireEndEvent(new EndEvent(this));
+				System.out.println("###### all the events are received, launching the sequence of rules #######");
+				seqRules.call();
+				//pool.submit(seqRules);
+				//super.call();
+				started = false;
+				fireEndEvent(new EndEvent(this));
+				// if the sequence of rules is terminated, fire the event event
+			} else {
+				started = false;
+				fireEndEvent(new EndEvent(this));
+			}
 		}
 	}
 
@@ -84,7 +89,16 @@ public class NodeWhen extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
+		if(started) {
+			stopping = true;
+			
+			seqEvent.removeEndEventListener(this);
+			seqEvent.stop();
+			seqRules.stop();
+			
+			started = false;
+			stopping = false;
+		}
 		
 	}
 

@@ -51,7 +51,7 @@ public class NodeEvent extends Node {
 	@Override
 	public Integer call() {
 		fireStartEvent(new StartEvent(this));
-		
+		started = true;
 		// if the source of the event is a program
 		if (sourceType.equals("program")) {
 			// get the node of the program
@@ -66,6 +66,7 @@ public class NodeEvent extends Node {
 					p.addEndEventListener(this);
 				}
 			} else { // interpreter does not know the program, then the end event is automatically fired
+				started = false;
 				fireEndEvent(new EndEvent(this));
 			}
 		// sourceType is "device"
@@ -83,7 +84,21 @@ public class NodeEvent extends Node {
 
 	@Override
 	public void stop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(started) {
+			stopping = true;
+			if (sourceType.equals("program")) {
+				NodeProgram p = interpreter.getNodeProgram(sourceId);
+				if (eventName.equals("start")) {
+					p.removeStartEventListener(this);
+				} else if (eventName.equals("end")) {
+					p.removeEndEventListener(this);
+				}
+			} else {
+				interpreter.removeNodeListening(this);
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -106,6 +121,7 @@ public class NodeEvent extends Node {
 		Node nodeEnded = (Node)e.getSource();
 		nodeEnded.removeEndEventListener(this);
 		
+		started = false;
 		// the node is done when the relevant event has been caught
 		fireEndEvent(new EndEvent(this));
 	}

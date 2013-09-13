@@ -135,7 +135,18 @@ public class NodeRelationBool extends Node {
 
 	@Override
 	public void stop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(started) {
+			stopping = true;
+			if (leftNodeAction != null) {
+				leftNodeAction.removeEndEventListener(this);
+				leftNodeAction.stop();
+			} else {
+				rightNodeAction.removeEndEventListener(this);
+				rightNodeAction.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -157,10 +168,12 @@ public class NodeRelationBool extends Node {
 	public Integer call() {
 		// fire the start event
 		fireStartEvent(new StartEvent((this)));
+		started = true;
 		
 		// if the both operands are direct value, compute the final result and fire the end event
 		if (leftNodeAction == null && rightNodeAction == null) {
 			computeResult();
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 
@@ -221,6 +234,7 @@ public class NodeRelationBool extends Node {
 			// ... compute the final result and fire the end event otherwise
 			} else {
 				computeResult();
+				started = false;
 				fireEndEvent(new EndEvent(this));
 			}
 		} else {
@@ -235,6 +249,7 @@ public class NodeRelationBool extends Node {
 			
 			// compute the final result and fire the end result
 			computeResult();
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}

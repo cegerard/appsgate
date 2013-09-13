@@ -49,6 +49,7 @@ public class NodeSeqEvent extends Node {
 	public Integer call() {
 		// fire the start event
 		fireStartEvent(new StartEvent(this));
+		started = true;
 		
 		// no event has been received yet
 		nbEventReceived = 0;
@@ -57,6 +58,7 @@ public class NodeSeqEvent extends Node {
 		for (NodeEvent e : seqEvent) {
 			e.addEndEventListener(this);
 			e.call();
+			if(stopping) {break;};
 		}
 		
 //		try {
@@ -75,7 +77,15 @@ public class NodeSeqEvent extends Node {
 
 	@Override
 	public void stop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(started) {
+			stopping = true;
+			for (Node n : seqEvent) {
+				n.removeEndEventListener(this);
+				n.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -100,6 +110,7 @@ public class NodeSeqEvent extends Node {
 		
 		// if all the events have been fired, fire the end event of the sequence of events
 		if (nbEventReceived == seqEvent.size()) {
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}

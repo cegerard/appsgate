@@ -2,11 +2,12 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 
@@ -21,6 +22,13 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  *
  */
 public class NodeProgram extends Node {
+
+	
+	/**
+	 * Program's id set by the EUDE editor
+	 */
+	private String id;
+	public String getId() {return id;}
 
 	/**
 	 * Program's name given by the user
@@ -50,7 +58,12 @@ public class NodeProgram extends Node {
 	public String getDeamon() {return deamon;}
 	public void setDeamon(String deamon) { this.deamon = deamon;}
 	public boolean isDeamon() { return deamon.contentEquals("true");}
-
+	
+	/**
+	 * Use for simplify user interface reverse compute
+	 */
+	private String userInputSource;
+	public String getUserInputSource() {return userInputSource;}
 
 	/**
 	 * Sequence of rules to interpret
@@ -61,28 +74,36 @@ public class NodeProgram extends Node {
 	 * JSON representation of the program
 	 */
 	private JSONObject programJSON;
-	
 	public JSONObject getProgramJSON() { return programJSON; }
 	
 	/**
-	 * the current running state of this program
+	 * The current running state of this program
+	 *  - DEPLOYED
 	 * 	- STARTED
 	 *  - STOPPED
 	 *  - PAUSED
 	 *  - FAILED
-	 *  - LOADED
 	 */
-	private String runningState = "STOPPED";
+	private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
+	public RUNNING_STATE getRunningState() {return runningState;}
+	public void setRunningState(RUNNING_STATE runningState) {
+		try {
+			programJSON.put("runningState", runningState.toString());
+			this.runningState = runningState;
+			interpreter.notifyChanges(new ProgramStateNotificationMsg(id ,"runningState", this.runningState.toString()));	
+		} catch (JSONException e) {e.printStackTrace();}
+	}
 	
+
 	/**
 	 * Future Java object to manage the program thread
 	 */
-	private Future<Integer> seqRulesThread ;
+	private Future<Integer> seqRulesThread;
 
 	/**
 	 * Default constructor
-	 * 
 	 * @constructor
+	 * @param interpreter the interpreter that execute this program
 	 */
 	public NodeProgram(EUDEInterpreterImpl interpreter) {
 		super(interpreter);
@@ -96,6 +117,7 @@ public class NodeProgram extends Node {
 	 * @param interpreter 
 	 * @param programJSON Abstract tree of the program in JSON
 	 * 
+	 * @constructor
 	 * @throws JSONException Thrown when the JSON file contains an error
 	 */
 	public NodeProgram(EUDEInterpreterImpl interpreter, JSONObject programJSON) throws JSONException {
@@ -104,11 +126,42 @@ public class NodeProgram extends Node {
 		this.programJSON = programJSON;
 		
 		// initialize the program with the JSON
-		name = programJSON.getString("programName");
-		author = programJSON.getString("author");
-		target = programJSON.getString("target");
-		deamon = programJSON.getString("deamon");
-		seqRules = new NodeSeqRules(interpreter, programJSON.getJSONArray("seqRules"));
+		id = programJSON.getString("id");
+		runningState = RUNNING_STATE.valueOf(programJSON.getString("runningState"));
+		userInputSource = programJSON.getString("userInputSource");
+		
+		JSONObject source = programJSON.getJSONObject("source");
+		name   = source.getString("programName");
+		author = source.getString("author");
+		target = source.getString("target");
+		deamon = source.getString("deamon");
+		seqRules = new NodeSeqRules(interpreter, source.getJSONArray("seqRules"));
+	}
+	
+	/**
+	 * Update the current program source code
+	 * Program need to be stopped.
+	 * 
+	 * @param jsonProgram the new source code
+	 * 
+	 * @return true if the source code has been udpated, false otherwise
+	 */
+	public boolean update(JSONObject jsonProgram) throws JSONException {
+		
+		if(runningState == RUNNING_STATE.STOPPED) {
+			this.programJSON = jsonProgram;
+			
+			JSONObject source = jsonProgram.getJSONObject("source");
+			name   = source.getString("programName");
+			author = source.getString("author");
+			target = source.getString("target");
+			deamon = source.getString("deamon");
+			seqRules = new NodeSeqRules(interpreter, source.getJSONArray("seqRules"));
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -125,18 +178,41 @@ public class NodeProgram extends Node {
 	 */
 	@Override
 	public Integer call() {
-		fireStartEvent(new StartEvent(this));
+
+		if(runningState != RUNNING_STATE.PAUSED) {
+			fireStartEvent(new StartEvent(this));
+			
+			seqRules.addStartEventListener(this);
+			seqRules.addEndEventListener(this);
 		
+			seqRulesThread = pool.submit(seqRules);
+		
+			if(seqRulesThread != null) {
+				return 1;
+			}else {
+				setRunningState(RUNNING_STATE.FAILED);
+			}
+		}else {
+			//TODO restart from previous state
+//			synchronized(pauseMutex) {
+//				pauseMutex.notify();
+//				return 1;
+//			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Restart daemon program after their previous termination
+	 */
+	private int deamonCall() {
 		seqRules.addStartEventListener(this);
-		seqRules.addEndEventListener(this);
-		
 		seqRulesThread = pool.submit(seqRules);
 		
 		if(seqRulesThread != null) {
-			runningState = "LOADED";
 			return 1;
 		}else {
-			runningState = "FAILED";
+			setRunningState(RUNNING_STATE.FAILED);
 			return -1;
 		}
 	}
@@ -144,42 +220,121 @@ public class NodeProgram extends Node {
 	@Override
 	public void undeploy() {
 		// TODO Auto-generated method stub
-		
+		///!\ UNUSED
 	}
 
 	@Override
 	public void stop() {
+		boolean terminate = false;
+		seqRules.stop();
+		if(!seqRulesThread.isDone()) {
+			LoggerFactory.getLogger(NodeProgram.class.getName()).error("thread did not terminate");
+			LoggerFactory.getLogger(NodeProgram.class.getName()).info("Try to kill the program thread");
+			terminate = seqRulesThread.cancel(true);
+		} else {
+			terminate = true;
+		}
+		
+		if(terminate) {
+			seqRules.removeEndEventListener(this);
+			setRunningState(RUNNING_STATE.STOPPED);
+			fireEndEvent(new EndEvent(this));
+			//pool = Executors.newSingleThreadExecutor();
+		}
+//		try {
+//			boolean terminate = false;
+//			pool.shutdownNow();
+//			if( pool.awaitTermination(5, TimeUnit.SECONDS)) {
+//				LoggerFactory.getLogger(NodeProgram.class.getName()).debug("Program thread stopped");
+//				terminate = true;
+//			//} else {
+//				if(!seqRulesThread.isCancelled()) {
+//					LoggerFactory.getLogger(NodeProgram.class.getName()).error("thread did not terminate");
+//					LoggerFactory.getLogger(NodeProgram.class.getName()).info("Try to kill the program thread");
+//					terminate = seqRulesThread.cancel(true);
+//				}
+//			}
+//			
+//			if(terminate) {
+//				seqRules.removeEndEventListener(this);
+//				setRunningState(RUNNING_STATE.STOPPED);
+//				fireEndEvent(new EndEvent(this));
+//				pool = Executors.newSingleThreadExecutor();
+//			}
+//
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+	}
+	
+	public boolean pause() {
 		// TODO Auto-generated method stub
-		runningState = "STOPPED";
+		
+		return false;
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		runningState = "STARTED";
+		// /!\ UNUSED
+		setRunningState(RUNNING_STATE.STARTED);
 	}
 
 	@Override
 	public void getState() {
 		// TODO Auto-generated method stub
-		
+		///!\ UNUSED
 	}
 	
-	public String getRunningState() {
-		return runningState;
+	/**
+	 * Set the current running state to deployed
+	 */
+	public void setDeployed() {
+		setRunningState(RUNNING_STATE.DEPLOYED);
 	}
 
 	@Override
 	public void startEventFired(StartEvent e) {
-		runningState = "STARTED";
+		setRunningState(RUNNING_STATE.STARTED);
 		seqRules.removeStartEventListener(this);
 	}
 
 	@Override
 	public void endEventFired(EndEvent e) {
-		runningState = "STOPPED";
-		seqRules.removeEndEventListener(this);
-		fireEndEvent(new EndEvent(this));
+		if(isDeamon()){
+			if(deamonCall() == -1) {
+				seqRules.removeEndEventListener(this);
+				fireEndEvent(new EndEvent(this));
+			}
+		}else {
+			setRunningState(RUNNING_STATE.STOPPED);
+			seqRules.removeEndEventListener(this);
+			fireEndEvent(new EndEvent(this));
+		}
+	}
+	
+	/**
+	 * Program running state static enumeration
+	 * @author Cédric Gérard
+	 * @since September 13, 2013
+	 */
+	public static enum RUNNING_STATE {
+		  
+		  DEPLOYED ("DEPLOYED"),
+		  STARTED ("STARTED"),
+		  FAILED ("FAILED"),
+		  STOPPED ("STOPPED"),
+		  PAUSED ("PAUSED");
+		    
+		  private String name = "";
+		  
+		  RUNNING_STATE(String name){
+		    this.name = name;
+		  }
+		    
+		  public String toString(){
+		    return name;
+		  }
 	}
 
 }

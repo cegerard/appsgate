@@ -58,20 +58,27 @@ public class NodeSeqRules extends Node {
 	}
 	
 	private void launchNextSeqAndRules() {
-		// get the next sequence of rules to launch
-		NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+		NodeSeqAndRules seqAndRule;
 		
-		// launch the sequence of rules
-		seqAndRule.addEndEventListener(this);
-		//pool.submit(seqAndRule);
-		seqAndRule.call();
-		// manage the interpretation
-		// super.call();
+		synchronized(this) {
+			// get the next sequence of rules to launch
+			seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+		}
+		
+		if(!stopping) {
+			// launch the sequence of rules
+			seqAndRule.addEndEventListener(this);
+			//pool.submit(seqAndRule);
+			seqAndRule.call();
+			// manage the interpretation
+			// super.call();
+		}
 	}
 	
 	@Override
 	public Integer call() {
 		idCurrentSeqAndRules = 0;
+		started = true;
 		fireStartEvent(new StartEvent(this));
 		
 		launchNextSeqAndRules();
@@ -95,6 +102,7 @@ public class NodeSeqRules extends Node {
 			launchNextSeqAndRules();
 		} else {
 			System.out.println("###### SeqThenRules ended...");
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}
@@ -106,7 +114,15 @@ public class NodeSeqRules extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub	
+		if(started) {
+			synchronized(this) {
+				NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+				stopping = true;
+				seqAndRule.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override

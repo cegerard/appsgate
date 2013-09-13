@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
  * Abstract class for all the nodes of the interpreter
  * 
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since May 22, 2013
  * @version 1.0.0
  *
@@ -51,6 +53,16 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	 * Node parent in the abstract tree of a program
 	 */
 	protected Node parent;
+	
+	/**
+	 * Use to stop node but atomically
+	 */
+	protected boolean stopping = false;
+	
+	/**
+	 * use to know when a node node is execute
+	 */
+	protected boolean started = false;
 	
 	/**
 	 * Default constructor
