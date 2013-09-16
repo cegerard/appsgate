@@ -145,6 +145,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 			p = new NodeProgram(this, programJSON);
 		} catch (JSONException e) {
 			logger.error("JSON error detected while loading a program");
+			e.printStackTrace();
 			return false;
 		}
 		
@@ -177,6 +178,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 			p.stop();
 			p.removeEndEventListener(this);
 			
+			mapPrograms.remove(programId);
 			//save program map state
 			ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String,Object>>();	
 			Set<String> keys = mapPrograms.keySet();
@@ -184,7 +186,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 				properties.add(new AbstractMap.SimpleEntry<String,Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
 			}
 			if(contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getName(), properties)) {
-				mapPrograms.remove(programId);
+				notifyRemoveProgram(p.getId());
 				return true;
 			}
 			
@@ -357,6 +359,9 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	
 	private void notifyAddProgram(String id, String runningState, JSONObject source, String userInputSource) {
 		notifyChanges(new ProgramNotification("newProgram", id, runningState, source, userInputSource));
+	}
+	private void notifyRemoveProgram(String id) {
+		notifyChanges(new ProgramNotification("removeProgram", id, RUNNING_STATE.STOPPED.toString(), new JSONObject(), ""));
 	}
 	
 	/**

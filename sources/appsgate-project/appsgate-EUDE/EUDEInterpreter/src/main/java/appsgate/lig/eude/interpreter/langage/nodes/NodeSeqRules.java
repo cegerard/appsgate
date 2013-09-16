@@ -81,7 +81,12 @@ public class NodeSeqRules extends Node {
 		started = true;
 		fireStartEvent(new StartEvent(this));
 		
-		launchNextSeqAndRules();
+		if(!seqAndRules.isEmpty()) {
+			launchNextSeqAndRules();
+		}else {
+			started = false;
+			fireEndEvent(new EndEvent(this));
+		}
 	
 		return null;
 	}
@@ -116,9 +121,11 @@ public class NodeSeqRules extends Node {
 	public void stop() {
 		if(started) {
 			synchronized(this) {
-				NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
-				stopping = true;
-				seqAndRule.stop();
+				if(seqAndRules.size() > 0) {
+					NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+					stopping = true;
+					seqAndRule.stop();
+				}
 			}
 			started = false;
 			stopping = false;

@@ -59,7 +59,7 @@ public class NodeRelationBool extends Node {
 
 		// left operand
 		operand = relationBoolJSON.getJSONObject("leftOperand");
-		if (operand.has("deviceId")) {
+		if (operand.has("targetId")) {
 			leftNodeAction = new NodeAction(interpreter, operand);
 			leftReturnType = operand.getString("returnType");
 			leftValue = null;
