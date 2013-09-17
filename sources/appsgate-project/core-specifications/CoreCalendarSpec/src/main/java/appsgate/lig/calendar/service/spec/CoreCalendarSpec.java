@@ -1,5 +1,7 @@
 package appsgate.lig.calendar.service.spec;
 
+import org.json.JSONObject;
+
 import net.fortuna.ical4j.model.Calendar;
 
 /**
@@ -15,12 +17,23 @@ public interface CoreCalendarSpec {
 	
 	/**
 	 * Get the corresponding calendar events and alerts between a date interval.
+	 * @param from the star date in milliseconds since January 1, 1970, 00:00:00 GMT 
+	 * @param to the end date in milliseconds since January 1, 1970, 00:00:00 GMT 
+	 * @return a sub calendar in JSON format.
+	 * 
+	 * JSON format sample:
+	 * 
+	 */
+	public JSONObject getCalendar(long from, long to);
+	
+	/**
+	 * Get the corresponding calendar events and alerts between a date interval.
 	 * @param from the star date
 	 * @param to the end date
 	 * @return a sub calendar in iCal format.
 	 */
 	public Calendar getCalendar(java.util.Date from, java.util.Date to);
-	
+
 	/**
 	 * Return the refresh rate of this service
 	 * @return the rate as a String

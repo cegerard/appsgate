@@ -215,13 +215,11 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	descr.put("id", getAbstractObjectId());
 	descr.put("type", appsgateUserType); // 21 for clock
 	descr.put("status", appsgateStatus);
-	//descr.put("name", appsgateServiceName);
-	logger.debug("descr: "+descr.toString());
+	descr.put("sysName", appsgateServiceName);
 
 	Calendar cal = Calendar.getInstance();
 	cal.setTimeInMillis(cal.getTimeInMillis() + currentLag);
 	descr.put("ClockSet", cal.getTime().toString());
-	logger.debug("descr: "+descr.toString());
 
 	return descr;
     }
