@@ -9,6 +9,7 @@ import javax.print.attribute.HashAttributeSet;
 import appsgate.lig.clock.sensor.impl.ConfigurableClockImpl;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,9 +73,10 @@ public class SimpleClockTest implements AlarmEventObserver{
     
 
     @Test
-    public void testBasicSetGetResetCurrentDate() {
+    public void testBasicSetGetResetCurrentDate() throws JSONException {
 
-	
+	System.out.println("Description "+clock.getDescription().toString());
+    	
 	System.out.println("Testing basic system time");
 	systemTime = System.currentTimeMillis();
 	clockTime = clock.getCurrentTimeInMillis();

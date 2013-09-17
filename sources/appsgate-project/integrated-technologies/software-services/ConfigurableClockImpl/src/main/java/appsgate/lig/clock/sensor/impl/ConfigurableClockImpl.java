@@ -67,19 +67,16 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	    .getLogger(ConfigurableClockImpl.class);
 
     public ConfigurableClockImpl() {
-	timer = new Timer();
-
-	initAppsgateFields();
-
-	resetClock();
+    	timer = new Timer();
+    	initAppsgateFields();
+    	resetClock();
     }
 
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public void start() {
-	logger.info("New Configurable clock created");
-
+    	logger.info("New Configurable clock created");
     }
 
     public void stop() {
@@ -182,18 +179,18 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	calculateNextTimer();
     }
 
-    String appsgatePictureId;
-    String appsgateObjectId;
-    String appsgateUserType;
-    String appsgateStatus;
-    String appsgateServiceName;
+    private String appsgatePictureId;
+    private String appsgateObjectId;
+    private String appsgateUserType;
+    private String appsgateStatus;
+    private String appsgateServiceName;
 
     protected void initAppsgateFields() {
-	appsgatePictureId = null;
-	appsgateServiceName = "Swing Clock";
-	appsgateUserType = "21";
-	appsgateStatus = "2";
-	appsgateObjectId = appsgateUserType + String.valueOf(this.hashCode());
+    	appsgatePictureId = null;
+		appsgateServiceName = "Swing Clock";
+		appsgateUserType = "21";
+		appsgateStatus = "2";
+		appsgateObjectId = appsgateUserType + String.valueOf(this.hashCode());
     }
 
     /*
@@ -214,17 +211,17 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
     @Override
     public JSONObject getDescription() throws JSONException {
 	JSONObject descr = new JSONObject();
-
 	// mandatory appsgate properties
-	descr.put("id", appsgateObjectId);
+	descr.put("id", getAbstractObjectId());
 	descr.put("type", appsgateUserType); // 21 for clock
 	descr.put("status", appsgateStatus);
-	descr.put("name", appsgateServiceName);
+	//descr.put("name", appsgateServiceName);
+	logger.debug("descr: "+descr.toString());
 
-	descr.put("varName", "ClockSet");
 	Calendar cal = Calendar.getInstance();
 	cal.setTimeInMillis(cal.getTimeInMillis() + currentLag);
-	descr.put("value", cal.getTime().toString());
+	descr.put("ClockSet", cal.getTime().toString());
+	logger.debug("descr: "+descr.toString());
 
 	return descr;
     }

@@ -12,14 +12,13 @@
 
 
         <!-- device kernel meta data -->
-        <definition name="deviceName" type="string"
-            field="appsgateServiceName" />
-        <definition name="deviceId" type="string" field="appsgateObjectId" />
+        <definition name="deviceName" 	type="string"  value="Unknown" field="appsgateServiceName" />
+        <definition name="deviceId" 	type="string"  value="000000"  field="appsgateObjectId" />
 
         <!-- device client meta data -->
-        <definition name="pictureId" type="string" field="appsgatePictureId" />
-        <definition name="userType" type="string" field="appsgateUserType" />
-        <definition name="status" type="string" field="appsgateStatus" />
+        <definition name="pictureId" 	type="string" 				   field="appsgatePictureId" />
+        <definition name="userType" 	type="string"  value="21" 	   field="appsgateUserType" />
+        <definition name="status" 		type="string"  value="2"  	   field="appsgateStatus" />
 
     </implementation>
 </apam>
