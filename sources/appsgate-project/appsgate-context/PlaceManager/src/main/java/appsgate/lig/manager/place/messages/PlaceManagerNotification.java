@@ -29,7 +29,7 @@ public class PlaceManagerNotification implements NotificationMsg {
 	/**
 	 * The specified type of this notification
 	 */
-	private int type;
+	private String type;
 
 	/**
 	 * Build a new place notification object
@@ -37,7 +37,7 @@ public class PlaceManagerNotification implements NotificationMsg {
 	 * @param name the name of the location
 	 * @param type the type of the notification (Add, Remove or Update)
 	 */
-	public PlaceManagerNotification(String locationId, String name, int type) {
+	public PlaceManagerNotification(String locationId, String name, String type) {
 		super();
 		this.locationId = locationId;
 		this.name = name;
@@ -63,14 +63,8 @@ public class PlaceManagerNotification implements NotificationMsg {
 		content.put("name", name);
 		content.put("devices", new JSONArray());
 		
-		if(type == 0) {
-			notif.put("newPlace", content);
-		} else if(type == 1) {
-			notif.put("updatePlace", content);
-		} else if(type == 2) {
-			notif.put("removePlace", content);
-		}
-		
+		notif.put(type, content);
+
 		return notif;
 	}
 

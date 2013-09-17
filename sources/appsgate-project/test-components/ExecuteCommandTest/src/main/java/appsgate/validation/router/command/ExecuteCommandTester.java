@@ -27,49 +27,49 @@ public class ExecuteCommandTester {
 	 */
 	@SuppressWarnings("rawtypes")
 	public void newInst() {
-		logger.debug("ExecuteCommandTester has been initialized");
+		logger.debug("ExecuteCommandTester has been initialized");  
 		
-		router.executeCommand("194.199.23.136-1", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-2", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-3", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-4", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-5", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-6", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-1", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-2", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-3", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-4", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-5", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-6", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
 		
-		router.executeCommand("194.199.23.136-1", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-2", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-3", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-4", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-5", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-6", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-1", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-2", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-3", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-4", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-5", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-6", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
 		
-		router.executeCommand("194.199.23.136-1", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-2", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-3", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-4", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-5", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-6", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-1", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-2", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-3", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-4", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-5", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-6", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
 		
-		router.executeCommand("194.199.23.136-1", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-2", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-3", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-4", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-5", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-6", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-1", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-2", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-3", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-4", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-5", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-6", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
 		
-		router.executeCommand("194.199.23.136-1", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-2", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-3", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-4", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-5", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-6", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-1", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-2", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-3", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-4", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-5", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-6", "On", new ArrayList<Object>(), new ArrayList<Class>()).run();
 		
-		router.executeCommand("194.199.23.136-1", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-2", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-3", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-4", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-5", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
-		router.executeCommand("194.199.23.136-6", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-1", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-2", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-3", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-4", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-5", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
+		router.executeCommand("194.199.23.135-6", "Off", new ArrayList<Object>(), new ArrayList<Class>()).run();
 	}
 
 	/**

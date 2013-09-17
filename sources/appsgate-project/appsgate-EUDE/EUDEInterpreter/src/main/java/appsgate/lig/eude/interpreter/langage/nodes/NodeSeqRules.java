@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,12 +8,13 @@ import org.json.JSONException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.ArrayList;
 
 /**
  * This class represents a sequence of rules to evaluate
  * 
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since May 22, 2013
  * @version 1.0.0
  *
@@ -53,27 +54,39 @@ public class NodeSeqRules extends Node {
 		 * Initialize the thread pool. This is a single thread pool because
 		 * the sequences of AndRules are separated by a "then", to be executed sequentially
 		 */
-		pool = Executors.newSingleThreadExecutor();
+		//pool = Executors.newSingleThreadExecutor();
 	}
 	
 	private void launchNextSeqAndRules() {
-		// get the next sequence of rules to launch
-		NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+		NodeSeqAndRules seqAndRule;
 		
-		// launch the sequence of rules
-		seqAndRule.addEndEventListener(this);
-		pool.submit(seqAndRule);
+		synchronized(this) {
+			// get the next sequence of rules to launch
+			seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+		}
 		
-		// manage the interpretation
-		// super.call();
+		if(!stopping) {
+			// launch the sequence of rules
+			seqAndRule.addEndEventListener(this);
+			//pool.submit(seqAndRule);
+			seqAndRule.call();
+			// manage the interpretation
+			// super.call();
+		}
 	}
 	
 	@Override
 	public Integer call() {
 		idCurrentSeqAndRules = 0;
+		started = true;
 		fireStartEvent(new StartEvent(this));
 		
-		launchNextSeqAndRules();
+		if(!seqAndRules.isEmpty()) {
+			launchNextSeqAndRules();
+		}else {
+			started = false;
+			fireEndEvent(new EndEvent(this));
+		}
 	
 		return null;
 	}
@@ -94,6 +107,7 @@ public class NodeSeqRules extends Node {
 			launchNextSeqAndRules();
 		} else {
 			System.out.println("###### SeqThenRules ended...");
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}
@@ -105,7 +119,17 @@ public class NodeSeqRules extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub	
+		if(started) {
+			synchronized(this) {
+				if(seqAndRules.size() > 0) {
+					NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+					stopping = true;
+					seqAndRule.stop();
+				}
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override

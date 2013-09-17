@@ -20,7 +20,7 @@ import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
  * @see LuminositySensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanLuminositySensorImpl implements CoreLuminositySensorSpec, CoreObjectSpec {
+public class EnoceanLuminositySensorImpl implements CoreObjectSpec, CoreLuminositySensorSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances

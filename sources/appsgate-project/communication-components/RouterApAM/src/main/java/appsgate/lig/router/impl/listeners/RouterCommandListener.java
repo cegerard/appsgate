@@ -102,10 +102,6 @@ public class RouterCommandListener implements CommandListener {
 
 				break;
 
-			case 3: // Interpreter
-				logger.debug("Interpreter level message");
-				break;
-
 			default:
 				logger.debug("AppsGate main level message");
 				try {

@@ -44,6 +44,7 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	 */
 	public void newInst() {
 		logger.info("New smart plug sensor detected, "+sensorId);
+		setSensorName("SmartPlug-"+sensorId);
 	}
 
 	/**
@@ -214,6 +215,26 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	@Override
 	public void setPictureId(String pictureId) {
 			this.pictureId = pictureId;
+	}
+	
+	public boolean isPaired() {
+		return Boolean.valueOf(isPaired);
+	}
+
+	public void setPaired(boolean isPaired) {
+		this.isPaired = String.valueOf(isPaired);
+	}
+	
+	public String getSensoreType() {
+		return sensoreType;
+	}
+	
+	public String getSensorName() {
+		return sensorName;
+	}
+
+	public void setSensorName(String sensorName) {
+		this.sensorName = sensorName;
 	}
 
 }

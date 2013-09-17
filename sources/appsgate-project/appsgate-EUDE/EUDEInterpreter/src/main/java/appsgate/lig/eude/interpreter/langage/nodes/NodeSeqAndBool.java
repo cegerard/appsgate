@@ -1,15 +1,16 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 
 /**
  * Node for the sequence of boolean relations separated by a "and"
@@ -52,6 +53,7 @@ public class NodeSeqAndBool extends Node {
 			} catch (JSONException ex) {
 				Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
 			}
+			if(stopping){break;}
 		}
 		
 		// nothing has been computed yet
@@ -59,7 +61,7 @@ public class NodeSeqAndBool extends Node {
 		result = null;
 		
 		// initialize the pool of threads
-		pool = Executors.newFixedThreadPool(relationsBool.size());
+		//pool = Executors.newFixedThreadPool(relationsBool.size());
 	}
 
 	@Override
@@ -69,7 +71,14 @@ public class NodeSeqAndBool extends Node {
 
 	@Override
 	public void stop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(started) {
+			stopping = true;
+			for(NodeRelationBool nr : relationsBool) {
+				nr.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -92,6 +101,7 @@ public class NodeSeqAndBool extends Node {
 	public Integer call() {
 		// fire the start event
 		fireStartEvent(new StartEvent(this));
+		started=true;
 		
 		// initialize the attribute to control the interpretation
 		result = null;
@@ -100,17 +110,18 @@ public class NodeSeqAndBool extends Node {
 		// add listener to the end of each node
 		for (NodeRelationBool n : relationsBool) {
 			n.addEndEventListener(this);
+			n.call();
 		}
 		
 		// launch the interpretation of the boolean relations
-		try {
-			pool.invokeAll(relationsBool);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
-		}
+//		try {
+//			pool.invokeAll(relationsBool);
+//		} catch (InterruptedException ex) {
+//			Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 		
 		// manage the pool
-		super.call();
+//		super.call();
 
 		return null;
 	}
@@ -148,6 +159,7 @@ public class NodeSeqAndBool extends Node {
 		// if all the relations are done, compute the final result
 		if (nbRelationBoolEnded == relationsBool.size()) {
 			computeResult();
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}

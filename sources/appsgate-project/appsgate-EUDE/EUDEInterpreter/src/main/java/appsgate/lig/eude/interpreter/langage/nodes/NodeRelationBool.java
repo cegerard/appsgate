@@ -1,24 +1,18 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.router.spec.GenericCommand;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
 
 /**
  * Node for the boolean relations
  *
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since June 19, 2013
  * @version 1.0.0
  */
@@ -65,7 +59,7 @@ public class NodeRelationBool extends Node {
 
 		// left operand
 		operand = relationBoolJSON.getJSONObject("leftOperand");
-		if (operand.has("deviceId")) {
+		if (operand.has("targetId")) {
 			leftNodeAction = new NodeAction(interpreter, operand);
 			leftReturnType = operand.getString("returnType");
 			leftValue = null;
@@ -102,7 +96,7 @@ public class NodeRelationBool extends Node {
 		}
 
 		// two thread - one for each operand
-		pool = Executors.newFixedThreadPool(2);
+		//pool = Executors.newFixedThreadPool(2);
 
 		// nothing has been computed yet
 		result = null;
@@ -141,7 +135,18 @@ public class NodeRelationBool extends Node {
 
 	@Override
 	public void stop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(started) {
+			stopping = true;
+			if (leftNodeAction != null) {
+				leftNodeAction.removeEndEventListener(this);
+				leftNodeAction.stop();
+			} else {
+				rightNodeAction.removeEndEventListener(this);
+				rightNodeAction.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -163,20 +168,24 @@ public class NodeRelationBool extends Node {
 	public Integer call() {
 		// fire the start event
 		fireStartEvent(new StartEvent((this)));
+		started = true;
 		
 		// if the both operands are direct value, compute the final result and fire the end event
 		if (leftNodeAction == null && rightNodeAction == null) {
 			computeResult();
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 
 		// interpret the left operand first if possible
 		if (leftNodeAction != null) {
 			leftNodeAction.addEndEventListener(this);
-			pool.submit(leftNodeAction);
+			//pool.submit(leftNodeAction);
+			leftNodeAction.call();
 		} else {
 			rightNodeAction.addEndEventListener(this);
-			pool.submit(rightNodeAction);
+			//pool.submit(rightNodeAction);
+			rightNodeAction.call();
 		}
 		
 		return null;
@@ -220,10 +229,12 @@ public class NodeRelationBool extends Node {
 			// if the right operand is not a direct value, launch its interpretation...
 			if (rightNodeAction != null) {
 				rightNodeAction.addEndEventListener(this);
-				pool.submit(rightNodeAction);
+				rightNodeAction.call();
+				//pool.submit(rightNodeAction);
 			// ... compute the final result and fire the end event otherwise
 			} else {
 				computeResult();
+				started = false;
 				fireEndEvent(new EndEvent(this));
 			}
 		} else {
@@ -238,6 +249,7 @@ public class NodeRelationBool extends Node {
 			
 			// compute the final result and fire the end result
 			computeResult();
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}

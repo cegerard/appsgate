@@ -112,7 +112,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	public synchronized void addPlace(String placeId, String name) {
 		if (!placeObjectsMap.containsKey(placeId)) {
 			placeObjectsMap.put(placeId, new SymbolicPlace(placeId, name));
-			notifyPlace(placeId, name, 0);
+			notifyPlace(placeId, name, "newPlace");
 			
 			// save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -137,7 +137,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		SymbolicPlace loc = placeObjectsMap.get(placeId);
 		loc.removeAll();
 		placeObjectsMap.remove(placeId);
-		notifyPlace(placeId, "", 2);
+		notifyPlace(placeId, "", "removePlace");
 		
 		// save the new devices name table 
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -190,26 +190,37 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	public synchronized void moveObject(String objId,
 			String oldPlaceID, String newPlaceID) {
 		
-		if (oldPlaceID.contentEquals("-1")) {
+		boolean moved = false;
+		
+		if (oldPlaceID.contentEquals("-1") && !newPlaceID.contentEquals("-1")) {
 			addObject(objId, newPlaceID);
-		} else {
+			moved = true;
+		} else if (!oldPlaceID.contentEquals("-1") && !newPlaceID.contentEquals("-1")) {
 			SymbolicPlace oldLoc = placeObjectsMap.get(oldPlaceID);
 			SymbolicPlace newLoc = placeObjectsMap.get(newPlaceID);
 			oldLoc.removeObject(objId);
 			newLoc.addObject(objId);
+			moved = true;
+		} else if (!oldPlaceID.contentEquals("-1") && newPlaceID.contentEquals("-1")) {
+			SymbolicPlace oldLoc = placeObjectsMap.get(oldPlaceID);
+			oldLoc.removeObject(objId);
+			moved = true;
 		}
-		notifyMove(oldPlaceID, newPlaceID, objId);
 		
-		// save the new devices name table 
-		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+		if(moved) {
+			notifyMove(oldPlaceID, newPlaceID, objId);
+		
+			// save the new devices name table 
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
 									
-		Set<String> keys = placeObjectsMap.keySet();
-		for(String e : keys) {
-			SymbolicPlace sl = placeObjectsMap.get(e);
-			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			Set<String> keys = placeObjectsMap.keySet();
+			for(String e : keys) {
+				SymbolicPlace sl = placeObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}
+									
+			contextHistory_push.pushData_change(this.getClass().getSimpleName(), objId, oldPlaceID, newPlaceID, properties);
 		}
-									
-		contextHistory_push.pushData_change(this.getClass().getSimpleName(), objId, oldPlaceID, newPlaceID, properties);
 	}
 
 	/**
@@ -220,7 +231,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		String oldName = loc.getName();
 		loc.setName(newName);
 		
-		notifyPlace(placeId, newName, 1);
+		notifyPlace(placeId, newName, "updatePlace");
 		
 		// save the new devices name table 
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -270,7 +281,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @param placeName the user name of this place
 	 * @param type indicate if this notification is a place creation (0) or an update (1)
 	 */
-	private void notifyPlace(String placeId, String placeName, int type) {
+	private void notifyPlace(String placeId, String placeName, String type) {
 		notifyChanged(new PlaceManagerNotification(placeId, placeName, type));
 	}
 	

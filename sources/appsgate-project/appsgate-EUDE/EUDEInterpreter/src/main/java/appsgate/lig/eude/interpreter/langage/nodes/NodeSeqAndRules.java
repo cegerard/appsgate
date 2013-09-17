@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,10 +9,16 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+/**
+ * 
+ * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
+ * @since May 22, 2013
+ * @version 1.0.0
+ *
+ */
 public class NodeSeqAndRules extends Node {
 	
 	private ArrayList<Node> rules;
@@ -44,24 +49,26 @@ public class NodeSeqAndRules extends Node {
 		}
 
 		// initialize the thread pool
-		pool = Executors.newFixedThreadPool(rules.size());
+		//pool = Executors.newFixedThreadPool(rules.size());
 	}
 
 	@Override
 	public Integer call() {
 		// no rules are done
 		nbRulesEnded = 0;
-		
+		started = true;
 		for (Node n : rules) {
 			n.addEndEventListener(this);
+			n.call();
+			if(stopping) { break;}
 		}
 		
-		try {
-			pool.invokeAll(rules);
-			super.call();
-		} catch (InterruptedException ex) {
-			Logger.getLogger(NodeSeqAndRules.class.getName()).log(Level.SEVERE, null, ex);
-		}
+//		try {
+//			pool.invokeAll(rules);
+//			super.call();
+//		} catch (InterruptedException ex) {
+//			Logger.getLogger(NodeSeqAndRules.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 		
 		return null;
 	}
@@ -73,8 +80,15 @@ public class NodeSeqAndRules extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		if(started) {
+			stopping = true;
+			for (Node n : rules) {
+				n.stop();
+				n.removeEndEventListener(this);
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -102,6 +116,7 @@ public class NodeSeqAndRules extends Node {
 		
 		// if all the rules are terminated, fire the end event
 		if (nbRulesEnded == rules.size()) {
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}

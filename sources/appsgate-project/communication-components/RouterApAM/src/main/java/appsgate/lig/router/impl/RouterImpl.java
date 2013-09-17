@@ -183,7 +183,7 @@ public class RouterImpl implements RouterApAMSpec {
 	 */
 	public void gotNotification(NotificationMsg notif) {
 		try {
-			logger.debug("Notification message receive, " + notif.JSONize());
+			logger.debug("Notification message received, " + notif.JSONize());
 			sendToClientService.send(notif.JSONize().toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
