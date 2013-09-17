@@ -22,5 +22,4 @@
         <definition name="status" type="string" field="appsgateStatus" />
 
     </implementation>
-
 </apam>
