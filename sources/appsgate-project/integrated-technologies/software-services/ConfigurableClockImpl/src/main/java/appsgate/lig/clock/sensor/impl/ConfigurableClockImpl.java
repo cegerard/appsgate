@@ -59,6 +59,8 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 
     long nextAlarm;
     Timer timer;
+    
+    Object lock;
 
     /**
      * Static class member uses to log what happened in each instances
@@ -67,8 +69,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	    .getLogger(ConfigurableClockImpl.class);
 
     public ConfigurableClockImpl() {
-    	timer = new Timer();
-    	initAppsgateFields();
+	lock=new Object();
     	resetClock();
     }
 
@@ -77,13 +78,14 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
      */
     public void start() {
     	logger.info("New Configurable clock created");
+    	initAppsgateFields();
     }
 
     public void stop() {
 	logger.info("Configurable Clock removed");
-	timer.cancel();
+	if(timer!=null)
+	    timer.cancel();
 	timer=null;
-	//frameClock.dispose();
 
     }
 
@@ -101,14 +103,18 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
      */
     @Override
     public void resetClock() {
-	synchronized (appsgateObjectId) {
+	synchronized (lock) {
 	    currentLag = 0;
 	    flowRate = 1;
 	    currentAlarmId = 0;
 	    alarms = new TreeMap<Long, Map<Integer, AlarmEventObserver>>();
 	    reverseAlarmMap = new HashMap<Integer, Long>();
 	    nextAlarm = -1;
-	    timer.purge();
+	    if(timer!= null) {
+		timer.cancel();
+		timer=null;
+	    }
+		
 	    timeFlowBreakPoint = -1;
 	}
 	fireClockSetNotificationMsg(Calendar.getInstance());
@@ -212,7 +218,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
     public JSONObject getDescription() throws JSONException {
 	JSONObject descr = new JSONObject();
 	// mandatory appsgate properties
-	descr.put("id", getAbstractObjectId());
+	descr.put("id", appsgateObjectId);
 	descr.put("type", appsgateUserType); // 21 for clock
 	descr.put("status", appsgateStatus);
 	descr.put("sysName", appsgateServiceName);
@@ -273,7 +279,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
      */
     @Override
     public void goAlongUntil(long millis) {
-	synchronized (appsgateObjectId) {
+	synchronized (lock) {
 	    Long currentTime = getCurrentTimeInMillis();
 	    SortedMap<Long, Map<Integer, AlarmEventObserver>> alarmsToFire = alarms
 		    .subMap(currentTime, currentTime + millis);
@@ -297,7 +303,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
     @Override
     public int registerAlarm(Calendar calendar, AlarmEventObserver observer) {
 	if (calendar != null && observer != null) {
-	    synchronized (appsgateObjectId) {
+	    synchronized (lock) {
 		Long time = getCurrentTimeInMillis();
 		if (alarms.containsKey(time)) {
 		    logger.debug("registerAlarm(...), alarm events already registered for this time, adding this one");
@@ -336,7 +342,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
      */
     @Override
     public void unregisterAlarm(int alarmEventId) {
-	synchronized (appsgateObjectId) {
+	synchronized (lock) {
 	    Long time = reverseAlarmMap.get(alarmEventId);
 	    Map<Integer, AlarmEventObserver> observers = alarms.get(time);
 	    observers.remove(alarmEventId);
@@ -374,7 +380,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
     }
 
     protected void calculateNextTimer() {
-	synchronized (appsgateObjectId) {
+	synchronized (lock) {
 	    Long currentTime = getCurrentTimeInMillis();
 	    if (alarms != null && !alarms.isEmpty()
 		    && alarms.lastKey() >= (currentTime - alarmLagTolerance)) {
@@ -389,6 +395,8 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		logger.debug("calculateNextTimer(), next alarm should ring in : "
 			+ nextAlarmDelay + "ms");
 		AlarmFiringTask nextAlarm = new AlarmFiringTask();
+		if(timer==null)
+		    timer= new Timer();			
 		timer.schedule(nextAlarm, nextAlarmDelay);
 	    }
 	}
@@ -421,7 +429,8 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 			.remove(nextAlarm);
 		fireClockAlarms(observers);
 		nextAlarm = -1;
-		this.cancel();
+		timer.cancel();
+		timer=null;
 		calculateNextTimer();
 	    }
 	}
