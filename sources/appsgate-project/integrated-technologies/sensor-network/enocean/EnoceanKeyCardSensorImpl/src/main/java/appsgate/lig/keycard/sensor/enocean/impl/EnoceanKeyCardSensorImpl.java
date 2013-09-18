@@ -90,8 +90,13 @@ public class EnoceanKeyCardSensorImpl implements CoreKeyCardSensorSpec, CoreObje
 	EnOceanService enoceanProxy;
 	
 	@Override
-	public boolean getKeyCardSensorStatus() {
+	public boolean getCardState() {
 		return Boolean.valueOf(currentStatus);
+	}
+	
+	@Override
+	public int getLastCardNumber() {
+		return -1;
 	}
 	
 	public String getSensorName() {

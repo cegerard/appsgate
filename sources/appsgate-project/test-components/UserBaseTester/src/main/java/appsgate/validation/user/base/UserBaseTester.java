@@ -91,10 +91,10 @@ public class UserBaseTester {
 			array = UserBaseSpec.getAccountsDetails("12");
 			logger.info("########## account list: " + array.toString());
 
-			logger.info("########## Try to add a device");
-			if (UserBaseSpec.addDevice("12", "appsgate", "ENO5684302")) {
-				logger.info("########## device added");
-			}
+//			logger.info("########## Try to add a device");
+//			if (UserBaseSpec.addDevice("12", "appsgate", "ENO5684302")) {
+//				logger.info("########## device added");
+//			}
 
 			logger.info("########## Try to get devices");
 			array = UserBaseSpec.getAssociatedDevices("12");
