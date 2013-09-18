@@ -330,6 +330,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		 * for not supported event	*				
 		 ****************************/
 		//RECV < a5 5a b 5 0 0 0 0 0 27 b3 ed 20 f7 > RRT from 27b3ed, RPS MSB [ 0 0 0 0 ] LSB
+		//RECV < 55 | 0 7 7 1 | 7a | f6 70 0 27 b3 ed 30 1 ff ff ff ff 2d 0 | 76 > FROM 27b3ed (-45 dBm)
 		String[] splited = arg0.split("from");
 		String split1 = splited[1];
 		String id = "";
