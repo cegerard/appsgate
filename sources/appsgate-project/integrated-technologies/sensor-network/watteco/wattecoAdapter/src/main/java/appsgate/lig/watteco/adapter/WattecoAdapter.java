@@ -135,6 +135,7 @@ public class WattecoAdapter implements WattecoIOService,
 				int port = 0;
 				while(notFound && port < 10) {
 					Process searchCMD = Runtime.getRuntime().exec("udevadm info -q symlink --name=ttyUSB"+port);
+					//sudo lsusb -v -d :0403 for all linux os
 					BufferedReader read = new BufferedReader(new InputStreamReader(searchCMD.getInputStream()));
 		            try {
 		            	searchCMD.waitFor();
