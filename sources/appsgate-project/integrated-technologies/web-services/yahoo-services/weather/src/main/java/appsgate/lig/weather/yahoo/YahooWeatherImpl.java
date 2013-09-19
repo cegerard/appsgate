@@ -190,7 +190,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	    currentWeathers.put(newWOEID, null);
 	    forecasts.put(newWOEID, null);
 	    fireWeatherUpdateMessage("location", placeName, WeatherUpdateNotificationMsg.EVENTTYPE_ADDLOCATION);
-	    
+	    fetch();
 	} else
 	    throw new WeatherForecastException("Place was not found");
     }
