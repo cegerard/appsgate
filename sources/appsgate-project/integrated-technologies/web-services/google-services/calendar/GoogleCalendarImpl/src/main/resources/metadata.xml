@@ -7,6 +7,8 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<ipojo:requires field="serviceAdapter"/>
 		
+		<dependency field="systemClock" fail="wait" resolve="exist"/>
+		
 		<definition name="calendarName" type="string" field="calendarName"/>
 		<definition name="account" 	  	type="string" field="account"/>
 		<definition name="pswd" 	  	type="string" field="pswd"/>

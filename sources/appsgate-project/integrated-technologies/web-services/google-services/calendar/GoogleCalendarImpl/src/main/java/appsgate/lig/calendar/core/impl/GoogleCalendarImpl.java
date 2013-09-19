@@ -3,15 +3,11 @@ package appsgate.lig.calendar.core.impl;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.filter.Filter;
@@ -23,10 +19,14 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Period;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.ValidationException;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -36,6 +36,8 @@ import appsgate.lig.calendar.service.messages.AlarmNotificationMsg;
 import appsgate.lig.calendar.service.messages.EndingEventNotificationMsg;
 import appsgate.lig.calendar.service.messages.StartingEventNotificationMsg;
 import appsgate.lig.calendar.service.spec.CoreCalendarSpec;
+import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
+import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter;
@@ -60,6 +62,11 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	 * The adapter for Google account
 	 */
 	private GoogleCalendarAdapter serviceAdapter;
+	
+	/**
+	 * The current system clock
+	 */
+	private CoreClockSpec systemClock;
 
 	/**
 	 * The name of the corresponding remote calendar
@@ -76,11 +83,11 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	 * The refresh rate of the local calendar
 	 */
 	private String rate;
-
+	
 	/**
-	 * The timer that trigger the refresh task each "rate" milliseconds
+	 * the refresh task id in the system clock
 	 */
-	private Timer refreshTimer = new Timer();
+	private int refreshTaskId = -1;
 
 	/**
 	 * The start date from when to get remote calendar
@@ -112,16 +119,16 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	 */
 	private String status;
 
+	private int beginEventId = -1;
 	ArrayList<VEvent> startingEventsList;
-	Timer nextStartEventTimer = new Timer();
 	DateTime referenceStartingEventDate = new DateTime(0);
 	
+	private int endEventId = -1;
 	ArrayList<VEvent> endingEventsList;
-	Timer nextEndEventTimer = new Timer();
 	DateTime referenceEndingEventDate = new DateTime(0);
 
+	private int alarmEventId = -1;
 	HashMap<VAlarm, VEvent> alarmsMap;
-	Timer nextAlarmTimer = new Timer();
 	DateTime referenceTriggeringAlarmDate = new DateTime(0);
 
 	/**
@@ -129,60 +136,39 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	 */
 	public void newInst() {
 		logger.info("New core calendar instanciated, " + calendarName);
-		// calendar = Adapter.getCalendar(calendarName, account, pswd, startDate,
-		// endDate);
-		// logger.debug("URL for private access to data:"+calendar.getProperty("URL").getValue());
-		// logger.debug("Name of remote calendar: "+calendar.getProperty("NAME").getValue());
-		
-		//Identifier generation with MD5 method
 		String target = calendarName+account;
-		try {
-			serviceId = new String(MessageDigest.getInstance("MD5").digest(target.getBytes()));
-		} catch (NoSuchAlgorithmException e) {e.printStackTrace();}
+		serviceId = userType+target.hashCode();
 		
 		startingEventsList = new ArrayList<VEvent>();
 		endingEventsList = new ArrayList<VEvent>();
 		alarmsMap = new HashMap<VAlarm, VEvent>();
 
 		Long refreshRate = Long.valueOf(rate);
-		refreshTimer.scheduleAtFixedRate(refreshtask, 30000, refreshRate);
+		java.util.Calendar cal = systemClock.getCurrentDate();
+		cal.setTimeInMillis(cal.getTimeInMillis()+5000+(long)(Math.random()*10000));
+		refreshTaskId = systemClock.registerAlarm(cal, new RefreshTask());
+	
 		logger.debug("Refresh task initiated to " + refreshRate / 1000 / 60 + " minutes");
-		
-//		java.util.Calendar calbegin=java.util.Calendar.getInstance();
-//		java.util.Calendar calend=java.util.Calendar.getInstance();
-		
-//		//add
-//		calbegin.add(java.util.Calendar.DAY_OF_MONTH, 1);
-//		calend.add(java.util.Calendar.DAY_OF_MONTH, 1);
-//		calend.add(java.util.Calendar.HOUR, 2);		
-//		DateTime inicio=new DateTime(calbegin.getTimeInMillis());
-//		DateTime fim=new DateTime(calbegin.getTimeInMillis());
-//		VEvent event=new VEvent(inicio,fim,"novo elemento");
-//		serviceAdapter.addEvent("Calendar boulot","smarthome.inria@gmail.com","smarthome2012",event);
-		
-//		//del
-//		calbegin.add(java.util.Calendar.DAY_OF_MONTH, 1);
-//		calend.add(java.util.Calendar.DAY_OF_MONTH, 1);
-//		calend.add(java.util.Calendar.HOUR, 2);		
-//		DateTime inicio=new DateTime(calbegin.getTimeInMillis());
-//		DateTime fim=new DateTime(calbegin.getTimeInMillis());
-//		VEvent event=new VEvent(inicio,fim,"novo elemento");
-//		serviceAdapter.delEvent("Calendar boulot","smarthome.inria@gmail.com","smarthome2012",event);
-		
 	}
 
 	/**
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		refreshTimer.cancel();
-		refreshTimer.purge();
+		if(refreshTaskId != -1) {
+			systemClock.unregisterAlarm(refreshTaskId);
+		}
 		logger.info("A core calendar instance desapeared, " + calendarName);
 	}
 	
 	@Override
+	public JSONObject getCalendar( long from, long to) {
+		Calendar subCal = serviceAdapter.getCalendar(calendarName, account, pswd, from, to);
+		return calToJSONConvert(subCal);
+	}
+
+	@Override
 	public Calendar getCalendar(java.util.Date from, java.util.Date to) {
-		
 		return serviceAdapter.getCalendar(calendarName, account, pswd, from.getTime(), to.getTime());
 	}
 	
@@ -202,11 +188,15 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	 * member value
 	 */
 	private void reScheduleRefreshTask() {
-		refreshtask.cancel();
-		refreshtask = new RefreshTask();
+		if(refreshTaskId != -1) {
+			systemClock.unregisterAlarm(refreshTaskId);
+		}
 		
 		Long refreshRate = Long.valueOf(rate);
-		refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
+		java.util.Calendar cal = systemClock.getCurrentDate();
+		cal.setTimeInMillis(cal.getTimeInMillis()+refreshRate);
+		refreshTaskId = systemClock.registerAlarm(cal, new RefreshTask());
+		
 		logger.debug("Refresh task initiated to " + refreshRate / 1000 / 60 + " minutes");
 	}
 
@@ -217,12 +207,11 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void subscribeNextEventNotifications() {
-		//TODO use core clock Spec (message and ref)
-		java.util.Calendar startDate = java.util.Calendar.getInstance();
+		java.util.Calendar startDate = systemClock.getCurrentDate();
 		startDate.set(java.util.Calendar.HOUR_OF_DAY, 0);
 		startDate.clear(java.util.Calendar.MINUTE);
 		startDate.clear(java.util.Calendar.SECOND);
-		//logger.debug("START DATE: "+ String.format("Current Date/Time : %tc", startDate));
+		logger.debug("START DATE: "+ String.format("Current Date/Time : %tc", startDate));
 
 		// create a period starting the current day at midnight with a duration
 		// of one month because
@@ -232,7 +221,7 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 		rules[0] = new PeriodRule(period);
 		Filter filter = new Filter(rules, Filter.MATCH_ANY);
 
-		DateTime today = new DateTime(java.util.Calendar.getInstance().getTime().getTime());
+		DateTime today = new DateTime(systemClock.getCurrentTimeInMillis());
 		DateTime newStartingEventDate = null;
 		DateTime newEndingEventDate = null;
 		DateTime newTriggeringAlarmDate = null;
@@ -303,26 +292,31 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 			}
 		}
 
-		// Update Events timers
+		// Update begin Events timers
 		if(newStartingEventDate != null) {
 			if (! newStartingEventDate.equals(referenceStartingEventDate)) {
 				if(! referenceStartingEventDate.equals(new DateTime(0))) {
-					nextStartEventTimer.cancel();
-					nextStartEventTimer = new Timer();
+					systemClock.unregisterAlarm(beginEventId);
 				}
 				referenceStartingEventDate = newStartingEventDate;
-				nextStartEventTimer.schedule(new notifyStartingEventTask(), referenceStartingEventDate);
+				
+				java.util.Calendar calbegin=java.util.Calendar.getInstance();
+				calbegin.setTimeInMillis(referenceStartingEventDate.getTime());
+				beginEventId = systemClock.registerAlarm(calbegin, new notifyStartingEventTask());
 			}
 		}
 		
+		// Update end Events timers
 		if(newEndingEventDate != null ) {
 			if( ! newEndingEventDate.equals(referenceEndingEventDate)) {
 				if(! referenceEndingEventDate.equals(new DateTime(0))) {
-					nextEndEventTimer.cancel();
-					nextEndEventTimer = new Timer();
+					systemClock.unregisterAlarm(endEventId);
 				}
 				referenceEndingEventDate = newEndingEventDate;
-				nextEndEventTimer.schedule(new notifyEndingEventTask(), referenceEndingEventDate);
+				
+				java.util.Calendar calend=java.util.Calendar.getInstance();
+				calend.setTimeInMillis(referenceEndingEventDate.getTime());
+				endEventId = systemClock.registerAlarm(calend, new notifyEndingEventTask());
 			}
 		}
 
@@ -330,11 +324,13 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 		if(newTriggeringAlarmDate != null ) {
 			if(! newTriggeringAlarmDate.equals(referenceTriggeringAlarmDate)) {
 				if(! referenceTriggeringAlarmDate.equals(new DateTime(0))) {
-					nextAlarmTimer.cancel();
-					nextAlarmTimer = new Timer();
+					systemClock.unregisterAlarm(alarmEventId);
 				}
 				referenceTriggeringAlarmDate = newTriggeringAlarmDate;
-				nextAlarmTimer.schedule(new notifyAlarmRingTask(), referenceTriggeringAlarmDate);
+				
+				java.util.Calendar calAlarm=java.util.Calendar.getInstance();
+				calAlarm.setTimeInMillis(referenceTriggeringAlarmDate.getTime());
+				alarmEventId = systemClock.registerAlarm(calAlarm, new notifyAlarmRingTask());
 			}
 		}
 		
@@ -362,14 +358,15 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	/**
 	 * Timer use to trigger notifications when events begin
 	 */
-	private class notifyStartingEventTask extends TimerTask {
+	private class notifyStartingEventTask implements AlarmEventObserver  {
+
 		@Override
-		public void run() {
+		public void alarmEventFired(int alarmEventId) {
 			Iterator<VEvent> it = startingEventsList.iterator();
 			while (it.hasNext()) {
 				VEvent event = it.next();
 				notifyEventAlarm(0, event, null);
-				logger.debug("Send the starting event status notifcation for "+ event.getSummary().getValue());
+				logger.info("Send the starting event status notifcation for "+ event.getSummary().getValue());
 			}
 			subscribeNextEventNotifications();
 		}
@@ -378,14 +375,15 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	/**
 	 * Timer use to trigger notifications when events end
 	 */
-	private class notifyEndingEventTask extends TimerTask {
+	private class notifyEndingEventTask implements AlarmEventObserver {
+
 		@Override
-		public void run() {
+		public void alarmEventFired(int alarmEventId) {
 			Iterator<VEvent> it = endingEventsList.iterator();
 			while (it.hasNext()) {
 				VEvent event = it.next();
 				notifyEventAlarm(1, event, null);
-				logger.debug("Send the ending event status notifcation for "+ event.getSummary().getValue());
+				logger.info("Send the ending event status notifcation for "+ event.getSummary().getValue());
 			}
 			subscribeNextEventNotifications();
 		}
@@ -394,9 +392,10 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	/**
 	 * Timer use to trigger notifications when alarms rings
 	 */
-	private class notifyAlarmRingTask extends TimerTask {
+	private class notifyAlarmRingTask implements AlarmEventObserver {
+
 		@Override
-		public void run() {
+		public void alarmEventFired(int alarmEventId) {
 			Iterator<Entry<VAlarm, VEvent>> it = alarmsMap.entrySet().iterator();
 			while (it.hasNext()) {
 				Entry<VAlarm, VEvent> entry = it.next();
@@ -411,10 +410,11 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 	/**
 	 * The task that is executed automatically to refresh the local calendar
 	 */
-	private class RefreshTask extends TimerTask {
+	private class RefreshTask implements AlarmEventObserver {
 
 		@Override
-		public void run() {
+		public void alarmEventFired(int alarmEventId) {
+			refreshTaskId = -1;
 			calendar = serviceAdapter.getCalendar(calendarName, account, pswd, startDate, endDate);
 			subscribeNextEventNotifications();
 			
@@ -432,15 +432,13 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}	
-			logger.debug("");
+			
+			logger.info("Calendar "+calendarName+" udpated.");
+			
+			reScheduleRefreshTask();
 		}
 		
 	}
-	
-	/**
-	 * The RefreshTask member
-	 */
-	RefreshTask refreshtask = new RefreshTask();
 
 	@Override
 	public String getAbstractObjectId() {
@@ -467,7 +465,7 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 		JSONObject descr = new JSONObject();
 		
 		descr.put("id", serviceId);
-		descr.put("type", userType); //? for Google calendar
+		descr.put("type", userType); //101 for Google calendar
 		descr.put("status", status);
 		descr.put("calendarName", calendarName);
 		descr.put("owner", account);
@@ -478,5 +476,44 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 
 	@Override
 	public void setPictureId(String pictureId) {}
+	
+	/**
+	 * Convert a calendar in iCal format to JSONObject calendar
+	 * @param calendar the calendar in iCal format
+	 * @return a JSONBject that include the calendar
+	 */
+	private JSONObject calToJSONConvert(Calendar calendar) {
+		JSONObject cal = new JSONObject();
+		JSONArray compo = new JSONArray();
+		
+		try {
+			cal.put("PRODID", calendar.getProductId());
+			
+			PropertyList pList = calendar.getProperties();
+			for(Property p : pList) {
+				cal.put(p.getName(), p.getValue());
+			}
+			
+			ComponentList<CalendarComponent> cList = calendar.getComponents();
+			for(CalendarComponent c : cList) {
+				JSONObject event = new JSONObject();
+				
+				PropertyList cpList = c.getProperties();
+				for(Property p : cpList) {
+					event.put(p.getName(), p.getValue());
+				}
+			
+				compo.put(event);
+			}
+			cal.put("components", compo);
+			
+			
+		} catch (JSONException e) {
+			logger.debug("Calendar convertion JSON exception.");
+			e.printStackTrace();
+		}
+		
+		return cal;
+	}
 
 }
