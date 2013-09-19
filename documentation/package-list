@@ -101,6 +101,4 @@ appsgate.validation.router.command
 appsgate.validation.user.base
 appsgate.validation.virtual.adapter
 appsgate.validation.watteco.adapter
-enocean.ubikit.adapter
-enocean.ubikit.adapter.services
-enocean.ubikit.adapter.source.event
+test
