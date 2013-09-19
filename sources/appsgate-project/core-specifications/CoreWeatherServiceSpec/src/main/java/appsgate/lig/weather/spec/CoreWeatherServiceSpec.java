@@ -3,6 +3,10 @@ package appsgate.lig.weather.spec;
 import java.util.Calendar;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
@@ -114,4 +118,10 @@ public interface CoreWeatherServiceSpec {
      * @return The corresponding notification message
      */
     NotificationMsg fireWeatherUpdateMessage(String property, String value, String eventType);
+    
+    /**
+     * Method GUI uses
+     */
+    public JSONArray getCurrentWeather() throws JSONException;
+    public JSONArray getForecast() throws JSONException;
 } 

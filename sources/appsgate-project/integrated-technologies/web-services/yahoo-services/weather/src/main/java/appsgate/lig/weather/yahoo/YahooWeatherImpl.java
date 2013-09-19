@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -20,6 +22,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
+import appsgate.lig.weather.utils.WeatherCodesHelper;
 import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
@@ -156,6 +159,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	return currentWeathers.get(getWOEID(placeName));
     }
 
+
     /*
      * (non-Javadoc)
      * 
@@ -185,7 +189,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	    lastPublicationDates.put(newWOEID, null);
 	    currentWeathers.put(newWOEID, null);
 	    forecasts.put(newWOEID, null);
-	    fireWeatherUpdateMessage("location", placeName,WeatherUpdateNotificationMsg.EVENTTYPE_ADDLOCATION);
+	    fireWeatherUpdateMessage("location", placeName, WeatherUpdateNotificationMsg.EVENTTYPE_ADDLOCATION);
 	    
 	} else
 	    throw new WeatherForecastException("Place was not found");
@@ -399,7 +403,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	    appsgatePictureId=null;
 	    appsgateUserType="20"; //20 stands for weather forecast service
 	    appsgateDeviceStatus="2"; // 2 means device paired (for a device, not relevant for service)
-	    appsgateObjectId=appsgateUserType+String.valueOf(this.hashCode()); // Object id prefixed by the user type
+	    appsgateObjectId=appsgateUserType+String.valueOf(feedUrlTemplate.hashCode()); // Object id prefixed by the user type
 	    appsgateServiceName="Yahoo Weather Forecast";
     }
     
@@ -488,6 +492,64 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
     public int getObjectStatus() {
 	return Integer.parseInt(appsgateDeviceStatus);
     }
-    
+
+	@Override
+	public JSONArray getCurrentWeather() throws JSONException {
+		Set<String> keys = currentWeathers.keySet();
+		JSONArray weather = new JSONArray();
+		for(String key : keys) {
+			CurrentWeather cw = currentWeathers.get(key);
+			
+			JSONObject obj = new JSONObject();
+			obj.put("location", getNameFromWOEID(key));
+			obj.put("temperature", String.valueOf(cw.getTemperature()));
+			obj.put("trend", WeatherCodesHelper.getDescription(cw.getWeatherCode()));
+			
+			weather.put(obj);
+		}
+		return weather;
+	}
+
+	@Override
+	public JSONArray getForecast() throws JSONException {
+		Set<String> keys = forecasts.keySet();
+		JSONArray allForecasts = new JSONArray();
+		
+		for(String key : keys) {
+			
+			List<DayForecast> dfc = forecasts.get(key);
+			JSONObject place = new JSONObject();
+			JSONArray locDFC = new JSONArray();
+			
+			for(DayForecast d : dfc) {
+				JSONObject obj = new JSONObject();
+				obj.put("date", d.getDate().toString());
+				obj.put("trend",WeatherCodesHelper.getDescription(d.getCode()));
+				obj.put("max", d.getMax());
+				obj.put("min", d.getMin());
+				locDFC.put(obj);
+			}
+			
+			place.put("location", getNameFromWOEID(key));
+			place.put("forecast", locDFC);
+			allForecasts.put(place);
+		}
+		
+		return allForecasts;
+	}
+	
+	private String getNameFromWOEID(String WOEID) {
+		Set<String> nameList = woeidFromePlaceName.keySet();
+		String nameLoc = "";
+		for(String name : nameList) {
+			String woeid = woeidFromePlaceName.get(name);
+			if(WOEID.contentEquals(woeid)) {
+				nameLoc = name;
+				break;
+			}
+		}
+		
+		return nameLoc;
+	}
 
 }
