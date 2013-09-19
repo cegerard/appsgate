@@ -8,7 +8,7 @@
 		],
 		author : "Bob",
 		target : "Alice",
-		deamon : "true",
+		daemon : "true",
 		seqDefinitions : [
 		],
 		seqRules : [
