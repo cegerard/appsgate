@@ -1,28 +1,36 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="fr.imag.adele.apam http://raw.github.com/AdeleResearchGroup/ApAM/master/runtime/core/src/main/resources/xsd/ApamCore.xsd">
-    
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+                              
 	<implementation name="GmailImpl" classname="appsgate.lig.mail.gmail.Gmail" specification="mail-service-specification" push="mailReceivedNotification">
+	    
 	    <dependency field="apam"/>	
 		<callback onInit="start" onRemove="stop" />
+		
 		<definition name="user" type="string" field="USER" internal="false"/>
 		<definition name="password" type="string" field="PASSWORD" internal="false"/>
 		<definition name="auto-refresh" type="int" field="refreshRate" internal="false" method="autoRefreshValueChanged"/>
+		
+		<definition name="deviceId" 	type="string" value="666666666" field="serviceId"/>
+		<definition name="userType" 	type="string" value="102"	field="userType"/>
+		<definition name="status" 		type="string" value="2" 	field="status"/>
+		
 	</implementation>
-   
-   	<implementation name="MailReceivedConsoleNotification" classname="appsgate.lig.mail.gmail.main.MailReceivedConsoleNotification">
-   	    <dependency field="apam"/>
-		<callback onInit="start" onRemove="stop" />
-		<dependency field="mailService" specification="mail-service-specification">
-		    	<message push="messageReceived" />
-		</dependency>
-	</implementation>
-
-   <apam-instance name="GmailImpl-0" implementation="GmailImpl">
+	
+	<apam-instance name="GmailImpl-0" implementation="GmailImpl">
        <property name="user" value="smarthome.inria@gmail.com"/>
        <property name="password" value="smarthome2012"/>
        <property name="auto-refresh" value="2000"/>
    </apam-instance>
+   
+<!--    	<implementation name="MailReceivedConsoleNotification" classname="appsgate.lig.mail.gmail.main.MailReceivedConsoleNotification"> -->
+<!--    	    <dependency field="apam"/> -->
+<!-- 		<callback onInit="start" onRemove="stop" /> -->
+<!-- 		<dependency field="mailService" specification="mail-service-specification"> -->
+<!-- 		    	<message push="messageReceived" /> -->
+<!-- 		</dependency> -->
+<!-- 	</implementation> -->
    	
-   <apam-instance implementation="MailReceivedConsoleNotification" name="MailReceivedConsoleNotification-0"/>
+<!--    <apam-instance implementation="MailReceivedConsoleNotification" name="MailReceivedConsoleNotification-0"/> -->
    
 </apam>

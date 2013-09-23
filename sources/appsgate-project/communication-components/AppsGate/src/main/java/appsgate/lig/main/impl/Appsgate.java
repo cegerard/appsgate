@@ -22,6 +22,10 @@ import org.cybergarage.upnp.device.InvalidDescriptionException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -378,25 +382,28 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	}
 	
 	@Override
-	public boolean removeProgram(String programName) {
-		return interpreter.removeProgram(programName);
+	public boolean removeProgram(String programId) {
+		return interpreter.removeProgram(programId);
 	}
 
 	@Override
 	public boolean updateProgram(JSONObject jsonProgram) {
-		try {
-			if (interpreter.removeProgram(jsonProgram.getString("programName"))) {
-				return interpreter.addProgram(jsonProgram);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return false;
+		return interpreter.update(jsonProgram);
 	}
 
 	@Override
-	public boolean callProgram(String programName) {
-		return interpreter.callProgram(programName);
+	public boolean callProgram(String programId) {
+		return interpreter.callProgram(programId);
+	}
+	
+	@Override
+	public boolean stopProgram(String programId) {
+		return interpreter.stopProgram(programId);
+	}
+	
+	@Override
+	public boolean pauseProgram(String programId){
+		 return interpreter.pauseProgram(programId);
 	}
 
 	@Override
@@ -404,16 +411,30 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 		HashMap<String, JSONObject> map = interpreter.getListPrograms();
 		JSONArray programList = new JSONArray();
 		for(String key : map.keySet()) {
-			JSONObject pgmJSON = new JSONObject();
-			try {
-				pgmJSON.put("name", key);
-				pgmJSON.put("source", map.get(key));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			programList.put(pgmJSON);
+			programList.put(map.get(key));
 		}
 		return programList;
 	}
+	
+	@Override
+	public void shutdown() {
+		BundleContext ctx = FrameworkUtil.getBundle(Appsgate.class).getBundleContext();
+		Bundle systemBundle = ctx.getBundle(0);
+		try {
+			systemBundle.stop();
+		} catch (BundleException e) {
+			e.printStackTrace();
+		}
+	}
 
+	@Override
+	public void restart() {
+		BundleContext ctx = FrameworkUtil.getBundle(Appsgate.class).getBundleContext();
+		Bundle systemBundle = ctx.getBundle(0);
+		try {
+			systemBundle.update();
+		} catch (BundleException e) {
+			e.printStackTrace();
+		}
+	}
 }

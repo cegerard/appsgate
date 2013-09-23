@@ -1,4 +1,12 @@
-import appsgate.lig.clock.sensor.impl.SwingClock;
+package test;
+
+import java.util.HashSet;
+import java.util.Set;
+
+
+import appsgate.lig.clock.sensor.impl.SwingClockImpl;
+import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
+
 
 /**
  * Copyright 2011-2013 Universite Joseph Fourier, LIG, ADELE team
@@ -21,16 +29,30 @@ import appsgate.lig.clock.sensor.impl.SwingClock;
  * @author thibaud
  *
  */
-public class SwingClockTest {
+public class SwingClockTest implements AlarmEventObserver{
+    
+    long errorTolerance=10;
+    Set<Integer> receivedAlarm = new HashSet<Integer>();
+    
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-//	SwingClock clock = new SwingClock();
-//	clock.start();
-//	clock.show();
 
+
+// Just testing the GUI
+        public static void main(String[] args) {
+	SwingClockImpl clock = new SwingClockImpl();
+	clock.start();
+	clock.show();
     }
+    
+    
 
+
+    /* (non-Javadoc)
+     * @see appsgate.lig.clock.sensor.spec.AlarmEventObserver#alarmEventFired(int)
+     */
+    @Override
+    public void alarmEventFired(int alarmEventId) {
+	receivedAlarm.add(alarmEventId);
+    }
+    
 }

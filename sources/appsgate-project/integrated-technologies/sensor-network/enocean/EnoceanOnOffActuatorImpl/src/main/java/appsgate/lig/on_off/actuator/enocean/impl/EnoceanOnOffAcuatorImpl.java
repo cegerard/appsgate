@@ -20,7 +20,7 @@ import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
  * @see OnOffActuatorSpec
  * @see AbstractObjectSpec
  */
-public class EnoceanOnOffAcuatorImpl implements CoreOnOffActuatorSpec, CoreObjectSpec {
+public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuatorSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -28,7 +28,7 @@ public class EnoceanOnOffAcuatorImpl implements CoreOnOffActuatorSpec, CoreObjec
 	private static Logger logger = LoggerFactory.getLogger(EnoceanOnOffAcuatorImpl.class);
 	
 	/**
-	 * the system name of this sensor.
+	 * the system name of this sensor. 
 	 */
 	private String actuatorName;
 

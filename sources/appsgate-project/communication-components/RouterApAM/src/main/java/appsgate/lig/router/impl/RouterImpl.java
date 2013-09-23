@@ -183,7 +183,7 @@ public class RouterImpl implements RouterApAMSpec {
 	 */
 	public void gotNotification(NotificationMsg notif) {
 		try {
-			logger.debug("Notification message receive, " + notif.JSONize());
+			logger.debug("Notification message received, " + notif.JSONize());
 			sendToClientService.send(notif.JSONize().toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -231,7 +231,10 @@ public class RouterImpl implements RouterApAMSpec {
 			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
 			JSONDescription.put("placeId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
 		} catch (JSONException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
+		} catch (Exception e) {
+			logger.error("ApAM error");
+			logger.error(e.getMessage());
 		}
 		return JSONDescription;
 	}

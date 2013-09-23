@@ -193,29 +193,59 @@ public interface AppsGateSpec {
 	/**
 	 * Remove a currently deployed program.
 	 * Stop it, if it is running.
-	 * @param programName the name of the program to remove.
+	 * @param programID the identifier of the program to remove.
 	 * @return true if the program has been removed, false otherwise.
 	 */
-	public boolean removeProgram(String programName);
+	public boolean removeProgram(String programId);
 	
 	/**
 	 * Update an existing program
 	 * @param jsonProgram the JSONtree of the program
-	 * @return true if the program has been udpated, false otherwise
+	 * @return true if the program has been updated, false otherwise
 	 */
 	public boolean updateProgram(JSONObject jsonProgram);
 	
 	/**
 	 * Run a deployed end user program 
-	 * @param programName the name of the program to run
+	 * @param programId the identifier of the program to run
 	 * @return true if the program has been launched, false otherwise
 	 */
-	public boolean callProgram(String programName);
+	public boolean callProgram(String programId);
+	
+	/**
+	 * Stop a deployed program execution
+	 * @param progamId identifier of the program
+	 * @return true if the program has been stopped, false otherwise
+	 */
+	public boolean stopProgram(String programId);
+	
+	/**
+	 * Stop the program but keep its current state
+	 * @param programId the identifier of the program
+	 * @return true if the program has been paused, false otherwise
+	 */
+	public boolean pauseProgram(String programId);
 	
 	/**
 	 * Get the list of current deployed programs
 	 * @return the programs list as a JSONArray
 	 */
 	public JSONArray getPrograms();
+	
+	/************************************/
+	/**    General Appsgate commands    */
+	/************************************/
+	
+	/**
+	 * Shutdown the Appsgate system
+	 * (Shutdown the OSGi distribution)
+	 */
+	public void shutdown();
+	
+	/**
+	 * restart the Appsgate system
+	 * (Restart the system bundle from OSGi)
+	 */
+	public void restart();
 	
 }

@@ -14,5 +14,11 @@ public interface CoreKeyCardSensorSpec {
 	 * Get the current state of the key card sensor
 	 * @return true if a card is inserted and false otherwise
 	 */
-	public boolean getKeyCardSensorStatus();
+	public boolean getCardState();
+	
+	/**
+	 * Get the last card number that has been checked
+	 * @return the card number
+	 */
+	public int getLastCardNumber();
 }

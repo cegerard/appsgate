@@ -11,7 +11,7 @@
 
 	<artifactId>CoreObjectSpec</artifactId>
 	<packaging>bundle</packaging>
-	<name>Abstract object specification</name>
+	<name>Core object specification</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

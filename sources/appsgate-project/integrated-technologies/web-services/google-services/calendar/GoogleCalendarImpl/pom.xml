@@ -41,6 +41,11 @@
 			 <artifactId>CoreObjectSpec</artifactId>
 			 <version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreClockSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->

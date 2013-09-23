@@ -1,20 +1,20 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 /**
  * Node for a list of events
  *
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since June 26, 2013
  * @version 1.0.0
  */
@@ -42,13 +42,14 @@ public class NodeSeqEvent extends Node {
 		}
 		
 		// initialize the thread pool
-		pool = Executors.newFixedThreadPool(seqEvent.size());
+		//pool = Executors.newFixedThreadPool(seqEvent.size());
 	}
 	
 	@Override
 	public Integer call() {
 		// fire the start event
 		fireStartEvent(new StartEvent(this));
+		started = true;
 		
 		// no event has been received yet
 		nbEventReceived = 0;
@@ -56,13 +57,15 @@ public class NodeSeqEvent extends Node {
 		// add an end event listener to each event
 		for (NodeEvent e : seqEvent) {
 			e.addEndEventListener(this);
+			e.call();
+			if(stopping) {break;};
 		}
 		
-		try {
-			pool.invokeAll(seqEvent);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(NodeSeqEvent.class.getName()).log(Level.SEVERE, null, ex);
-		}
+//		try {
+//			pool.invokeAll(seqEvent);
+//		} catch (InterruptedException ex) {
+//			Logger.getLogger(NodeSeqEvent.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 
 		return null;
 	}
@@ -74,7 +77,15 @@ public class NodeSeqEvent extends Node {
 
 	@Override
 	public void stop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(started) {
+			stopping = true;
+			for (Node n : seqEvent) {
+				n.removeEndEventListener(this);
+				n.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -99,6 +110,7 @@ public class NodeSeqEvent extends Node {
 		
 		// if all the events have been fired, fire the end event of the sequence of events
 		if (nbEventReceived == seqEvent.size()) {
+			started = false;
 			fireEndEvent(new EndEvent(this));
 		}
 	}

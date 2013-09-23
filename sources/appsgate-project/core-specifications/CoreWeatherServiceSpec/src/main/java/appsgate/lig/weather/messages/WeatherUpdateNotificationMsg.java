@@ -86,9 +86,10 @@ public class WeatherUpdateNotificationMsg implements NotificationMsg {
 	notif.put("objectId", source.getAbstractObjectId());
 	notif.put("varName", varName);
 	notif.put("value", value);
-	if (eventType != null && eventType.length() > 0)
+	if (eventType != null && eventType.length() > 0){
 	    notif.put("eventType", eventType);
-
+	}
+	
 	return notif;
     }
 

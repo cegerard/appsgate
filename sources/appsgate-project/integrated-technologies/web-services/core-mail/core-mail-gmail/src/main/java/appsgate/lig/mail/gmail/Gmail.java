@@ -38,9 +38,10 @@ import fr.imag.adele.apam.Apam;
 /**
  * Gmail implementation for mail service
  * @author jnascimento
+ * @author Cédric Gérard
  *
  */
-public class Gmail implements Mail {
+public class Gmail implements Mail, CoreObjectSpec {
 
 	
 	private Apam apam;
@@ -53,6 +54,13 @@ public class Gmail implements Mail {
 	 */
 	private String USER;
 	private String PASSWORD;
+	
+	/*
+	 * Object information
+	 */
+	private String serviceId;
+	private String userType;
+	private String status;
 	
 	/*
 	 * State variables
@@ -80,6 +88,8 @@ public class Gmail implements Mail {
 	public void start() {
 
 		try {
+			String target = USER+PASSWORD;
+			serviceId = String.valueOf(target.hashCode());
 			fetch();
 		} catch (MessagingException e) {
 			throw new RuntimeException("unable to start component. Message "+e.getMessage());
@@ -152,8 +162,7 @@ public class Gmail implements Mail {
 		
 		if (refreshRate != null && refreshRate != -1) {
 			logger.fine("Configuring auto-refresh to:" + refreshRate + "ms");
-			refreshTimer.scheduleAtFixedRate(refreshtask, 0,
-					refreshRate.longValue());
+			refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate.longValue());
 		}
 		
 	}
@@ -168,8 +177,7 @@ public class Gmail implements Mail {
 			session = Session.getInstance(properties,
 					new javax.mail.Authenticator() {
 						protected PasswordAuthentication getPasswordAuthentication() {
-							return new PasswordAuthentication(Gmail.this.USER,
-									Gmail.this.PASSWORD);
+							return new PasswordAuthentication(Gmail.this.USER, Gmail.this.PASSWORD);
 						}
 					});
 		}
@@ -257,8 +265,7 @@ public class Gmail implements Mail {
 
 			Message message = new MimeMessage(getSession());
 			message.setFrom(new InternetAddress(USER));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(to));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 			message.setSubject(subject);
 			message.setText(body);
 
@@ -351,9 +358,9 @@ public class Gmail implements Mail {
 				
 				try {
 
-					result.put("objectId", this.hashCode());
-					result.put("varName", "");
-					result.put("value", "");
+					result.put("objectId", serviceId);
+					result.put("varName", "newMail");
+					result.put("value", USER);
 
 					result.put("subject", msg.getSubject());
 					result.put("from", msg.getFrom());
@@ -395,5 +402,41 @@ public class Gmail implements Mail {
 		configureAutoRefreshTask();
 		
 	}
+
+	@Override
+	public String getAbstractObjectId() {
+		return serviceId;
+	}
+
+	@Override
+	public String getUserType() {
+		return userType;
+	}
+
+	@Override
+	public int getObjectStatus() {
+		return Integer.parseInt(status);
+	}
+
+	@Override
+	public String getPictureId() {
+		return "";
+	}
+
+	@Override
+	public JSONObject getDescription() throws JSONException {
+		JSONObject descr = new JSONObject();
+		
+		descr.put("id", serviceId);
+		descr.put("type", userType); //102 for mail
+		descr.put("status", status);
+		descr.put("user", USER);
+		descr.put("refreshRate", refreshRate);
+		
+		return descr;
+	}
+
+	@Override
+	public void setPictureId(String pictureId) {}
 	
 }

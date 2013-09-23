@@ -70,6 +70,9 @@ appsgate.lig.proxy.google.calendar
 appsgate.lig.router.impl
 appsgate.lig.router.impl.listeners
 appsgate.lig.router.spec
+appsgate.lig.smartplug.actuator_sensor.messages
+appsgate.lig.smartplug.actuator_sensor.spec
+appsgate.lig.smartplug.sensor.watteco.impl
 appsgate.lig.temperature.sensor.enocean.impl
 appsgate.lig.temperature.sensor.messages
 appsgate.lig.temperature.sensor.spec
@@ -81,6 +84,8 @@ appsgate.lig.upnp.generator.util
 appsgate.lig.virtual.adapter
 appsgate.lig.virtual.adapter.listener
 appsgate.lig.virtual.adapter.services
+appsgate.lig.watteco.adapter
+appsgate.lig.watteco.adapter.services
 appsgate.lig.weather
 appsgate.lig.weather.exception
 appsgate.lig.weather.messages
@@ -95,3 +100,5 @@ appsgate.validation.router.call
 appsgate.validation.router.command
 appsgate.validation.user.base
 appsgate.validation.virtual.adapter
+appsgate.validation.watteco.adapter
+test

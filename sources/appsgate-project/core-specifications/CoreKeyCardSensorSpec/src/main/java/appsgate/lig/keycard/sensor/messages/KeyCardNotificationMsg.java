@@ -27,6 +27,11 @@ public class KeyCardNotificationMsg implements NotificationMsg{
 	private boolean isCardInserted;
 	
 	/**
+	 * The card number that as as been pass on or inserted.
+	 */
+	private int cardNumber; 
+	
+	/**
 	 * The name of the change variable
 	 */
 	private String varName; 
@@ -39,41 +44,74 @@ public class KeyCardNotificationMsg implements NotificationMsg{
 	/**
 	 * Constructor for this ApAM message
 	 * @param isCardInserted the new key card status
+	 * @param cardNumber the inserted card number (-1 if no id)
+	 * @param varName the variable that changed
+	 * @param value the new value for the variable that changed
+	 * @param the source object reference
 	 */
-	public KeyCardNotificationMsg(boolean isCardInserted, String varName, String value, CoreObjectSpec source) {
-		super();
+	public KeyCardNotificationMsg(boolean isCardInserted, int cardNumber, String varName, String value, CoreObjectSpec source) {
 		this.isCardInserted = isCardInserted;
+		this.cardNumber = cardNumber;
 		this.source = source;
 		this.varName = varName;
 		this.value = value;
 	}
 	
 	/**
-	 * Method that returns the value corresponding to this notification 
+	 * Constructor for this ApAM message
+	 * @param isCardInserted the new key card status
+	 * @param varName the variable that changed
+	 * @param value the new value for the variable that changed
+	 * @param the source object reference
+	 */
+	public KeyCardNotificationMsg(boolean isCardInserted, String varName, String value, CoreObjectSpec source) {
+		this.isCardInserted = isCardInserted;
+		this.cardNumber = -1;
+		this.source = source;
+		this.varName = varName;
+		this.value = value;
+	}
+	
+	/**
+	 * Constructor for this ApAM message
+	 * @param isCardInserted the new key card status
+	 * @param varName the variable that changed
+	 * @param value the new value for the variable that changed
+	 * @param the source object reference
+	 */
+	public KeyCardNotificationMsg(int cardNumber, String varName, String value, CoreObjectSpec source) {
+		this.isCardInserted = false;
+		this.cardNumber = cardNumber;
+		this.source = source;
+		this.varName = varName;
+		this.value = value;
+	}
+	
+	/**
+	 * Method that returns if a card is inserted 
 	 * @return  the new key card status
 	 */
-	public boolean getNotificationValue(){
+	public boolean getInsertedValue(){
 		return isCardInserted;
+	}
+	
+	/**
+	 * Method that returns the card number that trigger the notification
+	 * @return the card number
+	 */
+	public int getCardNumber() {
+		return cardNumber;
 	}
 
 	@Override
 	public String getNewValue() {
-		return String.valueOf(isCardInserted);
+		return String.valueOf(isCardInserted)+"/"+String.valueOf(cardNumber);
 	}
 
 	@Override
 	public JSONObject JSONize() throws JSONException{
 		
 		JSONObject notif = new JSONObject();
-//		JSONObject content = new JSONObject();
-//		
-//		content.put("id", source.getAbstractObjectId());
-//		content.put("name", source.getUserObjectName());
-//		content.put("locationId", source.getLocationId());
-//		content.put("status", source.getObjectStatus());
-//		content.put("inserted", isCardInserted);
-//		
-//		notif.put("updateKeyCard", content);
 		
 		notif.put("objectId", source.getAbstractObjectId());
 		notif.put("varName", varName);

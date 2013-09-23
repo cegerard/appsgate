@@ -1,18 +1,18 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Node representing the events
  *
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since June 25, 2013
  * @version 1.0.0
  */
@@ -45,13 +45,13 @@ public class NodeEvent extends Node {
 		eventName = eventJSON.getString("eventName");
 		eventValue = eventJSON.getString("eventValue");
 		
-		pool = Executors.newSingleThreadExecutor();
+		//pool = Executors.newSingleThreadExecutor();
 	}
 	
 	@Override
 	public Integer call() {
 		fireStartEvent(new StartEvent(this));
-		
+		started = true;
 		// if the source of the event is a program
 		if (sourceType.equals("program")) {
 			// get the node of the program
@@ -66,6 +66,7 @@ public class NodeEvent extends Node {
 					p.addEndEventListener(this);
 				}
 			} else { // interpreter does not know the program, then the end event is automatically fired
+				started = false;
 				fireEndEvent(new EndEvent(this));
 			}
 		// sourceType is "device"
@@ -83,7 +84,21 @@ public class NodeEvent extends Node {
 
 	@Override
 	public void stop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(started) {
+			stopping = true;
+			if (sourceType.equals("program")) {
+				NodeProgram p = interpreter.getNodeProgram(sourceId);
+				if (eventName.equals("start")) {
+					p.removeStartEventListener(this);
+				} else if (eventName.equals("end")) {
+					p.removeEndEventListener(this);
+				}
+			} else {
+				interpreter.removeNodeListening(this);
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -106,6 +121,7 @@ public class NodeEvent extends Node {
 		Node nodeEnded = (Node)e.getSource();
 		nodeEnded.removeEndEventListener(this);
 		
+		started = false;
 		// the node is done when the relevant event has been caught
 		fireEndEvent(new EndEvent(this));
 	}

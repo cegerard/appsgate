@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.button_switch.sensor.messages.SwitchNotificationMsg;
 import appsgate.lig.button_switch.sensor.spec.CoreSwitchSensorSpec;
+
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
@@ -20,7 +21,7 @@ import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
  * @see SwitchSensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanSwitchSensorImpl implements CoreSwitchSensorSpec, CoreObjectSpec {
+public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensorSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -60,7 +61,7 @@ public class EnoceanSwitchSensorImpl implements CoreSwitchSensorSpec, CoreObject
 	/**
 	 * Attribute use to indicate that the status change
 	 */
-	private boolean switchState;
+	private String switchState;
 
 	/**
 	 * The type for user of this sensor
@@ -201,12 +202,12 @@ public class EnoceanSwitchSensorImpl implements CoreSwitchSensorSpec, CoreObject
 	 * @param justuse to trigger the state change
 	 */
 	public void switchChanged(String status) {
-		if(switchState) {
+		if(Boolean.valueOf(switchState)) {
 			notifyChanges("switchNumber", this.switchNumber);
 			logger.info("New switch value from "+sensorId+"/"+sensorName+", "+this.switchNumber);
 			notifyChanges("buttonStatus", this.buttonStatus);
 			logger.info("New switch value from "+sensorId+"/"+sensorName+", "+this.buttonStatus);
-			switchState = false;
+			switchState = "false";
 		}
 	}
 	

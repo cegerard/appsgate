@@ -85,7 +85,7 @@ public class WeatherCodesHelper {
 	    if(yahooWeatherCodes.containsKey(new Integer(weatherCode))) {
 		return (String)yahooWeatherCodes.get(new Integer(weatherCode));
 	    }
-	    else return null;
+	    else return "";
 	}
 
 /*

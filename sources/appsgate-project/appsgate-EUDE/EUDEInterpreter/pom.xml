@@ -49,6 +49,12 @@
 			<version>1.0.0</version>
 			<type>bundle</type>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreObjectSpec</artifactId>
+			<version>1.0.0</version>
+			<type>bundle</type>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->

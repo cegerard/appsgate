@@ -190,7 +190,8 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		Collection<PhysicalEnvironmentItem> itemList = enoceanBridge.getAllItems();
 		if(itemList != null && !itemList.isEmpty()) {
 			//Create thread that take the list in parameter and instanciate all Ubikit items
-			instanciationService.execute(new ItemInstanciation(itemList));
+			//TODO Schedule instanciation to avoid dependency collision
+			instanciationService.schedule(new ItemInstanciation(itemList), 15, TimeUnit.SECONDS);
 		}
 		
 	}
@@ -329,6 +330,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		 * for not supported event	*				
 		 ****************************/
 		//RECV < a5 5a b 5 0 0 0 0 0 27 b3 ed 20 f7 > RRT from 27b3ed, RPS MSB [ 0 0 0 0 ] LSB
+		//RECV < 55 | 0 7 7 1 | 7a | f6 70 0 27 b3 ed 30 1 ff ff ff ff 2d 0 | 76 > FROM 27b3ed (-45 dBm)
 		String[] splited = arg0.split("from");
 		String split1 = splited[1];
 		String id = "";
@@ -352,7 +354,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 					logger.info("The switch " + id + ", state changed to neutral with button  " + switchNumber);
 					inst.setProperty("buttonStatus", "none");
 					inst.setProperty("switchNumber", switchNumber);
-					inst.setProperty("switchState", true);
+					inst.setProperty("switchState", "true");
 				}
 			}
 			
@@ -370,13 +372,13 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		
 		Iterator<PhysicalEnvironmentItem> it = enOceanDeviceList.iterator();
 		PhysicalEnvironmentItem pei;
-		Instance apamInst;
+		//Instance apamInst;
 		JSONArray allJSONItem = new JSONArray();
 		
 		while(it.hasNext()) {
 			pei = it.next();
-			apamInst = sidToInstanceName.get(pei.getUID());
-			logger.debug(apamInst.getAllProperties().keySet().toString());
+			//apamInst = sidToInstanceName.get(pei.getUID());
+			//logger.debug(apamInst.getAllProperties().keySet().toString());
 			allJSONItem.put(pei.getUID());
 		}
 		
@@ -684,14 +686,25 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			properties.put("isPaired", "false");
 		}
 		
-		impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
+		int nbTry = 0;
+		while(nbTry < 5){
+			impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
+			if(impl != null) {
+				properties.put("deviceName", ep.getUserFriendlyName());
+				properties.put("deviceId", item.getUID());
+				properties.put("deviceType", ep.name());
 		
-		properties.put("deviceName", ep.getUserFriendlyName());
-		properties.put("deviceId", item.getUID());
-		properties.put("deviceType", ep.name());
-		
-		Instance createInstance = impl.createInstance(null, properties);
-		sidToInstanceName.put(item.getUID(), createInstance);
+				Instance createInstance = impl.createInstance(null, properties);
+				sidToInstanceName.put(item.getUID(), createInstance);
+				nbTry = 5;
+			}else {
+				synchronized(this){try {
+					logger.error("No "+ep.getApAMImplementation()+" found ! -- "+nbTry+" try");
+					wait(3000);
+				} catch (InterruptedException e) {e.printStackTrace();}}
+				nbTry++;
+			}
+		}
 	}
 
 	/**

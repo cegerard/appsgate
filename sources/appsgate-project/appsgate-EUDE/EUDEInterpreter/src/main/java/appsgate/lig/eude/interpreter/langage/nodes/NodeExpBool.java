@@ -1,19 +1,22 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 /**
  * Node for the boolean expression
  * 
  * @author Rémy Dautriche
+ * @author Cédric Gérard
+ * 
  * @since June 20, 2013
  * @version 1.0.0
  */
@@ -58,7 +61,7 @@ public class NodeExpBool extends Node {
 		result = null;
 
 		// initialize the pool of threads
-		pool = Executors.newFixedThreadPool(listSeqAndBool.size());
+		//pool = Executors.newFixedThreadPool(listSeqAndBool.size());
 	}
 
 	@Override
@@ -68,7 +71,15 @@ public class NodeExpBool extends Node {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
+		if(started) {
+			stopping = true;
+			for (NodeSeqAndBool n : listSeqAndBool) {
+				n.removeEndEventListener(this);
+				n.stop();
+			}
+			started = false;
+			stopping = false;
+		}
 	}
 
 	@Override
@@ -107,7 +118,7 @@ public class NodeExpBool extends Node {
 					Logger.getLogger(NodeExpBool.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
-
+			started = false;
 			// fire the end event
 			fireEndEvent(new EndEvent(this));
 		}
@@ -123,7 +134,7 @@ public class NodeExpBool extends Node {
 	public Integer call() {
 		// fire the start event
 		fireStartEvent(new StartEvent(this));
-
+		started = true;
 		// initialize the attributes to control the evaluation
 		nbSeqAndBoolDone = 0;
 		result = null;
@@ -131,17 +142,19 @@ public class NodeExpBool extends Node {
 		// add listener to the end event of the nodes
 		for (NodeSeqAndBool n : listSeqAndBool) {
 			n.addEndEventListener(this);
+			n.call();
+			if(stopping){break;}
 		}
 
 		// interpret the nodes
-		try {
-			pool.invokeAll(listSeqAndBool);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(NodeExpBool.class.getName()).log(Level.SEVERE, null, ex);
-		}
+//		try {
+//			pool.invokeAll(listSeqAndBool);
+//		} catch (InterruptedException ex) {
+//			Logger.getLogger(NodeExpBool.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 		
 		// manage the pool
-		super.call();
+//		super.call();
 
 		return null;
 	}

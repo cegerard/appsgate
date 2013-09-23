@@ -1,8 +1,12 @@
 package appsgate.lig.clock.sensor.impl;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -22,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
+import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
@@ -30,13 +35,8 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
  * This java interface is an ApAM specification shared by all ApAM AppsGate
  * application to provide current Time and Date information
  */
-public class SwingClock implements CoreClockSpec, CoreObjectSpec,
+public class SwingClockImpl extends ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec,
 	ChangeListener {
-
-    /**
-     * Lag between the real current Date and the one setted in the GUI
-     */
-    long currentLag;
 
     // Calendar currentCalendar;
 
@@ -55,17 +55,20 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
     int oldHour;
     int oldMinute;
 
+
     /**
      * Static class member uses to log what happened in each instances
      */
-    private static Logger logger = LoggerFactory.getLogger(SwingClock.class);
+    private static Logger logger = LoggerFactory
+	    .getLogger(SwingClockImpl.class);
 
-    public SwingClock() {
+    public SwingClockImpl() {
 	oldDay = -1;
 	oldMonth = -1;
 	oldYear = -1;
 	oldHour = -1;
 	oldMinute = -1;
+	initAppsgateFields();
 
 	resetClock();
     }
@@ -75,17 +78,18 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
      */
     public void start() {
 	logger.info("New swing clock created");
-	initAppsgateFields();
 
 	refreshClock();
-	Timer timer = new Timer();
-	timer.scheduleAtFixedRate(refreshtask,
-		Calendar.getInstance().getTime(), 1000);
+	Timer refreshTimer = new Timer();
+	refreshTimer.scheduleAtFixedRate(refreshtask, Calendar.getInstance()
+		.getTime(), 1000);
     }
 
     public void stop() {
 	logger.info("Swing Clock removed");
-	frameClock.dispose();
+	hide();
+	timer.cancel();
+	timer=null;
 
     }
 
@@ -199,10 +203,6 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
 
     }
 
-    public NotificationMsg fireClockSetNotificationMsg(Calendar currentTime) {
-	return new ClockSetNotificationMsg(this, currentTime.getTime()
-		.toString());
-    }
 
     /*
      * (non-Javadoc)
@@ -234,11 +234,11 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
 	    currentLag = cal.getTimeInMillis()
 		    - Calendar.getInstance().getTimeInMillis();
 
-	    if(currentLag>500) {
-		    logger.info("Clock lag updated to simulate a false date : "
-			    + (long) currentLag / 1000);
-		    refreshClock();
-		    fireClockSetNotificationMsg(cal);		
+	    if (currentLag > 500) {
+		logger.info("Clock lag updated to simulate a false date : "
+			+ (long) currentLag / 1000);
+		refreshClock();
+		fireClockSetNotificationMsg(cal);
 	    }
 
 	} catch (NumberFormatException exc) {
@@ -248,17 +248,15 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
 	    refreshClock();
 	}
     }
+    
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#resetClock()
-     */
-    @Override
-    public void resetClock() {
-	currentLag = 0;
-	fireClockSetNotificationMsg(Calendar.getInstance());
+
+    public NotificationMsg fireClockSetNotificationMsg(Calendar currentTime) {
+	return new ClockSetNotificationMsg(this, currentTime.getTime()
+		.toString());
     }
+    
+
 
     /**
      * The task that is executed automatically to refresh the local calendar
@@ -270,143 +268,6 @@ public class SwingClock implements CoreClockSpec, CoreObjectSpec,
 	}
     };
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#getCurrentDate()
-     */
-    @Override
-    public Calendar getCurrentDate() {
-	Calendar cal = Calendar.getInstance();
-	cal.setTimeInMillis(cal.getTimeInMillis() + currentLag);
-	return cal;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * appsgate.lig.clock.sensor.spec.CoreClockSpec#getCurrentTimeInMillis()
-     */
-    @Override
-    public long getCurrentTimeInMillis() {
-	Calendar cal = Calendar.getInstance();
-	cal.setTimeInMillis(cal.getTimeInMillis() + currentLag);
-	return cal.getTimeInMillis();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * appsgate.lig.clock.sensor.spec.CoreClockSpec#setCurrentDate(java.util
-     * .Calendar)
-     */
-    @Override
-    public void setCurrentDate(Calendar calendar) {
-	currentLag = calendar.getTimeInMillis()
-		- Calendar.getInstance().getTimeInMillis();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * appsgate.lig.clock.sensor.spec.CoreClockSpec#setCurrentTimeInMillis(long)
-     */
-    @Override
-    public void setCurrentTimeInMillis(long millis) {
-	currentLag = millis - Calendar.getInstance().getTimeInMillis();
-    }
-    
-    private String appsgatePictureId;
-    private String appsgateObjectId;
-    private String appsgateUserType;
-    private String appsgateStatus;
-    private String appsgateServiceName;
-
-    
-    private void initAppsgateFields() {
-	    appsgatePictureId=null;
-	    appsgateServiceName="Swing Clock";
-	    appsgateUserType="21";
-	    appsgateStatus="2";
-	    appsgateObjectId=appsgateUserType+String.valueOf(this.hashCode());
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getAbstractObjectId()
-     */
-    @Override
-    public String getAbstractObjectId() {
-	return appsgateObjectId;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getDescription()
-     */
-    @Override
-    public JSONObject getDescription() throws JSONException {
-	JSONObject descr = new JSONObject();
-
-	// mandatory appsgate properties
-	descr.put("id", appsgateObjectId);
-	descr.put("type", appsgateUserType); // 21 for clok
-	descr.put("status", appsgateStatus);
-	descr.put("name", appsgateServiceName);
-
-	descr.put("varName", "ClockSet");
-	Calendar cal = Calendar.getInstance();
-	cal.setTimeInMillis(cal.getTimeInMillis() + currentLag);
-	descr.put("value", cal.getTime().toString());
-
-	return descr;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getObjectStatus()
-     */
-    @Override
-    public int getObjectStatus() {
-	return Integer.parseInt(appsgateStatus);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getPictureId()
-     */
-    @Override
-    public String getPictureId() {
-	return appsgatePictureId;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see appsgate.lig.core.object.spec.CoreObjectSpec#getUserType()
-     */
-    @Override
-    public String getUserType() {
-	return appsgateUserType;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * appsgate.lig.core.object.spec.CoreObjectSpec#setPictureId(java.lang.String
-     * )
-     */
-    @Override
-    public void setPictureId(String pictureId) {
-	this.appsgatePictureId = pictureId;
-    }
 
 }

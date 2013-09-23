@@ -21,7 +21,7 @@ import appsgate.lig.temperature.sensor.spec.CoreTemperatureSensorSpec;
  * @see TemperatureSensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanTemperatureSensorImpl implements CoreTemperatureSensorSpec, CoreObjectSpec {
+public class EnoceanTemperatureSensorImpl implements CoreObjectSpec, CoreTemperatureSensorSpec  {
 	
 	/**
 	 * Static class member uses to log what happened in each instances

@@ -9,6 +9,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.smartplug.actuator_sensor.messages.SmartPlugNotificationMsg;
 import appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec;
+import appsgate.lig.watteco.adapter.WattecoAdapter;
 import appsgate.lig.watteco.adapter.services.WattecoIOService;
 
 
@@ -29,7 +30,10 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	private String route;
 	
 	private String plugState;
+	
 	private String consumption;
+	
+	private SmartPlugValue spv;
 	
 	/** the main border router */
 	WattecoIOService wattecoAdapter;
@@ -40,6 +44,7 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	 */
 	public void newInst() {
 		logger.info("New smart plug sensor detected, "+sensorId);
+		setSensorName("SmartPlug-"+sensorId);
 	}
 
 	/**
@@ -49,6 +54,10 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 		logger.info("Smart plug sensor desapeared, "+sensorId);
 	}
 	
+	/**
+	 * Called by ApAM when the isPaired property is changed
+	 * @param newPairedState the new paired state
+	 */
 	public void isPairedChanged(String newPairedState){
 		logger.info("New Paired status, "+newPairedState+", for "+sensorId);
 	}
@@ -89,36 +98,46 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	 * 							 PUBLIC FUNCTIONS                            *
 	 *********************************************************************** */
 	
+	@Override
 	public void toggle() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
-	}
-	
-	public SmartPlugValue readAttribute() {
-		byte[] b = null;
-		b = wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_READ_ATTRIBUTE$*/);
-		return extractValues(b);
+		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_TOGGLE, false);
 	}
 	
 	@Override
 	public void on() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
+		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_ON, false);
 	}
 
 	@Override
 	public void off() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
+		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_OFF, false);
 	}
 	
 	@Override
 	public int activePower() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
-		return 0;
+		return readAttribute().activePower;
 	}
 
 	@Override
 	public int activeEnergy() {
-		wattecoAdapter.sendCommand(route, ""/*BorderRouterCommand.SP_TOGGLE*/);
-		return 0;
+		return readAttribute().activeEnergy;
+	}
+	
+	@Override
+	public boolean getRelayState() {
+		byte[] b = wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_READ_ATTRIBUTE, true);
+		boolean state = extractState(b);
+		plugState = Boolean.toString(state);
+		return state;
+	}
+
+	@Override
+	public SmartPlugValue readAttribute() {
+		byte[] b = null;
+		b = wattecoAdapter.sendCommand(route, WattecoAdapter.SIMPLE_METERING_READ_ATTRIBUTE, true);
+		spv = extractValues(b);
+		consumption = String.valueOf(spv.activePower);
+		return spv;
 	}
 	
 	/* ***********************************************************************
@@ -151,6 +170,10 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 		spv.activePower += b;
 		
 		return spv;
+	}
+	
+	private boolean extractState(byte[] ba) {
+		return (ba[8] == new Byte("1").byteValue());
 	}
 	
 	/* ***********************************************************************
@@ -192,6 +215,26 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	@Override
 	public void setPictureId(String pictureId) {
 			this.pictureId = pictureId;
+	}
+	
+	public boolean isPaired() {
+		return Boolean.valueOf(isPaired);
+	}
+
+	public void setPaired(boolean isPaired) {
+		this.isPaired = String.valueOf(isPaired);
+	}
+	
+	public String getSensoreType() {
+		return sensoreType;
+	}
+	
+	public String getSensorName() {
+		return sensorName;
+	}
+
+	public void setSensorName(String sensorName) {
+		this.sensorName = sensorName;
 	}
 
 }

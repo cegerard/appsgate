@@ -62,6 +62,12 @@
 			<artifactId>EUDEInterpreterSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.3.0</version>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 
 	<!-- Build Description -->
@@ -81,6 +87,7 @@
 							org.cybergarage.*
 						</Export-Package>
 						<Import-Package>
+							org.osgi.framework,
 							javax.xml.parsers,
 							!org.kxml2.io,
 							org.w3c.dom,
