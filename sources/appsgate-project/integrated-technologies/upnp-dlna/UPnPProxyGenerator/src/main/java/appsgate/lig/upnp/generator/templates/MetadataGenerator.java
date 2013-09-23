@@ -42,7 +42,11 @@ public class MetadataGenerator  {
 		metadata.write("\n");
 		
 		for (Service service : device.getServices()) {
-			metadata.write("	<dependency field="+quote(Naming.getField(service.getServiceId()))+" />\n");
+			metadata.write("	<dependency resolve=\"exist\" fail=\"wait\" field="+quote(Naming.getField(service.getServiceId()))+">\n");
+			metadata.write("		<constraints>\n");
+			metadata.write("			<instance filter=\"(UPnP.device.UDN=$.$UPnP\\.device\\.UDN)\"/>\n");
+			metadata.write("		</constraints>\n");
+			metadata.write("	</dependency>\n");
 		}
 
 		metadata.write("\n");

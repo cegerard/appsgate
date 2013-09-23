@@ -51,7 +51,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-Description>
-							Dynamic Manager DYNAMAN
+							UPnP Adapter
                         </Bundle-Description>
 					</instructions>
 				</configuration>
