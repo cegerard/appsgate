@@ -28,6 +28,7 @@
 		<module>CoreClockSpec</module>
 		<module>CoreCalendarSpec</module>
 		<module>CoreSmartPlugSpec</module>
+		<module>CoreMediaPlayerSpec</module>		
 	</modules>
 
 </project>
