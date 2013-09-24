@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 
 /**
@@ -73,22 +74,24 @@ public class NodeAction extends Node {
 			
 			// manage the pool
 			//super.call();
-			started = false;
-			fireEndEvent(new EndEvent(this));
 		} else if (targetType.equals("program")) {
 			NodeProgram p = interpreter.getNodeProgram(targetId);
-			if (p != null) {	
-				// listen to the end of the program
-				p.addEndEventListener(this);
-				
-				// launch the program
-				interpreter.callProgram(targetId);
-			} else {
-				started = false;
-				fireEndEvent(new EndEvent(this));
+			
+			if (p != null) {
+				if(methodName.contentEquals("callProgram") && p.getRunningState() != RUNNING_STATE.STARTED) {
+					// listen to the end of the program
+					p.addEndEventListener(this);
+					// launch the program
+					interpreter.callProgram(targetId);
+				}else if(methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
+					//stop the running program
+					interpreter.stopProgram(targetId);
+				}
 			}
 		}
 		
+		started = false;
+		fireEndEvent(new EndEvent(this));
 		return null;
 	}
 	
