@@ -69,5 +69,13 @@ public interface EUDE_InterpreterSpec {
 	 * @return HashMap with all the existing programs
 	 */
 	public HashMap<String, JSONObject> getListPrograms();
+	
+	/**
+	 * Check if a program is active or not
+	 * 
+	 * @param programId the identifier of the program
+	 * @return true if the program is active (STARTED), false otherwise
+	 */
+	public boolean isProgramActive(String programId);
 
 }

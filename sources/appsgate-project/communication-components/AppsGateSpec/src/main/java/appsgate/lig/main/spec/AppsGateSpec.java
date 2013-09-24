@@ -232,6 +232,14 @@ public interface AppsGateSpec {
 	 */
 	public JSONArray getPrograms();
 	
+	/**
+	 * Check if a program is active or not
+	 * 
+	 * @param programId the identifier of the program
+	 * @return true if the program is active (STARTED), false otherwise
+	 */
+	public boolean isProgramActive(String programId);
+	
 	/************************************/
 	/**    General Appsgate commands    */
 	/************************************/

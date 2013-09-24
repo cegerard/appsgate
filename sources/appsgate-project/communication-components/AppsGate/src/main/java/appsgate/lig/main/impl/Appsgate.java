@@ -417,6 +417,11 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	}
 	
 	@Override
+	public boolean isProgramActive(String programId) {
+		return interpreter.isProgramActive(programId);
+	}
+	
+	@Override
 	public void shutdown() {
 		BundleContext ctx = FrameworkUtil.getBundle(Appsgate.class).getBundleContext();
 		Bundle systemBundle = ctx.getBundle(0);

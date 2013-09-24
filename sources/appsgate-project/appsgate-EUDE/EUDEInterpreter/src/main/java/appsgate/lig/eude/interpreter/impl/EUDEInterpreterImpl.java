@@ -272,10 +272,6 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		return false;
 	}
 	
-	/**
-	 * Get the end user programs list 
-	 * @return the end user program list as an HashMap<String, JSONObject>
-	 */
 	@Override
 	public HashMap<String, JSONObject> getListPrograms() {
 		HashMap <String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
@@ -284,6 +280,17 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		}
 		
 		return mapProgramJSON;
+	}
+	
+	@Override
+	public boolean isProgramActive(String programId) {
+		NodeProgram p = mapPrograms.get(programId);
+		
+		if(p!= null){
+			return (p.getRunningState() == RUNNING_STATE.STARTED);
+		}
+		
+		return false;
 	}
 	
 	/**
