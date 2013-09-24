@@ -1,8 +1,10 @@
-package appsgate.lig.upnp.generator;
+package appsgate.lig.upnp.generator.templates;
 
 import java.io.IOException;
 import java.io.Writer;
 
+import appsgate.lig.upnp.generator.Device;
+import appsgate.lig.upnp.generator.Service;
 import appsgate.lig.upnp.generator.util.Naming;
 
 /**
@@ -40,7 +42,11 @@ public class MetadataGenerator  {
 		metadata.write("\n");
 		
 		for (Service service : device.getServices()) {
-			metadata.write("	<dependency field="+quote(Naming.getField(service.getServiceId()))+" />\n");
+			metadata.write("	<dependency resolve=\"exist\" fail=\"wait\" field="+quote(Naming.getField(service.getServiceId()))+">\n");
+			metadata.write("		<constraints>\n");
+			metadata.write("			<instance filter=\"(UPnP.device.UDN=$.$UPnP\\.device\\.UDN)\"/>\n");
+			metadata.write("		</constraints>\n");
+			metadata.write("	</dependency>\n");
 		}
 
 		metadata.write("\n");
@@ -99,17 +105,4 @@ public class MetadataGenerator  {
 		return quoted.toString();
 	}
 	
-	/*
-	
-			metadata.close();
-	
-	
-					
-					
-					
-					
-		 * 
-	 * 
-	 * 
-	 */
 }

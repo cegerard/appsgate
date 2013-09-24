@@ -19,5 +19,6 @@
 		<module>UPnPProxyGenerator</module>
 		<module>UPnPAdapter</module>
 		<module>UPnPMediaServices</module>
+		<module>UPnPMediaPlayer</module>
 	</modules>
 </project>
