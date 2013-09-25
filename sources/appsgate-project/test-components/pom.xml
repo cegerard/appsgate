@@ -24,6 +24,7 @@
 		<module>UserBaseTester</module>
 		<module>VituralAdapterTester</module>
 		<module>WattecoAdapterTester</module>
+		<module>ContextFollowerTester</module>
 	</modules>
 
 </project>
