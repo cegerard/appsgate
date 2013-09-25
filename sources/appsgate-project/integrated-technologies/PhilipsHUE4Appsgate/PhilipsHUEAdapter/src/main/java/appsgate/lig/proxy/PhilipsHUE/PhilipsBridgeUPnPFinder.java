@@ -75,11 +75,15 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 		if(device.getDeviceType().contentEquals(PHILIPS_BRIDGE_UPNP_TYPE) &&
 				device.getFriendlyName().contains(BRIDGE_NAME)) {
 			String philipsNameIP = device.getFriendlyName();
-			CharSequence splitString = device.getFriendlyName().subSequence(13, philipsNameIP.length()-1);
-			logger.debug("A Philips bridge on local netork is not reachable, former IP was "+ splitString);
-			bridgeIP.remove(splitString.toString());
-			if(adapter != null ) {
-				adapter.notifyOldBridge(splitString.toString());
+			CharSequence splitString = device.getFriendlyName().subSequence(13, philipsNameIP.length()-1);	
+			logger.debug("A Philips HUE removed UPnP message wwas received.");
+			//TODO this test is just because we have a problem with the UPnP stack
+			if(adapter.getLightState((String) splitString, "1") == null) {
+				logger.debug("A Philips bridge on local netork is not reachable, former IP was "+ splitString);
+				bridgeIP.remove(splitString.toString());
+				if(adapter != null ) {
+					adapter.notifyOldBridge(splitString.toString());
+				}
 			}
 		}
 	}
