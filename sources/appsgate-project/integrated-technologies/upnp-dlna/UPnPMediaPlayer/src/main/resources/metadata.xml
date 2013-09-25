@@ -5,7 +5,8 @@
 <implementation 
 	name="MediaPlayerAdapter"
 	classname="appsgate.lig.upnp.media.player.adapter.MediaPlayerAdapter"
-	instantiable="false">
+	instantiable="false"
+    specification="CoreMediaPlayerSpec">
 
 	<callback onInit="initialize" />
 
@@ -16,6 +17,17 @@
 	</relation>
 
 	<definition name="UPnP.device.UDN" type="string"/>
+    
+    <!--  Appsgate part -->
+        <definition name="deviceName" 	type="string"  field="appsgateServiceName" />
+        <definition name="deviceId" 	type="string"  field="deviceId" />
+
+        <!-- device client meta data -->
+        <definition name="pictureId" 	type="string"  field="appsgatePictureId" />
+        <definition name="userType" 	type="string"  field="appsgateUserType" />
+        <definition name="status" 		type="string"  field="appsgateStatus"  />
+
+    
 
 </implementation>
 
