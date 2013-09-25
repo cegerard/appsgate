@@ -5,6 +5,7 @@
                           
 	<implementation name="AppsGateContextFollowerImpl" classname="appsgate.lig.context.follower.impl.ContextFollowerImpl" specification="AppsGateContextFollowerSpec" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
+		<dependency field="coreClock"/>
 		<dependency push="gotNotification" multiple="true"/>
 	</implementation>
 	

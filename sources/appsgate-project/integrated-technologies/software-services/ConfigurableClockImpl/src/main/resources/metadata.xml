@@ -23,7 +23,5 @@
     </implementation>
     
     <apam-instance name="ConfigurableClockInst" implementation="ConfigurableClockImpl">
-    	<property name="deviceName" value="SystemClock"/>
-    	<property name="deviceId" value="system-clock-21-test2"/>
 	</apam-instance>
 </apam>
