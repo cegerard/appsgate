@@ -20,7 +20,6 @@ import org.osgi.service.upnp.UPnPEventListener;
 import org.osgi.service.upnp.UPnPService;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.ApamResolver;
 import fr.imag.adele.apam.CST;
@@ -29,10 +28,10 @@ import fr.imag.adele.apam.apform.ApformInstance;
 import fr.imag.adele.apam.impl.InstanceImpl;
 
 /**
- * This class listen for UPnPDevice service discovery events and creates the APAM deviceMap for all hosted
+ * This class listen for UPnPDevice service discovery events and creates the APAM proxy for all hosted
  * services in the device.
  * 
- * Proxies are looked up using Apam resolver capabilities, so they may be deployed as a side effcet of a
+ * Proxies are looked up using Apam resolver capabilities, so they may be deployed as a side effect of a
  * discovery.
  * 
  * @author vega
@@ -83,6 +82,8 @@ public class ProxyDiscovery  {
 			System.err.println("[UPnP Apam Discovery] ... scheduling pending request for "+device.getDescriptions(null).get(UPnPDevice.ID));
 			executor.execute(new DeviceDiscoveryRequest(device));
 		}
+		
+		pending.clear();
 	}
 	
 	@Unbind(id="APAM")
@@ -96,7 +97,7 @@ public class ProxyDiscovery  {
 	 * The list of created proxies for each discovered device
 	 * 
 	 */
-	private Map<UPnPDevice,List<ApformInstance>> deviceMap = new HashMap<UPnPDevice, List<ApformInstance>>() ;
+	private Map<UPnPDevice,List<ApformInstance>> discoveredDeviceProxies = new HashMap<UPnPDevice, List<ApformInstance>>() ;
 
 
 	/**
@@ -108,28 +109,30 @@ public class ProxyDiscovery  {
 	@Bind(id=UPnPDevice.ID,aggregate=true,optional=true)
 	@SuppressWarnings("unused")
 	private void boundDevice(UPnPDevice device) {
-		
-		/*
-		 * If APAM is not available schedule the request later
-		 */
-		synchronized (this) {
-			if (resolver == null)
-				pending.add(device);
-		}
-		
+
 		/*
 		 * first we update synchronously the device table, so we can respect the order of events
 		 * (bound/unbound) for each device
 		 */
-		synchronized (deviceMap) {
-			deviceMap.put(device,new ArrayList<ApformInstance>());
+		synchronized (discoveredDeviceProxies) {
+			discoveredDeviceProxies.put(device,new ArrayList<ApformInstance>());
+		}
+
+		/*
+		 * If APAM is not available register the pending request
+		 */
+		synchronized (this) {
+			if (resolver == null) {
+				pending.add(device);
+				return;
+			}
 		}
 		
 		executor.execute(new DeviceDiscoveryRequest(device));
 	}
 	
 	/**
-	 * Method invoked when a device is no longer available. We dispose all created deviceMap.
+	 * Method invoked when a device is no longer available. We dispose all created discoveredDeviceProxies.
 	 * 
 	 * WARNING IMPORTANT Notice that this is an iPojo callback, and we should not block inside,
 	 * so we process the request asynchronously.
@@ -151,8 +154,8 @@ public class ProxyDiscovery  {
 		 * (bound/unbound) for each device
 		 */
 		List<ApformInstance> serviceProxies = null;
-		synchronized (deviceMap) {
-			serviceProxies = deviceMap.remove(device);
+		synchronized (discoveredDeviceProxies) {
+			serviceProxies = discoveredDeviceProxies.remove(device);
 		}
 
 		executor.execute(new DeviceLostRequest(device,serviceProxies));
@@ -186,8 +189,8 @@ public class ProxyDiscovery  {
 			 * IMPORTANT Because we are processing this event asynchronously, we need to verify that the device is
 			 * still available, and abort the processing as soon as possible.
 			 */
-			synchronized (deviceMap) {
-				if (! deviceMap.containsKey(device))
+			synchronized (discoveredDeviceProxies) {
+				if (! discoveredDeviceProxies.containsKey(device))
 					return;
 			}
 			
@@ -236,12 +239,12 @@ public class ProxyDiscovery  {
 						/*
 						 * Update the service map
 						 */
-						synchronized (deviceMap) {
+						synchronized (discoveredDeviceProxies) {
 							
 							/*
 							 * If the device is no longer available, just dispose the created proxy and abort processing 
 							 */
-							if (! deviceMap.containsKey(device)) {
+							if (! discoveredDeviceProxies.containsKey(device)) {
 								if (proxy.getApamComponent() != null)
 									((InstanceImpl)proxy.getApamComponent()).unregister();
 								return;
@@ -250,7 +253,7 @@ public class ProxyDiscovery  {
 							/*
 							 * otherwise add it to the map
 							 */
-							deviceMap.get(device).add(proxy);
+							discoveredDeviceProxies.get(device).add(proxy);
 						}
 					}
 		
@@ -270,8 +273,8 @@ public class ProxyDiscovery  {
 				 * IMPORTANT Because we are processing this event asynchronously, we need to verify that the device is
 				 * still available, and abort the processing as soon as possible.
 				 */
-				synchronized (deviceMap) {
-					if (! deviceMap.containsKey(device))
+				synchronized (discoveredDeviceProxies) {
+					if (! discoveredDeviceProxies.containsKey(device))
 						return;
 				}
 				
@@ -279,7 +282,7 @@ public class ProxyDiscovery  {
 				 * IMPORTANT Because we are processing this event asynchronously, we need to verify that APAM is
 				 * still available, and abort the processing as soon as possible.
 				 */
-				synchronized (this) {
+				synchronized (ProxyDiscovery.this) {
 					if (resolver == null)
 						return;
 				}
@@ -288,7 +291,7 @@ public class ProxyDiscovery  {
 				/*
 				 * Look for an implementation 
 				 */
-				 implementation	= resolver.resolveSpecByName(null,CoreObjectSpec.class.getSimpleName(),
+				implementation	= resolver.resolveSpecByName(null,CoreObjectSpec.class.getSimpleName(),
 												Collections.singleton("("+UPnPService.TYPE+"="+service.getType()+")"),null);
 				
 				if (implementation == null) {
@@ -328,12 +331,12 @@ public class ProxyDiscovery  {
 					/*
 					 * Update the service map
 					 */
-					synchronized (deviceMap) {
+					synchronized (discoveredDeviceProxies) {
 						
 						/*
 						 * If the device is no longer available, just dispose the created proxy and abort processing 
 						 */
-						if (! deviceMap.containsKey(device)) {
+						if (! discoveredDeviceProxies.containsKey(device)) {
 							if (proxy.getApamComponent() != null)
 								((InstanceImpl)proxy.getApamComponent()).unregister();
 							return;
@@ -342,7 +345,7 @@ public class ProxyDiscovery  {
 						/*
 						 * otherwise add it to the map
 						 */
-						deviceMap.get(device).add(proxy);
+						discoveredDeviceProxies.get(device).add(proxy);
 					}
 
 				} catch (Exception e) {

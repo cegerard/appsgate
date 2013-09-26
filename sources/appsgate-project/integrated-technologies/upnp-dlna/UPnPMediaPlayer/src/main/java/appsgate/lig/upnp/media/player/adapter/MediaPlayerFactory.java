@@ -11,6 +11,7 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.impl.ComponentImpl.InvalidConfiguration;
+import fr.imag.adele.apam.impl.InstanceImpl;
 
 public class MediaPlayerFactory {
 	
@@ -31,8 +32,13 @@ public class MediaPlayerFactory {
 		}
 	}
 
-	public void mediaRendererUnbound(Instance instance) {
-		
+	public void mediaRendererUnbound(Instance device) {
+
+		Implementation adapterImplementtation = CST.apamResolver.findImplByName(null,"MediaPlayer");
+		for (Instance player : adapterImplementtation.getInsts()) {
+			if (player.getProperty(UPnPDevice.ID).equals(device.getPropertyObject(UPnPDevice.ID)))
+				((InstanceImpl)player).unregister();
+		}
 	}
 
 }
