@@ -61,7 +61,7 @@ public class ProxyDiscovery  {
 	 * Reference to the APAM resolver
 	 */
 	@SuppressWarnings("unused")
-	@Requires(id="APAM", optional=false)
+	@Requires(id="APAM", optional=true)
 	private Apam 				apam;
 	private ApamResolver 		resolver;
 
@@ -181,8 +181,6 @@ public class ProxyDiscovery  {
 			String deviceId		= (String)device.getDescriptions(null).get(UPnPDevice.ID);
 			String deviceType	= (String)device.getDescriptions(null).get(UPnPDevice.TYPE);
 			
-			System.err.println("[UPnP Apam Discovery] Device ("+deviceType+") discovered :"+deviceId);
-
 
 			/*
 			 * IMPORTANT Because we are processing this event asynchronously, we need to verify that the device is
@@ -197,11 +195,13 @@ public class ProxyDiscovery  {
 			 * IMPORTANT Because we are processing this event asynchronously, we need to verify that APAM is
 			 * still available, and abort the processing as soon as possible.
 			 */
-			synchronized (this) {
+			synchronized (ProxyDiscovery.this) {
 				if (resolver == null)
 					return;
 			}
-			
+
+			System.err.println("[UPnP Apam Discovery] Device ("+deviceType+") discovered :"+deviceId);
+
 			/*
 			 * Look for an implementation 
 			 */
