@@ -18,7 +18,7 @@ public class MediaPlayerFactory {
 		
 
 		try {
-			Implementation adapterImplementtation = CST.apamResolver.findImplByName(null,"MediaPlayerAdapter");
+			Implementation adapterImplementtation = CST.apamResolver.findImplByName(null,"MediaPlayer");
 
 			String deviceId = device.getProperty(UPnPDevice.ID);
 

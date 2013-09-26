@@ -2,46 +2,52 @@
 
 package appsgate.lig.upnp.media.player.adapter;
 
-import java.net.URI;
-import java.util.Calendar;
-
-import org.apache.felix.upnp.devicegen.holder.IntegerHolder;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.osgi.service.upnp.UPnPDevice;
-import org.osgi.service.upnp.UPnPException;
-
-import fr.imag.adele.apam.Instance;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.upnp.media.player.MediaPlayer;
 import appsgate.lig.upnp.media.proxy.MediaRendererProxyImpl;
 
-public class MediaPlayerAdapter implements MediaPlayer,CoreObjectSpec {	
+import appsgate.lig.core.object.spec.CoreObjectSpec;
+
+import org.osgi.service.upnp.UPnPDevice;
+import org.osgi.service.upnp.UPnPException;
+import org.apache.felix.upnp.devicegen.holder.IntegerHolder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import fr.imag.adele.apam.Instance;
+
+public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {	
 
 	private MediaRendererProxyImpl mediaRenderer;
 
+	/**
+	 * The associated UPnP device
+	 */
 	private String 		deviceId;
 	
-	private String		currentMedia;
-	
-	@SuppressWarnings("unused")
-	private void initialize(Instance instance) {
-		deviceId 	= instance.getProperty(UPnPDevice.ID);
-		mediaRenderer.getAVTransport();
-		mediaRenderer.getConnectionManager();
-		mediaRenderer.getRenderingControl();
-	}
-
+	/**
+	 * Core Object Spec properties
+	 */
 	private String appsgatePictureId;
 	private String appsgateUserType;
 	private String appsgateStatus;
 	private String appsgateServiceName;
 
-	protected void initAppsgateFields() {
+	/**
+	 * The currently playing media
+	 */
+	private String		currentMedia;
+
+
+	@SuppressWarnings("unused")
+	private void initialize(Instance instance) {
+		deviceId 	= instance.getProperty(UPnPDevice.ID);
+
 		appsgatePictureId = null;
-		appsgateServiceName = "Upnp Media player";
+		appsgateServiceName = "Appsgate UPnP Media player";
 		appsgateUserType = "31";
 		appsgateStatus = "2";
+
 	}
 
 	/*
@@ -51,7 +57,7 @@ public class MediaPlayerAdapter implements MediaPlayer,CoreObjectSpec {
 	 */
 	@Override
 	public String getAbstractObjectId() {
-		return deviceId;
+		return appsgateServiceName+" for "+deviceId;
 	}
 
 	/*
