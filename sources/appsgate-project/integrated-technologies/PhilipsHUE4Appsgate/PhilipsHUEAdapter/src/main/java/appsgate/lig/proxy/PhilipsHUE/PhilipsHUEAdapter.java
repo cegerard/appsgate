@@ -494,8 +494,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
 		Set<Instance> insts = impl.getInsts();
 		for(Instance inst : insts) {
-			//TODO filter HUE instance that have the correct bridge IP
-			ComponentBrokerImpl.disappearedComponent(inst.getName());
+			if(inst.getProperty("lightBridgeIP").contentEquals(bridgeIP)) {
+				ComponentBrokerImpl.disappearedComponent(inst.getName());
+			}
 		}
 	}
 

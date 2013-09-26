@@ -3,6 +3,7 @@
 package appsgate.lig.upnp.media.player.adapter;
 
 import java.net.URI;
+import java.util.Calendar;
 
 import org.apache.felix.upnp.devicegen.holder.IntegerHolder;
 import org.json.JSONException;
@@ -20,11 +21,6 @@ public class MediaPlayerAdapter implements MediaPlayer,CoreObjectSpec {
 	private MediaRendererProxyImpl mediaRenderer;
 
 	private String 		deviceId;
-
-	private String 		userObjectName;
-	private int 		locationId;
-	private String 		pictureId;
-
 	
 	private String		currentMedia;
 	
@@ -36,36 +32,87 @@ public class MediaPlayerAdapter implements MediaPlayer,CoreObjectSpec {
 		mediaRenderer.getRenderingControl();
 	}
 
+	private String appsgatePictureId;
+	private String appsgateUserType;
+	private String appsgateStatus;
+	private String appsgateServiceName;
+
+	protected void initAppsgateFields() {
+		appsgatePictureId = null;
+		appsgateServiceName = "Upnp Media player";
+		appsgateUserType = "31";
+		appsgateStatus = "2";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getAbstractObjectId()
+	 */
 	@Override
 	public String getAbstractObjectId() {
-		return mediaRenderer.getAbstractObjectId()+"-Player";
+		return deviceId;
 	}
 
-	@Override
-	public String getUserType() {
-		return null;
-	}
-
-	@Override
-	public int getObjectStatus() {
-		return 0;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getDescription()
+	 */
 	@Override
 	public JSONObject getDescription() throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject descr = new JSONObject();
+		// mandatory appsgate properties
+		descr.put("id", deviceId);
+		descr.put("type", appsgateUserType);
+		descr.put("status", appsgateStatus);
+		descr.put("sysName", appsgateServiceName);
+		
+		return descr;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getObjectStatus()
+	 */
 	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
+	public int getObjectStatus() {
+		return Integer.parseInt(appsgateStatus);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getPictureId()
+	 */
 	@Override
 	public String getPictureId() {
-		return pictureId;
+		return appsgatePictureId;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getUserType()
+	 */
+	@Override
+	public String getUserType() {
+		return appsgateUserType;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * appsgate.lig.core.object.spec.CoreObjectSpec#setPictureId(java.lang.String
+	 * )
+	 */
+	@Override
+	public void setPictureId(String pictureId) {
+		this.appsgatePictureId = pictureId;
+	}
+
 
 	@Override
 	public void play(String media) {

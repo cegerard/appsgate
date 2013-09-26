@@ -192,10 +192,10 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 
 	protected void initAppsgateFields() {
 		appsgatePictureId = null;
-		appsgateServiceName = "Swing Clock";
+		appsgateServiceName = "SystemClock";
 		appsgateUserType = "21";
 		appsgateStatus = "2";
-		appsgateObjectId = appsgateUserType + String.valueOf(this.hashCode());
+		appsgateObjectId = appsgateUserType + String.valueOf(appsgateServiceName.hashCode());
 	}
 
 	/*

@@ -1,43 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
     
-	<parent>
-		<groupId>appsgate.components</groupId>
-		<artifactId>appsgate-context</artifactId>
-		<version>1.0.0</version>
-	</parent>
+    <parent>
+        <groupId>appsgate.components</groupId>
+        <artifactId>core-specifications</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
-    <artifactId>ContextFollower</artifactId>
+    <artifactId>CoreMediaPlayerSpec</artifactId>
     <packaging>bundle</packaging>
-    <name>ContextFollowerImpl OSGi Bundle</name>
+    <name>Core Media Player functionnality (inspired from upnp media renderer)</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<!-- Repositories List -->
-	
+
 	<!-- Dependencies Description -->
-    <dependencies>
-     	<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>ContextFollowerSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+	<dependencies>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CoreObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>CoreClockSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-    </dependencies>
+	</dependencies>
 
- <!-- Build Description -->
+	<!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>

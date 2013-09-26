@@ -100,6 +100,11 @@ public class RouterImpl implements RouterApAMSpec {
 	 */
 	public void removedAbstractObject(Instance inst) {
 		logger.debug("Abstract device removed: " + inst.getName());
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("objectId", inst.getProperty("deviceId"));
+		} catch (JSONException e) {e.printStackTrace();}
+		sendToClientService.send("removeDevice",  obj);
 	}
 
 	/**

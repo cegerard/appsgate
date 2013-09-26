@@ -3,13 +3,12 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<implementation name="AppsGateContextFollowerImpl" classname="appsgate.lig.context.follower.impl.ContextFollowerImpl" specification="AppsGateContextFollowerSpec" singleton="true">
+	<implementation name="ContextFollowerTesterImpl" classname="appsgate.validation.context.follower.ContextFollowerTester">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		<dependency field="coreClock"/>
-		<dependency push="gotNotification" multiple="true"/>
+		<dependency field="contextFollower"/>
 	</implementation>
 	
-	<apam-instance name="AppsGateContextFollowerInst" implementation="AppsGateContextFollowerImpl">
+	<apam-instance name="ContextFollowerTesterInst" implementation="ContextFollowerTesterImpl">
 	</apam-instance>
 
 </apam>
