@@ -126,8 +126,7 @@ public class NodeProgram extends Node {
 		try {
 			programJSON.put("runningState", runningState.toString());
 			this.runningState = runningState;
-			interpreter.notifyChanges(new ProgramStateNotificationMsg(id,
-					"runningState", this.runningState.toString()));
+			interpreter.notifyChanges(new ProgramStateNotificationMsg(id,"runningState", this.runningState.toString()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -170,8 +169,7 @@ public class NodeProgram extends Node {
 
 		// initialize the program with the JSON
 		id = programJSON.getString("id");
-		runningState = RUNNING_STATE.valueOf(programJSON
-				.getString("runningState"));
+		runningState = RUNNING_STATE.valueOf(programJSON.getString("runningState"));
 		userInputSource = programJSON.getString("userInputSource");
 
 		JSONObject source = programJSON.getJSONObject("source");
