@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.clock.sensor.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
+import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -91,6 +92,10 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	public NotificationMsg fireClockSetNotificationMsg(Calendar currentTime) {
 		return new ClockSetNotificationMsg(this, currentTime.getTime().toString());
 	}
+	
+	public NotificationMsg fireFlowRateSetNotificationMsg(double newFlowRate) {
+		return new FlowRateSetNotification(this, String.valueOf(newFlowRate));
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -114,6 +119,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 			timeFlowBreakPoint = -1;
 		}
 		fireClockSetNotificationMsg(Calendar.getInstance());
+		fireFlowRateSetNotificationMsg(flowRate);
 	}
 
 	/*
@@ -380,8 +386,8 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 			flowRate = 1;
 			timeFlowBreakPoint = -1;
 		}
-		logger.debug("setTimeFlowRate(double rate), new time flow rate : "
-				+ flowRate);
+		logger.debug("setTimeFlowRate(double rate), new time flow rate : "+ flowRate);
+		fireFlowRateSetNotificationMsg(rate);
 		return flowRate;
 
 	}
