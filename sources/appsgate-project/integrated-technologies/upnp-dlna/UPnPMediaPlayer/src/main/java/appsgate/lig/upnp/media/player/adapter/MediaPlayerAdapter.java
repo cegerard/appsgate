@@ -57,7 +57,7 @@ public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {
 	 */
 	@Override
 	public String getAbstractObjectId() {
-		return appsgateServiceName+" for "+deviceId;
+		return "player:"+deviceId;
 	}
 
 	/*
