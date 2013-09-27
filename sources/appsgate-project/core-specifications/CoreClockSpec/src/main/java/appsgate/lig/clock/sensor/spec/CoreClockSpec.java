@@ -19,6 +19,12 @@ public interface CoreClockSpec {
      *         1970 00:00:00.000 GMT )
      */
     long getCurrentTimeInMillis();
+    
+    /**
+     * Get the current time flow rate
+     * @return the time flow rate as a double
+     */
+    double getTimeFlowRate();
 
     /**
      * Set a date (might be real or simulated),

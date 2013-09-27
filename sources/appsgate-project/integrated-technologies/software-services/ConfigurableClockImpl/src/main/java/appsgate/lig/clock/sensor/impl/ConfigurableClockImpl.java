@@ -155,6 +155,11 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 				+ simulatedTime);
 		return simulatedTime;
 	}
+	
+	@Override
+	public double getTimeFlowRate() {
+		return flowRate;
+	};
 
 	/*
 	 * (non-Javadoc)
@@ -223,8 +228,11 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		descr.put("sysName", appsgateServiceName);
 
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(cal.getTimeInMillis() + currentLag);
+		long time  = cal.getTimeInMillis() + currentLag;
+		cal.setTimeInMillis(time);
 		descr.put("ClockSet", cal.getTime().toString());
+		descr.put("clockValue", String.valueOf(time));
+		descr.put("flowRate", String.valueOf(flowRate));
 
 		return descr;
 	}
@@ -433,6 +441,6 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 				calculateNextTimer();
 			}
 		}
-	};
+	}
 
 }
