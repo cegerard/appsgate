@@ -188,7 +188,6 @@ public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {
 		if (currentMedia != null) {
 			try {
 				mediaRenderer.getRenderingControl().setVolume(0, "Master", level);
-				currentMedia = null;
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
