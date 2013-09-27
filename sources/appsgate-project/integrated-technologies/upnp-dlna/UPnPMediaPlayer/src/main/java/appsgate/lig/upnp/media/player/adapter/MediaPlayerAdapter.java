@@ -69,8 +69,8 @@ public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {
 	public JSONObject getDescription() throws JSONException {
 		JSONObject descr = new JSONObject();
 		// mandatory appsgate properties
-		descr.put("id", deviceId);
-		descr.put("type", appsgateUserType);
+		descr.put("id", getAbstractObjectId());
+		descr.put("type", getUserType());
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
 		
@@ -168,7 +168,6 @@ public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {
 	@Override
 	public int getVolume() {
 		
-		if (currentMedia != null) {
 			try {
 				IntegerHolder result = new IntegerHolder();
 				mediaRenderer.getRenderingControl().getVolume(0,"Master",result);
@@ -177,21 +176,17 @@ public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
-		}	
-		
 		return 0;
 
 	}
 
 	@Override
 	public void setVolume(int level) {
-		if (currentMedia != null) {
 			try {
 				mediaRenderer.getRenderingControl().setVolume(0, "Master", level);
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
-		}
 	}
 
 
