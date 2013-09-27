@@ -133,36 +133,30 @@ public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {
 
 	@Override
 	public void play() {
-		if (currentMedia != null){
 			try {
 				mediaRenderer.getAVTransport().play(0,"1");
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
-		}
 	}
 
 	@Override
 	public void pause() {
-		if (currentMedia != null) {
 			try {
 				mediaRenderer.getAVTransport().pause(0);
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
-		}
 	}
 
 	@Override
 	public void stop() {
-		if (currentMedia != null) {
 			try {
 				mediaRenderer.getAVTransport().stop(0);
 				currentMedia = null;
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
-		}
 	}
 
 	@Override
