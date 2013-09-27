@@ -59,11 +59,8 @@ public class NodeEvent extends Node {
 			// if it exists
 			if (p != null) {
 				// listen to its start event...
-				if (eventName.equals("start")) {
-					p.addStartEventListener(this);
-				// ... or its end event
-				} else if (eventName.equals("end")) {
-					p.addEndEventListener(this);
+				if (eventName.equals("runningState")) {
+					interpreter.addNodeListening(this);
 				}
 			} else { // interpreter does not know the program, then the end event is automatically fired
 				started = false;
