@@ -113,43 +113,28 @@ public class WattecoAdapter implements WattecoIOService,
 		String osName =System.getProperty("os.name");
 		if (osName.contentEquals("Linux")) {
 			try {
-//				char port ='0';
-//				Process searchCMD = Runtime.getRuntime().exec("ls -l /dev");
-//				BufferedReader read = new BufferedReader(new InputStreamReader(searchCMD.getInputStream()));
-//	            try {
-//	            	searchCMD.waitFor();
-//	            } catch (InterruptedException e) {
-//	                logger.error(e.getMessage());
-//	            }
-//	            while (read.ready()) {
-//	            	String result = read.readLine();
-//	            	if(result.contains("tty.usbserial")) {
-//	            		char invalidPort = result.charAt(result.length()-1);
-//	            		if(invalidPort == port) {
-//	            			port = '1';
-//	            		}
-//	            	}
-//	            }
-				//TODO THIS WORK ONLY FOR EXPERIMENTA AND UBUNTU AND OUR WATTECO DONGLE
+				//TODO THIS WORK ONLY FOR EXPERIMENTA AND OUR WATTECO DONGLE
 				boolean notFound = true;
 				int port = 0;
-				while(notFound && port < 10) {
-					Process searchCMD = Runtime.getRuntime().exec("udevadm info -q symlink --name=ttyUSB"+port);
-					//sudo lsusb -v -d :0403 for all linux os
-					BufferedReader read = new BufferedReader(new InputStreamReader(searchCMD.getInputStream()));
-		            try {
-		            	searchCMD.waitFor();
-		            } catch (InterruptedException e) {
-		                logger.error(e.getMessage());
-		            }
+				//while(notFound && port < 10) {
+				//Process searchCMD = Runtime.getRuntime().exec("udevadm info -q symlink --name=ttyUSB"+port);
+				Process searchCMD = Runtime.getRuntime().exec("ls -l /dev/serial/by-id/");
+				BufferedReader read = new BufferedReader(new InputStreamReader(searchCMD.getInputStream()));
+				try {
+					searchCMD.waitFor();
+		       } catch (InterruptedException e) {logger.error(e.getMessage());}
+		        
+		       while(notFound && port < 10) {
 		            String result = read.readLine();
 		            //TODO find a way to determine this FTDI short serial name
 		            if(result.contains("A701QQEY")) {
 		            	notFound = false;
+		            	port = Integer.valueOf(result.substring(result.length()-1));
 		            }else{
 		            	port++;
 		            }
 				}
+		       
 	          // 2- Run the tunslip configuration program to the free serial port
 	          String cmd = "./conf/watteco/tunslip6 -L -v2 -s ttyUSB"+port+" aaaa::1/64 &";
 	          Runtime.getRuntime().exec(cmd);
