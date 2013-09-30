@@ -260,10 +260,10 @@ public class AppsgateEndUser {
 		try {
 			String saLogin = accountDetails.getString("login");
 			String saPswd =  accountDetails.getString("password");
-			String saAccountImplementation = accountDetails.getString("implem");
+			String saService = accountDetails.getString("service");
 			JSONObject saAccountSynchDetails = accountDetails.getJSONObject("details");
 		
-			ServiceAccount sa = new ServiceAccount(saLogin, saPswd, saAccountImplementation, saAccountSynchDetails); 
+			ServiceAccount sa = new ServiceAccount(saLogin, saPswd, saService, saAccountSynchDetails); 
 	
 			return serviceAccountList.add(sa);
 			
@@ -370,10 +370,10 @@ public class AppsgateEndUser {
 
 					String login = acc.getString("login");
 					String hashPswd = acc.getString("hasPSWD");
-					String accountImplementation = acc.getString("implem");
+					String service = acc.getString("service");
 					JSONObject accountSynchDetails = acc.getJSONObject("synchDetails");
 				
-					sa = new ServiceAccount(login, hashPswd, accountImplementation, accountSynchDetails);
+					sa = new ServiceAccount(login, hashPswd, service, accountSynchDetails);
 					serviceAccountList.add(sa);
 					i++;
 					

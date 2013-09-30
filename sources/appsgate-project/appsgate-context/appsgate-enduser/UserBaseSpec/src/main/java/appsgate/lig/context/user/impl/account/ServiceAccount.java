@@ -33,7 +33,7 @@ public class ServiceAccount {
 	/**
 	 * The selected implementation for this account
 	 */
-	private String accountImplementation;
+	private String service;
 	
 	/**
 	 * Account details for synchronization
@@ -49,36 +49,35 @@ public class ServiceAccount {
 	 * Default constructor for user synchronized service account
 	 * @param login the user login for the service
 	 * @param hashPswd the corresponding password
-	 * @param accountImplementation the Appsgate implementation
+	 * @param service the Appsgate web service
 	 * @param accountSynchDetails all requires details for connection as a JSONObject
 	 */
 	public ServiceAccount(String login, String hashPswd,
-			String accountImplementation, JSONObject accountSynchDetails) {
+			String service, JSONObject accountSynchDetails) {
 		super();
 		this.login = login;
 		this.hashPswd = hashPswd;
-		this.accountImplementation = accountImplementation;
+		this.service = service;
 		this.accountSynchDetails = accountSynchDetails;
-		
+		Implementation impl = null;
 		try {
-			int nbTry = 0;
-			while(nbTry < 5 ) {
-				Implementation impl = CST.apamResolver.findImplByName(null, accountImplementation);
-				
+			if(service.contentEquals("GoogleAgenda")) {
+				impl = CST.apamResolver.findImplByName(null, "GoogleCalendarImpl");
 				if(impl != null) {
 					HashMap<String,String> properties = new HashMap<String, String>();
-		
 					properties.put("account", login);
-					properties.put("pswd", hashPswd);
+					properties.put("pswd", hashPswd);	
 					properties.put("calendarName", accountSynchDetails.getString("calendarName"));
 					impl.createInstance(null, properties);
-					nbTry = 5;
-				} else {
-					synchronized(this){try {
-						logger.error("No "+accountImplementation+" found ! -- "+nbTry+" try");
-						wait(3000);
-					} catch (InterruptedException e) {e.printStackTrace();}}
-					nbTry++;
+				} 
+			}else if(service.contentEquals("Mail")) {
+				impl = CST.apamResolver.findImplByName(null, "GmailImpl");
+				if(impl != null) {
+					HashMap<String,String> properties = new HashMap<String, String>();
+					properties.put("user", login);
+					properties.put("password", hashPswd);	
+					properties.put("auto-refresh", accountSynchDetails.getString("refreshRate"));
+					impl.createInstance(null, properties);
 				}
 			}
 		} catch (JSONException e) {e.printStackTrace();}
@@ -100,12 +99,12 @@ public class ServiceAccount {
 		this.hashPswd = hashPswd;
 	}
 
-	public String getAccountImplementation() {
-		return accountImplementation;
+	public String getServiceType() {
+		return service;
 	}
 
-	public void setAccountImplementation(String accountImplementation) {
-		this.accountImplementation = accountImplementation;
+	public void setService(String service) {
+		this.service = service;
 	}
 
 	public JSONObject getAccountSynchDetails() {
@@ -122,7 +121,7 @@ public class ServiceAccount {
 		try {
 			obj.put("login", login);
 			obj.put("hasPSWD", hashPswd);
-			obj.put("implem", accountImplementation);
+			obj.put("service", service);
 			obj.put("synchDetails", accountSynchDetails);
 		} catch (JSONException e) {e.printStackTrace();}
 		

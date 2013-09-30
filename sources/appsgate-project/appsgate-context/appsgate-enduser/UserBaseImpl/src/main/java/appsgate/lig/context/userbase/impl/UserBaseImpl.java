@@ -110,6 +110,7 @@ public class UserBaseImpl implements UserBaseSpec {
 		try{
 			AppsgateEndUser aeu = userList.get(id);
 			if(aeu.authenticate(password)) {
+				//TODO delete all related service instances.
 				userList.remove(id);
 
 				// save the new user base
@@ -164,7 +165,7 @@ public class UserBaseImpl implements UserBaseSpec {
 					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize().toString()));
 				}
 				try {
-					contextHistory_push.pushData_add(this.getClass().getSimpleName(),id, accountDetails.getString("login"), accountDetails.getString("implem"), properties);
+					contextHistory_push.pushData_add(this.getClass().getSimpleName(),id, accountDetails.getString("login"), accountDetails.getString("service"), properties);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -190,7 +191,7 @@ public class UserBaseImpl implements UserBaseSpec {
 					properties.add(new AbstractMap.SimpleEntry<String,Object>(key, userList.get(key).JSONize().toString()));
 				}
 				try {
-					contextHistory_push.pushData_remove(this.getClass().getSimpleName(),id, accountDetails.getString("login"), accountDetails.getString("implem"), properties);
+					contextHistory_push.pushData_remove(this.getClass().getSimpleName(),id, accountDetails.getString("login"), accountDetails.getString("service"), properties);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
