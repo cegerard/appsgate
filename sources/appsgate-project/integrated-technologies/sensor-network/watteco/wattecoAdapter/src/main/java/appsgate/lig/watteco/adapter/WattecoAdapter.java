@@ -9,21 +9,30 @@ import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsGate.lig.manager.client.communication.service.subscribe.AddListenerService;
+import appsgate.lig.watteco.adapter.listeners.WattecoConfigListener;
 import appsgate.lig.watteco.adapter.services.WattecoDiscoveryService;
 import appsgate.lig.watteco.adapter.services.WattecoIOService;
 import appsgate.lig.watteco.adapter.services.WattecoTunSlipManagement;
@@ -82,9 +91,20 @@ public class WattecoAdapter implements WattecoIOService,
 	private boolean slipTunnelOn;
 	
 	/**
-	 * Keep the Ipv6 sensor Adresses
+	 * Keep the Ipv6 sensor Addresses
 	 */
 	private HashMap<String, Instance> ipv6AddressToInstance;
+	
+	/**
+	 * Service to be notified when clients send commands
+	 */
+	private AddListenerService addListenerService;
+	
+	/**
+	 * HTTP service dependency resolve by iPojo. Allow to register HTML
+	 * resources to the Felix HTTP server
+	 */
+	private HttpService httpService;
 
 	/**
 	 * Default constructor
@@ -150,6 +170,25 @@ public class WattecoAdapter implements WattecoIOService,
 			logger.error("This bundle embbeded native C lib executing code and only Linux system are supported.");
 		}  
 		
+		if (httpService != null) {
+			final HttpContext httpContext = httpService.createDefaultHttpContext();
+			final Dictionary<String, String> initParams = new Hashtable<String, String>();
+			initParams.put("from", "HttpService");
+			try {
+				httpService.registerResources("/configuration/sensors/watteco", "/WEB", httpContext);
+				logger.info("Sensors configuration HTML GUI sources registered.");
+			} catch (NamespaceException ex) {
+				logger.error("NameSpace exception");
+			}
+		}
+		
+		logger.info("Getting the listeners services...");
+		if(addListenerService.addConfigListener(new WattecoConfigListener(this))){
+			logger.info("Listeners services dependency resolved.");
+		}else{
+			logger.info("Listeners services dependency resolution failed.");
+		}
+		
 		logger.info("Appsgate Watteco adapter initiated.");
 	}
 
@@ -166,16 +205,61 @@ public class WattecoAdapter implements WattecoIOService,
 		} catch (InterruptedException e) {
 			logger.debug("Watteco Adapter instanciation service thread crash at termination");
 		}
-		//TODO delete all sensor instances
+		
 //		Implementation impl = CST.apamResolver.findImplByName(null, WattecoAdapter.SMART_PLUG_IMPL);
 //		Set<Instance> insts = impl.getInsts();
 //		for(Instance inst : insts) {
 //			ComponentBrokerImpl.disappearedComponent(inst.getName());
 //		}
-		//TODO stop slip tunnel
 		logger.info("Appsgate Watteco adapter stopped.");	
 	}
 
+	/**
+	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
+	 * 
+	 * @param addListenerService
+	 *            , the subscription service
+	 */
+	@Bind(optional = true)
+	public void bindSubscriptionService(AddListenerService addListenerService) {
+		this.addListenerService = addListenerService;
+		logger.debug("Communication subscription service dependency resolved");
+	}
+
+	/**
+	 * Call when the Watteco adapter release the optional subscription service.
+	 * 
+	 * @param addListenerService
+	 *            , the released subscription service
+	 */
+	@Unbind(optional = true)
+	public void unbindSubscriptionService(AddListenerService addListenerService) {
+		this.addListenerService = null;
+		logger.debug("Subscription service dependency not available");
+	}
+	
+	/**
+	 * Get the HTTP service form OSGi/iPojo. This service is optional.
+	 * 
+	 * @param httpService the HTTP service
+	 */
+	@Bind(optional = true)
+	public void bindHTTPService(HttpService httpService) {
+		this.httpService = httpService;
+		logger.debug("HTTP service dependency resolved");
+	}
+	
+	/**
+	 * Call when the EnOcean proxy release the HTTP service.
+	 * 
+	 * @param httpService the HTTP service
+	 */
+	@Unbind(optional = true)
+	public void unbindHTTPService(HttpService httpService) {
+		this.httpService = null;
+		logger.debug("HTTP service dependency not available");
+	}
+	
 	/* ***********************************************************************
 	 * 						  PUBLIC METHODS                                 *
 	 *********************************************************************** */

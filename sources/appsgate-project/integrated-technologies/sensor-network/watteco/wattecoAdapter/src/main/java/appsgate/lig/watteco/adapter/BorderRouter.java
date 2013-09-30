@@ -278,7 +278,11 @@ public class BorderRouter {
 						String address = "fe80:"+route.subSequence(12, route.length());
 						logger.debug("sensor IPV6 address: "+address);
 						Instance inst = wattecoAdapter.getInstanceFormAddress(address);
-						setInstanceProperties(inst, result);
+						if(inst != null) {
+							setInstanceProperties(inst, result);
+						}else{
+							logger.info("Notification received from a not installed sensor "+address);
+						}
 
 					} else {
 						logger.info("Watteco command response received.");

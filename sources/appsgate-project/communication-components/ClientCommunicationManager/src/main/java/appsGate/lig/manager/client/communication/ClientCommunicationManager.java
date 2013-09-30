@@ -151,6 +151,9 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 			} else if (command.contentEquals("actuatorAction")) { 
 				notifyConfigListeners(socket, cmd);
 				
+			} else if (command.contentEquals("discover")) { 
+				notifyConfigListeners(socket, cmd);
+				
 			} else {
 				notifyCommandListeners(socket, cmd);
 			}
