@@ -17,11 +17,11 @@
 		
 	</implementation>
 	
-	<apam-instance name="GmailImpl-0" implementation="GmailImpl">
-       <property name="user" value="smarthome.inria@gmail.com"/>
-       <property name="password" value="smarthome2012"/>
-       <property name="auto-refresh" value="120000"/>
-   </apam-instance>
+<!-- 	<apam-instance name="GmailImpl-0" implementation="GmailImpl"> -->
+<!--        <property name="user" value="smarthome.inria@gmail.com"/> -->
+<!--        <property name="password" value="smarthome2012"/> -->
+<!--        <property name="auto-refresh" value="120000"/> -->
+<!--    </apam-instance> -->
    
 <!--    	<implementation name="MailReceivedConsoleNotification" classname="appsgate.lig.mail.gmail.main.MailReceivedConsoleNotification"> -->
 <!--    	    <dependency field="apam"/> -->
