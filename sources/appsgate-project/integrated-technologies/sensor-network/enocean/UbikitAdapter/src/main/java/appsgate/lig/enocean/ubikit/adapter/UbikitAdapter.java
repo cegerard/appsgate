@@ -172,7 +172,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			final Dictionary<String, String> initParams = new Hashtable<String, String>();
 			initParams.put("from", "HttpService");
 			try {
-				httpService.registerResources("/configuration/sensors", "/WEB", httpContext);
+				httpService.registerResources("/configuration/sensors/enocean", "/WEB", httpContext);
 				logger.info("Sensors configuration HTML GUI sources registered.");
 			} catch (NamespaceException ex) {
 				logger.error("NameSpace exception");
