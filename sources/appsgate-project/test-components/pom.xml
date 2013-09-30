@@ -25,6 +25,7 @@
 		<module>VituralAdapterTester</module>
 		<module>WattecoAdapterTester</module>
 		<module>ContextFollowerTester</module>
+		<module>ExperimentaConfiguration</module>
 	</modules>
 
 </project>

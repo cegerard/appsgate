@@ -1,0 +1,14 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="AutoConfiguationImpl" classname="appsgate.validation.configuration.AutoConfiguration" singleton="true">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		<dependency field="UserBaseSpec"/>
+	</implementation>
+	
+	<apam-instance name="AutoConfiguationInst" implementation="AutoConfiguationImpl">
+	</apam-instance>
+
+</apam>
