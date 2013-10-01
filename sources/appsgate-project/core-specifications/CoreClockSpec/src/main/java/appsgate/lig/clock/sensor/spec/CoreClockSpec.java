@@ -52,12 +52,22 @@ public interface CoreClockSpec {
     
     
     /**
-     * register a new Alarm at specified calendar date
+     * register a new single Alarm at specified calendar date
      * @param calendar The date when clock event must be generated
      * @param observer The observer that must be called
      * @return An unique identifier for the Alarm (allow unregister and distinction between multiple alarm for a single observer) or -1 if registration impossible
      */
     int registerAlarm(Calendar calendar, AlarmEventObserver observer);
+    
+    /**
+     * register a periodic Alarm that will occurs every specified period (each hour, each day, ...), starting from Calendar date
+     * @param calendar Starting date for the alarms (first event will be triggered at Calendar + millis), if null registration start from now (current time of the clock)
+     * @param millis The period between each alarm
+     * @param observer The observer that must be called
+     * @return An unique identifier for the Alarm (allow unregister and distinction between multiple alarm for a single observer) or -1 if registration impossible
+     */
+    int registerPeriodicAlarm(Calendar calendar, long millis, AlarmEventObserver observer);
+    
     
     /**
      * Unregister a previously alarm setted

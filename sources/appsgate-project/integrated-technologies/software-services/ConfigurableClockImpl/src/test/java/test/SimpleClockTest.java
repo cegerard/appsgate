@@ -46,6 +46,8 @@ public class SimpleClockTest implements AlarmEventObserver{
     long clockTime;
     ConfigurableClockImpl clock;
     Set<Integer> receivedAlarm;
+    int receivedAlarmCounter;
+
     private static Logger logger = LoggerFactory.getLogger(SimpleClockTest.class);
     
 
@@ -63,6 +65,7 @@ public class SimpleClockTest implements AlarmEventObserver{
 	clock = new ConfigurableClockImpl();
 	clock.start();
 	receivedAlarm = new HashSet<Integer>();
+	receivedAlarmCounter=0;
     }
     
     @After
@@ -269,7 +272,7 @@ public class SimpleClockTest implements AlarmEventObserver{
 	}
 	
 	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
-	Assert.assertEquals("received alarm set should contain only one element",1,receivedAlarm.size());
+	Assert.assertEquals("received alarm set should contain three elements",3,receivedAlarm.size());
 	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID));
 
     }
@@ -353,6 +356,22 @@ public class SimpleClockTest implements AlarmEventObserver{
 	Assert.assertEquals("received alarm set should still contain 5 elements (last alarm unregistered)",5,receivedAlarm.size());	
     }
     
+    @Test
+    public void testSimplePeriodicAlarms() {
+	System.out.println("testSimplePeriodicAlarms(), adding a periodic events for each seconds");
+	clock.registerPeriodicAlarm(null,1000, this);
+
+	try{
+	    Thread.sleep(4321);
+	}catch (Exception exc) {
+	    exc.printStackTrace();
+	}
+	
+	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
+	Assert.assertEquals("received alarm set should contain 1 element (same id for all events)",1,receivedAlarm.size());
+	Assert.assertEquals("should receive 4 elements",4,receivedAlarmCounter);	
+    }
+    
 
 
     /* (non-Javadoc)
@@ -362,6 +381,7 @@ public class SimpleClockTest implements AlarmEventObserver{
     public void alarmEventFired(int alarmEventId) {
 	logger.debug("received an alarm with id : "+alarmEventId);
 	receivedAlarm.add(alarmEventId);
+	receivedAlarmCounter++;
     }
     
 }
