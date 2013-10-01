@@ -13,7 +13,7 @@ function WebSocketOpen()
      ws.onopen = function()
      {
         // Web Socket is connected, get all existing devices
-        ws.send("{\"getConfDevices\":{}}");
+        ws.send("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\"}");
         pairingMode = 0;
      };
      
@@ -199,16 +199,16 @@ function validConf(){
 	var profile_list = document.getElementById("profile-list");
 	var profile_prf = profile_list.options[profile_list.selectedIndex].value;
     
-    ws.send("{\"sensorValidation\":{\"id\":\""+sensor_id+"\", \"nbchoice\":\""+1+"\" ,\"capabilities\":[\""+profile_prf+"\"]}}");
+    ws.send("{\"sensorValidation\":{\"id\":\""+sensor_id+"\", \"nbchoice\":\""+1+"\" ,\"capabilities\":[\""+profile_prf+"\"]}, \"CONFIGURATION\":\"sensorValidation\"}");
 }
 
 /** Check */
 function setPairingMode() {
     if(pairingMode == 1){
-        ws.send("{\"setPairingMode\":{\"pairingMode\":\""+false+"\"}}");
+        ws.send("{\"setPairingMode\":{\"pairingMode\":\""+false+"\"}, \"CONFIGURATION\":\"setPairingMode\"}");
         pairingMode = 0;
     }else{
-        ws.send("{\"setPairingMode\":{\"pairingMode\":\""+true+"\"}}");
+        ws.send("{\"setPairingMode\":{\"pairingMode\":\""+true+"\"}, \"CONFIGURATION\":\"setPairingMode\"}");
         pairingMode = 1;
     }
 }
@@ -220,7 +220,7 @@ function createActuator() {
 	
 	var profile = actuator_profile.options[actuator_profile.selectedIndex].value;
 	
-	 ws.send("{\"createActuator\":{\"profile\":\""+profile+"\", \"name\":\""+name.value+"\", \"place\":\"\"}}");
+	 ws.send("{\"createActuator\":{\"profile\":\""+profile+"\", \"name\":\""+name.value+"\", \"place\":\"\"}, \"CONFIGURATION\":\"createActuator\"}");
 }
 
 /** Check */
@@ -252,13 +252,13 @@ function getActuatorInfos() {
 function actuatorOn() {
 	var actuator_list = document.getElementById("actuator-list");
 	var actId = actuator_list.options[actuator_list.selectedIndex].value;
-	ws.send("{\"actuatorAction\":{\"action\":\"on\", \"id\":\""+actId+"\"}}");
+	ws.send("{\"actuatorAction\":{\"action\":\"on\", \"id\":\""+actId+"\"}, \"CONFIGURATION\":\"actuatorAction\"}");
 }
 
 function actuatorOff() {
 	var actuator_list = document.getElementById("actuator-list");
 	var actId = actuator_list.options[actuator_list.selectedIndex].value;
-	ws.send("{\"actuatorAction\":{\"action\":\"off\", \"id\":\""+actId+"\"}}");
+	ws.send("{\"actuatorAction\":{\"action\":\"off\", \"id\":\""+actId+"\"}, \"CONFIGURATION\":\"actuatorAction\"}");
 }
 
 /** Check */

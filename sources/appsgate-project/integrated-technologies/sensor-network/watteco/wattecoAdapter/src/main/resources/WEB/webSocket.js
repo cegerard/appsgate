@@ -43,5 +43,5 @@ function WebSocketClose() {
 
 /** Check */
 function discover() {
-	ws.send("{\"discover\":{}}");
+	ws.send("{\"discover\":{}, \"CONFIGURATION\":\"discover\"}");
 }

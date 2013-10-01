@@ -132,34 +132,29 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 		try {
 			JSONTokener jsonParser = new JSONTokener(cmd);
 			JSONObject jsObj = (JSONObject)jsonParser.nextValue();
-			@SuppressWarnings("rawtypes")
-			Iterator keys = jsObj.keys();
-			String command = keys.next().toString();
-
-			if (command.contentEquals("setPairingMode")) {
-				notifyConfigListeners(socket, cmd);
-				
-			} else if (command.contentEquals("sensorValidation")) {
-				notifyConfigListeners(socket, cmd);
-				
-			} else if (command.contentEquals("getConfDevices")) {
-				notifyConfigListeners(socket, cmd);
-				
-			} else if (command.contentEquals("createActuator")) { 
-				notifyConfigListeners(socket, cmd);
-				
-			} else if (command.contentEquals("actuatorAction")) { 
-				notifyConfigListeners(socket, cmd);
-				
-			} else if (command.contentEquals("discover")) { 
-				notifyConfigListeners(socket, cmd);
-				
-			} else {
-				notifyCommandListeners(socket, cmd);
+			
+			if(isConfiguration(jsObj)) {
+				notifyConfigListeners(socket, jsObj);
+			}else {
+				notifyCommandListeners(socket, jsObj);
 			}
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Test if the JSON message is a configuration message
+	 * @param msg the message a a JSON object
+	 * @return true if the message is a configuration message, false otherwise
+	 */
+	private boolean isConfiguration(JSONObject msg) {
+		try{
+			msg.getString("CONFIGURATION");
+			return true;
+		}catch(JSONException e) {
+			return false;
 		}
 	}
 
@@ -356,23 +351,18 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 	 * @param cmd the command.
 	 * @throws ParseException 
 	 */
-	private void notifyCommandListeners(WebSocket socket, String cmd) {
+	private void notifyCommandListeners(WebSocket socket, JSONObject cmd) {
 		logger.debug("notify listeners for new command event");
 		
 		try {
-		
-			JSONTokener jsonParser = new JSONTokener(cmd);
-			JSONObject jsObj;
-		
-			jsObj = (JSONObject)jsonParser.nextValue();
-			jsObj.put("clientId", socket.hashCode());
+			cmd.put("clientId", socket.hashCode());
 			
 			Iterator<CommandListener> it = commandListeners.iterator();
 			CommandListener allcmdListener;
 		
 			while(it.hasNext()){
 				allcmdListener = it.next();
-				allcmdListener.onReceivedCommand(jsObj);
+				allcmdListener.onReceivedCommand(cmd);
 			}
 		
 		} catch (JSONException e) {
@@ -386,16 +376,13 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 	 * @param cmd the command.
 	 * @throws ParseException 
 	 */
-	private void notifyConfigListeners(WebSocket socket, String cmd) {
+	private void notifyConfigListeners(WebSocket socket, JSONObject cmd) {
 		logger.debug("notify listeners for new configuration event");
 		try {
-			JSONTokener jsonParser = new JSONTokener(cmd);
-			JSONObject jsObj = (JSONObject)jsonParser.nextValue();
-			@SuppressWarnings("rawtypes")
-			Iterator keys = jsObj.keys();
-			String command = keys.next().toString();
 			JSONObject value;
-			value = jsObj.getJSONObject(command);
+			String command = cmd.getString("CONFIGURATION");
+
+			value = cmd.getJSONObject(command);
 			value.put("clientId", socket.hashCode());
 			
 			Iterator<ConfigListener> it = configListeners.iterator();
