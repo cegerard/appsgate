@@ -237,8 +237,10 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 			VEvent event = it.next();
 			logger.debug("EVENT: "+event.getSummary().getValue());
 			// add next starting events and next ending events to the lists.
-			DateTime eventStartDate = (DateTime)event.getStartDate().getDate();
-			DateTime eventEndDate   = (DateTime)event.getEndDate().getDate();
+			DateTime eventStartDate = new DateTime();
+			DateTime eventEndDate = new DateTime();
+			eventStartDate.setTime(event.getStartDate().getDate().getTime());
+			eventEndDate.setTime(event.getEndDate().getDate().getTime());
 
 			if (eventStartDate.after(today)) {
 				logger.debug("EVENT START:"+event.getSummary().getValue());
@@ -274,7 +276,8 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 
 			while (itAlarm.hasNext()) {
 				VAlarm alarm = itAlarm.next();
-				DateTime triggerAlarmDate = (DateTime)alarm.getTrigger().getDate();
+				DateTime triggerAlarmDate = new DateTime();
+				triggerAlarmDate.setTime(alarm.getTrigger().getDate().getTime());
 				logger.debug("Reminders for "+event.getSummary().getValue()+String.format(" Current Date/Time : %tc", triggerAlarmDate));
 				
 				if ((triggerAlarmDate.after(today))) {
