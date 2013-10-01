@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.clock.sensor.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
-import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -336,7 +335,6 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 
 	    setCurrentTimeInMillis(currentTime + millis);
 	}
-<<<<<<< HEAD
 	calculateNextTimer();
     }
 
@@ -368,90 +366,10 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		    observers.put(++currentAlarmId, observer);
 		    alarms.put(time, observers);
 		    reverseAlarmMap.put(currentAlarmId, time);
-=======
-	
-	public NotificationMsg fireFlowRateSetNotificationMsg(double newFlowRate) {
-		return new FlowRateSetNotification(this, String.valueOf(newFlowRate));
-	}
->>>>>>> cc4874ea303bb79a43a4ff849793ef049aeac04b
 
 		}
-<<<<<<< HEAD
 		logger.debug("registerAlarm(...), alarm events id created : "
 			+ currentAlarmId);
-=======
-		fireClockSetNotificationMsg(Calendar.getInstance());
-		fireFlowRateSetNotificationMsg(flowRate);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#getCurrentDate()
-	 */
-	@Override
-	public Calendar getCurrentDate() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(getCurrentTimeInMillis());
-		return cal;
-	}
-
-	/*
-	 * if
-	 * 
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * appsgate.lig.clock.sensor.spec.CoreClockSpec#getCurrentTimeInMillis()
-	 */
-	@Override
-	public long getCurrentTimeInMillis() {
-		// TODO with flow might be more difficult
-
-		long systemTime = System.currentTimeMillis();
-		long simulatedTime = currentLag;
-		if (timeFlowBreakPoint > 0 && timeFlowBreakPoint <= systemTime) {
-			long elapsedTime = (long) ((systemTime - timeFlowBreakPoint) * flowRate);
-			logger.debug("getCurrentTimeInMillis(), system time : "
-					+ systemTime + ", time flow breakpoint : "
-					+ timeFlowBreakPoint + ", elasped time : " + elapsedTime);
-
-			simulatedTime += timeFlowBreakPoint + elapsedTime;
-		} else
-			simulatedTime += systemTime;
-		logger.debug("getCurrentTimeInMillis(), simulated time : "
-				+ simulatedTime);
-		return simulatedTime;
-	}
-	
-	@Override
-	public double getTimeFlowRate() {
-		return flowRate;
-	};
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * appsgate.lig.clock.sensor.spec.CoreClockSpec#setCurrentDate(java.util
-	 * .Calendar)
-	 */
-	@Override
-	public void setCurrentDate(Calendar calendar) {
-		setCurrentTimeInMillis(calendar.getTimeInMillis());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * appsgate.lig.clock.sensor.spec.CoreClockSpec#setCurrentTimeInMillis(long)
-	 */
-	@Override
-	public void setCurrentTimeInMillis(long millis) {
-		currentLag = millis - Calendar.getInstance().getTimeInMillis();
-		setTimeFlowRate(flowRate);
->>>>>>> cc4874ea303bb79a43a4ff849793ef049aeac04b
 		calculateNextTimer();
 		return currentAlarmId;
 	    }
@@ -512,10 +430,11 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	if (disarmedAlarms != null && !disarmedAlarms.isEmpty()
 		&& reverseAlarmMap != null && !reverseAlarmMap.isEmpty()
 		&& alarmPeriods != null && !alarmPeriods.isEmpty())
-	    for (Integer i : disarmedAlarms)
+	    for (Integer i : disarmedAlarms) {
 		if (Math.abs((reverseAlarmMap.get(i).longValue() - time
 			.longValue()) % alarmPeriods.get(i).longValue()) > alarmLagTolerance)
 		    disarmedAlarms.remove(i);
+	    }
     }
 
     long nearestSingleAlarmDelay(long time) {
@@ -558,6 +477,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
     long calculateNextTimer() {
 	synchronized (lock) {
 	    Long currentTime = getCurrentTimeInMillis();
+	    rearmPeriodicAlarms(currentTime);
 
 	    long nextAlarmDelay = -1;
 	    nextAlarmId = -1;
@@ -668,55 +588,9 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
     
     class RearmingPeriodicAlarmTask extends TimerTask {
 	@Override
-<<<<<<< HEAD
 	public void run() {
 	    logger.debug("trying to rearm periodic clock alarms");
 	    rearmPeriodicAlarms(null);
-	    calculateNextTimer();
-=======
-	public double setTimeFlowRate(double rate) {
-		if (rate > 0 && rate != 1) {
-			// avoid value that could lead to strange behavior
-			timeFlowBreakPoint = System.currentTimeMillis();
-			if (flowRate < 0.01)
-				flowRate = 0.01;
-			if (flowRate > 100)
-				flowRate = 100;
-			else
-				flowRate = rate;
-		} else {
-			flowRate = 1;
-			timeFlowBreakPoint = -1;
-		}
-		logger.debug("setTimeFlowRate(double rate), new time flow rate : "+ flowRate);
-		fireFlowRateSetNotificationMsg(rate);
-		return flowRate;
-
-	}
-
-	protected void calculateNextTimer() {
-		synchronized (lock) {
-			Long currentTime = getCurrentTimeInMillis();
-			if (alarms != null && !alarms.isEmpty()
-					&& alarms.lastKey() >= (currentTime - alarmLagTolerance)) {
-				logger.debug("calculateNextTimer(), alarms last : "
-						+ alarms.lastKey() + ", current time : " + currentTime);
-				nextAlarm = alarms.tailMap(currentTime - alarmLagTolerance)
-						.firstKey();
-				long nextAlarmDelay = nextAlarm - currentTime;
-				if (nextAlarmDelay < 0)
-					nextAlarmDelay = 0;
-				nextAlarmDelay = (long) (nextAlarmDelay / flowRate);
-				logger.debug("calculateNextTimer(), next alarm should ring in : "
-						+ nextAlarmDelay + "ms");
-				AlarmFiringTask nextAlarm = new AlarmFiringTask();
-				if (timer == null)
-					timer = new Timer();
-				timer.schedule(nextAlarm, nextAlarmDelay);
-			}
-		}
-
->>>>>>> cc4874ea303bb79a43a4ff849793ef049aeac04b
 	}
     }
     
