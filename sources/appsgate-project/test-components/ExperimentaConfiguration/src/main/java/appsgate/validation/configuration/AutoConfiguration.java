@@ -4,7 +4,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
+import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 
 /**
  * Class use to set up complete configuration in appsgate server
@@ -26,6 +29,16 @@ public class AutoConfiguration {
 	private UserBaseSpec UserBaseSpec;
 	
 	/**
+	 * Device name table dependency
+	 */
+	private DeviceNameTableSpec deviceNameTableSpec;
+	
+	/**
+	 * Place manager dependency
+	 */
+	private PlaceManagerSpec placeManagerSpec;
+	
+	/**
 	 * Built the auto configuration instance
 	 */
 	public AutoConfiguration() {
@@ -38,9 +51,10 @@ public class AutoConfiguration {
 	public void newInst() {
 		//Initiate the user base
 		logger.debug("Initiate the user base");
-		//Add a test user for experimenta
+		//Add a test user for Experimenta
 		if (UserBaseSpec.adduser("666", "appsgate", "Dupont", "Rene", "fils")) {
 			logger.info("########## user added");
+			
 			//Add Google agendas account
 			logger.info("########## add agenda accounts");
 			JSONObject account = new JSONObject();
@@ -69,6 +83,7 @@ public class AutoConfiguration {
 				logger.info("########## Smart home account added");
 			}
 			
+			//Add mail account
 			logger.info("########## add mail accounts");
 			account = new JSONObject();
 			try {
@@ -86,10 +101,15 @@ public class AutoConfiguration {
 		}
 		
 		//TODO Create Places
+		//placeManagerSpec.addPlace(placeId, name);
 		
 		//TODO Rename devices
+		//deviceNameTableSpec.addName(objectId, usrId, newName);
 		
 		//TODO Move devices
+		//placeManagerSpec.moveObject(objId, oldPlaceID, newPlaceID);
+		
+		logger.debug("Experimenta configuration set up.");
 	}
 	
 	
@@ -97,6 +117,6 @@ public class AutoConfiguration {
 	 * Callback called when the ApAM instance will be delete.
 	 */
 	public void deleteInst() {
-		logger.debug("Configurator uninstall");
+		logger.debug("Experimenta configurator uninstall");
 	}
 }

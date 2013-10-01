@@ -92,12 +92,11 @@ public class SymbolicPlace {
 	 * Remove all the objects from this place 
 	 */
 	public void removeAll() {
-		Iterator<String> it = abstractsObjects.iterator();
-		String abObj;
-		while(it.hasNext()) {
-			abObj = it.next();
-			//TODO notify that this object move to -1
-		}
+//		Iterator<String> it = abstractsObjects.iterator();
+//		String abObj;
+//		while(it.hasNext()) {
+//			abObj = it.next();
+//		}
 		abstractsObjects.clear();
 	}
 

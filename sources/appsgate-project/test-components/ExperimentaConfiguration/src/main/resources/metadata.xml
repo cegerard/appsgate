@@ -6,6 +6,8 @@
 	<implementation name="AutoConfiguationImpl" classname="appsgate.validation.configuration.AutoConfiguration" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<dependency field="UserBaseSpec"/>
+		<dependency field="deviceNameTableSpec"/>
+		<dependency field="placeManagerSpec"/>
 	</implementation>
 	
 	<apam-instance name="AutoConfiguationInst" implementation="AutoConfiguationImpl">
