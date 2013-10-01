@@ -100,14 +100,21 @@ public class AutoConfiguration {
 			
 		}
 		
-		//TODO Create Places
-		//placeManagerSpec.addPlace(placeId, name);
+		logger.info("########## add places");
+		placeManagerSpec.addPlace("1011", "Cuisine");
+		placeManagerSpec.addPlace("1010", "Salon");
+		placeManagerSpec.addPlace("1001", "Salle de bain");
+		placeManagerSpec.addPlace("1002", "Chambre");
+		logger.info("########## places added");
 		
 		//TODO Rename devices
 		//deviceNameTableSpec.addName(objectId, usrId, newName);
 		
 		//TODO Move devices
 		//placeManagerSpec.moveObject(objId, oldPlaceID, newPlaceID);
+		
+		//TODO deploy program
+		
 		
 		logger.debug("Experimenta configuration set up.");
 	}
