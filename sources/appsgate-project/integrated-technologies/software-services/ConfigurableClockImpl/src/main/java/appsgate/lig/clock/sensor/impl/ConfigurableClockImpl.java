@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.clock.sensor.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
+import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -152,6 +153,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	    timeFlowBreakPoint = -1;
 	}
 	fireClockSetNotificationMsg(Calendar.getInstance());
+	fireFlowRateSetNotificationMsg(flowRate);
     }
 
     /*
@@ -420,6 +422,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	}
 	logger.debug("setTimeFlowRate(double rate), new time flow rate : "
 		+ flowRate);
+	fireFlowRateSetNotificationMsg(rate);
 	return flowRate;
 
     }
@@ -586,11 +589,16 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	}
     }
     
+    public NotificationMsg fireFlowRateSetNotificationMsg(double newFlowRate) {
+	return new FlowRateSetNotification(this, String.valueOf(newFlowRate));
+    }    
+    
     class RearmingPeriodicAlarmTask extends TimerTask {
 	@Override
 	public void run() {
 	    logger.debug("trying to rearm periodic clock alarms");
 	    rearmPeriodicAlarms(null);
+	    calculateNextTimer();
 	}
     }
     
