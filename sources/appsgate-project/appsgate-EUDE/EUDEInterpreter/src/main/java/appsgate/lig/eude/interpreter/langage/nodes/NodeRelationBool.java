@@ -199,6 +199,18 @@ public class NodeRelationBool extends Node {
 			result = (leftValue.equals(rightValue));
 		} else if (operator.equals("!=")) {
 			result = !(leftValue.equals(rightValue));
+		} else if (operator.equals(">=")) {
+			if (leftReturnType.equals("number") && rightReturnType.equals("number")) {
+				result = ((Long)leftValue >= (Long)rightValue);
+			} else {
+				result = false;
+			}
+		} else if (operator.equals("<=")) {
+			if (leftReturnType.equals("number") && rightReturnType.equals("number")) {
+				result = ((Long)leftValue <= (Long)rightValue);
+			} else {
+				result = false;
+			}
 		}
 	}
 
