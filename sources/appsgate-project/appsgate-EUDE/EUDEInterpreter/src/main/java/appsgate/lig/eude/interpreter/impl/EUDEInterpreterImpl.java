@@ -3,6 +3,7 @@ package appsgate.lig.eude.interpreter.impl;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -321,13 +322,26 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	 * 
 	 * @param nodeEvent Node to notify when the event is received
 	 */
-	public void addNodeListening(NodeEvent nodeEvent) {
+	public synchronized void addNodeListening(NodeEvent nodeEvent) {
 		// instantiate a core listener
-		CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
+		CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue(), this);
+		
+		Set<CoreEventListener> keyset = mapCoreNodeEvent.keySet();
+		Iterator<CoreEventListener> it = keyset.iterator();
+		boolean contains = false;
+		CoreEventListener cel = null;
+		
+		while(it.hasNext() && !contains) {
+			cel = it.next();
+			if(cel.equals(listener)) {
+				contains = true;
+			}
+		}
 		
 		// if the event is already listened by other nodes
-		if (mapCoreNodeEvent.containsKey(listener)) {
-			mapCoreNodeEvent.get(listener).add(nodeEvent);
+		if ( contains ) {
+			mapCoreNodeEvent.get(cel).add(nodeEvent);
+			logger.debug("Add node event to listener list.");
 		// if the event is not listened yet
 		} else {
 			// create the list of nodes to notify
@@ -339,6 +353,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 			
 			// fill the map with the new entry
 			mapCoreNodeEvent.put(listener, nodeList);
+			logger.debug("Add node event listener list.");
 		}	
 	}
 	
@@ -347,15 +362,30 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 	 * 
 	 * @param nodeEvent Node to remove
 	 */
-	public void removeNodeListening(NodeEvent nodeEvent) {
-		CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
-		if (mapCoreNodeEvent.containsKey(listener)) {
-			mapCoreNodeEvent.get(listener).remove(nodeEvent);
-			
+	public synchronized void removeNodeListening(NodeEvent nodeEvent) {
+		CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue(), this);
+		
+		Set<CoreEventListener> keyset = mapCoreNodeEvent.keySet();
+		Iterator<CoreEventListener> it = keyset.iterator();
+		boolean contains = false;
+		CoreEventListener cel = null;
+		
+		while(it.hasNext() && !contains) {
+			cel = it.next();
+			if(cel.equals(listener)) {
+				contains = true;
+			}
+		}
+		
+		if (contains) {
+			ArrayList<NodeEvent> nodeEventList = mapCoreNodeEvent.get(cel);
+			nodeEventList.remove(nodeEvent);
+			logger.debug("Remove nodeEvent from listener list.");
 			// remove the listener if there is no node any more to notify
-			if (mapCoreNodeEvent.get(listener).isEmpty()) {
-				contextFollower.deleteListener(listener);
-				mapCoreNodeEvent.remove(listener);
+			if (nodeEventList.isEmpty()) {
+				contextFollower.deleteListener(cel);
+				mapCoreNodeEvent.remove(cel);
+				logger.debug("Remove node event listener list.");
 			}
 		}
 	}
@@ -388,13 +418,15 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		private String objectId;
 		private String varName;
 		private String varValue;
+		private EUDEInterpreterImpl eudeInt;
 		
 	
 		public CoreEventListener(String objectId, String varName,
-				String varValue) {
+				String varValue, EUDEInterpreterImpl eudeInt) {
 			this.objectId = objectId;
 			this.varName = varName;
 			this.varValue = varValue;
+			this.eudeInt = eudeInt;
 		}
 
 		@Override
@@ -430,8 +462,13 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 		@Override
 		public void notifyEvent() {
 			// transmit the core event to the concerned nodes
-			for (NodeEvent n : mapCoreNodeEvent.get(this)) {
-				n.coreEventFired();
+			synchronized(eudeInt) {
+				ArrayList<NodeEvent> nodeEventList =  mapCoreNodeEvent.get(this);
+				for (NodeEvent n : nodeEventList) {
+					n.coreEventFired();
+				}
+				contextFollower.deleteListener(this);
+				mapCoreNodeEvent.remove(this);
 			}
 		}
 
@@ -447,7 +484,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 			}
 			
 			CoreEventListener c = (CoreEventListener)o;
-			return (objectId.equals(c.objectId) && varName.equals(c.varName) && varValue.equals(c.varValue));
+			return (objectId.contentEquals(c.objectId) && varName.contentEquals(c.varName) && varValue.contentEquals(c.varValue));
 		}
 	}
 

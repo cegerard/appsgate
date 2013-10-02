@@ -115,15 +115,15 @@ public class NodeEvent extends Node {
 
 	@Override
 	public void endEventFired(EndEvent e) {
-		Node nodeEnded = (Node)e.getSource();
-		nodeEnded.removeEndEventListener(this);
-		
-		started = false;
-		// the node is done when the relevant event has been caught
-		fireEndEvent(new EndEvent(this));
+//		Node nodeEnded = (Node)e.getSource();
+//		nodeEnded.removeEndEventListener(this);
+//		
+//		coreEventFired();
 	}
 
 	public void coreEventFired() {
+		started = false;
+		//interpreter.removeNodeListening(this);
 		// the node is done when the relevant event has been caught
 		fireEndEvent(new EndEvent(this));
 	}

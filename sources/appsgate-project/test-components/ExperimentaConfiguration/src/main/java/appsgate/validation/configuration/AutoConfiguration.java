@@ -116,6 +116,7 @@ public class AutoConfiguration {
 		//TODO deploy program
 		
 		
+		
 		logger.debug("Experimenta configuration set up.");
 	}
 	
@@ -125,5 +126,16 @@ public class AutoConfiguration {
 	 */
 	public void deleteInst() {
 		logger.debug("Experimenta configurator uninstall");
+		//TODO remove accounts
+		
+		//TODO remove user
+		
+		//TODO device names
+		
+		//TODO remove device places
+		
+		//TODO Remove places
+		
+		//TODO remove programs
 	}
 }

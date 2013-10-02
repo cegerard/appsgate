@@ -63,7 +63,7 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 	}
 
 	@Override
-	public void addListener(CoreListener coreListener) {
+	public synchronized void addListener(CoreListener coreListener) {
 		logger.debug("Adding a listener...");
 		Entry eventKey = new Entry(coreListener.getObjectId(), coreListener.getEvent(), coreListener.getValue());
 		
@@ -104,8 +104,8 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 	}
 
 	@Override
-	public void deleteListener(CoreListener coreListener) {
-		logger.debug("Deleting all listeners...");
+	public synchronized void deleteListener(CoreListener coreListener) {
+		logger.debug("Deleting a listener...");
 		Entry eventKey = new Entry(coreListener.getObjectId(), coreListener.getEvent(), coreListener.getValue());
 		
 		Set<Entry> keys = eventsListeners.keySet();
@@ -137,13 +137,14 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 	 * @param notif
 	 *            the notification message from ApAM
 	 */
+	@SuppressWarnings("unchecked")
 	public void gotNotification(NotificationMsg notif) {
 		try {
 			logger.debug("Event message receive, " + notif.JSONize());
 			JSONObject event = notif.JSONize();
 			
 			//TODO delete this exception when the notification
-			//mechanism will be totally define
+			//mechanism will be totally define. Use to ignore context notification (device name, place added etc.)
 			try{
 				event.getString("objectId");
 			}catch(JSONException e) {
@@ -151,15 +152,29 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 			}
 				
 			Entry eventKey = new Entry(event.getString("objectId"), event.getString("varName"), event.getString("value"));
+			ArrayList<Entry> keys = new ArrayList<Entry>();
+		
+			synchronized(this) {
+				Iterator<Entry> tempKeys = eventsListeners.keySet().iterator();
+				while(tempKeys.hasNext()){
+					keys.add(tempKeys.next());
+				}
+			}
 			
-			Set<Entry> keys = eventsListeners.keySet();
 			Iterator<Entry> keysIt = keys.iterator();
 			
 			while(keysIt.hasNext()) {
 				Entry key = keysIt.next();
 				if(eventKey.equals(key)) {
 					logger.debug("Event is followed, retreiving listeners...");
-					ArrayList<CoreListener> coreListenerList = eventsListeners.get(key);
+					
+					ArrayList<CoreListener> coreListenerList;
+					synchronized(this) {
+						//TODO the clone method is used because is necessary if in the notifyEvent
+						//override method someone call the deleteListener method that made deadlock
+						coreListenerList = (ArrayList<CoreListener>) eventsListeners.get(key).clone();
+					}
+
 					Iterator<CoreListener> it = coreListenerList.iterator();
 					while(it.hasNext()) {
 						it.next().notifyEvent();
