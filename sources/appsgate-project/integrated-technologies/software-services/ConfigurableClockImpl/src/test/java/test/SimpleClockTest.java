@@ -357,6 +357,31 @@ public class SimpleClockTest implements AlarmEventObserver{
     }
     
     @Test
+    public void testGoAlongUntilWithPeriodics() {
+	System.out.println("testGoAlongUntil(), adding periodic events for each hour, and jump into 4,5 hours)");
+	int alarmId=clock.registerPeriodicAlarm(null, 1000*60*60, this);
+
+	try{
+	    Thread.sleep(4321);
+	}catch (Exception exc) {
+	    exc.printStackTrace();
+	}
+	
+	Assert.assertTrue("received alarm set should be empty",receivedAlarm.isEmpty());
+	
+	clock.goAlongUntil((long)(4.5*1000*60*60));
+	Assert.assertEquals("received alarm set should contain 1 element (periodic)",1,receivedAlarm.size());
+	Assert.assertEquals("should have received 4 elements",4,receivedAlarmCounter);
+	clock.goAlongUntil((1000*60*60));
+	Assert.assertEquals("should have received 5 elements",5,receivedAlarmCounter);
+	
+	clock.unregisterAlarm(alarmId);
+	clock.goAlongUntil((1000*60*60));
+	Assert.assertEquals("should still have received 5 elements (alarm unregistered)",5,receivedAlarmCounter);
+    }
+    
+    
+    @Test
     public void testSimplePeriodicAlarms() {
 	System.out.println("testSimplePeriodicAlarms(), adding a periodic events for each seconds");
 	clock.registerPeriodicAlarm(null,1000, this);
@@ -369,7 +394,23 @@ public class SimpleClockTest implements AlarmEventObserver{
 	
 	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
 	Assert.assertEquals("received alarm set should contain 1 element (same id for all events)",1,receivedAlarm.size());
-	Assert.assertEquals("should receive 4 elements",4,receivedAlarmCounter);	
+	Assert.assertEquals("should receive 4 elements",4,receivedAlarmCounter);
+	
+	System.out.println("registering a single alarm in 1 sec, then waiting for 4 secs more");
+	Calendar cal = Calendar.getInstance();
+	cal.setTimeInMillis(System.currentTimeMillis()+1000);
+	clock.registerAlarm(cal, this);
+	
+	try{
+	    Thread.sleep(4321);
+	}catch (Exception exc) {
+	    exc.printStackTrace();
+	}
+	
+	Assert.assertEquals("received alarm set should contain 2 element (1 for all periodics + une for single alarm)",2,receivedAlarm.size());
+	Assert.assertEquals("should have received 9 elements (total)",9,receivedAlarmCounter);
+	
+	
     }
     
 

@@ -93,6 +93,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
     Timer timer;
 
     Object lock;
+    boolean runningArmTimer;
 
     /**
      * Static class member uses to log what happened in each instances
@@ -145,6 +146,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 
 	    nextAlarmId = -1;
 	    nextAlarmTime = -1;
+	    runningArmTimer = false;
 	    if (timer != null) {
 		timer.cancel();
 		timer = null;
@@ -325,19 +327,53 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
      */
     @Override
     public void goAlongUntil(long millis) {
-	// TODO : intégrer les alarmes périodiques
 	synchronized (lock) {
 	    Long currentTime = getCurrentTimeInMillis();
+	    long futureTime = currentTime + millis;
 	    SortedMap<Long, Map<Integer, AlarmEventObserver>> alarmsToFire = alarms
-		    .subMap(currentTime, currentTime + millis);
+		    .subMap(currentTime - alarmLagTolerance, futureTime
+			    + alarmLagTolerance);
+	    // Firing single alarms
 	    if (alarmsToFire != null)
 		for (Map<Integer, AlarmEventObserver> obs : alarmsToFire
 			.values())
 		    fireClockAlarms(obs);
 
+	    // firing periodic alarms
+	    if (alarmPeriods != null && !alarmPeriods.isEmpty())
+		for (Integer i : alarmPeriods.keySet()) {
+		    long time = currentTime;
+		    if (disarmedAlarms.contains(i))
+			time += alarmLagTolerance + 1;
+
+		    Long nextPeriodic = (time - reverseAlarmMap.get(i))
+			    % alarmPeriods.get(i);
+		    if (nextPeriodic >= 0)
+			time += alarmPeriods.get(i) - nextPeriodic;
+
+		    if (nextPeriodic >= 0)
+			while (time < futureTime) {
+			    time += alarmPeriods.get(i);
+			    periodicAlarmObservers.get(i).alarmEventFired(i);
+			}
+		    if (futureTime - time < alarmLagTolerance)
+			disarmedAlarms.add(i);
+		    else
+			disarmedAlarms.remove(i);
+		}
+
 	    setCurrentTimeInMillis(currentTime + millis);
 	}
 	calculateNextTimer();
+	if (!disarmedAlarms.isEmpty() && !runningArmTimer) {
+	    RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
+	    if (timer == null)
+		timer = new Timer();
+	    timer.schedule(arming, alarmLagTolerance + 1);
+	    runningArmTimer = true;
+
+	}
+
     }
 
     /*
@@ -389,12 +425,18 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
     @Override
     public void unregisterAlarm(int alarmEventId) {
 	synchronized (lock) {
-	    // TODO : Change this
-	    Long time = reverseAlarmMap.remove(alarmEventId);
-	    Map<Integer, AlarmEventObserver> observers = alarms.get(time);
-	    observers.remove(alarmEventId);
-	    if (observers.size() < 1)
-		alarms.remove(time);
+	    if (periodicAlarmObservers.containsKey(alarmEventId)) {
+		periodicAlarmObservers.remove(alarmEventId);
+		alarmPeriods.remove(alarmEventId);
+		disarmedAlarms.remove(alarmEventId);
+	    } else {
+		Long time = reverseAlarmMap.remove(alarmEventId);
+		Map<Integer, AlarmEventObserver> observers = alarms.get(time);
+		observers.remove(alarmEventId);
+		if (observers.size() < 1)
+		    alarms.remove(time);
+	    }
+
 	    reverseAlarmMap.remove(alarmEventId);
 	    calculateNextTimer();
 	}
@@ -493,10 +535,9 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		    + ", nextAlarmTime : " + nextAlarmTime
 		    + ", nearestSingle :" + nearestSingle + ", nearestPeriodic"
 		    + nearestPeriodic);
-	    
-	    
-	    
-	    if (nearestSingle>=0 && (nearestSingle < nearestPeriodic || nearestPeriodic < 0)) {
+
+	    if (nearestSingle >= 0
+		    && (nearestSingle < nearestPeriodic || nearestPeriodic < 0)) {
 		nextAlarmDelay = nearestSingle;
 		nextAlarmId = -1;
 	    } else if (nearestPeriodic >= 0) {
@@ -556,6 +597,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	@Override
 	public void run() {
 	    logger.debug("Firing current clock alarms");
+	    long next = -1;
 	    if (nextAlarmTime > 0) {
 		logger.debug("Firing current clock alarms to all single clock observers");
 		Map<Integer, AlarmEventObserver> observers = alarms
@@ -566,7 +608,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		nextAlarmTime = -1;
 		timer.cancel();
 		timer = null;
-		calculateNextTimer();
+		next = calculateNextTimer();
 	    }
 	    if (nextAlarmId > 0) {
 		logger.debug("Firing current clock alarms to one periodic event observer");
@@ -575,33 +617,32 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 			nextAlarmId);
 		fireClockAlarmNotificationMsg(nextAlarmId);
 		disarmedAlarms.add(nextAlarmId);
-		long next=calculateNextTimer();
-		if(next<0 ||next > alarmPeriods.get(nextAlarmId)) {
-			RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
-			if (timer == null)
-			    timer = new Timer();
-			timer.schedule(arming, alarmLagTolerance+1);
-		}
-		    
-			
+		next = calculateNextTimer();
+	    }
+	    if (next < 0 && !runningArmTimer && !reverseAlarmMap.isEmpty()) {
+		RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
+		if (timer == null)
+		    timer = new Timer();
+		timer.schedule(arming, alarmLagTolerance + 1);
+		runningArmTimer = true;
 	    }
 
 	}
     }
-    
+
     public NotificationMsg fireFlowRateSetNotificationMsg(double newFlowRate) {
 	return new FlowRateSetNotification(this, String.valueOf(newFlowRate));
-    }    
-    
+    }
+
     class RearmingPeriodicAlarmTask extends TimerTask {
 	@Override
 	public void run() {
 	    logger.debug("trying to rearm periodic clock alarms");
+	    runningArmTimer = false;
 	    rearmPeriodicAlarms(null);
 	    calculateNextTimer();
 	}
     }
-    
 
     /*
      * (non-Javadoc)
@@ -627,8 +668,6 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		reverseAlarmMap.put(currentAlarmId, time);
 		alarmPeriods.put(currentAlarmId, millis);
 
-		// if (calendar == null)
-		// disarmedAlarms.add(currentAlarmId);
 		logger.debug("registerPeriodicAlarm(...), alarm events id created : "
 			+ currentAlarmId);
 		calculateNextTimer();
