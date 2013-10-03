@@ -105,10 +105,33 @@ public class AutoConfiguration {
 		placeManagerSpec.addPlace("1010", "Salon");
 		placeManagerSpec.addPlace("1001", "Salle de bain");
 		placeManagerSpec.addPlace("1002", "Chambre");
+		placeManagerSpec.addPlace("1003", "Entree");
 		logger.info("########## places added");
 		
-		//TODO Rename devices
-		//deviceNameTableSpec.addName(objectId, usrId, newName);
+		//Temperature EnOcean
+		deviceNameTableSpec.addName("ENO57ce7", "", "Capteur de temperature");
+		//Switch EnOcean
+		deviceNameTableSpec.addName("ENO27b5da", "", "Interrupteur salle de bain");
+		deviceNameTableSpec.addName("ENO2842be", "", "Interrupteur salon");
+		deviceNameTableSpec.addName("ENO2842c2", "", "Interrupteur cuisine");
+		deviceNameTableSpec.addName("ENO27b2b1", "", "Interrupteur chambre");
+		deviceNameTableSpec.addName("ENO2796f3", "", "Interrupteur entree");
+		//Contact EnOcean
+		deviceNameTableSpec.addName("ENO1c1da", "", "Capteur de contact bouilloire");
+		deviceNameTableSpec.addName("ENO1c167", "", "Capteur de contact porte entree");
+		deviceNameTableSpec.addName("ENO1c168", "", "Capteur de contact salle de bain");
+		deviceNameTableSpec.addName("ENO1c169", "", "Capteur Porte cle");
+		deviceNameTableSpec.addName("ENO1c17a", "", "");
+		//Card switch EnOcean
+		deviceNameTableSpec.addName("ENO2840bb", "", "Lecteur de cartes de la chambre");
+		
+		//TODO Rename watteco devices
+		//Smart plug Watteco
+		//deviceNameTableSpec.addName("ENO2840bb", "", "Lecteur de cartes de la chambre");
+		
+		//TODO Rename Philips hue devices
+		//Philips HUE lights
+		//deviceNameTableSpec.addName("ENO2840bb", "", "Lecteur de cartes de la chambre");
 		
 		//TODO Move devices
 		//placeManagerSpec.moveObject(objId, oldPlaceID, newPlaceID);
