@@ -64,14 +64,14 @@ public class NodeRelationBool extends Node {
 			leftReturnType = operand.getString("returnType");
 			leftValue = null;
 		} else {
-			String type = operand.getString("type");
+			leftReturnType = operand.getString("type");
 			String valueJSON = operand.getString("value");
 			
-			if (type.equals("number")) {
-				leftValue = Long.parseLong(valueJSON);
-			} else if (type.equals("boolean")) {
-				leftValue = Boolean.parseBoolean(valueJSON);
-			} else if (type.equals("string")) {
+			if (leftReturnType.equals("number")) {
+				leftValue = new Double(valueJSON);
+			} else if (leftReturnType.equals("boolean")) {
+				leftValue = new Boolean(valueJSON);
+			} else if (leftReturnType.equals("string")) {
 				leftValue = valueJSON;
 			}
 		}
@@ -83,14 +83,14 @@ public class NodeRelationBool extends Node {
 			rightReturnType = operand.getString("returnType");
 			rightValue = null;
 		} else {
-			String type = operand.getString("type");
+			rightReturnType = operand.getString("type");
 			String valueJSON = operand.getString("value");
 			
-			if (type.equals("number")) {
-				rightValue = Long.parseLong(valueJSON);
-			} else if (type.equals("boolean")) {
-				rightValue = Boolean.parseBoolean(valueJSON);
-			} else if (type.equals("string")) {
+			if (rightReturnType.equals("number")) {
+				rightValue = new Double(valueJSON);
+			} else if (rightReturnType.equals("boolean")) {
+				rightValue = new Boolean(valueJSON);
+			} else if (rightReturnType.equals("string")) {
 				rightValue = valueJSON;
 			}
 		}
@@ -118,7 +118,7 @@ public class NodeRelationBool extends Node {
 			String valueJSON = operand.getString("value");
 
 			if (type.equals("number")) {
-				value = Long.parseLong(valueJSON);
+				value = Double.parseDouble(valueJSON);
 			} else if (type.equals("boolean")) {
 				value = Boolean.parseBoolean(valueJSON);
 			} else if (type.equals("string")) {
@@ -201,13 +201,14 @@ public class NodeRelationBool extends Node {
 			result = !(leftValue.equals(rightValue));
 		} else if (operator.equals(">=")) {
 			if (leftReturnType.equals("number") && rightReturnType.equals("number")) {
-				result = ((Long)leftValue >= (Long)rightValue);
+				result = (((Double)leftValue) >= ((Double)rightValue));
 			} else {
 				result = false;
 			}
 		} else if (operator.equals("<=")) {
 			if (leftReturnType.equals("number") && rightReturnType.equals("number")) {
-				result = ((Long)leftValue <= (Long)rightValue);
+				System.out.println(leftValue.toString()+" <= " + rightValue.toString());
+				result = (((Double)leftValue) <= ((Double)rightValue));
 			} else {
 				result = false;
 			}
@@ -231,9 +232,9 @@ public class NodeRelationBool extends Node {
 		if (n == leftNodeAction) {
 			// cast the value to the correct type
 			if (leftReturnType.equals("number")) {
-				leftValue = (Long)n.getResult();
+				leftValue = new Double((n.getResult().toString()));
 			} else if (leftReturnType.equals("boolean")) {
-				leftValue = (Boolean)n.getResult();
+				leftValue = new Boolean(n.getResult().toString());
 			} else if (leftReturnType.equals("string")) {
 				leftValue = (String)n.getResult();
 			}
@@ -252,9 +253,9 @@ public class NodeRelationBool extends Node {
 		} else {
 			// cast the value to the correct type
 			if (rightReturnType.equals("number")) {
-				rightValue = (Long)n.getResult();
+				rightValue = new Double(n.getResult().toString());
 			} else if (rightReturnType.equals("boolean")) {
-				rightValue = (Boolean)n.getResult();
+				rightValue = new Boolean(n.getResult().toString());
 			} else if (rightReturnType.equals("string")) {
 				rightValue = (String)n.getResult();
 			}
