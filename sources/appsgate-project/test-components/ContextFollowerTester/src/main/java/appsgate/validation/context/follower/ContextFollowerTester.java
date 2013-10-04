@@ -40,7 +40,7 @@ public class ContextFollowerTester {
 		
 		
 		logger.debug("Try to register a time listener to 10 minutes");
-		TestListener test = new TestListener();
+		test = new TestListener();
 		contextFollower.addListener(test);
 		
 	}
@@ -64,8 +64,8 @@ public class ContextFollowerTester {
 		
 		public TestListener() {
 			objectId = "21106637055";
-			eventVarName = "ClockAlarm";
-			eventVarValue=String.valueOf(Calendar.getInstance().getTimeInMillis()+600000);
+			eventVarName = "flowRate";
+			eventVarValue= "";
 		}
 		
 		
@@ -101,10 +101,10 @@ public class ContextFollowerTester {
 
 		@Override
 		public void notifyEvent() {
-			Calendar cal = Calendar.getInstance();
-			Calendar oldCal = (Calendar) cal.clone();
-			cal.setTimeInMillis(Long.valueOf(eventVarValue));
-			logger.debug("####### The context notify at "+oldCal+ " it as to notify at "+cal);
+			//Calendar cal = Calendar.getInstance();
+			//Calendar oldCal = (Calendar) cal.clone();
+			//cal.setTimeInMillis(Long.valueOf(eventVarValue));
+			logger.debug("####### The context instance notify the CONTEXT FOLLOWER TESTER");
 		}
 
 		@Override

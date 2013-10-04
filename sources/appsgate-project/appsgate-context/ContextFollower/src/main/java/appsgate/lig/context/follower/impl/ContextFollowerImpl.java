@@ -69,7 +69,8 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		
 		//Check if the need to by register in the core clock implementation
 		CoreObjectSpec abstractClock = (CoreObjectSpec)coreClock;
-		if(abstractClock.getAbstractObjectId().contentEquals(coreListener.getObjectId())) {
+		if(abstractClock.getAbstractObjectId().contentEquals(coreListener.getObjectId()) && eventKey.getVarName().contentEquals("ClockAlarm")  && !eventKey.isEventOnly()) {
+			logger.debug("Adding an alarm listener...");
 			//Generate calendar java object for core clock
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(Long.valueOf(coreListener.getValue()));
@@ -79,6 +80,7 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 			eventKey.setValue(String.valueOf(alarmId));
 			//save the alarm identifier
 			alarmListenerList.put(eventKey, alarmId);
+			logger.debug("Alarm listener added.");
 		}
 		
 		Set<Entry> keys = eventsListeners.keySet();
@@ -143,17 +145,17 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 			logger.debug("Event message receive, " + notif.JSONize());
 			JSONObject event = notif.JSONize();
 			
-			//TODO delete this exception when the notification
+			//TODO delete this test when the notification
 			//mechanism will be totally define. Use to ignore context notification (device name, place added etc.)
-			try{
-				event.getString("objectId");
-			}catch(JSONException e) {
+			if(!event.has("objectId")) {
 				return;
 			}
 				
 			Entry eventKey = new Entry(event.getString("objectId"), event.getString("varName"), event.getString("value"));
 			ArrayList<Entry> keys = new ArrayList<Entry>();
 		
+			//Copy the listener just to avoid concurrent exeption with program
+			//when daemon try to add listener again when they restart
 			synchronized(this) {
 				Iterator<Entry> tempKeys = eventsListeners.keySet().iterator();
 				while(tempKeys.hasNext()){
@@ -211,6 +213,13 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		 * The threshold value
 		 */
 		private String value;
+		
+		/**
+		 * The kind of entry
+		 * "eventValue": for specific value of an event
+		 * "eventName" : for a specific event but don't care about the value
+		 */
+		private String entryType;
 
 		/**
 		 * Constructor for an Entry
@@ -222,6 +231,11 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 			this.objectId = objectId;
 			this.varName = varName;
 			this.value = value;
+			if(value.contentEquals("")) {
+				entryType = "eventName";
+			}else{
+				entryType = "eventValue";
+			}
 		}
 
 		public String getObjectId() {
@@ -239,6 +253,19 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		public void setValue(String value) {
 			this.value = value;
 		}
+		
+		public String getEntryType() {
+			return entryType;
+		}
+		
+		/**
+		 * Test if the Entry is only considering the event name and
+		 * not the event value
+		 * @return true if the entry doesn't take in consideration the event value, false otherwise
+		 */
+		public boolean isEventOnly() {
+			return entryType.contentEquals("eventName");
+		}
 
 		/**
 		 * Override the equals method to compare two entry together but 
@@ -248,9 +275,10 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		public boolean equals(Object eventEntry) {
 			if (eventEntry instanceof Entry) {
 				Entry entry = (Entry) eventEntry;
-				return (entry.getObjectId().contentEquals(objectId)
-						&& entry.getVarName().contentEquals(varName) && entry
-						.getValue().contentEquals(value));
+				return ( entry.getObjectId().contentEquals(objectId) &&
+						 entry.getVarName().contentEquals(varName) && 
+						 (entry.getValue().contentEquals(value)  ||  entry.getValue().contentEquals("")	)
+					   );
 			}
 			return false;
 		}
