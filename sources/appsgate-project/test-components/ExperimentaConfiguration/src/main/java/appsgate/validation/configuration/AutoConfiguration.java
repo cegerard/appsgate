@@ -121,26 +121,50 @@ public class AutoConfiguration {
 		deviceNameTableSpec.addName("ENO1c167", "", "Capteur de contact porte entree");
 		deviceNameTableSpec.addName("ENO1c168", "", "Capteur de contact salle de bain");
 		deviceNameTableSpec.addName("ENO1c169", "", "Capteur Porte cle");
-		deviceNameTableSpec.addName("ENO1c17a", "", "");
+		deviceNameTableSpec.addName("ENO1c17a", "", "Capteur de contact Aspirateur");
 		//Card switch EnOcean
-		deviceNameTableSpec.addName("ENO2840bb", "", "Lecteur de cartes de la chambre");
+		deviceNameTableSpec.addName("ENO2840bb", "", "Lecteur de carte");
 		
-		//TODO Rename watteco devices
 		//Smart plug Watteco
-		//deviceNameTableSpec.addName("ENO2840bb", "", "Lecteur de cartes de la chambre");
+		deviceNameTableSpec.addName("fe80::ff:ff00:2f0b", "", "Prise gigogne Ventilateur");
+		deviceNameTableSpec.addName("fe80::ff:ff00:2c0a", "", "Prise gigogne Chauffage");
 		
-		//TODO Rename Philips hue devices
+		//TODO change the HUE bridge IP
 		//Philips HUE lights
-		//deviceNameTableSpec.addName("ENO2840bb", "", "Lecteur de cartes de la chambre");
+		String chambreLightId = "194.199.23.135-1";
+		String sdbLightId 	  = "194.199.23.135-2";
+		String cuisineLightId = "194.199.23.135-4";
+		String salonLightId   = "194.199.23.135-6";
 		
-		//TODO Move devices
-		//placeManagerSpec.moveObject(objId, oldPlaceID, newPlaceID);
+		deviceNameTableSpec.addName(chambreLightId, "", "Lampe chambre");
+		deviceNameTableSpec.addName(sdbLightId, "", "Lampe salle de bain");
+		deviceNameTableSpec.addName(cuisineLightId, "", "Lampe cuisine");
+		deviceNameTableSpec.addName(salonLightId, "", "Lampe salon");
 		
-		//TODO deploy program
+		//Media Renderer
+		//TODO change name of media renderer
 		
+		//Put the devices into places
+		placeManagerSpec.moveObject("ENO57ce7", "-1", "1001");
+		placeManagerSpec.moveObject("ENO27b5da", "-1", "1001");
+		placeManagerSpec.moveObject("ENO1c168", "-1", "1001");
+		placeManagerSpec.moveObject("fe80::ff:ff00:2c0a", "-1", "1001");
+		placeManagerSpec.moveObject(sdbLightId, "-1", "1001");
+		placeManagerSpec.moveObject("ENO27b2b1", "-1", "1002");
+		placeManagerSpec.moveObject("ENO2840bb", "-1", "1002");
+		placeManagerSpec.moveObject(chambreLightId, "-1", "1002");
+		placeManagerSpec.moveObject("ENO2842c2", "-1", "1011");
+		placeManagerSpec.moveObject("ENO1c1da", "-1", "1011");
+		placeManagerSpec.moveObject(cuisineLightId, "-1", "1011");
+		placeManagerSpec.moveObject("ENO2796f3", "-1", "1003");
+		placeManagerSpec.moveObject("ENO1c167", "-1", "1003");
+		placeManagerSpec.moveObject("ENO1c169", "-1", "1003");
+		placeManagerSpec.moveObject("ENO2842be", "-1", "1010");
+		placeManagerSpec.moveObject("ENO1c17a", "-1", "1010");
+		placeManagerSpec.moveObject(salonLightId, "-1", "1010");
 		
-		
-		logger.debug("Experimenta configuration set up.");
+		//TODO put the Media renderer into the living room
+		logger.debug("Experimenta user, devices and places configuration set up.");
 	}
 	
 	
@@ -149,16 +173,5 @@ public class AutoConfiguration {
 	 */
 	public void deleteInst() {
 		logger.debug("Experimenta configurator uninstall");
-		//TODO remove accounts
-		
-		//TODO remove user
-		
-		//TODO device names
-		
-		//TODO remove device places
-		
-		//TODO Remove places
-		
-		//TODO remove programs
 	}
 }

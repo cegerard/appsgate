@@ -26,6 +26,7 @@
 		<module>WattecoAdapterTester</module>
 		<module>ContextFollowerTester</module>
 		<module>ExperimentaConfiguration</module>
+		<module>ExperimentaPrograms</module>
 	</modules>
 
 </project>
