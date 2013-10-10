@@ -221,6 +221,9 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
      */
     @Override
     public void setCurrentTimeInMillis(long millis) {
+	logger.debug("setCurrentTimeInMillis(long millis : "
+		+ millis+")");
+	
 	currentLag = millis - Calendar.getInstance().getTimeInMillis();
 	setTimeFlowRate(flowRate);
 	calculateNextTimer();
@@ -327,6 +330,8 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
      */
     @Override
     public void goAlongUntil(long millis) {
+	logger.debug("goAlongUntil(long millis : "
+		+ millis+")");
 	synchronized (lock) {
 	    Long currentTime = getCurrentTimeInMillis();
 	    long futureTime = currentTime + millis;
@@ -490,7 +495,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		&& alarms.lastKey() >= (time - alarmLagTolerance)) {
 	    nextAlarmTime = alarms.tailMap(time - alarmLagTolerance).firstKey()
 		    .longValue();
-	    return nextAlarmTime - time;
+	    return Math.abs(nextAlarmTime - time);
 	} else
 	    return nextAlarmTime;
     }
@@ -545,7 +550,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		nextAlarmTime = -1;
 	    }
 
-	    if (nextAlarmDelay > 0) {
+	    if (nextAlarmDelay >= 0) {
 		nextAlarmDelay = (long) (nextAlarmDelay / flowRate);
 
 		logger.debug("calculateNextTimer(), next alarm should ring in : "
