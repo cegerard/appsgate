@@ -560,7 +560,15 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		    timer = new Timer();
 		timer.schedule(nextAlarm, nextAlarmDelay);
 		return nextAlarmDelay;
-	    }
+	    } else // TODO : Check or fix  as it creates a polling if there are alarms in the queue, but no current timer
+		    if (!runningArmTimer && !reverseAlarmMap.isEmpty()) {
+			RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
+			if (timer == null)
+			    timer = new Timer();
+			timer.schedule(arming, alarmLagTolerance + 1);
+			runningArmTimer = true;
+		    }
+
 	    return -1;
 	}
     }
