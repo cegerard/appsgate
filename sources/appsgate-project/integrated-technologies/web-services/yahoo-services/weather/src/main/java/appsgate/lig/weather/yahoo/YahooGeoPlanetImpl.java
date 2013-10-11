@@ -16,14 +16,15 @@
  */
 package appsgate.lig.weather.yahoo;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.events.XMLEvent;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
 
 
 /**
@@ -44,7 +45,8 @@ public class YahooGeoPlanetImpl implements YahooGeoPlanet {
      */
     private String appID = "LIolTLV34H_riBa5bYkTDWrCutm0j7Ta6Nvzfh1wOp5tBktKEXzSOsKznKPqFzE9Nw-";
 
-    private String WOEID = "woeid";
+    
+    static final String xPathWOEID = "//woeid";
 
     /*
      * (non-Javadoc)
@@ -53,31 +55,25 @@ public class YahooGeoPlanetImpl implements YahooGeoPlanet {
      * appsgate.lig.weather.YahooGeoPlanet#GetWOEIDFromPlaceName(java.lang.String)
      */
     public String getWOEIDFromPlaceName(String placeName) {
-	logger.fine("GetWOEIDFromPlaceName(String placeName : "
+	System.out.println("GetWOEIDFromPlaceName(String placeName : "
 		+ placeName + ")");
 	String currentWOEID = null;
 
 	try {
 	    URL url = new URL(String.format(geoPlanetURL + queryPlaceWOEID,
 		    placeName, appID));
-	    logger.fine("GetWOEIDFromPlaceName(...), query URL : " + url);
-
-	    XMLEventReader reader = XMLInputFactory.newInstance()
-		    .createXMLEventReader(url.openStream());
-
-	    while (currentWOEID == null && reader.hasNext()) {
-		XMLEvent evt = reader.nextEvent();
-		if (evt.isStartElement()
-			&& evt.asStartElement().getName().getLocalPart()
-				.equals(WOEID))
-		    currentWOEID = reader.nextEvent().asCharacters().toString();
-	    }
-	    logger.info("GetWOEIDFromPlaceName(...), found WOEID : "
+	    System.out.println("GetWOEIDFromPlaceName(...), query URL : " + url);
+	    
+		DocumentBuilder db = null;
+		db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		Document doc = db.parse(url.openStream());
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		currentWOEID = xPath.evaluate(xPathWOEID, doc);
+	    System.out.println("GetWOEIDFromPlaceName(...), found WOEID : "
 		    + currentWOEID);
-	    reader.close();
 
 	} catch (Exception exc) {
-	    logger.warning(exc.getMessage());
+	    exc.printStackTrace();
 	}
 
 	return currentWOEID;

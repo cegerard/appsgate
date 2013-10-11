@@ -182,6 +182,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 		    "Already monitoring this location");
 
 	String okPlaceName = placeName.replace(" ", "%20");
+	System.out.println("addLocation(String placeName: "+okPlaceName+" )");
 
 	String newWOEID = geoPlanet.getWOEIDFromPlaceName(okPlaceName);
 	if (newWOEID != null) {
