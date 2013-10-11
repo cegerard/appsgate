@@ -39,19 +39,22 @@ mvn install:install-file -Dfile=additionnal.jar -DgroupId=javamail-android -Dart
             <groupId>javamail-android</groupId>
             <artifactId>mail.jar</artifactId>
             <version>1.4.7</version>
-            <scope>runtime</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/mail.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>javamail-android</groupId>
             <artifactId>activation.jar</artifactId>
             <version>1.0.2</version>
-            <scope>runtime</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/activation.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>javamail-android</groupId>
             <artifactId>additionnal.jar</artifactId>
             <version>1.0.0</version>
-            <scope>runtime</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/additionnal.jar</systemPath>
         </dependency>
 
     </dependencies>

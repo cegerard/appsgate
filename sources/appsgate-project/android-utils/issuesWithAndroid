@@ -1,0 +1,18 @@
+package javax.xml.stream (and associated) are not exported by android
+( related) Stax is tricky to run under android because it redefines javax.xml.XMLConstants and javax.xml.namespace (whose are core libraries)
+-> Solution : Xpath parser works with android
+
+ContextHistory doesn't work on android
+(related) MongoDB does not work with android
+-> look for Couchbase DB ?
+
+DeviceNameTable, UserBaseImpl, PlaceManager doesn't work because of ContextHistory missing
+
+UniversalShell does not work with android
+-> Solution : a shell extension using felix Gogo works properly
+
+ClientCommunicationManager does not work on android
+(related) Grizzly cannot work on android
+-> look for other websocket implementation and refactor CommunicationManager accordingly
+
+

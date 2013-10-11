@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>appsgate.android</groupId>
+        <artifactId>utils</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>JavaWebSocketAndroidAdapter</artifactId>
+    <packaging>bundle</packaging>
+
+
+    <name>###### WebSocket Android Adapter ######</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- Dependencies Description -->
+    <dependencies>
+<dependency>
+	<groupId>org.java-websocket</groupId>
+	<artifactId>Java-WebSocket</artifactId>
+	<version>1.3.0</version>
+</dependency>
+            
+    </dependencies>
+
+
+    <!-- Build Description -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Embed-Dependency>*;scope=runtime;inline=true</Embed-Dependency>
+                        <Export-Package>*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
