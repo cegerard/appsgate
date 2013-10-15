@@ -61,20 +61,19 @@ public class RouterCommandListener implements CommandListener {
 	public void onReceivedCommand(JSONObject obj) {
 		logger.debug("Client send : " + obj.toString());
 		try {
-			String targetTypeTemp;
-			try {
-				targetTypeTemp = obj.getString("targetType");
-			}catch (JSONException e1) {
-				targetTypeTemp = "999"; //to reach the default entry in the following switch case
-										//that correspond to call Appsgate main component
-			}
-
-			int targetType = Integer.parseInt(targetTypeTemp);
+//			String targetTypeTemp;
+//			try {
+//				targetTypeTemp = obj.getString("targetType");
+//			}catch (JSONException e1) {
+//				targetTypeTemp = "999"; //to reach the default entry in the following switch case
+//										//that correspond to call Appsgate main component
+//			}
+//
+//			int targetType = Integer.parseInt(targetTypeTemp);
 			int clientId = obj.getInt("clientId");
 			
-			switch (targetType) {
+			if(obj.has("objectId")) {
 
-			case 1:// Abstract object level
 				logger.debug("Abstract object level message");
 				try {
 					String method = obj.getString("method");
@@ -100,9 +99,7 @@ public class RouterCommandListener implements CommandListener {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 
 
-				break;
-
-			default:
+			} else {
 				logger.debug("AppsGate main level message");
 				try {
 					String method = obj.getString("method");
@@ -126,7 +123,6 @@ public class RouterCommandListener implements CommandListener {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 
 
-				break;
 			}
 
 		} catch (JSONException e1) {
