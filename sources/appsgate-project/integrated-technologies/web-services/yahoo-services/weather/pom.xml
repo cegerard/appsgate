@@ -57,6 +57,12 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.gogo.runtime</artifactId>
             <version>0.10.0</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>org.eclipse.osgi</artifactId>
+            		<groupId>org.eclipse.osgi</groupId>
+            	</exclusion>
+            </exclusions>
         </dependency>        
         <dependency>
             <groupId>org.osgi</groupId>
@@ -80,7 +86,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.felix</groupId>
+               	<groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
