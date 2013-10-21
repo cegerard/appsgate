@@ -406,6 +406,42 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		}
 		return false;
 	}
+	
+	/**
+	 * Get the Philips HUE bridge Mac address or empty string is doesn't work
+	 * @return the Philips hue bridge Mac address as a String
+	 */
+	public String getBridgeMacAddress(String bridgeIP) {
+		String macAddr = "";
+		try {
+			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/config");
+			HttpURLConnection server = (HttpURLConnection) url.openConnection();
+			server.setDoInput(true);
+			server.setRequestMethod("GET");
+			server.connect();
+
+			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
+			String line = response.readLine();
+			String BridgeResponse = "";
+			while (line != null) {
+				BridgeResponse += line;
+				line = response.readLine();
+			}
+			response.close();
+
+			JSONObject jsonResponse = new JSONObject(BridgeResponse);
+			macAddr = jsonResponse.getString("mac");
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return macAddr;
+	}
 
 	/**
 	 * Indicate if the request is a success or not.
@@ -433,11 +469,13 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 */
 	private class LightsInstanciation implements Runnable {
 		
-		private String bridgeIP;
+		private String bridgeMac;
+		private String bridgeIp;
 		
-		public LightsInstanciation(String bridgeIP) {
+		public LightsInstanciation(String bridgeMac, String bridgeIp) {
 			super();
-			this.bridgeIP = bridgeIP;
+			this.bridgeMac = bridgeMac;
+			this.bridgeIp = bridgeIp;
 		}
 
 		public void run() {
@@ -452,9 +490,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 					Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
 					Map<String, String> properties = new HashMap<String, String>();
 					properties.put("deviceName", 	light.getString("name"));
-					properties.put("deviceId", 		bridgeIP+"-"+light.getString("lightId"));
+					properties.put("deviceId", 		bridgeMac+"-"+light.getString("lightId"));
 					properties.put("lightBridgeId", light.getString("lightId"));
-					properties.put("lightBridgeIP", bridgeIP);
+					properties.put("lightBridgeIP", bridgeIp);
 
 					if(impl != null) {
 						/*Instance createInstance = */impl.createInstance(null, properties);
@@ -480,10 +518,11 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	/**
 	 * Method call to notify that a new Philips HUE bridge
 	 * has been discovered.
+	 * @param bridgeMac the Philips HUE bridge mac address
 	 * @param bridgeIP the Philips HUE bridge IP address
 	 */
-	public void notifyNewBridge(String bridgeIP) {
-		instanciationService.schedule(new LightsInstanciation(bridgeIP), 15, TimeUnit.SECONDS);
+	public void notifyNewBridge(String bridgeMac, String bridgeIp) {
+		instanciationService.schedule(new LightsInstanciation(bridgeMac, bridgeIp), 15, TimeUnit.SECONDS);
 	}
 	
 	/**
