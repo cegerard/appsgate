@@ -370,14 +370,6 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	    setCurrentTimeInMillis(currentTime + millis);
 	}
 	calculateNextTimer();
-	if (!disarmedAlarms.isEmpty() && !runningArmTimer) {
-	    RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
-	    if (timer == null)
-		timer = new Timer();
-	    timer.schedule(arming, alarmLagTolerance + 1);
-	    runningArmTimer = true;
-
-	}
 
     }
 
@@ -560,8 +552,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		    timer = new Timer();
 		timer.schedule(nextAlarm, nextAlarmDelay);
 		return nextAlarmDelay;
-	    } else // TODO : Check or fix  as it creates a polling if there are alarms in the queue, but no current timer
-		    if (!runningArmTimer && !reverseAlarmMap.isEmpty()) {
+	    } else if (!runningArmTimer && !disarmedAlarms.isEmpty()) {
 			RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
 			if (timer == null)
 			    timer = new Timer();
@@ -610,7 +601,6 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	@Override
 	public void run() {
 	    logger.debug("Firing current clock alarms");
-	    long next = -1;
 	    if (nextAlarmTime > 0) {
 		logger.debug("Firing current clock alarms to all single clock observers");
 		Map<Integer, AlarmEventObserver> observers = alarms
@@ -621,7 +611,6 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		nextAlarmTime = -1;
 		timer.cancel();
 		timer = null;
-		next = calculateNextTimer();
 	    }
 	    if (nextAlarmId > 0) {
 		logger.debug("Firing current clock alarms to one periodic event observer");
@@ -630,17 +619,8 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 			nextAlarmId);
 		fireClockAlarmNotificationMsg(nextAlarmId);
 		disarmedAlarms.add(nextAlarmId);
-		long next2 = calculateNextTimer();
-		if (next<0 ||(next2>=0 && next2<next))
-		    next=next2;
 	    }
-	    if (next < 0 && !runningArmTimer && !disarmedAlarms.isEmpty()  && !reverseAlarmMap.isEmpty()) {
-		RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
-		if (timer == null)
-		    timer = new Timer();
-		timer.schedule(arming, alarmLagTolerance + 1);
-		runningArmTimer = true;
-	    }
+	    calculateNextTimer();
 
 	}
     }
