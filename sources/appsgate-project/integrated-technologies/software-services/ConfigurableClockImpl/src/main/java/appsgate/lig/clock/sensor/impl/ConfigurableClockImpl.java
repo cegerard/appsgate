@@ -630,9 +630,11 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 			nextAlarmId);
 		fireClockAlarmNotificationMsg(nextAlarmId);
 		disarmedAlarms.add(nextAlarmId);
-		next = calculateNextTimer();
+		long next2 = calculateNextTimer();
+		if (next<0 ||(next2>=0 && next2<next))
+		    next=next2;
 	    }
-	    if (next < 0 && !runningArmTimer && !reverseAlarmMap.isEmpty()) {
+	    if (next < 0 && !runningArmTimer && !disarmedAlarms.isEmpty()  && !reverseAlarmMap.isEmpty()) {
 		RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
 		if (timer == null)
 		    timer = new Timer();
