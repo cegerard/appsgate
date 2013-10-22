@@ -64,8 +64,9 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 			CharSequence splitString = device.getFriendlyName().subSequence(13, philipsNameIP.length()-1);
 			logger.debug("New bridge with IP: "+splitString);
 			
-			if(adapter != null) {
-				String ipAddr = splitString.toString();
+			String ipAddr = splitString.toString();
+			//TODO the contain test is used to deal with UPnP announce problem
+			if(adapter != null && !bridgeIp.contains(ipAddr)) {
 				String macAddr = adapter.getBridgeMacAddress(ipAddr);
 				logger.debug(", and mac: "+macAddr);
 				bridgeIp.add(ipAddr);
