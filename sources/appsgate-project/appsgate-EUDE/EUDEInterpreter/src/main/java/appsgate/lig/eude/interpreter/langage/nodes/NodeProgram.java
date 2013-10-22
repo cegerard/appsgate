@@ -117,6 +117,11 @@ public class NodeProgram extends Node {
 	 * - PAUSED - FAILED
 	 */
 	private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
+	
+	/**
+	 * Attribute use to detect error like infinite loop and kill them
+	 */
+	private int state = 0;
 
 	public RUNNING_STATE getRunningState() {
 		return runningState;
@@ -127,6 +132,23 @@ public class NodeProgram extends Node {
 			programJSON.put("runningState", runningState.toString());
 			this.runningState = runningState;
 			interpreter.notifyChanges(new ProgramStateNotificationMsg(id,"runningState", this.runningState.toString()));
+			
+			if(runningState.equals(RUNNING_STATE.STARTED)) {
+				state++;
+			}else if(runningState.equals(RUNNING_STATE.STOPPED)) {
+				state--;
+			}
+			
+			//This program seem to be in an infinite loop
+			if(state > 1) {
+				//stop it
+				stop();
+				//notify client that a program has been killed for security
+				interpreter.notifyChanges(new ProgramStateNotificationMsg(id, "ERROR", "INFINITE_LOOP_KILLED"));
+				//change the state of the program to failed start
+				setRunningState(RUNNING_STATE.FAILED);
+			}
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -247,6 +269,7 @@ public class NodeProgram extends Node {
 	 * Restart daemon program after their previous termination
 	 */
 	private int deamonCall() {
+		state--;
 		seqRules.addStartEventListener(this);
 		seqRulesThread = pool.submit(seqRules);
 
