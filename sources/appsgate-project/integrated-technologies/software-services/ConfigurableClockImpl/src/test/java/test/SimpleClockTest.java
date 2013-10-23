@@ -252,7 +252,6 @@ public class SimpleClockTest implements AlarmEventObserver{
 	    exc.printStackTrace();
 	}
 
-	clock.setTimeFlowRate(2);
 	clock.registerAlarm(cal, this);
 	
 	try{
@@ -260,7 +259,6 @@ public class SimpleClockTest implements AlarmEventObserver{
 	}catch (Exception exc) {
 	    exc.printStackTrace();
 	}
-	clock.setTimeFlowRate(0.5);
 	Integer alarmID=clock.registerAlarm(cal, this);
 	
 	
@@ -403,6 +401,69 @@ public class SimpleClockTest implements AlarmEventObserver{
 	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID));
 
     }
+    
+    @Test
+    public void testRegisterAlarmWithSimulFlowComplex() {
+	long currentTime = System.currentTimeMillis();
+	
+	System.out.println("Registering an event in 100 secs (real)");
+	Calendar cal = Calendar.getInstance();
+	cal.setTimeInMillis(System.currentTimeMillis()+100000);
+	Integer alarmID=clock.registerAlarm(cal, this);
+
+	System.out.println("Jumping to 90 secs later");
+	clock.setCurrentTimeInMillis(currentTime+90000);
+
+	System.out.println("Time flow should go 10 times faster");
+	clock.setTimeFlowRate(10);
+	System.out.println("Waiting for 0,9 secs (should be 9 secs in simulated time)");
+	
+	try{
+	    Thread.sleep(900);
+	}catch (Exception exc) {
+	    exc.printStackTrace();
+	}
+	Assert.assertTrue("received alarm set should be empty",receivedAlarm.isEmpty());
+	System.out.println("Now, waiting for 0,1 more sec (should be 1 sec in simulated time)");
+
+	try{
+	    Thread.sleep(100+errorTolerance);
+	}catch (Exception exc) {
+	    exc.printStackTrace();
+	}
+	
+	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
+	Assert.assertEquals("received alarm set should contain only one element",1,receivedAlarm.size());
+	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID));
+	
+	
+	
+
+//	This test is too long !
+//	System.out.println("Time flow should go 10 times slower");
+//	clock.setTimeFlowRate(0.1);
+//	System.out.println("Waiting for 9 secs (real)");
+//	
+//	try{
+//	    Thread.sleep(9000);
+//	}catch (Exception exc) {
+//	    exc.printStackTrace();
+//	}
+//	
+//	Assert.assertTrue("received alarm set should be empty",receivedAlarm.isEmpty());
+//	System.out.println("Now, waiting for 1 more sec (real)");
+//	
+//	try{
+//	    Thread.sleep(1000+errorTolerance);
+//	}catch (Exception exc) {
+//	    exc.printStackTrace();
+//	}
+//	
+//	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
+//	Assert.assertEquals("received alarm set should contain only one element",1,receivedAlarm.size());
+//	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID));
+    }
+
     
     @Test
     public void testGoAlongUntil() {

@@ -462,6 +462,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	logger.debug("setTimeFlowRate(double rate), new time flow rate : "
 		+ flowRate);
 	fireFlowRateSetNotificationMsg(rate);
+	calculateNextTimer();
 	return flowRate;
 
     }
@@ -548,8 +549,9 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		logger.debug("calculateNextTimer(), next alarm should ring in : "
 			+ nextAlarmDelay + "ms");
 		AlarmFiringTask nextAlarm = new AlarmFiringTask();
-		if (timer == null)
-		    timer = new Timer();
+		if (timer  != null)
+		    timer.cancel();
+		timer = new Timer();
 		timer.schedule(nextAlarm, nextAlarmDelay);
 		return nextAlarmDelay;
 	    } else if (!runningArmTimer && !disarmedAlarms.isEmpty()) {
