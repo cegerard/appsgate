@@ -13,6 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-natives=-Djava.library.path=natives/jni/Linux/x86_64/
+natives=-Djava.library.path=natives/jni/MacOSX/
 
 java -Dlogback.configurationFile=log/logback.xml ${natives} -jar bin/felix.jar
