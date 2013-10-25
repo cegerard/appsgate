@@ -157,8 +157,9 @@ public class WattecoAdapter implements WattecoIOService,
 		       
 	          // 2- Run the tunslip configuration program to the free serial port
 	          String cmd = "./conf/watteco/tunslip6 -L -v2 -s ttyUSB"+port+" aaaa::1/64 &";
+	          logger.debug("Set up slip tunel with command: " +cmd);
 	          Runtime.getRuntime().exec(cmd);
-	          
+	          logger.debug("tunslip set up");
 	          //4- launch the discovery phase of Watteco sensors desynchronized by 15 seconds to give 
 	          //enough time to the tun0 network interface to be up.
 	          instanciationService.schedule(new sensorDiscovery(BORDER_ROUTER_ADDR), 15, TimeUnit.SECONDS);
