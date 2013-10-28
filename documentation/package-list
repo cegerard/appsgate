@@ -98,6 +98,7 @@ appsgate.lig.weather.spec
 appsgate.lig.weather.utils
 appsgate.lig.weather.yahoo
 appsgate.validation.configuration
+appsgate.validation.configuration.eude
 appsgate.validation.context.follower
 appsgate.validation.context.history
 appsgate.validation.device.name.table.command
