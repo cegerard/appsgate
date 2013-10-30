@@ -22,6 +22,7 @@
 		<!-- device meta data -->
 		<definition name="lightBridgeId" 	   type="string"		 			    field="lightBridgeId"/>
 		<definition name="lightBridgeIP" 	   type="string"		 			    field="lightBridgeIP"/>
+		<definition name="reachable" 	   	   type="string"		 			    field="reachable"/>
 		
 	</implementation>
 

@@ -47,6 +47,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	private String lightBridgeId;
 	private String lightBridgeIP;
+	private String reachable;
 	
 	/**
 	 * The current sensor status.
@@ -448,6 +449,10 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	public void setActuatorType(String actuatorType) {
 		this.actuatorType = actuatorType;
+	}
+	
+	public boolean isReachable() {
+		return Boolean.valueOf(reachable);
 	}
 
 	/**
