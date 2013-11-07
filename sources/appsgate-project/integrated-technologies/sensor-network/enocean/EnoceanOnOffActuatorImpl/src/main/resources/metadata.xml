@@ -16,7 +16,7 @@
 		
 		<!-- device client meta data -->
 		<definition name="pictureId" 		  type="string"			 			   field="pictureId"/>
-		<definition name="userType" 		  type="string" value="6" 			   field="userType"/>
+		<definition name="userType" 		  type="string" value="8" 			   field="userType"/>
 		<definition name="status" 			  type="string" value="2" 			   field="status"   method="statusChanged"/>
 		
 		<!-- Sensor network meta data -->
