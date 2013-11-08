@@ -1,10 +1,10 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
@@ -30,12 +30,12 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 	/**
 	 * List of the listeners that listen to the StartEvent of the node
 	 */
-	private ArrayList<StartEventListener> startEventListeners = new ArrayList<StartEventListener>();
+	private final ArrayList<StartEventListener> startEventListeners = new ArrayList<StartEventListener>();
 
 	/**
 	 * List of the listeners that listen to the EndEvent of the node
 	 */
-	private ArrayList<EndEventListener> endEventListeners = new ArrayList<EndEventListener>();
+	private final ArrayList<EndEventListener> endEventListeners = new ArrayList<EndEventListener>();
 	
 	/**
 	 * Pool to execute the children. Possibly a single thread

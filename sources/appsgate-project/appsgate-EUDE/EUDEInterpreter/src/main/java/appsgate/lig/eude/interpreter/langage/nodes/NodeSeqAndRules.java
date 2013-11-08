@@ -21,7 +21,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  */
 public class NodeSeqAndRules extends Node {
 	
-	private ArrayList<Node> rules;
+	private final ArrayList<Node> rules;
 	private int nbRulesEnded;
 	
 	public NodeSeqAndRules(EUDEInterpreterImpl interpreter, JSONArray seqAndRulesJSON) {

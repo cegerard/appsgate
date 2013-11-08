@@ -1,9 +1,9 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 
@@ -19,15 +19,15 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 public class NodeEvent extends Node {
 	
 	/** Type of the source to listen. Can be "program" or "device" */
-	private String sourceType;
+	private final String sourceType;
 	/** ID of the source to listen */
-	private String sourceId;
+	private final String sourceId;
 	public String getSourceId() { return sourceId; }
 	/** Name of the event to listen */
-	private String eventName;
+	private final String eventName;
 	public String getEventName() { return eventName; }
 	/** Value of the event to wait */
-	private String eventValue;
+	private final String eventValue;
 	public String getEventValue() { return eventValue; }
 	
 	/**
