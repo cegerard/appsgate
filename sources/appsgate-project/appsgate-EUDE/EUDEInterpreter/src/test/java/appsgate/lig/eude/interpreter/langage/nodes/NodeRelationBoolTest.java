@@ -5,19 +5,22 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.Assert;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author jr
  */
 public class NodeRelationBoolTest extends NodeTest {
+
     private NodeRelationBool relationTest;
 
     public NodeRelationBoolTest() {
@@ -43,7 +46,7 @@ public class NodeRelationBoolTest extends NodeTest {
             this.instance = this.relationTest;
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
-            
+
         }
     }
 
@@ -64,47 +67,21 @@ public class NodeRelationBoolTest extends NodeTest {
     }
 
     /**
-     * Test of undeploy method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testUndeploy() {
-        System.out.println("undeploy : NOT IMPLEMENTED YET");
-    }
-
-
-    /**
-     * Test of resume method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testResume() {
-        System.out.println("resume : NOT IMPLEMENTED YET");
-    }
-
-    /**
-     * Test of getState method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testGetState() {
-        System.out.println("getState : NOT IMPLEMENTED YET");
-    }
-
-    /**
-     * Test of startEventFired method, of class NodeProgram.
-     */
-    @Test
-    @Override
-    public void testStartEventFired() {
-        System.out.println("startEventFired : NOT IMPLEMENTED YET");
-    }
-    /**
-     * Test of fireEndEvent method, of class Node.
+     * Test of endEventFired method, of class NodeProgram.
      */
     @Test
     @Override
     public void testEndEventFired() {
-        System.out.println("fireEndEvent : NOT IMPLEMENTED YET");
+        System.out.println("endEventFired");
+        NodeAction ac;
+        try {
+            ac = new NodeAction(this.interpreter, this.ruleJSON);
+            EndEvent e = new EndEvent(ac);
+            this.instance.endEventFired(e);
+        } catch (JSONException ex) {
+            System.out.println("JSON ex: " + ex.getMessage());
+            Assert.fail("unable to create a NodeAction for test");
+        }
     }
+
 }

@@ -11,6 +11,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 
 /**
  * Node for a list of events
+ * 
+ * <seqEvent> ::= <event> {, <event> }
+
  *
  * @author Rémy Dautriche
  * @author Cédric Gérard
@@ -19,8 +22,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  * @version 1.0.0
  */
 public class NodeSeqEvent extends Node {
-       // <seqEvent> ::= <event> {, <event> }
-
+    
     /**
      * list of events
      */
@@ -77,10 +79,6 @@ public class NodeSeqEvent extends Node {
         return null;
     }
 
-    @Override
-    public void undeploy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void stop() {
@@ -96,21 +94,6 @@ public class NodeSeqEvent extends Node {
     }
 
     @Override
-    public void resume() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void getState() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void startEventFired(StartEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void endEventFired(EndEvent e) {
         ((Node) e.getSource()).removeEndEventListener(this);
         nbEventReceived++;
@@ -121,5 +104,6 @@ public class NodeSeqEvent extends Node {
             fireEndEvent(new EndEvent(this));
         }
     }
+
 
 }

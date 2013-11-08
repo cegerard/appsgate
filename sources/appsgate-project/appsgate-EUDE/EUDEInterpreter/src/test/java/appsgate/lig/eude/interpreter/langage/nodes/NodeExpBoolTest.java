@@ -5,11 +5,8 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import org.json.JSONArray;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  *
@@ -30,24 +27,5 @@ public class NodeExpBoolTest extends NodeTest {
         this.instance = this.expBoolTest;
     }
 
-    /**
-     * Test of startEventFired method, of class NodeExpBool.
-     */
-    @Test
-    public void testStartEventFired() {
-        System.out.println("startEventFired");
-        StartEvent e = new StartEvent(this.expBoolTest);
-        this.expBoolTest.startEventFired(e);
-    }
-
-    /**
-     * Test of endEventFired method, of class NodeExpBool.
-     */
-    @Test
-    public void testEndEventFired() {
-        System.out.println("endEventFired");
-        EndEvent e = new EndEvent(this.expBoolTest);
-        this.expBoolTest.endEventFired(e);
-    }
 
 }

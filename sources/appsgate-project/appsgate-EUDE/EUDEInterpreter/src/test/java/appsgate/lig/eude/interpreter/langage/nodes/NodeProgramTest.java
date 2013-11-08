@@ -271,10 +271,11 @@ public class NodeProgramTest extends NodeTest {
 
     /**
      * Test of call method, of class NodeAction.
+     * @throws java.lang.Exception
      */
     @Test
     @Override
-    public void testCall() {
+    public void testCall() throws Exception{
         System.out.println("call");
         Integer expResult = 1;
         Integer result = this.instance.call();

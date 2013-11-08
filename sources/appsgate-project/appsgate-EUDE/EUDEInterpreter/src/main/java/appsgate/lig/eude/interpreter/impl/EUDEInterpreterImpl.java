@@ -44,7 +44,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     /**
      * Static class member uses to log what happened in each instances
      */
-    private static Logger logger = LoggerFactory.getLogger(EUDEInterpreterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(EUDEInterpreterImpl.class);
 
     /**
      * Reference to the ApAM context follower. Used to be notified when
@@ -70,12 +70,12 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     /**
      * Hash map containing the nodes and the events they are listening
      */
-    private HashMap<CoreEventListener, ArrayList<NodeEvent>> mapCoreNodeEvent;
+    private final HashMap<CoreEventListener, ArrayList<NodeEvent>> mapCoreNodeEvent;
 
     /**
      * HashMap that contains all the existing programs under a JSON format
      */
-    private HashMap<String, NodeProgram> mapPrograms;
+    private final HashMap<String, NodeProgram> mapPrograms;
 
     /**
      * Initialize the list of programs and of events
@@ -371,7 +371,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     public synchronized void removeNodeListening(NodeEvent nodeEvent) {
 
         CoreEventListener listener;
-       
+
         listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue(), this);
 
         Set<CoreEventListener> keyset = mapCoreNodeEvent.keySet();
@@ -524,8 +524,21 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 
     @Override
     public void startEventFired(StartEvent e) {
-		// TODO Auto-generated method stub
+        // TODO Auto-generated method stub
 
+    }
+
+    /**
+     * Method to make some mocked tests
+     * 
+     * @param pull
+     * @param push 
+     */
+    public void setTestMocks(DataBasePullService pull, DataBasePushService push, RouterApAMSpec router, ContextFollowerSpec c) {
+        this.contextHistory_pull = pull;
+        this.contextHistory_push = push;
+        this.router = router;
+        this.contextFollower = c;
     }
 
 }

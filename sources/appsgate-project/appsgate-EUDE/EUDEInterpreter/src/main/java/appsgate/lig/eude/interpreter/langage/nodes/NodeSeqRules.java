@@ -8,6 +8,8 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class represents a sequence of rules to evaluate
@@ -20,14 +22,18 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  *
  */
 public class NodeSeqRules extends Node {
-	// <seqRules> ::= <seqAndRules> { <opThenRule> <seqAndRules> }
 
+    // Logger
+    private static final Logger LOGGER = Logger.getLogger(NodeSeqRules.class.getName());
+
+	// <seqRules> ::= <seqAndRules> { <opThenRule> <seqAndRules> }
     /**
      * Contains the block of rules separated by a "THEN" operator
      */
     private final ArrayList<NodeSeqAndRules> seqAndRules;
     /**
-     *      */
+     *
+     */
     private int idCurrentSeqAndRules;
 
     /**
@@ -35,33 +41,25 @@ public class NodeSeqRules extends Node {
      *
      * @param interpreter
      * @param seqRulesJSON JSON array containing the rules
+     * @throws org.json.JSONException
      */
-    public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON) {
+    public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON) throws JSONException {
         super(interpreter);
 
         seqAndRules = new ArrayList<NodeSeqAndRules>();
 
         for (int i = 0; i < seqRulesJSON.length(); i++) {
-            try {
-                JSONArray seqAndRulesJSON = seqRulesJSON.getJSONArray(i);
-                if (seqAndRulesJSON.length() > 0) {
-                    seqAndRules.add(new NodeSeqAndRules(interpreter, seqAndRulesJSON));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            JSONArray seqAndRulesJSON = seqRulesJSON.getJSONArray(i);
+            if (seqAndRulesJSON.length() > 0) {
+                seqAndRules.add(new NodeSeqAndRules(interpreter, seqAndRulesJSON));
             }
         }
 
-        System.out.println("###### nb SeqAndRules: " + seqAndRules.size());
+        LOGGER.log(Level.FINEST, "###### nb SeqAndRules: {0}", seqAndRules.size());
 
-        /*
-         * Initialize the thread pool. This is a single thread pool because
-         * the sequences of AndRules are separated by a "then", to be executed sequentially
-         */
-        //pool = Executors.newSingleThreadExecutor();
     }
 
-    private void launchNextSeqAndRules() {
+    private void launchNextSeqAndRules() throws Exception {
         NodeSeqAndRules seqAndRule;
 
         synchronized (this) {
@@ -74,13 +72,13 @@ public class NodeSeqRules extends Node {
             seqAndRule.addEndEventListener(this);
             //pool.submit(seqAndRule);
             seqAndRule.call();
-			// manage the interpretation
+            // manage the interpretation
             // super.call();
         }
     }
 
     @Override
-    public Integer call() {
+    public Integer call() throws Exception {
         idCurrentSeqAndRules = 0;
         started = true;
         fireStartEvent(new StartEvent(this));
@@ -96,29 +94,22 @@ public class NodeSeqRules extends Node {
     }
 
     @Override
-    public void startEventFired(StartEvent e) {
-		// TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void endEventFired(EndEvent e) {
         ((Node) e.getSource()).removeEndEventListener(this);
         idCurrentSeqAndRules++;
 
         if (idCurrentSeqAndRules < seqAndRules.size()) {
-            System.out.println("###### launching the next sequence of rules...");
-            launchNextSeqAndRules();
+            LOGGER.finest("###### launching the next sequence of rules...");
+            try {
+                launchNextSeqAndRules();
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "Exception caught: {0}", ex.getMessage());
+            }
         } else {
-            System.out.println("###### SeqThenRules ended...");
+            LOGGER.finest("###### SeqThenRules ended...");
             started = false;
             fireEndEvent(new EndEvent(this));
         }
-    }
-
-    @Override
-    public void undeploy() {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -134,16 +125,6 @@ public class NodeSeqRules extends Node {
             started = false;
             stopping = false;
         }
-    }
-
-    @Override
-    public void resume() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void getState() {
-        // TODO Auto-generated method stub	
     }
 
 }

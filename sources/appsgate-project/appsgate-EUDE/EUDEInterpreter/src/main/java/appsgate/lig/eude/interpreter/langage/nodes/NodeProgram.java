@@ -5,11 +5,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
 
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import java.util.concurrent.ExecutorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node program for the interpreter. Contains the metadatas of the program, the
@@ -23,6 +25,12 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  *
  */
 public class NodeProgram extends Node {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
+    /**
+     * Pool to execute the children. Possibly a single thread
+     */
+    protected ExecutorService pool;
 
     /**
      * Program's id set by the EUDE editor
@@ -73,7 +81,7 @@ public class NodeProgram extends Node {
     }
 
     /**
-     * Deamon attribute
+     * Daemon attribute
      */
     private String daemon;
 
@@ -205,7 +213,7 @@ public class NodeProgram extends Node {
      *
      * @param jsonProgram the new source code
      *
-     * @return true if the source code has been udpated, false otherwise
+     * @return true if the source code has been updated, false otherwise
      * @throws org.json.JSONException
      */
     public boolean update(JSONObject jsonProgram) throws JSONException {
@@ -222,6 +230,12 @@ public class NodeProgram extends Node {
 
         return true;
 
+    }
+
+    public boolean pause() {
+        // TODO Auto-generated method stub
+
+        return false;
     }
 
     /**
@@ -255,7 +269,7 @@ public class NodeProgram extends Node {
                 setRunningState(RUNNING_STATE.FAILED);
             }
         } else {
-			// TODO restart from previous state
+            // TODO restart from previous state
             // synchronized(pauseMutex) {
             // pauseMutex.notify();
             // return 1;
@@ -267,7 +281,7 @@ public class NodeProgram extends Node {
     /**
      * Restart daemon program after their previous termination
      */
-    private int deamonCall() {
+    private int daemonCall() {
         state--;
         seqRules.addStartEventListener(this);
         seqRulesThread = pool.submit(seqRules);
@@ -281,21 +295,13 @@ public class NodeProgram extends Node {
     }
 
     @Override
-    public void undeploy() {
-		// TODO Auto-generated method stub
-        // /!\ UNUSED
-    }
-
-    @Override
     public void stop() {
         if (runningState == RUNNING_STATE.STARTED) {
             boolean terminate;
             seqRules.stop();
             if (!seqRulesThread.isDone()) {
-                LoggerFactory.getLogger(NodeProgram.class.getName()).error(
-                        "thread did not terminate");
-                LoggerFactory.getLogger(NodeProgram.class.getName()).info(
-                        "Try to kill the program thread");
+                LOGGER.error("thread did not terminate");
+                LOGGER.info("Try to kill the program thread");
                 terminate = seqRulesThread.cancel(true);
             } else {
                 terminate = true;
@@ -307,7 +313,7 @@ public class NodeProgram extends Node {
                 fireEndEvent(new EndEvent(this));
                 // pool = Executors.newSingleThreadExecutor();
             }
-			// try {
+            // try {
             // boolean terminate = false;
             // pool.shutdownNow();
             // if( pool.awaitTermination(5, TimeUnit.SECONDS)) {
@@ -334,25 +340,6 @@ public class NodeProgram extends Node {
         }
     }
 
-    public boolean pause() {
-        // TODO Auto-generated method stub
-
-        return false;
-    }
-
-    @Override
-    public void resume() {
-		// TODO Auto-generated method stub
-        // /!\ UNUSED
-        setRunningState(RUNNING_STATE.STARTED);
-    }
-
-    @Override
-    public void getState() {
-		// TODO Auto-generated method stub
-        // /!\ UNUSED
-    }
-
     /**
      * Set the current running state to deployed
      */
@@ -369,7 +356,7 @@ public class NodeProgram extends Node {
     @Override
     public void endEventFired(EndEvent e) {
         if (isDeamon()) {
-            if (deamonCall() == -1) {
+            if (daemonCall() == -1) {
                 seqRules.removeEndEventListener(this);
                 fireEndEvent(new EndEvent(this));
             }

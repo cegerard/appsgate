@@ -42,7 +42,7 @@ public abstract class NodeTest {
     }
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() {   
     }
 
     @AfterClass
@@ -70,15 +70,6 @@ public abstract class NodeTest {
     }
 
     /**
-     * Test of undeploy method, of class NodeAction.
-     */
-    @Test
-    public void testUndeploy() {
-        System.out.println("undeploy");
-        this.instance.undeploy();
-    }
-
-    /**
      * Test of stop method, of class NodeAction.
      *
      */
@@ -89,28 +80,11 @@ public abstract class NodeTest {
     }
 
     /**
-     * Test of resume method, of class NodeAction.
-     */
-    @Test
-    public void testResume() {
-        System.out.println("resume");
-        this.instance.resume();
-    }
-
-    /**
-     * Test of getState method, of class NodeAction.
-     */
-    @Test
-    public void testGetState() {
-        System.out.println("getState");
-        this.instance.getState();
-    }
-
-    /**
      * Test of call method, of class NodeAction.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testCall() {
+    public void testCall() throws Exception {
         System.out.println("call");
         Integer expResult = null;
         Integer result = this.instance.call();
@@ -210,7 +184,7 @@ public abstract class NodeTest {
     }
 
     /**
-     * Test of endEventFired method, of class NodeProgram.
+     * Test of endEventFired method, of the same class.
      */
     @Test
     public void testEndEventFired() {

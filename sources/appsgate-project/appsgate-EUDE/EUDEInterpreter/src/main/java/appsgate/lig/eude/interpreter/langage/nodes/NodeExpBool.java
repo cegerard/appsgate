@@ -73,11 +73,6 @@ public class NodeExpBool extends Node {
     }
 
     @Override
-    public void undeploy() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
     public void stop() {
         if (started) {
             stopping = true;
@@ -90,20 +85,6 @@ public class NodeExpBool extends Node {
         }
     }
 
-    @Override
-    public void resume() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void getState() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void startEventFired(StartEvent e) {
-        // TODO Auto-generated method stub
-    }
 
     /**
      * Called when the interpretation of a sequence is done. Check if all the

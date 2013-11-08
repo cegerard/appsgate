@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  *
@@ -31,43 +30,5 @@ public class NodeSeqEventTest extends NodeTest {
         }
 
     }
-    
-    /**
-     * Test of undeploy method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testUndeploy() {
-        System.out.println("undeploy : NOT IMPLEMENTED YET");
-    }
-
-
-    /**
-     * Test of resume method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testResume() {
-        System.out.println("resume : NOT IMPLEMENTED YET");
-    }
-
-    /**
-     * Test of getState method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testGetState() {
-        System.out.println("getState : NOT IMPLEMENTED YET");
-    }
-
-    /**
-     * Test of startEventFired method, of class NodeProgram.
-     */
-    @Test
-    @Override
-    public void testStartEventFired() {
-        System.out.println("startEventFired : NOT implemented YET");
-    }
-
 
 }

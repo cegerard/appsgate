@@ -123,11 +123,6 @@ public class NodeIf extends Node {
         return null;
     }
 
-    @Override
-    public void undeploy() {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     public void stop() {
@@ -144,18 +139,6 @@ public class NodeIf extends Node {
             started = false;
             stopping = false;
         }
-
-    }
-
-    @Override
-    public void resume() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void getState() {
-        // TODO Auto-generated method stub
 
     }
 

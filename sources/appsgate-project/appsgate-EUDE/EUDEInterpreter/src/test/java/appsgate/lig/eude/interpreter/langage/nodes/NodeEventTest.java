@@ -90,40 +90,4 @@ public class NodeEventTest extends NodeTest {
         this.eventTest.coreEventFired();
     }
 
-    /**
-     * Test of undeploy method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testUndeploy() {
-        System.out.println("undeploy : not implemented yet");
-    }
-
-    /**
-     * Test of resume method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testResume() {
-        System.out.println("resume : not implemented yet");
-    }
-
-    /**
-     * Test of getState method, of class NodeAction.
-     */
-    @Test
-    @Override
-    public void testGetState() {
-        System.out.println("getState : not implemented yet");
-    }
-
-    /**
-     * Test of startEventFired method, of class NodeProgram.
-     */
-    @Test
-    @Override
-    public void testStartEventFired() {
-        System.out.println("startEventFired : NOT implemented YET");
-    }
-
 }

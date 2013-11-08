@@ -50,10 +50,6 @@ public class NodeAction extends Node {
         command = null;
     }
 
-    @Override
-    public void startEventFired(StartEvent e) {
-        // TODO Auto-generated method stub
-    }
 
     @Override
     public void endEventFired(EndEvent e) {
@@ -71,10 +67,6 @@ public class NodeAction extends Node {
             // get the runnable from the interpreter
             command = interpreter.executeCommand(targetId, methodName, args);
             command.run();
-			//pool.submit(command);
-
-			// manage the pool
-            //super.call();
         } else if (targetType.equals("program")) {
             NodeProgram p = (NodeProgram) interpreter.getNodeProgram(targetId);
 
@@ -96,6 +88,10 @@ public class NodeAction extends Node {
         return null;
     }
 
+    /**
+     * 
+     * @return an object containing the return of a command, null if no command has been passed
+     */
     public Object getResult() {
         if (command != null) {
             return command.getReturn();
@@ -104,10 +100,6 @@ public class NodeAction extends Node {
         }
     }
 
-    @Override
-    public void undeploy() {
-        // TODO Auto-generated method stub
-    }
 
     @Override
     public void stop() {
@@ -118,16 +110,6 @@ public class NodeAction extends Node {
             started = false;
             stopping = false;
         }
-    }
-
-    @Override
-    public void resume() {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void getState() {
-        // TODO Auto-generated method stub
     }
 
 }

@@ -6,6 +6,8 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Node for the when
@@ -17,7 +19,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  * @version 1.0.0
  */
 public class NodeWhen extends Node {
-	// <nodeWhen> ::= when ( <nodeEvent> {, <nodeEvent> } ) then <seqAndRules>
+
+    // <nodeWhen> ::= when ( <nodeEvent> {, <nodeEvent> } ) then <seqAndRules>
+    private static final Logger LOGGER = Logger.getLogger(NodeWhen.class.getName());
 
     private final NodeSeqEvent seqEvent;
     private final NodeSeqRules seqRules;
@@ -36,8 +40,6 @@ public class NodeWhen extends Node {
         seqEvent = new NodeSeqEvent(interpreter, ruleWhenJSON.getJSONArray("events"));
         seqRules = new NodeSeqRules(interpreter, ruleWhenJSON.getJSONArray("seqRulesThen"));
 
-		// initialize the pool
-        //pool = Executors.newCachedThreadPool();
     }
 
     @Override
@@ -47,7 +49,7 @@ public class NodeWhen extends Node {
 
         seqEvent.addEndEventListener(this);
         seqEvent.call();
-		//pool.submit(seqEvent);
+        //pool.submit(seqEvent);
         // super.call();
 
         return null;
@@ -55,6 +57,7 @@ public class NodeWhen extends Node {
 
     @Override
     public void startEventFired(StartEvent e) {
+        LOGGER.finest("TEST logg");
         // TODO Auto-generated method stub
     }
 
@@ -68,9 +71,13 @@ public class NodeWhen extends Node {
             if (nodeEnded == seqEvent) {
                 seqRules.addEndEventListener(this);
 
-                System.out.println("###### all the events are received, launching the sequence of rules #######");
-                seqRules.call();
-				//pool.submit(seqRules);
+                LOGGER.finest("###### all the events are received, launching the sequence of rules #######");
+                try {
+                    seqRules.call();
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                }
+                //pool.submit(seqRules);
                 //super.call();
                 started = false;
                 fireEndEvent(new EndEvent(this));
@@ -82,11 +89,6 @@ public class NodeWhen extends Node {
         }
     }
 
-    @Override
-    public void undeploy() {
-		// TODO Auto-generated method stub
-
-    }
 
     @Override
     public void stop() {
@@ -103,15 +105,4 @@ public class NodeWhen extends Node {
 
     }
 
-    @Override
-    public void resume() {
-		// TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void getState() {
-		// TODO Auto-generated method stub
-
-    }
 }

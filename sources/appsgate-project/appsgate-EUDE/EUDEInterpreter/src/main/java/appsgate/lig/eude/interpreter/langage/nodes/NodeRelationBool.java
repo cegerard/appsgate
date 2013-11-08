@@ -10,6 +10,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 /**
  * Node for the boolean relations
  *
+ * <relationBool> ::= <term> <opComparison> <term>
+ * <term> ::= NodeAction | number | string | boolean
+ * <term> can be a NodeAction in the case where the value is provided by a device. In this case, a method call has to be performed
  * @author Rémy Dautriche
  * @author Cédric Gérard
  *
@@ -17,9 +20,6 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  * @version 1.0.0
  */
 public class NodeRelationBool extends Node {
-	// <relationBool> ::= <term> <opComparison> <term>
-    // <term> ::= NodeAction | number | string | boolean
-    // <term> can be a NodeAction in the case where the value is provided by a device. In this case, a method call has to be performed
 
     private final String operator;
     private Object leftValue;
@@ -129,11 +129,6 @@ public class NodeRelationBool extends Node {
     }
 
     @Override
-    public void undeploy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void stop() {
         if (started) {
             stopping = true;
@@ -148,17 +143,6 @@ public class NodeRelationBool extends Node {
             stopping = false;
         }
     }
-
-    @Override
-    public void resume() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void getState() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * Launch the interpretation of the node.
      *
@@ -213,11 +197,6 @@ public class NodeRelationBool extends Node {
                 result = false;
             }
         }
-    }
-
-    @Override
-    public void startEventFired(StartEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
