@@ -1,17 +1,18 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node for the if
+ *
+ * // <nodeIf> ::= if (expBool) then <seqAndRules> else <seqAndRules>
  *
  * @author Rémy Dautriche
  * @author Cédric Gérard
@@ -20,7 +21,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  * @version 1.0.0
  */
 public class NodeIf extends Node {
-       // <nodeIf> ::= if (expBool) then <seqAndRules> else <seqAndRules>
+
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
 
     /**
      * node being interpreted
@@ -96,7 +99,7 @@ public class NodeIf extends Node {
                     //pool.submit(seqRulesFalse);
                 }
             } catch (Exception ex) {
-                Logger.getLogger(NodeIf.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getMessage());
             }
             // the true branch or the false one has completed - nothing to do more
         } else {
@@ -122,7 +125,6 @@ public class NodeIf extends Node {
 
         return null;
     }
-
 
     @Override
     public void stop() {

@@ -146,8 +146,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         try {
             p = new NodeProgram(this, programJSON);
         } catch (JSONException e) {
-            logger.error("JSON error detected while loading a program");
-            e.printStackTrace();
+            logger.error("JSON error detected while loading a program: {}", e.getMessage());
             return false;
         }
 
@@ -195,7 +194,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
             }
 
         } else {
-            logger.error("The programme " + programId + " does not exist.");
+            logger.error("The program " + programId + " does not exist.");
         }
 
         return false;
@@ -229,12 +228,11 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
                 }
 
             } else {
-                logger.error("The programme " + jsonProgram.getString("id") + " does not exist.");
+                logger.error("The program {} does not exist.", jsonProgram.getString("id"));
             }
 
         } catch (JSONException e) {
             logger.error("EUDE error - updating programm - NO ID in JSON DESCRIPTION");
-            e.printStackTrace();
         }
 
         return false;
@@ -530,9 +528,9 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 
     /**
      * Method to make some mocked tests
-     * 
+     *
      * @param pull
-     * @param push 
+     * @param push
      */
     public void setTestMocks(DataBasePullService pull, DataBasePushService push, RouterApAMSpec router, ContextFollowerSpec c) {
         this.contextHistory_pull = pull;

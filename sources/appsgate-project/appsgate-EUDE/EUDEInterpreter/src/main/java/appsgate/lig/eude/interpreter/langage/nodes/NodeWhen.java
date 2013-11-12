@@ -6,22 +6,24 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node for the when
+ * 
+ *  // <nodeWhen> ::= when ( <nodeEvent> {, <nodeEvent> } ) then <seqAndRules>*
  *
  * @author Rémy Dautriche
  * @author Cédric Gérard
- *
+ * 
  * @since June 25, 2013
  * @version 1.0.0
  */
 public class NodeWhen extends Node {
 
-    // <nodeWhen> ::= when ( <nodeEvent> {, <nodeEvent> } ) then <seqAndRules>
-    private static final Logger LOGGER = Logger.getLogger(NodeWhen.class.getName());
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
 
     private final NodeSeqEvent seqEvent;
     private final NodeSeqRules seqRules;
@@ -57,7 +59,6 @@ public class NodeWhen extends Node {
 
     @Override
     public void startEventFired(StartEvent e) {
-        LOGGER.finest("TEST logg");
         // TODO Auto-generated method stub
     }
 
@@ -71,11 +72,11 @@ public class NodeWhen extends Node {
             if (nodeEnded == seqEvent) {
                 seqRules.addEndEventListener(this);
 
-                LOGGER.finest("###### all the events are received, launching the sequence of rules #######");
+                LOGGER.trace("###### all the events are received, launching the sequence of rules #######");
                 try {
                     seqRules.call();
                 } catch (Exception ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex.getMessage());
                 }
                 //pool.submit(seqRules);
                 //super.call();
