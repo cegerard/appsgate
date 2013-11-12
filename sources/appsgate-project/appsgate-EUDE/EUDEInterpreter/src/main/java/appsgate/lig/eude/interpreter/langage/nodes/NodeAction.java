@@ -9,6 +9,8 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node for the actions
@@ -21,6 +23,9 @@ import appsgate.lig.router.spec.GenericCommand;
  *
  */
 public class NodeAction extends Node {
+
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeAction.class.getName());
 
     private final String targetType;
     private final String targetId;
@@ -44,16 +49,12 @@ public class NodeAction extends Node {
         methodName = ruleJSON.getString("methodName");
         args = ruleJSON.getJSONArray("args");
 
-		//TODO remove the pool nodeAction execute the command right now
-        //The router manage execution thread by its own
-        //pool = Executors.newSingleThreadExecutor();
         command = null;
     }
 
-
     @Override
     public void endEventFired(EndEvent e) {
-        System.out.println("##### NodeAction - End event received!");
+        LOGGER.debug("##### End event received!");
         ((Node) e.getSource()).removeEndEventListener(this);
         started = false;
         fireEndEvent(new EndEvent(this));
@@ -61,16 +62,24 @@ public class NodeAction extends Node {
 
     @Override
     public Integer call() {
+        LOGGER.debug("##### Action call [{}]!", methodName);
         fireStartEvent(new StartEvent(this));
         started = true;
         if (targetType.equals("device")) {
             // get the runnable from the interpreter
             command = interpreter.executeCommand(targetId, methodName, args);
-            command.run();
+            if (command == null) {
+                LOGGER.error("Command not found {}, for {}", methodName, targetId);
+            } else {
+                LOGGER.debug("Run command: {}", command.toString());
+                command.run();
+            }
         } else if (targetType.equals("program")) {
+
             NodeProgram p = (NodeProgram) interpreter.getNodeProgram(targetId);
 
             if (p != null) {
+                LOGGER.debug("Program running state {}", p.getRunningState());
                 if (methodName.contentEquals("callProgram") && p.getRunningState() != RUNNING_STATE.STARTED) {
                     // listen to the end of the program
                     p.addEndEventListener(this);
@@ -79,8 +88,15 @@ public class NodeAction extends Node {
                 } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
                     //stop the running program
                     interpreter.stopProgram(targetId);
+                } else {
+                    LOGGER.warn("Cannot run {} on program {}", methodName, targetId);
                 }
+
+            } else {
+                LOGGER.error("Program not found: {}", targetId);
             }
+        } else {
+            LOGGER.warn("Action type ({}) not supported", targetType);
         }
 
         started = false;
@@ -89,8 +105,9 @@ public class NodeAction extends Node {
     }
 
     /**
-     * 
-     * @return an object containing the return of a command, null if no command has been passed
+     *
+     * @return an object containing the return of a command, null if no command
+     * has been passed
      */
     public Object getResult() {
         if (command != null) {
@@ -100,10 +117,9 @@ public class NodeAction extends Node {
         }
     }
 
-
     @Override
     public void stop() {
-        if (started && targetType.equals("program")) {
+        if (started && targetType.equals("program") && !stopping) {
             stopping = true;
             NodeProgram p = (NodeProgram) interpreter.getNodeProgram(targetId);
             p.stop();

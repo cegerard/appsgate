@@ -54,7 +54,7 @@ public class NodeSeqAndRules extends Node {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call()  {
         // no rules are done
         nbRulesEnded = 0;
         started = true;
@@ -65,14 +65,7 @@ public class NodeSeqAndRules extends Node {
                 break;
             }
         }
-
-//		try {
-//			pool.invokeAll(rules);
-//			super.call();
-//		} catch (InterruptedException ex) {
-//			Logger.getLogger(NodeSeqAndRules.class.getName()).log(Level.SEVERE, null, ex);
-//		}
-        return null;
+       return null;
     }
 
 

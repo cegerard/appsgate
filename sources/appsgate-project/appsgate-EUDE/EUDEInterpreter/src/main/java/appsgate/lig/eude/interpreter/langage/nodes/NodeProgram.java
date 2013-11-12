@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeProgram extends Node {
 
+    // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
     /**
      * Pool to execute the children. Possibly a single thread
@@ -158,7 +159,7 @@ public class NodeProgram extends Node {
             }
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            LOGGER.warn("JSON Excpetion : {}", e.getMessage());
         }
     }
 
@@ -260,7 +261,6 @@ public class NodeProgram extends Node {
 
             seqRules.addStartEventListener(this);
             seqRules.addEndEventListener(this);
-
             seqRulesThread = pool.submit(seqRules);
 
             if (seqRulesThread != null) {
@@ -311,32 +311,8 @@ public class NodeProgram extends Node {
                 seqRules.removeEndEventListener(this);
                 setRunningState(RUNNING_STATE.STOPPED);
                 fireEndEvent(new EndEvent(this));
-                // pool = Executors.newSingleThreadExecutor();
+                pool = Executors.newSingleThreadExecutor();
             }
-            // try {
-            // boolean terminate = false;
-            // pool.shutdownNow();
-            // if( pool.awaitTermination(5, TimeUnit.SECONDS)) {
-            // LoggerFactory.getLogger(NodeProgram.class.getName()).debug("Program thread stopped");
-            // terminate = true;
-            // //} else {
-            // if(!seqRulesThread.isCancelled()) {
-            // LoggerFactory.getLogger(NodeProgram.class.getName()).error("thread did not terminate");
-            // LoggerFactory.getLogger(NodeProgram.class.getName()).info("Try to kill the program thread");
-            // terminate = seqRulesThread.cancel(true);
-            // }
-            // }
-            //
-            // if(terminate) {
-            // seqRules.removeEndEventListener(this);
-            // setRunningState(RUNNING_STATE.STOPPED);
-            // fireEndEvent(new EndEvent(this));
-            // pool = Executors.newSingleThreadExecutor();
-            // }
-            //
-            // } catch (InterruptedException e) {
-            // e.printStackTrace();
-            // }
         }
     }
 

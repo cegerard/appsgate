@@ -8,11 +8,15 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class represents a sequence of rules to evaluate
+ *
+ * // <seqRules> ::= <seqAndRules> { <opThenRule> <seqAndRules> }
+ *
  *
  * @author Rémy Dautriche
  * @author Cédric Gérard
@@ -24,9 +28,8 @@ import java.util.logging.Logger;
 public class NodeSeqRules extends Node {
 
     // Logger
-    private static final Logger LOGGER = Logger.getLogger(NodeSeqRules.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
 
-	// <seqRules> ::= <seqAndRules> { <opThenRule> <seqAndRules> }
     /**
      * Contains the block of rules separated by a "THEN" operator
      */
@@ -55,11 +58,15 @@ public class NodeSeqRules extends Node {
             }
         }
 
-        LOGGER.log(Level.FINEST, "###### nb SeqAndRules: {0}", seqAndRules.size());
+        LOGGER.trace("###### nb SeqAndRules: {}", seqAndRules.size());
 
     }
 
-    private void launchNextSeqAndRules() throws Exception {
+    /**
+     * 
+     * @throws Exception 
+     */
+    private void launchNextSeqAndRules() {
         NodeSeqAndRules seqAndRule;
 
         synchronized (this) {
@@ -78,7 +85,7 @@ public class NodeSeqRules extends Node {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         idCurrentSeqAndRules = 0;
         started = true;
         fireStartEvent(new StartEvent(this));
@@ -99,14 +106,14 @@ public class NodeSeqRules extends Node {
         idCurrentSeqAndRules++;
 
         if (idCurrentSeqAndRules < seqAndRules.size()) {
-            LOGGER.finest("###### launching the next sequence of rules...");
+            LOGGER.trace("###### launching the next sequence of rules...");
             try {
                 launchNextSeqAndRules();
             } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Exception caught: {0}", ex.getMessage());
+                LOGGER.error("Exception caught: {}", ex.getMessage());
             }
         } else {
-            LOGGER.finest("###### SeqThenRules ended...");
+            LOGGER.trace("###### SeqThenRules ended...");
             started = false;
             fireEndEvent(new EndEvent(this));
         }

@@ -2,17 +2,17 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Node for the boolean expression
+ * Node for the boolean expression // <expBool> ::= <seqAndBool> { <opOrBool>
+ * <seqAndBool> }
  *
  * @author Rémy Dautriche
  * @author Cédric Gérard
@@ -21,7 +21,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  * @version 1.0.0
  */
 public class NodeExpBool extends Node {
-    // <expBool> ::= <seqAndBool> { <opOrBool> <seqAndBool> }
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
 
     /**
      * List of boolean sequences. Nodes of the list are separated by a boolean
@@ -51,24 +52,21 @@ public class NodeExpBool extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param expBoolJSON JSON representation of the node
+     * @throws org.json.JSONException
      */
-    public NodeExpBool(EUDEInterpreterImpl interpreter, JSONArray expBoolJSON) {
+    public NodeExpBool(EUDEInterpreterImpl interpreter, JSONArray expBoolJSON) throws JSONException {
         super(interpreter);
 
         // instantiate each sequence and store it in the list
         listSeqAndBool = new ArrayList<NodeSeqAndBool>();
         for (int i = 0; i < expBoolJSON.length(); i++) {
-            try {
-                listSeqAndBool.add(new NodeSeqAndBool(interpreter, expBoolJSON.getJSONArray(i)));
-            } catch (JSONException ex) {
-                Logger.getLogger(NodeExpBool.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            listSeqAndBool.add(new NodeSeqAndBool(interpreter, expBoolJSON.getJSONArray(i)));
         }
 
         // the result has not been computed yet
         result = null;
 
-		// initialize the pool of threads
+        // initialize the pool of threads
         //pool = Executors.newFixedThreadPool(listSeqAndBool.size());
     }
 
@@ -84,7 +82,6 @@ public class NodeExpBool extends Node {
             stopping = false;
         }
     }
-
 
     /**
      * Called when the interpretation of a sequence is done. Check if all the
@@ -105,7 +102,7 @@ public class NodeExpBool extends Node {
                 try {
                     result = result || n.getResult();
                 } catch (Exception ex) {
-                    Logger.getLogger(NodeExpBool.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex.getMessage());
                 }
             }
             started = false;
@@ -138,14 +135,6 @@ public class NodeExpBool extends Node {
             }
         }
 
-		// interpret the nodes
-//		try {
-//			pool.invokeAll(listSeqAndBool);
-//		} catch (InterruptedException ex) {
-//			Logger.getLogger(NodeExpBool.class.getName()).log(Level.SEVERE, null, ex);
-//		}
-		// manage the pool
-//		super.call();
         return null;
     }
 }

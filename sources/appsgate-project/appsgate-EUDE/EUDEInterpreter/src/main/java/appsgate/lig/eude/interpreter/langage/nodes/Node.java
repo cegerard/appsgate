@@ -124,7 +124,6 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
             }
             if (endEventListeners.get(i) instanceof NodeEvent) {
                 LOGGER.debug("###### Waking up a NodeEvent");
-                // endEventListeners.get(i).notify();
             }
             endEventListeners.get(i).endEventFired(e);
         }
@@ -192,6 +191,11 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
         } else {
             return null;
         }
+    }
+    
+    @Override
+    public Integer call() {
+        return null;
     }
 
 }

@@ -305,21 +305,26 @@ public class EUDEInterpreterImplTest {
      */
     @Test
     public void testAddingTestPrograms() throws IOException, FileNotFoundException, JSONException {
-        boolean addProgram = instance.addProgram(loadFileJSON("src/test/resources/switchLightsOnCard.js"));
-        Assert.assertTrue(addProgram);
-        addProgram = instance.addProgram(loadFileJSON("src/test/resources/switchLightsOffCard.js"));
-        Assert.assertTrue(addProgram);
-        addProgram = instance.addProgram(loadFileJSON("src/test/resources/defautLightModeSingleSwitch.js"));
-        Assert.assertTrue(addProgram);
-        addProgram = instance.addProgram(loadFileJSON("src/test/resources/colorLooplightModeSingleSwitch.js"));
-        Assert.assertTrue(addProgram);
-        instance.callProgram("0000000001");
-        instance.callProgram("0000000002");
-        Assert.assertTrue(instance.callProgram("0000000003"));
-        Assert.assertFalse(instance.callProgram("0000000014"));
-                
+        System.out.println("AddingTestPrograms");
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testActions.json")));
+        Assert.assertTrue(instance.callProgram("testActions"));
+        
+    }
 
-
+    /**
+     * To test whether reading real program is working
+     *
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws JSONException
+     */
+    @Test
+    public void testPrograms() throws IOException, FileNotFoundException, JSONException {
+        System.out.println("Programs");
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testActions.json")));
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testPrograms.json")));
+        Assert.assertTrue(instance.callProgram("testPrograms"));
+        
     }
 
     /**

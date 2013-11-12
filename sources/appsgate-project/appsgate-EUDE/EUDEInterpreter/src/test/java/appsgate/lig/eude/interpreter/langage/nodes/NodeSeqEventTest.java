@@ -5,8 +5,6 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Before;
@@ -26,7 +24,7 @@ public class NodeSeqEventTest extends NodeTest {
         try {
             this.instance = new NodeSeqEvent(null, new JSONArray());
         } catch (JSONException ex) {
-            Logger.getLogger(NodeSeqEventTest.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("JSON Exception: " + ex);
         }
 
     }

@@ -2,8 +2,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,16 +9,21 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Node for the sequence of boolean relations separated by a "and"
+ * Node for the sequence of boolean relations separated by a "and" //
+ * <seqAndBool> ::= <relationBool> { <opAndBool> <relationBool> }
  *
  * @author Rémy Dautriche
  * @since June 21, 2013
  * @version 1.0.0
  */
 public class NodeSeqAndBool extends Node {
-    // <seqAndBool> ::= <relationBool> { <opAndBool> <relationBool> }
+
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
 
     /**
      * List of the boolean relations
@@ -47,19 +50,17 @@ public class NodeSeqAndBool extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param seqAndBoolJSON JSON representation of the node
+     * @throws org.json.JSONException
      */
-    public NodeSeqAndBool(EUDEInterpreterImpl interpreter, JSONArray seqAndBoolJSON) {
+    public NodeSeqAndBool(EUDEInterpreterImpl interpreter, JSONArray seqAndBoolJSON)
+            throws JSONException {
         super(interpreter);
 
         // instantiate each boolean relation and store in the list
         relationsBool = new ArrayList<NodeRelationBool>();
         for (int i = 0; i < seqAndBoolJSON.length(); i++) {
-            try {
-                JSONObject relBoolJSON = seqAndBoolJSON.getJSONObject(i);
-                relationsBool.add(new NodeRelationBool(interpreter, relBoolJSON));
-            } catch (JSONException ex) {
-                Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            JSONObject relBoolJSON = seqAndBoolJSON.getJSONObject(i);
+            relationsBool.add(new NodeRelationBool(interpreter, relBoolJSON));
             if (stopping) {
                 break;
             }
@@ -69,7 +70,7 @@ public class NodeSeqAndBool extends Node {
         nbRelationBoolEnded = 0;
         result = null;
 
-		// initialize the pool of threads
+        // initialize the pool of threads
         //pool = Executors.newFixedThreadPool(relationsBool.size());
     }
 
@@ -113,7 +114,7 @@ public class NodeSeqAndBool extends Node {
 //		} catch (InterruptedException ex) {
 //			Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
 //		}
-		// manage the pool
+        // manage the pool
 //		super.call();
         return null;
     }
@@ -128,7 +129,7 @@ public class NodeSeqAndBool extends Node {
             try {
                 result = result && n.getResult();
             } catch (Exception ex) {
-                Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getMessage());
             }
         }
     }
