@@ -1,0 +1,188 @@
+{
+	"app" : {
+		"name"	: "AppsGate"
+	},
+	"form" : {
+		"cancel-button"	: "Annuler",
+		"valid-button"	: "Valider",
+		"close-button"	: "Fermer",
+		"rename-button"	: "Renommer",
+		"delete-button"	: "Supprimer",
+		"edit-button"	: "Editer",
+		"save-button"	: "Sauvegarder"
+	},
+	"navbar" : {
+		"places"			: "Pièces",
+		"devices"			: "Dispositifs",
+		"programs"			: "Programmes",
+		"button-settings"	: "Préférences"
+	},
+	"modal-lost-connection" : {
+		"title"						: "Problème de connexion",
+		"interrupted-connection"	: "La connexion a été interrompue.",
+		"connection"				: "Connexion...",
+		"change-server-button"		: "Changer serveur",
+		"reconnection-button"		: "Se reconnecter"
+	},
+	"modal-settings" : {
+		"title"					: "Préférences",
+		"addr-server"			: "Adresse du serveur",
+		"server-unreachable"	: "Serveur indisponible...",
+		"connection"			: "Connexion..."
+	},
+	"places-menu" : {
+		"add-button"	: "Ajouter pièce",
+		"place-no-name"	: "Pièce sans nom"
+	},
+	"programs-menu": {
+		"add-button"		: "Ajouter programme"
+	},
+	"modal-add-place" : {
+		"title"						: "Ajouter pièce",
+		"place-name"				: "Nom de la pièce",
+		"place-name-empty"			: "Le nom de la pièce doit être renseigné.",
+		"place-already-existing"	: "Nom de la pièce déjà existant."
+	},
+	"modal-edit-place"	: {
+		"title"						: "Renommer pièce",
+		"place-name"				: "Nom de la pièce",
+		"place-name-empty"			: "Le nom de la pièce doit être renseigné.",
+		"place-already-existing"	: "Nom de la pièce déjà existant."
+	},
+	"modal-edit-device" : {
+		"name-label"			: "Nom",
+		"name-placeholder"		: "Nom du dispositif",
+		"name-already-existing"	: "Nom de dispositif déjà existant",
+		"place-label"			: "Pièce",
+		"time-label"			: "Heure",
+		"time-speed-label"		: "Vitesse"
+	},
+	"modal-add-program"	: {
+		"title"					: "Ajouter programme",
+		"name-label"			: "Nom",
+		"name-placeholder"		: "Nom du programme",
+		"name-empty"			: "Le nom du programme doit être renseigné.",
+		"name-already-existing"	: "Nom de programme déjà existant"
+	},
+	"places-details" : {
+		"place-no-name"	: "Pièce sans nom",
+		"undefined"		: "Non défini",
+		"header"		: {
+			"device-number-title"	: "Nombre de dispositifs",
+			"temperature-label"		: "Température",
+			"illumination-label"	: "Luminosité",
+			"consumption-label"		: "Consommation"
+		},
+		"body"			: {
+			"device-no-name"		: "Dispositif sans nom",
+			"no-device-in-place"	: "Aucun dispositif n'est assigné dans cette pièce."
+		}
+	},
+	"programs" : {
+		"program-no-name"	: "Programme sans nom",
+		"state"	: {
+			"deployed"	: "Déployé",
+			"started"	: "Démarré",
+			"stopped"	: "Arrêté",
+			"failed"	: "Erreur"
+		},
+		"action" : {
+			"start"	: "Démarrer",
+			"stop"	: "Arrêter"
+		}
+	},
+	"devices" : {
+		"device-no-name"	: "Dispositif sans nom",
+		"device-unlocated"	: "Non localisé",
+		"state-label"		: "Etat",
+		"value-label"		: "Valeur",
+		"consumption-label"	: "Consommation",
+		"status-label"		: "Statut",
+		"status"			: {
+			"connected"		: "Connecté",
+			"waiting"		: "En attente",
+			"disconnected"	: "Déconnecté"
+		},
+		"temperature"		: {
+			"name"	: {
+				"singular"	: "Capteur de température",
+				"plural"	: "Capteurs de température"
+			}
+		},
+		"illumination"		: {
+			"name"	: {
+				"singular"	: "Capteur de luminosité",
+				"plural"	: "Capteurs de luminosité"
+			}
+		},
+		"switch"			: {
+			"name"	: {
+				"singular"	: "Interrupteur",
+				"plural"	: "Interrupteurs"
+			},
+			"value"	: {
+				"opened"	: "Ouvert",
+				"closed"	: "Fermé"
+			}
+		},
+		"contact"			: {
+			"name"	: {
+				"singular"	: "Capteur de contact",
+				"plural"	: "Capteurs de contact"
+			},
+			"value"	: {
+				"opened"	: "Ouvert",
+				"closed"	: "Fermé"
+			}
+		},
+		"keycard-reader"	: {
+			"name"	: {
+				"singular"	: "Lecteur de carte",
+				"plural"	: "Lecteurs de carte"
+			},
+			"value"	: {
+				"inserted"		: "Carte insérée",
+				"not-inserted"	: "Pas de carte"
+			}
+		},
+		"movement"			: {
+			"name"	: {
+				"singular"	: "Capteur de mouvement",
+				"plural"	: "Capteurs de mouvement"
+			}
+		},
+		"plug"				: {
+			"name"	: {
+				"singular"	: "Prise gigogne",
+				"plural"	: "Prises gigogne"
+			},
+			"action"	: {
+				"turnOn"	: "Allumer",
+				"turnOff"	: "Eteindre"
+			}
+		},
+		"lamp"				: {
+			"name"	: {
+				"singular"	: "Lampe Philips Hue",
+				"plural"	: "Lampes Philips Hue"
+			},
+			"action"	: {
+				"turnOn"	: "Allumer",
+				"turnOff"	: "Eteindre"
+			}
+		},
+		"clock"				: {
+			"name"	: {
+				"singular"	: "Horloge système",
+				"no-name"	: "Horloge système sans nom"
+			},
+			"time-speed-label"	: "Vitesse d'écoulement du temps"
+		}
+	},
+	"editor" : {
+		"title"					: "Editeur de programme",
+		"no-program-alert"		: "Aucun programme",
+		"valid-program-alert"	: "Programme valide",
+		"invalid-program-alert"	: "Programme invalide",
+	}
+}

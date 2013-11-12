@@ -1,0 +1,257 @@
+{
+	"app" : {
+		"name"	: "AppsGate"
+	},
+	"form" : {
+		"cancel-button"	: "Cancel",
+		"valid-button"	: "Valid",
+		"close-button"	: "Close",
+		"rename-button"	: "Rename",
+		"delete-button"	: "Delete",
+		"edit-button"	: "Edit",
+		"save-button"	: "Save"
+	},
+	"navbar" : {
+		"places"			: "Places",
+		"devices"			: "Devices",
+		"programs"			: "Programs",
+		"button-settings"	: "Preferences"
+	},
+	"modal-lost-connection" : {
+		"title"						: "Connection error",
+		"interrupted-connection"	: "The connection has been interrupted.",
+		"connection"				: "Connection...",
+		"change-server-button"		: "Change server",
+		"reconnection-button"		: "Reconnect"
+	},
+	"modal-settings" : {
+		"title"					: "Preferences",
+		"addr-server"			: "Address server",
+		"server-unreachable"	: "Server unavailable",
+		"connection"			: "Connection"
+	},
+	"places-menu" : {
+		"add-button"	: "Add place",
+		"place-no-name"	: "Place with no name"
+	},
+	"modal-add-place" : {
+		"title"						: "Add place",
+		"place-name"				: "Place's name",
+		"place-name-empty"			: "The place must have a name.",
+		"place-already-existing"	: "Place name already existing."
+	},
+	"modal-edit-place"	: {
+		"title"						: "Rename place",
+		"place-name"				: "Place's name",
+		"place-name-empty"			: "The place's name cannot be empty.",
+		"place-already-existing"	: "Place name already existing."
+	},
+	"places-details" : {
+		"place-no-name"	: "Place with no name",
+		"undefined"		: "Not defined",
+		"header"		: {
+			"device-number-title"	: "Number of devices",
+			"temperature-label"		: "Temperature",
+			"illumination-label"	: "Illumination",
+			"consumption-label"		: "Consumption"
+		},
+		"body"			: {
+			"device-no-name"		: "Device with no name",
+			"no-device-in-place"	: "No device is located in this place."
+		}
+	},
+	"modal-edit-device" : {
+		"name-label"			: "Name",
+		"name-placeholder"		: "Device's name",
+		"name-already-existing"	: "Device's already existing",
+		"place-label"			: "Place",
+		"time-label"			: "Time",
+		"time-speed-label"		: "Speed"
+	},
+	"programs-menu": {
+		"add-button"		: "Add program"
+	},
+	"modal-add-program"	: {
+		"title"					: "Add program",
+		"name-label"			: "Name",
+		"name-placeholder"		: "Program's name",
+		"name-empty"			: "The program must have a name.",
+		"name-already-existing"	: "The program's name is already existing"
+	},
+	"devices" : {
+		"device-no-name"	: "Device with no name",
+		"device-unlocated"	: "Unlocated",
+		"state-label"		: "State",
+		"value-label"		: "Value",
+		"consumption-label"	: "Consumption",
+		"status-label"		: "Status",
+		"status"			: {
+			"connected"		: "Connected",
+			"waiting"		: "Waiting",
+			"disconnected"	: "Disconnected"
+		},
+		"temperature"		: {
+			"name"	: {
+				"singular"	: "Temperature sensor",
+				"plural"	: "Temperature sensors"
+			}
+		},
+		"illumination"		: {
+			"name"	: {
+				"singular"	: "Illumination sensor",
+				"plural"	: "Illumination sensors"
+			}
+		},
+		"switch"			: {
+			"name"	: {
+				"singular"	: "Switch",
+				"plural"	: "Switches"
+			},
+			"value"	: {
+				"opened"	: "Opened",
+				"closed"	: "Closed"
+			}
+		},
+		"contact"			: {
+			"name"	: {
+				"singular"	: "Contact sensor",
+				"plural"	: "Contact sensors"
+			},
+			"value"	: {
+				"opened"	: "Opened",
+				"closed"	: "Closed"
+			}
+		},
+		"keycard-reader"	: {
+			"name"	: {
+				"singular"	: "Key-card reader",
+				"plural"	: "Key-card readers"
+			},
+			"value"	: {
+				"inserted"		: "Card inserted",
+				"not-inserted"	: "No card"
+			}
+		},
+		"movement"			: {
+			"name"	: {
+				"singular"	: "Movement sensor",
+				"plural"	: "Movement sensors"
+			}
+		},
+		"plug"				: {
+			"name"	: {
+				"singular"	: "Smart plug",
+				"plural"	: "Smart plugs"
+			},
+			"action"	: {
+				"turnOn"	: "Turn on",
+				"turnOff"	: "Turn off"
+			}
+		},
+		"lamp"				: {
+			"name"	: {
+				"singular"	: "Philips Hue Lamp",
+				"plural"	: "Philips Hue Lamp"
+			},
+			"action"	: {
+				"turnOn"	: "Turn on",
+				"turnOff"	: "Turn off"
+			}
+		},
+		"clock"				: {
+			"name"	: {
+				"singular"	: "System clock",
+				"no-name"	: "Unnamed system clock"
+			},
+			"time-speed-label"	: "Time speed"
+		}
+	},
+	"programs" : {
+		"program-no-name"	: "Unammed program",
+		"state"	: {
+			"deployed"	: "Déployed",
+			"started"	: "Started",
+			"stopped"	: "Stopped",
+			"failed"	: "Failed"
+		},
+		"action" : {
+			"start"	: "Start",
+			"stop"	: "Stop"
+		}
+	},
+	"editor" : {
+		"title"					: "Program editor",
+		"valid-program-alert"	: "Program is valid",
+		"invalid-program-alert"	: "Programme is not valid"
+	},
+	"language" : {
+		"written-by"								: "written by",
+		"when-keyword"								: "when",
+		"end-when-block"							: "end of when",
+		"if-keyword"								: "if",
+		"else-keyword"								: "else",
+		"end-if-block"								: "end of if",
+		"then-keyword"								: "then",
+		"activate-program-action"					: "start the program",
+		"disactivate-program-action"				: "stop the program",
+		"is-activated-program-event"				: "is activated",
+		"is-disactivated-program-event"				: "is disactivated",
+		"is-running-program-status"					: "is started",
+		"is-stopped-program-status"					: "is stopped",
+		"op-event"									: "and",
+		"op-event-bool"								: "and",
+		"op-and-rule"								: "and",
+		"op-then-rule"								: "then",
+		"op-or-bool"								: "or",
+		"op-and-bool"								: "and",
+		"space"										: "space",
+		"true"										: "true",
+		"false"										: "false",
+		
+		"indicate-temperature"						: "indicates",
+		
+		"indicate-illumination"						: "indicates",
+		
+		"pushed-switch-event"						: "we press on",
+		"released-switch-event"						: "we release",
+		
+		"opened-contact-event"						: "we open",
+		"closed-contact-event"						: "we close",
+		"contact-sensor-keyword"					: "the contact sensor of",
+		"contact-assembled-event"					: "closes",
+		"contact-disassembled-event"				: "opens",
+		"is-closed-contact-status"					: "is closed",
+		"is-opened-contact-status"					: "is opened",
+		"is-assembled-contact-status"				: "is assembled",
+		"is-disassembled-contact-status"			: "is disassembled",
+		
+		"inserted-keycard-reader-event"				: "we insert a card in",
+		"removed-keycard-reader-event"				: "we remove a card from",
+		"card-inserted-keycard-reader-status"		: "a card is inserted in",
+		"no-card-inserted-keycard-reader-status"	: "no card is inserted in",
+		
+		"turned-on-plug-event"						: "we turn on",
+		"turned-off-plug-event"						: "we turn off",
+		"is-turned-on-plug-status"					: "is turned on",
+		"is-turned-off-plug-status"					: "is turned off",
+		"turn-on-plug-action"						: "turn on",
+		"turn-off-plug-action"						: "turn off",
+		
+		"turned-on-lamp-event"						: "we turn on",
+		"turned-off-lamp-event"						: "we turn off",
+		"is-turned-on-lamp-status"					: "is turned on",
+		"is-turned-off-lamp-status"					: "is turned off",
+		"turn-on-lamp-action"						: "turn on",
+		"turn-off-lamp-action"						: "turn off",
+		"change-color-lamp-action"					: "change the color of",
+		"complement-change-color-lamp-action"		: "in",
+		"white-color"								: "white",
+		"red-color"									: "red",
+		"blue-color"								: "blue",
+		"green-color"								: "green",
+		"yellow-color"								: "yellow",
+		"orange-color"								: "orange",
+		"purple-color"								: "purple",
+		"pink-color"								: "pink"
+	}
+}

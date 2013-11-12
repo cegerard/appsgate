@@ -1,0 +1,63 @@
+body {
+	padding-top: 70px;
+}
+
+.list-group-item > img {
+	width: 50%;
+	height: auto;
+	margin-left: 25%;
+}
+
+.programInput > span:hover {
+	background-color: lightgrey;
+}
+
+.keyword {
+	color: #31b0d5;
+}
+
+.action-name {
+	color: red;
+}
+
+.status {
+	color: darkseagreen;
+}
+
+.prev-seqrules:after {
+	content: "\A";
+	white-space: pre;
+}
+
+.prev-seqrules + span {
+	margin-left: 10px;
+}
+
+.end-of-block:before {
+	content: "\A";
+	white-space: pre;
+}
+
+.deleted-elements {
+	font-style: italic;
+	text-decoration: line-through;
+}
+
+.programInput > .popover .popover-content {
+	max-height: 200px;
+	overflow-y: scroll;
+}
+
+.programInput > .popover button {
+	width: 100%;
+	margin: auto;
+	margin-bottom: 5px;
+}
+
+.programInput > .popover button.valid-value-popover-button {
+	margin-top: 5px;
+}
+
+.programInput > .popover button.delete-popover-button {
+	margin-top: 10px;
+}

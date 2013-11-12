@@ -1,0 +1,33 @@
+<% if (typeof program === "undefined") { %>
+	<div class="lead" data-i18n="editor.title"></div>
+	<div class="alert alert-info" data-i18n="editor.no-program-alert"></div>
+<% } else { %>
+
+	<div class="lead">
+		<% if (program.get("name") !== "") { %>
+			<%= program.get("name") %>
+		<% } else { %>
+			<em>Programme sans nom</em>
+		<% } %>
+
+		<div class="pull-right">
+			<button type="button" class="btn btn-default save-program-button">
+				<i class="glyphicon glyphicon-save"></i> <span data-i18n="form.save-button"></span>
+			</button>
+			<button id="delete-popover" class="btn btn-default" rel="popover">
+				<i class="glyphicon glyphicon-trash"></i>
+			</button>
+		</div>
+	</div>
+
+	<div class="alert alert-success hide" data-i18n="editor.valid-program-alert"></div>
+
+	<div class="alert alert-danger hide" data-i18n="editor.invalid-program-alert"></div>
+	
+	<div class="programInput"><%= program.get("userInputSource") %></div>
+	
+	<div class="expected-elements col-md-12"></div>
+	
+	<button class="btn btn-default deleted-elements disabled hidden col-md-12"></div>
+
+<% } %>

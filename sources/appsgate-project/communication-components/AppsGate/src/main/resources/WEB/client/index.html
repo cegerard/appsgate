@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AppsGate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
+	<!-- Twitter Bootstrap 3.0 styles -->
+	<link rel="stylesheet" type="text/css" href="js/libs/bootstrap/css/bootstrap.min.css" media="screen" />
+	
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="styles/style.css" />
+
+    <script type="text/javascript">
+    // load ios specific js files
+    if (navigator.userAgent.toLowerCase().match(/(ipad|ipod|iphone|android)/)) {
+        document.write("<script type='text/javascript' src='phonegap.js'><\/script>");
+        // document.write("<script type='text/javascript' src='js/libs/cordova/ios/plugins/barcodescanner.js'><\/script>");
+    // load android specific js files
+    }/*  else if (navigator.userAgent.toLowerCase().match(/(android)/)) {
+        document.write("<script type='text/javascript' src='phonegap.js'><\/script>");
+        // document.write("<script type='text/javascript' src='js/libs/cordova/android/plugins/websocket.js'><\/script>");
+        // document.write("<script type='text/javascript' src='js/libs/cordova/android/plugins/barcodescanner.js'><\/script>");
+    } */
+    </script>
+
+    <script data-main="js/config" src="js/libs/require/require.js"></script>
+</head>
+<body>
+	<!-- navigation bar -->
+    <div class="navbar navbar-fixed-top navbar-default" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="#" class="navbar-brand" data-i18n="app.name"></a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="#locations" data-i18n="navbar.places"></a></li>
+					<li><a href="#devices" data-i18n="navbar.devices"></a></li>
+					<li><a href="#programs" data-i18n="navbar.programs"></a></li>
+				</ul>
+				<div class="navbar-right">
+					<button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#settings-modal">
+						<i class="glyphicon glyphicon-cog"></i> <span data-i18n="navbar.button-settings"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+    </div>
+    <div class="container">
+		<div class="row">
+			<div class="col-md-4 aside-menu">
+			</div>
+			<div class="col-md-8 body-content">
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- modal to notify the user when the connection is lost -->
+	<div id="lost-connection-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="lostConnectionModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" data-i18n="modal-lost-connection.title"></h4>
+				</div>
+				<div class="modal-body">
+					<p class="text-danger" data-i18n="modal-lost-connection.interrupted-connection"></p>
+					<p class="text-info" data-i18n="modal-lost-connection.connection"></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="form.close-button"></button>
+					<button type="button" id="change-addr-server" class="btn btn-info" data-i18n="modal-lost-connection.change-server-button"></button>
+					<button type="button" id="reconnect-button" class="btn btn-primary" data-i18n="modal-lost-connection.reconnection-button"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- modal for the settings -->
+	<div id="settings-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalSettings" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" data-i18n="modal-settings.title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3" data-i18n="modal-settings.addr-server"></div>
+						<div class="col-md-9">
+							<input type="text" class="addr-server" data-i18n="[placeholder]modal-settings.addr-server">
+							:
+							<input type="text" class="port-server" placeholder="8080">
+							<p class="hide text-danger" data-i18n="modal-settings.server-unreachable"></p>
+							<p class="hide text-info" data-i18n="modal-settings.connection"></p>
+						</div>
+					</div><br>
+					<div class="row">
+						<div class="col-md-3" data-i18n="modal-settings.language-label"></div>
+						<div class="col-md-9">
+							<select id="language" class="form-control">
+								<option value="fr-FR" data-i18n="modal-settings.language-fr"></option>
+								<option value="en-US" data-i18n="modal-settings.language-en"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+					<button type="button" id="valid-button" class="btn btn-primary" data-i18n="form.valid-button"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
