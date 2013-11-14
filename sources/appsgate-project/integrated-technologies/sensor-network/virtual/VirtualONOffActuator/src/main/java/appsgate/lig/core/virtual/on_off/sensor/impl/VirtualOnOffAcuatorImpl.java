@@ -11,7 +11,7 @@ import appsgate.lig.on_off.actuator.messages.OnOffActuatorNotificationMsg;
 import appsgate.lig.on_off.actuator.spec.CoreOnOffActuatorSpec;
 
 /**
- * This is the class that represent the EnOcean implementation of On/Off actuator.
+ * This is the class that represent the virtual implementation of On/Off actuator.
  * 
  * @author Cédric Gérard
  * @since November 14, 2013
@@ -141,14 +141,14 @@ public class VirtualOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		logger.info("New temperature sensor detected, "+actuatorId);
+		logger.info("New On/Off actuator detected, "+actuatorId);
 	}
 
 	/**
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		logger.info("Temperature sensor desapeared, "+actuatorId);
+		logger.info("An On/Off actuator desapeared, "+actuatorId);
 	}
 	
 	public void isPairedChanged(String newPairedState){
@@ -158,9 +158,9 @@ public class VirtualOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 	/**
 	 * Called by APAM when the status of the on/Off device change
 	 */
-	public void isOnChanged (String newTemperatureValue) {
-		logger.info("New temperature value from "+actuatorId+"/"+actuatorName+", "+isOn);
-		notifyChanges("value", isOn);
+	public void isOnChanged (String newIsOnValue) {
+		logger.info("The "+actuatorId+"/"+actuatorName+", state change to "+newIsOnValue);
+		notifyChanges("isOn", isOn);
 	}
 	
 	/**
@@ -193,16 +193,14 @@ public class VirtualOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 
 	@Override
 	public void on() {
+		logger.info("The sensor, "+actuatorId+" status request changed to ON");
 		isOn = "true";
-		logger.info("The sensor, "+actuatorId+" status changed to ON");
-		notifyChanges("value", isOn);
 	}
 
 	@Override
 	public void off() {
+		logger.info("The sensor, "+actuatorId+" status request changed to OFF");
 		isOn = "false";
-		logger.info("The sensor, "+actuatorId+" status changed to OFF");
-		notifyChanges("value", isOn);
 	}
 
 }
