@@ -4,6 +4,13 @@
 <% } else { %>
 
 	<div class="lead">
+		<% if (program.get("runningState") === "STARTED") { %>
+			<div class="led led-green pull-left"></div>
+		<% } else if ((program.get("runningState") === "STOPPED") || (program.get("runningState") === "DEPLOYED")) { %>
+			<div class="led led-default pull-left"></div>
+		<% } else if (program.get("runningState") === "FAILED") { %>
+			<div class="led led-red pull-left"></div>
+		<% } %>
 		<% if (program.get("name") !== "") { %>
 			<%= program.get("name") %>
 		<% } else { %>
@@ -11,12 +18,26 @@
 		<% } %>
 
 		<div class="pull-right">
+			<% if (program.get("runningState") === "STARTED") { %>
+				<button type="button" id="<%= program.get('id') %>" class="btn btn-default stop-program-button" data-i18n="programs.action.stop"></button>
+			<% } else if ((program.get("runningState") === "STOPPED") 
+				|| (program.get("runningState") === "DEPLOYED") 
+				|| (program.get("runningState") === "FAILED")) { %>
+				<button type="button" id="<%= program.get('id') %>" class="btn btn-default start-program-button" data-i18n="programs.action.start"></button>
+			<% } %> 
+			
 			<button type="button" class="btn btn-default save-program-button">
-				<i class="glyphicon glyphicon-save"></i> <span data-i18n="form.save-button"></span>
+				<i class="glyphicon glyphicon-save"></i> 
+				<span class="save-span" data-i18n="form.save-button"></span>
+				<span class="saving-span hidden" data-i18n="form.saving-button"></span>
+			</button>
+			<button type="button" data-target="#edit-program-name-modal" data-toggle="modal" class="btn btn-default">
+				<i class="glyphicon glyphicon-edit"></i> <span data-i18n="form.rename-button"></span>
 			</button>
 			<button id="delete-popover" class="btn btn-default" rel="popover">
 				<i class="glyphicon glyphicon-trash"></i>
 			</button>
+
 		</div>
 	</div>
 
@@ -24,10 +45,31 @@
 
 	<div class="alert alert-danger hide" data-i18n="editor.invalid-program-alert"></div>
 	
-	<div class="programInput"><%= program.get("userInputSource") %></div>
+	<div class="editorWorkspace">
+		<div class="programInput"><%= program.get("userInputSource") %></div>
 	
-	<div class="expected-elements col-md-12"></div>
-	
-	<button class="btn btn-default deleted-elements disabled hidden col-md-12"></div>
+		<div class="expected-elements expected-input col-md-12"></div>
 
+		<button class="btn btn-default deleted-elements disabled hidden col-md-12"></div>
+	</div>
 <% } %>
+
+<!-- modal to edit the name of a program -->
+<div id="edit-program-name-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalEditProgram" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h3 data-i18n="modal-edit-program.title"></h3>
+			</div>
+			<div class="modal-body">
+				<input type="text" class="form-control" data-i18n="[placeholder]modal-edit-program.program-name">
+				<p class="hide text-danger" data-i18n="modal-edit-program.program-already-existing"></p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+				<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+			</div>
+		</div>
+	</div>
+</div>

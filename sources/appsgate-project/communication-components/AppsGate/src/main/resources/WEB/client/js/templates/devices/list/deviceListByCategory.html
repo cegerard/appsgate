@@ -51,6 +51,7 @@
 </div>
 
 <!-- render located devices -->
+<div class="contents-list">
 <% places.forEach(function(place) { %>
 <% if (place.getTypeSensors(type).length > 0) { %>
 <div class="panel panel-default">
@@ -140,3 +141,4 @@
 </div>
 <% } %>
 <% }) %>
+</div>

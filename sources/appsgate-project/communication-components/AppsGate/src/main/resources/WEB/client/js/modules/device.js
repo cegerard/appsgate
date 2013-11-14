@@ -1044,6 +1044,34 @@ define([
 	var router = new Device.Router();
 
 	/**
+	 * Resizes the div to the maximum displayable size on the screen
+	 */	
+	function resizeDiv(jqNode){
+		if(typeof jqNode !== "undefined"){
+			jqNode[0].classList.add("div-scrollable");
+			setTimeout(function(){
+				var divSize = window.innerHeight-(jqNode.offset().top + jqNode.outerHeight(false) + 20 - jqNode.innerHeight());
+
+				// if there isn't enough space to display the whole div, we adjust its size to the screen
+				if(divSize<jqNode.outerHeight(true)){	
+					jqNode.height(divSize);
+				}
+
+				// if there is an active element, make it visible
+				var activeItem = jqNode.children(".list-group-item.active")[0];
+				if(typeof activeItem !== "undefined"){
+					jqNode.scrollTop((activeItem.offsetTop)-($(".list-group-item")[1].offsetTop));
+				}
+				// otherwise display the top of the list
+				else{
+					jqNode.scrollTop(0);
+				}
+			}, 0);
+		}
+	}
+
+
+	/**
 	 * Abstract class regrouping common characteristics shared by all the devices
 	 *
 	 * @class Device.Model
@@ -1268,21 +1296,21 @@ define([
 		 * Send a message to the backend to update the attribute color
 		 */
 		sendColor:function() {
-			this.remoteCall("setColor", [{ type : "long", value : this.get("color") }]);
+			this.remoteCall("setColor", [{ type : "long", value : this.get("color") }], this.id);
 		},
 		
 		/**
 		 * Send a message to the backend to update the attribute saturation
 		 */
 		sendSaturation:function() {
-			this.remoteCall("setSaturation", [{ type : "int", value : this.get("saturation") }]);
+			this.remoteCall("setSaturation", [{ type : "int", value : this.get("saturation") }], this.id);
 		},
 		
 		/**
 		 * Send a message to the backend to update the attribute brightness
 		 */
 		sendBrightness:function() {
-			this.remoteCall("setBrightness", [{ type : "long", value : this.get("brightness") }]);
+			this.remoteCall("setBrightness", [{ type : "long", value : this.get("brightness") }], this.id);
 		}
 	});
 	
@@ -1343,20 +1371,20 @@ define([
 		 */
 		updateClockValue:function() {
 			this.get("moment").add("minute", 1);
-			this.set("year", this.get("moment").year().toString());
-			this.set("month", this.get("moment").month().toString());
-			this.set("day", this.get("moment").day().toString());
-			this.set("hour", this.get("moment").hour().toString());
+			this.set("year", this.get("moment").year().toString(), {clockRefresh: true});
+			this.set("month", this.get("moment").month().toString(), {clockRefresh: true});
+			this.set("day", this.get("moment").day().toString(), {clockRefresh: true});
+			this.set("hour", this.get("moment").hour().toString(), {clockRefresh: true});
 			if (this.get("hour").length === 1) {
-				this.set("hour", "0" + this.get("hour"));
+				this.set("hour", "0" + this.get("hour"), {clockRefresh: true});
 			}
-			this.set("minute", this.get("moment").minute().toString());
+			this.set("minute", this.get("moment").minute().toString(), {clockRefresh: true});
 			if (this.get("minute").length === 1) {
-				this.set("minute", "0" + this.get("minute"));
+				this.set("minute", "0" + this.get("minute"), {clockRefresh: true});
 			}
-			this.set("second", this.get("moment").second().toString());
+			this.set("second", this.get("moment").second().toString(), {clockRefresh: true});
 			if (this.get("second").length === 1) {
-				this.set("second", "0" + this.get("second"));
+				this.set("second", "0" + this.get("second"), {clockRefresh: true});
 			}
 		},
 		
@@ -1636,8 +1664,26 @@ define([
 		 */
 		initialize:function() {
 			this.listenTo(devices, "add", this.render);
-			this.listenTo(devices, "change", this.render);
+			this.listenTo(devices, "change", this.onChangedDevice);
 			this.listenTo(devices, "remove", this.render);
+		},
+
+		/**
+		 * Method called when a device has changed
+		 * @param model Model that changed, Device in that cas
+		 * @param collection Collection that holds the changed model
+		 * @param options Options given with the change event 	
+		 */
+		onChangedDevice:function(model, collection, options) {
+			// a device has changed
+			// if it's the clock, we refresh the clock only
+			if(typeof options !== "undefined" && options.clockRefresh){
+				this.refreshClockDisplay();
+			}
+			// otherwise we rerender the whole view
+			else{
+				this.render();
+			}
 		},
 		
 		/**
@@ -1665,6 +1711,22 @@ define([
 		},
 
 		/**
+		 * Refreshes the time display without rerendering the whole screen
+		 */
+		refreshClockDisplay:function() {
+			
+			//remove existing node
+			$(this.$el.find(".list-group")[0]).children().remove();
+
+			//refresh the clock
+			$(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
+				device	: devices.getCoreClock(),
+				active	: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
+			}));
+
+		},
+
+		/**
 		 * Render the side menu
 		 */
 		render:function() {
@@ -1674,7 +1736,7 @@ define([
 				// initialize the content
 				this.$el.html(this.tpl());
 
-				// put the time on the top of the menu
+				// display the clock
 				$(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
 					device	: devices.getCoreClock(),
 					active	: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
@@ -1700,6 +1762,9 @@ define([
 				
 				// translate the view
 				this.$el.i18n();
+
+				// resize the menu
+				resizeDiv($(self.$el.find(".list-group")[1]));
 
 				return this;
 			 }
@@ -1738,7 +1803,7 @@ define([
 		initialize:function() {
 			this.listenTo(this.model, "change", this.render);
 		},
-		
+
 		/**
 		 * Return to the previous view
 		 */
@@ -1932,17 +1997,10 @@ define([
 			var rgb = Raphael.getRGB(colorWheel.color());
 			var hsl = Raphael.rgb2hsl(rgb);
 			
-			// hue
-			lamp.set("color", Math.floor(hsl.h * 65535));
-			lamp.save();
-			
-			// saturation
-			lamp.set("saturation", Math.floor(hsl.s * 255));
-			lamp.save();
-			
-			// brightness
-			lamp.set("brightness", Math.floor(hsl.l * 255));
-			lamp.save();
+			lamp.set({color: Math.floor(hsl.h * 65535), "saturation": Math.floor(hsl.s * 255),"brightness": Math.floor(hsl.l * 255)});
+
+			var result = lamp.save();
+	
 		},
 
 		/**
@@ -2012,17 +2070,23 @@ define([
 						break;
 
 					case 7: // phillips hue
+						var lamp = this.model;
+
 						this.$el.html(this.template({
-							device: this.model,
+							device: lamp,
 							sensorType: $.i18n.t("devices.lamp.name.singular"),
 							locations: locations,
 							deviceDetails: this.tplPhillipsHue
 						}));
 
-						// if the color wheel is not already displayed
-						if (typeof window.colorWheel === "undefined") {
-							this.renderColorWheel();
-						}
+						// get the current color						
+						var color = Raphael.hsl((lamp.get("color") / 65535), (lamp.get("saturation") / 255), (lamp.get("brightness") / 255)); 
+
+						// get the current state
+						var enabled = lamp.get("value");
+
+						// if the lamp is on, we allow the user to pick a color				
+						this.renderColorWheel(enabled, color);
 
 						// update the size of the color picker container
 						this.$el.find(".color-picker").height(colorWheel.size2 * 2);
@@ -2051,6 +2115,9 @@ define([
 				// translate the view
 				this.$el.i18n();
 
+				// resize the panel
+				resizeDiv($(this.$el.find(".list-group")[0]));
+
 				return this;
 			}
 		},
@@ -2058,32 +2125,21 @@ define([
 		/**
 		 * Render the color wheel for the Philips Hue
 		 */
-		renderColorWheel:function() {
+		renderColorWheel:function(enabled, color) {
 			// create the color picker
-			// compute its size
-			var wheelRadius = Math.min(
-				$(".body-content").width(),
-				$(document).height() - this.$el.find(".color-picker").position().top
-			);
-			wheelRadius -= wheelRadius / 10 + 80;
+			var wheelRadius = $(".body-content").outerWidth() / 10 + 80;
 
 			// instantiate the color wheel
-			window.colorWheel = Raphael.colorwheel(
-				$(".body-content").position().left + ($(".body-content").width() - wheelRadius) / 2,
-				this.$el.find(".color-picker").position().top + 160,
-				wheelRadius,
-				"#F00"
-			);
+			window.colorWheel = Raphael.colorwheel($(".color-picker")[0], wheelRadius*2).color(color);
 
 			// bind the events
-			// mobile -> touch
-			if (navigator.userAgent.toLowerCase().match(/(ipad|ipod|iphone|android)/)) {
-				// window.colorWheel.onchange = this.onChangeColor;
-				window.colorWheel.ring.node.ontouchend = this.onChangeColor;
-				window.colorWheel.square.node.ontouchend = this.onChangeColor;
-			} else { // desktop -> drag w/ the mouse
-				window.colorWheel.ring.node.onmouseup = this.onChangeColor;
-				window.colorWheel.square.node.onmouseup = this.onChangeColor;
+			if(typeof enabled !== undefined && enabled === "true"){
+				// color change enabled
+				window.colorWheel.ondrag(null, this.onChangeColor);
+			}
+			else{
+				// color change disabled
+				window.colorWheel.onchange(function(){window.colorWheel.color(color)});
 			}
 		}
 	});
@@ -2190,6 +2246,9 @@ define([
 				
 				// translate the view
 				this.$el.i18n();
+
+				// resize the list
+				resizeDiv($(".contents-list"));
 
 				return this;
 			}

@@ -9,7 +9,8 @@
 		"rename-button"	: "Renommer",
 		"delete-button"	: "Supprimer",
 		"edit-button"	: "Editer",
-		"save-button"	: "Sauvegarder"
+		"save-button"	: "Sauvegarder",
+		"saving-button" : "En cours..."
 	},
 	"navbar" : {
 		"places"			: "Pièces",
@@ -76,11 +77,17 @@
 		"add-button"		: "Ajouter programme"
 	},
 	"modal-add-program"	: {
-		"title"					: "Ajouter programme",
+		"title"				: "Ajouter programme",
 		"name-label"			: "Nom",
 		"name-placeholder"		: "Nom du programme",
 		"name-empty"			: "Le nom du programme doit être renseigné.",
 		"name-already-existing"	: "Nom de programme déjà existant"
+	},
+	"modal-edit-program"	: {
+		"title"				: "Renommer programme",
+		"program-name"			: "Nom du programme",
+		"program-name-empty"		: "Le nom du programme doit être renseigné.",
+		"program-already-existing"	: "Nom du programme déjà existant."
 	},
 	"devices" : {
 		"device-no-name"	: "Dispositif sans nom",
@@ -202,10 +209,10 @@
 	"language" : {
 		"written-by"								: "ecrit par",
 		"when-keyword"								: "au moment ou",
-		"end-when-block"							: "fin de au moment ou",
+		"end-when-block"							: ".",
 		"if-keyword"								: "si",
 		"else-keyword"								: "sinon",
-		"end-if-block"								: "fin du si",
+		"end-if-block"								: ".",
 		"then-keyword"								: "alors",
 		"activate-program-action"					: "activer le programme",
 		"disactivate-program-action"				: "desactiver le programme",

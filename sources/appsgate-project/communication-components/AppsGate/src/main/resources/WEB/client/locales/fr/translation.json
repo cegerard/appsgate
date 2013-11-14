@@ -9,7 +9,8 @@
 		"rename-button"	: "Renommer",
 		"delete-button"	: "Supprimer",
 		"edit-button"	: "Editer",
-		"save-button"	: "Sauvegarder"
+		"save-button"	: "Sauvegarder",
+		"saving-button" : "En cours..."
 	},
 	"navbar" : {
 		"places"			: "Pièces",
@@ -58,11 +59,17 @@
 		"time-speed-label"		: "Vitesse"
 	},
 	"modal-add-program"	: {
-		"title"					: "Ajouter programme",
+		"title"				: "Ajouter programme",
 		"name-label"			: "Nom",
 		"name-placeholder"		: "Nom du programme",
 		"name-empty"			: "Le nom du programme doit être renseigné.",
 		"name-already-existing"	: "Nom de programme déjà existant"
+	},
+	"modal-edit-program"	: {
+		"title"				: "Renommer programme",
+		"program-name"			: "Nom du programme",
+		"program-name-empty"		: "Le nom du programme doit être renseigné.",
+		"program-already-existing"	: "Nom du programme déjà existant."
 	},
 	"places-details" : {
 		"place-no-name"	: "Pièce sans nom",

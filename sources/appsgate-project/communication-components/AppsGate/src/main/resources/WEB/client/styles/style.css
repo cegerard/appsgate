@@ -1,5 +1,28 @@
 body {
 	padding-top: 70px;
+	overflow: hidden;
+}
+
+.alert {
+	clear: both;
+}
+
+.div-scrollable {
+	overflow-y: auto;
+	margin-bottom: 20px;
+	border: 1px solid #999999; 
+	border-radius: 4px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.color-picker {
+	margin:auto;
+}
+
+.expected-input {
+	padding: 10px;
+    	background: #DDDDDD;
+	margin-top: 50px;
 }
 
 .list-group-item > img {
@@ -61,3 +84,41 @@ body {
 .programInput > .popover button.delete-popover-button {
 	margin-top: 10px;
 }
+
+.led {
+	width: 27px; height:27px; 
+	margin-right: 10px;
+	border: 1px solid #999999; border-radius: 20px;
+}
+
+.led-default{
+    background: #999999;
+}
+
+.led-red{
+    background: #FF0000;
+}
+
+.led-green{
+    background: #00FF00;
+}
+
+::-webkit-scrollbar {
+  width: 8px; 
+  background-color: rgba(0,0,0,0);
+  -webkit-border-radius: 100px;
+}
+
+::-webkit-scrollbar:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+ 
+::-webkit-scrollbar-thumb:vertical {
+  background: rgba(0,0,0,0.05);
+  -webkit-border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:vertical:active {
+  background: rgba(0,0,0,0.61); /* Some darker color when you click it */
+  -webkit-border-radius: 100px;
+}
+

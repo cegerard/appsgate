@@ -44,6 +44,33 @@ define([
 	// instantiate the router
 	var router = new Location.Router();
 
+	/**
+	 * Resizes the div to the maximum displayable size on the screen
+	 */	
+	function resizeDiv(jqNode){
+		if(typeof jqNode !== "undefined"){
+			jqNode[0].classList.add("div-scrollable");
+			setTimeout(function(){
+				var divSize = window.innerHeight-(jqNode.offset().top + jqNode.outerHeight(true) - jqNode.innerHeight());
+
+				// if there isn't enough space to display the whole div, we adjust its size to the screen
+				if(divSize<jqNode.outerHeight(true)){	
+					jqNode.height(divSize);
+				}
+
+				// if there is an active element, make it visible
+				var activeItem = jqNode.children(".list-group-item.active")[0];
+				if(typeof activeItem !== "undefined"){
+					jqNode.scrollTop((activeItem.offsetTop)-($(".list-group-item")[1].offsetTop));
+				}
+				// otherwise display the top of the list
+				else{
+					jqNode.scrollTop(0);
+				}
+			}, 0);
+		}
+	}
+
 	// model
 	Location.Model = Backbone.Model.extend({
 
@@ -469,9 +496,45 @@ define([
 			this.listenTo(locations, "add", this.render);
 			this.listenTo(locations, "change", this.render);
 			this.listenTo(locations, "remove", this.render);
-			this.listenTo(devices, "change", this.render);
+			this.listenTo(devices, "change", this.onChangedDevice);
 		},
 		
+		/**
+		 * Method called when a device has changed
+		 * @param model Model that changed, Device in that cas
+		 * @param collection Collection that holds the changed model
+		 * @param options Options given with the change event 	
+		 */
+		onChangedDevice:function(model, collection, options) {
+			// a device has changed
+			// if it's the clock, we refresh the clock only
+			if(typeof options !== "undefined" && options.clockRefresh){
+				this.refreshClockDisplay();
+			}
+			// otherwise we rerender the whole view
+			else{
+				this.render();
+			}
+		},
+
+		/**
+		 * Refreshes the time display without rerendering the whole screen
+		 */
+		refreshClockDisplay:function() {
+
+			if (typeof devices.getCoreClock() !== "undefined") { // dirty hack to avoid a bug when reconnecting - TODO
+				//remove existing node
+				$(this.$el.find(".list-group")[0]).children().remove();
+
+				//refresh the clock
+				$(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
+					device	: devices.getCoreClock(),
+					active	: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
+				}));
+			}
+		},
+
+
 		/**
 		 * Update the side menu to set the correct active element
 		 * 
@@ -592,8 +655,19 @@ define([
 					}));
 				}
 
+				// "add place" button to the side menu
+				this.$el.append(this.tplAddPlaceButton());
+
 				// for each location, add a menu item
 				this.$el.append(this.tpl());
+				
+				// put the unlocated devices into a separate group list
+				//this.$el.append(this.tpl());
+				$(this.$el.find(".list-group")[1]).append(this.tplPlaceContainer({
+					place	: locations.get("-1"),
+					active	: Backbone.history.fragment.split("/")[1] === "-1" ? true : false
+				}));
+
 				locations.forEach(function(location) {
 					if (location.get("id") !== "-1") {
 						$(self.$el.find(".list-group")[1]).append(self.tplPlaceContainer({
@@ -603,18 +677,11 @@ define([
 					}
 				});
 
-				// put the unlocated devices into a separate group list
-				this.$el.append(this.tpl());
-				$(this.$el.find(".list-group")[2]).append(this.tplPlaceContainer({
-					place	: locations.get("-1"),
-					active	: Backbone.history.fragment.split("/")[1] === "-1" ? true : false
-				}));
-
-				// "add place" button to the side menu
-				this.$el.append(this.tplAddPlaceButton());
-				
 				// translate the menu
 				this.$el.i18n();
+
+				// resize the menu
+				resizeDiv($(self.$el.find(".list-group")[1]));
 
 				return this;
 			}
@@ -831,6 +898,9 @@ define([
 				
 				// translate the view
 				this.$el.i18n();
+
+				// resize the devices list in the selected location
+				resizeDiv($(".contents-list"));
 
 				return this;
 			}

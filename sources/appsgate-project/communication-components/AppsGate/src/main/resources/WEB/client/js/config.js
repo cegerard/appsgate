@@ -17,7 +17,7 @@ require.config({
         // underscore library
         underscore: "libs/underscore/underscore",
         // Backbone.js library
-        backbone: "libs/backbone/backbone-1.0.0.min",
+        backbone: "libs/backbone/backbone",
 		// Raphael.js library
 		raphael: "libs/raphael/raphael.2.1.0.amd",
 		// Color wheel Raphael.js plugin

@@ -9,7 +9,8 @@
 		"rename-button"	: "Rename",
 		"delete-button"	: "Delete",
 		"edit-button"	: "Edit",
-		"save-button"	: "Save"
+		"save-button"	: "Save",
+		"saving-button" : "Saving..."
 	},
 	"navbar" : {
 		"places"			: "Places",
@@ -77,6 +78,12 @@
 		"name-placeholder"		: "Program's name",
 		"name-empty"			: "The program must have a name.",
 		"name-already-existing"	: "The program's name is already existing"
+	},
+	"modal-edit-program"	: {
+		"title"				: "Rename program",
+		"program-name"			: "Program's name",
+		"program-name-empty"		: "The program must have a name.",
+		"program-already-existing"	: "The program's name is already existing"
 	},
 	"devices" : {
 		"device-no-name"	: "Device with no name",
@@ -187,10 +194,10 @@
 	"language" : {
 		"written-by"								: "written by",
 		"when-keyword"								: "when",
-		"end-when-block"							: "end of when",
+		"end-when-block"							: ".",
 		"if-keyword"								: "if",
 		"else-keyword"								: "else",
-		"end-if-block"								: "end of if",
+		"end-if-block"								: ".",
 		"then-keyword"								: "then",
 		"activate-program-action"					: "start the program",
 		"disactivate-program-action"				: "stop the program",

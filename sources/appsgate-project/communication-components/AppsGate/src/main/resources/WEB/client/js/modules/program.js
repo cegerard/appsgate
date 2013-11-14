@@ -38,23 +38,52 @@ define([
 		details:function(id) {
 			appRouter.showView(new Program.Views.Editor({ model : programs.get(id) }));
 		}
+
 	});
 
 	// instantiate the router
 	var router = new Program.Router();
+
+	/**
+	 * Resizes the div of program list or program input to the maximum displayable size on the screen
+	 */	
+	function resizeDiv(jqNode){
+		if(typeof jqNode !== "undefined"){
+			jqNode[0].classList.add("div-scrollable");
+			setTimeout(function(){
+				var divSize = window.innerHeight-(jqNode.offset().top + jqNode.outerHeight(true) - jqNode.innerHeight());
+
+				// if there isn't enough space to display the whole div, we adjust its size to the screen
+				if(divSize<jqNode.outerHeight(true)){	
+					jqNode.height(divSize);
+				}
+
+				// if there is an active element, make it visible
+				var activeItem = jqNode.children(".list-group-item.active")[0];
+				if(typeof activeItem !== "undefined"){
+					jqNode.scrollTop((activeItem.offsetTop)-($(".list-group-item")[1].offsetTop));
+				}
+				// otherwise display the top of the list
+				else{
+					jqNode.scrollTop(0);
+				}
+			}, 0);
+		}
+	}
 
 	// model
 	Program.Model = Backbone.Model.extend({
 		// default values
 		defaults: {
 			runningState : "DEPLOYED",
+			modified : true,
 			userInputSource : "",
 			source : {
 				programName : "",
 				seqParameters : [],
 				author : "",
 				target : "",
-				daemon : "false",
+				daemon : "true",
 				seqDefinitions : [],
 				seqRules : [
 					[]
@@ -150,6 +179,7 @@ define([
 			return {
 				id				: this.get("id"),
 				runningState	: this.get("runningState"),
+				modified	: this.get("modified"),
 				source			: this.get("source"),
 				userInputSource	: this.get("userInputSource")
 			}
@@ -236,9 +266,7 @@ define([
 			"show.bs.modal #add-program-modal"				: "initializeModal",
 			"hidden.bs.modal #add-program-modal"			: "toggleModalValue",
 			"click #add-program-modal button.valid-button"	: "validAddProgram",
-			"keyup #add-program-modal input:text"			: "validAddProgram",
-			"click button.start-program-button"				: "onStartProgramButton",
-			"click button.stop-program-button"				: "onStopProgramButton"
+			"keyup #add-program-modal input:text"			: "validAddProgram"
 		},
 		
 		/**
@@ -250,7 +278,7 @@ define([
 			this.listenTo(programs, "add", this.render);
 			this.listenTo(programs, "remove", this.render);
 			this.listenTo(programs, "change", this.render);
-			this.listenTo(devices.getCoreClock(), "change", this.render);
+			this.listenTo(devices.getCoreClock(), "change", this.refreshClockDisplay);
 		},
 		
 		/**
@@ -270,6 +298,22 @@ define([
 			}
 		},
 		
+		/**
+		 * Refreshes the time display without rerendering the whole screen
+		 */
+		refreshClockDisplay:function() {
+			
+			//remove existing node
+			$(this.$el.find(".list-group")[0]).children().remove();
+
+			//refresh the clock
+			$(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
+				device	: devices.getCoreClock(),
+				active	: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
+			}));
+
+		},
+
 		/**
 		 * Clear the input text, hide the error message, check the checkbox and disable the valid button by default
 		 */
@@ -330,6 +374,7 @@ define([
 		 * @param e JS event
 		 */
 		validAddProgram:function(e) {
+  			var self = this;
 			if (e.type === "keyup" && e.keyCode === 13 || e.type === "click") {
 				// create the program if the name is ok
 				if (this.checkProgramName()) {
@@ -350,6 +395,24 @@ define([
 
 						// add it to the collection
 						programs.add(program);
+
+						// display the new program
+						appRouter.showView(new Program.Views.Editor({ model : program }));
+			
+						// update the url to the new program
+						appRouter.navigate("#programs/" + program.get("id"));
+
+						// set the current program active
+						_.forEach($("a.list-group-item"), function(item) {
+							if(item.id === "side-"+program.id){
+								$(item).addClass("active");
+								$(self.$el.find(".list-group")[1]).scrollTop(1000);
+							}
+							else{
+								$(item).removeClass("active");
+							}
+						});
+
 					});
 					
 					// hide the modal
@@ -360,6 +423,92 @@ define([
 			}
 		},
 		
+		/**
+		 * Render the side menu
+		 */
+		render:function() {
+			if (!appRouter.isModalShown) {
+				var self = this;
+
+				// initialize the content
+				this.$el.html(this.tpl());
+
+				// put the time on the top of the menu
+				$(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
+					device	: devices.getCoreClock(),
+					active	: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
+				}));
+
+				// "add program" button to the side menu
+				this.$el.append(this.tplAddProgramButton());
+
+				// for each program, add a menu item
+				this.$el.append(this.tpl());
+				var programsDiv = $(self.$el.find(".list-group")[1]);
+
+				// we build a temporary container with each model
+ 				var container = document.createDocumentFragment();
+				programs.forEach(function(program) {
+					$(container).append(self.tplProgramContainer({
+						program : program,
+						active	: Backbone.history.fragment.split("/programs")[1] === program.get("name") ? true : false
+					}));
+				});
+
+				// we add all elements all at once to avoid rendering them individually and thus reflowing the dom 					several times
+				programsDiv.append(container);
+
+				// set active the current menu item
+				this.updateSideMenu();
+				
+				// translate the view
+				this.$el.i18n();
+
+				// fix the programs list size to be able to scroll through it
+				resizeDiv(programsDiv);
+
+				return this;
+			}
+		}
+
+	});
+	
+	/**
+	 * Render the editor view
+	 */
+	Program.Views.Editor = Backbone.View.extend({
+		tplEditor : _.template(programEditorTemplate),
+		
+		events : {
+			"show.bs.modal #edit-program-name-modal"			: "initializeModal",
+			"hidden #edit-program-name-modal"				: "render",
+			"click #edit-program-name-modal button.valid-button"		: "validEditName",
+			"keyup #edit-program-name-modal input"				: "validEditName",
+			"click button.start-program-button"				: "onStartProgramButton",
+			"click button.stop-program-button"				: "onStopProgramButton",
+			"click button.save-program-button"				: "onSaveProgramButton",
+			"click button.delete-program-button"				: "onDeleteProgramButton",
+			"keyup textarea"						: "onKeyUpTextarea",
+			"click .expected-elements > button.completion-button"		: "onClickCompletionButton",
+			"click .programInput > span"					: "onClickSourceElement",
+			"click button.valid-value"					: "onValidValueButton",
+			"click button.deleted-elements"					: "onClickDeletedElements",
+			"click button.value-popover-button"				: "onClickValuePopoverButton",
+			"click button.valid-value-popover-button"			: "onClickValidValuePopoverButton",
+			"click button.device-popover-button"				: "onClickDevicePopoverButton",
+			"click button.delete-popover-button"				: "onClickDeletePopoverButton",
+			"click button.close-popover-button"				: "onClickClosePopoverButton"
+		},
+		
+		/**
+		 * @constructor
+		 */
+		initialize:function() {
+			if (typeof this.model !== "undefined") {
+				this.userInputSource = this.model.get("name") + " " + $.i18n.t("language.written-by") + " Bob pour Alice ";
+			}
+		},
+
 		/**
 		 * Callback to start a program
 		 * 
@@ -407,85 +556,110 @@ define([
 		},
 		
 		/**
-		 * Render the side menu
-		 */
-		render:function() {
-			if (!appRouter.isModalShown) {
-				var self = this;
-
-				// initialize the content
-				this.$el.html(this.tpl());
-
-				// put the time on the top of the menu
-				$(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-					device	: devices.getCoreClock(),
-					active	: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-				}));
-
-				// for each program, add a menu item
-				this.$el.append(this.tpl());
-				programs.forEach(function(program) {
-					$(self.$el.find(".list-group")[1]).append(self.tplProgramContainer({
-						program : program,
-						active	: Backbone.history.fragment.split("/programs")[1] === program.get("name") ? true : false
-					}));
-				});
-
-				// "add program" button to the side menu
-				this.$el.append(this.tplAddProgramButton());
-
-				// set active the current menu item
-				this.updateSideMenu();
-				
-				// translate the view
-				this.$el.i18n();
-
-				return this;
-			}
-		}
-
-	});
-	
-	/**
-	 * Render the editor view
-	 */
-	Program.Views.Editor = Backbone.View.extend({
-		tplEditor : _.template(programEditorTemplate),
-		
-		events : {
-			"click button.save-program-button"							: "onSaveProgramButton",
-			"click button.delete-program-button"						: "onDeleteProgramButton",
-			"keyup textarea"											: "onKeyUpTextarea",
-			"click .expected-elements > button.completion-button"		: "onClickCompletionButton",
-			"click .programInput > span"								: "onClickSourceElement",
-			"click button.valid-value"									: "onValidValueButton",
-			"click button.deleted-elements"								: "onClickDeletedElements",
-			"click button.value-popover-button"							: "onClickValuePopoverButton",
-			"click button.valid-value-popover-button"					: "onClickValidValuePopoverButton",
-			"click button.device-popover-button"						: "onClickDevicePopoverButton",
-			"click button.delete-popover-button"						: "onClickDeletePopoverButton",
-			"click button.close-popover-button"							: "onClickClosePopoverButton"
-		},
-		
-		/**
-		 * @constructor
-		 */
-		initialize:function() {
-			if (typeof this.model !== "undefined") {
-				this.userInputSource = this.model.get("name") + " " + $.i18n.t("language.written-by") + " Bob pour Alice ";
-			}
-		},
-		
-		/**
 		 * Callback when the user has clicked on the button to save modifications done on a program. Send the update to the server
 		 */
 		onSaveProgramButton:function() {
+
+			this.model.set("modified", false);
+
+			// replace span text
+			if (!$(".save-span").hasClass("hidden") && $(".saving-span").hasClass("hidden")) {
+				$(".save-span").addClass("hidden");
+				$(".saving-span").removeClass("hidden");
+			}
+		
+			// save the model
 			this.model.save();
 			
 			// hide the deleted elements
 			if (!$(".deleted-elements").hasClass("hidden")) {
 				$(".deleted-elements").addClass("hidden");
 			}
+
+			// after a while reset save button text, TODO: get info from server when the programm is saved
+			setTimeout(function(){
+				$(".save-span").removeClass("hidden");
+				$(".saving-span").addClass("hidden");
+				$(".start-program-button").prop("disabled",false);
+			}, 1000);
+
+		},
+
+		/**
+		 * Clear the input text, hide the error message and disable the valid button by default
+		 */
+		initializeModal:function() {
+			$("#edit-program-name-modal input").val(this.model.get("name"));
+			$("#edit-program-name-modal .text-danger").addClass("hide");
+			$("#edit-program-name-modal .valid-button").addClass("disabled");
+		},
+
+		/**
+		 * Check the current value of the input text and show a message error if needed
+		 * 
+		 * @return false if the typed name already exists, true otherwise
+		 */
+		checkProgramName:function() {
+			// name is empty
+			if ($("#edit-program-name-modal input").val() === "") {
+				$("#edit-program-name-modal .text-danger").removeClass("hide");
+				$("#edit-program-name-modal .text-danger").text($.i18n.t("modal-edit-program.program-name-empty"));
+				$("#edit-program-name-modal .valid-button").addClass("disabled");
+				
+				return false;
+			}
+			
+			// name already existing
+			if (programs.where({ name : $("#edit-program-name-modal input").val() }).length > 0) {
+				$("#edit-program-name-modal .text-danger").removeClass("hide");
+				$("#edit-program-name-modal .text-danger").text($.i18n.t("modal-edit-program.program-already-existing"));
+				$("#edit-program-name-modal .valid-button").addClass("disabled");
+				
+				return false;
+			}
+			
+			//ok
+			$("#edit-program-name-modal .text-danger").addClass("hide");
+			$("#edit-program-name-modal .valid-button").removeClass("disabled");
+			
+			return true;
+		},
+				
+		/**
+		 * Check if the name of the program does not already exist. If not, update the program
+		 * Hide the modal when done
+		 */
+		validEditName:function(e) {
+			var self = this;
+			
+			if (e.type === "keyup" && e.keyCode === 13 || e.type === "click") {
+				e.preventDefault();
+				
+				// update the name if it is ok
+				if (this.checkProgramName()) {
+					this.$el.find("#edit-program-name-modal").on("hidden.bs.modal", function() {
+						// set the new name to the place
+						self.model.set("name", $("#edit-program-name-modal input").val());
+						self.model.get("source").programName = $("#edit-program-name-modal input").val();
+
+						// send the update to the backend
+						self.model.save();
+						
+						return false;
+					});
+					
+					$("#edit-program-name-modal").on("hidden.bs.modal",function(){
+						self.render();
+					});
+
+					// hide the modal
+					$("#edit-program-name-modal").modal("hide");
+
+				}
+			} else if (e.type === "keyup") {
+				this.checkProgramName();
+			}
+
 		},
 		
 		/**
@@ -500,10 +674,12 @@ define([
 		},
 		
 		onKeyUpTextarea:function() {
+			this.model.set("modified", true);
 			this.compileProgram();
 		},
 		
 		onClickCompletionButton:function(e) {
+			this.model.set("modified", true);
 			if ($(e.currentTarget).text() === $.i18n.t("language.space")) {
 				// $(".programInput").append(" ");
 			} else {
@@ -513,6 +689,7 @@ define([
 		},
 
 		onClickSourceElement:function(e) {
+			this.model.set("modified", true);
 			var i = $(".programInput").children().toArray().indexOf(e.currentTarget);
 			var before = $(".programInput").children().splice(0, i);
 			var after = $(".programInput").children().splice(i + 1, $(".programInput").children().length);
@@ -603,17 +780,20 @@ define([
 		},
 		
 		onValidValueButton:function() {
+			this.model.set("modified", true);
 			$(".programInput").append("<span class='value'>" + $(".expected-elements input").val() + "</span>");
 			this.compileProgram();
 		},
 		
 		onClickDeletedElements:function() {
+			this.model.set("modified", true);
 			$(".programInput").append($("button.deleted-elements").html());
 			$("button.deleted-elements").addClass("hidden");
 			this.compileProgram();
 		},
 		
 		onClickValuePopoverButton:function(e) {
+			this.model.set("modified", true);
 			var self = this;
 			this.valueToReplace.text($(e.currentTarget).text());
 			
@@ -629,6 +809,7 @@ define([
 		},
 		
 		onClickValidValuePopoverButton:function() {
+			this.model.set("modified", true);
 			var self = this;
 			this.valueToReplace.text($(".programInput > .popover input").val());
 			
@@ -644,6 +825,7 @@ define([
 		},
 		
 		onClickDevicePopoverButton:function(e) {
+			this.model.set("modified", true);
 			var self = this;
 			this.valueToReplace.text($(e.currentTarget).text());
 			
@@ -659,6 +841,7 @@ define([
 		},
 		
 		onClickDeletePopoverButton:function() {
+			this.model.set("modified", true);
 			var self = this;
 			 //.indexOf(this.valueToReplace));
 			
@@ -685,6 +868,7 @@ define([
 		},
 		
 		onClickClosePopoverButton:function() {
+			this.model.set("modified", true);
 			var self = this;
 			
 			this.valueToReplace.on("hidden.bs.popover", function() {
@@ -698,13 +882,14 @@ define([
 		},
 
 		compileProgram:function() {
+
+			var self = this;
+
 			// build the beginning of the user input source to be given to the parser
 			var programInput = this.model.get("name") + " " + $.i18n.t("language.written-by") + " Bob pour Alice ";
 			programInput += $(".programInput").html();
 			programInput = programInput.replace(/"/g, "'");
 			
-			console.log(programInput);
-
 			// clear the error span
 			$(".expected-elements").html("");
 
@@ -716,8 +901,6 @@ define([
 				this.model.set("source", ast);
 				this.model.set("userInputSource", $(".programInput").html());
 
-				console.log(ast);
-				
 				// include a syntax error to the program input to get the next possibilities if the user wants to add rules
 				try {
 					grammar.parse(programInput + " ");
@@ -785,12 +968,18 @@ define([
 							.css("font-style", "italic");
 				}
 			}
+
+			// fix the program input size to be able to scroll through it
+			resizeDiv($(self.$el.find(".editorWorkspace")[0]));
 		},
 
 		/**
 		 * Render the editor view
 		 */
 		render:function() {
+			
+			var self = this;
+
 			// render the editor with the program
 			this.$el.html(this.tplEditor({
 				program : this.model
@@ -802,12 +991,24 @@ define([
 				content		: "<button type='button' class='btn btn-danger delete-program-button'>" + $.i18n.t("form.delete-button") + "</button>",
 				placement	: "bottom"
 			});
+
+			// put the name of the place by default in the modal to edit
+			$("#edit-program-name-modal .program-name").val(this.model.get("name"));
+
+			// hide the error message
+			$("#edit-program-name-modal .text-error").hide();
 			
 			// try to compile the program to show the potential errors
 			if (typeof this.model !== "undefined") {
 				this.compileProgram();
 			}
+
+			// fix the programs list size to be able to scroll through it
+			resizeDiv($(self.$el.find(".editorWorkspace")[0]));
 			
+			// disable start button if there is unsaved changes
+			$(".start-program-button").prop("disabled",this.model.get("modified"));
+
 			// translate the view
 			this.$el.i18n();
 			
