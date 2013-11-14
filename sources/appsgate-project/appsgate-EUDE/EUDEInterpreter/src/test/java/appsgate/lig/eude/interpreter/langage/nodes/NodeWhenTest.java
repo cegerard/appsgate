@@ -28,6 +28,8 @@ public class NodeWhenTest extends NodeTest {
             this.instance = new NodeWhen(null, this.ruleJSON);
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
+        } catch (NodeException ex) {
+            System.out.println(ex.getMessage());
         }
 
     }

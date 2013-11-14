@@ -7,7 +7,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import junit.framework.Assert;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,8 +27,8 @@ public class NodeSeqAndBoolTest extends NodeTest {
         try {
             this.seqTest = new NodeSeqAndBool(null, new JSONArray());
             this.instance = this.seqTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON Ex : " + ex.getMessage());
+        } catch (NodeException ex) {
+            System.out.println(ex.getMessage());
         }
 
     }

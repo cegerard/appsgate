@@ -6,7 +6,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.Before;
 
 /**
@@ -23,7 +22,7 @@ public class NodeSeqEventTest extends NodeTest {
     public void setUp() {
         try {
             this.instance = new NodeSeqEvent(null, new JSONArray());
-        } catch (JSONException ex) {
+        } catch (NodeException ex) {
             System.out.println("JSON Exception: " + ex);
         }
 

@@ -3,7 +3,7 @@
     "runningState": "DEPLOYED",
     "userInputSource": "",
     "source": {
-        "daemon": "true",
+        "daemon": false,
         "programName": "ColorLoopMode",
         "seqParameters": [],
         "author": "Bob",
@@ -11,13 +11,6 @@
         "seqDefinitions": [],
         "seqRules": [
             [
-                {
-                    "type": "NodeAction",
-                    "targetId": "test",
-                    "methodName": "close",
-                    "args":[],
-                    "targetType": "device"
-                },
                 {
                     "type": "NodeAction",
                     "targetId": "test",
@@ -31,8 +24,14 @@
                     "methodName": "redAlert",
                     "targetType": "test",
                     "args":[]
-                }
-            ]
+                },
+                {
+                    "type": "NodeAction",
+                    "targetId": "test",
+                    "methodName": "close",
+                    "args":[],
+                    "targetType": "device"
+                }            ]
         ]
     }
 }

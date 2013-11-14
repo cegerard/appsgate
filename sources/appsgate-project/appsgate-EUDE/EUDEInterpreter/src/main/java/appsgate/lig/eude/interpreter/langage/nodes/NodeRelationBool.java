@@ -6,13 +6,17 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node for the boolean relations
  *
  * <relationBool> ::= <term> <opComparison> <term>
  * <term> ::= NodeAction | number | string | boolean
- * <term> can be a NodeAction in the case where the value is provided by a device. In this case, a method call has to be performed
+ * <term> can be a NodeAction in the case where the value is provided by a
+ * device. In this case, a method call has to be performed
+ *
  * @author Rémy Dautriche
  * @author Cédric Gérard
  *
@@ -21,6 +25,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  */
 public class NodeRelationBool extends Node {
 
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
+    
     private final String operator;
     private Object leftValue;
     private NodeAction leftNodeAction;
@@ -48,26 +55,26 @@ public class NodeRelationBool extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param relationBoolJSON JSON representation of the node
-     * @throws JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeRelationBool(EUDEInterpreterImpl interpreter, JSONObject relationBoolJSON) throws JSONException {
+    public NodeRelationBool(EUDEInterpreterImpl interpreter, JSONObject relationBoolJSON) throws NodeException {
         super(interpreter);
 
         // operator
-        operator = relationBoolJSON.getString("operator");
-
+        operator = getJSONString(relationBoolJSON, "operator");
+        
         JSONObject operand;
 
         // left operand
-        operand = relationBoolJSON.getJSONObject("leftOperand");
-        if (operand.has("targetId")) {
+        operand = getJSONObject(relationBoolJSON, "leftOperand");
+        if (operand.has("deviceId")) {
             leftNodeAction = new NodeAction(interpreter, operand);
-            leftReturnType = operand.getString("returnType");
+            leftReturnType = getJSONString(operand, "returnType");
             leftValue = null;
         } else {
-            leftReturnType = operand.getString("type");
-            String valueJSON = operand.getString("value");
-
+            leftReturnType = getJSONString(operand, "type");
+            String valueJSON = getJSONString(operand, "value");
+            
             if (leftReturnType.equals("number")) {
                 leftValue = new Double(valueJSON);
             } else if (leftReturnType.equals("boolean")) {
@@ -78,15 +85,15 @@ public class NodeRelationBool extends Node {
         }
 
         // right operand
-        operand = relationBoolJSON.getJSONObject("rightOperand");
+        operand = getJSONObject(relationBoolJSON, "rightOperand");
         if (operand.has("deviceId")) {
             rightNodeAction = new NodeAction(interpreter, operand);
-            rightReturnType = operand.getString("returnType");
+            rightReturnType = getJSONString(operand, "returnType");
             rightValue = null;
         } else {
-            rightReturnType = operand.getString("type");
-            String valueJSON = operand.getString("value");
-
+            rightReturnType = getJSONString(operand, "type");
+            String valueJSON = getJSONString(operand, "value");
+            
             if (rightReturnType.equals("number")) {
                 rightValue = new Double(valueJSON);
             } else if (rightReturnType.equals("boolean")) {
@@ -95,10 +102,7 @@ public class NodeRelationBool extends Node {
                 rightValue = valueJSON;
             }
         }
-
-		// two thread - one for each operand
-        //pool = Executors.newFixedThreadPool(2);
-        // nothing has been computed yet
+        
         result = null;
     }
 
@@ -109,14 +113,14 @@ public class NodeRelationBool extends Node {
      * @param value
      * @throws JSONException
      */
-    private void parseOperand(JSONObject operand, NodeAction nodeAction, Object value) throws JSONException {
+    private void parseOperand(JSONObject operand, NodeAction nodeAction, Object value) throws JSONException, NodeException {
         if (operand.has("deviceId")) {
             nodeAction = new NodeAction(interpreter, operand);
             value = null;
         } else {
             String type = operand.getString("type");
             String valueJSON = operand.getString("value");
-
+            
             if (type.equals("number")) {
                 value = Double.parseDouble(valueJSON);
             } else if (type.equals("boolean")) {
@@ -127,7 +131,7 @@ public class NodeRelationBool extends Node {
             nodeAction = null;
         }
     }
-
+    
     @Override
     public void stop() {
         if (started) {
@@ -143,6 +147,7 @@ public class NodeRelationBool extends Node {
             stopping = false;
         }
     }
+
     /**
      * Launch the interpretation of the node.
      *
@@ -159,6 +164,7 @@ public class NodeRelationBool extends Node {
             computeResult();
             started = false;
             fireEndEvent(new EndEvent(this));
+            return null;
         }
 
         // interpret the left operand first if possible
@@ -171,7 +177,7 @@ public class NodeRelationBool extends Node {
             //pool.submit(rightNodeAction);
             rightNodeAction.call();
         }
-
+        
         return null;
     }
 
@@ -208,7 +214,9 @@ public class NodeRelationBool extends Node {
     public void endEventFired(EndEvent e) {
         NodeAction n = (NodeAction) e.getSource();
         n.removeEndEventListener(this);
-
+        
+        
+        
         if (n == leftNodeAction) {
             // cast the value to the correct type
             if (leftReturnType.equals("number")) {
@@ -223,7 +231,7 @@ public class NodeRelationBool extends Node {
             if (rightNodeAction != null) {
                 rightNodeAction.addEndEventListener(this);
                 rightNodeAction.call();
-				//pool.submit(rightNodeAction);
+                //pool.submit(rightNodeAction);
                 // ... compute the final result and fire the end event otherwise
             } else {
                 computeResult();

@@ -45,7 +45,7 @@ public class NodeProgramTest extends NodeTest {
             source.put("programName", "test");
             source.put("author", "test");
             source.put("target", "test");
-            source.put("daemon", "test");
+            source.put("daemon", false);
             source.put("seqRules", (Collection) null);
             ruleJSON.put("source", source);
 
@@ -54,109 +54,19 @@ public class NodeProgramTest extends NodeTest {
             this.instance = this.programTest;
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
+        } catch (NodeException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
     /**
-     * Test of getId method, of class NodeProgram.
+     * Test of setDaemon method, of class NodeProgram.
      */
     @Test
-    public void testGetId() {
-        System.out.println("getId");
-        String expResult = "test";
-        String result = this.programTest.getId();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getName method, of class NodeProgram.
-     */
-    @Test
-    public void testGetName() {
-        System.out.println("getName");
-        String expResult = "test";
-        String result = this.programTest.getName();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of setName method, of class NodeProgram.
-     */
-    @Test
-    public void testSetName() {
-        System.out.println("setName");
-        String name = "";
-        this.programTest.setName(name);
-    }
-
-    /**
-     * Test of getAuthor method, of class NodeProgram.
-     */
-    @Test
-    public void testGetAuthor() {
-        System.out.println("getAuthor");
-        String expResult = "test";
-        String result = this.programTest.getAuthor();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of setAuthor method, of class NodeProgram.
-     */
-    @Test
-    public void testSetAuthor() {
-        System.out.println("setAuthor");
-        String author = "Toto";
-        this.programTest.setAuthor(author);
-        String result = this.programTest.getAuthor();
-        assertEquals(author, result);
-    }
-
-    /**
-     * Test of getTarget method, of class NodeProgram.
-     */
-    @Test
-    public void testGetTarget() {
-        System.out.println("getTarget");
-        String expResult = "test";
-        String result = this.programTest.getTarget();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of setTarget method, of class NodeProgram.
-     */
-    @Test
-    public void testSetTarget() {
-        System.out.println("setTarget");
-        String target = "Target";
-        this.programTest.setTarget(target);
-
-        String result = this.programTest.getTarget();
-        assertEquals(target, result);
-    }
-
-    /**
-     * Test of getDeamon method, of class NodeProgram.
-     */
-    @Test
-    public void testGetDeamon() {
-        System.out.println("getDeamon");
-        String expResult = "test";
-        String result = this.programTest.getDeamon();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of setDeamon method, of class NodeProgram.
-     */
-    @Test
-    public void testSetDeamon() {
-        System.out.println("setDeamon");
-        String deamon = "dd";
-        this.programTest.setDeamon(deamon);
-        String result = this.programTest.getDeamon();
-        assertEquals(deamon, result);
+    public void testSetDaemon() {
+        System.out.println("setDaemon");
+        this.programTest.setDaemon(true);
+        assertTrue(this.programTest.isDaemon());
     }
 
     /**
@@ -166,7 +76,7 @@ public class NodeProgramTest extends NodeTest {
     public void testIsDeamon() {
         System.out.println("isDeamon");
         boolean expResult = false;
-        boolean result = this.programTest.isDeamon();
+        boolean result = this.programTest.isDaemon();
         assertEquals(expResult, result);
     }
 
@@ -227,23 +137,12 @@ public class NodeProgramTest extends NodeTest {
         src.put("programName", "test");
         src.put("author", "test");
         src.put("target", "test");
-        src.put("daemon", "test");
+        src.put("daemon", true);
         src.put("seqRules", (Collection) null);
         jsonProgram.put("source", src);
 
         boolean expResult = true;
         boolean result = this.programTest.update(jsonProgram);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getInformation method, of class NodeProgram.
-     */
-    @Test
-    public void testGetInformation() {
-        System.out.println("getInformation");
-        JSONObject expResult = this.ruleJSON;
-        JSONObject result = this.programTest.getInformation();
         assertEquals(expResult, result);
     }
 
@@ -271,11 +170,12 @@ public class NodeProgramTest extends NodeTest {
 
     /**
      * Test of call method, of class NodeAction.
+     *
      * @throws java.lang.Exception
      */
     @Test
     @Override
-    public void testCall() throws Exception{
+    public void testCall() throws Exception {
         System.out.println("call");
         Integer expResult = 1;
         Integer result = this.instance.call();

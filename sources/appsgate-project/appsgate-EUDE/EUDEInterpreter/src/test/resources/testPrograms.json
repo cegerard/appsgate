@@ -3,7 +3,7 @@
     "runningState": "DEPLOYED",
     "userInputSource": "",
     "source": {
-        "daemon": "true",
+        "daemon": true,
         "programName": "ColorLoopMode",
         "seqParameters": [],
         "author": "Bob",
@@ -31,7 +31,15 @@
                     "methodName": "stopProgram",
                     "args": [],
                     "targetType": "program"
+                },
+                {
+                    "type": "NodeAction",
+                    "targetId": "test",
+                    "methodName": "close",
+                    "args": [],
+                    "targetType": "device"
                 }
+
             ]
         ]
     }

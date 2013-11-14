@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  */
 public class NodeExpBool extends Node {
+
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
 
@@ -52,22 +53,24 @@ public class NodeExpBool extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param expBoolJSON JSON representation of the node
-     * @throws org.json.JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeExpBool(EUDEInterpreterImpl interpreter, JSONArray expBoolJSON) throws JSONException {
+    public NodeExpBool(EUDEInterpreterImpl interpreter, JSONArray expBoolJSON) throws NodeException {
         super(interpreter);
 
         // instantiate each sequence and store it in the list
         listSeqAndBool = new ArrayList<NodeSeqAndBool>();
         for (int i = 0; i < expBoolJSON.length(); i++) {
-            listSeqAndBool.add(new NodeSeqAndBool(interpreter, expBoolJSON.getJSONArray(i)));
+            try {
+                listSeqAndBool.add(new NodeSeqAndBool(interpreter, expBoolJSON.getJSONArray(i)));
+            } catch (JSONException ex) {
+                throw new NodeException("NodeExpBool", "item " + i, ex);
+            }
         }
 
         // the result has not been computed yet
         result = null;
 
-        // initialize the pool of threads
-        //pool = Executors.newFixedThreadPool(listSeqAndBool.size());
     }
 
     @Override

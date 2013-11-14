@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -11,12 +10,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Node for the when
- * 
+ *
  *  // <nodeWhen> ::= when ( <nodeEvent> {, <nodeEvent> } ) then <seqAndRules>*
  *
  * @author Rémy Dautriche
  * @author Cédric Gérard
- * 
+ *
  * @since June 25, 2013
  * @version 1.0.0
  */
@@ -33,14 +32,14 @@ public class NodeWhen extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param ruleWhenJSON
-     * @throws JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeWhen(EUDEInterpreterImpl interpreter, JSONObject ruleWhenJSON) throws JSONException {
+    public NodeWhen(EUDEInterpreterImpl interpreter, JSONObject ruleWhenJSON) throws NodeException {
         super(interpreter);
 
         // initialize the sequences of events and rules
-        seqEvent = new NodeSeqEvent(interpreter, ruleWhenJSON.getJSONArray("events"));
-        seqRules = new NodeSeqRules(interpreter, ruleWhenJSON.getJSONArray("seqRulesThen"));
+        seqEvent = new NodeSeqEvent(interpreter, getJSONArray(ruleWhenJSON, "events"));
+        seqRules = new NodeSeqRules(interpreter, getJSONArray(ruleWhenJSON, "seqRulesThen"));
 
     }
 
@@ -89,7 +88,6 @@ public class NodeWhen extends Node {
             }
         }
     }
-
 
     @Override
     public void stop() {

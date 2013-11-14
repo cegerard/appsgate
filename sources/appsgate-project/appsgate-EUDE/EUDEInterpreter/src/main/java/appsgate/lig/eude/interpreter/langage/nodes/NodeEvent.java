@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -55,21 +54,35 @@ public class NodeEvent extends Node {
     }
 
     /**
-     * Default constructor. Instantiate a node when
+     *
+     * @param interpreter
+     * @param s_type
+     * @param s_id
+     * @param name
+     * @param value
+     */
+    public NodeEvent(EUDEInterpreterImpl interpreter, String s_type, String s_id, String name, String value) {
+        super(interpreter);
+        sourceType = s_type;
+        sourceId = s_id;
+        eventName = name;
+        eventValue = value;
+  }
+
+    /**
      *
      * @param interpreter Pointer on the interpreter
      * @param eventJSON JSON representation of the event
-     * @throws JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeEvent(EUDEInterpreterImpl interpreter, JSONObject eventJSON) throws JSONException {
+    public NodeEvent(EUDEInterpreterImpl interpreter, JSONObject eventJSON) throws NodeException {
         super(interpreter);
 
-        sourceType = eventJSON.getString("sourceType");
-        sourceId = eventJSON.getString("sourceId");
-        eventName = eventJSON.getString("eventName");
-        eventValue = eventJSON.getString("eventValue");
+        sourceType = getJSONString(eventJSON, "sourceType");
+        sourceId = getJSONString(eventJSON, "sourceId");
+        eventName = getJSONString(eventJSON, "eventName");
+        eventValue = getJSONString(eventJSON, "eventValue");
 
-        //pool = Executors.newSingleThreadExecutor();
     }
 
     @Override

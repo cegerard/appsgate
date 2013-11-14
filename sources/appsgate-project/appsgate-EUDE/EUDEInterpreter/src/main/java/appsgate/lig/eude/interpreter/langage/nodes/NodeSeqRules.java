@@ -44,15 +44,20 @@ public class NodeSeqRules extends Node {
      *
      * @param interpreter
      * @param seqRulesJSON JSON array containing the rules
-     * @throws org.json.JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON) throws JSONException {
+    public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON) throws NodeException {
         super(interpreter);
 
         seqAndRules = new ArrayList<NodeSeqAndRules>();
 
         for (int i = 0; i < seqRulesJSON.length(); i++) {
-            JSONArray seqAndRulesJSON = seqRulesJSON.getJSONArray(i);
+            JSONArray seqAndRulesJSON;
+            try {
+                seqAndRulesJSON = seqRulesJSON.getJSONArray(i);
+            } catch (JSONException ex) {
+                throw new NodeException("NodeSeqRules", "item " + i, ex);
+            }
             if (seqAndRulesJSON.length() > 0) {
                 seqAndRules.add(new NodeSeqAndRules(interpreter, seqAndRulesJSON));
             }
@@ -63,8 +68,8 @@ public class NodeSeqRules extends Node {
     }
 
     /**
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     private void launchNextSeqAndRules() {
         NodeSeqAndRules seqAndRule;

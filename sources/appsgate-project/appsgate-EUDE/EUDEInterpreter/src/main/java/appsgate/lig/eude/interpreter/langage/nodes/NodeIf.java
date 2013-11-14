@@ -47,25 +47,20 @@ public class NodeIf extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param ruleIfJSON JSON representation of the node
-     * @throws org.json.JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeIf(EUDEInterpreterImpl interpreter, JSONObject ruleIfJSON) throws JSONException {
+    public NodeIf(EUDEInterpreterImpl interpreter, JSONObject ruleIfJSON) throws NodeException {
         super(interpreter);
 
-        this.expBool = new NodeExpBool(interpreter, ruleIfJSON.getJSONArray("expBool"));
-        this.seqRulesTrue = new NodeSeqRules(interpreter, ruleIfJSON.getJSONArray("seqRulesTrue"));
-        this.seqRulesFalse = new NodeSeqRules(interpreter, ruleIfJSON.getJSONArray("seqRulesFalse"));
+        this.expBool = new NodeExpBool(interpreter, getJSONArray(ruleIfJSON, "expBool"));
+        this.seqRulesTrue = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesTrue"));
+        this.seqRulesFalse = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesFalse"));
 
-        /*
-         * Initialize the pool
-         * All the steps of the NodeIf are sequential: 1) expBool 2) trueBranch or falseBranch
-         */
-        //pool = Executors.newSingleThreadExecutor();
     }
 
     @Override
     public void startEventFired(StartEvent e) {
-        System.out.println("NodeIf - StartEvent received!!");
+        LOGGER.debug("StartEvent received!!");
     }
 
     /**

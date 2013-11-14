@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.impl;
 
+import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
 import appsgate.lig.context.history.services.DataBasePullService;
 import appsgate.lig.context.history.services.DataBasePushService;
@@ -12,6 +13,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -25,6 +27,8 @@ import java.util.Map;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.jmock.Mockery;
+import org.jmock.States;
+import org.jmock.lib.concurrent.Synchroniser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,11 +46,24 @@ import static org.junit.Assert.*;
  */
 public class EUDEInterpreterImplTest {
 
-    protected Mockery context = new Mockery();
+    /**
+     *
+     */
+    protected Synchroniser synchroniser = new Synchroniser();
+
+    /**
+     *
+     */
+    protected Mockery context = new Mockery() {
+        {
+            setThreadingPolicy(synchroniser);
+        }
+    };
+    private States tested;
     private DataBasePullService pull_service;
     private DataBasePushService push_service;
     private RouterApAMSpec router;
-    private ContextFollowerSpec contextFollower;
+    private ContextFollowerTest contextFollower;
     private EUDEInterpreterImpl instance;
     private JSONObject programJSON;
 
@@ -66,7 +83,8 @@ public class EUDEInterpreterImplTest {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
-        this.contextFollower = context.mock(ContextFollowerSpec.class);
+        this.contextFollower = new ContextFollowerTest();
+        tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
                 allowing(pull_service).pullLastObjectVersion(with(any(String.class)));
@@ -74,8 +92,9 @@ public class EUDEInterpreterImplTest {
                 allowing(push_service).pushData_change(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 allowing(push_service).pushData_add(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 will(returnValue(true));
+                allowing(router).executeCommand(with("test"), with(any(String.class)), with(any(JSONArray.class)));
+                then(tested.is("Yes"));
                 allowing(router).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
-                allowing(contextFollower).addListener(with(any(EUDEInterpreterImpl.CoreEventListener.class)));
             }
         });
         this.instance = new EUDEInterpreterImpl();
@@ -231,9 +250,10 @@ public class EUDEInterpreterImplTest {
      * Test of addNodeListening method, of class EUDEInterpreterImpl.
      *
      * @throws org.json.JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
     @Test
-    public void testAddNodeListening() throws JSONException {
+    public void testAddNodeListening() throws JSONException, NodeException {
         System.out.println("addNodeListening");
         JSONObject ruleJSON = new JSONObject();
         ruleJSON.put("sourceType", "test");
@@ -249,9 +269,10 @@ public class EUDEInterpreterImplTest {
      * Test of removeNodeListening method, of class EUDEInterpreterImpl.
      *
      * @throws org.json.JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
     @Test
-    public void testRemoveNodeListening() throws JSONException {
+    public void testRemoveNodeListening() throws JSONException, NodeException {
         System.out.println("removeNodeListening");
         JSONObject ruleJSON = new JSONObject();
         ruleJSON.put("sourceType", "test");
@@ -302,13 +323,16 @@ public class EUDEInterpreterImplTest {
      * @throws IOException
      * @throws FileNotFoundException
      * @throws JSONException
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testAddingTestPrograms() throws IOException, FileNotFoundException, JSONException {
-        System.out.println("AddingTestPrograms");
+    public void testActions() throws IOException, FileNotFoundException, JSONException, InterruptedException {
+        System.out.println("Actions");
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testActions.json")));
         Assert.assertTrue(instance.callProgram("testActions"));
-        
+        synchroniser.waitUntil(tested.is("Yes"), 500);
+        Assert.assertTrue(instance.stopProgram("testActions"));
+
     }
 
     /**
@@ -317,14 +341,34 @@ public class EUDEInterpreterImplTest {
      * @throws IOException
      * @throws FileNotFoundException
      * @throws JSONException
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testPrograms() throws IOException, FileNotFoundException, JSONException {
+    public void testPrograms() throws IOException, FileNotFoundException, JSONException, InterruptedException {
         System.out.println("Programs");
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testActions.json")));
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testIf.json")));
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testPrograms.json")));
         Assert.assertTrue(instance.callProgram("testPrograms"));
-        
+        NodeProgram nodeProgram = instance.getNodeProgram("testPrograms");
+        synchroniser.waitUntil(tested.is("Yes"), 500);
+        Assert.assertTrue(nodeProgram.getRunningState() == NodeProgram.RUNNING_STATE.STOPPED);
+    }
+
+    /**
+     * To test whether reading real program is working
+     *
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws JSONException
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testWhen() throws IOException, FileNotFoundException, JSONException, InterruptedException {
+        System.out.println("When");
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
+        Assert.assertTrue(instance.callProgram("TestWhen"));
+        contextFollower.notifAll();
+        synchroniser.waitUntil(tested.is("Yes"), 500);
     }
 
     /**
@@ -354,4 +398,29 @@ public class EUDEInterpreterImplTest {
         return new JSONObject(fileContent);
     }
 
+    /**
+     * Class to make some tests on the events
+     */
+    public class ContextFollowerTest implements ContextFollowerSpec {
+
+        private final ArrayList<CoreListener> list = new ArrayList<CoreListener>();
+
+        @Override
+        public void addListener(CoreListener coreListener) {
+            list.add(coreListener);
+            System.out.println("Listener added: " + list.size());
+        }
+
+        @Override
+        public void deleteListener(CoreListener coreListener) {
+            System.out.println("removing listener: " + coreListener.getObjectId());
+        }
+
+        public void notifAll() {
+            for (CoreListener l : list) {
+                l.notifyEvent();
+            }
+        }
+
+    }
 }

@@ -28,16 +28,21 @@ public class NodeSeqAndRules extends Node {
      *
      * @param interpreter
      * @param seqAndRulesJSON
-     * @throws org.json.JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeSeqAndRules(EUDEInterpreterImpl interpreter, JSONArray seqAndRulesJSON) throws JSONException {
+    public NodeSeqAndRules(EUDEInterpreterImpl interpreter, JSONArray seqAndRulesJSON) throws NodeException {
         super(interpreter);
 
         rules = new ArrayList<Node>();
 
         for (int i = 0; i < seqAndRulesJSON.length(); i++) {
-            JSONObject ruleJSON = seqAndRulesJSON.getJSONObject(i);
-            String nodeType = ruleJSON.getString("type");
+            JSONObject ruleJSON;
+            try {
+                ruleJSON = seqAndRulesJSON.getJSONObject(i);
+            } catch (JSONException ex) {
+                throw new NodeException("NodeSeqAndRules", "item " + i, ex);
+            }
+            String nodeType = getJSONString(ruleJSON, "type");
             if (nodeType.equals("NodeAction")) {
                 rules.add(new NodeAction(interpreter, ruleJSON));
             } else if (nodeType.equals("NodeIf")) {
@@ -45,16 +50,14 @@ public class NodeSeqAndRules extends Node {
             } else if (nodeType.equals("NodeWhen")) {
                 rules.add(new NodeWhen(interpreter, ruleJSON));
             } else if (nodeType.equals("seqRules")) {
-                rules.add(new NodeSeqRules(interpreter, ruleJSON.getJSONArray("rule")));
+                rules.add(new NodeSeqRules(interpreter, getJSONArray(ruleJSON, "rule")));
             }
 
-            // initialize the thread pool
-            //pool = Executors.newFixedThreadPool(rules.size());
         }
     }
 
     @Override
-    public Integer call()  {
+    public Integer call() {
         // no rules are done
         nbRulesEnded = 0;
         started = true;
@@ -65,9 +68,8 @@ public class NodeSeqAndRules extends Node {
                 break;
             }
         }
-       return null;
+        return null;
     }
-
 
     @Override
     public void stop() {

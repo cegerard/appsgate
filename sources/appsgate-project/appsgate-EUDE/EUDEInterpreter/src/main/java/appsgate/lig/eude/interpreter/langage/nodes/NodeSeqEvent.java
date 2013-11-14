@@ -11,9 +11,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 
 /**
  * Node for a list of events
- * 
+ *
  * <seqEvent> ::= <event> {, <event> }
-
+ *
  *
  * @author Rémy Dautriche
  * @author Cédric Gérard
@@ -22,7 +22,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  * @version 1.0.0
  */
 public class NodeSeqEvent extends Node {
-    
+
     /**
      * list of events
      */
@@ -37,19 +37,20 @@ public class NodeSeqEvent extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param seqEventJSON Sequence of event to instantiate in a JSON format
-     * @throws org.json.JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeSeqEvent(EUDEInterpreterImpl interpreter, JSONArray seqEventJSON) throws JSONException {
+    public NodeSeqEvent(EUDEInterpreterImpl interpreter, JSONArray seqEventJSON) throws NodeException {
         super(interpreter);
 
         // instantiate the events
         seqEvent = new ArrayList<NodeEvent>();
         for (int i = 0; i < seqEventJSON.length(); i++) {
-            seqEvent.add(new NodeEvent(interpreter, seqEventJSON.getJSONObject(i)));
+            try {
+                seqEvent.add(new NodeEvent(interpreter, seqEventJSON.getJSONObject(i)));
+            } catch (JSONException ex) {
+                throw new NodeException("NodeSeqEvent", "item " + i, ex);
+            }
         }
-
-        // initialize the thread pool
-        //pool = Executors.newFixedThreadPool(seqEvent.size());
     }
 
     @Override
@@ -79,7 +80,6 @@ public class NodeSeqEvent extends Node {
         return null;
     }
 
-
     @Override
     public void stop() {
         if (started) {
@@ -104,6 +104,5 @@ public class NodeSeqEvent extends Node {
             fireEndEvent(new EndEvent(this));
         }
     }
-
 
 }

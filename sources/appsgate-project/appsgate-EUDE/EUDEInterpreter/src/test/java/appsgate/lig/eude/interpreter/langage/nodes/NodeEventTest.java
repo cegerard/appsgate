@@ -45,6 +45,8 @@ public class NodeEventTest extends NodeTest {
             this.instance = this.eventTest;
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
+        } catch (NodeException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 

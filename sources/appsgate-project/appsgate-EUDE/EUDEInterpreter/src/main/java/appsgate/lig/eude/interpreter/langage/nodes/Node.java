@@ -11,6 +11,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +43,6 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * List of the listeners that listen to the EndEvent of the node
      */
     private final ArrayList<EndEventListener> endEventListeners = new ArrayList<EndEventListener>();
-
-
 
     protected EUDEInterpreterImpl interpreter;
 
@@ -85,6 +86,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     public void startEventFired(StartEvent e) {
         LOGGER.debug("The start event has been fired: " + e.toString());
     }
+
     @Override
     public void endEventFired(EndEvent e) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -192,10 +194,59 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
             return null;
         }
     }
-    
+
     @Override
     public Integer call() {
         return null;
+    }
+
+    /**
+     * Method that retrieve a string from a Json object
+     *
+     * @param jsonObj
+     * @param jsonParam
+     * @return the string corresponding to the jsonParam
+     * @throws NodeException if there is no such parameter in the JSON Object
+     */
+    protected String getJSONString(JSONObject jsonObj, String jsonParam) throws NodeException {
+        try {
+            return jsonObj.getString(jsonParam);
+        } catch (JSONException ex) {
+            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+        }
+    }
+
+    /**
+     * Method that retrieve an array from a Json object
+     *
+     * @param jsonObj
+     * @param jsonParam
+     * @return the array corresponding to the jsonParam
+     * @throws NodeException if there is no such parameter in the JSON Object
+     */
+    protected JSONArray getJSONArray(JSONObject jsonObj, String jsonParam) throws NodeException {
+        try {
+            return jsonObj.getJSONArray(jsonParam);
+        } catch (JSONException ex) {
+            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+        }
+
+    }
+    /**
+     * Method that retrieve an object from a Json object
+     *
+     * @param jsonObj
+     * @param jsonParam
+     * @return the object corresponding to the jsonParam
+     * @throws NodeException if there is no such parameter in the JSON Object
+     */
+    protected JSONObject getJSONObject(JSONObject jsonObj, String jsonParam) throws NodeException {
+        try {
+            return jsonObj.getJSONObject(jsonParam);
+        } catch (JSONException ex) {
+            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+        }
+
     }
 
 }

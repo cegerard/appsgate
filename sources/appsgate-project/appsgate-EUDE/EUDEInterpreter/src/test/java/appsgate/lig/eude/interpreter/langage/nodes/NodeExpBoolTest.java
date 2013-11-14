@@ -6,7 +6,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.Before;
 
 /**
@@ -27,8 +26,8 @@ public class NodeExpBoolTest extends NodeTest {
         try {
             this.expBoolTest = new NodeExpBool(null, array);
             this.instance = this.expBoolTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON Ex : " + ex.getMessage());
+        } catch (NodeException ex) {
+            System.out.println(ex.getMessage());
         }
 
     }

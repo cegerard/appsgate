@@ -5,7 +5,6 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import org.json.JSONException;
 import org.junit.Before;
 import static org.junit.Assert.*;
 
@@ -28,7 +27,7 @@ public class NodeActionTest extends NodeTest {
         try {
             this.actionTest = new NodeAction(null, ruleJSON);
             this.instance = this.actionTest;
-        } catch (JSONException ex) {
+        } catch (NodeException ex) {
             System.out.println("JSon Exception");
         }
     }

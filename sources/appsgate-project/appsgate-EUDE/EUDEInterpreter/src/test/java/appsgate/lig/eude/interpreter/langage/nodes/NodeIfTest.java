@@ -7,6 +7,8 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONException;
@@ -40,6 +42,8 @@ public class NodeIfTest extends NodeTest {
             this.instance = this.ifTest;
         } catch (JSONException ex) {
             System.out.println("JSON ex : " + ex.getMessage());
+        } catch (NodeException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 

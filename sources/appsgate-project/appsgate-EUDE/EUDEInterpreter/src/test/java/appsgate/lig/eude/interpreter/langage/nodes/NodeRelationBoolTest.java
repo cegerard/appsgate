@@ -35,7 +35,7 @@ public class NodeRelationBoolTest extends NodeTest {
             op.put("targetType", "test");
             op.put("methodName", "test");
             op.put("args", (Collection) null);
-            op.put("type", "test");
+            op.put("type", "string");
             op.put("value", "test");
             ruleJSON.put("operator", "test");
             ruleJSON.put("leftOperand", op);
@@ -45,6 +45,8 @@ public class NodeRelationBoolTest extends NodeTest {
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
 
+        } catch (NodeException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -75,9 +77,9 @@ public class NodeRelationBoolTest extends NodeTest {
         try {
             ac = new NodeAction(this.interpreter, this.ruleJSON);
             EndEvent e = new EndEvent(ac);
-            this.instance.endEventFired(e);
-        } catch (JSONException ex) {
-            System.out.println("JSON ex: " + ex.getMessage());
+            this.relationTest.endEventFired(e);
+        } catch (NodeException ex) {
+            System.out.println("NodeException ex: " + ex.getMessage());
             Assert.fail("unable to create a NodeAction for test");
         }
     }

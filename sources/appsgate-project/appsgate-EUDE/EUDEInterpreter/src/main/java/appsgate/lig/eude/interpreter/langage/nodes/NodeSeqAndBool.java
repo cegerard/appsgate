@@ -50,16 +50,21 @@ public class NodeSeqAndBool extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param seqAndBoolJSON JSON representation of the node
-     * @throws org.json.JSONException
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
     public NodeSeqAndBool(EUDEInterpreterImpl interpreter, JSONArray seqAndBoolJSON)
-            throws JSONException {
+            throws NodeException {
         super(interpreter);
 
         // instantiate each boolean relation and store in the list
         relationsBool = new ArrayList<NodeRelationBool>();
         for (int i = 0; i < seqAndBoolJSON.length(); i++) {
-            JSONObject relBoolJSON = seqAndBoolJSON.getJSONObject(i);
+            JSONObject relBoolJSON = null;
+            try {
+                relBoolJSON = seqAndBoolJSON.getJSONObject(i);
+            } catch (JSONException ex) {
+                throw new NodeException("NodeSeqAndBool", "item " + i, ex);
+            }
             relationsBool.add(new NodeRelationBool(interpreter, relBoolJSON));
             if (stopping) {
                 break;
@@ -108,7 +113,7 @@ public class NodeSeqAndBool extends Node {
             n.call();
         }
 
-		// launch the interpretation of the boolean relations
+        // launch the interpretation of the boolean relations
 //		try {
 //			pool.invokeAll(relationsBool);
 //		} catch (InterruptedException ex) {

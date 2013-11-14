@@ -30,7 +30,7 @@ public class NodeAction extends Node {
     private final String targetType;
     private final String targetId;
     private final String methodName;
-    private final JSONArray args;
+    private JSONArray args;
     private GenericCommand command;
 
     /**
@@ -38,16 +38,23 @@ public class NodeAction extends Node {
      *
      * @param interpreter
      * @param ruleJSON
-     * @constructor
-     * @throws JSONException
+     * @throws NodeException
      */
-    public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON) throws JSONException {
+    public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON) throws NodeException {
         super(interpreter);
 
-        targetType = ruleJSON.getString("targetType");
-        targetId = ruleJSON.getString("targetId");
-        methodName = ruleJSON.getString("methodName");
-        args = ruleJSON.getJSONArray("args");
+        targetType = getJSONString(ruleJSON, "targetType");
+        targetId = getJSONString(ruleJSON, "targetId");
+        methodName = getJSONString(ruleJSON, "methodName");
+        if (ruleJSON.has("args")) {
+            try {
+                args = ruleJSON.getJSONArray("args");
+            } catch (JSONException ex) {
+                LOGGER.warn("An Exception has been thrown, args for this node has been set to empty array");
+            }
+        } else {
+            args = new JSONArray();
+        }
 
         command = null;
     }
@@ -127,5 +134,12 @@ public class NodeAction extends Node {
             stopping = false;
         }
     }
+    
+    @Override
+    public String toString() {
+        return "[Node Action: " + methodName + " on " + targetId + "]";
+        
+    }
+
 
 }
