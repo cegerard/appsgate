@@ -1,0 +1,28 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="VirtualOnOffActuatorImpl"
+		classname="appsgate.lig.core.virtual.on_off.sensor.impl.VirtualOnOffAcuatorImpl" specification="CoreOnOffActuatorSpec" push="notifyChanges">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<!-- device kernel meta data -->
+		<definition name="deviceName" 		  type="string" value="VirtualOnOffActuator" 	field="actuatorName"/>
+		<definition name="deviceId" 		  type="string" value="000000"		   			field="actuatorId"/>
+		
+		<!-- device client meta data -->
+		<definition name="pictureId" 		  type="string"			 			   field="pictureId"/>
+		<definition name="userType" 		  type="string" value="8" 			   field="userType"/>
+		<definition name="status" 			  type="string" value="2" 			   field="status"   method="statusChanged"/>
+		
+		<!-- device specific meta data -->
+		<definition name="isOn" 			  type="string" 	value="false"	   field="isOn" 	method="isOnChanged"/>
+			
+	</implementation>
+
+
+<!-- 	<apam-instance name="VirtualOnOffActuatorInst" implementation="VirtualOnOffActuatorImpl"> -->
+<!-- 	</apam-instance> -->
+
+</apam>

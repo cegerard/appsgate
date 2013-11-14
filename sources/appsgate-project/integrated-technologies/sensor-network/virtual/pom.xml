@@ -25,5 +25,6 @@
 	<modules>
 		<module>CoreVirtualTempSensorImpl</module>
 		<module>VirtualAdapter</module>
+		<module>VirtualONOffActuator</module>
 	</modules>
 </project>
