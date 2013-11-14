@@ -436,6 +436,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 */
 	//@Override
 	public void turnOnActuator(String targetID) {
+		logger.debug("Turn on --> " + targetID);
 		eventGate.postEvent(new TurnOnActuatorEvent(targetID));
 	}
 
@@ -447,6 +448,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 */
 	//@Override
 	public void turnOffActuator(String targetID) {
+		logger.debug("Turn off --> " + targetID);
 		eventGate.postEvent(new TurnOffActuatorEvent(targetID));
 	}
 
