@@ -91,6 +91,11 @@ public class WattecoAdapter implements WattecoIOService,
 	private boolean slipTunnelOn;
 	
 	/**
+	 * The border router identifier
+	 */
+	private String BR_ID = "A701QQEY";
+	
+	/**
 	 * Keep the Ipv6 sensor Addresses
 	 */
 	private HashMap<String, Instance> ipv6AddressToInstance;
@@ -129,11 +134,10 @@ public class WattecoAdapter implements WattecoIOService,
 	public void newInst() {
 		//Initiate the SLIP tunnel from C source from Watteco
 		// /!\ this use native source code so it must be compile to the targeted platform
-		// 1- Find where the EnOcean transceiver is plug (USB0 or USB1  serial port
+		// 1- Find where the Watteco border router USB serial port
 		String osName =System.getProperty("os.name");
 		if (osName.contentEquals("Linux")) {
 			try {
-				//TODO THIS WORK ONLY FOR EXPERIMENTA AND OUR WATTECO DONGLE
 				boolean notFound = true;
 				int port = 0;
 				//while(notFound && port < 10) {
@@ -146,8 +150,7 @@ public class WattecoAdapter implements WattecoIOService,
 		        
 		       while(notFound && port < 10) {
 		            String result = read.readLine();
-		            //TODO find a way to determine this FTDI short serial name
-		            if(result.contains("A701QQEY")) {
+		            if(result.contains(BR_ID)) {
 		            	notFound = false;
 		            	port = Integer.valueOf(result.substring(result.length()-1));
 		            }else{
@@ -155,7 +158,7 @@ public class WattecoAdapter implements WattecoIOService,
 		            }
 				}
 		       
-	          // 2- Run the tunslip configuration program to the free serial port
+	          // 2- Run the tunslip configuration program to the previous found serial port
 	          String cmd = "./conf/watteco/tunslip6 -L -v2 -s ttyUSB"+port+" aaaa::1/64 &";
 	          logger.debug("Set up slip tunel with command: " +cmd);
 	          Runtime.getRuntime().exec(cmd);
@@ -300,6 +303,16 @@ public class WattecoAdapter implements WattecoIOService,
 	@Override
 	public void discover() {
 		discover("http://["+BORDER_ROUTER_ADDR+"]/");
+	}
+	
+	@Override
+	public void setBorderRouterId(String newBrId) {
+		BR_ID = newBrId;
+	}
+	
+	@Override
+	public String getBorderRouterId() {
+		return BR_ID;
 	}
 	
 	@Override
