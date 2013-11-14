@@ -94,6 +94,10 @@ public class EUDEInterpreterImplTest {
                 will(returnValue(true));
                 allowing(router).executeCommand(with("test"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("Yes"));
+                allowing(router).executeCommand(with("flag1"), with(any(String.class)), with(any(JSONArray.class)));
+                then(tested.is("flag1"));
+                allowing(router).executeCommand(with("flag2"), with(any(String.class)), with(any(JSONArray.class)));
+                then(tested.is("flag2"));
                 allowing(router).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
             }
         });
@@ -331,7 +335,7 @@ public class EUDEInterpreterImplTest {
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testActions.json")));
         Assert.assertTrue(instance.callProgram("testActions"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
-        Assert.assertTrue(instance.stopProgram("testActions"));
+        Assert.assertFalse(instance.isProgramActive("testActions"));
 
     }
 
@@ -349,9 +353,8 @@ public class EUDEInterpreterImplTest {
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testIf.json")));
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testPrograms.json")));
         Assert.assertTrue(instance.callProgram("testPrograms"));
-        NodeProgram nodeProgram = instance.getNodeProgram("testPrograms");
         synchroniser.waitUntil(tested.is("Yes"), 500);
-        Assert.assertTrue(nodeProgram.getRunningState() == NodeProgram.RUNNING_STATE.STOPPED);
+        Assert.assertFalse(instance.isProgramActive("testPrograms"));
     }
 
     /**
@@ -369,6 +372,29 @@ public class EUDEInterpreterImplTest {
         Assert.assertTrue(instance.callProgram("TestWhen"));
         contextFollower.notifAll();
         synchroniser.waitUntil(tested.is("Yes"), 500);
+        Assert.assertTrue(instance.isProgramActive("TestWhen"));
+    }
+
+    /**
+     * To test whether reading real program is working
+     *
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws JSONException
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testPgm() throws IOException, FileNotFoundException, JSONException, InterruptedException {
+        System.out.println("Pgm");
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/pgm.json")));
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testIf.json")));
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
+        Assert.assertTrue(instance.callProgram("TestWhen"));
+        Assert.assertTrue(instance.callProgram("pgm"));
+        Assert.assertTrue(instance.callProgram("testIF"));
+        Assert.assertTrue(instance.isProgramActive("TestWhen"));
+        Assert.assertFalse(instance.isProgramActive("pgm"));
+        Assert.assertTrue(instance.isProgramActive("testIF"));
     }
 
     /**

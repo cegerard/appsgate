@@ -181,12 +181,6 @@ public class NodeProgram extends Node {
             // seqRulesThread = pool.submit(seqRules);
             seqRules.call();
             return 1;
-
-//            if (seqRulesThread != null) {
-//                return 1;
-//            } else {
-//                setRunningState(RUNNING_STATE.FAILED);
-//            }
         } else {
             // TODO restart from previous state
             // synchronized(pauseMutex) {
@@ -243,10 +237,11 @@ public class NodeProgram extends Node {
     @Override
     public void endEventFired(EndEvent e) {
         if (isDaemon()) {
-            if (daemonCall() == -1) {
-                seqRules.removeEndEventListener(this);
-                fireEndEvent(new EndEvent(this));
-            }
+            LOGGER.debug("The end event has been fired, which does not mean the program should be ended");
+//            if (daemonCall() == -1) {
+//                seqRules.removeEndEventListener(this);
+//                fireEndEvent(new EndEvent(this));
+//            }
         } else {
             setRunningState(RUNNING_STATE.STOPPED);
             seqRules.removeEndEventListener(this);
