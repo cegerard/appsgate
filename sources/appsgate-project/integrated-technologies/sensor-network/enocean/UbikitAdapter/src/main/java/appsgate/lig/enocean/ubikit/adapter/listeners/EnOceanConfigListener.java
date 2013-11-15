@@ -78,10 +78,11 @@ public class EnOceanConfigListener implements ConfigListener {
 				enoceanProxy.getActuator(obj.getInt("clientId"));
 
 			} else if (cmd.equalsIgnoreCase("createActuator")) {
-				String profile = obj.getString("profile");
-				String name = obj.getString("name");
-				String place = obj.getString("place");
-				enoceanProxy.createActuator(profile, name, place, obj.getInt("clientId"));
+				//TODO remove this client command
+//				String profile = obj.getString("profile");
+//				String name = obj.getString("name");
+//				String place = obj.getString("place");
+//				enoceanProxy.createActuator(profile, name, place, obj.getInt("clientId"));
 
 			} else if (cmd.equalsIgnoreCase("actuatorAction")) {
 				String id = obj.getString("id");

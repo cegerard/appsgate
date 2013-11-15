@@ -142,3 +142,5 @@ sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
 sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
 
 sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
+
+*.swp

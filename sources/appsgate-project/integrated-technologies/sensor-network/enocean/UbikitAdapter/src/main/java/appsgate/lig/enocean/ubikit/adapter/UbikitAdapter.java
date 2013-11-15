@@ -56,8 +56,8 @@ import appsgate.lig.enocean.ubikit.adapter.source.event.TempEvent;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
-import fr.immotronic.ubikit.pems.enocean.ActuatorProfile;
-import fr.immotronic.ubikit.pems.enocean.event.in.CreateNewActuatorEvent;
+//import fr.immotronic.ubikit.pems.enocean.ActuatorProfile;
+//import fr.immotronic.ubikit.pems.enocean.event.in.CreateNewActuatorEvent;
 import fr.immotronic.ubikit.pems.enocean.event.in.TurnOffActuatorEvent;
 import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
 
@@ -331,7 +331,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		 ****************************/
 		//RECV < a5 5a b 5 0 0 0 0 0 27 b3 ed 20 f7 > RRT from 27b3ed, RPS MSB [ 0 0 0 0 ] LSB
 		//RECV < 55 | 0 7 7 1 | 7a | f6 70 0 27 b3 ed 30 1 ff ff ff ff 2d 0 | 76 > FROM 27b3ed (-45 dBm)
-		String[] splited = arg0.split("from");
+		String[] splited = arg0.split("FROM");
 		String split1 = splited[1];
 		String id = "";
 		for(int i=1; i<7; i++ ) {
@@ -348,7 +348,8 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 				String split0 = splited[0];
 				String[] splited1 = split0.split("<");
 				String enoceanTg = splited1[1].trim();
-				if(enoceanTg.charAt(10) == '0') {
+
+				if(enoceanTg.charAt(23) == '0') {
 					//The switch is set to neutral position
 					String switchNumber = inst.getProperty("switchNumber");
 					logger.info("The switch " + id + ", state changed to neutral with button  " + switchNumber);
@@ -435,6 +436,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 */
 	//@Override
 	public void turnOnActuator(String targetID) {
+		logger.debug("Turn on --> " + targetID);
 		eventGate.postEvent(new TurnOnActuatorEvent(targetID));
 	}
 
@@ -446,6 +448,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 */
 	//@Override
 	public void turnOffActuator(String targetID) {
+		logger.debug("Turn off --> " + targetID);
 		eventGate.postEvent(new TurnOffActuatorEvent(targetID));
 	}
 
@@ -733,30 +736,30 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		sendToClientService.send("pairingModeChanged", pairingState);
 	}
 	
-	/**
-	 * Create and send the newActuator event to ubikit
-	 * 
-	 * @param profile the actuator profile
-	 * @param name the actuator name
-	 * @param place the place where it be
-	 */
-	public void createActuator(String profile, String name, String place, int clientId) {
-		ActuatorProfile ap = EnOceanProfiles.getActuatorProfile(profile);
-		if(ap != null) {
-			
-			CreateNewActuatorEvent ev = new CreateNewActuatorEvent(ap, name, place);
-			eventGate.postEvent(ev);
-		}else {
-			JSONObject error = new JSONObject();
-			try {
-				error.put("code", "0001");
-				error.put("deescription", "No ubikit<>appsgate actuator profile found !");
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			sendToClientService.send(clientId, "actuatorError", error);
-		}
-	}
+//	/**
+//	 * Create and send the newActuator event to ubikit
+//	 * 
+//	 * @param profile the actuator profile
+//	 * @param name the actuator name
+//	 * @param place the place where it be
+//	 */
+//	public void createActuator(String profile, String name, String place, int clientId) {
+//		ActuatorProfile ap = EnOceanProfiles.getActuatorProfile(profile);
+//		if(ap != null) {
+//			
+//			CreateNewActuatorEvent ev = new CreateNewActuatorEvent(ap, name, place);
+//			eventGate.postEvent(ev);
+//		}else {
+//			JSONObject error = new JSONObject();
+//			try {
+//				error.put("code", "0001");
+//				error.put("deescription", "No ubikit<>appsgate actuator profile found !");
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//			sendToClientService.send(clientId, "actuatorError", error);
+//		}
+//	}
 	
 	/**
 	 * Send all paired actuators and all existing actuator profiles

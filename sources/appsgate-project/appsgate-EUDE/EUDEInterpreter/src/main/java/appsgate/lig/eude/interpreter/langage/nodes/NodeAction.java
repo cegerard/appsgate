@@ -1,132 +1,145 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node for the actions
- * 
+ *
  * @author Rémy Dautriche
  * @author Cédric Gérard
- * 
+ *
  * @since May 22, 2013
  * @version 1.0.0
  *
  */
 public class NodeAction extends Node {
-	
-	private String targetType;
-	private String targetId;
-	private String methodName;
-	private JSONArray args;
-	private GenericCommand command;
 
-	/**
-	 * Default constructor
-	 * 
-	 * @constructor
-	 * @param action
-	 * @throws JSONException 
-	 */
-	public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON) throws JSONException {
-		super(interpreter);
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeAction.class.getName());
 
-		targetType = ruleJSON.getString("targetType");
-		targetId = ruleJSON.getString("targetId");
-		methodName = ruleJSON.getString("methodName");
-		args = ruleJSON.getJSONArray("args");
-		
-		//TODO remove the pool nodeAction execute the command right now
-		//The router manage execution thread by its own
-		//pool = Executors.newSingleThreadExecutor();
-		command = null;
-	}
+    private final String targetType;
+    private final String targetId;
+    private final String methodName;
+    private JSONArray args;
+    private GenericCommand command;
 
-	@Override
-	public void startEventFired(StartEvent e) {
-		// TODO Auto-generated method stub
-	}
+    /**
+     * Default constructor
+     *
+     * @param interpreter
+     * @param ruleJSON
+     * @throws NodeException
+     */
+    public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON) throws NodeException {
+        super(interpreter);
 
-	@Override
-	public void endEventFired(EndEvent e) {
-		System.out.println("##### NodeAction - End event received!");
-		((Node)e.getSource()).removeEndEventListener(this);
-		started = false;
-		fireEndEvent(new EndEvent(this));
-	}
+        targetType = getJSONString(ruleJSON, "targetType");
+        targetId = getJSONString(ruleJSON, "targetId");
+        methodName = getJSONString(ruleJSON, "methodName");
+        if (ruleJSON.has("args")) {
+            try {
+                args = ruleJSON.getJSONArray("args");
+            } catch (JSONException ex) {
+                LOGGER.warn("An Exception has been thrown, args for this node has been set to empty array");
+            }
+        } else {
+            args = new JSONArray();
+        }
 
-	@Override
-	public Integer call() {    
-	    fireStartEvent(new StartEvent(this));
-	    started = true;
-		if (targetType.equals("device")) {
-			// get the runnable from the interpreter
-			command = interpreter.executeCommand(targetId, methodName, args);
-			command.run();
-			//pool.submit(command);
-			
-			// manage the pool
-			//super.call();
-		} else if (targetType.equals("program")) {
-			NodeProgram p = interpreter.getNodeProgram(targetId);
-			
-			if (p != null) {
-				if(methodName.contentEquals("callProgram") && p.getRunningState() != RUNNING_STATE.STARTED) {
-					// listen to the end of the program
-					p.addEndEventListener(this);
-					// launch the program
-					interpreter.callProgram(targetId);
-				}else if(methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
-					//stop the running program
-					interpreter.stopProgram(targetId);
-				}
-			}
-		}
-		
-		started = false;
-		fireEndEvent(new EndEvent(this));
-		return null;
-	}
-	
-	public Object getResult() {
-	    if (command != null) {
-			return command.getReturn();
-	    } else {
-			return null;
-	    }
-	}
+        command = null;
+    }
 
-	@Override
-	public void undeploy() {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    public void endEventFired(EndEvent e) {
+        LOGGER.debug("##### End event received!");
+        ((Node) e.getSource()).removeEndEventListener(this);
+        started = false;
+        fireEndEvent(new EndEvent(this));
+    }
 
-	@Override
-	public void stop() {
-		if(started && targetType.equals("program")) {
-			stopping = true;
-			NodeProgram p = interpreter.getNodeProgram(targetId);
-			p.stop();
-			started = false;
-			stopping = false;
-		}
-	}
+    @Override
+    public Integer call() {
+        LOGGER.debug("##### Action call [{}]!", methodName);
+        fireStartEvent(new StartEvent(this));
+        started = true;
+        if (targetType.equals("device")) {
+            // get the runnable from the interpreter
+            command = interpreter.executeCommand(targetId, methodName, args);
+            if (command == null) {
+                LOGGER.error("Command not found {}, for {}", methodName, targetId);
+            } else {
+                LOGGER.debug("Run command: {}", command.toString());
+                command.run();
+            }
+        } else if (targetType.equals("program")) {
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-	}
+            NodeProgram p = (NodeProgram) interpreter.getNodeProgram(targetId);
 
-	@Override
-	public void getState() {
-		// TODO Auto-generated method stub
-	}
+            if (p != null) {
+                LOGGER.debug("Program running state {}", p.getRunningState());
+                if (methodName.contentEquals("callProgram") && p.getRunningState() != RUNNING_STATE.STARTED) {
+                    // listen to the end of the program
+                    p.addEndEventListener(this);
+                    // launch the program
+                    interpreter.callProgram(targetId);
+                } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
+                    //stop the running program
+                    interpreter.stopProgram(targetId);
+                } else {
+                    LOGGER.warn("Cannot run {} on program {}", methodName, targetId);
+                }
+
+            } else {
+                LOGGER.error("Program not found: {}", targetId);
+            }
+        } else {
+            LOGGER.warn("Action type ({}) not supported", targetType);
+        }
+
+        started = false;
+        fireEndEvent(new EndEvent(this));
+        return null;
+    }
+
+    /**
+     *
+     * @return an object containing the return of a command, null if no command
+     * has been passed
+     */
+    public Object getResult() {
+        if (command != null) {
+            return command.getReturn();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (started && targetType.equals("program") && !stopping) {
+            stopping = true;
+            NodeProgram p = (NodeProgram) interpreter.getNodeProgram(targetId);
+            p.stop();
+            started = false;
+            stopping = false;
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return "[Node Action: " + methodName + " on " + targetId + "]";
+        
+    }
+
 
 }

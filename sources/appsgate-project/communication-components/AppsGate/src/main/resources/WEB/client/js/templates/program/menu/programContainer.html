@@ -1,0 +1,18 @@
+<a href="#programs/<%= program.get('id') %>" class="list-group-item <% if (active) { %> active <% } %>" id="side-<%= program.get('id') %>">
+	<!-- header -->
+	<% if (program.get("runningState") === "STARTED") { %>
+		<div class="led led-green pull-left"></div>
+	<% } else if ((program.get("runningState") === "STOPPED") || (program.get("runningState") === "DEPLOYED")) { %>
+		<div class="led led-default pull-left"></div>
+	<% } else if (program.get("runningState") === "FAILED") { %>
+		<div class="led led-red pull-left"></div>
+	<% } %>
+
+	<p class="list-group-item-heading lead">
+		<% if (program.get("name") !== "") { %>
+			<%= program.get("name") %>
+		<% } else { %>
+			<em data-i18n="programs.program-no-name"></em>
+		<% } %>
+	</p>
+</a>

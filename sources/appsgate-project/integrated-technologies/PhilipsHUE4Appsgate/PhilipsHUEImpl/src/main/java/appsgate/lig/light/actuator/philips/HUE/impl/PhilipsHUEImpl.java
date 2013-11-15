@@ -30,6 +30,9 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	private static long HUE_PINK    = 54332;
 	private static long HUE_DEFAULT = 14922;
 	
+	private static int SAT_DEFAULT = 255;
+	private static long BRI_DEFAULT = 127;
+	
 	
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -47,6 +50,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	private String lightBridgeId;
 	private String lightBridgeIP;
+	private String reachable;
 	
 	/**
 	 * The current sensor status.
@@ -239,6 +243,15 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		
 		return false;
 	}
+	
+	public boolean setSaturatedColor(long color) {
+		
+		if(setColor(color) && setDefaultBrightness() && setDefaultSaturation()) {
+			return true;
+		}
+		
+		return false;
+	}
 
 	@Override
 	public boolean setBrightness(long brightness) {
@@ -251,6 +264,10 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		return false;
 	}
 	
+	public boolean setDefaultBrightness() {
+		return setBrightness(BRI_DEFAULT);
+	}
+	
 	@Override
 	public boolean setSaturation(int saturation) {
 		
@@ -260,6 +277,10 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		}
 		
 		return false;
+	}
+	
+	public boolean setDefaultSaturation() {
+		return setSaturation(SAT_DEFAULT);
 	}
 	
 	public boolean setEffect(String effect) {
@@ -294,8 +315,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setRed() {
-		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_RED)) {
-			notifyChanges("color", String.valueOf(HUE_RED));
+		if(setSaturatedColor(HUE_RED)) {
 			return true;
 		}
 		
@@ -304,8 +324,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setBlue() {
-		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_BLUE)) {
-			notifyChanges("color", String.valueOf(HUE_BLUE));
+		if(setSaturatedColor(HUE_BLUE)) {
 			return true;
 		}
 		
@@ -314,8 +333,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setGreen() {
-		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_GREEN)) {
-			notifyChanges("color", String.valueOf(HUE_GREEN));
+		if(setSaturatedColor(HUE_GREEN)) {
 			return true;
 		}
 		
@@ -324,8 +342,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setYellow() {
-		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_YELLOW)) {
-			notifyChanges("color", String.valueOf(HUE_YELLOW));
+		if(setSaturatedColor(HUE_YELLOW)) {
 			return true;
 		}
 		
@@ -334,8 +351,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setOrange() {
-		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_ORANGE)) {
-			notifyChanges("color", String.valueOf(HUE_ORANGE));
+		if(setSaturatedColor(HUE_ORANGE)) {
 			return true;
 		}
 		
@@ -344,19 +360,16 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	@Override
 	public boolean setPurple() {
-		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_PURPLE)) {
-			notifyChanges("color", String.valueOf(HUE_PURPLE));
+		if(setSaturatedColor(HUE_PURPLE)) {
 			return true;
 		}
 		
 		return false;
-		
 	}
 
 	@Override
 	public boolean setPink() {
-		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_PINK)) {
-			notifyChanges("color", String.valueOf(HUE_PINK));
+		if(setSaturatedColor(HUE_PINK)) {
 			return true;
 		}
 		
@@ -365,8 +378,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	@Override
 	public boolean setDefault() {
-		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", HUE_DEFAULT)) {
-			notifyChanges("color", String.valueOf(HUE_DEFAULT));
+		if(setSaturatedColor(HUE_DEFAULT)) {
 			return true;
 		}
 		
@@ -448,6 +460,10 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 
 	public void setActuatorType(String actuatorType) {
 		this.actuatorType = actuatorType;
+	}
+	
+	public boolean isReachable() {
+		return Boolean.valueOf(reachable);
 	}
 
 	/**

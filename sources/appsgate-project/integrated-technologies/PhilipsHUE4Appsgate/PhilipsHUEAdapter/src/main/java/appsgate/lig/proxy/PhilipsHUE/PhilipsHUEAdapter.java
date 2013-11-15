@@ -487,25 +487,34 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			try {
 				while(i < size) {
 					JSONObject light = lightsArray.getJSONObject(i);
-					Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
-					Map<String, String> properties = new HashMap<String, String>();
-					properties.put("deviceName", 	light.getString("name"));
-					properties.put("deviceId", 		bridgeMac+"-"+light.getString("lightId"));
-					properties.put("lightBridgeId", light.getString("lightId"));
-					properties.put("lightBridgeIP", bridgeIp);
+					String lightId = light.getString("lightId");
+					JSONObject lightState = getLightState(bridgeIp, lightId);
+					
+					if(lightState.getJSONObject("state").getBoolean("reachable")) {
+					
+						Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
+						Map<String, String> properties = new HashMap<String, String>();
+						properties.put("deviceName", 	light.getString("name"));
+						properties.put("deviceId", 		bridgeMac+"-"+lightId);
+						properties.put("lightBridgeId", lightId);
+						properties.put("lightBridgeIP", bridgeIp);
+						properties.put("reachable", "true");
 
-					if(impl != null) {
-						/*Instance createInstance = */impl.createInstance(null, properties);
-						i++;
-						nbTry = 0;
-					}else {
-						synchronized(this){wait(3000);}
-						nbTry++;
-						if(nbTry == 5){
-							logger.error("No "+ApAMIMPL+" found !");
-							logger.error("Stop the HUE light instanciation thread !");
-							break;
+						if(impl != null) {
+							/*Instance createInstance = */impl.createInstance(null, properties);
+							i++;
+							nbTry = 0;
+						}else {
+							synchronized(this){wait(3000);}
+							nbTry++;
+							if(nbTry == 5){
+								logger.error("No "+ApAMIMPL+" found !");
+								logger.error("Stop the HUE light instanciation thread !");
+								break;
+							}
 						}
+					} else {
+						i++;
 					}
 				}
 			} catch (Exception e) {

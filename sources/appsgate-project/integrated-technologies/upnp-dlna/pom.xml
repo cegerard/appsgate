@@ -19,6 +19,6 @@
 		<module>UPnPProxyGenerator</module>
 		<module>UPnPAdapter</module>
 		<module>UPnPMediaServices</module>
-		<module>UPnPMediaPlayer</module>
+<!-- 		<module>UPnPMediaPlayer</module> --> <!-- Remove this because is failed at build -->
 	</modules>
 </project>

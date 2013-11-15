@@ -130,7 +130,7 @@ public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 		JSONObject descr = new JSONObject();
 		
 		descr.put("id", actuatorId);
-		descr.put("type", userType); //6 for On_Off device
+		descr.put("type", userType); //8 for On_Off device
 		descr.put("status", status);
 		descr.put("isOn", isOn);
 		

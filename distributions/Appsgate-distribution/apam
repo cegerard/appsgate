@@ -12,4 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-java -Dlogback.configurationFile=log/logback.xml -jar bin/felix.jar
+
+natives=-Djava.library.path=natives/jni/Linux/x86_64/
+
+java -Dlogback.configurationFile=log/logback.xml ${natives} -jar bin/felix.jar
