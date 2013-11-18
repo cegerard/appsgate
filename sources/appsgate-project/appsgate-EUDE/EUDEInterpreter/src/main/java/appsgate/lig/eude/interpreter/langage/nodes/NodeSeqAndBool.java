@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class NodeSeqAndBool extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqAndBool.class.getName());
 
     /**
      * List of the boolean relations
@@ -32,18 +32,11 @@ public class NodeSeqAndBool extends Node {
     /**
      * Track the number of relation done
      */
-    private int nbRelationBoolEnded;
+    private int nbRelationBoolEnded = 0;
     /**
      * Final result of the sequence
      */
-    private Boolean result;
-
-    public Boolean getResult() throws Exception {
-        if (result != null) {
-            return result;
-        }
-        throw new Exception("result has not been computed yet");
-    }
+    private Boolean result = null;
 
     /**
      * Default construct
@@ -66,42 +59,36 @@ public class NodeSeqAndBool extends Node {
                 throw new NodeException("NodeSeqAndBool", "item " + i, ex);
             }
             relationsBool.add(new NodeRelationBool(interpreter, relBoolJSON));
-            if (stopping) {
+            if (isStopping()) {
                 break;
             }
         }
 
-        // nothing has been computed yet
-        nbRelationBoolEnded = 0;
-        result = null;
-
-        // initialize the pool of threads
-        //pool = Executors.newFixedThreadPool(relationsBool.size());
     }
 
     @Override
     public void stop() {
-        if (started) {
-            stopping = true;
+        if (isStarted()) {
+            setStopping(true);
             for (NodeRelationBool nr : relationsBool) {
                 nr.stop();
             }
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
     }
 
     /**
-     * Launch the interpretation of the node. Interpret simultaneously all the
-     * boolean relations
+     * Launch the interpretation of the node.
+     * Interpret simultaneously all the boolean relations
      *
-     * @return
+     * @return null
      */
     @Override
     public Integer call() {
         // fire the start event
         fireStartEvent(new StartEvent(this));
-        started = true;
+        setStarted(true);
 
         // initialize the attribute to control the interpretation
         result = null;
@@ -113,14 +100,6 @@ public class NodeSeqAndBool extends Node {
             n.call();
         }
 
-        // launch the interpretation of the boolean relations
-//		try {
-//			pool.invokeAll(relationsBool);
-//		} catch (InterruptedException ex) {
-//			Logger.getLogger(NodeSeqAndBool.class.getName()).log(Level.SEVERE, null, ex);
-//		}
-        // manage the pool
-//		super.call();
         return null;
     }
 
@@ -128,15 +107,17 @@ public class NodeSeqAndBool extends Node {
      * Compute the final result. Basically, perform a boolean "and" with all the
      * results of the relations
      */
-    private void computeResult() {
-        result = true;
+    private Boolean computeResult() {
+        Boolean r = true;
         for (NodeRelationBool n : relationsBool) {
             try {
-                result = result && n.getResult();
+                r = r && n.getResult();
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage());
+                return false;
             }
         }
+        return r;
     }
 
     /**
@@ -148,14 +129,34 @@ public class NodeSeqAndBool extends Node {
      */
     @Override
     public void endEventFired(EndEvent e) {
-        ((Node) e.getSource()).removeEndEventListener(this);
         nbRelationBoolEnded++;
 
         // if all the relations are done, compute the final result
         if (nbRelationBoolEnded == relationsBool.size()) {
-            computeResult();
-            started = false;
+            result = computeResult();
+            setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
+    }
+
+    /**
+     *
+     * @return the result
+     * @throws Exception if no result has been computed
+     */
+    public Boolean getResult() throws Exception {
+        if (result != null) {
+            return result;
+        }
+        throw new Exception("result has not been computed yet");
+    }
+
+    @Override
+    public String toString() {
+        String array = "";
+        for (NodeRelationBool seq : relationsBool) {
+            array += seq.toString() + "\n";
+        }
+        return "[Node SeqAndBool: [" + array + "]]";
     }
 }

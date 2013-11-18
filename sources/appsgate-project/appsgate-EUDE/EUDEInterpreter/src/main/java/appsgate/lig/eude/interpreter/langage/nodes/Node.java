@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import java.util.ArrayList;
+import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import java.util.concurrent.Callable;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -11,6 +11,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.router.spec.GenericCommand;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Rémy Dautriche
  * @author Cédric Gérard
+ * @author JR Courtois
  *
  * @since May 22, 2013
  * @version 1.0.0
@@ -37,34 +40,37 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * List of the listeners that listen to the StartEvent of the node
      */
-    private final ArrayList<StartEventListener> startEventListeners = new ArrayList<StartEventListener>();
+    private final ConcurrentLinkedQueue<StartEventListener> startEventListeners = new ConcurrentLinkedQueue<StartEventListener>();
 
     /**
      * List of the listeners that listen to the EndEvent of the node
      */
-    private final ArrayList<EndEventListener> endEventListeners = new ArrayList<EndEventListener>();
+    private final ConcurrentLinkedQueue<EndEventListener> endEventListeners = new ConcurrentLinkedQueue<EndEventListener>();
 
-    protected EUDEInterpreterImpl interpreter;
+    /**
+     * The interpreter
+     */
+    private final EUDEInterpreterImpl interpreter;
 
     /**
      * Symbol table of the node containing the local symbols
      */
-    protected SymbolTable symbolTable;
+    private SymbolTable symbolTable;
 
     /**
      * Node parent in the abstract tree of a program
      */
-    protected Node parent;
+    private Node parent;
 
     /**
      * Use to stop node but atomically
      */
-    protected boolean stopping = false;
+    private boolean stopping = false;
 
     /**
      * use to know when a node node is execute
      */
-    protected boolean started = false;
+    private boolean started = false;
 
     /**
      * Default constructor
@@ -76,7 +82,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     * Stop the interpretation of the node. The current state is saved
+     * Stop the interpretation of the node.
+     *
+     * This method has to be overwritten
      */
     public void stop() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -84,7 +92,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 
     @Override
     public void startEventFired(StartEvent e) {
-        LOGGER.debug("The start event has been fired: " + e.toString());
+        LOGGER.trace("The start event has been fired: " + e.toString());
     }
 
     @Override
@@ -98,8 +106,11 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param e The start event to fire for all the listeners
      */
     protected void fireStartEvent(StartEvent e) {
-        for (int i = 0; i < startEventListeners.size(); i++) {
-            startEventListeners.get(i).startEventFired(e);
+        //during the execution the list can be updated
+        int nbListeners = startEventListeners.size();
+        for (int i = 0; i < nbListeners; i++) {
+            StartEventListener l = startEventListeners.poll();
+            l.startEventFired(e);
         }
     }
 
@@ -109,25 +120,11 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param e The end event to fire for all the listeners
      */
     protected synchronized void fireEndEvent(EndEvent e) {
-        Node n = (Node) e.getSource();
-        if (n instanceof NodeProgram) {
-            LOGGER.debug("NodeProgram {0} waking {1} nodes...", new Object[]{((NodeProgram) n).getName(), endEventListeners.size()});
-            for (int i = 0; i < endEventListeners.size(); i++) {
-                if (endEventListeners.get(i) instanceof NodeEvent) {
-                    LOGGER.debug("////// ###waking a node event...");
-                    ((NodeEvent) endEventListeners.get(i)).endEventFired(e);
-                }
-            }
-        }
-
-        for (int i = 0; i < endEventListeners.size(); i++) {
-            if (endEventListeners.get(i) instanceof Node) {
-                LOGGER.debug("###waking a node...");
-            }
-            if (endEventListeners.get(i) instanceof NodeEvent) {
-                LOGGER.debug("###### Waking up a NodeEvent");
-            }
-            endEventListeners.get(i).endEventFired(e);
+        //during the execution the list can be updated
+        int nbListeners = endEventListeners.size();
+        for (int i = 0; i < nbListeners; i++) {
+            EndEventListener l = endEventListeners.poll();
+            l.endEventFired(e);
         }
     }
 
@@ -138,6 +135,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      */
     @Override
     public void addStartEventListener(StartEventListener listener) {
+        LOGGER.trace("ADDING Start listener {} TO {}", listener, this);
         startEventListeners.add(listener);
     }
 
@@ -148,6 +146,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      */
     @Override
     public void removeStartEventListener(StartEventListener listener) {
+        LOGGER.trace("REMOVING Start listener {} FROM {}", listener, this);
         startEventListeners.remove(listener);
     }
 
@@ -158,6 +157,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      */
     @Override
     public void addEndEventListener(EndEventListener listener) {
+        LOGGER.trace("ADDING End listener {} TO {}", listener, this);
         endEventListeners.add(listener);
     }
 
@@ -168,6 +168,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      */
     @Override
     public void removeEndEventListener(EndEventListener listener) {
+        LOGGER.trace("REMOVING END listener {} FROM {}", listener, this);
         endEventListeners.remove(listener);
     }
 
@@ -198,6 +199,113 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     @Override
     public Integer call() {
         return null;
+    }
+
+    /**
+     * get the command from the interpreter
+     *
+     * @param targetId
+     * @param methodName
+     * @param args
+     * @return
+     */
+    protected GenericCommand executeCommand(String targetId, String methodName, JSONArray args) {
+        return interpreter.executeCommand(targetId, methodName, args);
+    }
+
+    /**
+     * get the node program from interpreter
+     *
+     * @param targetId
+     * @return
+     */
+    protected NodeProgram getNodeProgram(String targetId) {
+        return interpreter.getNodeProgram(targetId);
+    }
+
+    /**
+     * call the program from interpreter
+     *
+     * @param targetId
+     */
+    protected void callProgram(String targetId) {
+        interpreter.callProgram(targetId);
+    }
+
+    /**
+     * Stop program from the interpreter
+     *
+     * @param targetId
+     */
+    protected void stopProgram(String targetId) {
+        interpreter.stopProgram(targetId);
+    }
+
+    /**
+     * add node listening to interpreter
+     *
+     * @param aThis
+     */
+    protected void addNodeListening(NodeEvent aThis) {
+        interpreter.addNodeListening(aThis);
+    }
+
+    /**
+     * remove the node listening from interpreter
+     *
+     * @param aThis
+     */
+    protected void removeNodeListening(NodeEvent aThis) {
+        interpreter.removeNodeListening(aThis);
+    }
+
+    /**
+     * transmit the state notification message to interpreter
+     *
+     * @param programStateNotificationMsg
+     */
+    protected void notifyChanges(ProgramStateNotificationMsg programStateNotificationMsg) {
+        interpreter.notifyChanges(programStateNotificationMsg);
+    }
+
+    /**
+     *
+     * @return interpreter
+     */
+    public EUDEInterpreterImpl getInterpreter() {
+        return interpreter;
+    }
+
+    /**
+     * @return true if the node is started
+     */
+    public boolean isStarted() {
+        return started;
+    }
+
+    /**
+     * @return true if the node is stopping
+     */
+    public boolean isStopping() {
+        return stopping;
+    }
+
+    /**
+     * Set the started boolean to b
+     *
+     * @param b
+     */
+    public void setStarted(Boolean b) {
+        started = b;
+    }
+
+    /**
+     * Set the stopping boolean to b
+     *
+     * @param b
+     */
+    public void setStopping(Boolean b) {
+        stopping = b;
     }
 
     /**
@@ -232,6 +340,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
         }
 
     }
+
     /**
      * Method that retrieve an object from a Json object
      *

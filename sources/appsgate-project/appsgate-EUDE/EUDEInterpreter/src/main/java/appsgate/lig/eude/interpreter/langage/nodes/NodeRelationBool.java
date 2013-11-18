@@ -25,29 +25,40 @@ import org.slf4j.LoggerFactory;
 public class NodeRelationBool extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
-
-    private final String operator;
-    private Object leftValue;
-    private NodeAction leftNodeAction;
-    private final String leftReturnType;
-    private Object rightValue;
-    private NodeAction rightNodeAction;
-    private final String rightReturnType;
-    private Boolean result;
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeRelationBool.class);
 
     /**
-     * Getter for the result of the boolean relation
-     *
-     * @return true or false according to the result of the boolean relation
-     * @throws java.lang.Exception
+     * The operator of the boolean operation
      */
-    public boolean getResult() throws Exception {
-        if (result != null) {
-            return result;
-        }
-        throw new Exception("result has not been computed yet");
-    }
+    private final String operator;
+    /**
+     * the left operation
+     */
+    private Object leftValue;
+    /**
+     * the node action of the left branch
+     */
+    private NodeAction leftNodeAction;
+    /**
+     * the return type of the left branch
+     */
+    private final String leftReturnType;
+    /**
+     * the right operation
+     */
+    private Object rightValue;
+    /**
+     * the node action of the right branch
+     */
+    private NodeAction rightNodeAction;
+    /**
+     * the return type of the right branch
+     */
+    private final String rightReturnType;
+    /**
+     * The result value
+     */
+    private Boolean result;
 
     /**
      * Default constructor
@@ -92,8 +103,8 @@ public class NodeRelationBool extends Node {
 
     @Override
     public void stop() {
-        if (started) {
-            stopping = true;
+        if (isStarted()) {
+            setStopping(true);
             if (leftNodeAction != null) {
                 leftNodeAction.removeEndEventListener(this);
                 leftNodeAction.stop();
@@ -101,8 +112,8 @@ public class NodeRelationBool extends Node {
                 rightNodeAction.removeEndEventListener(this);
                 rightNodeAction.stop();
             }
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
     }
 
@@ -115,12 +126,12 @@ public class NodeRelationBool extends Node {
     public Integer call() {
         // fire the start event
         fireStartEvent(new StartEvent((this)));
-        started = true;
+        setStarted(true);
 
         // if the both operands are direct value, compute the final result and fire the end event
         if (leftNodeAction == null && rightNodeAction == null) {
             result = computeResult();
-            started = false;
+            setStarted(false);
             fireEndEvent(new EndEvent(this));
             return null;
         }
@@ -169,7 +180,6 @@ public class NodeRelationBool extends Node {
     @Override
     public void endEventFired(EndEvent e) {
         NodeAction n = (NodeAction) e.getSource();
-        n.removeEndEventListener(this);
 
         if (n == leftNodeAction) {
             // cast the value to the correct type
@@ -188,7 +198,7 @@ public class NodeRelationBool extends Node {
         }
         // compute the final result and fire the end result
         result = computeResult();
-        started = false;
+        setStarted(false);
         fireEndEvent(new EndEvent(this));
 
     }
@@ -214,6 +224,24 @@ public class NodeRelationBool extends Node {
         }
         LOGGER.warn("A null value has been parsed");
         return null;
-
     }
+
+    /**
+     * Getter for the result of the boolean relation
+     *
+     * @return true or false according to the result of the boolean relation
+     * @throws java.lang.Exception
+     */
+    public boolean getResult() throws Exception {
+        if (result != null) {
+            return result;
+        }
+        throw new Exception("result has not been computed yet");
+    }
+
+    @Override
+    public String toString() {
+        return "[Node RelationBool: '" + leftReturnType + "'" + operator + "'" + rightReturnType + "]";
+    }
+
 }

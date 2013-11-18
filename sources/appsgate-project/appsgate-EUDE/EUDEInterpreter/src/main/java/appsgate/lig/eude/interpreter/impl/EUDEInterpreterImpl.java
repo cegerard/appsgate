@@ -482,11 +482,17 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
             // transmit the core event to the concerned nodes
             synchronized (eudeInt) {
                 ArrayList<NodeEvent> nodeEventList = mapCoreNodeEvent.get(this);
+                
+                mapCoreNodeEvent.remove(this);
+                if (nodeEventList == null) {
+                    LOGGER.warn("No CoreEvent found");
+                    return;
+                }
                 for (NodeEvent n : nodeEventList) {
+                    LOGGER.debug("Notifying node: {}",n);
                     n.coreEventFired();
                 }
-                contextFollower.deleteListener(this);
-                mapCoreNodeEvent.remove(this);
+                //contextFollower.deleteListener(this);
             }
         }
 
@@ -509,8 +515,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     @Override
     public void endEventFired(EndEvent e) {
         NodeProgram p = (NodeProgram) e.getSource();
-        LOGGER.info("program " + p.getName() + " ended.");
-        p.removeEndEventListener(this);
+        LOGGER.info("Program " + p.getName() + " ended.");
     }
 
     @Override

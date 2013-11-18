@@ -60,16 +60,6 @@ public class NodeProgramTest extends NodeTest {
     }
 
     /**
-     * Test of setDaemon method, of class NodeProgram.
-     */
-    @Test
-    public void testSetDaemon() {
-        System.out.println("setDaemon");
-        this.programTest.setDaemon(true);
-        assertTrue(this.programTest.isDaemon());
-    }
-
-    /**
      * Test of isDeamon method, of class NodeProgram.
      */
     @Test
@@ -113,15 +103,6 @@ public class NodeProgramTest extends NodeTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of setRunningState method, of class NodeProgram.
-     */
-    @Test
-    public void testSetRunningState() {
-        System.out.println("setRunningState");
-        NodeProgram.RUNNING_STATE runningState = NodeProgram.RUNNING_STATE.STOPPED;
-        this.programTest.setRunningState(runningState);
-    }
 
     /**
      * Test of update method, of class NodeProgram.

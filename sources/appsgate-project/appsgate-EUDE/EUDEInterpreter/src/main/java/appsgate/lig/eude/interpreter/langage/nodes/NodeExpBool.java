@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class NodeExpBool extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeExpBool.class.getName());
 
     /**
      * List of boolean sequences. Nodes of the list are separated by a boolean
@@ -38,15 +38,6 @@ public class NodeExpBool extends Node {
      * Final value of the boolean expression
      */
     private Boolean result = null;
-
-    public Boolean getResult() throws Exception {
-        // throw an exception if the result has not already been computed
-        if (result == null) {
-            throw new Exception("Result is not computed yet");
-        }
-
-        return result;
-    }
 
     /**
      * Default constructor
@@ -75,14 +66,14 @@ public class NodeExpBool extends Node {
 
     @Override
     public void stop() {
-        if (started) {
-            stopping = true;
+        if (isStarted()) {
+            setStopping(true);
             for (NodeSeqAndBool n : listSeqAndBool) {
                 n.removeEndEventListener(this);
                 n.stop();
             }
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
     }
 
@@ -95,7 +86,6 @@ public class NodeExpBool extends Node {
      */
     @Override
     public void endEventFired(EndEvent e) {
-        ((Node) e.getSource()).removeEndEventListener(this);
         nbSeqAndBoolDone++;
 
         // if all the sequences are done, compute the final result and fire the end event
@@ -108,7 +98,8 @@ public class NodeExpBool extends Node {
                     LOGGER.error(ex.getMessage());
                 }
             }
-            started = false;
+            setStarted(false);
+
             // fire the end event
             fireEndEvent(new EndEvent(this));
         }
@@ -124,7 +115,7 @@ public class NodeExpBool extends Node {
     public Integer call() {
         // fire the start event
         fireStartEvent(new StartEvent(this));
-        started = true;
+        setStarted(true);
         // initialize the attributes to control the evaluation
         nbSeqAndBoolDone = 0;
         result = null;
@@ -133,11 +124,31 @@ public class NodeExpBool extends Node {
         for (NodeSeqAndBool n : listSeqAndBool) {
             n.addEndEventListener(this);
             n.call();
-            if (stopping) {
-                break;
-            }
         }
 
         return null;
+    }
+
+    /**
+     *
+     * @return the result
+     * @throws Exception if the result is null
+     */
+    public Boolean getResult() throws Exception {
+        // throw an exception if the result has not already been computed
+        if (result == null) {
+            throw new Exception("Result is not computed yet");
+        }
+
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        String array = "";
+        for (NodeSeqAndBool seq : listSeqAndBool) {
+            array += seq.toString() + "\n";
+        }
+        return "[Node ExpBool: [" + array + "]]";
     }
 }

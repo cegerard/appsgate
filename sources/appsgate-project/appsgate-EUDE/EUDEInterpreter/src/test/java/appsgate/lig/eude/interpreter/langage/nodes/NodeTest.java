@@ -117,7 +117,7 @@ public abstract class NodeTest {
     @Test
     public void testAddStartEventListener() {
         System.out.println("addStartEventListener");
-        StartEventListener listener = null;
+        StartEventListener listener = this.instance;
         this.instance.addStartEventListener(listener);
     }
 
@@ -127,7 +127,7 @@ public abstract class NodeTest {
     @Test
     public void testRemoveStartEventListener() {
         System.out.println("removeStartEventListener");
-        StartEventListener listener = null;
+        StartEventListener listener = this.instance;
         this.instance.removeStartEventListener(listener);
     }
 
@@ -137,7 +137,7 @@ public abstract class NodeTest {
     @Test
     public void testAddEndEventListener() {
         System.out.println("addEndEventListener");
-        EndEventListener listener = null;
+        EndEventListener listener = this.instance;
         this.instance.addEndEventListener(listener);
     }
 

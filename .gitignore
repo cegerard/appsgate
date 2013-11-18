@@ -144,3 +144,23 @@ sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
 sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
 
 *.swp
+
+*.log
+
+*.location
+
+*.id
+
+*.info
+
+*.checksum
+
+*.config
+
+*.jar
+
+*.ser
+
+*.properties
+
+*.script

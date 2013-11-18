@@ -68,8 +68,7 @@ public class NodeSeqRules extends Node {
     }
 
     /**
-     *
-     * @throws Exception
+     * Method that launch the next sequence
      */
     private void launchNextSeqAndRules() {
         NodeSeqAndRules seqAndRule;
@@ -79,26 +78,24 @@ public class NodeSeqRules extends Node {
             seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
         }
 
-        if (!stopping) {
+        if (!isStopping()) {
             // launch the sequence of rules
             seqAndRule.addEndEventListener(this);
-            //pool.submit(seqAndRule);
             seqAndRule.call();
-            // manage the interpretation
-            // super.call();
         }
     }
 
     @Override
     public Integer call() {
         idCurrentSeqAndRules = 0;
-        started = true;
+        setStarted(true);
         fireStartEvent(new StartEvent(this));
 
         if (!seqAndRules.isEmpty()) {
             launchNextSeqAndRules();
         } else {
-            started = false;
+            LOGGER.warn("Trying to call a seq rule on an empty sequence");
+            setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
 
@@ -107,7 +104,7 @@ public class NodeSeqRules extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
-        ((Node) e.getSource()).removeEndEventListener(this);
+        //    ((Node) e.getSource()).removeEndEventListener(this);
         idCurrentSeqAndRules++;
 
         if (idCurrentSeqAndRules < seqAndRules.size()) {
@@ -119,24 +116,33 @@ public class NodeSeqRules extends Node {
             }
         } else {
             LOGGER.trace("###### SeqThenRules ended...");
-            started = false;
+            setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
     }
 
     @Override
     public void stop() {
-        if (started) {
+        if (isStarted()) {
             synchronized (this) {
                 if (seqAndRules.size() > 0) {
                     NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
-                    stopping = true;
+                    setStopping(true);
                     seqAndRule.stop();
                 }
             }
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
     }
 
+    @Override
+    public String toString() {
+        String array = "";
+        for (Node seq : this.seqAndRules) {
+            array += seq.toString() + "\n";
+        }
+
+        return "[Node SeqRules: [" + array + "]]";
+    }
 }

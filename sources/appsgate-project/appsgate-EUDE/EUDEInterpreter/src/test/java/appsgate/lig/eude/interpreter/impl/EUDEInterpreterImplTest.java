@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.jmock.Mockery;
@@ -84,6 +85,8 @@ public class EUDEInterpreterImplTest {
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
         this.contextFollower = new ContextFollowerTest();
+
+        final GenericCommand gc = new GenericCommand(null, null, this, null);
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
@@ -370,9 +373,13 @@ public class EUDEInterpreterImplTest {
         System.out.println("When");
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
         Assert.assertTrue(instance.callProgram("TestWhen"));
-        contextFollower.notifAll();
+        contextFollower.notifAll("1");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
+        System.out.println("become no");
+        tested.become("no");
+        contextFollower.notifAll("2");
+        synchroniser.waitUntil(tested.is("Yes"), 500);
     }
 
     /**
@@ -429,23 +436,26 @@ public class EUDEInterpreterImplTest {
      */
     public class ContextFollowerTest implements ContextFollowerSpec {
 
-        private final ArrayList<CoreListener> list = new ArrayList<CoreListener>();
+        private final ConcurrentLinkedQueue<CoreListener> list = new ConcurrentLinkedQueue<CoreListener>();
 
         @Override
         public void addListener(CoreListener coreListener) {
             list.add(coreListener);
-            System.out.println("Listener added: " + list.size());
+            System.out.println("Listener added: " + coreListener.getObjectId());
         }
 
         @Override
         public void deleteListener(CoreListener coreListener) {
             System.out.println("removing listener: " + coreListener.getObjectId());
+            list.remove(coreListener);
         }
 
-        public void notifAll() {
-            for (CoreListener l : list) {
-                l.notifyEvent();
-            }
+        public void notifAll(String msg) {
+            System.out.println("NotifAll Start " + msg);
+            CoreListener l = list.poll();
+            l.notifyEvent();
+            System.out.println("NotifAll End " + msg);
+
         }
 
     }

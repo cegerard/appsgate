@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -23,12 +22,8 @@ import org.slf4j.LoggerFactory;
 public class NodeIf extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeIf.class.getName());
 
-    /**
-     * node being interpreted
-     */
-    private Node currentNode;
     /**
      * node representing the boolean expression
      */
@@ -58,11 +53,6 @@ public class NodeIf extends Node {
 
     }
 
-    @Override
-    public void startEventFired(StartEvent e) {
-        LOGGER.debug("StartEvent received!!");
-    }
-
     /**
      * Catch the end events for the boolean expression and the branches true and
      * false Launch the appropriate branch according to the result of the
@@ -74,31 +64,24 @@ public class NodeIf extends Node {
     public void endEventFired(EndEvent e) {
         Node nodeEnded = (Node) e.getSource();
 
-        // remove EndEvent listener
-        nodeEnded.removeEndEventListener(this);
-
         // if this is the boolean expression...
         if (nodeEnded == expBool) {
             try {
-                // launch the "true" branch if expBool returned true...
-                if (expBool.getResult()) {
+
+                if (expBool.getResult()) {// launch the "true" branch if expBool returned true...
                     seqRulesTrue.addEndEventListener(this);
-                    currentNode = seqRulesTrue;
                     seqRulesTrue.call();
-                    //pool.submit(seqRulesTrue);
-                    // ... launch the false branch otherwise
-                } else {
+
+                } else {// ... launch the false branch otherwise
                     seqRulesFalse.addEndEventListener(this);
-                    currentNode = seqRulesFalse;
                     seqRulesFalse.call();
-                    //pool.submit(seqRulesFalse);
                 }
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage());
             }
             // the true branch or the false one has completed - nothing to do more
         } else {
-            started = false;
+            setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
     }
@@ -112,19 +95,17 @@ public class NodeIf extends Node {
     @Override
     public Integer call() {
         fireStartEvent(new StartEvent(this));
-        started = true;
+        setStarted(true);
         expBool.addEndEventListener(this);
-        currentNode = expBool;
         expBool.call();
-        //pool.submit(expBool);
 
         return null;
     }
 
     @Override
     public void stop() {
-        if (started) {
-            stopping = true;
+        if (isStarted()) {
+            setStopping(true);
 
             expBool.removeEndEventListener(this);
             expBool.stop();
@@ -133,10 +114,15 @@ public class NodeIf extends Node {
             seqRulesFalse.removeEndEventListener(this);
             seqRulesFalse.stop();
 
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return "[node If:" + expBool.toString() + "?" + seqRulesTrue.toString() + ":" + seqRulesFalse.toString() + "]";
     }
 
 }

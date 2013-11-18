@@ -22,9 +22,15 @@ import org.slf4j.LoggerFactory;
 public class NodeWhen extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeWhen.class.getName());
 
+    /**
+     * The seq of event to catch to have run the when
+     */
     private final NodeSeqEvent seqEvent;
+    /**
+     * The sequence of thing to do once the events are done
+     */
     private final NodeSeqRules seqRules;
 
     /**
@@ -32,7 +38,7 @@ public class NodeWhen extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param ruleWhenJSON
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     public NodeWhen(EUDEInterpreterImpl interpreter, JSONObject ruleWhenJSON) throws NodeException {
         super(interpreter);
@@ -45,45 +51,37 @@ public class NodeWhen extends Node {
 
     @Override
     public Integer call() {
-        fireStartEvent(new StartEvent(this));
-        started = true;
-
+        LOGGER.debug("Call {}", this);
+        if (!isStarted()) {
+            fireStartEvent(new StartEvent(this));
+            setStarted(true);
+        }
         seqEvent.addEndEventListener(this);
         seqEvent.call();
-        //pool.submit(seqEvent);
-        // super.call();
 
         return null;
     }
 
     @Override
-    public void startEventFired(StartEvent e) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
     public void endEventFired(EndEvent e) {
         Node nodeEnded = (Node) e.getSource();
-        nodeEnded.removeEndEventListener(this);
-
-        if (!stopping) {
+        LOGGER.debug("NWhen end event: {}", nodeEnded);
+        if (!isStopping()) {
             // if all the events are received, launch the sequence of rules
             if (nodeEnded == seqEvent) {
                 seqRules.addEndEventListener(this);
 
-                LOGGER.trace("###### all the events are received, launching the sequence of rules #######");
+                LOGGER.debug("###### all the events are received, launching the sequence of rules #######");
                 try {
                     seqRules.call();
                 } catch (Exception ex) {
                     LOGGER.error(ex.getMessage());
                 }
-                //pool.submit(seqRules);
-                //super.call();
-                started = false;
+                setStarted(false);
                 fireEndEvent(new EndEvent(this));
                 // if the sequence of rules is terminated, fire the event event
             } else {
-                started = false;
+                setStarted(false);
                 fireEndEvent(new EndEvent(this));
             }
         }
@@ -91,17 +89,20 @@ public class NodeWhen extends Node {
 
     @Override
     public void stop() {
-        if (started) {
-            stopping = true;
-
+        if (isStarted()) {
+            setStopping(true);
             seqEvent.removeEndEventListener(this);
             seqEvent.stop();
             seqRules.stop();
 
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
 
     }
 
+    @Override
+    public String toString() {
+        return "[Node When: events(" + seqEvent.toString() + "), rules(" + seqRules + ")]";
+    }
 }
