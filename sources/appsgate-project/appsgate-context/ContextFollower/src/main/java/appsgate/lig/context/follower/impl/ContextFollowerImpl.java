@@ -254,6 +254,7 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 			this.value = value;
 		}
 		
+		@SuppressWarnings("unused")
 		public String getEntryType() {
 			return entryType;
 		}

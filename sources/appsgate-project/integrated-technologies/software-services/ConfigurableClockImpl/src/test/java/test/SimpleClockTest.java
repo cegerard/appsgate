@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.print.attribute.HashAttributeSet;
-
 import appsgate.lig.clock.sensor.impl.ConfigurableClockImpl;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 

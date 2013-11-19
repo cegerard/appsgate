@@ -236,6 +236,22 @@ public class NodeProgram extends Node {
     public String getName() {
         return name;
     }
+    
+    /**
+     * 
+     * @return the author
+     */
+    public String getAuthor() {
+    	return author;
+    }
+    
+    /**
+     * 
+     * @return the target
+     */
+    public String getTarget() {
+    	return target;
+    }
 
     /**
      * @return true if the Program is a daemon

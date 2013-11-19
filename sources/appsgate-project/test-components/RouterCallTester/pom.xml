@@ -12,28 +12,13 @@
     <packaging>bundle</packaging>
 
     <name>###### RouterCallTester OSGi Bundle ######</name>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
- <!-- Repositories List -->
-	<repositories>
-		<repository>
-			<id>apam-repo</id>
-			<url>https://repository-apam.forge.cloudbees.com/snapshot/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	
 	<!-- Dependencies Description -->
     <dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>1.8.0</version>
+			<version>${ipojo.annotations.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>

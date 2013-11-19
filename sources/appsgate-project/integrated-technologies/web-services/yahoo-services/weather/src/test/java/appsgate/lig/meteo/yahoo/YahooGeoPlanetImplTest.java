@@ -20,7 +20,7 @@ package appsgate.lig.meteo.yahoo;
 
 //import org.junit.Test;
 
-import appsgate.lig.weather.YahooGeoPlanet;
+//import appsgate.lig.weather.YahooGeoPlanet;
 
 /**
  * @author thibaud

@@ -5,11 +5,9 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.weather.exception.WeatherForecastException;
-import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
 

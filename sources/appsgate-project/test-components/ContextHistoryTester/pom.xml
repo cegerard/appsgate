@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>1.8.0</version>
+			<version>${ipojo.annotations.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>

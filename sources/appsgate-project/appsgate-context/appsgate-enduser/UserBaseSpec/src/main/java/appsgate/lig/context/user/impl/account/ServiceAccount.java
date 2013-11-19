@@ -113,6 +113,7 @@ public class ServiceAccount {
 
 	public void setAccountSynchDetails(JSONObject accountSynchDetails) {
 		this.accountSynchDetails = accountSynchDetails;
+		logger.debug("Account detials changed: "+getServiceType()+" / "+accountSynchDetails.toString());
 	}
 	
 	public JSONObject getAccountJSONDescription() {

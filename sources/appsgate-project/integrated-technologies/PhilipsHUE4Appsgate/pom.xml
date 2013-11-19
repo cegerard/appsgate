@@ -11,10 +11,6 @@
 	<artifactId>PhilipsHUE4Appsgate</artifactId>
 	<packaging>pom</packaging>
 	<name>Philips HUE Appsgate Components</name>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 	
 	<build>
 		<pluginManagement>

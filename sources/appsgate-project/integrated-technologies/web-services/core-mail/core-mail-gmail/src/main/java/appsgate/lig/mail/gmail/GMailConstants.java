@@ -10,6 +10,9 @@ public class GMailConstants {
 	public static final String PROTOCOL_VALUE="imaps";
 	
 	public static final Map<String, String> defaultGoogleProperties = new HashMap<String, String>() {
+
+		private static final long serialVersionUID = 1L;
+
 		{
 			put("mail.smtp.auth", "true");
 			put("mail.smtp.starttls.enable", "true");

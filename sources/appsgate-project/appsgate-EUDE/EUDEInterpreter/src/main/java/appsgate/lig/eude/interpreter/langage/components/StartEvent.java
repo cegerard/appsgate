@@ -9,7 +9,9 @@ import java.util.EventObject;
  */
 public class StartEvent extends EventObject {
 
-    /**
+	private static final long serialVersionUID = 3054033473176292430L;
+
+	/**
      * Constructor
      * @param source the Object which has just started
      */

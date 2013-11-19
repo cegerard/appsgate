@@ -31,6 +31,7 @@ public class ContextHistoryTester {
 	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
+	@SuppressWarnings("unchecked")
 	public void newInst() {
 		logger.debug("ContextHistoryTester has been initialized");
 		

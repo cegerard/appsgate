@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>${ipojo.version}</version>
+			<version>${ipojo.annotations.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>

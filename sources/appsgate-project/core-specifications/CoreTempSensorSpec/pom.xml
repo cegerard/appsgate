@@ -12,9 +12,6 @@
     <artifactId>CoreTempSensorSpec</artifactId>
     <packaging>bundle</packaging>
     <name>Core temperature sensor specification</name>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <!-- Repositories List -->
 

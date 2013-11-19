@@ -13,10 +13,6 @@
 	<packaging>bundle</packaging>
 	<name>AppsGateSpec OSGi Bundle</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<!-- Repositories List -->
 
 	<!-- Dependencies Description -->

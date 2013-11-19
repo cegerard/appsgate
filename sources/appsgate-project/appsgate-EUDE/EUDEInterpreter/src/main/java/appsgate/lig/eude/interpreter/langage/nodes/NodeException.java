@@ -11,7 +11,9 @@ package appsgate.lig.eude.interpreter.langage.nodes;
  */
 public class NodeException extends Exception {
 
-    NodeException(String name, String jsonParam, Exception ex) {
+	private static final long serialVersionUID = -8848996955176059448L;
+
+	NodeException(String name, String jsonParam, Exception ex) {
         super("Missing parameter [" + jsonParam + "] for " + name, ex);
     }
 

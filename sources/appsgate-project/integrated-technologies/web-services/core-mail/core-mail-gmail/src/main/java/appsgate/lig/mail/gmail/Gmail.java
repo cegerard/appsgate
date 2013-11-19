@@ -29,11 +29,8 @@ import org.json.JSONObject;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.mail.Mail;
-import appsgate.lig.mail.apam.message.ApamMessage;
 
 import com.sun.mail.imap.IMAPFolder;
-
-import fr.imag.adele.apam.Apam;
 
 /**
  * Gmail implementation for mail service
@@ -42,9 +39,6 @@ import fr.imag.adele.apam.Apam;
  *
  */
 public class Gmail implements Mail, CoreObjectSpec {
-
-	
-	private Apam apam;
 	
 	private Logger logger = Logger.getLogger(Gmail.class.getSimpleName());
 	private Timer refreshTimer;
@@ -351,6 +345,7 @@ public class Gmail implements Mail, CoreObjectSpec {
 				return null;
 			}
 			
+			@SuppressWarnings({ "rawtypes", "finally" })
 			@Override
 			public JSONObject JSONize() throws JSONException {
 				

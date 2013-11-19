@@ -4,7 +4,6 @@
                               
 	<implementation name="GmailImpl" classname="appsgate.lig.mail.gmail.Gmail" specification="mail-service-specification" push="mailReceivedNotification">
 	    
-	    <dependency field="apam"/>	
 		<callback onInit="start" onRemove="stop" />
 		
 		<definition name="user" type="string" field="USER" internal="false"/>

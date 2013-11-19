@@ -33,7 +33,7 @@ public class DeployPrograms {
 	
 	private void deployProgram(String newDay) {
 		// TODO Auto-generated method stub
-		
+		eude.getListPrograms();
 	}
 	
 	private void removeAllProgram() {

@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 public class NodeSeqEvent extends Node {
 
     //Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqAndRules.class.getName());
+    @SuppressWarnings("unused")
+	private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqAndRules.class.getName());
 
     /**
      * list of events

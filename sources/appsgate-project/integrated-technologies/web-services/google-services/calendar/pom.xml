@@ -28,7 +28,6 @@
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-ipojo-plugin</artifactId>
-					<version>${ipojo.version}</version>
 					<executions>
 						<execution>
 							<goals>

@@ -2,8 +2,6 @@ package appsgate.lig.mail.apam.message;
 
 import javax.mail.Message;
 
-import appsgate.lig.core.object.spec.CoreObjectSpec;
-
 /**
  * Interface for receiving mail notification messages
  * 

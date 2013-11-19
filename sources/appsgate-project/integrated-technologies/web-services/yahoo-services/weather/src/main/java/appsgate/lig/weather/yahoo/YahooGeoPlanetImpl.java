@@ -17,7 +17,6 @@
 package appsgate.lig.weather.yahoo;
 
 import java.net.URL;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,10 +31,6 @@ import org.w3c.dom.Document;
  * 
  */
 public class YahooGeoPlanetImpl implements YahooGeoPlanet {
-    
-    private Logger logger = Logger.getLogger(YahooGeoPlanetImpl.class
-		.getSimpleName());
-
 
     private String geoPlanetURL = "http://where.yahooapis.com/v1/";
     private String queryPlaceWOEID = "places.q(%s)?appid=%s";

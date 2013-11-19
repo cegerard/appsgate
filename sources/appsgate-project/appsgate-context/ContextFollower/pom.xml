@@ -12,9 +12,6 @@
     <packaging>bundle</packaging>
     <name>ContextFollowerImpl OSGi Bundle</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
 	<!-- Repositories List -->
 	
