@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,7 +22,16 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
  */
 public class NodeSeqAndRules extends Node {
 
+    //Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqAndRules.class.getName());
+
+    /**
+     * the rules to apply
+     */
     private final ArrayList<Node> rules;
+    /**
+     * the number of rules that has been ended
+     */
     private int nbRulesEnded;
 
     /**
@@ -28,7 +39,7 @@ public class NodeSeqAndRules extends Node {
      *
      * @param interpreter
      * @param seqAndRulesJSON
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     public NodeSeqAndRules(EUDEInterpreterImpl interpreter, JSONArray seqAndRulesJSON) throws NodeException {
         super(interpreter);
@@ -58,13 +69,14 @@ public class NodeSeqAndRules extends Node {
 
     @Override
     public Integer call() {
+        LOGGER.debug("A call has been done: {}", this);
         // no rules are done
         nbRulesEnded = 0;
-        started = true;
+        setStarted(true);
         for (Node n : rules) {
             n.addEndEventListener(this);
             n.call();
-            if (stopping) {
+            if (isStopping()) {
                 break;
             }
         }
@@ -73,28 +85,35 @@ public class NodeSeqAndRules extends Node {
 
     @Override
     public void stop() {
-        if (started) {
-            stopping = true;
+        if (isStarted()) {
+            setStopping(true);
             for (Node n : rules) {
                 n.stop();
                 n.removeEndEventListener(this);
             }
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
     }
 
     @Override
-    public void endEventFired(EndEvent e
-    ) {
-        ((Node) e.getSource()).removeEndEventListener(this);
+    public void endEventFired(EndEvent e) {
         nbRulesEnded++;
-
         // if all the rules are terminated, fire the end event
         if (nbRulesEnded == rules.size()) {
-            started = false;
+            setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
+    }
+
+    @Override
+    public String toString() {
+        String array = "";
+        for (Node seq : rules) {
+            array += seq.toString() + "\n";
+        }
+
+        return "[Node SeqAndRules: [" + array + "]]";
     }
 
 }

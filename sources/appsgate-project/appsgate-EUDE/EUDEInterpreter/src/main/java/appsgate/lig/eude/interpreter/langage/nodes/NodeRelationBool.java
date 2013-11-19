@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -26,16 +25,206 @@ import org.slf4j.LoggerFactory;
 public class NodeRelationBool extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
-    
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeRelationBool.class);
+
+    /**
+     * The operator of the boolean operation
+     */
     private final String operator;
+    /**
+     * the left operation
+     */
     private Object leftValue;
+    /**
+     * the node action of the left branch
+     */
     private NodeAction leftNodeAction;
+    /**
+     * the return type of the left branch
+     */
     private final String leftReturnType;
+    /**
+     * the right operation
+     */
     private Object rightValue;
+    /**
+     * the node action of the right branch
+     */
     private NodeAction rightNodeAction;
+    /**
+     * the return type of the right branch
+     */
     private final String rightReturnType;
+    /**
+     * The result value
+     */
     private Boolean result;
+
+    /**
+     * Default constructor
+     *
+     * @param interpreter Pointer on the interpreter
+     * @param relationBoolJSON JSON representation of the node
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     */
+    public NodeRelationBool(EUDEInterpreterImpl interpreter, JSONObject relationBoolJSON) throws NodeException {
+        super(interpreter);
+
+        // operator
+        operator = getJSONString(relationBoolJSON, "operator");
+
+        JSONObject operand;
+
+        // left operand
+        operand = getJSONObject(relationBoolJSON, "leftOperand");
+        if (operand.has("deviceId")) {
+            leftNodeAction = new NodeAction(interpreter, operand);
+            leftReturnType = getJSONString(operand, "returnType");
+            leftValue = null;
+        } else {
+            leftReturnType = getJSONString(operand, "type");
+            leftValue = parseValue(getJSONString(operand, "value"), leftReturnType);
+
+        }
+
+        // right operand
+        operand = getJSONObject(relationBoolJSON, "rightOperand");
+        if (operand.has("deviceId")) {
+            rightNodeAction = new NodeAction(interpreter, operand);
+            rightReturnType = getJSONString(operand, "returnType");
+            rightValue = null;
+        } else {
+            rightReturnType = getJSONString(operand, "type");
+            rightValue = parseValue(getJSONString(operand, "value"), rightReturnType);
+        }
+
+        result = null;
+    }
+
+    @Override
+    public void stop() {
+        if (isStarted()) {
+            setStopping(true);
+            if (leftNodeAction != null) {
+                leftNodeAction.removeEndEventListener(this);
+                leftNodeAction.stop();
+            } else {
+                rightNodeAction.removeEndEventListener(this);
+                rightNodeAction.stop();
+            }
+            setStarted(false);
+            setStopping(false);
+        }
+    }
+
+    /**
+     * Launch the interpretation of the node.
+     *
+     * @return
+     */
+    @Override
+    public Integer call() {
+        // fire the start event
+        fireStartEvent(new StartEvent((this)));
+        setStarted(true);
+
+        // if the both operands are direct value, compute the final result and fire the end event
+        if (leftNodeAction == null && rightNodeAction == null) {
+            result = computeResult();
+            setStarted(false);
+            fireEndEvent(new EndEvent(this));
+            return null;
+        }
+
+        // interpret the left operand first if possible
+        if (leftNodeAction != null) {
+            leftNodeAction.addEndEventListener(this);
+            leftNodeAction.call();
+        } else {
+            rightNodeAction.addEndEventListener(this);
+            rightNodeAction.call();
+        }
+
+        return null;
+    }
+
+    /**
+     * Compute the final result according to the operator
+     */
+    private boolean computeResult() {
+        if (leftValue == null) {
+            return false;
+        }
+        if (operator.equals("==")) {
+            return (leftValue.equals(rightValue));
+        }
+        if (operator.equals("!=")) {
+            return !(leftValue.equals(rightValue));
+        }
+        // Numerical comparison
+        if (leftReturnType.equals("number") && rightReturnType.equals("number")) {
+            if (operator.equals(">=")) {
+                return (((Double) leftValue) >= ((Double) rightValue));
+            } else if (operator.equals("<=")) {
+                return (((Double) leftValue) <= ((Double) rightValue));
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Called when an operand is done.
+     *
+     * @param e
+     */
+    @Override
+    public void endEventFired(EndEvent e) {
+        NodeAction n = (NodeAction) e.getSource();
+
+        if (n == leftNodeAction) {
+            // cast the value to the correct type
+            leftValue = parseValue(n.getResult(), leftReturnType);
+
+            // if the right operand is not a direct value, launch its interpretation...
+            if (rightNodeAction != null) {
+                rightNodeAction.addEndEventListener(this);
+                rightNodeAction.call();
+                return;
+            }
+        } else {
+            // cast the value to the correct type
+            rightValue = parseValue(n.getResult(), rightReturnType);
+
+        }
+        // compute the final result and fire the end result
+        result = computeResult();
+        setStarted(false);
+        fireEndEvent(new EndEvent(this));
+
+    }
+
+    /**
+     *
+     * @param obj the object to parse
+     * @param type the type of object to obtain
+     * @return the new value, null if no type has been recognized or if the obj
+     * is null
+     */
+    private Object parseValue(Object obj, String type) {
+        if (obj == null) {
+            LOGGER.warn("A null value has been parsed");
+            return null;
+        }
+        if (type.equals("number")) {
+            return new Double((obj.toString()));
+        } else if (type.equals("boolean")) {
+            return Boolean.valueOf(obj.toString());
+        } else if (type.equals("string")) {
+            return (String) obj;
+        }
+        LOGGER.warn("A null value has been parsed");
+        return null;
+    }
 
     /**
      * Getter for the result of the boolean relation
@@ -50,208 +239,9 @@ public class NodeRelationBool extends Node {
         throw new Exception("result has not been computed yet");
     }
 
-    /**
-     * Default constructor
-     *
-     * @param interpreter Pointer on the interpreter
-     * @param relationBoolJSON JSON representation of the node
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
-     */
-    public NodeRelationBool(EUDEInterpreterImpl interpreter, JSONObject relationBoolJSON) throws NodeException {
-        super(interpreter);
-
-        // operator
-        operator = getJSONString(relationBoolJSON, "operator");
-        
-        JSONObject operand;
-
-        // left operand
-        operand = getJSONObject(relationBoolJSON, "leftOperand");
-        if (operand.has("deviceId")) {
-            leftNodeAction = new NodeAction(interpreter, operand);
-            leftReturnType = getJSONString(operand, "returnType");
-            leftValue = null;
-        } else {
-            leftReturnType = getJSONString(operand, "type");
-            String valueJSON = getJSONString(operand, "value");
-            
-            if (leftReturnType.equals("number")) {
-                leftValue = new Double(valueJSON);
-            } else if (leftReturnType.equals("boolean")) {
-                leftValue = Boolean.valueOf(valueJSON);
-            } else if (leftReturnType.equals("string")) {
-                leftValue = valueJSON;
-            }
-        }
-
-        // right operand
-        operand = getJSONObject(relationBoolJSON, "rightOperand");
-        if (operand.has("deviceId")) {
-            rightNodeAction = new NodeAction(interpreter, operand);
-            rightReturnType = getJSONString(operand, "returnType");
-            rightValue = null;
-        } else {
-            rightReturnType = getJSONString(operand, "type");
-            String valueJSON = getJSONString(operand, "value");
-            
-            if (rightReturnType.equals("number")) {
-                rightValue = new Double(valueJSON);
-            } else if (rightReturnType.equals("boolean")) {
-                rightValue = Boolean.valueOf(valueJSON);
-            } else if (rightReturnType.equals("string")) {
-                rightValue = valueJSON;
-            }
-        }
-        
-        result = null;
-    }
-
-    /**
-     * Parse a JSON operand
-     *
-     * @param operand JSON object representing an operand of a boolean relation
-     * @param value
-     * @throws JSONException
-     */
-    private void parseOperand(JSONObject operand, NodeAction nodeAction, Object value) throws JSONException, NodeException {
-        if (operand.has("deviceId")) {
-            nodeAction = new NodeAction(interpreter, operand);
-            value = null;
-        } else {
-            String type = operand.getString("type");
-            String valueJSON = operand.getString("value");
-            
-            if (type.equals("number")) {
-                value = Double.parseDouble(valueJSON);
-            } else if (type.equals("boolean")) {
-                value = Boolean.parseBoolean(valueJSON);
-            } else if (type.equals("string")) {
-                value = valueJSON;
-            }
-            nodeAction = null;
-        }
-    }
-    
     @Override
-    public void stop() {
-        if (started) {
-            stopping = true;
-            if (leftNodeAction != null) {
-                leftNodeAction.removeEndEventListener(this);
-                leftNodeAction.stop();
-            } else {
-                rightNodeAction.removeEndEventListener(this);
-                rightNodeAction.stop();
-            }
-            started = false;
-            stopping = false;
-        }
+    public String toString() {
+        return "[Node RelationBool: '" + leftReturnType + "'" + operator + "'" + rightReturnType + "]";
     }
 
-    /**
-     * Launch the interpretation of the node.
-     *
-     * @return
-     */
-    @Override
-    public Integer call() {
-        // fire the start event
-        fireStartEvent(new StartEvent((this)));
-        started = true;
-
-        // if the both operands are direct value, compute the final result and fire the end event
-        if (leftNodeAction == null && rightNodeAction == null) {
-            computeResult();
-            started = false;
-            fireEndEvent(new EndEvent(this));
-            return null;
-        }
-
-        // interpret the left operand first if possible
-        if (leftNodeAction != null) {
-            leftNodeAction.addEndEventListener(this);
-            //pool.submit(leftNodeAction);
-            leftNodeAction.call();
-        } else {
-            rightNodeAction.addEndEventListener(this);
-            //pool.submit(rightNodeAction);
-            rightNodeAction.call();
-        }
-        
-        return null;
-    }
-
-    /**
-     * Compute the final result according to the operator
-     */
-    private void computeResult() {
-        if (operator.equals("==")) {
-            result = (leftValue.equals(rightValue));
-        } else if (operator.equals("!=")) {
-            result = !(leftValue.equals(rightValue));
-        } else if (operator.equals(">=")) {
-            if (leftReturnType.equals("number") && rightReturnType.equals("number")) {
-                result = (((Double) leftValue) >= ((Double) rightValue));
-            } else {
-                result = false;
-            }
-        } else if (operator.equals("<=")) {
-            if (leftReturnType.equals("number") && rightReturnType.equals("number")) {
-                System.out.println(leftValue.toString() + " <= " + rightValue.toString());
-                result = (((Double) leftValue) <= ((Double) rightValue));
-            } else {
-                result = false;
-            }
-        }
-    }
-
-    /**
-     * Called when an operand is done.
-     *
-     * @param e
-     */
-    @Override
-    public void endEventFired(EndEvent e) {
-        NodeAction n = (NodeAction) e.getSource();
-        n.removeEndEventListener(this);
-        
-        
-        
-        if (n == leftNodeAction) {
-            // cast the value to the correct type
-            if (leftReturnType.equals("number")) {
-                leftValue = new Double((n.getResult().toString()));
-            } else if (leftReturnType.equals("boolean")) {
-                leftValue = Boolean.valueOf(n.getResult().toString());
-            } else if (leftReturnType.equals("string")) {
-                leftValue = (String) n.getResult();
-            }
-
-            // if the right operand is not a direct value, launch its interpretation...
-            if (rightNodeAction != null) {
-                rightNodeAction.addEndEventListener(this);
-                rightNodeAction.call();
-                //pool.submit(rightNodeAction);
-                // ... compute the final result and fire the end event otherwise
-            } else {
-                computeResult();
-                started = false;
-                fireEndEvent(new EndEvent(this));
-            }
-        } else {
-            // cast the value to the correct type
-            if (rightReturnType.equals("number")) {
-                rightValue = new Double(n.getResult().toString());
-            } else if (rightReturnType.equals("boolean")) {
-                rightValue = Boolean.valueOf(n.getResult().toString());
-            } else if (rightReturnType.equals("string")) {
-                rightValue = (String) n.getResult();
-            }
-
-            // compute the final result and fire the end result
-            computeResult();
-            started = false;
-            fireEndEvent(new EndEvent(this));
-        }
-    }
 }

@@ -27,20 +27,36 @@ public class NodeAction extends Node {
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeAction.class.getName());
 
+    /**
+     * the type of the target of the action ('device' or 'program')
+     */
     private final String targetType;
+    /**
+     * the id of the target of the action
+     */
     private final String targetId;
+    /**
+     * the name of the method to apply
+     */
     private final String methodName;
+    /**
+     * The args of the action
+     */
     private JSONArray args;
+    /**
+     * the command once it has been retrieve from interpreter
+     */
     private GenericCommand command;
 
     /**
      * Default constructor
      *
-     * @param interpreter
-     * @param ruleJSON
-     * @throws NodeException
+     * @param interpreter points to the interpreter
+     * @param ruleJSON the JSON Object
+     * @throws NodeException if the interpretation of JSON fails
      */
-    public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON) throws NodeException {
+    public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON)
+            throws NodeException {
         super(interpreter);
 
         targetType = getJSONString(ruleJSON, "targetType");
@@ -61,9 +77,7 @@ public class NodeAction extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
-        LOGGER.debug("##### End event received!");
-        ((Node) e.getSource()).removeEndEventListener(this);
-        started = false;
+        setStarted(false);
         fireEndEvent(new EndEvent(this));
     }
 
@@ -71,10 +85,10 @@ public class NodeAction extends Node {
     public Integer call() {
         LOGGER.debug("##### Action call [{}]!", methodName);
         fireStartEvent(new StartEvent(this));
-        started = true;
+        setStarted(true);
         if (targetType.equals("device")) {
             // get the runnable from the interpreter
-            command = interpreter.executeCommand(targetId, methodName, args);
+            command = executeCommand(targetId, methodName, args);
             if (command == null) {
                 LOGGER.error("Command not found {}, for {}", methodName, targetId);
             } else {
@@ -83,7 +97,7 @@ public class NodeAction extends Node {
             }
         } else if (targetType.equals("program")) {
 
-            NodeProgram p = (NodeProgram) interpreter.getNodeProgram(targetId);
+            NodeProgram p =  getNodeProgram(targetId);
 
             if (p != null) {
                 LOGGER.debug("Program running state {}", p.getRunningState());
@@ -91,10 +105,10 @@ public class NodeAction extends Node {
                     // listen to the end of the program
                     p.addEndEventListener(this);
                     // launch the program
-                    interpreter.callProgram(targetId);
+                    callProgram(targetId);
                 } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
                     //stop the running program
-                    interpreter.stopProgram(targetId);
+                    stopProgram(targetId);
                 } else {
                     LOGGER.warn("Cannot run {} on program {}", methodName, targetId);
                 }
@@ -106,7 +120,7 @@ public class NodeAction extends Node {
             LOGGER.warn("Action type ({}) not supported", targetType);
         }
 
-        started = false;
+        setStarted(false);
         fireEndEvent(new EndEvent(this));
         return null;
     }
@@ -126,12 +140,12 @@ public class NodeAction extends Node {
 
     @Override
     public void stop() {
-        if (started && targetType.equals("program") && !stopping) {
-            stopping = true;
-            NodeProgram p = (NodeProgram) interpreter.getNodeProgram(targetId);
+        if (isStarted() && targetType.equals("program") && !isStopping()) {
+            setStopping(true);
+            NodeProgram p = getNodeProgram(targetId);
             p.stop();
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
     }
     
@@ -140,6 +154,5 @@ public class NodeAction extends Node {
         return "[Node Action: " + methodName + " on " + targetId + "]";
         
     }
-
 
 }

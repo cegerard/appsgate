@@ -22,7 +22,7 @@ public class NodeEvent extends Node {
     /**
      * Logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(Node.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeEvent.class);
 
     /**
      * Type of the source to listen. Can be "program" or "device"
@@ -33,25 +33,15 @@ public class NodeEvent extends Node {
      */
     private final String sourceId;
 
-    public String getSourceId() {
-        return sourceId;
-    }
     /**
      * Name of the event to listen
      */
     private final String eventName;
 
-    public String getEventName() {
-        return eventName;
-    }
     /**
      * Value of the event to wait
      */
     private final String eventValue;
-
-    public String getEventValue() {
-        return eventValue;
-    }
 
     /**
      *
@@ -67,7 +57,7 @@ public class NodeEvent extends Node {
         sourceId = s_id;
         eventName = name;
         eventValue = value;
-  }
+    }
 
     /**
      *
@@ -88,24 +78,30 @@ public class NodeEvent extends Node {
     @Override
     public Integer call() {
         fireStartEvent(new StartEvent(this));
-        started = true;
+        setStarted(true);
         // if the source of the event is a program
         if (sourceType.equals("program")) {
             // get the node of the program
-            NodeProgram p = interpreter.getNodeProgram(sourceId);
+            NodeProgram p = getNodeProgram(sourceId);
             // if it exists
             if (p != null) {
                 // listen to its start event...
                 if (eventName.equals("runningState")) {
-                    interpreter.addNodeListening(this);
+                    LOGGER.trace("Node event added for {}", sourceId);
+                    addNodeListening(this);
+                } else {
+                    LOGGER.warn("Event ({}) not supported for programs.", eventName);
                 }
-            } else { // interpreter does not know the program, then the end event is automatically fired
-                started = false;
+            } else {
+                // interpreter does not know the program, then the end event is automatically fired
+                LOGGER.warn("Program {} not found", sourceId);
+                setStarted(false);
                 fireEndEvent(new EndEvent(this));
             }
             // sourceType is "device"
         } else {
-            interpreter.addNodeListening(this);
+            LOGGER.trace("Node event added for {}", sourceId);
+            addNodeListening(this);
         }
 
         return null;
@@ -113,36 +109,60 @@ public class NodeEvent extends Node {
 
     @Override
     public void stop() {
-        if (started) {
-            stopping = true;
+        if (isStarted()) {
+            setStopping(true);
             if (sourceType.equals("program")) {
-                NodeProgram p = interpreter.getNodeProgram(sourceId);
+                NodeProgram p = getNodeProgram(sourceId);
                 if (eventName.equals("start")) {
                     p.removeStartEventListener(this);
                 } else if (eventName.equals("end")) {
                     p.removeEndEventListener(this);
                 }
             } else {
-                interpreter.removeNodeListening(this);
+                removeNodeListening(this);
             }
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
     }
 
     /**
-     *
+     * Once the event is fired, transmit the fact that the event has been fired
      */
     public void coreEventFired() {
-        started = false;
-        //interpreter.removeNodeListening(this);
-        // the node is done when the relevant event has been caught
+        setStarted(false);
         fireEndEvent(new EndEvent(this));
     }
 
     @Override
     public void endEventFired(EndEvent e) {
-        LOGGER.debug("endEvent fired: " + e.toString());
+        LOGGER.debug("EndEvent fired: {}", e.toString());
+    }
+
+    @Override
+    public String toString() {
+        return "[Node Event on " + sourceId + "]";
+    }
+
+    /**
+     * @return the sourceID
+     */
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    /**
+     * @return the eventName
+     */
+    public String getEventName() {
+        return eventName;
+    }
+
+    /**
+     * @return the eventValue
+     */
+    public String getEventValue() {
+        return eventValue;
     }
 
 }

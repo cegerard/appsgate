@@ -3,7 +3,7 @@
     "id": "TestWhen",
     "userInputSource": "",
     "source": {
-        "daemon": false,
+        "daemon": true,
         "programName": "TestWhen",
         "seqParameters": [],
         "author": "Bob",

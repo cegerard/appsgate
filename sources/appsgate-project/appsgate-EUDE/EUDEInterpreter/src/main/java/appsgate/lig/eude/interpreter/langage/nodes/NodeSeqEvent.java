@@ -8,6 +8,8 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node for a list of events
@@ -22,6 +24,9 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
  * @version 1.0.0
  */
 public class NodeSeqEvent extends Node {
+
+    //Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqAndRules.class.getName());
 
     /**
      * list of events
@@ -54,11 +59,10 @@ public class NodeSeqEvent extends Node {
     }
 
     @Override
-    @SuppressWarnings("empty-statement")
     public Integer call() {
         // fire the start event
         fireStartEvent(new StartEvent(this));
-        started = true;
+        setStarted(true);
 
         // no event has been received yet
         nbEventReceived = 0;
@@ -67,42 +71,43 @@ public class NodeSeqEvent extends Node {
         for (NodeEvent e : seqEvent) {
             e.addEndEventListener(this);
             e.call();
-            if (stopping) {
-                break;
-            }
         }
 
-//		try {
-//			pool.invokeAll(seqEvent);
-//		} catch (InterruptedException ex) {
-//			Logger.getLogger(NodeSeqEvent.class.getName()).log(Level.SEVERE, null, ex);
-//		}
         return null;
     }
 
     @Override
     public void stop() {
-        if (started) {
-            stopping = true;
+        if (isStarted()) {
+            setStopping(true);
             for (Node n : seqEvent) {
                 n.removeEndEventListener(this);
                 n.stop();
             }
-            started = false;
-            stopping = false;
+            setStarted(false);
+            setStopping(false);
         }
     }
 
     @Override
     public void endEventFired(EndEvent e) {
-        ((Node) e.getSource()).removeEndEventListener(this);
         nbEventReceived++;
 
         // if all the events have been fired, fire the end event of the sequence of events
         if (nbEventReceived == seqEvent.size()) {
-            started = false;
+            setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
+    }
+
+    @Override
+    public String toString() {
+        String array = "";
+        for (Node seq : this.seqEvent) {
+            array += seq.toString() + "\n";
+        }
+
+        return "[Node SeqEvent: [" + array + "]]";
     }
 
 }

@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,11 +96,6 @@ public class NodeProgram extends Node {
     private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
 
     /**
-     * Attribute use to detect error like infinite loop and kill them
-     */
-    private int state = 0;
-
-    /**
      * Default constructor
      *
      * @constructor
@@ -154,7 +148,7 @@ public class NodeProgram extends Node {
         } else {
             daemon = false;
         }
-        seqRules = new NodeSeqRules(interpreter, getJSONArray(source, "seqRules"));
+        seqRules = new NodeSeqRules(getInterpreter(), getJSONArray(source, "seqRules"));
 
         return true;
 
@@ -172,21 +166,13 @@ public class NodeProgram extends Node {
      */
     @Override
     public Integer call() {
-
         if (runningState != RUNNING_STATE.PAUSED) {
             fireStartEvent(new StartEvent(this));
-
             seqRules.addStartEventListener(this);
             seqRules.addEndEventListener(this);
             // seqRulesThread = pool.submit(seqRules);
             seqRules.call();
             return 1;
-
-//            if (seqRulesThread != null) {
-//                return 1;
-//            } else {
-//                setRunningState(RUNNING_STATE.FAILED);
-//            }
         } else {
             // TODO restart from previous state
             // synchronized(pauseMutex) {
@@ -197,33 +183,16 @@ public class NodeProgram extends Node {
         return -1;
     }
 
-    /**
-     * Restart daemon program after their previous termination
-     */
-    private int daemonCall() {
-        state--;
-        seqRules.addStartEventListener(this);
-        seqRules.call();
-        return 1;
-//        seqRulesThread = pool.submit(seqRules);
-
-//        if (seqRulesThread != null) {
-//            return 1;
-//        } else {
-//            setRunningState(RUNNING_STATE.FAILED);
-//            return -1;
-//        }
-    }
-
     @Override
     public void stop() {
         if (runningState == RUNNING_STATE.STARTED) {
+            LOGGER.debug("Stoping program {}", this);
             seqRules.stop();
             seqRules.removeEndEventListener(this);
             setRunningState(RUNNING_STATE.STOPPED);
             fireEndEvent(new EndEvent(this));
         } else {
-            LOGGER.warn("Trying to stop program {}, while being at state {}", this.name, this.runningState);
+            LOGGER.warn("Trying to stop {}, while being at state {}", this, this.runningState);
         }
     }
 
@@ -236,59 +205,70 @@ public class NodeProgram extends Node {
 
     @Override
     public void startEventFired(StartEvent e) {
+        LOGGER.debug("The start event has been catched by {}", this);
         setRunningState(RUNNING_STATE.STARTED);
-        seqRules.removeStartEventListener(this);
     }
 
     @Override
     public void endEventFired(EndEvent e) {
         if (isDaemon()) {
-            if (daemonCall() == -1) {
-                seqRules.removeEndEventListener(this);
-                fireEndEvent(new EndEvent(this));
-            }
+            LOGGER.debug("The end event has been fired on a daemon, program is still running");
+            LOGGER.trace(e.toString());
+            seqRules.call();
         } else {
             setRunningState(RUNNING_STATE.STOPPED);
-            seqRules.removeEndEventListener(this);
             fireEndEvent(new EndEvent(this));
         }
     }
 
     /**
-     * Accessors
-     */
-    /**
      *
-     * @return
+     * @return the id
      */
     public String getId() {
         return id;
     }
 
+    /**
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
-    public void setDaemon(Boolean d) {
-        this.daemon = d;
-    }
-
+    /**
+     * @return true if the Program is a daemon
+     */
     public boolean isDaemon() {
         return this.daemon;
     }
 
+    /**
+     * @return the user input source
+     */
     public String getUserInputSource() {
         return userInputSource;
     }
 
+    /**
+     * @return the JSONObjecto containing the program
+     */
     public JSONObject getProgramJSON() {
         return programJSON;
     }
 
+    /**
+     * @return the running state of the program
+     */
     public RUNNING_STATE getRunningState() {
         return runningState;
     }
 
+    /**
+     * @return the JSON source of the program
+     * @throws NodeException if there is no source for the program
+     */
     public JSONObject getJSONSource() throws NodeException {
         try {
             return programJSON.getJSONObject("source");
@@ -301,31 +281,20 @@ public class NodeProgram extends Node {
      *
      * @param runningState
      */
-    public void setRunningState(RUNNING_STATE runningState) {
+    private void setRunningState(RUNNING_STATE runningState) {
         try {
             programJSON.put("runningState", runningState.toString());
             this.runningState = runningState;
-            interpreter.notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
-
-            if (runningState.equals(RUNNING_STATE.STARTED)) {
-                state++;
-            } else if (runningState.equals(RUNNING_STATE.STOPPED)) {
-                state--;
-            }
-
-            //This program seem to be in an infinite loop
-            if (state > 1) {
-                //stop it
-                stop();
-                //notify client that a program has been killed for security
-                interpreter.notifyChanges(new ProgramStateNotificationMsg(id, "ERROR", "INFINITE_LOOP_KILLED"));
-                //change the state of the program to failed start
-                setRunningState(RUNNING_STATE.FAILED);
-            }
+            notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
 
         } catch (JSONException e) {
-            LOGGER.warn("JSON Exception : {}", e.getMessage());
+            LOGGER.warn("JSON Exception : {}, unable to set the running state inside the JSON program", e.getMessage());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "[Node Program : " + name + "]";
     }
 
 }
