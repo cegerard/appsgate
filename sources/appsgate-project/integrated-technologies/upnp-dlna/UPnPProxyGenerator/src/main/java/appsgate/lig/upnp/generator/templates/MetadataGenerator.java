@@ -42,15 +42,16 @@ public class MetadataGenerator  {
 		metadata.write("\n");
 		
 		for (Service service : device.getServices()) {
-			metadata.write("	<dependency resolve=\"exist\" fail=\"wait\" field="+quote(Naming.getField(service.getServiceId()))+">\n");
+			metadata.write("	<relation resolve=\"exist\" fail=\"wait\" field="+quote(Naming.getField(service.getServiceId()))+">\n");
 			metadata.write("		<constraints>\n");
 			metadata.write("			<instance filter=\"(UPnP.device.UDN=$.$UPnP\\.device\\.UDN)\"/>\n");
 			metadata.write("		</constraints>\n");
-			metadata.write("	</dependency>\n");
+			metadata.write("	</relation>\n");
 		}
 
 		metadata.write("\n");
-		metadata.write("	<property name=\"UPnP.device.type\" type=\"string\" value="+quote(device.getDeviceType())+" />\n");
+		metadata.write("	<definition name=\"UPnP.device.type\" type=\"string\" />\n");
+		metadata.write("	<property name=\"UPnP.device.type\" value="+quote(device.getDeviceType())+" />\n");
 		metadata.write("	<definition name=\"UPnP.device.UDN\" type=\"string\"/>\n");
 		metadata.write("\n");
 
@@ -73,7 +74,8 @@ public class MetadataGenerator  {
 		metadata.write("	<callback onInit=\"initialize\" />\n");
 		metadata.write("\n");
 		metadata.write("\n");
-		metadata.write("	<property name=\"UPnP.service.type\" type=\"string\" value="+quote(service.getType())+" />\n");
+		metadata.write("	<definition name=\"UPnP.service.type\" type=\"string\" />\n");
+		metadata.write("	<property name=\"UPnP.service.type\" value="+quote(service.getType())+" />\n");
 		metadata.write("	<definition name=\"UPnP.device.UDN\" type=\"string\"/>\n");
 		metadata.write("	<definition name=\"UPnP.service.id\" type=\"string\"/>\n");
 		metadata.write("\n");
