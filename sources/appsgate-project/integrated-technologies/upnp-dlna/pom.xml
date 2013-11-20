@@ -16,9 +16,9 @@
 	<description>This sub-project containt components for UPnP Appsgate integration.</description>
 	
 	<modules>
-		<module>UPnPProxyGenerator</module>
-		<module>UPnPAdapter</module>
-		<module>UPnPMediaServices</module>
+<!-- 		<module>UPnPProxyGenerator</module> -->
+<!-- 		<module>UPnPAdapter</module> -->
+<!-- 		<module>UPnPMediaServices</module> -->
 <!-- 		<module>UPnPMediaPlayer</module> --> <!-- Remove this because is failed at build -->
 	</modules>
 </project>

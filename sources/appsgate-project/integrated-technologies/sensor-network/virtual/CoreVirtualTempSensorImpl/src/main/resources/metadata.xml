@@ -1,6 +1,6 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="CoreVirtualTemperatureSensorImpl"
@@ -8,21 +8,21 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 			
 		<!-- device kernel meta data -->
-		<definition name="deviceName" 		  type="string" value="VirtualTemperatureSensor" field="sensorName"/>
-		<definition name="deviceId" 		  type="string" value="000000"		   			 field="sensorId"/>
+		<definition name="deviceName" 		  type="string" default="VirtualTemperatureSensor" field="sensorName"/>
+		<definition name="deviceId" 		  type="string" default="000000"		   		   field="sensorId"/>
 		
 		<!-- device client meta data -->
-		<definition name="pictureId" 		  type="string" 		 			   			 field="pictureId"/>
-		<definition name="userType" 		  type="string" value="0" 			   			 field="userType"/>
-		<definition name="status" 			  type="string"	value="2" 				   		 field="status"				method="statusChanged"/>
+		<definition name="pictureId" 		  type="string" 		 			   			   field="pictureId"/>
+		<definition name="userType" 		  type="string" default="0" 			   		   field="userType"/>
+		<definition name="status" 			  type="string"	default="2" 				   	   field="status"				method="statusChanged"/>
 		
 		<!-- device specific meta data -->
-		<definition name="currentTemperature" type="string" value="20"			 		   	 field="currentTemperature" method="currentTemperatureChanged"/>
-		<definition name="notifRate" 		  type="string" value="600000"				   	 field="notifRate"			method="rateChanged"/>
+		<definition name="currentTemperature" type="string" default="20"			 		   field="currentTemperature"   method="currentTemperatureChanged"/>
+		<definition name="notifRate" 		  type="string" default="600000"				   field="notifRate"			method="rateChanged"/>
 		
 		<!-- virtual device meta data -->
-		<definition name="evolutionValue" 	  type="string" value="0.5"			 		     field="evolutionValue" />
-		<definition name="evolutionRate" 	  type="string"	value="90000000"	 			 field="evolutionRate"		method="SimulationRateChanged"/>
+		<definition name="evolutionValue" 	  type="string" default="0.5"			 		   field="evolutionValue" />
+		<definition name="evolutionRate" 	  type="string"	default="90000000"	 			   field="evolutionRate"		method="SimulationRateChanged"/>
 		
 	</implementation>
 

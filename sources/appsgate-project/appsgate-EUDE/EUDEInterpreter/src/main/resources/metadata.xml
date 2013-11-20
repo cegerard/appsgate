@@ -1,12 +1,12 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="EUDEInterpreterImpl" classname="appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl" specification="EUDEInterpreterSpec" singleton="true" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		<dependency field="router" fail="wait" resolve="exist"/>
-		<dependency field="contextFollower" fail="wait" resolve="exist"/>
+		<relation field="router" fail="wait" resolve="exist"/>
+		<relation field="contextFollower" fail="wait" resolve="exist"/>
 		<ipojo:requires field="contextHistory_pull"/>
 		<ipojo:requires field="contextHistory_push"/>
 	</implementation>

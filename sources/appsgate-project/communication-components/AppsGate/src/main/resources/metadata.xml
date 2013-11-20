@@ -1,15 +1,15 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore-0.0.4.xsd
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
 	<implementation name="AppsGateImpl" classname="appsgate.lig.main.impl.Appsgate" specification="AppsGateSpec" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
- 		<dependency field="router"/>
-		<dependency field="deviceNameTable"/>
-		<dependency field="placeManager"/>
-		<dependency field="userManager"/>
-		<dependency field="interpreter"/>
+ 		<relation field="router"/>
+		<relation field="deviceNameTable"/>
+		<relation field="placeManager"/>
+		<relation field="userManager"/>
+		<relation field="interpreter"/>
 		<ipojo:requires field="httpService"/>
 	</implementation>
 
