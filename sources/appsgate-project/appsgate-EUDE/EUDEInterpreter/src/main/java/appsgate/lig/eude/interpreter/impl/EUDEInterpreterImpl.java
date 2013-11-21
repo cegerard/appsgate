@@ -492,7 +492,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
                     LOGGER.debug("Notifying node: {}",n);
                     n.coreEventFired();
                 }
-                //contextFollower.deleteListener(this);
+                contextFollower.deleteListener(this);
             }
         }
 
