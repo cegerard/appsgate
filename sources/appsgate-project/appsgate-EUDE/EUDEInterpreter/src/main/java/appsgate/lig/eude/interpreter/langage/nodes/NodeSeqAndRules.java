@@ -62,6 +62,8 @@ public class NodeSeqAndRules extends Node {
                 rules.add(new NodeWhen(interpreter, ruleJSON));
             } else if (nodeType.equals("seqRules")) {
                 rules.add(new NodeSeqRules(interpreter, getJSONArray(ruleJSON, "rule")));
+            } else {
+                LOGGER.warn("The type [{}] is not supported by the parser", nodeType);
             }
 
         }
@@ -69,7 +71,6 @@ public class NodeSeqAndRules extends Node {
 
     @Override
     public Integer call() {
-        LOGGER.debug("A call has been done: {}", this);
         // no rules are done
         nbRulesEnded = 0;
         setStarted(true);
