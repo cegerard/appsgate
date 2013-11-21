@@ -28,13 +28,20 @@
 		<dependency>
 		    <groupId>org.ow2.chameleon.fuchsia</groupId>
 		    <artifactId>fuchsia-core</artifactId>
-		    <version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		    <version>0.0.1-SNAPSHOT</version> 
+		    <exclusions>
+			<exclusion>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.ipojo</artifactId>
+			</exclusion>
+	            </exclusions> 
+		</dependency> 
 		<dependency>
 		    <groupId>org.ow2.chameleon.fuchsia.extra.ard</groupId>
 		    <artifactId>ard-importer</artifactId>
 		    <version>${project.version}</version>
-		</dependency> -->
+		</dependency> 
+		-->
 		<!--felix -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -367,7 +374,7 @@
 					    <configuration>
 						    <outputDirectory>${chameleon.destination}/runtime</outputDirectory>
 						    <excludeTransitive>false</excludeTransitive>
-						    <excludeArtifactIds>org.apache.felix.gogo.runtime,org.apache.felix.gogo.shell,felix-gogo,org.eclipse.osgi</excludeArtifactIds>
+						    <excludeArtifactIds>org.apache.felix.gogo.runtime,org.apache.felix.gogo.shell,felix-gogo,org.eclipse.osgi,org.apache.felix.ipojo</excludeArtifactIds>
 					    </configuration>
 				    </execution>
 			    </executions>
