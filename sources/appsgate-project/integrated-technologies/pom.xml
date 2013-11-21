@@ -27,11 +27,8 @@
 		<module>software-services</module>
 <!--
 		<module>fuchsia-ard-plugin</module>
-<<<<<<< HEAD
-		<module>dfki-integration</module>
-=======
 -->
->>>>>>> fe0cb571a210cccac2b3f616e145ec31611f06bf
+		<module>dfki-integration</module>
 	</modules>
 	
 </project>
