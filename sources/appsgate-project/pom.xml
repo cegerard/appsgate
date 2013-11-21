@@ -15,8 +15,8 @@
 		<apam.current.version>0.0.5</apam.current.version>
 		<!-- Dependencies version -->
 		<osgi.version>4.2.0</osgi.version>
-                <ipojo.version>1.11.0</ipojo.version>
-                <ipojo.annotations.version>1.11.0</ipojo.annotations.version>
+		<ipojo.version>1.11.0</ipojo.version>
+		<ipojo.annotations.version>1.11.0</ipojo.annotations.version>
 
 		<!-- Encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,8 +27,8 @@
 		<!-- Sonar -->
 		<sonar.plugin.version>2.0</sonar.plugin.version>
 		<chameleon.version>1.0.0-SNAPSHOT</chameleon.version>
-	        <chameleon.destination>${project.build.directory}/chameleon-distribution</chameleon.destination>
-	        <distribution.baseDirectory>include</distribution.baseDirectory>
+		<chameleon.destination>${project.build.directory}/chameleon-distribution</chameleon.destination>
+		<distribution.baseDirectory>include</distribution.baseDirectory>
 	</properties>
 
 	<pluginRepositories>
@@ -45,13 +45,13 @@
 	<!-- Maven Repo -->
 	<repositories>
 
-<!-- 		<repository> -->
-<!-- 			<id>apam-repo</id> -->
-<!-- 			<url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> -->
-<!-- 			<snapshots> -->
-<!-- 				<enabled>true</enabled> -->
-<!-- 			</snapshots> -->
-<!-- 		</repository> -->
+		<!-- <repository> -->
+		<!-- <id>apam-repo</id> -->
+		<!-- <url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> -->
+		<!-- <snapshots> -->
+		<!-- <enabled>true</enabled> -->
+		<!-- </snapshots> -->
+		<!-- </repository> -->
 
 		<!-- OW2 Repo -->
 		<repository>
@@ -103,29 +103,29 @@
 		<!-- <url>https://repository-apam.forge.cloudbees.com/snapshot/repository/</url> -->
 		<!-- </repository> -->
 
-        <repository>
-            <id>ow2-public</id>
-            <name>OW2 Maven Repository</name>
-            <url>http://repository.ow2.org/nexus/content/repositories/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+		<repository>
+			<id>ow2-public</id>
+			<name>OW2 Maven Repository</name>
+			<url>http://repository.ow2.org/nexus/content/repositories/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 
-        <repository>
-            <id>ow2-snapshots</id>
-            <name>OW2 Maven Snapshots Repository</name>
-            <url>http://repository.ow2.org/nexus/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+		<repository>
+			<id>ow2-snapshots</id>
+			<name>OW2 Maven Snapshots Repository</name>
+			<url>http://repository.ow2.org/nexus/content/repositories/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 
 		<!-- Spring Repository -->
 		<repository>
