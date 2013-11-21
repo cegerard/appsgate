@@ -11,6 +11,10 @@ deployToAppsGateDistribution.sh
 
 *.class
 
+*.iml
+
+*.*~*
+
 *obr.xml
 
 */target/*

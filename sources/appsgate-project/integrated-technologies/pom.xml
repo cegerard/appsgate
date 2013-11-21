@@ -21,6 +21,7 @@
 		<module>web-services</module>
 		<module>device-mockups</module>
 		<module>software-services</module>
+		<module>fuchsia-ard-plugin</module>
 	</modules>
 	
 </project>
