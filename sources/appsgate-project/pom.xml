@@ -45,13 +45,10 @@
 	<!-- Maven Repo -->
 	<repositories>
 
-<!-- 		<repository> -->
-<!-- 			<id>apam-repo</id> -->
-<!-- 			<url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> -->
-<!-- 			<snapshots> -->
-<!-- 				<enabled>true</enabled> -->
-<!-- 			</snapshots> -->
-<!-- 		</repository> -->
+ 		<repository> 
+ 			<id>apam-repo</id>
+ 			<url>http://repository-apam.forge.cloudbees.com/release/repository/</url>
+ 		</repository> 
 
 		<!-- OW2 Repo -->
 		<repository>
