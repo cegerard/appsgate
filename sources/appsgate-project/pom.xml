@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>appsgate.components</groupId>
 	<artifactId>appsgate-project</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>Appsgate main project</name>
-	
+
 	<description>This project contain all top level dependencies and properties.</description>
-	
+
 	<properties>
 		<!-- apam version -->
 		<apam.current.version>0.0.5</apam.current.version>
@@ -24,22 +24,24 @@
 		<ipojo.plugin.version>1.11.0</ipojo.plugin.version>
 		<bundle.plugin.version>2.3.7</bundle.plugin.version>
 		<compiler.plugin.version>2.5.1</compiler.plugin.version>
+		<!-- Sonar -->
+		<sonar.plugin.version>2.0</sonar.plugin.version>
 		<chameleon.version>1.0.0-SNAPSHOT</chameleon.version>
 	        <chameleon.destination>${project.build.directory}/chameleon-distribution</chameleon.destination>
 	        <distribution.baseDirectory>include</distribution.baseDirectory>
 	</properties>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>apam-plugin-repository-release</id>
 			<url>https://repository-apam.forge.cloudbees.com/release/repository</url>
 		</pluginRepository>
-		<pluginRepository>
-			<id>apam-plugin-repository-snapshot</id>
-			<url>https://repository-apam.forge.cloudbees.com/snapshot/repository/</url>
-		</pluginRepository>
+		<!-- <pluginRepository> -->
+		<!-- <id>apam-plugin-repository-snapshot</id> -->
+		<!-- <url>https://repository-apam.forge.cloudbees.com/snapshot/repository/</url> -->
+		<!-- </pluginRepository> -->
 	</pluginRepositories>
-	
+
 	<!-- Maven Repo -->
 	<repositories>
 
@@ -74,7 +76,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		
+
 		<!-- Java.net repo -->
 		<repository>
 			<id>maven2-repository.dev.java.net</id>
@@ -88,18 +90,18 @@
 			<url>http://download.java.net/maven/glassfish/</url>
 			<layout>default</layout>
 		</repository>
-		
+
 		<!-- cloudbee repo -->
 		<repository>
 			<id>cloudbees-ApAM-release</id>
 			<name>Cloudbees Private Repository - ApAM - Release </name>
 			<url>https://repository-apam.forge.cloudbees.com/release/repository</url>
 		</repository>
-		<repository>
-		    <id>cloudbees-ApAM-snapshot</id>
-		    <name>Cloudbees Private Repository - ApAM - Snapshot</name>
-		    <url>https://repository-apam.forge.cloudbees.com/snapshot/repository/</url>
-		</repository>
+		<!-- <repository> -->
+		<!-- <id>cloudbees-ApAM-snapshot</id> -->
+		<!-- <name>Cloudbees Private Repository - ApAM - Snapshot</name> -->
+		<!-- <url>https://repository-apam.forge.cloudbees.com/snapshot/repository/</url> -->
+		<!-- </repository> -->
 
         <repository>
             <id>ow2-public</id>
@@ -138,7 +140,7 @@
 		</repository>
 
 	</repositories>
-	
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -192,7 +194,7 @@
 			</extension>
 		</extensions>
 	</build>
-	
+
 	<modules>
 		<module>core-specifications</module>
 		<module>appsgate-context</module>
@@ -201,5 +203,24 @@
 		<module>communication-components</module>
 		<module>test-components</module>
 	</modules>
-	
+
+	<profiles>
+
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.jdbc.url>
+					jdbc:mysql://bogota.imag.fr:3306/sonar?useUnicode=true&amp;characterEncoding=utf8
+				</sonar.jdbc.url>
+				<sonar.jdbc.driverClassName>com.mysql.jdbc.Driver</sonar.jdbc.driverClassName>
+				<sonar.host.url>http://bogota.imag.fr:9042</sonar.host.url>
+				<sonar.jdbc.username>sonar</sonar.jdbc.username>
+				<sonar.jdbc.password>S0n4r-Adele</sonar.jdbc.password>
+			</properties>
+		</profile>
+	</profiles>
+
 </project>

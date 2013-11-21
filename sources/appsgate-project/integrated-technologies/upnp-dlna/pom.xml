@@ -1,24 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<groupId>appsgate.components</groupId>
 		<artifactId>integrated-technologies</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	
+
 
 	<artifactId>upnp-dlna</artifactId>
 	<packaging>pom</packaging>
 	<name>UPnP services project</name>
-	
+
 	<description>This sub-project containt components for UPnP Appsgate integration.</description>
-	
+
 	<modules>
-<!-- 		<module>UPnPProxyGenerator</module> -->
-<!-- 		<module>UPnPAdapter</module> -->
-<!-- 		<module>UPnPMediaServices</module> -->
-<!-- 		<module>UPnPMediaPlayer</module> --> <!-- Remove this because is failed at build -->
+		<module>UPnPProxyGenerator</module>
+		<module>UPnPAdapter</module>
+		<module>UPnPMediaServices</module>
+<!-- 		<module>UPnPMediaPlayer</module> -->
+<!-- 	Remove this because is failed at build -->
 	</modules>
 </project>
