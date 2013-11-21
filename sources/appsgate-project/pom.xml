@@ -45,6 +45,7 @@
 	<!-- Maven Repo -->
 	<repositories>
 
+<<<<<<< HEAD
 		<!-- <repository> -->
 		<!-- <id>apam-repo</id> -->
 		<!-- <url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> -->
@@ -52,6 +53,12 @@
 		<!-- <enabled>true</enabled> -->
 		<!-- </snapshots> -->
 		<!-- </repository> -->
+=======
+ 		<repository> 
+ 			<id>apam-repo</id>
+ 			<url>http://repository-apam.forge.cloudbees.com/release/repository/</url>
+ 		</repository> 
+>>>>>>> fe0cb571a210cccac2b3f616e145ec31611f06bf
 
 		<!-- OW2 Repo -->
 		<repository>

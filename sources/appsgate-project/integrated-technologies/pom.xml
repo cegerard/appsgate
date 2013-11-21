@@ -15,14 +15,23 @@
 	<description>This sub project contain all component for all supported technologies in Appsgate</description>
 	
 	<modules>
+		<module>devicegen</module>
+		<module>ubikit</module>
+		<module>immotronic</module>
+		<module>cybergarage</module>
 		<module>PhilipsHUE4Appsgate</module>
 		<module>sensor-network</module>
 		<module>upnp-dlna</module>
 		<module>web-services</module>
 		<module>device-mockups</module>
 		<module>software-services</module>
+<!--
 		<module>fuchsia-ard-plugin</module>
+<<<<<<< HEAD
 		<module>dfki-integration</module>
+=======
+-->
+>>>>>>> fe0cb571a210cccac2b3f616e145ec31611f06bf
 	</modules>
 	
 </project>

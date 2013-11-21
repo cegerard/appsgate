@@ -5,38 +5,22 @@
 
     <!-- Project's parent -->
     <parent>
-        <artifactId>ard</artifactId>
-    	<groupId>org.ow2.chameleon.fuchsia.extra.ard</groupId>
+	<artifactId>integrated-technologies</artifactId>
+    	<groupId>appsgate.components</groupId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-
-    <artifactId>ard-importer</artifactId>
-    <version>1.0.0</version>
+    <artifactId>devicegen-bundle</artifactId>
+    <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
-    <name>OW2 Chameleon - ARD Importer</name>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<artifactId>org.apache.felix.upnp.devicegen.util</artifactId>
+	<groupId>org.apache.felix.sandbox</groupId>
+        <version>0.1.0</version>
+	<packaging>jar</packaging>
+        <file>src/main/resources/org.apache.felix.upnp.devicegen.util-0.1.0.jar</file>
     </properties>
-
-    <dependencies>
-       <dependency>
-            <groupId>org.ow2.chameleon.fuchsia</groupId>
-            <artifactId>fuchsia-core</artifactId>
-	    <version>0.0.1-SNAPSHOT</version>
-       </dependency>
-       <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo</artifactId>
-            <version>${ipojo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-            <version>${ipojo.annotations.version}</version>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
@@ -72,6 +56,18 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-install-plugin</artifactId>
+		<executions>
+		  <execution>
+		    <phase>install</phase>
+		    <goals>
+		      <goal>install-file</goal>
+		    </goals>
+		  </execution>
+		</executions>
+	      </plugin>
         </plugins>
     </build>
 </project>
