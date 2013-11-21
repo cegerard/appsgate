@@ -447,7 +447,7 @@ public class EUDEInterpreterImplTest {
         @Override
         public void deleteListener(CoreListener coreListener) {
             System.out.println("removing listener: " + coreListener.getObjectId());
-            list.remove(coreListener);
+            //list.remove(coreListener);
         }
 
         public void notifAll(String msg) {
