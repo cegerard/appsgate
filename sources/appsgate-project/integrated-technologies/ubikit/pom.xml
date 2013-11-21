@@ -18,9 +18,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<artifactId>ubikit</artifactId>
 	<groupId>immotronic</groupId>
-        <version>1.9.0</version>
+        <version>1.11.0</version>
 	<packaging>jar</packaging>
-        <file>src/main/resources/ubikit-1.9.0.jar</file>
+        <file>src/main/resources/ubikit-1.11.0.jar</file>
     </properties>
 
     <build>
