@@ -42,11 +42,11 @@ public class NodeAction extends Node {
     /**
      * The args of the action
      */
-    private JSONArray args;
+    private JSONArray args = new JSONArray();
     /**
      * the command once it has been retrieve from interpreter
      */
-    private GenericCommand command;
+    private GenericCommand command = null;
 
     /**
      * Default constructor
@@ -66,13 +66,10 @@ public class NodeAction extends Node {
             try {
                 args = ruleJSON.getJSONArray("args");
             } catch (JSONException ex) {
-                LOGGER.warn("An Exception has been thrown, args for this node has been set to empty array");
+                LOGGER.warn("An Exception has been thrown, args is not set");
             }
-        } else {
-            args = new JSONArray();
         }
 
-        command = null;
     }
 
     @Override
