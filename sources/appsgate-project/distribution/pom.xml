@@ -297,6 +297,11 @@
 		    <artifactId>felix-gogo</artifactId>
 		    <version>1.1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.upnp.basedriver</artifactId>
+			<version>0.8.0</version>
+		</dependency>
 		<!-- -->
 		<dependency>
 					<groupId>appsgate.components</groupId>
