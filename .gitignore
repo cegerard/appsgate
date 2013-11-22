@@ -161,7 +161,7 @@ sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
 
 *.config
 
-*.jar
+**/target/**/*.jar
 
 *.ser
 
