@@ -287,6 +287,16 @@
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>4.2.0</version>
 		</dependency>
+		<dependency>  
+		    <groupId>org.knowhowlab.osgi.shell</groupId>  
+		    <artifactId>felix</artifactId>  
+		    <version>1.0.1</version>  
+		</dependency>  
+		<dependency>
+		    <groupId>org.knowhowlab.osgi.shell</groupId>
+		    <artifactId>felix-gogo</artifactId>
+		    <version>1.1.0</version>
+		</dependency>
 		<!--
 		<dependency>
 					<groupId>appsgate.components</groupId>
@@ -327,7 +337,7 @@
 						    <goal>copy-resources</goal>
 					    </goals>
 					    <configuration>
-						    <outputDirectory>${chameleon.destination}/runtime</outputDirectory>
+						    <outputDirectory>${chameleon.destination}/</outputDirectory>
 						    <resources>
 							    <resource>
 								    <directory>src/main/resources</directory>
@@ -360,11 +370,11 @@
 								    <groupId>org.ow2.chameleon</groupId>
 								    <artifactId>chameleon-core</artifactId>
 								    <version>${chameleon.version}</version>
+								    <excludes>conf/system.properties,chameleon.sh</excludes>
 							    </artifactItem>
 						    </artifactItems>
 					    </configuration>
 				    </execution>
-				    <!-- -->
 				    <execution>
 					    <id>copy-dependencies-chameleon</id>
 					    <phase>package</phase>
@@ -374,7 +384,7 @@
 					    <configuration>
 						    <outputDirectory>${chameleon.destination}/runtime</outputDirectory>
 						    <excludeTransitive>false</excludeTransitive>
-						    <excludeArtifactIds>org.apache.felix.gogo.runtime,org.apache.felix.gogo.shell,felix-gogo,org.eclipse.osgi,org.apache.felix.ipojo</excludeArtifactIds>
+						    <excludeArtifactIds>org.apache.felix.gogo.runtime,org.apache.felix.gogo.shell,org.eclipse.osgi,org.apache.felix.ipojo,grizzly-httpservice</excludeArtifactIds>
 					    </configuration>
 				    </execution>
 			    </executions>
