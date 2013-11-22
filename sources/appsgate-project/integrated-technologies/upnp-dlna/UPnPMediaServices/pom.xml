@@ -27,7 +27,6 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo</artifactId>
 			<version>${ipojo.version}</version>
-			<type>bundle</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
