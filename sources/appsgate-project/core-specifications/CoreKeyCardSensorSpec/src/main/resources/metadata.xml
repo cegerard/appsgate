@@ -5,6 +5,16 @@
 
 	<specification name="CoreKeyCardSensorSpec"
 		interfaces="appsgate.lig.keycard.sensor.spec.CoreKeyCardSensorSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
+		
+		<definition name="deviceName" 	 type="string" />
+		<definition name="deviceId"   	 type="string" />
+		<definition name="deviceType" 	 type="string" />
+		<definition name="pictureId"  	 type="string"/>
+		<definition name="userType"	  	 type="string" />
+		<definition name="status"	  	 type="string" />
+		<definition name="isPaired"   	 type="string" />
+		<definition name="currentStatus" type="string" 	/>
+		
 	</specification>
 
 </apam>

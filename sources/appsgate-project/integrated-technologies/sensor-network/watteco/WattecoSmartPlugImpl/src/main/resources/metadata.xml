@@ -24,7 +24,7 @@
 		<definition name="networkRoute" type="string" default="000000" 		 field="route"/>
 		
 		<!-- device specific meta data -->
-		<definition name="plugState"  	type="String" default="false" 		 field="plugState"   method="plugStateChanged"/>
+		<definition name="plugState"  	type="string" default="false" 		 field="plugState"   method="plugStateChanged"/>
 		
 		<definition name="consumption" 	type="string" default="00" 			 field="consumption" method="consumptionChanged"/>
 		

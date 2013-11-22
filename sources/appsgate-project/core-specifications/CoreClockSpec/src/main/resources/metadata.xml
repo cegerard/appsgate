@@ -6,6 +6,16 @@
 	<specification name="CoreClockSpec"
 		interfaces="appsgate.lig.clock.sensor.spec.CoreClockSpec"
         messages="appsgate.lig.core.object.messages.NotificationMsg">
+        
+        <!-- device kernel meta data -->
+        <definition name="deviceName" 	type="string"  />
+        <definition name="deviceId" 	type="string"  />
+
+        <!-- device client meta data -->
+        <definition name="pictureId" 	type="string"  />
+        <definition name="userType" 	type="string"  />
+        <definition name="status" 		type="string"  />
+        
 	</specification>
 
 </apam>
