@@ -2,6 +2,13 @@
 appsGate.lig.manager.client.communication
 appsGate.lig.manager.client.communication.service.send
 appsGate.lig.manager.client.communication.service.subscribe
+appsgate.ard
+appsgate.ard.aperio
+appsgate.ard.base.callback
+appsgate.ard.base.iface
+appsgate.ard.dao
+appsgate.lig.adapter.urc
+appsgate.lig.adapter.urc.services
 appsgate.lig.button_switch.sensor.enocean.impl
 appsgate.lig.button_switch.sensor.messages
 appsgate.lig.button_switch.sensor.spec
@@ -16,6 +23,7 @@ appsgate.lig.clock.sensor.spec
 appsgate.lig.colorLight.actuator.messages
 appsgate.lig.colorLight.actuator.spec
 appsgate.lig.colorLight.actuator.swing.impl
+appsgate.lig.contact.sensor.dfki.impl
 appsgate.lig.contact.sensor.enocean.impl
 appsgate.lig.contact.sensor.messages
 appsgate.lig.contact.sensor.spec
@@ -33,6 +41,7 @@ appsgate.lig.context.userbase.impl
 appsgate.lig.context.userbase.spec
 appsgate.lig.core.object.messages
 appsgate.lig.core.object.spec
+appsgate.lig.core.virtual.on_off.sensor.impl
 appsgate.lig.core.virtual.temperature.sensor.impl
 appsgate.lig.enocean.ubikit.adapter
 appsgate.lig.enocean.ubikit.adapter.listeners
@@ -45,6 +54,7 @@ appsgate.lig.eude.interpreter.spec
 appsgate.lig.keycard.sensor.enocean.impl
 appsgate.lig.keycard.sensor.messages
 appsgate.lig.keycard.sensor.spec
+appsgate.lig.led.dfki.impl
 appsgate.lig.light.actuator.philips.HUE.impl
 appsgate.lig.luminosity.sensor.enocean.impl
 appsgate.lig.luminosity.sensor.messages
@@ -58,11 +68,13 @@ appsgate.lig.main.spec
 appsgate.lig.manager.place.impl
 appsgate.lig.manager.place.messages
 appsgate.lig.manager.place.spec
+appsgate.lig.manager.propertyhistory
 appsgate.lig.meteo.yahoo
 appsgate.lig.meteo.yahoo.test
 appsgate.lig.on_off.actuator.enocean.impl
 appsgate.lig.on_off.actuator.messages
 appsgate.lig.on_off.actuator.spec
+appsgate.lig.plug_board.dfki.impl
 appsgate.lig.proxy.PhilipsHUE
 appsgate.lig.proxy.PhilipsHUE.interfaces
 appsgate.lig.proxy.calendar.interfaces
@@ -73,6 +85,7 @@ appsgate.lig.router.spec
 appsgate.lig.smartplug.actuator_sensor.messages
 appsgate.lig.smartplug.actuator_sensor.spec
 appsgate.lig.smartplug.sensor.watteco.impl
+appsgate.lig.temperature.sensor.dfki.impl
 appsgate.lig.temperature.sensor.enocean.impl
 appsgate.lig.temperature.sensor.messages
 appsgate.lig.temperature.sensor.spec
@@ -97,6 +110,7 @@ appsgate.lig.weather.messages
 appsgate.lig.weather.spec
 appsgate.lig.weather.utils
 appsgate.lig.weather.yahoo
+appsgate.lig.wmc.dfki.impl
 appsgate.validation.configuration
 appsgate.validation.configuration.eude
 appsgate.validation.context.follower
