@@ -168,3 +168,9 @@ sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
 *.properties
 
 *.script
+
+sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/META-INF/MANIFEST.MF
+
+sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/metadata.xml
+
+

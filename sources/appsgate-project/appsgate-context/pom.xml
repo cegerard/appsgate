@@ -42,6 +42,7 @@
 		<module>DeviceNameTable</module>
 		<module>ContextHistoy</module>
 		<module>appsgate-enduser</module>
+		<module>PropertyHistoryManager</module>		
 	</modules>
 
 </project>

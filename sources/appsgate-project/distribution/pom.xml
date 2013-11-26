@@ -66,11 +66,6 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
-			<artifactId>histman</artifactId>
-			<version>${apam.current.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>manager.conflict</artifactId>
 			<version>${apam.current.version}</version>
 		</dependency>
@@ -141,6 +136,12 @@
 			<artifactId>ContextHistory</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>PropertyHistoryManager</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+				
 
 		<dependency>
 			<groupId>appsgate.components</groupId>
@@ -286,12 +287,7 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>4.2.0</version>
-		</dependency>
-		<dependency>  
-		    <groupId>org.knowhowlab.osgi.shell</groupId>  
-		    <artifactId>felix</artifactId>  
-		    <version>1.0.1</version>  
-		</dependency>  
+		</dependency> 
 		<dependency>
 		    <groupId>org.knowhowlab.osgi.shell</groupId>
 		    <artifactId>felix-gogo</artifactId>
@@ -375,7 +371,7 @@
 								    <groupId>org.ow2.chameleon</groupId>
 								    <artifactId>chameleon-core</artifactId>
 								    <version>${chameleon.version}</version>
-								    <excludes>conf/system.properties,chameleon.sh</excludes>
+								    <excludes>conf/system.properties,conf/logger.xml,chameleon.sh</excludes>
 							    </artifactItem>
 						    </artifactItems>
 					    </configuration>
