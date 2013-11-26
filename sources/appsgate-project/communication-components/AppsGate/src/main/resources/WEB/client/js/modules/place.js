@@ -3,46 +3,46 @@ define([
 	"underscore",
 	"backbone",
 	"grammar",
-	"text!templates/locations/menu/menu.html",
-	"text!templates/locations/menu/placeContainer.html",
+	"text!templates/places/menu/menu.html",
+	"text!templates/places/menu/placeContainer.html",
 	"text!templates/devices/menu/coreClockContainer.html",
-	"text!templates/locations/menu/addButton.html",
-	"text!templates/locations/details/details.html",
+	"text!templates/places/menu/addButton.html",
+	"text!templates/places/details/details.html",
 	"i18next"
-], function($, _, Backbone, Grammar, placeMenuTemplate, placeContainerMenuTemplate, coreClockContainerMenuTemplate, addPlaceButtonTemplate, locationDetailsTemplate) {
+], function($, _, Backbone, Grammar, placeMenuTemplate, placeContainerMenuTemplate, coreClockContainerMenuTemplate, addPlaceButtonTemplate, placeDetailsTemplate) {
 	// initialize the module
-	var Location = {};
+	var Place = {};
 
 	// router
-	Location.Router = Backbone.Router.extend({
+	Place.Router = Backbone.Router.extend({
 		routes: {
-			"locations"		: "list",
-			"locations/:id"	: "details"
+			"places"		: "list",
+			"places/:id"	: "details"
 		},
 
-		// list all the locations
+		// list all the places
 		list:function() {
 			// display the side menu
-			appRouter.showMenuView(new Location.Views.Menu());
+			appRouter.showMenuView(new Place.Views.Menu());
 			
 			// set active the first element - displayed by default
 			$($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
 			
 			// display the first place
-			appRouter.showView(new Location.Views.Details({ model : locations.at(0) }));
+			appRouter.showView(new Place.Views.Details({ model : places.at(0) }));
 			
 			// update the url
-			appRouter.navigate("#locations/" + locations.at(0).get("id"));
+			appRouter.navigate("#places/" + places.at(0).get("id"));
 		},
 
-		// show the details of a locations (i.e. list of devices in this location)
+		// show the details of a places (i.e. list of devices in this place)
 		details:function(id) {
-			appRouter.showView(new Location.Views.Details({ model : locations.get(id) }));
+			appRouter.showView(new Place.Views.Details({ model : places.get(id) }));
 		}
 	});
 
 	// instantiate the router
-	var router = new Location.Router();
+	var router = new Place.Router();
 
 	/**
 	 * Resizes the div to the maximum displayable size on the screen
@@ -72,7 +72,7 @@ define([
 	}
 
 	// model
-	Location.Model = Backbone.Model.extend({
+	Place.Model = Backbone.Model.extend({
 
 		/**
 		 * @constructor
@@ -256,7 +256,7 @@ define([
 					var id;
 					do {
 						id = "place-" + Math.round(Math.random() * 10000).toString();
-					} while (locations.where({ id : id }).length > 0);
+					} while (places.where({ id : id }).length > 0);
 					model.set("id", id);
 					
 					this.remoteCall("newPlace", [{ type : "JSONObject", value : model.toJSON() }]);
@@ -285,23 +285,23 @@ define([
 	});
 	
 	// collection
-	Location.Collection = Backbone.Collection.extend({
-		model: Location.Model,
+	Place.Collection = Backbone.Collection.extend({
+		model: Place.Model,
 
 		/**
-		 * Fetch the locations from the server
+		 * Fetch the places from the server
 		 *
 		 * @constructor
 		 */
 		initialize:function() {
 		 	var self = this;
 			
-			// sort the locations alphabetically
-			this.comparator = function(location) {
-				return location.get("name");
+			// sort the places alphabetically
+			this.comparator = function(place) {
+				return place.get("name");
 			};
 			
-			// add the location w/ id -1 for the unlocated devices
+			// add the place w/ id -1 for the unlocated devices
 			this.add({
 				id : "-1",
 				name: $.i18n.t("places-menu.unlocated-devices"),
@@ -317,17 +317,17 @@ define([
 				window.grammar = new Grammar();
 			});
 
-		 	// listen to the event when the list of locations is received
-		 	dispatcher.on("listPlaces", function(locations) {
-		 		_.each(locations, function(location) {
-		 			self.add(location);
+		 	// listen to the event when the list of places is received
+		 	dispatcher.on("listPlaces", function(places) {
+		 		_.each(places, function(place) {
+		 			self.add(place);
 		 		});
-		 		dispatcher.trigger("locationsReady");
+		 		dispatcher.trigger("placesReady");
 		 	});
 
-		 	// listen to the event when a location appears and add it
-		 	dispatcher.on("newPlace", function(location) {
-		 		self.add(location);
+		 	// listen to the event when a place appears and add it
+		 	dispatcher.on("newPlace", function(place) {
+		 		self.add(place);
 				
 				// update the grammar
 				delete window.grammar;
@@ -336,7 +336,7 @@ define([
 
 			// listen to the event when a place has been updated
 			dispatcher.on("updatePlace", function(place) {
-				locations.get(place.id).set("name", place.name);
+				places.get(place.id).set("name", place.name);
 				
 				// update the grammar
 				delete window.grammar;
@@ -345,20 +345,20 @@ define([
 
 			// listen to the event when a place has been removed
 			dispatcher.on("removePlace", function(placeId) {
-				var removedPlace = locations.get(placeId);
+				var removedPlace = places.get(placeId);
 				
 				// check if the place exists in the collection
 				if (typeof removedPlace !== "undefined") {
 					
 					// remove the place from the collection
-					locations.remove(removedPlace);
+					places.remove(removedPlace);
 
 					// update the devices of the place
 					self.updateDevicesRemovedPlace(removedPlace);
 
 					// refresh the content if the details of the removed place was displayed
-					if (Backbone.history.fragment === "locations/" + placeId) {
-						appRouter.navigate("#locations", { trigger : true });
+					if (Backbone.history.fragment === "places/" + placeId) {
+						appRouter.navigate("#places", { trigger : true });
 					}
 					
 					// update the grammar
@@ -369,14 +369,14 @@ define([
 
 		 	// listen to the event when a device has been moved
 		 	dispatcher.on("moveDevice", function(messageData) {
-		 		self.moveDevice(messageData.srcLocationId, messageData.destLocationId, messageData.deviceId, false);
+		 		self.moveDevice(messageData.srcPlaceId, messageData.destPlaceId, messageData.deviceId, false);
 				
 				// update the grammar
 				delete window.grammar;
 				window.grammar = new Grammar();
 		 	});
 
-		 	// send the request to fetch the locations
+		 	// send the request to fetch the places
 		 	communicator.sendMessage({
 				method : "getPlaces",
 				args: [],
@@ -385,10 +385,10 @@ define([
 		 },
 
 		 /**
-		  * Return the name of the location where a device is located
+		  * Return the name of the place where a device is located
 		  * 
 		  * @param device
-		  * @return Name of the location where the device is located
+		  * @return Name of the place where the device is located
 		  */
 		getNameByDevice:function(device) {
 			try {
@@ -420,7 +420,7 @@ define([
 		},
 
 		/**
-		 * Update the locations and the device
+		 * Update the places and the device
 		 *
 		 * @param srcPlaceId
 		 * @param destPlaceId
@@ -429,17 +429,17 @@ define([
 		 */
 		moveDevice:function(srcPlaceId, destPlaceId, deviceId, movedByUser) {
 			console.log(srcPlaceId, destPlaceId, deviceId);
-			var srcLocation = locations.get(srcPlaceId);
-		 	var destLocation = locations.get(destPlaceId);
+			var srcPlace = places.get(srcPlaceId);
+		 	var destPlace = places.get(destPlaceId);
 			
-		 	// remove the device from the old location
-		 	if (srcLocation !== undefined && srcLocation.get("devices").indexOf(deviceId) > -1) {
-		 		srcLocation.get("devices").splice(srcLocation.get("devices").indexOf(deviceId), 1);
+		 	// remove the device from the old place
+		 	if (srcPlace !== undefined && srcPlace.get("devices").indexOf(deviceId) > -1) {
+		 		srcPlace.get("devices").splice(srcPlace.get("devices").indexOf(deviceId), 1);
 		 	}
 			
-		 	// add the device to the new location
-		 	if (destLocation !== undefined && destLocation.get("devices").indexOf(deviceId) === -1) {
-		 		destLocation.get("devices").push(deviceId);
+		 	// add the device to the new place
+		 	if (destPlace !== undefined && destPlace.get("devices").indexOf(deviceId) === -1) {
+		 		destPlace.get("devices").push(deviceId);
 		 	}
 			
 		 	// update the device itself
@@ -465,12 +465,12 @@ define([
 	/**
 	 * Namespace for the views
 	 */
-	Location.Views = {};
+	Place.Views = {};
 	
 	/**
 	 * Render the side menu for the places
 	 */
-	Location.Views.Menu = Backbone.View.extend({
+	Place.Views.Menu = Backbone.View.extend({
 		tpl						: _.template(placeMenuTemplate),
 		tplPlaceContainer		: _.template(placeContainerMenuTemplate),
 		tplCoreClockContainer	: _.template(coreClockContainerMenuTemplate),
@@ -493,9 +493,9 @@ define([
 		 * @constructor
 		 */
 		initialize:function() {
-			this.listenTo(locations, "add", this.render);
-			this.listenTo(locations, "change", this.render);
-			this.listenTo(locations, "remove", this.render);
+			this.listenTo(places, "add", this.render);
+			this.listenTo(places, "change", this.render);
+			this.listenTo(places, "remove", this.render);
 			this.listenTo(devices, "change", this.onChangedDevice);
 		},
 		
@@ -584,7 +584,7 @@ define([
 			}
 			
 			// name already exists
-			if (locations.where({ name : $("#add-place-modal input").val() }).length > 0) {
+			if (places.where({ name : $("#add-place-modal input").val() }).length > 0) {
 				$("#add-place-modal .text-danger")
 						.text($.i18n.t("modal-add-place.place-already-existing"))
 						.removeClass("hide");
@@ -614,7 +614,7 @@ define([
 					// instantiate the place and add it to the collection after the modal has been hidden
 					$("#add-place-modal").on("hidden.bs.modal", function() {
 						// instantiate a model for the new place
-						var place = new Location.Model({
+						var place = new Place.Model({
 							name	: $("#add-place-modal input").val(),
 							devices	: []
 						});
@@ -623,7 +623,7 @@ define([
 						place.save();
 
 						// add it to the collection
-						locations.add(place);
+						places.add(place);
 						
 						// tell the router that there is no modal any more
 						appRouter.isModalShown = false;
@@ -658,21 +658,21 @@ define([
 				// "add place" button to the side menu
 				this.$el.append(this.tplAddPlaceButton());
 
-				// for each location, add a menu item
+				// for each place, add a menu item
 				this.$el.append(this.tpl());
 				
 				// put the unlocated devices into a separate group list
 				//this.$el.append(this.tpl());
 				$(this.$el.find(".list-group")[1]).append(this.tplPlaceContainer({
-					place	: locations.get("-1"),
+					place	: places.get("-1"),
 					active	: Backbone.history.fragment.split("/")[1] === "-1" ? true : false
 				}));
 
-				locations.forEach(function(location) {
-					if (location.get("id") !== "-1") {
+				places.forEach(function(place) {
+					if (place.get("id") !== "-1") {
 						$(self.$el.find(".list-group")[1]).append(self.tplPlaceContainer({
-							place : location,
-							active	: Backbone.history.fragment.split("/")[1] === location.get("id") ? true : false
+							place : place,
+							active	: Backbone.history.fragment.split("/")[1] === place.get("id") ? true : false
 						}));
 					}
 				});
@@ -691,8 +691,8 @@ define([
 	/**
 	 * Detailled view of a place
 	 */
-	Location.Views.Details = Backbone.View.extend({
-		tpl: _.template(locationDetailsTemplate),
+	Place.Views.Details = Backbone.View.extend({
+		tpl: _.template(placeDetailsTemplate),
 
 		/**
 		 * Bind events of the DOM elements from the view to their callback
@@ -753,7 +753,7 @@ define([
 			}
 			
 			// name already existing
-			if (locations.where({ name : $("#edit-name-place-modal input").val() }).length > 0) {
+			if (places.where({ name : $("#edit-name-place-modal input").val() }).length > 0) {
 				$("#edit-name-place-modal .text-danger").removeClass("hide");
 				$("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-already-existing"));
 				$("#edit-name-place-modal .valid-button").addClass("disabled");
@@ -805,8 +805,8 @@ define([
 			// delete the place
 			this.model.destroy();
 			
-			// navigate to the list of locations
-			appRouter.navigate("#locations", { trigger : true });
+			// navigate to the list of places
+			appRouter.navigate("#places", { trigger : true });
 		},
 		
 		/**
@@ -899,7 +899,7 @@ define([
 				// translate the view
 				this.$el.i18n();
 
-				// resize the devices list in the selected location
+				// resize the devices list in the selected place
 				resizeDiv($(".contents-list"));
 
 				return this;
@@ -907,5 +907,5 @@ define([
 		}
 	});
 
-	return Location;
+	return Place;
 });

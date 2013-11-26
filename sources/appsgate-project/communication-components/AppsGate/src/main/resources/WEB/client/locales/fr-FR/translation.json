@@ -125,6 +125,20 @@
 				"closed"	: "Fermé"
 			}
 		},
+		"actuator"			: {
+			"name"	: {
+				"singular"	: "Actionneur",
+				"plural"	: "Actionneurs"
+			},
+			"status"	: {
+				"turnedOn"	: "Allumé",
+				"turnedOff"	: "Eteint"
+			},
+			"action"	: {
+				"turnOn"	: "Allumer",
+				"turnOff"	: "Eteindre"
+			}
+		},
 		"contact"			: {
 			"name"	: {
 				"singular"	: "Capteur de contact",
@@ -263,6 +277,15 @@
 		"is-turned-off-plug-status"					: "est eteinte",
 		"turn-on-plug-action"						: "allumer",
 		"turn-off-plug-action"						: "eteindre",
+
+		"turned-on-actuator-event"					: "on allume",
+		"turned-off-actuator-event"					: "on eteint",
+
+		"is-turned-on-actuator-status"					: "est allume",
+		"is-turned-off-actuator-status"					: "est eteint",
+
+		"turn-on-actuator-action"					: "allumer",
+		"turn-off-actuator-action"					: "eteindre",
 		
 		"turned-on-lamp-event"						: "on allume",
 		"turned-off-lamp-event"						: "on eteint",

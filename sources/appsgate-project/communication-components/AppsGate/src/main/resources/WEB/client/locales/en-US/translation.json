@@ -125,6 +125,20 @@
 				"closed"	: "Closed"
 			}
 		},
+		"actuator"			: {
+			"name"	: {
+				"singular"	: "Actuator",
+				"plural"	: "Actuators"
+			},
+			"status"	: {
+				"turnedOn"	: "On",
+				"turnedOff"	: "Off"
+			},
+			"action"	: {
+				"turnOn"	: "Turn on",
+				"turnOff"	: "Turn off"
+			}
+		},
 		"contact"			: {
 			"name"	: {
 				"singular"	: "Contact sensor",
@@ -263,7 +277,14 @@
 		"is-turned-off-plug-status"					: "is turned off",
 		"turn-on-plug-action"						: "turn on",
 		"turn-off-plug-action"						: "turn off",
-		
+
+		"turned-on-actuator-event"					: "we turn on",
+		"turned-off-actuator-event"					: "we turn off",
+		"is-turned-on-actuator-status"					: "is turned on",
+		"is-turned-off-actuator-status"					: "is turned off",
+		"turn-on-actuator-action"					: "turn on",
+		"turn-off-actuator-action"					: "turn off",
+
 		"turned-on-lamp-event"						: "we turn on",
 		"turned-off-lamp-event"						: "we turn off",
 		"is-turned-on-lamp-status"					: "is turned on",
