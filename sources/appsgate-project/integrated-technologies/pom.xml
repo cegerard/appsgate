@@ -25,9 +25,7 @@
 		<module>web-services</module>
 		<module>device-mockups</module>
 		<module>software-services</module>
-<!--
 		<module>fuchsia-ard-plugin</module>
--->
 		<module>dfki-integration</module>
 	</modules>
 	

@@ -157,4 +157,22 @@ public interface CoreColorLightSpec {
 	 * @return true if the light state changed, false otherwise
 	 */
 	public boolean toggle();
+	
+	/**
+	 * Make the light blink one time
+	 * @return true if the light blinked, false otherwise
+	 */
+	public boolean blink();
+	
+	/**
+	 * Make the light blink for 30 seconds
+	 * @return true if the light start to blink, false otherwise
+	 */
+	public boolean blink30();
+	
+	/**
+	 * turn the light into a loop between all the color spectrum
+	 * @return true if the light start to loop, false otherwise
+	 */
+	public boolean colorLoop();
 }

@@ -5,6 +5,23 @@
 
 	<specification name="CoreOnOffActuatorSpec"
 		interfaces="appsgate.lig.on_off.actuator.spec.CoreOnOffActuatorSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
+		
+		<!-- device kernel meta data -->
+		<definition name="deviceName" 		  type="string" />
+		<definition name="deviceId" 		  type="string" />
+		<definition name="deviceType" 		  type="string" />
+		
+		<!-- device client meta data -->
+		<definition name="pictureId" 		  type="string"	/>
+		<definition name="userType" 		  type="string" />
+		<definition name="status" 			  type="string" />
+		
+		<!-- Sensor network meta data -->
+		<definition name="isPaired" 		  type="string" />
+		
+		<!-- device specific meta data -->
+		<definition name="isOn" 			  type="string" />
+		
 	</specification>
 
 </apam>

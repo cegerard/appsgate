@@ -528,4 +528,22 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
 	else
 	    return On();
     }
+
+	@Override
+	public boolean blink() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean blink30() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean colorLoop() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

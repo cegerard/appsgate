@@ -4,7 +4,21 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreWeatherServiceSpec"
-		interfaces="appsgate.lig.weather.spec.CoreWeatherServiceSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
+		interfaces="appsgate.lig.weather.spec.CoreWeatherServiceSpec"
+		messages="appsgate.lig.core.object.messages.NotificationMsg">
+
+		<!-- Appsgate mandatory property -->
+		<definition name="deviceName" type="string" />
+		<!-- <definition name="deviceId" type="string" field="appsgateObjectId" /> -->
+
+		<!-- device client meta data -->
+		<definition name="pictureId" type="string" />
+		<definition name="userType"  type="string" />
+		<definition name="status"    type="string" />
+
+		<!-- Service specific meta data -->
+		<definition name="auto-refresh" type="int"/>
+
 	</specification>
 
 </apam>

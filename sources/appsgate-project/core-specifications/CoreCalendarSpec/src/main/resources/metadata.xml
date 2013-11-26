@@ -6,6 +6,17 @@
 	<specification name="CoreCalendarSpec"
 		interfaces="appsgate.lig.calendar.service.spec.CoreCalendarSpec"
 		messages="appsgate.lig.core.object.messages.NotificationMsg">
+		
+		<definition name="calendarName" type="string"/>
+		<definition name="account" 	  	type="string"/>
+		<definition name="pswd" 	  	type="string" />
+		<definition name="rate" 	 	type="string" />
+		
+		<definition name="deviceId" 	type="string" />
+		<definition name="userType" 	type="string" />
+		<definition name="status" 		type="string" />
+		
+		
 	</specification>
 
 </apam>

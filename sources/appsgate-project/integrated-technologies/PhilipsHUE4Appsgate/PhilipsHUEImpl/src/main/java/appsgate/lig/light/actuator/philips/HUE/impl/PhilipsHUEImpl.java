@@ -244,9 +244,28 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		return false;
 	}
 	
+	/**
+	 * Change the HUe color value and set the brightness and the saturation to 
+	 * default.
+	 * @param color the HUE color value
+	 * @return true if the color is set with default saturation and brightness values, false otherwise
+	 */
 	public boolean setSaturatedColor(long color) {
 		
-		if(setColor(color) && setDefaultBrightness() && setDefaultSaturation()) {
+		JSONObject JSONAttribute = new JSONObject();
+		
+		try {
+			JSONAttribute.put("hue", color);
+			JSONAttribute.put("bri", BRI_DEFAULT);
+			JSONAttribute.put("sat", SAT_DEFAULT);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return false;
+		}
+	
+	
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, JSONAttribute)) {
+			notifyChanges("color", String.valueOf(color));
 			return true;
 		}
 		
@@ -264,6 +283,10 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		return false;
 	}
 	
+	/**
+	 * Set the default brightness value
+	 * @return true if the brightness return to default, false otherwise
+	 */
 	public boolean setDefaultBrightness() {
 		return setBrightness(BRI_DEFAULT);
 	}
@@ -279,10 +302,19 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		return false;
 	}
 	
+	/**
+	 * Turn the HUE light saturation to default value
+	 * @return true if the default saturation is correctly set, false otherwise
+	 */
 	public boolean setDefaultSaturation() {
 		return setSaturation(SAT_DEFAULT);
 	}
 	
+	/**
+	 * Change the HUE light effect, ie color loop or not
+	 * @param effect the desired effect conform to the REST call from Philips HUE API (none or colorloop)	
+	 * @return true if the HUE effect is correctly set, false otherwise
+	 */
 	public boolean setEffect(String effect) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "effect", effect)) {
@@ -293,6 +325,11 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		return false;
 	}
 	
+	/**
+	 * Turn the HUE light in alert mode
+	 * @param alert the alert mode: one blink (select), blink for 30 seconds (lselect), or return to previous settings (none)
+	 * @return true of the alert mode turns on, false otherwise
+	 */
 	public boolean setAlert(String alert) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "alert", alert)) {
@@ -303,6 +340,10 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		return false;
 	}
 	
+	/**
+	 * Set the color transition time
+	 * @return true if the transition time is modified, false otherwise
+	 */
 	public boolean setTransitionTime(long transition) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "transitiontime", transition)) {
@@ -403,6 +444,21 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean blink() {
+		return setAlert("select");
+	}
+
+	@Override
+	public boolean blink30() {
+		return setAlert("lselect");
+	}
+
+	@Override
+	public boolean colorLoop() {
+		return setEffect("colorloop");
 	}
 	
 	public String getSensorName() {
