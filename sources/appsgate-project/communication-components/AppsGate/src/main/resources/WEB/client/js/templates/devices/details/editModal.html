@@ -6,9 +6,9 @@
 	<div class="modal-body">
 		<input type="text" class="device-name input-block-level" value="<%= device.get('name') %>">
 		<select class="input-block-level">
-			<% _.each(locations.models, function(location) { %>
-			<option value="<%= location.get('id') %>" <% if (location.get("id") === device.get("placeId")) { %>selected<% } %>>
-				<%= location.get("name") %>
+			<% _.each(places.models, function(place) { %>
+			<option value="<%= place.get('id') %>" <% if (place.get("id") === device.get("placeId")) { %>selected<% } %>>
+				<%= place.get("name") %>
 			</option>
 			<% }) %>
 			<option value="-1">Non localis&eacute;</option>

@@ -194,8 +194,8 @@ define([
 			var self = this;
 			
 			// sort the programs alphabetically
-			this.comparator = function(location) {
-				return location.get("name");
+			this.comparator = function(place) {
+				return place.get("name");
 			};
 
 			// listen to the event when the list of programs is received

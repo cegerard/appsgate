@@ -4,12 +4,12 @@ define([
 	"backbone",
 	"communicator",
 	"device",
-    "location",
+    "place",
     "program",
 	"grammar",
 	"bootstrap",
 	"i18next"
-], function($, _, Backbone, Communicator, Device, Location, Program, Grammar) {
+], function($, _, Backbone, Communicator, Device, Place, Program, Grammar) {
 
 	// define the application router
 	var AppRouter = Backbone.Router.extend({
@@ -29,8 +29,8 @@ define([
 
         // default route of the application
         index:function() {
-			this.showMenuView(new Location.Views.Menu());
-			this.showView(new Location.Views.Details({ model : locations.at(0) }));
+			this.showMenuView(new Place.Views.Menu());
+			this.showView(new Place.Views.Details({ model : places.at(0) }));
 			
 			// set active the first item of the navbar - displayed by default
 			$($(".navbar li")[0]).addClass("active");
@@ -57,7 +57,7 @@ define([
 				$(navItem).removeClass("active");
 			});
 			// add active class to the correct menu item
-			if (Backbone.history.fragment.indexOf("locations") !== -1) {
+			if (Backbone.history.fragment.indexOf("places") !== -1) {
 				$($(".navbar-nav > li")[0]).addClass("active");
 			} else if (Backbone.history.fragment.indexOf("devices") !== -1) {
 				$($(".navbar-nav > li")[1]).addClass("active");
@@ -69,11 +69,6 @@ define([
         showView:function(view) {
 			// remove and unbind the current view
 			if (this.currentView) {
-				// manage raphaeljs objects
-				if (typeof colorWheel !== "undefined") {
-					colorWheel.remove();
-					delete colorWheel;
-				}
 				this.currentView.close();
 			}
 
@@ -87,7 +82,7 @@ define([
 			this.locale = locale;
 			
 			$.i18n.init({ lng : this.locale }).done(function() {
-				locations.get("-1").set("name", $.i18n.t("places-menu.unlocated-devices"));
+				places.get("-1").set("name", $.i18n.t("places-menu.unlocated-devices"));
 				appRouter.navigate("reset", { trigger : true });
 				$("body").i18n();
 			});
@@ -112,9 +107,9 @@ define([
 				devices.reset();
 				delete devices;
 			}
-			if (typeof locations !== "undefined") {
-				locations.reset();
-				delete locations;
+			if (typeof places !== "undefined") {
+				places.reset();
+				delete places;
 			}
 			if (typeof programs !== "undefined") {
 				programs.reset();
@@ -127,7 +122,7 @@ define([
 			var programsReady = false;
 
 			// places
-			dispatcher.on("locationsReady", function() {
+			dispatcher.on("placesReady", function() {
 				placesReady = true;
 				if (placesReady && devicesReady && programsReady) {
 					dispatcher.trigger("dataReady");
@@ -159,7 +154,7 @@ define([
 				$("#settings-modal").modal("hide");
 
 				// remove potential duplicated entries of devices in a place
-				locations.forEach(function(l) {
+				places.forEach(function(l) {
 					l.set({ devices : _.uniq(l.get("devices")) });
 				});
 
@@ -174,8 +169,8 @@ define([
 				appRouter.navigate("reset", { trigger : true });
 			});
 			
-			// Initialize the collection of locations
-            window.locations = new Location.Collection();
+			// Initialize the collection of places
+            window.places = new Place.Collection();
 
             // Initialize the collection of devices
             window.devices = new Device.Collection();

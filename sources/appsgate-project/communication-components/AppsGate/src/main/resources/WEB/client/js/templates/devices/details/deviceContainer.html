@@ -38,7 +38,7 @@
 				<% if (device.get("placeId") === "-1") { %>
 					<span data-i18n="devices.device-unlocated"></span>
 				<% } else { %>
-					<%= locations.get(device.get("placeId")).get("name")%>
+					<%= places.get(device.get("placeId")).get("name")%>
 				<% } %>
 			</div>
 		</li>
@@ -88,9 +88,9 @@
 							<div class="col-md-3" data-i18n="modal-edit-device.place-label"></div>
 							<div class="col-md-9">
 								<select id="device-place" class="form-control">
-									<% _.each(locations.models, function(location) { %>
-										<option value="<%= location.get('id') %>" <% if (location.get("id") === device.get("placeId")) { %>selected<% } %>>
-											<%= location.get("name") %>
+									<% _.each(places.models, function(place) { %>
+										<option value="<%= place.get('id') %>" <% if (place.get("id") === device.get("placeId")) { %>selected<% } %>>
+											<%= place.get("name") %>
 										</option>
 									<% }) %>
 								</select>

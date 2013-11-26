@@ -11,15 +11,15 @@
             <label class="control-label" for="selectRoom">Emplacement</label>
             <div class="controls">
                 <select>
-                    <% _.each(locations, function(location) { %>
-                        <option value=<%=location.get("id") %>
-                            <% if (location.get("id") === device.get("locationId")) { %>
+                    <% _.each(places, function(place) { %>
+                        <option value=<%=place.get("id") %>
+                            <% if (place.get("id") === device.get("placeId")) { %>
                             selected="selected"
                             <% } %>>
-                            <%= location.get("name") %>
+                            <%= place.get("name") %>
                         </option>
                     <% }); %>
-                    <option value="-1" <% if (device.get("locationId") == -1) { %>
+                    <option value="-1" <% if (device.get("placeId") == -1) { %>
                         selected="selected"
                         <% } %>>
                         Non d&eacute;fini

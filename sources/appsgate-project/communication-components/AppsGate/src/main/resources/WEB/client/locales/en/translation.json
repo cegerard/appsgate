@@ -28,12 +28,16 @@
 	"modal-settings" : {
 		"title"					: "Preferences",
 		"addr-server"			: "Address server",
+		"language-label"		: "Language",
+		"language-fr"			: "French",
+		"language-en"			: "English",
 		"server-unreachable"	: "Server unavailable",
 		"connection"			: "Connection"
 	},
 	"places-menu" : {
-		"add-button"	: "Add place",
-		"place-no-name"	: "Place with no name"
+		"add-button"		: "Add place",
+		"place-no-name"		: "Place with no name",
+		"unlocated-devices"	: "Unlocated devices"
 	},
 	"modal-add-place" : {
 		"title"						: "Add place",
@@ -88,6 +92,8 @@
 	"devices" : {
 		"device-no-name"	: "Device with no name",
 		"device-unlocated"	: "Unlocated",
+		"type-label"		: "Type",
+		"place-label"		: "Place",
 		"state-label"		: "State",
 		"value-label"		: "Value",
 		"consumption-label"	: "Consumption",
@@ -117,6 +123,20 @@
 			"value"	: {
 				"opened"	: "Opened",
 				"closed"	: "Closed"
+			}
+		},
+		"actuator"			: {
+			"name"	: {
+				"singular"	: "Actuator",
+				"plural"	: "Actuators"
+			},
+			"status"	: {
+				"turnedOn"	: "On",
+				"turnedOff"	: "Off"
+			},
+			"action"	: {
+				"turnOn"	: "Turn on",
+				"turnOff"	: "Turn off"
 			}
 		},
 		"contact"			: {
@@ -150,6 +170,10 @@
 				"singular"	: "Smart plug",
 				"plural"	: "Smart plugs"
 			},
+			"status"	: {
+				"turnedOn"	: "Turned on",
+				"turnedOff"	: "Turned off"
+			},
 			"action"	: {
 				"turnOn"	: "Turn on",
 				"turnOff"	: "Turn off"
@@ -159,6 +183,10 @@
 			"name"	: {
 				"singular"	: "Philips Hue Lamp",
 				"plural"	: "Philips Hue Lamp"
+			},
+			"status"	: {
+				"turnedOn"	: "Turned on",
+				"turnedOff"	: "Turned off"
 			},
 			"action"	: {
 				"turnOn"	: "Turn on",
@@ -188,8 +216,9 @@
 	},
 	"editor" : {
 		"title"					: "Program editor",
+		"no-program-alert"		: "No program",
 		"valid-program-alert"	: "Program is valid",
-		"invalid-program-alert"	: "Programme is not valid"
+		"invalid-program-alert"	: "Program is not valid"
 	},
 	"language" : {
 		"written-by"								: "written by",
@@ -215,8 +244,13 @@
 		"true"										: "true",
 		"false"										: "false",
 		
+		"op-more-than"								: "more than",
+		"op-less-than"								: "less than",
+		
+		"change-temperature"						: "changes",
 		"indicate-temperature"						: "indicates",
 		
+		"change-illumination"						: "changes",
 		"indicate-illumination"						: "indicates",
 		
 		"pushed-switch-event"						: "we press on",
@@ -243,7 +277,14 @@
 		"is-turned-off-plug-status"					: "is turned off",
 		"turn-on-plug-action"						: "turn on",
 		"turn-off-plug-action"						: "turn off",
-		
+
+		"turned-on-actuator-event"					: "we turn on",
+		"turned-off-actuator-event"					: "we turn off",
+		"is-turned-on-actuator-status"					: "is turned on",
+		"is-turned-off-actuator-status"					: "is turned off",
+		"turn-on-actuator-action"					: "turn on",
+		"turn-off-actuator-action"					: "turn off",
+
 		"turned-on-lamp-event"						: "we turn on",
 		"turned-off-lamp-event"						: "we turn off",
 		"is-turned-on-lamp-status"					: "is turned on",
@@ -259,6 +300,26 @@
 		"yellow-color"								: "yellow",
 		"orange-color"								: "orange",
 		"purple-color"								: "purple",
-		"pink-color"								: "pink"
+		"pink-color"								: "pink",
+		
+		"clock-event"								: "it is",
+		"clock-status"								: "it is",
+		
+		"play-media-player-action"					: "play",
+		"pause-media-player-action"					: "pause the media",
+		"stop-media-player-action"					: "stop",
+		"set-volume-media-player-action"			: "set the volume of",
+		"complement-media-player-action"			: "on",
+		
+		"alarm-music"								: "quite music",
+		"music"										: "tonic music",
+		"ring-bell-mail-arrived"					: "ringbell new mail arrived",
+		"radio"										: "radio",
+		"movie"										: "movie",
+		"img-table"									: "image 'dinner's ready!'",
+		
+		"received-mail-event"						: "a mail arrives",
+		"send-mail-action"							: "send the mail 'Well arrived!' to",
+		"well-arrived-subject"						: "Well arrived!"
 	}
 }

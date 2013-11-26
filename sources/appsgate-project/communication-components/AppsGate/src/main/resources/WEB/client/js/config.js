@@ -28,7 +28,7 @@ require.config({
 		moment: "libs/moment/moment.min",
         // Modules
         communicator: "modules/communicator",
-        location: "modules/location",
+        place: "modules/place",
         device: "modules/device",
         program: "modules/program",
         home: "modules/home",

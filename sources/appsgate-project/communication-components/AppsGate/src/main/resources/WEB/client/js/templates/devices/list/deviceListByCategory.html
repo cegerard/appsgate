@@ -47,6 +47,12 @@
 		<% } else { %>
 			<span data-i18n="devices.lamp.name.plural"></span>
 		<% } %>
+	<% } else if (type === "8") { %>
+		<% if (devices.length === 1) { %>
+			<span data-i18n="devices.actuator.name.singular"></span>
+		<% } else { %>
+			<span data-i18n="devices.actuator.name.plural"></span>
+		<% } %>
 	<% } %>
 </div>
 
@@ -87,6 +93,12 @@
 							<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-lamp-button" data-i18n="devices.plug.action.turnOff"></button>
 						<% } else { %>
 							<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-lamp-button" data-i18n="devices.plug.action.turnOn"></button>
+						<% } %>
+					<% } else if (type === "8") { %>
+						<% if (s.get("value") === "true" || s.get("value") === true) { %>
+							<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-actuator-button" data-i18n="devices.actuator.action.turnOff"></button>
+						<% } else { %>
+							<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-actuator-button" data-i18n="devices.actuator.action.turnOn"></button>
 						<% } %>
 					<% } %>
 					<i class="glyphicon glyphicon-chevron-right"></i>
@@ -133,6 +145,12 @@
 						<span class="label label-info" data-i18n="devices.lamp.status.turnedOn"></span>
 					<% } else { %>
 						<span class="label label-info" data-i18n="devices.lamp.status.turnedOff"></span>
+					<% } %>
+				<% } else if (type === "8") { %>
+					<% if (s.get("value") === "true" || s.get("value") === true) { %>
+						<span class="label label-info" data-i18n="devices.actuator.status.turnedOn"></span>
+					<% } else { %>
+						<span class="label label-info" data-i18n="devices.actuator.status.turnedOff"></span>
 					<% } %>
 				<% } %>
 			</a>
