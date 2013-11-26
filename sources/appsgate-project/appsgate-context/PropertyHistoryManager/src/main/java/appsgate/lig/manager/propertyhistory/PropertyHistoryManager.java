@@ -70,7 +70,7 @@ public class PropertyHistoryManager implements PropertyManager {
 	/*
 	 * The collection containing the attributes created, changed and removed.
 	 */
-	private static final String ChangedAttributes = "Attr";
+	private static final String ChangedAttributes = "Properties";
 
 	/*
 	 * The collection containing the links (wires) created, and deleted
@@ -120,6 +120,7 @@ public class PropertyHistoryManager implements PropertyManager {
 	}
 
 	private void insertDBEntry(Component comp, String attr, String status) {
+		logger.debug("insertDBEntry(Component comp : "+comp+", String attr : "+attr+", String status : "+status);
 		if (data != null && mongoClient != null) {
 			try {
 				// force connection to be established
@@ -288,12 +289,17 @@ public class PropertyHistoryManager implements PropertyManager {
 
 	public void start() throws Exception {
 
+		logger.debug("starting...");
 		ApamManagers.addPropertyManager(this);
 
 	}
 
 	public void stop() {
+		logger.debug("stopping...");
 		ApamManagers.removePropertyManager(this);
+		if(mongoClient!=null) {
+			mongoClient.close();
+		}
 		data = null;
 	}
 

@@ -66,11 +66,6 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
-			<artifactId>histman</artifactId>
-			<version>${apam.current.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>manager.conflict</artifactId>
 			<version>${apam.current.version}</version>
 		</dependency>
@@ -141,6 +136,12 @@
 			<artifactId>ContextHistory</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>PropertyHistoryManager</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+				
 
 		<dependency>
 			<groupId>appsgate.components</groupId>
