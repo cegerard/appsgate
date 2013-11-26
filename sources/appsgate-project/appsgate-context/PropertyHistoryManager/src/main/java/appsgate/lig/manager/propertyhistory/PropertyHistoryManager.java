@@ -22,11 +22,13 @@ import fr.imag.adele.apam.ApamManagers;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Component;
 import fr.imag.adele.apam.CompositeType;
+import fr.imag.adele.apam.DynamicManager;
+import fr.imag.adele.apam.Instance;
+import fr.imag.adele.apam.Link;
 import fr.imag.adele.apam.ManagerModel;
 import fr.imag.adele.apam.PropertyManager;
-import fr.imag.adele.apam.impl.CompositeTypeImpl;
 
-public class PropertyHistoryManager implements PropertyManager {
+public class PropertyHistoryManager implements PropertyManager, DynamicManager {
 
 	public static class DBConfig {
 		public String histURL;
@@ -120,7 +122,8 @@ public class PropertyHistoryManager implements PropertyManager {
 	}
 
 	private void insertDBEntry(Component comp, String attr, String status) {
-		logger.debug("insertDBEntry(Component comp : "+comp+", String attr : "+attr+", String status : "+status);
+		logger.debug("insertDBEntry(Component comp : " + comp
+				+ ", String attr : " + attr + ", String status : " + status);
 		if (data != null && mongoClient != null) {
 			try {
 				// force connection to be established
@@ -215,92 +218,159 @@ public class PropertyHistoryManager implements PropertyManager {
 				+ ", CompositeType compositeType = "
 				+ (compositeType == null ? "null" : compositeType.getName()));
 
-		URL configuration = null;
-		if (model == null) { // model is root
-			// trying to retrieve an external default configuration file
-			File modelDirectory = new File("conf");
+		if (db == null) {
 
-			if (modelDirectory.exists() && modelDirectory.isDirectory()) {
-				for (File modelFile : modelDirectory.listFiles()) {
-					try {
-						String modelFileName = modelFile.getName();
+			URL configuration = null;
+			if (model == null) { // model is root
+				// trying to retrieve an external default configuration file
+				File modelDirectory = new File("conf");
 
-						if (modelFileName.endsWith(".cfg")
-								&& modelFileName
-										.startsWith(CST.ROOT_COMPOSITE_TYPE)
-										&& modelFileName.substring(CST.ROOT_COMPOSITE_TYPE.length() + 1).startsWith(this.getName()) ) {
-							configuration = modelFile.toURI().toURL();
-							logger.debug("Found external configuration file : "+configuration);
+				if (modelDirectory.exists() && modelDirectory.isDirectory()) {
+					for (File modelFile : modelDirectory.listFiles()) {
+						try {
+							String modelFileName = modelFile.getName();
+
+							if (modelFileName.endsWith(".cfg")
+									&& modelFileName
+											.startsWith(CST.ROOT_COMPOSITE_TYPE)
+									&& modelFileName
+											.substring(
+													CST.ROOT_COMPOSITE_TYPE
+															.length() + 1)
+											.startsWith(this.getName())) {
+								configuration = modelFile.toURI().toURL();
+								logger.debug("Found external configuration file : "
+										+ configuration);
+							}
+
+						} catch (MalformedURLException e) {
+							logger.warn("Error when reading url : "
+									+ e.getMessage());
 						}
-
-					} catch (MalformedURLException e) {
-						logger.warn("Error when reading url : "+e.getMessage());
 					}
 				}
-			}
-		} else {
-			configuration = model.getURL();
-		}
-
-		data = new DBConfig(loadProperties(configuration));
-
-		try {
-
-			Builder options = new MongoClientOptions.Builder();
-
-			options.connectTimeout(data.histDBTimeout);
-
-			if (mongoClient == null) {
-				mongoClient = new MongoClient(data.histURL, options.build());
+			} else {
+				configuration = model.getURL();
 			}
 
-			logger.info("trying to connect with database {} in host {}",
-					data.histDBName, data.histURL);
+			data = new DBConfig(loadProperties(configuration));
 
-			// force connection to be established
-			mongoClient.getDatabaseNames();
+			try {
 
-			db = mongoClient.getDB(data.histDBName);
+				Builder options = new MongoClientOptions.Builder();
 
-		} catch (Exception e) {
-			logger.error("{} is inactive, it was unable to find the DB in {}",
-					this.getName(), data.histURL);
-		}
+				options.connectTimeout(data.histDBTimeout);
 
-		try {
+				if (mongoClient == null) {
+					mongoClient = new MongoClient(data.histURL, options.build());
+				}
 
-			// force connection to be established
-			mongoClient.getDatabaseNames();
+				logger.info("trying to connect with database {} in host {}",
+						data.histDBName, data.histURL);
 
-			/*
-			 * if attribute dropComection is true, drop all collections
-			 */
-			if (data.dropCollections.equals("true")) {
-				db.getCollection(ChangedAttributes).drop();
+				// force connection to be established
+				mongoClient.getDatabaseNames();
+
+				db = mongoClient.getDB(data.histDBName);
+
+			} catch (Exception e) {
+				logger.error(
+						"{} is inactive, it was unable to find the DB in {}",
+						this.getName(), data.histURL);
 			}
 
-		} catch (MongoException e) {
-			logger.error("no Mongo Database at URL {} name {}", model.getURL(),
-					data.histDBName);
-			stop();
+			try {
+
+				/*
+				 * if attribute dropComection is true, drop all collections
+				 */
+				if (data.dropCollections.equals("true")) {
+					db.getCollection(ChangedAttributes).drop();
+				}
+				logger.info("First connection with DB OK");
+
+				initialPropertiesPolling();
+
+			} catch (MongoException e) {
+				logger.error("no Mongo Database at URL {} name {}",
+						model.getURL(), data.histDBName);
+				stop();
+			}
 		}
 
+	}
+
+	private void initialPropertiesPolling() {
+		logger.debug("Initial properties polling");
+		for (Instance inst : CST.componentBroker.getInsts()) {
+			logger.debug("For instance : " + inst.getName());
+			for (String propertyName : inst.getAllPropertiesString().keySet()) {
+				logger.debug(" -> adding property : " + propertyName
+						+ ", whose value : " + inst.getProperty(propertyName));
+				insertDBEntry(inst, propertyName, "added");
+			}
+		}
 	}
 
 	public void start() throws Exception {
 
 		logger.debug("starting...");
 		ApamManagers.addPropertyManager(this);
+		ApamManagers.addDynamicManager(this);
 
 	}
 
 	public void stop() {
 		logger.debug("stopping...");
 		ApamManagers.removePropertyManager(this);
-		if(mongoClient!=null) {
+		ApamManagers.removeDynamicManager(this);
+		if (mongoClient != null) {
 			mongoClient.close();
 		}
 		data = null;
+		db = null;
+	}
+
+	@Override
+	public void addedComponent(Component newComponent) {
+		if (newComponent != null && newComponent instanceof Instance) {
+			for (String propertyName : newComponent.getAllPropertiesString()
+					.keySet()) {
+				logger.debug("For instance : " + newComponent.getName()
+						+ ", adding property : " + propertyName
+						+ ", whose value : "
+						+ newComponent.getProperty(propertyName));
+				insertDBEntry(newComponent, propertyName, "added");
+			}
+		}
+
+	}
+
+	@Override
+	public void addedLink(Link wire) {
+		// Nothing to do
+
+	}
+
+	@Override
+	public void removedComponent(Component lostComponent) {
+		if (lostComponent != null && lostComponent instanceof Instance) {
+			for (String propertyName : lostComponent.getAllPropertiesString()
+					.keySet()) {
+				logger.debug("For instance : " + lostComponent.getName()
+						+ ", adding property : " + propertyName
+						+ ", whose value : "
+						+ lostComponent.getProperty(propertyName));
+				insertDBEntry(lostComponent, propertyName, "removed");
+			}
+		}
+
+	}
+
+	@Override
+	public void removedLink(Link wire) {
+		// Nothing to do
+
 	}
 
 }
