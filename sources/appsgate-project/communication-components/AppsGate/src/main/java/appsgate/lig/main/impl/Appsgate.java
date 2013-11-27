@@ -74,7 +74,7 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	/**
 	 * default web socket connection port
 	 */
-	private static String wsPort = "8080";
+	private static String wsPort = "8087";
 
 	/**
 	 * Table for deviceId, user and device name association
