@@ -18,5 +18,6 @@
 	<modules>
 		<module>wattecoAdapter</module>
 		<module>WattecoSmartPlugImpl</module>
+		<module>WattecoOccupancyImpl</module>
 	</modules>
 </project>
