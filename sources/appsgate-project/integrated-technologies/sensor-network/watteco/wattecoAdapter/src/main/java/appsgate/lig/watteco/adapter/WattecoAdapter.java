@@ -292,7 +292,7 @@ public class WattecoAdapter implements WattecoIOService,
 			ip6.remove(key);
 		}
 		
-		//If a sensor is not yet instanciate, instanciate it
+		//If a sensor is not yet instantiate, instantiate it
 		if(! ip6.isEmpty()){
 			instanciationService.execute(new sensorInstanciation(ip6));
 		}else {
@@ -464,7 +464,7 @@ public class WattecoAdapter implements WattecoIOService,
 			initialproperties.put("isPaired", "true");
 			initiateSensorValues(implName, route, initialproperties);
 			
-			//Sensor ApAM instanciation
+			//Sensor ApAM instantiation
 			int nbTry = 0;
 			while(nbTry < 5){
 				if(impl != null) {

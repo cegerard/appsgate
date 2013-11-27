@@ -10,7 +10,7 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
  * This class is an ApAM message for temperature notifications.
  * 
  * @author Cédric Gérard
- * version 1.0.0
+ * @version 1.0.0
  * @since February 4, 2013
  *
  */
