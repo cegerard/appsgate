@@ -17,6 +17,6 @@
 	<modules>
 		<module>enocean</module>
 		<module>watteco</module>
-		<module>virtual</module>
+		<module>simulation</module>
 	</modules>
 </project>

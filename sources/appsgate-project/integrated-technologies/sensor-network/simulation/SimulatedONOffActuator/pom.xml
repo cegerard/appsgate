@@ -1,34 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
 		<groupId>appsgate.components</groupId>
-		<artifactId>test-components</artifactId>
+		<artifactId>simulation</artifactId>
 		<version>1.0.0</version>
 	</parent>
 	
-	<artifactId>SimulatedAdapterTester</artifactId>
-	
+	<artifactId>SimulatedONOffActuator</artifactId>
 	<packaging>bundle</packaging>
-	
-	<name>###### Simulated Adapter tester ######</name>
-	
+	<name>Simulate On/Off actuator implementation</name>
+
+	<!-- Repositories List -->
+
 	<!-- Dependencies Description -->
-    <dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreOnOffActuatorSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>${ipojo.annotations.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>SimulationAdapter</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
 		</dependency>
-    </dependencies>
-	
-	<!-- Build Description -->
+	</dependencies>
+		<!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>
@@ -55,4 +60,5 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 </project>

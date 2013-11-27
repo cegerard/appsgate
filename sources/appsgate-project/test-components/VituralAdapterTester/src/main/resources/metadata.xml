@@ -3,12 +3,12 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="VirtualAdapterTesterImpl" classname="appsgate.validation.virtual.adapter.VirtualAdapterTester">
+	<implementation name="SimulatedAdapterTesterImpl" classname="appsgate.validation.simulation.adapter.SimulatedAdapterTester">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		<relation field="virtualAdapterService"/>
+		<relation field="simulatedAdapterService"/>
 	</implementation>
 	
-	<apam-instance name="VirtualAdapterTesterInst" implementation="VirtualAdapterTesterImpl">
+	<apam-instance name="SimulatedAdapterTesterInst" implementation="SimulatedAdapterTesterImpl">
 	</apam-instance>
 
 </apam>

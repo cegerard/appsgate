@@ -4,31 +4,40 @@
 	
 	<parent>
 		<groupId>appsgate.components</groupId>
-		<artifactId>test-components</artifactId>
+		<artifactId>simulation</artifactId>
 		<version>1.0.0</version>
 	</parent>
 	
-	<artifactId>SimulatedAdapterTester</artifactId>
-	
+	<artifactId>SimulationAdapter</artifactId>
 	<packaging>bundle</packaging>
 	
-	<name>###### Simulated Adapter tester ######</name>
+	<name>Simulated adapter</name>
 	
 	<!-- Dependencies Description -->
-    <dependencies>
+		<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>${ipojo.annotations.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-core</artifactId>
+			<version>${apam.current.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>SimulationAdapter</artifactId>
+			<artifactId>ClientCommunicationManager</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreObjectSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
 	
-	<!-- Build Description -->
+	<!-- Dependencies Instructions -->
 	<build>
 		<plugins>
 			<plugin>
@@ -42,17 +51,17 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>fr.imag.adele.apam</groupId>
-				<artifactId>apam-maven-plugin</artifactId>
-				<version>${apam.current.version}</version>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
 				<executions>
 					<execution>
 						<goals>
-							<goal>apam-bundle</goal>
+							<goal>ipojo-bundle</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
+	
 </project>

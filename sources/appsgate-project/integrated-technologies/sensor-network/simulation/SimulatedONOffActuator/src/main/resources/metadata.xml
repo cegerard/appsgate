@@ -1,0 +1,28 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="SimulatedOnOffActuatorImpl"
+		classname="appsgate.lig.simulated.on_off.sensor.impl.SimulatedOnOffAcuatorImpl" specification="CoreOnOffActuatorSpec" push="notifyChanges">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<!-- device kernel meta data -->
+		<definition name="deviceName" 		  type="string" default="SimulateOnOffActuator" 	field="actuatorName"/>
+		<definition name="deviceId" 		  type="string" default="000000"		   			field="actuatorId"/>
+		
+		<!-- device client meta data -->
+		<definition name="pictureId" 		  type="string"			 			   field="pictureId"/>
+		<definition name="userType" 		  type="string" default="8" 			   field="userType"/>
+		<definition name="status" 			  type="string" default="2" 			   field="status"   method="statusChanged"/>
+		
+		<!-- device specific meta data -->
+		<definition name="isOn" 			  type="string" default="false"	   field="isOn" 	method="isOnChanged"/>
+			
+	</implementation>
+
+
+<!-- 	<apam-instance name="SimulateOnOffActuatorInst" implementation="SimulatedOnOffActuatorImpl"> -->
+<!-- 	</apam-instance> -->
+
+</apam>
