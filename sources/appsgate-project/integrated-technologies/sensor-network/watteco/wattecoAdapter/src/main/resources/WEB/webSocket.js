@@ -1,6 +1,7 @@
 var ws;
 
 var pairingMode;
+var DEFAULT_SERVER_PORT = 8087;
 
 /** Check */
 function WebSocketOpen()
@@ -8,8 +9,9 @@ function WebSocketOpen()
   if ("WebSocket" in window)
   {
      // Open a web socket
-     var server = document.location.toString().split("/");
-     ws = new WebSocket("ws://"+server[2]+"/");
+	 var server = document.location.toString().split("/");
+	 server = server[2].split(":");
+	 ws = new WebSocket("ws://"+server[0]+":"+DEFAULT_SERVER_PORT+"/");
      ws.onopen = function()
      {};
      

@@ -1,22 +1,21 @@
 package appsGate.lig.manager.client.communication;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.glassfish.grizzly.websockets.DataFrame;
-import org.glassfish.grizzly.websockets.DefaultWebSocket;
-import org.glassfish.grizzly.websockets.ProtocolHandler;
-import org.glassfish.grizzly.websockets.WebSocket;
-import org.glassfish.grizzly.websockets.WebSocketApplication;
-import org.glassfish.grizzly.websockets.WebSocketEngine;
-import org.glassfish.grizzly.websockets.WebSocketListener;
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +35,7 @@ import appsGate.lig.manager.client.communication.service.subscribe.ConfigListene
  * 
  * @author Cédric Gérard
  * @since February 8, 2013
- * @version 1.0.0
+ * @version 1.1.0
  * 
  * @provide AddListenerService to manage the subscription for receiving command from
  * AppsGate client.
@@ -50,7 +49,9 @@ import appsGate.lig.manager.client.communication.service.subscribe.ConfigListene
 @Component(publicFactory=false)
 @Instantiate(name="AppsgateClientCommunicationManager")
 @Provides(specifications = { AddListenerService.class, SendWebsocketsService.class })
-public class ClientCommunicationManager extends WebSocketApplication implements AddListenerService, SendWebsocketsService {
+public class ClientCommunicationManager extends WebSocketServer implements AddListenerService, SendWebsocketsService {
+	
+	public final static int DEFAULT_WEBSOCKET_PORT = 8087;
 	
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -63,6 +64,9 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 	 */
 	//private HttpService httpService;
 	
+	public ClientCommunicationManager() throws UnknownHostException {
+		super(new InetSocketAddress(DEFAULT_WEBSOCKET_PORT));
+	}
 	
 	/**
 	 * Called by iPOJO when an instance of this implementation is created
@@ -81,8 +85,8 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 //				logger.error("NameSpace exception");
 //			}
 //		}
-//		// initialize web socket engine and register web socket java application
-		WebSocketEngine.getEngine().register(this);
+		// start the web socket server
+		this.start();
 		logger.info("The communication manager is ready.");
 	}
 	
@@ -94,53 +98,49 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 		logger.info("Releasing the communication manager...");
 //		if (httpService != null) {
 //			httpService.unregister("/");
-			WebSocketEngine.getEngine().unregister(this);
+			try {
+				this.stop();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 //		}
 		logger.info("The communication manager is now stopped.");
 	}
+	
+	@Override
+	public void onOpen(WebSocket conn, ClientHandshake handshake) {
+		logger.info( "New client connected: " + conn.getRemoteSocketAddress() );
+	}
 
 	@Override
-	public boolean isApplicationRequest(HttpRequestPacket hrp) {
-		logger.debug("isApplicationRequest: " + hrp);
-		return true;
+	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+		logger.info("A client has closed his connection: "+ conn.getRemoteSocketAddress() + " with exit code " + code + " additional info: " + reason);
 	}
-	
-	/**
-	 * This method is call to create a new web socket.
-	 * it is called by the web socket engine each time a client start a connection.
-	 * 
-	 * @param handler the Protocolhandler set by the web socket engine
-	 * @param listeners the set of listeners for this sockets
-	 */
+
 	@Override
-	public WebSocket createSocket(ProtocolHandler handler, WebSocketListener... listeners) {
-		logger.debug("Create webSocket");
-		return new DefaultWebSocket(handler, listeners);
-	}
-	
-	/**
-	 * Call back used to notify that a new message come from a connected client.
-	 * 
-	 * @param socket the socket that send the message
-	 * @param cmd the message received
-	 */
-	@Override
-	public void onMessage(WebSocket socket, String cmd) {
-		logger.debug("msg --> " + cmd);
+	public void onMessage(WebSocket conn, String message) {
+		logger.debug("msg --> " + message);
 		
 		try {
-			JSONTokener jsonParser = new JSONTokener(cmd);
+			JSONTokener jsonParser = new JSONTokener(message);
 			JSONObject jsObj = (JSONObject)jsonParser.nextValue();
 			
 			if(isConfiguration(jsObj)) {
-				notifyConfigListeners(socket, jsObj);
+				notifyConfigListeners(conn, jsObj);
 			}else {
-				notifyCommandListeners(socket, jsObj);
+				notifyCommandListeners(conn, jsObj);
 			}
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onError(WebSocket conn, Exception ex) {
+		logger.error( "An error occured on connection " + conn + ":" + ex );
 	}
 	
 	/**
@@ -155,30 +155,6 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 		}catch(JSONException e) {
 			return false;
 		}
-	}
-
-	/**
-	 * Call back called when a socket connection has closed.
-	 * 
-	 * @param socket the closed socket connection
-	 * @param frame the dataFrame corresponding to the closed connection action
-	 */
-	@Override
-	public void onClose(WebSocket socket, DataFrame frame) {
-		super.onClose(socket, frame);
-		logger.info("A client has closed his connection.");
-	}
-
-	/**
-	 * Call back called when a new connection is opened
-	 * 
-	 * @param socket the new connected socket
-	 * 
-	 */
-	@Override
-	public void onConnect(WebSocket socket) {
-		super.onConnect(socket);
-		logger.info("new client connected.");
 	}
 	
 	/**
@@ -285,7 +261,7 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 	 */
 	public void send(String msg) {
 		logger.debug("retreiving web sockets...");
-		Set<WebSocket> sockets = this.getWebSockets();
+		Collection<WebSocket> sockets = this.connections();
 		Iterator<WebSocket> socketIt = sockets.iterator();
 		WebSocket sock;
 		while (socketIt.hasNext()) {
@@ -302,7 +278,7 @@ public class ClientCommunicationManager extends WebSocketApplication implements 
 	 * @param msg the string message to send
 	 */
 	public void send(int clientId, String msg) {
-		Set<WebSocket> sockets = this.getWebSockets();
+		Collection<WebSocket> sockets = this.connections();
 		Iterator<WebSocket> socketIt = sockets.iterator();
 		WebSocket sock = null;
 		boolean found = false;
