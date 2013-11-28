@@ -190,7 +190,8 @@
 			},
 			"action"	: {
 				"turnOn"	: "Allumer",
-				"turnOff"	: "Eteindre"
+				"turnOff"	: "Eteindre",
+                "blink"     : "Clignoter"
 			}
 		},
 		"clock"				: {
@@ -286,6 +287,7 @@
 
 		"turn-on-actuator-action"					: "allumer",
 		"turn-off-actuator-action"					: "eteindre",
+    
 		
 		"turned-on-lamp-event"						: "on allume",
 		"turned-off-lamp-event"						: "on eteint",
@@ -293,6 +295,7 @@
 		"is-turned-off-lamp-status"					: "est eteinte",
 		"turn-on-lamp-action"						: "allumer",
 		"turn-off-lamp-action"						: "eteindre",
+        "blink-lamp-action"                         : "faire clignoter",
 		"change-color-lamp-action"					: "changer la couleur de",
 		"complement-change-color-lamp-action"		: "en",
 		"white-color"								: "blanc",

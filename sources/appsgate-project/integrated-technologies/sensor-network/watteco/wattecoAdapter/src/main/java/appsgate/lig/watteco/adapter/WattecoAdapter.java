@@ -394,7 +394,7 @@ public class WattecoAdapter implements WattecoIOService,
 
 		public void run() {
 			for (String address : addressList) {
-				instanciateSensor(address);
+				instantiateSensor(address);
 			}
 		}
 	}
@@ -438,10 +438,10 @@ public class WattecoAdapter implements WattecoIOService,
 	 *********************************************************************** */
 	
 	/**
-	 * Instanciate a sensor from its ipv6 address
-	 * @param address the ipv6 address of the sensor to instanciate
+	 * Instantiate a sensor from its ipv6 address
+	 * @param address the ipv6 address of the sensor to instantiate
 	 */
-	private void instanciateSensor(String address) {
+	private void instantiateSensor(String address) {
 		
 		CharSequence subaddress = address.subSequence(4, address.length());
 		String route = "aaaa"+subaddress;
@@ -568,6 +568,14 @@ public class WattecoAdapter implements WattecoIOService,
 			initialproperties.put("consumption", String.valueOf(cons));
 			//Configure simple metering cluster reporting
 			sendCommand(route, WattecoAdapter.SIMPLE_METERING_CONF_REPORTING, false);
+			
+		}else if(implName.contentEquals(WattecoAdapter.OCCUPANCY_IMPL)) {
+			ret = sendCommand(route, WattecoAdapter.OCCUPANCY_SENSING_READ_ATTRIBUTE, true);
+			String occupied = "false";
+			if(new Byte("1").byteValue() == ret[ret.length-1]) {
+				occupied = "true";
+			}
+			initialproperties.put("occupied", occupied);
 		}
 			
 	}
@@ -635,4 +643,6 @@ public class WattecoAdapter implements WattecoIOService,
 	
 	public static final String SMART_PLUG_IMPL  				   		= "WattecoSmartPlugImpl";
 	public static final String OCCUPANCY_IMPL  				   		    = "WattecoOccupancyImpl";
+	public static final String TEMPERATURE_IMPL  				   		= "WattecoTemperatureImpl";
+	public static final String CO2_IMPL  				   		    	= "WattecoCO2Impl";
 }

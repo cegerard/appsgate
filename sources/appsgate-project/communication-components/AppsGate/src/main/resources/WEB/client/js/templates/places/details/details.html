@@ -378,6 +378,8 @@
 					<em data-i18n="places-details.body.device-no-name"></em>
 				<% } %>
 				<div class="pull-right">
+                    <button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm blink-lamp-button" data-i18n="devices.lamp.action.blink"></button>
+
 					<% if (s.get("value") === "true" || s.get("value") === true) { %>
 						<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-lamp-button" data-i18n="devices.lamp.action.turnOff"></button>
 					<% } else { %>

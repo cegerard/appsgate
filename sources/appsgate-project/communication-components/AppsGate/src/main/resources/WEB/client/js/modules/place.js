@@ -703,6 +703,7 @@ define([
 			"keyup #edit-name-place-modal input"				: "validEditName",
 			"click button.delete-place-button"					: "deletePlace",
 			"click button.toggle-plug-button"					: "onTogglePlugButton",
+            "click button.blink-lamp-button"                    : "onBlinkLampButton",
 			"click button.toggle-lamp-button"					: "onToggleLampButton"
 		},
 		
@@ -872,6 +873,20 @@ define([
 			
 			return false;
 		},
+                                               /**
+                                                * Callback to blink a lamp
+                                                *
+                                                * @param e JS mouse event
+                                                */
+                                               onBlinkLampButton:function(e) {
+                                               e.preventDefault();
+                                               
+                                               var lamp = devices.get($(e.currentTarget).attr("id"));
+                                               // send the message to the backend
+                                               lamp.remoteCall("blink", []);
+                                               
+                                               return false;
+                                               },
 
 		/**
 		 * Render the view

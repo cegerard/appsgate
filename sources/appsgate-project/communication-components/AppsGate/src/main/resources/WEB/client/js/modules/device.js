@@ -597,10 +597,14 @@ define([
 					grammarAnchor	: "{{turnOffLampAction}}",
 					i18nVar			: "language.turn-off-lamp-action"
 				},
-				{
-					grammarAnchor	: "{{changeColorLampAction}}",
-					i18nVar			: "language.change-color-lamp-action"
-				},
+                               {
+                               grammarAnchor	: "{{changeColorLampAction}}",
+                               i18nVar			: "language.change-color-lamp-action"
+                               },
+                               {
+                               grammarAnchor	: "{{blinkLampAction}}",
+                               i18nVar			: "language.blink-lamp-action"
+                               },
 				{
 					grammarAnchor	: "{{complementChangeColorLampAction}}",
 					i18nVar			: "language.complement-change-color-lamp-action"
@@ -701,7 +705,7 @@ define([
 					\n\
 					return nodeRelationBool;\n\
 				}',
-				"actionLamp = onLampAction / offLampAction / changeColorLampAction",
+				"actionLamp = onLampAction / offLampAction / changeColorLampAction / blinkLampAction",
 				'onLampAction = "<span class=' + "'action-name'" + '> {{turnOnLampAction}} </span>" lampName:L\n\
 				{\n\
 					var nodeAction = {};\n\
@@ -713,17 +717,28 @@ define([
 					\n\
 					return nodeAction;\n\
 				}',
-				'offLampAction = "<span class=' + "'action-name'" + '> {{turnOffLampAction}} </span>" lampName:L\n\
-				{\n\
-					var nodeAction = {};\n\
-					nodeAction.type = "NodeAction";\n\
-					nodeAction.targetType = "device";\n\
-					nodeAction.targetId = devices.findWhere({ name : $(lampName).text() }).get("id");\n\
-					nodeAction.methodName = "Off";\n\
-					nodeAction.args = [];\n\
-					\n\
-					return nodeAction;\n\
-				}',
+                               'offLampAction = "<span class=' + "'action-name'" + '> {{turnOffLampAction}} </span>" lampName:L\n\
+                               {\n\
+                               var nodeAction = {};\n\
+                               nodeAction.type = "NodeAction";\n\
+                               nodeAction.targetType = "device";\n\
+                               nodeAction.targetId = devices.findWhere({ name : $(lampName).text() }).get("id");\n\
+                               nodeAction.methodName = "Off";\n\
+                               nodeAction.args = [];\n\
+                               \n\
+                               return nodeAction;\n\
+                               }',
+                               'blinkLampAction = "<span class=' + "'action-name'" + '> {{blinkLampAction}} </span>" lampName:L\n\
+                               {\n\
+                               var nodeAction = {};\n\
+                               nodeAction.type = "NodeAction";\n\
+                               nodeAction.targetType = "device";\n\
+                               nodeAction.targetId = devices.findWhere({ name : $(lampName).text() }).get("id");\n\
+                               nodeAction.methodName = "blink";\n\
+                               nodeAction.args = [];\n\
+                               \n\
+                               return nodeAction;\n\
+                               }',
 				'changeColorLampAction = "<span class=' + "'action-name'" + '> {{changeColorLampAction}} </span>" lampName:L "<span class=' + "'action-name'" + '> {{complementChangeColorLampAction}} </span>" color:lampColor\n\
 				{\n\
 					var nodeAction = {};\n\
@@ -1943,7 +1958,8 @@ define([
 		// map the events and their callback
 		events: {
 			"click button.back-button"						: "onBackButton",
-			"click button.toggle-lamp-button"				: "onToggleLampButton",
+            "click button.toggle-lamp-button"				: "onToggleLampButton",
+            "click button.blink-lamp-button"				: "onBlinkLampButton",
 			"click button.toggle-plug-button"				: "onTogglePlugButton",
 			"click button.toggle-actuator-button"				: "onToggleActuatorButton",
 			"show.bs.modal #edit-device-modal"				: "initializeModal",
@@ -1997,6 +2013,20 @@ define([
 			// send the message to the backend
 			this.model.save();
 		},
+                                                /**
+                                                 * Callback to blink a lamp
+                                                 *
+                                                 * @param e JS mouse event
+                                                 */
+                                                onBlinkLampButton:function(e) {
+                                                e.preventDefault();
+                                                var lamp = devices.get($(e.currentTarget).attr("id"));
+                                                // send the message to the backend
+                                                lamp.remoteCall("blink", []);
+                                                
+                                                return false;
+                                                },
+
 		
 		/**
 		 * Callback to toggle a plug - used when the displayed device is a plug (!)
@@ -2348,7 +2378,8 @@ define([
 		
 		events: {
 			"click button.toggle-plug-button"	: "onTogglePlugButton",
-			"click button.toggle-lamp-button"	: "onToggleLampButton",
+            "click button.blink-lamp-button"	: "onBlinkLampButton",
+            "click button.toggle-lamp-button"	: "onToggleLampButton",
 			"click button.toggle-actuator-button"	: "onToggleActuatorButton"
 		},
 		
@@ -2430,6 +2461,19 @@ define([
 			
 			return false;
 		},
+                                                      /**
+                                                       * Callback to blink a lamp
+                                                       *
+                                                       * @param e JS mouse event
+                                                       */
+                                                      onBlinkLampButton:function(e) {
+                                                      e.preventDefault();
+                                                      var lamp = devices.get($(e.currentTarget).attr("id"));
+                                                      // send the message to the backend
+                                                      lamp.remoteCall("blink", []);
+                                                      
+                                                      return false;
+                                                      },
 
 		/**
 		 * Callback to toggle an actuator
