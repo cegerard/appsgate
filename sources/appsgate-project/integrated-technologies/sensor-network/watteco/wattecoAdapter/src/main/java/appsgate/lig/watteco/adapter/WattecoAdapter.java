@@ -42,10 +42,10 @@ import fr.imag.adele.apam.Instance;
 
 /**
  * This class is used to connect the Watteco WSN to the ApAM environment. An
- * instance of this class instanciate Watteco sensors with ApAM implementation.
+ * instance of this class instantiate Watteco sensors with ApAM implementation.
  * 
  * This class it is also an OSGi/iPOJO bundle, that provide two services and
- * instanciate itself automatically.
+ * instantiate itself automatically.
  * 
  * @author Cédric Gérard
  * @since August 13, 2013
@@ -76,7 +76,7 @@ public class WattecoAdapter implements WattecoIOService,
 	private static Logger logger = LoggerFactory.getLogger(WattecoAdapter.class);
 	
 	/**
-	 * Executor scheduler for sensor instanciation
+	 * Executor scheduler for sensor instantiation
 	 */
 	private ScheduledExecutorService instanciationService;
 	
@@ -454,7 +454,7 @@ public class WattecoAdapter implements WattecoIOService,
 			ArrayList<String> clusterList = extractInputClusterFromConfDescription(ret);
 			
 			//ApAM implementation recovery
-			String implName = getApAMImplFromClusterList(clusterList);
+			String implName = getApAMImplFromClusterList(route, clusterList);
 			Implementation impl = CST.apamResolver.findImplByName(null, implName);
 		
 			//ApAM instance initialization
@@ -481,6 +481,8 @@ public class WattecoAdapter implements WattecoIOService,
 					impl = CST.apamResolver.findImplByName(null, implName);
 				}
 			}
+		} else {
+			logger.error("No sensor configuration available for "+address);
 		}
 	}
 	
@@ -526,14 +528,35 @@ public class WattecoAdapter implements WattecoIOService,
 	
 	/**
 	 * Get the ApAM implementation corresponding to the Watteco cluster list
+	 * @param route the sensor route over the network
 	 * @param clusterList the Watteco cluster list
 	 * @return an ApAM implementation name
 	 */
-	private String getApAMImplFromClusterList(ArrayList<String> clusterList) {
+	private String getApAMImplFromClusterList(String route, ArrayList<String> clusterList) {
 		if(clusterList.contains(ON_OFF_CLUSTER) && clusterList.contains(SIMPLE_METERING_CLUSTER)) {
 			return WattecoAdapter.SMART_PLUG_IMPL;
 		} else if(clusterList.contains(OCCUPANCY_SENSING_CLUSTER)) {
 			return WattecoAdapter.OCCUPANCY_IMPL;
+		} else if(clusterList.contains(TEMPERATURE_MEASUREMENT_CLUSTER)) {
+			return WattecoAdapter.TEMPERATURE_IMPL;
+		} else if(clusterList.contains(ANALOG_INPUT_CLUSTER)) {
+			//Get the sensor type
+			byte[] b = null;
+			int temp;
+			b = sendCommand(route, WattecoAdapter.ANALOG_INPUT_READ_ATTRIBUTE, true);
+			Byte readByte = new Byte(b[8]);
+			temp = (readByte << 32);
+			readByte = new Byte(b[9]);
+			temp += (readByte << 16);
+			readByte = new Byte(b[10]);
+			temp += (readByte << 8);
+			readByte = new Byte(b[11]);
+			temp += readByte;
+			System.out.println(" 9999999999999999 Calculated application type: " +temp);
+			System.out.println(" 9999999999999999 Application type: " +APPLICATION_TYPE_CO2);
+			if(temp == APPLICATION_TYPE_CO2) {
+				return WattecoAdapter.CO2_IMPL;
+			}
 		}
 		return "NOIMPLEM";
 	}
@@ -576,6 +599,35 @@ public class WattecoAdapter implements WattecoIOService,
 				occupied = "true";
 			}
 			initialproperties.put("occupied", occupied);
+			//Configure occupancy cluster reporting
+			//sendCommand(route, WattecoAdapter.OCCUPANCY_CONF_REPORTING, false);
+			
+		} else if(implName.contentEquals(WattecoAdapter.TEMPERATURE_IMPL)) {
+			int temp = 999;
+			ret = sendCommand(route, WattecoAdapter.TEMPERATURE_MEASUREMENT_READ_ATTRIBUTE, true);
+			Byte readByte = new Byte(ret[8]);
+			temp = (readByte << 8);
+			readByte = new Byte(ret[9]);
+			temp += readByte;
+			
+			initialproperties.put("currentTemperature", String.valueOf((Float.valueOf(temp)/100.0)));
+			//Keep the default sensor configuration
+			
+		} else if(implName.contentEquals(WattecoAdapter.CO2_IMPL)) {
+			int temp;
+			ret = sendCommand(route, WattecoAdapter.ANALOG_INPUT_READ_ATTRIBUTE, true);
+			Byte readByte = new Byte(ret[8]);
+			temp = (readByte << 32);
+			readByte = new Byte(ret[9]);
+			temp += (readByte << 16);
+			readByte = new Byte(ret[10]);
+			temp += (readByte << 8);
+			readByte = new Byte(ret[11]);
+			temp += readByte;
+			
+			initialproperties.put("currentCO2Concentration", String.valueOf(temp));
+			//Keep the default sensor configuration
+			
 		}
 			
 	}
@@ -613,11 +665,12 @@ public class WattecoAdapter implements WattecoIOService,
 	public static final String OCCUPANCY_SENSING_READ_ATTRIBUTE  	   = "$11$00$04$06$00$00";
 	public static final String OCCUPANCY_SENSING_READ_OCCUPIED  	   = "$11$00$04$06$00$10";
 	public static final String OCCUPANCY_SENSING_READ_INOCCUPIED 	   = "$11$00$04$06$00$11";
-	
-	
+	public static final String OCCUPANCY_CONF_REPORTING  		   	   = "$11$06$04$06$00$00$00$18$00$02$00$3C$01"; // 2 seconds minimal reporting and 1 minutes each auto-notification
+
 	//Analog input (basic) cluster commands
 	public static final String ANALOG_INPUT_CLUSTER				   	   = "C";
 	public static final String ANALOG_INPUT_READ_ATTRIBUTE  		   = "$11$00$00$0C$00$55";
+	public static final String ANALOG_INPUT_APPLICATION_ASK  		   = "$11$00$00$0C$01$00";
 	
 	//Binary input (basic) cluster commands
 	public static final String BINARY_INPUT_CLUSTER				   	   = "F";
@@ -635,6 +688,9 @@ public class WattecoAdapter implements WattecoIOService,
 	//Basic cluster commands
 	public static final String BASIC_CLUSTER		 			  	   = "0";
 	public static final String BASIC_READ_ATTRIBUTE  				   = "$11$00$00$00$00$01";
+	
+	//Application type for Watteco analog input cluster
+	public static final int APPLICATION_TYPE_CO2  		   			   = 294912;
 	
 	
 	/* ***********************************************************************

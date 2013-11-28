@@ -13,8 +13,8 @@ public interface CoreCO2SensorSpec {
 	
 	/**
 	 * Get the current CO2 concentration
-	 * @return the Co2 concentration as a float
+	 * @return the Co2 concentration as an integer (ppm unit)
 	 */
-	public float getCO2Concentration();
+	public int getCO2Concentration();
 
 }
