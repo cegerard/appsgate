@@ -30,6 +30,7 @@
 		<module>CoreSmartPlugSpec</module>
 		<module>CoreMediaPlayerSpec</module>
 		<module>CoreOccupancySpec</module>
+		<module>CoreCO2SensorSpec</module>
 	</modules>
 
 </project>

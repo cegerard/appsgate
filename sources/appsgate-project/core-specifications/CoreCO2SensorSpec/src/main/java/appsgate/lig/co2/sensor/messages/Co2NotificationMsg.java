@@ -1,4 +1,4 @@
-package appsgate.lig.luminosity.sensor.messages;
+package appsgate.lig.co2.sensor.messages;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,13 +7,13 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 /**
- * This class is an ApAM message for illumination notifications
+ * This class is an ApAM message for Co2 concentration notifications
  * 
  * @author Cédric Gérard
  * @version 1.0.0
- * @since February 5, 2013
+ * @since November 28, 2013
  */
-public class IlluminationNotificationMsg implements NotificationMsg {
+public class Co2NotificationMsg implements NotificationMsg {
 	
 	/**
 	 * The source sensor of this notification
@@ -21,9 +21,9 @@ public class IlluminationNotificationMsg implements NotificationMsg {
 	private CoreObjectSpec source;
 	
 	/**
-	 * The new illumination value
+	 * The new CO2 value
 	 */
-	private int newIllumination;
+	private float newCO2Concentration;
 	
 	/**
 	 * The name of the change variable
@@ -35,44 +35,38 @@ public class IlluminationNotificationMsg implements NotificationMsg {
 	 */
 	private String value;
 	
-	
 	/**
 	 * Constructor for this ApAM message
 	 * @param newIllumination the new illumination value
 	 */
-	public IlluminationNotificationMsg (int newIllumination, String varName, String value, CoreObjectSpec source) {
-		this.newIllumination = newIllumination;
+	public Co2NotificationMsg (float newCo2Concentration, String varName, String value, CoreObjectSpec source) {
+		this.newCO2Concentration = newCo2Concentration;
 		this.source = source;
 		this.varName = varName;
 		this.value = value;
 	}
-	
+
 	/**
 	 * Method that returns the value corresponding to this notification
-	 * @return the new illumination as an integer
+	 * @return the new Co2 concentration as a float
 	 */
-	public int getNotificationValue(){
-		return newIllumination;
+	public float getNotificationValue(){
+		return newCO2Concentration;
+	}
+	
+	@Override
+	public CoreObjectSpec getSource() {
+		return source;
 	}
 
 	@Override
 	public String getNewValue() {
-		return String.valueOf(newIllumination);
+		return String.valueOf(newCO2Concentration);
 	}
 
 	@Override
 	public JSONObject JSONize() throws JSONException {
-		
 		JSONObject notif = new JSONObject();
-//		JSONObject content = new JSONObject();
-//		
-//		content.put("id", source.getAbstractObjectId());
-//		content.put("name", source.getUserObjectName());
-//		content.put("locationId", source.getLocationId());
-//		content.put("status", source.getObjectStatus());
-//		content.put("value", newIllumination);
-//		
-//		notif.put("updateIllumination", content);
 		
 		notif.put("objectId", source.getAbstractObjectId());
 		notif.put("varName", varName);
@@ -81,9 +75,4 @@ public class IlluminationNotificationMsg implements NotificationMsg {
 		return notif;
 	}
 
-	@Override
-	public CoreObjectSpec getSource() {
-		return source;
-	}
-	
 }
