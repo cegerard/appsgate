@@ -12,7 +12,11 @@ import appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec;
 import appsgate.lig.watteco.adapter.WattecoAdapter;
 import appsgate.lig.watteco.adapter.services.WattecoIOService;
 
-
+/**
+ * 
+ * @author Cédric Gérard
+ *
+ */
 public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, SmartPlugServices {
 
 	/**
