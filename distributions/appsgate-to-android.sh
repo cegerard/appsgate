@@ -69,6 +69,7 @@ rm apam-universal-shell-*
 rm mail*
 rm mongo*.jar
 rm org.apache.felix.ipojo-*.jar
+rm grizzly*
 find *.android -type f -exec mv {} {}.jar \; 
 
 
@@ -116,13 +117,16 @@ echo " javax.net.ssl; \\" >> android-appsgate/conf/config.properties
 echo " javax.security.auth; \\" >> android-appsgate/conf/config.properties
 
 # extra package used with appsgate
+echo " org.json; \\" >> android-appsgate/conf/config.properties
 echo " org.w3c.dom; \\" >> android-appsgate/conf/config.properties
 echo " org.w3c.dom.ls; \\" >> android-appsgate/conf/config.properties
 echo " javax.net; \\" >> android-appsgate/conf/config.properties
 echo " javax.security.auth.callback ;\\" >> android-appsgate/conf/config.properties
 echo " org.json; \\" >> android-appsgate/conf/config.properties
 echo " javax.xml.xpath; \\" >> android-appsgate/conf/config.properties
+echo " javax.xml; \\" >> android-appsgate/conf/config.properties
 echo " javax.xml.transform; \\" >> android-appsgate/conf/config.properties
+echo " javax.xml.transform.dom; \\" >> android-appsgate/conf/config.properties
 echo " android.content; \\" >> android-appsgate/conf/config.properties
 echo " android.database; \\" >> android-appsgate/conf/config.properties
 echo " android.database.sqlite; \\" >> android-appsgate/conf/config.properties
