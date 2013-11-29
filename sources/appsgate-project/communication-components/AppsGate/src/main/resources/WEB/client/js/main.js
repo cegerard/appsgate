@@ -38,7 +38,7 @@ require([
             App.initialize();
 
             // Hiding splash screen when app is loaded
-            if (desktop !== true) {
+            if (desktop !== true && typeof navigator.splashscreen !== 'undefined') {
                 navigator.splashscreen.hide();
             }
         }

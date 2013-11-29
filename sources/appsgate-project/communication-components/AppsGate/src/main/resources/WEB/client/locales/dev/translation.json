@@ -81,7 +81,9 @@
 		"name-label"			: "Nom",
 		"name-placeholder"		: "Nom du programme",
 		"name-empty"			: "Le nom du programme doit être renseigné.",
-		"name-already-existing"	: "Nom de programme déjà existant"
+		"name-already-existing"	: "Nom de programme déjà existant",
+        "load-from-file"		: "Charger depuis un fichier",
+		"unable-to-parse"		: "Impossible de lire ce fichier"
 	},
 	"modal-edit-program"	: {
 		"title"				: "Renommer programme",

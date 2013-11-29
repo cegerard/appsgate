@@ -11,9 +11,19 @@
 				<h4 class="modal-title" data-i18n="modal-add-program.title"></h4>
 			</div>
 			<div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <p data-i18n="modal-add-program.load-from-file"/>
+                    </div>
+                    <div class="col-xs-9">
+						<input type="file">
+                    </div>
+                </div>
 				<div class="row">
-					<div class="col-md-3" data-i18n="modal-add-program.name-label"></div>
-					<div class="col-md-9">
+                    <div class="col-xs-3">
+                        <p data-i18n="modal-add-program.name-label" />
+                    </div>
+					<div class="col-xs-9">
 						<input type="text" class="form-control" data-i18n="[placeholder]modal-add-program.name-placeholder">
 						<p class="hide text-danger" data-i18n="modal-add-program.name-already-existing"></p>
 					</div>
