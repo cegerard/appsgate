@@ -81,7 +81,9 @@
 		"name-label"			: "Name",
 		"name-placeholder"		: "Program's name",
 		"name-empty"			: "The program must have a name.",
-		"name-already-existing"	: "The program's name is already existing"
+		"name-already-existing"	: "The program's name is already existing",
+        "load-from-file"        : "Upload from a file",
+		"unable-to-parse"		: "Can't read that file"
 	},
 	"modal-edit-program"	: {
 		"title"				: "Rename program",

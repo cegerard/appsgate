@@ -138,6 +138,7 @@ define([
 
 		// override its synchronization method to send a notification on the network
 		sync:function(method, model) {
+			console.log(model.toJSON());
 			switch (method) {
 				case "create":
 					// create an id to the program
@@ -375,21 +376,57 @@ define([
 		 */
 		validAddProgram:function(e) {
   			var self = this;
-			if (e.type === "keyup" && e.keyCode === 13 || e.type === "click") {
-				// create the program if the name is ok
+            if (e.type === "keyup" && e.keyCode === 13 || e.type === "click") {
+                // create the program if the name is ok
 				if (this.checkProgramName()) {
+					var program;
+					
+					// if a file is selected we use the program from file
+					if (typeof window.FileReader !== 'undefined' && $("#add-program-modal input:file")[0].files[0]){
+						var file = $("#add-program-modal input:file")[0].files[0];
+						var fileR = new FileReader();
+						fileR.onload = receivedText;
+						fileR.readAsText(file);
+						
+						// build the program from data read in file
+						function receivedText(){
+							var result = fileR.result;
+							
+							try{
+								var resultJSON = JSON.parse(result);
+								
+								program = new Program.Model(resultJSON);
+								program.set("id",null); // make sure the program is considered as new one
+								program.set("name", $("#add-program-modal input:text").val()); // use the name selected by the user
+								program.get("source").programName = $("#add-program-modal input:text").val();
+								
+								// hide the modal
+								$("#add-program-modal").modal("hide");
+							} catch (exception){
+								$("#add-program-modal .text-danger")
+									.text($.i18n.t("modal-add-program.unable-to-parse"))
+									.removeClass("hide");
+								$("#add-program-modal .valid-button").addClass("disabled");
+							}
+						}
+												  
+					}
+					else{
+						// instantiate a model for the new program
+						program = new Program.Model({
+							name	: $("#add-program-modal input:text").val(),
+							daemon	: "false"
+						});
+						
+						// hide the modal
+						$("#add-program-modal").modal("hide");
+					}
 					
 					// instantiate the program and add it to the collection after the modal has been hidden
 					$("#add-program-modal").on("hidden.bs.modal", function() {
 						// tell the router there is no modal any more
 						appRouter.isModalShown = false;
 						
-						// instantiate a model for the new program
-						var program = new Program.Model({
-							name	: $("#add-program-modal input:text").val(),
-							daemon	: "false"
-						});
-
 						// send the program to the backend
 						program.save();
 
@@ -412,11 +449,7 @@ define([
 								$(item).removeClass("active");
 							}
 						});
-
 					});
-					
-					// hide the modal
-					$("#add-program-modal").modal("hide");
 				}
 			} else if (e.type === "keyup") {
 				this.checkProgramName();
@@ -993,7 +1026,9 @@ define([
 			});
 
 			// put the name of the place by default in the modal to edit
-			$("#edit-program-name-modal .program-name").val(this.model.get("name"));
+			if(typeof this.model !== 'undefined'){
+				$("#edit-program-name-modal .program-name").val(this.model.get("name"));
+			}
 
 			// hide the error message
 			$("#edit-program-name-modal .text-error").hide();
