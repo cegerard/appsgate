@@ -117,7 +117,7 @@ public class WattecoAdapter implements WattecoIOService,
 	public WattecoAdapter() {
 		super();
 		this.borderRouter = new BorderRouter(this);
-		instanciationService = Executors.newScheduledThreadPool(2);
+		instanciationService = Executors.newScheduledThreadPool(1);
 		slipTunnelOn = false;
 		ipv6AddressToInstance = new HashMap<String, Instance>();
 		logger.debug("Appsgate Watteco adapter instanciated.");
@@ -174,25 +174,6 @@ public class WattecoAdapter implements WattecoIOService,
 			logger.error("This bundle embbeded native C lib executing code and only Linux system are supported.");
 		}  
 		
-		if (httpService != null) {
-			final HttpContext httpContext = httpService.createDefaultHttpContext();
-			final Dictionary<String, String> initParams = new Hashtable<String, String>();
-			initParams.put("from", "HttpService");
-			try {
-				httpService.registerResources("/configuration/sensors/watteco", "/WEB", httpContext);
-				logger.info("Sensors configuration HTML GUI sources registered.");
-			} catch (NamespaceException ex) {
-				logger.error("NameSpace exception");
-			}
-		}
-		
-		logger.info("Getting the listeners services...");
-		if(addListenerService.addConfigListener(new WattecoConfigListener(this))){
-			logger.info("Listeners services dependency resolved.");
-		}else{
-			logger.info("Listeners services dependency resolution failed.");
-		}
-		
 		logger.info("Appsgate Watteco adapter initiated.");
 	}
 
@@ -228,6 +209,12 @@ public class WattecoAdapter implements WattecoIOService,
 	public void bindSubscriptionService(AddListenerService addListenerService) {
 		this.addListenerService = addListenerService;
 		logger.debug("Communication subscription service dependency resolved");
+		logger.info("Getting the listeners services...");
+		if(addListenerService.addConfigListener(new WattecoConfigListener(this))){
+			logger.info("Listeners services dependency resolved.");
+		}else{
+			logger.info("Listeners services dependency resolution failed.");
+		}
 	}
 
 	/**
@@ -251,6 +238,17 @@ public class WattecoAdapter implements WattecoIOService,
 	public void bindHTTPService(HttpService httpService) {
 		this.httpService = httpService;
 		logger.debug("HTTP service dependency resolved");
+		//if (httpService != null) {
+		final HttpContext httpContext = httpService.createDefaultHttpContext();
+		final Dictionary<String, String> initParams = new Hashtable<String, String>();
+		initParams.put("from", "HttpService");
+		try {
+			httpService.registerResources("/configuration/sensors/watteco", "/WEB", httpContext);
+			logger.info("Sensors configuration HTML GUI sources registered.");
+		} catch (NamespaceException ex) {
+			logger.error("NameSpace exception");
+		}
+		//}
 	}
 	
 	/**
@@ -294,7 +292,9 @@ public class WattecoAdapter implements WattecoIOService,
 		
 		//If a sensor is not yet instantiate, instantiate it
 		if(! ip6.isEmpty()){
-			instanciationService.execute(new sensorInstanciation(ip6));
+			//instanciationService.execute(new sensorInstanciation(ip6));
+			// the thread cause Watteco adapter instance failure since iPojo 1.11
+			new sensorInstanciation(ip6).run();
 		}else {
 			logger.info("No new Watteco sensor detected. All are already set up or are out of range from the border router");
 		}
