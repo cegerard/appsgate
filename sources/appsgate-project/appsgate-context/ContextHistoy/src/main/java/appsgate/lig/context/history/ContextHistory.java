@@ -66,7 +66,7 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	/**
 	 * The collection containing symbol table
 	 */
-	private static final String CONTEXT_COLLECTION = "context";;
+	private static final String CONTEXT_COLLECTION = "context";
 
 	private MongoClient mongoClient;
 

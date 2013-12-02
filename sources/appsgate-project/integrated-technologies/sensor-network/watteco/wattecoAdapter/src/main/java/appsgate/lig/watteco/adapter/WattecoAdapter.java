@@ -543,7 +543,7 @@ public class WattecoAdapter implements WattecoIOService,
 			//Get the sensor type
 			byte[] b = null;
 			int temp;
-			b = sendCommand(route, WattecoAdapter.ANALOG_INPUT_READ_ATTRIBUTE, true);
+			b = sendCommand(route, WattecoAdapter.ANALOG_INPUT_APPLICATION_ASK, true);
 			Byte readByte = new Byte(b[8]);
 			temp = (readByte << 32);
 			readByte = new Byte(b[9]);
@@ -552,8 +552,6 @@ public class WattecoAdapter implements WattecoIOService,
 			temp += (readByte << 8);
 			readByte = new Byte(b[11]);
 			temp += readByte;
-			System.out.println(" 9999999999999999 Calculated application type: " +temp);
-			System.out.println(" 9999999999999999 Application type: " +APPLICATION_TYPE_CO2);
 			if(temp == APPLICATION_TYPE_CO2) {
 				return WattecoAdapter.CO2_IMPL;
 			}
@@ -668,12 +666,12 @@ public class WattecoAdapter implements WattecoIOService,
 	public static final String OCCUPANCY_CONF_REPORTING  		   	   = "$11$06$04$06$00$00$00$18$00$02$00$3C$01"; // 2 seconds minimal reporting and 1 minutes each auto-notification
 
 	//Analog input (basic) cluster commands
-	public static final String ANALOG_INPUT_CLUSTER				   	   = "C";
+	public static final String ANALOG_INPUT_CLUSTER				   	   = "c";
 	public static final String ANALOG_INPUT_READ_ATTRIBUTE  		   = "$11$00$00$0C$00$55";
 	public static final String ANALOG_INPUT_APPLICATION_ASK  		   = "$11$00$00$0C$01$00";
 	
 	//Binary input (basic) cluster commands
-	public static final String BINARY_INPUT_CLUSTER				   	   = "F";
+	public static final String BINARY_INPUT_CLUSTER				   	   = "f";
 	public static final String BINARY_INPUT_READ_ATTRIBUTE  		   = "$11$00$00$0F$00$55";
 	
 	//Illumination measurement cluster commands
@@ -690,7 +688,7 @@ public class WattecoAdapter implements WattecoIOService,
 	public static final String BASIC_READ_ATTRIBUTE  				   = "$11$00$00$00$00$01";
 	
 	//Application type for Watteco analog input cluster
-	public static final int APPLICATION_TYPE_CO2  		   			   = 294912;
+	public static final int APPLICATION_TYPE_CO2  		   			   = 327680;
 	
 	
 	/* ***********************************************************************
