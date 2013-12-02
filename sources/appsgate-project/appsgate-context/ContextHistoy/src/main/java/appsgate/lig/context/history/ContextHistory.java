@@ -110,8 +110,7 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 
 		Properties prop = DBConfig.loadProperties(configuration);
 
-		if (prop.get(DBConfig.DBNAME_KEY) == null)
-			prop.put(DBConfig.DBNAME_KEY, DBNAME_DEFAULT);
+		prop.put(DBConfig.DBNAME_KEY, DBNAME_DEFAULT);
 
 		logger.debug(" -> loaded DB Name : " + prop.get(DBConfig.DBNAME_KEY));
 
