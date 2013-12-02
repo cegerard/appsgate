@@ -1,8 +1,12 @@
 package appsgate.lig.context.history;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -15,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.history.services.DataBasePullService;
 import appsgate.lig.context.history.services.DataBasePushService;
+import appsgate.lig.manager.propertyhistory.DBConfig;
+import appsgate.lig.manager.propertyhistory.PropertyHistoryManager;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -25,6 +31,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientOptions.Builder;
 import com.mongodb.MongoException;
+
+import fr.imag.adele.apam.CST;
 
 /**
  * The context history is use to all every context component to save its state.
@@ -37,82 +45,112 @@ import com.mongodb.MongoException;
  * 
  * @see DataBasePullService
  * @see DataBasePushService
- *
+ * 
  */
-@Component(publicFactory=false)
-@Instantiate(name="AppsgateContextHistory")
-@Provides(specifications = { DataBasePullService.class, DataBasePushService.class })
+@Component(publicFactory = false)
+@Instantiate(name = "AppsgateContextHistory")
+@Provides(specifications = { DataBasePullService.class,
+		DataBasePushService.class })
 public class ContextHistory implements DataBasePullService, DataBasePushService {
 
 	private final Logger logger = LoggerFactory.getLogger(ContextHistory.class);
 
-	//private static final String DB_NAME_KEY = "DBName";
-	private static final String DB_NAME_VALUE_DEFAULT = "ContextHistory";
+	private static final String DBNAME_DEFAULT = "ContextHistory";
 
-	//private static final String DB_URL_KEY = "DBUrl";
-	private static final String DB_URL_VALUE_DEFAULT = "localhost";
+	/*
+	 * The collection containing the links (wires) created, and deleted
+	 */
 
-	//private static final String DB_CONNECT_TIMEOUT_KEY = "DBTimeout";
-	private static final String DB_CONNECT_TIMEOUT_VALUE_DEFAULT = "3000";
-	//private static final String DB_DROP_START = "dropCollectionsOnStart";
-	
+	private DBConfig data = null;
+
 	/**
 	 * The collection containing symbol table
 	 */
-	private static final String CONTEXT_COLLECTION = "context";
-	
-
-	private String contextHistURL = null;
-	private String contextHistDBName = null;
-	private Integer contextHistDBTimeout = null;
-	//private String contextDropCollections = null;
+	private static final String CONTEXT_COLLECTION = "context";;
 
 	private MongoClient mongoClient;
-	
-	
+
 	/**
 	 * Mongo Data base
 	 */
 	private DB db = null;
-	
-	
+
 	@Validate
 	public void start() throws Exception {
 
+		
+		// By defalut retrieve the same DB configuration file as PropertyHistoryManager
+		URL configuration = null;
 
-		contextHistURL 		 = DB_URL_VALUE_DEFAULT;
-		contextHistDBName 	 = DB_NAME_VALUE_DEFAULT;
-		contextHistDBTimeout = Integer.parseInt(DB_CONNECT_TIMEOUT_VALUE_DEFAULT);
+		File modelDirectory = new File("conf");
+
+		if (modelDirectory.exists() && modelDirectory.isDirectory()) {
+			for (File modelFile : modelDirectory.listFiles()) {
+				try {
+					String modelFileName = modelFile.getName();
+
+					if (modelFileName.endsWith(".cfg")
+							&& modelFileName
+									.startsWith(CST.ROOT_COMPOSITE_TYPE)
+							&& modelFileName
+									.substring(
+											CST.ROOT_COMPOSITE_TYPE.length() + 1)
+									.startsWith(
+											PropertyHistoryManager.MANAGER_NAME)) {
+						configuration = modelFile.toURI().toURL();
+						logger.debug("Found external configuration file : "
+								+ configuration);
+					}
+
+				} catch (MalformedURLException e) {
+					logger.warn("Error when reading url : " + e.getMessage());
+				}
+			}
+		}
+
+		Properties prop = DBConfig.loadProperties(configuration);
+
+		if (prop.get(DBConfig.DBNAME_KEY) == null)
+			prop.put(DBConfig.DBNAME_KEY, DBNAME_DEFAULT);
+
+		logger.debug(" -> loaded DB Name : " + prop.get(DBConfig.DBNAME_KEY));
+
+		data = new DBConfig(prop);
 
 		try {
 
 			Builder options = new MongoClientOptions.Builder();
 
-			options.connectTimeout(contextHistDBTimeout);
+			options.connectTimeout(data.dBTimeout);
 
-			mongoClient = new MongoClient(contextHistURL, options.build());
+			mongoClient = new MongoClient(data.dbURL, options.build());
 
-			logger.info("trying to connect with database {} in host {}", contextHistDBName, contextHistURL);
+			logger.info("trying to connect with database {} in host {}",
+					data.dbName, data.dbURL);
 
-			//force connection to be established
+			// force connection to be established
 			mongoClient.getDatabaseNames();
 
-			db = mongoClient.getDB(contextHistDBName);
+			db = mongoClient.getDB(data.dbName);
 
 		} catch (Exception e) {
-			logger.error("Context history is inactive, it was unable to find the DB in {}", contextHistURL);
-		} 
+			logger.error(
+					"Context history is inactive, it was unable to find the DB in {}",
+					data.dbURL);
+		}
 
 	}
 
 	@Invalidate
-	public void stop() {}
+	public void stop() {
+	}
 
 	@Override
-	public boolean pushData_add(String name, String userID, String objectID, String addedValue, ArrayList<Entry<String, Object>> properties) {
+	public boolean pushData_add(String name, String userID, String objectID,
+			String addedValue, ArrayList<Entry<String, Object>> properties) {
 		try {
 
-			//force connection to be established
+			// force connection to be established
 			mongoClient.getDatabaseNames();
 
 			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
@@ -120,21 +158,20 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			BasicDBObject newVal = new BasicDBObject("name", name)
 					.append("time", System.currentTimeMillis())
 					.append("op", DataBasePushService.OP.ADD.toString())
-					.append("userID", userID)
-					.append("objectID", objectID)
+					.append("userID", userID).append("objectID", objectID)
 					.append("addedValue", addedValue);
 
 			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
-			
+
 			for (Map.Entry<String, Object> e : properties) {
 				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
-			
+
 			newVal.append("state", stateArray);
-			
+
 			context.insert(newVal);
 			return true;
-			
+
 		} catch (MongoException e) {
 			stop();
 		}
@@ -142,10 +179,11 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	}
 
 	@Override
-	public boolean pushData_remove(String name, String userID, String objectID, String removedValue, ArrayList<Entry<String, Object>> properties) {
+	public boolean pushData_remove(String name, String userID, String objectID,
+			String removedValue, ArrayList<Entry<String, Object>> properties) {
 		try {
 
-			//force connection to be established
+			// force connection to be established
 			mongoClient.getDatabaseNames();
 
 			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
@@ -153,18 +191,17 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			BasicDBObject newVal = new BasicDBObject("name", name)
 					.append("time", System.currentTimeMillis())
 					.append("op", DataBasePushService.OP.REMOVE.toString())
-					.append("userID", userID)
-					.append("objectID", objectID)
+					.append("userID", userID).append("objectID", objectID)
 					.append("removedValue", removedValue);
 
 			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
-			
+
 			for (Map.Entry<String, Object> e : properties) {
 				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
-			
+
 			newVal.append("state", stateArray);
-			
+
 			context.insert(newVal);
 			return true;
 		} catch (MongoException e) {
@@ -174,10 +211,12 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	}
 
 	@Override
-	public boolean pushData_change(String name, String userID, String objectID, String oldValue, String newValue, ArrayList<Entry<String, Object>> properties) {
+	public boolean pushData_change(String name, String userID, String objectID,
+			String oldValue, String newValue,
+			ArrayList<Entry<String, Object>> properties) {
 		try {
 
-			//force connection to be established
+			// force connection to be established
 			mongoClient.getDatabaseNames();
 
 			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
@@ -185,19 +224,17 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			BasicDBObject newVal = new BasicDBObject("name", name)
 					.append("time", System.currentTimeMillis())
 					.append("op", DataBasePushService.OP.CHANGE.toString())
-					.append("userID", userID)
-					.append("objectID", objectID)
-					.append("oldValue", oldValue)
-					.append("newValue", newValue);
+					.append("userID", userID).append("objectID", objectID)
+					.append("oldValue", oldValue).append("newValue", newValue);
 
 			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
-			
+
 			for (Map.Entry<String, Object> e : properties) {
 				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
-			
+
 			newVal.append("state", stateArray);
-			
+
 			context.insert(newVal);
 			return true;
 		} catch (MongoException e) {
@@ -208,28 +245,28 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 
 	@Override
 	public JSONObject pullLastObjectVersion(String ObjectName) {
-		//force connection to be established
+		// force connection to be established
 		mongoClient.getDatabaseNames();
-		
+
 		DBCollection context = db.getCollection(CONTEXT_COLLECTION);
 		DBCursor cursor = context.find(new BasicDBObject("name", ObjectName));
-		
+
 		DBObject val = null;
 		Long curTime, lastTime;
 		lastTime = Long.valueOf(0);
-		
-		for(DBObject cur : cursor) {
-			curTime = (Long)cur.get("time");
-			if(curTime > lastTime) {
+
+		for (DBObject cur : cursor) {
+			curTime = (Long) cur.get("time");
+			if (curTime > lastTime) {
 				lastTime = curTime;
 				val = cur;
 			}
 		}
-		
-		if(val != null) {
+
+		if (val != null) {
 			return new JSONObject(val.toMap());
 		}
-		
+
 		return null;
 	}
 
@@ -238,7 +275,7 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			String addedValue, ArrayList<Entry<String, Object>> properties) {
 		try {
 
-			//force connection to be established
+			// force connection to be established
 			mongoClient.getDatabaseNames();
 
 			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
@@ -250,13 +287,13 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 					.append("addedValue", addedValue);
 
 			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
-			
+
 			for (Map.Entry<String, Object> e : properties) {
 				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
-			
+
 			newVal.append("state", stateArray);
-			
+
 			context.insert(newVal);
 			return true;
 		} catch (MongoException e) {
@@ -270,7 +307,7 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			String removedValue, ArrayList<Entry<String, Object>> properties) {
 		try {
 
-			//force connection to be established
+			// force connection to be established
 			mongoClient.getDatabaseNames();
 
 			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
@@ -282,13 +319,13 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 					.append("removedValue", removedValue);
 
 			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
-			
+
 			for (Map.Entry<String, Object> e : properties) {
 				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
-			
+
 			newVal.append("state", stateArray);
-			
+
 			context.insert(newVal);
 			return true;
 		} catch (MongoException e) {
@@ -303,7 +340,7 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			ArrayList<Entry<String, Object>> properties) {
 		try {
 
-			//force connection to be established
+			// force connection to be established
 			mongoClient.getDatabaseNames();
 
 			DBCollection context = db.getCollection(CONTEXT_COLLECTION);
@@ -311,18 +348,17 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			BasicDBObject newVal = new BasicDBObject("name", name)
 					.append("time", System.currentTimeMillis())
 					.append("op", DataBasePushService.OP.CHANGE.toString())
-					.append("objectID", objectID)
-					.append("oldValue", oldValue)
+					.append("objectID", objectID).append("oldValue", oldValue)
 					.append("newValue", newValue);
 
 			ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
-			
+
 			for (Map.Entry<String, Object> e : properties) {
 				stateArray.add(new BasicDBObject(e.getKey(), e.getValue()));
 			}
-			
+
 			newVal.append("state", stateArray);
-			
+
 			context.insert(newVal);
 			return true;
 		} catch (MongoException e) {
@@ -330,5 +366,5 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 		}
 		return false;
 	}
-	
+
 }
