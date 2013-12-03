@@ -29,6 +29,7 @@
 		<module>CoreCalendarSpec</module>
 		<module>CoreSmartPlugSpec</module>
 		<module>CoreMediaPlayerSpec</module>
+		<module>CoreMediaBrowserSpec</module>
 		<module>CoreOccupancySpec</module>
 		<module>CoreCO2SensorSpec</module>
 	</modules>
