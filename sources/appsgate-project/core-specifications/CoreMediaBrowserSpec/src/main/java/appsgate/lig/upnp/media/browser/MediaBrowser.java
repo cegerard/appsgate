@@ -17,4 +17,10 @@ public interface MediaBrowser {
 	 * browse the contents of the media directory identified by objectId ("0" is the root object of the media server).
 	 */
 	public String browse(String objectID,String browseFlag,String filter,long startingIndex,long requestedCount,String sortCriteria);
+        
+        /**
+         * 
+         * @return the list of all the media
+         */
+        public String list();
 }
