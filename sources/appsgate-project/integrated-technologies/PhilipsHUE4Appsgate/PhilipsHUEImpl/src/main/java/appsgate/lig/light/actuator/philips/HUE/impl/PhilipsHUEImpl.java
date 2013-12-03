@@ -258,6 +258,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 			JSONAttribute.put("hue", color);
 			JSONAttribute.put("bri", BRI_DEFAULT);
 			JSONAttribute.put("sat", SAT_DEFAULT);
+			JSONAttribute.put("on", true);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return false;
@@ -265,6 +266,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	
 	
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, JSONAttribute)) {
+			notifyChanges("value", "true");
 			notifyChanges("color", String.valueOf(color));
 			return true;
 		}

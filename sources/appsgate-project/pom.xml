@@ -26,7 +26,7 @@
 		<compiler.plugin.version>2.5.1</compiler.plugin.version>
 		<!-- Sonar -->
 		<sonar.plugin.version>2.0</sonar.plugin.version>
-		<chameleon.version>1.0.0-SNAPSHOT</chameleon.version>
+		<chameleon.version>1.0.3-SNAPSHOT</chameleon.version>
 		<chameleon.destination>${project.build.directory}/chameleon-distribution</chameleon.destination>
 		<distribution.baseDirectory>include</distribution.baseDirectory>
 	</properties>

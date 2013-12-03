@@ -1,0 +1,34 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://raw.github.com/AdeleResearchGroup/ApAM/master/runtime/core/src/main/resources/xsd/ApamCore.xsd">
+
+<implementation 
+	name="MediaBrowser"
+	classname="appsgate.lig.upnp.media.browser.adapter.MediaBrowserAdapter"
+	instantiable="false"
+    specification="CoreMediaBrowserSpec">
+
+	<callback onInit="initialize" />
+
+	<relation implementation= "MediaServerProxyImpl" field="mediaServer" resolve="exist" fail="wait">
+       <constraints>
+          <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)" />
+      </constraints>
+	</relation>
+
+	<definition name="UPnP.device.UDN" type="string"/>
+    
+</implementation>
+
+<implementation 
+	name="MediaBrowserFactory"
+	classname="appsgate.lig.upnp.media.browser.adapter.MediaBrowserFactory">
+
+	<relation implementation= "MediaServerProxyImpl" multiple="true" resolve="exist" added="mediaServerBound" removed="mediaServerUnbound"  />
+	
+</implementation>
+
+<apam-instance name="Global-MediaBrowserFactory" implementation="MediaBrowserFactory">
+</apam-instance>
+
+</apam>

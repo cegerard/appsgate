@@ -24,7 +24,7 @@
        <dependency>
             <groupId>org.ow2.chameleon.fuchsia</groupId>
             <artifactId>fuchsia-core</artifactId>
-	    <version>0.0.1-SNAPSHOT</version>
+	    <version>0.0.1</version>
        </dependency>
        <dependency>
             <groupId>org.apache.felix</groupId>

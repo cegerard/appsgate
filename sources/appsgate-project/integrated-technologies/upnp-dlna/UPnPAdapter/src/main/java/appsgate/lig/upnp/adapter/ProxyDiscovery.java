@@ -104,6 +104,7 @@ public class ProxyDiscovery  {
 	 * so we process the request asynchronously.
 	 */
 	@Bind(id=UPnPDevice.ID,aggregate=true,optional=true)
+	@SuppressWarnings("unused")
 	private void boundDevice(UPnPDevice device) {
 
 		/*
@@ -134,6 +135,7 @@ public class ProxyDiscovery  {
 	 * so we process the request asynchronously.
 	 */
 	@Unbind(id=UPnPDevice.ID)
+	@SuppressWarnings("unused")
 	private void unboundDevice(UPnPDevice device) {
 		
 		/*
