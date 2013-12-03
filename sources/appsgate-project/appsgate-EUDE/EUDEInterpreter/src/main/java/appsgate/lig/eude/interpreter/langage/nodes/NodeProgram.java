@@ -205,16 +205,17 @@ public class NodeProgram extends Node {
 
     @Override
     public void startEventFired(StartEvent e) {
-        LOGGER.debug("The start event has been catched by {}", this);
+        LOGGER.debug("The start event ({}) has been catched by {}", e.getSource(), this);
         setRunningState(RUNNING_STATE.STARTED);
     }
 
     @Override
     public void endEventFired(EndEvent e) {
         if (isDaemon()) {
-            LOGGER.debug("The end event has been fired on a daemon, program is still running");
-            LOGGER.trace(e.toString());
+            LOGGER.debug("The end event ({}) has been fired on a daemon, program is still running", e.getSource());
             seqRules.call();
+            seqRules.addEndEventListener(this);
+            LOGGER.debug("Call rearmed");
         } else {
             setRunningState(RUNNING_STATE.STOPPED);
             fireEndEvent(new EndEvent(this));
@@ -236,21 +237,21 @@ public class NodeProgram extends Node {
     public String getName() {
         return name;
     }
-    
+
     /**
-     * 
+     *
      * @return the author
      */
     public String getAuthor() {
-    	return author;
+        return author;
     }
-    
+
     /**
-     * 
+     *
      * @return the target
      */
     public String getTarget() {
-    	return target;
+        return target;
     }
 
     /**

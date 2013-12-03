@@ -536,5 +536,10 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         this.router = router;
         this.contextFollower = c;
     }
+    
+    @Override
+    public String toString() {
+        return "[EUDE Interpreter]";
+    }
 
 }

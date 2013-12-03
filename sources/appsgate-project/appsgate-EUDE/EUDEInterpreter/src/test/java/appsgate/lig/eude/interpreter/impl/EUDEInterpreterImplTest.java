@@ -380,6 +380,10 @@ public class EUDEInterpreterImplTest {
         tested.become("no");
         contextFollower.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 500);
+        tested.become("no");
+        contextFollower.notifAll("3");
+        synchroniser.waitUntil(tested.is("Yes"), 500);
+
     }
 
     /**
@@ -447,13 +451,18 @@ public class EUDEInterpreterImplTest {
         @Override
         public void deleteListener(CoreListener coreListener) {
             System.out.println("removing listener: " + coreListener.getObjectId());
-            //list.remove(coreListener);
+            list.remove(coreListener);
         }
 
         public void notifAll(String msg) {
             System.out.println("NotifAll Start " + msg);
-            CoreListener l = list.poll();
-            l.notifyEvent();
+            ConcurrentLinkedQueue<CoreListener> buf = new ConcurrentLinkedQueue<CoreListener>();
+            for (CoreListener l : list) {
+                buf.add(l);
+            }
+            for (CoreListener l1 : buf) {
+                l1.notifyEvent();
+            }
             System.out.println("NotifAll End " + msg);
 
         }
