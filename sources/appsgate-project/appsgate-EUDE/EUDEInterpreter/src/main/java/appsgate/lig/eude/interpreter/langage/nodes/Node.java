@@ -122,6 +122,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     protected synchronized void fireEndEvent(EndEvent e) {
         //during the execution the list can be updated
         int nbListeners = endEventListeners.size();
+        LOGGER.trace("fire endEvent {} for {} nodes", e.getSource(), nbListeners);
         for (int i = 0; i < nbListeners; i++) {
             EndEventListener l = endEventListeners.poll();
             l.endEventFired(e);
@@ -135,7 +136,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      */
     @Override
     public void addStartEventListener(StartEventListener listener) {
-        LOGGER.trace("ADDING Start listener {} TO {}", listener, this);
+        LOGGER.trace("ADD:  {} listen StartEvent FROM {}", listener, this);
         startEventListeners.add(listener);
     }
 
@@ -146,7 +147,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      */
     @Override
     public void removeStartEventListener(StartEventListener listener) {
-        LOGGER.trace("REMOVING Start listener {} FROM {}", listener, this);
+        LOGGER.trace("REM: {} stop listening startEvent FROM {}", listener, this);
         startEventListeners.remove(listener);
     }
 
@@ -157,7 +158,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      */
     @Override
     public void addEndEventListener(EndEventListener listener) {
-        LOGGER.trace("ADDING End listener {} TO {}", listener, this);
+        LOGGER.trace("ADD:  {} listen EndEvent FROM {}", listener, this);
         endEventListeners.add(listener);
     }
 
@@ -168,7 +169,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      */
     @Override
     public void removeEndEventListener(EndEventListener listener) {
-        LOGGER.trace("REMOVING END listener {} FROM {}", listener, this);
+        LOGGER.trace("REM: {} stop listening endEvent FROM {}", listener, this);
         endEventListeners.remove(listener);
     }
 

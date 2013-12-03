@@ -63,8 +63,6 @@ public class NodeSeqRules extends Node {
             }
         }
 
-        LOGGER.trace("###### nb SeqAndRules: {}", seqAndRules.size());
-
     }
 
     /**
@@ -115,7 +113,7 @@ public class NodeSeqRules extends Node {
                 LOGGER.error("Exception caught: {}", ex.getMessage());
             }
         } else {
-            LOGGER.trace("###### SeqThenRules ended...");
+            LOGGER.debug("###### SeqThenRules ended...");
             setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
@@ -138,11 +136,7 @@ public class NodeSeqRules extends Node {
 
     @Override
     public String toString() {
-        String array = "";
-        for (Node seq : this.seqAndRules) {
-            array += seq.toString() + "\n";
-        }
 
-        return "[Node SeqRules: [" + array + "]]";
+        return "[Node SeqRules: [" + seqAndRules.size() + "]]";
     }
 }

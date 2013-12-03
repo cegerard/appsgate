@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="WattecoC02Impl"
+	<implementation name="WattecoCO2Impl"
 		classname="appsgate.lig.co2.sensor.watteco.impl.WattecoCO2Impl" specification="CoreCO2SensorSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		

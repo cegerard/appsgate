@@ -109,12 +109,8 @@ public class NodeSeqAndRules extends Node {
 
     @Override
     public String toString() {
-        String array = "";
-        for (Node seq : rules) {
-            array += seq.toString() + "\n";
-        }
 
-        return "[Node SeqAndRules: [" + array + "]]";
+        return "[Node SeqAndRules: [" + rules.size() + "]]";
     }
 
 }

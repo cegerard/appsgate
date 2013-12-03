@@ -103,12 +103,7 @@ public class NodeSeqEvent extends Node {
 
     @Override
     public String toString() {
-        String array = "";
-        for (Node seq : this.seqEvent) {
-            array += seq.toString() + "\n";
-        }
-
-        return "[Node SeqEvent: [" + array + "]]";
+        return "[Node SeqEvent: [" + seqEvent.size() + "]]";
     }
 
 }

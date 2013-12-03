@@ -145,10 +145,6 @@ public class NodeExpBool extends Node {
 
     @Override
     public String toString() {
-        String array = "";
-        for (NodeSeqAndBool seq : listSeqAndBool) {
-            array += seq.toString() + "\n";
-        }
-        return "[Node ExpBool: [" + array + "]]";
+        return "[Node ExpBool: [" + listSeqAndBool.size() + "]]";
     }
 }

@@ -153,10 +153,6 @@ public class NodeSeqAndBool extends Node {
 
     @Override
     public String toString() {
-        String array = "";
-        for (NodeRelationBool seq : relationsBool) {
-            array += seq.toString() + "\n";
-        }
-        return "[Node SeqAndBool: [" + array + "]]";
+        return "[Node SeqAndBool: [" + relationsBool.size() + "]]";
     }
 }

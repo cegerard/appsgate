@@ -174,3 +174,7 @@ sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/
 sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/metadata.xml
 
 
+
+*.jar
+
+.gitignore

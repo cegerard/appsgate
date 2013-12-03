@@ -81,9 +81,11 @@ public class NodeWhen extends Node {
                 fireEndEvent(new EndEvent(this));
                 // if the sequence of rules is terminated, fire the event event
             } else {
-                setStarted(false);
-                fireEndEvent(new EndEvent(this));
+                LOGGER.debug("###### Rules are done");
             }
+        } else {
+            LOGGER.debug("###### is stopping");
+
         }
     }
 
