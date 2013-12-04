@@ -31,7 +31,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	private static long HUE_DEFAULT = 14922;
 	
 	private static int SAT_DEFAULT = 255;
-	private static long BRI_DEFAULT = 127;
+	private static long BRI_DEFAULT = 180;
 	
 	
 	/**
@@ -268,6 +268,8 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, JSONAttribute)) {
 			notifyChanges("value", "true");
 			notifyChanges("color", String.valueOf(color));
+			notifyChanges("brightness", String.valueOf(BRI_DEFAULT));
+			notifyChanges("saturation", String.valueOf(SAT_DEFAULT));
 			return true;
 		}
 		
@@ -413,6 +415,29 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	@Override
 	public boolean setPink() {
 		if(setSaturatedColor(HUE_PINK)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean setWhite() {
+		JSONObject JSONAttribute  = new JSONObject();
+		try {
+			JSONAttribute.put("bri", 220);
+			JSONAttribute.put("sat", 0);
+			JSONAttribute.put("on", true);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return false;
+		}
+	
+	
+		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, JSONAttribute)) {
+			notifyChanges("value", "true");
+			notifyChanges("saturation", String.valueOf(0));
+			notifyChanges("brightness", String.valueOf(220));
 			return true;
 		}
 		
