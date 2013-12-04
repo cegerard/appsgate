@@ -546,4 +546,12 @@ public class SwingColorLightImpl implements CoreObjectSpec, CoreColorLightSpec {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+    @Override
+    public boolean setWhite() {
+		color = HUE_DEFAULT;
+		notifyChanges("color", String.valueOf(color));
+		refreshLight();
+		return true;
+    }
 }

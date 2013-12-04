@@ -1,0 +1,30 @@
+
+{
+    "id": "program-373",
+    "runningState": "STOPPED",
+    "modified": false,
+    "source":
+            {"seqDefinitions": [],
+                "author": "Bob",
+                "target": "alice",
+                "seqRules": [[
+                        {"events":
+                                    [{"eventValue": 1386050400170,
+                                            "sourceType": "device",
+                                            "eventName": "ClockAlarm",
+                                            "type": "NodeEvent",
+                                            "sourceId": "21106637055"}],
+                            "seqRulesThen": [[
+                                    {"args": [],
+                                        "targetId": "program-4050",
+                                        "type": "NodeAction",
+                                        "methodName": "callProgram",
+                                        "targetType": "program"}
+                                    , {"args": [],
+                                        "targetId": "00:17:88:0a:99:c1-6",
+                                        "type": "NodeAction",
+                                        "methodName": "On", "targetType": "device"}]],
+                            "type": "NodeWhen"}]],
+                "daemon": true, "seqParameters": [], "programName": "MORNING2"},
+    "userInputSource": ""
+}

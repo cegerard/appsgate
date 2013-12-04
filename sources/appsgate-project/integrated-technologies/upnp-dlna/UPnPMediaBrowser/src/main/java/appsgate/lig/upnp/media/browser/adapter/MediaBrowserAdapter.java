@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import fr.imag.adele.apam.Instance;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
@@ -54,6 +56,8 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
 
         deviceId = instance.getProperty(UPnPDevice.ID);
         proxies = implementation.getInsts();
+
+        Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.INFO, "proxies instanciated: {}", proxies);
 
         appsgatePictureId = null;
         appsgateServiceName = "Appsgate UPnP Media browser";
@@ -142,7 +146,9 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
     @Override
     public String browse(String objectID, String browseFlag, String filter,
             long startingIndex, long requestedCount, String sortCriteria) {
+
         try {
+            String ret = "";
             StringHolder result = new StringHolder();
             LongHolder number = new LongHolder();
             LongHolder totalMatches = new LongHolder();
@@ -151,62 +157,60 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
             mediaServer.getContentDirectory().browse(objectID, browseFlag, filter, startingIndex, requestedCount, sortCriteria,
                     result, number, totalMatches, updateId);
 
-            return result.getObject();
+            try {
+                InputSource is = new InputSource();
+                is.setCharacterStream(new StringReader(result.getObject()));
+
+                Document document = builder.parse(is);
+
+                ret += parseXml(document, objectID);
+
+            } catch (SAXException ex) {
+                Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
+                return "<XMLError/>";
+            } catch (IOException ex) {
+                Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
+                return "<IOError/>";
+            }
+
+            return ret;
 
         } catch (UPnPException ignored) {
+            System.err.print("UPNP Exception");
             ignored.printStackTrace(System.err);
-            return "";
+            return "<empty/>";
         }
     }
 
-    @Override
-    public String list() {
-
-        String ret = "<medias>";
-        for (Instance inst : this.proxies) {
-            MediaServerProxyImpl proxy = (MediaServerProxyImpl) inst;
-            ret += "<server name='" + proxy.getUserObjectName() + "'>\n";
-            ret += this.recList(proxy, "0");
-            ret += "</server>\n";
-        }
-        return ret + "</medias>";
-
-    }
-
-    private String recList(MediaServerProxyImpl proxy, String objectID) {
-        StringHolder result = new StringHolder();
-        LongHolder number = new LongHolder();
-        LongHolder totalMatches = new LongHolder();
-        LongHolder updateId = new LongHolder();
+    /**
+     * Method that parse a document and print it to jsTree format
+     * @param document
+     * @param objectID
+     * @return 
+     */
+    protected String parseXml(Document document, String objectID) {
         String ret = "";
-        try {
-            proxy.getContentDirectory().browse(objectID, MediaBrowser.BROWSE_CHILDREN, "*", 0, 0, "",
-                    result, number, totalMatches, updateId);
-            Document document = builder.parse(result.getObject());
-            NodeList childNodes = document.getDocumentElement().getChildNodes();
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                Node node = childNodes.item(i);
-                if (node instanceof Element) {
-                    if (node.getLocalName().equalsIgnoreCase("container")) {
-                        String id = node.getAttributes().getNamedItem("id").getNodeValue();
-                        ret +=  "<container id='" + id + "'>" + recList(proxy, id) + "</container>\n";
-                    } else {
-                        ret+= "<media id='" + node.getLocalName() + "/>\n";
-                    }
-                }
+        NodeList childNodes = document.getDocumentElement().getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node instanceof Element) {
+                String id = node.getAttributes().getNamedItem("id").getNodeValue();
+                String name = getDirectoryName(node);
+                ret += "<item id='" + id + "' parent_id='" + objectID + "'>" + "<content><name>" + name + "</name</content></item>\n";
             }
-        } catch (UPnPException ex) {
-            Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
-            return "<upnpError/>";
-        } catch (SAXException ex) {
-            Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
-            return "<XMLError/>";
-        } catch (IOException ex) {
-            Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
-            return "<IOError/>";
         }
 
         return ret;
+    }
+
+    private String getDirectoryName(Node node) {
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            if (children.item(i).getNodeName().equalsIgnoreCase("dc:title")) {
+                return children.item(i).getTextContent();
+            }
+        }
+        return "toto";
     }
 
 }
