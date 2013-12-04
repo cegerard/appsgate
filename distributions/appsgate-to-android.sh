@@ -106,7 +106,7 @@ echo Creating script felix-android.sh
 echo XXXX
 echo "cd $ANDROIDFELIXPATH"  > android-appsgate/felix-android.sh
 echo "rm -rf felix-cache" >> android-appsgate/felix-android.sh
-echo "/system/bin/dalvikvm -classpath bin/felix.jar org.apache.felix.main.Main" >> android-appsgate/felix-android.sh
+echo "/system/bin/dalvikvm -Xms128m  -Xmx256m -classpath bin/felix.jar org.apache.felix.main.Main" >> android-appsgate/felix-android.sh
 
 
 echo
@@ -115,7 +115,7 @@ echo Setting configuration files
 echo You may add dalvik packages to \"org.osgi.framework.system.packages.extra\"
 echo depending on your own bundle needs
 echo XXXX
-cp Appsgate-distribution/conf/* android-appsgate/conf/
+cp -R Appsgate-distribution/conf android-appsgate
 echo updating felix configuration file
 # echo "org.osgi.service.http.port=8080" >> android-appsgate/conf/config.properties
 
