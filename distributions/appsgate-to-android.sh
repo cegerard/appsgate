@@ -43,6 +43,7 @@ mkdir android-appsgate
 mkdir android-appsgate/bin
 mkdir android-appsgate/bundle
 mkdir android-appsgate/conf
+mkdir android-appsgate/load
 mkdir android-appsgate/tmp
 
 echo
@@ -60,7 +61,7 @@ rm android-appsgate/tmp/*
 
 echo
 echo XXXX
-echo Creating dex files for the other bundles
+echo Creating dex files for the external libs bundles
 echo XXXX
 cp Appsgate-distribution/bundle/* android-appsgate/tmp/
 cd android-appsgate/tmp
@@ -81,6 +82,23 @@ done
 cd ..
 rm tmp/*
 cd ..
+
+echo
+echo XXXX
+echo Creating dex files for the loaded AppsGate bundles
+echo XXXX
+
+cp Appsgate-distribution/load/* android-appsgate/tmp/
+cd android-appsgate/tmp
+for jarfile in *.jar; do
+	dx --dex --output=classes.dex $jarfile
+	aapt add $jarfile classes.dex
+	mv $jarfile ../load/$jarfile
+done
+cd ..
+rm tmp/*
+cd ..
+
 
 echo
 echo XXXX
