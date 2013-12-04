@@ -79,7 +79,8 @@ public class AppsgateUpnpDevice extends Device implements ActionListener,
 	 * @throws InvalidDescriptionException
 	 */
 	public AppsgateUpnpDevice() throws InvalidDescriptionException {
-		super(System.getProperty("user.dir") + "/" + descriptionFileName);
+		super(System.getProperty("user.dir") + descriptionFileName);
+		logger.debug("Super constructor OK, filename : "+System.getProperty("user.dir") + descriptionFileName);
 
 		// Set UPnP action listening
 		Action action = getAction("getIP");
@@ -91,12 +92,16 @@ public class AppsgateUpnpDevice extends Device implements ActionListener,
 		action = getAction("getWebsocket");
 		action.setActionListener(this);
 
+		logger.debug("Action listeners registered");
+
 		// initiate UPnP state variables
 		try {
 			StateVariable stateVar;
 			StateVariable serverIP;
 			// server IP initialization
 			stateVar = getStateVariable("serverIP");
+			logger.debug(" state variable ServerIP Ok");
+
 
 			Inet4Address localAddress = (Inet4Address) InetAddress
 					.getLocalHost();

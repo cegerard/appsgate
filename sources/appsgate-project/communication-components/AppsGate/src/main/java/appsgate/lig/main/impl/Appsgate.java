@@ -99,14 +99,7 @@ public class Appsgate implements AppsGateSpec {
 	 */
 	public Appsgate() {
 		
-		try{
-			mainDevice= new AppsgateUpnpDevice();
-		} catch(InvalidDescriptionException exception) {
-			logger.error("Error during instanctiation of AppsGate UPnP device, "+exception
-					+"\n Caused by "+exception.getStackTrace());
-		}
-
-		// initiate UPnP state variables
+		
 		logger.info("AppsGate instanciated");
 	}
 
@@ -114,9 +107,21 @@ public class Appsgate implements AppsGateSpec {
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		logger.info("AppsGate is starting");
+		logger.debug("AppsGate is starting");
+		try{
+			logger.debug("Trying to create upnp device according to : "+System.getProperty("user.dir") + "/conf/device/description.xml");
+			mainDevice= new AppsgateUpnpDevice();
+			logger.debug("upnp device created successfully");
+		} catch(InvalidDescriptionException exception) {
+			logger.error("Error during instantiation of AppsGate UPnP device, "+exception
+					+"\n Caused by "+exception.getStackTrace());
+		}
+
+		// initiate UPnP state variables
+		
 		if(mainDevice != null) {
 			mainDevice.start();
+			logger.debug("upnp device started");
 		} else {
 			logger.error("Cannot start AppsGate Main device, because it is null");
 		}
