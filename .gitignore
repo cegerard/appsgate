@@ -21,10 +21,6 @@ deployToAppsGateDistribution.sh
 
 nbaction.xml
 
-sources/apam.components/EUDE_InterpreterSpec/target/classes/META-INF/MANIFEST.MF
-
-sources/apam.components/EUDE_InterpreterSpec/target/classes/META-INF/MANIFEST.MF
-
 sources/PhilipsHUE4Appsgate/PhilipsHUEAdapter/.classpath
 
 sources/UPnPMediaServices/.classpath
@@ -173,8 +169,5 @@ sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/
 
 sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/metadata.xml
 
-
-
-*.jar
 
 .gitignore
