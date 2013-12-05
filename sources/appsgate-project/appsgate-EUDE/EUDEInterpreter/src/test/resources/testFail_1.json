@@ -1,0 +1,57 @@
+{
+    "runningState": "STOPPED",
+    "id": "program-4050",
+    "userInputSource" : "",
+    "source": {
+        "daemon": true,
+        "programName": "CAREGIVER_SERVICE",
+        "author": "Bob",
+        "seqDefinitions": [],
+        "seqParameters": [],
+        "target": "alice",
+        "seqRules":
+                [[
+                        {"events":
+                                    [
+                                        {"sourceType": "device",
+                                            "eventValue": 1386052200210,
+                                            "eventName": "ClockAlarm",
+                                            "type": "NodeEvent",
+                                            "sourceId": "21106637055"}
+                                    ],
+                            "seqRulesThen": [[
+                                    {"args": [],
+                                        "targetId": "00:17:88:0a:99:c1-5",
+                                        "type": "NodeAction",
+                                        "methodName": "setDefault",
+                                        "targetType": "device"},
+                                    {"args": [], "targetId": "00:17:88:0a:99:c1-6",
+                                        "type": "NodeAction",
+                                        "methodName": "setDefault",
+                                        "targetType": "device"},
+                                    {"args": [],
+                                        "targetId": "00:17:88:0a:99:c1-4",
+                                        "type": "NodeAction",
+                                        "methodName": "setOrange",
+                                        "targetType": "device"},
+                                    {"events": [
+                                            {"sourceType": "device",
+                                                "eventValue": 1386054000210,
+                                                "eventName": "ClockAlarm",
+                                                "type": "NodeEvent",
+                                                "sourceId": "21106637055"}],
+                                        "seqRulesThen": [[
+                                                {"args": [],
+                                                    "targetId": "00:17:88:0a:99:c1-4",
+                                                    "type": "NodeAction",
+                                                    "methodName": "setRed",
+                                                    "targetType": "device"},
+                                                {"args": [],
+                                                    "targetId": "00:17:88:0a:99:c1-4",
+                                                    "type": "NodeAction",
+                                                    "methodName": "blink",
+                                                    "targetType": "device"}]],
+                                        "type": "NodeWhen"}]],
+                            "type": "NodeWhen"}]]}
+}
+    

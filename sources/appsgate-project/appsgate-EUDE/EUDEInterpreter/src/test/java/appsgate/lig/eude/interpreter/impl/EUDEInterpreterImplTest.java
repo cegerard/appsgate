@@ -355,7 +355,11 @@ public class EUDEInterpreterImplTest {
         System.out.println("Programs");
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testIf.json")));
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testPrograms.json")));
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testFail.json")));
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testFail_1.json")));
         Assert.assertTrue(instance.callProgram("testPrograms"));
+        Assert.assertTrue(instance.callProgram("program-373"));
+        Assert.assertTrue(instance.callProgram("program-4050"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertFalse(instance.isProgramActive("testPrograms"));
     }

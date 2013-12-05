@@ -51,8 +51,7 @@ import appsgate.lig.router.spec.RouterApAMSpec;
  * @version 1.0.0
  * 
  */
-public class Appsgate extends Device implements AppsGateSpec, ActionListener,
-		QueryListener {
+public class Appsgate implements AppsGateSpec {
 
 	/**
 	 * 
@@ -65,16 +64,6 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	 * resources to the Felix HTTP server
 	 */
 	private HttpService httpService;
-
-	/**
-	 * UPnP device description xml file relative path.
-	 */
-	private static String descriptionFileName = "/conf/device/description.xml";
-
-	/**
-	 * default web socket connection port
-	 */
-	private static String wsPort = "8087";
 
 	/**
 	 * Table for deviceId, user and device name association
@@ -100,76 +89,17 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	 * Reference to the EUDE interpreter to manage end user programs
 	 */
 	private EUDE_InterpreterSpec interpreter;
+	
+	private AppsgateUpnpDevice mainDevice;
 
 	/**
 	 * Default constructor for Appsgate java object. it load UPnP device and
 	 * services profiles and subscribes the corresponding listeners.
 	 * 
-	 * @throws InvalidDescriptionException
 	 */
-	public Appsgate() throws InvalidDescriptionException {
-		super(System.getProperty("user.dir") + "/" + descriptionFileName);
-
-		// Set UPnP action listening
-		Action action = getAction("getIP");
-		action.setActionListener(this);
-
-		action = getAction("getURL");
-		action.setActionListener(this);
-
-		action = getAction("getWebsocket");
-		action.setActionListener(this);
-
-		// initiate UPnP state variables
-		try {
-			StateVariable stateVar;
-			StateVariable serverIP;
-			// server IP initialization
-			stateVar = getStateVariable("serverIP");
-
-			Inet4Address localAddress = (Inet4Address) InetAddress
-					.getLocalHost();
-			Enumeration<NetworkInterface> nets = NetworkInterface
-					.getNetworkInterfaces();
-			for (NetworkInterface netint : Collections.list(nets)) {
-				if (!netint.isLoopback() && !netint.isVirtual()
-						&& netint.isUp()) { // TODO check also if its the local
-											// network. but It will difficult to
-											// find automatically the right
-											// network interface
-					Enumeration<InetAddress> addresses = netint
-							.getInetAddresses();
-					for (InetAddress address : Collections.list(addresses)) {
-						if (address instanceof Inet4Address) {
-							localAddress = (Inet4Address) address;
-							break;
-						}
-					}
-				}
-			}
-			stateVar.setValue(localAddress.getHostAddress());
-			stateVar.setQueryListener(this);
-			serverIP = stateVar;
-
-			// server access URL initialization
-			stateVar = getStateVariable("serverURL");
-			stateVar.setValue("http://" + serverIP.getValue() + "/index.html");
-			stateVar.setQueryListener(this);
-
-			// server web socket connection entry variable initialization
-			stateVar = getStateVariable("serverWebsocket");
-			stateVar.setValue("http://" + serverIP.getValue() + ":" + wsPort
-					+ "/");
-			stateVar.setQueryListener(this);
-
-		} catch (UnknownHostException e) {
-			logger.debug("Unknown host: ");
-			e.printStackTrace();
-		} catch (SocketException e) {
-			logger.debug("Socket exception for UPnP: ");
-			e.printStackTrace();
-		}
-
+	public Appsgate() {
+		
+		
 		logger.info("AppsGate instanciated");
 	}
 
@@ -177,8 +107,25 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		this.start();
-		logger.info("AppsGate is started");
+		logger.debug("AppsGate is starting");
+		try{
+			logger.debug("Trying to create upnp device according to : "+System.getProperty("user.dir") + "/conf/device/description.xml");
+			mainDevice= new AppsgateUpnpDevice();
+			logger.debug("upnp device created successfully");
+		} catch(InvalidDescriptionException exception) {
+			logger.error("Error during instantiation of AppsGate UPnP device, "+exception
+					+"\n Caused by "+exception.getStackTrace());
+		}
+
+		// initiate UPnP state variables
+		
+		if(mainDevice != null) {
+			mainDevice.start();
+			logger.debug("upnp device started");
+		} else {
+			logger.error("Cannot start AppsGate Main device, because it is null");
+		}
+		
 
 		if (httpService != null) {
 			final HttpContext httpContext = httpService
@@ -198,54 +145,15 @@ public class Appsgate extends Device implements AppsGateSpec, ActionListener,
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		this.stop();
-		logger.info("AppsGate has stopped");
+		logger.info("AppsGate is stopping");
+		if(mainDevice != null) {
+			mainDevice.stop();
+		} else {
+			logger.error("Cannot stop AppsGate Main device, because it is null");
+		}
 		httpService.unregister("/appsgate");
 	}
 
-	/**
-	 * Method call when an UPnP state variable is modify
-	 */
-	@Override
-	public boolean queryControlReceived(StateVariable stateVar) {
-		String varName = stateVar.getName();
-		if (varName.contentEquals("serverIP")) {
-
-			// stateVar.setValue(currTimeStr);
-			return true;
-		}
-
-		// stateVar.setStatus(UPnP::INVALID_VAR, “.....”);
-		return false;
-	}
-
-	/**
-	 * Method call when an UPnP action is triggered
-	 */
-	@Override
-	public boolean actionControlReceived(Action action) {
-		ArgumentList argList = action.getArgumentList();
-		String actionName = action.getName();
-
-		if (actionName.contentEquals("getIP")) {
-			Argument out_serverIP = argList.getArgument("serverIP");
-			out_serverIP.setValue(getStateVariable("serverIP").getValue());
-			return true;
-
-		} else if (actionName.contentEquals("getURL")) {
-			Argument out_serverURL = argList.getArgument("serverURL");
-			out_serverURL.setValue(getStateVariable("serverURL").getValue());
-			return true;
-		} else if (actionName.contentEquals("getWebsocket")) {
-			Argument out_serverWS = argList.getArgument("serverWebsocket");
-			out_serverWS.setValue(getStateVariable("serverWebsocket")
-					.getValue());
-			return true;
-		}
-
-		action.setStatus(401, "invalid action");
-		return false;
-	}
 	
 	@Override
 	public JSONArray getDevices() {

@@ -133,6 +133,12 @@ public interface CoreColorLightSpec {
 	public boolean setPink();
 	
 	/**
+	 * Set the light color to bright white
+	 * @return true if the light turn to white unsaturated color, false otherwise
+	 */
+	public boolean setWhite();
+	
+	/**
 	 * Set the default light color
 	 * @return true if the light turn to default color, false otherwise
 	 */

@@ -73,7 +73,7 @@ public class DBConfig {
 		logger.debug(" -> loaded DB Port : " + prop_model.get(DBPORT_KEY));
 		if (prop_model.get(DBURL_KEY) == null)
 			prop_model.put(DBURL_KEY,
-					DBHOST_DEFAULT.concat(":" + prop_model.get(DBPORT_KEY)));
+					((String)prop_model.get(DBHOST_KEY)).concat(":" + prop_model.get(DBPORT_KEY)));
 		logger.debug(" -> loaded DB URL : " + prop_model.get(DBURL_KEY));
 		if (prop_model.get(DBTIMEOUT_KEY) == null)
 			prop_model.put(DBTIMEOUT_KEY, DBTIMEOUT_DEFAULT);
