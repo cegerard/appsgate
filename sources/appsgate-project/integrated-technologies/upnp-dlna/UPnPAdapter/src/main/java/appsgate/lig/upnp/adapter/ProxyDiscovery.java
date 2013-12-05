@@ -60,7 +60,9 @@ public class ProxyDiscovery  {
 	 * Reference to the APAM resolver
 	 */
 	@Requires(id="APAM", optional=true)
+	@SuppressWarnings("unused")
 	private Apam 				apam;
+
 	private ApamResolver 		resolver;
 
 	/**
@@ -69,6 +71,7 @@ public class ProxyDiscovery  {
 	private List<UPnPDevice> 	pending = new ArrayList<UPnPDevice>();
 	
 	@Bind(id="APAM")
+	@SuppressWarnings("unused")
 	private synchronized void  apamBound() {
 		resolver = CST.apamResolver;
 		System.err.println("[UPnP Apam Discovery] Bound to APAM resolver "+resolver);
@@ -85,6 +88,7 @@ public class ProxyDiscovery  {
 	}
 	
 	@Unbind(id="APAM")
+	@SuppressWarnings("unused")
 	private synchronized void apamUnbound() {
 		resolver = null;
 		System.err.println("[UPnP Apam Discovery] Unbound to APAM resolver "+resolver);
@@ -180,7 +184,7 @@ public class ProxyDiscovery  {
 
 			String deviceId		= (String)device.getDescriptions(null).get(UPnPDevice.ID);
 			String deviceType	= (String)device.getDescriptions(null).get(UPnPDevice.TYPE);
-			
+			String deviceName	= (String)device.getDescriptions(null).get(UPnPDevice.FRIENDLY_NAME);
 
 			/*
 			 * IMPORTANT Because we are processing this event asynchronously, we need to verify that the device is
@@ -223,6 +227,7 @@ public class ProxyDiscovery  {
 		
 					Map<String,Object> configuration = new Hashtable<String,Object>();
 					configuration.put(UPnPDevice.ID,deviceId);
+					configuration.put(UPnPDevice.FRIENDLY_NAME,deviceName);
 		
 					ApformInstance proxy = implementation.getApformImpl().addDiscoveredInstance(configuration);
 					

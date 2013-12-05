@@ -69,6 +69,7 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
 		descr.put("type", getUserType());
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
+		descr.put("friendlyName", mediaServer.getFriendlyName());
 		
 		return descr;
 	}

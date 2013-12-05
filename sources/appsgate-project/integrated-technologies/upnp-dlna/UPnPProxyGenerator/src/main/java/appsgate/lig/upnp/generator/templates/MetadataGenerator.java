@@ -53,6 +53,7 @@ public class MetadataGenerator  {
 		metadata.write("	<definition name=\"UPnP.device.type\" type=\"string\" />\n");
 		metadata.write("	<property name=\"UPnP.device.type\" value="+quote(device.getDeviceType())+" />\n");
 		metadata.write("	<definition name=\"UPnP.device.UDN\" type=\"string\"/>\n");
+		metadata.write("	<definition name=\"UPnP.device.friendlyName\" type=\"string\"/>\n");
 		metadata.write("\n");
 
 		metadata.write("\n");

@@ -7,6 +7,7 @@ import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
+import org.osgi.service.upnp.UPnPDevice;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.upnp.media.player.MediaPlayer;
@@ -62,7 +63,12 @@ public class MediaPlayerShell {
 		
 		for (Instance playerInstance : implementation.getInsts()) {
 			CoreObjectSpec player = (CoreObjectSpec) playerInstance.getServiceObject();
-			players.append(playerInstance.getName()).append("(appsgate id = ").append(player.getAbstractObjectId()).append(") \n");
+			
+			players.append(playerInstance.getName())
+			.append(" appsgate id = ").append(player.getAbstractObjectId())
+			.append(" friendly name = ").append(playerInstance.getProperty(UPnPDevice.FRIENDLY_NAME))
+			.append(" \n");
+			
 		}
 		
 		System.out.println("Currently discovered players :");

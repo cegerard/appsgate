@@ -6,6 +6,7 @@ import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
+import org.osgi.service.upnp.UPnPDevice;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.upnp.media.browser.MediaBrowser;
@@ -42,8 +43,7 @@ public class MediaBrowserShell {
 	    };
 
 	private MediaBrowser retrieveMediaBrowserInstance(String player) {
-		Implementation implementation = CST.apamResolver.findImplByName(null,
-			"MediaBrowser");
+		Implementation implementation = CST.apamResolver.findImplByName(null,"MediaBrowser");
 		return (MediaBrowser) implementation.getInst(player).getServiceObject();
 	    
 	}
@@ -53,9 +53,12 @@ public class MediaBrowserShell {
 		
 		StringBuilder browsers = new StringBuilder();
 		
-		for (Instance playerInstance : implementation.getInsts()) {
-			CoreObjectSpec player = (CoreObjectSpec) playerInstance.getServiceObject();
-			browsers.append(playerInstance.getName()).append("(appsgate id = ").append(player.getAbstractObjectId()).append(") \n");
+		for (Instance browserInstance : implementation.getInsts()) {
+			CoreObjectSpec browser = (CoreObjectSpec) browserInstance.getServiceObject();
+			browsers.append(browserInstance.getName())
+				.append(" appsgate id = ").append(browser.getAbstractObjectId())
+				.append(" friendly name = ").append(browserInstance.getProperty(UPnPDevice.FRIENDLY_NAME))
+				.append(" \n");
 		}
 		
 		System.out.println("Currently discovered browsers :");
