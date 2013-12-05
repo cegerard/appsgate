@@ -54,6 +54,8 @@ public class DeviceDiscoveryRequest implements Runnable {
 		String deviceId		= (String)device.getDescriptions(null).get(UPnPDevice.ID);
 		String deviceType	= (String)device.getDescriptions(null).get(UPnPDevice.TYPE);
 		
+		String deviceName  = (String)device.getDescriptions(null).get(UPnPDevice.FRIENDLY_NAME);		
+		
 
 		/*
 		 * IMPORTANT Because we are processing this event asynchronously, we need to verify that the device is
@@ -96,6 +98,7 @@ public class DeviceDiscoveryRequest implements Runnable {
 	
 				Map<String,Object> configuration = new Hashtable<String,Object>();
 				configuration.put(UPnPDevice.ID,deviceId);
+				configuration.put(UPnPDevice.FRIENDLY_NAME,deviceName);
 	
 				ApformInstance proxy = implementation.getApformImpl().addDiscoveredInstance(configuration);
 				

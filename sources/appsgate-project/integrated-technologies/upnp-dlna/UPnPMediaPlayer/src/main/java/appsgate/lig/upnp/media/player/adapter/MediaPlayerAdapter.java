@@ -73,6 +73,7 @@ public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {
 		descr.put("type", getUserType());
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
+		descr.put("friendlyName", mediaRenderer.getFriendlyName());
 		
 		return descr;
 	}

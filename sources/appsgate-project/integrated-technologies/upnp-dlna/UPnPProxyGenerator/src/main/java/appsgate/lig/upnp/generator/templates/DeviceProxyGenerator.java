@@ -86,6 +86,7 @@ public class DeviceProxyGenerator {
 		output.write("\n");
 		output.write("	private String 		deviceType;\n");
 		output.write("	private String 		deviceId;\n");
+		output.write("	private String 		deviceName;\n");
 		output.write("\n");
 		output.write("	private String 		userObjectName;\n");
 		output.write("	private int 		locationId;\n");
@@ -95,6 +96,7 @@ public class DeviceProxyGenerator {
 		output.write("	private void initialize(Instance instance) {\n");
 		output.write("		deviceType	= instance.getProperty(UPnPDevice.TYPE);\n");
 		output.write("		deviceId 	= instance.getProperty(UPnPDevice.ID);\n");
+		output.write("		deviceName 	= instance.getProperty(UPnPDevice.FRIENDLY_NAME);\n");
 		output.write("	}\n");
 		output.write("\n");
 		output.write("	private class Notification implements NotificationMsg {\n");
@@ -147,6 +149,10 @@ public class DeviceProxyGenerator {
 		output.write("		return userObjectName;\n");
 		output.write("	}\n");
 		output.write("\n");
+		output.write("	public String getFriendlyName() {\n");
+		output.write("		return deviceName;\n");
+		output.write("	}\n");
+		output.write("\n");
 		output.write("	public void setUserObjectName(String userName) {\n");
 		output.write("		this.userObjectName = userName;\n");
 		output.write("	}\n");
@@ -176,6 +182,7 @@ public class DeviceProxyGenerator {
 		output.write("		description.put(\"id\", getAbstractObjectId());\n");
 		output.write("		description.put(\"physical-device\", deviceId);\n");
 		output.write("		description.put(\"name\", getUserObjectName());\n");
+		output.write("		description.put(\"friendlyname\", getFriendlyName());\n");
 		output.write("		description.put(\"type\", getUserType());\n");
 		output.write("		description.put(\"locationId\", getLocationId());\n");
 		output.write("		description.put(\"status\", getObjectStatus());\n");

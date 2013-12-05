@@ -99,7 +99,7 @@ public class WattecoCO2Impl implements CoreObjectSpec, CoreCO2SensorSpec {
 		byte[] b = null;
 		b = wattecoAdapter.sendCommand(route, WattecoAdapter.ANALOG_INPUT_READ_ATTRIBUTE, true);
 		Byte readByte = new Byte(b[8]);
-		temp = (readByte << 32);
+		temp = (readByte << 24);
 		readByte = new Byte(b[9]);
 		temp += (readByte << 16);
 		readByte = new Byte(b[10]);

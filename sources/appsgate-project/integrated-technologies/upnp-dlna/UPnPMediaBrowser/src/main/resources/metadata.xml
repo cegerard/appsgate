@@ -17,6 +17,7 @@
 	</relation>
 
 	<definition name="UPnP.device.UDN" type="string"/>
+	<definition name="UPnP.device.friendlyName" type="string"/>
     
 </implementation>
 

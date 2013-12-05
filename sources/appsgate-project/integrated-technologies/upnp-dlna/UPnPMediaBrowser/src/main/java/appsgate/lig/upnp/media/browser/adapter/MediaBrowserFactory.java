@@ -21,10 +21,12 @@ public class MediaBrowserFactory {
 		try {
 			Implementation adapterImplementtation = CST.apamResolver.findImplByName(null,"MediaBrowser");
 
-			String deviceId = device.getProperty(UPnPDevice.ID);
+			String deviceId 	= device.getProperty(UPnPDevice.ID);
+			String deviceName 	= device.getProperty(UPnPDevice.FRIENDLY_NAME);
 
 			Map<String,Object> configuration = new Hashtable<String,Object>();
 			configuration.put(UPnPDevice.ID,deviceId);
+			configuration.put(UPnPDevice.FRIENDLY_NAME,deviceName);
 			adapterImplementtation.getApformImpl().addDiscoveredInstance(configuration);
 
 		} catch (InvalidConfiguration e) {
