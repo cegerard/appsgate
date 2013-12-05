@@ -48,7 +48,7 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
     private String appsgateServiceName;
     private Set<Instance> proxies;
 
-    private DocumentBuilder builder;
+    private DocumentBuilderFactory factory;
 
     @SuppressWarnings("unused")
     private void initialize(Instance instance) {
@@ -64,13 +64,7 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
         appsgateUserType = "36";
         appsgateStatus = "2";
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-            //Get the DOM Builder
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException ex) {
-            Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        factory = DocumentBuilderFactory.newInstance();
 
     }
 
@@ -146,6 +140,14 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
     @Override
     public String browse(String objectID, String browseFlag, String filter,
             long startingIndex, long requestedCount, String sortCriteria) {
+        DocumentBuilder builder;
+        try {
+            //Get the DOM Builder
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
+            return "<empty/>";
+        }
 
         try {
             String ret = "";
@@ -156,24 +158,25 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
 
             mediaServer.getContentDirectory().browse(objectID, browseFlag, filter, startingIndex, requestedCount, sortCriteria,
                     result, number, totalMatches, updateId);
+            return result.getObject();
+//
+//            try {
+//                InputSource is = new InputSource();
+//                is.setCharacterStream(new StringReader(result.getObject()));
+//
+//                Document document = builder.parse(is);
+//
+//                ret += parseXml(document, objectID);
+//
+//            } catch (SAXException ex) {
+//                Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
+//                return "<XMLError/>";
+//            } catch (IOException ex) {
+//                Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
+//                return "<IOError/>";
+//            }
 
-            try {
-                InputSource is = new InputSource();
-                is.setCharacterStream(new StringReader(result.getObject()));
-
-                Document document = builder.parse(is);
-
-                ret += parseXml(document, objectID);
-
-            } catch (SAXException ex) {
-                Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
-                return "<XMLError/>";
-            } catch (IOException ex) {
-                Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
-                return "<IOError/>";
-            }
-
-            return ret;
+          //  return ret;
 
         } catch (UPnPException ignored) {
             System.err.print("UPNP Exception");
@@ -184,9 +187,10 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
 
     /**
      * Method that parse a document and print it to jsTree format
+     *
      * @param document
      * @param objectID
-     * @return 
+     * @return
      */
     protected String parseXml(Document document, String objectID) {
         String ret = "";
@@ -196,7 +200,7 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
             if (node instanceof Element) {
                 String id = node.getAttributes().getNamedItem("id").getNodeValue();
                 String name = getDirectoryName(node);
-                ret += "<item id='" + id + "' parent_id='" + objectID + "'>" + "<content><name>" + name + "</name</content></item>\n";
+                ret += "<item id='" + id + "' parent_id='" + objectID + "'>" + "<content><name>" + name + "</name></content></item>\n";
             }
         }
 

@@ -46,21 +46,21 @@ public class MediaBrowserShell {
         return (MediaBrowser) implementation.getInst(player).getServiceObject();
 
     }
-    
+
     public void browsers(PrintWriter out, String... args) {
-        
-         Implementation implementation = CST.apamResolver.findImplByName(null, "MediaBrowser");
 
-         StringBuilder browsers = new StringBuilder();
+        Implementation implementation = CST.apamResolver.findImplByName(null, "MediaBrowser");
 
-         for (Instance playerInstance : implementation.getInsts()) {
-         CoreObjectSpec player = (CoreObjectSpec) playerInstance.getServiceObject();
-         browsers.append(playerInstance.getName()).append("(appsgate id = ").append(player.getAbstractObjectId()).append(") \n");
-         }
+        StringBuilder browsers = new StringBuilder();
 
-         System.out.println("Currently discovered browsers:");
-         System.out.println(browsers);
-         
+        for (Instance playerInstance : implementation.getInsts()) {
+            CoreObjectSpec player = (CoreObjectSpec) playerInstance.getServiceObject();
+            browsers.append(playerInstance.getName()).append("(appsgate id = ").append(player.getAbstractObjectId()).append(") \n");
+        }
+
+        System.out.println("Currently discovered browsers:");
+        System.out.println(browsers);
+
     }
 
     public void browse(PrintWriter out, String... args) {
