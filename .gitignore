@@ -171,3 +171,5 @@ sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/
 
 
 .gitignore
+
+distributions/Appsgate-distribution/felix-cache/*
