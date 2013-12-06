@@ -213,8 +213,8 @@ public class NodeProgram extends Node {
     public void endEventFired(EndEvent e) {
         if (isDaemon()) {
             LOGGER.debug("The end event ({}) has been fired on a daemon, program is still running", e.getSource());
-            seqRules.call();
             seqRules.addEndEventListener(this);
+            seqRules.call();
             LOGGER.debug("Call rearmed");
         } else {
             setRunningState(RUNNING_STATE.STOPPED);

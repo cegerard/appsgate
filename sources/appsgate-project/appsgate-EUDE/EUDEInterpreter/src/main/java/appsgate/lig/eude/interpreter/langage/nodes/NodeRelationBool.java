@@ -77,7 +77,7 @@ public class NodeRelationBool extends Node {
 
         // left operand
         operand = getJSONObject(relationBoolJSON, "leftOperand");
-        if (operand.has("deviceId")) {
+        if (operand.has("targetId")) {
             leftNodeAction = new NodeAction(interpreter, operand);
             leftReturnType = getJSONString(operand, "returnType");
             leftValue = null;
@@ -89,7 +89,7 @@ public class NodeRelationBool extends Node {
 
         // right operand
         operand = getJSONObject(relationBoolJSON, "rightOperand");
-        if (operand.has("deviceId")) {
+        if (operand.has("targetId")) {
             rightNodeAction = new NodeAction(interpreter, operand);
             rightReturnType = getJSONString(operand, "returnType");
             rightValue = null;
