@@ -9,7 +9,9 @@ require.config({
         // jQuery
         jquery: "libs/jquery/jquery-1.8.2",
         // jQuery UI
-        jqueryui: "libs/jquery/jquery-ui-1.10.0.min",
+        jqueryui: "libs/jquery/plugins/jqueryui/jquery-ui",
+		// jstree
+		jstree : "libs/jquery/plugins/jstree/jquery.jstree",
 		// i18next for internationalization
 		i18next: "libs/i18next/i18next.amd.withJQuery-1.7.1.min",
         // bootstrap
@@ -54,6 +56,9 @@ require.config({
         "jqueryui": {
             deps: [ "jquery" ]
         },
+		"jstree" : {
+			deps: [ "jquery" ]
+		},
 		"i18next" : {
 			deps: [ "jquery" ] 
 		}

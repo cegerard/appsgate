@@ -399,7 +399,7 @@ public class EUDEInterpreterImplTest {
      * @throws java.lang.InterruptedException
      */
     @Test
-    public void testPgm() throws IOException, FileNotFoundException, JSONException, InterruptedException {
+    public void testPgm() throws Exception {
         System.out.println("Pgm");
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/pgm.json")));
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testIf.json")));
@@ -409,7 +409,29 @@ public class EUDEInterpreterImplTest {
         Assert.assertTrue(instance.callProgram("testIF"));
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         Assert.assertFalse(instance.isProgramActive("pgm"));
-        Assert.assertTrue(instance.isProgramActive("testIF"));
+        Assert.assertFalse(instance.isProgramActive("testIF"));
+    }
+
+    @Test
+    public void testStopAndStart() throws Exception {
+        System.out.println("Stop And Start");
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
+        System.out.println("Start");
+        Assert.assertTrue(instance.callProgram("TestWhen"));
+        System.out.println("Stop 1");
+        Assert.assertTrue(instance.stopProgram("TestWhen"));
+        System.out.println("Stop 2");
+        Assert.assertTrue(instance.stopProgram("TestWhen"));
+        Assert.assertFalse(instance.isProgramActive("TestWhen"));
+        System.out.println("Start 2");
+        Assert.assertTrue(instance.callProgram("TestWhen"));
+        Assert.assertTrue(instance.isProgramActive("TestWhen"));
+        contextFollower.notifAll("1");
+        Assert.assertTrue(instance.isProgramActive("TestWhen"));
+        contextFollower.notifAll("2");
+        Assert.assertTrue(instance.isProgramActive("TestWhen"));
+//        Assert.fail("Fin");
+
     }
 
     /**

@@ -15,8 +15,18 @@ body {
 	-webkit-overflow-scrolling: touch;
 }
 
-.color-picker {
-	margin:auto;
+.browser-container {
+	height: 100 px;
+	overflow-y: auto;
+}
+
+.slider-container {
+	height: 30 px !important;
+	width: 50 px !important;
+}	
+
+.center {
+	margin:auto !important;
 }
 
 .expected-input {

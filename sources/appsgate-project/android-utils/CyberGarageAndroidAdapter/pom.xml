@@ -1,0 +1,89 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>appsgate.android</groupId>
+		<artifactId>utils</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>CyberGarageAdapter</artifactId>
+	<packaging>bundle</packaging>
+	<version>2.1.0</version>
+
+
+	<name>###### Cybergarage OSGi Adapter ######</name>
+
+	<!-- Original Jar files come from Cybergarage website		
+		
+		Instead :
+		mvn deploy:deploy-file -Durl=file://PATH-TO-PROJECT/repo -Dfile=repo/clink210.jar -DgroupId=cyberlink.upnp -DartifactId=cybergarage -Dversion=2.1.0 -Dpackaging=jar
+		
+		
+		-->
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
+	
+
+	<repositories>
+		<repository>
+			<id>private-repo</id>
+			<url>file://${project.basedir}/repo</url>
+		</repository>
+	</repositories>
+
+	<!-- Dependencies Description -->
+	<dependencies>
+		<dependency>
+			<groupId>cyberlink.upnp</groupId>
+			<artifactId>cybergarage</artifactId>
+			<version>2.1.0</version>
+			<scope>runtime</scope>
+		</dependency>	   
+	</dependencies>
+
+
+	<!-- Build Description -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Embed-Dependency>*;scope=runtime;inline=true</Embed-Dependency>
+                                                <Export-Package>
+                                                        org.cybergarage.*
+                                                </Export-Package>
+                                                <Import-Package>
+                                                    
+                                                    !org.kxml2.io,
+                                                    !org.apache.xerces.parsers,
+                                                    javax.xml.parsers,
+                                                    org.w3c.dom,
+                                                    org.xml.sax,
+                                                    org.xmlpull.v1,
+                                                    org.json,                                                    
+                                                    *
+                                                    <!--     org.osgi.framework,
+
+                                                        
+                                                        org.slf4j,
+                                                        org.json, -->
+
+                                                </Import-Package>						
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

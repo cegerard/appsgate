@@ -1,10 +1,12 @@
 define([
 	"jquery",
+	"jqueryui",
 	"underscore",
 	"backbone",
 	"grammar",
 	"raphael",
 	"moment",
+	"jstree",
 	"text!templates/devices/menu/menu.html",
 	"text!templates/devices/menu/deviceContainer.html",
 	"text!templates/devices/menu/coreClockContainer.html",
@@ -19,11 +21,13 @@ define([
 	"text!templates/devices/details/plug.html",
 	"text!templates/devices/details/phillipsHue.html",
 	"text!templates/devices/details/coreClock.html",
+	"text!templates/devices/details/mediaplayer.html",
 	"colorWheel"
-], function($, _, Backbone, Grammar, Raphael, Moment,
+], function($, jqueryui, _, Backbone, Grammar, Raphael, Moment, JsTree,
 		deviceMenuTemplate, deviceContainerMenuTemplate, coreClockContainerMenuTemplate,
 		deviceListByCategoryTemplate, deviceDetailsTemplate, contactDetailTemplate, illuminationDetailTemplate,
-		keyCardDetailTemplate, switchDetailTemplate, actuatorDetailTemplate, temperatureDetailTemplate, 			plugDetailTemplate, phillipsHueDetailTemplate, coreClockDetailTemplate) {
+		keyCardDetailTemplate, switchDetailTemplate, actuatorDetailTemplate, temperatureDetailTemplate, plugDetailTemplate, phillipsHueDetailTemplate,
+		coreClockDetailTemplate, mediaPlayerTemplate) {
 	
 	// initialize the module
 	var Device = {};
@@ -768,7 +772,7 @@ define([
 							nodeAction.methodName = "setPink";\n\
 							break;\n\
 						case " {{whiteColor}} ":\n\
-							nodeAction.methodName = "setDefault";\n\
+							nodeAction.methodName = "setWhite";\n\
 							break;\n\
 						default:\n\
 					}\n\
@@ -993,14 +997,18 @@ define([
 					grammarAnchor	: "{{movie}}",
 					i18nVar			: "language.movie"
 				},
-				{
-					grammarAnchor	: "{{imgTable}}",
-					i18nVar			: "language.img-table"
-				}
+                               {
+                               grammarAnchor	: "{{imgTable}}",
+                               i18nVar			: "language.img-table"
+                               },
+                               {
+                               grammarAnchor	: "{{selectedMusic}}",
+                               i18nVar			: "language.selectedMusic"
+                               }
 			],
 			rules			: [
 				'actionMediaPlayer = playMediaPlayerAction / pauseMediaPlayerAction / stopMediaPlayerAction / setVolumeMediaPlayerAction',
-				'playMediaPlayerAction = "<span class=' + "'action-name'" + '> {{playMediaPlayerAction}} </span>" media:ML "<span class=' + "'action-name'" + '> {{complementMediaPlayerAction}} </span>" mediaPlayerName:M\n\
+				'playMediaPlayerAction = "<span class=' + "'action-name'" + '> {{playMediaPlayerAction}} </span>" media:music "<span class=' + "'action-name'" + '> {{complementMediaPlayerAction}} </span>" mediaPlayerName:M\n\
 				{\n\
 					var nodeAction = {};\n\
 					nodeAction.type = "NodeAction";\n\
@@ -1044,33 +1052,7 @@ define([
 					\n\
 					return nodeAction;\n\
 				}',
-				'M = {{listOfMediaPlayers}}',
-				'ML = alarmMusic / music / ringBellMailArrived / radio / movie / imgTable',
-				'alarmMusic = "<span class=' + "'value'" + '> {{alarmMusic}} </span>"\n\
-				{\n\
-					return "/Users/camillelenoir/Desktop/MediapourExperimenta/MusiqueReveil.mp3";\n\
-				}',
-				'music = "<span class=' + "'value'" + '> {{music}} </span>"\n\
-				{\n\
-					return "/Users/camillelenoir/Desktop/MediapourExperimenta/Musique.mp3";\n\
-				}',
-				'ringBellMailArrived = "<span class=' + "'value'" + '> {{ringBellMailArrived}} </span>"\n\
-				{\n\
-					return "/Users/camillelenoir/Desktop/MediapourExperimenta/SonnerieMailArrive.aac";\n\
-				}',
-				'radio = "<span class=' + "'value'" + '> {{radio}} </span>"\n\
-				{\n\
-					return "/Users/camillelenoir/Desktop/MediapourExperimenta/Radio.mp3";\n\
-				}',
-				'movie = "<span class=' + "'value'" + '> {{movie}} </span>"\n\
-				{\n\
-					return "/Users/camillelenoir/Desktop/MediapourExperimenta/Film.avi";\n\
-				}',
-				'imgTable = "<span class=' + "'value'" + '> {{imgTable}} </span>"\n\
-				{\n\
-					return "/Users/camillelenoir/Desktop/MediapourExperimenta/ImageATable.jpg";\n\
-				}'
-			]
+				'M = {{listOfMediaPlayers}}'			]
 		},
 		102		: {
 			eventAnchor		: "eventCoreMail",
@@ -1604,7 +1586,152 @@ define([
 		 */
 		initialize:function() {
 			Device.MediaPlayer.__super__.initialize.apply(this, arguments);
-		}
+		},
+				
+		/**
+		 * Send a message to the backend to play the current media
+		 */
+		sendPlay:function() {
+			var selectedMedia = $("#selectedMedia");
+			var url = selectedMedia.attr("url");
+			if(typeof url !== 'undefined') {
+				console.log("sending play with " + url);
+				this.remoteCall("play", [{"type":"String", "value":url}], "mediaplayer");
+			}
+		},
+		
+		/**
+		 * Send a message to the backend to play the current media
+		 */
+		sendResume:function() {
+			this.remoteCall("play", [], "mediaplayer");
+		},
+		
+		/**
+		 * Send a message to the backend to pause the current media
+		 */
+		sendPause:function() {
+			this.remoteCall("pause", [], "mediaplayer");
+		},
+		
+		/**
+		 * Send a message to the backend to stop the media player
+		 */
+		sendStop:function() {
+			this.remoteCall("stop", [], "mediaplayer");
+		},
+		
+		/**
+		 * Send a message to the backend to set the volume to a given level
+		 */
+		sendVolume:function(volume) {
+			this.remoteCall("setVolume", [{"type":"int" , "value":volume}], "mediaplayer"); // TODO store the actual volume somewhere and allow to change it
+		},
+		
+		// Displays a tree of items the player can read
+		onBrowseMedia:function(selectedMedia) {
+			var browsers = devices.getMediaBrowsers();
+			var currentDevice;
+			
+			// make sure the tree is empty
+			$(".browser-container").jstree('destroy');
+			
+			var xml_data
+			for(var i = 0; i<browsers.length; i++){
+				var name = browsers[i].get("friendlyName") !== "" ? browsers[i].get("friendlyName") : browsers[i].get("id");
+				xml_data += "<item id='" + browsers[i].get("id") + "' rel='root'>" + "<content><name>" + name + "</name></content></item>";
+			}
+			
+						
+			var mediabrowser = $(".browser-container").jstree({
+				"xml_data" : {
+					data : "<root>" + xml_data + "</root>"
+				},
+				"themes" : {
+					"theme" : "apple",
+				},
+				"unique" : {
+					"error_callback" : function (n, p, f) {
+						console.log("unique conflict");
+					}
+				},
+				"types" : {
+					"types" : {
+						"media" : {
+							"valid_children" : "none",
+							"icon" : {
+								"image" : "styles/img/drive.png"
+							}
+						},
+					},
+				},
+				"plugins" : [ "xml_data", "themes", "types", "crrm", "ui", "unique"]
+			}).delegate("a", "click", function (event, data) {
+				event.preventDefault();
+				var target = "" + event.currentTarget.parentNode.id;
+			    if(typeof currentDevice ==='undefined' || event.currentTarget.parentNode.getAttribute("rel") === "root") {
+					currentDevice = devices.get(target);
+					target = "0";
+				}
+				if(event.currentTarget.parentNode.getAttribute("rel") !== "media"){
+					$("#media-browser-modal .valid-media").addClass("disabled");
+					currentDevice.remoteCall("browse", [{"type":"String", "value":target},{"type":"String", "value":"BrowseDirectChildren"},{"type":"String", "value":"*"},{"type":"long" , "value":"0"},{"type":"long" , "value":"0"},{"type":"String", "value":""}], "mediaBrowser");
+				}
+				else {
+					$("#media-browser-modal .valid-media").removeClass("disabled");
+					selectedMedia.text(event.currentTarget.parentNode.attributes.title.textContent);
+					selectedMedia.attr("title",event.currentTarget.parentNode.attributes.title.textContent);
+					selectedMedia.attr("url",event.currentTarget.parentNode.attributes.res.textContent);
+				}
+				
+			});
+			
+			dispatcher.on("mediaBrowser", function(result) {
+				var D = null;
+				var P = new DOMParser();
+					
+				if(result !== null && result.indexOf("<empty/>") == -1) {
+					D = P.parseFromString(result , "text/xml")
+					
+					// attaching detected containers to the tree
+					var L_containers = D.querySelectorAll('container');
+					for(var i=0; i<L_containers.length; i++) {
+						var cont = L_containers.item(i);
+						
+						// making sure to not create duplicates
+						if($("#" + cont.getAttribute('id')).length === 0) {
+							$(".browser-container").jstree("create", $("#" + cont.getAttribute('parentID'))[0], "inside",{ "data" : { "title" :cont.querySelector('title').textContent}, "attr" : { "id" : cont.getAttribute('id'), "title" :cont.querySelector('title').textContent, "parent_id" : cont.getAttribute('parentID'), "rel" : 'container' }},false,true);
+						}
+					}
+					// attaching media items to the tree
+					var L_items = D.querySelectorAll('item');
+					for(var i=0; i<L_items.length; i++) {
+						var item = L_items.item(i);
+						
+						// making sure to not create duplicates
+						if($("#" + item.getAttribute('parentID')).parent().has("#" + item.getAttribute('id')).length === 0) {
+							$(".browser-container").jstree("create", $("#" + item.getAttribute('parentID'))[0], "inside",{ "data" : { "title" :item.querySelector('title').textContent}, "attr" : { "id" : item.getAttribute('id'), "title" :item.querySelector('title').textContent, "parent_id" : item.getAttribute('parentID'), "rel" : 'media', "res" : item.querySelector('res').textContent }},false,true);
+						}
+					}
+				}
+			});
+		},
+	});
+	
+	/**
+	 * Implementation of the UPnP media browser
+	 *
+	 * @class Device.MediaBrowser
+	 */
+	Device.MediaBrowser = Device.Model.extend({
+		/**
+		 * @constructor
+		 */
+		initialize:function() {
+			Device.MediaBrowser.__super__.initialize.apply(this,arguments);
+		},
+		
+				
 	});
 
 	// collection
@@ -1644,7 +1771,7 @@ define([
 				}
 				window.grammar = new Grammar();
 			});
-
+			
 			// send the request to fetch the devices
 			communicator.sendMessage({
 				method: "getDevices",
@@ -1691,6 +1818,9 @@ define([
 					break;
 				case 31:
 					this.add(new Device.MediaPlayer(device));
+					break;
+				case 36:
+					this.add(new Device.MediaBrowser(device));
 					break;
 				case 102:
 					this.add(new Device.Mail(device));
@@ -1790,6 +1920,13 @@ define([
 		},
 		
 		/**
+		 * @return Array of UPnP media browsers
+		 */
+		getMediaBrowsers:function() {
+			return devices.where({ type : 36 });
+		},
+		
+		/**
 		 * @return Array of the unlocated devices
 		 */
 		getUnlocatedDevices:function() {
@@ -1818,7 +1955,7 @@ define([
 	 */
 	Device.Views.Menu = Backbone.View.extend({
 		tpl						: _.template(deviceMenuTemplate),
-		tplDeviceContainer		:	_.template(deviceContainerMenuTemplate),
+		tplDeviceContainer		: _.template(deviceContainerMenuTemplate),
 		tplCoreClockContainer	: _.template(coreClockContainerMenuTemplate),
 		
 		/**
@@ -1917,7 +2054,7 @@ define([
 				this.$el.append(this.tpl());
 				var types = devices.getDevicesByType();
 				_.forEach(_.keys(types), function(type) {
-					if (type !== "21" && type !== "31" && type !== "102") {
+					if (type !== "21" && type !== "36" && type !== "102") {
 						$(self.$el.find(".list-group")[1]).append(self.tplDeviceContainer({
 							type		: type,
 							devices		: types[type],
@@ -1954,6 +2091,7 @@ define([
 		tplPlug: _.template(plugDetailTemplate),
 		tplPhillipsHue: _.template(phillipsHueDetailTemplate),
 		tplCoreClock: _.template(coreClockDetailTemplate),
+		tplMediaPlayer: _.template(mediaPlayerTemplate),
 		
 		// map the events and their callback
 		events: {
@@ -1961,7 +2099,13 @@ define([
             "click button.toggle-lamp-button"				: "onToggleLampButton",
             "click button.blink-lamp-button"				: "onBlinkLampButton",
 			"click button.toggle-plug-button"				: "onTogglePlugButton",
-			"click button.toggle-actuator-button"				: "onToggleActuatorButton",
+			"click button.toggle-actuator-button"			: "onToggleActuatorButton",
+			"click button.btn-media-play"					: "onPlayMedia",
+			"click button.btn-media-resume"					: "onResumeMedia",
+			"click button.btn-media-pause"					: "onPauseMedia",
+			"click button.btn-media-stop"					: "onStopMedia",
+			"click button.btn-media-volume"					: "onSetVolumeMedia",
+			"click button.btn-media-browse"					: "onBrowseMedia",
 			"show.bs.modal #edit-device-modal"				: "initializeModal",
 			"hide.bs.modal #edit-device-modal"				: "toggleModalValue",
 			"click #edit-device-modal button.valid-button"	: "validEditDevice",
@@ -2013,20 +2157,20 @@ define([
 			// send the message to the backend
 			this.model.save();
 		},
-                                                /**
-                                                 * Callback to blink a lamp
-                                                 *
-                                                 * @param e JS mouse event
-                                                 */
-                                                onBlinkLampButton:function(e) {
-                                                e.preventDefault();
-                                                var lamp = devices.get($(e.currentTarget).attr("id"));
-                                                // send the message to the backend
-                                                lamp.remoteCall("blink", []);
-                                                
-                                                return false;
-                                                },
-
+		
+		/**
+		 * Callback to blink a lamp
+		 *
+		 * @param e JS mouse event
+		 */
+		onBlinkLampButton:function(e) {
+			e.preventDefault();
+			var lamp = devices.get($(e.currentTarget).attr("id"));
+			// send the message to the backend
+			lamp.remoteCall("blink", []);
+			
+			return false;
+		},
 		
 		/**
 		 * Callback to toggle a plug - used when the displayed device is a plug (!)
@@ -2085,7 +2229,50 @@ define([
 			// send the message to the backend
 			this.model.save();
 		},
-				
+		
+		/**
+		 * Called when resume button is pressed and the displayed device is a media player
+		 */
+		onPlayMedia:function() {
+			this.model.sendPlay();
+		},
+		
+		/**
+		 * Called when resume button is pressed and the displayed device is a media player
+		 */
+		onResumeMedia:function() {
+			this.model.sendResume();
+		},
+		
+		/**
+		 * Called when pause button is pressed and the displayed device is a media player
+		 */
+		onPauseMedia:function() {
+			this.model.sendPause();
+		},
+		
+		/**
+		 * Called when stop button is pressed and the displayed device is a media player
+		 */
+		onStopMedia:function() {
+			this.model.sendStop();
+		},
+		
+		/**
+		 * Called when volume is chosen and the displayed device is a media player
+		 */
+		onSetVolumeMedia:function() {
+			this.model.setVolume();
+		},
+		
+		/**
+		 * Called when browse button is pressed, displays a tree of available media
+		 */
+		onBrowseMedia:function(e) {
+			
+			this.model.onBrowseMedia($("#selectedMedia"));
+		},
+		
 		/**
 		 * Clear the input text, hide the error message and disable the valid button by default
 		 */
@@ -2224,6 +2411,8 @@ define([
 		 * Render the detailled view of a device
 		 */
 		render: function() {
+			var self = this;
+		
 			if (!appRouter.isModalShown) {
 				switch (this.model.get("type")) {
 					case 0: // temperature sensor
@@ -2336,6 +2525,25 @@ define([
 							minutes: minutes,
 							deviceDetails: this.tplCoreClock
 						}));
+						break;
+					case 31: // media player
+						this.$el.html(this.template({
+							device: this.model,
+							sensorType: $.i18n.t("devices.mediaplayer.name.singular"),
+							places: places,
+							deviceDetails: this.tplMediaPlayer
+						}));
+						_.defer(function(){
+							$( ".volume-slider" ).slider({
+								range: "min",
+								min: 0,
+								max: 100,
+								value: 60,
+								stop: function( event, ui ) {
+									self.model.sendVolume($( ".volume-slider" ).slider( "value" ));
+								}
+							});
+						});
 				}
 				
 				// translate the view

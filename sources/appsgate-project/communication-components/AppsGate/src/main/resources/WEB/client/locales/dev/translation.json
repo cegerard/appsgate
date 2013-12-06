@@ -202,6 +202,25 @@
 				"no-name"	: "Horloge système sans nom"
 			},
 			"time-speed-label"	: "Vitesse d'écoulement du temps"
+		},
+		"mediaplayer"		: {
+			"name"		: {
+				"singular"	: "Lecteur multimédia",
+				"plural"	: "Lecteurs multimédia"
+			},
+			"status"	: {
+				"playing"	: "Lecture en cours",
+				"stopped"	: "Arrêté",
+				"selected"	: "Veuillez choisir un média"
+			},
+			"action"	: {
+				"play"		: "Lancer",
+				"resume"	: "Reprendre",
+				"pause"		: "Pause",
+				"stop"		: "Arrêter",
+				"volume"	: "Volume",
+				"browse"	: "Parcourir"
+			}
 		}
 	},
 	"programs" : {
@@ -323,6 +342,7 @@
 		"ring-bell-mail-arrived"					: "sonnerie nouveau mail arrive",
 		"radio"										: "radio",
 		"movie"										: "film",
+		"selectedMusic"								: "musique",
 		"img-table"									: "image a table",
 		
 		"received-mail-event"						: "un mail arrive",

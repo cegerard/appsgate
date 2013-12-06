@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
-    <parent>
-    	<groupId>appsgate.components</groupId>        
+
+	<parent>
+		<groupId>appsgate.components</groupId>
 		<artifactId>communication-components</artifactId>
 		<version>1.0.0</version>
-    </parent>
+	</parent>
 
 	<artifactId>AppsGate</artifactId>
 	<packaging>bundle</packaging>
@@ -29,10 +29,18 @@
 			<version>${ipojo.annotations.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>cyberlink.upnp</groupId>
-			<artifactId>cybergarage</artifactId>
-			<version>2.1.0</version> <!-- WARNING: use local repository you need to export it into your own -->
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.upnp.extra</artifactId>
+			<version>0.4.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>${osgi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>RouterApAMSpec</artifactId>
@@ -59,11 +67,11 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
-            <scope>provided</scope>
-        </dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.3.0</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->
@@ -77,28 +85,11 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Private-Package>
-							appsgate.lig.main.impl
+							appsgate.lig.main.impl,
+							appsgate.lig.main.impl.upnp
 						</Private-Package>
-						<Export-Package>
-							org.cybergarage.*
-						</Export-Package>
 						<Import-Package>
-							org.osgi.framework,
-							javax.xml.parsers,
-							!org.kxml2.io,
-							org.w3c.dom,
-							org.xml.sax,
-							org.xmlpull.v1,
-							!org.apache.xerces.parsers,
-							org.slf4j,
-							org.json,
-							org.osgi.service.http,
-							appsgate.lig.main.spec,
-							appsgate.lig.context.device.name.table.spec,,
-							appsgate.lig.manager.place.spec,
-							appsgate.lig.context.userbase.spec,
-							appsgate.lig.eude.interpreter.spec,
-							appsgate.lig.router.spec
+							*
 						</Import-Package>
 					</instructions>
 				</configuration>
