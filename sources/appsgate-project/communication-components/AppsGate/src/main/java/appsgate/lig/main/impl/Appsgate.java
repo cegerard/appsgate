@@ -1,24 +1,9 @@
 package appsgate.lig.main.impl;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.cybergarage.upnp.Action;
-import org.cybergarage.upnp.Argument;
-import org.cybergarage.upnp.ArgumentList;
-import org.cybergarage.upnp.Device;
-import org.cybergarage.upnp.StateVariable;
-import org.cybergarage.upnp.control.ActionListener;
-import org.cybergarage.upnp.control.QueryListener;
-import org.cybergarage.upnp.device.InvalidDescriptionException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,15 +11,19 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.imag.adele.apam.CST;
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.main.impl.upnp.AppsGateServerDevice;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -89,42 +78,38 @@ public class Appsgate implements AppsGateSpec {
 	 * Reference to the EUDE interpreter to manage end user programs
 	 */
 	private EUDE_InterpreterSpec interpreter;
+
 	
-	private AppsgateUpnpDevice mainDevice;
+	private BundleContext context;
+	private ServiceRegistration<?> serviceRegistration;
+	
+	AppsGateServerDevice upnpDevice;
 
 	/**
 	 * Default constructor for Appsgate java object. it load UPnP device and
 	 * services profiles and subscribes the corresponding listeners.
 	 * 
 	 */
-	public Appsgate() {
+	public Appsgate(BundleContext context) {
+		logger.debug("new AppsGate, BundleContext : "+context);
+		this.context = context;
+		upnpDevice = new AppsGateServerDevice(context);
+		logger.debug("UPnP Device instanciated");
+		Dictionary<String, Object> dict = upnpDevice.getDescriptions(null);
+		serviceRegistration = context.registerService(UPnPDevice.class.getName(), upnpDevice, dict);
+		logger.debug("UPnP Device registered");
 		
 		
 		logger.info("AppsGate instanciated");
 	}
+	
 
 	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
 		logger.debug("AppsGate is starting");
-		try{
-			logger.debug("Trying to create upnp device according to : "+System.getProperty("user.dir") + "/conf/device/description.xml");
-			mainDevice= new AppsgateUpnpDevice();
-			logger.debug("upnp device created successfully");
-		} catch(InvalidDescriptionException exception) {
-			logger.error("Error during instantiation of AppsGate UPnP device, "+exception
-					+"\n Caused by "+exception.getStackTrace());
-		}
 
-		// initiate UPnP state variables
-		
-		if(mainDevice != null) {
-			mainDevice.start();
-			logger.debug("upnp device started");
-		} else {
-			logger.error("Cannot start AppsGate Main device, because it is null");
-		}
 		
 
 		if (httpService != null) {
@@ -146,11 +131,6 @@ public class Appsgate implements AppsGateSpec {
 	 */
 	public void deleteInst() {
 		logger.info("AppsGate is stopping");
-		if(mainDevice != null) {
-			mainDevice.stop();
-		} else {
-			logger.error("Cannot stop AppsGate Main device, because it is null");
-		}
 		httpService.unregister("/appsgate");
 	}
 
