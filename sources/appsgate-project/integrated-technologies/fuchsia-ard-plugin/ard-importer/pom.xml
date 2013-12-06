@@ -15,6 +15,7 @@
     <version>1.0.0</version>
     <modelVersion>4.0.0</modelVersion>
     <name>OW2 Chameleon - ARD Importer</name>
+    <packaging>bundle</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
