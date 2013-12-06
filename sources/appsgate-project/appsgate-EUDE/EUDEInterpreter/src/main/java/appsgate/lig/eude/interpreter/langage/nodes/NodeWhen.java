@@ -94,6 +94,7 @@ public class NodeWhen extends Node {
         if (isStarted()) {
             setStopping(true);
             seqEvent.removeEndEventListener(this);
+            seqRules.removeEndEventListener(this);
             seqEvent.stop();
             seqRules.stop();
 

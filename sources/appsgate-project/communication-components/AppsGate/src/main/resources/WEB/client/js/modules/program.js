@@ -524,8 +524,10 @@ define([
 			"keyup textarea"						: "onKeyUpTextarea",
 			"click .expected-elements > button.completion-button"		: "onClickCompletionButton",
 			"click .programInput > span"					: "onClickSourceElement",
+			"click button.browse-media"					: "onClickBrowseMedia",
 			"click button.valid-value"					: "onValidValueButton",
-			"click button.deleted-elements"					: "onClickDeletedElements",
+			"click button.valid-media"					: "onValidMusicButton",
+            "click button.deleted-elements"					: "onClickDeletedElements",
 			"click button.value-popover-button"				: "onClickValuePopoverButton",
 			"click button.valid-value-popover-button"			: "onClickValidValuePopoverButton",
 			"click button.device-popover-button"				: "onClickDevicePopoverButton",
@@ -799,6 +801,22 @@ define([
 				
 				this.valueToReplace = $(e.currentTarget);
 				$(e.currentTarget).popover("show");
+			} else if ($(e.currentTarget).hasClass("music")) {
+				var title = "Change music";
+				var content = $("<span>");
+				content.append("<button class='btn btn-primary' onclick='alert(\"coucou\")'>Parcourir</button>");
+				
+                content.append("<button class='btn btn-danger delete-popover-button'>" + $.i18n.t("form.delete-button") + "</button>");
+				content.append("<button class='btn btn-info close-popover-button'>" + $.i18n.t("form.cancel-button") + "</button>");
+				
+				$(e.currentTarget).popover({
+					html		: true,
+					title		: title,
+					content		: content,
+					placement	: "bottom"
+				});
+				this.valueToReplace = $(e.currentTarget);
+				$(e.currentTarget).popover("show");
 			} else {
 				$(".deleted-elements").html("");
 				after.forEach(function(element) {
@@ -816,6 +834,19 @@ define([
 			this.model.set("modified", true);
 			$(".programInput").append("<span class='value'>" + $(".expected-elements input").val() + "</span>");
 			this.compileProgram();
+		},
+		
+		onValidMusicButton:function() {
+		$("#media-browser-modal").modal("hide");
+			this.model.set("modified", true);
+			$(".programInput").append("<span class='music' url='"+$("#playurl").attr('url')+"'>" + $("#playurl").html() + "</span>");
+			this.compileProgram();
+		},
+		
+		onClickBrowseMedia:function() {
+			var possibleDevices = devices.where({ type : 31 });
+			var currentDevice = devices.get(possibleDevices[0].get("id"));
+			currentDevice.onBrowseMedia($("#playurl"));
 		},
 		
 		onClickDeletedElements:function() {
@@ -950,36 +981,38 @@ define([
 					});
 				}
 			} catch(e) {
-				$(".alert-danger").removeClass("hide");
-				$(".alert-success").addClass("hide");
-				
-				if (e.expected.length === 1) {
-					if ($("button.deleted-elements").html().replace(/" /g, "'") === e.expected[0]) {
-						$("button.deleted-elements").addClass("hidden");
-					}
-					
-					if (e.expected[0] === $.i18n.t("language.space")) {
-						$(".programInput").append(" ");
-						this.compileProgram();
-					} else if (e.expected[0].indexOf("input") === -1) {
-						$(".programInput").append(e.expected[0].replace(/"/g, ""));
-						this.compileProgram();
-					} else {
-						$(".expected-elements").html(e.expected[0]);
-					}
-				} else {
-					e.expected.forEach(function(nextPossibility) {
-						if ($("button.deleted-elements").html().replace(/"/g, "'") === nextPossibility.replace(/"/g, "")) {
-							$("button.deleted-elements").addClass("hidden");
-						}
-						
-						if (nextPossibility.indexOf("input") === -1) {
-							$(".expected-elements").append("<button class='btn btn-default completion-button'>" + nextPossibility.replace(/"/g, "").replace(/\\/g, "") + "</button>&nbsp;");
-						} else {
-							$(".expected-elements").append(nextPossibility);
-						}
-					});
-				}
+            	if ( typeof(e.expected) !== 'undefined') {
+            
+                    $(".alert-danger").removeClass("hide");
+                    $(".alert-success").addClass("hide");
+                    if (e.expected.length === 1) {
+                        if ($("button.deleted-elements").html().replace(/" /g, "'") === e.expected[0]) {
+                            $("button.deleted-elements").addClass("hidden");
+                        }
+                        
+                        if (e.expected[0] === $.i18n.t("language.space")) {
+                            $(".programInput").append(" ");
+                            this.compileProgram();
+                        } else if (e.expected[0].indexOf("input") === -1) {
+                            $(".programInput").append(e.expected[0].replace(/"/g, ""));
+                            this.compileProgram();
+                        } else {
+                            $(".expected-elements").html(e.expected[0]);
+                        }
+                    } else {
+                        e.expected.forEach(function(nextPossibility) {
+                            if ($("button.deleted-elements").html().replace(/"/g, "'") === nextPossibility.replace(/"/g, "")) {
+                                $("button.deleted-elements").addClass("hidden");
+                            }
+                            
+                            if (nextPossibility.indexOf("input") === -1) {
+                                $(".expected-elements").append("<button class='btn btn-default completion-button'>" + nextPossibility.replace(/"/g, "").replace(/\\/g, "") + "</button>&nbsp;");
+                            } else {
+                                $(".expected-elements").append(nextPossibility);
+                            }
+                        });
+                    }
+                }
 			}
 			
 			if ($(".programInput").html().replace(/"/g, "'").replace(/ /g, "") === $("button.deleted-elements").html().replace(/"/g, "'").replace(/ /g, "")) {

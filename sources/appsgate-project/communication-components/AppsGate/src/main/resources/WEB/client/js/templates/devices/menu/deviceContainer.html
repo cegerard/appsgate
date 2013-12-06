@@ -50,12 +50,18 @@
 				<span data-i18n="devices.lamp.name.plural"></span>
 			<% } %>
 		<% } else if (type === "8") { %>
-		<% if (devices.length === 1) { %>
-			<span data-i18n="devices.actuator.name.singular"></span>
-		<% } else { %>
-			<span data-i18n="devices.actuator.name.plural"></span>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.actuator.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.actuator.name.plural"></span>
+			<% } %>
+		<% } else if (type === "31") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.mediaplayer.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.mediaplayer.name.plural"></span>
+			<% } %>
 		<% } %>
-	<% } %>
 		<span class="pull-right badge">
 			<%= devices.length %>
 		</span>

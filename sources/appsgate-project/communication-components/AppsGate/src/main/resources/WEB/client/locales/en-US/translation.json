@@ -202,6 +202,25 @@
 				"no-name"	: "Unnamed system clock"
 			},
 			"time-speed-label"	: "Time speed"
+		},
+		"mediaplayer"		: {
+			"name"		: {
+				"singular"	: "Media player",
+				"plural"	: "Media players"
+			},
+			"status"	: {
+				"playing"	: "Playing",
+				"stopped"	: "Stopped",
+				"selected"	: "Please select a media"
+			},
+			"action"	: {
+				"play"		: "Play",
+				"resume"	: "Resume",
+				"pause"		: "Pause",
+				"stop"		: "Stop",
+				"volume"	: "Volume",
+				"browse"	: "Browse"
+			}
 		}
 	},
 	"programs" : {
@@ -320,6 +339,7 @@
 		"ring-bell-mail-arrived"					: "ringbell new mail arrived",
 		"radio"										: "radio",
 		"movie"										: "movie",
+		"selectedMusic"								: "music",
 		"img-table"									: "image 'dinner's ready!'",
 		
 		"received-mail-event"						: "a mail arrives",
