@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.philips.lighting.hue</groupId>
+  <artifactId>huelocalsdk</artifactId>
+  <versioning>
+    <release>1.1.1beta</release>
+    <versions>
+      <version>1.1.1beta</version>
+    </versions>
+    <lastUpdated>20131206145853</lastUpdated>
+  </versioning>
+</metadata>
