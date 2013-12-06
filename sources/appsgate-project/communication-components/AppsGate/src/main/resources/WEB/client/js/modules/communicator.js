@@ -100,7 +100,7 @@ define([
 			console.log("received", message.data);
 
 			if (jsonMessage.callId !== undefined) {
-				if (typeof jsonMessage.value === "string") {
+				if (typeof jsonMessage.value === "string" && jsonMessage.callId !== "mediaBrowser") {
 					jsonMessage.value = JSON.parse(jsonMessage.value);
 				}
 				dispatcher.trigger(jsonMessage.callId, jsonMessage.value);
@@ -124,7 +124,7 @@ define([
 		 * @param targetType Parameter used by the server to route the message. 0: AbstractObject, 1: ApAM component
 		 */
 		sendMessage:function(message) {
-			console.log("sending", message);
+			console.log("sending", JSON.stringify(message));
 			this.webSocket.send(JSON.stringify(message));
 		},
 
