@@ -376,8 +376,8 @@ public class Appsgate implements AppsGateSpec {
 											// network. but It will difficult to
 											// find automatically the right
 											// network interface
-					logger.debug("The newtwork interface {} will be inspected.",netint.getDisplayName());
 					if(!netint.getDisplayName().contentEquals("tun0")) {
+						logger.debug("The newtwork interface {} will be inspected.",netint.getDisplayName());
 						Enumeration<InetAddress> addresses = netint.getInetAddresses();
 						for (InetAddress address : Collections.list(addresses)) {
 							if (address instanceof Inet4Address) {
