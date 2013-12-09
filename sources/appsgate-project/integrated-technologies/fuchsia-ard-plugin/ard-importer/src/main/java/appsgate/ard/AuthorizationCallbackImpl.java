@@ -5,31 +5,55 @@ import appsgate.ard.base.callback.LockerAuthorizationCallback;
 import appsgate.ard.dao.AuthorizationRequest;
 import appsgate.ard.dao.AuthorizationResponse;
 import appsgate.ard.dao.AuthorizationResponseAck;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.*;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
-import java.util.Calendar;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.*;
 
-@Component
-@Instantiate
+@Component (name="DoorAuthorizationCallbackFactory")
 @Provides
 public class AuthorizationCallbackImpl implements LockerAuthorizationCallback {
 
+    @Property(name = "ard.switch.authorized_cards",value = "")
+    private String authorizedCardsString;
+
+    private Set<Integer> authorizedCards=new HashSet<Integer>();
+
     @Requires
     EventAdmin eventAdmin;
+
+    @Validate
+    public void adaptAuthorizedDoors(){
+
+        if(authorizedCardsString.trim().length()>0){
+
+            StringTokenizer st=new StringTokenizer(authorizedCardsString," ");
+
+            while(st.hasMoreTokens()){
+
+                String val=st.nextToken();
+
+                try{
+                    Integer intval=Integer.parseInt(val);
+                    authorizedCards.add(intval);
+                    System.out.println("Adding "+intval+" into the list of authorized cards");
+                }catch(NumberFormatException e){
+                    System.err.println("Not possible to parse value "+val);
+                }
+
+            }
+
+        }
+
+    }
 
     public AuthorizationResponse authorizationRequested(AuthorizationRequest ar) {
 
         AuthorizationResponse response;
         Event eventAdminMessage;
 
-        if(ar.getCardIntCode()==410146306){
+        if(authorizedCards.contains(ar.getCardIntCode())){
             response=new AuthorizationResponse(AperioAccessDecision.GRANTED,ar);
         }else {
             response=new AuthorizationResponse(AperioAccessDecision.NOT_GRANTED,ar);

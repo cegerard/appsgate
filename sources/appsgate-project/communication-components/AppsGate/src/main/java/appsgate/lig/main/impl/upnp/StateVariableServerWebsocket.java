@@ -9,7 +9,8 @@ public class StateVariableServerWebsocket extends StringStateVariable implements
 	
 	public StateVariableServerWebsocket() {
 		NAME = VAR_NAME;
-		DEFAULT_VALUE = "http://127.0.0.1:8080";
+		DEFAULT_VALUE = "http://127.0.0.1:8087/";
+		NAME = "serverWebsocket";
 		stringValue = DEFAULT_VALUE.toString();
 	}
 

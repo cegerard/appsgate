@@ -53,6 +53,8 @@ public class ARDSwitchImporter extends AbstractImporterComponent implements Door
         switchProperty.put("ard.switch.ip", address);
         switchProperty.put("target", String.format("(&(ard.door.id=*)(ard.door.switch.ip=%s))", address));
         switchProperty.put("port", port);
+        switchProperty.put("ard.switch.authorized_cards",importDeclaration.getMetadata().get("ard.switch.authorized_cards"));
+
 
         try {
 
