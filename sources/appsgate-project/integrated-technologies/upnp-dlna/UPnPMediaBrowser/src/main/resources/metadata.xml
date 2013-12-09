@@ -25,7 +25,7 @@
 	name="MediaBrowserFactory"
 	classname="appsgate.lig.upnp.media.browser.adapter.MediaBrowserFactory">
 
-	<relation implementation= "MediaServerProxyImpl" multiple="true" resolve="exist" added="mediaServerBound" removed="mediaServerUnbound"  />
+	<relation implementation= "MediaServerProxyImpl"  multiple="true" creation="eager" resolve="exist" added="mediaServerBound" removed="mediaServerUnbound"  />
 	
 </implementation>
 
