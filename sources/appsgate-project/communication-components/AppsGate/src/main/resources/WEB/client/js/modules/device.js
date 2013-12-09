@@ -1495,9 +1495,14 @@ define([
 				this.intervalLocalClockValue = setInterval(self.updateClockValue, (1 / self.get("flowRate")) * 60000);
 			});
 			
+			// when the ClockSet changes, resynchornize with the server
+			this.on("change:ClockSet", function() {
+				self.synchronizeCoreClock();
+			});
+			
 			// synchronize the core clock with the server every 10 minutes
 			dispatcher.on("systemCurrentTime", function(timeInMillis) {
-				self.moment = moment(timeInMillis);
+				self.set("moment", Moment(parseInt(timeInMillis)));
 			});
 			
 			// bind the method to this model to avoid this keyword pointing to the window object for the callback on setInterval
@@ -1686,31 +1691,32 @@ define([
 				
 			});
 			
+			
 			dispatcher.on("mediaBrowser", function(result) {
 				var D = null;
 				var P = new DOMParser();
-					
 				if(result !== null && result.indexOf("<empty/>") == -1) {
 					D = P.parseFromString(result , "text/xml")
-					
 					// attaching detected containers to the tree
 					var L_containers = D.querySelectorAll('container');
 					for(var i=0; i<L_containers.length; i++) {
 						var cont = L_containers.item(i);
-						
 						// making sure to not create duplicates
-						if($("#" + cont.getAttribute('id')).length === 0) {
-							$(".browser-container").jstree("create", $("#" + cont.getAttribute('parentID'))[0], "inside",{ "data" : { "title" :cont.querySelector('title').textContent}, "attr" : { "id" : cont.getAttribute('id'), "title" :cont.querySelector('title').textContent, "parent_id" : cont.getAttribute('parentID'), "rel" : 'container' }},false,true);
+						if(!document.getElementById( cont.getAttribute('id') )) {
+							var parentNode = document.getElementById( cont.getAttribute('parentID') );
+							$(".browser-container").jstree ( "create", parentNode, "inside", { "data" : { "title" :cont.querySelector('title').textContent}, "attr" : { "id" : cont.getAttribute('id'),
+							"title" :cont.querySelector('title').textContent, "parent_id" : cont.getAttribute('parentID'), "rel" : 'container' }}, false, true );
 						}
 					}
 					// attaching media items to the tree
 					var L_items = D.querySelectorAll('item');
 					for(var i=0; i<L_items.length; i++) {
 						var item = L_items.item(i);
-						
 						// making sure to not create duplicates
-						if($("#" + item.getAttribute('parentID')).parent().has("#" + item.getAttribute('id')).length === 0) {
-							$(".browser-container").jstree("create", $("#" + item.getAttribute('parentID'))[0], "inside",{ "data" : { "title" :item.querySelector('title').textContent}, "attr" : { "id" : item.getAttribute('id'), "title" :item.querySelector('title').textContent, "parent_id" : item.getAttribute('parentID'), "rel" : 'media', "res" : item.querySelector('res').textContent }},false,true);
+						if(!document.getElementById( "" + item.getAttribute('parentID') + item.getAttribute('id') )) {
+							var parentNode = document.getElementById( item.getAttribute('parentID') );
+							$(".browser-container").jstree ( "create", parentNode, "inside", { "data"      : { "title" :item.querySelector('title').textContent} , "attr"      : { "id" : "" + item.getAttribute('parentID') + item.getAttribute('id'),
+								"title"     : item.querySelector('title').textContent, "parent_id" : item.getAttribute('parentID'), "rel" : 'media', "res" : item.querySelector('res').textContent }}, false, true );
 						}
 					}
 				}

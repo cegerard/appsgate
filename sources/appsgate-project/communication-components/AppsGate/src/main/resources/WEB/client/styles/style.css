@@ -7,6 +7,10 @@ body {
 	clear: both;
 }
 
+.clock-font {
+	font-size: 72px;
+}
+
 .div-scrollable {
 	overflow-y: auto;
 	margin-bottom: 20px;

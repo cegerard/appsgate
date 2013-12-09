@@ -26,7 +26,6 @@ import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.imag.adele.apam.CST;
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
@@ -369,22 +368,22 @@ public class Appsgate implements AppsGateSpec {
 		try {
 
 
-			Inet4Address localAddress = (Inet4Address) InetAddress
-					.getLocalHost();
-			Enumeration<NetworkInterface> nets = NetworkInterface
-					.getNetworkInterfaces();
+			Inet4Address localAddress = (Inet4Address) InetAddress.getLocalHost();
+			Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
 			for (NetworkInterface netint : Collections.list(nets)) {
 				if (!netint.isLoopback() && !netint.isVirtual()
 						&& netint.isUp()) { // TODO check also if its the local
 											// network. but It will difficult to
 											// find automatically the right
 											// network interface
-					Enumeration<InetAddress> addresses = netint
-							.getInetAddresses();
-					for (InetAddress address : Collections.list(addresses)) {
-						if (address instanceof Inet4Address) {
-							localAddress = (Inet4Address) address;
-							break;
+					logger.debug("The newtwork interface {} will be inspected.",netint.getDisplayName());
+					if(!netint.getDisplayName().contentEquals("tun0")) {
+						Enumeration<InetAddress> addresses = netint.getInetAddresses();
+						for (InetAddress address : Collections.list(addresses)) {
+							if (address instanceof Inet4Address) {
+								localAddress = (Inet4Address) address;
+								break;
+							}
 						}
 					}
 				}
