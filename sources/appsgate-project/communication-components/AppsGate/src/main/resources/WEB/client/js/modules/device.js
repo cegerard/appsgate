@@ -1519,12 +1519,12 @@ define([
 		 */
 		updateClockValue:function() {
 			this.get("moment").add("minute", 1);
-			this.set("year", this.get("moment").year().toString(), {clockRefresh: true});
-			this.set("month", this.get("moment").month().toString(), {clockRefresh: true});
-			this.set("day", this.get("moment").day().toString(), {clockRefresh: true});
-			this.set("hour", this.get("moment").hour().toString(), {clockRefresh: true});
+			this.set("year", this.get("moment").year().toString(), {silent: true});
+			this.set("month", this.get("moment").month().toString(), {silent: true});
+			this.set("day", this.get("moment").day().toString(), {silent: true});
+			this.set("hour", this.get("moment").hour().toString(), {silent: true});
 			if (this.get("hour").length === 1) {
-				this.set("hour", "0" + this.get("hour"), {clockRefresh: true});
+				this.set("hour", "0" + this.get("hour"), {silent: true});
 			}
 			this.set("minute", this.get("moment").minute().toString(), {clockRefresh: true});
 			if (this.get("minute").length === 1) {
@@ -1832,7 +1832,7 @@ define([
 					this.add(new Device.Mail(device));
 					break;
 				default:
-					console.log("unknown type", device, typeof device.type);
+					console.log("unknown type", device.type, device);
 					break;
 			}
 			
@@ -1988,7 +1988,7 @@ define([
 		 * @param collection Collection that holds the changed model
 		 * @param options Options given with the change event 	
 		 */
-		onChangedDevice:function(model, collection, options) {
+		onChangedDevice:function(model, options) {
 			// a device has changed
 			// if it's the clock, we refresh the clock only
 			if(typeof options !== "undefined" && options.clockRefresh){
@@ -2127,7 +2127,7 @@ define([
 		initialize:function() {
 			this.listenTo(this.model, "change", this.render);
 		},
-
+		
 		/**
 		 * Return to the previous view
 		 */
@@ -2556,7 +2556,9 @@ define([
 				this.$el.i18n();
 
 				// resize the panel
-				resizeDiv($(this.$el.find(".list-group")[0]));
+				if(this.model.get("type") != 21){
+					resizeDiv($(this.$el.find(".list-group")[0]));
+				}
 
 				return this;
 			}

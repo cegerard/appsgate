@@ -505,7 +505,7 @@ define([
 		 * @param collection Collection that holds the changed model
 		 * @param options Options given with the change event 	
 		 */
-		onChangedDevice:function(model, collection, options) {
+		onChangedDevice:function(model, options) {
 			// a device has changed
 			// if it's the clock, we refresh the clock only
 			if(typeof options !== "undefined" && options.clockRefresh){
@@ -724,9 +724,23 @@ define([
 				
 				// if the device has been found in the collection
 				if (typeof device !== "undefined") {
-					self.listenTo(devices.get(deviceId), "change", self.render);
+					self.listenTo(devices.get(deviceId), "change", self.onChangedDevice);
 				}
 			});
+		},
+		
+		/**
+		 * Method called when a device has changed
+		 * @param model Model that changed, Device in that cas
+		 * @param collection Collection that holds the changed model
+		 * @param options Options given with the change event 	
+		 */
+		onChangedDevice:function(model, options) {
+			// a device has changed
+			// if it's the clock, we refresh the clock only
+			if(typeof options === "undefined" || (typeof options !== "undefined") && !options.clockRefresh){
+				this.render();
+			}
 		},
 
 		/**
