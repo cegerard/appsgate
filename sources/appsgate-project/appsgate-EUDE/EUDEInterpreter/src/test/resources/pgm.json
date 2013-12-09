@@ -3,8 +3,8 @@
     "runningState": "DEPLOYED",
     "userInputSource": "",
     "source": {
-        "programName": "TestIf",
-        "daemon": false,
+        "programName": "TestLaunchPgm",
+        "daemon": true,
         "seqParameters": [
         ],
         "author": "Bob",
@@ -14,51 +14,23 @@
         "seqRules": [
             [
                 {
-                    "type": "NodeIf",
-                    "expBool": [
-                        [
-                            {
-                                "type": "NodeRelationBool",
-                                "operator": "==",
-                                "leftOperand": {
-                                    "deviceId": "194.199.23.136-1",
-                                    "methodName": "getCurrentState",
-                                    "returnType": "boolean",
-                                    "targetId": "test",
-                                    "action": "fermer les volets",
-                                    "targetType": "test",
-                                    "args": []
-                                },
-                                "rightOperand": {
-                                    "type": "boolean",
-                                    "value": true
-                                }
-                            }
-                        ]
+                    "type": "NodeWhen",
+                    "events": [
+                        {
+                            "type": "NodeEvent",
+                            "sourceType": "device",
+                            "sourceId": "PremierAppel",
+                            "eventName": "makeCall",
+                            "eventValue": "1"
+                        }
                     ],
-                    "seqRulesTrue": [
+                    "seqRulesThen": [
                         [
                             {
                                 "type": "NodeAction",
-                                "deviceId": "194.199.23.136-5",
-                                "methodName": "Off",
-                                "args": [],
-                                "targetId": "test",
-                                "action": "Ouvrir les volets",
-                                "targetType": "test"
-                            }
-                        ]
-                    ],
-                    "seqRulesFalse": [
-                        [
-                            {
-                                "type": "NodeAction",
-                                "deviceId": "194.199.23.136-1",
-                                "methodName": "On",
-                                "args": [],
-                                "targetId": "test",
-                                "action": "fermer les volets",
-                                "targetType": "test"
+                                "targetType": "program",
+                                "targetId": "TestWhen",
+                                "methodName": "callProgram"
                             }
                         ]
                     ]

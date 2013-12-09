@@ -29,6 +29,7 @@ import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.jmock.Mockery;
 import org.jmock.States;
+import org.jmock.internal.StatePredicate;
 import org.jmock.lib.concurrent.Synchroniser;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -400,16 +401,21 @@ public class EUDEInterpreterImplTest {
      */
     @Test
     public void testPgm() throws Exception {
-        System.out.println("Pgm");
+        System.out.println("Pgm calling TestWhen");
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/pgm.json")));
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testIf.json")));
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
-        Assert.assertTrue(instance.callProgram("TestWhen"));
         Assert.assertTrue(instance.callProgram("pgm"));
-        Assert.assertTrue(instance.callProgram("testIF"));
+        Assert.assertFalse(instance.isProgramActive("TestWhen"));
+        Assert.assertTrue(instance.isProgramActive("pgm"));
+        contextFollower.notifAll("1");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
-        Assert.assertFalse(instance.isProgramActive("pgm"));
-        Assert.assertFalse(instance.isProgramActive("testIF"));
+        Assert.assertTrue(instance.isProgramActive("pgm"));
+        Assert.assertTrue(tested.isNot("yes").isActive());
+        contextFollower.notifAll("2");
+        synchroniser.waitUntil(tested.is("Yes"), 500);
+        Assert.assertTrue(instance.isProgramActive("TestWhen"));
+        Assert.assertTrue(instance.isProgramActive("pgm"));
+
     }
 
     @Test
