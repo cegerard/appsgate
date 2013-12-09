@@ -1674,11 +1674,11 @@ define([
 					target = "0";
 				}
 				if(event.currentTarget.parentNode.getAttribute("rel") !== "media"){
-					$("#media-browser-modal .valid-media").addClass("disabled");
+					$("#media-browser-modal .media-button").addClass("disabled");
 					currentDevice.remoteCall("browse", [{"type":"String", "value":target},{"type":"String", "value":"BrowseDirectChildren"},{"type":"String", "value":"*"},{"type":"long" , "value":"0"},{"type":"long" , "value":"0"},{"type":"String", "value":""}], "mediaBrowser");
 				}
 				else {
-					$("#media-browser-modal .valid-media").removeClass("disabled");
+					$("#media-browser-modal .media-button").removeClass("disabled");
 					selectedMedia.text(event.currentTarget.parentNode.attributes.title.textContent);
 					selectedMedia.attr("title",event.currentTarget.parentNode.attributes.title.textContent);
 					selectedMedia.attr("url",event.currentTarget.parentNode.attributes.res.textContent);

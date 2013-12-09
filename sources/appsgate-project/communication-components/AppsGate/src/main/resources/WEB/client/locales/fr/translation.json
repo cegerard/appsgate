@@ -10,7 +10,8 @@
 		"delete-button"	: "Supprimer",
 		"edit-button"	: "Editer",
 		"save-button"	: "Sauvegarder",
-		"saving-button" : "En cours..."
+		"saving-button" : "En cours...",
+		"browse-button"	: "Parcourir"
 	},
 	"navbar" : {
 		"places"			: "Pièces",

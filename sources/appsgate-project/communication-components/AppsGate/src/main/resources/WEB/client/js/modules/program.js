@@ -527,6 +527,7 @@ define([
 			"click button.browse-media"					: "onClickBrowseMedia",
 			"click button.valid-value"					: "onValidValueButton",
 			"click button.valid-media"					: "onValidMusicButton",
+			"click button.replace-media"				: "onReplaceMusicButton",
             "click button.deleted-elements"					: "onClickDeletedElements",
 			"click button.value-popover-button"				: "onClickValuePopoverButton",
 			"click button.valid-value-popover-button"			: "onClickValidValuePopoverButton",
@@ -804,7 +805,8 @@ define([
 			} else if ($(e.currentTarget).hasClass("music")) {
 				var title = "Change music";
 				var content = $("<span>");
-				content.append("<button class='btn btn-primary' onclick='alert(\"coucou\")'>Parcourir</button>");
+				content.append("<button class='btn btn-primary browse-media' data-target='#media-browser-modal' data-toggle='modal'>" + $.i18n.t("form.browse-button") + "</button><span id='playurl' style='display:none'></span>");
+				$(".media-button").addClass("replace-media").removeClass("valid-media");
 				
                 content.append("<button class='btn btn-danger delete-popover-button'>" + $.i18n.t("form.delete-button") + "</button>");
 				content.append("<button class='btn btn-info close-popover-button'>" + $.i18n.t("form.cancel-button") + "</button>");
@@ -841,6 +843,26 @@ define([
 			this.model.set("modified", true);
 			$(".programInput").append("<span class='music' url='"+$("#playurl").attr('url')+"'>" + $("#playurl").html() + "</span>");
 			this.compileProgram();
+		},
+		
+		onReplaceMusicButton:function() {
+			$("#media-browser-modal").modal("hide");
+			this.model.set("modified", true);
+			var self = this;
+			this.valueToReplace.replaceWith("<span class='music' url='"+$("#playurl").attr('url')+"'>" + $("#playurl").html() + "</span>");
+			
+			this.valueToReplace.on("hidden.bs.popover", function() {
+				self.valueToReplace
+						.removeAttr("data-original-title")
+						.removeAttr("title");
+				$(".programInput .popover").remove();
+				
+				$(".media-button").addClass("valid-media").removeClass("replace-media");
+				
+				self.compileProgram();
+			});
+			
+			this.valueToReplace.popover("destroy");
 		},
 		
 		onClickBrowseMedia:function() {

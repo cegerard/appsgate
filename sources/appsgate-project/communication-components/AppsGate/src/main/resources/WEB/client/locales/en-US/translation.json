@@ -10,7 +10,8 @@
 		"delete-button"	: "Delete",
 		"edit-button"	: "Edit",
 		"save-button"	: "Save",
-		"saving-button" : "Saving..."
+		"saving-button" : "Saving...",
+		"browse-button"	: "Browse"
 	},
 	"navbar" : {
 		"places"			: "Places",

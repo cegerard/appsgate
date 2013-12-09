@@ -133,6 +133,7 @@ define([
 			
 			// button
 			this.grammar = this.grammar.replace(/{{validButton}}/g, $.i18n.t("form.valid-button"));
+			this.grammar = this.grammar.replace(/{{browseButton}}/g, $.i18n.t("form.browse-button"));
 			
 			// other
 			this.grammar = this.grammar.replace(/{{space}}/g, $.i18n.t("language.space"));
