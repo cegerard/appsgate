@@ -10,7 +10,7 @@
 		<relation field="placeManager"/>
 		<relation field="userManager"/>
 		<relation field="interpreter"/>
-		<ipojo:requires field="httpService"/>
+		<ipojo:requires field="httpService"  />
 	</implementation>
 
 	<apam-instance name="AppsGateInst" implementation="AppsGateImpl">

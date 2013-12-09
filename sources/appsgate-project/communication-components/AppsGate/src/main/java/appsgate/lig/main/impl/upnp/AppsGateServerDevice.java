@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.felix.upnp.extra.util.UPnPEventNotifier;
@@ -13,6 +14,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpService;
 import org.osgi.service.upnp.UPnPDevice;
 import org.osgi.service.upnp.UPnPEventListener;
 import org.osgi.service.upnp.UPnPIcon;

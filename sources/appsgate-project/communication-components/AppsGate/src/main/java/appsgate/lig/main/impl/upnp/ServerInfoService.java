@@ -8,9 +8,9 @@ import org.osgi.service.upnp.UPnPStateVariable;
 
 public class ServerInfoService implements UPnPService {
 
-	final private String SERVICE_ID = "urn:upnp-org:serviceId:serverInfo:1";
-	final private String SERVICE_TYPE = "urn:schemas-upnp-org:service:serverInfo:1";
-	final private String VERSION = "1";
+	public static final String SERVICE_ID = "urn:upnp-org:serviceId:serverInfo:1";
+	public static final String SERVICE_TYPE = "urn:schemas-upnp-org:service:serverInfo:1";
+	public static final String VERSION = "1";
 
 	private StateVariableServerIP serverIP;
 	private StateVariableServerURL serverURL;
