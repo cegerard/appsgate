@@ -309,7 +309,7 @@ public class SimpleClockTest implements AlarmEventObserver{
 	System.out.println("2° jumping just before exact time");
 	clock.setCurrentTimeInMillis(currentTime+(80000-errorTolerance));
 	try{
-	    Thread.sleep(errorTolerance*10);
+	    Thread.sleep(errorTolerance*20);
 	}catch (Exception exc) {
 	    exc.printStackTrace();
 	}

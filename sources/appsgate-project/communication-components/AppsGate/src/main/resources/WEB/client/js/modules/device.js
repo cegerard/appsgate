@@ -1591,6 +1591,21 @@ define([
 		 */
 		initialize:function() {
 			Device.MediaPlayer.__super__.initialize.apply(this, arguments);
+			
+			// setting default friendly name if none exists
+			if(this.get("name") === ""){
+				this.set("name", this.get("friendlyName"));
+				this.save();
+			}
+			
+			// listening for volume value
+			dispatcher.on(this.get("id") + ":volume", function(volume) {
+				_.defer(function(){
+					$( ".volume-slider" ).slider({
+						value: volume,
+					});
+				});
+			});
 		},
 				
 		/**
@@ -2351,40 +2366,43 @@ define([
 						destPlaceId = $("#edit-device-modal select option:selected").val();
 					}
 					
-					this.$el.find("#edit-device-modal").on("hidden.bs.modal", function() {
-						// set the new name to the device
-						self.model.set("name", $("#edit-device-modal input#device-name").val());
+					// set the new name to the device
+					self.model.set("name", $("#edit-device-modal input#device-name").val());
 						
-						// send the updates to the server
+					// send the updates to the server
+					self.model.save();
+					
+					// move the device if this is not the core clock
+					if (self.model.get("type") !== "21" && self.model.get("type") !== 21) {
+						places.moveDevice(self.model.get("placeId"), destPlaceId, self.model.get("id"), true);
+					} else { // update the time and the flow rate set by the user
+						// update the moment attribute
+						self.model.get("moment").set("hour", parseInt($("#edit-device-modal select#hour").val()));
+						self.model.get("moment").set("minute", parseInt($("#edit-device-modal select#minute").val()));
+						// retrieve the value of the flow rate set by the user
+						var timeFlowRate = $("#edit-device-modal input#time-flow-rate").val();
+						
+						// update the attributes hour and minute
+						self.model.set("hour", self.model.get("moment").hour());
+						self.model.set("minute", self.model.get("moment").minute());
+							
+						// send the update to the server
 						self.model.save();
+							
+						// update the attribute time flow rate
+						self.model.set("flowRate", timeFlowRate);
+							
+						//send the update to the server
+						self.model.save();
+					}
+
 						
-						// move the device if this is not the core clock
-						if (self.model.get("type") !== "21" && self.model.get("type") !== 21) {
-							places.moveDevice(self.model.get("placeId"), destPlaceId, self.model.get("id"), true);
-						} else { // update the time and the flow rate set by the user
-							// update the moment attribute
-							self.model.get("moment").set("hour", parseInt($("#edit-device-modal select#hour").val()));
-							self.model.get("moment").set("minute", parseInt($("#edit-device-modal select#minute").val()));
-							
-							// retrieve the value of the flow rate set by the user
-							var timeFlowRate = $("#edit-device-modal input#time-flow-rate").val();
-							
-							// update the attributes hour and minute
-							self.model.set("hour", self.model.get("moment").hour());
-							self.model.set("minute", self.model.get("moment").minute());
-							
-							// send the update to the server
-							self.model.save();
-							
-							// update the attribute time flow rate
-							self.model.set("flowRate", timeFlowRate);
-							
-							// send the update to the server
-							self.model.save();
-						}
-						
+					this.$el.find("#edit-device-modal").on("hidden.bs.modal", function() {
 						// tell the router that there is no modal any more
 						appRouter.isModalShown = false;
+						
+						// rerender the view
+						self.render();
 						
 						return false;
 					});
@@ -2539,27 +2557,32 @@ define([
 							places: places,
 							deviceDetails: this.tplMediaPlayer
 						}));
+						
+						// initialize the volume slider
 						_.defer(function(){
 							$( ".volume-slider" ).slider({
 								range: "min",
 								min: 0,
 								max: 100,
-								value: 60,
+								value: 100,
 								stop: function( event, ui ) {
 									self.model.sendVolume($( ".volume-slider" ).slider( "value" ));
 								}
 							});
 						});
+						
+						// requesting current volume level
+						this.model.remoteCall("getVolume", [], this.model.get("id") + ":volume");
+						
+					// resize the panel
+					if(this.model.get("type") != 21){
+						resizeDiv($(this.$el.find(".list-group")[0]));
+					}
 				}
 				
 				// translate the view
 				this.$el.i18n();
-
-				// resize the panel
-				if(this.model.get("type") != 21){
-					resizeDiv($(this.$el.find(".list-group")[0]));
-				}
-
+				
 				return this;
 			}
 		},
