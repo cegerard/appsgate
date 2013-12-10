@@ -1471,28 +1471,18 @@ define([
 			
 			Device.CoreClock.__super__.initialize.apply(this, arguments);
 			
-			// attribute for the clock
-			this.set("moment", Moment(parseInt(this.get("clockValue"))));
-			this.set("year", this.get("moment").year());
-			this.set("month", this.get("moment").month());
-			this.set("day", this.get("moment").day());
-			this.set("hour", this.get("moment").hour().toString());
-			if (this.get("hour").length === 1) {
-				this.set("hour", "0" + this.get("hour"));
-			}
-			this.set("minute", this.get("moment").minute().toString());
-			if (this.get("minute").length === 1) {
-				this.set("minute", "0" + this.get("minute"));
-			}
-			this.set("second", this.get("moment").second().toString());
-			if (this.get("second").length === 1) {
-				this.set("second", "0" + this.get("second"));
-			}
-			
 			// when the flow rate changes, update the interval that controls the local time
 			this.on("change:flowRate", function() {
-				clearInterval(this.intervalLocalClockValue);
-				this.intervalLocalClockValue = setInterval(self.updateClockValue, (1 / self.get("flowRate")) * 60000);
+				//clearInterval(this.intervalLocalClockValue);
+				var moi = this;
+				var time = (new Date()).getTime();
+				clearTimeout( moi.timeout );
+				var fctCB = function() {
+					 self.updateClockValue();
+					 var time = (new Date()).getTime();
+					 moi.timeout = setTimeout( fctCB, ( Math.floor((time+60000)/60000)*60000 - time + 5 ) * self.get("flowRate") );
+					}
+				this.timeout = setTimeout( fctCB, ( Math.floor((time+60000)/60000)*60000 - time + 5 ) * self.get("flowRate") );
 			});
 			
 			// when the ClockSet changes, resynchornize with the server
@@ -1502,8 +1492,18 @@ define([
 			
 			// synchronize the core clock with the server every 10 minutes
 			dispatcher.on("systemCurrentTime", function(timeInMillis) {
-				self.set("moment", Moment(parseInt(timeInMillis)));
+				self.set("moment", moment(parseInt(timeInMillis)));
+				self.anchorSysTime = (new Date()).getTime();
+				self.anchorTime = parseInt(timeInMillis);
+				self.updateClockDisplay();
 			});
+			
+			dispatcher.on("systemCurrentFlowRate", function(flowRate){
+				self.set("flowRate", flowRate);
+			});
+			
+			self.synchronizeCoreClock();
+			self.synchronizeFlowRate();
 			
 			// bind the method to this model to avoid this keyword pointing to the window object for the callback on setInterval
 			this.synchronizeCoreClock = _.bind(this.synchronizeCoreClock, this);
@@ -1511,14 +1511,25 @@ define([
 			
 			// update the local time every minute
 			this.updateClockValue = _.bind(this.updateClockValue, this);
-			this.intervalLocalClockValue = setInterval(this.updateClockValue, (1 / this.get("flowRate")) * 60000);
 		},
 		
 		/**
 		 * Callback to update the clock value - increase the local time of one minute
 		 */
 		updateClockValue:function() {
-			this.get("moment").add("minute", 1);
+		console.log(this.get("flowRate"));
+			if(this.anchorSysTime){
+				var delta_ms = ((new Date()).getTime() - this.anchorSysTime) * parseInt(this.get("flowRate"));
+				var ms = this.anchorTime + delta_ms;
+				this.set("moment", moment(ms));
+				this.updateClockDisplay();
+			}
+		},
+		
+		/**
+		 * Updates clock display values from internal moment
+		 */
+		updateClockDisplay:function() {
 			this.set("year", this.get("moment").year().toString(), {silent: true});
 			this.set("month", this.get("moment").month().toString(), {silent: true});
 			this.set("day", this.get("moment").day().toString(), {silent: true});
@@ -1541,6 +1552,10 @@ define([
 		 */
 		synchronizeCoreClock:function() {
 			this.remoteCall("getCurrentTimeInMillis", [], "systemCurrentTime");
+		},
+		
+		synchronizeFlowRate:function() {
+			this.remoteCall("getTimeFlowRate", [], "systemCurrentFlowRate");
 		},
 		
 		/**
@@ -2396,6 +2411,8 @@ define([
 						self.model.save();
 					}
 
+					// hide the modal
+					$("#edit-device-modal").modal("hide");
 						
 					this.$el.find("#edit-device-modal").on("hidden.bs.modal", function() {
 						// tell the router that there is no modal any more
@@ -2406,9 +2423,6 @@ define([
 						
 						return false;
 					});
-					
-					// hide the modal
-					$("#edit-device-modal").modal("hide");
 				}
 			}  else if (e.type === "keyup") {
 				this.checkDevice();
