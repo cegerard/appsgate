@@ -181,51 +181,51 @@ public class SimpleClockTest implements AlarmEventObserver {
 		systemTime += 4321 * 2;
 		clockTime = clock.getCurrentTimeInMillis();
 		testTimeEqual(systemTime, clockTime);
-
-<<<<<<< HEAD
-	cal.setTimeInMillis(currentTime+80000);
-	int alarmID2=clock.registerAlarm(cal, this);
-	
-	cal.setTimeInMillis(currentTime+120000);
-	int alarmID3=clock.registerAlarm(cal, this);	
-	
-	cal.setTimeInMillis(System.currentTimeMillis()+160000);
-	int alarmID4=clock.registerAlarm(cal, this);
-	
-	cal.setTimeInMillis(System.currentTimeMillis()+200000);
-	int alarmID5=clock.registerAlarm(cal, this);
-	
-	
-	System.out.println("1° Jumping nearly exact time the first one");
-	clock.setCurrentTimeInMillis(currentTime+40000);
-	try{
-	    Thread.sleep(errorTolerance*10);
-	}catch (Exception exc) {
-	    exc.printStackTrace();
-	}
-	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
-	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID1));
-	
-	
-	System.out.println("2° jumping just before exact time");
-	clock.setCurrentTimeInMillis(currentTime+(80000-errorTolerance));
-	try{
-	    Thread.sleep(errorTolerance*20);
-	}catch (Exception exc) {
-	    exc.printStackTrace();
-	}
-	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
-	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID2));
-	
-	
-	System.out.println("3° Jumping just after exact time");
-	clock.setCurrentTimeInMillis(currentTime+(120000+errorTolerance));
-	try{
-	    Thread.sleep(errorTolerance*10);
-	}catch (Exception exc) {
-	    exc.printStackTrace();
-=======
->>>>>>> 2bf9d1cd7d927acb21c47e9dfd6d18bb3743a896
+//
+//<<<<<<< HEAD
+//	cal.setTimeInMillis(currentTime+80000);
+//	int alarmID2=clock.registerAlarm(cal, this);
+//	
+//	cal.setTimeInMillis(currentTime+120000);
+//	int alarmID3=clock.registerAlarm(cal, this);	
+//	
+//	cal.setTimeInMillis(System.currentTimeMillis()+160000);
+//	int alarmID4=clock.registerAlarm(cal, this);
+//	
+//	cal.setTimeInMillis(System.currentTimeMillis()+200000);
+//	int alarmID5=clock.registerAlarm(cal, this);
+//	
+//	
+//	System.out.println("1° Jumping nearly exact time the first one");
+//	clock.setCurrentTimeInMillis(currentTime+40000);
+//	try{
+//	    Thread.sleep(errorTolerance*10);
+//	}catch (Exception exc) {
+//	    exc.printStackTrace();
+//	}
+//	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
+//	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID1));
+//	
+//	
+//	System.out.println("2° jumping just before exact time");
+//	clock.setCurrentTimeInMillis(currentTime+(80000-errorTolerance));
+//	try{
+//	    Thread.sleep(errorTolerance*20);
+//	}catch (Exception exc) {
+//	    exc.printStackTrace();
+//	}
+//	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
+//	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID2));
+//	
+//	
+//	System.out.println("3° Jumping just after exact time");
+//	clock.setCurrentTimeInMillis(currentTime+(120000+errorTolerance));
+//	try{
+//	    Thread.sleep(errorTolerance*10);
+//	}catch (Exception exc) {
+//	    exc.printStackTrace();
+//=======
+//>>>>>>> 2bf9d1cd7d927acb21c47e9dfd6d18bb3743a896
 	}
 
 	void testTimeEqual(long systemTime, long clockTime) {
