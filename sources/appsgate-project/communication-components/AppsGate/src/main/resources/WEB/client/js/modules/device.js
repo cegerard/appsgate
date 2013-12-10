@@ -1480,9 +1480,9 @@ define([
 				var fctCB = function() {
 					 self.updateClockValue();
 					 var time = (new Date()).getTime();
-					 moi.timeout = setTimeout( fctCB, ( Math.floor((time+60000)/60000)*60000 - time + 5 ) * self.get("flowRate") );
+					 moi.timeout = setTimeout( fctCB, ( Math.floor((time+60000)/60000)*60000 - time + 5 ) / self.get("flowRate") );
 					}
-				this.timeout = setTimeout( fctCB, ( Math.floor((time+60000)/60000)*60000 - time + 5 ) * self.get("flowRate") );
+				this.timeout = setTimeout( fctCB, ( Math.floor((time+60000)/60000)*60000 - time + 5 ) / self.get("flowRate") );
 			});
 			
 			// when the ClockSet changes, resynchornize with the server
