@@ -29,7 +29,6 @@ import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.jmock.Mockery;
 import org.jmock.States;
-import org.jmock.internal.StatePredicate;
 import org.jmock.lib.concurrent.Synchroniser;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -356,10 +355,9 @@ public class EUDEInterpreterImplTest {
         System.out.println("Programs");
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testIf.json")));
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testPrograms.json")));
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testFail.json")));
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testFail_1.json")));
         Assert.assertTrue(instance.callProgram("testPrograms"));
-        Assert.assertTrue(instance.callProgram("program-373"));
+        //Assert.assertTrue(instance.callProgram("program-373"));
         Assert.assertTrue(instance.callProgram("program-4050"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertFalse(instance.isProgramActive("testPrograms"));
@@ -436,6 +434,17 @@ public class EUDEInterpreterImplTest {
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         contextFollower.notifAll("2");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
+//        Assert.fail("Fin");
+
+    }
+    @Test
+    public void testWhenImbricated() throws Exception {
+        System.out.println("Stop And Start");
+        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhenImb.json")));
+        System.out.println("Start");
+        Assert.assertTrue(instance.callProgram("whenImb"));
+        contextFollower.notifAll("1");
+        contextFollower.notifAll("2");
 //        Assert.fail("Fin");
 
     }
