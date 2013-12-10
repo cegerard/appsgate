@@ -841,7 +841,7 @@ define([
 		onValidMusicButton:function() {
 		$("#media-browser-modal").modal("hide");
 			this.model.set("modified", true);
-			$(".programInput").append("<span class='music' url='"+$("#playurl").attr('url')+"'>" + $("#playurl").html() + "</span>");
+			$(".programInput").append("<span class='music' url='"+$("#playurl").attr('url')+"'>[" + $("#playurl").html() + "]</span>");
 			this.compileProgram();
 		},
 		
@@ -849,7 +849,7 @@ define([
 			$("#media-browser-modal").modal("hide");
 			this.model.set("modified", true);
 			var self = this;
-			this.valueToReplace.replaceWith("<span class='music' url='"+$("#playurl").attr('url')+"'>" + $("#playurl").html() + "</span>");
+			this.valueToReplace.replaceWith("<span class='music' url='"+$("#playurl").attr('url')+"'>[" + $("#playurl").html() + "]</span>");
 			
 			this.valueToReplace.on("hidden.bs.popover", function() {
 				self.valueToReplace
