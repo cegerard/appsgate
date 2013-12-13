@@ -1482,9 +1482,7 @@ define([
 					 var time = ( (new Date()).getTime() - self.anchorSysTime ) * self.get("flowRate"); // Temps écoulé en terme de l'horloge par rapport à son ancre AnchorTimeSys
 					 var dt = ( Math.floor((time+60000)/60000)*60000 - time) / self.get("flowRate");
 					 moi.timeout = setTimeout( fctCB, dt + 5);
-					 console.log('setTimeout : ' + dt + ' / ' );
 					}
-				console.log('Change flowrate...');
 				this.timeout = setTimeout( fctCB, ( Math.floor((time+60000)/60000)*60000 - time + 5 ) / self.get("flowRate") );
 			});
 			
@@ -1523,7 +1521,7 @@ define([
 			if(this.anchorSysTime){
 				var delta_ms = ((new Date()).getTime() - this.anchorSysTime) * parseInt(this.get("flowRate"));
 				var ms = this.anchorTime + delta_ms;
-				this.set("moment", moment(ms));
+				this.set("moment", moment(ms), {clockRefresh:true});
 				this.updateClockDisplay();
 			}
 		},
@@ -2145,7 +2143,7 @@ define([
 			"click button.btn-media-volume"					: "onSetVolumeMedia",
 			"click button.btn-media-browse"					: "onBrowseMedia",
 			"show.bs.modal #edit-device-modal"				: "initializeModal",
-			//"hide.bs.modal #edit-device-modal"				: "toggleModalValue",
+			"hidden.bs.modal #edit-device-modal"				: "toggleModalValue",
 			"click #edit-device-modal button.valid-button"	: "validEditDevice",
 			"keyup #edit-device-modal input"				: "validEditDevice",
 			"change #edit-device-modal select"				: "checkDevice"
@@ -2321,8 +2319,8 @@ define([
 			
 			// initialize the field to edit the core clock if needed
 			if (this.model.get("type") === "21" || this.model.get("type") === 21) {
-				$("#edit-device-modal select#hour").val(this.model.get("hour"));
-				$("#edit-device-modal select#minute").val(this.model.get("minute"));
+				$("#edit-device-modal select#hour").val(this.model.get("moment").hour());
+				$("#edit-device-modal select#minute").val(this.model.get("moment").minute());
 				$("#edit-device-modal input#time-flow-rate").val(this.model.get("flowRate"));
 			}
 			
@@ -2334,7 +2332,10 @@ define([
 		 * Tell the router there is no modal anymore
 		 */
 		toggleModalValue:function() {
-			appRouter.isModalShown = false;
+			_.defer(function() {
+				appRouter.isModalShown = false;
+				appRouter.currentView.render();
+			});
 		},
 		
 		/**
@@ -2386,7 +2387,7 @@ define([
 					
 					this.$el.find("#edit-device-modal").on("hidden.bs.modal", function() {
 						// set the new name to the device
-						self.model.set("name", $("#edit-device-modal input#device-name").val(), {silent: true});
+						self.model.set("name", $("#edit-device-modal input#device-name").val());
 							
 						// send the updates to the server
 						self.model.save();

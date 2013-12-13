@@ -190,7 +190,7 @@ define([
 		// listen to the event coming from the button to flash a device
 		$("#flash-device-button").on("click", function() {
 			// launch the window to flash a device
-			window.plugins.barcodeScanner.scan(
+			cordova.plugins.barcodeScanner.scan(
 				function(result) {
 					if (result.cancelled) {
 						console.log("the user cancelled the scan");

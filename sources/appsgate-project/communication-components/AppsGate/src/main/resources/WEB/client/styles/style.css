@@ -24,6 +24,10 @@ body {
 	overflow-y: auto;
 }
 
+.navbar {
+	position:absolute;
+}
+
 .slider-container {
 	height:14px;
 	width:150px;
