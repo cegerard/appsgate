@@ -1,0 +1,14 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Appsgate</title>
+</head>
+<body>
+	<H1>Welcome to Appsgate system</H1>
+	<a href="../configuration/sensors/enocean/enocean.html"> EnOcean sensor pairing page </a><br/>
+	<a href="../configuration/sensors/watteco/watteco.html"> Watteco configuration page </a><br/>
+	<a href="/appsgate/client/index.html"> Home control page </a>
+</body>
+
+</html>
