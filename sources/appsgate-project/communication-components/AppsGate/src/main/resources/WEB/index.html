@@ -51,7 +51,8 @@
    </script>
 </head>
 
-<body>
+<body onload="javascript:WebSocketOpen();"
+	onUnload="javascript:WebSocketClose();>
 
    <div id="wrap">
    
@@ -338,9 +339,9 @@
    <script type="text/javascript" src="./assets/js/bootstrap-datepicker.js"></script>
    <script type="text/javascript" src="./assets/js/jquery.mousewheel.min.js"></script>
    <script type="text/javascript" src="./assets/js/jquery.touchSwipe.min.js"></script>
-   <script type="text/javascript" src="./assets/js/holder.js"></script>
+   <!--<script type="text/javascript" src="./assets/js/holder.js"></script>-->
    <!--<script type="text/javascript" src="./assets/js/perfect-scrollbar.with-mousewheel.min.js"></script>-->
-   <script type="text/javascript" src="./assets/js/demo.js"></script>
+   <script type="text/javascript" src="./scripts/websocket.js"></script>
 
    <script type="text/javascript">
       $('.panorama').panorama({
