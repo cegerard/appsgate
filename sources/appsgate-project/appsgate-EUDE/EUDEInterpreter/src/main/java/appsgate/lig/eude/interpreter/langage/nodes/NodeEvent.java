@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,9 +51,10 @@ public class NodeEvent extends Node {
      * @param s_id
      * @param name
      * @param value
+     * @param parent
      */
-    public NodeEvent(EUDEInterpreterImpl interpreter, String s_type, String s_id, String name, String value) {
-        super(interpreter);
+    public NodeEvent(EUDEInterpreterImpl interpreter, String s_type, String s_id, String name, String value, Node parent) {
+        super(interpreter, parent);
         sourceType = s_type;
         sourceId = s_id;
         eventName = name;
@@ -63,10 +65,11 @@ public class NodeEvent extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param eventJSON JSON representation of the event
+     * @param parent
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeEvent(EUDEInterpreterImpl interpreter, JSONObject eventJSON) throws NodeException {
-        super(interpreter);
+    public NodeEvent(EUDEInterpreterImpl interpreter, JSONObject eventJSON, Node parent) throws NodeException {
+        super(interpreter, parent);
 
         sourceType = getJSONString(eventJSON, "sourceType");
         sourceId = getJSONString(eventJSON, "sourceId");
@@ -163,6 +166,19 @@ public class NodeEvent extends Node {
      */
     public String getEventValue() {
         return eventValue;
+    }
+
+    @Override
+    public String getExpertProgramScript() {
+        String ret;
+        ret = this.getElementKey(sourceId, sourceType) + ".";
+        return ret + eventName + "(\"" + eventName + "\")";
+
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        s.add(sourceId, sourceType);
     }
 
 }

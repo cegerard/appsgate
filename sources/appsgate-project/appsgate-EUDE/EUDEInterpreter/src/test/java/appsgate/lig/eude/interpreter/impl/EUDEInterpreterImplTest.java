@@ -268,7 +268,7 @@ public class EUDEInterpreterImplTest {
         ruleJSON.put("eventName", "test");
         ruleJSON.put("eventValue", "test");
 
-        NodeEvent n = new NodeEvent(this.instance, ruleJSON);
+        NodeEvent n = new NodeEvent(this.instance, ruleJSON, null);
         instance.addNodeListening(n);
     }
 
@@ -287,7 +287,7 @@ public class EUDEInterpreterImplTest {
         ruleJSON.put("eventName", "test");
         ruleJSON.put("eventValue", "test");
 
-        NodeEvent n = new NodeEvent(this.instance, ruleJSON);
+        NodeEvent n = new NodeEvent(this.instance, ruleJSON, null);
         instance.removeNodeListening(n);
     }
 
@@ -361,6 +361,8 @@ public class EUDEInterpreterImplTest {
         Assert.assertTrue(instance.callProgram("program-4050"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertFalse(instance.isProgramActive("testPrograms"));
+        System.out.println(instance.getNodeProgram("testPrograms").getExpertProgramScript());
+        System.out.println(instance.getNodeProgram("program-4050").getExpertProgramScript());
     }
 
     /**

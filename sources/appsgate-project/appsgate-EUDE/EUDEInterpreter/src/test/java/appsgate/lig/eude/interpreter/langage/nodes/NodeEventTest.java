@@ -41,7 +41,7 @@ public class NodeEventTest extends NodeTest {
             ruleJSON.put("sourceId", "test");
             ruleJSON.put("eventName", "test");
             ruleJSON.put("eventValue", "test");
-            this.eventTest = new NodeEvent(interpreter, ruleJSON);
+            this.eventTest = new NodeEvent(interpreter, ruleJSON, null);
             this.instance = this.eventTest;
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());

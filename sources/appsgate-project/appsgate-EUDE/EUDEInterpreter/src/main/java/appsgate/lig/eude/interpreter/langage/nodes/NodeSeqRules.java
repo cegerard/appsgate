@@ -8,6 +8,7 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +47,8 @@ public class NodeSeqRules extends Node {
      * @param seqRulesJSON JSON array containing the rules
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON) throws NodeException {
-        super(interpreter);
+    public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON, Node parent) throws NodeException {
+        super(interpreter, parent);
 
         seqAndRules = new ArrayList<NodeSeqAndRules>();
 
@@ -59,7 +60,7 @@ public class NodeSeqRules extends Node {
                 throw new NodeException("NodeSeqRules", "item " + i, ex);
             }
             if (seqAndRulesJSON.length() > 0) {
-                seqAndRules.add(new NodeSeqAndRules(interpreter, seqAndRulesJSON));
+                seqAndRules.add(new NodeSeqAndRules(interpreter, seqAndRulesJSON, this));
             }
         }
 
@@ -122,7 +123,7 @@ public class NodeSeqRules extends Node {
     @Override
     public void stop() {
         if (isStarted()) {
-            for (Node n: seqAndRules) {
+            for (Node n : seqAndRules) {
                 n.removeEndEventListener(this);
             }
             synchronized (this) {
@@ -141,5 +142,29 @@ public class NodeSeqRules extends Node {
     public String toString() {
 
         return "[Node SeqRules: [" + seqAndRules.size() + "]]";
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getExpertProgramScript() {
+        if (seqAndRules.size() == 1) {
+            return seqAndRules.get(0).getExpertProgramScript();
+        }
+
+        String ret = "[";
+        for (NodeSeqAndRules s : seqAndRules) {
+            ret += s.getExpertProgramScript() + ",";
+        }
+        return ret.substring(0, ret.length() - 1) + "]";
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        for (NodeSeqAndRules seq : seqAndRules) {
+            seq.collectVariables(s);
+        }
     }
 }

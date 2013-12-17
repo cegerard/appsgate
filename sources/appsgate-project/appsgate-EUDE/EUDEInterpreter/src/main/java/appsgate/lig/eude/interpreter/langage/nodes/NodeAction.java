@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable.Element;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import org.slf4j.Logger;
@@ -53,11 +55,12 @@ public class NodeAction extends Node {
      *
      * @param interpreter points to the interpreter
      * @param ruleJSON the JSON Object
+     * @param parent
      * @throws NodeException if the interpretation of JSON fails
      */
-    public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON)
+    public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON, Node parent)
             throws NodeException {
-        super(interpreter);
+        super(interpreter, parent);
 
         targetType = getJSONString(ruleJSON, "targetType");
         targetId = getJSONString(ruleJSON, "targetId");
@@ -94,7 +97,7 @@ public class NodeAction extends Node {
             }
         } else if (targetType.equals("program")) {
 
-            NodeProgram p =  getNodeProgram(targetId);
+            NodeProgram p = getNodeProgram(targetId);
 
             if (p != null) {
                 LOGGER.debug("Program running state {}", p.getRunningState());
@@ -145,11 +148,28 @@ public class NodeAction extends Node {
             setStopping(false);
         }
     }
-    
+
     @Override
     public String toString() {
         return "[Node Action: " + methodName + " on " + targetId + "]";
-        
+
+    }
+
+    @Override
+    public String getExpertProgramScript() {
+        String ret;
+        ret = this.getElementKey(targetId, targetType) + ".";
+        String cmd = "";
+        if (this.command != null) {
+            cmd = this.command.toString();
+        }
+        return ret + this.methodName + "(\"" + cmd + "\")";
+
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        s.add(targetId, targetType);
     }
 
 }

@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class NodeRelationBool extends Node {
     /**
      * the node action of the left branch
      */
-    private NodeAction leftNodeAction;
+    private NodeAction leftNodeAction = null;
     /**
      * the return type of the left branch
      */
@@ -50,7 +51,7 @@ public class NodeRelationBool extends Node {
     /**
      * the node action of the right branch
      */
-    private NodeAction rightNodeAction;
+    private NodeAction rightNodeAction = null;
     /**
      * the return type of the right branch
      */
@@ -65,10 +66,11 @@ public class NodeRelationBool extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param relationBoolJSON JSON representation of the node
+     * @param parent
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeRelationBool(EUDEInterpreterImpl interpreter, JSONObject relationBoolJSON) throws NodeException {
-        super(interpreter);
+    public NodeRelationBool(EUDEInterpreterImpl interpreter, JSONObject relationBoolJSON, Node parent) throws NodeException {
+        super(interpreter, parent);
 
         // operator
         operator = getJSONString(relationBoolJSON, "operator");
@@ -78,7 +80,7 @@ public class NodeRelationBool extends Node {
         // left operand
         operand = getJSONObject(relationBoolJSON, "leftOperand");
         if (operand.has("targetId")) {
-            leftNodeAction = new NodeAction(interpreter, operand);
+            leftNodeAction = new NodeAction(interpreter, operand, this);
             leftReturnType = getJSONString(operand, "returnType");
             leftValue = null;
         } else {
@@ -90,7 +92,7 @@ public class NodeRelationBool extends Node {
         // right operand
         operand = getJSONObject(relationBoolJSON, "rightOperand");
         if (operand.has("targetId")) {
-            rightNodeAction = new NodeAction(interpreter, operand);
+            rightNodeAction = new NodeAction(interpreter, operand, this);
             rightReturnType = getJSONString(operand, "returnType");
             rightValue = null;
         } else {
@@ -242,6 +244,35 @@ public class NodeRelationBool extends Node {
     @Override
     public String toString() {
         return "[Node RelationBool: '" + leftReturnType + "'" + operator + "'" + rightReturnType + "]";
+    }
+
+    @Override
+    public String getExpertProgramScript() {
+        return "(" + getScript(leftReturnType, leftNodeAction, leftValue) + operator + getScript(rightReturnType, rightNodeAction, rightValue) + ")";
+    }
+
+    private String getScript(String retType, NodeAction action, Object val) {
+        if (action != null) {
+            return action.getExpertProgramScript();
+        }
+        if (retType.equalsIgnoreCase("number")) {
+            return val.toString();
+        }
+        if (retType.equalsIgnoreCase("boolean")) {
+            if ((Boolean) val) {
+                return "true";
+            } else {
+                return "false";
+            }
+        }
+        else {
+            return "\"" + val.toString() + "\"";
+        }
+
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
     }
 
 }
