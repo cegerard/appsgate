@@ -1,1 +1,0 @@
-sudo ./tunslip6 -L -v2 -s ttyUSB1 aaaa::1/64

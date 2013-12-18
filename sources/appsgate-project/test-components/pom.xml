@@ -15,18 +15,18 @@
 	<description>This sub-project contain all maven project use to test automatically and validate other Appsgate module.</description>
 
 	<modules>
-		<module>ExecuteCommandTest</module>
-		<module>DeviceNameTableTester</module>
-		<module>AppsGateCommandTester</module>
-		<module>RouterCallTester</module>
-		<module>InterpreterProgramTester</module>
-		<module>ContextHistoryTester</module>
-		<module>UserBaseTester</module>
-		<module>VituralAdapterTester</module>
-		<module>WattecoAdapterTester</module>
-		<module>ContextFollowerTester</module>
-		<module>ExperimentaConfiguration</module>
-		<module>ExperimentaPrograms</module>
+<!-- 		<module>ExecuteCommandTest</module> -->
+<!-- 		<module>DeviceNameTableTester</module> -->
+<!-- 		<module>AppsGateCommandTester</module> -->
+<!-- 		<module>RouterCallTester</module> -->
+<!-- 		<module>InterpreterProgramTester</module> -->
+<!-- 		<module>ContextHistoryTester</module> -->
+<!-- 		<module>UserBaseTester</module> -->
+<!-- 		<module>VituralAdapterTester</module> -->
+<!-- 		<module>WattecoAdapterTester</module> -->
+<!-- 		<module>ContextFollowerTester</module> -->
+<!-- 		<module>ExperimentaConfiguration</module> -->
+<!-- 		<module>ExperimentaPrograms</module> -->
 	</modules>
 
 </project>
