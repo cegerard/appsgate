@@ -84,13 +84,25 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     * Stop the interpretation of the node.
-     *
-     * This method has to be overwritten
+     * Stop the interpretation of the node. 
+     * Check if the node is not started
      */
     public void stop() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (isStarted()) {
+            setStopping(true);
+
+            specificStop();
+            setStarted(false);
+            setStopping(false);
+        } else {
+            LOGGER.warn("Trying to stop a not started node {}", this);
+        }
     }
+
+    /**
+     * This method is called by the
+     */
+    abstract protected void specificStop();
 
     @Override
     public void startEventFired(StartEvent e) {
@@ -372,9 +384,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     * 
+     *
      * @param varName
-     * @return 
+     * @return
      */
     protected Element getElementFromName(String varName) {
         if (this.symbolTable != null) {
@@ -389,12 +401,12 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
         }
         return null;
     }
-    
+
     /**
-     * 
+     *
      * @param id
      * @param type
-     * @return 
+     * @return
      */
     protected String getElementKey(String id, String type) {
         if (this.symbolTable != null) {
@@ -410,5 +422,5 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
         return null;
     }
 
-    abstract protected void collectVariables(SymbolTable s) ;
+    abstract protected void collectVariables(SymbolTable s);
 }

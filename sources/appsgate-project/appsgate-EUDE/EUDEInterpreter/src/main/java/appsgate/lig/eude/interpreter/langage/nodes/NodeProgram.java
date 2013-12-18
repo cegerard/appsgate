@@ -186,15 +186,21 @@ public class NodeProgram extends Node {
 
     @Override
     public void stop() {
-        if (runningState == RUNNING_STATE.STARTED) {
+        if (runningState == RUNNING_STATE.STARTED && !isStopping()) {
             LOGGER.debug("Stoping program {}", this);
+            setStopping(true);
             seqRules.stop();
             seqRules.removeEndEventListener(this);
             setRunningState(RUNNING_STATE.STOPPED);
             fireEndEvent(new EndEvent(this));
+            setStopping(false);
         } else {
             LOGGER.warn("Trying to stop {}, while being at state {}", this, this.runningState);
         }
+    }
+    
+    @Override
+    protected void specificStop() {
     }
 
     /**
@@ -314,19 +320,19 @@ public class NodeProgram extends Node {
     public String toString() {
         return "[Node Program : " + name + "]";
     }
-    
+
     /**
      * @return the script of a program, more readable than the json structure
      */
     @Override
-   
-    public String getExpertProgramScript(){
+
+    public String getExpertProgramScript() {
         SymbolTable vars = new SymbolTable();
         seqRules.collectVariables(vars);
         this.setSymbolTable(vars);
         return this.getHeader() + vars.getExpertProgramDecl() + "\n" + seqRules.getExpertProgramScript();
     }
-     
+
     /**
      * @return the header of a program
      */
@@ -336,12 +342,10 @@ public class NodeProgram extends Node {
         ret += "Target:" + this.target + "\n";
         return ret;
     }
-    
 
     @Override
     protected void collectVariables(SymbolTable s) {
         seqRules.collectVariables(s);
     }
-
 
 }

@@ -104,18 +104,13 @@ public class NodeRelationBool extends Node {
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-            if (leftNodeAction != null) {
-                leftNodeAction.removeEndEventListener(this);
-                leftNodeAction.stop();
-            } else {
-                rightNodeAction.removeEndEventListener(this);
-                rightNodeAction.stop();
-            }
-            setStarted(false);
-            setStopping(false);
+    public void specificStop() {
+        if (leftNodeAction != null) {
+            leftNodeAction.removeEndEventListener(this);
+            leftNodeAction.stop();
+        } else {
+            rightNodeAction.removeEndEventListener(this);
+            rightNodeAction.stop();
         }
     }
 
@@ -264,8 +259,7 @@ public class NodeRelationBool extends Node {
             } else {
                 return "false";
             }
-        }
-        else {
+        } else {
             return "\"" + val.toString() + "\"";
         }
 

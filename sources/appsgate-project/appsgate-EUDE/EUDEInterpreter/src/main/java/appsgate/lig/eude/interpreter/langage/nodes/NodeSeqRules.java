@@ -121,20 +121,16 @@ public class NodeSeqRules extends Node {
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            for (Node n : seqAndRules) {
-                n.removeEndEventListener(this);
+    public void specificStop() {
+        for (Node n : seqAndRules) {
+            n.removeEndEventListener(this);
+        }
+        synchronized (this) {
+            if (seqAndRules.size() > 0) {
+                NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
+                setStopping(true);
+                seqAndRule.stop();
             }
-            synchronized (this) {
-                if (seqAndRules.size() > 0) {
-                    NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
-                    setStopping(true);
-                    seqAndRule.stop();
-                }
-            }
-            setStarted(false);
-            setStopping(false);
         }
     }
 

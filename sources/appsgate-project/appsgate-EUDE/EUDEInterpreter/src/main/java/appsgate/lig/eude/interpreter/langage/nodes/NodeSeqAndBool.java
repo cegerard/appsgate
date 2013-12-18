@@ -69,20 +69,15 @@ public class NodeSeqAndBool extends Node {
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-            for (NodeRelationBool nr : relationsBool) {
-                nr.stop();
-            }
-            setStarted(false);
-            setStopping(false);
+    public void specificStop() {
+        for (NodeRelationBool nr : relationsBool) {
+            nr.stop();
         }
     }
 
     /**
-     * Launch the interpretation of the node.
-     * Interpret simultaneously all the boolean relations
+     * Launch the interpretation of the node. Interpret simultaneously all the
+     * boolean relations
      *
      * @return null
      */
@@ -160,8 +155,8 @@ public class NodeSeqAndBool extends Node {
 
     @Override
     public String getExpertProgramScript() {
-        String ret ="";
-        for (NodeRelationBool n: this.relationsBool) {
+        String ret = "";
+        for (NodeRelationBool n : this.relationsBool) {
             ret += n.getExpertProgramScript();
         }
         return ret;
@@ -169,8 +164,8 @@ public class NodeSeqAndBool extends Node {
 
     @Override
     protected void collectVariables(SymbolTable s) {
-        for (NodeRelationBool n: this.relationsBool) {
+        for (NodeRelationBool n : this.relationsBool) {
             n.collectVariables(s);
-       }
+        }
     }
 }

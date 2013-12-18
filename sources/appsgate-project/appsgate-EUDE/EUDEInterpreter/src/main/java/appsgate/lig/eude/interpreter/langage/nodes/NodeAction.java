@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable.Element;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import org.slf4j.Logger;
@@ -139,13 +138,13 @@ public class NodeAction extends Node {
     }
 
     @Override
-    public void stop() {
-        if (isStarted() && targetType.equals("program") && !isStopping()) {
-            setStopping(true);
+    public void specificStop() {
+        if (targetType.equals("program")) {
             NodeProgram p = getNodeProgram(targetId);
             p.stop();
-            setStarted(false);
             setStopping(false);
+        } else {
+            LOGGER.warn("Trying to stop an action ({}) which is not a program", this);
         }
     }
 

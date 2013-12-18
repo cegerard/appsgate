@@ -6,6 +6,9 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +29,14 @@ public class NodeWhen extends Node {
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeWhen.class.getName());
 
     /**
-     * The seq of event to catch to have run the when
+     * list of events
      */
-    private final NodeSeqEvent seqEvent;
+    private final ArrayList<NodeEvent> seqEvent;
+    /**
+     * The number of events that have fired EndEvent
+     */
+    private int nbEventEnded = 0;
+
     /**
      * The sequence of thing to do once the events are done
      */
@@ -44,9 +52,17 @@ public class NodeWhen extends Node {
      */
     public NodeWhen(EUDEInterpreterImpl interpreter, JSONObject ruleWhenJSON, Node parent) throws NodeException {
         super(interpreter, parent);
+        seqEvent = new ArrayList<NodeEvent>();
+        JSONArray seqEventJSON = getJSONArray(ruleWhenJSON, "events");
+        for (int i = 0; i < seqEventJSON.length(); i++) {
+            try {
+                seqEvent.add(new NodeEvent(interpreter, seqEventJSON.getJSONObject(i), this));
+            } catch (JSONException ex) {
+                throw new NodeException("NodeSeqEvent", "item " + i, ex);
+            }
+        }
 
         // initialize the sequences of events and rules
-        seqEvent = new NodeSeqEvent(interpreter, getJSONArray(ruleWhenJSON, "events"), this);
         seqRules = new NodeSeqRules(interpreter, getJSONArray(ruleWhenJSON, "seqRulesThen"), this);
 
     }
@@ -55,12 +71,14 @@ public class NodeWhen extends Node {
     public Integer call() {
         LOGGER.debug("Call {}", this);
         if (!isStarted()) {
+            nbEventEnded = 0;
             fireStartEvent(new StartEvent(this));
             setStarted(true);
         }
-        seqEvent.addEndEventListener(this);
-        seqEvent.call();
-
+        for (NodeEvent e : seqEvent) {
+            e.addEndEventListener(this);
+            e.call();
+        }
         return null;
     }
 
@@ -70,40 +88,33 @@ public class NodeWhen extends Node {
         LOGGER.debug("NWhen end event: {}", nodeEnded);
         if (!isStopping()) {
             // if all the events are received, launch the sequence of rules
-            if (nodeEnded == seqEvent) {
-                seqRules.addEndEventListener(this);
-
-                LOGGER.debug("###### all the events are received, launching the sequence of rules #######");
-                try {
+            if (nodeEnded instanceof NodeEvent) {
+                nbEventEnded++;
+                if (nbEventEnded == seqEvent.size()) {
+                    LOGGER.debug("All the events have been ended");
+                    seqRules.addEndEventListener(this);
                     seqRules.call();
-                } catch (Exception ex) {
-                    LOGGER.error(ex.getMessage());
                 }
-                // if the sequence of rules is terminated, fire the event event
-            } else {
-                LOGGER.debug("###### Rules are done");
-                setStarted(false);
-                fireEndEvent(new EndEvent(this));
-            }
-        } else {
-            LOGGER.debug("###### is stopping");
+                return;
 
+            }
+            setStarted(false);
+            fireEndEvent(new EndEvent(this));
+
+        } else {
+            LOGGER.warn("endEvent has been fired while the node was stopping");
         }
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-            seqEvent.removeEndEventListener(this);
-            seqRules.removeEndEventListener(this);
-            seqEvent.stop();
-            seqRules.stop();
-
-            setStarted(false);
-            setStopping(false);
+    protected void specificStop() {
+        LOGGER.debug("specific Stop");
+        for (NodeEvent e : seqEvent) {
+            e.removeEndEventListener(this);
+            e.stop();
         }
-
+        seqRules.removeEndEventListener(this);
+        seqRules.stop();
     }
 
     @Override
@@ -113,12 +124,20 @@ public class NodeWhen extends Node {
 
     @Override
     public String getExpertProgramScript() {
-        return "when("+seqEvent.getExpertProgramScript() + "," + seqRules.getExpertProgramScript() + ")";
+        String events = "[";
+        for (NodeEvent e : seqEvent) {
+            events += e.getExpertProgramScript() + ",";
+        }
+        events = events.substring(0, events.length() - 1) + "]";
+
+        return "when(" + events + "," + seqRules.getExpertProgramScript() + ")";
     }
 
     @Override
     protected void collectVariables(SymbolTable s) {
-        seqEvent.collectVariables(s);
+        for (NodeEvent e : seqEvent) {
+            e.collectVariables(s);
+        }
         seqRules.collectVariables(s);
     }
 }

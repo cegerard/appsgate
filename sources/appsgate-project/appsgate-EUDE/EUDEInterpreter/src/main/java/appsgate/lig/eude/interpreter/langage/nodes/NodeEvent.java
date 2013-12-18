@@ -111,21 +111,16 @@ public class NodeEvent extends Node {
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-            if (sourceType.equals("program")) {
-                NodeProgram p = getNodeProgram(sourceId);
-                if (eventName.equals("start")) {
-                    p.removeStartEventListener(this);
-                } else if (eventName.equals("end")) {
-                    p.removeEndEventListener(this);
-                }
-            } else {
-                removeNodeListening(this);
+    public void specificStop() {
+        if (sourceType.equals("program")) {
+            NodeProgram p = getNodeProgram(sourceId);
+            if (eventName.equals("start")) {
+                p.removeStartEventListener(this);
+            } else if (eventName.equals("end")) {
+                p.removeEndEventListener(this);
             }
-            setStarted(false);
-            setStopping(false);
+        } else {
+            removeNodeListening(this);
         }
     }
 

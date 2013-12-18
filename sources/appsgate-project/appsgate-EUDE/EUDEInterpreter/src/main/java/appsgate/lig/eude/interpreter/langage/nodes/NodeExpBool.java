@@ -66,15 +66,10 @@ public class NodeExpBool extends Node {
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-            for (NodeSeqAndBool n : listSeqAndBool) {
-                n.removeEndEventListener(this);
-                n.stop();
-            }
-            setStarted(false);
-            setStopping(false);
+    public void specificStop() {
+        for (NodeSeqAndBool n : listSeqAndBool) {
+            n.removeEndEventListener(this);
+            n.stop();
         }
     }
 

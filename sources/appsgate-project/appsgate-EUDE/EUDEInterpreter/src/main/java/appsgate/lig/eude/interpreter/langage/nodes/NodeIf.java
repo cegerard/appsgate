@@ -105,21 +105,13 @@ public class NodeIf extends Node {
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-
-            expBool.removeEndEventListener(this);
-            expBool.stop();
-            seqRulesTrue.removeEndEventListener(this);
-            seqRulesTrue.stop();
-            seqRulesFalse.removeEndEventListener(this);
-            seqRulesFalse.stop();
-
-            setStarted(false);
-            setStopping(false);
-        }
-
+    public void specificStop() {
+        expBool.removeEndEventListener(this);
+        expBool.stop();
+        seqRulesTrue.removeEndEventListener(this);
+        seqRulesTrue.stop();
+        seqRulesFalse.removeEndEventListener(this);
+        seqRulesFalse.stop();
     }
 
     @Override

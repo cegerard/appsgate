@@ -87,15 +87,10 @@ public class NodeSeqAndRules extends Node {
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-            for (Node n : rules) {
-                n.stop();
-                n.removeEndEventListener(this);
-            }
-            setStarted(false);
-            setStopping(false);
+    public void specificStop() {
+        for (Node n : rules) {
+            n.stop();
+            n.removeEndEventListener(this);
         }
     }
 
@@ -115,19 +110,18 @@ public class NodeSeqAndRules extends Node {
         return "[Node SeqAndRules: [" + rules.size() + "]]";
     }
 
-    
     @Override
     public String getExpertProgramScript() {
         String ret = "";
-        for (Node n: rules) {
+        for (Node n : rules) {
             ret += n.getExpertProgramScript() + "\n";
         }
-        return ret.substring(0, ret.length()-1);
+        return ret.substring(0, ret.length() - 1);
     }
 
     @Override
     protected void collectVariables(SymbolTable s) {
-        for (Node n: rules) {
+        for (Node n : rules) {
             n.collectVariables(s);
         }
     }
