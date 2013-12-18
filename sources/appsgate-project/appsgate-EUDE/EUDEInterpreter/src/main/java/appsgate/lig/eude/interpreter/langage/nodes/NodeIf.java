@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,14 +43,15 @@ public class NodeIf extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param ruleIfJSON JSON representation of the node
+     * @param parent
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeIf(EUDEInterpreterImpl interpreter, JSONObject ruleIfJSON) throws NodeException {
-        super(interpreter);
+    public NodeIf(EUDEInterpreterImpl interpreter, JSONObject ruleIfJSON, Node parent) throws NodeException {
+        super(interpreter, parent);
 
-        this.expBool = new NodeExpBool(interpreter, getJSONArray(ruleIfJSON, "expBool"));
-        this.seqRulesTrue = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesTrue"));
-        this.seqRulesFalse = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesFalse"));
+        this.expBool = new NodeExpBool(interpreter, getJSONArray(ruleIfJSON, "expBool"), this);
+        this.seqRulesTrue = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesTrue"), this);
+        this.seqRulesFalse = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesFalse"), this);
 
     }
 
@@ -123,6 +125,18 @@ public class NodeIf extends Node {
     @Override
     public String toString() {
         return "[node If:" + expBool.toString() + "?" + seqRulesTrue.toString() + ":" + seqRulesFalse.toString() + "]";
+    }
+
+    @Override
+    public String getExpertProgramScript() {
+        return "if " + expBool.getExpertProgramScript() + "\nthen " + seqRulesTrue.getExpertProgramScript() + "\n else " + seqRulesFalse.getExpertProgramScript() + "\n";
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        expBool.collectVariables(s);
+        seqRulesTrue.collectVariables(s);
+        seqRulesFalse.collectVariables(s);
     }
 
 }

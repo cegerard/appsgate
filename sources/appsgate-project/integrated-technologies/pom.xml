@@ -23,10 +23,10 @@
 		<module>sensor-network</module>
 		<module>upnp-dlna</module>
 		<module>web-services</module>
-		<module>device-mockups</module>
+<!-- 		<module>device-mockups</module> -->
 		<module>software-services</module>
 		<module>fuchsia-ard-plugin</module>
-		<module>dfki-integration</module>
+<!-- 		<module>dfki-integration</module> -->
 	</modules>
 	
 </project>

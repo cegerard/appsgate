@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,11 +44,12 @@ public class NodeSeqAndBool extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param seqAndBoolJSON JSON representation of the node
+     * @param parent
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeSeqAndBool(EUDEInterpreterImpl interpreter, JSONArray seqAndBoolJSON)
+    public NodeSeqAndBool(EUDEInterpreterImpl interpreter, JSONArray seqAndBoolJSON, Node parent)
             throws NodeException {
-        super(interpreter);
+        super(interpreter, parent);
 
         // instantiate each boolean relation and store in the list
         relationsBool = new ArrayList<NodeRelationBool>();
@@ -58,7 +60,7 @@ public class NodeSeqAndBool extends Node {
             } catch (JSONException ex) {
                 throw new NodeException("NodeSeqAndBool", "item " + i, ex);
             }
-            relationsBool.add(new NodeRelationBool(interpreter, relBoolJSON));
+            relationsBool.add(new NodeRelationBool(interpreter, relBoolJSON, this));
             if (isStopping()) {
                 break;
             }
@@ -154,5 +156,21 @@ public class NodeSeqAndBool extends Node {
     @Override
     public String toString() {
         return "[Node SeqAndBool: [" + relationsBool.size() + "]]";
+    }
+
+    @Override
+    public String getExpertProgramScript() {
+        String ret ="";
+        for (NodeRelationBool n: this.relationsBool) {
+            ret += n.getExpertProgramScript();
+        }
+        return ret;
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        for (NodeRelationBool n: this.relationsBool) {
+            n.collectVariables(s);
+       }
     }
 }

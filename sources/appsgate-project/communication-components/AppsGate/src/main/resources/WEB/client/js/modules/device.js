@@ -1471,28 +1471,19 @@ define([
 			
 			Device.CoreClock.__super__.initialize.apply(this, arguments);
 			
-			// attribute for the clock
-			this.set("moment", Moment(parseInt(this.get("clockValue"))));
-			this.set("year", this.get("moment").year());
-			this.set("month", this.get("moment").month());
-			this.set("day", this.get("moment").day());
-			this.set("hour", this.get("moment").hour().toString());
-			if (this.get("hour").length === 1) {
-				this.set("hour", "0" + this.get("hour"));
-			}
-			this.set("minute", this.get("moment").minute().toString());
-			if (this.get("minute").length === 1) {
-				this.set("minute", "0" + this.get("minute"));
-			}
-			this.set("second", this.get("moment").second().toString());
-			if (this.get("second").length === 1) {
-				this.set("second", "0" + this.get("second"));
-			}
-			
 			// when the flow rate changes, update the interval that controls the local time
 			this.on("change:flowRate", function() {
-				clearInterval(this.intervalLocalClockValue);
-				this.intervalLocalClockValue = setInterval(self.updateClockValue, (1 / self.get("flowRate")) * 60000);
+				//clearInterval(this.intervalLocalClockValue);
+				var moi = this;
+				var time = (new Date()).getTime();
+				clearTimeout( moi.timeout );
+				var fctCB = function() {
+					 self.updateClockValue();
+					 var time = ( (new Date()).getTime() - self.anchorSysTime ) * self.get("flowRate"); // Temps écoulé en terme de l'horloge par rapport à son ancre AnchorTimeSys
+					 var dt = ( Math.floor((time+60000)/60000)*60000 - time) / self.get("flowRate");
+					 moi.timeout = setTimeout( fctCB, dt + 5);
+					}
+				this.timeout = setTimeout( fctCB, ( Math.floor((time+60000)/60000)*60000 - time + 5 ) / self.get("flowRate") );
 			});
 			
 			// when the ClockSet changes, resynchornize with the server
@@ -1502,8 +1493,18 @@ define([
 			
 			// synchronize the core clock with the server every 10 minutes
 			dispatcher.on("systemCurrentTime", function(timeInMillis) {
-				self.set("moment", Moment(parseInt(timeInMillis)));
+				self.set("moment", moment(parseInt(timeInMillis)));
+				self.anchorSysTime = (new Date()).getTime();
+				self.anchorTime = parseInt(timeInMillis);
+				self.updateClockDisplay();
 			});
+			
+			dispatcher.on("systemCurrentFlowRate", function(flowRate){
+				self.set("flowRate", flowRate);
+			});
+			
+			self.synchronizeCoreClock();
+			self.synchronizeFlowRate();
 			
 			// bind the method to this model to avoid this keyword pointing to the window object for the callback on setInterval
 			this.synchronizeCoreClock = _.bind(this.synchronizeCoreClock, this);
@@ -1511,14 +1512,24 @@ define([
 			
 			// update the local time every minute
 			this.updateClockValue = _.bind(this.updateClockValue, this);
-			this.intervalLocalClockValue = setInterval(this.updateClockValue, (1 / this.get("flowRate")) * 60000);
 		},
 		
 		/**
 		 * Callback to update the clock value - increase the local time of one minute
 		 */
 		updateClockValue:function() {
-			this.get("moment").add("minute", 1);
+			if(this.anchorSysTime){
+				var delta_ms = ((new Date()).getTime() - this.anchorSysTime) * parseInt(this.get("flowRate"));
+				var ms = this.anchorTime + delta_ms;
+				this.set("moment", moment(ms), {clockRefresh:true});
+				this.updateClockDisplay();
+			}
+		},
+		
+		/**
+		 * Updates clock display values from internal moment
+		 */
+		updateClockDisplay:function() {
 			this.set("year", this.get("moment").year().toString(), {silent: true});
 			this.set("month", this.get("moment").month().toString(), {silent: true});
 			this.set("day", this.get("moment").day().toString(), {silent: true});
@@ -1541,6 +1552,10 @@ define([
 		 */
 		synchronizeCoreClock:function() {
 			this.remoteCall("getCurrentTimeInMillis", [], "systemCurrentTime");
+		},
+		
+		synchronizeFlowRate:function() {
+			this.remoteCall("getTimeFlowRate", [], "systemCurrentFlowRate");
 		},
 		
 		/**
@@ -2128,7 +2143,7 @@ define([
 			"click button.btn-media-volume"					: "onSetVolumeMedia",
 			"click button.btn-media-browse"					: "onBrowseMedia",
 			"show.bs.modal #edit-device-modal"				: "initializeModal",
-			"hide.bs.modal #edit-device-modal"				: "toggleModalValue",
+			"hidden.bs.modal #edit-device-modal"				: "toggleModalValue",
 			"click #edit-device-modal button.valid-button"	: "validEditDevice",
 			"keyup #edit-device-modal input"				: "validEditDevice",
 			"change #edit-device-modal select"				: "checkDevice"
@@ -2304,8 +2319,8 @@ define([
 			
 			// initialize the field to edit the core clock if needed
 			if (this.model.get("type") === "21" || this.model.get("type") === 21) {
-				$("#edit-device-modal select#hour").val(this.model.get("hour"));
-				$("#edit-device-modal select#minute").val(this.model.get("minute"));
+				$("#edit-device-modal select#hour").val(this.model.get("moment").hour());
+				$("#edit-device-modal select#minute").val(this.model.get("moment").minute());
 				$("#edit-device-modal input#time-flow-rate").val(this.model.get("flowRate"));
 			}
 			
@@ -2317,7 +2332,10 @@ define([
 		 * Tell the router there is no modal anymore
 		 */
 		toggleModalValue:function() {
-			appRouter.isModalShown = false;
+			_.defer(function() {
+				appRouter.isModalShown = false;
+				appRouter.currentView.render();
+			});
 		},
 		
 		/**
@@ -2366,38 +2384,38 @@ define([
 						destPlaceId = $("#edit-device-modal select option:selected").val();
 					}
 					
-					// set the new name to the device
-					self.model.set("name", $("#edit-device-modal input#device-name").val());
-						
-					// send the updates to the server
-					self.model.save();
 					
-					// move the device if this is not the core clock
-					if (self.model.get("type") !== "21" && self.model.get("type") !== 21) {
-						places.moveDevice(self.model.get("placeId"), destPlaceId, self.model.get("id"), true);
-					} else { // update the time and the flow rate set by the user
-						// update the moment attribute
-						self.model.get("moment").set("hour", parseInt($("#edit-device-modal select#hour").val()));
-						self.model.get("moment").set("minute", parseInt($("#edit-device-modal select#minute").val()));
-						// retrieve the value of the flow rate set by the user
-						var timeFlowRate = $("#edit-device-modal input#time-flow-rate").val();
-						
-						// update the attributes hour and minute
-						self.model.set("hour", self.model.get("moment").hour());
-						self.model.set("minute", self.model.get("moment").minute());
-							
-						// send the update to the server
-						self.model.save();
-							
-						// update the attribute time flow rate
-						self.model.set("flowRate", timeFlowRate);
-							
-						//send the update to the server
-						self.model.save();
-					}
-
-						
 					this.$el.find("#edit-device-modal").on("hidden.bs.modal", function() {
+						// set the new name to the device
+						self.model.set("name", $("#edit-device-modal input#device-name").val());
+							
+						// send the updates to the server
+						self.model.save();
+						
+						// move the device if this is not the core clock
+						if (self.model.get("type") !== "21" && self.model.get("type") !== 21) {
+							places.moveDevice(self.model.get("placeId"), destPlaceId, self.model.get("id"), true);
+						} else { // update the time and the flow rate set by the user
+							// update the moment attribute
+							self.model.get("moment").set("hour", parseInt($("#edit-device-modal select#hour").val()));
+							self.model.get("moment").set("minute", parseInt($("#edit-device-modal select#minute").val()));
+							// retrieve the value of the flow rate set by the user
+							var timeFlowRate = $("#edit-device-modal input#time-flow-rate").val();
+							
+							// update the attributes hour and minute
+							self.model.set("hour", self.model.get("moment").hour());
+							self.model.set("minute", self.model.get("moment").minute());
+								
+							// send the update to the server
+							self.model.save();
+								
+							// update the attribute time flow rate
+							self.model.set("flowRate", timeFlowRate);
+								
+							//send the update to the server
+							self.model.save();
+						}
+						
 						// tell the router that there is no modal any more
 						appRouter.isModalShown = false;
 						

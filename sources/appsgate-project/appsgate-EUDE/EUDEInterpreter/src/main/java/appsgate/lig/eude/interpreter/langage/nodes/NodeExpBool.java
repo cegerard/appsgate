@@ -7,6 +7,7 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,14 +47,14 @@ public class NodeExpBool extends Node {
      * @param expBoolJSON JSON representation of the node
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeExpBool(EUDEInterpreterImpl interpreter, JSONArray expBoolJSON) throws NodeException {
-        super(interpreter);
+    public NodeExpBool(EUDEInterpreterImpl interpreter, JSONArray expBoolJSON, Node parent) throws NodeException {
+        super(interpreter, parent);
 
         // instantiate each sequence and store it in the list
         listSeqAndBool = new ArrayList<NodeSeqAndBool>();
         for (int i = 0; i < expBoolJSON.length(); i++) {
             try {
-                listSeqAndBool.add(new NodeSeqAndBool(interpreter, expBoolJSON.getJSONArray(i)));
+                listSeqAndBool.add(new NodeSeqAndBool(interpreter, expBoolJSON.getJSONArray(i), this));
             } catch (JSONException ex) {
                 throw new NodeException("NodeExpBool", "item " + i, ex);
             }
@@ -146,5 +147,22 @@ public class NodeExpBool extends Node {
     @Override
     public String toString() {
         return "[Node ExpBool: [" + listSeqAndBool.size() + "]]";
+    }
+
+    @Override
+    public String getExpertProgramScript() {
+        String ret = "";
+        for (NodeSeqAndBool n : listSeqAndBool) {
+            ret += n.getExpertProgramScript() + "\n";
+        }
+        return ret;
+
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        for (NodeSeqAndBool n : listSeqAndBool) {
+            n.collectVariables(s);
+        }
     }
 }

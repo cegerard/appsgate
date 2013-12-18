@@ -123,6 +123,7 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 				}
 				Integer alarmId  = alarmListenerList.get(key);
 				if(alarmId != null) {
+					logger.debug("Deleting an alarm listener with id: "+alarmId);
 					coreClock.unregisterAlarm(alarmId);
 					alarmListenerList.remove(key);
 				}

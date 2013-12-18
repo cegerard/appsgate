@@ -8,6 +8,7 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class NodeSeqEvent extends Node {
 
     //Logger
     @SuppressWarnings("unused")
-	private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqAndRules.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqAndRules.class.getName());
 
     /**
      * list of events
@@ -43,22 +44,23 @@ public class NodeSeqEvent extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param seqEventJSON Sequence of event to instantiate in a JSON format
+     * @param parent
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public NodeSeqEvent(EUDEInterpreterImpl interpreter, JSONArray seqEventJSON) throws NodeException {
-        super(interpreter);
+    public NodeSeqEvent(EUDEInterpreterImpl interpreter, JSONArray seqEventJSON, Node parent) throws NodeException {
+        super(interpreter, parent);
 
         // instantiate the events
         seqEvent = new ArrayList<NodeEvent>();
         for (int i = 0; i < seqEventJSON.length(); i++) {
             try {
-                seqEvent.add(new NodeEvent(interpreter, seqEventJSON.getJSONObject(i)));
+                seqEvent.add(new NodeEvent(interpreter, seqEventJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
                 throw new NodeException("NodeSeqEvent", "item " + i, ex);
             }
         }
     }
-
+    
     @Override
     public Integer call() {
         // fire the start event
@@ -73,10 +75,10 @@ public class NodeSeqEvent extends Node {
             e.addEndEventListener(this);
             e.call();
         }
-
+        
         return null;
     }
-
+    
     @Override
     public void stop() {
         if (isStarted()) {
@@ -89,7 +91,7 @@ public class NodeSeqEvent extends Node {
             setStopping(false);
         }
     }
-
+    
     @Override
     public void endEventFired(EndEvent e) {
         nbEventReceived++;
@@ -100,10 +102,26 @@ public class NodeSeqEvent extends Node {
             fireEndEvent(new EndEvent(this));
         }
     }
-
+    
     @Override
     public String toString() {
         return "[Node SeqEvent: [" + seqEvent.size() + "]]";
     }
 
+    @Override
+    public String getExpertProgramScript() {
+        String ret = "[";
+        for (NodeEvent e : this.seqEvent) {
+            ret += e.getExpertProgramScript() + ",";
+        }
+        return ret.substring(0, ret.length()-1) + "]";
+    }
+    
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        for (NodeEvent e : this.seqEvent) {
+            e.collectVariables(s);
+        }
+    }
+    
 }

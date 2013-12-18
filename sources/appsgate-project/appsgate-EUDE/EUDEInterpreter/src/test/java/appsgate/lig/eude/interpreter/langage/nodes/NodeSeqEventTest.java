@@ -21,7 +21,7 @@ public class NodeSeqEventTest extends NodeTest {
     @Override
     public void setUp() {
         try {
-            this.instance = new NodeSeqEvent(null, new JSONArray());
+            this.instance = new NodeSeqEvent(null, new JSONArray(), null);
         } catch (NodeException ex) {
             System.out.println("JSON Exception: " + ex);
         }

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +103,7 @@ public class NodeProgram extends Node {
      * @param interpreter the interpreter that execute this program
      */
     public NodeProgram(EUDEInterpreterImpl interpreter) {
-        super(interpreter);
+        super(interpreter, null);
     }
 
     /**
@@ -148,7 +149,7 @@ public class NodeProgram extends Node {
         } else {
             daemon = false;
         }
-        seqRules = new NodeSeqRules(getInterpreter(), getJSONArray(source, "seqRules"));
+        seqRules = new NodeSeqRules(getInterpreter(), getJSONArray(source, "seqRules"), this);
 
         return true;
 
@@ -313,5 +314,34 @@ public class NodeProgram extends Node {
     public String toString() {
         return "[Node Program : " + name + "]";
     }
+    
+    /**
+     * @return the script of a program, more readable than the json structure
+     */
+    @Override
+   
+    public String getExpertProgramScript(){
+        SymbolTable vars = new SymbolTable();
+        seqRules.collectVariables(vars);
+        this.setSymbolTable(vars);
+        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + seqRules.getExpertProgramScript();
+    }
+     
+    /**
+     * @return the header of a program
+     */
+    private String getHeader() {
+        String ret = "";
+        ret += "Author: " + this.author + "\n";
+        ret += "Target:" + this.target + "\n";
+        return ret;
+    }
+    
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        seqRules.collectVariables(s);
+    }
+
 
 }

@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +39,15 @@ public class NodeWhen extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param ruleWhenJSON
+     * @param parent
      * @throws NodeException
      */
-    public NodeWhen(EUDEInterpreterImpl interpreter, JSONObject ruleWhenJSON) throws NodeException {
-        super(interpreter);
+    public NodeWhen(EUDEInterpreterImpl interpreter, JSONObject ruleWhenJSON, Node parent) throws NodeException {
+        super(interpreter, parent);
 
         // initialize the sequences of events and rules
-        seqEvent = new NodeSeqEvent(interpreter, getJSONArray(ruleWhenJSON, "events"));
-        seqRules = new NodeSeqRules(interpreter, getJSONArray(ruleWhenJSON, "seqRulesThen"));
+        seqEvent = new NodeSeqEvent(interpreter, getJSONArray(ruleWhenJSON, "events"), this);
+        seqRules = new NodeSeqRules(interpreter, getJSONArray(ruleWhenJSON, "seqRulesThen"), this);
 
     }
 
@@ -77,10 +79,10 @@ public class NodeWhen extends Node {
                 } catch (Exception ex) {
                     LOGGER.error(ex.getMessage());
                 }
-                setStarted(false);
                 // if the sequence of rules is terminated, fire the event event
             } else {
                 LOGGER.debug("###### Rules are done");
+                setStarted(false);
                 fireEndEvent(new EndEvent(this));
             }
         } else {
@@ -107,5 +109,16 @@ public class NodeWhen extends Node {
     @Override
     public String toString() {
         return "[Node When: events(" + seqEvent.toString() + "), rules(" + seqRules + ")]";
+    }
+
+    @Override
+    public String getExpertProgramScript() {
+        return "when("+seqEvent.getExpertProgramScript() + "," + seqRules.getExpertProgramScript() + ")";
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        seqEvent.collectVariables(s);
+        seqRules.collectVariables(s);
     }
 }

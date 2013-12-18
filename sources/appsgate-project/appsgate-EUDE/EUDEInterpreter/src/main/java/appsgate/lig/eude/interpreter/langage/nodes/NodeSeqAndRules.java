@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +40,11 @@ public class NodeSeqAndRules extends Node {
      *
      * @param interpreter
      * @param seqAndRulesJSON
+     * @param parent
      * @throws NodeException
      */
-    public NodeSeqAndRules(EUDEInterpreterImpl interpreter, JSONArray seqAndRulesJSON) throws NodeException {
-        super(interpreter);
+    public NodeSeqAndRules(EUDEInterpreterImpl interpreter, JSONArray seqAndRulesJSON, Node parent) throws NodeException {
+        super(interpreter, parent);
 
         rules = new ArrayList<Node>();
 
@@ -55,13 +57,13 @@ public class NodeSeqAndRules extends Node {
             }
             String nodeType = getJSONString(ruleJSON, "type");
             if (nodeType.equals("NodeAction")) {
-                rules.add(new NodeAction(interpreter, ruleJSON));
+                rules.add(new NodeAction(interpreter, ruleJSON, this));
             } else if (nodeType.equals("NodeIf")) {
-                rules.add(new NodeIf(interpreter, ruleJSON));
+                rules.add(new NodeIf(interpreter, ruleJSON, this));
             } else if (nodeType.equals("NodeWhen")) {
-                rules.add(new NodeWhen(interpreter, ruleJSON));
+                rules.add(new NodeWhen(interpreter, ruleJSON, this));
             } else if (nodeType.equals("seqRules")) {
-                rules.add(new NodeSeqRules(interpreter, getJSONArray(ruleJSON, "rule")));
+                rules.add(new NodeSeqRules(interpreter, getJSONArray(ruleJSON, "rule"), this));
             } else {
                 LOGGER.warn("The type [{}] is not supported by the parser", nodeType);
             }
@@ -111,6 +113,23 @@ public class NodeSeqAndRules extends Node {
     public String toString() {
 
         return "[Node SeqAndRules: [" + rules.size() + "]]";
+    }
+
+    
+    @Override
+    public String getExpertProgramScript() {
+        String ret = "";
+        for (Node n: rules) {
+            ret += n.getExpertProgramScript() + "\n";
+        }
+        return ret.substring(0, ret.length()-1);
+    }
+
+    @Override
+    protected void collectVariables(SymbolTable s) {
+        for (Node n: rules) {
+            n.collectVariables(s);
+        }
     }
 
 }

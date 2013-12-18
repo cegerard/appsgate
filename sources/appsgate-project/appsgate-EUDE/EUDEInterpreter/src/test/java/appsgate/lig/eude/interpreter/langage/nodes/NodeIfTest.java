@@ -38,7 +38,7 @@ public class NodeIfTest extends NodeTest {
             ruleJSON.put("expBool", (Collection) null);
             ruleJSON.put("seqRulesTrue", (Collection) null);
             ruleJSON.put("seqRulesFalse", (Collection) null);
-            this.ifTest = new NodeIf(interpreter, ruleJSON);
+            this.ifTest = new NodeIf(interpreter, ruleJSON, null);
             this.instance = this.ifTest;
         } catch (JSONException ex) {
             System.out.println("JSON ex : " + ex.getMessage());

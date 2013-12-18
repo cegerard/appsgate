@@ -422,6 +422,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	 */
 	@Override
 	public void unregisterAlarm(int alarmEventId) {
+		logger.debug("unregisterAlarm(...), start " +alarmEventId);
 		synchronized (lock) {
 			if (periodicAlarmObservers.containsKey(alarmEventId)) {
 				periodicAlarmObservers.remove(alarmEventId);
@@ -438,6 +439,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 			reverseAlarmMap.remove(alarmEventId);
 			calculateNextTimer();
 		}
+		logger.debug("unregisterAlarm(...), end "+alarmEventId);
 	}
 
 	/*

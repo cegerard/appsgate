@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable.Element;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
@@ -50,17 +51,17 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * The interpreter
      */
-    private final EUDEInterpreterImpl interpreter;
+    private final EUDEInterpreterImpl interpreter; // :TODO: make this static 
 
     /**
      * Symbol table of the node containing the local symbols
      */
-    private SymbolTable symbolTable;
+    private SymbolTable symbolTable;// :TODO: remove this unused element
 
     /**
      * Node parent in the abstract tree of a program
      */
-    private Node parent;
+    private Node parent; // :TODO: remove this unused element
 
     /**
      * Use to stop node but atomically
@@ -77,8 +78,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      *
      * @param interpreter interpreter pointer for the nodes
      */
-    public Node(EUDEInterpreterImpl interpreter) {
+    public Node(EUDEInterpreterImpl interpreter, Node p) {
         this.interpreter = interpreter;
+        this.parent = p;
     }
 
     /**
@@ -196,6 +198,12 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
             return null;
         }
     }
+
+    /**
+     *
+     * @return
+     */
+    public abstract String getExpertProgramScript();
 
     @Override
     public Integer call() {
@@ -359,4 +367,48 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 
     }
 
+    protected void setSymbolTable(SymbolTable s) {
+        this.symbolTable = s;
+    }
+
+    /**
+     * 
+     * @param varName
+     * @return 
+     */
+    protected Element getElementFromName(String varName) {
+        if (this.symbolTable != null) {
+            Element element;
+            element = this.symbolTable.getElementByKey(varName);
+            if (element != null) {
+                return element;
+            }
+        }
+        if (parent != null) {
+            return parent.getElementFromName(varName);
+        }
+        return null;
+    }
+    
+    /**
+     * 
+     * @param id
+     * @param type
+     * @return 
+     */
+    protected String getElementKey(String id, String type) {
+        if (this.symbolTable != null) {
+            String key;
+            key = this.symbolTable.getElementKey(id, type);
+            if (key != null) {
+                return key;
+            }
+        }
+        if (parent != null) {
+            return parent.getElementKey(id, type);
+        }
+        return null;
+    }
+
+    abstract protected void collectVariables(SymbolTable s) ;
 }
