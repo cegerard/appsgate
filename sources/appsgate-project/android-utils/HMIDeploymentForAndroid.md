@@ -140,6 +140,8 @@ Bundles modified or added
 * Made a bundle from official Philips HUE SdK (better than using upnp)
 * Made a bundle from cybergarage (this one will be fully replaced with felix upnp base driver)
 * Made a bundle from Stax (does not work well for the moment)
+* Made a bundle for version 2.1.0-SNAPSHOT of Cybergarage, make a patch to accomodates with wrong url for embedded service/device description, also an ugly patch to retrieve the base URL of the device in some case (ugly but it works)
+* Patch upnp base drivers, to use the patched version of cybergarage as an external bundle
 
 Specific Configuration of the framework (config.properties)
 * felix.fileinstall.tmpdir= -> should be $ANDROIDFELIXPATH/tmp
@@ -159,8 +161,8 @@ On some devices (as the Set-Top-Box) dalvik sometimes ends unexpectedly with a "
 
 ### TODO list
 * Add the script felix-android.sh on init.rc to start on boot and keep running.
-* Patch the UPnP base driver to remove errors with incorrect UPnP XML
+* Clean up the patch on UPnP base driver to remove errors with incorrect UPnP XML
 * Use Philips SdK for HUE Lamps
-* Remove Cybergarage
+* Investigate weird upnp base driver behavior with incorrect devices (such as hue lamp)
 * Investigate "stack fault" on STB
 * Port the Immotronics pem-enocean and ubikit
