@@ -51,8 +51,8 @@
    </script>
 </head>
 
-<body onload="javascript:WebSocketOpen();"
-	onUnload="javascript:WebSocketClose();>
+<body onload=""
+	onUnload="javascript:appsgateMain.disconnect();>
 
    <div id="wrap">
    
@@ -107,6 +107,9 @@
 
                	  </ul>
             	</div> -->
+            	<ul class="breadcrumb" id="path-app">
+     				<li><a href="#" onclick="javascript:appsgateMain.backHome();">Home</a> <span class="divider">/</span></li>
+   				</ul>
             </div>
          </div>
          <div class="pull-right">
@@ -143,7 +146,7 @@
             <!--<div id="hub" class="metro">-->
             
             	<!-- The whole metro panorama area -->
-               <div class="metro panorama">
+               <div class="metro panorama" id="top-panorama">
                	  <!-- The metro sections area -->
                   <div class="panorama-sections">
                   	 <!--  The HOME section area -->
@@ -151,7 +154,7 @@
                      
                       	<h2>Home</h2>
                      
-                        <div class="tile-column-span-2">	
+                        <div class="tile-column-span-2" id="home-left-col">	
                         
                            <a class="tile wide imagetext bg-color-bluedark" href="http://www.appsgate-catrene.org/"  target="_blank">
                            		<div class="image-wrapper">
@@ -163,19 +166,20 @@
                            		</div>
                            </a>
                            
-                            <a class="tile wide text bg-color-bluedark" href="/appsgate/client/index.html#programs" target="_blank">
+                           <a class="tile wide text bg-color-bluedark" href="/appsgate/client/index.html#programs" target="_blank">
                              <div class="text-header">SPOK</div>
                              <div class="text4">Simple PrOgramming Kit</div>
                               <div class="text3">End user designed programming language</div>
                            </a>
-                           
+
                         </div>
+                        
                      </div>
    
    					 <!--  The End users section area -->
                      <div class="panorama-section">
    
-                        <h2>End users</h2>
+                       <h2>End users</h2>
                         
                        <div class="tile-column-span-1">
                            <a class="tile square text bg-color-green" href="#">
@@ -260,7 +264,7 @@
                             	<div class="app-count">0</div>
                          	</a>
                         
-                         	<a class="tile app bg-color-darken" href="#" target="_blank">
+                         	<a class="tile app bg-color-darken" href="#" onclick="javascript:appsgateMain.goToHueSubMenu();">
                             	<div class="image-wrapper">
                                		<img src="ressources/hue_logo.png" alt=""/>
                             	</div>
@@ -298,6 +302,8 @@
                      </div>
    
                   </div>
+               </div>
+               <div class="metro panorama" id="display-panorama" style="display: none">
                </div>
                <a id="panorama-scroll-prev" href="#"></a>
                <a id="panorama-scroll-next" href="#"></a>
@@ -341,7 +347,15 @@
    <script type="text/javascript" src="./assets/js/jquery.touchSwipe.min.js"></script>
    <!--<script type="text/javascript" src="./assets/js/holder.js"></script>-->
    <!--<script type="text/javascript" src="./assets/js/perfect-scrollbar.with-mousewheel.min.js"></script>-->
-   <script type="text/javascript" src="./scripts/websocket.js"></script>
+   
+   <script data-main="scripts/appsgate" src="scripts/vendor/require.js"></script>
+   <!-- AppsGate devices scripts -->
+   <script type="text/javascript" src="./scripts/hue.js"></script>
+   <!-- AppsGate system clock scripts -->
+   <!--<script type="text/javascript" src="./scripts/clock.js"></script>-->
+   <!-- AppsGate scripts -->
+   <!--<script type="text/javascript" src="./scripts/websocket.js"></script>-->
+   <!--<script type="text/javascript" src="./scripts/appsgate.js"></script>-->
 
    <script type="text/javascript">
       $('.panorama').panorama({
