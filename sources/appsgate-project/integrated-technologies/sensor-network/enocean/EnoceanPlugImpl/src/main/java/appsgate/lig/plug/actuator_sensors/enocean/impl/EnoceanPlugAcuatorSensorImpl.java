@@ -1,4 +1,4 @@
-package appsgate.lig.smartplug.sensor.watteco.impl;
+package appsgate.lig.plug.actuator_sensors.enocean.impl;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,22 +7,16 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
 import appsgate.lig.smartplug.actuator_sensor.messages.SmartPlugNotificationMsg;
 import appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec;
-import appsgate.lig.watteco.adapter.WattecoAdapter;
-import appsgate.lig.watteco.adapter.services.WattecoIOService;
 
-/**
- * 
- * @author Cédric Gérard
- *
- */
-public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, SmartPlugServices {
-
+public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPlugSpec {
+	
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory.getLogger(WattecoSmartPlugImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(EnoceanPlugAcuatorSensorImpl.class);
 	
 	private String sensorName;
 	private String sensorId;
@@ -31,17 +25,16 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	private String userType;
 	private String status;
 	private String isPaired;
-	private String route;
 	
 	private String plugState;
 	
 	private String consumption;
 	
-	private SmartPlugValue spv;
-	
-	/** the main border router */
-	WattecoIOService wattecoAdapter;
-	
+	/**
+	 * EnOcean proxy service uses to validate the sensor configuration with the
+	 * EnOcean proxy (pairing phase)
+	 */
+	EnOceanService enoceanProxy;
 	
 	/**
 	 * Called by APAM when an instance of this implementation is created
@@ -85,7 +78,7 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 		logger.info("The sensor, "+ sensorId+" consumption changed to "+consumption);
 		notifyChanges("consumption", consumption);
 	}
-	
+
 	/**
 	 * This method uses the ApAM message model. Each call produce a
 	 * KeyCardNotificationMsg object and notifies ApAM that a new message has
@@ -104,82 +97,41 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	
 	@Override
 	public void toggle() {
-		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_TOGGLE, false);
+		boolean state = new Boolean(plugState);
+		if(state){
+			off();
+		}else{
+			on();
+		}
 	}
-	
+
 	@Override
 	public void on() {
-		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_ON, false);
+		enoceanProxy.turnOnActuator(sensorId);
 	}
 
 	@Override
 	public void off() {
-		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_OFF, false);
+		enoceanProxy.turnOffActuator(sensorId);
 	}
-	
+
 	@Override
 	public int activePower() {
-		return readAttribute().activePower;
+		enoceanProxy.sendActuatorUpdateEvent(sensorId);
+		return new Integer(consumption);
 	}
 
 	@Override
 	public int activeEnergy() {
-		return readAttribute().activeEnergy;
-	}
-	
-	@Override
-	public boolean getRelayState() {
-		byte[] b = wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_READ_ATTRIBUTE, true);
-		boolean state = extractState(b);
-		plugState = Boolean.toString(state);
-		return state;
+		return -1;
 	}
 
 	@Override
-	public SmartPlugValue readAttribute() {
-		byte[] b = null;
-		b = wattecoAdapter.sendCommand(route, WattecoAdapter.SIMPLE_METERING_READ_ATTRIBUTE, true);
-		spv = extractValues(b);
-		consumption = String.valueOf(spv.activePower);
-		return spv;
+	public boolean getRelayState() {
+		boolean state = new Boolean(plugState);
+		return state;
 	}
-	
-	/* ***********************************************************************
-	 * 							PRIVATE FUNCTIONS                            *
-	 *********************************************************************** */
-	
-	private SmartPlugValue extractValues(byte[] ba) {
-		// TODO: unsure, doc inaccurate
-		SmartPlugValue spv = new SmartPlugValue();
-		Byte b;
-		
-		// calculation of the 'summation of the active energy in W.h'
-		b = new Byte(ba[9]);
-		spv.activeEnergy  = (b << 16);
-		b = new Byte(ba[10]);
-		spv.activeEnergy += (b << 8);
-		b = new Byte(ba[11]);
-		spv.activeEnergy += b;
-		
-		// calculation of the 'number of sample'
-		b = new Byte(ba[15]);
-		spv.nbOfSamples  = (b << 8);
-		b = new Byte(ba[16]);
-		spv.nbOfSamples += b;
-		
-		// calculation of the 'active power in W'
-		b = new Byte(ba[17]);
-		spv.activePower = (b << 8);
-		b = new Byte(ba[18]);
-		spv.activePower += b;
-		
-		return spv;
-	}
-	
-	private boolean extractState(byte[] ba) {
-		return (ba[8] == new Byte("1").byteValue());
-	}
-	
+
 	/* ***********************************************************************
 	 * 							    ACCESSORS                                *
 	 *********************************************************************** */
@@ -220,7 +172,7 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	public void setPictureId(String pictureId) {
 		this.pictureId = pictureId;
 	}
-	
+
 	public boolean isPaired() {
 		return Boolean.valueOf(isPaired);
 	}
@@ -240,5 +192,4 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	public void setSensorName(String sensorName) {
 		this.sensorName = sensorName;
 	}
-
 }

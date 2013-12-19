@@ -8,8 +8,8 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 		var websocket = new websocketRef();
         var clockModule = new clockModuleRef();
 	
-		this.getWebSocket = function () {return websocket};
-		this.getClockModule = function () {return clockModule};
+		this.getWebSocket = function () {return websocket;}
+		this.getClockModule = function () {return clockModule;}
 	
 		/**
      	 * Connect to the AppsGate server through the web socket module
@@ -127,6 +127,14 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
        				}	
        			}
     		}
+		}
+		
+		/**
+ 		 * Shutdown the AppsGate server
+ 		 */
+		this.shutdown = function ()
+		{
+			websocket.send("{\"method\":\"shutdown\", \"args\":[], \"callId\":\"cf-shutdown\"}");
 		}
 		
 	})(); //AppsGate main object definition end

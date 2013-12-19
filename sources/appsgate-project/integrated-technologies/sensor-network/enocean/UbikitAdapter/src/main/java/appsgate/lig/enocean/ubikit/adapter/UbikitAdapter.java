@@ -48,6 +48,7 @@ import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
 import appsgate.lig.enocean.ubikit.adapter.source.event.ContactEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.KeyCardEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.LumEvent;
+import appsgate.lig.enocean.ubikit.adapter.source.event.MeteringEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.MotionEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.PairingModeEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.SetPointEvent;
@@ -56,6 +57,7 @@ import appsgate.lig.enocean.ubikit.adapter.source.event.TempEvent;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
+import fr.immotronic.ubikit.pems.enocean.event.in.ActuatorUpdateEvent;
 //import fr.immotronic.ubikit.pems.enocean.ActuatorProfile;
 //import fr.immotronic.ubikit.pems.enocean.event.in.CreateNewActuatorEvent;
 import fr.immotronic.ubikit.pems.enocean.event.in.TurnOffActuatorEvent;
@@ -166,6 +168,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		eventGate.addListener(new KeyCardEvent(this));
 		eventGate.addListener(new ContactEvent(this));
 		eventGate.addListener(new PairingModeEvent(this));
+		eventGate.addListener(new MeteringEvent(this));
 		
 		if (httpService != null) {
 			final HttpContext httpContext = httpService.createDefaultHttpContext();
@@ -321,7 +324,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @see PhysicalEnvironmentModelObserver
 	 */
-	// @Override
+	@Override
 	public void log(String arg0) {
 		logger.info("!EnOcean event! " + arg0);
 		
@@ -329,36 +332,37 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		 * EnOcean telegram parsing * 
 		 * for not supported event	*				
 		 ****************************/
-		//RECV < a5 5a b 5 0 0 0 0 0 27 b3 ed 20 f7 > RRT from 27b3ed, RPS MSB [ 0 0 0 0 ] LSB
 		//RECV < 55 | 0 7 7 1 | 7a | f6 70 0 27 b3 ed 30 1 ff ff ff ff 2d 0 | 76 > FROM 27b3ed (-45 dBm)
 		String[] splited = arg0.split("FROM");
-		String split1 = splited[1];
-		String id = "";
-		for(int i=1; i<7; i++ ) {
-			id += split1.charAt(i);
-		}
-		id= "ENO"+id;
-		Instance inst = getSensorInstance(id);
-		if(inst != null){
-			logger.info("Paired sensor found "+id);
-			//TODO replace the use of userTyper by something directly on EnOceanProfile
-			String userType = inst.getProperty("userType");
-			if(userType.contentEquals("2")) { // Switch sensor
-				//Check the event
-				String split0 = splited[0];
-				String[] splited1 = split0.split("<");
-				String enoceanTg = splited1[1].trim();
-
-				if(enoceanTg.charAt(23) == '0') {
-					//The switch is set to neutral position
-					String switchNumber = inst.getProperty("switchNumber");
-					logger.info("The switch " + id + ", state changed to neutral with button  " + switchNumber);
-					inst.setProperty("buttonStatus", "none");
-					inst.setProperty("switchNumber", switchNumber);
-					inst.setProperty("switchState", "true");
-				}
+		if(splited.length > 1) { // if arg0 is a received message FROM xxxx
+			String split1 = splited[1];
+			String id = "";
+			for(int i=1; i<7; i++ ) {
+				id += split1.charAt(i);
 			}
+			id= "ENO"+id;
+			Instance inst = getSensorInstance(id);
+			if(inst != null){
+				logger.info("Paired sensor found "+id);
+				//TODO replace the use of userTyper by something directly on EnOceanProfile
+				String userType = inst.getProperty("userType");
+				if(userType.contentEquals("2")) { // Switch sensor
+					//Check the event
+					String split0 = splited[0];
+					String[] splited1 = split0.split("<");
+					String enoceanTg = splited1[1].trim();
+
+					if(enoceanTg.charAt(23) == '0') {
+						//The switch is set to neutral position
+						String switchNumber = inst.getProperty("switchNumber");
+						logger.info("The switch " + id + ", state changed to neutral with button  " + switchNumber);
+						inst.setProperty("buttonStatus", "none");
+						inst.setProperty("switchNumber", switchNumber);
+						inst.setProperty("switchState", "true");
+					}
+				}
 			
+			}
 		}
 	}
 
@@ -367,7 +371,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @see EnOceanService
 	 */
-	// Override
+	@Override
 	public JSONArray getAllItem() {
 		Collection<PhysicalEnvironmentItem> enOceanDeviceList = enoceanBridge.getAllItems();
 		
@@ -393,7 +397,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 *            , the sensor item id.
 	 * @see EnOceanService
 	 */
-	// Override
+	@Override
 	public JSONObject getItem(String id) {
 		PhysicalEnvironmentItem item = enoceanBridge.getItem(id);
 		JSONObject obj = new JSONObject();
@@ -409,7 +413,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * Get a JSON description of the capabilities associate to the specified
 	 * item id
 	 */
-	// @Override
+	@Override
 	public JSONArray getItemCapabilities(String id) {
 		ArrayList<EnOceanProfiles> capas = tempEventCapabilitiesMap.get(id);
 
@@ -428,28 +432,22 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		return capList;
 	}
 
-	/**
-	 * Post the turn on event to the specified target id.
-	 * 
-	 * @param targetID
-	 *            , the actuator id
-	 */
-	//@Override
+	@Override
 	public void turnOnActuator(String targetID) {
 		logger.debug("Turn on --> " + targetID);
 		eventGate.postEvent(new TurnOnActuatorEvent(targetID));
 	}
 
-	/**
-	 * Post the turn off event to the specified target id.
-	 * 
-	 * @param targetID
-	 *            , the actuator id.
-	 */
-	//@Override
+	@Override
 	public void turnOffActuator(String targetID) {
 		logger.debug("Turn off --> " + targetID);
 		eventGate.postEvent(new TurnOffActuatorEvent(targetID));
+	}
+	
+	@Override
+	public void sendActuatorUpdateEvent(String targetID) {
+		logger.debug("Actuator update --> " + targetID);
+		eventGate.postEvent(new ActuatorUpdateEvent(targetID));
 	}
 
 	/**
@@ -459,7 +457,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 *            , the new pairing mode
 	 * @see EnOceanPairingService
 	 */
-	// @Override
+	@Override
 	public void setPairingMode(boolean pair) {
 		logger.debug("Set pairing mode to: " + pair);
 		if (pair) {
@@ -481,7 +479,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @see NewItemEvent
 	 */
-	// @Override
+	@Override
 	public void onEvent(NewItemEvent newItEvent) {
 		logger.debug("!NewItemEvent! from " + newItEvent.getSourceItemUID()
 				+ " to " + newItEvent.getPemUID() + ", type="
@@ -531,7 +529,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @see UnsupportedNewItemEvent
 	 */
-	// @Override
+	@Override
 	public void onEvent(UnsupportedNewItemEvent unsupportedItEvent) {
 		logger.debug("!UnsupportedNewItemEvent! from "
 				+ unsupportedItEvent.getSourceItemUID() + " to "
@@ -555,7 +553,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @see ItemAddedEvent
 	 */
-	// @Override
+	@Override
 	public void onEvent(ItemAddedEvent addItEvent) {
 		logger.debug("!ItemAddedEvent! from " + addItEvent.getSourceItemUID() + " to " + addItEvent.getPemUID() + ", type "+ addItEvent.getItemType());
 		
@@ -563,7 +561,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		Implementation impl = null;
 		Map<String, String> properties = new HashMap<String, String>();
 		
-		if(addItEvent.getItemType().equals(Type.SENSOR)) {
+		if(addItEvent.getItemType().equals(Type.SENSOR) || addItEvent.getItemType().equals(Type.SENSOR_AND_ACTUATOR)) {
 			if (addItEvent.getCapabilities().length == 1) {
 				String capabilitie = addItEvent.getCapabilities()[0];
 				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);	
@@ -609,7 +607,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @see ItemAddingFailedEvent
 	 */
-	// @Override
+	@Override
 	public void onEvent(ItemAddingFailedEvent addFailedEvent) {
 		logger.debug("!ItemAddingFailedEvent! from "
 				+ addFailedEvent.getSourceItemUID() + " Error Code = "
@@ -639,7 +637,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 *            , boolean that indicate if we have to specified capabilities
 	 *            for this sensor (if it ambiguous)
 	 */
-	// @Override
+	@Override
 	public void validateItem(String sensorID, ArrayList<String> capList, boolean doesCapabilitiesHaveToBeSelected) {
 
 		logger.debug("validateItem call received for " + sensorID);
@@ -671,7 +669,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		Implementation impl = null;
 		Map<String, String> properties = new HashMap<String, String>();
 		
-		if(item.getType().equals(Type.SENSOR)) {
+		if(item.getType().equals(Type.SENSOR) || item.getType().equals(Type.SENSOR_AND_ACTUATOR)) {
 			if (item.getCapabilities().length == 1) {
 				String capabilitie = item.getCapabilities()[0];
 				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);	
