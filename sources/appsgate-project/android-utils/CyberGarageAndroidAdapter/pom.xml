@@ -12,24 +12,20 @@
 
 	<artifactId>CyberGarageAdapter</artifactId>
 	<packaging>bundle</packaging>
-	<version>2.1.0</version>
+	<version>2.1.0-PATCHED</version>
 
 
 	<name>###### Cybergarage OSGi Adapter ######</name>
 
-	<!-- Original Jar files come from Cybergarage website		
-		
-		Instead :
-		mvn deploy:deploy-file -Durl=file://PATH-TO-PROJECT/repo -Dfile=repo/clink210.jar -DgroupId=cyberlink.upnp -DartifactId=cybergarage -Dversion=2.1.0 -Dpackaging=jar
-		
-		
-		-->
+	<!-- Original Jar files come from Cybergarage website Instead : mvn deploy:deploy-file 
+		-Durl=file://PATH-TO-PROJECT/repo -Dfile=repo/clink210.jar -DgroupId=cyberlink.upnp 
+		-DartifactId=cybergarage -Dversion=2.1.0 -Dpackaging=jar -->
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
-	
+
+
 
 	<repositories>
 		<repository>
@@ -41,11 +37,21 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>cyberlink.upnp</groupId>
-			<artifactId>cybergarage</artifactId>
-			<version>2.1.0</version>
-			<scope>runtime</scope>
-		</dependency>	   
+			<groupId>net.sf.kxml</groupId>
+			<artifactId>kxml2</artifactId>
+			<version>2.1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 
@@ -60,26 +66,21 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;scope=runtime;inline=true</Embed-Dependency>
-                                                <Export-Package>
-                                                        org.cybergarage.*
-                                                </Export-Package>
-                                                <Import-Package>
-                                                    
-                                                    !org.kxml2.io,
-                                                    !org.apache.xerces.parsers,
-                                                    javax.xml.parsers,
-                                                    org.w3c.dom,
-                                                    org.xml.sax,
-                                                    org.xmlpull.v1,
-                                                    org.json,                                                    
-                                                    *
-                                                    <!--     org.osgi.framework,
+						<Export-Package>
+							org.cybergarage.*
+						</Export-Package>
+						<Import-Package>
+							!org.kxml2.io,
+							!org.apache.xerces.parsers,
+							<!--  javax.xml.parsers,
+							org.w3c.dom,
+							org.xml.sax,
+							org.xmlpull.v1,
+							org.json, -->
+							*
+							<!-- org.osgi.framework, org.slf4j, org.json, -->
 
-                                                        
-                                                        org.slf4j,
-                                                        org.json, -->
-
-                                                </Import-Package>						
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
