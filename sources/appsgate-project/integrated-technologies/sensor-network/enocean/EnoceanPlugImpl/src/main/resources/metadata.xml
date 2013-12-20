@@ -1,0 +1,30 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="EnoceanPlugActuatorSensorImpl"
+		classname="appsgate.lig.plug.actuator_sensors.enocean.impl.EnoceanPlugAcuatorSensorImpl" specification="CoreSmartPlugSpec" push="notifyChanges">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<ipojo:requires field="enoceanProxy"/>
+		
+		<definition name="deviceName"  	type="string" default="Unknown" 	   field="sensorName"/>
+		<definition name="deviceId"  	type="string" default="000000" 		   field="sensorId"/>
+		<definition name="deviceType" 	type="string" default="EnOcean_DEVICE" field="sensoreType"/>
+		
+		<definition name="pictureId" 	type="string"						  	field="pictureId"/>
+		<definition name="userType" 	type="string" default="6" 			 	field="userType"/>
+		<definition name="status" 		type="string" default="2" 			 	field="status"		 method="statusChanged"/>
+		
+		<definition name="isPaired"		type="string" default="false" 		  	field="isPaired"	 method="isPairedChanged"/>
+		
+		<!-- device specific meta data -->
+		<definition name="plugState"  	type="string" default="false" 		 	field="plugState"    method="plugStateChanged"/>
+		<definition name="consumption" 	type="string" default="-1" 				field="consumption"  method="consumptionChanged"/>
+		<definition name="activeEnergy" type="string" default="-1" 				field="activeEnergy" method="activeEnergyChanged"/>
+		<definition name="lastRequest"  type="string" default="0" 				field="lastRequest"  />
+	
+	</implementation>
+
+</apam>

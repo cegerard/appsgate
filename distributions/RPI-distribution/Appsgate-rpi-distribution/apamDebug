@@ -1,0 +1,2 @@
+natives=-Djava.library.path=rxtx_natives_RPi/
+java -Dlogback.configurationFile=log/logback.xml -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 ${natives} -jar bin/felix.jar

@@ -218,7 +218,7 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 
 	@Override
 	public void setPictureId(String pictureId) {
-			this.pictureId = pictureId;
+		this.pictureId = pictureId;
 	}
 	
 	public boolean isPaired() {

@@ -70,7 +70,7 @@ rm apam-universal-shell-*
 rm mail*
 rm mongo*.jar
 rm org.apache.felix.ipojo-*.jar
-rm grizzly*
+rm kxml*
 find *.android -type f -exec mv {} {}.jar \; 
 
 
@@ -135,12 +135,10 @@ echo " javax.net.ssl; \\" >> android-appsgate/conf/config.properties
 echo " javax.security.auth; \\" >> android-appsgate/conf/config.properties
 
 # extra package used with appsgate
-echo " org.json; \\" >> android-appsgate/conf/config.properties
 echo " org.w3c.dom; \\" >> android-appsgate/conf/config.properties
 echo " org.w3c.dom.ls; \\" >> android-appsgate/conf/config.properties
 echo " javax.net; \\" >> android-appsgate/conf/config.properties
 echo " javax.security.auth.callback ;\\" >> android-appsgate/conf/config.properties
-echo " org.json; \\" >> android-appsgate/conf/config.properties
 echo " javax.xml.xpath; \\" >> android-appsgate/conf/config.properties
 echo " javax.xml; \\" >> android-appsgate/conf/config.properties
 echo " javax.xml.transform; \\" >> android-appsgate/conf/config.properties
@@ -170,6 +168,7 @@ echo " org.apache.http.params; \\" >> android-appsgate/conf/config.properties
 echo " org.apache.http.protocol; \\" >> android-appsgate/conf/config.properties
 echo " org.apache.http.util; \\" >> android-appsgate/conf/config.properties
 echo " javax.xml.datatype; \\" >> android-appsgate/conf/config.properties
+echo " org.xmlpull.v1; \\" >> android-appsgate/conf/config.properties
 echo " javax.xml.namespace" >> android-appsgate/conf/config.properties
 
 
@@ -186,14 +185,14 @@ echo "cd android-appsgate"
 echo "adb -s $ANDROIDADBDEVICE shell rm -rf $ANDROIDFELIXPATH"
 echo "adb -s $ANDROIDADBDEVICE shell mkdir $ANDROIDFELIXPATH/tmp"
 echo "adb -s $ANDROIDADBDEVICE shell chmod 700 /data/felix"
-echo "find * -type f -exec adb push -s $ANDROIDADBDEVICE {} $ANDROIDFELIXPATH/{} \;"
+echo "find * -type f -exec adb -s $ANDROIDADBDEVICE push {} $ANDROIDFELIXPATH/{} \;"
 echo "cd .."
 
 #cd android-appsgate
 #adb -s $ANDROIDADBDEVICE shell rm -rf $ANDROIDFELIXPATH
 #adb -s $ANDROIDADBDEVICE shell mkdir $ANDROIDFELIXPATH/tmp
 #adb -s $ANDROIDADBDEVICE shell chmod 700 /data/felix
-#find * -type f -exec adb push -s $ANDROIDADBDEVICE {} $ANDROIDFELIXPATH/{} \;
+#find * -type f -exec adb -s $ANDROIDADBDEVICE push {} $ANDROIDFELIXPATH/{} \;
 #cd ..
 
 #echo

@@ -23,5 +23,6 @@
 		<module>EnoceanUndefinedSensorImpl</module>
 		<module>EnoceanOnOffActuatorImpl</module>
 		<module>UbikitAdapter</module>
+		<module>EnoceanPlugImpl</module>
 	</modules>
 </project>

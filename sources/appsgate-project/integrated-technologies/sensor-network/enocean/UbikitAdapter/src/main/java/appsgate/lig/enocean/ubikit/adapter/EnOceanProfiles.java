@@ -118,10 +118,10 @@ public enum EnOceanProfiles {
 	
 	//######## ENOCEAN ACTUATOR WITH CONSUMPTION MEASUREMENT PROFILE
 	
-	EEP_D2_01_00("Actuator with consumption feedback - 0x00", "EnoceanUndefinedSensorImpl"), //NOT SUPPORTED
-	EEP_D2_01_02("Actuator with consumption feedback - 0x02", "EnoceanUndefinedSensorImpl"), //NOT SUPPORTED
-	EEP_D2_01_06("Actuator with consumption feedback - 0x06", "EnoceanUndefinedSensorImpl"), //NOT SUPPORTED
-	
+	EEP_D2_01_00("Actuator with consumption feedback - 0x00", "EnoceanPlugActuatorSensorImpl"),
+	EEP_D2_01_02("Actuator with consumption feedback - 0x02", "EnoceanPlugActuatorSensorImpl"),
+	EEP_D2_01_06("Actuator with consumption feedback - 0x06", "EnoceanPlugActuatorSensorImpl"),
+
 	//######## ENOCEAN SMOKE PROFILE
 	
 	Eltako_FRW_WS("Eltako smoke sensor", "EnoceanUndefinedSensorImpl"), //NOT SUPPORTED
