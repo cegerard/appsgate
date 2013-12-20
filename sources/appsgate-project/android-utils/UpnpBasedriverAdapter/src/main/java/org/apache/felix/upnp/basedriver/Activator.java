@@ -19,16 +19,15 @@
 
 package org.apache.felix.upnp.basedriver;
 
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
 import org.cybergarage.upnp.UPnP;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
-
 import org.apache.felix.upnp.basedriver.controller.DevicesInfo;
 import org.apache.felix.upnp.basedriver.controller.DriverController;
 import org.apache.felix.upnp.basedriver.controller.impl.DriverControllerImpl;
@@ -100,8 +99,10 @@ public class Activator implements BundleActivator {
     	 * Loading default properties value from the embeeded properties file
     	 */
     	configuration = new Properties();    
-    	try {    		
-    		configuration.load(Activator.class.getResourceAsStream("resources/upnp.properties"));
+    	try {
+    		InputStream st = Activator.class.getResourceAsStream("resources/upnp.properties");
+    		configuration.load(st);
+    		st.close();
 		} catch (Exception ignored) {
 		}
 		

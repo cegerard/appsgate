@@ -143,7 +143,7 @@ public class PropertyHistoryManager implements PropertyManager, DynamicManager {
 					for (File modelFile : modelDirectory.listFiles()) {
 						try {
 							String modelFileName = modelFile.getName();
-
+							
 							if (modelFileName.endsWith(".cfg")
 									&& modelFileName
 											.startsWith(CST.ROOT_COMPOSITE_TYPE)

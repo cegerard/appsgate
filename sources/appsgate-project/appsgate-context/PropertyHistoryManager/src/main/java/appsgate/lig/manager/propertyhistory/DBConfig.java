@@ -1,6 +1,7 @@
 package appsgate.lig.manager.propertyhistory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
@@ -95,7 +96,10 @@ public class DBConfig {
 			try {
 				logger.info("Loading properties from {}", configuration);
 				Properties prop_model = new Properties();
-				prop_model.load(configuration.openStream());
+				InputStream st = configuration.openStream();
+				prop_model.load(st);
+				st.close();
+
 				return addDefaultProperties(prop_model);
 
 			} catch (IOException e) {
