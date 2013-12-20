@@ -5,8 +5,11 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 public class SymbolTable {
+    // Logger
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SymbolTable.class.getName());
 
     private final HashMap<String, Variable> symbols;
 
@@ -28,9 +31,13 @@ public class SymbolTable {
             JSONObject vJson;
             try {
                 vJson = jsonArray.getJSONObject(i);
-                symbols.put(vJson.getString("var_name"), new Variable(vJson.getString("id"), vJson.getString("type")));
+                String varName = vJson.getString("var_name");
+                if (symbols.get(varName) != null) {
+                    throw new NodeException("Symbol Table", "The var_name has already been used in the same scope: " + varName, null);
+                }
+                symbols.put(varName, new Variable(vJson));
             } catch (JSONException ex) {
-                throw new NodeException("Symbol Table", "item " + i, ex);
+                throw new NodeException("Symbol Table", "missing var_name for item " + i, ex);
             }
         }
     }

@@ -8,8 +8,10 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.components.Variable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,35 +88,11 @@ public class NodeAction extends Node {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         if (targetType.equals("device")) {
-            // get the runnable from the interpreter
-            command = executeCommand(targetId, methodName, args);
-            if (command == null) {
-                LOGGER.error("Command not found {}, for {}", methodName, targetId);
-            } else {
-                LOGGER.debug("Run command: {}", command.toString());
-                command.run();
-            }
+            callDeviceAction(targetId);
         } else if (targetType.equals("program")) {
-
-            NodeProgram p = getNodeProgram(targetId);
-
-            if (p != null) {
-                LOGGER.debug("Program running state {}", p.getRunningState());
-                if (methodName.contentEquals("callProgram") && p.getRunningState() != RUNNING_STATE.STARTED) {
-                    // listen to the end of the program
-                    p.addEndEventListener(this);
-                    // launch the program
-                    callProgram(targetId);
-                } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
-                    //stop the running program
-                    stopProgram(targetId);
-                } else {
-                    LOGGER.warn("Cannot run {} on program {}", methodName, targetId);
-                }
-
-            } else {
-                LOGGER.error("Program not found: {}", targetId);
-            }
+            callProgramAction(targetId);
+        } else if (targetType.equals("list")) {
+            callListAction(targetId);
         } else {
             LOGGER.warn("Action type ({}) not supported", targetType);
         }
@@ -122,6 +100,79 @@ public class NodeAction extends Node {
         setStarted(false);
         fireEndEvent(new EndEvent(this));
         return null;
+    }
+
+    /**
+     * Method that run a device action
+     */
+    private void callDeviceAction(String target) {
+        // get the runnable from the interpreter
+        command = executeCommand(target, methodName, args);
+        if (command == null) {
+            LOGGER.error("Command not found {}, for {}", methodName, target);
+        } else {
+            LOGGER.debug("Run command: {}", command.toString());
+            command.run();
+        }
+    }
+
+    /**
+     * Method to run a program action
+     */
+    private void callProgramAction(String target) {
+        NodeProgram p = getNodeProgram(target);
+
+        if (p != null) {
+            LOGGER.debug("Program running state {}", p.getRunningState());
+            if (methodName.contentEquals("callProgram") && p.getRunningState() != RUNNING_STATE.STARTED) {
+                // listen to the end of the program
+                p.addEndEventListener(this);
+                // launch the program
+                callProgram(target);
+            } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
+                //stop the running program
+                stopProgram(target);
+            } else {
+                LOGGER.warn("Cannot run {} on program {}", methodName, target);
+            }
+
+        } else {
+            LOGGER.error("Program not found: {}", targetId);
+        }
+    }
+
+    /**
+     *
+     */
+    private void callListAction(String target) {
+                LOGGER.debug("Call List action");
+
+        Variable list = getElementFromName(target);
+        if (list == null) {
+            LOGGER.error("No such variable found in the symbol table");
+            return;
+        }
+        List<Variable> elements = list.getElements();
+        for (Variable v : elements) {
+            
+            callVariableAction(v, target);
+        }
+    }
+
+    private void callVariableAction(Variable v, String target) {
+        LOGGER.debug("Call Variable action: {}", v.getName());
+        if (v.getType().equals("variable")) {
+            if (v.getName().equals(target)) {
+                LOGGER.warn("Stopping cause there was a recursive loop");
+                return;
+            }
+            callVariableAction(getElementFromName(v.getName()), v.getName());
+        } else if (v.getType().equals("device")) {
+            callDeviceAction(v.getName());
+        } else if (v.getType().equals("list")) {
+            callListAction(v.getName());
+        }
+
     }
 
     /**

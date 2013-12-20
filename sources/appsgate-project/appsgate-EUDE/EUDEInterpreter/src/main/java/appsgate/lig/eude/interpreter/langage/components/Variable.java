@@ -5,17 +5,26 @@
  */
 package appsgate.lig.eude.interpreter.langage.components;
 
-import java.util.HashSet;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jr
  */
 public class Variable {
+    // Logger
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Variable.class.getName());
 
     private final String id;
     private final String type;
+    private final JSONObject json;
 
     /**
      * Constructor
@@ -26,6 +35,22 @@ public class Variable {
     public Variable(String i, String t) {
         this.id = i;
         this.type = t;
+        this.json = null;
+    }
+    
+    /**
+     *
+     * @param obj
+     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     */
+    public Variable(JSONObject obj) throws NodeException {
+        try {
+            this.id = obj.getString("id");
+            this.type = obj.getString("type");
+            this.json = obj;
+        } catch (JSONException ex) {
+            throw new NodeException("Variable", "The variable cannot be init correctly, missing parameter", ex);
+        }
     }
 
     /**
@@ -85,10 +110,36 @@ public class Variable {
      * 
      * @return the types contained by this variable
      */
-    public Set<String> getTypes() {
-        HashSet<String> ret = new HashSet<String>();
-        ret.add(this.type);
-        return ret;
+    public String getType() {
+        return this.type;
+    }
+    /**
+     * Return the list of types that has a variable
+     * 
+     * By default a variable is of type variable
+     * 
+     * @return the types contained by this variable
+     */
+    public String getName() {
+        return this.id;
+    }
+
+    public List<Variable> getElements() {
+        try {
+            ArrayList<Variable> a = new ArrayList<Variable>();
+            JSONArray list = this.json.getJSONArray("list");
+            for(int i = 0; i < list.length(); i++) {
+                a.add(new Variable(list.getJSONObject(i)));
+            }
+            return a;
+            
+        } catch (JSONException ex) {
+            LOGGER.error("list without a list");
+            return null;
+        } catch (NodeException ex) {
+            LOGGER.error("The variable was not well formed");
+            return null;
+        }
     }
 
 }
