@@ -129,6 +129,10 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
     		}
 		}
 		
+		/*****************************************/
+		/*			Consol Commands				 */
+		/*****************************************/
+		
 		/**
  		 * Shutdown the AppsGate server
  		 */
@@ -136,6 +140,27 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 		{
 			websocket.send("{\"method\":\"shutdown\", \"args\":[], \"callId\":\"cf-shutdown\"}");
 		}
+		
+		/**
+ 		 * Get the list of device
+ 		 */
+		this.getDevices = function ()
+		{
+			websocket.send("{\"method\":\"getDevices\", \"args\":[], \"callId\":\"cf-shutdown\"}");
+		}
+		
+		/**
+ 		 * Send a command to the AppsGate server
+ 		 */
+		this.sendCmd = function (msg)
+		{
+			websocket.send(msg);
+		}
+		
+		
+		
+		
+		
 		
 	})(); //AppsGate main object definition end
 	
