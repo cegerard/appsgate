@@ -664,6 +664,12 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		logger.debug("item validated "+sensorID);
 	}
 	
+	/**
+	 * Instantiate an already configure item from Ubikit database
+	 * Pretty similar to the action done with ItemAddedEvent received but
+	 * does not notify client just push the instance to ApAM layer.
+	 * @param item the device to instantiate
+	 */
 	private void instanciateItem (PhysicalEnvironmentItem item) {
 		EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
 		Implementation impl = null;

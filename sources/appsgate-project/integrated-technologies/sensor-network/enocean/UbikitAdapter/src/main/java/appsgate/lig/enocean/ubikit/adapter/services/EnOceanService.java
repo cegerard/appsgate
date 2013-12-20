@@ -67,4 +67,5 @@ public interface EnOceanService {
 	 * @param targetID the targeted device identifier
 	 */
 	public void sendActuatorUpdateEvent(String targetID);
+	
 }

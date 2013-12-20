@@ -26,9 +26,11 @@ public class MeteringEvent implements Listener {
 
 	@Override
 	public void onEvent(fr.immotronic.ubikit.pems.enocean.event.out.MeteringEvent arg0) {
-		logger.info("This consumption for "+ arg0.getSourceItemUID() + " change to "+arg0.getValue()+" "+arg0.getMeasurementUnit().name());
+		logger.info("This active energy for "+ arg0.getSourceItemUID() + " change to "+arg0.getValue()+" "+arg0.getMeasurementUnit().name());
+		
 		Instance instRef = enocean.getSensorInstance(arg0.getSourceItemUID());
-		instRef.setProperty("consumption", String.valueOf(arg0.getValue()));
+		instRef.setProperty("lastRequest", String.valueOf(arg0.getDate().getTime()));
+		instRef.setProperty("activeEnergy", String.valueOf(arg0.getValue()));
 	}
 
 }

@@ -1,5 +1,8 @@
 package appsgate.lig.plug.actuator_sensors.enocean.impl;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -28,7 +31,15 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 	
 	private String plugState;
 	
-	private String consumption;
+	private String consumption;  //In Watt
+	private String activeEnergy; //In Watt.s
+	private String lastRequest;  //Date
+	
+	private float[] metering = {(float) 0.0, (float) 0.0};
+	private long[] date = {0, 1};
+	private Timer timer = new Timer();
+	private TimerTask meteringAction;
+     
 	
 	/**
 	 * EnOcean proxy service uses to validate the sensor configuration with the
@@ -42,6 +53,8 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 	public void newInst() {
 		logger.info("New smart plug sensor detected, "+sensorId);
 		setSensorName("SmartPlug-"+sensorId);
+		meteringAction = new meteringTask();
+		timer.scheduleAtFixedRate(meteringAction, 5000, 600000); //Schedule metering task to 5 seconds and every 10 minutes
 	}
 
 	/**
@@ -72,11 +85,29 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 	public void plugStateChanged(String plugState) {
 		logger.info("The plug state, "+ sensorId+" changed to "+plugState);
 		notifyChanges("plugState", plugState);
+		
+
+		if(plugState.contentEquals("true")) {
+			meteringAction.cancel();
+			timer.purge();
+			meteringAction = new meteringTask();
+			timer.scheduleAtFixedRate(meteringAction, 0, 10000);
+		}else {
+			meteringAction.cancel();
+			timer.purge();
+			consumption = "0";
+		}
 	}
 	
 	public void consumptionChanged(String consumption) {
 		logger.info("The sensor, "+ sensorId+" consumption changed to "+consumption);
 		notifyChanges("consumption", consumption);
+	}
+	
+	public void activeEnergyChanged(String activeEnergy) {
+		logger.info("The sensor, "+ sensorId+" activeEnergy changed to "+activeEnergy);
+		notifyChanges("activeEnergy", activeEnergy);
+		addValue(new Float(activeEnergy), new Long(lastRequest));
 	}
 
 	/**
@@ -108,6 +139,7 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 	@Override
 	public void on() {
 		enoceanProxy.turnOnActuator(sensorId);
+		activeEnergy();
 	}
 
 	@Override
@@ -117,13 +149,36 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 
 	@Override
 	public int activePower() {
-		enoceanProxy.sendActuatorUpdateEvent(sensorId);
-		return new Integer(consumption);
+		return new Float(consumption).intValue();
 	}
 
 	@Override
 	public int activeEnergy() {
-		return -1;
+		enoceanProxy.sendActuatorUpdateEvent(sensorId);
+		return new Float(activeEnergy).intValue();
+	}
+	
+	/**
+	 * add the value to a tab that allow the instance to calculate it's
+	 * real time consumption
+	 * 
+	 * @param activeenergy the consumption in Watt.s
+	 * @param date the time stamp
+	 */
+	public void addValue(float activeEnergy, long newDate){
+		Float f;
+		if(date[1] < date[0]) {
+			date[1] = newDate;
+			metering[1] = activeEnergy;
+			f = new Float(1000*(metering[1]-metering[0])/(date[1]-date[0]));
+			
+		} else {
+			date[0] = newDate;
+			metering[0] = activeEnergy;
+			f = new Float(1000*(metering[0]-metering[1])/(date[0]-date[1]));
+		}
+		
+		consumption = String.valueOf(f.intValue());
 	}
 
 	@Override
@@ -164,6 +219,7 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 		descr.put("status", status);
 		descr.put("plugState", plugState);
 		descr.put("consumption", consumption);
+		descr.put("activeEnergy", activeEnergy);
 		
 		return descr;
 	}
@@ -192,4 +248,11 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 	public void setSensorName(String sensorName) {
 		this.sensorName = sensorName;
 	}
+	
+	
+	class meteringTask extends TimerTask {
+        public void run() {
+        	activeEnergy();
+        }
+    }
 }
