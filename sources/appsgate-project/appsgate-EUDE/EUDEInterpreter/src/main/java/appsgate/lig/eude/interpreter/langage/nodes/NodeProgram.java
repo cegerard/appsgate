@@ -138,8 +138,10 @@ public class NodeProgram extends Node {
 
         JSONObject source = getJSONObject(jsonProgram, "source");
         name = getJSONString(source, "programName");
-        author = getJSONString(source, "author");
-        target = getJSONString(source, "target");
+//        author = getJSONString(source, "author");
+//        target = getJSONString(source, "target");
+        
+        this.setSymbolTable(new SymbolTable(getJSONArray(source, "seqDefinitions")));
         if (source.has("daemon")) {
             try {
                 daemon = source.getBoolean("daemon");

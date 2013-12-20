@@ -11,7 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable.Element;
+import appsgate.lig.eude.interpreter.langage.components.Variable;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
@@ -61,7 +61,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * Node parent in the abstract tree of a program
      */
-    private Node parent; // :TODO: remove this unused element
+    private final Node parent;
 
     /**
      * Use to stop node but atomically
@@ -77,6 +77,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * Default constructor
      *
      * @param interpreter interpreter pointer for the nodes
+     * @param p
      */
     public Node(EUDEInterpreterImpl interpreter, Node p) {
         this.interpreter = interpreter;
@@ -388,10 +389,10 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param varName
      * @return
      */
-    protected Element getElementFromName(String varName) {
+    protected Variable getElementFromName(String varName) {
         if (this.symbolTable != null) {
-            Element element;
-            element = this.symbolTable.getElementByKey(varName);
+            Variable element;
+            element = this.symbolTable.getVariableByKey(varName);
             if (element != null) {
                 return element;
             }
@@ -403,7 +404,8 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     *
+     * Method that returns the Variable name of a given id and type
+     * 
      * @param id
      * @param type
      * @return
@@ -411,7 +413,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     protected String getElementKey(String id, String type) {
         if (this.symbolTable != null) {
             String key;
-            key = this.symbolTable.getElementKey(id, type);
+            key = this.symbolTable.getVariableKey(id, type);
             if (key != null) {
                 return key;
             }

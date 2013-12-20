@@ -1,16 +1,38 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
+import appsgate.lig.eude.interpreter.langage.nodes.NodeException;
 import java.util.HashMap;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SymbolTable {
 
-    private final HashMap<String, Element> symbols;
+    private final HashMap<String, Variable> symbols;
 
     /**
      * Constructor
      */
     public SymbolTable() {
-        symbols = new HashMap<String, Element>();
+        symbols = new HashMap<String, Variable>();
+    }
+
+    /**
+     *
+     * @param jsonArray
+     * @throws NodeException
+     */
+    public SymbolTable(JSONArray jsonArray) throws NodeException {
+        this();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject vJson;
+            try {
+                vJson = jsonArray.getJSONObject(i);
+                symbols.put(vJson.getString("var_name"), new Variable(vJson.getString("id"), vJson.getString("type")));
+            } catch (JSONException ex) {
+                throw new NodeException("Symbol Table", "item " + i, ex);
+            }
+        }
     }
 
     /**
@@ -19,18 +41,18 @@ public class SymbolTable {
      * @param type
      */
     public void add(String id, String type) {
-        Element e = new Element(id, type);
-        if (this.getElementKey(e) == null) {
+        Variable e = new Variable(id, type);
+        if (this.getVariableKey(e) == null) {
             String keyVal = type.substring(0, 3) + "_" + symbols.size();
             symbols.put(keyVal, e);
         }
     }
 
     public void addElement(String varName, String id, String type) {
-        symbols.put(varName, new Element(id, type));
+        symbols.put(varName, new Variable(id, type));
     }
 
-    public String getElementKey(Element l) {
+    public String getVariableKey(Variable l) {
         for (String k : symbols.keySet()) {
             if (symbols.get(k).equals(l)) {
                 return k;
@@ -39,11 +61,11 @@ public class SymbolTable {
         return null;
     }
 
-    public String getElementKey(String id, String type) {
-        return getElementKey(new Element(id, type));
+    public String getVariableKey(String id, String type) {
+        return getVariableKey(new Variable(id, type));
     }
 
-    public Element getElementByKey(String key) {
+    public Variable getVariableByKey(String key) {
         return symbols.get(key);
     }
 
@@ -55,23 +77,4 @@ public class SymbolTable {
         return ret;
     }
 
-    public class Element {
-
-        private final String id;
-        private final String type;
-
-        public Element(String i, String t) {
-            this.id = i;
-            this.type = t;
-        }
-
-        public String getExpertProgramDecl() {
-            return "{ type: " + this.type + ", id: " + this.id + "}";
-        }
-
-        public boolean equals(Element other) {
-            return other.id.equals(this.id) && other.type.equals(this.type);
-        }
-
-    }
 }

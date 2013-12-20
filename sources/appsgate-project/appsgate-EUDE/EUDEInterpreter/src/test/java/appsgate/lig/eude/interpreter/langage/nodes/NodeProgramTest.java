@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import java.util.Collection;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -47,6 +48,7 @@ public class NodeProgramTest extends NodeTest {
             source.put("target", "test");
             source.put("daemon", false);
             source.put("seqRules", (Collection) null);
+            source.put("seqDefinitions", (Collection) null);
             ruleJSON.put("source", source);
 
             this.programTest = new NodeProgram(interpreter, this.ruleJSON);
@@ -120,6 +122,7 @@ public class NodeProgramTest extends NodeTest {
         src.put("target", "test");
         src.put("daemon", true);
         src.put("seqRules", (Collection) null);
+        src.put("seqDefinitions", (Collection) null);
         jsonProgram.put("source", src);
 
         boolean expResult = true;
@@ -162,4 +165,15 @@ public class NodeProgramTest extends NodeTest {
         Integer result = this.instance.call();
         assertEquals(expResult, result);
     }
+        /**
+     * Test of getSymbolTable method, of class Node.
+     */
+    @Test
+    @Override
+    public void testGetSymbolTable() {
+        System.out.println("getSymbolTable");
+        SymbolTable result = this.instance.getSymbolTable();
+        assertNotNull(result);
+    }
+
 }
