@@ -41,7 +41,7 @@ import org.ubikit.pem.event.UnsupportedNewItemEvent;
 import org.ubikit.service.PhysicalEnvironmentModelService;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.AddListenerService;
+import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.enocean.ubikit.adapter.listeners.EnOceanConfigListener;
 import appsgate.lig.enocean.ubikit.adapter.services.EnOceanPairingService;
 import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
@@ -109,7 +109,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Service to be notified when clients send commands
 	 */
-	private AddListenerService addListenerService;
+	private ListenerService listenerService;
 
 	/**
 	 * Service to communicate with clients
@@ -126,6 +126,8 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * class logger member
 	 */
 	private static Logger logger = LoggerFactory.getLogger(UbikitAdapter.class);
+	
+	private static String CONFIG_TARGET = "ENOCEAN";
 
 	/**
 	 * constructor to initiate event members
@@ -184,7 +186,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		logger.info("EnOcean proxy deployed and instanciated.");
 		
 		logger.info("Getting the listeners services...");
-		if(addListenerService.addConfigListener(new EnOceanConfigListener(this))){
+		if(listenerService.addConfigListener(CONFIG_TARGET, new EnOceanConfigListener(this))){
 			logger.info("Listeners services dependency resolved.");
 		}else{
 			logger.info("Listeners services dependency resolution failed.");
@@ -221,6 +223,12 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			logger.debug("Event gate thread crash at termination");
 		}
 
+		if(listenerService.removeConfigListener(CONFIG_TARGET)){
+			logger.info("EnOcean configuration listener removed.");
+		}else{
+			logger.warn("EnOcean configuration listener remove failed.");
+		}
+		
 		logger.info("EnOcean PEM connector removed");
 	}
 
@@ -252,24 +260,24 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
 	 * 
-	 * @param addListenerService
+	 * @param listenerService
 	 *            , the subscription service
 	 */
 	@Bind(optional = false)
-	public void bindSubscriptionService(AddListenerService addListenerService) {
-		this.addListenerService = addListenerService;
+	public void bindSubscriptionService(ListenerService addListenerService) {
+		this.listenerService = addListenerService;
 		logger.debug("Communication subscription service dependency resolved");
 	}
 
 	/**
 	 * Call when the EnOcean proxy release the optional subscription service.
 	 * 
-	 * @param addListenerService
+	 * @param listenerService
 	 *            , the released subscription service
 	 */
 	@Unbind(optional = false)
-	public void unbindSubscriptionService(AddListenerService addListenerService) {
-		this.addListenerService = null;
+	public void unbindSubscriptionService(ListenerService addListenerService) {
+		this.listenerService = null;
 		logger.debug("Subscription service dependency not available");
 	}
 
