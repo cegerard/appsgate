@@ -1,0 +1,12 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd">
+                              
+	<implementation name="ARDAdaptorImpl" classname="appsgate.ard.adaptor.ARDLockerFuchsiaApamAdapter" push="mailReceivedNotification">
+	    
+		<callback onInit="start" onRemove="stop" />
+
+	</implementation>
+
+    <apam-instance implementation="ARDAdaptorImpl" name="ARDAdaptorImpl-Apam-0"/>
+   
+</apam>
