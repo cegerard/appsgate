@@ -57,7 +57,7 @@ public class ARDLockerFuchsiaApamAdapter implements EventHandler {
 
     }
 
-    private NotificationMsg mailReceivedNotification(final Event event){ //final Message msg
+    private NotificationMsg triggerApamMessage(final Event event){ //final Message msg
         return new NotificationMsg() {
 
             public CoreObjectSpec getSource() {
@@ -92,7 +92,7 @@ public class ARDLockerFuchsiaApamAdapter implements EventHandler {
         /**
          * Here we trigger an Apam message (they will be catch by somebody in upper layers)
          */
-        mailReceivedNotification(event);
+        triggerApamMessage(event);
 
     }
 }
