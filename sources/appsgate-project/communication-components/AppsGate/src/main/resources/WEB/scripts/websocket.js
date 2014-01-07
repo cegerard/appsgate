@@ -25,10 +25,18 @@ define([], function () {
 					var received_msg = evt.data;
 					console.log(received_msg);
 		
-					var callId = false;
+					//var callId = false;
 					var jsonMess = JSON.parse(received_msg);
+					
+					if(jsonMess.hasOwnProperty("TARGET")){
+						//Call the target handler
+					}else if(jsonMess.hasOwnProperty("callId")){
+						appsgateMain.returnCallHandler(jsonMess.callId, jsonMess);
+					}else { //It is a notification
+						appsgateMain.notificationHandler(jsonMess);
+					}
 		
-					for (key in jsonMess) {
+					/*for (key in jsonMess) {
     					if (key == "callId") {
         					callId = true;
 						}
@@ -38,7 +46,7 @@ define([], function () {
         				appsgateMain.returnCallHandler(jsonMess.callId, jsonMess);
         			}else{
 						appsgateMain.notificationHandler(jsonMess);
-					}
+					}*/
      			};
      
      			ws.onerror = function (evt)

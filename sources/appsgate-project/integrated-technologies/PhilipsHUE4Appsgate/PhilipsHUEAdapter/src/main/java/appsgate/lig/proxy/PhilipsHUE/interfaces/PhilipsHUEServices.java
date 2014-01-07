@@ -88,5 +88,10 @@ public interface PhilipsHUEServices {
 	 */
 	public boolean setAttribute(String bridgeIP, String id, JSONObject attributes);
 	
+	/**
+	 * Get the list of discovered Philips HUE bridge
+	 * @return the list of bridge as a JSONArray
+	 */
+	public JSONArray getBridgeList();
 	
 }

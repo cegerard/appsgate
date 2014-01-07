@@ -1,10 +1,13 @@
 package appsgate.lig.proxy.PhilipsHUE;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.cybergarage.upnp.ControlPoint;
 import org.cybergarage.upnp.Device;
 import org.cybergarage.upnp.device.DeviceChangeListener;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +36,13 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 	 * Philips HUE bridge IP address list
 	 */
 	private ArrayList<String> bridgeIp = new ArrayList<String>();
+	
+	/**
+	 * Philips HUE bridge with error map
+	 * key is the bridge current IP address and
+	 * the value is the JSON description of the related error
+	 */
+	private HashMap<String, JSONObject> errorBridgeMap = new HashMap<String, JSONObject>();
 	
 	/**
 	 * Java reference on the Philips HUE adapter that
@@ -65,12 +75,23 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 			logger.debug("New bridge with IP: "+splitString);
 			
 			String ipAddr = splitString.toString();
-			//TODO the contain test is used to deal with UPnP announce problem
+			//TODO the contain test is used to deal with UPnP stack announce problem
 			if(adapter != null && !bridgeIp.contains(ipAddr)) {
-				String macAddr = adapter.getBridgeMacAddress(ipAddr);
-				logger.debug(", and mac: "+macAddr);
 				bridgeIp.add(ipAddr);
-				adapter.notifyNewBridge(macAddr, ipAddr);
+				JSONObject[] error = new JSONObject[1];
+				boolean associated = adapter.isAssociated(ipAddr, error);
+				
+				if(associated) {
+					String macAddr = adapter.getBridgeMacAddress(ipAddr);
+					logger.debug(", and mac: "+macAddr);
+					adapter.notifyNewBridge(macAddr, ipAddr);
+				}else{
+					logger.debug(error[0].toString());
+					try {
+						JSONObject errorDetail = error[0].getJSONObject("error");
+						errorBridgeMap.put(ipAddr, errorDetail);
+					} catch (JSONException e) {e.printStackTrace();} 
+				}
 			}
 		}
 	}
@@ -93,8 +114,47 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 		}
 	}
 
+	/**
+	 * Get the discovered bridge IP address list
+	 * @return the IP address list as an ArrayList<String>
+	 */
 	public ArrayList<String> getBridgesIp() {
 		return bridgeIp;
+	}
+	
+	/**
+	 * get all available HUE bridge IP, all that AppsGate is associated
+	 * with.
+	 * @return a sub ArrayList<String> of bridgeIp.
+	 */
+	public ArrayList<String> getAvailableBridgesIp() {
+		ArrayList<String> availableBridgeIp = new ArrayList<String>();
+		
+		for(String ip : bridgeIp){
+			if(!isStatusError(ip)){
+				availableBridgeIp.add(ip);
+			}
+		}
+		
+		return availableBridgeIp;
+	}
+	
+	/**
+	 * get the error detail for a specify bridge
+	 * @param bridgeIP the IP address of the HUE bridge
+	 * @return the error details as a JSONObject
+	 */
+	public JSONObject getErrorDetails(String bridgeIP) {
+		return errorBridgeMap.get(bridgeIP);
+	}
+	
+	/**
+	 * Check if the bridge is correctly set up
+	 * @param ip the bridge IP to check
+	 * @return true if the bridge is correctly set up, false otherwise
+	 */
+	public boolean isStatusError(String ip) {
+		return errorBridgeMap.containsKey(ip);
 	}
 
 	/**
@@ -112,4 +172,15 @@ public class PhilipsBridgeUPnPFinder extends ControlPoint implements  DeviceChan
 	public void unregistrer(PhilipsHUEAdapter philipsHUEAdapter) {
 		adapter = null;
 	}
+	
+	/**
+	 * Remove a bridge from error bridge list
+	 * @param ipAddr the bridge IP address
+	 * @return true if the bridge is correctly removed.
+	 */
+	public boolean removeBridgeFromErrorMap(String ipAddr) {
+		return errorBridgeMap.remove(ipAddr) != null;
+	}
+
+	
 }

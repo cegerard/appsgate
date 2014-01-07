@@ -41,6 +41,11 @@
 			<artifactId>apam-core</artifactId>
 			<version>${apam.current.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ClientCommunicationManager</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Dependencies Instructions -->
