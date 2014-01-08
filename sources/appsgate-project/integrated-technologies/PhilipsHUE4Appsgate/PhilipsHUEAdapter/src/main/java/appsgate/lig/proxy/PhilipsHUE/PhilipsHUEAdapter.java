@@ -82,7 +82,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		if(listenerService.addConfigListener(CONFIG_TARGET, new PhilipsHUEBridgeConfigListener(this))){
 			logger.info("Listeners services dependency resolved.");
 		}else{
-			logger.warn("Listeners services dependency resolution failed.");
+			logger.warn("Listeners services dependency resolution updated.");
 		}
 		
 		logger.debug("Philips finder started");
@@ -742,7 +742,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param sendToClientService
 	 *            , the communication service
 	 */
-	@Bind(optional = true)
+	@Bind(optional = false)
 	public void bindCommunicationService(SendWebsocketsService sendToClientService) {
 		this.sendToClientService = sendToClientService;
 		logger.debug("Communication service dependency resolved");
@@ -754,7 +754,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param sendToClientService
 	 *            , the communication service
 	 */
-	@Unbind(optional = true)
+	@Unbind(optional = false)
 	public void unbindCommunicationService(SendWebsocketsService sendToClientService) {
 		this.sendToClientService = null;
 		logger.debug("Communication service dependency not available");

@@ -41,7 +41,6 @@
 			<artifactId>apam-core</artifactId>
 			<version>${apam.current.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>appsgate.android</groupId>
 			<artifactId>PhilipsHUEAndroidAdapter</artifactId>
