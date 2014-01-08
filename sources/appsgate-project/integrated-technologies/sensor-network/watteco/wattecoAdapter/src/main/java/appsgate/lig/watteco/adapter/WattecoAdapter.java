@@ -31,7 +31,7 @@ import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.client.communication.service.subscribe.AddListenerService;
+import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.watteco.adapter.listeners.WattecoConfigListener;
 import appsgate.lig.watteco.adapter.services.WattecoDiscoveryService;
 import appsgate.lig.watteco.adapter.services.WattecoIOService;
@@ -75,6 +75,8 @@ public class WattecoAdapter implements WattecoIOService,
 	 */
 	private static Logger logger = LoggerFactory.getLogger(WattecoAdapter.class);
 	
+	private static String CONFIG_TARGET = "WATTECO";
+	
 	/**
 	 * Executor scheduler for sensor instantiation
 	 */
@@ -103,7 +105,7 @@ public class WattecoAdapter implements WattecoIOService,
 	/**
 	 * Service to be notified when clients send commands
 	 */
-	private AddListenerService addListenerService;
+	private ListenerService listenerService;
 	
 	/**
 	 * HTTP service dependency resolve by iPojo. Allow to register HTML
@@ -191,6 +193,12 @@ public class WattecoAdapter implements WattecoIOService,
 			logger.debug("Watteco Adapter instanciation service thread crash at termination");
 		}
 		
+		if(listenerService.removeConfigListener(CONFIG_TARGET)){
+			logger.info("Watteco configuration listener removed.");
+		}else{
+			logger.warn("Watteco configuration listener remove failed.");
+		}
+		
 //		Implementation impl = CST.apamResolver.findImplByName(null, WattecoAdapter.SMART_PLUG_IMPL);
 //		Set<Instance> insts = impl.getInsts();
 //		for(Instance inst : insts) {
@@ -202,15 +210,15 @@ public class WattecoAdapter implements WattecoIOService,
 	/**
 	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
 	 * 
-	 * @param addListenerService
+	 * @param listenerService
 	 *            , the subscription service
 	 */
 	@Bind(optional = true)
-	public void bindSubscriptionService(AddListenerService addListenerService) {
-		this.addListenerService = addListenerService;
+	public void bindSubscriptionService(ListenerService listenerService) {
+		this.listenerService = listenerService;
 		logger.debug("Communication subscription service dependency resolved");
 		logger.info("Getting the listeners services...");
-		if(addListenerService.addConfigListener(new WattecoConfigListener(this))){
+		if(listenerService.addConfigListener(CONFIG_TARGET, new WattecoConfigListener(this))){
 			logger.info("Listeners services dependency resolved.");
 		}else{
 			logger.info("Listeners services dependency resolution failed.");
@@ -220,12 +228,12 @@ public class WattecoAdapter implements WattecoIOService,
 	/**
 	 * Call when the Watteco adapter release the optional subscription service.
 	 * 
-	 * @param addListenerService
+	 * @param listenerService
 	 *            , the released subscription service
 	 */
 	@Unbind(optional = true)
-	public void unbindSubscriptionService(AddListenerService addListenerService) {
-		this.addListenerService = null;
+	public void unbindSubscriptionService(ListenerService listenerService) {
+		this.listenerService = null;
 		logger.debug("Subscription service dependency not available");
 	}
 	

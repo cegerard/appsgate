@@ -11,10 +11,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>ard-importer</artifactId>
+    <artifactId>ard-importer-adaptor</artifactId>
     <version>1.0.0</version>
     <modelVersion>4.0.0</modelVersion>
-    <name>OW2 Chameleon - ARD Importer</name>
+    <name>OW2 Chameleon - ARD Importer Adaptor</name>
     <packaging>bundle</packaging>
 
     <properties>
@@ -36,6 +36,16 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.ipojo.annotations</artifactId>
             <version>${ipojo.annotations.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>apam-core</artifactId>
+            <groupId>fr.imag.adele.apam</groupId>
+            <version>${apam.current.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>CoreObjectSpec</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
@@ -72,6 +82,18 @@
                     <source>1.5</source>
                     <target>1.5</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>fr.imag.adele.apam</groupId>
+                <artifactId>apam-maven-plugin</artifactId>
+                <version>${apam.current.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apam-bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

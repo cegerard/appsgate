@@ -77,6 +77,8 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 			var liContent = document.createTextNode("Philips HUE");
 			li.appendChild(liContent);
 			navBar.appendChild(li);
+			
+			this.sendCmd("{\"getHUEConfDevices\":{}, \"CONFIGURATION\":\"getHUEConfDevices\", \"TARGET\":\"PHILIPSHUE\"}");
 		}
 
 
@@ -130,7 +132,7 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 		}
 		
 		/*****************************************/
-		/*			Consol Commands				 */
+		/*			Console Commands				 */
 		/*****************************************/
 		
 		/**
@@ -146,7 +148,7 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
  		 */
 		this.getDevices = function ()
 		{
-			websocket.send("{\"method\":\"getDevices\", \"args\":[], \"callId\":\"cf-shutdown\"}");
+			websocket.send("{\"method\":\"getDevices\", \"args\":[], \"callId\":\"cf-getdevices\"}");
 		}
 		
 		/**

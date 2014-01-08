@@ -16,10 +16,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +29,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeConfigListener;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
@@ -49,10 +54,14 @@ import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 	private static String ApAMIMPL = "PhilipsHUEImpl";
+	public static String CONFIG_TARGET = "PHILIPSHUE";
 
 	private PhilipsBridgeUPnPFinder bridgeFinder;
 	private String currentUserName = "AppsGateUJF";
 	private ScheduledExecutorService instanciationService = Executors.newScheduledThreadPool(1);
+	
+	private ListenerService listenerService;
+	private SendWebsocketsService sendToClientService;
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -68,6 +77,14 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		bridgeFinder = new PhilipsBridgeUPnPFinder();
 		bridgeFinder.registrer(this);
 		bridgeFinder.start();
+		
+		logger.info("Getting the listeners services...");
+		if(listenerService.addConfigListener(CONFIG_TARGET, new PhilipsHUEBridgeConfigListener(this))){
+			logger.info("Listeners services dependency resolved.");
+		}else{
+			logger.warn("Listeners services dependency resolution failed.");
+		}
+		
 		logger.debug("Philips finder started");
 	}
 
@@ -84,6 +101,13 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		} catch (InterruptedException e) {
 			logger.debug("PhilipsHUEAdapter instanciationService thread crash at termination");
 		}
+		
+		if(listenerService.removeConfigListener(CONFIG_TARGET)){
+			logger.info("HUE configuration listener removed.");
+		}else{
+			logger.warn("HUE configuration listener remove failed.");
+		}
+		
 		logger.debug("PhilipsHUEAdapter stopped");
 	}
 
@@ -92,7 +116,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		JSONArray jsonResponse = new JSONArray();
 		try {
 			
-			for(String bridgeIP : bridgeFinder.getBridgesIp()) {
+			for(String bridgeIP : bridgeFinder.getAvailableBridgesIp()) {
 			
 				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/");
 				HttpURLConnection server = (HttpURLConnection) url.openConnection();
@@ -140,7 +164,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		JSONArray jsonResponse = new JSONArray();
 		try {
 			
-			for(String bridgeIP : bridgeFinder.getBridgesIp()) {
+			for(String bridgeIP : bridgeFinder.getAvailableBridgesIp()) {
 			
 				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/new");
 				HttpURLConnection server = (HttpURLConnection) url.openConnection();
@@ -188,7 +212,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			
 			boolean successState = true;
 			
-			for(String bridgeIP : bridgeFinder.getBridgesIp()) {
+			for(String bridgeIP : bridgeFinder.getAvailableBridgesIp()) {
 			
 				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/");
 				HttpURLConnection server = (HttpURLConnection) url.openConnection();
@@ -409,6 +433,39 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		return false;
 	}
 	
+	@Override
+	public JSONArray getBridgeList() {
+		JSONArray jsonResponse = new JSONArray();
+		try {
+			
+			for(String bridgeIP : bridgeFinder.getBridgesIp()) {
+				JSONObject jsonBridge = new JSONObject();
+				jsonBridge.put("ip", bridgeIP);
+				
+				if(!bridgeFinder.isStatusError(bridgeIP)) {
+					jsonBridge.put("status", "OK");
+					jsonBridge.put("MAC", getBridgeMacAddress(bridgeIP));
+					jsonBridge.put("lights", getLightNumber(bridgeIP));
+				}else {
+					JSONObject error = bridgeFinder.getErrorDetails(bridgeIP);
+					if( error.getString("description").equalsIgnoreCase("unauthorized user")) {
+						jsonBridge.put("status", "not associated");
+					}else {
+						jsonBridge.put("status", "critical error");
+					}
+					jsonBridge.put("MAC", "N.A");
+					jsonBridge.put("lights", "N.A");
+				}
+	
+				jsonResponse.put(jsonBridge);
+			}
+			logger.debug("getBridgeList : "+jsonResponse.toString());
+
+		} catch (JSONException e) {e.printStackTrace();}
+		
+		return jsonResponse;
+	}
+	
 	/**
 	 * Get the Philips HUE bridge Mac address or empty string is doesn't work
 	 * @return the Philips hue bridge Mac address as a String
@@ -432,7 +489,11 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			response.close();
 
 			JSONObject jsonResponse = new JSONObject(BridgeResponse);
-			macAddr = jsonResponse.getString("mac");
+			if(jsonResponse.has("mac")) {
+				macAddr = jsonResponse.getString("mac");
+			}else {
+				macAddr = jsonResponse.toString();
+			}
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -443,6 +504,107 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		}
 		
 		return macAddr;
+	}
+	
+	/**
+	 * ask the bridge for user name availability
+	 * @param ipAddr the bridge IP address
+	 * @param error the error tab out JSONObject
+	 * @return true if the bridge is already associated, false otherwise
+	 */
+	public boolean isAssociated(String ipAddr, JSONObject[] error) {
+		try {
+			URL url = new URL("http://" + ipAddr + "/api/"+ currentUserName+"/");
+			HttpURLConnection server = (HttpURLConnection) url.openConnection();
+			server.setDoInput(true);
+			server.setRequestMethod("GET");
+			server.connect();
+
+			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
+			String line = response.readLine();
+			String BridgeResponse = "";
+			while (line != null) {
+				BridgeResponse += line;
+				line = response.readLine();
+			}
+			response.close();
+
+			if(BridgeResponse.startsWith("[")) { //If the returned value is the JSONArray description of the failure
+				JSONArray jsonResponse = new JSONArray(BridgeResponse);
+				error[0] = jsonResponse.getJSONObject(0);
+				return false;
+			}
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			try {
+				JSONObject errorDetail = new JSONObject();
+				errorDetail.put("Exception", "Malformed URL Exception");
+				errorDetail.put("source", "PhilispsHUEAdapter");
+				errorDetail.put("method", "isAssociated");
+				error[0].put("error", errorDetail);
+			} catch (JSONException e1) {e1.printStackTrace();}
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			try {
+				JSONObject errorDetail = new JSONObject();
+				errorDetail.put("Exception", "Input/Output exception with bridge");
+				errorDetail.put("source", "PhilispsHUEAdapter");
+				errorDetail.put("method", "isAssociated");
+				error[0].put("error", errorDetail);
+			} catch (JSONException e1) {e1.printStackTrace();}
+			return false;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Get the number of lights associated with a specify HUE bridge
+	 * @param bridgeIP the HUE bridge address
+	 * @return the number of lights connected to the bridge
+	 */
+	private int getLightNumber(String bridgeIP) {
+		int associatedLightsNumber = 0;
+		try {
+			
+			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/");
+			HttpURLConnection server = (HttpURLConnection) url.openConnection();
+			server.setDoInput(true);
+			server.setRequestMethod("GET");
+			server.connect();
+
+			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
+			String line = response.readLine();
+			String BridgeResponse = "";
+			while (line != null) {
+				BridgeResponse += line;
+				line = response.readLine();
+			}
+			response.close();
+			server.disconnect();
+
+			JSONObject temp_response = new JSONObject(BridgeResponse);
+
+			@SuppressWarnings("unchecked")
+			Iterator<String> it = temp_response.keys();
+			while(it.hasNext()) {
+				associatedLightsNumber++;
+			}
+			logger.debug("number of lights with "+bridgeIP+" = "+associatedLightsNumber);
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return associatedLightsNumber;
 	}
 
 	/**
@@ -548,6 +710,62 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				ComponentBrokerImpl.disappearedComponent(inst.getName());
 			}
 		}
+	}
+	
+	/**
+	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
+	 * 
+	 * @param listenerService
+	 *            , the subscription service
+	 */
+	@Bind(optional = false)
+	public void bindSubscriptionService(ListenerService listenerService) {
+		this.listenerService = listenerService;
+		logger.debug("Communication subscription service dependency resolved");
+	}
+
+	/**
+	 * Call when the EnOcean proxy release the optional subscription service.
+	 * 
+	 * @param listenerService
+	 *            , the released subscription service
+	 */
+	@Unbind(optional = false)
+	public void unbindSubscriptionService(ListenerService listenerService) {
+		this.listenerService = null;
+		logger.debug("Subscription service dependency not available");
+	}
+
+	/**
+	 * Get the communication service from OSGi/iPojo. This service is optional.
+	 * 
+	 * @param sendToClientService
+	 *            , the communication service
+	 */
+	@Bind(optional = true)
+	public void bindCommunicationService(SendWebsocketsService sendToClientService) {
+		this.sendToClientService = sendToClientService;
+		logger.debug("Communication service dependency resolved");
+	}
+	
+	/**
+	 * Call when the EnOcean proxy release the communication service.
+	 * 
+	 * @param sendToClientService
+	 *            , the communication service
+	 */
+	@Unbind(optional = true)
+	public void unbindCommunicationService(SendWebsocketsService sendToClientService) {
+		this.sendToClientService = null;
+		logger.debug("Communication service dependency not available");
+	}
+	
+	/**
+	 * Get the communication service instance
+	 * @return the Websocket communication service instance
+	 */
+	public SendWebsocketsService getCommunicationService(){
+		return sendToClientService;
 	}
 
 }
