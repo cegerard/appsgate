@@ -1,0 +1,31 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+                          
+    <composite name="AppsGate-Application"
+        main=""
+        singleton="true"></composite>
+
+    <implementation name="ConfigurableClockImpl"
+        classname="appsgate.lig.clock.sensor.impl.ConfigurableClockImpl"
+        specification="CoreClockSpec" push="fireClockSetNotificationMsg, fireClockAlarmNotificationMsg, fireFlowRateSetNotificationMsg" singleton="true">
+        <callback onInit="start" onRemove="stop"/>
+
+
+
+
+        <!-- device kernel meta data -->
+        <definition name="deviceName" 	type="string"  field="appsgateServiceName" />
+        <definition name="deviceId" 	type="string"  field="appsgateObjectId" />
+
+        <!-- device client meta data -->
+        <definition name="pictureId" 	type="string"  field="appsgatePictureId" />
+        <definition name="userType" 	type="string"  field="appsgateUserType" />
+        <definition name="status" 		type="string"  field="appsgateStatus"  />
+
+    </implementation>
+    
+    <apam-instance name="ConfigurableClockInst" implementation="ConfigurableClockImpl">
+	</apam-instance>
+</apam>
