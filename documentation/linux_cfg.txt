@@ -1,0 +1,117 @@
+Ubuntu configuration
+--------------------
+
+1 - System Installation (64 bit)
+
+	1.1 - disk Partitions
+		When you instal the operating system be sur that you make a "srv" partition under
+		the root file system.
+		All the AppsGate file will put in this partition.
+	
+	1.2 - remove open-jdk java version if it is installed
+		sudo apt-get purge openjdk-\*
+	
+	1.3 - install oracle-jdk 
+		sudo mkdir -p /usr/local/java
+		then download the last version of the oracle java jdk X64 on there web site
+		go to your download directory
+		copy the archive to the directory your create before
+		cd /usr/local/java
+		sudo tar xvzf <your-archive-file>
+		edit your profile file:
+			sudo vi /etc/profile
+		add to the end:
+			JAVA_HOME=/usr/local/java/jdk1.7.0_45
+			PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
+			export JAVA_HOME
+			export PATH
+		inform the system where Oracle Java JRE is located:
+			sudo update-alternatives --install "/usr/bin/java" "java" "/usr/local/java/jdk1.7.0_45/bin/java" 1
+			sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/local/java/jdk1.7.0_45/bin/javaws" 1
+			sudo update-alternatives --set java /usr/local/java/jdk1.7.0_45/bin/java
+			sudo update-alternatives --set javaws /usr/local/java/jdk1.7.0_45/bin/javaws
+		/etc/profile (not mandatory)
+		restart you system		
+	
+	1.4 - install mongo db
+		download the mongdodb archive from the official web site
+		go to your download directory
+		sudo cp <mongodb archive file> /srv/
+		cd /srv
+		sudo tar xvzf <mongo-archive-file>
+		cd <mongodb-directory>
+		sudo mkdir data
+		sudo mkdir data/db
+	
+	1.5 - manually install the auto-launch script for AppsGate
+		get scripts from the git repository
+		/distributions/script_for_appsgate_machine/nuc
+		copy the appsgate_launcher and the clean_appsgate_cache to /srv
+		Check the version in each script of the mongodb and upate if it's necessary
+		sudo chmod a+x appsgate_launche clean_appsgate_cache
+		copy the appsgate deamon script to /etc/init.d directory
+		sudo cp deamon/etc/init.d/appsgatedeamon /etc/init.d/
+		cd /etc/init.d
+		sudo chmod a+rwx appsgatedeamon
+		sudo update-rc.d appsgatedeamon defaults
+	
+	1.6 - install the AppsGate distribution
+		Just get the distribution from the git repository or "scp" your AppsGate
+		distribution to the /srv/ directory.
+
+	
+	1.7 - the end!
+		Just restart the system and AppsGate will auto-running in background.
+		try in any web browser localhost:8080/appsgate/index.html
+	
+	
+2 - Maintain GRUB to auto-log on:
+
+	open the /boot/grub/grub.cfg file --> gksudo gedit grub.cfg
+	search for the following lines:
+		if [ "${recordfail}" = 1 ] ; then
+			set timeout=-1
+		else
+			......
+	and change the set timeout entry to  et timeout=5
+	that allow the system to boot every time even if an error occur and allow you to debug
+	through ssh connexion
+	
+	/!\ be careful the operation need to be done each time grub is updated !
+	
+	
+Raspbian configuration
+---------------------
+
+1 - System Installation
+	1.1 - You can reinstall the complete system from scratch by downloading the Raspbian
+		system from the web
+		
+	1.1bis - You can the AppsgGate raspberry system disk image and clone to your SD card.
+
+	########################################	
+	Only if you did the install from scratch
+	
+	1.2 - Install oracle jdk (better perf)
+			sudo apt-get update && sudo apt-get install oracle-java7-jdk
+			
+	1.3 - Install mongo db
+		Get mongo db binaries from the web:
+			https://github.com/brice-morin/ArduPi/tree/master/mongodb-rpi
+			copy the mongo directory to the /srv path
+			cd /srv/mongo
+			sudo mkdir data
+			sudo mkdir data/db
+	
+	1.4 - Appsgate script
+		Rename the distribution directory to "Appsgate-disitribution"
+		Get scripts from the git repository
+		copy the appsgate_launcher and the clean_appsgate_cache to /srv
+		In appsgate_auncher script change the "mongodb.xxxxx" path to "mongo"
+		move the appsgate deamon script to /etc/init.d directory
+		sudo mv /appsgatedeamon /etc/init.d/
+		cd /etc/init.d
+		sudo chmod a+rwx appsgatedeamon
+		sudo update-rc.d appsgatedeamon defaults
+
+	
