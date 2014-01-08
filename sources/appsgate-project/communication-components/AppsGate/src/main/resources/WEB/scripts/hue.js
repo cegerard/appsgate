@@ -3,5 +3,5 @@
  */
 function getDevices()
 {
-	appsgateMain.getWebSocket().send("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\"}");
+	appsgateMain.sendCmd("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\", \"TARGET\":\"ENOCEAN\"}");
 }

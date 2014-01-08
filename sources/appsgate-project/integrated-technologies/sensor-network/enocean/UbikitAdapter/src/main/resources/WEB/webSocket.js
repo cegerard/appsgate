@@ -15,7 +15,7 @@ function WebSocketOpen()
      ws.onopen = function()
      {
         // Web Socket is connected, get all existing devices
-        ws.send("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\"}");
+        ws.send("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\", \"TARGET\":\"ENOCEAN\"}");
         pairingMode = 0;
      };
      
@@ -201,16 +201,16 @@ function validConf(){
 	var profile_list = document.getElementById("profile-list");
 	var profile_prf = profile_list.options[profile_list.selectedIndex].value;
     
-    ws.send("{\"sensorValidation\":{\"id\":\""+sensor_id+"\", \"nbchoice\":\""+1+"\" ,\"capabilities\":[\""+profile_prf+"\"]}, \"CONFIGURATION\":\"sensorValidation\"}");
+    ws.send("{\"sensorValidation\":{\"id\":\""+sensor_id+"\", \"nbchoice\":\""+1+"\" ,\"capabilities\":[\""+profile_prf+"\"]}, \"CONFIGURATION\":\"sensorValidation\", \"TARGET\":\"ENOCEAN\"}");
 }
 
 /** Check */
 function setPairingMode() {
     if(pairingMode == 1){
-        ws.send("{\"setPairingMode\":{\"pairingMode\":\""+false+"\"}, \"CONFIGURATION\":\"setPairingMode\"}");
+        ws.send("{\"setPairingMode\":{\"pairingMode\":\""+false+"\"}, \"CONFIGURATION\":\"setPairingMode\", \"TARGET\":\"ENOCEAN\"}");
         pairingMode = 0;
     }else{
-        ws.send("{\"setPairingMode\":{\"pairingMode\":\""+true+"\"}, \"CONFIGURATION\":\"setPairingMode\"}");
+        ws.send("{\"setPairingMode\":{\"pairingMode\":\""+true+"\"}, \"CONFIGURATION\":\"setPairingMode\", \"TARGET\":\"ENOCEAN\"}");
         pairingMode = 1;
     }
 }
@@ -222,7 +222,7 @@ function createActuator() {
 	
 	var profile = actuator_profile.options[actuator_profile.selectedIndex].value;
 	
-	 ws.send("{\"createActuator\":{\"profile\":\""+profile+"\", \"name\":\""+name.value+"\", \"place\":\"\"}, \"CONFIGURATION\":\"createActuator\"}");
+	 ws.send("{\"createActuator\":{\"profile\":\""+profile+"\", \"name\":\""+name.value+"\", \"place\":\"\"}, \"CONFIGURATION\":\"createActuator\", \"TARGET\":\"ENOCEAN\"}");
 }
 
 /** Check */
@@ -254,13 +254,13 @@ function getActuatorInfos() {
 function actuatorOn() {
 	var actuator_list = document.getElementById("actuator-list");
 	var actId = actuator_list.options[actuator_list.selectedIndex].value;
-	ws.send("{\"actuatorAction\":{\"action\":\"on\", \"id\":\""+actId+"\"}, \"CONFIGURATION\":\"actuatorAction\"}");
+	ws.send("{\"actuatorAction\":{\"action\":\"on\", \"id\":\""+actId+"\"}, \"CONFIGURATION\":\"actuatorAction\", \"TARGET\":\"ENOCEAN\"}");
 }
 
 function actuatorOff() {
 	var actuator_list = document.getElementById("actuator-list");
 	var actId = actuator_list.options[actuator_list.selectedIndex].value;
-	ws.send("{\"actuatorAction\":{\"action\":\"off\", \"id\":\""+actId+"\"}, \"CONFIGURATION\":\"actuatorAction\"}");
+	ws.send("{\"actuatorAction\":{\"action\":\"off\", \"id\":\""+actId+"\"}, \"CONFIGURATION\":\"actuatorAction\", \"TARGET\":\"ENOCEAN\"}");
 }
 
 /** Check */

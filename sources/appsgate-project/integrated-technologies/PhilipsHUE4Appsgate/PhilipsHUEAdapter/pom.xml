@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<groupId>appsgate.components</groupId>
 		<artifactId>PhilipsHUE4Appsgate</artifactId>
@@ -31,16 +31,28 @@
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>cyberlink.upnp</groupId>
 			<artifactId>cybergarage</artifactId>
-			<version>2.1.0</version> <!-- WARNING: use local repository you need to export it into your own -->
-		</dependency>
+			<version>2.1.0</version>
+		</dependency> -->
 		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>
 			<version>${apam.current.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>appsgate.android</groupId>
+			<artifactId>PhilipsHUEAndroidAdapter</artifactId>
+			<version>1.1.1beta</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ClientCommunicationManager</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<!-- Dependencies Instructions -->
