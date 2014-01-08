@@ -14,6 +14,7 @@ import org.osgi.service.event.EventHandler;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.UUID;
 
 /**
  * This entity is instantiated in Apam level, and all messages received in the Queue fuchsia/ard/locker (EventAdmin message), are addressed to
@@ -73,10 +74,14 @@ public class ARDLockerFuchsiaApamAdapter implements EventHandler {
                 JSONObject result = new JSONObject();
 
                 //Those a mandatory fields, case they are not defined an exception is raised in upper layers
-                result.put("objectId", "");
-                result.put("varName", "doorMessage");
-                result.put("value", "");
+                result.put("objectId", String.format("ard-door-%s",event.getProperty("door")));
 
+                //result.put(event.getProperty("authorization_result").toString(),event.getProperty("card-int"));
+
+                result.put("varName", event.getProperty("authorization_result"));
+                result.put("value", event.getProperty("card-int"));
+
+                //Add all other informations just to make sure
                 for(String name:event.getPropertyNames()){
                     result.put(name,event.getProperty(name));
                 }

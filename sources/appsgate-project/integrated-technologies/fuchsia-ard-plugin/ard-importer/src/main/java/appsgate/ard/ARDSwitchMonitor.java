@@ -1,14 +1,14 @@
 package appsgate.ard;
 
 import appsgate.ard.aperio.AperioAccessDecision;
+import appsgate.ard.base.AuthorizationCallbackComparator;
 import appsgate.ard.base.callback.DoorMonitorExceptionHandler;
 import appsgate.ard.base.callback.LockerAuthorizationCallback;
 import appsgate.ard.base.iface.Switch;
 import appsgate.ard.dao.AuthorizationRequest;
 import appsgate.ard.dao.AuthorizationResponse;
 import appsgate.ard.dao.AuthorizationResponseAck;
-import org.apache.felix.ipojo.Factory;
-import org.apache.felix.ipojo.InstanceManager;
+import org.apache.felix.ipojo.*;
 import org.apache.felix.ipojo.annotations.*;
 import org.ow2.chameleon.fuchsia.core.component.AbstractImporterComponent;
 import org.ow2.chameleon.fuchsia.core.declaration.ImportDeclaration;
@@ -18,9 +18,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.*;
-
-import static org.ow2.chameleon.fuchsia.core.ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY;
-import static org.ow2.chameleon.fuchsia.core.ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY;
 
 @Component(name="SwitchMonitorFactory")
 @Provides
@@ -35,12 +32,12 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
     @ServiceProperty(name = "ard.switch.authorized_cards")
     private String authorizedCardsString;
 
-    private Set<Integer> authorizedCards=new HashSet<Integer>();
+    @Requires(filter = "(factory.name=DoorAuthorizationCallbackMockFactory)")
+    Factory doorAuthorizationCallbackMockFactory;
 
-    @Requires(filter = "(factory.name=DoorAuthorizationCallbackFactory)")
-    Factory auhorizationCallbackFactory;
-
-    LockerAuthorizationCallback defaultCallbackFactory;
+    //LockerAuthorizationCallback services with higher priority will take place (high priority = high int values)
+    @Requires(policy = BindingPolicy.DYNAMIC_PRIORITY,comparator = AuthorizationCallbackComparator.class, optional = true)
+    LockerAuthorizationCallback authorizationCallback;
 
     @Property
     private Integer port;
@@ -51,8 +48,7 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
     private Socket connection;
     private DoorMonitorExceptionHandler exceptionHandler;
 
-    private Map<String, InstanceManager> doorCallback=new HashMap<String, InstanceManager>();
-
+    private Set<String> doorCallback=new HashSet<String>();
     private Set<String> monitoredDoors=new HashSet<String>();
 
     public ARDSwitchMonitor(){}
@@ -62,48 +58,19 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
         this.port=port;
     }
 
-    private InstanceManager generateAuthorizationCallback(){
-        try {
-
-            Dictionary<String,Object> authorizedCards=new Hashtable<String,Object>() ;
-
-            authorizedCards.put("ard.switch.authorized_cards", authorizedCardsString);
-
-            InstanceManager im=(InstanceManager)auhorizationCallbackFactory.createComponentInstance(authorizedCards);
-
-            LockerAuthorizationCallback callback=(LockerAuthorizationCallback)im.getPojoObject();
-
-            return im;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Impossible to create call back");
-            return null;
-
-        }
-    }
 
     @Validate
-    public void adaptAuthorizedDoors(){
+    private void generateAuthorizationCallback() {
 
-        if(authorizedCardsString.trim().length()>0){
+        Dictionary<String,Object> authorizedCards=new Hashtable<String,Object>() ;
 
-            StringTokenizer st=new StringTokenizer(authorizedCardsString," ");
+        authorizedCards.put("ard.switch.authorized_cards", authorizedCardsString);
 
-            while(st.hasMoreTokens()){
-
-                String val=st.nextToken();
-
-                try{
-                    Integer intval=Integer.parseInt(val);
-                    authorizedCards.add(intval);
-                    System.out.println("Adding "+intval+" into the list of authorized cards");
-                }catch(NumberFormatException e){
-                    System.err.println("Not possible to parse value "+val);
-                }
-
-            }
-
+        InstanceManager im= null;
+        try {
+            im = (InstanceManager)doorAuthorizationCallbackMockFactory.createComponentInstance(authorizedCards);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -147,11 +114,12 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
 
                 AuthorizationResponse arr=null;
 
-                LockerAuthorizationCallback callback=(LockerAuthorizationCallback)doorCallback.get(new Byte(ar.getDoorId()).toString()).getPojoObject();
+                //LockerAuthorizationCallback callback=doorCallback.get(new Byte(ar.getDoorId()).toString());
 
-                if (callback!=null)
-                    arr=callback.authorizationRequested(ar);
-                else {
+                if (authorizationCallback!=null){
+                    System.out.println(String.format("Using %s as authorization callback",authorizationCallback.toString()));
+                    arr= authorizationCallback.authorizationRequested(ar);
+                } else {
                     System.out.println("handler is null, allowing everyone comming in");
                     arr=new AuthorizationResponse(AperioAccessDecision.GRANTED,ar);
                 }
@@ -166,7 +134,7 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
 
                 AuthorizationResponseAck ack=AuthorizationResponseAck.fromStream(ackDataStream);
 
-                if (callback!=null) callback.authorizationAckReceived(ack);
+                if (authorizationCallback !=null) authorizationCallback.authorizationAckReceived(ack);
 
                 System.out.println("ack received.");
 
@@ -193,14 +161,6 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
 
         monitoredDoors.add(doorId);
 
-        InstanceManager im=generateAuthorizationCallback();
-
-        if(im!=null){
-            LockerAuthorizationCallback callback=(LockerAuthorizationCallback)im.getPojoObject();
-            doorCallback.put(doorId,im);
-            setHandshakeHandler(callback, doorId);
-        }
-
         System.out.println("monitoring door:"+doorId);
     }
 
@@ -209,21 +169,10 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
 
         String doorId=importDeclaration.getMetadata().get("ard.door.id").toString();
 
-        InstanceManager managerCallback=doorCallback.get(doorId);
-
-        if(managerCallback!=null){
-            managerCallback.dispose();
-        }
-
         monitoredDoors.remove(doorId);
 
         System.out.println("stop monitoring door:"+doorId);
     }
-
-    public void AddExceptionHandler(DoorMonitorExceptionHandler handler){
-        this.exceptionHandler=handler;
-    }
-
 
     public List<String> getConfigPrefix() {
         return null;
@@ -233,7 +182,32 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
         return String.format("%s:%s-switchmonitor",address,port);
     }
 
-    public void setHandshakeHandler(LockerAuthorizationCallback handler, String doorcode){
-        //Don't care
+    private Set<Integer> adaptAuthorizedDoors(String cards){
+
+        Set<Integer> authorizedCards=new HashSet<Integer>();
+
+        if(authorizedCardsString.trim().length()>0){
+
+            StringTokenizer st=new StringTokenizer(authorizedCardsString," ");
+
+            while(st.hasMoreTokens()){
+
+                String val=st.nextToken();
+
+                try{
+                    Integer intval=Integer.parseInt(val);
+                    authorizedCards.add(intval);
+                    System.out.println("Adding "+intval+" into the list of authorized cards");
+                }catch(NumberFormatException e){
+                    System.err.println("Not possible to parse value "+val);
+                }
+
+            }
+
+        }
+
+        return authorizedCards;
+
     }
+
 }

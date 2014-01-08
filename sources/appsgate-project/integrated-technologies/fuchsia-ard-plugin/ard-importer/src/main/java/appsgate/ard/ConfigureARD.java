@@ -21,15 +21,4 @@ public class ConfigureARD {
             .of("ARDSwitchImporterFactory")
             .with("target").setto("(&(ard.switch.ip=*)(ard.switch.port=*))");
 
-
-      /*
-    Instance ARDDoorLinker = instance()
-            .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
-            .with(FILTER_IMPORTDECLARATION_PROPERTY).setto("(ard.door.id=*)")
-            .with(FILTER_IMPORTERSERVICE_PROPERTY).setto("(address=*)");
-
-    Instance ARDDoorImporter = instance()
-            .of("ARDDoorImporterFactory")
-            .with("target").setto("(ard.door.id=*)");
-    */
 }
