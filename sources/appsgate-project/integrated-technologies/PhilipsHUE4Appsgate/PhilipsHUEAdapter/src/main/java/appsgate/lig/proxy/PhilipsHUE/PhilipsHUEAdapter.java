@@ -109,6 +109,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				}
 				response.close();
 				server.disconnect();
+				
+				logger.debug("Bridge response (before jsonize) : "+BridgeResponse);
 
 				JSONObject temp_response = new JSONObject(BridgeResponse);
 
