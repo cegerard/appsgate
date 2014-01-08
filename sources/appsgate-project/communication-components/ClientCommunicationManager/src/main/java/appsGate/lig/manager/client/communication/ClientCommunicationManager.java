@@ -310,7 +310,7 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	@Override
 	public boolean addConfigListener(String target, ConfigListener configCmdList) {
 		logger.debug("New config listener: "+configCmdList.toString()+" for target: "+target);
-		return configListeners.put(target, configCmdList) != null;
+		return configListeners.put(target, configCmdList) == null;
 	}
 	
 	@Override
