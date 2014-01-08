@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "Appsgate starting..."
+echo "Mongo data base for Appsgate server starting..." > /tmp/appsgate.log
+cd /srv/mongodb-linux-x86_64-2.4.1/bin
+./mongod --dbpath ../data/db &
+echo "Mongo data base for Appsgate server started." > /tmp/appsgate.log
+echo "Launch Appsgate server" > /tmp/appsgate.log
+cd /srv/Appsgate-distribution
+sudo ./apam
+echo "Appsgate server down !" > /tmp/appsgate.log

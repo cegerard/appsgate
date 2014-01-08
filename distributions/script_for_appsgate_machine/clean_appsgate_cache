@@ -1,0 +1,7 @@
+#!/bin/sh
+echo "clean Appsgate server"
+echo "clean Felix cache"
+sudo rm -r AppsGate-distribution/felix-cache
+echo "clean Ubikit database for EnOcean paired sensors"
+sudo rm -r AppsGate-distribution/ubikit_databases
+echo "Appsgate distribution cleaned up"
