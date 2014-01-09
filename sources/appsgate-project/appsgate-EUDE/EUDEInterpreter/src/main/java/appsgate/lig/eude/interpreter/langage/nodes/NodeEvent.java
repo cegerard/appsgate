@@ -173,7 +173,7 @@ public class NodeEvent extends Node {
 
     @Override
     protected void collectVariables(SymbolTable s) {
-        s.add(sourceId, sourceType);
+        s.addAnonymousVariable(sourceId, sourceType);
     }
 
 }

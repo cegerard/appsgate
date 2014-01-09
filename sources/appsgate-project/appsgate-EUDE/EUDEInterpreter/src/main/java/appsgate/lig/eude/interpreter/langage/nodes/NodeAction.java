@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
-import appsgate.lig.eude.interpreter.langage.components.Variable;
+import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.List;
@@ -147,19 +147,19 @@ public class NodeAction extends Node {
     private void callListAction(String target) {
                 LOGGER.debug("Call List action");
 
-        Variable list = getElementFromName(target);
+        SpokVariable list = getElementFromName(target);
         if (list == null) {
             LOGGER.error("No such variable found in the symbol table");
             return;
         }
-        List<Variable> elements = list.getElements();
-        for (Variable v : elements) {
+        List<SpokVariable> elements = list.getElements();
+        for (SpokVariable v : elements) {
             
             callVariableAction(v, target);
         }
     }
 
-    private void callVariableAction(Variable v, String target) {
+    private void callVariableAction(SpokVariable v, String target) {
         LOGGER.debug("Call Variable action: {}", v.getName());
         if (v.getType().equals("variable")) {
             if (v.getName().equals(target)) {
@@ -219,7 +219,7 @@ public class NodeAction extends Node {
 
     @Override
     protected void collectVariables(SymbolTable s) {
-        s.add(targetId, targetType);
+        s.addAnonymousVariable(targetId, targetType);
     }
 
 }

@@ -11,7 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
-import appsgate.lig.eude.interpreter.langage.components.Variable;
+import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
@@ -147,7 +147,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * Add a new listener to the start event of the node
      *
-     * @param listener Listener to add
+     * @param listener Listener to addAnonymousVariable
      */
     @Override
     public void addStartEventListener(StartEventListener listener) {
@@ -169,7 +169,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * Add a new listener to the end event of the node
      *
-     * @param listener Listener to add
+     * @param listener Listener to addAnonymousVariable
      */
     @Override
     public void addEndEventListener(EndEventListener listener) {
@@ -264,7 +264,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     * add node listening to interpreter
+     * addAnonymousVariable node listening to interpreter
      *
      * @param aThis
      */
@@ -389,9 +389,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param varName
      * @return
      */
-    protected Variable getElementFromName(String varName) {
+    protected SpokVariable getElementFromName(String varName) {
         if (this.symbolTable != null) {
-            Variable element;
+            SpokVariable element;
             element = this.symbolTable.getVariableByKey(varName);
             if (element != null) {
                 return element;
@@ -404,7 +404,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     * Method that returns the Variable name of a given id and type
+     * Method that returns the SpokVariable name of a given id and type
      * 
      * @param id
      * @param type
@@ -413,7 +413,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     protected String getElementKey(String id, String type) {
         if (this.symbolTable != null) {
             String key;
-            key = this.symbolTable.getVariableKey(id, type);
+            key = this.symbolTable.getAnonymousVariableKey(id, type);
             if (key != null) {
                 return key;
             }

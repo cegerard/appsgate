@@ -47,7 +47,7 @@ public class KeyCardNotificationMsg implements NotificationMsg{
 	 * @param cardNumber the inserted card number (-1 if no id)
 	 * @param varName the variable that changed
 	 * @param value the new value for the variable that changed
-	 * @param the source object reference
+	 * @param source the source object reference
 	 */
 	public KeyCardNotificationMsg(boolean isCardInserted, int cardNumber, String varName, String value, CoreObjectSpec source) {
 		this.isCardInserted = isCardInserted;
@@ -62,7 +62,7 @@ public class KeyCardNotificationMsg implements NotificationMsg{
 	 * @param isCardInserted the new key card status
 	 * @param varName the variable that changed
 	 * @param value the new value for the variable that changed
-	 * @param the source object reference
+	 * @param source the source object reference
 	 */
 	public KeyCardNotificationMsg(boolean isCardInserted, String varName, String value, CoreObjectSpec source) {
 		this.isCardInserted = isCardInserted;
@@ -74,10 +74,10 @@ public class KeyCardNotificationMsg implements NotificationMsg{
 	
 	/**
 	 * Constructor for this ApAM message
-	 * @param isCardInserted the new key card status
+	 * @param cardNumber the key card id
 	 * @param varName the variable that changed
 	 * @param value the new value for the variable that changed
-	 * @param the source object reference
+	 * @param source the source object reference
 	 */
 	public KeyCardNotificationMsg(int cardNumber, String varName, String value, CoreObjectSpec source) {
 		this.isCardInserted = false;

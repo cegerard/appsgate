@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class Variable {
+public class SpokVariable{
     // Logger
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Variable.class.getName());
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SpokVariable.class.getName());
 
     private final String id;
     private final String type;
@@ -32,7 +32,7 @@ public class Variable {
      * @param i the id
      * @param t the type
      */
-    public Variable(String i, String t) {
+    public SpokVariable(String i, String t) {
         this.id = i;
         this.type = t;
         this.json = null;
@@ -43,7 +43,7 @@ public class Variable {
      * @param obj
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
-    public Variable(JSONObject obj) throws NodeException {
+    public SpokVariable(JSONObject obj) throws NodeException {
         try {
             this.id = obj.getString("id");
             this.type = obj.getString("type");
@@ -66,7 +66,7 @@ public class Variable {
      * @param other
      * @return true if both variables are the same
      */
-    public boolean equals(Variable other) {
+    public boolean equals(SpokVariable other) {
         return other.id.equals(this.id) && other.type.equals(this.type);
     }
 
@@ -124,12 +124,12 @@ public class Variable {
         return this.id;
     }
 
-    public List<Variable> getElements() {
+    public List<SpokVariable> getElements() {
         try {
-            ArrayList<Variable> a = new ArrayList<Variable>();
+            ArrayList<SpokVariable> a = new ArrayList<SpokVariable>();
             JSONArray list = this.json.getJSONArray("list");
             for(int i = 0; i < list.length(); i++) {
-                a.add(new Variable(list.getJSONObject(i)));
+                a.add(new SpokVariable(list.getJSONObject(i)));
             }
             return a;
             
