@@ -63,7 +63,7 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 	 
 			//Get the html source for Philips HUE
 			var httpRequest=new XMLHttpRequest();
-			httpRequest.open("GET","./html/hue.html",false);
+			httpRequest.open("GET","./html/philipshue.html",false);
 			httpRequest.send();
 			//Displays it in the display panorama
 			var panorama = document.getElementById("display-panorama")
