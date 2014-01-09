@@ -150,12 +150,7 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	 * @return true if the message is a configuration message, false otherwise
 	 */
 	private boolean isConfiguration(JSONObject msg) {
-		try{
-			msg.getString("CONFIGURATION");
-			return true;
-		}catch(JSONException e) {
-			return false;
-		}
+		return msg.has("CONFIGURATION");
 	}
 	
 	/**
