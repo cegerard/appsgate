@@ -87,12 +87,25 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 		 */
 		this.notificationHandler = function (message)
 		{
-  	
-			if (message.varName == "ClockSet"){
-				clockModule.setSystemClockTime(message.value);
-	 		} else if(message.varName == "flowRate"){
-   	 			clockModule.setSystemClockFlowRate(message.value);	
-   			}  
+			if(message.hasOwnProperty("newDevice")) {
+				var newDevice = message.newDevice;
+				
+				//Tiles update
+   				if (newDevice.deviceType == "PHILIPS_HUE_LIGHT") {
+   					var hue_tile_light_count = document.getElementById("philips-index-tile-count");
+   					var currentCount = hue_tile_light_count.innerHTML.valueOf();
+   					currentCount++;
+   					hue_tile_light_count.innerHTML = currentCount;
+   				}
+
+			}else {
+			
+				if (message.varName == "ClockSet"){
+					clockModule.setSystemClockTime(message.value);
+				} else if(message.varName == "flowRate"){
+   	 				clockModule.setSystemClockFlowRate(message.value);	
+				} 
+			}
 		}
 
 		/**
@@ -106,6 +119,8 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
     			var jsonArray = JSON.parse(tab_devices);
     			var l_tab = jsonArray.length;
     		
+    			var PhilipsLightCount = 0;
+    			
     			for(i = 0; i < l_tab; i++) 
     			{
     				obj = jsonArray[i];
@@ -126,13 +141,20 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 						clockModule.setSystemClockMilisTime(obj.clockValue);
 						//Set time flow rate
 						clockModule.setSystemClockFlowRate(obj.flowRate);
-       				}	
+       				}
+       				
+       				//Tile initialization
+       				if (obj.deviceType == "PHILIPS_HUE_LIGHT") {
+       					PhilipsLightCount++;
+       					var hue_tile_light_count = document.getElementById("philips-index-tile-count");
+       					hue_tile_light_count.innerHTML = PhilipsLightCount;
+       				}
        			}
     		}
 		}
 		
 		/*****************************************/
-		/*			Console Commands				 */
+		/*			Console Commands			 */
 		/*****************************************/
 		
 		/**
