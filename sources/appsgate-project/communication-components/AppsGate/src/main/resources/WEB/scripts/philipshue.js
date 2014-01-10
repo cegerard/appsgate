@@ -22,8 +22,6 @@ define([], function () {
 				}
 			}
 			
-			//{"TARGET":"PHILIPSHUE","hueConfDevices":{"lights":[{"name":"MK2","lightId":"2"},{"name":"MK1","lightId":"1"}]
-			//,"bridges":[{"lights":"2","status":"OK","MAC":"00:17:88:0a:99:c1","ip":"194.199.23.165"},{"lights":"N.A","status":"not associated","MAC":"00:17:88:18:29:30","ip":"194.199.23.135"}]}}
 		}
 		
 		/** Add a tile in configure GUI for the bridge in parameter */
@@ -85,7 +83,61 @@ define([], function () {
 		
 		/**  Add a tile in configure GUI for the light in parameter */
 		this.addLightTile = function addLightTile(light) {
-			console.log(light.name);
+			
+			var httpRequest=new XMLHttpRequest();
+			httpRequest.open("GET","./html/hueLightTile.html",false);
+			httpRequest.send();
+			
+			var lights_tile_list = document.getElementById("lights-tile-list");
+						
+			var lightDiv = document.createElement('div');
+			lightDiv.innerHTML = httpRequest.responseText;
+			lightDiv.id = light.lightId;
+			
+			var atag = lightDiv.childNodes[0];
+			var subDiv = atag.childNodes;
+			var nbDiv = subDiv.length;
+			var currentDiv;
+			var lightState = light.state;
+			
+			for(var i = 0; i < nbDiv; i++){
+				currentDiv = subDiv[i];
+				currentDiv.id = currentDiv.id+"-"+light.lightId;
+				
+				switch(i){
+					case 1: //Header - reachable
+						var reachable = lightState.reachable;
+						if(reachable) {
+							currentDiv.innerHTML = "OK";
+						}else {
+							currentDiv.innerHTML = "OUT";
+							atag.className = "tile square text bg-color-red";
+						}
+						break;
+					case 3: //Id
+						currentDiv.innerHTML = light.lightId;
+						break;
+					case 5: //State
+						currentDiv.innerHTML = lightState.on;
+						break;
+					case 7: //color
+						currentDiv.innerHTML = lightState.hue;
+						break;
+					case 9: //hue-type
+						currentDiv.innerHTML = light.type;
+						break;
+					default:
+						;
+				}
+			}
+			
+			var no_light_tag = document.getElementById("no-ligths-detected-tag");
+			if(no_light_tag != null) {
+				lights_tile_list.removeChild(no_light_tag);
+			}
+			
+			lights_tile_list.appendChild(lightDiv);
+			
 		}
 	
 	};

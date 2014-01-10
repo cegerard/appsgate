@@ -121,8 +121,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		try {
 			
 			for(PHBridge bridge : bridgeFinder.getAvailableBridges()) {
-				String bridgeIP = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
-				URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/");
+				PHBridgeConfiguration bc = bridge.getResourceCache().getBridgeConfiguration();
+				String bridgeIP = bc.getIpAddress();
+				URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/");
 				HttpURLConnection server = (HttpURLConnection) url.openConnection();
 				server.setDoInput(true);
 				server.setRequestMethod("GET");
@@ -137,17 +138,16 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				}
 				response.close();
 				server.disconnect();
-				
-				logger.debug("Bridge response (before jsonize) : "+BridgeResponse);
 
 				JSONObject temp_response = new JSONObject(BridgeResponse);
 
+				JSONObject lights = temp_response.getJSONObject("lights");
 				@SuppressWarnings("unchecked")
-				Iterator<String> it = temp_response.keys();
+				Iterator<String> it = lights.keys();
 				while(it.hasNext()) {
 					String lightID = it.next();
-					JSONObject lightObj = temp_response.getJSONObject(lightID);
-					lightObj.put("lightId", lightID);
+					JSONObject lightObj = lights.getJSONObject(lightID);
+					lightObj.put("lightId", bc.getMacAddress()+"-"+lightID);
 					jsonResponse.put(lightObj);
 				}
 			}
