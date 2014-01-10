@@ -1,5 +1,7 @@
 package appsgate.ard.dao;
 
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class AuthorizationRequest {
@@ -98,6 +100,18 @@ public class AuthorizationRequest {
 	public void setCard(byte[] card) {
 		this.card = card;
 	}
+
+    public static AuthorizationRequest fromData(byte door,Integer card) {
+        AuthorizationRequest ar = new AuthorizationRequest();
+        ar.door=door;
+
+        ByteBuffer bigInt = ByteBuffer.allocate(8).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+        bigInt.putInt(card);
+
+        ar.card=bigInt.array();
+
+        return ar;
+    }
 
 	public static AuthorizationRequest fromStream(byte[] stream) {
 

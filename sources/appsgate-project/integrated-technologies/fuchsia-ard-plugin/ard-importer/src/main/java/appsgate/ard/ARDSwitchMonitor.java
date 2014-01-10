@@ -10,9 +10,17 @@ import appsgate.ard.dao.AuthorizationResponse;
 import appsgate.ard.dao.AuthorizationResponseAck;
 import org.apache.felix.ipojo.*;
 import org.apache.felix.ipojo.annotations.*;
+import org.apache.felix.ipojo.handlers.providedservice.ProvidedServiceHandler;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.ow2.chameleon.fuchsia.core.component.AbstractImporterComponent;
 import org.ow2.chameleon.fuchsia.core.declaration.ImportDeclaration;
 import org.ow2.chameleon.fuchsia.core.exceptions.ImporterException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,7 +29,7 @@ import java.util.*;
 
 @Component(name="SwitchMonitorFactory")
 @Provides
-public class ARDSwitchMonitor extends AbstractImporterComponent implements Switch, Runnable{
+public class ARDSwitchMonitor extends AbstractImporterComponent implements Switch, Runnable {
 
     @ServiceProperty(name = "target")
     private String filter;
@@ -29,35 +37,42 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
     @ServiceProperty(name = "ard.switch.ip")
     private String address;
 
+    @Property
+    private Integer port;
+
     @ServiceProperty(name = "ard.switch.authorized_cards")
     private String authorizedCardsString;
 
     @Requires(filter = "(factory.name=DoorAuthorizationCallbackMockFactory)")
-    Factory doorAuthorizationCallbackMockFactory;
+    private Factory doorAuthorizationCallbackMockFactory;
 
-    //LockerAuthorizationCallback services with higher priority will take place (high priority = high int values)
+    //LockerAuthorizationCallback services with higher priority will take replace lower priorities ones(high priority = high int values)
     @Requires(policy = BindingPolicy.DYNAMIC_PRIORITY,comparator = AuthorizationCallbackComparator.class, optional = true)
-    LockerAuthorizationCallback authorizationCallback;
+    private LockerAuthorizationCallback authorizationCallback;
 
-    @Property
-    private Integer port;
+    /**
+     * This is the authorizationCallback instance that exists always, but will be replaced by any other instance (with the proper interface )
+     * with higher priority
+     */
+    InstanceManager authorizationCallbackMockInstance;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private boolean activated=true;
     private InputStream input;
     private OutputStream output;
     private Socket connection;
-    private DoorMonitorExceptionHandler exceptionHandler;
-
-    private Set<String> doorCallback=new HashSet<String>();
     private Set<String> monitoredDoors=new HashSet<String>();
 
-    public ARDSwitchMonitor(){}
+    private BundleContext context;
+
+    public ARDSwitchMonitor(BundleContext context){
+        this.context=context;
+    }
 
     public ARDSwitchMonitor(String address, int port){
         this.address=address;
         this.port=port;
     }
-
 
     @Validate
     private void generateAuthorizationCallback() {
@@ -66,11 +81,10 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
 
         authorizedCards.put("ard.switch.authorized_cards", authorizedCardsString);
 
-        InstanceManager im= null;
         try {
-            im = (InstanceManager)doorAuthorizationCallbackMockFactory.createComponentInstance(authorizedCards);
+            authorizationCallbackMockInstance = (InstanceManager)doorAuthorizationCallbackMockFactory.createComponentInstance(authorizedCards);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("failed to create authorization callback mock object");
         }
 
     }
@@ -81,6 +95,9 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
             input.close();
             output.close();
             connection.close();
+            if(authorizationCallbackMockInstance!=null){
+                authorizationCallbackMockInstance.dispose();
+            }
         } catch (Exception e) {
             System.out.println("failed to force disconnection");
         }
@@ -143,9 +160,50 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
             System.out.println(String.format("Stopping monitoring locker in address %s:%s ",address,port));
 
         } catch (Exception e) {
+
             stopMonitor();
-            exceptionHandler.handleException(e,this);
+
+        } finally {
+
+            registerMockAuthenticationReceiver();
+
         }
+
+    }
+
+    private void registerMockAuthenticationReceiver() {
+
+        String[] topics = new String[] {
+              "fuchsia/ard/mock/authorization_requested"
+        };
+
+        Dictionary props = new Hashtable();
+
+        props.put(EventConstants.EVENT_TOPIC, topics);
+
+        context.registerService(EventHandler.class.getName(), new EventHandler(){{}
+
+            public void handleEvent(Event event) {
+
+                System.out.println(String.format("ARD importer: message received on the topic %s with parameters %s",event.getTopic(),event.getPropertyNames().toString()));
+
+                Integer cardId=new Integer(event.getProperty("card-int").toString());
+                Byte doorId=new Byte(event.getProperty("door").toString());
+
+                if(monitoredDoors.contains(doorId.toString())){
+
+                    AuthorizationRequest ar=AuthorizationRequest.fromData(doorId,cardId);
+
+                    AuthorizationResponse arr= authorizationCallback.authorizationRequested(ar);
+
+                } else {
+
+                    System.out.println("Authorization request ignored, door is not monitored");
+
+                }
+
+            }
+        } , props);
 
     }
 
@@ -180,34 +238,6 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
 
     public String getName() {
         return String.format("%s:%s-switchmonitor",address,port);
-    }
-
-    private Set<Integer> adaptAuthorizedDoors(String cards){
-
-        Set<Integer> authorizedCards=new HashSet<Integer>();
-
-        if(authorizedCardsString.trim().length()>0){
-
-            StringTokenizer st=new StringTokenizer(authorizedCardsString," ");
-
-            while(st.hasMoreTokens()){
-
-                String val=st.nextToken();
-
-                try{
-                    Integer intval=Integer.parseInt(val);
-                    authorizedCards.add(intval);
-                    System.out.println("Adding "+intval+" into the list of authorized cards");
-                }catch(NumberFormatException e){
-                    System.err.println("Not possible to parse value "+val);
-                }
-
-            }
-
-        }
-
-        return authorizedCards;
-
     }
 
 }

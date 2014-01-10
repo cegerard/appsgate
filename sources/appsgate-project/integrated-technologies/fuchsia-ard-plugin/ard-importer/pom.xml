@@ -37,6 +37,11 @@
             <artifactId>org.apache.felix.ipojo.annotations</artifactId>
             <version>${ipojo.annotations.version}</version>
         </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreKeyCardSensorSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
