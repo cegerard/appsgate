@@ -89,6 +89,43 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
 
     }
 
+    @Validate
+    private void registerMockAuthenticationReceiver() {
+
+        String[] topics = new String[] {
+                "fuchsia/ard/mock/authorization_requested"
+        };
+
+        Dictionary props = new Hashtable();
+
+        props.put(EventConstants.EVENT_TOPIC, topics);
+
+        context.registerService(EventHandler.class.getName(), new EventHandler(){{}
+
+            public void handleEvent(Event event) {
+
+                System.out.println(String.format("ARD importer: message received on the topic %s with parameters %s",event.getTopic(),event.getPropertyNames().toString()));
+
+                Integer cardId=new Integer(event.getProperty("card-int").toString());
+                Byte doorId=new Byte(event.getProperty("door").toString());
+
+                if(monitoredDoors.contains(doorId.toString())){
+
+                    AuthorizationRequest ar=AuthorizationRequest.fromData(doorId,cardId);
+
+                    AuthorizationResponse arr= authorizationCallback.authorizationRequested(ar);
+
+                } else {
+
+                    System.out.println("Authorization request ignored, door is not monitored");
+
+                }
+
+            }
+        } , props);
+
+    }
+
     public void stopMonitor(){
         this.activated=false;
         try {
@@ -163,47 +200,7 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
 
             stopMonitor();
 
-        } finally {
-
-            registerMockAuthenticationReceiver();
-
         }
-
-    }
-
-    private void registerMockAuthenticationReceiver() {
-
-        String[] topics = new String[] {
-              "fuchsia/ard/mock/authorization_requested"
-        };
-
-        Dictionary props = new Hashtable();
-
-        props.put(EventConstants.EVENT_TOPIC, topics);
-
-        context.registerService(EventHandler.class.getName(), new EventHandler(){{}
-
-            public void handleEvent(Event event) {
-
-                System.out.println(String.format("ARD importer: message received on the topic %s with parameters %s",event.getTopic(),event.getPropertyNames().toString()));
-
-                Integer cardId=new Integer(event.getProperty("card-int").toString());
-                Byte doorId=new Byte(event.getProperty("door").toString());
-
-                if(monitoredDoors.contains(doorId.toString())){
-
-                    AuthorizationRequest ar=AuthorizationRequest.fromData(doorId,cardId);
-
-                    AuthorizationResponse arr= authorizationCallback.authorizationRequested(ar);
-
-                } else {
-
-                    System.out.println("Authorization request ignored, door is not monitored");
-
-                }
-
-            }
-        } , props);
 
     }
 
