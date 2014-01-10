@@ -120,11 +120,11 @@ public class SwingARD implements CoreKeyCardSensorSpec, CoreObjectSpec, ActionLi
                 + appsgateObjectId);
         frameMultiSwitchButtons.setLayout(new BorderLayout());
 
-        buttonOff = new JToggleButton(" GRANT CARD ");
+        buttonOff = new JToggleButton(" REFUSE CARD ");
         buttonOff.setPreferredSize(new Dimension(240, 60));
         buttonOff.addActionListener(this);
 
-        buttonOn = new JToggleButton(" NOT GRANTED CARD  ");
+        buttonOn = new JToggleButton(" GRANT CARD  ");
         buttonOn.setPreferredSize(new Dimension(240, 60));
         buttonOn.addActionListener(this);
 
@@ -133,7 +133,7 @@ public class SwingARD implements CoreKeyCardSensorSpec, CoreObjectSpec, ActionLi
 
 	//frameMultiSwitchButtons.add(panelButtons);
         // frameMultiSwitchButtons.add(panelControl);
-	// changeNbOfSwitchs(2);
+        // changeNbOfSwitchs(2);
         frameMultiSwitchButtons.pack();
         frameMultiSwitchButtons.setVisible(true);
     }
@@ -154,7 +154,7 @@ public class SwingARD implements CoreKeyCardSensorSpec, CoreObjectSpec, ActionLi
      * to trigger the state change
      */
     public void switchChanged(String status) {
-        notifyChanges("inserted", this.buttonStatus);
+        notifyChanges("GRANTED", "true");
         logger.info("New switch value from " + appsgateObjectId + " / "
                 + appsgateDeviceName + ", " + this.buttonStatus);
     }
@@ -180,23 +180,10 @@ public class SwingARD implements CoreKeyCardSensorSpec, CoreObjectSpec, ActionLi
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == buttonOn) {
-            switchNumber = "1";
-            if (buttonOn.isSelected()) {
-                buttonOff.setSelected(false);
-                buttonStatus = "true";
-            } else {
-                buttonStatus = "false";
-            }
+            notifyChanges("GRANTED", "true");
         } else if (e.getSource() == buttonOff) {
-            switchNumber = "0";
-            if (buttonOff.isSelected()) {
-                buttonOn.setSelected(false);
-                buttonStatus = "true";
-            } else {
-                buttonStatus = "false";
-            }
+            notifyChanges("NOTGRANTED", "true");
         }
-        switchChanged(buttonStatus);
     }
 
     @Override
