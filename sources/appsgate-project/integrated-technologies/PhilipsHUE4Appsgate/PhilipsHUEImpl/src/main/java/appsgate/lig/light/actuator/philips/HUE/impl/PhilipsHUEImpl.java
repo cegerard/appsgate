@@ -527,6 +527,9 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		descr.put("color", getLightColor());
 		descr.put("saturation", getLightColorSaturation());
 		descr.put("brightness", getLightBrightness());
+		descr.put("brightness", getLightBrightness());
+		//Entry added for configuration GUI
+		descr.put("deviceType", actuatorType);
 		
 		return descr;
 	}
