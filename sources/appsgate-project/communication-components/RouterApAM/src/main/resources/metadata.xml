@@ -12,7 +12,7 @@
 		<ipojo:requires field="sendToClientService"/>
 	</implementation>
 	
-	<apam-instance name="AppsGateRouterInst" implementation="AppsGateRouterImpl">
-	</apam-instance>
+<!-- 	<apam-instance name="AppsGateRouterInst" implementation="AppsGateRouterImpl"> -->
+<!-- 	</apam-instance> -->
 
 </apam>

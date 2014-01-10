@@ -26,10 +26,11 @@
 	classname="appsgate.lig.upnp.media.player.adapter.MediaPlayerFactory">
 
 	<relation implementation= "MediaRendererProxyImpl" multiple="true" creation="eager" resolve="exist" added="mediaRendererBound" removed="mediaRendererUnbound"  />
+	<relation implementation="AppsgateUPnPAdapter" creation="eager" resolve="external" />
 	
 </implementation>
 
-<apam-instance name="Global-MediaPlayerFactory" implementation="MediaPlayerFactory">
-</apam-instance>
+<!-- <apam-instance name="Global-MediaPlayerFactory" implementation="MediaPlayerFactory"> -->
+<!-- </apam-instance> -->
 
 </apam>

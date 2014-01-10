@@ -1,31 +1,79 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
-                          
-    <composite name="AppsGate-Application"
-        main=""
-        singleton="true"></composite>
 
-    <implementation name="ConfigurableClockImpl"
-        classname="appsgate.lig.clock.sensor.impl.ConfigurableClockImpl"
-        specification="CoreClockSpec" push="fireClockSetNotificationMsg, fireClockAlarmNotificationMsg, fireFlowRateSetNotificationMsg" singleton="true">
-        <callback onInit="start" onRemove="stop"/>
+	<composite name="AppsGate-Application" singleton="true">
+		<contentMngt>
+
+			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
+            <start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
+			
+<!--             <start implementation="AppsGateRouterImpl" name="AppsGateRouterInst"></start>			 -->
+<!-- 			<start implementation="PlaceManagerImpl" name="PlaceManagerInst"></start> -->
+<!-- 			<start implementation="AppsGateContextuserBaseImpl" name="AppsGateContextUserBaseInst"></start> -->
+<!-- 			<start implementation="AppsGateContextDeviceNameTableImpl" -->
+<!-- 				name="AppsGateContextDeviceNameTableInst"></start> -->
+<!-- 			<start implementation="EUDEInterpreterImpl" name="EUDEInterpreterInst"></start> -->
+			
+			<start implementation="AppsgateClientCommunicationManager" name="AppsgateClientCommunicationManagerInst"></start>
+
+			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
+
+			<start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
+			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
+
+			<start implementation="YahooWeatherImpl" name="YahooWeather">
+			    
+				<property name="auto-refresh" value="1800000" />
+			</start>
+
+			
+			
 
 
 
 
-        <!-- device kernel meta data -->
-        <definition name="deviceName" 	type="string"  field="appsgateServiceName" />
-        <definition name="deviceId" 	type="string"  field="appsgateObjectId" />
 
-        <!-- device client meta data -->
-        <definition name="pictureId" 	type="string"  field="appsgatePictureId" />
-        <definition name="userType" 	type="string"  field="appsgateUserType" />
-        <definition name="status" 		type="string"  field="appsgateStatus"  />
+			<!-- inst Fuchsia-FakeDiscovery -->
 
-    </implementation>
-    
-    <apam-instance name="ConfigurableClockInst" implementation="ConfigurableClockImpl">
-	</apam-instance>
+			<!-- inst ARDSwitchLinker -->
+			<!-- inst ARDSwitchImporter -->
+
+
+
+			<!-- inst MediaPlayerFactory_Appli-1 -->
+			<!-- inst AppsGateContextFollowerImpl_Appli-1 -->
+
+
+			<!-- inst Global-PropertyHistoryManager -->
+			<!-- inst AppsGateContextDeviceNameTableInst -->
+			<!-- inst MediaBrowserFactory_Appli-1 -->
+			<!-- inst AppsGateRouterImpl_Appli-1 -->
+
+			<!-- <own specification="CoreObjectSpec"></own> -->
+			<!-- <own specification="CoreClockSpec"></own> -->
+			<!-- <own specification="CoreCalendarSpec"></own> -->
+			<!-- <own specification="CoreTemperatureSensorSpec"></own> -->
+			<!-- <own specification="CoreColorLightSpec"></own> -->
+			<!-- <own specification="CoreWeatherServiceSpec"></own> -->
+			<!-- <own specification="CoreOccupancySpec"></own> -->
+			<!-- <own specification="CoreMediaBrowserSpec"></own> -->
+			<!-- <own specification="CoreCO2SensorSpec"></own> -->
+			<!-- <own specification="CoreSmartPlugSpec"></own> -->
+			<!-- <own specification="CoreOnOffActuatorSpec"></own> -->
+			<!-- <own specification="CoreContactSensorSpec"></own> -->
+			<!-- <own specification="CoreKeyCardSensorSpec"></own> -->
+			<!-- <own specification="CoreUndefinedSensorSpec"></own> -->
+			<!-- <own specification="CoreSwitchSensorSpec"></own> -->
+
+			<!-- <own specification="CoreMediaPlayerSpec"></own> -->
+			<!-- <own specification="CoreLuminositySensorSpec"></own> -->
+		</contentMngt>
+
+	</composite>
+
+
+	<apam-instance name="appsgate" implementation="AppsGate-Application" />
+
 </apam>

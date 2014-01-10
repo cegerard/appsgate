@@ -3,13 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>software-services</artifactId>
+		<artifactId>communication-components</artifactId>
 		<groupId>appsgate.components</groupId>
 		<version>1.0.0</version>
 	</parent>
-	
+
 	<artifactId>composite-application</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 
 	<packaging>bundle</packaging>
 
@@ -17,6 +16,163 @@
 
 	<!-- Dependencies Description -->
 	<dependencies>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>AppsGate</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ContextFollower</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>RouterApAM</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>PlaceManager</artifactId>
+            <version>${project.version}</version>
+        </dependency>        
+        		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ConfigurableClockImpl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>UserBaseImpl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>DeviceNameTable</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        		
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>EUDEInterpreter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>UPnPMediaPlayer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>UPnPMediaBrowser</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>appsgate-app-weather</artifactId>
+            <version>${project.version}</version>
+        </dependency>        
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ClientCommunicationManager</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreObjectSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreClockSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreCalendarSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreTempSensorSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreColorLightBulbSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreWeatherServiceSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreOccupancySpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreMediaBrowserSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreCO2SensorSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreSmartPlugSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreOnOffActuatorSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreContactSensorSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreKeyCardSensorSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreUndefinedSensorSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreSwitchSensorSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreMediaPlayerSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>CoreLumSensorSpec</artifactId> -->
+		<!-- <version>${project.version}</version> -->
+		<!-- </dependency> -->
+
+
+
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

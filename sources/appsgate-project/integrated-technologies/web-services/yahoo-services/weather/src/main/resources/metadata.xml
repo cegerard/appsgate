@@ -23,8 +23,8 @@
 	</implementation>
    
    <!-- Old Instance to check if still working -->
-   <apam-instance name="YahooWeather" implementation="YahooWeatherImpl">
-       <property name="auto-refresh" value="1800000"/>
-   </apam-instance>
+<!--    <apam-instance name="YahooWeather" implementation="YahooWeatherImpl"> -->
+<!--        <property name="auto-refresh" value="1800000"/> -->
+<!--    </apam-instance> -->
    
 </apam>

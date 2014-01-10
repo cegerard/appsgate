@@ -9,7 +9,7 @@
 		<relation push="gotNotification" multiple="true"/>
 	</implementation>
 	
-	<apam-instance name="AppsGateContextFollowerInst" implementation="AppsGateContextFollowerImpl">
-	</apam-instance>
+<!-- 	<apam-instance name="AppsGateContextFollowerInst" implementation="AppsGateContextFollowerImpl"> -->
+<!-- 	</apam-instance> -->
 
 </apam>

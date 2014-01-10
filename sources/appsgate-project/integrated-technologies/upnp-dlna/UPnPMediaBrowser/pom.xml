@@ -49,6 +49,11 @@
 			<artifactId>UPnPMediaServices</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>UPnPAdapter</artifactId>
+            <version>1.0.0</version>
+        </dependency>       		
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CoreMediaBrowserSpec</artifactId>

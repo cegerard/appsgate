@@ -9,11 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Validate;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -47,9 +42,6 @@ import appsGate.lig.manager.client.communication.service.subscribe.ConfigListene
  * @see SendWebsocketsService
  *
  */
-@Component(publicFactory=false)
-@Instantiate(name="AppsgateClientCommunicationManager")
-@Provides(specifications = { ListenerService.class, SendWebsocketsService.class })
 public class ClientCommunicationManager extends WebSocketServer implements ListenerService, SendWebsocketsService {
 	
 	public final static int DEFAULT_WEBSOCKET_PORT = 8087;
@@ -70,9 +62,8 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	}
 	
 	/**
-	 * Called by iPOJO when an instance of this implementation is created
+	 * Called by ApAM when an instance of this implementation is created
 	 */
-	@Validate
 	public void newInst() {
 		logger.info("initiating the web communication manager...");
 //		if (httpService != null) {
@@ -92,9 +83,8 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	}
 	
 	/**
-	 * Called by iPOJO when an instance of this implementation is removed
+	 * Called by ApAM when an instance of this implementation is removed
 	 */
-	@Invalidate
 	public void deleteInst() {
 		logger.info("Releasing the communication manager...");
 //		if (httpService != null) {

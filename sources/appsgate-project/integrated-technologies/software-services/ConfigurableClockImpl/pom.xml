@@ -1,78 +1,79 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>software-services</artifactId>
-        <groupId>appsgate.components</groupId>
-        <version>1.0.0</version>
-    </parent>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>software-services</artifactId>
+		<groupId>appsgate.components</groupId>
+		<version>1.0.0</version>
+	</parent>
 
-    <artifactId>ConfigurableClockImpl</artifactId>
+	<artifactId>ConfigurableClockImpl</artifactId>
 
-    <packaging>bundle</packaging>
+	<packaging>bundle</packaging>
 
-    <!-- Repositories List -->
+	<!-- Repositories List -->
 
-    <!-- Dependencies Description -->
-    <dependencies>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>CoreObjectSpec</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>CoreClockSpec</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.6.6</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.9</version>
-        </dependency>
+	<!-- Dependencies Description -->
+	<dependencies>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreObjectSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreClockSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
 
 
 
-    </dependencies>
+	</dependencies>
 
-    <!-- Build Description -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                    </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>fr.imag.adele.apam</groupId>
-                <artifactId>apam-maven-plugin</artifactId>
-                <version>${apam.current.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>apam-bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+	<!-- Build Description -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>fr.imag.adele.apam</groupId>
+				<artifactId>apam-maven-plugin</artifactId>
+				<version>${apam.current.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>apam-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

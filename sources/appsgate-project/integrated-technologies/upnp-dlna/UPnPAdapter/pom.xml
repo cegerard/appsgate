@@ -1,6 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<artifactId>upnp-dlna</artifactId>
 		<groupId>appsgate.components</groupId>
@@ -52,7 +53,7 @@
 					<instructions>
 						<Bundle-Description>
 							UPnP Adapter
-                        </Bundle-Description>
+						</Bundle-Description>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -69,6 +70,18 @@
 						<phase>install</phase>
 						<goals>
 							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>fr.imag.adele.apam</groupId>
+				<artifactId>apam-maven-plugin</artifactId>
+				<version>${apam.current.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>apam-bundle</goal>
 						</goals>
 					</execution>
 				</executions>
