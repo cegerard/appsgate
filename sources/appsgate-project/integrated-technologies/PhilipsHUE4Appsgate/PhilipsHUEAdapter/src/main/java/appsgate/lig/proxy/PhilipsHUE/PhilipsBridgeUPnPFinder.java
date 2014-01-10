@@ -1,25 +1,21 @@
 package appsgate.lig.proxy.PhilipsHUE;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.philips.lighting.hue.listener.PHBridgeConfigurationListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHSDKListener;
+import com.philips.lighting.hue.sdk.exception.PHHueException;
 import com.philips.lighting.model.PHBridge;
+import com.philips.lighting.model.PHBridgeConfiguration;
 import com.philips.lighting.model.PHHueError;
-
-//import com.philips.lighting.hue.sdk.PHHueSDK;
-//import com.philips.lighting.hue.sdk.PHSDKListener;
 
 /**
  * This class is design to find with UPnP discovery protocol the Philips bridge
@@ -37,13 +33,8 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	private final static int IDLE = 0;
 	private final static int SEARCHING_AP = 1;
 	//private final static int AUTHENT_BRIDGE = 2;
-
 	private int status;
 
-	/**
-	 * Philips HUE bridge IP address list
-	 */
-	private ArrayList<String> bridgeIp = new ArrayList<String>();
 
 	/**
 	 * Java reference on the Philips HUE adapter that
@@ -52,18 +43,14 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	 private PhilipsHUEAdapter adapter;
 	 
 	/**
-	 * Philips HUE bridge with error map
-	 * key is the bridge current IP address and
-	 * the value is the JSON description of the related error
+	 * Philips HUE access point thaht need an authorization
 	 */
-	private HashMap<String, JSONObject> errorBridgeMap = new HashMap<String, JSONObject>();
-	
+	private ArrayList<PHAccessPoint> unAuthorizedAccesPointList = new ArrayList<PHAccessPoint>();
 
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory
-			.getLogger(PhilipsBridgeUPnPFinder.class);
+	private static Logger logger = LoggerFactory.getLogger(PhilipsBridgeUPnPFinder.class);
 
 	/**
 	 * Default constructor for Philips HUE finder
@@ -80,85 +67,17 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 		phHueSDK.getNotificationManager().registerSDKListener(this);
 		logger.debug("Listener registered !");
 
-		sm = (PHBridgeSearchManager) phHueSDK
-				.getSDKService(PHHueSDK.SEARCH_BRIDGE);
+		sm = (PHBridgeSearchManager) phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE);
 		sm.upnpSearch();
 		status = SEARCHING_AP;
 	}		
 
-//	@Override
-//	public void deviceAdded(Device device) {
-//		if(device.getDeviceType().contentEquals(PHILIPS_BRIDGE_UPNP_TYPE) &&
-//				device.getFriendlyName().contains(BRIDGE_NAME)) {
-//			logger.debug("Finder found a Philips bridge on local network");
-//			String philipsNameIP = device.getFriendlyName();
-//			CharSequence splitString = device.getFriendlyName().subSequence(13, philipsNameIP.length()-1);
-//			logger.debug("New bridge with IP: "+splitString);
-//			
-//			String ipAddr = splitString.toString();
-//			//TODO the contain test is used to deal with UPnP stack announce problem
-//			if(adapter != null && !bridgeIp.contains(ipAddr)) {
-//				bridgeIp.add(ipAddr);
-//				JSONObject[] error = new JSONObject[1];
-//				boolean associated = adapter.isAssociated(ipAddr, error);
-//				
-//				if(associated) {
-//					String macAddr = adapter.getBridgeMacAddress(ipAddr);
-//					logger.debug(", and mac: "+macAddr);
-//					adapter.notifyNewBridge(macAddr, ipAddr);
-//				}else{
-//					logger.debug(error[0].toString());
-//					try {
-//						JSONObject errorDetail = error[0].getJSONObject("error");
-//						errorBridgeMap.put(ipAddr, errorDetail);
-//					} catch (JSONException e) {e.printStackTrace();} 
-//				}
-//			}
-//		}
-//	}
-
-
-
 	public void stop() {
 		logger.debug("stop()");
 		status = IDLE;
+		phHueSDK.destroySDK();
 	}
 	
-	/**
-	 * get all available HUE bridge IP, all that AppsGate is associated
-	 * with.
-	 * @return a sub ArrayList<String> of bridgeIp.
-	 */
-	public ArrayList<String> getAvailableBridgesIp() {
-		ArrayList<String> availableBridgeIp = new ArrayList<String>();
-		
-		for(String ip : bridgeIp){
-			if(!isStatusError(ip)){
-				availableBridgeIp.add(ip);
-			}
-		}
-		
-		return availableBridgeIp;
-	}
-	
-	/**
-	 * get the error detail for a specify bridge
-	 * @param bridgeIP the IP address of the HUE bridge
-	 * @return the error details as a JSONObject
-	 */
-	public JSONObject getErrorDetails(String bridgeIP) {
-		return errorBridgeMap.get(bridgeIP);
-	}
-	
-	/**
-	 * Check if the bridge is correctly set up
-	 * @param ip the bridge IP to check
-	 * @return true if the bridge is correctly set up, false otherwise
-	 */
-	public boolean isStatusError(String ip) {
-		return errorBridgeMap.containsKey(ip);
-	}
-
 	/**
 	 * Register the Philips HUE adapter reference
 	 * 
@@ -167,8 +86,9 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	 */
 	public void registrer(PhilipsHUEAdapter philipsHUEAdapter) {
 		adapter = philipsHUEAdapter;
+		phHueSDK.setDeviceName(PhilipsHUEAdapter.APP_NAME);
 	}
-
+	
 	/**
 	 * Unregister the current Philips HUE reference
 	 * 
@@ -178,116 +98,160 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	public void unregistrer(PhilipsHUEAdapter philipsHUEAdapter) {
 		adapter = null;
 	}
+	
+	/**
+	 * Get all available HUE bridge, all that AppsGate is associated
+	 * with.
+	 * @return a sub ArrayList<PHBridge> of all accessPoint.
+	 */
+	public ArrayList<PHBridge> getAvailableBridges() {
+		return phHueSDK.getAllBridges();
+	}
 
 	/**
-	 * Get the discovered bridge IP address list
-	 * @return the IP address list as an ArrayList<String>
+	 * Get all access points that need an authorization
+	 * @return the unauthorized access points list as an ArrayList<PHAccessPoint>
 	 */
-	public ArrayList<String> getBridgesIp() {
-		return bridgeIp;
+	public ArrayList<PHAccessPoint> getUnauthorizedAccessPoints() {
+		return unAuthorizedAccesPointList;
 	}
 
 	@Override
 	public void onAccessPointsFound(List<PHAccessPoint> aps) {
 
 		for (PHAccessPoint ap : aps) {
+			
 			String ipAddr = ap.getIpAddress();
 			String macAddr = ap.getMacAddress();
 			String userName =  ap.getUsername();
+			
 			logger.debug("Found Access Point with IP : " + ipAddr
 					+ ", mac address : " + macAddr + ", and username : "
 					+ userName);
 			
-			if (adapter != null && !bridgeIp.contains(ipAddr)) {
-				bridgeIp.add(ipAddr);
-				JSONObject[] error = new JSONObject[1];
-				boolean associated = adapter.isAssociated(ipAddr, error);
-				
-				if(associated) {
-					adapter.notifyNewBridge(macAddr, ipAddr);
-				}else{
-					logger.warn(error[0].toString());
-					try {
-						JSONObject errorDetail = error[0].getJSONObject("error");
-						errorBridgeMap.put(ipAddr, errorDetail);
-					} catch (JSONException e) {e.printStackTrace();} 
-				}
-			}
+			ap.setUsername(phHueSDK.getDeviceName());
+			try{
+				phHueSDK.connect(ap);
+			}catch(PHHueException phe){phe.printStackTrace();}
 		}
 	}
 
 	@Override
-	public void onAuthenticationRequired(PHAccessPoint arg0) {
-		// TODO Auto-generated method stub
-		logger.debug("Authentication required for "+arg0.getIpAddress()+", mac: "+arg0.getMacAddress());
+	public void onAuthenticationRequired(PHAccessPoint ap) {
+		logger.warn("Authentication required for "+ap.getIpAddress()+", mac: "+ap.getMacAddress()+" username: "+ap.getUsername());
+		unAuthorizedAccesPointList.add(ap);
 	}
 
 	@Override
-	public void onBridgeConnected(PHBridge arg0) {
-		// TODO Auto-generated method stub
-		logger.debug("############## Bridge connected: "+arg0);
+	public void onBridgeConnected(PHBridge pb) {
+		PHBridgeConfiguration phbc = pb.getResourceCache().getBridgeConfiguration();
+		logger.info("Bridge connected: "+phbc.getIpAddress());
+		pb.getBridgeConfigurations(new BridgeConfListener(pb));
+		adapter.notifyNewBridge(phbc.getMacAddress(), phbc.getIpAddress());
 	}
 
 	@Override
 	public void onCacheUpdated(int arg0, PHBridge arg1) {
-		// TODO Auto-generated method stub
-		logger.debug("############## chache updated: "+arg0);
+		logger.debug("Cache updated: "+arg0+" for "+arg1.getResourceCache().getBridgeConfiguration().getIpAddress());
 	}
 
 	@Override
 	public void onConnectionLost(PHAccessPoint ap) {
-		logger.debug("Connexion lost with PhilipsHUE bridge: "+ap);
+		logger.debug("Connexion lost with PhilipsHUE bridge: "+ap.getIpAddress());
 		String ipAddr = ap.getIpAddress();
-		bridgeIp.remove(ipAddr);
 		if(adapter != null ) {
 			adapter.notifyOldBridge(ipAddr);
 		}
 	}
 
 	@Override
-	public void onConnectionResumed(PHBridge bridge) {
-		logger.debug("Connexion resumed with PhilipsH HUE bridge: "+bridge);
+	public void onConnectionResumed(PHBridge pb) {
+		PHBridgeConfiguration phbc = pb.getResourceCache().getBridgeConfiguration();
+		logger.info("Bridge connexion resumed: "+phbc.getIpAddress());
+		pb.getBridgeConfigurations(new BridgeConfListener(pb));
+		adapter.notifyNewBridge(phbc.getMacAddress(), phbc.getIpAddress());
 	}
 
 	@Override
 	public void onError(int code, String message) {
-		logger.debug("onError(int code : " + code + ", String message : "+ message + ")");
-		if (status == SEARCHING_AP) {
-			sm.upnpSearch();
+		//27 error code stand for connection on already connected bridge
+		if(code != 27) { //We just ignore the 27 error case
+			logger.debug("onError(int code : " + code + ", String message : "+ message + ")");
+			if (status == SEARCHING_AP) {
+				sm.upnpSearch();
+			}
 		}
 	}
 
-//
-// @Override
-// public void deviceRemoved(Device device) {
-// if(device.getDeviceType().contentEquals(PHILIPS_BRIDGE_UPNP_TYPE) &&
-// device.getFriendlyName().contains(BRIDGE_NAME)) {
-// String philipsNameIP = device.getFriendlyName();
-// CharSequence splitString = device.getFriendlyName().subSequence(13,
-// philipsNameIP.length()-1);
-// logger.debug("A Philips HUE removed UPnP message was received.");
-// //TODO this test is just because we have a problem with the UPnP stack
-// if(adapter.getLightState((String) splitString, "1") == null) {
-// logger.debug("A Philips bridge on local network is not reachable, former IP was "+
-// splitString);
-// bridgeIp.remove(splitString.toString());
-// if(adapter != null ) {
-// adapter.notifyOldBridge(splitString.toString());
-// }
-// }
-// }
-// }
-
-// }
-
 	/**
-	 * Remove a bridge from error bridge list
+	 * Remove a bridge from unauthorized bridge list
 	 * @param ipAddr the bridge IP address
 	 * @return true if the bridge is correctly removed.
 	 */
-	public boolean removeBridgeFromErrorMap(String ipAddr) {
-		return errorBridgeMap.remove(ipAddr) != null;
+	private boolean removeBridgeFromUnauthorizedList(String ipAddr) {
+		PHAccessPoint paToRemove = null;
+		for(PHAccessPoint pa : unAuthorizedAccesPointList) {
+			if(pa.getIpAddress().contentEquals(ipAddr)){
+				paToRemove = pa;
+				break;
+			}
+		}
+		return unAuthorizedAccesPointList.remove(paToRemove);
 	}
+	
+	/**
+	 * Get the number of associated light to the specify bridge
+	 * @param brdieg the bridge
+	 * @return the number of light as a String
+	 */
+	public String getLightNumber(PHBridge bridge) {
+		return String.valueOf(bridge.getResourceCache().getAllLights().size());
+	}
+	
+	/***********************************************/
+	/** 		    INNER CLASS					  **/
+	/***********************************************/
+	
+	/**
+	 * Inner class use to get update for the bridge configuration
+	 * @author Cédric Gérard
+	 * @since January 9, 2014
+	 * @version 0.0.1
+	 */
+	private class BridgeConfListener extends PHBridgeConfigurationListener{
 
+		/**
+		 * The Philips HUE bridge reference
+		 */
+		private PHBridge phBridge;
+		
+		/**
+		 * Build a Philips HUE bridge configuration listener
+		 * @param phBridge the bridge reference
+		 */
+		public BridgeConfListener(PHBridge phBridge) {
+			super();
+			this.phBridge = phBridge;
+		}
+
+		@Override
+		public void onError(int type, String description) {
+			logger.debug("BridgeConfListener -- ON ERROR "+phBridge.getResourceCache().getBridgeConfiguration().getIpAddress());
+		}
+
+		@Override
+		public void onStateUpdate(Hashtable<String, String> state, List<PHHueError> errors) {
+			logger.debug("BridgeConfListener -- ON STATE UPDATE "+ phBridge.getResourceCache().getBridgeConfiguration().getIpAddress());
+			for(String k : state.keySet()){
+				String value = state.get(k);
+				logger.debug(k+" --> "+value);
+			}
+		}
+
+		@Override
+		public void onSuccess() {
+			logger.debug("BridgeConfListener -- ON SUCCESS" +phBridge.getResourceCache().getBridgeConfiguration().getIpAddress());
+		}
+	}
 	
 }

@@ -62,7 +62,10 @@ public class PhilipsHUEBridgeConfigListener implements ConfigListener {
 				PhilipsAdapter.getCommunicationService().send(obj.getInt("clientId"), resp.toString());
 				
 			} catch (JSONException e) {e.printStackTrace();}
-		} 
+			
+		}else { //Unknown command
+			logger.warn("This command is unknown for the "+PhilipsHUEAdapter.CONFIG_TARGET+" target");
+		}
 		
 	}
 	

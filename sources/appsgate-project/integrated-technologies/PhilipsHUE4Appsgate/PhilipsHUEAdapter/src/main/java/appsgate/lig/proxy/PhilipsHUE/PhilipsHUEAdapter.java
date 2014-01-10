@@ -29,6 +29,10 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.philips.lighting.hue.sdk.PHAccessPoint;
+import com.philips.lighting.model.PHBridge;
+import com.philips.lighting.model.PHBridgeConfiguration;
+
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeConfigListener;
@@ -55,9 +59,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 	private static String ApAMIMPL = "PhilipsHUEImpl";
 	public static String CONFIG_TARGET = "PHILIPSHUE";
-
+	public static String APP_NAME = "AppsGateUJF";
+	
 	private PhilipsBridgeUPnPFinder bridgeFinder;
-	private String currentUserName = "AppsGateUJF";
 	private ScheduledExecutorService instanciationService = Executors.newScheduledThreadPool(1);
 	
 	private ListenerService listenerService;
@@ -116,9 +120,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		JSONArray jsonResponse = new JSONArray();
 		try {
 			
-			for(String bridgeIP : bridgeFinder.getAvailableBridgesIp()) {
-			
-				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/");
+			for(PHBridge bridge : bridgeFinder.getAvailableBridges()) {
+				String bridgeIP = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
+				URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/");
 				HttpURLConnection server = (HttpURLConnection) url.openConnection();
 				server.setDoInput(true);
 				server.setRequestMethod("GET");
@@ -164,9 +168,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		JSONArray jsonResponse = new JSONArray();
 		try {
 			
-			for(String bridgeIP : bridgeFinder.getAvailableBridgesIp()) {
-			
-				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/new");
+			for(PHBridge bridge : bridgeFinder.getAvailableBridges()) {
+				String bridgeIP = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
+				URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/new");
 				HttpURLConnection server = (HttpURLConnection) url.openConnection();
 				server.setDoInput(true);
 				server.setRequestMethod("GET");
@@ -212,9 +216,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			
 			boolean successState = true;
 			
-			for(String bridgeIP : bridgeFinder.getAvailableBridgesIp()) {
-			
-				URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/");
+			for(PHBridge bridge : bridgeFinder.getAvailableBridges()) {
+				String bridgeIP = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
+				URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/");
 				HttpURLConnection server = (HttpURLConnection) url.openConnection();
 				server.setDoInput(true);
 				server.setRequestMethod("POST");
@@ -251,7 +255,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		JSONObject jsonResponse = null;
 		
 		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id);
+			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id);
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setRequestMethod("GET");
@@ -282,7 +286,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	@Override
 	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value) {
 		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id+"/state");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id+"/state");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setDoOutput(true);
@@ -321,7 +325,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	@Override
 	public boolean setAttribute(String bridgeIP, String id, String attribute, long value) {
 		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id+"/state");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id+"/state");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setDoOutput(true);
@@ -360,7 +364,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	@Override
 	public boolean setAttribute(String bridgeIP, String id, String attribute, String value) {
 		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id+"/state");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id+"/state");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setDoOutput(true);
@@ -399,7 +403,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	@Override
 	public boolean setAttribute(String bridgeIP, String id, JSONObject JSONAttribute) {
 		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/"+id+"/state");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id+"/state");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setDoOutput(true);
@@ -437,28 +441,29 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	public JSONArray getBridgeList() {
 		JSONArray jsonResponse = new JSONArray();
 		try {
+			JSONObject jsonBridge;
 			
-			for(String bridgeIP : bridgeFinder.getBridgesIp()) {
-				JSONObject jsonBridge = new JSONObject();
-				jsonBridge.put("ip", bridgeIP);
+			for(PHBridge bridge : bridgeFinder.getAvailableBridges()){
+				jsonBridge = new JSONObject();
+				PHBridgeConfiguration bc = bridge.getResourceCache().getBridgeConfiguration();
+				jsonBridge.put("ip", bc.getIpAddress());
+				jsonBridge.put("MAC", bc.getMacAddress());
+				jsonBridge.put("status", "OK");
+				jsonBridge.put("lights", bridgeFinder.getLightNumber(bridge));
 				
-				if(!bridgeFinder.isStatusError(bridgeIP)) {
-					jsonBridge.put("status", "OK");
-					jsonBridge.put("MAC", getBridgeMacAddress(bridgeIP));
-					jsonBridge.put("lights", getLightNumber(bridgeIP));
-				}else {
-					JSONObject error = bridgeFinder.getErrorDetails(bridgeIP);
-					if( error.getString("description").equalsIgnoreCase("unauthorized user")) {
-						jsonBridge.put("status", "not associated");
-					}else {
-						jsonBridge.put("status", "critical error");
-					}
-					jsonBridge.put("MAC", "N.A");
-					jsonBridge.put("lights", "N.A");
-				}
+				jsonResponse.put(jsonBridge);
+			}
+				
+			for(PHAccessPoint accessPoint : bridgeFinder.getUnauthorizedAccessPoints()) {
+				jsonBridge = new JSONObject();
+				jsonBridge.put("ip", accessPoint.getIpAddress());
+				jsonBridge.put("MAC", accessPoint.getMacAddress());
+				jsonBridge.put("status", "not associated");
+				jsonBridge.put("lights", "N.A");
 	
 				jsonResponse.put(jsonBridge);
 			}
+			
 			logger.debug("getBridgeList : "+jsonResponse.toString());
 
 		} catch (JSONException e) {e.printStackTrace();}
@@ -473,7 +478,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	public String getBridgeMacAddress(String bridgeIP) {
 		String macAddr = "";
 		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/config");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/config");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setRequestMethod("GET");
@@ -514,7 +519,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 */
 	public boolean isAssociated(String ipAddr, JSONObject[] error) {
 		try {
-			URL url = new URL("http://" + ipAddr + "/api/"+ currentUserName+"/");
+			URL url = new URL("http://" + ipAddr + "/api/"+ APP_NAME+"/");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setRequestMethod("GET");
@@ -572,7 +577,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		int associatedLightsNumber = 0;
 		try {
 			
-			URL url = new URL("http://" + bridgeIP + "/api/"+ currentUserName + "/lights/");
+			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/");
 			HttpURLConnection server = (HttpURLConnection) url.openConnection();
 			server.setDoInput(true);
 			server.setRequestMethod("GET");
