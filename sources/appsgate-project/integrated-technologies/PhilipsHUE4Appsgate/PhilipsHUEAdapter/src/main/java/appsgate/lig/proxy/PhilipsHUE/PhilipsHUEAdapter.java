@@ -148,6 +148,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 					String lightID = it.next();
 					JSONObject lightObj = lights.getJSONObject(lightID);
 					lightObj.put("lightId", bc.getMacAddress()+"-"+lightID);
+					lightObj.put("bridgeLightId", lightID);
 					jsonResponse.put(lightObj);
 				}
 			}
@@ -193,7 +194,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 					String lightID = it.next();
 					Object lightObj = temp_response.get(lightID);
 					if(lightObj instanceof JSONObject) {
-						((JSONObject)lightObj).put("lightId", lightID);
+						((JSONObject)lightObj).put("bridgeLightId", lightID);
 					}
 					jsonResponse.put(lightObj);
 				}
@@ -656,7 +657,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			try {
 				while(i < size) {
 					JSONObject light = lightsArray.getJSONObject(i);
-					String lightId = light.getString("lightId");
+					String lightId = light.getString("bridgeLightId");
 					JSONObject lightState = getLightState(bridgeIp, lightId);
 					
 					if(lightState.getJSONObject("state").getBoolean("reachable")) {
