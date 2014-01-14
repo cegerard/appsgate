@@ -7,16 +7,16 @@
 		<contentMngt>
 
 			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
-			
-            <start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
-			
+
+			<start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
+
 
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
-			<start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
-			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
+			<start implementation="UPnPMedia" name="UPnPMediaAdapter"></start>
 
-			<start implementation="YahooWeatherImpl" name="YahooWeather">			    
+
+			<start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />
 			</start>
 
@@ -52,6 +52,15 @@
 
 			<!-- <own specification="CoreMediaPlayerSpec"></own> -->
 			<!-- <own specification="CoreLuminositySensorSpec"></own> -->
+		</contentMngt>
+
+	</composite>
+
+	<composite name="UPnPMedia">
+		<contentMngt>
+			<start implementation="AppsgateUPnPAdapter" name="adapter" />
+			<start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
+			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
 		</contentMngt>
 
 	</composite>
