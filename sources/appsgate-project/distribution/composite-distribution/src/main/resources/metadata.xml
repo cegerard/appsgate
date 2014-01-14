@@ -7,40 +7,23 @@
 		<contentMngt>
 
 			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
+			
             <start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
 			
-<!--             <start implementation="AppsGateRouterImpl" name="AppsGateRouterInst"></start>			 -->
-<!-- 			<start implementation="PlaceManagerImpl" name="PlaceManagerInst"></start> -->
-<!-- 			<start implementation="AppsGateContextuserBaseImpl" name="AppsGateContextUserBaseInst"></start> -->
-<!-- 			<start implementation="AppsGateContextDeviceNameTableImpl" -->
-<!-- 				name="AppsGateContextDeviceNameTableInst"></start> -->
-<!-- 			<start implementation="EUDEInterpreterImpl" name="EUDEInterpreterInst"></start> -->
-			
-			<start implementation="AppsgateClientCommunicationManager" name="AppsgateClientCommunicationManagerInst"></start>
 
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
 			<start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
 			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
 
-			<start implementation="YahooWeatherImpl" name="YahooWeather">
-			    
+			<start implementation="YahooWeatherImpl" name="YahooWeather">			    
 				<property name="auto-refresh" value="1800000" />
 			</start>
-
-			
-			
-
-
-
-
 
 			<!-- inst Fuchsia-FakeDiscovery -->
 
 			<!-- inst ARDSwitchLinker -->
 			<!-- inst ARDSwitchImporter -->
-
-
 
 			<!-- inst MediaPlayerFactory_Appli-1 -->
 			<!-- inst AppsGateContextFollowerImpl_Appli-1 -->
