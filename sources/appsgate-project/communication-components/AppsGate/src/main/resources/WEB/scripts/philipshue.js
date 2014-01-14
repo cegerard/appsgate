@@ -38,6 +38,7 @@ define([], function () {
 			bridgeDiv.id = bridge.ip;
 			
 			var atag = bridgeDiv.childNodes[0];
+			atag.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().goToBridgeDisplay(\""+bridge.ip+"\");")
 			var subDiv = atag.childNodes;
 			var nbDiv = subDiv.length;
 			var currentDiv;
@@ -107,7 +108,7 @@ define([], function () {
 				switch(i){
 					case 1: //Header - reachable
 						var reachable = lightState.reachable;
-						if(reachable) {
+						if(reachable == "true") {
 							currentDiv.innerHTML = "OK";
 						}else {
 							currentDiv.innerHTML = "OUT";
@@ -138,6 +139,24 @@ define([], function () {
 			
 			lights_tile_list.appendChild(lightDiv);
 			
+		}
+		
+		/** Display details for the clicked bridge tile */
+		this.goToBridgeDisplay = function goToBridgeDisplay(bridge) {
+			var httpRequest=new XMLHttpRequest();
+			httpRequest.open("GET","./html/philipshue-bridge.html",false);
+			httpRequest.send();
+			
+			appsgateMain.gotToNextSubMenu("bridge "+bridge, httpRequest.responseText);
+			
+			var pushlinkTile = document.getElementById("pushlinkTile");
+			pushlinkTile.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().pushLinkSend(\""+bridge+"\");");
+		}
+		
+		/** send the pushLink request */
+		this.pushLinkSend = function addLightTile(bridge) {
+			var call = eval({"CONFIGURATION":"pushlinkSync", "pushlinkSync":{"ip":bridge}, "TARGET":"PHILIPSHUE"});
+			appsgateMain.sendCmd(JSON.stringify(call));
 		}
 	
 	};

@@ -80,6 +80,31 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 			
 			this.sendCmd("{\"getHUEConfDevices\":{}, \"CONFIGURATION\":\"getHUEConfDevices\", \"TARGET\":\"PHILIPSHUE\"}");
 		}
+		
+		this.gotToNextSubMenu = function(name, html) 
+		{
+			//Displays the html source in the display panorama
+			var panorama = document.getElementById("display-panorama")
+			panorama.innerHTML=html;
+			panorama.style.display="";
+			
+			//Update the navigation bar
+			var navBar = document.getElementById("path-app");
+			var li = document.createElement('li');
+			li.setAttribute("class", "active");
+			var liContent = document.createTextNode(name);
+			li.appendChild(liContent);
+			//toggle the previous menu entry to active link
+			var children = navBar.children;
+			var lastChild = children[children.length-1]
+			var divider = document.createElement('span');
+			divider.setAttribute("class", "divider");
+			divider.innerHTML = "/";
+			lastChild.appendChild(divider);
+			//li.setAttribute("class", "active");
+			
+			navBar.appendChild(li);
+		}
 
 
 		/**

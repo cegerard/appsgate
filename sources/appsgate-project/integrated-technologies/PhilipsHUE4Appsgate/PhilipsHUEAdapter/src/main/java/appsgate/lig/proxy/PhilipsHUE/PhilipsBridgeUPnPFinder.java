@@ -11,6 +11,7 @@ import com.philips.lighting.hue.listener.PHBridgeConfigurationListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
+import com.philips.lighting.hue.sdk.PHMessageType;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.hue.sdk.exception.PHHueException;
 import com.philips.lighting.model.PHBridge;
@@ -77,15 +78,6 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 		phHueSDK.getNotificationManager().unregisterSDKListener(this);
 		status = IDLE;
 	}
-	
-//	/**
-//	 * Get all available HUE bridge, all that AppsGate is associated
-//	 * with.
-//	 * @return a sub ArrayList<PHBridge> of all accessPoint.
-//	 */
-//	public ArrayList<PHBridge> getAvailableBridges() {
-//		return phHueSDK.getAllBridges();
-//	}
 
 	/**
 	 * Get all access points that need an authorization
@@ -93,6 +85,22 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	 */
 	public ArrayList<PHAccessPoint> getUnauthorizedAccessPoints() {
 		return unAuthorizedAccesPointList;
+	}
+	
+	/**
+	 * Get an unauthorized access point from its IP
+	 * @param bridgeIP the bridge IP address
+	 * @return the corresponding PHAccessPoint instance
+	 */
+	public PHAccessPoint getUnauthorizedAccessPoint(String bridgeIP) {
+		PHAccessPoint returnedAp = null;
+		for(PHAccessPoint ap : unAuthorizedAccesPointList) {
+			if(ap.getIpAddress().contentEquals(bridgeIP)) {
+				returnedAp = ap;
+				break;
+			}
+		}
+		return returnedAp;
 	}
 
 	@Override
@@ -118,6 +126,7 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	@Override
 	public void onAuthenticationRequired(PHAccessPoint ap) {
 		logger.warn("Authentication required for "+ap.getIpAddress()+", mac: "+ap.getMacAddress()+" username: "+ap.getUsername());
+		ap.setUsername(PhilipsHUEAdapter.APP_NAME);
 		unAuthorizedAccesPointList.add(ap);
 	}
 
@@ -128,6 +137,7 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 		logger.info("Bridge connected: "+phbc.getIpAddress());
 		pb.getBridgeConfigurations(new BridgeConfListener(pb));
 		adapter.notifyNewBridge(pb);
+		removeBridgeFromUnauthorizedList(phbc.getIpAddress());
 	}
 
 	@Override
@@ -146,13 +156,22 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	@Override
 	public void onConnectionResumed(PHBridge pb) {
 //		PHBridgeConfiguration phbc = pb.getResourceCache().getBridgeConfiguration();
-//		logger.info("Bridge connexion resumed: "+phbc.getIpAddress());
+//		logger.info("Bridge connection resumed: "+phbc.getIpAddress());
 	}
 
 	@Override
 	public void onError(int code, String message) {
-		//27 error code stand for connection on already connected bridge
-		if(code != 27) { //We just ignore the 27 error case
+		
+		if (code == PHHueError.BRIDGE_NOT_RESPONDING) {
+			logger.error("BRIDGE NOT RESPONDING");
+        } else if (code == PHMessageType.PUSHLINK_BUTTON_NOT_PRESSED) {
+        	logger.warn("Bridge pushlink button not pressed");
+        	//TODO send to client that the bridge button is not pressed
+        }  else if (code == PHMessageType.PUSHLINK_AUTHENTICATION_FAILED) {
+        	logger.error("BRIDGE AUTHENTICATION FAILED");
+        } else if (code == PHMessageType.BRIDGE_NOT_FOUND) {
+        	logger.error("BRIDGE NOT FOUND");
+        } else if(code != PHHueError.BRIDGE_ALREADY_CONNECTED) { //We just ignore the bridge already connected error case
 			logger.debug("onError(int code : " + code + ", String message : "+ message + ")");
 			if (status == SEARCHING_AP) {
 				sm.upnpSearch();
@@ -163,9 +182,8 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	/**
 	 * Remove a bridge from unauthorized bridge list
 	 * @param ipAddr the bridge IP address
-	 * @return true if the bridge is correctly removed.
 	 */
-	private boolean removeBridgeFromUnauthorizedList(String ipAddr) {
+	private void removeBridgeFromUnauthorizedList(String ipAddr) {
 		PHAccessPoint paToRemove = null;
 		for(PHAccessPoint pa : unAuthorizedAccesPointList) {
 			if(pa.getIpAddress().contentEquals(ipAddr)){
@@ -173,7 +191,10 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 				break;
 			}
 		}
-		return unAuthorizedAccesPointList.remove(paToRemove);
+		
+		if(paToRemove != null) {
+			unAuthorizedAccesPointList.remove(paToRemove);
+		}
 	}
 	
 	/***********************************************/

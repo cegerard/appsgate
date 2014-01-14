@@ -47,7 +47,7 @@ public class PhilipsHUEBridgeConfigListener implements ConfigListener {
 	public void onReceivedConfig(String cmd, JSONObject obj) {
 		logger.debug("Config or event received: " + cmd);
 		logger.debug("with core: " + obj.toString());
-
+		try {
 		if (cmd.equalsIgnoreCase("getHUEConfDevices")) {
 			JSONObject returnResp = new JSONObject();
 			JSONArray bridgeList = PhilipsAdapter.getBridgeList();
@@ -63,9 +63,13 @@ public class PhilipsHUEBridgeConfigListener implements ConfigListener {
 				
 			} catch (JSONException e) {e.printStackTrace();}
 			
-		}else { //Unknown command
+		}else if (cmd.equalsIgnoreCase("pushlinkSync")) {
+			PhilipsAdapter.startPushLinkAuthentication(obj.getString("ip"));
+		}
+		else { //Unknown command
 			logger.warn("This command is unknown for the "+PhilipsHUEAdapter.CONFIG_TARGET+" target");
 		}
+		} catch (JSONException e) {e.printStackTrace();}
 		
 	}
 	

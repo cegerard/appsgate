@@ -1,14 +1,8 @@
 package appsgate.lig.proxy.PhilipsHUE;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +24,16 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHBridgeConfiguration;
+import com.philips.lighting.model.PHHueError;
 import com.philips.lighting.model.PHLight;
+import com.philips.lighting.model.PHLight.PHLightAlertMode;
+import com.philips.lighting.model.PHLight.PHLightColorMode;
+import com.philips.lighting.model.PHLight.PHLightEffectMode;
 import com.philips.lighting.model.PHLightState;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
@@ -66,6 +65,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	public static String APP_NAME = "AppsGateUJF";
 	
 	private PHHueSDK phHueSDK;
+	private NewLightListener newlightListener;
 	
 	private PhilipsBridgeUPnPFinder bridgeFinder;
 	private ScheduledExecutorService instanciationService = Executors.newScheduledThreadPool(5);
@@ -98,6 +98,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		}else{
 			logger.warn("Listeners services dependency resolution updated.");
 		}
+		
+		newlightListener = new NewLightListener();
 	}
 
 	/**
@@ -170,96 +172,38 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 
 	@Override
-	public JSONArray getNewLights() {
-		JSONArray jsonResponse = new JSONArray();
-		try {
-			
-			for(PHBridge bridge : phHueSDK.getAllBridges()) {
-				
-//				TODO use the findNewLights method instead of direct REST API
-//				with this call the next method become useless. Make it fuse with
-//				this one.
-//				bridge.findNewLights(arg0);
-//				bridge.findNewLightsWithSerials(arg0, arg1);
-				
-				String bridgeIP = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
-				URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/new");
-				HttpURLConnection server = (HttpURLConnection) url.openConnection();
-				server.setDoInput(true);
-				server.setRequestMethod("GET");
-				server.connect();
-
-				BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-				String line = response.readLine();
-				String BridgeResponse = "";
-				while (line != null) {
-					BridgeResponse += line;
-					line = response.readLine();
-				}
-				response.close();
-				server.disconnect();
-
-				JSONObject temp_response = new JSONObject(BridgeResponse);
-				@SuppressWarnings("unchecked")
-				Iterator<String> it = temp_response.keys();
-				while(it.hasNext()) {
-					String lightID = it.next();
-					Object lightObj = temp_response.get(lightID);
-					if(lightObj instanceof JSONObject) {
-						((JSONObject)lightObj).put("bridgeLightId", lightID);
-					}
-					jsonResponse.put(lightObj);
-				}
-			}
-			logger.debug(jsonResponse.toString());
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return jsonResponse;
-	}
-
-	@Override
 	public boolean searchForNewLights() {
-		try {
-//			TODO this method fuse with the previous one using findLight method from the new API		
-			boolean successState = true;
-			
-			for(PHBridge bridge : phHueSDK.getAllBridges()) {
-				String bridgeIP = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
-				URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/");
-				HttpURLConnection server = (HttpURLConnection) url.openConnection();
-				server.setDoInput(true);
-				server.setRequestMethod("POST");
-				server.connect();
-
-				BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-				String line = response.readLine();
-				String BridgeResponse = "";
-				while (line != null) {
-					BridgeResponse += line;
-					line = response.readLine();
-				}
-				response.close();
-				server.disconnect();
-				successState &= isSuccess(BridgeResponse);
-			}
-
-			return successState;
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
+		
+		for (PHBridge bridge : phHueSDK.getAllBridges()) {
+			bridge.findNewLights(newlightListener);
 		}
-
-		return false;
+		return true;
+	}
+	
+	@Override
+	public boolean searchForNewLights(String bridgeIP) {
+		PHBridge bridge = getBridgeFromIp(bridgeIP);
+		bridge.findNewLights(newlightListener);
+		return true;
+	}
+	
+	/**
+	 * search for new light in the HUE network that have specific serial id
+	 * @param serials the list of serial id as a list of String
+	 */
+	public void searchForNewLightsWithSerials(List<String> serials) {
+		for (PHBridge bridge : phHueSDK.getAllBridges()) {
+			bridge.findNewLightsWithSerials(serials, newlightListener);
+		}
+	}
+	
+	/**
+	 * search for new light in the HUE network that have specific serial id
+	 * @param serials the list of serial id as a list of String
+	 */
+	public void searchForNewLightsWithSerials(List<String> serials, String bridgeIP) {
+		PHBridge bridge = getBridgeFromIp(bridgeIP);
+		bridge.findNewLightsWithSerials(serials, newlightListener);
 	}
 
 
@@ -311,157 +255,155 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 	@Override
 	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value) {
-		//TODO update all setAttribute method with the updateLIghtState with listener method
-		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id+"/state");
-			HttpURLConnection server = (HttpURLConnection) url.openConnection();
-			server.setDoInput(true);
-			server.setDoOutput(true);
-			server.setRequestMethod("PUT");
-			server.connect();
-
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
-			JSONObject JSONAttribute = new JSONObject();
-			JSONAttribute.put(attribute, value);
-			logger.debug(JSONAttribute.toString());
-			bw.write(JSONAttribute.toString(), 0, JSONAttribute.toString().length());
-			bw.flush();
-			bw.close();
-
-			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-			String line = response.readLine();
-			String BridgeResponse = "";
-			while (line != null) {
-				BridgeResponse += line;
-				line = response.readLine();
-			}
-			response.close();
-
-			return isSuccess(BridgeResponse);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return false;
+		
+		PHBridge bridge = getBridgeFromIp(bridgeIP);
+		PHLight light = getLightFromId(bridge, id);
+		
+		PHLightState state = new PHLightState();
+		state.setOn(value);
+		
+		bridge.updateLightState(light, state);
+		
+		return true;
 	}
 
 	@Override
 	public boolean setAttribute(String bridgeIP, String id, String attribute, long value) {
-		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id+"/state");
-			HttpURLConnection server = (HttpURLConnection) url.openConnection();
-			server.setDoInput(true);
-			server.setDoOutput(true);
-			server.setRequestMethod("PUT");
-			server.connect();
-
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
-			JSONObject JSONAttribute = new JSONObject();
-			JSONAttribute.put(attribute, value);
-			logger.debug(JSONAttribute.toString());
-			bw.write(JSONAttribute.toString(), 0, JSONAttribute.toString().length());
-			bw.flush();
-			bw.close();
-
-			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-			String line = response.readLine();
-			String BridgeResponse = "";
-			while (line != null) {
-				BridgeResponse += line;
-				line = response.readLine();
-			}
-			response.close();
-
-			return isSuccess(BridgeResponse);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
+		
+		PHBridge bridge = getBridgeFromIp(bridgeIP);
+		PHLight light = getLightFromId(bridge, id);
+		
+		PHLightState state = new PHLightState();
+		int convertedValue = Integer.valueOf(new Long(value).toString()); 
+		if(attribute.contentEquals("hue")) {
+			state.setHue(convertedValue);
+		} else if(attribute.contentEquals("bri")) {
+			state.setBrightness(convertedValue);
+		} else if(attribute.contentEquals("sat")) {
+			state.setSaturation(convertedValue);
+		} else if(attribute.contentEquals("ct")) {
+			state.setCt(convertedValue);
+		} else if(attribute.contentEquals("transitionTime")) {
+			state.setTransitionTime(convertedValue);
+		} else {
+			return false;
 		}
-		return false;
+		
+		bridge.updateLightState(light, state);
+		return true;
 	}
 
 	@Override
 	public boolean setAttribute(String bridgeIP, String id, String attribute, String value) {
-		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id+"/state");
-			HttpURLConnection server = (HttpURLConnection) url.openConnection();
-			server.setDoInput(true);
-			server.setDoOutput(true);
-			server.setRequestMethod("PUT");
-			server.connect();
+		
+		PHBridge bridge = getBridgeFromIp(bridgeIP);
+		PHLight light = getLightFromId(bridge, id);
+		
+		PHLightState state = new PHLightState();
 
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
-			JSONObject JSONAttribute = new JSONObject();
-			JSONAttribute.put(attribute, value);
-			logger.debug(JSONAttribute.toString());
-			bw.write(JSONAttribute.toString(), 0, JSONAttribute.toString().length());
-			bw.flush();
-			bw.close();
-
-			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-			String line = response.readLine();
-			String BridgeResponse = "";
-			while (line != null) {
-				BridgeResponse += line;
-				line = response.readLine();
+		if(attribute.contentEquals("alert")) {
+			if(value.contentEquals("select")) {
+				state.setAlertMode(PHLightAlertMode.ALERT_SELECT);
+			}else if(value.contentEquals("lselect")) {
+				state.setAlertMode(PHLightAlertMode.ALERT_LSELECT);
+			}else if(value.contentEquals("none")) {
+				state.setAlertMode(PHLightAlertMode.ALERT_NONE);
+			}else {
+				state.setAlertMode(PHLightAlertMode.ALERT_UNKNOWN);
+				return false;
 			}
-			response.close();
-
-			return isSuccess(BridgeResponse);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
+		}else if(attribute.contentEquals("effect")) {
+			if(value.contentEquals("colorloop")) {
+				state.setEffectMode(PHLightEffectMode.EFFECT_COLORLOOP);
+			}else if(value.contentEquals("none")) {
+				state.setEffectMode(PHLightEffectMode.EFFECT_NONE);
+			}else {
+				state.setEffectMode(PHLightEffectMode.EFFECT_UNKNOWN);
+				return false;
+			}
+		}else if(attribute.contentEquals("colormode")) {
+			if(value.contentEquals("hs")) {
+				state.setColorMode(PHLightColorMode.COLORMODE_HUE_SATURATION);
+			}else if(value.contentEquals("ct")) {
+				state.setColorMode(PHLightColorMode.COLORMODE_CT);
+			}else if(value.contentEquals("none")) {
+				state.setColorMode(PHLightColorMode.COLORMODE_NONE);
+			}else if(value.contentEquals("xy")) {
+				state.setColorMode(PHLightColorMode.COLORMODE_XY);
+			}else if(value.contentEquals("cu")) {
+				state.setColorMode(PHLightColorMode.COLORMODE_UNKNOWN);
+			}else {
+				return false;
+			}
+		}else{
+			return false;
 		}
-		return false;
+		
+		bridge.updateLightState(light, state);
+		return true;
 	}
 
 	@Override
 	public boolean setAttribute(String bridgeIP, String id, JSONObject JSONAttribute) {
-		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/lights/"+id+"/state");
-			HttpURLConnection server = (HttpURLConnection) url.openConnection();
-			server.setDoInput(true);
-			server.setDoOutput(true);
-			server.setRequestMethod("PUT");
-			server.connect();
+		
+		PHBridge bridge = getBridgeFromIp(bridgeIP);
+		PHLight light = getLightFromId(bridge, id);
+		
+		PHLightState state = new PHLightState();
+		
+		@SuppressWarnings("unchecked")
+		Iterator<String> it = JSONAttribute.keys();
+		while(it.hasNext()) {
+			String key = it.next();
 
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
-			logger.debug(JSONAttribute.toString());
-			bw.write(JSONAttribute.toString(), 0, JSONAttribute.toString().length());
-			bw.flush();
-			bw.close();
-
-			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-			String line = response.readLine();
-			String BridgeResponse = "";
-			while (line != null) {
-				BridgeResponse += line;
-				line = response.readLine();
+			try {
+				if(key.contentEquals("on")) {
+					state.setOn(JSONAttribute.getBoolean(key));
+				}else if(key.contentEquals("hue") || key.contentEquals("bri")
+						|| key.contentEquals("sat") || key.contentEquals("ct")
+						|| key.contentEquals("transitionTime") ) {
+					state.setHue(Integer.valueOf(new Long(JSONAttribute.getLong(key)).toString()));
+				
+				}else if(key.contentEquals("alert")) {
+					String alert = JSONAttribute.getString(key);
+					if(alert.contentEquals("select")) {
+						state.setAlertMode(PHLightAlertMode.ALERT_SELECT);
+					}else if(alert.contentEquals("lselect")) {
+						state.setAlertMode(PHLightAlertMode.ALERT_LSELECT);
+					}else if(alert.contentEquals("none")) {
+						state.setAlertMode(PHLightAlertMode.ALERT_NONE);
+					}
+				}else if(key.contentEquals("effect")) {
+					String effect = JSONAttribute.getString(key);
+					if(effect.contentEquals("colorloop")) {
+						state.setEffectMode(PHLightEffectMode.EFFECT_COLORLOOP);
+					}else if(effect.contentEquals("none")) {
+						state.setEffectMode(PHLightEffectMode.EFFECT_NONE);
+					}
+				}else if(key.contentEquals("colormode")) {
+					String colorMode = JSONAttribute.getString(key);
+					if(colorMode.contentEquals("hs")) {
+						state.setColorMode(PHLightColorMode.COLORMODE_HUE_SATURATION);
+						}else if(colorMode.contentEquals("ct")) {
+						state.setColorMode(PHLightColorMode.COLORMODE_CT);
+					}else if(colorMode.contentEquals("none")) {
+						state.setColorMode(PHLightColorMode.COLORMODE_NONE);
+					}else if(colorMode.contentEquals("xy")) {
+						state.setColorMode(PHLightColorMode.COLORMODE_XY);
+					}else if(colorMode.contentEquals("cu")) {
+						state.setColorMode(PHLightColorMode.COLORMODE_UNKNOWN);
+					}
+				}else{
+					return false;
+				}
+			}catch(JSONException ex) {
+				ex.printStackTrace();
+				return false;
 			}
-			response.close();
-
-			return isSuccess(BridgeResponse);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
 		}
-		return false;
+			
+		bridge.updateLightState(light, state);
+		return true;
 	}
 	
 	@Override
@@ -499,61 +441,12 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 	
 	/**
-	 * Get the Philips HUE bridge Mac address or empty string is doesn't work
-	 * @return the Philips hue bridge Mac address as a String
+	 * Start the bridge authentication for the first time connection
+	 * @param bridgeIP the bridge IP address the authenticate with
 	 */
-	public String getBridgeMacAddress(String bridgeIP) {
-		String macAddr = "";
-		try {
-			URL url = new URL("http://" + bridgeIP + "/api/"+ APP_NAME + "/config");
-			HttpURLConnection server = (HttpURLConnection) url.openConnection();
-			server.setDoInput(true);
-			server.setRequestMethod("GET");
-			server.connect();
-
-			BufferedReader response = new BufferedReader(new InputStreamReader(server.getInputStream()));
-			String line = response.readLine();
-			String BridgeResponse = "";
-			while (line != null) {
-				BridgeResponse += line;
-				line = response.readLine();
-			}
-			response.close();
-
-			JSONObject jsonResponse = new JSONObject(BridgeResponse);
-			if(jsonResponse.has("mac")) {
-				macAddr = jsonResponse.getString("mac");
-			}else {
-				macAddr = jsonResponse.toString();
-			}
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-		return macAddr;
-	}
-
-	/**
-	 * Indicate if the request is a success or not.
-	 * @param BridgeResponse the request to check
-	 * @return true if the HTTP response indicate a success action
-	 * @throws JSONException
-	 */
-	private boolean isSuccess(String BridgeResponse) throws JSONException {
-		JSONArray temp_response = new JSONArray(BridgeResponse);
-		logger.debug(temp_response.toString());
-
-		if(temp_response.length() > 0) {
-			String success = temp_response.getJSONObject(0).getString("success");
-			return (success != null);
-		}
-
-		return false;
+	public void startPushLinkAuthentication(String bridgeIP) {
+		PHAccessPoint ap = bridgeFinder.getUnauthorizedAccessPoint(bridgeIP);
+		phHueSDK.startPushlinkAuthentication(ap);
 	}
 	
 	/**
@@ -732,6 +625,37 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			}
 		}
 		return returnLight;
+	}
+	
+	/***********************************************/
+	/** 		    INNER CLASS					  **/
+	/***********************************************/
+	private class NewLightListener extends PHLightListener {
+
+		@Override
+		public void onError(int arg0, String arg1) {
+			logger.debug("error code: " +arg0+ " detail: "+arg1);
+		}
+
+		@Override
+		public void onStateUpdate(Hashtable<String, String> arg0, List<PHHueError> arg1) {
+			logger.debug("Light state udpate:");
+			for(String key : arg0.keySet()) {
+				String value = arg0.get(key);
+				logger.debug("---- : "+key+" / "+value);
+			}
+			logger.debug("Light state error:");
+			for(PHHueError error : arg1) {
+				logger.debug(" ##### : "+error.getCode()+" / "+error.getMessage());
+			}
+		}
+
+		@Override
+		public void onSuccess() {
+			// TODO instantiate new light
+			logger.debug("LIGHT ACTION SUCCESS");
+		}
+		
 	}
 
 }
