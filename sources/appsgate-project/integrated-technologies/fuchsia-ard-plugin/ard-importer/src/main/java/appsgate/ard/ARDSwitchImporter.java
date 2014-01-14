@@ -115,7 +115,7 @@ public class ARDSwitchImporter extends AbstractImporterComponent implements Door
     }
 
     public String getUserType() {
-        return "4";  //4 is the type dedicated to the SensorReader
+        return "5";  //4 is the type dedicated to the SensorReader
     }
 
     public int getObjectStatus() {
@@ -129,10 +129,10 @@ public class ARDSwitchImporter extends AbstractImporterComponent implements Door
     public JSONObject getDescription() throws JSONException {
 
         JSONObject descr = new JSONObject();
-        descr.put("id", "");
-        descr.put("type", "4"); //4 for keyCard sensor
+        descr.put("id", "ard-door-switch01");
+        descr.put("type", "5"); //4 for keyCard sensor
         descr.put("status", "0");
-        descr.put("inserted", "0");
+        descr.put("inserted", "true");
 
         return descr;
     }
