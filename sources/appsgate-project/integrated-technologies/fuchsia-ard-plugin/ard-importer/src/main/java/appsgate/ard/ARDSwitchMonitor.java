@@ -8,6 +8,7 @@ import appsgate.ard.base.iface.Switch;
 import appsgate.ard.dao.AuthorizationRequest;
 import appsgate.ard.dao.AuthorizationResponse;
 import appsgate.ard.dao.AuthorizationResponseAck;
+import appsgate.ard.mock.AuthorizationCallbackImpl;
 import org.apache.felix.ipojo.*;
 import org.apache.felix.ipojo.annotations.*;
 import org.apache.felix.ipojo.handlers.providedservice.ProvidedServiceHandler;
@@ -77,6 +78,7 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
     @Validate
     private void generateAuthorizationCallback() {
 
+
         Dictionary<String,Object> authorizedCards=new Hashtable<String,Object>() ;
 
         authorizedCards.put("ard.switch.authorized_cards", authorizedCardsString);
@@ -86,6 +88,7 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
         } catch (Exception e) {
             logger.error("failed to create authorization callback mock object");
         }
+
 
     }
 
@@ -110,6 +113,8 @@ public class ARDSwitchMonitor extends AbstractImporterComponent implements Switc
                 Byte doorId=new Byte(event.getProperty("door").toString());
 
                 if(monitoredDoors.contains(doorId.toString())){
+
+                    System.out.println(String.format("Using %s as authorization callback",authorizationCallback.toString()));
 
                     AuthorizationRequest ar=AuthorizationRequest.fromData(doorId,cardId);
 
