@@ -137,8 +137,7 @@ public class Appsgate implements AppsGateSpec {
 		logger.debug("AppsGate is starting");
 
 		if (httpService != null) {
-			final HttpContext httpContext = httpService
-					.createDefaultHttpContext();
+			final HttpContext httpContext = httpService.createDefaultHttpContext();
 			final Dictionary<String, String> initParams = new Hashtable<String, String>();
 			initParams.put("from", "HttpService");
 			try {

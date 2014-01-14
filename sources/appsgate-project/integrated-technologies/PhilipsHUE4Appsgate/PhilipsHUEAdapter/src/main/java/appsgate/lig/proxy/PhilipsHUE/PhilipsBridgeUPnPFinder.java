@@ -55,11 +55,11 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	/**
 	 * Default constructor for Philips HUE finder
 	 */
-	public PhilipsBridgeUPnPFinder() {
+	public PhilipsBridgeUPnPFinder(PhilipsHUEAdapter philipsHUEAdapter, PHHueSDK phHueSDK) {
 		logger.debug("new PhilipsBridgeUPnPFinder()");
 		status = IDLE;
-		adapter = null;
-		phHueSDK = PHHueSDK.create();
+		adapter = philipsHUEAdapter;
+		this.phHueSDK = phHueSDK;
 	}
 
 	public void start() {
@@ -74,39 +74,18 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 
 	public void stop() {
 		logger.debug("stop()");
+		phHueSDK.getNotificationManager().unregisterSDKListener(this);
 		status = IDLE;
-		phHueSDK.destroySDK();
 	}
 	
-	/**
-	 * Register the Philips HUE adapter reference
-	 * 
-	 * @param philipsHUEAdapter
-	 *            the Philips HUE reference to register
-	 */
-	public void registrer(PhilipsHUEAdapter philipsHUEAdapter) {
-		adapter = philipsHUEAdapter;
-		phHueSDK.setDeviceName(PhilipsHUEAdapter.APP_NAME);
-	}
-	
-	/**
-	 * Unregister the current Philips HUE reference
-	 * 
-	 * @param philipsHUEAdapter
-	 *            the Philips HUE reference that have been deleted
-	 */
-	public void unregistrer(PhilipsHUEAdapter philipsHUEAdapter) {
-		adapter = null;
-	}
-	
-	/**
-	 * Get all available HUE bridge, all that AppsGate is associated
-	 * with.
-	 * @return a sub ArrayList<PHBridge> of all accessPoint.
-	 */
-	public ArrayList<PHBridge> getAvailableBridges() {
-		return phHueSDK.getAllBridges();
-	}
+//	/**
+//	 * Get all available HUE bridge, all that AppsGate is associated
+//	 * with.
+//	 * @return a sub ArrayList<PHBridge> of all accessPoint.
+//	 */
+//	public ArrayList<PHBridge> getAvailableBridges() {
+//		return phHueSDK.getAllBridges();
+//	}
 
 	/**
 	 * Get all access points that need an authorization
@@ -144,32 +123,30 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 
 	@Override
 	public void onBridgeConnected(PHBridge pb) {
+		phHueSDK.enableHeartbeat(pb, 30000);
 		PHBridgeConfiguration phbc = pb.getResourceCache().getBridgeConfiguration();
 		logger.info("Bridge connected: "+phbc.getIpAddress());
 		pb.getBridgeConfigurations(new BridgeConfListener(pb));
-		adapter.notifyNewBridge(phbc.getMacAddress(), phbc.getIpAddress());
+		adapter.notifyNewBridge(pb);
 	}
 
 	@Override
 	public void onCacheUpdated(int arg0, PHBridge arg1) {
-		logger.debug("Cache updated: "+arg0+" for "+arg1.getResourceCache().getBridgeConfiguration().getIpAddress());
+//		logger.debug("Cache updated: "+arg0+" for "+arg1.getResourceCache().getBridgeConfiguration().getIpAddress());
 	}
 
 	@Override
 	public void onConnectionLost(PHAccessPoint ap) {
 		logger.debug("Connexion lost with PhilipsHUE bridge: "+ap.getIpAddress());
-		String ipAddr = ap.getIpAddress();
 		if(adapter != null ) {
-			adapter.notifyOldBridge(ipAddr);
+			adapter.notifyOldBridge(ap);
 		}
 	}
 
 	@Override
 	public void onConnectionResumed(PHBridge pb) {
-		PHBridgeConfiguration phbc = pb.getResourceCache().getBridgeConfiguration();
-		logger.info("Bridge connexion resumed: "+phbc.getIpAddress());
-		pb.getBridgeConfigurations(new BridgeConfListener(pb));
-		adapter.notifyNewBridge(phbc.getMacAddress(), phbc.getIpAddress());
+//		PHBridgeConfiguration phbc = pb.getResourceCache().getBridgeConfiguration();
+//		logger.info("Bridge connexion resumed: "+phbc.getIpAddress());
 	}
 
 	@Override
@@ -197,15 +174,6 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 			}
 		}
 		return unAuthorizedAccesPointList.remove(paToRemove);
-	}
-	
-	/**
-	 * Get the number of associated light to the specify bridge
-	 * @param brdieg the bridge
-	 * @return the number of light as a String
-	 */
-	public String getLightNumber(PHBridge bridge) {
-		return String.valueOf(bridge.getResourceCache().getAllLights().size());
 	}
 	
 	/***********************************************/
