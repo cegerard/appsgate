@@ -611,6 +611,45 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 	
 	/**
+	 * Get all bridge information
+	 * @param ip the targeted bridge ip adress
+	 * @return all birdge information as a JSONObject
+	 */
+	public JSONObject getBridgeInfo(String ip) {
+		PHBridge bridge = getBridgeFromIp(ip);
+		JSONObject returnedConf = new JSONObject();
+		try {
+			if(bridge != null) {
+				PHBridgeConfiguration conf = bridge.getResourceCache().getBridgeConfiguration();
+				
+				returnedConf.put("hueident", conf.getBridgeID());
+				returnedConf.put("name", conf.getName());
+				returnedConf.put("swversion", conf.getSoftwareVersion());
+				returnedConf.put("dhcpenabled", conf.getDhcpEnabled());
+				returnedConf.put("gateway", conf.getGateway());
+				returnedConf.put("ip", conf.getIpAddress());
+				returnedConf.put("mac", conf.getMacAddress());
+				returnedConf.put("netmask", conf.getNetmask());
+				returnedConf.put("proxy", conf.getProxy());
+				returnedConf.put("proxyport", conf.getProxyPort());
+				returnedConf.put("proxyenabled", conf.getPortalServicesEnabled());
+				returnedConf.put("time", conf.getTime());
+				returnedConf.put("timezone", conf.getTimeZone());
+				returnedConf.put("localtime", conf.getLocalTime());
+				
+			}else { //bridge not associated
+				PHAccessPoint ap = bridgeFinder.getUnauthorizedAccessPoint(ip);
+				returnedConf.put("ip", ap.getIpAddress());
+				returnedConf.put("mac", ap.getMacAddress());
+				returnedConf.put("error", "has to be associated");
+			}
+			
+		} catch (JSONException e) {e.printStackTrace();}
+	
+		return returnedConf;
+	}
+	
+	/**
 	 * Get the light instance from it's identifier on the specify bridge
 	 * @param bridge the targeted bridge
 	 * @param lightId the light identifier on the bridge

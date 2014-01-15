@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +144,7 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 
 	@Override
 	public void onCacheUpdated(int arg0, PHBridge arg1) {
-//		logger.debug("Cache updated: "+arg0+" for "+arg1.getResourceCache().getBridgeConfiguration().getIpAddress());
+		logger.debug("Cache updated: "+arg0+" for "+arg1.getResourceCache().getBridgeConfiguration().getIpAddress());
 	}
 
 	@Override
@@ -161,21 +163,40 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 
 	@Override
 	public void onError(int code, String message) {
-		
+		try{
+		JSONObject resp = new JSONObject();
 		if (code == PHHueError.BRIDGE_NOT_RESPONDING) {
 			logger.error("BRIDGE NOT RESPONDING");
+			
         } else if (code == PHMessageType.PUSHLINK_BUTTON_NOT_PRESSED) {
         	logger.warn("Bridge pushlink button not pressed");
-        	//TODO send to client that the bridge button is not pressed
+			resp.put("TARGET", PhilipsHUEAdapter.CONFIG_TARGET);
+			JSONObject content = new JSONObject();
+			content.put("header", "Push link button not pressed");
+			content.put("text", "you must to push the link button !");
+			resp.put("hueToastAlert", content);
+			adapter.getCommunicationService().send(resp.toString());
+			
         }  else if (code == PHMessageType.PUSHLINK_AUTHENTICATION_FAILED) {
         	logger.error("BRIDGE AUTHENTICATION FAILED");
+        	resp.put("TARGET", PhilipsHUEAdapter.CONFIG_TARGET);
+			JSONObject content = new JSONObject();
+			content.put("header", "Authentication failed");
+			content.put("text", message);
+			resp.put("hueToastAlert", content);
+			adapter.getCommunicationService().send(resp.toString());
+        	
         } else if (code == PHMessageType.BRIDGE_NOT_FOUND) {
         	logger.error("BRIDGE NOT FOUND");
+        	
         } else if(code != PHHueError.BRIDGE_ALREADY_CONNECTED) { //We just ignore the bridge already connected error case
 			logger.debug("onError(int code : " + code + ", String message : "+ message + ")");
 			if (status == SEARCHING_AP) {
 				sm.upnpSearch();
 			}
+		}
+		}catch(JSONException e){
+			e.printStackTrace();
 		}
 	}
 
@@ -193,7 +214,15 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 		}
 		
 		if(paToRemove != null) {
-			unAuthorizedAccesPointList.remove(paToRemove);
+			try {
+				unAuthorizedAccesPointList.remove(paToRemove);
+				JSONObject resp = new JSONObject();
+				resp.put("TARGET", PhilipsHUEAdapter.CONFIG_TARGET);
+				resp.put("bridgeConnected", ipAddr);
+				adapter.getCommunicationService().send(resp.toString());
+			}catch(JSONException e){
+				e.printStackTrace();
+			}
 		}
 	}
 	

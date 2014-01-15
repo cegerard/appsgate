@@ -63,6 +63,13 @@ public class PhilipsHUEBridgeConfigListener implements ConfigListener {
 				
 			} catch (JSONException e) {e.printStackTrace();}
 			
+		}else if(cmd.equalsIgnoreCase("getBridgeInfo")) {
+			JSONObject returnResp = new JSONObject();
+			JSONObject bridgeInfo = PhilipsAdapter.getBridgeInfo(obj.getString("ip"));
+			returnResp.put("TARGET", PhilipsHUEAdapter.CONFIG_TARGET);
+			returnResp.put("bridgeInfo", bridgeInfo);
+			PhilipsAdapter.getCommunicationService().send(obj.getInt("clientId"), returnResp.toString());
+			
 		}else if (cmd.equalsIgnoreCase("pushlinkSync")) {
 			PhilipsAdapter.startPushLinkAuthentication(obj.getString("ip"));
 		}
