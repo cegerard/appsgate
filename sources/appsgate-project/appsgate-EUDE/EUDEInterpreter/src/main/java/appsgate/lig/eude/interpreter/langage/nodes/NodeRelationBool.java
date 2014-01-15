@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONObject;
 
@@ -31,11 +32,11 @@ public class NodeRelationBool extends Node {
     /**
      * The operator of the boolean operation
      */
-    private final String operator;
+    private String operator = null;
     /**
      * the left operation
      */
-    private Object leftValue;
+    private Object leftValue = null;
     /**
      * the node action of the left branch
      */
@@ -43,11 +44,11 @@ public class NodeRelationBool extends Node {
     /**
      * the return type of the left branch
      */
-    private final String leftReturnType;
+    private String leftReturnType = null;
     /**
      * the right operation
      */
-    private Object rightValue;
+    private Object rightValue = null;
     /**
      * the node action of the right branch
      */
@@ -55,11 +56,11 @@ public class NodeRelationBool extends Node {
     /**
      * the return type of the right branch
      */
-    private final String rightReturnType;
+    private String rightReturnType = null;
     /**
      * The result value
      */
-    private Boolean result;
+    private Boolean result = null;
 
     /**
      * Default constructor
@@ -67,7 +68,7 @@ public class NodeRelationBool extends Node {
      * @param interpreter Pointer on the interpreter
      * @param relationBoolJSON JSON representation of the node
      * @param parent
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     public NodeRelationBool(EUDEInterpreterImpl interpreter, JSONObject relationBoolJSON, Node parent) throws NodeException {
         super(interpreter, parent);
@@ -101,6 +102,10 @@ public class NodeRelationBool extends Node {
         }
 
         result = null;
+    }
+
+    private NodeRelationBool(EUDEInterpreterImpl interpreter, Node parent) {
+        super(interpreter, parent);
     }
 
     @Override
@@ -269,4 +274,23 @@ public class NodeRelationBool extends Node {
     protected void collectVariables(SymbolTable s) {
     }
 
+    @Override
+    Node copy(Node parent) {
+        NodeRelationBool ret = new NodeRelationBool(getInterpreter(), parent);
+        ret.setSymbolTable(this.getSymbolTable());
+        if (leftNodeAction != null) {
+            ret.leftNodeAction = (NodeAction) leftNodeAction.copy(ret);
+        }
+        ret.leftReturnType = leftReturnType;
+        ret.leftValue = leftValue;
+        if (rightNodeAction != null) {
+            ret.rightNodeAction = (NodeAction) rightNodeAction.copy(ret);
+        }
+        ret.rightReturnType = rightReturnType;
+        ret.rightValue = rightValue;
+        ret.operator = operator;
+        ret.result = result;
+        return ret;
+
+    }
 }

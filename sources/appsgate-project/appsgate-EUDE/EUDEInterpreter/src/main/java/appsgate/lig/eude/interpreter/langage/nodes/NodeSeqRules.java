@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
 
@@ -34,17 +35,30 @@ public class NodeSeqRules extends Node {
     /**
      * Contains the block of rules separated by a "THEN" operator
      */
-    private final ArrayList<NodeSeqAndRules> seqAndRules;
+    private ArrayList<NodeSeqAndRules> seqAndRules;
+
     /**
      *
      */
     private int idCurrentSeqAndRules;
 
     /**
+     * private Constructor to copy Nodes
+     *
+     * @param interpreter
+     * @param seq
+     * @param p
+     */
+    private NodeSeqRules(EUDEInterpreterImpl interpreter, Node p) {
+        super(interpreter, p);
+    }
+
+    /**
      * Initialize the sequence of rules from a JSON tree
      *
      * @param interpreter
      * @param seqRulesJSON JSON array containing the rules
+     * @param parent
      * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
      */
     public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON, Node parent) throws NodeException {
@@ -163,4 +177,22 @@ public class NodeSeqRules extends Node {
             seq.collectVariables(s);
         }
     }
+
+    void initSymbolTableFromParams(JSONArray params) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    Node copy(Node parent) {
+        NodeSeqRules ret = new NodeSeqRules(getInterpreter(), parent);
+        ret.seqAndRules = new ArrayList<NodeSeqAndRules>();
+        for (NodeSeqAndRules n : seqAndRules) {
+            ret.seqAndRules.add((NodeSeqAndRules) n.copy(ret));
+        }
+
+        ret.setSymbolTable(this.getSymbolTable());
+        return ret;
+
+    }
+
 }

@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,7 +112,7 @@ public class NodeProgram extends Node {
      *
      * @param interpreter
      * @param programJSON Abstract tree of the program in JSON
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     public NodeProgram(EUDEInterpreterImpl interpreter, JSONObject programJSON)
             throws NodeException {
@@ -129,7 +130,7 @@ public class NodeProgram extends Node {
      * @param jsonProgram the new source code
      *
      * @return true if the source code has been updated, false otherwise
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     public final boolean update(JSONObject jsonProgram) throws NodeException {
 
@@ -140,7 +141,7 @@ public class NodeProgram extends Node {
         name = getJSONString(source, "programName");
 //        author = getJSONString(source, "author");
 //        target = getJSONString(source, "target");
-        
+
         this.setSymbolTable(new SymbolTable(getJSONArray(source, "seqDefinitions")));
         if (source.has("daemon")) {
             try {
@@ -200,7 +201,7 @@ public class NodeProgram extends Node {
             LOGGER.warn("Trying to stop {}, while being at state {}", this, this.runningState);
         }
     }
-    
+
     @Override
     protected void specificStop() {
     }
@@ -311,7 +312,7 @@ public class NodeProgram extends Node {
         try {
             programJSON.put("runningState", runningState.toString());
             this.runningState = runningState;
-            notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
+            getInterpreter().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
 
         } catch (JSONException e) {
             LOGGER.warn("JSON Exception : {}, unable to set the running state inside the JSON program", e.getMessage());
@@ -348,6 +349,25 @@ public class NodeProgram extends Node {
     @Override
     protected void collectVariables(SymbolTable s) {
         seqRules.collectVariables(s);
+    }
+
+    @Override
+    Node copy(Node parent) {
+        NodeProgram ret = new NodeProgram(getInterpreter());
+        ret.author = author;
+        ret.daemon = daemon;
+        ret.id = id;
+        ret.name = name;
+        ret.runningState = runningState;
+        ret.target = target;
+        ret.userInputSource = userInputSource;
+        ret.programJSON = new JSONObject(programJSON);
+        try {
+            boolean update = ret.update(programJSON);
+        } catch (NodeException ex) {
+            LOGGER.error("Unable to copy the program", ex);
+        }
+        return ret;
     }
 
 }

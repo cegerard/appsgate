@@ -1,26 +1,29 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
-import appsgate.lig.eude.interpreter.langage.nodes.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeFunctionDefinition;
+import java.util.AbstractCollection;
 import java.util.HashMap;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
-public class SymbolTable {
+public final class SymbolTable {
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SymbolTable.class.getName());
 
     private final HashMap<String, SpokVariable> variables;
-    private final HashMap<String, SpokFunction> functions;
+    private final HashMap<String, NodeFunctionDefinition> functions;
 
     /**
      * Constructor
      */
     public SymbolTable() {
         variables = new HashMap<String, SpokVariable>();
-        functions = new HashMap<String, SpokFunction>();
+        functions = new HashMap<String, NodeFunctionDefinition>();
     }
 
     /**
@@ -31,19 +34,39 @@ public class SymbolTable {
      */
     public SymbolTable(JSONArray jsonArray) throws NodeException {
         this();
+        this.buildFromJson(jsonArray);
+    }
+
+    /**
+     *
+     * @param jsonArray
+     * @throws NodeException
+     */
+    public void buildFromJson(JSONArray jsonArray) throws NodeException {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject vJson;
             try {
                 vJson = jsonArray.getJSONObject(i);
-                String varName = vJson.getString("var_name");
-                if (variables.get(varName) != null) {
-                    throw new NodeException("Symbol Table", "The var_name has already been used in the same scope: " + varName, null);
+                String varName = vJson.optString("var_name");
+                if (varName != null) {
+                    if (variables.get(varName) != null) {
+                        throw new NodeException("Symbol Table", "The var_name has already been used in the same scope: " + varName, null);
+                    }
+                    variables.put(varName, new SpokVariable(vJson));
+                } else {
+                    String functName = vJson.optString("func_name");
+                    if (functName != null) {
+                        if (functions.get(functName) != null) {
+                            throw new NodeException("Symbol Table", "The func_name has already been used in the same scope: " + functName, null);
+                        }
+                        functions.put(functName, new NodeFunctionDefinition(null, vJson, null));
+                    }
                 }
-                variables.put(varName, new SpokVariable(vJson));
             } catch (JSONException ex) {
-                throw new NodeException("Symbol Table", "missing var_name for item " + i, ex);
+                LOGGER.error("Reading a Json array and not finding item {}", i);
             }
         }
+
     }
 
     /**
@@ -108,16 +131,24 @@ public class SymbolTable {
     public SpokVariable getVariableByKey(String key) {
         return variables.get(key);
     }
-
+    /**
+     *
+     * @param key
+     * @return
+     */
+    public NodeFunctionDefinition getFunctionByKey(String key) {
+        return functions.get(key);
+    }
 
     /**
      * Method to add a function in the Symbol Table
+     *
      * @param functionName the name of the function
      * @param f the function
      * @return the function added in the Symbol table
      * @throws NodeException if function name is already in use
      */
-    public SpokFunction addFunction(String functionName, SpokFunction f)
+    public NodeFunctionDefinition addFunction(String functionName, NodeFunctionDefinition f)
             throws NodeException {
         if (functions.get(functionName) != null) {
             throw new NodeException("Symbol Table", "Function name already exists for this context", null);
@@ -125,7 +156,7 @@ public class SymbolTable {
         functions.put(functionName, f);
         return f;
     }
-    
+
     /**
      *
      * @return
@@ -135,13 +166,16 @@ public class SymbolTable {
         for (String k : variables.keySet()) {
             ret += k + " = " + variables.get(k).getExpertProgramDecl() + "\n";
         }
-        
+
         for (String k : functions.keySet()) {
-            ret += functions.get(k).getExpertProgramDecl() + "\n";
+            ret += functions.get(k).getExpertProgramScript() + "\n";
         }
-        
+
         return ret;
     }
 
-    
+    public Set<String> getVarList() {
+        return variables.keySet();
+    }
+
 }

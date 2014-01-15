@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONObject;
 
@@ -66,7 +67,7 @@ public class NodeEvent extends Node {
      * @param interpreter Pointer on the interpreter
      * @param eventJSON JSON representation of the event
      * @param parent
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     public NodeEvent(EUDEInterpreterImpl interpreter, JSONObject eventJSON, Node parent) throws NodeException {
         super(interpreter, parent);
@@ -85,13 +86,13 @@ public class NodeEvent extends Node {
         // if the source of the event is a program
         if (sourceType.equals("program")) {
             // get the node of the program
-            NodeProgram p = getNodeProgram(sourceId);
+            NodeProgram p = getInterpreter().getNodeProgram(sourceId);
             // if it exists
             if (p != null) {
                 // listen to its start event...
                 if (eventName.equals("runningState")) {
                     LOGGER.trace("Node event added for {}", sourceId);
-                    addNodeListening(this);
+                    getInterpreter().addNodeListening(this);
                 } else {
                     LOGGER.warn("Event ({}) not supported for programs.", eventName);
                 }
@@ -104,7 +105,7 @@ public class NodeEvent extends Node {
             // sourceType is "device"
         } else {
             LOGGER.trace("Node event added for {}", sourceId);
-            addNodeListening(this);
+            getInterpreter().addNodeListening(this);
         }
 
         return null;
@@ -113,14 +114,14 @@ public class NodeEvent extends Node {
     @Override
     public void specificStop() {
         if (sourceType.equals("program")) {
-            NodeProgram p = getNodeProgram(sourceId);
+            NodeProgram p = getInterpreter().getNodeProgram(sourceId);
             if (eventName.equals("start")) {
                 p.removeStartEventListener(this);
             } else if (eventName.equals("end")) {
                 p.removeEndEventListener(this);
             }
         } else {
-            removeNodeListening(this);
+            getInterpreter().removeNodeListening(this);
         }
     }
 
@@ -174,6 +175,14 @@ public class NodeEvent extends Node {
     @Override
     protected void collectVariables(SymbolTable s) {
         s.addAnonymousVariable(sourceId, sourceType);
+    }
+
+    @Override
+    Node copy(Node parent) {
+        NodeEvent ret = new NodeEvent(getInterpreter(), this.sourceType, this.sourceId, this.eventName, this.eventValue, parent);
+        ret.setSymbolTable(this.getSymbolTable());
+        return ret;
+
     }
 
 }

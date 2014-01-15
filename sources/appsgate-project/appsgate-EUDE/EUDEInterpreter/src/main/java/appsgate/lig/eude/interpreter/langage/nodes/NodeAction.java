@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,15 +35,15 @@ public class NodeAction extends Node {
     /**
      * the type of the target of the action ('device' or 'program')
      */
-    private final String targetType;
+    private String targetType;
     /**
      * the id of the target of the action
      */
-    private final String targetId;
+    private String targetId;
     /**
      * the name of the method to apply
      */
-    private final String methodName;
+    private String methodName;
     /**
      * The args of the action
      */
@@ -76,6 +78,10 @@ public class NodeAction extends Node {
 
     }
 
+    private NodeAction(EUDEInterpreterImpl interpreter, Node parent) {
+        super(interpreter, parent);
+    }
+
     @Override
     public void endEventFired(EndEvent e) {
         setStarted(false);
@@ -107,7 +113,7 @@ public class NodeAction extends Node {
      */
     private void callDeviceAction(String target) {
         // get the runnable from the interpreter
-        command = executeCommand(target, methodName, args);
+        command = getInterpreter().executeCommand(target, methodName, args);
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, target);
         } else {
@@ -120,7 +126,7 @@ public class NodeAction extends Node {
      * Method to run a program action
      */
     private void callProgramAction(String target) {
-        NodeProgram p = getNodeProgram(target);
+        NodeProgram p = getInterpreter().getNodeProgram(target);
 
         if (p != null) {
             LOGGER.debug("Program running state {}", p.getRunningState());
@@ -128,10 +134,10 @@ public class NodeAction extends Node {
                 // listen to the end of the program
                 p.addEndEventListener(this);
                 // launch the program
-                callProgram(target);
+                getInterpreter().callProgram(target);
             } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
                 //stop the running program
-                stopProgram(target);
+                getInterpreter().stopProgram(target);
             } else {
                 LOGGER.warn("Cannot run {} on program {}", methodName, target);
             }
@@ -142,12 +148,13 @@ public class NodeAction extends Node {
     }
 
     /**
-     *
+     * 
+     * @param target 
      */
     private void callListAction(String target) {
                 LOGGER.debug("Call List action");
 
-        SpokVariable list = getElementFromName(target);
+        SpokVariable list = getVariableByName(target);
         if (list == null) {
             LOGGER.error("No such variable found in the symbol table");
             return;
@@ -159,6 +166,11 @@ public class NodeAction extends Node {
         }
     }
 
+    /**
+     * 
+     * @param v
+     * @param target 
+     */
     private void callVariableAction(SpokVariable v, String target) {
         LOGGER.debug("Call Variable action: {}", v.getName());
         if (v.getType().equals("variable")) {
@@ -166,7 +178,7 @@ public class NodeAction extends Node {
                 LOGGER.warn("Stopping cause there was a recursive loop");
                 return;
             }
-            callVariableAction(getElementFromName(v.getName()), v.getName());
+            callVariableAction(getVariableByName(v.getName()), v.getName());
         } else if (v.getType().equals("device")) {
             callDeviceAction(v.getName());
         } else if (v.getType().equals("list")) {
@@ -191,7 +203,7 @@ public class NodeAction extends Node {
     @Override
     public void specificStop() {
         if (targetType.equals("program")) {
-            NodeProgram p = getNodeProgram(targetId);
+            NodeProgram p = getInterpreter().getNodeProgram(targetId);
             p.stop();
             setStopping(false);
         } else {
@@ -213,13 +225,29 @@ public class NodeAction extends Node {
         if (this.command != null) {
             cmd = this.command.toString();
         }
-        return ret + this.methodName + "(\"" + cmd + "\")";
+        return ret + this.methodName + "(\"" + cmd + "\");";
 
     }
 
     @Override
     protected void collectVariables(SymbolTable s) {
         s.addAnonymousVariable(targetId, targetType);
+    }
+    @Override
+    Node copy(Node parent) {
+        NodeAction ret = new NodeAction(getInterpreter(), parent);
+        ret.setSymbolTable(this.getSymbolTable());
+        try {
+            ret.args = new JSONArray(args);
+        } catch (JSONException ex) {
+            java.util.logging.Logger.getLogger(NodeAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ret.methodName = methodName;
+        ret.targetId = targetId;
+        ret.targetType = targetType;
+        ret.command = command;
+        return ret;
+
     }
 
 }

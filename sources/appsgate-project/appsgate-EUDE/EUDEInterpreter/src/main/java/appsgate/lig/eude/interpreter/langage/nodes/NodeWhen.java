@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONObject;
 
@@ -31,7 +32,7 @@ public class NodeWhen extends Node {
     /**
      * list of events
      */
-    private final ArrayList<NodeEvent> seqEvent;
+    private ArrayList<NodeEvent> seqEvent;
     /**
      * The number of events that have fired EndEvent
      */
@@ -40,7 +41,7 @@ public class NodeWhen extends Node {
     /**
      * The sequence of thing to do once the events are done
      */
-    private final NodeSeqRules seqRules;
+    private NodeSeqRules seqRules;
 
     /**
      * Default constructor. Instantiate a node when
@@ -65,6 +66,16 @@ public class NodeWhen extends Node {
         // initialize the sequences of events and rules
         seqRules = new NodeSeqRules(interpreter, getJSONArray(ruleWhenJSON, "seqRulesThen"), this);
 
+    }
+
+    /**
+     * private constructor to copy node
+     *
+     * @param interpreter
+     * @param parent
+     */
+    private NodeWhen(EUDEInterpreterImpl interpreter, Node parent) {
+        super(interpreter, parent);
     }
 
     @Override
@@ -140,4 +151,18 @@ public class NodeWhen extends Node {
         }
         seqRules.collectVariables(s);
     }
+
+    @Override
+    Node copy(Node parent) {
+        NodeWhen ret = new NodeWhen(getInterpreter(), parent);
+        ret.setSymbolTable(this.getSymbolTable());
+        ret.seqEvent = new ArrayList<NodeEvent>();
+        for (NodeEvent n : seqEvent) {
+            ret.seqEvent.add((NodeEvent) n.copy(ret));
+        }
+        ret.seqRules = (NodeSeqRules) seqRules.copy(ret);
+        return ret;
+
+    }
+
 }

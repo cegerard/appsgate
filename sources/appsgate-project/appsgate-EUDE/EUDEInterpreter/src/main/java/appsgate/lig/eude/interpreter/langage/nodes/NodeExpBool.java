@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -30,7 +31,7 @@ public class NodeExpBool extends Node {
      * List of boolean sequences. Nodes of the list are separated by a boolean
      * "or" to manage priority of the boolean "and"
      */
-    private final ArrayList<NodeSeqAndBool> listSeqAndBool;
+    private ArrayList<NodeSeqAndBool> listSeqAndBool;
     /**
      * Track the number of sequences done
      */
@@ -45,7 +46,8 @@ public class NodeExpBool extends Node {
      *
      * @param interpreter Pointer on the interpreter
      * @param expBoolJSON JSON representation of the node
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @param parent
+     * @throws NodeException
      */
     public NodeExpBool(EUDEInterpreterImpl interpreter, JSONArray expBoolJSON, Node parent) throws NodeException {
         super(interpreter, parent);
@@ -64,6 +66,16 @@ public class NodeExpBool extends Node {
         result = null;
 
     }
+
+    /**
+     * private Constructor to copy
+     * @param interpreter
+     * @param parent 
+     */
+    private NodeExpBool(EUDEInterpreterImpl interpreter, Node parent) {
+        super(interpreter, parent);
+    }
+    
 
     @Override
     public void specificStop() {
@@ -160,4 +172,18 @@ public class NodeExpBool extends Node {
             n.collectVariables(s);
         }
     }
+
+    @Override
+    Node copy(Node parent) {
+        NodeExpBool ret = new NodeExpBool(getInterpreter(), parent);
+        ret.setSymbolTable(this.getSymbolTable());
+        ret.result = result;
+        ret.listSeqAndBool = new ArrayList<NodeSeqAndBool>();
+        for (NodeSeqAndBool n:listSeqAndBool) {
+            ret.listSeqAndBool.add((NodeSeqAndBool) n.copy(ret));
+        }
+        return ret;
+
+    }
+
 }

@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -29,11 +30,21 @@ public class NodeSeqAndRules extends Node {
     /**
      * the rules to apply
      */
-    private final ArrayList<Node> rules;
+    private ArrayList<Node> rules;
     /**
      * the number of rules that has been ended
      */
     private int nbRulesEnded;
+
+    /**
+     * private constructor to copy nodes
+     * 
+     * @param interpreter
+     * @param p 
+     */
+    private NodeSeqAndRules(EUDEInterpreterImpl interpreter, Node p) {
+        super(interpreter, p);
+    }
 
     /**
      * Constructor
@@ -124,6 +135,17 @@ public class NodeSeqAndRules extends Node {
         for (Node n : rules) {
             n.collectVariables(s);
         }
+    }
+
+    @Override
+    Node copy(Node parent) {
+        NodeSeqAndRules ret = new NodeSeqAndRules(getInterpreter(), parent);
+        ret.rules = new ArrayList<Node>();
+        for (Node n : rules) {
+            ret.rules.add(n.copy(ret));
+        }
+        ret.setSymbolTable(this.getSymbolTable());
+        return ret;
     }
 
 }

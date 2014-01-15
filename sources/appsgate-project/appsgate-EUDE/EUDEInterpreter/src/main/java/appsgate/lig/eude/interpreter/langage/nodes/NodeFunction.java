@@ -1,10 +1,13 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.SpokFunction;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import java.util.logging.Level;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +28,24 @@ public class NodeFunction extends Node {
     private final String name;
 
     /**
+     * The Definition of the function
+     */
+    private final NodeFunctionDefinition functionDef;
+
+    private NodeSeqRules rules = null;
+
+    /**
      *
      */
-    private SpokFunction function;
+    private final JSONArray params;
+
+    private NodeFunction(EUDEInterpreterImpl interpreter, Node parent, String n, NodeFunctionDefinition def, JSONArray par) {
+        super(interpreter, parent);
+        name = n;
+        functionDef = def;
+        params = par;
+
+    }
 
     /**
      * Initialize the program from a JSON object
@@ -40,7 +58,20 @@ public class NodeFunction extends Node {
     public NodeFunction(EUDEInterpreterImpl interpreter, JSONObject programJSON, Node parent)
             throws NodeException {
         super(interpreter, parent);
-        name = getJSONString(programJSON, "name");
+        name = getJSONString(programJSON, "id");
+        functionDef = this.getFunctionByName(name);
+        params = programJSON.optJSONArray("params");
+    }
+
+    /**
+     * Constructor to make some tests
+     *
+     * @param n
+     * @param def
+     * @param p
+     */
+    public NodeFunction(String n, NodeFunctionDefinition def, JSONArray p) {
+        this(null, null, n, def, p);
     }
 
     /**
@@ -50,8 +81,12 @@ public class NodeFunction extends Node {
      */
     @Override
     public Integer call() {
-        LOGGER.info("The function {} has been called.", this);
-        return 1;
+        LOGGER.debug("The function {} has been called.", this);
+        if (functionDef != null) {
+            rules = functionDef.getCode(params, this);
+            rules.call();
+        }
+        return null;
     }
 
     @Override
@@ -82,13 +117,75 @@ public class NodeFunction extends Node {
      * @return the script of a program, more readable than the json structure
      */
     @Override
-
     public String getExpertProgramScript() {
-        return name + "()";
+        return name + "(" + this.getStringParams() + ")\n";
     }
 
     @Override
     protected void collectVariables(SymbolTable s) {
     }
 
+    /**
+     *
+     * @return the string representing the params to put in the expert program
+     */
+    private String getStringParams() {
+        if (params == null || params.length() == 0) {
+            return "";
+        }
+
+        try {
+            StringBuilder builder = new StringBuilder();
+            int i = 0;
+            for (; i < params.length() - 1; i++) {
+                builder.append(getStringParam(params.getJSONObject(i))).append(",");
+            }
+            builder.append(getStringParam(params.getJSONObject(i)));
+
+            return builder.toString();
+        } catch (JSONException ex) {
+            LOGGER.error("Error in parsing function params for function: {}", this.name);
+            return "...";
+        }
+
+    }
+
+    /**
+     *
+     * @param o the param to add to the parameters string
+     * @return the string corresponding to the type of the param
+     */
+    private String getStringParam(JSONObject o) {
+        String type = o.optString("type");
+        if (type.compareToIgnoreCase("int") == 0) {
+            return Integer.toString(o.optInt("value"));
+        }
+        if (type.compareToIgnoreCase("boolean") == 0) {
+            if (o.optBoolean("value")) {
+                return "true";
+            } else {
+                return "false";
+            }
+        }
+        if (type.compareToIgnoreCase("string") == 0) {
+            return '"' + o.optString("value") + '"';
+        }
+        if (type.compareToIgnoreCase("variable") == 0) {
+            return o.optString("value");
+        }
+        return type;
+
+    }
+
+    @Override
+    public Node copy(Node parent) {
+        JSONArray copyParams = null;
+        try {
+            copyParams = new JSONArray(params);
+        } catch (JSONException ex) {
+            java.util.logging.Logger.getLogger(NodeFunction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        NodeFunction ret = new NodeFunction(this.getInterpreter(), parent, name, functionDef, copyParams);
+        return ret;
+    }
 }

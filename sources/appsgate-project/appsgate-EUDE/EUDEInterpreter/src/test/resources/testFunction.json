@@ -1,0 +1,26 @@
+{
+    "type": "function",
+    "id": "test",
+    "seqDefinitions": [
+        {
+            "type": "variable",
+            "id": "v",
+            "var_name": "v"},
+        {
+            "type": "variable",
+            "id": "v2",
+            "var_name": "v2"},
+        {
+            "type": "variable",
+            "id": "v3",
+            "var_name": "v3"}
+    ],
+    "seqRules": [ [
+        {
+            "type": "NodeAction",
+            "targetType": "variable",
+            "targetId": "v",
+            "methodName": "do",
+            "action": ""}
+    ]]
+}

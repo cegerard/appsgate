@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;

@@ -13,12 +13,10 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -335,7 +333,7 @@ public class EUDEInterpreterImplTest {
     @Test
     public void testActions() throws IOException, FileNotFoundException, JSONException, InterruptedException {
         System.out.println("Actions");
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testActions.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testActions.json")));
         Assert.assertTrue(instance.callProgram("testActions"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertFalse(instance.isProgramActive("testActions"));
@@ -353,9 +351,9 @@ public class EUDEInterpreterImplTest {
     @Test
     public void testPrograms() throws IOException, FileNotFoundException, JSONException, InterruptedException {
         System.out.println("Programs");
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testIf.json")));
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testPrograms.json")));
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testFail_1.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testIf.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testPrograms.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testFail_1.json")));
         Assert.assertTrue(instance.callProgram("testPrograms"));
         //Assert.assertTrue(instance.callProgram("program-373"));
         Assert.assertTrue(instance.callProgram("program-4050"));
@@ -376,7 +374,7 @@ public class EUDEInterpreterImplTest {
     @Test
     public void testWhen() throws IOException, FileNotFoundException, JSONException, InterruptedException {
         System.out.println("When");
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));
         Assert.assertTrue(instance.callProgram("TestWhen"));
         contextFollower.notifAll("1");
         synchroniser.waitUntil(tested.is("Yes"), 500);
@@ -402,8 +400,8 @@ public class EUDEInterpreterImplTest {
     @Test
     public void testPgm() throws Exception {
         System.out.println("Pgm calling TestWhen");
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/pgm.json")));
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/pgm.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));
         Assert.assertTrue(instance.callProgram("pgm"));
         Assert.assertFalse(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
@@ -421,7 +419,7 @@ public class EUDEInterpreterImplTest {
     @Test
     public void testStopAndStart() throws Exception {
         System.out.println("Stop And Start");
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));
         System.out.println("Start");
         Assert.assertTrue(instance.callProgram("TestWhen"));
         System.out.println("Stop 1");
@@ -442,40 +440,13 @@ public class EUDEInterpreterImplTest {
     @Test
     public void testWhenImbricated() throws Exception {
         System.out.println("Stop And Start");
-        Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhenImb.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhenImb.json")));
         System.out.println("Start");
         Assert.assertTrue(instance.callProgram("whenImb"));
         contextFollower.notifAll("1");
         contextFollower.notifAll("2");
 //        Assert.fail("Fin");
 
-    }
-
-    /**
-     * Load a file and return its content
-     *
-     * @param filename
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws JSONException
-     */
-    private JSONObject loadFileJSON(String filename) throws FileNotFoundException, IOException, JSONException {
-        FileInputStream fis = new FileInputStream(filename);
-        DataInputStream dis = new DataInputStream(fis);
-
-        byte[] buf = new byte[dis.available()];
-        dis.readFully(buf);
-
-        String fileContent = "";
-        for (byte b : buf) {
-            fileContent += (char) b;
-        }
-
-        dis.close();
-        fis.close();
-
-        return new JSONObject(fileContent);
     }
 
     /**

@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import org.junit.Before;
 import static org.junit.Assert.*;
 
@@ -28,7 +24,7 @@ public class NodeActionTest extends NodeTest {
             this.actionTest = new NodeAction(null, ruleJSON, null);
             this.instance = this.actionTest;
         } catch (NodeException ex) {
-            System.out.println("JSon Exception");
+            System.out.println("JSon Exception: " + ex);
         }
     }
 

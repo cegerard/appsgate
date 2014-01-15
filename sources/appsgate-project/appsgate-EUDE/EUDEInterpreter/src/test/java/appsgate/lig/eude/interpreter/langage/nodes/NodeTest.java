@@ -163,17 +163,6 @@ public abstract class NodeTest {
     }
 
     /**
-     * Test of getParentSymbolTable method, of class Node.
-     */
-    @Test
-    public void testGetParentSymbolTable() {
-        System.out.println("getParentSymbolTable");
-        SymbolTable expResult = null;
-        SymbolTable result = this.instance.getParentSymbolTable();
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of startEventFired method, of class NodeProgram.
      */
     @Test

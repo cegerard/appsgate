@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import java.util.concurrent.Callable;
@@ -56,12 +57,12 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * Symbol table of the node containing the local symbols
      */
-    private SymbolTable symbolTable;// :TODO: remove this unused element
+    private SymbolTable symbolTable;
 
     /**
      * Node parent in the abstract tree of a program
      */
-    private final Node parent;
+    private Node parent;
 
     /**
      * Use to stop node but atomically
@@ -85,8 +86,14 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     * Stop the interpretation of the node. 
-     * Check if the node is not started
+     * @param n the parent node
+     */
+    protected void setParent(Node n) {
+        this.parent = n;
+    }
+
+    /**
+     * Stop the interpretation of the node. Check if the node is not started
      */
     public void stop() {
         if (isStarted()) {
@@ -101,7 +108,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     * This method is called by the
+     * This method is called by the stop method
      */
     abstract protected void specificStop();
 
@@ -188,29 +195,6 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
         endEventListeners.remove(listener);
     }
 
-    /**
-     * Getter for the local symbol table
-     *
-     * @return the symbol table of the node that contains the symbols defined by
-     * the node
-     */
-    public SymbolTable getSymbolTable() {
-        return symbolTable;
-    }
-
-    /**
-     * Getter for the symbol table of the parent node
-     *
-     * @return the symbol table of the parent node if the node has a parent,
-     * null otherwise
-     */
-    public SymbolTable getParentSymbolTable() {
-        if (parent != null) {
-            return parent.getSymbolTable();
-        } else {
-            return null;
-        }
-    }
 
     /**
      *
@@ -223,72 +207,6 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
         return null;
     }
 
-    /**
-     * get the command from the interpreter
-     *
-     * @param targetId
-     * @param methodName
-     * @param args
-     * @return
-     */
-    protected GenericCommand executeCommand(String targetId, String methodName, JSONArray args) {
-        return interpreter.executeCommand(targetId, methodName, args);
-    }
-
-    /**
-     * get the node program from interpreter
-     *
-     * @param targetId
-     * @return
-     */
-    protected NodeProgram getNodeProgram(String targetId) {
-        return interpreter.getNodeProgram(targetId);
-    }
-
-    /**
-     * call the program from interpreter
-     *
-     * @param targetId
-     */
-    protected void callProgram(String targetId) {
-        interpreter.callProgram(targetId);
-    }
-
-    /**
-     * Stop program from the interpreter
-     *
-     * @param targetId
-     */
-    protected void stopProgram(String targetId) {
-        interpreter.stopProgram(targetId);
-    }
-
-    /**
-     * addAnonymousVariable node listening to interpreter
-     *
-     * @param aThis
-     */
-    protected void addNodeListening(NodeEvent aThis) {
-        interpreter.addNodeListening(aThis);
-    }
-
-    /**
-     * remove the node listening from interpreter
-     *
-     * @param aThis
-     */
-    protected void removeNodeListening(NodeEvent aThis) {
-        interpreter.removeNodeListening(aThis);
-    }
-
-    /**
-     * transmit the state notification message to interpreter
-     *
-     * @param programStateNotificationMsg
-     */
-    protected void notifyChanges(ProgramStateNotificationMsg programStateNotificationMsg) {
-        interpreter.notifyChanges(programStateNotificationMsg);
-    }
 
     /**
      *
@@ -380,32 +298,72 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 
     }
 
+    /**
+     * Method to set the symbol table
+     *
+     * @param s the symbol table to set
+     */
     protected void setSymbolTable(SymbolTable s) {
         this.symbolTable = s;
     }
 
     /**
+     * Getter for the local symbol table
      *
-     * @param varName
-     * @return
+     * @return the symbol table of the node that contains the symbols defined by
+     * the node
      */
-    protected SpokVariable getElementFromName(String varName) {
-        if (this.symbolTable != null) {
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
+    /**
+     * Method to find a variable by its name
+     *
+     * it recursively parse the tree to find the name
+     *
+     * @param varName the name of the variable
+     * @return The SpokVariable
+     */
+    protected SpokVariable getVariableByName(String varName) {
+        if (this.getSymbolTable() != null) {
             SpokVariable element;
-            element = this.symbolTable.getVariableByKey(varName);
+            element = this.getSymbolTable().getVariableByKey(varName);
             if (element != null) {
                 return element;
             }
         }
         if (parent != null) {
-            return parent.getElementFromName(varName);
+            return parent.getVariableByName(varName);
+        }
+        return null;
+    }
+
+    /**
+     * Method to find a function by its name
+     *
+     * it recursively parse the tree to find the name
+     *
+     * @param funcName
+     * @return the node of the function definition
+     */
+    protected NodeFunctionDefinition getFunctionByName(String funcName) {
+        if (this.symbolTable != null) {
+            NodeFunctionDefinition element;
+            element = this.symbolTable.getFunctionByKey(funcName);
+            if (element != null) {
+                return element;
+            }
+        }
+        if (parent != null) {
+            return parent.getFunctionByName(funcName);
         }
         return null;
     }
 
     /**
      * Method that returns the SpokVariable name of a given id and type
-     * 
+     *
      * @param id
      * @param type
      * @return
@@ -424,5 +382,18 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
         return null;
     }
 
+    /**
+     * Helper method to build an expert Program from anonymous variables
+     *
+     * @param s the symbol table to populate
+     */
     abstract protected void collectVariables(SymbolTable s);
+
+    /**
+     * Method to copy a node and the rules behind
+     *
+     * @param parent
+     */
+    abstract Node copy(Node parent);
+
 }

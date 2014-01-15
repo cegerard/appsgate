@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONObject;
 
@@ -28,15 +29,15 @@ public class NodeIf extends Node {
     /**
      * node representing the boolean expression
      */
-    private final NodeExpBool expBool;
+    private NodeExpBool expBool;
     /**
      * sequence of nodes to interpret if the boolean expression is true
      */
-    private final NodeSeqRules seqRulesTrue;
+    private NodeSeqRules seqRulesTrue;
     /**
      * sequence of nodes to interpret if the boolean expression is false
      */
-    private final NodeSeqRules seqRulesFalse;
+    private NodeSeqRules seqRulesFalse;
 
     /**
      * Default constructor. Instantiate a node if
@@ -44,7 +45,7 @@ public class NodeIf extends Node {
      * @param interpreter Pointer on the interpreter
      * @param ruleIfJSON JSON representation of the node
      * @param parent
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     public NodeIf(EUDEInterpreterImpl interpreter, JSONObject ruleIfJSON, Node parent) throws NodeException {
         super(interpreter, parent);
@@ -53,6 +54,10 @@ public class NodeIf extends Node {
         this.seqRulesTrue = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesTrue"), this);
         this.seqRulesFalse = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesFalse"), this);
 
+    }
+
+    private NodeIf(EUDEInterpreterImpl interpreter, Node parent) {
+        super(interpreter, parent);
     }
 
     /**
@@ -129,6 +134,17 @@ public class NodeIf extends Node {
         expBool.collectVariables(s);
         seqRulesTrue.collectVariables(s);
         seqRulesFalse.collectVariables(s);
+    }
+
+    @Override
+    Node copy(Node parent) {
+        NodeIf ret = new NodeIf(getInterpreter(), parent);
+        ret.setSymbolTable(this.getSymbolTable());
+        ret.expBool = (NodeExpBool) expBool.copy(ret);
+        ret.seqRulesFalse = (NodeSeqRules) seqRulesFalse.copy(ret);
+        ret.seqRulesTrue = (NodeSeqRules) seqRulesTrue.copy(ret);
+        return ret;
+
     }
 
 }

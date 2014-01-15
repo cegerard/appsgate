@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
 
@@ -66,6 +67,16 @@ public class NodeSeqAndBool extends Node {
             }
         }
 
+    }
+
+    /**
+     * private constructor to copy
+     *
+     * @param interpreter
+     * @param parent
+     */
+    private NodeSeqAndBool(EUDEInterpreterImpl interpreter, Node parent) {
+        super(interpreter, parent);
     }
 
     @Override
@@ -168,4 +179,17 @@ public class NodeSeqAndBool extends Node {
             n.collectVariables(s);
         }
     }
+
+    @Override
+    Node copy(Node parent) {
+        NodeSeqAndBool ret = new NodeSeqAndBool(getInterpreter(), parent);
+        ret.relationsBool = new ArrayList<NodeRelationBool>();
+        for (NodeRelationBool n : relationsBool) {
+            ret.relationsBool.add((NodeRelationBool) n.copy(ret));
+        }
+        ret.setSymbolTable(this.getSymbolTable());
+        return ret;
+
+    }
+
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appsgate.lig.eude.interpreter.langage.nodes;
+package appsgate.lig.eude.interpreter.langage.exceptions;
 
 /**
  *
