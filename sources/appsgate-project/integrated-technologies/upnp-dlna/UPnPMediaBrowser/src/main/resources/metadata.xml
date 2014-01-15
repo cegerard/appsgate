@@ -26,10 +26,7 @@
 
 		<relation implementation="MediaServerProxyImpl" multiple="true"
 			creation="eager" resolve="exist" added="mediaServerBound" removed="mediaServerUnbound" />
-		
-		
-        <relation implementation="AppsgateUPnPAdapter" creation="eager" resolve="external" />
-		
+				
 	</implementation>
 
 <!-- 	<apam-instance name="Global-MediaBrowserFactory" implementation="MediaBrowserFactory"> -->

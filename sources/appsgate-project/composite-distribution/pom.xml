@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>communication-components</artifactId>
+		<artifactId>appsgate-project</artifactId>
 		<groupId>appsgate.components</groupId>
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>composite-application</artifactId>
+	<artifactId>composite-distribution</artifactId>
 
 	<packaging>bundle</packaging>
 
@@ -82,6 +82,12 @@
             <artifactId>ClientCommunicationManager</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>GoogleAdapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>        
         
 		<!-- <dependency> -->
 		<!-- <groupId>appsgate.components</groupId> -->

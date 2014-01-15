@@ -17,11 +17,6 @@ import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +47,6 @@ import com.google.gdata.util.ServiceException;
  * 
  * @see GoogleCalendarAdapter
  */
-@Component(publicFactory=false)
-@Instantiate(name="AppsgateGoogleAdapter")
-@Provides(specifications = {GoogleCalendarAdapter.class})
 public class GoogleAdapter implements GoogleCalendarAdapter{
 	
 	private static String baseURL = "https://www.google.com/calendar/feeds/default/";
@@ -345,7 +337,6 @@ public class GoogleAdapter implements GoogleCalendarAdapter{
 	/**
 	 * Called by iPOJO when all dependencies are available
 	 */
-	@Validate
 	public void validate() {
 		logger.info("Google adapter started");
 //		Calendar c = this.getCalendar("Calendar boulot", "smarthome.inria@gmail.com", "smarthome2012");
@@ -356,7 +347,6 @@ public class GoogleAdapter implements GoogleCalendarAdapter{
 	/**
 	 * Called by iPOJO when the bundle is not available
 	 */
-	@Invalidate
 	public void Invalidate() {
 		logger.info("Google adapter stopped");
 	}

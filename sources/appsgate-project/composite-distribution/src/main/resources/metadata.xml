@@ -5,16 +5,18 @@
 
 	<composite name="AppsGate-Application" singleton="true">
 		<contentMngt>
+		    
+		    <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
 
 			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
 
 			<start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
-
+			
+            <start implementation="AppsgateGoogleAdapter" name="AppsgateGoogleAdapterInst"></start>			
 
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
-			<start implementation="UPnPMedia" name="UPnPMediaAdapter"></start>
-
+			<start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
 			<start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />
@@ -56,15 +58,20 @@
 
 	</composite>
 
-	<composite name="UPnPMedia">
+	<composite name="AppsGateUPnPMediaServices">
 		<contentMngt>
 			<start implementation="AppsgateUPnPAdapter" name="adapter" />
 			<start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
 			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
 		</contentMngt>
-
 	</composite>
 
+    <composite name="AppsGatePersistency">
+        <contentMngt>
+            <start implementation="PropertyHistoryManager" name="Global-PropertyHistoryManager" />
+            <start implementation="AppsgateContextHistory" name="Global-ContextHistoryManager"></start>
+        </contentMngt>
+    </composite>
 
 	<apam-instance name="appsgate" implementation="AppsGate-Application" />
 
