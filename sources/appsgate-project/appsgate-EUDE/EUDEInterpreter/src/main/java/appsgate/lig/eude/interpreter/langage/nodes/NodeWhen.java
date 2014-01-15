@@ -1,12 +1,12 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,25 +46,24 @@ public class NodeWhen extends Node {
     /**
      * Default constructor. Instantiate a node when
      *
-     * @param interpreter Pointer on the interpreter
      * @param ruleWhenJSON
      * @param parent
      * @throws NodeException
      */
-    public NodeWhen(EUDEInterpreterImpl interpreter, JSONObject ruleWhenJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
+    public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws NodeException {
+        super(parent);
         seqEvent = new ArrayList<NodeEvent>();
         JSONArray seqEventJSON = getJSONArray(ruleWhenJSON, "events");
         for (int i = 0; i < seqEventJSON.length(); i++) {
             try {
-                seqEvent.add(new NodeEvent(interpreter, seqEventJSON.getJSONObject(i), this));
+                seqEvent.add(new NodeEvent(seqEventJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
                 throw new NodeException("NodeSeqEvent", "item " + i, ex);
             }
         }
 
         // initialize the sequences of events and rules
-        seqRules = new NodeSeqRules(interpreter, getJSONArray(ruleWhenJSON, "seqRulesThen"), this);
+        seqRules = new NodeSeqRules(getJSONArray(ruleWhenJSON, "seqRulesThen"), this);
 
     }
 
@@ -74,8 +73,8 @@ public class NodeWhen extends Node {
      * @param interpreter
      * @param parent
      */
-    private NodeWhen(EUDEInterpreterImpl interpreter, Node parent) {
-        super(interpreter, parent);
+    private NodeWhen(Node parent) {
+        super(parent);
     }
 
     @Override
@@ -118,7 +117,7 @@ public class NodeWhen extends Node {
     }
 
     @Override
-    protected void specificStop() {
+    protected void specificStop() throws SpokException{
         LOGGER.debug("specific Stop");
         for (NodeEvent e : seqEvent) {
             e.removeEndEventListener(this);
@@ -154,7 +153,7 @@ public class NodeWhen extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeWhen ret = new NodeWhen(getInterpreter(), parent);
+        NodeWhen ret = new NodeWhen(parent);
         ret.setSymbolTable(this.getSymbolTable());
         ret.seqEvent = new ArrayList<NodeEvent>();
         for (NodeEvent n : seqEvent) {

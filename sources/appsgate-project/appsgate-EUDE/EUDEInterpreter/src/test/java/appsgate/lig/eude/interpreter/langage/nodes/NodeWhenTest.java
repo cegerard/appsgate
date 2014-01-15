@@ -26,7 +26,7 @@ public class NodeWhenTest extends NodeTest {
         try {
             ruleJSON.put("events", (Collection) null);
             ruleJSON.put("seqRulesThen", (Collection) null);
-            this.instance = new NodeWhen(null, this.ruleJSON, null);
+            this.instance = new NodeWhen(this.ruleJSON, null);
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
         } catch (NodeException ex) {

@@ -25,7 +25,7 @@ public class NodeExpBoolTest extends NodeTest {
     public void setUp() {
         JSONArray array = new JSONArray();
         try {
-            this.expBoolTest = new NodeExpBool(null, array, null);
+            this.expBoolTest = new NodeExpBool(array, null);
             this.instance = this.expBoolTest;
         } catch (NodeException ex) {
             System.out.println(ex.getMessage());

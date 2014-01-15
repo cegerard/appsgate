@@ -39,8 +39,8 @@ public class NodeFunction extends Node {
      */
     private final JSONArray params;
 
-    private NodeFunction(EUDEInterpreterImpl interpreter, Node parent, String n, NodeFunctionDefinition def, JSONArray par) {
-        super(interpreter, parent);
+    private NodeFunction(Node parent, String n, NodeFunctionDefinition def, JSONArray par) {
+        super(parent);
         name = n;
         functionDef = def;
         params = par;
@@ -53,11 +53,11 @@ public class NodeFunction extends Node {
      * @param interpreter
      * @param programJSON Abstract tree of the program in JSON
      * @param parent
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     public NodeFunction(EUDEInterpreterImpl interpreter, JSONObject programJSON, Node parent)
             throws NodeException {
-        super(interpreter, parent);
+        super(parent);
         name = getJSONString(programJSON, "id");
         functionDef = this.getFunctionByName(name);
         params = programJSON.optJSONArray("params");
@@ -71,7 +71,7 @@ public class NodeFunction extends Node {
      * @param p
      */
     public NodeFunction(String n, NodeFunctionDefinition def, JSONArray p) {
-        this(null, null, n, def, p);
+        this(null, n, def, p);
     }
 
     /**
@@ -185,7 +185,7 @@ public class NodeFunction extends Node {
         } catch (JSONException ex) {
             java.util.logging.Logger.getLogger(NodeFunction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        NodeFunction ret = new NodeFunction(this.getInterpreter(), parent, name, functionDef, copyParams);
+        NodeFunction ret = new NodeFunction(parent, name, functionDef, copyParams);
         return ret;
     }
 }

@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -10,6 +9,7 @@ import org.json.JSONException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,24 +45,21 @@ public class NodeSeqRules extends Node {
     /**
      * private Constructor to copy Nodes
      *
-     * @param interpreter
-     * @param seq
      * @param p
      */
-    private NodeSeqRules(EUDEInterpreterImpl interpreter, Node p) {
-        super(interpreter, p);
+    private NodeSeqRules(Node p) {
+        super(p);
     }
 
     /**
      * Initialize the sequence of rules from a JSON tree
      *
-     * @param interpreter
      * @param seqRulesJSON JSON array containing the rules
      * @param parent
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
-    public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
+    public NodeSeqRules(JSONArray seqRulesJSON, Node parent) throws NodeException {
+        super(parent);
 
         seqAndRules = new ArrayList<NodeSeqAndRules>();
 
@@ -74,7 +71,7 @@ public class NodeSeqRules extends Node {
                 throw new NodeException("NodeSeqRules", "item " + i, ex);
             }
             if (seqAndRulesJSON.length() > 0) {
-                seqAndRules.add(new NodeSeqAndRules(interpreter, seqAndRulesJSON, this));
+                seqAndRules.add(new NodeSeqAndRules(seqAndRulesJSON, this));
             }
         }
 
@@ -135,7 +132,7 @@ public class NodeSeqRules extends Node {
     }
 
     @Override
-    public void specificStop() {
+    public void specificStop() throws SpokException {
         for (Node n : seqAndRules) {
             n.removeEndEventListener(this);
         }
@@ -184,7 +181,7 @@ public class NodeSeqRules extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeSeqRules ret = new NodeSeqRules(getInterpreter(), parent);
+        NodeSeqRules ret = new NodeSeqRules(parent);
         ret.seqAndRules = new ArrayList<NodeSeqAndRules>();
         for (NodeSeqAndRules n : seqAndRules) {
             ret.seqAndRules.add((NodeSeqAndRules) n.copy(ret));

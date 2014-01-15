@@ -21,7 +21,7 @@ public class NodeActionTest extends NodeTest {
     public void setUp() {
         super.setUp();
         try {
-            this.actionTest = new NodeAction(null, ruleJSON, null);
+            this.actionTest = new NodeAction(ruleJSON, null);
             this.instance = this.actionTest;
         } catch (NodeException ex) {
             System.out.println("JSon Exception: " + ex);

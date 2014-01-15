@@ -255,7 +255,7 @@ public class EUDEInterpreterImplTest {
      * Test of addNodeListening method, of class EUDEInterpreterImpl.
      *
      * @throws org.json.JSONException
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     @Test
     public void testAddNodeListening() throws JSONException, NodeException {
@@ -266,7 +266,7 @@ public class EUDEInterpreterImplTest {
         ruleJSON.put("eventName", "test");
         ruleJSON.put("eventValue", "test");
 
-        NodeEvent n = new NodeEvent(this.instance, ruleJSON, null);
+        NodeEvent n = new NodeEvent(ruleJSON, null);
         instance.addNodeListening(n);
     }
 
@@ -274,7 +274,7 @@ public class EUDEInterpreterImplTest {
      * Test of removeNodeListening method, of class EUDEInterpreterImpl.
      *
      * @throws org.json.JSONException
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
     @Test
     public void testRemoveNodeListening() throws JSONException, NodeException {
@@ -285,7 +285,7 @@ public class EUDEInterpreterImplTest {
         ruleJSON.put("eventName", "test");
         ruleJSON.put("eventValue", "test");
 
-        NodeEvent n = new NodeEvent(this.instance, ruleJSON, null);
+        NodeEvent n = new NodeEvent(ruleJSON, null);
         instance.removeNodeListening(n);
     }
 
@@ -437,6 +437,7 @@ public class EUDEInterpreterImplTest {
 //        Assert.fail("Fin");
 
     }
+
     @Test
     public void testWhenImbricated() throws Exception {
         System.out.println("Stop And Start");

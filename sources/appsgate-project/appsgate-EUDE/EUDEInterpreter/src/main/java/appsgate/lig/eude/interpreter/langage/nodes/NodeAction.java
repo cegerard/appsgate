@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.exceptions.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,14 +55,13 @@ public class NodeAction extends Node {
     /**
      * Default constructor
      *
-     * @param interpreter points to the interpreter
      * @param ruleJSON the JSON Object
      * @param parent
      * @throws NodeException if the interpretation of JSON fails
      */
-    public NodeAction(EUDEInterpreterImpl interpreter, JSONObject ruleJSON, Node parent)
+    public NodeAction(JSONObject ruleJSON, Node parent)
             throws NodeException {
-        super(interpreter, parent);
+        super(parent);
 
         targetType = getJSONString(ruleJSON, "targetType");
         targetId = getJSONString(ruleJSON, "targetId");
@@ -78,8 +76,8 @@ public class NodeAction extends Node {
 
     }
 
-    private NodeAction(EUDEInterpreterImpl interpreter, Node parent) {
-        super(interpreter, parent);
+    private NodeAction(Node parent) {
+        super(parent);
     }
 
     @Override
@@ -93,14 +91,18 @@ public class NodeAction extends Node {
         LOGGER.debug("##### Action call [{}]!", methodName);
         fireStartEvent(new StartEvent(this));
         setStarted(true);
-        if (targetType.equals("device")) {
-            callDeviceAction(targetId);
-        } else if (targetType.equals("program")) {
-            callProgramAction(targetId);
-        } else if (targetType.equals("list")) {
-            callListAction(targetId);
-        } else {
-            LOGGER.warn("Action type ({}) not supported", targetType);
+        try {
+            if (targetType.equals("device")) {
+                callDeviceAction(targetId);
+            } else if (targetType.equals("program")) {
+                callProgramAction(targetId);
+            } else if (targetType.equals("list")) {
+                callListAction(targetId);
+            } else {
+                LOGGER.warn("Action type ({}) not supported", targetType);
+            }
+        } catch (SpokException e) {
+            LOGGER.error("Error at execution: " + e);
         }
 
         setStarted(false);
@@ -111,7 +113,7 @@ public class NodeAction extends Node {
     /**
      * Method that run a device action
      */
-    private void callDeviceAction(String target) {
+    private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
         command = getInterpreter().executeCommand(target, methodName, args);
         if (command == null) {
@@ -125,7 +127,7 @@ public class NodeAction extends Node {
     /**
      * Method to run a program action
      */
-    private void callProgramAction(String target) {
+    private void callProgramAction(String target) throws SpokException {
         NodeProgram p = getInterpreter().getNodeProgram(target);
 
         if (p != null) {
@@ -148,11 +150,11 @@ public class NodeAction extends Node {
     }
 
     /**
-     * 
-     * @param target 
+     *
+     * @param target
      */
-    private void callListAction(String target) {
-                LOGGER.debug("Call List action");
+    private void callListAction(String target) throws SpokException {
+        LOGGER.debug("Call List action");
 
         SpokVariable list = getVariableByName(target);
         if (list == null) {
@@ -161,17 +163,17 @@ public class NodeAction extends Node {
         }
         List<SpokVariable> elements = list.getElements();
         for (SpokVariable v : elements) {
-            
+
             callVariableAction(v, target);
         }
     }
 
     /**
-     * 
+     *
      * @param v
-     * @param target 
+     * @param target
      */
-    private void callVariableAction(SpokVariable v, String target) {
+    private void callVariableAction(SpokVariable v, String target) throws SpokException {
         LOGGER.debug("Call Variable action: {}", v.getName());
         if (v.getType().equals("variable")) {
             if (v.getName().equals(target)) {
@@ -201,7 +203,7 @@ public class NodeAction extends Node {
     }
 
     @Override
-    public void specificStop() {
+    public void specificStop() throws SpokException {
         if (targetType.equals("program")) {
             NodeProgram p = getInterpreter().getNodeProgram(targetId);
             p.stop();
@@ -233,9 +235,10 @@ public class NodeAction extends Node {
     protected void collectVariables(SymbolTable s) {
         s.addAnonymousVariable(targetId, targetType);
     }
+
     @Override
     Node copy(Node parent) {
-        NodeAction ret = new NodeAction(getInterpreter(), parent);
+        NodeAction ret = new NodeAction(parent);
         ret.setSymbolTable(this.getSymbolTable());
         try {
             ret.args = new JSONArray(args);

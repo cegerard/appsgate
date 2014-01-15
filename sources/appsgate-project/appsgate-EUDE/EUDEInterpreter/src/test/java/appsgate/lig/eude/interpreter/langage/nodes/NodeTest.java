@@ -72,9 +72,10 @@ public abstract class NodeTest {
     /**
      * Test of stop method, of class NodeAction.
      *
+     * @throws Exception
      */
     @Test
-    public void testStop() {
+    public void testStop() throws Exception{
         System.out.println("stop");
         this.instance.stop();
     }

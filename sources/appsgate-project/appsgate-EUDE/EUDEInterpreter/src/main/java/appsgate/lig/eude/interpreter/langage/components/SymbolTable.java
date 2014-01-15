@@ -2,7 +2,6 @@ package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeFunctionDefinition;
-import java.util.AbstractCollection;
 import java.util.HashMap;
 import java.util.Set;
 import org.json.JSONArray;
@@ -59,7 +58,7 @@ public final class SymbolTable {
                         if (functions.get(functName) != null) {
                             throw new NodeException("Symbol Table", "The func_name has already been used in the same scope: " + functName, null);
                         }
-                        functions.put(functName, new NodeFunctionDefinition(null, vJson, null));
+                        functions.put(functName, new NodeFunctionDefinition(vJson, null));
                     }
                 }
             } catch (JSONException ex) {

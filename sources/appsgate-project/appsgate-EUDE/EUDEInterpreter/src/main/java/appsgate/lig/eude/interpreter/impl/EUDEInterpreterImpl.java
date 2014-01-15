@@ -24,11 +24,13 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
+import java.util.logging.Level;
 
 /**
  * This class is the interpreter component for end user development environment.
@@ -182,7 +184,12 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
-            p.stop();
+            try {
+                p.stop();
+            } catch (SpokException ex) {
+                LOGGER.error("The program " + programId + " failed to stop.");
+                return false;
+            }
             p.removeEndEventListener(this);
 
             mapPrograms.remove(programId);
@@ -220,12 +227,13 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
             return false;
         }
 
-        if (p.getRunningState() == NodeProgram.RUNNING_STATE.STARTED
-                || p.getRunningState() == NodeProgram.RUNNING_STATE.PAUSED) {
-            p.stop();
-            p.removeEndEventListener(this);
-        }
         try {
+            if (p.getRunningState() == NodeProgram.RUNNING_STATE.STARTED
+                    || p.getRunningState() == NodeProgram.RUNNING_STATE.PAUSED) {
+                p.stop();
+                p.removeEndEventListener(this);
+            }
+
             if (p.update(jsonProgram)) {
                 notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getJSONSource(), p.getUserInputSource());
                 //save program map state
@@ -240,7 +248,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
                 }
             }
 
-        } catch (NodeException ex) {
+        } catch (SpokException ex) {
             LOGGER.error("Unable to update the program with new properties. NodeException catched: {}", ex.getMessage());
         }
 
@@ -265,7 +273,12 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
-            p.stop();
+            try {
+                p.stop();
+            } catch (SpokException ex) {
+                LOGGER.error("Unable to stop program");
+                return false;
+            }
             return true;
         }
 
@@ -482,14 +495,14 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
             // transmit the core event to the concerned nodes
             synchronized (eudeInt) {
                 ArrayList<NodeEvent> nodeEventList = mapCoreNodeEvent.get(this);
-                
+
                 mapCoreNodeEvent.remove(this);
                 if (nodeEventList == null) {
                     LOGGER.warn("No CoreEvent found");
                     return;
                 }
                 for (NodeEvent n : nodeEventList) {
-                    LOGGER.debug("Notifying node: {}",n);
+                    LOGGER.debug("Notifying node: {}", n);
                     n.coreEventFired();
                 }
                 contextFollower.deleteListener(this);
@@ -536,7 +549,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         this.router = router;
         this.contextFollower = c;
     }
-    
+
     @Override
     public String toString() {
         return "[EUDE Interpreter]";

@@ -41,7 +41,7 @@ public class NodeRelationBoolTest extends NodeTest {
             ruleJSON.put("operator", "test");
             ruleJSON.put("leftOperand", op);
             ruleJSON.put("rightOperand", op);
-            this.relationTest = new NodeRelationBool(null, ruleJSON, null);
+            this.relationTest = new NodeRelationBool(ruleJSON, null);
             this.instance = this.relationTest;
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
@@ -76,7 +76,7 @@ public class NodeRelationBoolTest extends NodeTest {
         System.out.println("endEventFired");
         NodeAction ac;
         try {
-            ac = new NodeAction(this.interpreter, this.ruleJSON, null);
+            ac = new NodeAction(this.ruleJSON, null);
             EndEvent e = new EndEvent(ac);
             this.relationTest.endEventFired(e);
         } catch (NodeException ex) {

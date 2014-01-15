@@ -1,12 +1,14 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,15 +49,14 @@ public class NodeEvent extends Node {
 
     /**
      *
-     * @param interpreter
      * @param s_type
      * @param s_id
      * @param name
      * @param value
      * @param parent
      */
-    public NodeEvent(EUDEInterpreterImpl interpreter, String s_type, String s_id, String name, String value, Node parent) {
-        super(interpreter, parent);
+    public NodeEvent(String s_type, String s_id, String name, String value, Node parent) {
+        super(parent);
         sourceType = s_type;
         sourceId = s_id;
         eventName = name;
@@ -64,14 +65,12 @@ public class NodeEvent extends Node {
 
     /**
      *
-     * @param interpreter Pointer on the interpreter
      * @param eventJSON JSON representation of the event
      * @param parent
      * @throws NodeException
      */
-    public NodeEvent(EUDEInterpreterImpl interpreter, JSONObject eventJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
-
+    public NodeEvent(JSONObject eventJSON, Node parent) throws NodeException {
+        super(parent);
         sourceType = getJSONString(eventJSON, "sourceType");
         sourceId = getJSONString(eventJSON, "sourceId");
         eventName = getJSONString(eventJSON, "eventName");
@@ -83,16 +82,25 @@ public class NodeEvent extends Node {
     public Integer call() {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
+        EUDEInterpreterImpl interpreter;
+        try {
+            interpreter = getInterpreter();
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Unable to call this node: {}", this);
+            return null;
+        }
+
         // if the source of the event is a program
         if (sourceType.equals("program")) {
             // get the node of the program
-            NodeProgram p = getInterpreter().getNodeProgram(sourceId);
+            NodeProgram p;
+            p = interpreter.getNodeProgram(sourceId);
             // if it exists
             if (p != null) {
                 // listen to its start event...
                 if (eventName.equals("runningState")) {
                     LOGGER.trace("Node event added for {}", sourceId);
-                    getInterpreter().addNodeListening(this);
+                    interpreter.addNodeListening(this);
                 } else {
                     LOGGER.warn("Event ({}) not supported for programs.", eventName);
                 }
@@ -105,14 +113,14 @@ public class NodeEvent extends Node {
             // sourceType is "device"
         } else {
             LOGGER.trace("Node event added for {}", sourceId);
-            getInterpreter().addNodeListening(this);
+            interpreter.addNodeListening(this);
         }
 
         return null;
     }
 
     @Override
-    public void specificStop() {
+    public void specificStop() throws SpokException{
         if (sourceType.equals("program")) {
             NodeProgram p = getInterpreter().getNodeProgram(sourceId);
             if (eventName.equals("start")) {
@@ -179,7 +187,7 @@ public class NodeEvent extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeEvent ret = new NodeEvent(getInterpreter(), this.sourceType, this.sourceId, this.eventName, this.eventValue, parent);
+        NodeEvent ret = new NodeEvent(this.sourceType, this.sourceId, this.eventName, this.eventValue, parent);
         ret.setSymbolTable(this.getSymbolTable());
         return ret;
 

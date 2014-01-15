@@ -1,12 +1,12 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,13 +65,12 @@ public class NodeRelationBool extends Node {
     /**
      * Default constructor
      *
-     * @param interpreter Pointer on the interpreter
      * @param relationBoolJSON JSON representation of the node
      * @param parent
      * @throws NodeException
      */
-    public NodeRelationBool(EUDEInterpreterImpl interpreter, JSONObject relationBoolJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
+    public NodeRelationBool(JSONObject relationBoolJSON, Node parent) throws NodeException {
+        super(parent);
 
         // operator
         operator = getJSONString(relationBoolJSON, "operator");
@@ -81,7 +80,7 @@ public class NodeRelationBool extends Node {
         // left operand
         operand = getJSONObject(relationBoolJSON, "leftOperand");
         if (operand.has("targetId")) {
-            leftNodeAction = new NodeAction(interpreter, operand, this);
+            leftNodeAction = new NodeAction(operand, this);
             leftReturnType = getJSONString(operand, "returnType");
             leftValue = null;
         } else {
@@ -93,7 +92,7 @@ public class NodeRelationBool extends Node {
         // right operand
         operand = getJSONObject(relationBoolJSON, "rightOperand");
         if (operand.has("targetId")) {
-            rightNodeAction = new NodeAction(interpreter, operand, this);
+            rightNodeAction = new NodeAction(operand, this);
             rightReturnType = getJSONString(operand, "returnType");
             rightValue = null;
         } else {
@@ -104,12 +103,12 @@ public class NodeRelationBool extends Node {
         result = null;
     }
 
-    private NodeRelationBool(EUDEInterpreterImpl interpreter, Node parent) {
-        super(interpreter, parent);
+    private NodeRelationBool(Node parent) {
+        super(parent);
     }
 
     @Override
-    public void specificStop() {
+    public void specificStop() throws SpokException {
         if (leftNodeAction != null) {
             leftNodeAction.removeEndEventListener(this);
             leftNodeAction.stop();
@@ -276,7 +275,7 @@ public class NodeRelationBool extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeRelationBool ret = new NodeRelationBool(getInterpreter(), parent);
+        NodeRelationBool ret = new NodeRelationBool(parent);
         ret.setSymbolTable(this.getSymbolTable());
         if (leftNodeAction != null) {
             ret.leftNodeAction = (NodeAction) leftNodeAction.copy(ret);

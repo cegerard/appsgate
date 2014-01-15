@@ -32,16 +32,16 @@ public class NodeFunctionDefinition extends Node {
      * @throws NodeException
      * @throws JSONException
      */
-    public NodeFunctionDefinition(EUDEInterpreterImpl interpreter, JSONObject programJSON, Node parent)
+    public NodeFunctionDefinition(JSONObject programJSON, Node parent)
             throws NodeException, JSONException {
-        super(interpreter, parent);
+        super(parent);
         this.name = programJSON.optString("id");
         this.setSymbolTable(new SymbolTable(programJSON.getJSONArray("seqDefinitions")));
-        this.seqRules = new NodeSeqRules(interpreter, programJSON.optJSONArray("seqRules"), this);
+        this.seqRules = new NodeSeqRules(programJSON.optJSONArray("seqRules"), this);
     }
 
-    private NodeFunctionDefinition(EUDEInterpreterImpl interpreter, Node parent) {
-        super(interpreter, parent);
+    private NodeFunctionDefinition(Node parent) {
+        super(parent);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class NodeFunctionDefinition extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeFunctionDefinition ret = new NodeFunctionDefinition(this.getInterpreter(), parent);
+        NodeFunctionDefinition ret = new NodeFunctionDefinition(parent);
         ret.name = name;
         ret.seqRules = (NodeSeqRules) seqRules.copy(ret);
         return ret;

@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,14 +98,17 @@ public class NodeProgram extends Node {
      */
     private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
 
+    private EUDEInterpreterImpl interpreter = null;
+
     /**
      * Default constructor
      *
+     * @param i
      * @constructor
-     * @param interpreter the interpreter that execute this program
      */
-    public NodeProgram(EUDEInterpreterImpl interpreter) {
-        super(interpreter, null);
+    public NodeProgram(EUDEInterpreterImpl i) {
+        super(null);
+        this.interpreter = i;
     }
 
     /**
@@ -122,6 +126,12 @@ public class NodeProgram extends Node {
         id = getJSONString(programJSON, "id");
         runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
         update(programJSON);
+    }
+
+    
+    @Override
+    public EUDEInterpreterImpl getInterpreter() {
+        return this.interpreter;
     }
 
     /**
@@ -152,7 +162,7 @@ public class NodeProgram extends Node {
         } else {
             daemon = false;
         }
-        seqRules = new NodeSeqRules(getInterpreter(), getJSONArray(source, "seqRules"), this);
+        seqRules = new NodeSeqRules(getJSONArray(source, "seqRules"), this);
 
         return true;
 
@@ -188,7 +198,7 @@ public class NodeProgram extends Node {
     }
 
     @Override
-    public void stop() {
+    public void stop() throws SpokException{
         if (runningState == RUNNING_STATE.STARTED && !isStopping()) {
             LOGGER.debug("Stoping program {}", this);
             setStopping(true);

@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -11,6 +10,7 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,14 +43,13 @@ public class NodeSeqAndBool extends Node {
     /**
      * Default construct
      *
-     * @param interpreter Pointer on the interpreter
      * @param seqAndBoolJSON JSON representation of the node
      * @param parent
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws NodeException
      */
-    public NodeSeqAndBool(EUDEInterpreterImpl interpreter, JSONArray seqAndBoolJSON, Node parent)
+    public NodeSeqAndBool(JSONArray seqAndBoolJSON, Node parent)
             throws NodeException {
-        super(interpreter, parent);
+        super(parent);
 
         // instantiate each boolean relation and store in the list
         relationsBool = new ArrayList<NodeRelationBool>();
@@ -61,7 +60,7 @@ public class NodeSeqAndBool extends Node {
             } catch (JSONException ex) {
                 throw new NodeException("NodeSeqAndBool", "item " + i, ex);
             }
-            relationsBool.add(new NodeRelationBool(interpreter, relBoolJSON, this));
+            relationsBool.add(new NodeRelationBool(relBoolJSON, this));
             if (isStopping()) {
                 break;
             }
@@ -75,12 +74,12 @@ public class NodeSeqAndBool extends Node {
      * @param interpreter
      * @param parent
      */
-    private NodeSeqAndBool(EUDEInterpreterImpl interpreter, Node parent) {
-        super(interpreter, parent);
+    private NodeSeqAndBool(Node parent) {
+        super(parent);
     }
 
     @Override
-    public void specificStop() {
+    public void specificStop() throws SpokException {
         for (NodeRelationBool nr : relationsBool) {
             nr.stop();
         }
@@ -182,7 +181,7 @@ public class NodeSeqAndBool extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeSeqAndBool ret = new NodeSeqAndBool(getInterpreter(), parent);
+        NodeSeqAndBool ret = new NodeSeqAndBool(parent);
         ret.relationsBool = new ArrayList<NodeRelationBool>();
         for (NodeRelationBool n : relationsBool) {
             ret.relationsBool.add((NodeRelationBool) n.copy(ret));

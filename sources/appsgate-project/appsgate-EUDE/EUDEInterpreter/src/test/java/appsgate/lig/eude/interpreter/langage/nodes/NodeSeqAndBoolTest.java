@@ -26,7 +26,7 @@ public class NodeSeqAndBoolTest extends NodeTest {
     @Override
     public void setUp() {
         try {
-            this.seqTest = new NodeSeqAndBool(null, new JSONArray(), null);
+            this.seqTest = new NodeSeqAndBool(new JSONArray(), null);
             this.instance = this.seqTest;
         } catch (NodeException ex) {
             System.out.println(ex.getMessage());

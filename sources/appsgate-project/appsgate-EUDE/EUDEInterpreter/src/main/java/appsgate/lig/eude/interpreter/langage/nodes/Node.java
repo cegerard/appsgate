@@ -2,7 +2,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import java.util.concurrent.Callable;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -13,7 +12,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
-import appsgate.lig.router.spec.GenericCommand;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,11 +50,6 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     private final ConcurrentLinkedQueue<EndEventListener> endEventListeners = new ConcurrentLinkedQueue<EndEventListener>();
 
     /**
-     * The interpreter
-     */
-    private final EUDEInterpreterImpl interpreter; // :TODO: make this static 
-
-    /**
      * Symbol table of the node containing the local symbols
      */
     private SymbolTable symbolTable;
@@ -77,11 +72,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * Default constructor
      *
-     * @param interpreter interpreter pointer for the nodes
      * @param p
      */
-    public Node(EUDEInterpreterImpl interpreter, Node p) {
-        this.interpreter = interpreter;
+    public Node(Node p) {
         this.parent = p;
     }
 
@@ -94,8 +87,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 
     /**
      * Stop the interpretation of the node. Check if the node is not started
+     * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokException
      */
-    public void stop() {
+    public void stop() throws SpokException {
         if (isStarted()) {
             setStopping(true);
 
@@ -109,8 +103,9 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 
     /**
      * This method is called by the stop method
+     * @throws SpokException
      */
-    abstract protected void specificStop();
+    abstract protected void specificStop() throws SpokException;
 
     @Override
     public void startEventFired(StartEvent e) {
@@ -211,9 +206,13 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      *
      * @return interpreter
+     * @throws SpokExecutionException
      */
-    public EUDEInterpreterImpl getInterpreter() {
-        return interpreter;
+    public EUDEInterpreterImpl getInterpreter() throws SpokExecutionException {
+        if (this.parent != null) {
+            return this.parent.getInterpreter();
+        }
+        throw new SpokExecutionException("No interpreter found");
     }
 
     /**

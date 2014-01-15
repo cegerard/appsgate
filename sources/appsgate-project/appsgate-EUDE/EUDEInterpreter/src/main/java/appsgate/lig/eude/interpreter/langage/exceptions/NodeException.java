@@ -9,7 +9,7 @@ package appsgate.lig.eude.interpreter.langage.exceptions;
  *
  * @author jr
  */
-public class NodeException extends Exception {
+public class NodeException extends SpokException {
 
     private static final long serialVersionUID = -8848996955176059448L;
 

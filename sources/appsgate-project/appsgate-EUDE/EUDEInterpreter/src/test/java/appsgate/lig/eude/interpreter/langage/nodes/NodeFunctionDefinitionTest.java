@@ -29,7 +29,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
             ruleJSON.put("name", "test");
             ruleJSON.put("seqRules", new JSONArray());
             ruleJSON.put("seqDefinitions", new JSONArray());
-            this.instance = new NodeFunctionDefinition(interpreter, ruleJSON, null);
+            this.instance = new NodeFunctionDefinition(ruleJSON, null);
         } catch (NodeException ex) {
             Logger.getLogger(NodeFunctionTest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
@@ -45,7 +45,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
     
     @Test
     public void testBuildNodeFromJson() throws Exception {
-        NodeFunctionDefinition defNode = new NodeFunctionDefinition(null, TestUtilities.loadFileJSON("src/test/resources/testFunction.json"), null);
+        NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/testFunction.json"), null);
         assertNotNull(defNode);
         System.out.println(defNode.getExpertProgramScript());
     }

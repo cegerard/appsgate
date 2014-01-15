@@ -1,12 +1,12 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,22 +42,21 @@ public class NodeIf extends Node {
     /**
      * Default constructor. Instantiate a node if
      *
-     * @param interpreter Pointer on the interpreter
      * @param ruleIfJSON JSON representation of the node
      * @param parent
      * @throws NodeException
      */
-    public NodeIf(EUDEInterpreterImpl interpreter, JSONObject ruleIfJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
+    public NodeIf(JSONObject ruleIfJSON, Node parent) throws NodeException {
+        super(parent);
 
-        this.expBool = new NodeExpBool(interpreter, getJSONArray(ruleIfJSON, "expBool"), this);
-        this.seqRulesTrue = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesTrue"), this);
-        this.seqRulesFalse = new NodeSeqRules(interpreter, getJSONArray(ruleIfJSON, "seqRulesFalse"), this);
+        this.expBool = new NodeExpBool(getJSONArray(ruleIfJSON, "expBool"), this);
+        this.seqRulesTrue = new NodeSeqRules(getJSONArray(ruleIfJSON, "seqRulesTrue"), this);
+        this.seqRulesFalse = new NodeSeqRules(getJSONArray(ruleIfJSON, "seqRulesFalse"), this);
 
     }
 
-    private NodeIf(EUDEInterpreterImpl interpreter, Node parent) {
-        super(interpreter, parent);
+    private NodeIf(Node parent) {
+        super(parent);
     }
 
     /**
@@ -110,7 +109,7 @@ public class NodeIf extends Node {
     }
 
     @Override
-    public void specificStop() {
+    public void specificStop() throws SpokException{
         expBool.removeEndEventListener(this);
         expBool.stop();
         seqRulesTrue.removeEndEventListener(this);
@@ -138,7 +137,7 @@ public class NodeIf extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeIf ret = new NodeIf(getInterpreter(), parent);
+        NodeIf ret = new NodeIf(parent);
         ret.setSymbolTable(this.getSymbolTable());
         ret.expBool = (NodeExpBool) expBool.copy(ret);
         ret.seqRulesFalse = (NodeSeqRules) seqRulesFalse.copy(ret);

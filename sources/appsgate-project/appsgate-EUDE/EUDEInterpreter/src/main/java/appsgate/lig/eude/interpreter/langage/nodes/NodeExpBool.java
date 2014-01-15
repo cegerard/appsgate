@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,6 +8,7 @@ import org.json.JSONException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,19 +44,18 @@ public class NodeExpBool extends Node {
     /**
      * Default constructor
      *
-     * @param interpreter Pointer on the interpreter
      * @param expBoolJSON JSON representation of the node
      * @param parent
      * @throws NodeException
      */
-    public NodeExpBool(EUDEInterpreterImpl interpreter, JSONArray expBoolJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
+    public NodeExpBool(JSONArray expBoolJSON, Node parent) throws NodeException {
+        super(parent);
 
         // instantiate each sequence and store it in the list
         listSeqAndBool = new ArrayList<NodeSeqAndBool>();
         for (int i = 0; i < expBoolJSON.length(); i++) {
             try {
-                listSeqAndBool.add(new NodeSeqAndBool(interpreter, expBoolJSON.getJSONArray(i), this));
+                listSeqAndBool.add(new NodeSeqAndBool(expBoolJSON.getJSONArray(i), this));
             } catch (JSONException ex) {
                 throw new NodeException("NodeExpBool", "item " + i, ex);
             }
@@ -72,13 +71,13 @@ public class NodeExpBool extends Node {
      * @param interpreter
      * @param parent 
      */
-    private NodeExpBool(EUDEInterpreterImpl interpreter, Node parent) {
-        super(interpreter, parent);
+    private NodeExpBool(Node parent) {
+        super(parent);
     }
     
 
     @Override
-    public void specificStop() {
+    public void specificStop() throws SpokException{
         for (NodeSeqAndBool n : listSeqAndBool) {
             n.removeEndEventListener(this);
             n.stop();
@@ -175,7 +174,7 @@ public class NodeExpBool extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeExpBool ret = new NodeExpBool(getInterpreter(), parent);
+        NodeExpBool ret = new NodeExpBool(parent);
         ret.setSymbolTable(this.getSymbolTable());
         ret.result = result;
         ret.listSeqAndBool = new ArrayList<NodeSeqAndBool>();

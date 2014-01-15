@@ -7,9 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,20 +42,19 @@ public class NodeSeqAndRules extends Node {
      * @param interpreter
      * @param p 
      */
-    private NodeSeqAndRules(EUDEInterpreterImpl interpreter, Node p) {
-        super(interpreter, p);
+    private NodeSeqAndRules(Node p) {
+        super(p);
     }
 
     /**
      * Constructor
      *
-     * @param interpreter
      * @param seqAndRulesJSON
      * @param parent
      * @throws NodeException
      */
-    public NodeSeqAndRules(EUDEInterpreterImpl interpreter, JSONArray seqAndRulesJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
+    public NodeSeqAndRules(JSONArray seqAndRulesJSON, Node parent) throws NodeException {
+        super(parent);
 
         rules = new ArrayList<Node>();
 
@@ -68,13 +67,13 @@ public class NodeSeqAndRules extends Node {
             }
             String nodeType = getJSONString(ruleJSON, "type");
             if (nodeType.equals("NodeAction")) {
-                rules.add(new NodeAction(interpreter, ruleJSON, this));
+                rules.add(new NodeAction(ruleJSON, this));
             } else if (nodeType.equals("NodeIf")) {
-                rules.add(new NodeIf(interpreter, ruleJSON, this));
+                rules.add(new NodeIf(ruleJSON, this));
             } else if (nodeType.equals("NodeWhen")) {
-                rules.add(new NodeWhen(interpreter, ruleJSON, this));
+                rules.add(new NodeWhen(ruleJSON, this));
             } else if (nodeType.equals("seqRules")) {
-                rules.add(new NodeSeqRules(interpreter, getJSONArray(ruleJSON, "rule"), this));
+                rules.add(new NodeSeqRules(getJSONArray(ruleJSON, "rule"), this));
             } else {
                 LOGGER.warn("The type [{}] is not supported by the parser", nodeType);
             }
@@ -98,7 +97,7 @@ public class NodeSeqAndRules extends Node {
     }
 
     @Override
-    public void specificStop() {
+    public void specificStop() throws SpokException {
         for (Node n : rules) {
             n.stop();
             n.removeEndEventListener(this);
@@ -139,7 +138,7 @@ public class NodeSeqAndRules extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeSeqAndRules ret = new NodeSeqAndRules(getInterpreter(), parent);
+        NodeSeqAndRules ret = new NodeSeqAndRules(parent);
         ret.rules = new ArrayList<Node>();
         for (Node n : rules) {
             ret.rules.add(n.copy(ret));

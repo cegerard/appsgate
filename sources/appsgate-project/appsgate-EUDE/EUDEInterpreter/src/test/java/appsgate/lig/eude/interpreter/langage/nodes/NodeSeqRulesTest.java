@@ -22,7 +22,7 @@ public class NodeSeqRulesTest extends NodeTest {
     @Override
     public void setUp() {
         try {
-            this.instance = new NodeSeqRules(null, new JSONArray(), null);
+            this.instance = new NodeSeqRules(new JSONArray(), null);
         } catch (NodeException ex) {
             System.out.println("JSON ex: " + ex.getMessage());
         }
