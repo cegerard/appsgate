@@ -1,0 +1,16 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+    
+    <specification name="AppsgateClientCommunicationManagerSpec" interfaces="appsGate.lig.manager.client.communication.service.subscribe.ListenerService,
+        appsGate.lig.manager.client.communication.service.send.SendWebsocketsService"/>
+    
+    <implementation name="AppsgateClientCommunicationManager"
+        classname="appsGate.lig.manager.client.communication.ClientCommunicationManager"
+        specification="AppsgateClientCommunicationManagerSpec">
+        <callback onInit="newInst" onRemove="deleteInst"/>
+    </implementation>
+
+</apam>
