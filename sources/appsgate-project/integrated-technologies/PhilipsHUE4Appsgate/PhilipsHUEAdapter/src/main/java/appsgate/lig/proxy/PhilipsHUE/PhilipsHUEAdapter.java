@@ -209,6 +209,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				lightObj.put("modelid", light.getModelNumber());
 				lightObj.put("swversion", light.getVersionNumber());
 				lightObj.put("lightId", bc.getMacAddress()+"-"+light.getIdentifier());
+				lightObj.put("bridgeIp", bc.getIpAddress());
 				lightObj.put("bridgeLightId", light.getIdentifier());
 				jsonResponse.put(lightObj);
 			}
@@ -254,6 +255,15 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		PHBridge bridge = getBridgeFromIp(bridgeIP);
 		bridge.findNewLightsWithSerials(serials, newlightListener);
 	}
+	
+	/**
+	 * Update the firmware of the specify bridge
+	 * @param bridgeIP the targeted bridge
+	 */
+	public void updateFirmWare(String bridgeIP) {
+		PHBridge bridge = getBridgeFromIp(bridgeIP);
+		bridge.updateSoftware(null);
+	}
 
 
 	@Override
@@ -261,7 +271,11 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		
 		PHBridge bridge = getBridgeFromIp(bridgeIP);
 		PHLight light = getLightFromId(bridge, id);
-		return getLightState(light);
+		JSONObject jsonResponse = getLightState(light);
+		try {
+			jsonResponse.put("lightId", bridge.getResourceCache().getBridgeConfiguration().getMacAddress()+"-"+light.getIdentifier());
+		} catch (JSONException e) {e.printStackTrace();}
+		return jsonResponse;
 	}
 	
 	/**
@@ -295,6 +309,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			jsonResponse.put("name", light.getName());
 			jsonResponse.put("modelid", light.getModelNumber());
 			jsonResponse.put("swversion", light.getVersionNumber());
+			jsonResponse.put("bridgeLightId", light.getIdentifier());
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -558,7 +573,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * Method call to notify that a new Philips HUE bridge
 	 * has been discovered.
 	 * @param bridgethe Philips HUE bridge instance
-
 	 */
 	public void notifyNewBridge(PHBridge bridge) {
 		instanciationService.schedule(new LightsInstanciation(bridge), 15, TimeUnit.SECONDS);

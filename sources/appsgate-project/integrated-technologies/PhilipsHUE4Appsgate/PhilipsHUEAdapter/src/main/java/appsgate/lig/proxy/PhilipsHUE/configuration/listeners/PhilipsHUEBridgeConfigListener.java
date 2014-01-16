@@ -1,5 +1,6 @@
 package appsgate.lig.proxy.PhilipsHUE.configuration.listeners;
 
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,8 +81,26 @@ public class PhilipsHUEBridgeConfigListener implements ConfigListener {
 				
 			} catch (JSONException e) {e.printStackTrace();}
 			
+		}else if(cmd.equalsIgnoreCase("getLightClickedState")) {
+			JSONObject lightState = PhilipsAdapter.getLightState(obj.getString("bridge"), obj.getString("id"));
+			try {
+				JSONObject resp = new JSONObject();
+				resp.put("TARGET", PhilipsHUEAdapter.CONFIG_TARGET);
+				resp.put("lightClickedState", lightState);
+				PhilipsAdapter.getCommunicationService().send(obj.getInt("clientId"), resp.toString());
+				
+			} catch (JSONException e) {e.printStackTrace();}
+			
 		}else if (cmd.equalsIgnoreCase("pushlinkSync")) {
 			PhilipsAdapter.startPushLinkAuthentication(obj.getString("ip"));
+		}else if (cmd.equalsIgnoreCase("findNewLights")) {
+			PhilipsAdapter.searchForNewLights(obj.getString("ip"));
+		}else if (cmd.equalsIgnoreCase("findNewLightSerial")) {
+			ArrayList<String> serials = new ArrayList<String>();
+			serials.add(obj.getString("serial"));
+			PhilipsAdapter.searchForNewLightsWithSerials(serials, obj.getString("ip"));
+		}else if (cmd.equalsIgnoreCase("updatefirmware")) {
+			PhilipsAdapter.updateFirmWare(obj.getString("ip"));
 		}
 		else { //Unknown command
 			logger.warn("This command is unknown for the "+PhilipsHUEAdapter.CONFIG_TARGET+" target");

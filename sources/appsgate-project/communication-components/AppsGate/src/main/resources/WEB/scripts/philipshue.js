@@ -80,6 +80,9 @@ define([], function () {
 					this.addLightTile(lightsArray[light], lights_tile_list);
 				}
 			
+			} else if (message.hasOwnProperty("lightClickedState")) {
+				//TODO update light tiles
+			
 			} else if (message.hasOwnProperty("hueToastAlert")) {
 				var hueAlert = message.hueToastAlert;
 				
@@ -215,6 +218,8 @@ define([], function () {
 			lightDiv.id = light.lightId;
 			
 			var atag = lightDiv.childNodes[0];
+			atag.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().goToLightDisplay(\""+light.bridgeIp+"\", \""+light.bridgeLightId+"\");")
+			
 			var subDiv = atag.childNodes;
 			var nbDiv = subDiv.length;
 			var currentDiv;
@@ -286,8 +291,7 @@ define([], function () {
 				actionTile.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().updatefirmware(\""+bridge+"\");");
 				
 				actionTile = document.getElementById("findlightserialTile");
-				var serial = "";
-				actionTile.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().findNewLightSerial(\""+bridge+"\", \""+serial+"\");");
+				actionTile.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().findNewLightSerial(\""+bridge+"\");");
 				
 				actionTile = document.getElementById("findnewlightsTile");
 				actionTile.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().findNewLights(\""+bridge+"\");");
@@ -334,6 +338,19 @@ define([], function () {
 			}
 		}
 		
+		this.goToLightDisplay = function goToLightDisplay(bridge, light){
+			var httpRequest=new XMLHttpRequest();
+			httpRequest.open("GET","./html/philipshue-light.html",false);
+			httpRequest.send();
+			
+			//Display the next sub menu and update the navigation bar
+			appsgateMain.gotToNextSubMenu("light-"+bridge+"-"+light, httpRequest.responseText);
+				
+			//fill the tile with bridge information
+			var call = eval({"CONFIGURATION":"getLightClickedState", "getLightClickedState":{"bridge":bridge, "id":light}, "TARGET":"PHILIPSHUE"});
+			appsgateMain.sendCmd(JSON.stringify(call));
+		}
+		
 		/** send the pushLink request */
 		this.pushLinkSend = function pushLinkSend(bridge) {
 			var call = eval({"CONFIGURATION":"pushlinkSync", "pushlinkSync":{"ip":bridge}, "TARGET":"PHILIPSHUE"});
@@ -347,7 +364,8 @@ define([], function () {
 		}
 		
 		/** send the find new light with serial id request */
-		this.findNewLightSerial = function findNewLightSerial(bridge, serial) {
+		this.findNewLightSerial = function findNewLightSerial(bridge) {
+			var serial = document.getElementById("serial-param").value;
 			var call = eval({"CONFIGURATION":"findNewLightSerial", "findNewLightSerial":{"ip":bridge, "serial":serial}, "TARGET":"PHILIPSHUE"});
 			appsgateMain.sendCmd(JSON.stringify(call));
 		}
