@@ -170,6 +170,55 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		}
 		return jsonResponse;
 	}
+	
+	/**
+	 * Get the lights list from the specify bridge 
+	 * @param bridgeIP the bridge from where get the light list
+	 * @return the light list as a JSONArray
+	 */
+	public JSONArray getLightList(String bridgeIP) {
+		JSONArray jsonResponse = new JSONArray();
+		try {
+			
+			PHBridge bridge = getBridgeFromIp(bridgeIP);
+				
+			PHBridgeConfiguration bc = bridge.getResourceCache().getBridgeConfiguration();
+			List<PHLight> lightsList = bridge.getResourceCache().getAllLights();
+				
+			for(PHLight light : lightsList) {
+				JSONObject lightObj = new JSONObject();
+					
+				JSONObject JSONLightState = new JSONObject();
+				PHLightState lightState = light.getLastKnownLightState();
+				JSONLightState.put("on", lightState.isOn().toString());
+				JSONLightState.put("bri", String.valueOf(lightState.getBrightness()));
+				JSONLightState.put("hue", String.valueOf(lightState.getHue()));
+				JSONLightState.put("sat", String.valueOf(lightState.getSaturation()));
+				JSONLightState.put("x", String.valueOf(lightState.getX()));
+				JSONLightState.put("y", String.valueOf(lightState.getY()));
+				JSONLightState.put("ct", String.valueOf(lightState.getCt()));
+				JSONLightState.put("alert", lightState.getAlertMode().name());
+				JSONLightState.put("effect", lightState.getEffectMode().name());
+				JSONLightState.put("colorMode", lightState.getColorMode().name());
+				JSONLightState.put("transitionTime", String.valueOf(lightState.getTransitionTime()));
+				JSONLightState.put("reachable", String.valueOf(light.isReachable()));
+				lightObj.put("state", JSONLightState);
+					
+				lightObj.put("type", light.getLightType().name());
+				lightObj.put("name", light.getName());
+				lightObj.put("modelid", light.getModelNumber());
+				lightObj.put("swversion", light.getVersionNumber());
+				lightObj.put("lightId", bc.getMacAddress()+"-"+light.getIdentifier());
+				lightObj.put("bridgeLightId", light.getIdentifier());
+				jsonResponse.put(lightObj);
+			}
+			logger.debug("getLightList : "+jsonResponse.toString());
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonResponse;
+	}
 
 	@Override
 	public boolean searchForNewLights() {

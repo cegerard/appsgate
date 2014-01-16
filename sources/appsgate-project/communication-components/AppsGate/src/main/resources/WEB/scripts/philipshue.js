@@ -17,9 +17,11 @@ define([], function () {
 					this.addBridgeTile(bridgesArray[bridge]);
 				}
 				
+				var lights_tile_list = document.getElementById("lights-tile-list");
 				for(light in lightsArray) {
-					this.addLightTile(lightsArray[light]);
+					this.addLightTile(lightsArray[light], lights_tile_list);
 				}
+				
 			}else if(message.hasOwnProperty("bridgeInfo")){
 				var bridgeInfo = message.bridgeInfo;
 				
@@ -70,6 +72,14 @@ define([], function () {
 					element = document.getElementById("bridgetimeinfoTile-zone");
 					element.innerHTML = bridgeInfo.timezone;
 				}
+			} else if (message.hasOwnProperty("bridgeLights")) {
+				var lightsArray = message.bridgeLights;
+				
+				var lights_tile_list = document.getElementById("lights-tile-list");
+				for(light in lightsArray) {
+					this.addLightTile(lightsArray[light], lights_tile_list);
+				}
+			
 			} else if (message.hasOwnProperty("hueToastAlert")) {
 				var hueAlert = message.hueToastAlert;
 				
@@ -194,14 +204,12 @@ define([], function () {
 		}
 		
 		/**  Add a tile in configure GUI for the light in parameter */
-		this.addLightTile = function addLightTile(light) {
+		this.addLightTile = function addLightTile(light, lights_tile_list) {
 			
 			var httpRequest=new XMLHttpRequest();
 			httpRequest.open("GET","./html/hueLightTile.html",false);
 			httpRequest.send();
 			
-			var lights_tile_list = document.getElementById("lights-tile-list");
-						
 			var lightDiv = document.createElement('div');
 			lightDiv.innerHTML = httpRequest.responseText;
 			lightDiv.id = light.lightId;
@@ -283,6 +291,10 @@ define([], function () {
 				
 				actionTile = document.getElementById("findnewlightsTile");
 				actionTile.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().findNewLights(\""+bridge+"\");");
+				
+				//Get the hue lights
+				call = eval({"CONFIGURATION":"getBridgeLights", "getBridgeLights":{"ip":bridge}, "TARGET":"PHILIPSHUE"});
+				appsgateMain.sendCmd(JSON.stringify(call));
 				
 			}else if (status.indexOf("WARNING") != -1){
 				
