@@ -50,7 +50,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Import-Package>net.fortuna.ical4j.model.*;version="${ical-version}",*</Import-Package>
+						<Import-Package>net.fortuna.ical4j.*;version="${ical-version}",*</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

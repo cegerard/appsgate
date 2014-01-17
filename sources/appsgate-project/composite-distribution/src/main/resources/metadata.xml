@@ -10,11 +10,12 @@
 
 			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
 
-			<start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
+            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 			
-            <start implementation="AppsgateGoogleAdapter" name="AppsgateGoogleAdapterInst"></start>			
+            <start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
+			
+            <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>			
 
-			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
 			<start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
@@ -65,7 +66,15 @@
 			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
 		</contentMngt>
 	</composite>
-
+	
+    <composite name="AppsGateGoogleServices">
+        <contentMngt>
+            <start implementation="AppsgateGoogleAdapter" name="AppsgateGoogleAdapterInst"></start>         
+            <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start>
+            <start implementation="GmailImpl" name="GmailInst"></start>
+            </contentMngt>
+    </composite>
+	
     <composite name="AppsGatePersistency">
         <contentMngt>
             <start implementation="PropertyHistoryManager" name="Global-PropertyHistoryManager" />

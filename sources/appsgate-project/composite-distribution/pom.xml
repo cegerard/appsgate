@@ -87,9 +87,20 @@
             <groupId>appsgate.components</groupId>
             <artifactId>GoogleAdapter</artifactId>
             <version>${project.version}</version>
-        </dependency>        
+        </dependency>       
         
-		<!-- <dependency> -->
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>GoogleCalendarImpl</artifactId>
+            <version>${project.version}</version>
+        </dependency>           
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>core-mail-gmail</artifactId>
+            <version>${project.version}</version>
+        </dependency>           
+        		<!-- <dependency> -->
 		<!-- <groupId>appsgate.components</groupId> -->
 		<!-- <artifactId>CoreObjectSpec</artifactId> -->
 		<!-- <version>${project.version}</version> -->

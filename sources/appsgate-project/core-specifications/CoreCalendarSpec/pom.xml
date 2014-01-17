@@ -11,6 +11,10 @@
 	<name>Core calendar Appsgate specification </name>
 	<packaging>bundle</packaging>
 	
+    <properties>
+        <ical-version>2.0-beta1-SNAPSHOT</ical-version>
+    </properties>	
+	
 	<!-- Repositories List -->
 	<repositories>
 		<repository>
@@ -33,7 +37,7 @@
         <dependency>
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
-			<version>2.0-beta1-SNAPSHOT</version>
+			<version>${ical-version}</version>
 		</dependency>
     </dependencies>
 	
@@ -47,6 +51,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Import-Package>net.fortuna.ical4j.*;version="${ical-version}",*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
