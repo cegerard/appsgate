@@ -11,7 +11,6 @@
 
     <artifactId>appsgate-app-weather</artifactId>
     <packaging>bundle</packaging>
-    <version>0.0.1-SNAPSHOT</version>
     <name>Weather OSGi Bundle</name>
 
     <properties>

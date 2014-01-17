@@ -30,8 +30,6 @@ import fr.imag.adele.apam.apform.ApformInstance;
  * @author vega
  *
  */
-@Component(publicFactory=false)
-@Instantiate(name="AppsgateUPnPAdapter")
 public class ProxyDiscovery  {		
 
 	/**
@@ -49,12 +47,6 @@ public class ProxyDiscovery  {
      */
     static private final Executor executor      = Executors.newCachedThreadPool();
 	
-	/**
-	 * Reference to the APAM resolver
-	 */
-	@Requires(id="APAM", optional=true)
-	@SuppressWarnings("unused")
-	private Apam 				apam;
 
 	private ApamResolver 		resolver;
 
@@ -63,8 +55,6 @@ public class ProxyDiscovery  {
 	 */
 	private List<UPnPDevice> 	pending = new ArrayList<UPnPDevice>();
 	
-	@Bind(id="APAM")
-	@SuppressWarnings("unused")
 	private synchronized void  apamBound() {
 		resolver = CST.apamResolver;
 		System.err.println("[UPnP Apam Discovery] Bound to APAM resolver "+resolver);
@@ -80,8 +70,6 @@ public class ProxyDiscovery  {
 		pending.clear();
 	}
 	
-	@Unbind(id="APAM")
-	@SuppressWarnings("unused")
 	private synchronized void apamUnbound() {
 		resolver = null;
 		System.err.println("[UPnP Apam Discovery] Unbound to APAM resolver "+resolver);
@@ -100,7 +88,6 @@ public class ProxyDiscovery  {
 	 * WARNING IMPORTANT Notice that this is an iPojo callback, and we should not block inside,
 	 * so we process the request asynchronously.
 	 */
-	@Bind(id=UPnPDevice.ID,aggregate=true,optional=true)
 	private void boundDevice(UPnPDevice device) {
 
 		/*
@@ -130,7 +117,6 @@ public class ProxyDiscovery  {
 	 * WARNING IMPORTANT Notice that this is an iPojo callback, and we should not block inside,
 	 * so we process the request asynchronously.
 	 */
-	@Unbind(id=UPnPDevice.ID)
 	private void unboundDevice(UPnPDevice device) {
 		
 		/*

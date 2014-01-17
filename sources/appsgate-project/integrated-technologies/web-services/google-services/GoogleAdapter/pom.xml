@@ -11,6 +11,10 @@
     <artifactId>GoogleAdapter</artifactId>
     <packaging>bundle</packaging>
     <name>GoogleAdapter OSGi Bundle</name>
+    
+    <properties>
+        <ical-version>2.0-beta1-SNAPSHOT</ical-version>
+    </properties>
 
 	<!-- Dependencies Description -->
 	<dependencies>
@@ -27,7 +31,7 @@
 		<dependency>
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
-			<version>2.0-beta1-SNAPSHOT</version>
+			<version>${ical-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -46,20 +50,22 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Import-Package>net.fortuna.ical4j.*;version="${ical-version}",*</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>ipojo-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>fr.imag.adele.apam</groupId>
+                <artifactId>apam-maven-plugin</artifactId>
+                <version>${apam.current.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apam-bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 
