@@ -19,14 +19,6 @@ public interface PhilipsHUEServices {
 	 */
 	public JSONArray getLightList();
 	
-	/**
-	 * Gets a list of lights that were discovered the last time a search for
-	 * new lights was performed. The list of new lights is always deleted
-	 * when a new search is started.
-	 * @return the list of new lights as a JSON array
-	 */
-	public JSONArray getNewLights();
-	
 	
 	/**
 	 * Starts a search for new lights.
@@ -38,6 +30,18 @@ public interface PhilipsHUEServices {
 	 * @return true when the search begin.
 	 */
 	public boolean searchForNewLights();
+	
+	/**
+	 * Starts a search for new lights.
+	 * The bridge will search for 1 minute and will add a maximum of 15 new lights.
+	 * To add further lights, the command needs to be sent again after the search has completed.
+	 * If a search is already active, it will be aborted and a new search will start.
+	 * When the search has finished, new lights will be available using the get new lights command.
+	 * In addition, the new lights will now be available by calling get all lights.
+	 * @param the bridge Ip from where get new lights
+	 * @return true when the search begin.
+	 */
+	public boolean searchForNewLights(String bridgeIP);
 	
 	/**
 	 * Get the current light state. That method call return all the attributes corresponding
@@ -88,5 +92,10 @@ public interface PhilipsHUEServices {
 	 */
 	public boolean setAttribute(String bridgeIP, String id, JSONObject attributes);
 	
+	/**
+	 * Get the list of discovered Philips HUE bridge
+	 * @return the list of bridge as a JSONArray
+	 */
+	public JSONArray getBridgeList();
 	
 }

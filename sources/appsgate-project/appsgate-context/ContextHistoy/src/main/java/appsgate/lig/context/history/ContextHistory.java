@@ -8,11 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Validate;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +42,7 @@ import fr.imag.adele.apam.CST;
  * @see DataBasePushService
  * 
  */
-@Component(publicFactory = false)
-@Instantiate(name = "AppsgateContextHistory")
-@Provides(specifications = { DataBasePullService.class,
-		DataBasePushService.class })
+
 public class ContextHistory implements DataBasePullService, DataBasePushService {
 
 	private final Logger logger = LoggerFactory.getLogger(ContextHistory.class);
@@ -75,7 +67,7 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	 */
 	private DB db = null;
 
-	@Validate
+
 	public void start() throws Exception {
 
 		
@@ -140,7 +132,6 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 
 	}
 
-	@Invalidate
 	public void stop() {
 	}
 

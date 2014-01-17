@@ -1,7 +1,12 @@
-define([], function () {
+define(['philipshue'], function (hueRef) {
+//define begin
     var returnedModule = function () {
+    
         var _name = 'web socket module';
         this.getName = function () {return _name;}
+        
+        var philipshue = new hueRef();
+        this.getHue = function () {return philipshue;}
         
 		var ws;
 		var DEFAULT_SERVER_PORT = 8087;
@@ -25,20 +30,21 @@ define([], function () {
 					var received_msg = evt.data;
 					console.log(received_msg);
 		
-					var callId = false;
+					//var callId = false;
 					var jsonMess = JSON.parse(received_msg);
-		
-					for (key in jsonMess) {
-    					if (key == "callId") {
-        					callId = true;
+					
+					if(jsonMess.hasOwnProperty("TARGET")){//Call the target handler
+						
+						if(jsonMess.TARGET == "PHILIPSHUE"){
+							philipshue.messageHandler(jsonMess);
 						}
-					}
-
-					if (callId) {
-        				appsgateMain.returnCallHandler(jsonMess.callId, jsonMess);
-        			}else{
+						
+					}else if(jsonMess.hasOwnProperty("callId")){
+						appsgateMain.returnCallHandler(jsonMess.callId, jsonMess);
+					}else { //It is a notification
 						appsgateMain.notificationHandler(jsonMess);
 					}
+	
      			};
      
      			ws.onerror = function (evt)

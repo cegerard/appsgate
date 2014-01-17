@@ -45,5 +45,5 @@ function WebSocketClose() {
 
 /** Check */
 function discover() {
-	ws.send("{\"discover\":{}, \"CONFIGURATION\":\"discover\"}");
+	ws.send("{\"discover\":{}, \"CONFIGURATION\":\"discover\", \"TARGET\":\"WATTECO\"}");
 }

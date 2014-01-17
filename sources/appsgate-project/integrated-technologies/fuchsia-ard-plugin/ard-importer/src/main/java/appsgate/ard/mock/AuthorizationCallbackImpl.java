@@ -1,4 +1,4 @@
-package appsgate.ard;
+package appsgate.ard.mock;
 
 import appsgate.ard.aperio.AperioAccessDecision;
 import appsgate.ard.base.callback.LockerAuthorizationCallback;
@@ -11,12 +11,15 @@ import org.osgi.service.event.EventAdmin;
 
 import java.util.*;
 
-@Component (name="DoorAuthorizationCallbackFactory")
+@Component (name="DoorAuthorizationCallbackMockFactory")
 @Provides
 public class AuthorizationCallbackImpl implements LockerAuthorizationCallback {
 
     @Property(name = "ard.switch.authorized_cards",value = "")
     private String authorizedCardsString;
+
+    @ServiceProperty(value = "0",immutable = true)
+    private Integer priority;
 
     private Set<Integer> authorizedCards=new HashSet<Integer>();
 
@@ -62,7 +65,9 @@ public class AuthorizationCallbackImpl implements LockerAuthorizationCallback {
         String template="fuchsia/ard/locker/%s/authorization_request";
         String eventTopic=String.format(template,ar.getDoorId());
         Dictionary eventProperties=new Hashtable();
-        eventProperties.put("timestamp", Calendar.getInstance().getTime());
+        eventProperties.put("timestamp", Calendar.getInstance().getTimeInMillis());
+        eventProperties.put("timestamp-readable", Calendar.getInstance().getTime());
+        eventProperties.put("door", ar.getDoorId());
         eventProperties.put("card-byte", ar.getCard());
         eventProperties.put("card-int", ar.getCardIntCode());
         eventProperties.put("authorization_result", response.getDecision());

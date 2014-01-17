@@ -6,13 +6,9 @@ import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Validate;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -24,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.AddListenerService;
+import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsGate.lig.manager.client.communication.service.subscribe.ConfigListener;
 
@@ -42,14 +38,11 @@ import appsGate.lig.manager.client.communication.service.subscribe.ConfigListene
  * @provide SendWebsocketsService to send messages to AppsGate client application from OSGi
  * environment.
  * 
- * @see AddListenerService
+ * @see ListenerService
  * @see SendWebsocketsService
  *
  */
-@Component(publicFactory=false)
-@Instantiate(name="AppsgateClientCommunicationManager")
-@Provides(specifications = { AddListenerService.class, SendWebsocketsService.class })
-public class ClientCommunicationManager extends WebSocketServer implements AddListenerService, SendWebsocketsService {
+public class ClientCommunicationManager extends WebSocketServer implements ListenerService, SendWebsocketsService {
 	
 	public final static int DEFAULT_WEBSOCKET_PORT = 8087;
 	
@@ -69,9 +62,8 @@ public class ClientCommunicationManager extends WebSocketServer implements AddLi
 	}
 	
 	/**
-	 * Called by iPOJO when an instance of this implementation is created
+	 * Called by ApAM when an instance of this implementation is created
 	 */
-	@Validate
 	public void newInst() {
 		logger.info("initiating the web communication manager...");
 //		if (httpService != null) {
@@ -91,9 +83,8 @@ public class ClientCommunicationManager extends WebSocketServer implements AddLi
 	}
 	
 	/**
-	 * Called by iPOJO when an instance of this implementation is removed
+	 * Called by ApAM when an instance of this implementation is removed
 	 */
-	@Invalidate
 	public void deleteInst() {
 		logger.info("Releasing the communication manager...");
 //		if (httpService != null) {
@@ -149,12 +140,7 @@ public class ClientCommunicationManager extends WebSocketServer implements AddLi
 	 * @return true if the message is a configuration message, false otherwise
 	 */
 	private boolean isConfiguration(JSONObject msg) {
-		try{
-			msg.getString("CONFIGURATION");
-			return true;
-		}catch(JSONException e) {
-			return false;
-		}
+		return msg.has("CONFIGURATION");
 	}
 	
 	/**
@@ -299,25 +285,23 @@ public class ClientCommunicationManager extends WebSocketServer implements AddLi
 	/** Add listener service implementation **/
 	/*****************************************/
 	
-	/**
-	 * Register a new command listener
-	 * 
-	 * @param cmdListener the command listener to add
-	 */
+	@Override
 	public boolean addCommandListener(CommandListener cmdListener) {
 		logger.debug("New all command listener: "+cmdListener.toString());
 		return commandListeners.add(cmdListener);
 	}
 
-	/**
-	 * Register a new configuration listener
-	 * 
-	 * @param configCmdList the configuration listener to add
-	 * 
-	 */
-	public boolean addConfigListener(ConfigListener configCmdList) {
-		logger.debug("New config listener: "+configCmdList.toString());
-		return configListeners.add(configCmdList);
+
+	@Override
+	public boolean addConfigListener(String target, ConfigListener configCmdList) {
+		logger.debug("New config listener: "+configCmdList.toString()+" for target: "+target);
+		return configListeners.put(target, configCmdList) == null;
+	}
+	
+	@Override
+	public boolean removeConfigListener(String target) {
+		logger.debug("removing config listener: "+target);
+		return configListeners.remove(target) != null;
 	}
 	
 	/**
@@ -354,19 +338,14 @@ public class ClientCommunicationManager extends WebSocketServer implements AddLi
 	private void notifyConfigListeners(WebSocket socket, JSONObject cmd) {
 		logger.debug("notify listeners for new configuration event");
 		try {
-			JSONObject value;
+			String target = cmd.getString("TARGET");
 			String command = cmd.getString("CONFIGURATION");
-
-			value = cmd.getJSONObject(command);
+			JSONObject value = cmd.getJSONObject(command);
+			
 			value.put("clientId", socket.hashCode());
 			
-			Iterator<ConfigListener> it = configListeners.iterator();
-			ConfigListener configCommandListener;
-			
-			while(it.hasNext()){
-				configCommandListener = it.next();
-				configCommandListener.onReceivedConfig(command, value);
-			}
+			ConfigListener listener = configListeners.get(target);
+			listener.onReceivedConfig(command, value);
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -381,7 +360,8 @@ public class ClientCommunicationManager extends WebSocketServer implements AddLi
 	/**
 	 * The lister list for components who subscribe for configuration commands.
 	 */
-	ArrayList<ConfigListener> configListeners = new ArrayList<ConfigListener>();
+	HashMap<String, ConfigListener> configListeners = new HashMap<String, ConfigListener>();
+
 	
 }
 

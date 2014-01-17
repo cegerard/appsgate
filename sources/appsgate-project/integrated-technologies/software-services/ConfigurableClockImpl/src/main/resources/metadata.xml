@@ -22,6 +22,6 @@
 
     </implementation>
     
-    <apam-instance name="ConfigurableClockInst" implementation="ConfigurableClockImpl">
-	</apam-instance>
+<!--     <apam-instance name="ConfigurableClockInst" implementation="ConfigurableClockImpl"> -->
+<!-- 	</apam-instance> -->
 </apam>

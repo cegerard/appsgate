@@ -200,12 +200,15 @@
 	</build>
 
 	<modules>
-		<module>core-specifications</module>
+        <module>android-utils</module>      
+	    <module>core-specifications</module>		
 		<module>appsgate-context</module>
 		<module>appsgate-EUDE</module>
 		<module>integrated-technologies</module>
 		<module>communication-components</module>
 		<module>test-components</module>
+		<module>composite-distribution</module>
+		
 	</modules>
 
 	<profiles>

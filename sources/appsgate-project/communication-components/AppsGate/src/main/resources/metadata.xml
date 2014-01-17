@@ -3,16 +3,16 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<implementation name="AppsGateImpl" classname="appsgate.lig.main.impl.Appsgate" specification="AppsGateSpec" singleton="true">
+	<implementation name="AppsGateImpl" classname="appsgate.lig.main.impl.Appsgate" specification="AppsGateSpec" >
 		<callback onInit="newInst" onRemove="deleteInst" />
- 		<relation field="router"/>
-		<relation field="deviceNameTable"/>
-		<relation field="placeManager"/>
-		<relation field="userManager"/>
-		<relation field="interpreter"/>
+ 		<relation field="router" creation="eager" resolve="external"/>
+		<relation field="deviceNameTable" creation="eager" resolve="external"/>
+		<relation field="placeManager" creation="eager" resolve="external"/>
+		<relation field="userManager" creation="eager" resolve="external" />
+		<relation field="interpreter" creation="eager"  resolve="external"/>
 		<ipojo:requires field="httpService"  />
 	</implementation>
 
-	<apam-instance name="AppsGateInst" implementation="AppsGateImpl">
-	</apam-instance>
+<!-- This instance will be started by the Composite Application as its main implem -->
+<!--  <apam-instance name="AppsGateInst" implementation="AppsGateImpl"/>  -->
 </apam>

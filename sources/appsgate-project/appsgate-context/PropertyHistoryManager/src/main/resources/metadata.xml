@@ -19,9 +19,8 @@
 	</implementation>
 
 
-	<apam-instance name="Global-PropertyHistoryManager"
-		implementation="PropertyHistoryManager">
-
-	</apam-instance>
+<!-- 	<apam-instance name="Global-PropertyHistoryManager" -->
+<!-- 		implementation="PropertyHistoryManager"> -->
+<!-- 	</apam-instance> -->
 
 </apam>

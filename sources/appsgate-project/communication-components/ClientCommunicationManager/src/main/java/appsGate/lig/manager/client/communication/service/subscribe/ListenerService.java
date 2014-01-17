@@ -9,7 +9,7 @@ package appsGate.lig.manager.client.communication.service.subscribe;
  * @version 1.0.0
  *
  */
-public interface AddListenerService {
+public interface ListenerService {
 	
 	/**
 	 * This method allow all the caller to subscribe for all commands and events except configuration
@@ -21,10 +21,18 @@ public interface AddListenerService {
 	
 	
 	/**
-	 * This method all the caller to subscribe for all configuration command.
+	 * This method allow the caller to subscribe for all configuration command.
+	 * @param target the target identifier
 	 * @param configListener the listener for subscription
 	 * @return true if the listener is registered, false otherwise
 	 */
-	public boolean addConfigListener(ConfigListener configListener);
+	public boolean addConfigListener(String target, ConfigListener configListener);
+	
+	/**
+	 * This method allow the caller to unsubscribe the specify target for all configuration command.
+	 * @param target the target identifier
+	 * @return true if the listener is unregistered, false otherwise
+	 */
+	public boolean removeConfigListener(String target);
 
 }

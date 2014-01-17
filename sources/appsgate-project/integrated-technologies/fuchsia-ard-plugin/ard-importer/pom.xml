@@ -25,7 +25,7 @@
        <dependency>
             <groupId>org.ow2.chameleon.fuchsia</groupId>
             <artifactId>fuchsia-core</artifactId>
-	    <version>0.0.1</version>
+	        <version>0.0.1</version>
        </dependency>
        <dependency>
             <groupId>org.apache.felix</groupId>
@@ -36,6 +36,11 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.ipojo.annotations</artifactId>
             <version>${ipojo.annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreKeyCardSensorSpec</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -50,7 +55,7 @@
                         <Bundle-SymbolicName>
                             ${project.artifactId}
                         </Bundle-SymbolicName>
-                        <Export-Package/>
+                        <Export-Package>appsgate.ard.aperio,appsgate.ard.base.iface,appsgate.ard.base.callback,appsgate.ard.dao</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

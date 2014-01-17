@@ -174,3 +174,4 @@ sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/
 
 distributions/Appsgate-distribution/felix-cache/*
 sources/appsgate-project/android-utils/CyberGarageAndroidAdapter/target/classes/META-INF/MANIFEST.MF
+/sources/appsgate-project/integrated-technologies/device-mockups/SwingARD/target/

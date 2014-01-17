@@ -141,7 +141,7 @@ public class RouterCommandListener implements CommandListener {
 	@SuppressWarnings("rawtypes")
 	public void loadArguments(JSONArray args, ArrayList<Object> arguments,
 			ArrayList<Class> types) {
-		
+		//TODO
 		try {
 			// Get all arguments types and values
 			int l = args.length();
@@ -151,7 +151,8 @@ public class RouterCommandListener implements CommandListener {
 		
 			while (cpt < l) {
 				JSONObj = args.getJSONObject(cpt);
-				value = JSONObj.getString("value");
+				// This one has been modified : JSONObj.getString("value") not working properly with JSONObjects
+				value = JSONObj.get("value").toString();
 				type = JSONObj.getString("type");
 				addArguments(type, value, arguments, types);
 				cpt++;

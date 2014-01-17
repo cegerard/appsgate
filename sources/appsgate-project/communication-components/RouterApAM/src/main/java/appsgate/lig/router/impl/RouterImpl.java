@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.AddListenerService;
+import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.main.spec.AppsGateSpec;
@@ -46,7 +46,7 @@ public class RouterImpl implements RouterApAMSpec {
 	/**
 	 * Service to be notified when clients send commands
 	 */
-	private AddListenerService addListenerService;
+	private ListenerService addListenerService;
 
 	/**
 	 * Service to communicate with clients
