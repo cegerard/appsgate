@@ -15,7 +15,7 @@
 				<div class="text-header">Hue version</div>
 				<div class="text" id="lightinfo-2-Tile-id">id</div>
 				<div class="text" id="lightinfo-2-Tile-version">swversion</div>
-				<div class="text" id="lightinfo-2-Tile-type">swversion</div>
+				<div class="text" id="lightinfo-2-Tile-type">type</div>
 				<div class="text" ></div>
 			</a>
 	
@@ -24,7 +24,7 @@
 	
 	<div class="panorama-section">
 		<h2>Light state</h2>
-		<div class="tile-column-span-2" id="light-info-tiles">
+		<div class="tile-column-span-4" id="light-state-tiles">
 		
 			<a class="tile square text bg-color-yellow" href="#" id="lightstate-on">
 				<div class="text-header">State</div>
@@ -58,12 +58,12 @@
 			
 			<a class="tile wide text bg-color-green" href="#" id="lightstate-xy">
 				<div class="text-header">x/y</div>
-				<div class="text">X:</div>
 				<div style="padding-top:5px">
+					<div class="text" style="float: left; margin-right: 10px; padding-left: 50px;">X:</div>
 					<input style="width:125px" type="text" placeholder="x value" id="lightstate-x-value">
 				</div>
-				<div class="text">Y:</div>
-				<div style="padding-top:5px">
+				<div style="padding-top:12px">
+					<div class="text" style="float: left; margin-right: 10px; padding-left: 50px;">Y:</div>
 					<input style="width:125px" type="text" placeholder="y value" id="lightstate-y-value">
 				</div>
 			</a>
@@ -77,7 +77,7 @@
 			</a>
 			
 			<a class="tile square text bg-color-green" href="#" id="lightstate-transition">
-				<div class="text-header">Transition</div>
+				<div class="text-header">Speed</div>
 				<div class="text" ></div>
 				<div style="padding-top:5px">
 					<input style="width:125px" type="text" placeholder="transition time" id="lightstate-tt-value">
@@ -88,10 +88,11 @@
 				<div class="text-header">Alert</div>
 				<div class="text" ></div>
 				<div style="padding-top:5px">
-					<select name="alert-list" id="lightstate-alert-value">
+					<select style="width:125px" name="alert-list" id="lightstate-alert-value">
   						<option>none</option>
  						<option>select</option>
  						<option>lselect</option>
+ 						<option>unknown</option>
 					</select> 
 				</div>
 			</a>
@@ -100,10 +101,12 @@
 				<div class="text-header">Mode</div>
 				<div class="text" ></div>
 				<div style="padding-top:5px">
-					<select name="mode-list" id="lightstate-mode-value">
+					<select style="width:125px" name="mode-list" id="lightstate-mode-value">
   						<option>hs</option>
  						<option>xy</option>
  						<option>ct</option>
+ 						<option>none</option>
+ 						<option>unknown</option>
 					</select> 
 				</div>
 			</a>
@@ -112,9 +115,10 @@
 				<div class="text-header">Effect</div>
 				<div class="text" ></div>
 				<div style="padding-top:5px">
-					<select name="mode-list" id="lightstate-effect-value">
+					<select style="width:125px" name="mode-list" id="lightstate-effect-value">
   						<option>none</option>
  						<option>colorloop</option>
+ 						<option>unknown</option>
 					</select> 
 				</div>
 			</a>

@@ -81,7 +81,99 @@ define([], function () {
 				}
 			
 			} else if (message.hasOwnProperty("lightClickedState")) {
-				//TODO update light tiles
+				var lightInfo = message.lightClickedState;
+				var currentState = lightInfo.state;
+				
+				//Set light info
+				var element = document.getElementById("lightinfo-1-Tile-header");
+				element.innerHTML = lightInfo.name;
+				element = document.getElementById("lightinfo-1-Tile-id");
+				element.innerHTML = "ID: "+lightInfo.lightId;
+				element = document.getElementById("lightinfo-1-Tile-brId");
+				element.innerHTML = "ID on bridge: "+lightInfo.bridgeLightId;
+				element = document.getElementById("lightinfo-1-Tile-reachable");
+				element.innerHTML = "reachable: "+currentState.reachable;
+				
+				element = document.getElementById("lightinfo-2-Tile-id");
+				element.innerHTML = "model id: "+lightInfo.modelid;
+				element = document.getElementById("lightinfo-2-Tile-version");
+				element.innerHTML = "version: "+lightInfo.swversion;
+				
+				element = document.getElementById("lightinfo-2-Tile-type");
+				element.innerHTML = "type: "+lightInfo.type;
+				
+				//Set light state
+				element = document.getElementById("lightstate-on-value");
+				if(currentState.on == "true") {
+					element.innerHTML = "ON";
+					element = document.getElementById("lightstate-on");
+					element.className = "tile square text bg-color-yellow";
+				}else {
+					element.innerHTML = "OFF";
+					element = document.getElementById("lightstate-on");
+					element.className = "tile square text bg-color-darken";
+				}
+				
+				element = document.getElementById("lightstate-hue-value");
+				element.value = currentState.hue;
+				
+				element = document.getElementById("lightstate-sat-value");
+				element.value = currentState.sat;
+				
+				element = document.getElementById("lightstate-bri-value");
+				element.value = currentState.bri;
+				
+				element = document.getElementById("lightstate-ct-value");
+				element.value = currentState.ct;
+				
+				element = document.getElementById("lightstate-tt-value");
+				element.value = currentState.transitionTime;
+				
+				element = document.getElementById("lightstate-x-value");
+				element.value = currentState.x;
+				
+				element = document.getElementById("lightstate-y-value");
+				element.value = currentState.y;
+				
+				element = document.getElementById("lightstate-alert-value");
+				if(currentState.alert == "ALERT_NONE"){
+					element.value = "none";
+				}else if(currentState.alert == "ALERT_SELECT"){
+					element.value = "select";
+				}else if(currentState.alert == "ALERT_LSELECT"){
+					element.value = "lselect";
+				}else {
+					element.value = "unknown";
+				}
+				
+				element = document.getElementById("lightstate-mode-value");
+				if(currentState.colorMode == "COLORMODE_CT"){
+					element.value = "ct";
+				}else if(currentState.colorMode == "COLORMODE_HUE_SATURATION"){
+					element.value = "hs";
+				}else if(currentState.colorMode == "COLORMODE_XY"){
+					element.value = "xy";
+				}else if(currentState.colorMode == "COLORMODE_NONE"){
+					element.value = "none";
+				}else {
+					element.value = "unknown";
+				}
+				
+				element = document.getElementById("lightstate-effect-value");
+				if(currentState.effect == "EFFECT_NONE"){
+					element.value = "none";
+				}else if(currentState.alert == "EFFECT_COLORLOOP"){
+					element.value = "colorloop";
+				}else {
+					element.value = "unknown";
+				}
+				
+				//Set action methods
+				element = document.getElementById("lightstate-on");
+				var call = eval({"method":"toggle", "args":[], "objectId":lightInfo.lightId, "callId":"HUE-cf-light"});
+				element.setAttribute("onclick", "javascript:appsgateMain.sendCmd("+JSON.stringify(call)+");");
+
+				
 			
 			} else if (message.hasOwnProperty("hueToastAlert")) {
 				var hueAlert = message.hueToastAlert;
@@ -344,7 +436,7 @@ define([], function () {
 			httpRequest.send();
 			
 			//Display the next sub menu and update the navigation bar
-			appsgateMain.gotToNextSubMenu("light-"+bridge+"-"+light, httpRequest.responseText);
+			appsgateMain.gotToNextSubMenu("light-"+light, httpRequest.responseText);
 				
 			//fill the tile with bridge information
 			var call = eval({"CONFIGURATION":"getLightClickedState", "getLightClickedState":{"bridge":bridge, "id":light}, "TARGET":"PHILIPSHUE"});
