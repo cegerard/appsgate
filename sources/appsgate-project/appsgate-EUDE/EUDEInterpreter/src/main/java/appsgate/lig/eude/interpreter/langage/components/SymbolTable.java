@@ -1,9 +1,11 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokSymbolTableException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeFunctionDefinition;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +18,7 @@ public final class SymbolTable {
 
     private final HashMap<String, SpokVariable> variables;
     private final HashMap<String, NodeFunctionDefinition> functions;
+    private final List<String> varNames;
 
     /**
      * Constructor
@@ -23,15 +26,16 @@ public final class SymbolTable {
     public SymbolTable() {
         variables = new HashMap<String, SpokVariable>();
         functions = new HashMap<String, NodeFunctionDefinition>();
+        varNames = new ArrayList<String>();
     }
 
     /**
      * Constructor
      *
      * @param jsonArray
-     * @throws NodeException
+     * @throws SpokException
      */
-    public SymbolTable(JSONArray jsonArray) throws NodeException {
+    public SymbolTable(JSONArray jsonArray) throws SpokException {
         this();
         this.buildFromJson(jsonArray);
     }
@@ -39,33 +43,34 @@ public final class SymbolTable {
     /**
      *
      * @param jsonArray
-     * @throws NodeException
+     * @throws SpokException
      */
-    public void buildFromJson(JSONArray jsonArray) throws NodeException {
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject vJson;
-            try {
-                vJson = jsonArray.getJSONObject(i);
-                String varName = vJson.optString("var_name");
-                if (varName != null) {
-                    if (variables.get(varName) != null) {
-                        throw new NodeException("Symbol Table", "The var_name has already been used in the same scope: " + varName, null);
-                    }
-                    variables.put(varName, new SpokVariable(vJson));
-                } else {
-                    String functName = vJson.optString("func_name");
-                    if (functName != null) {
-                        if (functions.get(functName) != null) {
-                            throw new NodeException("Symbol Table", "The func_name has already been used in the same scope: " + functName, null);
+    public void buildFromJson(JSONArray jsonArray) throws SpokException {
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject vJson;
+                try {
+                    vJson = jsonArray.getJSONObject(i);
+                    String varName = vJson.optString("var_name");
+                    if (varName != null) {
+                        if (variables.get(varName) != null) {
+                            throw new SpokSymbolTableException("The var_name has already been used in the same scope: " + varName, null);
                         }
-                        functions.put(functName, new NodeFunctionDefinition(vJson, null));
+                        addVariable(varName, new SpokVariable(vJson));
+                    } else {
+                        String functName = vJson.optString("func_name");
+                        if (functName != null) {
+                            if (functions.get(functName) != null) {
+                                throw new SpokSymbolTableException("The func_name has already been used in the same scope: " + functName, null);
+                            }
+                            addFunction(functName, new NodeFunctionDefinition(vJson, null));
+                        }
                     }
+                } catch (JSONException ex) {
+                    LOGGER.error("Reading a Json array and not finding item {}", i);
                 }
-            } catch (JSONException ex) {
-                LOGGER.error("Reading a Json array and not finding item {}", i);
             }
         }
-
     }
 
     /**
@@ -79,7 +84,7 @@ public final class SymbolTable {
         SpokVariable e = new SpokVariable(id, type);
         if (this.getVariableKey(e) == null) {
             String keyVal = type.substring(0, 3) + "_" + variables.size();
-            variables.put(keyVal, e);
+            addVariable(keyVal, e);
         }
         return e;
     }
@@ -87,14 +92,14 @@ public final class SymbolTable {
     /**
      *
      * @param varName
-     * @param id
-     * @param type
+     * @param var
      * @return the new variable created
      */
-    public SpokVariable addVariable(String varName, String id, String type) {
-        SpokVariable v = new SpokVariable(id, type);
-        variables.put(varName, v);
-        return v;
+    public SpokVariable addVariable(String varName, SpokVariable var) {
+        variables.put(varName, var);
+        varNames.add(varName);
+        return var;
+
     }
 
     /**
@@ -130,6 +135,7 @@ public final class SymbolTable {
     public SpokVariable getVariableByKey(String key) {
         return variables.get(key);
     }
+
     /**
      *
      * @param key
@@ -145,12 +151,12 @@ public final class SymbolTable {
      * @param functionName the name of the function
      * @param f the function
      * @return the function added in the Symbol table
-     * @throws NodeException if function name is already in use
+     * @throws SpokSymbolTableException if function name is already in use
      */
     public NodeFunctionDefinition addFunction(String functionName, NodeFunctionDefinition f)
-            throws NodeException {
+            throws SpokSymbolTableException {
         if (functions.get(functionName) != null) {
-            throw new NodeException("Symbol Table", "Function name already exists for this context", null);
+            throw new SpokSymbolTableException("Function name already exists for this context", null);
         }
         functions.put(functionName, f);
         return f;
@@ -173,8 +179,8 @@ public final class SymbolTable {
         return ret;
     }
 
-    public Set<String> getVarList() {
-        return variables.keySet();
+    public List<String> getVarList() {
+        return varNames;
     }
 
 }

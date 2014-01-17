@@ -5,7 +5,9 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.junit.Before;
 
@@ -23,8 +25,8 @@ public class NodeSeqAndRulesTest extends NodeTest {
     public void setUp() {
         try {
             this.instance = new NodeSeqAndRules(new JSONArray(), null);
-        } catch (NodeException ex) {
-            System.out.println("JSON ex:" + ex.getMessage());
+        } catch (SpokNodeException ex) {
+            Logger.getLogger(NodeSeqAndRulesTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,6 +9,8 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +48,9 @@ public class NodeExpBool extends Node {
      *
      * @param expBoolJSON JSON representation of the node
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public NodeExpBool(JSONArray expBoolJSON, Node parent) throws NodeException {
+    public NodeExpBool(JSONArray expBoolJSON, Node parent) throws SpokNodeException {
         super(parent);
 
         // instantiate each sequence and store it in the list
@@ -57,7 +59,7 @@ public class NodeExpBool extends Node {
             try {
                 listSeqAndBool.add(new NodeSeqAndBool(expBoolJSON.getJSONArray(i), this));
             } catch (JSONException ex) {
-                throw new NodeException("NodeExpBool", "item " + i, ex);
+                throw new SpokNodeException("NodeExpBool", "item " + i, ex);
             }
         }
 
@@ -68,16 +70,16 @@ public class NodeExpBool extends Node {
 
     /**
      * private Constructor to copy
+     *
      * @param interpreter
-     * @param parent 
+     * @param parent
      */
     private NodeExpBool(Node parent) {
         super(parent);
     }
-    
 
     @Override
-    public void specificStop() throws SpokException{
+    public void specificStop() throws SpokException {
         for (NodeSeqAndBool n : listSeqAndBool) {
             n.removeEndEventListener(this);
             n.stop();
@@ -100,7 +102,7 @@ public class NodeExpBool extends Node {
             result = false;
             for (NodeSeqAndBool n : listSeqAndBool) {
                 try {
-                    result = result || n.getResult();
+                    result = result || n.getBooleanResult();
                 } catch (Exception ex) {
                     LOGGER.error(ex.getMessage());
                 }
@@ -119,7 +121,7 @@ public class NodeExpBool extends Node {
      * @return
      */
     @Override
-    public Integer call() {
+    public JSONObject call() {
         // fire the start event
         fireStartEvent(new StartEvent(this));
         setStarted(true);
@@ -139,12 +141,12 @@ public class NodeExpBool extends Node {
     /**
      *
      * @return the result
-     * @throws Exception if the result is null
+     * @throws SpokExecutionException if the result is null
      */
-    public Boolean getResult() throws Exception {
+    public Boolean getBooleanResult() throws SpokExecutionException {
         // throw an exception if the result has not already been computed
         if (result == null) {
-            throw new Exception("Result is not computed yet");
+            throw new SpokExecutionException("Result is not computed yet");
         }
 
         return result;
@@ -153,6 +155,11 @@ public class NodeExpBool extends Node {
     @Override
     public String toString() {
         return "[Node ExpBool: [" + listSeqAndBool.size() + "]]";
+    }
+
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -178,7 +185,7 @@ public class NodeExpBool extends Node {
         ret.setSymbolTable(this.getSymbolTable());
         ret.result = result;
         ret.listSeqAndBool = new ArrayList<NodeSeqAndBool>();
-        for (NodeSeqAndBool n:listSeqAndBool) {
+        for (NodeSeqAndBool n : listSeqAndBool) {
             ret.listSeqAndBool.add((NodeSeqAndBool) n.copy(ret));
         }
         return ret;

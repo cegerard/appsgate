@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import java.util.concurrent.Callable;
 
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public abstract class Node implements Callable<Integer>, StartEventGenerator, StartEventListener, EndEventGenerator, EndEventListener {
+public abstract class Node implements Callable<JSONObject>, StartEventGenerator, StartEventListener, EndEventGenerator, EndEventListener {
 
     /**
      * Logger
@@ -87,6 +87,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 
     /**
      * Stop the interpretation of the node. Check if the node is not started
+     *
      * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokException
      */
     public void stop() throws SpokException {
@@ -103,18 +104,17 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
 
     /**
      * This method is called by the stop method
+     *
      * @throws SpokException
      */
     abstract protected void specificStop() throws SpokException;
+    
+    @Override
+    abstract public JSONObject call() throws SpokException;
 
     @Override
     public void startEventFired(StartEvent e) {
         LOGGER.trace("The start event has been fired: " + e.toString());
-    }
-
-    @Override
-    public void endEventFired(EndEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
@@ -190,18 +190,11 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
         endEventListeners.remove(listener);
     }
 
-
     /**
      *
      * @return
      */
     public abstract String getExpertProgramScript();
-
-    @Override
-    public Integer call() {
-        return null;
-    }
-
 
     /**
      *
@@ -253,13 +246,13 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param jsonObj
      * @param jsonParam
      * @return the string corresponding to the jsonParam
-     * @throws NodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON Object
      */
-    protected String getJSONString(JSONObject jsonObj, String jsonParam) throws NodeException {
+    protected String getJSONString(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
             return jsonObj.getString(jsonParam);
         } catch (JSONException ex) {
-            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
     }
 
@@ -269,13 +262,13 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param jsonObj
      * @param jsonParam
      * @return the array corresponding to the jsonParam
-     * @throws NodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON Object
      */
-    protected JSONArray getJSONArray(JSONObject jsonObj, String jsonParam) throws NodeException {
+    protected JSONArray getJSONArray(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
             return jsonObj.getJSONArray(jsonParam);
         } catch (JSONException ex) {
-            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
 
     }
@@ -286,13 +279,13 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param jsonObj
      * @param jsonParam
      * @return the object corresponding to the jsonParam
-     * @throws NodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON Object
      */
-    protected JSONObject getJSONObject(JSONObject jsonObj, String jsonParam) throws NodeException {
+    protected JSONObject getJSONObject(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
             return jsonObj.getJSONObject(jsonParam);
         } catch (JSONException ex) {
-            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
 
     }
@@ -386,7 +379,8 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      *
      * @param s the symbol table to populate
      */
-    abstract protected void collectVariables(SymbolTable s);
+    protected void collectVariables(SymbolTable s) {
+    }
 
     /**
      * Method to copy a node and the rules behind
@@ -394,5 +388,45 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param parent
      */
     abstract Node copy(Node parent);
+
+    /**
+     * Method to get the JSONDescription of a node from its implementation
+     *
+     * @return
+     */
+    abstract JSONObject getJSONDescription();
+
+    /**
+     * Must be overridden
+     *
+     * @return
+     * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokException
+     */
+    public JSONObject getResult() throws SpokException {
+        return null;
+    }
+
+    /**
+     *
+     * @param aClass
+     * @param parent
+     * @return
+     */
+    protected Node findNode(Class aClass, Node parent) {
+        if(parent == null) {
+            return null;
+        }
+        if (parent.getClass() == aClass) {
+            return parent;
+        }
+        return findNode(aClass, parent.parent);
+    }
+
+    void setVariable(String name, SpokVariable v) {
+        if(symbolTable == null) {
+            symbolTable = new SymbolTable();
+        }
+        symbolTable.addVariable(name, v);
+    }
 
 }

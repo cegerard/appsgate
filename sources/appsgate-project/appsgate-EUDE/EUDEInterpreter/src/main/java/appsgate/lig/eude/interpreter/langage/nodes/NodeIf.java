@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -44,9 +44,9 @@ public class NodeIf extends Node {
      *
      * @param ruleIfJSON JSON representation of the node
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public NodeIf(JSONObject ruleIfJSON, Node parent) throws NodeException {
+    public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokNodeException {
         super(parent);
 
         this.expBool = new NodeExpBool(getJSONArray(ruleIfJSON, "expBool"), this);
@@ -74,7 +74,7 @@ public class NodeIf extends Node {
         if (nodeEnded == expBool) {
             try {
 
-                if (expBool.getResult()) {// launch the "true" branch if expBool returned true...
+                if (expBool.getBooleanResult()) {// launch the "true" branch if expBool returned true...
                     seqRulesTrue.addEndEventListener(this);
                     seqRulesTrue.call();
 
@@ -99,7 +99,7 @@ public class NodeIf extends Node {
      * @return
      */
     @Override
-    public Integer call() {
+    public JSONObject call() {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         expBool.addEndEventListener(this);
@@ -121,6 +121,11 @@ public class NodeIf extends Node {
     @Override
     public String toString() {
         return "[node If:" + expBool.toString() + "?" + seqRulesTrue.toString() + ":" + seqRulesFalse.toString() + "]";
+    }
+    
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

@@ -9,7 +9,7 @@ package appsgate.lig.eude.interpreter.langage.exceptions;
  *
  * @author jr
  */
-public class NodeException extends SpokException {
+public class SpokNodeException extends SpokException {
 
     private static final long serialVersionUID = -8848996955176059448L;
 
@@ -19,7 +19,7 @@ public class NodeException extends SpokException {
      * @param jsonParam
      * @param ex
      */
-    public NodeException(String name, String jsonParam, Exception ex) {
+    public SpokNodeException(String name, String jsonParam, Exception ex) {
         super("Missing parameter [" + jsonParam + "] for " + name, ex);
     }
 

@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -43,7 +43,7 @@ public class NodeIfTest extends NodeTest {
             this.instance = this.ifTest;
         } catch (JSONException ex) {
             System.out.println("JSON ex : " + ex.getMessage());
-        } catch (NodeException ex) {
+        } catch (SpokNodeException ex) {
             System.out.println(ex.getMessage());
         }
     }

@@ -5,7 +5,9 @@
  */
 package appsgate.lig.eude.interpreter.langage.components;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokSymbolTableException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -42,16 +44,20 @@ public class SpokVariable {
     /**
      *
      * @param obj
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public SpokVariable(JSONObject obj) throws NodeException {
-        try {
-            this.id = obj.getString("id");
-            this.type = obj.getString("type");
-            this.json = obj;
-        } catch (JSONException ex) {
-            throw new NodeException("Variable", "The variable cannot be init correctly, missing parameter", ex);
-        }
+    public SpokVariable(JSONObject obj) throws SpokException {
+        this.id = obj.optString("id");
+        this.type = obj.optString("type");
+        this.json = obj;
+        checkVariable();
+    }
+
+    public SpokVariable(String v_name, JSONObject jsonVariable) throws SpokException {
+        this.id = v_name;
+        this.type = jsonVariable.optString("type");
+        this.json = jsonVariable;
+        checkVariable();
     }
 
     /**
@@ -125,8 +131,9 @@ public class SpokVariable {
     }
 
     /**
-     * Method to get the variables of a list, if the variable is not a list,
-     * it returns null
+     * Method to get the variables of a list, if the variable is not a list, it
+     * returns null
+     *
      * @return a list of Variable or null
      */
     public List<SpokVariable> getElements() {
@@ -141,9 +148,24 @@ public class SpokVariable {
         } catch (JSONException ex) {
             LOGGER.error("list without a list");
             return null;
-        } catch (NodeException ex) {
+        } catch (SpokException ex) {
             LOGGER.error("The variable was not well formed");
             return null;
+        }
+    }
+
+    /**
+     * Method that check the availability of the variable, which must have a
+     * type and an id
+     *
+     * @throws SpokSymbolTableException
+     */
+    private void checkVariable() throws SpokSymbolTableException {
+        if (id == null || id.isEmpty()) {
+            throw new SpokSymbolTableException("Variable has no id", null);
+        }
+        if (type == null || type.isEmpty()) {
+            throw new SpokSymbolTableException("Variable has no type", null);
         }
     }
 

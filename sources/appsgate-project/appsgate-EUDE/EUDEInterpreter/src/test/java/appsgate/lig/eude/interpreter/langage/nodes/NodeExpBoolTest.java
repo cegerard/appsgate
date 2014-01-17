@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONArray;
 import org.junit.Before;
 
@@ -27,7 +27,7 @@ public class NodeExpBoolTest extends NodeTest {
         try {
             this.expBoolTest = new NodeExpBool(array, null);
             this.instance = this.expBoolTest;
-        } catch (NodeException ex) {
+        } catch (SpokNodeException ex) {
             System.out.println(ex.getMessage());
         }
 

@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -46,7 +46,7 @@ public class NodeEventTest extends NodeTest {
             this.instance = this.eventTest;
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
-        } catch (NodeException ex) {
+        } catch (SpokNodeException ex) {
             System.out.println(ex.getMessage());
         }
     }

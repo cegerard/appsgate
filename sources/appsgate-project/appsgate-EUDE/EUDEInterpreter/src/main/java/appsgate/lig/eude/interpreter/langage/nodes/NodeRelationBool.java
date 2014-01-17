@@ -1,11 +1,10 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +66,9 @@ public class NodeRelationBool extends Node {
      *
      * @param relationBoolJSON JSON representation of the node
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public NodeRelationBool(JSONObject relationBoolJSON, Node parent) throws NodeException {
+    public NodeRelationBool(JSONObject relationBoolJSON, Node parent) throws SpokNodeException {
         super(parent);
 
         // operator
@@ -85,7 +84,7 @@ public class NodeRelationBool extends Node {
             leftValue = null;
         } else {
             leftReturnType = getJSONString(operand, "type");
-            leftValue = parseValue(getJSONString(operand, "value"), leftReturnType);
+            leftValue = parseValue(operand, leftReturnType);
 
         }
 
@@ -97,7 +96,7 @@ public class NodeRelationBool extends Node {
             rightValue = null;
         } else {
             rightReturnType = getJSONString(operand, "type");
-            rightValue = parseValue(getJSONString(operand, "value"), rightReturnType);
+            rightValue = parseValue(operand, rightReturnType);
         }
 
         result = null;
@@ -124,7 +123,7 @@ public class NodeRelationBool extends Node {
      * @return
      */
     @Override
-    public Integer call() {
+    public JSONObject call() {
         // fire the start event
         fireStartEvent(new StartEvent((this)));
         setStarted(true);
@@ -211,19 +210,19 @@ public class NodeRelationBool extends Node {
      * @return the new value, null if no type has been recognized or if the obj
      * is null
      */
-    private Object parseValue(Object obj, String type) {
+    private Object parseValue(JSONObject obj, String type) {
         if (obj == null) {
             LOGGER.warn("A null value has been parsed");
             return null;
         }
         if (type.equals("number")) {
-            return new Double((obj.toString()));
+            return obj.optDouble("value");
         } else if (type.equals("boolean")) {
-            return Boolean.valueOf(obj.toString());
+            return obj.optBoolean("value");
         } else if (type.equals("string")) {
-            return (String) obj;
+            return obj.optString("value");
         }
-        LOGGER.warn("A null value has been parsed");
+        LOGGER.warn("Type unknown ({}), null has been returned", type);
         return null;
     }
 
@@ -233,7 +232,7 @@ public class NodeRelationBool extends Node {
      * @return true or false according to the result of the boolean relation
      * @throws java.lang.Exception
      */
-    public boolean getResult() throws Exception {
+    public boolean getBooleanResult() throws Exception {
         if (result != null) {
             return result;
         }
@@ -243,6 +242,11 @@ public class NodeRelationBool extends Node {
     @Override
     public String toString() {
         return "[Node RelationBool: '" + leftReturnType + "'" + operator + "'" + rightReturnType + "]";
+    }
+    
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -267,10 +271,6 @@ public class NodeRelationBool extends Node {
             return "\"" + val.toString() + "\"";
         }
 
-    }
-
-    @Override
-    protected void collectVariables(SymbolTable s) {
     }
 
     @Override

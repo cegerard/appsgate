@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import org.json.JSONObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +57,9 @@ public class NodeSeqRules extends Node {
      *
      * @param seqRulesJSON JSON array containing the rules
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public NodeSeqRules(JSONArray seqRulesJSON, Node parent) throws NodeException {
+    public NodeSeqRules(JSONArray seqRulesJSON, Node parent) throws SpokNodeException {
         super(parent);
 
         seqAndRules = new ArrayList<NodeSeqAndRules>();
@@ -68,7 +69,7 @@ public class NodeSeqRules extends Node {
             try {
                 seqAndRulesJSON = seqRulesJSON.getJSONArray(i);
             } catch (JSONException ex) {
-                throw new NodeException("NodeSeqRules", "item " + i, ex);
+                throw new SpokNodeException("NodeSeqRules", "item " + i, ex);
             }
             if (seqAndRulesJSON.length() > 0) {
                 seqAndRules.add(new NodeSeqAndRules(seqAndRulesJSON, this));
@@ -96,7 +97,7 @@ public class NodeSeqRules extends Node {
     }
 
     @Override
-    public Integer call() {
+    public JSONObject call() {
         idCurrentSeqAndRules = 0;
         setStarted(true);
         fireStartEvent(new StartEvent(this));
@@ -147,14 +148,14 @@ public class NodeSeqRules extends Node {
 
     @Override
     public String toString() {
-
         return "[Node SeqRules: [" + seqAndRules.size() + "]]";
     }
+    
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getExpertProgramScript() {
         if (seqAndRules.size() == 1) {
@@ -175,9 +176,6 @@ public class NodeSeqRules extends Node {
         }
     }
 
-    void initSymbolTableFromParams(JSONArray params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     Node copy(Node parent) {

@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -38,9 +38,9 @@ public class NodeSeqAndRules extends Node {
 
     /**
      * private constructor to copy nodes
-     * 
+     *
      * @param interpreter
-     * @param p 
+     * @param p
      */
     private NodeSeqAndRules(Node p) {
         super(p);
@@ -51,9 +51,9 @@ public class NodeSeqAndRules extends Node {
      *
      * @param seqAndRulesJSON
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public NodeSeqAndRules(JSONArray seqAndRulesJSON, Node parent) throws NodeException {
+    public NodeSeqAndRules(JSONArray seqAndRulesJSON, Node parent) throws SpokNodeException {
         super(parent);
 
         rules = new ArrayList<Node>();
@@ -63,7 +63,7 @@ public class NodeSeqAndRules extends Node {
             try {
                 ruleJSON = seqAndRulesJSON.getJSONObject(i);
             } catch (JSONException ex) {
-                throw new NodeException("NodeSeqAndRules", "item " + i, ex);
+              throw new SpokNodeException("NodeSeqAndRules", "item " + i, ex);
             }
             String nodeType = getJSONString(ruleJSON, "type");
             if (nodeType.equals("NodeAction")) {
@@ -74,6 +74,12 @@ public class NodeSeqAndRules extends Node {
                 rules.add(new NodeWhen(ruleJSON, this));
             } else if (nodeType.equals("seqRules")) {
                 rules.add(new NodeSeqRules(getJSONArray(ruleJSON, "rule"), this));
+            } else if (nodeType.equals("assignation")) {
+                rules.add(new NodeVariableAssignation(ruleJSON, this));
+            } else if (nodeType.equals("NodeReturn")) {
+                rules.add(new NodeReturn(ruleJSON, this));
+            } else if (nodeType.equals("functionCall")) {
+                rules.add(new NodeFunction(ruleJSON, this));
             } else {
                 LOGGER.warn("The type [{}] is not supported by the parser", nodeType);
             }
@@ -82,13 +88,18 @@ public class NodeSeqAndRules extends Node {
     }
 
     @Override
-    public Integer call() {
+    public JSONObject call() {
         // no rules are done
         nbRulesEnded = 0;
         setStarted(true);
         for (Node n : rules) {
             n.addEndEventListener(this);
-            n.call();
+            try {
+                n.call();
+            } catch (SpokException ex) {
+                LOGGER.error("An exception has been raised: " + ex);
+                break;
+            }
             if (isStopping()) {
                 break;
             }
@@ -116,8 +127,12 @@ public class NodeSeqAndRules extends Node {
 
     @Override
     public String toString() {
-
         return "[Node SeqAndRules: [" + rules.size() + "]]";
+    }
+
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

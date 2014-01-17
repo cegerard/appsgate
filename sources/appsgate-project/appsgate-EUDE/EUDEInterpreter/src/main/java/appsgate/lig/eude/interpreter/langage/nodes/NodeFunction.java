@@ -1,10 +1,13 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import java.util.List;
 import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class NodeFunction extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeFunction.class);
 
     /**
      * Sequence of rules to interpret
@@ -44,23 +47,25 @@ public class NodeFunction extends Node {
         name = n;
         functionDef = def;
         params = par;
+        setSymbolTable(new SymbolTable());
 
     }
 
     /**
      * Initialize the program from a JSON object
      *
-     * @param interpreter
      * @param programJSON Abstract tree of the program in JSON
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public NodeFunction(EUDEInterpreterImpl interpreter, JSONObject programJSON, Node parent)
-            throws NodeException {
+    public NodeFunction(JSONObject programJSON, Node parent)
+            throws SpokNodeException {
         super(parent);
         name = getJSONString(programJSON, "id");
         functionDef = this.getFunctionByName(name);
         params = programJSON.optJSONArray("params");
+        setSymbolTable(new SymbolTable());
+
     }
 
     /**
@@ -80,11 +85,21 @@ public class NodeFunction extends Node {
      * @return integer
      */
     @Override
-    public Integer call() {
-        LOGGER.debug("The function {} has been called.", this);
+    public JSONObject call() {
         if (functionDef != null) {
-            rules = functionDef.getCode(params, this);
-            rules.call();
+            LOGGER.debug("The function {} has been called.", this);
+            try {
+                rules = functionDef.getCode(this);
+                initSymbolTable();
+                rules.call();
+            } catch (SpokException ex) {
+                LOGGER.error("Unable to copy this function: {}", this);
+                return ex.getJSON();
+            }
+        } else {
+            LOGGER.error("Unable to find the definition of this function: {}", this);
+            SpokExecutionException ex = new SpokExecutionException("Unable to find the definition of this function");
+            return ex.getJSON();
         }
         return null;
     }
@@ -113,16 +128,17 @@ public class NodeFunction extends Node {
         return "[Node Function : " + name + "]";
     }
 
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * @return the script of a program, more readable than the json structure
      */
     @Override
     public String getExpertProgramScript() {
         return name + "(" + this.getStringParams() + ")\n";
-    }
-
-    @Override
-    protected void collectVariables(SymbolTable s) {
     }
 
     /**
@@ -187,5 +203,16 @@ public class NodeFunction extends Node {
         }
         NodeFunction ret = new NodeFunction(parent, name, functionDef, copyParams);
         return ret;
+    }
+
+    private void initSymbolTable() throws SpokException {
+        SymbolTable symbolTable = functionDef.getSymbolTable();
+        List<String> varList = symbolTable.getVarList();
+        int i = 0;
+        for (String v_name : varList) {
+            JSONObject jsonVariable = (JSONObject) params.opt(i);
+            SpokVariable v = new SpokVariable(v_name, jsonVariable);
+            this.getSymbolTable().addVariable(v_name, v);
+        }
     }
 }

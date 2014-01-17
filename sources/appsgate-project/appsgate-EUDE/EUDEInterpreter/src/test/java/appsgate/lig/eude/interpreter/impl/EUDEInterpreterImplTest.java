@@ -13,7 +13,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -255,10 +255,10 @@ public class EUDEInterpreterImplTest {
      * Test of addNodeListening method, of class EUDEInterpreterImpl.
      *
      * @throws org.json.JSONException
-     * @throws NodeException
+     * @throws SpokNodeException
      */
     @Test
-    public void testAddNodeListening() throws JSONException, NodeException {
+    public void testAddNodeListening() throws JSONException, SpokNodeException {
         System.out.println("addNodeListening");
         JSONObject ruleJSON = new JSONObject();
         ruleJSON.put("sourceType", "test");
@@ -274,10 +274,10 @@ public class EUDEInterpreterImplTest {
      * Test of removeNodeListening method, of class EUDEInterpreterImpl.
      *
      * @throws org.json.JSONException
-     * @throws NodeException
+     * @throws SpokNodeException
      */
     @Test
-    public void testRemoveNodeListening() throws JSONException, NodeException {
+    public void testRemoveNodeListening() throws JSONException, SpokNodeException {
         System.out.println("removeNodeListening");
         JSONObject ruleJSON = new JSONObject();
         ruleJSON.put("sourceType", "test");

@@ -57,10 +57,10 @@ public class NodeAction extends Node {
      *
      * @param ruleJSON the JSON Object
      * @param parent
-     * @throws NodeException if the interpretation of JSON fails
+     * @throws SpokNodeException if the interpretation of JSON fails
      */
     public NodeAction(JSONObject ruleJSON, Node parent)
-            throws NodeException {
+            throws SpokNodeException {
         super(parent);
 
         targetType = getJSONString(ruleJSON, "targetType");
@@ -87,7 +87,7 @@ public class NodeAction extends Node {
     }
 
     @Override
-    public Integer call() {
+    public JSONObject call() {
         LOGGER.debug("##### Action call [{}]!", methodName);
         fireStartEvent(new StartEvent(this));
         setStarted(true);
@@ -194,9 +194,10 @@ public class NodeAction extends Node {
      * @return an object containing the return of a command, null if no command
      * has been passed
      */
-    public Object getResult() {
+    @Override
+    public JSONObject getResult() {
         if (command != null) {
-            return command.getReturn();
+            return new JSONObject(command.getReturn());
         } else {
             return null;
         }
@@ -217,6 +218,11 @@ public class NodeAction extends Node {
     public String toString() {
         return "[Node Action: " + methodName + " on " + targetId + "]";
 
+    }
+    
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

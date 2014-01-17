@@ -64,7 +64,7 @@ public class SymbolTableTest {
         String type = "";
         SymbolTable instance = new SymbolTable();
         SpokVariable expResult = new SpokVariable(id, type);
-        SpokVariable result = instance.addVariable(varName, id, type);
+        SpokVariable result = instance.addVariable(varName, new SpokVariable(id, type));
         assertTrue(expResult.equals(result));
     }
 

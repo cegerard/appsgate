@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.junit.Before;
 import static org.junit.Assert.*;
 
@@ -23,7 +23,7 @@ public class NodeActionTest extends NodeTest {
         try {
             this.actionTest = new NodeAction(ruleJSON, null);
             this.instance = this.actionTest;
-        } catch (NodeException ex) {
+        } catch (SpokNodeException ex) {
             System.out.println("JSon Exception: " + ex);
         }
     }

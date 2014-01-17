@@ -23,14 +23,12 @@ import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
-import java.util.logging.Level;
 
 /**
  * This class is the interpreter component for end user development environment.
@@ -116,7 +114,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
                 }
             } catch (JSONException e) {
                 LOGGER.warn("JSONException: {}", e.getMessage());
-            } catch (NodeException e) {
+            } catch (SpokException e) {
                 LOGGER.warn(e.getMessage());
             }
         }
@@ -150,7 +148,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         // initialize a program node from the JSON
         try {
             p = new NodeProgram(this, programJSON);
-        } catch (NodeException e) {
+        } catch (SpokException e) {
             LOGGER.error("Node error detected while loading a program: {}", e.getMessage());
             LOGGER.debug(e.getCause().getMessage());
             return false;
@@ -258,14 +256,14 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     @Override
     public boolean callProgram(String programId) {
         NodeProgram p = mapPrograms.get(programId);
-        int calledStatus = -1;
+        JSONObject calledStatus = null;
 
         if (p != null) {
             p.addEndEventListener(this);
             calledStatus = p.call();
         }
 
-        return (calledStatus == 1);
+        return (calledStatus != null);
     }
 
     @Override

@@ -5,12 +5,13 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,8 @@ import org.junit.Test;
  */
 public class NodeFunctionDefinitionTest extends NodeTest {
 
+    private NodeFunctionDefinition node;
+    
     @Before
     @Override
     public void setUp() {
@@ -29,8 +32,10 @@ public class NodeFunctionDefinitionTest extends NodeTest {
             ruleJSON.put("name", "test");
             ruleJSON.put("seqRules", new JSONArray());
             ruleJSON.put("seqDefinitions", new JSONArray());
-            this.instance = new NodeFunctionDefinition(ruleJSON, null);
-        } catch (NodeException ex) {
+            this.node = new NodeFunctionDefinition(ruleJSON, null);
+            this.instance = this.node;
+            
+        } catch (SpokException ex) {
             Logger.getLogger(NodeFunctionTest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
             Logger.getLogger(NodeFunctionTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -40,7 +45,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
 
     @Override
     public void testGetSymbolTable() {
-        assertNotNull(this.instance.getSymbolTable());
+        assertNotNull(this.node.getSymbolTable());
     }
     
     @Test
@@ -48,6 +53,13 @@ public class NodeFunctionDefinitionTest extends NodeTest {
         NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/testFunction.json"), null);
         assertNotNull(defNode);
         System.out.println(defNode.getExpertProgramScript());
+        NodeSeqRules code = defNode.getCode(instance);
+        Assert.assertNotNull(code);
+    }
+    
+    @Test
+    public void testGetCode() throws Exception {
+        assertNotNull(this.node.getCode(instance));
     }
 
 }

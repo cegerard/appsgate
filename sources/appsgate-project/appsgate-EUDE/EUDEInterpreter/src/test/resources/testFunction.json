@@ -15,12 +15,23 @@
             "id": "v3",
             "var_name": "v3"}
     ],
-    "seqRules": [ [
-        {
-            "type": "NodeAction",
-            "targetType": "variable",
-            "targetId": "v",
-            "methodName": "do",
-            "action": ""}
-    ]]
+    "seqRules": [[
+            {
+                "type": "assignation",
+                "name": "v",
+                "value": {
+                    "type": "number",
+                    "value": "12.5"
+                }
+            },
+            {
+                "type": "NodeReturn",
+                "returnExp": "v",
+                "returnValue": {
+                    "type": "variable",
+                    "id": "v"
+                }
+            }
+
+        ]]
 }

@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.Collection;
 import org.json.JSONException;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class NodeWhenTest extends NodeTest {
             this.instance = new NodeWhen(this.ruleJSON, null);
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
-        } catch (NodeException ex) {
+        } catch (SpokNodeException ex) {
             System.out.println(ex.getMessage());
         }
 

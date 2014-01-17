@@ -7,17 +7,13 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.Collection;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.jmock.Mockery;
@@ -29,9 +25,11 @@ import org.jmock.lib.legacy.ClassImposteriser;
  */
 public abstract class NodeTest {
 
-    protected Mockery context = new Mockery(){{
-        setImposteriser(ClassImposteriser.INSTANCE);
-    }};
+    protected Mockery context = new Mockery() {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
     protected Node instance;
     protected JSONObject ruleJSON;
     protected EUDEInterpreterImpl interpreter;
@@ -39,14 +37,6 @@ public abstract class NodeTest {
     public NodeTest() {
         this.interpreter = context.mock(EUDEInterpreterImpl.class);
 
-    }
-
-    @BeforeClass
-    public static void setUpClass() {   
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Before
@@ -65,91 +55,28 @@ public abstract class NodeTest {
 
     }
 
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of stop method, of class NodeAction.
      *
      * @throws Exception
      */
     @Test
-    public void testStop() throws Exception{
+    public void testStop() throws Exception {
         System.out.println("stop");
         this.instance.stop();
     }
 
     /**
      * Test of call method, of class NodeAction.
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testCall() throws Exception {
         System.out.println("call");
-        Integer expResult = null;
-        Integer result = this.instance.call();
+        JSONObject expResult = null;
+        JSONObject result = this.instance.call();
         assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of fireStartEvent method, of class Node.
-     */
-    @Test
-    public void testFireStartEvent() {
-        System.out.println("fireStartEvent");
-        StartEvent e = new StartEvent(this.instance);
-        this.instance.fireStartEvent(e);
-    }
-
-    /**
-     * Test of fireEndEvent method, of class Node.
-     */
-    @Test
-    public void testFireEndEvent() {
-        System.out.println("fireEndEvent");
-        EndEvent e = new EndEvent(this.instance);
-        this.instance.fireEndEvent(e);
-    }
-
-    /**
-     * Test of addStartEventListener method, of class Node.
-     */
-    @Test
-    public void testAddStartEventListener() {
-        System.out.println("addStartEventListener");
-        StartEventListener listener = this.instance;
-        this.instance.addStartEventListener(listener);
-    }
-
-    /**
-     * Test of removeStartEventListener method, of class Node.
-     */
-    @Test
-    public void testRemoveStartEventListener() {
-        System.out.println("removeStartEventListener");
-        StartEventListener listener = this.instance;
-        this.instance.removeStartEventListener(listener);
-    }
-
-    /**
-     * Test of addEndEventListener method, of class Node.
-     */
-    @Test
-    public void testAddEndEventListener() {
-        System.out.println("addEndEventListener");
-        EndEventListener listener = this.instance;
-        this.instance.addEndEventListener(listener);
-    }
-
-    /**
-     * Test of removeEndEventListener method, of class Node.
-     */
-    @Test
-    public void testRemoveEndEventListener() {
-        System.out.println("removeEndEventListener");
-        EndEventListener listener = null;
-        this.instance.removeEndEventListener(listener);
     }
 
     /**
@@ -183,4 +110,31 @@ public abstract class NodeTest {
         this.instance.endEventFired(e);
     }
 
+    @Test
+    public void testGetInterpreter() {
+        System.out.println("GetInterpreter");
+        try {
+            this.instance.getInterpreter();
+            fail("Should raise an exception");
+        } catch (SpokExecutionException ex) {
+            System.out.println("Exception catched");
+        }
+    }
+
+    @Test
+    public void testGetResult() throws Exception {
+        System.out.println("GetInterpreter");
+        assertNull(this.instance.getResult());
+    }
+    
+    @Test
+    public void testGetJSONDescription() {
+        System.out.println("GetJSONDescription");
+        try {
+            this.instance.getJSONDescription();
+            fail("It is not supposed to be supported right now");
+        } catch (UnsupportedOperationException e) {
+            System.out.println("Exception catched");
+        }
+    }
 }

@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -116,10 +116,10 @@ public class NodeProgram extends Node {
      *
      * @param interpreter
      * @param programJSON Abstract tree of the program in JSON
-     * @throws NodeException
+     * @throws SpokNodeException
      */
     public NodeProgram(EUDEInterpreterImpl interpreter, JSONObject programJSON)
-            throws NodeException {
+            throws SpokException {
         this(interpreter);
 
         // initialize the program with the JSON
@@ -128,7 +128,6 @@ public class NodeProgram extends Node {
         update(programJSON);
     }
 
-    
     @Override
     public EUDEInterpreterImpl getInterpreter() {
         return this.interpreter;
@@ -140,9 +139,9 @@ public class NodeProgram extends Node {
      * @param jsonProgram the new source code
      *
      * @return true if the source code has been updated, false otherwise
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public final boolean update(JSONObject jsonProgram) throws NodeException {
+    public final boolean update(JSONObject jsonProgram) throws SpokException {
 
         this.programJSON = jsonProgram;
         userInputSource = getJSONString(programJSON, "userInputSource");
@@ -152,12 +151,12 @@ public class NodeProgram extends Node {
 //        author = getJSONString(source, "author");
 //        target = getJSONString(source, "target");
 
-        this.setSymbolTable(new SymbolTable(getJSONArray(source, "seqDefinitions")));
+        this.setSymbolTable(new SymbolTable(source.optJSONArray("seqDefinitions")));
         if (source.has("daemon")) {
             try {
                 daemon = source.getBoolean("daemon");
             } catch (JSONException ex) {
-                throw new NodeException("NodeProgram", "daemon", ex);
+                throw new SpokNodeException("NodeProgram", "daemon", ex);
             }
         } else {
             daemon = false;
@@ -179,14 +178,20 @@ public class NodeProgram extends Node {
      * @return integer
      */
     @Override
-    public Integer call() {
+    public JSONObject call() {
+        JSONObject ret = new JSONObject();
         if (runningState != RUNNING_STATE.PAUSED) {
             fireStartEvent(new StartEvent(this));
             seqRules.addStartEventListener(this);
             seqRules.addEndEventListener(this);
             // seqRulesThread = pool.submit(seqRules);
             seqRules.call();
-            return 1;
+            try {
+                ret.put("status", true);
+            } catch (JSONException ex) {
+                LOGGER.warn("Unable to set the status to true for program: {}", this);
+            }
+            return ret;
         } else {
             // TODO restart from previous state
             // synchronized(pauseMutex) {
@@ -194,11 +199,11 @@ public class NodeProgram extends Node {
             // return 1;
             // }
         }
-        return -1;
+        return null;
     }
 
     @Override
-    public void stop() throws SpokException{
+    public void stop() throws SpokException {
         if (runningState == RUNNING_STATE.STARTED && !isStopping()) {
             LOGGER.debug("Stoping program {}", this);
             setStopping(true);
@@ -304,13 +309,13 @@ public class NodeProgram extends Node {
 
     /**
      * @return the JSON source of the program
-     * @throws NodeException if there is no source for the program
+     * @throws SpokNodeException if there is no source for the program
      */
-    public JSONObject getJSONSource() throws NodeException {
+    public JSONObject getJSONSource() throws SpokNodeException {
         try {
             return programJSON.getJSONObject("source");
         } catch (JSONException ex) {
-            throw new NodeException("NodeProgram", "source", ex);
+            throw new SpokNodeException("NodeProgram", "source", ex);
         }
     }
 
@@ -332,6 +337,11 @@ public class NodeProgram extends Node {
     @Override
     public String toString() {
         return "[Node Program : " + name + "]";
+    }
+
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -374,8 +384,9 @@ public class NodeProgram extends Node {
         ret.programJSON = new JSONObject(programJSON);
         try {
             boolean update = ret.update(programJSON);
-        } catch (NodeException ex) {
+        } catch (SpokException ex) {
             LOGGER.error("Unable to copy the program", ex);
+            return null;
         }
         return ret;
     }

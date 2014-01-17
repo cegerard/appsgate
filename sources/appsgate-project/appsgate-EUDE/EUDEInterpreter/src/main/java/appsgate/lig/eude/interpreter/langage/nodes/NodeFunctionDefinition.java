@@ -5,15 +5,15 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import java.util.Iterator;
-import java.util.Set;
-import org.json.JSONArray;
-import org.json.JSONException;
+import java.util.List;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -21,22 +21,23 @@ import org.json.JSONObject;
  */
 public class NodeFunctionDefinition extends Node {
 
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeFunctionDefinition.class);
+
     private String name;
     private NodeSeqRules seqRules;
 
     /**
      *
-     * @param interpreter
      * @param programJSON
      * @param parent
-     * @throws NodeException
-     * @throws JSONException
+     * @throws SpokNodeException
      */
     public NodeFunctionDefinition(JSONObject programJSON, Node parent)
-            throws NodeException, JSONException {
+            throws SpokException {
         super(parent);
         this.name = programJSON.optString("id");
-        this.setSymbolTable(new SymbolTable(programJSON.getJSONArray("seqDefinitions")));
+        this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions")));
         this.seqRules = new NodeSeqRules(programJSON.optJSONArray("seqRules"), this);
     }
 
@@ -52,7 +53,7 @@ public class NodeFunctionDefinition extends Node {
     public String getExpertProgramScript() {
         String ret = "function " + this.name + "(";
         // Build the parameter list
-        Set<String> s = this.getSymbolTable().getVarList();
+        List<String> s = this.getSymbolTable().getVarList();
         if (s != null && !s.isEmpty()) {
 
             Iterator<String> iter = s.iterator();
@@ -66,30 +67,26 @@ public class NodeFunctionDefinition extends Node {
         return ret;
     }
 
-    /**
-     * do nothing, the symbol are defined inside the function
-     * 
-     * @param s the symbolic table to populate
-     */
-    @Override
-    protected void collectVariables(SymbolTable s) {
-    }
-
     @Override
     public void endEventFired(EndEvent e) {
-        
+
     }
 
     /**
-     * 
-     * @param params
+     *
      * @param parent
-     * @return 
+     * @return
+     * @throws SpokException
      */
-    NodeSeqRules getCode(JSONArray params, Node parent) {
+    public NodeSeqRules getCode(Node parent)
+            throws SpokException {
         NodeSeqRules newRules = (NodeSeqRules) seqRules.copy(parent);
-        newRules.initSymbolTableFromParams(params);
         return newRules;
+    }
+    
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -98,6 +95,12 @@ public class NodeFunctionDefinition extends Node {
         ret.name = name;
         ret.seqRules = (NodeSeqRules) seqRules.copy(ret);
         return ret;
+    }
+
+    @Override
+    public JSONObject call() {
+        LOGGER.warn("Trying to call a non functional node");
+        return null;
     }
 
 }

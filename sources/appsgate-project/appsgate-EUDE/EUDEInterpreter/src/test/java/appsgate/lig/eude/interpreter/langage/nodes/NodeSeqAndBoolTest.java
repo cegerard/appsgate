@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import junit.framework.Assert;
 import org.json.JSONArray;
 import org.junit.Before;
@@ -28,14 +28,14 @@ public class NodeSeqAndBoolTest extends NodeTest {
         try {
             this.seqTest = new NodeSeqAndBool(new JSONArray(), null);
             this.instance = this.seqTest;
-        } catch (NodeException ex) {
+        } catch (SpokNodeException ex) {
             System.out.println(ex.getMessage());
         }
 
     }
 
     /**
-     * Test of getResult method, of class NodeSeqAndBool.
+     * Test of getBooleanResult method, of class NodeSeqAndBool.
      *
      * @throws java.lang.Exception
      */
@@ -43,7 +43,7 @@ public class NodeSeqAndBoolTest extends NodeTest {
     public void testGetResult() throws Exception {
         System.out.println("getResult");
         try {
-            Boolean result = this.seqTest.getResult();
+            Boolean result = this.seqTest.getBooleanResult();
             Assert.fail("An exception is supposed to have been raised, instead a result has been returned: " + result);
         } catch (Exception e) {
             Assert.assertNotNull(e);

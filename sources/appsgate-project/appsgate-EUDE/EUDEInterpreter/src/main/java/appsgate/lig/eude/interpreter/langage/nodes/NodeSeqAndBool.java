@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +46,10 @@ public class NodeSeqAndBool extends Node {
      *
      * @param seqAndBoolJSON JSON representation of the node
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
     public NodeSeqAndBool(JSONArray seqAndBoolJSON, Node parent)
-            throws NodeException {
+            throws SpokNodeException {
         super(parent);
 
         // instantiate each boolean relation and store in the list
@@ -58,7 +59,7 @@ public class NodeSeqAndBool extends Node {
             try {
                 relBoolJSON = seqAndBoolJSON.getJSONObject(i);
             } catch (JSONException ex) {
-                throw new NodeException("NodeSeqAndBool", "item " + i, ex);
+                throw new SpokNodeException("NodeSeqAndBool", "item " + i, ex);
             }
             relationsBool.add(new NodeRelationBool(relBoolJSON, this));
             if (isStopping()) {
@@ -92,7 +93,7 @@ public class NodeSeqAndBool extends Node {
      * @return null
      */
     @Override
-    public Integer call() {
+    public JSONObject call() {
         // fire the start event
         fireStartEvent(new StartEvent(this));
         setStarted(true);
@@ -118,7 +119,7 @@ public class NodeSeqAndBool extends Node {
         Boolean r = true;
         for (NodeRelationBool n : relationsBool) {
             try {
-                r = r && n.getResult();
+                r = r && n.getBooleanResult();
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage());
                 return false;
@@ -149,18 +150,23 @@ public class NodeSeqAndBool extends Node {
     /**
      *
      * @return the result
-     * @throws Exception if no result has been computed
+     * @throws SpokExecutionException if no result has been computed
      */
-    public Boolean getResult() throws Exception {
+    public Boolean getBooleanResult() throws SpokExecutionException {
         if (result != null) {
             return result;
         }
-        throw new Exception("result has not been computed yet");
+        throw new SpokExecutionException("result has not been computed yet");
     }
 
     @Override
     public String toString() {
         return "[Node SeqAndBool: [" + relationsBool.size() + "]]";
+    }
+    
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

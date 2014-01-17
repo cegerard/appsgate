@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -48,9 +48,9 @@ public class NodeWhen extends Node {
      *
      * @param ruleWhenJSON
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws NodeException {
+    public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws SpokNodeException {
         super(parent);
         seqEvent = new ArrayList<NodeEvent>();
         JSONArray seqEventJSON = getJSONArray(ruleWhenJSON, "events");
@@ -58,7 +58,7 @@ public class NodeWhen extends Node {
             try {
                 seqEvent.add(new NodeEvent(seqEventJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
-                throw new NodeException("NodeSeqEvent", "item " + i, ex);
+                throw new SpokNodeException("NodeSeqEvent", "item " + i, ex);
             }
         }
 
@@ -78,7 +78,7 @@ public class NodeWhen extends Node {
     }
 
     @Override
-    public Integer call() {
+    public JSONObject call() {
         LOGGER.debug("Call {}", this);
         if (!isStarted()) {
             nbEventEnded = 0;
@@ -130,6 +130,11 @@ public class NodeWhen extends Node {
     @Override
     public String toString() {
         return "[Node When: events(" + seqEvent.toString() + "), rules(" + seqRules + ")]";
+    }
+    
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

@@ -5,28 +5,24 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import org.json.JSONArray;
 import org.junit.Before;
 
 /**
  *
  * @author jr
  */
-public class NodeSeqRulesTest extends NodeTest {
-
-    public NodeSeqRulesTest() {
-    }
+public class NodeReturnTest extends NodeTest {
 
     @Before
     @Override
     public void setUp() {
+        super.setUp();
         try {
-            this.instance = new NodeSeqRules(new JSONArray(), null);
-        } catch (SpokNodeException ex) {
-            System.out.println("JSON ex: " + ex.getMessage());
+            // A NodeReturn must have a function as a parent
+            this.instance = new NodeReturn(new NodeFunction("test", null, null));
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
     }
 
 }

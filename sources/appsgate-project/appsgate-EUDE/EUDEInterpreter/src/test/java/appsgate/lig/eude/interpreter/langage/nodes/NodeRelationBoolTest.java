@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import java.util.Collection;
 import junit.framework.Assert;
@@ -46,13 +46,13 @@ public class NodeRelationBoolTest extends NodeTest {
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
 
-        } catch (NodeException ex) {
+        } catch (SpokNodeException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
     /**
-     * Test of getResult method, of class NodeRelationBool.
+     * Test of getBooleanResult method, of class NodeRelationBool.
      *
      * @throws java.lang.Exception
      */
@@ -60,7 +60,7 @@ public class NodeRelationBoolTest extends NodeTest {
     public void testGetResult() throws Exception {
         System.out.println("getResult");
         try {
-            Boolean result = this.relationTest.getResult();
+            Boolean result = this.relationTest.getBooleanResult();
             Assert.fail("An exception is supposed to have been raised, instead a result has been returned: " + result);
         } catch (Exception e) {
             Assert.assertNotNull(e);
@@ -79,7 +79,7 @@ public class NodeRelationBoolTest extends NodeTest {
             ac = new NodeAction(this.ruleJSON, null);
             EndEvent e = new EndEvent(ac);
             this.relationTest.endEventFired(e);
-        } catch (NodeException ex) {
+        } catch (SpokNodeException ex) {
             System.out.println("NodeException ex: " + ex.getMessage());
             Assert.fail("unable to create a NodeAction for test");
         }

@@ -5,10 +5,13 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.Collection;
+import junit.framework.Assert;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONException;
@@ -57,7 +60,7 @@ public class NodeProgramTest extends NodeTest {
             this.instance = this.programTest;
         } catch (JSONException ex) {
             System.out.println("JSON Ex : " + ex.getMessage());
-        } catch (NodeException ex) {
+        } catch (SpokException ex) {
             System.out.println(ex.getMessage());
         }
     }
@@ -105,7 +108,6 @@ public class NodeProgramTest extends NodeTest {
         NodeProgram.RUNNING_STATE result = this.programTest.getRunningState();
         assertEquals(expResult, result);
     }
-
 
     /**
      * Test of update method, of class NodeProgram.
@@ -162,11 +164,12 @@ public class NodeProgramTest extends NodeTest {
     @Override
     public void testCall() throws Exception {
         System.out.println("call");
-        Integer expResult = 1;
-        Integer result = this.instance.call();
-        assertEquals(expResult, result);
+
+        JSONObject result = this.instance.call();
+        assertNotNull(result);
     }
-        /**
+
+    /**
      * Test of getSymbolTable method, of class Node.
      */
     @Test
@@ -176,5 +179,16 @@ public class NodeProgramTest extends NodeTest {
         SymbolTable result = this.instance.getSymbolTable();
         assertNotNull(result);
     }
-
+    
+    @Test
+    @Override
+    public void testGetInterpreter() {
+        System.out.println("GetInterpreter");
+        try {
+            EUDEInterpreterImpl i = this.instance.getInterpreter();
+            Assert.assertNotNull(i);
+        } catch (SpokExecutionException ex) {
+            fail("Should not have raised an exception");
+        }
+    }
 }

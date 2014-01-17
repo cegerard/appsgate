@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import appsgate.lig.eude.interpreter.langage.exceptions.NodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -67,9 +67,9 @@ public class NodeEvent extends Node {
      *
      * @param eventJSON JSON representation of the event
      * @param parent
-     * @throws NodeException
+     * @throws SpokNodeException
      */
-    public NodeEvent(JSONObject eventJSON, Node parent) throws NodeException {
+    public NodeEvent(JSONObject eventJSON, Node parent) throws SpokNodeException {
         super(parent);
         sourceType = getJSONString(eventJSON, "sourceType");
         sourceId = getJSONString(eventJSON, "sourceId");
@@ -79,7 +79,7 @@ public class NodeEvent extends Node {
     }
 
     @Override
-    public Integer call() {
+    public JSONObject call() {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         EUDEInterpreterImpl interpreter;
@@ -149,6 +149,11 @@ public class NodeEvent extends Node {
     @Override
     public String toString() {
         return "[Node Event on " + sourceId + "]";
+    }
+    
+    @Override
+    JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
