@@ -160,6 +160,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 					lightObj.put("swversion", light.getVersionNumber());
 					lightObj.put("lightId", bc.getMacAddress()+"-"+light.getIdentifier());
 					lightObj.put("bridgeLightId", light.getIdentifier());
+					lightObj.put("bridgeIp", bc.getIpAddress());
 					jsonResponse.put(lightObj);
 				}
 			}
@@ -274,6 +275,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		JSONObject jsonResponse = getLightState(light);
 		try {
 			jsonResponse.put("lightId", bridge.getResourceCache().getBridgeConfiguration().getMacAddress()+"-"+light.getIdentifier());
+			jsonResponse.put("bridgeIp", bridgeIP);
 		} catch (JSONException e) {e.printStackTrace();}
 		return jsonResponse;
 	}
@@ -394,7 +396,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				state.setColorMode(PHLightColorMode.COLORMODE_NONE);
 			}else if(value.contentEquals("xy")) {
 				state.setColorMode(PHLightColorMode.COLORMODE_XY);
-			}else if(value.contentEquals("cu")) {
+			}else if(value.contentEquals("unknown")) {
 				state.setColorMode(PHLightColorMode.COLORMODE_UNKNOWN);
 			}else {
 				return false;
@@ -454,7 +456,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 						state.setColorMode(PHLightColorMode.COLORMODE_NONE);
 					}else if(colorMode.contentEquals("xy")) {
 						state.setColorMode(PHLightColorMode.COLORMODE_XY);
-					}else if(colorMode.contentEquals("cu")) {
+					}else if(colorMode.contentEquals("unknown")) {
 						state.setColorMode(PHLightColorMode.COLORMODE_UNKNOWN);
 					}
 				}else{
@@ -466,6 +468,32 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			}
 		}
 			
+		bridge.updateLightState(light, state);
+		return true;
+	}
+	
+	/**Set the xy parameter for HUE lights
+	 * @param bridgeIP the bridge that manage the light
+	 * @param id the light id on the bridge
+	 * @param attribute the attribute as a string
+	 * @param x the x value
+	 * @param y the y value
+	 * @return true if the parameters are set, false otherwise
+	 */
+	public boolean setXY(String bridgeIP, String id, String attribute, float x, float y) {
+		
+		PHBridge bridge = getBridgeFromIp(bridgeIP);
+		PHLight light = getLightFromId(bridge, id);
+		
+		PHLightState state = new PHLightState();
+
+		if(attribute.contentEquals("xy")) {
+			state.setX(x);
+			state.setY(y);
+		}else{
+			return false;
+		}
+		
 		bridge.updateLightState(light, state);
 		return true;
 	}

@@ -91,6 +91,23 @@ public class PhilipsHUEBridgeConfigListener implements ConfigListener {
 				
 			} catch (JSONException e) {e.printStackTrace();}
 			
+		}else if (cmd.equalsIgnoreCase("setHUEAttribute")) {
+			String attribute = obj.getString("attribute");
+			String bridgeIp = obj.getString("bridgeIp");
+			String objectId = obj.getString("objectId");
+			String lightId = objectId.split("-")[1];
+			if(attribute.contentEquals("ct")) {
+				long value = Long.valueOf(obj.getString("ct"));
+				PhilipsAdapter.setAttribute(bridgeIp, lightId, attribute, value);
+			} else if (attribute.contentEquals("colormode")) {
+				String value = obj.getString("colormode");
+				PhilipsAdapter.setAttribute(bridgeIp, lightId, attribute, value);
+			} else if (attribute.contentEquals("xy")) {
+				float x = Float.parseFloat(Double.toString(obj.getDouble("x")));
+				float y = Float.parseFloat(Double.toString(obj.getDouble("y")));
+				PhilipsAdapter.setXY(bridgeIp, lightId, attribute, x, y);
+			}
+			
 		}else if (cmd.equalsIgnoreCase("pushlinkSync")) {
 			PhilipsAdapter.startPushLinkAuthentication(obj.getString("ip"));
 		}else if (cmd.equalsIgnoreCase("findNewLights")) {
