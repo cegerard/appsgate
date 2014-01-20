@@ -32,7 +32,7 @@ public class NodeSelect extends Node {
     @Override
     public void endEventFired(EndEvent e) {
     }
-    
+
     @Override
     Node copy(Node parent) {
         NodeSelect ret = new NodeSelect(parent);
@@ -47,10 +47,10 @@ public class NodeSelect extends Node {
         // depending on the what and the where of the context, it return the correct values
         return null;
     }
-    
+
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new JSONObject();
     }
 
 }

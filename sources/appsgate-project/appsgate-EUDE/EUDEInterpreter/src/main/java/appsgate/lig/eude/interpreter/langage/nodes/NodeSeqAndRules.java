@@ -132,9 +132,22 @@ public class NodeSeqAndRules extends Node {
 
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Should use the getJSONArrayDescription instead.");
     }
 
+    public JSONArray getJSONArrayDescription() {
+            JSONArray a = new JSONArray();
+        int i = 0;
+        for (Node n : this.rules) {
+            try {
+                a.put(i, n.getJSONDescription());
+                i++;
+            } catch (JSONException ex) {
+            }
+        }
+        return a;
+    }
+    
     @Override
     public String getExpertProgramScript() {
         String ret = "";

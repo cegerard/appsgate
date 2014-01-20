@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import java.util.Iterator;
 import java.util.List;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,10 @@ public class NodeFunctionDefinition extends Node {
         this.seqRules = new NodeSeqRules(programJSON.optJSONArray("seqRules"), this);
     }
 
+    /**
+     * private constructor to copy method
+     * @param parent
+     */
     private NodeFunctionDefinition(Node parent) {
         super(parent);
     }
@@ -49,6 +54,13 @@ public class NodeFunctionDefinition extends Node {
     protected void specificStop() {
     }
 
+    /**
+     * @return the name of the function
+     */
+    public String getName() {
+        return name;
+    }
+    
     @Override
     public String getExpertProgramScript() {
         String ret = "function " + this.name + "(";
@@ -83,10 +95,18 @@ public class NodeFunctionDefinition extends Node {
         NodeSeqRules newRules = (NodeSeqRules) seqRules.copy(parent);
         return newRules;
     }
-    
+
     @Override
-    JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public JSONObject getJSONDescription() {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("id", this.name);
+            o.put("seqRules", seqRules.getJSONArrayDescription());
+            o.put("seqDefinitions", getSymbolTable().getJSONDescription());
+            return o;
+        } catch (JSONException ex) {
+            return null; 
+        }
     }
 
     @Override
@@ -102,5 +122,6 @@ public class NodeFunctionDefinition extends Node {
         LOGGER.warn("Trying to call a non functional node");
         return null;
     }
+
 
 }

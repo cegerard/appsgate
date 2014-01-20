@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.logging.Level;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,13 +67,17 @@ public class NodeReturn extends Node {
 
     @Override
     Node copy(Node parent) {
-        NodeReturn ret = new NodeReturn(parent);
-        ret.returnExp = this.returnExp;
-        if (returnNode != null) {
-            ret.returnNode = this.returnNode.copy(parent);
+        try {
+            NodeReturn ret = new NodeReturn(parent);
+            ret.returnExp = this.returnExp;
+            if (returnNode != null) {
+                ret.returnNode = this.returnNode.copy(parent);
+            }
+            ret.returnValue = new JSONObject(returnValue.toString());
+            return ret;
+        } catch (JSONException ex) {
+            return null;
         }
-        ret.returnValue = new JSONObject(returnValue);
-        return ret;
     }
 
     @Override
@@ -99,6 +104,7 @@ public class NodeReturn extends Node {
             SpokExecutionException ex = new SpokExecutionException("Unable to find a function node to this function.");
             return ex.getJSON();
         }
+        addEndEventListener(functionParent);
 
         if (returnNode != null) {
             try {
@@ -117,7 +123,19 @@ public class NodeReturn extends Node {
 
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JSONObject o = new JSONObject();
+        try {
+            if (returnNode != null) {
+                o.put("functionNode", returnNode);
+            }
+            if (returnValue != null) {
+                o.put("returnValue", returnValue);
+            }
+            o.put("returnExp", returnExp);
+
+        } catch (JSONException ex) {
+        }
+        return o;
     }
 
 }

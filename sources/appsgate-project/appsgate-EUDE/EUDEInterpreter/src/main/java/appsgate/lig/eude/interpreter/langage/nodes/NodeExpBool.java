@@ -103,7 +103,7 @@ public class NodeExpBool extends Node {
             for (NodeSeqAndBool n : listSeqAndBool) {
                 try {
                     result = result || n.getBooleanResult();
-                } catch (Exception ex) {
+                } catch (SpokExecutionException ex) {
                     LOGGER.error(ex.getMessage());
                 }
             }
@@ -158,8 +158,25 @@ public class NodeExpBool extends Node {
     }
 
     @Override
-    JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Should use the getJSONArrayDescription instead.");
+    }
+
+    /**
+     *
+     * @return
+     */
+    public JSONArray getJSONArrayDescription() {
+        JSONArray a = new JSONArray();
+        int i = 0;
+        for (NodeSeqAndBool n : this.listSeqAndBool) {
+            try {
+                a.put(i, n.getJSONDescription());
+                i++;
+            } catch (JSONException ex) {
+            }
+        }
+        return a;
     }
 
     @Override

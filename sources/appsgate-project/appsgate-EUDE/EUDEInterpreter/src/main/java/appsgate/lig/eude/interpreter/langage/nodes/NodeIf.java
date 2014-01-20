@@ -7,6 +7,8 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +84,7 @@ public class NodeIf extends Node {
                     seqRulesFalse.addEndEventListener(this);
                     seqRulesFalse.call();
                 }
-            } catch (Exception ex) {
+            } catch (SpokExecutionException ex) {
                 LOGGER.error(ex.getMessage());
             }
             // the true branch or the false one has completed - nothing to do more
@@ -125,7 +127,15 @@ public class NodeIf extends Node {
     
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                JSONObject o = new JSONObject();
+        try {
+            o.put("expBool", expBool.getJSONArrayDescription());
+            o.put("seqRulesTrue", seqRulesTrue.getJSONArrayDescription());
+            o.put("seqRulesFalse", seqRulesTrue.getJSONArrayDescription());
+        } catch (JSONException jSONException) {
+        }
+        return o;
+
     }
 
     @Override

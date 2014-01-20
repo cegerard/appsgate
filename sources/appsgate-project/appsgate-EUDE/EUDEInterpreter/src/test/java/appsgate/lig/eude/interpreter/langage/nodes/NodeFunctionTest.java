@@ -2,6 +2,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
+import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -40,11 +41,17 @@ public class NodeFunctionTest extends NodeTest {
     public void testBuildNodeFromJson() throws Exception {
         NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/testFunction.json"), null);
         assertNotNull(defNode);
-        JSONArray p = new JSONArray("[{'type':'variable', 'value':'12'}, {'type':'boolean', 'value':'true'}, {'type':'string', 'value':'c'}]");
+        JSONArray p = new JSONArray("[{'type':'number', 'value':'40'}, {'type':'boolean', 'value':'true'}, {'type':'string', 'value':'c'}]");
         NodeFunction func = new NodeFunction("test", defNode, p);
         assertNotNull(func);
         System.out.println(func.getExpertProgramScript());
         Assert.assertEquals(null, func.call());
+        SpokVariable v1 = func.getVariableByName("v1");
+        Assert.assertNotNull(v1);
+        System.out.println(v1);
+        JSONObject result = func.getResult();
+        System.out.println(result);
+        Assert.assertNotNull(result);
     }
 
     @Test

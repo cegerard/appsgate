@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,10 +244,40 @@ public class NodeRelationBool extends Node {
     public String toString() {
         return "[Node RelationBool: '" + leftReturnType + "'" + operator + "'" + rightReturnType + "]";
     }
-    
+
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JSONObject o = new JSONObject();
+        try {
+            o.put("operator", operator);
+
+            JSONObject leftOperand;
+            if (leftNodeAction != null) {
+                leftOperand = leftNodeAction.getJSONDescription();
+
+            } else {
+                leftOperand = new JSONObject();
+
+                leftOperand.put("type", leftReturnType);
+                leftOperand.put(leftReturnType, leftValue);
+            }
+            o.put("leftOperand", leftOperand);
+            JSONObject rightOperand;
+            if (rightNodeAction != null) {
+                rightOperand = rightNodeAction.getJSONDescription();
+
+            } else {
+                rightOperand = new JSONObject();
+
+                rightOperand.put("type", rightReturnType);
+                rightOperand.put(rightReturnType, rightValue);
+            }
+            o.put("rightOperand", rightOperand);
+
+        } catch (JSONException jSONException) {
+        }
+        return o;
+
     }
 
     @Override

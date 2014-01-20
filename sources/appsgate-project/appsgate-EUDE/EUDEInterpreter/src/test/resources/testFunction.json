@@ -4,8 +4,8 @@
     "seqDefinitions": [
         {
             "type": "variable",
-            "id": "v",
-            "var_name": "v"},
+            "id": "v1",
+            "var_name": "v1"},
         {
             "type": "variable",
             "id": "v2",
@@ -18,7 +18,7 @@
     "seqRules": [[
             {
                 "type": "assignation",
-                "name": "v",
+                "name": "v1",
                 "value": {
                     "type": "number",
                     "value": "12.5"

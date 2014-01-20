@@ -168,5 +168,24 @@ public class SpokVariable {
             throw new SpokSymbolTableException("Variable has no type", null);
         }
     }
+    
+    /**
+     * @return the json description of the variable
+     */
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("id", id);
+            o.put("type", type);
+        } catch (JSONException ex) {
+        }
+        return o;
+    }
+    
+    @Override
+    public String toString() {
+        return "[var "+ this.id+ ", " + type + ": + " + this.json.toString() + "]";
+        
+    }
 
 }

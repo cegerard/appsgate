@@ -29,7 +29,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
     public void setUp() {
         super.setUp();
         try {
-            ruleJSON.put("name", "test");
+            ruleJSON.put("id", "test");
             ruleJSON.put("seqRules", new JSONArray());
             ruleJSON.put("seqDefinitions", new JSONArray());
             this.node = new NodeFunctionDefinition(ruleJSON, null);

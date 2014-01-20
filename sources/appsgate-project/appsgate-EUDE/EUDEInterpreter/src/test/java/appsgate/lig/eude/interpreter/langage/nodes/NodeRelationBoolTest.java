@@ -31,13 +31,11 @@ public class NodeRelationBoolTest extends NodeTest {
         super.setUp();
         try {
             JSONObject op = new JSONObject();
-            op.put("targetId", "test");
-            op.put("returnType", "test");
-            op.put("targetType", "test");
+            op.put("targetId", "p0");
+            op.put("returnType", "boolean");
+            op.put("targetType", "program");
             op.put("methodName", "test");
             op.put("args", (Collection) null);
-            op.put("type", "string");
-            op.put("value", "test");
             ruleJSON.put("operator", "test");
             ruleJSON.put("leftOperand", op);
             ruleJSON.put("rightOperand", op);
@@ -57,6 +55,7 @@ public class NodeRelationBoolTest extends NodeTest {
      * @throws java.lang.Exception
      */
     @Test
+    @Override
     public void testGetResult() throws Exception {
         System.out.println("getResult");
         try {
@@ -76,7 +75,17 @@ public class NodeRelationBoolTest extends NodeTest {
         System.out.println("endEventFired");
         NodeAction ac;
         try {
-            ac = new NodeAction(this.ruleJSON, null);
+            JSONObject action = new JSONObject();
+            try {
+                action.put("targetType", "test");
+                action.put("targetId", "test");
+                action.put("methodName", "test");
+                action.put("args", (Collection) null);
+            } catch (JSONException ex) {
+                System.out.println("JsonEx");
+            }
+
+            ac = new NodeAction(action, null);
             EndEvent e = new EndEvent(ac);
             this.relationTest.endEventFired(e);
         } catch (SpokNodeException ex) {

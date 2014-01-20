@@ -48,8 +48,6 @@ public class NodeProgramTest extends NodeTest {
             ruleJSON.put("userInputSource", "test");
             JSONObject source = new JSONObject();
             source.put("programName", "test");
-            source.put("author", "test");
-            source.put("target", "test");
             source.put("daemon", false);
             source.put("seqRules", (Collection) null);
             source.put("seqDefinitions", (Collection) null);

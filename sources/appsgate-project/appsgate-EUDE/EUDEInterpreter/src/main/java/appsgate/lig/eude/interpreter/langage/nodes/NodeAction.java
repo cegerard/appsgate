@@ -46,11 +46,13 @@ public class NodeAction extends Node {
     /**
      * The args of the action
      */
-    private JSONArray args = new JSONArray();
+    private JSONArray args;
     /**
      * the command once it has been retrieve from interpreter
      */
     private GenericCommand command = null;
+
+    private String returnType = null;
 
     /**
      * Default constructor
@@ -63,16 +65,14 @@ public class NodeAction extends Node {
             throws SpokNodeException {
         super(parent);
 
-        targetType = getJSONString(ruleJSON, "targetType");
-        targetId = getJSONString(ruleJSON, "targetId");
-        methodName = getJSONString(ruleJSON, "methodName");
-        if (ruleJSON.has("args")) {
-            try {
-                args = ruleJSON.getJSONArray("args");
-            } catch (JSONException ex) {
-                LOGGER.warn("An Exception has been thrown, args is not set");
-            }
+        targetType = ruleJSON.optString("targetType");
+        targetId = ruleJSON.optString("targetId");
+        methodName = ruleJSON.optString("methodName");
+        args = ruleJSON.optJSONArray("args");
+        if (args == null) {
+            args = new JSONArray();
         }
+        returnType = ruleJSON.optString("returnType");
 
     }
 
@@ -219,10 +219,20 @@ public class NodeAction extends Node {
         return "[Node Action: " + methodName + " on " + targetId + "]";
 
     }
-    
+
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JSONObject o = new JSONObject();
+        try {
+            o.put("targetType", targetType);
+            o.put("targetId", targetId);
+            o.put("methodName", methodName);
+            o.put("args", args);
+            o.put("returnType", returnType);
+        } catch (JSONException ex) {
+        }
+        return o;
+
     }
 
     @Override

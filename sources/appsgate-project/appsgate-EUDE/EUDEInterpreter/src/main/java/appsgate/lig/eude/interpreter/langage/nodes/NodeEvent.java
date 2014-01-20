@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,7 +154,16 @@ public class NodeEvent extends Node {
     
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JSONObject o = new JSONObject();
+        try {
+            o.put("sourceType", sourceType);
+            o.put("sourceId", sourceId);
+            o.put("eventName", eventName);
+            o.put("eventValue", eventValue);
+        } catch (JSONException jSONException) {
+        }
+        return o;
+
     }
 
     /**

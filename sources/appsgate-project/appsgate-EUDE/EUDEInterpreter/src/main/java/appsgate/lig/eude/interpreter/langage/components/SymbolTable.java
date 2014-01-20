@@ -183,4 +183,23 @@ public final class SymbolTable {
         return varNames;
     }
 
+    public JSONArray getJSONDescription() {
+        JSONArray a = new JSONArray();
+        int i = 0;
+        try {
+            for (String name : varNames) {
+                JSONObject v = variables.get(name).getJSONDescription();
+                v.put("var_name", v);
+                a.put(i++, v);
+            }
+            for (NodeFunctionDefinition f: functions.values()) {
+                JSONObject json = f.getJSONDescription();
+                json.put("func_name", f.getName());
+                a.put(i++, json);
+            }
+        } catch (JSONException ex) {
+        }
+        return a;
+    }
+
 }

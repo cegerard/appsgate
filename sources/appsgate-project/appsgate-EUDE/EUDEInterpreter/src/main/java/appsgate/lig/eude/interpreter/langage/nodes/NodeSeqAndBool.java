@@ -165,8 +165,25 @@ public class NodeSeqAndBool extends Node {
     }
     
     @Override
-    JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Should use the getJSONArrayDescription instead.");
+    }
+
+    /**
+     *
+     * @return
+     */
+    public JSONArray getJSONArrayDescription() {
+        JSONArray a = new JSONArray();
+        int i = 0;
+        for (NodeRelationBool n : this.relationsBool) {
+            try {
+                a.put(i, n.getJSONDescription());
+                i++;
+            } catch (JSONException ex) {
+            }
+        }
+        return a;
     }
 
     @Override

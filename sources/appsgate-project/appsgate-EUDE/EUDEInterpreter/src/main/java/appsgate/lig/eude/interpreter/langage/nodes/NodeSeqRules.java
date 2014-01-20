@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import java.util.Collection;
 import org.json.JSONObject;
 
 import org.slf4j.Logger;
@@ -152,8 +153,25 @@ public class NodeSeqRules extends Node {
     }
     
     @Override
-    JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public JSONObject getJSONDescription() {
+        throw new UnsupportedOperationException("Should use the getJSONArrayDescription instead.");
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public JSONArray getJSONArrayDescription() {
+            JSONArray a = new JSONArray();
+        int i = 0;
+        for (Node n : this.seqAndRules) {
+            try {
+                a.put(i, n.getJSONDescription());
+                i++;
+            } catch (JSONException ex) {
+            }
+        }
+        return a;
     }
 
     @Override
@@ -189,5 +207,4 @@ public class NodeSeqRules extends Node {
         return ret;
 
     }
-
 }

@@ -134,7 +134,18 @@ public class NodeWhen extends Node {
     
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JSONObject o = new JSONObject();
+        try {
+            o.put("seqRulesThen", seqRules.getJSONArrayDescription());
+            JSONArray evt = new JSONArray();
+            int i = 0;
+            for (NodeEvent e: seqEvent){
+                evt.put(i, e.getJSONDescription());
+            }
+            o.put("events", evt);
+        } catch (JSONException jSONException) {
+        }
+        return o;
     }
 
     @Override

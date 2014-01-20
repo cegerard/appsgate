@@ -10,7 +10,8 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import java.util.Collection;
+import java.util.Iterator;
+import junit.framework.Assert;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -44,14 +45,6 @@ public abstract class NodeTest {
 
         this.instance = null;
         this.ruleJSON = new JSONObject();
-        try {
-            ruleJSON.put("targetType", "test");
-            ruleJSON.put("targetId", "test");
-            ruleJSON.put("methodName", "test");
-            ruleJSON.put("args", (Collection) null);
-        } catch (JSONException ex) {
-            System.out.println("JsonEx");
-        }
 
     }
 
@@ -126,15 +119,46 @@ public abstract class NodeTest {
         System.out.println("GetInterpreter");
         assertNull(this.instance.getResult());
     }
-    
+
     @Test
-    public void testGetJSONDescription() {
+    public void testGetJSONDescription() throws JSONException {
         System.out.println("GetJSONDescription");
         try {
-            this.instance.getJSONDescription();
-            fail("It is not supposed to be supported right now");
+            JSONObject jsonDescription = this.instance.getJSONDescription();
+            Assert.assertTrue("Two Json Object should be equals", compareTo(this.ruleJSON, jsonDescription));
         } catch (UnsupportedOperationException e) {
-            System.out.println("Exception catched");
+            fail("It is supposed to be supported now");
         }
+    }
+
+    /**
+     * Method that compare two JSON Objects and tell where they differ
+     *
+     * @param ruleJSON
+     * @param jsonDescription
+     * @return
+     * @throws JSONException
+     */
+    private boolean compareTo(JSONObject ruleJSON, JSONObject jsonDescription) throws JSONException {
+        Boolean ret = true;
+        Iterator k = ruleJSON.keys();
+        while (k.hasNext()) {
+            String key = (String) k.next();
+            if (!jsonDescription.has(key)) {
+                ret = false;
+                System.out.println(key + " is in json, but not in desc");
+            } else {
+                if (ruleJSON.get(key).getClass() == JSONObject.class) {
+                    return compareTo((JSONObject) ruleJSON.get(key), (JSONObject) jsonDescription.get(key));
+                }
+                if (!ruleJSON.get(key).toString().equals(jsonDescription.get(key).toString())) {
+                    ret = false;
+                    System.out.println("For key (" + key + "), contents is not equal:\n"
+                            + ruleJSON.get(key).toString() + "\n"
+                            + jsonDescription.getString(key).toString());
+                }
+            }
+        }
+        return ret;
     }
 }

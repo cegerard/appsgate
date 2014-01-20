@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,20 @@ public class NodeVariableAssignation extends Node {
 
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JSONObject o = new JSONObject();
+        try {
+            if (evalNode != null) {
+                o.put("function", evalNode);
+            }
+            if (value != null) {
+                o.put("value", value);
+            }
+            o.put("name", name);
+
+        } catch (JSONException ex) {
+        }
+        return o;
+
     }
 
     @Override
@@ -101,16 +115,17 @@ public class NodeVariableAssignation extends Node {
             LOGGER.error("Exception raised during evaluation" + ex);
         }
     }
-    
+
     /**
      * Method that set the variable to its value
+     *
      * @param v the variable to set
      */
-    private void setVariable(SpokVariable v){
+    private void setVariable(SpokVariable v) {
         Node findNode = findNode(NodeFunction.class, this);
         if (findNode == null) {
             findNode = findNode(NodeProgram.class, this);
-        } 
+        }
         if (findNode == null) {
             LOGGER.warn("Unable to find a bloc to assign this variable ({})", this.name);
         } else {

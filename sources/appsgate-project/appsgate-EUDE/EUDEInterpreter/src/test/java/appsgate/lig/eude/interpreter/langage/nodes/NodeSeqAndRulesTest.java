@@ -9,7 +9,9 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -28,6 +30,11 @@ public class NodeSeqAndRulesTest extends NodeTest {
         } catch (SpokNodeException ex) {
             Logger.getLogger(NodeSeqAndRulesTest.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Test
+    @Override
+    public void testGetJSONDescription() throws JSONException {
     }
 
 }

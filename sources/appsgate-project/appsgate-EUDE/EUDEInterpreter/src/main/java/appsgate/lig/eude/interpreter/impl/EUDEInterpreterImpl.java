@@ -521,6 +521,15 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
             CoreEventListener c = (CoreEventListener) o;
             return (objectId.contentEquals(c.objectId) && varName.contentEquals(c.varName) && varValue.contentEquals(c.varValue));
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 17 * hash + (this.objectId != null ? this.objectId.hashCode() : 0);
+            hash = 17 * hash + (this.varName != null ? this.varName.hashCode() : 0);
+            hash = 17 * hash + (this.varValue != null ? this.varValue.hashCode() : 0);
+            return hash;
+        }
     }
 
     @Override

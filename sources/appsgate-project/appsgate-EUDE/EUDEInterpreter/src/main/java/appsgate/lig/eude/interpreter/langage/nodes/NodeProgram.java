@@ -341,7 +341,23 @@ public class NodeProgram extends Node {
 
     @Override
     JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JSONObject o = new JSONObject();
+        try {
+            o.put("id", id);
+            o.put("runningState", runningState.name);
+
+            JSONObject source = new JSONObject();
+            source.put("seqRules", seqRules.getJSONArrayDescription());
+            source.put("daemon", daemon);
+            source.put("programName", name);
+            source.put("userInputSource", userInputSource);
+            source.put("seqDefinitions", getSymbolTable().getJSONDescription());
+
+            o.put("source", source);
+        } catch (JSONException jSONException) {
+        }
+        return o;
+
     }
 
     /**
