@@ -9,54 +9,19 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>PhilipsHUEAdapter</artifactId>
+	<artifactId>PhilipsHUEAdapterSpec</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>PhilipsHUEAdapter OSGi Bundle</name>
+	<name>PhilipsHUEAdapter Specifications</name>
 
 	<!-- Dependencies Description -->
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>${ipojo.annotations.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.6</version>
-		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
-		<dependency>
-			<groupId>fr.imag.adele.apam</groupId>
-			<artifactId>apam-core</artifactId>
-			<version>${apam.current.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.android</groupId>
-			<artifactId>PhilipsHUEAndroidAdapter</artifactId>
-			<version>1.1.1beta</version>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>ClientCommunicationManager</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>PhilipsHUEImpl</artifactId>
-            <version>${project.version}</version>
-        </dependency>		
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>PhilipsHUEAdapterSpec</artifactId>
-            <version>${project.version}</version>
-        </dependency>       
-        		
+
 		
 
 	</dependencies>

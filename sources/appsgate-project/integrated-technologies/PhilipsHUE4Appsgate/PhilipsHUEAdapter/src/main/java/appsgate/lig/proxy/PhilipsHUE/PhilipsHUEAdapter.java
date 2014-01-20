@@ -11,13 +11,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.felix.ipojo.annotations.Bind;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Unbind;
-import org.apache.felix.ipojo.annotations.Validate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +31,7 @@ import com.philips.lighting.model.PHLightState;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+//import appsgate.lig.light.actuator.philips.HUE.impl.PhilipsHUEFactory;
 import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeConfigListener;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 import fr.imag.adele.apam.CST;
@@ -55,9 +49,6 @@ import fr.imag.adele.apam.impl.ComponentBrokerImpl;
  * @since May 22, 2013
  * 
  */
-@Component(publicFactory=false)
-@Instantiate(name="AppsgatePhilipsHUEAdapter")
-@Provides(specifications = { PhilipsHUEServices.class })
 public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 	private static String ApAMIMPL = "PhilipsHUEImpl";
@@ -66,6 +57,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	
 	private PHHueSDK phHueSDK;
 	private NewLightListener newlightListener;
+	
+//	private PhilipsHUEFactory lampFactory;
 	
 	private PhilipsBridgeUPnPFinder bridgeFinder;
 	private ScheduledExecutorService instanciationService = Executors.newScheduledThreadPool(5);
@@ -79,9 +72,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	private static Logger logger = LoggerFactory.getLogger(PhilipsHUEAdapter.class);
 
 	/**
-	 * Called by iPOJO when all dependencies are available
+	 * Called by ApAM when all dependencies are available
 	 */
-	@Validate
 	public void newInst() {
 		
 		phHueSDK = PHHueSDK.create();
@@ -103,9 +95,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 
 	/**
-	 * Called by iPOJO when the bundle become not available
+	 * Called by ApAM when the bundle become not available
 	 */
-	@Invalidate
 	public void delInst() {
 		bridgeFinder.stop();
 		phHueSDK.destroySDK();
@@ -626,7 +617,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param listenerService
 	 *            , the subscription service
 	 */
-	@Bind(optional = false)
 	public void bindSubscriptionService(ListenerService listenerService) {
 		this.listenerService = listenerService;
 		logger.debug("Communication subscription service dependency resolved");
@@ -638,7 +628,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param listenerService
 	 *            , the released subscription service
 	 */
-	@Unbind(optional = false)
 	public void unbindSubscriptionService(ListenerService listenerService) {
 		this.listenerService = null;
 		logger.debug("Subscription service dependency not available");
@@ -650,7 +639,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param sendToClientService
 	 *            , the communication service
 	 */
-	@Bind(optional = false)
 	public void bindCommunicationService(SendWebsocketsService sendToClientService) {
 		this.sendToClientService = sendToClientService;
 		logger.debug("Communication service dependency resolved");
@@ -662,7 +650,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param sendToClientService
 	 *            , the communication service
 	 */
-	@Unbind(optional = false)
 	public void unbindCommunicationService(SendWebsocketsService sendToClientService) {
 		this.sendToClientService = null;
 		logger.debug("Communication service dependency not available");

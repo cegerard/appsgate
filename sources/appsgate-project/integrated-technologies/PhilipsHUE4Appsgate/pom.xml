@@ -67,6 +67,7 @@
 	</build>
 
   <modules>
+    <module>PhilipsHUEAdapterSpec</module>
     <module>PhilipsHUEAdapter</module>
     <module>PhilipsHUEImpl</module>
   </modules>
