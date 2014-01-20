@@ -9,7 +9,7 @@
 		<ipojo:requires field="contextHistory_push"/>
 	</implementation>
 	
-	<apam-instance name="AppsGateContextDeviceNameTableInst" implementation="AppsGateContextDeviceNameTableImpl">
-	</apam-instance>
+<!-- 	<apam-instance name="AppsGateContextDeviceNameTableInst" implementation="AppsGateContextDeviceNameTableImpl"> -->
+<!-- 	</apam-instance> -->
 
 </apam>
