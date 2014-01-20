@@ -22,22 +22,22 @@
 			<version>${project.version}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>ContextFollower</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>RouterApAM</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>PlaceManager</artifactId>
-            <version>${project.version}</version>
-        </dependency>        
-        		<dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ContextFollower</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>RouterApAM</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>PlaceManager</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>ConfigurableClockImpl</artifactId>
 			<version>${project.version}</version>
@@ -48,59 +48,70 @@
 			<artifactId>UserBaseImpl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>DeviceNameTable</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        		
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>EUDEInterpreter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>DeviceNameTable</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>UPnPMediaPlayer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>UPnPMediaBrowser</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>EUDEInterpreter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>appsgate-app-weather</artifactId>
-            <version>${project.version}</version>
-        </dependency>        
-        
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>ClientCommunicationManager</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>GoogleAdapter</artifactId>
-            <version>${project.version}</version>
-        </dependency>       
-        
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>GoogleCalendarImpl</artifactId>
-            <version>${project.version}</version>
-        </dependency>           
-        
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>core-mail-gmail</artifactId>
-            <version>${project.version}</version>
-        </dependency>           
-        		<!-- <dependency> -->
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>UPnPMediaPlayer</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>UPnPMediaBrowser</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>appsgate-app-weather</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ClientCommunicationManager</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>GoogleAdapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>GoogleCalendarImpl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>core-mail-gmail</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>PhilipsHUEAdapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>PhilipsHUEImpl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- <dependency> -->
 		<!-- <groupId>appsgate.components</groupId> -->
 		<!-- <artifactId>CoreObjectSpec</artifactId> -->
 		<!-- <version>${project.version}</version> -->

@@ -5,17 +5,18 @@
 
 	<composite name="AppsGate-Application" singleton="true">
 		<contentMngt>
-		    
-		    <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
+
+			<start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
 
 			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
 
-            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
-			
-            <start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
-			
-            <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>			
+			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
+			<start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
+
+			<start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
+
+			<start implementation="AppsGateHUEServices" name="AppsGateHUEServicesInst"></start>
 
 			<start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
@@ -59,28 +60,36 @@
 
 	</composite>
 
-	<composite name="AppsGateUPnPMediaServices">
+	<composite name="AppsGateUPnPMediaServices" singleton="true">
 		<contentMngt>
 			<start implementation="AppsgateUPnPAdapter" name="adapter" />
 			<start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
 			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
 		</contentMngt>
 	</composite>
-	
-    <composite name="AppsGateGoogleServices">
-        <contentMngt>
-            <start implementation="AppsgateGoogleAdapter" name="AppsgateGoogleAdapterInst"></start>         
-            <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start>
-            <start implementation="GmailImpl" name="GmailInst"></start>
-            </contentMngt>
-    </composite>
-	
-    <composite name="AppsGatePersistency">
-        <contentMngt>
-            <start implementation="PropertyHistoryManager" name="Global-PropertyHistoryManager" />
-            <start implementation="AppsgateContextHistory" name="Global-ContextHistoryManager"></start>
-        </contentMngt>
-    </composite>
+
+	<composite name="AppsGateHUEServices" singleton="true">
+		<contentMngt>
+			<start implementation="PhilipsHUEImplFactory" name="Global-PhilipsHUEFactory" />
+			<start implementation="PhilipsHUEAdapterImpl" name="AppsgatePhilipsHUEAdapter" />
+
+		</contentMngt>
+	</composite>
+
+	<composite name="AppsGateGoogleServices" singleton="true">
+		<contentMngt>
+			<start implementation="AppsgateGoogleAdapter" name="AppsgateGoogleAdapterInst"></start>
+			<start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start>
+			<start implementation="GmailImpl" name="GmailInst"></start>
+		</contentMngt>
+	</composite>
+
+	<composite name="AppsGatePersistency" singleton="true">
+		<contentMngt>
+			<start implementation="PropertyHistoryManager" name="Global-PropertyHistoryManager" />
+			<start implementation="AppsgateContextHistory" name="Global-ContextHistoryManager"></start>
+		</contentMngt>
+	</composite>
 
 	<apam-instance name="appsgate" implementation="AppsGate-Application" />
 
