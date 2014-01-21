@@ -199,6 +199,14 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 			websocket.send(msg);
 		}
 		
+		/**
+ 		 * Send a command to the AppsGate server
+ 		 */
+		this.sendJSONCmd = function (jsonmsg)
+		{
+			websocket.send(JSON.stringify(jsonmsg));
+		}
+		
 		/********
 		 Device management
 		 		  ********/

@@ -4,26 +4,36 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="PhilipsHUEImpl"
-		classname="appsgate.lig.light.actuator.philips.HUE.impl.PhilipsHUEImpl" specification="CoreColorLightSpec" push="notifyChanges">
+		classname="appsgate.lig.light.actuator.philips.HUE.impl.PhilipsHUEImpl"
+		specification="CoreColorLightSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		
-		<ipojo:requires field="PhilipsBridge"/>
-		
+
+
+ 		<relation field="PhilipsBridge" specification="AppsgatePhilipsHUEAdapterSpec" resolve="exist" />
+
 		<!-- device kernel meta data -->
-		<definition name="deviceName" 		  type="string" default="Unknown" 	   	  field="actuatorName"/>
-		<definition name="deviceId" 		  type="string" default="000000"		   	  field="actuatorId"/>
-		<definition name="deviceType" 		  type="string" default="PHILIPS_HUE_LIGHT" field="actuatorType"/>
-		
+		<definition name="deviceName" type="string" default="Unknown"
+			field="actuatorName" />
+		<definition name="deviceId" type="string" default="000000"
+			field="actuatorId" />
+		<definition name="deviceType" type="string" default="PHILIPS_HUE_LIGHT"
+			field="actuatorType" />
+
 		<!-- device client meta data -->
-		<definition name="pictureId" 		  type="string"			 			   field="pictureId"/>
-		<definition name="userType" 		  type="string" default="7" 			   field="userType"/>
-		<definition name="status" 			  type="string" default="2" 			   field="status"		method="statusChanged"/>
-		
+		<definition name="pictureId" type="string" field="pictureId" />
+		<definition name="userType" type="string" default="7"
+			field="userType" />
+		<definition name="status" type="string" default="2" field="status"
+			method="statusChanged" />
+
 		<!-- device meta data -->
-		<definition name="lightBridgeId" 	   type="string"		 			    field="lightBridgeId"/>
-		<definition name="lightBridgeIP" 	   type="string"		 			    field="lightBridgeIP"/>
-		<definition name="reachable" 	   	   type="string"		 			    field="reachable"/>
-		
+		<definition name="lightBridgeId" type="string" field="lightBridgeId" />
+		<definition name="lightBridgeIP" type="string" field="lightBridgeIP" />
+		<definition name="reachable" type="string" field="reachable" />
+
 	</implementation>
+
+	<implementation name="PhilipsHUEImplFactory"
+		classname="appsgate.lig.light.actuator.philips.HUE.impl.PhilipsHUEFactory" />
 
 </apam>

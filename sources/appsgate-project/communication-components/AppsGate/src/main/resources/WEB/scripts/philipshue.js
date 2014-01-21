@@ -171,8 +171,34 @@ define([], function () {
 				//Set action methods
 				element = document.getElementById("lightstate-on");
 				var call = eval({"method":"toggle", "args":[], "objectId":lightInfo.lightId, "callId":"HUE-cf-light"});
-				element.setAttribute("onclick", "javascript:appsgateMain.sendCmd("+JSON.stringify(call)+");");
-
+				element.setAttribute("onclick", "javascript:appsgateMain.sendJSONCmd("+JSON.stringify(call)+");");
+				
+				element = document.getElementById("lightstate-hue");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"hue\",\""+lightInfo.lightId+"\", \"\")");
+				
+				element = document.getElementById("lightstate-sat");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"sat\",\""+lightInfo.lightId+"\", \"\")");
+				
+				element = document.getElementById("lightstate-bri");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"bri\",\""+lightInfo.lightId+"\", \"\")");
+				
+				element = document.getElementById("lightstate-xy");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"xy\",\""+lightInfo.lightId+"\",\""+lightInfo.bridgeIp+"\")");
+				
+				element = document.getElementById("lightstate-ct");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"ct\",\""+lightInfo.lightId+"\",\""+lightInfo.bridgeIp+"\")");
+				
+				element = document.getElementById("lightstate-transition");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"tt\",\""+lightInfo.lightId+"\", \"\")");
+				
+				element = document.getElementById("lightstate-alert");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"alert\",\""+lightInfo.lightId+"\", \"\")");
+				
+				element = document.getElementById("lightstate-effect");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"effect\",\""+lightInfo.lightId+"\", \"\")");
+				
+				element = document.getElementById("lightstate-mode");
+				element.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().triggerCmd(\"mode\",\""+lightInfo.lightId+"\",\""+lightInfo.bridgeIp+"\")");
 				
 			
 			} else if (message.hasOwnProperty("hueToastAlert")) {
@@ -355,6 +381,51 @@ define([], function () {
 			
 			lights_tile_list.appendChild(lightDiv);
 			
+		}
+		
+		/** Trigger the "type" command on the id object throught AppsGate */
+		this.triggerCmd = function triggerCmd(type, id, optBridgeIp){
+			var call;
+			
+			if(type == "hue"){
+				var color = document.getElementById("lightstate-hue-value");
+				call = eval({"method":"setColor", "args":[{"type":"long", "value":color.value}], "objectId":id, "callId":"HUE-cf-light"});
+				
+			} else if (type == "sat") {
+				var sat = document.getElementById("lightstate-sat-value");
+				call = eval({"method":"setSaturation", "args":[{"type":"int", "value":sat.value}], "objectId":id, "callId":"HUE-cf-light"});
+				
+			} else if (type == "bri") {
+				var bri = document.getElementById("lightstate-bri-value");
+				call = eval({"method":"setBrightness", "args":[{"type":"long", "value":bri.value}], "objectId":id, "callId":"HUE-cf-light"});
+				
+			} else if (type == "xy") {
+				var x = document.getElementById("lightstate-x-value");
+				var y = document.getElementById("lightstate-y-value");
+				call = eval({"CONFIGURATION":"setHUEAttribute", "setHUEAttribute":{"attribute":"xy", "x":x.value, "y":y.value, "bridgeIp":optBridgeIp, "objectId":id}, "TARGET":"PHILIPSHUE", "callId":"HUE-cf-light"});
+				
+			} else if (type == "ct") {
+				var ct = document.getElementById("lightstate-ct-value");
+				call = eval({"CONFIGURATION":"setHUEAttribute", "setHUEAttribute":{"attribute":"ct", "ct":ct.value, "bridgeIp":optBridgeIp, "objectId":id}, "TARGET":"PHILIPSHUE", "callId":"HUE-cf-light"});
+				
+			} else if (type == "tt") {
+				var tt = document.getElementById("lightstate-tt-value");
+				call = eval({"method":"setTransitionTime", "args":[{"type":"long", "value":tt.value}], "objectId":id, "callId":"HUE-cf-light"});
+				
+			} else if (type == "alert") {
+				var alert = document.getElementById("lightstate-alert-value");
+				call = eval({"method":"setAlert", "args":[{"type":"String", "value":alert.value}], "objectId":id, "callId":"HUE-cf-light"});
+				
+			} else if (type == "mode") {
+				var mode = document.getElementById("lightstate-mode-value");
+				call = eval({"CONFIGURATION":"setHUEAttribute", "setHUEAttribute":{"attribute":"colormode", "colormode":mode.value, "bridgeIp":optBridgeIp, "objectId":id}, "TARGET":"PHILIPSHUE", "callId":"HUE-cf-light"});
+				
+			} else if (type == "effect") {
+				var effect = document.getElementById("lightstate-effect-value");
+				call = eval({"method":"setEffect", "args":[{"type":"String", "value":effect.value}], "objectId":id, "callId":"HUE-cf-light"});
+			}
+			
+			appsgateMain.sendJSONCmd(call);
 		}
 		
 		/** Display details for the clicked bridge tile */
