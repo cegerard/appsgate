@@ -417,14 +417,32 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         }
     }
 
+    /**
+     * 
+     * @param id
+     * @param runningState
+     * @param source
+     * @param userInputSource 
+     */
     private void notifyUpdateProgram(String id, String runningState, JSONObject source, String userInputSource) {
         notifyChanges(new ProgramNotification("updateProgram", id, runningState, source, userInputSource));
     }
 
+    /**
+     * 
+     * @param id
+     * @param runningState
+     * @param source
+     * @param userInputSource 
+     */
     private void notifyAddProgram(String id, String runningState, JSONObject source, String userInputSource) {
         notifyChanges(new ProgramNotification("newProgram", id, runningState, source, userInputSource));
     }
 
+    /**
+     * 
+     * @param id 
+     */
     private void notifyRemoveProgram(String id) {
         notifyChanges(new ProgramNotification("removeProgram", id, RUNNING_STATE.STOPPED.toString(), new JSONObject(), ""));
     }
@@ -442,13 +460,34 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 
     }
 
+    /**
+     * 
+     */
     public class CoreEventListener implements CoreListener {
-
+        /**
+         * 
+         */
         private String objectId;
+        /**
+         * 
+         */
         private String varName;
+        /**
+         * 
+         */
         private String varValue;
+        /**
+         * 
+         */
         private final EUDEInterpreterImpl eudeInt;
 
+        /**
+         * 
+         * @param objectId
+         * @param varName
+         * @param varValue
+         * @param eudeInt 
+         */
         public CoreEventListener(String objectId, String varName,
                 String varValue, EUDEInterpreterImpl eudeInt) {
             this.objectId = objectId;

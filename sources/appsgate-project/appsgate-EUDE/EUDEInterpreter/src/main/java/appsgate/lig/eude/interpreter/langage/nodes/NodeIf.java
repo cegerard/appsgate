@@ -151,7 +151,7 @@ public class NodeIf extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeIf ret = new NodeIf(parent);
         ret.setSymbolTable(this.getSymbolTable());
         ret.expBool = (NodeExpBool) expBool.copy(ret);

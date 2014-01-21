@@ -201,7 +201,7 @@ public class NodeEvent extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeEvent ret = new NodeEvent(this.sourceType, this.sourceId, this.eventName, this.eventValue, parent);
         ret.setSymbolTable(this.getSymbolTable());
         return ret;

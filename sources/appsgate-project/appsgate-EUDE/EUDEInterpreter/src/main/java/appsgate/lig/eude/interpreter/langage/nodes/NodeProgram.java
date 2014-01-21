@@ -388,7 +388,7 @@ public class NodeProgram extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeProgram ret = new NodeProgram(getInterpreter());
         ret.author = author;
         ret.daemon = daemon;

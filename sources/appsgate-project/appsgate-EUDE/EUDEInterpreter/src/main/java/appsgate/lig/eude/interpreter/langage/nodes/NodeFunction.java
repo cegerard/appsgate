@@ -155,7 +155,7 @@ public class NodeFunction extends Node {
     }
     
     @Override
-    JSONObject getJSONDescription() {
+    protected JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             o.put("id", name);

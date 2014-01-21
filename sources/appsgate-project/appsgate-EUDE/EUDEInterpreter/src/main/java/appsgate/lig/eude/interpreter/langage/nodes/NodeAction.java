@@ -76,6 +76,10 @@ public class NodeAction extends Node {
 
     }
 
+    /**
+     * Private constructor to allow copy function
+     * @param parent 
+     */
     private NodeAction(Node parent) {
         super(parent);
     }
@@ -112,6 +116,9 @@ public class NodeAction extends Node {
 
     /**
      * Method that run a device action
+     * 
+     * @param target
+     * @throws SpokException 
      */
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
@@ -126,6 +133,9 @@ public class NodeAction extends Node {
 
     /**
      * Method to run a program action
+     * 
+     * @param target
+     * @throws SpokException 
      */
     private void callProgramAction(String target) throws SpokException {
         NodeProgram p = getInterpreter().getNodeProgram(target);
@@ -150,8 +160,10 @@ public class NodeAction extends Node {
     }
 
     /**
-     *
+     * Method to run a list of action
+     * 
      * @param target
+     * @throws SpokException 
      */
     private void callListAction(String target) throws SpokException {
         LOGGER.debug("Call List action");
@@ -253,7 +265,7 @@ public class NodeAction extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeAction ret = new NodeAction(parent);
         ret.setSymbolTable(this.getSymbolTable());
         try {

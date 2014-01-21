@@ -203,7 +203,7 @@ public class NodeSeqAndBool extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeSeqAndBool ret = new NodeSeqAndBool(parent);
         ret.relationsBool = new ArrayList<NodeRelationBool>();
         for (NodeRelationBool n : relationsBool) {

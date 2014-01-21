@@ -9,7 +9,6 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -24,9 +23,17 @@ public class NodeReturn extends Node {
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeReturn.class.getName());
 
-    private String returnExp;
+    /**
+     * the node to be evaluated for the return expression
+     */
     private Node returnNode = null;
+    /**
+     * the value to return
+     */
     private JSONObject returnValue = null;
+    /**
+     * the parent function of this return node
+     */
     private NodeFunction functionParent = null;
 
     /**
@@ -53,7 +60,6 @@ public class NodeReturn extends Node {
         if (obj.has("returnValue")) {
             returnValue = obj.optJSONObject("returnValue");
         }
-        returnExp = obj.optString("returnExp");
     }
 
     @Override
@@ -62,14 +68,19 @@ public class NodeReturn extends Node {
 
     @Override
     public String getExpertProgramScript() {
-        return "return " + this.returnExp + ";";
+        String returnExp;
+        if (this.returnNode != null) {
+            returnExp = this.returnNode.getExpertProgramScript();
+        } else {
+            return returnValue.toString();
+        }
+        return "return " + returnExp + ";";
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         try {
             NodeReturn ret = new NodeReturn(parent);
-            ret.returnExp = this.returnExp;
             if (returnNode != null) {
                 ret.returnNode = this.returnNode.copy(parent);
             }
@@ -131,7 +142,6 @@ public class NodeReturn extends Node {
             if (returnValue != null) {
                 o.put("returnValue", returnValue);
             }
-            o.put("returnExp", returnExp);
 
         } catch (JSONException ex) {
         }

@@ -196,7 +196,7 @@ public class NodeSeqRules extends Node {
 
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeSeqRules ret = new NodeSeqRules(parent);
         ret.seqAndRules = new ArrayList<NodeSeqAndRules>();
         for (NodeSeqAndRules n : seqAndRules) {

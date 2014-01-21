@@ -110,7 +110,7 @@ public class NodeFunctionDefinition extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeFunctionDefinition ret = new NodeFunctionDefinition(parent);
         ret.name = name;
         ret.seqRules = (NodeSeqRules) seqRules.copy(ret);

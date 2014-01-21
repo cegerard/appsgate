@@ -386,31 +386,35 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * Method to copy a node and the rules behind
      *
      * @param parent
+     * @return the node copied
      */
-    abstract Node copy(Node parent);
+    abstract protected Node copy(Node parent);
 
     /**
      * Method to get the JSONDescription of a node from its implementation
      *
-     * @return
+     * @return the description of the description of the node
      */
     abstract JSONObject getJSONDescription();
 
     /**
+     * Method that return the value associated to a node
      * Must be overridden
      *
-     * @return
-     * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokException
+     * @return null by default
+     * @throws SpokException
      */
     public JSONObject getResult() throws SpokException {
         return null;
     }
 
     /**
-     *
-     * @param aClass
-     * @param parent
-     * @return
+     * Method that find a node of a given class in a tree
+     * This method is recursive
+     * 
+     * @param aClass the class of the node to find
+     * @param parent the parent node to explore
+     * @return the node when it is found and null if it is not found
      */
     protected Node findNode(Class aClass, Node parent) {
         if(parent == null) {
@@ -422,7 +426,13 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         return findNode(aClass, parent.parent);
     }
 
-    void setVariable(String name, SpokVariable v) {
+    /**
+     * Method that add a variable in the Symbol Table and creates it if it does not exist
+     * 
+     * @param name the name of the variable
+     * @param v the variable to assign
+     */
+    protected void setVariable(String name, SpokVariable v) {
         if(symbolTable == null) {
             symbolTable = new SymbolTable();
         }

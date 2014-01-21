@@ -79,7 +79,7 @@ public class NodeVariableAssignation extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeVariableAssignation ret = new NodeVariableAssignation(parent);
         if (evalNode != null) {
             ret.evalNode = this.evalNode.copy(parent);

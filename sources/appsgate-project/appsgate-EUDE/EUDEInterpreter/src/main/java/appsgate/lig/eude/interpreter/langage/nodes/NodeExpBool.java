@@ -197,7 +197,7 @@ public class NodeExpBool extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeExpBool ret = new NodeExpBool(parent);
         ret.setSymbolTable(this.getSymbolTable());
         ret.result = result;

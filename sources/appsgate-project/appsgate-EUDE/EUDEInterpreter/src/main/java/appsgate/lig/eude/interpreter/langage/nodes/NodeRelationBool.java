@@ -305,7 +305,7 @@ public class NodeRelationBool extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeRelationBool ret = new NodeRelationBool(parent);
         ret.setSymbolTable(this.getSymbolTable());
         if (leftNodeAction != null) {

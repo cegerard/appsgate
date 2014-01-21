@@ -34,7 +34,7 @@ public class NodeSelect extends Node {
     }
 
     @Override
-    Node copy(Node parent) {
+    protected Node copy(Node parent) {
         NodeSelect ret = new NodeSelect(parent);
         ret.what = new ArrayList<SpokType>(what);
         ret.where = new ArrayList<SpokPlace>(where);
