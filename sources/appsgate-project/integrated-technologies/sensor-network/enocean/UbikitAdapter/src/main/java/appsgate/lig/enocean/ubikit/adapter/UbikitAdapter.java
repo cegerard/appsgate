@@ -171,26 +171,9 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		eventGate.addListener(new ContactEvent(this));
 		eventGate.addListener(new PairingModeEvent(this));
 		eventGate.addListener(new MeteringEvent(this));
-		
-		if (httpService != null) {
-			final HttpContext httpContext = httpService.createDefaultHttpContext();
-			final Dictionary<String, String> initParams = new Hashtable<String, String>();
-			initParams.put("from", "HttpService");
-			try {
-				httpService.registerResources("/configuration/sensors/enocean", "/WEB", httpContext);
-				logger.info("Sensors configuration HTML GUI sources registered.");
-			} catch (NamespaceException ex) {
-				logger.error("NameSpace exception");
-			}
-		}
+	
 		logger.info("EnOcean proxy deployed and instanciated.");
 		
-		logger.info("Getting the listeners services...");
-		if(listenerService.addConfigListener(CONFIG_TARGET, new EnOceanConfigListener(this))){
-			logger.info("Listeners services dependency resolved.");
-		}else{
-			logger.info("Listeners services dependency resolution failed.");
-		}
 		//Retrieve existing paired sensors from Ubikit and instanciate them.
 		Collection<PhysicalEnvironmentItem> itemList = enoceanBridge.getAllItems();
 		if(itemList != null && !itemList.isEmpty()) {
@@ -263,10 +246,15 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * @param listenerService
 	 *            , the subscription service
 	 */
-	@Bind(optional = false)
+	@Bind(optional = true)
 	public void bindSubscriptionService(ListenerService addListenerService) {
 		this.listenerService = addListenerService;
 		logger.debug("Communication subscription service dependency resolved");
+		if(listenerService.addConfigListener(CONFIG_TARGET, new EnOceanConfigListener(this))){
+			logger.info("Configuration listeners deployed.");
+		}else{
+			logger.info("Configuration listeners deployement failed.");
+		}
 	}
 
 	/**
@@ -275,7 +263,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * @param listenerService
 	 *            , the released subscription service
 	 */
-	@Unbind(optional = false)
+	@Unbind(optional = true)
 	public void unbindSubscriptionService(ListenerService addListenerService) {
 		this.listenerService = null;
 		logger.debug("Subscription service dependency not available");
@@ -314,6 +302,17 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	public void bindHTTPService(HttpService httpService) {
 		this.httpService = httpService;
 		logger.debug("HTTP service dependency resolved");
+		//if (httpService != null) {
+		final HttpContext httpContext = httpService.createDefaultHttpContext();
+		final Dictionary<String, String> initParams = new Hashtable<String, String>();
+		initParams.put("from", "HttpService");
+		try {
+			httpService.registerResources("/configuration/sensors/enocean", "/WEB", httpContext);
+			logger.info("Sensors configuration HTML GUI sources registered.");
+		} catch (NamespaceException ex) {
+			logger.error("NameSpace exception");
+		}
+		//}
 	}
 	
 	/**
