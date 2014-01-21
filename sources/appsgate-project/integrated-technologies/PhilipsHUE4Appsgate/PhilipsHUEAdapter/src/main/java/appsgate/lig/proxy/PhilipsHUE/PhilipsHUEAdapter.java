@@ -612,50 +612,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 	
 	/**
-	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
-	 * 
-	 * @param listenerService
-	 *            , the subscription service
-	 */
-	public void bindSubscriptionService(ListenerService listenerService) {
-		this.listenerService = listenerService;
-		logger.debug("Communication subscription service dependency resolved");
-	}
-
-	/**
-	 * Call when the EnOcean proxy release the optional subscription service.
-	 * 
-	 * @param listenerService
-	 *            , the released subscription service
-	 */
-	public void unbindSubscriptionService(ListenerService listenerService) {
-		this.listenerService = null;
-		logger.debug("Subscription service dependency not available");
-	}
-
-	/**
-	 * Get the communication service from OSGi/iPojo. This service is optional.
-	 * 
-	 * @param sendToClientService
-	 *            , the communication service
-	 */
-	public void bindCommunicationService(SendWebsocketsService sendToClientService) {
-		this.sendToClientService = sendToClientService;
-		logger.debug("Communication service dependency resolved");
-	}
-	
-	/**
-	 * Call when the EnOcean proxy release the communication service.
-	 * 
-	 * @param sendToClientService
-	 *            , the communication service
-	 */
-	public void unbindCommunicationService(SendWebsocketsService sendToClientService) {
-		this.sendToClientService = null;
-		logger.debug("Communication service dependency not available");
-	}
-	
-	/**
 	 * Get the communication service instance
 	 * @return the Websocket communication service instance
 	 */

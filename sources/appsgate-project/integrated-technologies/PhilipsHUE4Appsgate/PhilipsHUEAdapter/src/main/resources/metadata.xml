@@ -9,18 +9,12 @@
 		specification="AppsgatePhilipsHUEAdapterSpec">
 
 		<callback onInit="newInst" onRemove="delInst" />
-
-		<ipojo:requires specification="appsGate.lig.manager.client.communication.service.subscribe.ListenerService"
-			optional="false">
-			<ipojo:callback type="bind" method="bindSubscriptionService" />
-			<ipojo:callback type="unbind" method="unbindSubscriptionService" />
-		</ipojo:requires>
-
-        <ipojo:requires specification="appsGate.lig.manager.client.communication.service.send.SendWebsocketsService"
-            optional="false">
-            <ipojo:callback type="bind" method="bindCommunicationService" />
-            <ipojo:callback type="unbind" method="unbindCommunicationService" />
-        </ipojo:requires>						
+        
+        <relation specification="AppsgateClientCommunicationManagerSpec"
+			creation="eager"  resolve="external" >
+            <interface field="listenerService"/>
+            <interface field="sendToClientService"/>
+		</relation>						
 
 	</implementation>
 
