@@ -1,8 +1,10 @@
 package appsgate.lig.proxy.PhilipsHUE;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +21,11 @@ import com.philips.lighting.hue.sdk.exception.PHHueException;
 import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHBridgeConfiguration;
 import com.philips.lighting.model.PHHueError;
+import com.philips.lighting.model.PHLight;
+import com.philips.lighting.model.PHLightState;
+
+import fr.imag.adele.apam.Instance;
+import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 
 /**
  * This class is design to find with UPnP discovery protocol the Philips bridge
@@ -143,8 +150,32 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 	}
 
 	@Override
-	public void onCacheUpdated(int arg0, PHBridge arg1) {
-		logger.debug("Cache updated: "+arg0+" for "+arg1.getResourceCache().getBridgeConfiguration().getIpAddress());
+	public void onCacheUpdated(int flag, PHBridge bridge) {
+		PHBridgeConfiguration bc = bridge.getResourceCache().getBridgeConfiguration();
+		logger.debug("Cache updated: "+flag+" for "+bc.getIpAddress());
+		
+		for (PHLight light : bridge.getResourceCache().getAllLights()) {
+			Instance inst = adapter.getSensorInstance(bc.getMacAddress()+"-"+light.getIdentifier());
+			PHLightState lightState = light.getLastKnownLightState();
+			Map<String, String> properties = new HashMap<String, String>();
+			String deviceID = bc.getMacAddress()+"-"+light.getIdentifier();
+			
+			if(inst != null) {
+				if(!light.isReachable()) {
+					inst.setProperty("reachable", "false");
+					ComponentBrokerImpl.disappearedComponent(inst.getName());
+					adapter.removeInSensorInstance(deviceID);
+				}else {
+					adapter.initiateLightStateProperties(properties, lightState);
+					inst.setAllProperties(properties);
+				}
+			}else { //no ApAM instance
+				if(light.isReachable()) {
+					//Instantiate the light
+					adapter.instanciateHUELight(bridge, light);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -195,6 +226,7 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 				sm.upnpSearch();
 			}
 		}
+		
 		}catch(JSONException e){
 			e.printStackTrace();
 		}

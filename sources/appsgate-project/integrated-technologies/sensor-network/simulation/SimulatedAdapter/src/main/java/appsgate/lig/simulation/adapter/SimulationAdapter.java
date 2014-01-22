@@ -2,12 +2,15 @@ package appsgate.lig.simulation.adapter;
 
 import java.util.HashMap;
 
+import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.Unbind;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
@@ -24,9 +27,13 @@ import appsgate.lig.simulation.adapter.services.SimulatedObjectManagementService
 public class SimulationAdapter implements SimulatedObjectManagementService {
 	
 	/**
+	 * class logger member
+	 */
+	private static Logger logger = LoggerFactory.getLogger(SimulationAdapter.class);
+	
+	/**
 	 * Service to communicate with clients
 	 */
-	@Requires
 	private SendWebsocketsService sendToClientService;
 	
 	private HashMap<String, Instance> objectList = new HashMap<String, Instance>();
@@ -77,7 +84,35 @@ public class SimulationAdapter implements SimulatedObjectManagementService {
 	}
 
 	public void sendResponse(int clientId, String respType, JSONArray list) {
-		sendToClientService.send(clientId, respType, list);
+		if(sendToClientService != null)
+			sendToClientService.send(clientId, respType, list);
+		else
+			logger.error("No client communication service found.");
+	}
+	
+	
+	/**
+	 * Get the communication service from OSGi/iPojo. This service is optional.
+	 * 
+	 * @param sendToClientService
+	 *            , the communication service
+	 */
+	@Bind(optional = true)
+	public void bindCommunicationService(SendWebsocketsService sendToClientService) {
+		this.sendToClientService = sendToClientService;
+		logger.debug("Communication service dependency resolved");
+	}
+	
+	/**
+	 * Call when the EnOcean proxy release the communication service.
+	 * 
+	 * @param sendToClientService
+	 *            , the communication service
+	 */
+	@Unbind(optional = true)
+	public void unbindCommunicationService(SendWebsocketsService sendToClientService) {
+		this.sendToClientService = null;
+		logger.debug("Communication service dependency not available");
 	}
 	
 	//TODO add simulate object persistence management

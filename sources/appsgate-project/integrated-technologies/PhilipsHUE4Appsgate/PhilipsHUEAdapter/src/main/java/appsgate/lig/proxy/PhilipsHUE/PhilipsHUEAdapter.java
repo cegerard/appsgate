@@ -7,9 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,17 +48,17 @@ import fr.imag.adele.apam.impl.ComponentBrokerImpl;
  */
 public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
-	private static String ApAMIMPL = "PhilipsHUEImpl";
+	public static String ApAMIMPL = "PhilipsHUEImpl";
 	public static String CONFIG_TARGET = "PHILIPSHUE";
 	public static String APP_NAME = "AppsGateUJF";
 	
 	private PHHueSDK phHueSDK;
 	private NewLightListener newlightListener;
+	private HashMap<String, Instance> sidToInstanceName = new HashMap<String, Instance>();
 	
 //	private PhilipsHUEFactory lampFactory;
 	
 	private PhilipsBridgeUPnPFinder bridgeFinder;
-	private ScheduledExecutorService instanciationService = Executors.newScheduledThreadPool(5);
 	
 	private ListenerService listenerService;
 	private SendWebsocketsService sendToClientService;
@@ -100,17 +97,17 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	public void delInst() {
 		bridgeFinder.stop();
 		phHueSDK.destroySDK();
-		instanciationService.shutdown();
-		try {
-			instanciationService.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			logger.debug("PhilipsHUEAdapter instanciationService thread crash at termination");
-		}
 		
 		if(listenerService.removeConfigListener(CONFIG_TARGET)){
 			logger.info("HUE configuration listener removed.");
 		}else{
 			logger.warn("HUE configuration listener remove failed.");
+		}
+		
+		for(Instance inst: sidToInstanceName.values()) {
+			inst.setProperty("status", "0");
+			removeInSensorInstance(inst.getProperty("deviceId"));
+			ComponentBrokerImpl.disappearedComponent(inst.getName());
 		}
 		
 		logger.debug("PhilipsHUEAdapter stopped");
@@ -416,11 +413,16 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 			try {
 				if(key.contentEquals("on")) {
 					state.setOn(JSONAttribute.getBoolean(key));
-				}else if(key.contentEquals("hue") || key.contentEquals("bri")
-						|| key.contentEquals("sat") || key.contentEquals("ct")
-						|| key.contentEquals("transitionTime") ) {
+				}else if(key.contentEquals("hue")) {
 					state.setHue(Integer.valueOf(new Long(JSONAttribute.getLong(key)).toString()));
-				
+				}else if(key.contentEquals("bri")) {
+					state.setBrightness(Integer.valueOf(new Long(JSONAttribute.getLong(key)).toString()));
+				}else if(key.contentEquals("sat")) {
+					state.setSaturation(Integer.valueOf(new Long(JSONAttribute.getLong(key)).toString()));
+				}else if(key.contentEquals("ct")) {
+					state.setCt(Integer.valueOf(new Long(JSONAttribute.getLong(key)).toString()));
+				}else if(key.contentEquals("transitionTime")) {
+					state.setTransitionTime(Integer.valueOf(new Long(JSONAttribute.getLong(key)).toString()));
 				}else if(key.contentEquals("alert")) {
 					String alert = JSONAttribute.getString(key);
 					if(alert.contentEquals("select")) {
@@ -531,62 +533,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		PHAccessPoint ap = bridgeFinder.getUnauthorizedAccessPoint(bridgeIP);
 		phHueSDK.startPushlinkAuthentication(ap);
 	}
-	
-	/**
-	 * Inner class for Philips HUE lights instanciation thread
-	 * @author Cédric Gérard
-	 * @since June 26, 2013
-	 * @version 1.0.0
-	 */
-	private class LightsInstanciation implements Runnable {
-		
-		private PHBridge bridge;
-		
-		public LightsInstanciation(PHBridge bridge) {
-			super();
-			this.bridge = bridge;
-		}
-
-		public void run() {
-			
-			PHBridgeConfiguration bc  = bridge.getResourceCache().getBridgeConfiguration();
-			int nbTry = 0;
-			
-			try {
-				for(PHLight light : bridge.getResourceCache().getAllLights()){
-				
-					if(light.isReachable()) {
-					
-						Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
-						Map<String, String> properties = new HashMap<String, String>();
-						properties.put("deviceName", 	light.getName());
-						properties.put("deviceId", 		bc.getMacAddress()+"-"+light.getIdentifier());
-						properties.put("lightBridgeId", light.getIdentifier());
-						properties.put("lightBridgeIP", bc.getIpAddress());
-						properties.put("reachable", "true");
-
-						if(impl != null) {
-							impl.createInstance(null, properties);
-							nbTry = 0;
-						}else {
-							synchronized(this){wait(3000);}
-							nbTry++;
-							if(nbTry == 5){
-								logger.error("No "+ApAMIMPL+" found !");
-								logger.error("Stop the HUE light instanciation thread !");
-								break;
-							}
-						}
-					}else {
-						logger.warn("Don't instanciate not reachable HUE light: "+bc.getMacAddress()+"-"+light.getIdentifier());
-					}
-				}
-			}catch(InterruptedException ie) {
-				ie.printStackTrace();
-			}
-		}
-		
-	}
 
 	/**
 	 * Method call to notify that a new Philips HUE bridge
@@ -594,7 +540,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param bridgethe Philips HUE bridge instance
 	 */
 	public void notifyNewBridge(PHBridge bridge) {
-		instanciationService.schedule(new LightsInstanciation(bridge), 15, TimeUnit.SECONDS);
+		//instanciationService.schedule(new LightsInstanciation(bridge), 15, TimeUnit.SECONDS);
 	}
 	
 	/**
@@ -609,50 +555,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				ComponentBrokerImpl.disappearedComponent(inst.getName());
 			}
 		}
-	}
-	
-	/**
-	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
-	 * 
-	 * @param listenerService
-	 *            , the subscription service
-	 */
-	public void bindSubscriptionService(ListenerService listenerService) {
-		this.listenerService = listenerService;
-		logger.debug("Communication subscription service dependency resolved");
-	}
-
-	/**
-	 * Call when the EnOcean proxy release the optional subscription service.
-	 * 
-	 * @param listenerService
-	 *            , the released subscription service
-	 */
-	public void unbindSubscriptionService(ListenerService listenerService) {
-		this.listenerService = null;
-		logger.debug("Subscription service dependency not available");
-	}
-
-	/**
-	 * Get the communication service from OSGi/iPojo. This service is optional.
-	 * 
-	 * @param sendToClientService
-	 *            , the communication service
-	 */
-	public void bindCommunicationService(SendWebsocketsService sendToClientService) {
-		this.sendToClientService = sendToClientService;
-		logger.debug("Communication service dependency resolved");
-	}
-	
-	/**
-	 * Call when the EnOcean proxy release the communication service.
-	 * 
-	 * @param sendToClientService
-	 *            , the communication service
-	 */
-	public void unbindCommunicationService(SendWebsocketsService sendToClientService) {
-		this.sendToClientService = null;
-		logger.debug("Communication service dependency not available");
 	}
 	
 	/**
@@ -744,9 +646,116 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		return returnLight;
 	}
 	
+	/**
+	 * Get the ApAM instance corresponding to a specified hue ID
+	 * 
+	 * @param uid
+	 *            , the id of the hue light
+	 * @return an ApAM instance
+	 */
+	public Instance getSensorInstance(String uid) {
+		return sidToInstanceName.get(uid);
+	}
+	
+	/**
+	 * Put the instance inst in the adapter HashMap.
+	 * @param uid the AppsGate instance identifier
+	 * @param inst the ApAM instance reference
+	 */
+	public void putInSensorInstance(String uid, Instance inst) {
+		sidToInstanceName.put(uid, inst);
+	}
+	
+	/**
+	 * remove an ApAM instance from the HashMap
+	 * @param uid the hue light identifier
+	 */
+	public void removeInSensorInstance(String uid) {
+		sidToInstanceName.remove(uid);
+	}
+	
+	/**
+	 * Initiate ApAm instance light state properties structure from PHLightState sdk structure
+	 * @param properties the HashMap for ApAM
+	 * @param lightState the PHLightState structure
+	 */
+	public void initiateLightStateProperties(Map<String, String> properties, PHLightState lightState) {
+		properties.put("state", String.valueOf(lightState.isOn()));
+		properties.put("hue", String.valueOf(lightState.getHue()));
+		properties.put("sat", String.valueOf(lightState.getSaturation()));
+		properties.put("bri", String.valueOf(lightState.getBrightness()));
+		properties.put("x", String.valueOf(lightState.getX()));
+		properties.put("y", String.valueOf(lightState.getY()));
+		properties.put("ct", String.valueOf(lightState.getCt()));
+		properties.put("speed", String.valueOf(lightState.getTransitionTime()));
+		
+		if(lightState.getAlertMode().name().contentEquals(PHLightAlertMode.ALERT_SELECT.name())) {
+			properties.put("alert", "select");
+		}else if(lightState.getAlertMode().name().contentEquals(PHLightAlertMode.ALERT_LSELECT.name())){ 
+			properties.put("alert", "lselect");
+		}else if(lightState.getAlertMode().name().contentEquals(PHLightAlertMode.ALERT_NONE.name())){ 
+			properties.put("alert", "none");
+		}else if(lightState.getAlertMode().name().contentEquals(PHLightAlertMode.ALERT_UNKNOWN.name())){ 
+			properties.put("alert", "unknown");
+		}else {
+			logger.error("Error when initiating the HUE light alert value!");
+		}
+		
+		if(lightState.getEffectMode().name().contentEquals(PHLightEffectMode.EFFECT_COLORLOOP.name())) {
+			properties.put("effect",  "colorloop");
+		}else if(lightState.getEffectMode().name().contentEquals(PHLightEffectMode.EFFECT_NONE.name())){ 
+			properties.put("effect",  "none");
+		}else if(lightState.getEffectMode().name().contentEquals(PHLightEffectMode.EFFECT_UNKNOWN.name())){ 
+			properties.put("effect",  "unknown");
+		}else {
+			logger.error("Error when initiating the HUE light effect value!");
+		}
+		
+		if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_HUE_SATURATION.name())) {
+			properties.put("mode",  "hs");
+		}else if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_CT.name())){ 
+			properties.put("mode",  "ct");
+		}else if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_XY.name())){ 
+			properties.put("mode",  "xy");
+		}else if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_NONE.name())){ 
+			properties.put("mode",  "none");
+		}else if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_UNKNOWN.name())){ 
+			properties.put("mode",  "unknown");
+		}else {
+			logger.error("Error when initiating the HUE light color mode value!");
+		}
+	}
+	
+	/**
+	 * Instantiate a new HUE light with properties get from hte HUE bridge
+	 * @param bridge the hue bridge that handle the light
+	 * @param light the hue light on the bridge
+	 */
+	public void instanciateHUELight(PHBridge bridge, PHLight light) {
+		PHBridgeConfiguration bc  = bridge.getResourceCache().getBridgeConfiguration();
+		String deviceID = bc.getMacAddress()+"-"+light.getIdentifier();
+		Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
+		Map<String, String> properties = new HashMap<String, String>();
+		
+		properties.put("deviceName", 	light.getName());
+		properties.put("deviceId", 		deviceID);
+		properties.put("lightBridgeId", light.getIdentifier());
+		properties.put("lightBridgeIP", bc.getIpAddress());
+		properties.put("reachable", "true");
+		initiateLightStateProperties(properties, light.getLastKnownLightState());
+		
+		if(impl != null) {
+			Instance inst = impl.createInstance(null, properties);
+			sidToInstanceName.put(deviceID, inst);
+		}else {
+			logger.error("No "+ApAMIMPL+" found !");
+		}
+	}
+	
 	/***********************************************/
 	/** 		    INNER CLASS					  **/
 	/***********************************************/
+	
 	private class NewLightListener extends PHLightListener {
 
 		@Override
@@ -756,7 +765,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 		@Override
 		public void onStateUpdate(Hashtable<String, String> arg0, List<PHHueError> arg1) {
-			logger.debug("Light state udpate:");
+			logger.debug("Light state udpated:");
 			for(String key : arg0.keySet()) {
 				String value = arg0.get(key);
 				logger.debug("---- : "+key+" / "+value);
@@ -769,8 +778,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 		@Override
 		public void onSuccess() {
-			// TODO instantiate new light
-			logger.debug("LIGHT ACTION SUCCESS");
+			logger.debug("light action success");
 		}
 		
 	}

@@ -7,6 +7,7 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 	
 		var websocket = new websocketRef();
         var clockModule = new clockModuleRef();
+        var handlerMap = {};
 	
 		this.getWebSocket = function () {return websocket;}
 		this.getClockModule = function () {return clockModule;}
@@ -123,13 +124,18 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
    					hue_tile_light_count.innerHTML = currentCount;
    				}
 
-			}else {
+			} else {
 			
 				if (message.varName == "ClockSet"){
 					clockModule.setSystemClockTime(message.value);
 				} else if(message.varName == "flowRate"){
    	 				clockModule.setSystemClockFlowRate(message.value);	
-				} 
+				} else { //find the handler for this notification
+					var handler = handlerMap[message.objectId]
+					if(handler != null) {
+						handler(message);
+					}
+				}
 			}
 		}
 
@@ -176,6 +182,20 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
        				}
        			}
     		}
+		}
+		
+		/**
+		 * Add a notification handler
+		 */
+		this.addNotifHandler = function (objectId, handler) {
+			handlerMap[objectId] = handler;
+		}
+		
+		/**
+		 * Remove a notification handler
+		 */
+		this.removeNotifHandler = function (objectId) {
+			delete handlerMap[objectId];
 		}
 		
 		/*****************************************/
