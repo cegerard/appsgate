@@ -8,7 +8,6 @@ import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.List;
-import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +63,7 @@ public class NodeFunction extends Node {
         functionDef = def;
         params = par;
         setSymbolTable(new SymbolTable());
-        
+
     }
 
     /**
@@ -81,7 +80,7 @@ public class NodeFunction extends Node {
         functionDef = this.getFunctionByName(name);
         params = programJSON.optJSONArray("params");
         setSymbolTable(new SymbolTable());
-        
+
     }
 
     /**
@@ -110,16 +109,16 @@ public class NodeFunction extends Node {
                 rules.call();
             } catch (SpokException ex) {
                 LOGGER.error("Unable to copy this function: {}", this);
-                return ex.getJSON();
+                return ex.getJSONDescription();
             }
         } else {
             LOGGER.error("Unable to find the definition of this function: {}", this);
             SpokExecutionException ex = new SpokExecutionException("Unable to find the definition of this function");
-            return ex.getJSON();
+            return ex.getJSONDescription();
         }
         return null;
     }
-    
+
     @Override
     public void stop() throws SpokException {
         LOGGER.info("The function {} has been stoped.", this);
@@ -127,16 +126,16 @@ public class NodeFunction extends Node {
             rules.stop();
         }
     }
-    
+
     @Override
     protected void specificStop() {
     }
-    
+
     @Override
     public void startEventFired(StartEvent e) {
         LOGGER.debug("The start event ({}) has been catched by {}", e.getSource(), this);
     }
-    
+
     @Override
     public void endEventFired(EndEvent e) {
         Node source = (Node) e.getSource();
@@ -144,23 +143,25 @@ public class NodeFunction extends Node {
         try {
             this.result = source.getResult();
         } catch (SpokException ex) {
-            this.result = ex.getJSON();
+            this.result = ex.getJSONDescription();
         }
         fireEndEvent(new EndEvent(this));
     }
-    
+
     @Override
     public String toString() {
         return "[Node Function : " + name + "]";
     }
-    
+
     @Override
-    protected JSONObject getJSONDescription() {
+    public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             o.put("id", name);
             o.put("params", params);
-        } catch (JSONException jSONException) {
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
     }
@@ -181,7 +182,7 @@ public class NodeFunction extends Node {
         if (params == null || params.length() == 0) {
             return "";
         }
-        
+
         try {
             StringBuilder builder = new StringBuilder();
             int i = 0;
@@ -189,13 +190,13 @@ public class NodeFunction extends Node {
                 builder.append(getStringParam(params.getJSONObject(i))).append(",");
             }
             builder.append(getStringParam(params.getJSONObject(i)));
-            
+
             return builder.toString();
         } catch (JSONException ex) {
             LOGGER.error("Error in parsing function params for function: {}", this.name);
             return "...";
         }
-        
+
     }
 
     /**
@@ -222,16 +223,17 @@ public class NodeFunction extends Node {
             return o.optString("value");
         }
         return type;
-        
+
     }
-    
+
     @Override
     public Node copy(Node parent) {
         JSONArray copyParams = null;
         try {
-            copyParams = new JSONArray(params);
+            if (params != null) {
+                copyParams = new JSONArray(params.toString());
+            }
         } catch (JSONException ex) {
-            java.util.logging.Logger.getLogger(NodeFunction.class.getName()).log(Level.SEVERE, null, ex);
         }
         NodeFunction ret = new NodeFunction(parent, name, functionDef, copyParams);
         return ret;
@@ -253,7 +255,7 @@ public class NodeFunction extends Node {
             this.getSymbolTable().addVariable(v_name, v);
         }
     }
-    
+
     @Override
     public JSONObject getResult() {
         return this.result;

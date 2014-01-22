@@ -153,14 +153,16 @@ public class NodeEvent extends Node {
     }
     
     @Override
-    JSONObject getJSONDescription() {
+    public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             o.put("sourceType", sourceType);
             o.put("sourceId", sourceId);
             o.put("eventName", eventName);
             o.put("eventValue", eventValue);
-        } catch (JSONException jSONException) {
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
 

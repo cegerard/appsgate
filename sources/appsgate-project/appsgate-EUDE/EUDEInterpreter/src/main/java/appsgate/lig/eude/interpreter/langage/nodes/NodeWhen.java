@@ -133,7 +133,7 @@ public class NodeWhen extends Node {
     }
     
     @Override
-    JSONObject getJSONDescription() {
+    public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             o.put("seqRulesThen", seqRules.getJSONArrayDescription());
@@ -143,7 +143,9 @@ public class NodeWhen extends Node {
                 evt.put(i, e.getJSONDescription());
             }
             o.put("events", evt);
-        } catch (JSONException jSONException) {
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
     }

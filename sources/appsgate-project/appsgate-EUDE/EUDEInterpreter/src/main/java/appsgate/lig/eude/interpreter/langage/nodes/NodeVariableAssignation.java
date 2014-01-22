@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -37,9 +38,12 @@ public class NodeVariableAssignation extends Node {
 
     public NodeVariableAssignation(JSONObject obj, Node p) throws SpokNodeException {
         super(p);
-        if (obj.has("function")) {
+        if (obj.has("select")) {
+            evalNode = new NodeSelect(obj.optJSONObject("select"), this);
+        } else if (obj.has("function")) {
             evalNode = new NodeFunction(obj.optJSONObject("function"), this);
         }
+
         if (obj.has("value")) {
             value = obj.optJSONObject("value");
         }
@@ -52,7 +56,7 @@ public class NodeVariableAssignation extends Node {
     }
 
     @Override
-    JSONObject getJSONDescription() {
+    public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             if (evalNode != null) {
@@ -64,6 +68,8 @@ public class NodeVariableAssignation extends Node {
             o.put("name", name);
 
         } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
 
@@ -84,7 +90,12 @@ public class NodeVariableAssignation extends Node {
         if (evalNode != null) {
             ret.evalNode = this.evalNode.copy(parent);
         }
-        ret.value = new JSONObject(value);
+        if (value != null) {
+            try {
+                ret.value = new JSONObject(value.toString());
+            } catch (JSONException ex) {
+            }
+        }
         return ret;
     }
 

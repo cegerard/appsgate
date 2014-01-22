@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import java.util.Iterator;
 import java.util.List;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ public class NodeFunctionDefinition extends Node {
 
     /**
      * private constructor to copy method
+     *
      * @param parent
      */
     private NodeFunctionDefinition(Node parent) {
@@ -60,7 +62,7 @@ public class NodeFunctionDefinition extends Node {
     public String getName() {
         return name;
     }
-    
+
     @Override
     public String getExpertProgramScript() {
         String ret = "function " + this.name + "(";
@@ -98,15 +100,20 @@ public class NodeFunctionDefinition extends Node {
 
     @Override
     public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
         try {
-            JSONObject o = new JSONObject();
             o.put("id", this.name);
             o.put("seqRules", seqRules.getJSONArrayDescription());
-            o.put("seqDefinitions", getSymbolTable().getJSONDescription());
-            return o;
+            if (getSymbolTable() != null) {
+                o.put("seqDefinitions", getSymbolTable().getJSONDescription());
+           } else {
+                o.put("seqDefinitions", new JSONArray());
+            }
         } catch (JSONException ex) {
-            return null; 
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case           
         }
+        return o;
     }
 
     @Override
@@ -122,6 +129,5 @@ public class NodeFunctionDefinition extends Node {
         LOGGER.warn("Trying to call a non functional node");
         return null;
     }
-
 
 }

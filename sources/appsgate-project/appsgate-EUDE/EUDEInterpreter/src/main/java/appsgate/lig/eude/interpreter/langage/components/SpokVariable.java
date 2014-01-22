@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class SpokVariable {
+public class SpokVariable implements SpokObject{
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SpokVariable.class.getName());
@@ -172,12 +172,15 @@ public class SpokVariable {
     /**
      * @return the json description of the variable
      */
+    @Override
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             o.put("id", id);
             o.put("type", type);
         } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
     }

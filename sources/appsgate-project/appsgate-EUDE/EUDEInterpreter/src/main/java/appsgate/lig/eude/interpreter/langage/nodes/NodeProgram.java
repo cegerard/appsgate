@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Node program for the interpreter. Contains the metadatas of the program, the
+ * Node program for the interpreter. Contains the metadata of the program, the
  * parameters, the variables and the rules
  *
  * @author Rémy Dautriche
@@ -153,11 +153,7 @@ public class NodeProgram extends Node {
 
         this.setSymbolTable(new SymbolTable(source.optJSONArray("seqDefinitions")));
         if (source.has("daemon")) {
-            try {
-                daemon = source.getBoolean("daemon");
-            } catch (JSONException ex) {
-                throw new SpokNodeException("NodeProgram", "daemon", ex);
-            }
+            daemon = source.optBoolean("daemon");
         } else {
             daemon = false;
         }
@@ -189,7 +185,8 @@ public class NodeProgram extends Node {
             try {
                 ret.put("status", true);
             } catch (JSONException ex) {
-                LOGGER.warn("Unable to set the status to true for program: {}", this);
+                // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+                // only if the key is null, which will never be the case
             }
             return ret;
         } else {
@@ -330,7 +327,8 @@ public class NodeProgram extends Node {
             getInterpreter().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
 
         } catch (JSONException e) {
-            LOGGER.warn("JSON Exception : {}, unable to set the running state inside the JSON program", e.getMessage());
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
     }
 
@@ -340,7 +338,7 @@ public class NodeProgram extends Node {
     }
 
     @Override
-    JSONObject getJSONDescription() {
+    public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             o.put("id", id);
@@ -354,7 +352,9 @@ public class NodeProgram extends Node {
             source.put("seqDefinitions", getSymbolTable().getJSONDescription());
 
             o.put("source", source);
-        } catch (JSONException jSONException) {
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
 

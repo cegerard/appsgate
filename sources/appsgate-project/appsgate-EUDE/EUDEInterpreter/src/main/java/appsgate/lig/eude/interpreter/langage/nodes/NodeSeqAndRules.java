@@ -131,8 +131,16 @@ public class NodeSeqAndRules extends Node {
     }
 
     @Override
-    JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Should use the getJSONArrayDescription instead.");
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("type", "NodeSeqAndRules");
+            o.put("sequence", getJSONArrayDescription());
+        } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return o;
     }
 
     public JSONArray getJSONArrayDescription() {
@@ -143,6 +151,8 @@ public class NodeSeqAndRules extends Node {
                 a.put(i, n.getJSONDescription());
                 i++;
             } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
             }
         }
         return a;

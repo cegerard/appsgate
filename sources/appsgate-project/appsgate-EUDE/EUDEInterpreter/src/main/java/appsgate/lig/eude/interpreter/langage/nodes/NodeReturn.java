@@ -84,7 +84,9 @@ public class NodeReturn extends Node {
             if (returnNode != null) {
                 ret.returnNode = this.returnNode.copy(parent);
             }
-            ret.returnValue = new JSONObject(returnValue.toString());
+            if (returnValue != null) {
+                ret.returnValue = new JSONObject(returnValue.toString());
+            }
             return ret;
         } catch (JSONException ex) {
             return null;
@@ -113,7 +115,7 @@ public class NodeReturn extends Node {
         functionParent = (NodeFunction) findNode(NodeFunction.class, this);
         if (functionParent == null) {
             SpokExecutionException ex = new SpokExecutionException("Unable to find a function node to this function.");
-            return ex.getJSON();
+            return ex.getJSONDescription();
         }
         addEndEventListener(functionParent);
 
@@ -123,7 +125,7 @@ public class NodeReturn extends Node {
                 returnNode.call();
 
             } catch (SpokException ex) {
-                return ex.getJSON();
+                return ex.getJSONDescription();
             }
         } else {
             addEndEventListener(this);
@@ -133,7 +135,7 @@ public class NodeReturn extends Node {
     }
 
     @Override
-    JSONObject getJSONDescription() {
+    public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             if (returnNode != null) {
@@ -144,6 +146,8 @@ public class NodeReturn extends Node {
             }
 
         } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
     }

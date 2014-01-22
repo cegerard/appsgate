@@ -22,6 +22,16 @@ public interface AppsGateSpec {
 	 * Get all the devices description
 	 */
 	public JSONArray getDevices();
+        
+        /**
+         * Return a list of devices that correspond to a combinaison of types, places and states.
+         * 
+         * @param types
+         * @param places
+         * @param states
+         * @return a list of devices corresponding to the request
+         */
+        public JSONArray getSpecificDevices(JSONArray types, JSONArray places, JSONArray states);
 	
 	/***************************/
 	/** Device name management */

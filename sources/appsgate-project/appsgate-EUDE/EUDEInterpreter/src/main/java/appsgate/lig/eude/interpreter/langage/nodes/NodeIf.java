@@ -111,7 +111,7 @@ public class NodeIf extends Node {
     }
 
     @Override
-    public void specificStop() throws SpokException{
+    public void specificStop() throws SpokException {
         expBool.removeEndEventListener(this);
         expBool.stop();
         seqRulesTrue.removeEndEventListener(this);
@@ -124,15 +124,17 @@ public class NodeIf extends Node {
     public String toString() {
         return "[node If:" + expBool.toString() + "?" + seqRulesTrue.toString() + ":" + seqRulesFalse.toString() + "]";
     }
-    
+
     @Override
-    JSONObject getJSONDescription() {
-                JSONObject o = new JSONObject();
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
         try {
             o.put("expBool", expBool.getJSONArrayDescription());
             o.put("seqRulesTrue", seqRulesTrue.getJSONArrayDescription());
             o.put("seqRulesFalse", seqRulesTrue.getJSONArrayDescription());
-        } catch (JSONException jSONException) {
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
 

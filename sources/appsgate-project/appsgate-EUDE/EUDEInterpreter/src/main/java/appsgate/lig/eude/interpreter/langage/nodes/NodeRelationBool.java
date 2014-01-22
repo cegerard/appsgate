@@ -246,7 +246,7 @@ public class NodeRelationBool extends Node {
     }
 
     @Override
-    JSONObject getJSONDescription() {
+    public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             o.put("operator", operator);
@@ -274,7 +274,9 @@ public class NodeRelationBool extends Node {
             }
             o.put("rightOperand", rightOperand);
 
-        } catch (JSONException jSONException) {
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
 

@@ -198,6 +198,8 @@ public final class SymbolTable {
                 a.put(i++, json);
             }
         } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return a;
     }

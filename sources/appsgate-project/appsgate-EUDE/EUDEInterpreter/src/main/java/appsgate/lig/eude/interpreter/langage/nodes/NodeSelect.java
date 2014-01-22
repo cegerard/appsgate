@@ -1,10 +1,12 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.SpokPlace;
-import appsgate.lig.eude.interpreter.langage.components.SpokType;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import java.util.ArrayList;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.main.spec.AppsGateSpec;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -13,11 +15,40 @@ import org.json.JSONObject;
  */
 public class NodeSelect extends Node {
 
-    private ArrayList<SpokType> what;
-    private ArrayList<SpokPlace> where;
+    private JSONArray what;
+    private JSONArray where;
+    private JSONArray state;
+    private JSONArray specificDevices;
 
-    public NodeSelect(Node p) {
+    /**
+     * private constructor to allow copy
+     *
+     * @param p
+     */
+    private NodeSelect(Node p) {
         super(p);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param o
+     * @param parent 
+     */
+    public NodeSelect(JSONObject o, Node parent) {
+        super(parent);
+        what = o.optJSONArray("what");
+        if (what == null) {
+            what = new JSONArray();
+        }
+        where = o.optJSONArray("where");
+        if (where == null) {
+            where = new JSONArray();
+        }
+        state = o.optJSONArray("state");
+        if (state == null) {
+            state = new JSONArray();
+        }
     }
 
     @Override
@@ -36,21 +67,50 @@ public class NodeSelect extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeSelect ret = new NodeSelect(parent);
-        ret.what = new ArrayList<SpokType>(what);
-        ret.where = new ArrayList<SpokPlace>(where);
+        try {
+            ret.what = new JSONArray(what.toString());
+            ret.where = new JSONArray(where.toString());
+            ret.state = new JSONArray(state.toString());
+        } catch (JSONException ex) {
+        }
         return ret;
     }
 
     @Override
-    public JSONObject call() {
-        // TODO
-        // depending on the what and the where of the context, it return the correct values
+    public JSONObject getResult() {
+        if (specificDevices == null) {
+            return null;
+        }
+        JSONObject o = new JSONObject();
+        try {
+            o.put("type", "list");
+            o.put("value", specificDevices);
+        } catch (JSONException ex) {
+        }
+        return o;
+    }
+
+    @Override
+    public JSONObject call() throws SpokExecutionException {
+        EUDEInterpreterImpl interpreter = getInterpreter();
+        AppsGateSpec appsGate = interpreter.getAppsGate();
+        specificDevices = appsGate.getSpecificDevices(what, where, state);
+        fireEndEvent(new EndEvent(this));
         return null;
     }
 
     @Override
-    JSONObject getJSONDescription() {
-        return new JSONObject();
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("what", what);
+            o.put("where", where);
+            o.put("state", state);
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return o;
     }
 
 }

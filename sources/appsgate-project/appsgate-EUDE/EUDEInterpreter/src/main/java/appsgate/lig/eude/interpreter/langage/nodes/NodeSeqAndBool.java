@@ -163,10 +163,18 @@ public class NodeSeqAndBool extends Node {
     public String toString() {
         return "[Node SeqAndBool: [" + relationsBool.size() + "]]";
     }
-    
+
     @Override
     public JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Should use the getJSONArrayDescription instead.");
+        JSONObject o = new JSONObject();
+        try {
+            o.put("type", "NodeSeqAndBool");
+            o.put("sequence", getJSONArrayDescription());
+        } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return o;
     }
 
     /**
@@ -181,6 +189,8 @@ public class NodeSeqAndBool extends Node {
                 a.put(i, n.getJSONDescription());
                 i++;
             } catch (JSONException ex) {
+                // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+                // only if the key is null, which will never be the case
             }
         }
         return a;

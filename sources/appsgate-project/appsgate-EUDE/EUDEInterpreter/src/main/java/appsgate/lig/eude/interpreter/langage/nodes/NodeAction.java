@@ -12,7 +12,6 @@ import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,7 +232,7 @@ public class NodeAction extends Node {
     }
 
     @Override
-    JSONObject getJSONDescription() {
+    public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
             o.put("targetType", targetType);
@@ -242,6 +241,8 @@ public class NodeAction extends Node {
             o.put("args", args);
             o.put("returnType", returnType);
         } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
         }
         return o;
 
@@ -269,10 +270,10 @@ public class NodeAction extends Node {
         NodeAction ret = new NodeAction(parent);
         ret.setSymbolTable(this.getSymbolTable());
         try {
-            ret.args = new JSONArray(args);
+            ret.args = new JSONArray(args.toString());
         } catch (JSONException ex) {
-            java.util.logging.Logger.getLogger(NodeAction.class.getName()).log(Level.SEVERE, null, ex);
         }
+        ret.returnType = returnType;
         ret.methodName = methodName;
         ret.targetId = targetId;
         ret.targetType = targetType;

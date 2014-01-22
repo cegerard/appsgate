@@ -27,6 +27,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
@@ -67,6 +68,11 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
      * Context history push service to save the current state
      */
     private DataBasePushService contextHistory_push;
+
+    /**
+     * The appsgate server
+     */
+    private AppsGateSpec appsgate;
 
     /**
      * Hash map containing the nodes and the events they are listening
@@ -418,30 +424,30 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     }
 
     /**
-     * 
+     *
      * @param id
      * @param runningState
      * @param source
-     * @param userInputSource 
+     * @param userInputSource
      */
     private void notifyUpdateProgram(String id, String runningState, JSONObject source, String userInputSource) {
         notifyChanges(new ProgramNotification("updateProgram", id, runningState, source, userInputSource));
     }
 
     /**
-     * 
+     *
      * @param id
      * @param runningState
      * @param source
-     * @param userInputSource 
+     * @param userInputSource
      */
     private void notifyAddProgram(String id, String runningState, JSONObject source, String userInputSource) {
         notifyChanges(new ProgramNotification("newProgram", id, runningState, source, userInputSource));
     }
 
     /**
-     * 
-     * @param id 
+     *
+     * @param id
      */
     private void notifyRemoveProgram(String id) {
         notifyChanges(new ProgramNotification("removeProgram", id, RUNNING_STATE.STOPPED.toString(), new JSONObject(), ""));
@@ -461,32 +467,33 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     }
 
     /**
-     * 
+     *
      */
     public class CoreEventListener implements CoreListener {
+
         /**
-         * 
+         *
          */
         private String objectId;
         /**
-         * 
+         *
          */
         private String varName;
         /**
-         * 
+         *
          */
         private String varValue;
         /**
-         * 
+         *
          */
         private final EUDEInterpreterImpl eudeInt;
 
         /**
-         * 
+         *
          * @param objectId
          * @param varName
          * @param varValue
-         * @param eudeInt 
+         * @param eudeInt
          */
         public CoreEventListener(String objectId, String varName,
                 String varValue, EUDEInterpreterImpl eudeInt) {
@@ -581,6 +588,22 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     public void startEventFired(StartEvent e) {
         // TODO Auto-generated method stub
 
+    }
+
+    /**
+     *
+     * @param spec
+     */
+    public void setAppsGate(AppsGateSpec spec) {
+        this.appsgate = spec;
+    }
+
+    /**
+     * 
+     * @return appsgate
+     */
+    public AppsGateSpec getAppsGate() {
+        return appsgate;
     }
 
     /**

@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public abstract class Node implements Callable<JSONObject>, StartEventGenerator, StartEventListener, EndEventGenerator, EndEventListener {
+public abstract class Node implements Callable<JSONObject>, StartEventGenerator, StartEventListener, EndEventGenerator, EndEventListener, SpokObject{
 
     /**
      * Logger
@@ -389,13 +390,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @return the node copied
      */
     abstract protected Node copy(Node parent);
-
-    /**
-     * Method to get the JSONDescription of a node from its implementation
-     *
-     * @return the description of the description of the node
-     */
-    abstract JSONObject getJSONDescription();
 
     /**
      * Method that return the value associated to a node

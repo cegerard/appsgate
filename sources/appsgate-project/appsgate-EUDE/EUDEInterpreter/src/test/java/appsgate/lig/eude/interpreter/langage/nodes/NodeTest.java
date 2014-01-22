@@ -116,7 +116,7 @@ public abstract class NodeTest {
 
     @Test
     public void testGetResult() throws Exception {
-        System.out.println("GetInterpreter");
+        System.out.println("GetResult");
         assertNull(this.instance.getResult());
     }
 
@@ -131,34 +131,44 @@ public abstract class NodeTest {
         }
     }
 
+    @Test
+    public void testCopy() throws JSONException {
+        System.out.println("Copy - " + this.getClass().getSimpleName());
+        Node copy = this.instance.copy(null);
+        assertNotNull(copy);
+        Assert.assertTrue("Two copies should have same json description", compareTo(this.instance.getJSONDescription(), copy.getJSONDescription()));
+    }
+    
     /**
      * Method that compare two JSON Objects and tell where they differ
      *
-     * @param ruleJSON
-     * @param jsonDescription
+     * @param orig
+     * @param copy
      * @return
      * @throws JSONException
      */
-    private boolean compareTo(JSONObject ruleJSON, JSONObject jsonDescription) throws JSONException {
+    private boolean compareTo(JSONObject orig, JSONObject copy) throws JSONException {
         Boolean ret = true;
-        Iterator k = ruleJSON.keys();
+        Iterator k = orig.keys();
         while (k.hasNext()) {
             String key = (String) k.next();
-            if (!jsonDescription.has(key)) {
+            if (!copy.has(key)) {
                 ret = false;
-                System.out.println(key + " is in json, but not in desc");
+                System.out.println(key + " is in original, but not in copy");
             } else {
-                if (ruleJSON.get(key).getClass() == JSONObject.class) {
-                    return compareTo((JSONObject) ruleJSON.get(key), (JSONObject) jsonDescription.get(key));
+                if (orig.get(key).getClass() == JSONObject.class) {
+                    return compareTo((JSONObject) orig.get(key), (JSONObject) copy.get(key));
                 }
-                if (!ruleJSON.get(key).toString().equals(jsonDescription.get(key).toString())) {
+                if (!orig.get(key).toString().equals(copy.get(key).toString())) {
                     ret = false;
                     System.out.println("For key (" + key + "), contents is not equal:\n"
-                            + ruleJSON.get(key).toString() + "\n"
-                            + jsonDescription.getString(key).toString());
+                            + orig.get(key).toString() + "\n"
+                            + copy.getString(key).toString());
                 }
             }
         }
         return ret;
     }
+    
+    
 }

@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import java.util.logging.Level;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +135,6 @@ public class NodeExpBool extends Node {
             n.addEndEventListener(this);
             n.call();
         }
-
         return null;
     }
 
@@ -159,7 +159,15 @@ public class NodeExpBool extends Node {
 
     @Override
     public JSONObject getJSONDescription() {
-        throw new UnsupportedOperationException("Should use the getJSONArrayDescription instead.");
+        JSONObject o = new JSONObject();
+        try {
+            o.put("type", "NodeExpBool");
+            o.put("sequence", getJSONArrayDescription());
+        } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return o;
     }
 
     /**
@@ -174,6 +182,8 @@ public class NodeExpBool extends Node {
                 a.put(i, n.getJSONDescription());
                 i++;
             } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
             }
         }
         return a;
