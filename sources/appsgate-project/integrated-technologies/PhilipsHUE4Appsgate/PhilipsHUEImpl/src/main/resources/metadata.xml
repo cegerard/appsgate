@@ -29,8 +29,20 @@
 		<!-- device meta data -->
 		<definition name="lightBridgeId" type="string" field="lightBridgeId" />
 		<definition name="lightBridgeIP" type="string" field="lightBridgeIP" />
-		<definition name="reachable" type="string" field="reachable" />
+		<definition name="reachable" 	 type="string" field="reachable"     method="reachableChanged"/>
 
+		<definition name="state"  type="string" field="state"  method="stateChanged"/>
+		<definition name="hue"    type="string" field="hue"    method="hueChanged"/>
+		<definition name="sat"    type="string" field="sat"    method="satChanged"/>
+		<definition name="bri"    type="string" field="bri"    method="briChanged"/>
+		<definition name="x"  	  type="string" field="x"      method="xChanged"/>
+		<definition name="y" 	  type="string" field="y"	   method="yChanged"/>
+		<definition name="ct"	  type="string" field="ct"	   method="ctChanged"/>
+		<definition name="speed"  type="string" field="speed"  method="speedChanged"/>
+		<definition name="alert"  type="string" field="alert"  method="alertChanged"/>
+		<definition name="mode"   type="string" field="mode"   method="modeChanged"/>
+		<definition name="effect" type="string" field="effect" method="effectChanged"/>
+		
 	</implementation>
 
 	<implementation name="PhilipsHUEImplFactory"
