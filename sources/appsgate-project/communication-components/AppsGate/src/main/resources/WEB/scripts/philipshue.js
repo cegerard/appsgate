@@ -20,6 +20,7 @@ define([], function () {
 				var lights_tile_list = document.getElementById("lights-tile-list");
 				for(light in lightsArray) {
 					this.addLightTile(lightsArray[light], lights_tile_list);
+					appsgateMain.addNotifHandler(lightsArray[light].lightId, this.notificationHandler);
 				}
 				
 			}else if(message.hasOwnProperty("bridgeInfo")){
@@ -264,6 +265,92 @@ define([], function () {
 				}
 			}
 			
+		}
+		
+		this.notificationHandler = function(message) {
+			var active_page = document.getElementById("philips-hue-light-sections");
+			var currentDomObject;
+			var varName = message.varName;
+			if(active_page != null) {
+				//Update full light state tiles
+				if(varName == "reachable"){
+					currentDomObject = document.getElementById("lightinfo-1-Tile-reachable");
+					if(message.value == "true") {
+						currentDomObject.innerHTML = "reachable";
+					}else {
+						currentDomObject.innerHTML = "not reachable";
+					}	
+				}else {
+					if(varName == "state"){
+						currentDomObject = document.getElementById("lightstate-on-value");
+						if(message.value == "true") {
+							document.getElementById("lightstate-on").className = "tile square text bg-color-yellow";
+							currentDomObject.innerHTML = "ON";
+						}else {
+							currentDomObject.innerHTML = "OFF";
+							document.getElementById("lightstate-on").className = "tile square text bg-color-darken";
+						}
+					}else if(varName == "hue"){
+						currentDomObject = document.getElementById("lightstate-hue-value");
+						currentDomObject.innerHTML = message.value;
+					}else if(varName == "sat"){
+						currentDomObject = document.getElementById("lightstate-sat-value");
+						currentDomObject.innerHTML = message.value;
+					}else if(varName == "bri"){
+						currentDomObject = document.getElementById("lightstate-bri-value");
+						currentDomObject.innerHTML = message.value;
+					}else if(varName == "x"){
+						currentDomObject = document.getElementById("lightstate-x-value");
+						currentDomObject.innerHTML = message.value;
+					}else if(varName == "y"){
+						currentDomObject = document.getElementById("lightstate-y-value");
+						currentDomObject.innerHTML = message.value;
+					}else if(varName == "ct"){
+						currentDomObject = document.getElementById("lightstate-ct-value");
+						currentDomObject.innerHTML = message.value;
+					}else if(varName == "speed"){
+						currentDomObject = document.getElementById("lightstate-tt-value");
+						currentDomObject.innerHTML = message.value;
+					}else if(varName == "alert"){
+						currentDomObject = document.getElementById("lightstate-alert-value");
+						currentDomObject.value =  message.value;
+					}else if(varName == "mode"){
+						currentDomObject = document.getElementById("lightstate-mode-value");
+						currentDomObject.value =  message.value;
+					}else if(varName == "effect"){
+						currentDomObject = document.getElementById("lightstate-effect-value");
+						currentDomObject.value =  message.value;
+					}
+				}
+
+			}else {
+				active_page = document.getElementById("lights-tile-list");
+				var lightDiv = document.getElementById(message.objectId);
+				var atag = lightDiv.childNodes[0];
+				
+				
+				if(varName == "reachable"){
+					currentDomObject = document.getElementById("light-reachable-"+message.objectId);
+					if(message.value == "true") {
+						currentDomObject.innerHTML = "OK";
+						atag.className = "tile square text bg-color-blue";
+					}else {
+						currentDomObject.innerHTML = "OUT";
+						atag.className = "tile square text bg-color-red";
+					}	
+					
+				} else if(varName == "state"){
+					currentDomObject = document.getElementById("light-state-"+message.objectId);
+					if(message.value == "true") {
+						currentDomObject.innerHTML = "ON";
+					}else {
+						currentDomObject.innerHTML = "OFF";
+					}
+				} else if(varName == "hue"){
+					currentDomObject = document.getElementById("light-color-"+message.objectId);
+					currentDomObject.innerHTML = message.value;
+				}
+			}
 		}
 		
 		/** Add a tile in configure GUI for the bridge in parameter */

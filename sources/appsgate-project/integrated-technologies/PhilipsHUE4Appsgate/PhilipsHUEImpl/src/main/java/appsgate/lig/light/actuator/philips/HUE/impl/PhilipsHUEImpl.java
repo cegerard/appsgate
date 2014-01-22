@@ -30,7 +30,7 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	private static long HUE_PINK    = 54332;
 	private static long HUE_DEFAULT = 14922;
 	
-	private static int SAT_DEFAULT = 255;
+	private static int SAT_DEFAULT = 254;
 	private static long BRI_DEFAULT = 180;
 	
 	
@@ -51,6 +51,18 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	private String lightBridgeId;
 	private String lightBridgeIP;
 	private String reachable;
+	
+	private String state;
+	private String hue;
+	private String sat;
+	private String bri;
+	private String x;
+	private String y;
+	private String ct;
+	private String speed;
+	private String alert;
+	private String mode;
+	private String effect;
 	
 	/**
 	 * The current sensor status.
@@ -563,6 +575,123 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	}
 	
 	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newReachable the new reachable value.
+	 * its a string the represent a boolean value for the reachable status.
+	 */
+	public void reachableChanged(String newReachable) {
+		logger.info("The actuator, "+ actuatorId+" reachable changed to "+newReachable);
+		notifyChanges("reachable", newReachable);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newState the new state value.
+	 * its a string the represent a boolean value for the state(On/Off) of the light.
+	 */
+	public void stateChanged(String newState) {
+		logger.info("The actuator, "+ actuatorId+" state changed to "+newState);
+		notifyChanges("state", newState);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newHue the new hue value.
+	 * its a string the represent a integer value for the hue status.
+	 */
+	public void hueChanged(String newHue) {
+		logger.info("The actuator, "+ actuatorId+" hue changed to "+newHue);
+		notifyChanges("hue", newHue);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newSat the new color saturation value.
+	 * its a string the represent a integer value for the color saturation status.
+	 */
+	public void satChanged(String newSat) {
+		logger.info("The actuator, "+ actuatorId+" sat changed to "+newSat);
+		notifyChanges("sat", newSat);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newBri the new brightness value.
+	 * its a string the represent a integer value for the brightness status.
+	 */
+	public void briChanged(String newBri) {
+		logger.info("The actuator, "+ actuatorId+" bri changed to "+newBri);
+		notifyChanges("bri", newBri);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newX the new x value.
+	 * its a string the represent a float value for the x status.
+	 */
+	public void xChanged(String newX) {
+		logger.info("The actuator, "+ actuatorId+" x changed to "+newX);
+		notifyChanges("x", newX);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newY the new y value.
+	 * its a string the represent a float value for the y status.
+	 */
+	public void yChanged(String newY) {
+		logger.info("The actuator, "+ actuatorId+" y changed to "+newY);
+		notifyChanges("y", newY);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newCT the new ct value.
+	 * its a string the represent a integer value for the ct status.
+	 */
+	public void ctChanged(String newCT) {
+		logger.info("The actuator, "+ actuatorId+" ct changed to "+newCT);
+		notifyChanges("ct", newCT);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newSpeed the new transition time value.
+	 * its a string the represent a integer value for the speed status.
+	 */
+	public void speedChanged(String newSpeed) {
+		logger.info("The actuator, "+ actuatorId+" speed changed to "+newSpeed);
+		notifyChanges("speed", newSpeed);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newAlert the new alert value.
+	 */
+	public void alertChanged(String newAlert) {
+		logger.info("The actuator, "+ actuatorId+" alert changed to "+newAlert);
+		notifyChanges("alert", newAlert);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newMode the new color mode value.
+	 */
+	public void modeChanged(String newMode) {
+		logger.info("The actuator, "+ actuatorId+" mode changed to "+newMode);
+		notifyChanges("mode", newMode);
+	}
+	
+	/**
+	 * Called by ApAM when the attribute value changed
+	 * @param newEffect the new effect value.
+	 */
+	public void effectChanged(String newEffect) {
+		logger.info("The actuator, "+ actuatorId+" effect changed to "+newEffect);
+		notifyChanges("effect", newEffect);
+	}
+	
+	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
@@ -586,6 +715,58 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
 		return new ColorLightNotificationMsg(this, varName, value);
+	}
+	
+	/**************************************/
+	/** Getter and setter for attributes **/
+	/**************************************/
+	
+	public boolean getReachable() {
+		return Boolean.valueOf(reachable);
+	}
+
+	public boolean getState() {
+		return Boolean.valueOf(state);
+	}
+
+	public int getHue() {
+		return Integer.valueOf(hue);
+	}
+
+	public int getSat() {
+		return Integer.valueOf(sat);
+	}
+
+	public int getBri() {
+		return Integer.valueOf(bri);
+	}
+
+	public float getX() {
+		return Float.valueOf(x);
+	}
+
+	public float getY() {
+		return Float.valueOf(y);
+	}
+
+	public int getCt() {
+		return Integer.valueOf(ct);
+	}
+
+	public long getSpeed() {
+		return Long.valueOf(speed);
+	}
+
+	public String getAlert() {
+		return alert;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public String getEffect() {
+		return effect;
 	}
 
 }
