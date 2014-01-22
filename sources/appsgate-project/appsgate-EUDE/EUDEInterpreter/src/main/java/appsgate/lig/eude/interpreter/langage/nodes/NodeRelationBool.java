@@ -184,8 +184,9 @@ public class NodeRelationBool extends Node {
 
         if (n == leftNodeAction) {
             // cast the value to the correct type
-            leftValue = parseValue(n.getResult(), leftReturnType);
-
+            if (n.getResult() != null) {
+                leftValue = parseValue(n.getResult().getJSONDescription(), leftReturnType);
+            }
             // if the right operand is not a direct value, launch its interpretation...
             if (rightNodeAction != null) {
                 rightNodeAction.addEndEventListener(this);
@@ -194,7 +195,9 @@ public class NodeRelationBool extends Node {
             }
         } else {
             // cast the value to the correct type
-            rightValue = parseValue(n.getResult(), rightReturnType);
+            if (n.getResult() != null) {
+                rightValue = parseValue(n.getResult().getJSONDescription(), rightReturnType);
+            }
 
         }
         // compute the final result and fire the end result

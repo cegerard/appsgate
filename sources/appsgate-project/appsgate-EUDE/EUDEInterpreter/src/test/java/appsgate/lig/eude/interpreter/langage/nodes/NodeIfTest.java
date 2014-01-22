@@ -5,14 +5,10 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
-import org.json.JSONException;
 import org.junit.Before;
 
 /**
@@ -33,19 +29,13 @@ public class NodeIfTest extends NodeTest {
 
     @Before
     @Override
-    public void setUp() {
-        try {
-            super.setUp();
-            ruleJSON.put("expBool", (Collection) null);
-            ruleJSON.put("seqRulesTrue", (Collection) null);
-            ruleJSON.put("seqRulesFalse", (Collection) null);
-            this.ifTest = new NodeIf(ruleJSON, null);
-            this.instance = this.ifTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON ex : " + ex.getMessage());
-        } catch (SpokNodeException ex) {
-            System.out.println(ex.getMessage());
-        }
+    public void setUp() throws Exception {
+        super.setUp();
+        ruleJSON.put("expBool", (Collection) null);
+        ruleJSON.put("seqRulesTrue", (Collection) null);
+        ruleJSON.put("seqRulesFalse", (Collection) null);
+        this.ifTest = new NodeIf(ruleJSON, null);
+        this.instance = this.ifTest;
     }
 
 }

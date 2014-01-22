@@ -33,22 +33,15 @@ public class NodeEventTest extends NodeTest {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
 
-        try {
-
-            ruleJSON.put("sourceType", "test");
-            ruleJSON.put("sourceId", "test");
-            ruleJSON.put("eventName", "test");
-            ruleJSON.put("eventValue", "test");
-            this.eventTest = new NodeEvent(ruleJSON, null);
-            this.instance = this.eventTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON Ex : " + ex.getMessage());
-        } catch (SpokNodeException ex) {
-            System.out.println(ex.getMessage());
-        }
+        ruleJSON.put("sourceType", "test");
+        ruleJSON.put("sourceId", "test");
+        ruleJSON.put("eventName", "test");
+        ruleJSON.put("eventValue", "test");
+        this.eventTest = new NodeEvent(ruleJSON, null);
+        this.instance = this.eventTest;
     }
 
     /**

@@ -2,6 +2,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.main.spec.AppsGateSpec;
@@ -77,7 +78,7 @@ public class NodeSelect extends Node {
     }
 
     @Override
-    public JSONObject getResult() {
+    public SpokVariable getResult() throws SpokException {
         if (specificDevices == null) {
             return null;
         }
@@ -87,12 +88,17 @@ public class NodeSelect extends Node {
             o.put("value", specificDevices);
         } catch (JSONException ex) {
         }
-        return o;
+        return new SpokVariable(o);
     }
 
     @Override
-    public JSONObject call() throws SpokExecutionException {
-        EUDEInterpreterImpl interpreter = getInterpreter();
+    public JSONObject call() {
+        EUDEInterpreterImpl interpreter;
+        try {
+            interpreter = getInterpreter();
+        } catch (SpokExecutionException ex) {
+            return ex.getJSONDescription();
+        }
         AppsGateSpec appsGate = interpreter.getAppsGate();
         specificDevices = appsGate.getSpecificDevices(what, where, state);
         fireEndEvent(new EndEvent(this));

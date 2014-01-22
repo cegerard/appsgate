@@ -12,9 +12,9 @@ public class SpokException extends Exception implements SpokObject {
 
     /**
      * Constructor
-     * 
+     *
      * @param reason
-     * @param ex 
+     * @param ex
      */
     public SpokException(String reason, Exception ex) {
         super(reason, ex);
@@ -35,5 +35,15 @@ public class SpokException extends Exception implements SpokObject {
         }
         return ret;
 
+    }
+
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName();
+    }
+    
+    @Override
+    public String getValue() {
+        return null;
     }
 }

@@ -6,10 +6,9 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -25,7 +24,7 @@ public class NodeVariableAssignation extends Node {
 
     private String name;
     private Node evalNode = null;
-    private JSONObject value = null;
+    private SpokObject value = null;
 
     /**
      * Default Constructor
@@ -36,7 +35,7 @@ public class NodeVariableAssignation extends Node {
         super(p);
     }
 
-    public NodeVariableAssignation(JSONObject obj, Node p) throws SpokNodeException {
+    public NodeVariableAssignation(JSONObject obj, Node p) throws SpokException {
         super(p);
         if (obj.has("select")) {
             evalNode = new NodeSelect(obj.optJSONObject("select"), this);
@@ -45,7 +44,7 @@ public class NodeVariableAssignation extends Node {
         }
 
         if (obj.has("value")) {
-            value = obj.optJSONObject("value");
+            value = new SpokVariable(obj.optJSONObject("value"));
         }
         name = getJSONString(obj, "name");
 
@@ -92,15 +91,15 @@ public class NodeVariableAssignation extends Node {
         }
         if (value != null) {
             try {
-                ret.value = new JSONObject(value.toString());
-            } catch (JSONException ex) {
+                ret.value = new SpokVariable(value.getJSONDescription());
+            } catch (SpokException ex) {
             }
         }
         return ret;
     }
 
     @Override
-    public JSONObject call() throws SpokException {
+    public JSONObject call() {
         setStarted(true);
         if (evalNode != null) {
             evalNode.addEndEventListener(this);
@@ -118,7 +117,7 @@ public class NodeVariableAssignation extends Node {
         try {
             value = source.getResult();
             if (value != null) {
-                setVariable(new SpokVariable(value));
+                setVariable(new SpokVariable(value.getJSONDescription()));
             } else {
                 setVariable(null);
             }

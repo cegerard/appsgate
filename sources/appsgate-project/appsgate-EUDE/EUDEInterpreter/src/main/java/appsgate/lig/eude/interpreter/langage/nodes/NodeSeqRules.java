@@ -59,7 +59,7 @@ public class NodeSeqRules extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeSeqRules(JSONArray seqRulesJSON, Node parent) throws SpokNodeException {
+    public NodeSeqRules(JSONArray seqRulesJSON, Node parent) throws SpokException {
         super(parent);
 
         seqAndRules = new ArrayList<NodeSeqAndRules>();

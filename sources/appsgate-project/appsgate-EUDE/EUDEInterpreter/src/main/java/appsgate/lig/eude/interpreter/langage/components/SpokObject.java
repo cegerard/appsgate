@@ -9,5 +9,9 @@ import org.json.JSONObject;
  */
 public interface SpokObject {
     
-    JSONObject getJSONDescription();
+    public JSONObject getJSONDescription();
+    
+    public String getType();
+    
+    public String getValue();
 }

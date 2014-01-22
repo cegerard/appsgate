@@ -53,7 +53,7 @@ public class NodeSeqAndRules extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeSeqAndRules(JSONArray seqAndRulesJSON, Node parent) throws SpokNodeException {
+    public NodeSeqAndRules(JSONArray seqAndRulesJSON, Node parent) throws SpokException {
         super(parent);
 
         rules = new ArrayList<Node>();
@@ -63,7 +63,7 @@ public class NodeSeqAndRules extends Node {
             try {
                 ruleJSON = seqAndRulesJSON.getJSONObject(i);
             } catch (JSONException ex) {
-              throw new SpokNodeException("NodeSeqAndRules", "item " + i, ex);
+                throw new SpokNodeException("NodeSeqAndRules", "item " + i, ex);
             }
             String nodeType = getJSONString(ruleJSON, "type");
             if (nodeType.equals("NodeAction")) {
@@ -94,12 +94,7 @@ public class NodeSeqAndRules extends Node {
         setStarted(true);
         for (Node n : rules) {
             n.addEndEventListener(this);
-            try {
-                n.call();
-            } catch (SpokException ex) {
-                LOGGER.error("An exception has been raised: " + ex);
-                break;
-            }
+            n.call();
             if (isStopping()) {
                 break;
             }
@@ -144,7 +139,7 @@ public class NodeSeqAndRules extends Node {
     }
 
     public JSONArray getJSONArrayDescription() {
-            JSONArray a = new JSONArray();
+        JSONArray a = new JSONArray();
         int i = 0;
         for (Node n : this.rules) {
             try {
@@ -152,12 +147,12 @@ public class NodeSeqAndRules extends Node {
                 i++;
             } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
-            // only if the key is null, which will never be the case
+                // only if the key is null, which will never be the case
             }
         }
         return a;
     }
-    
+
     @Override
     public String getExpertProgramScript() {
         String ret = "";

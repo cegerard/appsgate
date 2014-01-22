@@ -5,7 +5,6 @@ import appsgate.lig.main.spec.AppsGateSpec;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -37,15 +36,11 @@ public class NodeSelectTest extends NodeTest {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
         JSONObject o = new JSONObject();
-        try {
-            o.put("where", (JSONArray) null);
-            o.put("state", new JSONArray());
-        } catch (JSONException ex) {
-        }
-
+        o.put("where", (JSONArray) null);
+        o.put("state", new JSONArray());
         this.instance = new NodeSelect(o, programNode);
     }
 

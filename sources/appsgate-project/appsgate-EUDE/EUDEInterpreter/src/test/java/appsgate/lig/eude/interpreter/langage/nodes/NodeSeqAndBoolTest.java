@@ -6,7 +6,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import junit.framework.Assert;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,13 +25,9 @@ public class NodeSeqAndBoolTest extends NodeTest {
 
     @Before
     @Override
-    public void setUp() {
-        try {
-            this.seqTest = new NodeSeqAndBool(new JSONArray(), null);
-            this.instance = this.seqTest;
-        } catch (SpokNodeException ex) {
-            System.out.println(ex.getMessage());
-        }
+    public void setUp()  throws Exception{
+        this.seqTest = new NodeSeqAndBool(new JSONArray(), null);
+        this.instance = this.seqTest;
 
     }
 

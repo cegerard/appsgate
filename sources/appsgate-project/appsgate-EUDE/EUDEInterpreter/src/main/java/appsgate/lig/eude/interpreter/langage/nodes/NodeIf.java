@@ -48,7 +48,7 @@ public class NodeIf extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokNodeException {
+    public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokException {
         super(parent);
 
         this.expBool = new NodeExpBool(getJSONArray(ruleIfJSON, "expBool"), this);

@@ -41,7 +41,7 @@ public abstract class NodeTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
 
         this.instance = null;
         this.ruleJSON = new JSONObject();
@@ -55,7 +55,7 @@ public abstract class NodeTest {
      */
     @Test
     public void testStop() throws Exception {
-        System.out.println("stop");
+        printTestName("stop");
         this.instance.stop();
     }
 
@@ -66,7 +66,7 @@ public abstract class NodeTest {
      */
     @Test
     public void testCall() throws Exception {
-        System.out.println("call");
+        printTestName("call");
         JSONObject expResult = null;
         JSONObject result = this.instance.call();
         assertEquals(expResult, result);
@@ -77,7 +77,7 @@ public abstract class NodeTest {
      */
     @Test
     public void testGetSymbolTable() {
-        System.out.println("getSymbolTable");
+        printTestName("getSymbolTable");
         SymbolTable expResult = null;
         SymbolTable result = this.instance.getSymbolTable();
         assertEquals(expResult, result);
@@ -88,7 +88,7 @@ public abstract class NodeTest {
      */
     @Test
     public void testStartEventFired() {
-        System.out.println("startEventFired");
+        printTestName("startEventFired");
         StartEvent e = new StartEvent(this.instance);
         this.instance.startEventFired(e);
     }
@@ -98,14 +98,14 @@ public abstract class NodeTest {
      */
     @Test
     public void testEndEventFired() {
-        System.out.println("endEventFired");
+        printTestName("endEventFired");
         EndEvent e = new EndEvent(this.instance);
         this.instance.endEventFired(e);
     }
 
     @Test
     public void testGetInterpreter() {
-        System.out.println("GetInterpreter");
+        printTestName("GetInterpreter");
         try {
             this.instance.getInterpreter();
             fail("Should raise an exception");
@@ -116,13 +116,13 @@ public abstract class NodeTest {
 
     @Test
     public void testGetResult() throws Exception {
-        System.out.println("GetResult");
+        printTestName("GetResult");
         assertNull(this.instance.getResult());
     }
 
     @Test
     public void testGetJSONDescription() throws JSONException {
-        System.out.println("GetJSONDescription");
+        printTestName("GetJSONDescription");
         try {
             JSONObject jsonDescription = this.instance.getJSONDescription();
             Assert.assertTrue("Two Json Object should be equals", compareTo(this.ruleJSON, jsonDescription));
@@ -133,12 +133,13 @@ public abstract class NodeTest {
 
     @Test
     public void testCopy() throws JSONException {
-        System.out.println("Copy - " + this.getClass().getSimpleName());
+        printTestName("Copy");
+
         Node copy = this.instance.copy(null);
         assertNotNull(copy);
         Assert.assertTrue("Two copies should have same json description", compareTo(this.instance.getJSONDescription(), copy.getJSONDescription()));
     }
-    
+
     /**
      * Method that compare two JSON Objects and tell where they differ
      *
@@ -169,6 +170,9 @@ public abstract class NodeTest {
         }
         return ret;
     }
-    
-    
+
+    protected void printTestName(String testName) {
+        System.out.println(testName + " - " + this.getClass().getSimpleName());
+    }
+
 }

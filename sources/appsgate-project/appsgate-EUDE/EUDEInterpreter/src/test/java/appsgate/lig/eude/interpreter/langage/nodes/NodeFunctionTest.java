@@ -1,12 +1,9 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
+import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,21 +16,14 @@ import org.junit.Before;
  */
 public class NodeFunctionTest extends NodeTest {
 
-
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
-        try {
-            ruleJSON.put("id", "test");
+        ruleJSON.put("id", "test");
             //ruleJSON.put("params", new JSONArray());
-            
-            this.instance = new NodeFunction(ruleJSON, null);
-        } catch (SpokNodeException ex) {
-            Logger.getLogger(NodeFunctionTest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(NodeFunctionTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        this.instance = new NodeFunction(ruleJSON, null);
 
     }
 
@@ -49,7 +39,7 @@ public class NodeFunctionTest extends NodeTest {
         SpokVariable v1 = func.getVariableByName("v1");
         Assert.assertNotNull(v1);
         System.out.println(v1);
-        JSONObject result = func.getResult();
+        SpokObject result = func.getResult();
         System.out.println(result);
         Assert.assertNotNull(result);
     }
@@ -63,7 +53,7 @@ public class NodeFunctionTest extends NodeTest {
         assertNotNull(result);
         assertEquals("SpokExecutionException", result.getString("exceptionType"));
     }
-    
+
     @Test
     @Override
     public void testGetSymbolTable() {

@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
@@ -206,9 +207,9 @@ public class NodeAction extends Node {
      * has been passed
      */
     @Override
-    public JSONObject getResult() {
+    public SpokObject getResult() {
         if (command != null) {
-            return new JSONObject(command.getReturn());
+            return new SpokVariable(returnType, command.getReturn());
         } else {
             return null;
         }

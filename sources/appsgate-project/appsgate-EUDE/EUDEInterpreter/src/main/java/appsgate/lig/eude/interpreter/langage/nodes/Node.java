@@ -111,7 +111,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     abstract protected void specificStop() throws SpokException;
     
     @Override
-    abstract public JSONObject call() throws SpokException;
+    abstract public JSONObject call();
 
     @Override
     public void startEventFired(StartEvent e) {
@@ -398,7 +398,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @return null by default
      * @throws SpokException
      */
-    public JSONObject getResult() throws SpokException {
+    public SpokObject getResult() throws SpokException {
         return null;
     }
 
@@ -433,4 +433,13 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         symbolTable.addVariable(name, v);
     }
 
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName();
+    }
+    @Override
+    public String getValue() {
+        return null;
+    }
+    
 }

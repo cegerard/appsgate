@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Before;
@@ -25,7 +25,7 @@ public class NodeSeqRulesTest extends NodeTest {
     public void setUp() {
         try {
             this.instance = new NodeSeqRules(new JSONArray(), null);
-        } catch (SpokNodeException ex) {
+        } catch (SpokException ex) {
             System.out.println("JSON ex: " + ex.getMessage());
         }
 

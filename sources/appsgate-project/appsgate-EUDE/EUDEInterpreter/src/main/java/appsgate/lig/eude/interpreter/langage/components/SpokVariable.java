@@ -11,6 +11,8 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokSymbolTableException
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class SpokVariable implements SpokObject{
+public class SpokVariable implements SpokObject {
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SpokVariable.class.getName());
@@ -53,11 +55,28 @@ public class SpokVariable implements SpokObject{
         checkVariable();
     }
 
+    /**
+     *
+     * @param v_name
+     * @param jsonVariable
+     * @throws SpokException
+     */
     public SpokVariable(String v_name, JSONObject jsonVariable) throws SpokException {
         this.id = v_name;
         this.type = jsonVariable.optString("type");
         this.json = jsonVariable;
         checkVariable();
+    }
+
+    /**
+     *
+     * @param t
+     * @param value
+     */
+    public SpokVariable(String t, Object value) {
+        this.id = null;
+        this.type = t;
+        this.json = new JSONObject(value);
     }
 
     /**
@@ -119,8 +138,14 @@ public class SpokVariable implements SpokObject{
     /**
      * @return the type of this variable
      */
+    @Override
     public String getType() {
         return this.type;
+    }
+
+    @Override
+    public String getValue() {
+        return json.optString("value");
     }
 
     /**
@@ -161,14 +186,11 @@ public class SpokVariable implements SpokObject{
      * @throws SpokSymbolTableException
      */
     private void checkVariable() throws SpokSymbolTableException {
-        if (id == null || id.isEmpty()) {
-            throw new SpokSymbolTableException("Variable has no id", null);
-        }
         if (type == null || type.isEmpty()) {
             throw new SpokSymbolTableException("Variable has no type", null);
         }
     }
-    
+
     /**
      * @return the json description of the variable
      */
@@ -184,11 +206,11 @@ public class SpokVariable implements SpokObject{
         }
         return o;
     }
-    
+
     @Override
     public String toString() {
-        return "[var "+ this.id+ ", " + type + ": + " + this.json.toString() + "]";
-        
+        return "[var " + this.id + ", " + type + ": + " + this.json.toString() + "]";
+
     }
 
 }

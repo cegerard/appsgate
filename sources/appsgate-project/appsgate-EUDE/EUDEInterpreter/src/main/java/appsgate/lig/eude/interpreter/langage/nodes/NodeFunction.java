@@ -2,6 +2,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
@@ -47,7 +48,7 @@ public class NodeFunction extends Node {
     /**
      * The result associated with the function
      */
-    private JSONObject result = null;
+    private SpokObject result = null;
 
     /**
      * Constructor
@@ -143,7 +144,7 @@ public class NodeFunction extends Node {
         try {
             this.result = source.getResult();
         } catch (SpokException ex) {
-            this.result = ex.getJSONDescription();
+            this.result = ex;
         }
         fireEndEvent(new EndEvent(this));
     }
@@ -257,7 +258,7 @@ public class NodeFunction extends Node {
     }
 
     @Override
-    public JSONObject getResult() {
+    public SpokObject getResult() {
         return this.result;
     }
 }

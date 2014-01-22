@@ -8,7 +8,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.Collection;
 import junit.framework.Assert;
@@ -39,28 +38,21 @@ public class NodeProgramTest extends NodeTest {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
-        try {
+        ruleJSON.put("id", "test");
+        ruleJSON.put("runningState", "STOPPED");
+        ruleJSON.put("userInputSource", "test");
+        JSONObject source = new JSONObject();
+        source.put("programName", "test");
+        source.put("daemon", false);
+        source.put("seqRules", (Collection) null);
+        source.put("seqDefinitions", (Collection) null);
+        ruleJSON.put("source", source);
 
-            ruleJSON.put("id", "test");
-            ruleJSON.put("runningState", "STOPPED");
-            ruleJSON.put("userInputSource", "test");
-            JSONObject source = new JSONObject();
-            source.put("programName", "test");
-            source.put("daemon", false);
-            source.put("seqRules", (Collection) null);
-            source.put("seqDefinitions", (Collection) null);
-            ruleJSON.put("source", source);
+        this.programTest = new NodeProgram(interpreter, this.ruleJSON);
 
-            this.programTest = new NodeProgram(interpreter, this.ruleJSON);
-
-            this.instance = this.programTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON Ex : " + ex.getMessage());
-        } catch (SpokException ex) {
-            System.out.println(ex.getMessage());
-        }
+        this.instance = this.programTest;
     }
 
     /**
@@ -177,7 +169,7 @@ public class NodeProgramTest extends NodeTest {
         SymbolTable result = this.instance.getSymbolTable();
         assertNotNull(result);
     }
-    
+
     @Test
     @Override
     public void testGetInterpreter() {

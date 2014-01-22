@@ -23,23 +23,16 @@ import org.junit.Test;
 public class NodeFunctionDefinitionTest extends NodeTest {
 
     private NodeFunctionDefinition node;
-    
+
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
-        try {
-            ruleJSON.put("id", "test");
-            ruleJSON.put("seqRules", new JSONArray());
-            ruleJSON.put("seqDefinitions", new JSONArray());
-            this.node = new NodeFunctionDefinition(ruleJSON, null);
-            this.instance = this.node;
-            
-        } catch (SpokException ex) {
-            Logger.getLogger(NodeFunctionTest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(NodeFunctionTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ruleJSON.put("id", "test");
+        ruleJSON.put("seqRules", new JSONArray());
+        ruleJSON.put("seqDefinitions", new JSONArray());
+        this.node = new NodeFunctionDefinition(ruleJSON, null);
+        this.instance = this.node;
 
     }
 
@@ -47,7 +40,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
     public void testGetSymbolTable() {
         assertNotNull(this.node.getSymbolTable());
     }
-    
+
     @Test
     public void testBuildNodeFromJson() throws Exception {
         NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/testFunction.json"), null);
@@ -56,7 +49,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
         NodeSeqRules code = defNode.getCode(instance);
         Assert.assertNotNull(code);
     }
-    
+
     @Test
     public void testGetCode() throws Exception {
         assertNotNull(this.node.getCode(instance));

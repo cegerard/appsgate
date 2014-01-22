@@ -10,14 +10,10 @@ public class NodeVariableAssignationTest extends NodeTest {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
-        try {
 
-            this.instance = new NodeVariableAssignation(null);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        this.instance = new NodeVariableAssignation(null);
     }
 
 }

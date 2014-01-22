@@ -1,8 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.Collection;
-import org.json.JSONException;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -20,24 +18,15 @@ public class NodeActionTest extends NodeTest {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
-        try {
-            ruleJSON.put("targetType", "test");
-            ruleJSON.put("targetId", "test");
-            ruleJSON.put("methodName", "test");
-            ruleJSON.put("args", (Collection) null);
-        } catch (JSONException ex) {
-            System.out.println("JsonEx");
-        }
+        ruleJSON.put("targetType", "test");
+        ruleJSON.put("targetId", "test");
+        ruleJSON.put("methodName", "test");
+        ruleJSON.put("args", (Collection) null);
 
-        try {
-
-            this.actionTest = new NodeAction(ruleJSON, null);
-            this.instance = this.actionTest;
-        } catch (SpokNodeException ex) {
-            System.out.println("JSon Exception: " + ex);
-        }
+        this.actionTest = new NodeAction(ruleJSON, null);
+        this.instance = this.actionTest;
     }
 
     /**

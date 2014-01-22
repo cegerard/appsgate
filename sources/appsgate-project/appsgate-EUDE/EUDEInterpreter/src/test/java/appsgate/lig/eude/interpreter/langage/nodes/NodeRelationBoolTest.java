@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -27,26 +22,20 @@ public class NodeRelationBoolTest extends NodeTest {
 
     @Before
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
-        try {
-            JSONObject op = new JSONObject();
-            op.put("targetId", "p0");
-            op.put("returnType", "boolean");
-            op.put("targetType", "program");
-            op.put("methodName", "test");
-            op.put("args", (Collection) null);
-            ruleJSON.put("operator", "test");
-            ruleJSON.put("leftOperand", op);
-            ruleJSON.put("rightOperand", op);
-            this.relationTest = new NodeRelationBool(ruleJSON, null);
-            this.instance = this.relationTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON Ex : " + ex.getMessage());
+        JSONObject op = new JSONObject();
+        op.put("targetId", "p0");
+        op.put("returnType", "boolean");
+        op.put("targetType", "program");
+        op.put("methodName", "test");
+        op.put("args", (Collection) null);
+        ruleJSON.put("operator", "test");
+        ruleJSON.put("leftOperand", op);
+        ruleJSON.put("rightOperand", op);
+        this.relationTest = new NodeRelationBool(ruleJSON, null);
+        this.instance = this.relationTest;
 
-        } catch (SpokNodeException ex) {
-            System.out.println(ex.getMessage());
-        }
     }
 
     /**

@@ -50,7 +50,7 @@ public class NodeWhen extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws SpokNodeException {
+    public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws SpokException {
         super(parent);
         seqEvent = new ArrayList<NodeEvent>();
         JSONArray seqEventJSON = getJSONArray(ruleWhenJSON, "events");
