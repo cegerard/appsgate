@@ -18,7 +18,7 @@ public class NodeBuilder {
     private static enum NODE_TYPE {
 
         NODE_ACTION, NODE_BINARY_EXPRESSION, NODE_EVENT, NODE_FUNCTION,
-        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM, NODE_RELATION_BOOL,
+        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM,
         NODE_RETURN, NODE_SELECT, NODE_VALUE, NODE_VARIABLE_ASSIGNATION, NODE_WHEN;
     }
 
@@ -43,9 +43,6 @@ public class NodeBuilder {
         }
         if (type.equalsIgnoreCase("NodeProgram")) {
             return NODE_TYPE.NODE_PROGRAM;
-        }
-        if (type.equalsIgnoreCase("NodeRelationBool")) {
-            return NODE_TYPE.NODE_RELATION_BOOL;
         }
         if (type.equalsIgnoreCase("NodeReturn")) {
             return NODE_TYPE.NODE_RETURN;
@@ -92,8 +89,6 @@ public class NodeBuilder {
                 return new NodeFunctionDefinition(o, parent);
             case NODE_IF:
                 return new NodeIf(o, parent);
-            case NODE_RELATION_BOOL:
-                return new NodeRelationBool(o, parent);
             case NODE_RETURN:
                 return new NodeReturn(o, parent);
             case NODE_SELECT:

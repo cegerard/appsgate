@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
+import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONException;
@@ -156,22 +157,25 @@ public class NodeBinaryExpression extends Node {
         Boolean result = false;
         switch (operator) {
             case EQUALS:
-                result = evaluateEquals(true);
+                result = SpokParser.equals(left.getResult(), right.getResult());
                 break;
             case NOT_EQUALS:
-                result = evaluateEquals(false);
+                result = ! SpokParser.equals(left.getResult(), right.getResult());
                 break;
             case MORE_THAN:
-                result = evaluateNumbers(true, false);
+                result = SpokParser.getNumericResult(left.getResult()) > SpokParser.getNumericResult(right.getResult());
                 break;
             case LESS_THAN:
-                result = evaluateNumbers(false, false);
+                result = SpokParser.getNumericResult(left.getResult()) < SpokParser.getNumericResult(right.getResult());
                 break;
             case OR:
+                result = SpokParser.getBooleanResult(left.getResult()) || SpokParser.getBooleanResult(right.getResult());
                 break;
             case AND:
+                result = SpokParser.getBooleanResult(left.getResult()) && SpokParser.getBooleanResult(right.getResult());
                 break;
             case NOT:
+                result = !SpokParser.getBooleanResult(left.getResult());
                 break;
             default:
                 throw new AssertionError(operator.name());
@@ -213,30 +217,12 @@ public class NodeBinaryExpression extends Node {
         fireEndEvent(new EndEvent(this));
     }
 
+
     /**
-     *
-     * @param b
-     * @return
-     * @throws SpokException
+     * Method to check whether the node is well formed
+     * @param operator
+     * @return 
      */
-    private Boolean evaluateEquals(boolean b) throws SpokException {
-        SpokObject l = left.getResult();
-        SpokObject r = right.getResult();
-        boolean equals = l.getType().equalsIgnoreCase(r.getType())
-                && l.getValue().equalsIgnoreCase(r.getValue());
-        if (b) {
-            return equals;
-        } else {
-            return !equals;
-        }
-
-    }
-
-    private Boolean evaluateNumbers(boolean isMore, boolean isEqual) {
-        LOGGER.error("Not implemented yet");
-        return false;
-    }
-
     private boolean needTwoOperands(BinaryOperator operator) {
         switch (operator) {
             case EQUALS:
@@ -253,5 +239,6 @@ public class NodeBinaryExpression extends Node {
 
         }
     }
+
 
 }

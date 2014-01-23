@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import java.util.Collection;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
+import org.json.JSONObject;
 import org.junit.Before;
 
 /**
@@ -31,7 +32,10 @@ public class NodeIfTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ruleJSON.put("expBool", (Collection) null);
+        JSONObject v = new JSONObject();
+        v.put("type", "boolean");
+        v.put("value", "false");
+        ruleJSON.put("expBool",  v);
         ruleJSON.put("seqRulesTrue", (Collection) null);
         ruleJSON.put("seqRulesFalse", (Collection) null);
         this.ifTest = new NodeIf(ruleJSON, null);

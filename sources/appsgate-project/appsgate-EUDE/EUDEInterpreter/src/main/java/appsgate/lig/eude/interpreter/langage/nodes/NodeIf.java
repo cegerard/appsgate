@@ -4,10 +4,10 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,8 @@ public class NodeIf extends Node {
     /**
      * node representing the boolean expression
      */
-    private NodeExpBool expBool;
+//    private NodeExpBool expBool
+    private Node expBool;
     /**
      * sequence of nodes to interpret if the boolean expression is true
      */
@@ -51,7 +52,8 @@ public class NodeIf extends Node {
     public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokException {
         super(parent);
 
-        this.expBool = new NodeExpBool(getJSONArray(ruleIfJSON, "expBool"), this);
+//        this.expBool = new NodeExpBool(getJSONArray(ruleIfJSON, "expBool"), this);
+        this.expBool = NodeBuilder.BuildNodeFromJSON(ruleIfJSON.optJSONObject("expBool"), this);
         this.seqRulesTrue = new NodeSeqRules(getJSONArray(ruleIfJSON, "seqRulesTrue"), this);
         this.seqRulesFalse = new NodeSeqRules(getJSONArray(ruleIfJSON, "seqRulesFalse"), this);
 
@@ -76,7 +78,7 @@ public class NodeIf extends Node {
         if (nodeEnded == expBool) {
             try {
 
-                if (expBool.getBooleanResult()) {// launch the "true" branch if expBool returned true...
+                if (SpokParser.getBooleanResult(expBool.getResult())) {// launch the "true" branch if expBool returned true...
                     seqRulesTrue.addEndEventListener(this);
                     seqRulesTrue.call();
 
@@ -84,7 +86,7 @@ public class NodeIf extends Node {
                     seqRulesFalse.addEndEventListener(this);
                     seqRulesFalse.call();
                 }
-            } catch (SpokExecutionException ex) {
+            } catch (SpokException ex) {
                 LOGGER.error(ex.getMessage());
             }
             // the true branch or the false one has completed - nothing to do more
@@ -129,7 +131,7 @@ public class NodeIf extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("expBool", expBool.getJSONArrayDescription());
+            o.put("expBool", expBool.getJSONDescription());
             o.put("seqRulesTrue", seqRulesTrue.getJSONArrayDescription());
             o.put("seqRulesFalse", seqRulesTrue.getJSONArrayDescription());
         } catch (JSONException e) {
@@ -156,7 +158,7 @@ public class NodeIf extends Node {
     protected Node copy(Node parent) {
         NodeIf ret = new NodeIf(parent);
         ret.setSymbolTable(this.getSymbolTable());
-        ret.expBool = (NodeExpBool) expBool.copy(ret);
+        ret.expBool = expBool.copy(ret);
         ret.seqRulesFalse = (NodeSeqRules) seqRulesFalse.copy(ret);
         ret.seqRulesTrue = (NodeSeqRules) seqRulesTrue.copy(ret);
         return ret;

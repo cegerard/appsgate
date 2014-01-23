@@ -15,26 +15,24 @@
             [
                 {
                     "type": "NodeIf",
-                    "expBool": [
-                        [
-                            {
-                                "type": "NodeRelationBool",
-                                "operator": "==",
-                                "leftOperand": {
-                                    "targetId": "194.199.23.136-1",
-                                    "methodName": "getCurrentState",
-                                    "returnType": "boolean",
-                                    "action": "fermer les volets",
-                                    "targetType": "device",
-                                    "args": []
-                                },
-                                "rightOperand": {
-                                    "type": "boolean",
-                                    "value": true
-                                }
-                            }
-                        ]
-                    ],
+                    "expBool": {
+                        "type": "NodeBinaryExpression",
+                        "operator": "EQUALS",
+                        "leftOperand": {
+                            "type" : "NodeAction",
+                            "targetId": "194.199.23.136-1",
+                            "methodName": "getCurrentState",
+                            "returnType": "boolean",
+                            "action": "fermer les volets",
+                            "targetType": "device",
+                            "args": []
+                        },
+                        "rightOperand": {
+                            "type": "boolean",
+                            "value": true
+                        }
+                    }
+                    ,
                     "seqRulesTrue": [
                         [
                             {
@@ -42,7 +40,6 @@
                                 "targetId": "194.199.23.136-5",
                                 "methodName": "Off",
                                 "args": [],
- 
                                 "action": "Ouvrir les volets",
                                 "targetType": "device"
                             }

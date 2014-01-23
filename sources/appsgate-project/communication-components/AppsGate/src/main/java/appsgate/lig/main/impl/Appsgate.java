@@ -403,4 +403,9 @@ public class Appsgate implements AppsGateSpec {
 			e.printStackTrace();
 		}
 	}
+
+    @Override
+    public JSONArray getSpecificDevices(JSONArray types, JSONArray places, JSONArray states) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
