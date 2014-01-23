@@ -17,7 +17,9 @@ deployToAppsGateDistribution.sh
 
 *obr.xml
 
-*/target/*
+target
+
+felix-cache
 
 nbaction.xml
 
