@@ -77,6 +77,7 @@ public class PhilipsHUEBridgeConfigListener implements ConfigListener {
 				JSONObject resp = new JSONObject();
 				resp.put("TARGET", PhilipsHUEAdapter.CONFIG_TARGET);
 				resp.put("bridgeLights", lightList);
+				resp.put("bridgeIp", obj.getString("ip"));
 				PhilipsAdapter.getCommunicationService().send(obj.getInt("clientId"), resp.toString());
 				
 			} catch (JSONException e) {e.printStackTrace();}
