@@ -9,7 +9,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.keycard.sensor.messages.KeyCardNotificationMsg;
 import appsgate.lig.keycard.sensor.spec.CoreKeyCardSensorSpec;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
+import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 
 /**
  * This is the class that represent the EnOcean implementation of key card sensor.
@@ -87,7 +87,7 @@ public class EnoceanKeyCardSensorImpl implements CoreKeyCardSensorSpec, CoreObje
 	 * EnOcean proxy service uses to validate the sensor configuration with the
 	 * EnOcean proxy (pairing phase)
 	 */
-	EnOceanService enoceanProxy;
+	UbikitAdapterService enoceanProxy;
 	
 	@Override
 	public boolean getCardState() {

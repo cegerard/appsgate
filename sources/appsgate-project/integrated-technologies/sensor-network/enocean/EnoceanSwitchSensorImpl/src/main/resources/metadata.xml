@@ -7,7 +7,7 @@
 		classname="appsgate.lig.button_switch.sensor.enocean.impl.EnoceanSwitchSensorImpl" specification="CoreSwitchSensorSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<ipojo:requires field="enoceanProxy"/>
+		<relation field="enoceanProxy" resolve="exist" />
 		
 		<!-- device kernel meta data -->
 		<definition name="deviceName" 	type="string" default="Unknown" 		 field="sensorName"/>

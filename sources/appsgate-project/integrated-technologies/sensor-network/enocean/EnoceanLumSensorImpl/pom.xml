@@ -27,7 +27,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>UbikitAdapter</artifactId>
+			<artifactId>UbikitAdapterSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

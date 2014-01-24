@@ -43,8 +43,6 @@ import org.ubikit.service.PhysicalEnvironmentModelService;
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.enocean.ubikit.adapter.listeners.EnOceanConfigListener;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanPairingService;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
 import appsgate.lig.enocean.ubikit.adapter.source.event.ContactEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.KeyCardEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.LumEvent;
@@ -54,6 +52,8 @@ import appsgate.lig.enocean.ubikit.adapter.source.event.PairingModeEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.SetPointEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.SwitchEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.TempEvent;
+import appsgate.lig.enocean.ubikit.adapter.spec.EnOceanPairingService;
+import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
@@ -81,16 +81,15 @@ import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
  *          sensor configuration.
  * 
  * @see EnOceanPairingService
- * @see EnOceanService
+ * @see UbikitAdapterService
  * 
  */
-@Component(publicFactory=false)
-@Instantiate(name="AppsgateUbikitAdapter")
-@Provides(specifications = { EnOceanPairingService.class, EnOceanService.class })
+// @Component(publicFactory=false)
+// @Instantiate(name="AppsgateUbikitAdapter")
+// @Provides(specifications = { EnOceanPairingService.class,
+// UbikitAdapterService.class })
 public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
-		EnOceanService, EnOceanPairingService, NewItemEvent.Listener,
-		ItemAddedEvent.Listener, UnsupportedNewItemEvent.Listener,
-		ItemAddingFailedEvent.Listener {
+		UbikitAdapterService, EnOceanPairingService {
 
 	/**
 	 * Event management members
@@ -126,7 +125,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * class logger member
 	 */
 	private static Logger logger = LoggerFactory.getLogger(UbikitAdapter.class);
-	
+
 	private static String CONFIG_TARGET = "ENOCEAN";
 
 	/**
@@ -148,7 +147,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Called by iPOJO when all dependencies are available
 	 */
-	@Validate
+	// @Validate
 	public void newInst() {
 		logger.debug("PEM service = " + enoceanBridge.toString());
 		enoceanBridge.setObserver(this);
@@ -161,7 +160,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 
 		// The events gate is listening for all event coming
 		// from paired sensors
-		eventGate.addListener(this);
+		eventGate.addListener(new enoceanPemListener());
 		eventGate.addListener(new TempEvent(this));
 		eventGate.addListener(new SwitchEvent(this));
 		eventGate.addListener(new LumEvent(this));
@@ -171,24 +170,49 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		eventGate.addListener(new ContactEvent(this));
 		eventGate.addListener(new PairingModeEvent(this));
 		eventGate.addListener(new MeteringEvent(this));
-	
+
 		logger.info("EnOcean proxy deployed and instanciated.");
-		
-		//Retrieve existing paired sensors from Ubikit and instanciate them.
-		Collection<PhysicalEnvironmentItem> itemList = enoceanBridge.getAllItems();
-		if(itemList != null && !itemList.isEmpty()) {
-			//Create thread that take the list in parameter and instanciate all Ubikit items
-			//TODO Schedule instanciation to avoid dependency collision
-			instanciationService.schedule(new ItemInstanciation(itemList), 15, TimeUnit.SECONDS);
+
+		if (listenerService.addConfigListener(CONFIG_TARGET,
+				new EnOceanConfigListener(this))) {
+			logger.info("Configuration listeners deployed.");
+			if (httpService != null) {
+				logger.debug("HTTP service dependency resolved");
+				final HttpContext httpContext = httpService
+						.createDefaultHttpContext();
+				final Dictionary<String, String> initParams = new Hashtable<String, String>();
+				initParams.put("from", "HttpService");
+				try {
+					httpService.registerResources(
+							"/configuration/sensors/enocean", "/WEB",
+							httpContext);
+					logger.info("Sensors configuration HTML GUI sources registered.");
+				} catch (NamespaceException ex) {
+					logger.error("NameSpace exception");
+				}
+			}
+
+		} else {
+			logger.info("Configuration listeners deployement failed.");
 		}
-		
+
+		// Retrieve existing paired sensors from Ubikit and instanciate them.
+		Collection<PhysicalEnvironmentItem> itemList = enoceanBridge
+				.getAllItems();
+		if (itemList != null && !itemList.isEmpty()) {
+			// Create thread that take the list in parameter and instanciate all
+			// Ubikit items
+			instanciationService.schedule(new ItemInstanciation(itemList), 15,
+					TimeUnit.SECONDS);
+		}
+
 	}
 
 	/**
 	 * Called by iPOJO when the bundle is not available
 	 */
-	@Invalidate
-	public void deleteInst() {
+	// @Invalidate
+	public void delInst() {
 		// logger.info("Removed PEM service = " + enoceanBridge.toString());
 
 		eventGate.unlinkAll();
@@ -206,169 +230,180 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			logger.debug("Event gate thread crash at termination");
 		}
 
-		if(listenerService.removeConfigListener(CONFIG_TARGET)){
+		if (listenerService.removeConfigListener(CONFIG_TARGET)) {
 			logger.info("EnOcean configuration listener removed.");
-		}else{
+		} else {
 			logger.warn("EnOcean configuration listener remove failed.");
 		}
-		
+
 		logger.info("EnOcean PEM connector removed");
 	}
 
-	/**
-	 * Get the EnOcean PEM service form OSGi/iPOJO. This service is required.
-	 * 
-	 * @param PEMService
-	 *            , the physical environment model OSGi service
-	 */
-	@Bind(optional = false)
-	public void bindPEMService(PhysicalEnvironmentModelService PEMService) {
-		enoceanBridge = PEMService;
-		logger.debug("EnOcean PEM service dependency resolved");
-	}
+	// /**
+	// * Get the EnOcean PEM service form OSGi/iPOJO. This service is required.
+	// *
+	// * @param PEMService
+	// * , the physical environment model OSGi service
+	// */
+	// @Bind(optional = false)
+	// public void bindPEMService(PhysicalEnvironmentModelService PEMService) {
+	// enoceanBridge = PEMService;
+	// logger.debug("EnOcean PEM service dependency resolved");
+	// }
 
-	/**
-	 * Call when the EnOcean proxy release the required physical environment
-	 * model OSGi service.
-	 * 
-	 * @param PEMService
-	 *            , the released physical environment model OSGi service
-	 */
-	@Unbind(optional = false)
-	public void unbindPEMService(PhysicalEnvironmentModelService PEMService) {
-		enoceanBridge = null;
-		logger.debug("EnOcean PEM service dependency not available");
-	}
+	// /**
+	// * Call when the EnOcean proxy release the required physical environment
+	// * model OSGi service.
+	// *
+	// * @param PEMService
+	// * , the released physical environment model OSGi service
+	// */
+	// // @Unbind(optional = false)
+	// public void unbindPEMService(PhysicalEnvironmentModelService PEMService)
+	// {
+	// enoceanBridge = null;
+	// logger.debug("EnOcean PEM service dependency not available");
+	// }
 
-	/**
-	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
-	 * 
-	 * @param listenerService
-	 *            , the subscription service
-	 */
-	@Bind(optional = true)
-	public void bindSubscriptionService(ListenerService addListenerService) {
-		this.listenerService = addListenerService;
-		logger.debug("Communication subscription service dependency resolved");
-		if(listenerService.addConfigListener(CONFIG_TARGET, new EnOceanConfigListener(this))){
-			logger.info("Configuration listeners deployed.");
-		}else{
-			logger.info("Configuration listeners deployement failed.");
-		}
-	}
+	// /**
+	// * Get the subscribe service form OSGi/iPOJO. This service is optional.
+	// *
+	// * @param listenerService
+	// * , the subscription service
+	// */
+	// // @Bind(optional = true)
+	// public void bindSubscriptionService(ListenerService addListenerService) {
+	// this.listenerService = addListenerService;
+	// logger.debug("Communication subscription service dependency resolved");
+	// if(listenerService.addConfigListener(CONFIG_TARGET, new
+	// EnOceanConfigListener(this))){
+	// logger.info("Configuration listeners deployed.");
+	// }else{
+	// logger.info("Configuration listeners deployement failed.");
+	// }
+	// }
 
-	/**
-	 * Call when the EnOcean proxy release the optional subscription service.
-	 * 
-	 * @param listenerService
-	 *            , the released subscription service
-	 */
-	@Unbind(optional = true)
-	public void unbindSubscriptionService(ListenerService addListenerService) {
-		this.listenerService = null;
-		logger.debug("Subscription service dependency not available");
-	}
+	// /**
+	// * Call when the EnOcean proxy release the optional subscription service.
+	// *
+	// * @param listenerService
+	// * , the released subscription service
+	// */
+	// // @Unbind(optional = true)
+	// public void unbindSubscriptionService(ListenerService addListenerService)
+	// {
+	// this.listenerService = null;
+	// logger.debug("Subscription service dependency not available");
+	// }
 
-	/**
-	 * Get the communication service from OSGi/iPojo. This service is optional.
-	 * 
-	 * @param sendToClientService
-	 *            , the communication service
-	 */
-	@Bind(optional = true)
-	public void bindCommunicationService(SendWebsocketsService sendToClientService) {
-		this.sendToClientService = sendToClientService;
-		logger.debug("Communication service dependency resolved");
-	}
-	
-	/**
-	 * Call when the EnOcean proxy release the communication service.
-	 * 
-	 * @param sendToClientService
-	 *            , the communication service
-	 */
-	@Unbind(optional = true)
-	public void unbindCommunicationService(SendWebsocketsService sendToClientService) {
-		this.sendToClientService = null;
-		logger.debug("Communication service dependency not available");
-	}
-	
-	/**
-	 * Get the HTTP service form OSGi/iPojo. This service is optional.
-	 * 
-	 * @param httpService the HTTP service
-	 */
-	@Bind(optional = true)
-	public void bindHTTPService(HttpService httpService) {
-		this.httpService = httpService;
-		logger.debug("HTTP service dependency resolved");
-		//if (httpService != null) {
-		final HttpContext httpContext = httpService.createDefaultHttpContext();
-		final Dictionary<String, String> initParams = new Hashtable<String, String>();
-		initParams.put("from", "HttpService");
-		try {
-			httpService.registerResources("/configuration/sensors/enocean", "/WEB", httpContext);
-			logger.info("Sensors configuration HTML GUI sources registered.");
-		} catch (NamespaceException ex) {
-			logger.error("NameSpace exception");
-		}
-		//}
-	}
-	
-	/**
-	 * Call when the EnOcean proxy release the HTTP service.
-	 * 
-	 * @param httpService the HTTP service
-	 */
-	@Unbind(optional = true)
-	public void unbindHTTPService(HttpService httpService) {
-		this.httpService = null;
-		logger.debug("HTTP service dependency not available");
-	}
+	// /**
+	// * Get the communication service from OSGi/iPojo. This service is
+	// optional.
+	// *
+	// * @param sendToClientService
+	// * , the communication service
+	// */
+	// // @Bind(optional = true)
+	// public void bindCommunicationService(SendWebsocketsService
+	// sendToClientService) {
+	// this.sendToClientService = sendToClientService;
+	// logger.debug("Communication service dependency resolved");
+	// }
+
+	// /**
+	// * Call when the EnOcean proxy release the communication service.
+	// *
+	// * @param sendToClientService
+	// * , the communication service
+	// */
+	// // @Unbind(optional = true)
+	// public void unbindCommunicationService(SendWebsocketsService
+	// sendToClientService) {
+	// this.sendToClientService = null;
+	// logger.debug("Communication service dependency not available");
+	// }
+
+	// /**
+	// * Get the HTTP service form OSGi/iPojo. This service is optional.
+	// *
+	// * @param httpService the HTTP service
+	// */
+	// // @Bind(optional = true)
+	// public void bindHTTPService(HttpService httpService) {
+	// this.httpService = httpService;
+	// logger.debug("HTTP service dependency resolved");
+	// //if (httpService != null) {
+	// final HttpContext httpContext = httpService.createDefaultHttpContext();
+	// final Dictionary<String, String> initParams = new Hashtable<String,
+	// String>();
+	// initParams.put("from", "HttpService");
+	// try {
+	// httpService.registerResources("/configuration/sensors/enocean", "/WEB",
+	// httpContext);
+	// logger.info("Sensors configuration HTML GUI sources registered.");
+	// } catch (NamespaceException ex) {
+	// logger.error("NameSpace exception");
+	// }
+	// //}
+	// }
+
+	// /**
+	// * Call when the EnOcean proxy release the HTTP service.
+	// *
+	// * @param httpService the HTTP service
+	// */
+	// // @Unbind(optional = true)
+	// public void unbindHTTPService(HttpService httpService) {
+	// this.httpService = null;
+	// logger.debug("HTTP service dependency not available");
+	// }
 
 	/**
 	 * Log all the EnOcean event from the EnOcean dongle.
 	 * 
 	 * @see PhysicalEnvironmentModelObserver
 	 */
-	@Override
+	// @Override
 	public void log(String arg0) {
 		logger.info("!EnOcean event! " + arg0);
-		
+
 		/****************************
-		 * EnOcean telegram parsing * 
-		 * for not supported event	*				
+		 * EnOcean telegram parsing * for not supported event *
 		 ****************************/
-		//RECV < 55 | 0 7 7 1 | 7a | f6 70 0 27 b3 ed 30 1 ff ff ff ff 2d 0 | 76 > FROM 27b3ed (-45 dBm)
+		// RECV < 55 | 0 7 7 1 | 7a | f6 70 0 27 b3 ed 30 1 ff ff ff ff 2d 0 |
+		// 76 > FROM 27b3ed (-45 dBm)
 		String[] splited = arg0.split("FROM");
-		if(splited.length > 1) { // if arg0 is a received message FROM xxxx
+		if (splited.length > 1) { // if arg0 is a received message FROM xxxx
 			String split1 = splited[1];
 			String id = "";
-			for(int i=1; i<7; i++ ) {
+			for (int i = 1; i < 7; i++) {
 				id += split1.charAt(i);
 			}
-			id= "ENO"+id;
+			id = "ENO" + id;
 			Instance inst = getSensorInstance(id);
-			if(inst != null){
-				logger.info("Paired sensor found "+id);
-				//TODO replace the use of userTyper by something directly on EnOceanProfile
+			if (inst != null) {
+				logger.info("Paired sensor found " + id);
+				// TODO replace the use of userTyper by something directly on
+				// EnOceanProfile
 				String userType = inst.getProperty("userType");
-				if(userType.contentEquals("2")) { // Switch sensor
-					//Check the event
+				if (userType.contentEquals("2")) { // Switch sensor
+					// Check the event
 					String split0 = splited[0];
 					String[] splited1 = split0.split("<");
 					String enoceanTg = splited1[1].trim();
 
-					if(enoceanTg.charAt(23) == '0') {
-						//The switch is set to neutral position
+					if (enoceanTg.charAt(23) == '0') {
+						// The switch is set to neutral position
 						String switchNumber = inst.getProperty("switchNumber");
-						logger.info("The switch " + id + ", state changed to neutral with button  " + switchNumber);
+						logger.info("The switch " + id
+								+ ", state changed to neutral with button  "
+								+ switchNumber);
 						inst.setProperty("buttonStatus", "none");
 						inst.setProperty("switchNumber", switchNumber);
 						inst.setProperty("switchState", "true");
 					}
 				}
-			
+
 			}
 		}
 	}
@@ -376,24 +411,25 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Get all the EnOcean paired item from Ubikit use when the bundle restart.
 	 * 
-	 * @see EnOceanService
+	 * @see UbikitAdapterService
 	 */
 	@Override
 	public JSONArray getAllItem() {
-		Collection<PhysicalEnvironmentItem> enOceanDeviceList = enoceanBridge.getAllItems();
-		
+		Collection<PhysicalEnvironmentItem> enOceanDeviceList = enoceanBridge
+				.getAllItems();
+
 		Iterator<PhysicalEnvironmentItem> it = enOceanDeviceList.iterator();
 		PhysicalEnvironmentItem pei;
-		//Instance apamInst;
+		// Instance apamInst;
 		JSONArray allJSONItem = new JSONArray();
-		
-		while(it.hasNext()) {
+
+		while (it.hasNext()) {
 			pei = it.next();
-			//apamInst = sidToInstanceName.get(pei.getUID());
-			//logger.debug(apamInst.getAllProperties().keySet().toString());
+			// apamInst = sidToInstanceName.get(pei.getUID());
+			// logger.debug(apamInst.getAllProperties().keySet().toString());
 			allJSONItem.put(pei.getUID());
 		}
-		
+
 		return allJSONItem;
 	}
 
@@ -402,7 +438,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @param id
 	 *            , the sensor item id.
-	 * @see EnOceanService
+	 * @see UbikitAdapterService
 	 */
 	@Override
 	public JSONObject getItem(String id) {
@@ -450,7 +486,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		logger.debug("Turn off --> " + targetID);
 		eventGate.postEvent(new TurnOffActuatorEvent(targetID));
 	}
-	
+
 	@Override
 	public void sendActuatorUpdateEvent(String targetID) {
 		logger.debug("Actuator update --> " + targetID);
@@ -475,161 +511,191 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			eventGate.postEvent(new ExitPairingModeEvent());
 			logger.debug("pairing mode off event sent");
 		}
-		
-		//TODO removed this call when PairingModeEvent work
+
+		// TODO removed this call when PairingModeEvent work
 		pairingModeChanged(pair);
 	}
 
 	/**
-	 * This method is a listener method call when Ubikit is in paring mode and
-	 * detect a new sensor.
-	 * 
-	 * @see NewItemEvent
+	 * Ubikit PEM EnOcean listener
+	 * @author Cédric Gérard
+	 * @since January 24, 2014
 	 */
-	@Override
-	public void onEvent(NewItemEvent newItEvent) {
-		logger.debug("!NewItemEvent! from " + newItEvent.getSourceItemUID()
-				+ " to " + newItEvent.getPemUID() + ", type="
-				+ newItEvent.getItemType());
+	private class enoceanPemListener implements NewItemEvent.Listener,
+			ItemAddedEvent.Listener, UnsupportedNewItemEvent.Listener,
+			ItemAddingFailedEvent.Listener {
 
-		if (!sidToInstanceName.containsKey(newItEvent.getSourceItemUID())) {
+		/**
+		 * This method is a listener method call when Ubikit is in paring mode
+		 * and detect a new sensor.
+		 * 
+		 * @see NewItemEvent
+		 */
+		@Override
+		public void onEvent(NewItemEvent newItEvent) {
+			logger.debug("!NewItemEvent! from " + newItEvent.getSourceItemUID()
+					+ " to " + newItEvent.getPemUID() + ", type="
+					+ newItEvent.getItemType());
 
-			sidToInstanceName.put(newItEvent.getSourceItemUID(), null);
+			if (!sidToInstanceName.containsKey(newItEvent.getSourceItemUID())) {
 
-			CapabilitySelection cs = newItEvent.doesCapabilitiesHaveToBeSelected();
+				sidToInstanceName.put(newItEvent.getSourceItemUID(), null);
 
-			if (cs == CapabilitySelection.NO) {			
-				validateItem(newItEvent.getSourceItemUID(), null, false);
+				CapabilitySelection cs = newItEvent
+						.doesCapabilitiesHaveToBeSelected();
 
-			} else if (cs == CapabilitySelection.SINGLE) {
+				if (cs == CapabilitySelection.NO) {
+					validateItem(newItEvent.getSourceItemUID(), null, false);
 
-				String[] capabilities = newItEvent.getCapabilities();
-				int capListLength = capabilities.length;
-				int i = 0;
-				ArrayList<EnOceanProfiles> tempCapList = new ArrayList<EnOceanProfiles>();
-				while (i < capListLength) {
-					tempCapList.add(EnOceanProfiles.getEnOceanProfile(capabilities[i]));
-					i++;
+				} else if (cs == CapabilitySelection.SINGLE) {
+
+					String[] capabilities = newItEvent.getCapabilities();
+					int capListLength = capabilities.length;
+					int i = 0;
+					ArrayList<EnOceanProfiles> tempCapList = new ArrayList<EnOceanProfiles>();
+					while (i < capListLength) {
+						tempCapList.add(EnOceanProfiles
+								.getEnOceanProfile(capabilities[i]));
+						i++;
+					}
+					tempEventCapabilitiesMap.put(newItEvent.getSourceItemUID(),
+							tempCapList);
+					JSONObject newUndefinedMsg = new JSONObject();
+					try {
+						newUndefinedMsg
+								.put("id", newItEvent.getSourceItemUID());
+						newUndefinedMsg.put("capabilities",
+								getItemCapabilities(newItEvent
+										.getSourceItemUID()));
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					sendToClientService.send("newUndefinedSensor",
+							newUndefinedMsg);
+
+				} else if (cs == CapabilitySelection.MULTIPLE) {
+					logger.error("Multiple capabality not supported yet for "
+							+ newItEvent.getSourceItemUID() + " to "
+							+ newItEvent.getPemUID() + ", type="
+							+ newItEvent.getItemType());
 				}
-				tempEventCapabilitiesMap.put(newItEvent.getSourceItemUID(),tempCapList);
-				JSONObject newUndefinedMsg =  new JSONObject();
-				try {
-					newUndefinedMsg.put("id", newItEvent.getSourceItemUID());
-					newUndefinedMsg.put("capabilities", getItemCapabilities(newItEvent.getSourceItemUID()));
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				sendToClientService.send("newUndefinedSensor", newUndefinedMsg);
-
-			} else if (cs == CapabilitySelection.MULTIPLE) {
-				logger.error("Multiple capabality not supported yet for "
-						+ newItEvent.getSourceItemUID() + " to "
-						+ newItEvent.getPemUID() + ", type="
-						+ newItEvent.getItemType());
 			}
 		}
-	}
-	
-	/**
-	 * This method is a listener method call when Ubikit is in paring mode and
-	 * notify that it detect a undefined sensor.
-	 * 
-	 * @see UnsupportedNewItemEvent
-	 */
-	@Override
-	public void onEvent(UnsupportedNewItemEvent unsupportedItEvent) {
-		logger.debug("!UnsupportedNewItemEvent! from "
-				+ unsupportedItEvent.getSourceItemUID() + " to "
-				+ unsupportedItEvent.getPemUID() + ", type"
-				+ unsupportedItEvent.getItemType());
-		
-		JSONObject newUnsupportedMsg =  new JSONObject();
-		try {
-			newUnsupportedMsg.put("id", unsupportedItEvent.getSourceItemUID());
-			newUnsupportedMsg.put("capabilities", getItemCapabilities(unsupportedItEvent.getSourceItemUID()));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		sendToClientService.send("newUnsupportedSensor", newUnsupportedMsg);
-		
-	}
 
-	/**
-	 * This method is a listener method call when Ubikit is in paring mode and
-	 * notify that a new sensor is paired.
-	 * 
-	 * @see ItemAddedEvent
-	 */
-	@Override
-	public void onEvent(ItemAddedEvent addItEvent) {
-		logger.debug("!ItemAddedEvent! from " + addItEvent.getSourceItemUID() + " to " + addItEvent.getPemUID() + ", type "+ addItEvent.getItemType());
-		
-		EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
-		Implementation impl = null;
-		Map<String, String> properties = new HashMap<String, String>();
-		
-		if(addItEvent.getItemType().equals(Type.SENSOR) || addItEvent.getItemType().equals(Type.SENSOR_AND_ACTUATOR)) {
-			if (addItEvent.getCapabilities().length == 1) {
+		/**
+		 * This method is a listener method call when Ubikit is in paring mode
+		 * and notify that it detect a undefined sensor.
+		 * 
+		 * @see UnsupportedNewItemEvent
+		 */
+		@Override
+		public void onEvent(UnsupportedNewItemEvent unsupportedItEvent) {
+			logger.debug("!UnsupportedNewItemEvent! from "
+					+ unsupportedItEvent.getSourceItemUID() + " to "
+					+ unsupportedItEvent.getPemUID() + ", type"
+					+ unsupportedItEvent.getItemType());
+
+			JSONObject newUnsupportedMsg = new JSONObject();
+			try {
+				newUnsupportedMsg.put("id",
+						unsupportedItEvent.getSourceItemUID());
+				newUnsupportedMsg.put("capabilities",
+						getItemCapabilities(unsupportedItEvent
+								.getSourceItemUID()));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			sendToClientService.send("newUnsupportedSensor", newUnsupportedMsg);
+
+		}
+
+		/**
+		 * This method is a listener method call when Ubikit is in paring mode
+		 * and notify that a new sensor is paired.
+		 * 
+		 * @see ItemAddedEvent
+		 */
+		@Override
+		public void onEvent(ItemAddedEvent addItEvent) {
+			logger.debug("!ItemAddedEvent! from "
+					+ addItEvent.getSourceItemUID() + " to "
+					+ addItEvent.getPemUID() + ", type "
+					+ addItEvent.getItemType());
+
+			EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
+			Implementation impl = null;
+			Map<String, String> properties = new HashMap<String, String>();
+
+			if (addItEvent.getItemType().equals(Type.SENSOR)
+					|| addItEvent.getItemType()
+							.equals(Type.SENSOR_AND_ACTUATOR)) {
+				if (addItEvent.getCapabilities().length == 1) {
+					String capabilitie = addItEvent.getCapabilities()[0];
+					ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
+				} else {
+					ArrayList<EnOceanProfiles> profilesList = tempEventCapabilitiesMap
+							.get(addItEvent.getSourceItemUID());
+					// TODO manage for multiple profiles sensors.
+					ep = profilesList.iterator().next();
+					tempEventCapabilitiesMap.remove(addItEvent
+							.getSourceItemUID());
+				}
+				properties.put("isPaired", "true");
+
+			} else if (addItEvent.getItemType().equals(Type.ACTUATOR)) {
 				String capabilitie = addItEvent.getCapabilities()[0];
-				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);	
-			} else {
-				ArrayList<EnOceanProfiles> profilesList = tempEventCapabilitiesMap.get(addItEvent.getSourceItemUID());
-				//TODO manage for multiple profiles sensors.
-				ep = profilesList.iterator().next();
-				tempEventCapabilitiesMap.remove(addItEvent.getSourceItemUID());
+				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
+				properties.put("isPaired", "false");
 			}
-			properties.put("isPaired", "true");
-			
-		}else if(addItEvent.getItemType().equals(Type.ACTUATOR)) {
-			String capabilitie = addItEvent.getCapabilities()[0];
-			ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
-			properties.put("isPaired", "false");
-		}
-		
-		impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
-		
-		properties.put("deviceName", ep.getUserFriendlyName());
-		properties.put("deviceId", addItEvent.getSourceItemUID());
-		properties.put("deviceType", ep.name());
-		
-		Instance createInstance = impl.createInstance(null, properties);
-		sidToInstanceName.put(addItEvent.getSourceItemUID(), createInstance);
-		
-		//Notify configuration UI
-		JSONObject jsonObj = new JSONObject();
-		try {
-			jsonObj.put("id", addItEvent.getSourceItemUID());
-			jsonObj.put("type", addItEvent.getItemType().name());
-			jsonObj.put("deviceType", ep.name());
-			jsonObj.put("paired", properties.get("isPaired"));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		sendToClientService.send("newObject", jsonObj);
-	}
 
-	/**
-	 * This method is a listener method call when Ubikit is in paring mode and
-	 * notify that the pairing sequence failed for this sensor.
-	 * 
-	 * @see ItemAddingFailedEvent
-	 */
-	@Override
-	public void onEvent(ItemAddingFailedEvent addFailedEvent) {
-		logger.debug("!ItemAddingFailedEvent! from "
-				+ addFailedEvent.getSourceItemUID() + " Error Code = "
-				+ addFailedEvent.getErrorCode() + ", Reason = "
-				+ addFailedEvent.getReason());
-		JSONObject pairingFailedMsg =  new JSONObject();
-		try {
-			pairingFailedMsg.put("id", addFailedEvent.getSourceItemUID());
-			pairingFailedMsg.put("capabilities", getItemCapabilities(addFailedEvent.getSourceItemUID()));
-			pairingFailedMsg.put("code", addFailedEvent.getErrorCode());
-			pairingFailedMsg.put("reason", addFailedEvent.getReason());
-		} catch (JSONException e) {
-			e.printStackTrace();
+			impl = CST.apamResolver.findImplByName(null,
+					ep.getApAMImplementation());
+
+			properties.put("deviceName", ep.getUserFriendlyName());
+			properties.put("deviceId", addItEvent.getSourceItemUID());
+			properties.put("deviceType", ep.name());
+
+			Instance createInstance = impl.createInstance(null, properties);
+			sidToInstanceName
+					.put(addItEvent.getSourceItemUID(), createInstance);
+
+			// Notify configuration UI
+			JSONObject jsonObj = new JSONObject();
+			try {
+				jsonObj.put("id", addItEvent.getSourceItemUID());
+				jsonObj.put("type", addItEvent.getItemType().name());
+				jsonObj.put("deviceType", ep.name());
+				jsonObj.put("paired", properties.get("isPaired"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			sendToClientService.send("newObject", jsonObj);
 		}
-		sendToClientService.send("pairingFailed", pairingFailedMsg);
+
+		/**
+		 * This method is a listener method call when Ubikit is in paring mode
+		 * and notify that the pairing sequence failed for this sensor.
+		 * 
+		 * @see ItemAddingFailedEvent
+		 */
+		@Override
+		public void onEvent(ItemAddingFailedEvent addFailedEvent) {
+			logger.debug("!ItemAddingFailedEvent! from "
+					+ addFailedEvent.getSourceItemUID() + " Error Code = "
+					+ addFailedEvent.getErrorCode() + ", Reason = "
+					+ addFailedEvent.getReason());
+			JSONObject pairingFailedMsg = new JSONObject();
+			try {
+				pairingFailedMsg.put("id", addFailedEvent.getSourceItemUID());
+				pairingFailedMsg.put("capabilities",
+						getItemCapabilities(addFailedEvent.getSourceItemUID()));
+				pairingFailedMsg.put("code", addFailedEvent.getErrorCode());
+				pairingFailedMsg.put("reason", addFailedEvent.getReason());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			sendToClientService.send("pairingFailed", pairingFailedMsg);
+		}
 	}
 
 	/**
@@ -645,7 +711,8 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 *            for this sensor (if it ambiguous)
 	 */
 	@Override
-	public void validateItem(String sensorID, ArrayList<String> capList, boolean doesCapabilitiesHaveToBeSelected) {
+	public void validateItem(String sensorID, ArrayList<String> capList,
+			boolean doesCapabilitiesHaveToBeSelected) {
 
 		logger.debug("validateItem call received for " + sensorID);
 		AddItemEvent addItEvent = new AddItemEvent(sensorID);
@@ -653,69 +720,79 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		if (doesCapabilitiesHaveToBeSelected) {
 			logger.debug("item which capabilities have to be selected");
 			addItEvent.addCapabilities(capList.toArray(new String[2]));
-			
+
 			ArrayList<EnOceanProfiles> profilesList = new ArrayList<EnOceanProfiles>();
-			Iterator<String> capIt= capList.iterator();
+			Iterator<String> capIt = capList.iterator();
 			String capa;
-			
-			while(capIt.hasNext()) {
+
+			while (capIt.hasNext()) {
 				capa = capIt.next();
 				profilesList.add(EnOceanProfiles.getEnOceanProfile(capa));
 			}
-			
+
 			tempEventCapabilitiesMap.put(sensorID, profilesList);
 			logger.debug("Capability selected");
 		}
-		
+
 		eventGate.postEvent(addItEvent);
-		logger.debug("item validated "+sensorID);
+		logger.debug("item validated " + sensorID);
 	}
-	
+
 	/**
-	 * Instantiate an already configure item from Ubikit database
-	 * Pretty similar to the action done with ItemAddedEvent received but
-	 * does not notify client just push the instance to ApAM layer.
-	 * @param item the device to instantiate
+	 * Instantiate an already configure item from Ubikit database Pretty similar
+	 * to the action done with ItemAddedEvent received but does not notify
+	 * client just push the instance to ApAM layer.
+	 * 
+	 * @param item
+	 *            the device to instantiate
 	 */
-	private void instanciateItem (PhysicalEnvironmentItem item) {
+	private void instanciateItem(PhysicalEnvironmentItem item) {
 		EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
 		Implementation impl = null;
 		Map<String, String> properties = new HashMap<String, String>();
-		
-		if(item.getType().equals(Type.SENSOR) || item.getType().equals(Type.SENSOR_AND_ACTUATOR)) {
+
+		if (item.getType().equals(Type.SENSOR)
+				|| item.getType().equals(Type.SENSOR_AND_ACTUATOR)) {
 			if (item.getCapabilities().length == 1) {
 				String capabilitie = item.getCapabilities()[0];
-				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);	
+				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
 			} else {
-				ArrayList<EnOceanProfiles> profilesList = tempEventCapabilitiesMap.get(item.getUID());
-				//TODO manage for multiple profiles sensors.
+				ArrayList<EnOceanProfiles> profilesList = tempEventCapabilitiesMap
+						.get(item.getUID());
+				// TODO manage for multiple profiles sensors.
 				ep = profilesList.iterator().next();
 				tempEventCapabilitiesMap.remove(item.getUID());
 			}
 			properties.put("isPaired", "true");
-			
-		}else if(item.getType().equals(Type.ACTUATOR)) {
+
+		} else if (item.getType().equals(Type.ACTUATOR)) {
 			String capabilitie = item.getCapabilities()[0];
 			ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
 			properties.put("isPaired", "false");
 		}
-		
+
 		int nbTry = 0;
-		while(nbTry < 5){
-			impl = CST.apamResolver.findImplByName(null, ep.getApAMImplementation());
-			if(impl != null) {
+		while (nbTry < 5) {
+			impl = CST.apamResolver.findImplByName(null,
+					ep.getApAMImplementation());
+			if (impl != null) {
 				properties.put("deviceName", ep.getUserFriendlyName());
 				properties.put("deviceId", item.getUID());
 				properties.put("deviceType", ep.name());
-		
+
 				Instance createInstance = impl.createInstance(null, properties);
 				sidToInstanceName.put(item.getUID(), createInstance);
 				nbTry = 5;
-			}else {
-				synchronized(this){try {
-					logger.error("No "+ep.getApAMImplementation()+" found ! -- "+nbTry+" try");
-					wait(3000);
-				} catch (InterruptedException e) {e.printStackTrace();}}
+			} else {
+				synchronized (this) {
+					try {
+						logger.error("No " + ep.getApAMImplementation()
+								+ " found ! -- " + nbTry + " try");
+						wait(3000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 				nbTry++;
 			}
 		}
@@ -735,7 +812,8 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Send the new pairing mode to client part.
 	 * 
-	 * @param mode the new pairing status
+	 * @param mode
+	 *            the new pairing status
 	 */
 	public void pairingModeChanged(boolean mode) {
 		JSONObject pairingState = new JSONObject();
@@ -746,53 +824,57 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		}
 		sendToClientService.send("pairingModeChanged", pairingState);
 	}
-	
-//	/**
-//	 * Create and send the newActuator event to ubikit
-//	 * 
-//	 * @param profile the actuator profile
-//	 * @param name the actuator name
-//	 * @param place the place where it be
-//	 */
-//	public void createActuator(String profile, String name, String place, int clientId) {
-//		ActuatorProfile ap = EnOceanProfiles.getActuatorProfile(profile);
-//		if(ap != null) {
-//			
-//			CreateNewActuatorEvent ev = new CreateNewActuatorEvent(ap, name, place);
-//			eventGate.postEvent(ev);
-//		}else {
-//			JSONObject error = new JSONObject();
-//			try {
-//				error.put("code", "0001");
-//				error.put("deescription", "No ubikit<>appsgate actuator profile found !");
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//			sendToClientService.send(clientId, "actuatorError", error);
-//		}
-//	}
-	
+
+	// /**
+	// * Create and send the newActuator event to ubikit
+	// *
+	// * @param profile the actuator profile
+	// * @param name the actuator name
+	// * @param place the place where it be
+	// */
+	// public void createActuator(String profile, String name, String place, int
+	// clientId) {
+	// ActuatorProfile ap = EnOceanProfiles.getActuatorProfile(profile);
+	// if(ap != null) {
+	//
+	// CreateNewActuatorEvent ev = new CreateNewActuatorEvent(ap, name, place);
+	// eventGate.postEvent(ev);
+	// }else {
+	// JSONObject error = new JSONObject();
+	// try {
+	// error.put("code", "0001");
+	// error.put("deescription",
+	// "No ubikit<>appsgate actuator profile found !");
+	// } catch (JSONException e) {
+	// e.printStackTrace();
+	// }
+	// sendToClientService.send(clientId, "actuatorError", error);
+	// }
+	// }
+
 	/**
 	 * Send all paired actuators and all existing actuator profiles
 	 */
 	public void getActuator(int clientId) {
 		JSONObject actuatorsJSON = new JSONObject();
-		//JSONArray actuatorsProfiles = new JSONArray();
-		
-		//actuatorsProfiles.put(EnOceanProfiles.getActuatorProfiles());
-		
+		// JSONArray actuatorsProfiles = new JSONArray();
+
+		// actuatorsProfiles.put(EnOceanProfiles.getActuatorProfiles());
+
 		try {
-			actuatorsJSON.put("actuatorProfiles", EnOceanProfiles.getActuatorProfiles());
+			actuatorsJSON.put("actuatorProfiles",
+					EnOceanProfiles.getActuatorProfiles());
 			actuatorsJSON.put("enoceanDevices", getAllItem());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		logger.debug(actuatorsJSON.toString());
-		sendToClientService.send(clientId, "confDevices",actuatorsJSON);
+		sendToClientService.send(clientId, "confDevices", actuatorsJSON);
 	}
-	
+
 	/**
 	 * Inner class for Ubikit items instanciation thread
+	 * 
 	 * @author Cédric Gérard
 	 * @since June 25, 2013
 	 * @version 1.0.0
@@ -800,7 +882,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	private class ItemInstanciation implements Runnable {
 
 		Collection<PhysicalEnvironmentItem> itemList;
-		
+
 		public ItemInstanciation(Collection<PhysicalEnvironmentItem> itemList) {
 			super();
 			this.itemList = itemList;
@@ -811,7 +893,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 				instanciateItem(item);
 			}
 		}
-		
+
 	}
 
 }

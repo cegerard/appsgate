@@ -7,47 +7,22 @@
 		<artifactId>enocean</artifactId>
 		<version>1.0.0</version>
 	</parent>
-
-	<artifactId>UbikitAdapter</artifactId>
+	
+	<artifactId>UbikitAdapterSpec</artifactId>
 	<packaging>bundle</packaging>
-
-	<name>Ubikit adapter OSGi Bundle</name>
-
+	
+	<name>UbikitAdapterSpec</name>
+	<description>Ubikit adapter specification</description>
+	
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>${ipojo.annotations.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>immotronic</groupId>
-			<artifactId>ubikit</artifactId>
-			<version>1.11.0</version>
-		</dependency>
-		<dependency>
-			<groupId>immotronic</groupId>
-			<artifactId>pem.enocean</artifactId>
-			<version>1.12.0</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.imag.adele.apam</groupId>
-			<artifactId>apam-core</artifactId>
-			<version>${apam.current.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>ClientCommunicationManager</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>UbikitAdapterSpec</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
 		</dependency>
 	</dependencies>
-
-	<!-- Build Instructions -->
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -60,7 +35,7 @@
 					</instructions>
 				</configuration>
 			</plugin>
-			<plugin>
+            <plugin>
                 <groupId>fr.imag.adele.apam</groupId>
                 <artifactId>apam-maven-plugin</artifactId>
                 <version>${apam.current.version}</version>
@@ -74,5 +49,5 @@
             </plugin>
 		</plugins>
 	</build>
-
+	
 </project>

@@ -9,7 +9,7 @@ import appsgate.lig.contact.sensor.messages.ContactNotificationMsg;
 import appsgate.lig.contact.sensor.spec.CoreContactSensorSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
+import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 
 
 /**
@@ -77,7 +77,7 @@ public class EnoceanContactSensorImpl implements CoreContactSensorSpec, CoreObje
 	 * EnOcean proxy service uses to validate the sensor configuration with the
 	 * EnOcean proxy (pairing phase)
 	 */
-	EnOceanService enoceanProxy;
+	UbikitAdapterService enoceanProxy;
 
 	@Override
 	public boolean getContactStatus() {

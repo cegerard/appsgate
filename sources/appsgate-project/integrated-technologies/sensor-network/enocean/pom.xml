@@ -14,6 +14,14 @@
 	
 	<description>This sub-project contain all component for EnOcean Appsgate integration.</description>
 	
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+	</dependencies>
+	
 	<modules>
 		<module>EnoceanTempSensorImpl</module>
 		<module>EnoceanSwitchSensorImpl</module>
@@ -24,5 +32,6 @@
 		<module>EnoceanOnOffActuatorImpl</module>
 		<module>UbikitAdapter</module>
 		<module>EnoceanPlugImpl</module>
+		<module>UbikitAdapterSpec</module>
 	</modules>
 </project>

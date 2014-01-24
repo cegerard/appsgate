@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
+import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 import appsgate.lig.smartplug.actuator_sensor.messages.SmartPlugNotificationMsg;
 import appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec;
 
@@ -45,7 +45,7 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 	 * EnOcean proxy service uses to validate the sensor configuration with the
 	 * EnOcean proxy (pairing phase)
 	 */
-	EnOceanService enoceanProxy;
+	UbikitAdapterService enoceanProxy;
 	
 	/**
 	 * Called by APAM when an instance of this implementation is created

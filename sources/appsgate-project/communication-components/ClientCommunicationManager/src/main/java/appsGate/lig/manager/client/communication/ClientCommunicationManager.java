@@ -51,12 +51,6 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	 */
 	private static Logger logger = LoggerFactory.getLogger(ClientCommunicationManager.class);
 	
-	/**
-	 * HTTP service dependency resolve by iPOJO.
-	 * Allow to register HTML resources to the Felix HTTP server 
-	 */
-	//private HttpService httpService;
-	
 	public ClientCommunicationManager() throws UnknownHostException {
 		super(new InetSocketAddress(DEFAULT_WEBSOCKET_PORT));
 	}
@@ -66,17 +60,6 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	 */
 	public void newInst() {
 		logger.info("initiating the web communication manager...");
-//		if (httpService != null) {
-//			final HttpContext httpContext = httpService.createDefaultHttpContext();
-//			final Dictionary<String, String> initParams = new Hashtable<String, String>();
-//			initParams.put("from", "HttpService");
-//			try {
-//				// register HTML pages as resources
-//				httpService.registerResources("/", "WEB/", httpContext);
-//			} catch (NamespaceException ex) {
-//				logger.error("NameSpace exception");
-//			}
-//		}
 		// start the web socket server
 		this.start();
 		logger.info("The communication manager is ready.");
@@ -87,16 +70,13 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	 */
 	public void deleteInst() {
 		logger.info("Releasing the communication manager...");
-//		if (httpService != null) {
-//			httpService.unregister("/");
-			try {
-				this.stop();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-//		}
+		try {
+			this.stop();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		logger.info("The communication manager is now stopped.");
 	}
 	
@@ -142,30 +122,6 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	private boolean isConfiguration(JSONObject msg) {
 		return msg.has("CONFIGURATION");
 	}
-	
-	/**
-	 * Get the HTTP service form OSGi/iPOJO. This service is required.
-	 * 
-	 * @param httpService
-	 *            , the HTTP OSGi service
-	 */
-//	@Bind(optional = false)
-//	public void bindHttpService(HttpService httpService) {
-//		this.httpService = httpService;
-//		logger.debug("httpService service dependency resolved");
-//	}
-
-	/**
-	 * Call when the communication manager release the required HTTP service.
-	 * 
-	 * @param httpService
-	 *            , the released HTTP OSGi service
-	 */
-//	@Unbind(optional = false)
-//	public void unbindHttpService(HttpService httpService) {
-//		this.httpService = null;
-//		logger.debug("httpService service dependency not available");
-//	}
 	
 	/*****************************************/
 	/** Send message service implementation **/

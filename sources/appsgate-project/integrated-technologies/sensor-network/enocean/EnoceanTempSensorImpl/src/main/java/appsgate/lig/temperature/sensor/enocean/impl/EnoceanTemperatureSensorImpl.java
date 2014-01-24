@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
+import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 import appsgate.lig.temperature.sensor.messages.TemperatureNotificationMsg;
 import appsgate.lig.temperature.sensor.spec.CoreTemperatureSensorSpec;
 
@@ -76,7 +76,7 @@ public class EnoceanTemperatureSensorImpl implements CoreObjectSpec, CoreTempera
 	 * EnOcean proxy service uses to validate the sensor configuration with the
 	 * EnOcean proxy (pairing phase)
 	 */
-	EnOceanService enoceanProxy;
+	UbikitAdapterService enoceanProxy;
 
 	@Override
 	public TemperatureUnit getTemperatureUnit() {

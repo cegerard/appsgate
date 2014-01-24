@@ -79,8 +79,8 @@
 	<composite name="AppsGateGoogleServices" singleton="true">
 		<contentMngt>
 			<start implementation="AppsgateGoogleAdapter" name="AppsgateGoogleAdapterInst"></start>
-			<start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start>
-			<start implementation="GmailImpl" name="GmailInst"></start>
+<!-- 			<start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
+<!-- 			<start implementation="GmailImpl" name="GmailInst"></start> -->
 		</contentMngt>
 	</composite>
 
