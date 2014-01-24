@@ -6,11 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -29,7 +25,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
     public void setUp() throws Exception {
         super.setUp();
         ruleJSON.put("id", "test");
-        ruleJSON.put("seqRules", new JSONArray());
+        ruleJSON.put("seqRules", emptySeqRules);
         ruleJSON.put("seqDefinitions", new JSONArray());
         this.node = new NodeFunctionDefinition(ruleJSON, null);
         this.instance = this.node;
@@ -46,7 +42,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
         NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/testFunction.json"), null);
         assertNotNull(defNode);
         System.out.println(defNode.getExpertProgramScript());
-        NodeSeqRules code = defNode.getCode(instance);
+        Node code = defNode.getCode(instance);
         Assert.assertNotNull(code);
     }
 

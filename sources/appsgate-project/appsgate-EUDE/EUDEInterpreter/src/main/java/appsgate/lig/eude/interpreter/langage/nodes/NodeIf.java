@@ -36,11 +36,11 @@ public class NodeIf extends Node {
     /**
      * sequence of nodes to interpret if the boolean expression is true
      */
-    private NodeSeqRules seqRulesTrue;
+    private Node seqRulesTrue;
     /**
      * sequence of nodes to interpret if the boolean expression is false
      */
-    private NodeSeqRules seqRulesFalse;
+    private Node seqRulesFalse;
 
     /**
      * Default constructor. Instantiate a node if
@@ -53,9 +53,9 @@ public class NodeIf extends Node {
         super(parent);
 
 //        this.expBool = new NodeExpBool(getJSONArray(ruleIfJSON, "expBool"), this);
-        this.expBool = NodeBuilder.BuildNodeFromJSON(ruleIfJSON.optJSONObject("expBool"), this);
-        this.seqRulesTrue = new NodeSeqRules(getJSONArray(ruleIfJSON, "seqRulesTrue"), this);
-        this.seqRulesFalse = new NodeSeqRules(getJSONArray(ruleIfJSON, "seqRulesFalse"), this);
+        this.expBool = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
+        this.seqRulesTrue = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
+        this.seqRulesFalse = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
 
     }
 
@@ -132,8 +132,8 @@ public class NodeIf extends Node {
         JSONObject o = new JSONObject();
         try {
             o.put("expBool", expBool.getJSONDescription());
-            o.put("seqRulesTrue", seqRulesTrue.getJSONArrayDescription());
-            o.put("seqRulesFalse", seqRulesTrue.getJSONArrayDescription());
+            o.put("seqRulesTrue", seqRulesTrue.getJSONDescription());
+            o.put("seqRulesFalse", seqRulesTrue.getJSONDescription());
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
@@ -159,8 +159,8 @@ public class NodeIf extends Node {
         NodeIf ret = new NodeIf(parent);
         ret.setSymbolTable(this.getSymbolTable());
         ret.expBool = expBool.copy(ret);
-        ret.seqRulesFalse = (NodeSeqRules) seqRulesFalse.copy(ret);
-        ret.seqRulesTrue = (NodeSeqRules) seqRulesTrue.copy(ret);
+        ret.seqRulesFalse =  seqRulesFalse.copy(ret);
+        ret.seqRulesTrue =  seqRulesTrue.copy(ret);
         return ret;
 
     }

@@ -352,15 +352,24 @@ public class EUDEInterpreterImplTest {
     public void testPrograms() throws IOException, FileNotFoundException, JSONException, InterruptedException {
         System.out.println("Programs");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testIf.json")));
+        System.out.println(instance.getNodeProgram("testIf").getExpertProgramScript());
+
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testPrograms.json")));
+        System.out.println(instance.getNodeProgram("testPrograms").getExpertProgramScript());
+
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testFail_1.json")));
+        System.out.println(instance.getNodeProgram("program-4050").getExpertProgramScript());
+
+        System.out.println("********************testIf************************");
+        Assert.assertTrue(instance.callProgram("testIf"));
+        System.out.println("*******************testPrograms*************************");
         Assert.assertTrue(instance.callProgram("testPrograms"));
-        //Assert.assertTrue(instance.callProgram("program-373"));
+        System.out.println("********************program-4050************************");
         Assert.assertTrue(instance.callProgram("program-4050"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertFalse(instance.isProgramActive("testPrograms"));
-        System.out.println(instance.getNodeProgram("testPrograms").getExpertProgramScript());
-        System.out.println(instance.getNodeProgram("program-4050").getExpertProgramScript());
+        Assert.assertFalse(instance.isProgramActive("testIf"));
+        Assert.assertTrue(instance.isProgramActive("program-4050"));
     }
 
     /**
@@ -375,7 +384,8 @@ public class EUDEInterpreterImplTest {
     public void testWhen() throws IOException, FileNotFoundException, JSONException, InterruptedException {
         System.out.println("When");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));
-        Assert.assertTrue(instance.callProgram("TestWhen"));
+        boolean callProgram = instance.callProgram("TestWhen");
+        Assert.assertTrue(callProgram);
         contextFollower.notifAll("1");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
@@ -397,7 +407,7 @@ public class EUDEInterpreterImplTest {
      * @throws JSONException
      * @throws java.lang.InterruptedException
      */
-    @Test
+    //@Test
     public void testPgm() throws Exception {
         System.out.println("Pgm calling TestWhen");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/pgm.json")));
@@ -416,7 +426,7 @@ public class EUDEInterpreterImplTest {
 
     }
 
-    @Test
+    //@Test
     public void testStopAndStart() throws Exception {
         System.out.println("Stop And Start");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));

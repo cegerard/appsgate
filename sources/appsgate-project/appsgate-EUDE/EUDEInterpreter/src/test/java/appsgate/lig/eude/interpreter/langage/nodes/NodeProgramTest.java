@@ -13,6 +13,7 @@ import java.util.Collection;
 import junit.framework.Assert;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -43,10 +44,13 @@ public class NodeProgramTest extends NodeTest {
         ruleJSON.put("id", "test");
         ruleJSON.put("runningState", "STOPPED");
         ruleJSON.put("userInputSource", "test");
+        JSONObject rules = new JSONObject();
+        rules.put("type", "instructions");
+        rules.put("rules", new JSONArray());
         JSONObject source = new JSONObject();
         source.put("programName", "test");
         source.put("daemon", false);
-        source.put("seqRules", (Collection) null);
+        source.put("seqRules", rules);
         source.put("seqDefinitions", (Collection) null);
         ruleJSON.put("source", source);
 
@@ -109,12 +113,16 @@ public class NodeProgramTest extends NodeTest {
         System.out.println("update");
         JSONObject jsonProgram = new JSONObject();
         jsonProgram.put("userInputSource", "test");
+        JSONObject rules = new JSONObject();
+        rules.put("type", "instructions");
+        rules.put("rules", new JSONArray());
+
         JSONObject src = new JSONObject();
         src.put("programName", "test");
         src.put("author", "test");
         src.put("target", "test");
         src.put("daemon", true);
-        src.put("seqRules", (Collection) null);
+        src.put("seqRules", rules);
         src.put("seqDefinitions", (Collection) null);
         jsonProgram.put("source", src);
 

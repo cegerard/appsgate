@@ -19,6 +19,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.json.JSONArray;
 
 /**
  *
@@ -34,10 +35,17 @@ public abstract class NodeTest {
     protected Node instance;
     protected JSONObject ruleJSON;
     protected EUDEInterpreterImpl interpreter;
+    
+    protected JSONObject emptySeqRules;
 
     public NodeTest() {
         this.interpreter = context.mock(EUDEInterpreterImpl.class);
-
+        this.emptySeqRules = new JSONObject();
+        try {
+            emptySeqRules.put("type", "instructions");
+            emptySeqRules.put("rules", new JSONArray());
+        } catch (JSONException jSONException) {
+        }
     }
 
     @Before
@@ -157,7 +165,7 @@ public abstract class NodeTest {
                 ret = false;
                 System.out.println(key + " is in original, but not in copy");
             } else {
-                if (orig.get(key).getClass() == JSONObject.class) {
+                if (orig.get(key).getClass() == JSONObject.class && copy.get(key).getClass() == JSONObject.class) {
                     return compareTo((JSONObject) orig.get(key), (JSONObject) copy.get(key));
                 }
                 if (!orig.get(key).toString().equals(copy.get(key).toString())) {

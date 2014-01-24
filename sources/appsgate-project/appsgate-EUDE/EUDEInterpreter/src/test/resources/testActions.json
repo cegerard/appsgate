@@ -9,29 +9,31 @@
         "author": "Bob",
         "target": "Alice",
         "seqDefinitions": [],
-        "seqRules": [
-            [
-                {
-                    "type": "NodeAction",
-                    "targetId": "test",
-                    "methodName": "stopProgram",
-                    "args":[],
-                    "targetType": "program"
-                },
-                {
-                    "type": "NodeAction",
-                    "targetId": "test",
-                    "methodName": "redAlert",
-                    "targetType": "test",
-                    "args":[]
-                },
-                {
-                    "type": "NodeAction",
-                    "targetId": "test",
-                    "methodName": "close",
-                    "args":[],
-                    "targetType": "device"
-                }            ]
-        ]
+        "seqRules": {
+            "type": "instructions",
+            "rules":
+                    [
+                        {
+                            "type": "NodeAction",
+                            "targetId": "test",
+                            "methodName": "stopProgram",
+                            "args": [],
+                            "targetType": "program"
+                        },
+                        {
+                            "type": "NodeAction",
+                            "targetId": "test",
+                            "methodName": "redAlert",
+                            "targetType": "test",
+                            "args": []
+                        },
+                        {
+                            "type": "NodeAction",
+                            "targetId": "test",
+                            "methodName": "close",
+                            "args": [],
+                            "targetType": "device"
+                        }]
+        }
     }
 }

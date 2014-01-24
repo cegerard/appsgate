@@ -36,8 +36,8 @@ public class NodeIfTest extends NodeTest {
         v.put("type", "boolean");
         v.put("value", "false");
         ruleJSON.put("expBool",  v);
-        ruleJSON.put("seqRulesTrue", (Collection) null);
-        ruleJSON.put("seqRulesFalse", (Collection) null);
+        ruleJSON.put("seqRulesTrue", emptySeqRules);
+        ruleJSON.put("seqRulesFalse", emptySeqRules);
         this.ifTest = new NodeIf(ruleJSON, null);
         this.instance = this.ifTest;
     }

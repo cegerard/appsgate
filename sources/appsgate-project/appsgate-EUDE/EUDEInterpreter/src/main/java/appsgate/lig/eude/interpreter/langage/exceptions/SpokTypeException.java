@@ -16,5 +16,9 @@ public class SpokTypeException extends SpokException {
     public SpokTypeException(String type, SpokObject o) {
         super("[" +type + "] not correct found: " + o.getType(), null);
     }
+    
+    public SpokTypeException(String unknown_type) {
+        super("[" +unknown_type + "] is unknown as a type", null);
+    }
 
 }

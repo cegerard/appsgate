@@ -9,25 +9,19 @@
         "author": "Bob",
         "target": "Alice",
         "seqDefinitions": [],
-        "seqRules": [
-            [
+        "seqRules": {
+            "type": "instructions",
+            "rules": [
                 {
                     "type": "NodeAction",
-                    "targetId": "testActions",
+                    "targetId": "testIf",
                     "methodName": "callProgram",
                     "args": [],
                     "targetType": "program"
                 },
                 {
                     "type": "NodeAction",
-                    "targetId": "testActions",
-                    "methodName": "stopProgram",
-                    "args": [],
-                    "targetType": "program"
-                },
-                {
-                    "type": "NodeAction",
-                    "targetId": "testPrograms",
+                    "targetId": "testIf",
                     "methodName": "stopProgram",
                     "args": [],
                     "targetType": "program"
@@ -39,8 +33,16 @@
                     "args": [],
                     "targetType": "device"
                 }
+                ,
+                {
+                    "type": "NodeAction",
+                    "targetId": "testPrograms",
+                    "methodName": "stopProgram",
+                    "args": [],
+                    "targetType": "program"
+                }
 
             ]
-        ]
+        }
     }
 }

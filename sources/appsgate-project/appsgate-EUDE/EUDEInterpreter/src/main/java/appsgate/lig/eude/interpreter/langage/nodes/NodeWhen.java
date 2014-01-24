@@ -41,7 +41,7 @@ public class NodeWhen extends Node {
     /**
      * The sequence of thing to do once the events are done
      */
-    private NodeSeqRules seqRules;
+    private Node seqRules;
 
     /**
      * Default constructor. Instantiate a node when
@@ -63,7 +63,7 @@ public class NodeWhen extends Node {
         }
 
         // initialize the sequences of events and rules
-        seqRules = new NodeSeqRules(getJSONArray(ruleWhenJSON, "seqRulesThen"), this);
+        seqRules = NodeBuilder.BuildNodeFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
 
     }
 
@@ -117,7 +117,7 @@ public class NodeWhen extends Node {
     }
 
     @Override
-    protected void specificStop() throws SpokException{
+    protected void specificStop() throws SpokException {
         LOGGER.debug("specific Stop");
         for (NodeEvent e : seqEvent) {
             e.removeEndEventListener(this);
@@ -131,15 +131,15 @@ public class NodeWhen extends Node {
     public String toString() {
         return "[Node When: events(" + seqEvent.toString() + "), rules(" + seqRules + ")]";
     }
-    
+
     @Override
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("seqRulesThen", seqRules.getJSONArrayDescription());
+            o.put("seqRulesThen", seqRules.getJSONDescription());
             JSONArray evt = new JSONArray();
             int i = 0;
-            for (NodeEvent e: seqEvent){
+            for (NodeEvent e : seqEvent) {
                 evt.put(i, e.getJSONDescription());
             }
             o.put("events", evt);
@@ -177,7 +177,7 @@ public class NodeWhen extends Node {
         for (NodeEvent n : seqEvent) {
             ret.seqEvent.add((NodeEvent) n.copy(ret));
         }
-        ret.seqRules = (NodeSeqRules) seqRules.copy(ret);
+        ret.seqRules = seqRules.copy(ret);
         return ret;
 
     }

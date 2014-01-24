@@ -27,7 +27,7 @@ public class NodeFunctionDefinition extends Node {
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeFunctionDefinition.class);
 
     private String name;
-    private NodeSeqRules seqRules;
+    private Node seqRules;
 
     /**
      *
@@ -40,7 +40,7 @@ public class NodeFunctionDefinition extends Node {
         super(parent);
         this.name = programJSON.optString("id");
         this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions")));
-        this.seqRules = new NodeSeqRules(programJSON.optJSONArray("seqRules"), this);
+        this.seqRules = NodeBuilder.BuildNodeFromJSON(programJSON.optJSONObject("seqRules"), this);
     }
 
     /**
@@ -92,9 +92,9 @@ public class NodeFunctionDefinition extends Node {
      * @return
      * @throws SpokException
      */
-    public NodeSeqRules getCode(Node parent)
+    public Node getCode(Node parent)
             throws SpokException {
-        NodeSeqRules newRules = (NodeSeqRules) seqRules.copy(parent);
+        Node newRules =  seqRules.copy(parent);
         return newRules;
     }
 
@@ -103,10 +103,10 @@ public class NodeFunctionDefinition extends Node {
         JSONObject o = new JSONObject();
         try {
             o.put("id", this.name);
-            o.put("seqRules", seqRules.getJSONArrayDescription());
+            o.put("seqRules", seqRules.getJSONDescription());
             if (getSymbolTable() != null) {
                 o.put("seqDefinitions", getSymbolTable().getJSONDescription());
-           } else {
+            } else {
                 o.put("seqDefinitions", new JSONArray());
             }
         } catch (JSONException ex) {
@@ -120,7 +120,7 @@ public class NodeFunctionDefinition extends Node {
     protected Node copy(Node parent) {
         NodeFunctionDefinition ret = new NodeFunctionDefinition(parent);
         ret.name = name;
-        ret.seqRules = (NodeSeqRules) seqRules.copy(ret);
+        ret.seqRules = seqRules.copy(ret);
         return ret;
     }
 

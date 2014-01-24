@@ -15,7 +15,9 @@
             "id": "v3",
             "var_name": "v3"}
     ],
-    "seqRules": [[
+    "seqRules": {
+        "type": "instructions",
+        "rules": [
             {
                 "type": "assignation",
                 "name": "v1",
@@ -33,5 +35,6 @@
                 }
             }
 
-        ]]
+        ]
+    }
 }

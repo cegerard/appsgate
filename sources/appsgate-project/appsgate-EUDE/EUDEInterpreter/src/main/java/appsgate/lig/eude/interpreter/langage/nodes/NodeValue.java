@@ -108,5 +108,10 @@ public class NodeValue extends Node {
     public SpokObject getResult() {
         return this;
     }
+    
+    @Override
+    public String toString() {
+        return "[NodeValue type: " + type + ", value: " + value + "]";
+    }
 
 }

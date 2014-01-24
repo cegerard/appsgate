@@ -9,32 +9,29 @@
         "author": "Bob",
         "target": "Alice",
         "seqDefinitions": [],
-        "seqRules": [
-            [
+        "seqRules": {
+            "type": "NodeWhen",
+            "events": [
                 {
-                    "type": "NodeWhen",
-                    "events": [
-                        {
-                            "type": "NodeEvent",
-                            "sourceType": "device",
-                            "sourceId": "ENO2796f3",
-                            "eventName": "switchNumber",
-                            "eventValue": "1"
-                        }
-                    ],
-                    "seqRulesThen": [
-                        [
-                            {
-                                "type": "NodeAction",
-                                "deviceId": "194.199.23.136-2",
-                                "targetType": "device",
-                                "targetId": "test",
-                                "methodName": "On"
-                            }
-                        ]
-                    ]
+                    "type": "NodeEvent",
+                    "sourceType": "device",
+                    "sourceId": "ENO2796f3",
+                    "eventName": "switchNumber",
+                    "eventValue": "1"
                 }
-            ]
-        ]
+            ],
+            "seqRulesThen": {
+                "type": "instructions",
+                "rules": [
+                    {
+                        "type": "NodeAction",
+                        "deviceId": "194.199.23.136-2",
+                        "targetType": "device",
+                        "targetId": "test",
+                        "methodName": "On"
+                    }
+                ]
+            }
+        }
     }
 }

@@ -1,25 +1,24 @@
 {
-    "id": "testIF",
+    "id": "testIf",
     "runningState": "DEPLOYED",
     "userInputSource": "",
     "source": {
-        "programName": "TestIf",
+        "programName": "testIf",
         "daemon": false,
-        "seqParameters": [
-        ],
+        "seqParameters": [],
         "author": "Bob",
         "target": "Alice",
-        "seqDefinitions": [
-        ],
-        "seqRules": [
-            [
+        "seqDefinitions": [],
+        "seqRules": {
+            "type": "instructions",
+            "rules": [
                 {
                     "type": "NodeIf",
                     "expBool": {
                         "type": "NodeBinaryExpression",
                         "operator": "EQUALS",
                         "leftOperand": {
-                            "type" : "NodeAction",
+                            "type": "NodeAction",
                             "targetId": "194.199.23.136-1",
                             "methodName": "getCurrentState",
                             "returnType": "boolean",
@@ -33,8 +32,9 @@
                         }
                     }
                     ,
-                    "seqRulesTrue": [
-                        [
+                    "seqRulesTrue": {
+                        "type": "instructions",
+                        "rules": [
                             {
                                 "type": "NodeAction",
                                 "targetId": "194.199.23.136-5",
@@ -44,21 +44,17 @@
                                 "targetType": "device"
                             }
                         ]
-                    ],
-                    "seqRulesFalse": [
-                        [
-                            {
-                                "type": "NodeAction",
-                                "targetId": "194.199.23.136-1",
-                                "methodName": "On",
-                                "args": [],
-                                "action": "fermer les volets",
-                                "targetType": "device"
-                            }
-                        ]
-                    ]
+                    },
+                    "seqRulesFalse": {
+                        "type": "NodeAction",
+                        "targetId": "194.199.23.136-1",
+                        "methodName": "On",
+                        "args": [],
+                        "action": "fermer les volets",
+                        "targetType": "device"
+                    }
                 }
             ]
-        ]
+        }
     }
 }

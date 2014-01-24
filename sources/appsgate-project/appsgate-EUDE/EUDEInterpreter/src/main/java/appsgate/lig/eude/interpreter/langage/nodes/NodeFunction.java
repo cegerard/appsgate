@@ -38,7 +38,7 @@ public class NodeFunction extends Node {
     /**
      * The node sequence to execute
      */
-    private NodeSeqRules rules = null;
+    private Node rules = null;
 
     /**
      * The params passed to the function

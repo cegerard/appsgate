@@ -1,0 +1,18 @@
+{
+    "type": "instructions",
+    "rules": [
+        {
+            "type": "boolean",
+            "value" : "true"
+        },
+        {
+            "type": "number",
+            "value" : "2"
+        },
+        {
+            "type": "number",
+            "value" : "3"
+        }
+    ]
+
+}

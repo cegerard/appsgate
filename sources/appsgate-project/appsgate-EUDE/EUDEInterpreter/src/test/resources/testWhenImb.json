@@ -11,8 +11,9 @@
         "target": "Alice",
         "seqDefinitions": [
         ],
-        "seqRules": [
-            [
+        "seqRules": {
+            "type": "instructions",
+            "rules": [
                 {
                     "type": "NodeWhen",
                     "events": [
@@ -24,8 +25,9 @@
                             "eventValue": "1"
                         }
                     ],
-                    "seqRulesThen": [
-                        [
+                    "seqRulesThen": {
+                        "type": "instructions",
+                        "rules": [
                             {
                                 "type": "NodeAction",
                                 "targetId": "FirstWhen",
@@ -44,24 +46,20 @@
                                         "eventName": "makeCall",
                                         "eventValue": "1"
                                     }
-                                ], "seqRulesThen": [
-                                    [
-                                        {
-                                            "type": "NodeAction",
-                                            "targetId": "SecondWhen",
-                                            "methodName": "On",
-                                            "args": [],
-                                            "action": "DoJob",
-                                            "targetType": "device"
-                                        }
-                                    ]
-
-                                ]
+                                ],
+                                "seqRulesThen": {
+                                    "type": "NodeAction",
+                                    "targetId": "SecondWhen",
+                                    "methodName": "On",
+                                    "args": [],
+                                    "action": "DoJob",
+                                    "targetType": "device"
+                                }
                             }
                         ]
-                    ]
+                    }
                 }
             ]
-        ]
+        }
     }
 }

@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONObject;
 
 /**
@@ -18,11 +19,11 @@ public class NodeBuilder {
     private static enum NODE_TYPE {
 
         NODE_ACTION, NODE_BINARY_EXPRESSION, NODE_EVENT, NODE_FUNCTION,
-        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM,
-        NODE_RETURN, NODE_SELECT, NODE_VALUE, NODE_VARIABLE_ASSIGNATION, NODE_WHEN;
+        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM, NODE_RETURN,
+        NODE_SELECT, NODE_SEQ_RULES, NODE_VALUE, NODE_VARIABLE_ASSIGNATION, NODE_WHEN;
     }
 
-    private static NODE_TYPE getType(String type) {
+    private static NODE_TYPE getType(String type) throws SpokException {
         if (type.equalsIgnoreCase("NodeAction")) {
             return NODE_TYPE.NODE_ACTION;
         }
@@ -56,13 +57,16 @@ public class NodeBuilder {
         if (type.equalsIgnoreCase("boolean")) {
             return NODE_TYPE.NODE_VALUE;
         }
-        if (type.equalsIgnoreCase("NodeVariableAssignation")) {
+        if (type.equalsIgnoreCase("assignation")) {
             return NODE_TYPE.NODE_VARIABLE_ASSIGNATION;
         }
         if (type.equalsIgnoreCase("NodeWhen")) {
             return NODE_TYPE.NODE_WHEN;
         }
-        return null;
+        if (type.equalsIgnoreCase("instructions")) {
+            return NODE_TYPE.NODE_SEQ_RULES;
+        }
+        throw new SpokTypeException(type);
     }
 
     /**
@@ -101,6 +105,8 @@ public class NodeBuilder {
                 return new NodeWhen(o, parent);
             case NODE_PROGRAM:
                 throw new SpokException("Unable to build program node inside other programs", null);
+            case NODE_SEQ_RULES:
+                return new NodeSeqRules(o, parent);
             default:
                 throw new SpokNodeException("NodeBuilder", "type", null);
         }

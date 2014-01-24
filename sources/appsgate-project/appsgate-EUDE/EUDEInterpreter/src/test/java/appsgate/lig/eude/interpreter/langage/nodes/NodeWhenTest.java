@@ -22,7 +22,7 @@ public class NodeWhenTest extends NodeTest {
     public void setUp() throws Exception {
         super.setUp();
         ruleJSON.put("events", (Collection) null);
-        ruleJSON.put("seqRulesThen", (Collection) null);
+        ruleJSON.put("seqRulesThen", emptySeqRules);
         this.instance = new NodeWhen(this.ruleJSON, null);
 
     }

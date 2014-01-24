@@ -85,7 +85,7 @@ public class NodeProgram extends Node {
     /**
      * Sequence of rules to interpret
      */
-    private NodeSeqRules seqRules;
+    private Node seqRules;
 
     /**
      * JSON representation of the program
@@ -157,7 +157,7 @@ public class NodeProgram extends Node {
         } else {
             daemon = false;
         }
-        seqRules = new NodeSeqRules(getJSONArray(source, "seqRules"), this);
+        seqRules = NodeBuilder.BuildNodeFromJSON(getJSONObject(source, "seqRules"), this);
 
         return true;
 
@@ -345,7 +345,7 @@ public class NodeProgram extends Node {
             o.put("runningState", runningState.name);
 
             JSONObject source = new JSONObject();
-            source.put("seqRules", seqRules.getJSONArrayDescription());
+            source.put("seqRules", seqRules.getJSONDescription());
             source.put("daemon", daemon);
             source.put("programName", name);
             source.put("userInputSource", userInputSource);
