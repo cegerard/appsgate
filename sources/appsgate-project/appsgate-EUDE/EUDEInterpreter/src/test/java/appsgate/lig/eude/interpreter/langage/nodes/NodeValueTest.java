@@ -29,10 +29,9 @@ public class NodeValueTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        JSONObject o = new JSONObject();
-        o.put("value", false);
-        o.put("type", "boolean");
-        this.instance = new NodeValue(o, null);
+        ruleJSON.put("value", false);
+        ruleJSON.put("type", "boolean");
+        this.instance = new NodeValue(ruleJSON, null);
 
     }
     @Test

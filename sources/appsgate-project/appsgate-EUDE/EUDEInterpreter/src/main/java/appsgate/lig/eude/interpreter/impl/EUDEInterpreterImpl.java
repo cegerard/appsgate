@@ -156,7 +156,6 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
             p = new NodeProgram(this, programJSON);
         } catch (SpokException e) {
             LOGGER.error("Node error detected while loading a program: {}", e.getMessage());
-            LOGGER.debug(e.getCause().getMessage());
             return false;
         }
 

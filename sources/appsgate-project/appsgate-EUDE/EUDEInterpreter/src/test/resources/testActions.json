@@ -14,21 +14,21 @@
             "rules":
                     [
                         {
-                            "type": "NodeAction",
+                            "type": "action",
                             "targetId": "test",
                             "methodName": "stopProgram",
                             "args": [],
                             "targetType": "program"
                         },
                         {
-                            "type": "NodeAction",
+                            "type": "action",
                             "targetId": "test",
                             "methodName": "redAlert",
                             "targetType": "test",
                             "args": []
                         },
                         {
-                            "type": "NodeAction",
+                            "type": "action",
                             "targetId": "test",
                             "methodName": "close",
                             "args": [],

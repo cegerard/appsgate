@@ -38,10 +38,11 @@ public class NodeSelectTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        JSONObject o = new JSONObject();
-        o.put("where", (JSONArray) null);
-        o.put("state", new JSONArray());
-        this.instance = new NodeSelect(o, programNode);
+        ruleJSON.put("type", "select");
+        ruleJSON.put("where", new JSONArray());
+        ruleJSON.put("state", new JSONArray());
+        ruleJSON.put("what", new JSONArray());
+        this.instance = new NodeSelect(ruleJSON, programNode);
     }
 
     @Test

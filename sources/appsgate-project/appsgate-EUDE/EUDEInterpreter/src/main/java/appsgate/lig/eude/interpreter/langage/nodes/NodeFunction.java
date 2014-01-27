@@ -158,6 +158,7 @@ public class NodeFunction extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
+            o.put("type", "function");
             o.put("id", name);
             o.put("params", params);
         } catch (JSONException e) {

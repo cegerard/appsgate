@@ -15,21 +15,24 @@
             "type": "instructions",
             "rules": [
                 {
-                    "type": "NodeWhen",
-                    "events": [
-                        {
-                            "type": "NodeEvent",
-                            "sourceType": "device",
-                            "sourceId": "PremierAppel",
-                            "eventName": "makeCall",
-                            "eventValue": "1"
-                        }
-                    ],
+                    "type": "when",
+                    "events": {
+                        "type": "events",
+                        "events": [
+                            {
+                                "type": "event",
+                                "sourceType": "device",
+                                "sourceId": "PremierAppel",
+                                "eventName": "makeCall",
+                                "eventValue": "1"
+                            }
+                        ]
+                    },
                     "seqRulesThen": {
                         "type": "instructions",
                         "rules": [
                             {
-                                "type": "NodeAction",
+                                "type": "action",
                                 "targetId": "FirstWhen",
                                 "methodName": "On",
                                 "args": [],
@@ -37,18 +40,21 @@
                                 "targetType": "device"
                             },
                             {
-                                "type": "NodeWhen",
-                                "events": [
-                                    {
-                                        "type": "NodeEvent",
-                                        "sourceType": "device",
-                                        "sourceId": "PremierAppel",
-                                        "eventName": "makeCall",
-                                        "eventValue": "1"
-                                    }
-                                ],
+                                "type": "when",
+                                "events": {
+                                    "type": "events",
+                                    "events": [
+                                        {
+                                            "type": "event",
+                                            "sourceType": "device",
+                                            "sourceId": "PremierAppel",
+                                            "eventName": "makeCall",
+                                            "eventValue": "1"
+                                        }
+                                    ]
+                                },
                                 "seqRulesThen": {
-                                    "type": "NodeAction",
+                                    "type": "action",
                                     "targetId": "SecondWhen",
                                     "methodName": "On",
                                     "args": [],

@@ -109,6 +109,7 @@ public class NodeSelect extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
+            o.put("type", "select");
             o.put("what", what);
             o.put("where", where);
             o.put("state", state);

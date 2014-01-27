@@ -8,8 +8,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,7 +17,13 @@ import org.json.JSONObject;
  */
 public class NodeValue extends Node {
 
+    /**
+     *
+     */
     private String type;
+    /**
+     *
+     */
     private String value;
 
     /**
@@ -35,11 +39,12 @@ public class NodeValue extends Node {
      *
      * @param o
      * @param parent
+     * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokException
      */
-    public NodeValue(JSONObject o, Node parent) {
+    public NodeValue(JSONObject o, Node parent) throws SpokException {
         super(parent);
-        type = o.optString("type");
-        value = o.optString("value");
+        type = this.getJSONString(o, "type");
+        value = this.getJSONString(o, "value");
     }
 
     /**
@@ -108,10 +113,10 @@ public class NodeValue extends Node {
     public SpokObject getResult() {
         return this;
     }
-    
+
     @Override
     public String toString() {
-        return "[NodeValue type: " + type + ", value: " + value + "]";
+        return "[NodeValue type: " + getType() + ", value: " + getValue() + "]";
     }
 
 }

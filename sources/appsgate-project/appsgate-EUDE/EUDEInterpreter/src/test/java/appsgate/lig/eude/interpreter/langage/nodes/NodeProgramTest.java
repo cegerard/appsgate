@@ -41,6 +41,7 @@ public class NodeProgramTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        ruleJSON.put("type","program");
         ruleJSON.put("id", "test");
         ruleJSON.put("runningState", "STOPPED");
         ruleJSON.put("userInputSource", "test");
@@ -154,7 +155,7 @@ public class NodeProgramTest extends NodeTest {
     }
 
     /**
-     * Test of call method, of class NodeAction.
+     * Test of call method.
      *
      * @throws java.lang.Exception
      */

@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -20,110 +21,121 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeVariableAssignation extends Node {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeReturn.class.getName());
+    // Logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeVariableAssignation.class.getName());
 
+    /**
+     * The name of the variable
+     */
     private String name;
-    private Node evalNode = null;
-    private SpokObject value = null;
+    /**
+     * The value of the variable
+     */
+    private Node value = null;
 
     /**
      * Default Constructor
      *
      * @param p
      */
-    public NodeVariableAssignation(Node p) {
+    private NodeVariableAssignation(Node p) {
         super(p);
     }
 
+    /**
+     * Main constructor
+     *
+     * @param obj the json description
+     * @param p the parent
+     * @throws SpokException
+     */
     public NodeVariableAssignation(JSONObject obj, Node p) throws SpokException {
         super(p);
-        if (obj.has("select")) {
-            evalNode = new NodeSelect(obj.optJSONObject("select"), this);
-        } else if (obj.has("function")) {
-            evalNode = new NodeFunction(obj.optJSONObject("function"), this);
-        }
-
         if (obj.has("value")) {
-            value = new SpokVariable(obj.optJSONObject("value"));
+            value = NodeBuilder.BuildNodeFromJSON(obj.optJSONObject("value"), this);
         }
         name = getJSONString(obj, "name");
-
     }
-
+    
     @Override
     protected void specificStop() throws SpokException {
     }
-
+    
     @Override
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            if (evalNode != null) {
-                o.put("function", evalNode);
-            }
+            o.put("type", "assignation");
             if (value != null) {
-                o.put("value", value);
+                o.put("value", value.getJSONDescription());
             }
             o.put("name", name);
-
+            
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
         }
         return o;
-
+        
     }
-
+    
     @Override
     public String getExpertProgramScript() {
-        if (this.evalNode != null) {
-            return this.name + " = " + this.evalNode.getExpertProgramScript() + ";";
+        if (this.value != null) {
+            return this.name + " = " + this.value.getExpertProgramScript() + ";";
         } else {
-            return this.name + "=" + this.value.toString() + ";";
+            return this.name + " = UNDEFINED ;";
         }
     }
-
+    
     @Override
     protected Node copy(Node parent) {
         NodeVariableAssignation ret = new NodeVariableAssignation(parent);
-        if (evalNode != null) {
-            ret.evalNode = this.evalNode.copy(parent);
-        }
+        ret.name = name;
         if (value != null) {
-            try {
-                ret.value = new SpokVariable(value.getJSONDescription());
-            } catch (SpokException ex) {
-            }
+            ret.value = value.copy(ret);
         }
         return ret;
     }
-
+    
     @Override
     public JSONObject call() {
         setStarted(true);
-        if (evalNode != null) {
-            evalNode.addEndEventListener(this);
-            evalNode.call();
-        } else {
-            addEndEventListener(this);
-            fireEndEvent(new EndEvent(this));
+        if (value != null) {
+            value.addEndEventListener(this);
+            value.call();
         }
         return null;
     }
-
+    
     @Override
     public void endEventFired(EndEvent e) {
         Node source = (Node) e.getSource();
         try {
-            value = source.getResult();
-            if (value != null) {
-                setVariable(new SpokVariable(value.getJSONDescription()));
+            SpokObject v = source.getResult();
+            if (v != null) {
+                setVariable(new SpokVariable(v.getJSONDescription()));
             } else {
                 setVariable(null);
             }
         } catch (SpokException ex) {
             LOGGER.error("Exception raised during evaluation" + ex);
         }
+        fireEndEvent(new EndEvent(this));
+    }
+    
+    @Override
+    public String toString() {
+        return "[Var " + this.name + "=" + this.value + "]";
+        
+    }
+    
+    @Override
+    public SpokObject getResult() throws SpokException {
+        if (value == null) {
+            throw new SpokExecutionException("A variable assignation should not be null");
+        }
+        return value.getResult();
     }
 
     /**
@@ -139,8 +151,9 @@ public class NodeVariableAssignation extends Node {
         if (findNode == null) {
             LOGGER.warn("Unable to find a bloc to assign this variable ({})", this.name);
         } else {
+            LOGGER.trace("variable assigned: " + this.name + " to " + v.getValue());
             findNode.setVariable(this.name, v);
         }
     }
-
+    
 }

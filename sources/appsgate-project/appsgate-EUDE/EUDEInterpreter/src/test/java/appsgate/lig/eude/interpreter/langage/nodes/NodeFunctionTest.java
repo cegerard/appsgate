@@ -21,7 +21,8 @@ public class NodeFunctionTest extends NodeTest {
     public void setUp() throws Exception {
         super.setUp();
         ruleJSON.put("id", "test");
-            //ruleJSON.put("params", new JSONArray());
+        ruleJSON.put("type", "function");
+           ruleJSON.put("params", new JSONArray());
 
         this.instance = new NodeFunction(ruleJSON, null);
 

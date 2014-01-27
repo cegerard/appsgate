@@ -5,7 +5,8 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import java.util.Collection;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 
 /**
@@ -13,18 +14,21 @@ import org.junit.Before;
  * @author jr
  */
 public class NodeWhenTest extends NodeTest {
-
+    
     public NodeWhenTest() {
     }
-
+    
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ruleJSON.put("events", (Collection) null);
+        JSONObject events = new JSONObject();
+        events.put("type", "events");
+        events.put("events", new JSONArray());
+        ruleJSON.put("events", events);
         ruleJSON.put("seqRulesThen", emptySeqRules);
         this.instance = new NodeWhen(this.ruleJSON, null);
-
+        
     }
-
+    
 }

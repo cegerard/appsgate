@@ -5,11 +5,9 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -35,7 +33,7 @@ public class NodeEventTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-
+        ruleJSON.put("type", "event");
         ruleJSON.put("sourceType", "test");
         ruleJSON.put("sourceId", "test");
         ruleJSON.put("eventName", "test");

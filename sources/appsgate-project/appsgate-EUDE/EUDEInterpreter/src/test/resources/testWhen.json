@@ -10,21 +10,24 @@
         "target": "Alice",
         "seqDefinitions": [],
         "seqRules": {
-            "type": "NodeWhen",
-            "events": [
-                {
-                    "type": "NodeEvent",
-                    "sourceType": "device",
-                    "sourceId": "ENO2796f3",
-                    "eventName": "switchNumber",
-                    "eventValue": "1"
-                }
-            ],
+            "type": "when",
+            "events": {
+                "type": "events",
+                "events": [
+                    {
+                        "type": "event",
+                        "sourceType": "device",
+                        "sourceId": "ENO2796f3",
+                        "eventName": "switchNumber",
+                        "eventValue": "1"
+                    }
+                ]
+            },
             "seqRulesThen": {
                 "type": "instructions",
                 "rules": [
                     {
-                        "type": "NodeAction",
+                        "type": "action",
                         "deviceId": "194.199.23.136-2",
                         "targetType": "device",
                         "targetId": "test",

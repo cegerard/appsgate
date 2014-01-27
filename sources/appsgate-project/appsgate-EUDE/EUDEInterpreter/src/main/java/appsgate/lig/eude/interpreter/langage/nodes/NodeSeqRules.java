@@ -144,6 +144,7 @@ public class NodeSeqRules extends Node {
     public void specificStop() throws SpokException {
         for (Node n : instructions) {
             n.removeEndEventListener(this);
+            n.stop();
         }
         synchronized (this) {
             if (instructions.size() > 0) {

@@ -13,67 +13,74 @@
             "type": "instructions",
             "rules": [
                 {
-                    "type": "NodeWhen",
-                    "events": [
-                        {
-                            "sourceType": "device",
-                            "eventValue": 1386052200210,
-                            "eventName": "ClockAlarm",
-                            "type": "NodeEvent",
-                            "sourceId": "21106637055"
-                        }
-                    ],
+                    "type": "when",
+                    "events": {
+                        "type": "events",
+                        "events": [
+                            {
+                                "sourceType": "device",
+                                "eventValue": 1386052200210,
+                                "eventName": "ClockAlarm",
+                                "type": "event",
+                                "sourceId": "21106637055"
+                            }
+                        ]
+                    },
                     "seqRulesThen": {
                         "type": "instructions",
                         "rules": [
                             {
                                 "args": [],
                                 "targetId": "00:17:88:0a:99:c1-5",
-                                "type": "NodeAction",
+                                "type": "action",
                                 "methodName": "setDefault",
                                 "targetType": "device"
                             },
                             {
                                 "args": [], "targetId": "00:17:88:0a:99:c1-6",
-                                "type": "NodeAction",
+                                "type": "action",
                                 "methodName": "setDefault",
                                 "targetType": "device"
                             },
                             {
                                 "args": [],
                                 "targetId": "00:17:88:0a:99:c1-4",
-                                "type": "NodeAction",
+                                "type": "action",
                                 "methodName": "setOrange",
                                 "targetType": "device"
                             },
                             {
-                                "events": [
-                                    {"sourceType": "device",
-                                        "eventValue": 1386054000210,
-                                        "eventName": "ClockAlarm",
-                                        "type": "NodeEvent",
-                                        "sourceId": "21106637055"}
-                                ],
+                                "type": "when",
+                                "events": {
+                                    "type": "events",
+                                    "events": [
+                                        {"sourceType": "device",
+                                            "eventValue": 1386054000210,
+                                            "eventName": "ClockAlarm",
+                                            "type": "event",
+                                            "sourceId": "21106637055"}
+                                    ]
+                                },
                                 "seqRulesThen": {
                                     "type": "instructions",
                                     "rules": [
                                         {
                                             "args": [],
                                             "targetId": "00:17:88:0a:99:c1-4",
-                                            "type": "NodeAction",
+                                            "type": "action",
                                             "methodName": "setRed",
                                             "targetType": "device"
                                         },
                                         {
                                             "args": [],
                                             "targetId": "00:17:88:0a:99:c1-4",
-                                            "type": "NodeAction",
+                                            "type": "action",
                                             "methodName": "blink",
                                             "targetType": "device"
                                         }
                                     ]
-                                },
-                                "type": "NodeWhen"}
+                                }
+                            }
                         ]
                     }
                 }

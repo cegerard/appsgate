@@ -24,6 +24,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        ruleJSON.put("type", "functionDefinition");
         ruleJSON.put("id", "test");
         ruleJSON.put("seqRules", emptySeqRules);
         ruleJSON.put("seqDefinitions", new JSONArray());

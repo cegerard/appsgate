@@ -236,6 +236,7 @@ public class NodeAction extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
+            o.put("type","action");
             o.put("targetType", targetType);
             o.put("targetId", targetId);
             o.put("methodName", methodName);

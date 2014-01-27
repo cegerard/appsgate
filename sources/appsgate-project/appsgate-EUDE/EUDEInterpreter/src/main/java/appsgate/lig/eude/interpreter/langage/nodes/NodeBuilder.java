@@ -18,40 +18,49 @@ public class NodeBuilder {
 
     private static enum NODE_TYPE {
 
-        NODE_ACTION, NODE_BINARY_EXPRESSION, NODE_EVENT, NODE_FUNCTION,
+        NODE_ACTION, NODE_BINARY_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
         NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_SEQ_RULES, NODE_VALUE, NODE_VARIABLE_ASSIGNATION, NODE_WHEN;
     }
 
     private static NODE_TYPE getType(String type) throws SpokException {
-        if (type.equalsIgnoreCase("NodeAction")) {
+        if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
-        if (type.equalsIgnoreCase("NodeBinaryExpression")) {
+        if (type.equalsIgnoreCase("binaryExpression")) {
             return NODE_TYPE.NODE_BINARY_EXPRESSION;
         }
-        if (type.equalsIgnoreCase("NodeEvent")) {
+        if (type.equalsIgnoreCase("event")) {
             return NODE_TYPE.NODE_EVENT;
         }
-        if (type.equalsIgnoreCase("NodeFunction")) {
+        if (type.equalsIgnoreCase("events")) {
+            return NODE_TYPE.NODE_EVENTS;
+        }
+        if (type.equalsIgnoreCase("function")) {
             return NODE_TYPE.NODE_FUNCTION;
         }
-        if (type.equalsIgnoreCase("NodeFunctionDefinition")) {
+        if (type.equalsIgnoreCase("functionDefinition")) {
             return NODE_TYPE.NODE_FUNCTION_DEFINITION;
         }
-        if (type.equalsIgnoreCase("NodeIf")) {
+        if (type.equalsIgnoreCase("if")) {
             return NODE_TYPE.NODE_IF;
         }
-        if (type.equalsIgnoreCase("NodeProgram")) {
+        if (type.equalsIgnoreCase("program")) {
             return NODE_TYPE.NODE_PROGRAM;
         }
-        if (type.equalsIgnoreCase("NodeReturn")) {
+        if (type.equalsIgnoreCase("return")) {
             return NODE_TYPE.NODE_RETURN;
         }
-        if (type.equalsIgnoreCase("NodeSelect")) {
+        if (type.equalsIgnoreCase("select")) {
             return NODE_TYPE.NODE_SELECT;
         }
         if (type.equalsIgnoreCase("number")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
+        if (type.equalsIgnoreCase("string")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
+        if (type.equalsIgnoreCase("variable")) {
             return NODE_TYPE.NODE_VALUE;
         }
         if (type.equalsIgnoreCase("boolean")) {
@@ -60,7 +69,7 @@ public class NodeBuilder {
         if (type.equalsIgnoreCase("assignation")) {
             return NODE_TYPE.NODE_VARIABLE_ASSIGNATION;
         }
-        if (type.equalsIgnoreCase("NodeWhen")) {
+        if (type.equalsIgnoreCase("when")) {
             return NODE_TYPE.NODE_WHEN;
         }
         if (type.equalsIgnoreCase("instructions")) {
@@ -87,6 +96,8 @@ public class NodeBuilder {
                 return new NodeBinaryExpression(o, parent);
             case NODE_EVENT:
                 return new NodeEvent(o, parent);
+            case NODE_EVENTS:
+                return new NodeEvents(o, parent);
             case NODE_FUNCTION:
                 return new NodeFunction(o, parent);
             case NODE_FUNCTION_DEFINITION:

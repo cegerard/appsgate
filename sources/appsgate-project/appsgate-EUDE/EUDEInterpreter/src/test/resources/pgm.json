@@ -15,18 +15,21 @@
             "type": "instructions",
             "rules": [
                 {
-                    "type": "NodeWhen",
-                    "events": [
-                        {
-                            "type": "NodeEvent",
-                            "sourceType": "device",
-                            "sourceId": "PremierAppel",
-                            "eventName": "makeCall",
-                            "eventValue": "1"
-                        }
-                    ],
+                    "type": "when",
+                    "events": {
+                        "type": "events",
+                        "events": [
+                            {
+                                "type": "event",
+                                "sourceType": "device",
+                                "sourceId": "PremierAppel",
+                                "eventName": "makeCall",
+                                "eventValue": "1"
+                            }
+                        ]
+                    },
                     "seqRulesThen": {
-                        "type": "NodeAction",
+                        "type": "action",
                         "targetType": "program",
                         "targetId": "TestWhen",
                         "methodName": "callProgram"

@@ -31,7 +31,6 @@ public class NodeIf extends Node {
     /**
      * node representing the boolean expression
      */
-//    private NodeExpBool expBool
     private Node expBool;
     /**
      * sequence of nodes to interpret if the boolean expression is true
@@ -52,13 +51,17 @@ public class NodeIf extends Node {
     public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokException {
         super(parent);
 
-//        this.expBool = new NodeExpBool(getJSONArray(ruleIfJSON, "expBool"), this);
         this.expBool = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
         this.seqRulesTrue = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
         this.seqRulesFalse = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
 
     }
 
+    /**
+     * private Constructor to allow copy function
+     *
+     * @param parent
+     */
     private NodeIf(Node parent) {
         super(parent);
     }
@@ -124,13 +127,14 @@ public class NodeIf extends Node {
 
     @Override
     public String toString() {
-        return "[node If:" + expBool.toString() + "?" + seqRulesTrue.toString() + ":" + seqRulesFalse.toString() + "]";
+        return "[node If:" + expBool.toString() + " THEN " + seqRulesTrue.toString() + " ELSE " + seqRulesFalse.toString() + "]";
     }
 
     @Override
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
+            o.put("type", "if");
             o.put("expBool", expBool.getJSONDescription());
             o.put("seqRulesTrue", seqRulesTrue.getJSONDescription());
             o.put("seqRulesFalse", seqRulesTrue.getJSONDescription());
@@ -159,8 +163,8 @@ public class NodeIf extends Node {
         NodeIf ret = new NodeIf(parent);
         ret.setSymbolTable(this.getSymbolTable());
         ret.expBool = expBool.copy(ret);
-        ret.seqRulesFalse =  seqRulesFalse.copy(ret);
-        ret.seqRulesTrue =  seqRulesTrue.copy(ret);
+        ret.seqRulesFalse = seqRulesFalse.copy(ret);
+        ret.seqRulesTrue = seqRulesTrue.copy(ret);
         return ret;
 
     }

@@ -1,0 +1,42 @@
+{
+    "seqDefinitions": [
+        {
+            "type": "boolean",
+            "value": "true",
+            "var_name": "c"},
+        {
+            "var_name": "b"},
+        {
+            "type": "variable",
+            "id": "c",
+            "var_name": "a"}
+    ],
+    "seqRules": [
+        {
+            "type": "if",
+            "expBool": {"type": "NodeRelationBool",
+                "operator": "==",
+                "leftOperand": {
+                    "type": "number",
+                    "value": "12"},
+                "rightOperand": {
+                    "type": "number",
+                    "value": "43"}
+            },
+            "seqRulesTrue": [
+                {
+                    "type": "action",
+                    "methodName": "get",
+                    "action": ""}
+            ],
+            "seqRulesFalse": [
+                {
+                    "type": "action",
+                    "targetType": "boolean",
+                    "methodName": "put",
+                    "action": ""
+                }
+            ]
+        }
+    ]
+}

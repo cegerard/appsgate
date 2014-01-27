@@ -27,11 +27,11 @@
                 }
             },
             {
-                "type": "NodeReturn",
-                "returnExp": "v",
+                "type": "return",
+                "returnExp": "v1",
                 "returnValue": {
                     "type": "variable",
-                    "id": "v"
+                    "value": "v1"
                 }
             }
 

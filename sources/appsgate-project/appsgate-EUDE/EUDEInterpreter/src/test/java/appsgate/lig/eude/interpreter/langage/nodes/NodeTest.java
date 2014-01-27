@@ -57,7 +57,7 @@ public abstract class NodeTest {
     }
 
     /**
-     * Test of stop method, of class NodeAction.
+     * Test of stop method
      *
      * @throws Exception
      */
@@ -68,7 +68,7 @@ public abstract class NodeTest {
     }
 
     /**
-     * Test of call method, of class NodeAction.
+     * Test of call method.
      *
      * @throws java.lang.Exception
      */
@@ -125,7 +125,7 @@ public abstract class NodeTest {
     @Test
     public void testGetResult() throws Exception {
         printTestName("GetResult");
-        assertNull(this.instance.getResult());
+        assertNull("result should be null in the default case", this.instance.getResult());
     }
 
     @Test
@@ -133,6 +133,7 @@ public abstract class NodeTest {
         printTestName("GetJSONDescription");
         try {
             JSONObject jsonDescription = this.instance.getJSONDescription();
+            Assert.assertNotNull(jsonDescription.getString("type"));
             Assert.assertTrue("Two Json Object should be equals", compareTo(this.ruleJSON, jsonDescription));
         } catch (UnsupportedOperationException e) {
             fail("It is supposed to be supported now");
@@ -171,11 +172,30 @@ public abstract class NodeTest {
                 if (!orig.get(key).toString().equals(copy.get(key).toString())) {
                     ret = false;
                     System.out.println("For key (" + key + "), contents is not equal:\n"
-                            + orig.get(key).toString() + "\n"
-                            + copy.getString(key).toString());
+                            + orig.get(key).getClass().getSimpleName() + ":" + orig.get(key).toString() + "\n"
+                            + copy.get(key).getClass().getSimpleName() + ":" + copy.getString(key).toString());
                 }
             }
         }
+        k = copy.keys();
+        while (k.hasNext()) {
+            String key = (String) k.next();
+            if (!orig.has(key)) {
+                ret = false;
+                System.out.println(key + " is in copy, but not in original");
+            } else {
+                if (orig.get(key).getClass() == JSONObject.class && copy.get(key).getClass() == JSONObject.class) {
+                    return compareTo((JSONObject) orig.get(key), (JSONObject) copy.get(key));
+                }
+                if (!orig.get(key).toString().equals(copy.get(key).toString())) {
+                    ret = false;
+                    System.out.println("For key (" + key + "), contents is not equal:\n"
+                            + orig.get(key).getClass().getSimpleName() + ":" + orig.get(key).toString() + "\n"
+                            + copy.get(key).getClass().getSimpleName() + ":" + copy.getString(key).toString());
+                }
+            }
+        }
+
         return ret;
     }
 

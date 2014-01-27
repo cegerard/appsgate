@@ -22,14 +22,14 @@ public class NodeBinaryExpressionTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        JSONObject o = new JSONObject();
         JSONObject l = new JSONObject();
-        o.put("operator", "EQUALS");
+        ruleJSON.put("type", "binaryExpression");
+        ruleJSON.put("operator", "EQUALS");
         l.put("type", "number");
         l.put("value", 12);
-        o.put("leftOperand", l);
-        o.put("rightOperand", l);
-        this.instance = new NodeBinaryExpression(o, null);
+        ruleJSON.put("leftOperand", l);
+        ruleJSON.put("rightOperand", l);
+        this.instance = new NodeBinaryExpression(ruleJSON, null);
 
     }
 

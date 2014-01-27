@@ -156,6 +156,7 @@ public class NodeEvent extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
+            o.put("type", "event");
             o.put("sourceType", sourceType);
             o.put("sourceId", sourceId);
             o.put("eventName", eventName);

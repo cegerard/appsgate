@@ -13,12 +13,12 @@
             "type": "instructions",
             "rules": [
                 {
-                    "type": "NodeIf",
+                    "type": "if",
                     "expBool": {
-                        "type": "NodeBinaryExpression",
+                        "type": "binaryExpression",
                         "operator": "EQUALS",
                         "leftOperand": {
-                            "type": "NodeAction",
+                            "type": "action",
                             "targetId": "194.199.23.136-1",
                             "methodName": "getCurrentState",
                             "returnType": "boolean",
@@ -36,7 +36,7 @@
                         "type": "instructions",
                         "rules": [
                             {
-                                "type": "NodeAction",
+                                "type": "action",
                                 "targetId": "194.199.23.136-5",
                                 "methodName": "Off",
                                 "args": [],
@@ -46,7 +46,7 @@
                         ]
                     },
                     "seqRulesFalse": {
-                        "type": "NodeAction",
+                        "type": "action",
                         "targetId": "194.199.23.136-1",
                         "methodName": "On",
                         "args": [],

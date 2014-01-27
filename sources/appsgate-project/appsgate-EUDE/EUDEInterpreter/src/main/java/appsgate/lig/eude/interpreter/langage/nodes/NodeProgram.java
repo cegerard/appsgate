@@ -343,6 +343,7 @@ public class NodeProgram extends Node {
         try {
             o.put("id", id);
             o.put("runningState", runningState.name);
+            o.put("type", "program");
 
             JSONObject source = new JSONObject();
             source.put("seqRules", seqRules.getJSONDescription());

@@ -35,6 +35,7 @@ public class NodeIfTest extends NodeTest {
         JSONObject v = new JSONObject();
         v.put("type", "boolean");
         v.put("value", "false");
+        ruleJSON.put("type", "if");
         ruleJSON.put("expBool",  v);
         ruleJSON.put("seqRulesTrue", emptySeqRules);
         ruleJSON.put("seqRulesFalse", emptySeqRules);

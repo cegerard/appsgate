@@ -141,6 +141,7 @@ public class NodeBinaryExpression extends Node {
     public JSONObject getJSONDescription() {
         JSONObject ret = new JSONObject();
         try {
+            ret.put("type", "binaryExpression");
             ret.put("operator", operator);
             ret.put("leftOperand", left.getJSONDescription());
             ret.put("rightOperand", left.getJSONDescription());

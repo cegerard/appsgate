@@ -13,21 +13,21 @@
             "type": "instructions",
             "rules": [
                 {
-                    "type": "NodeAction",
+                    "type": "action",
                     "targetId": "testIf",
                     "methodName": "callProgram",
                     "args": [],
                     "targetType": "program"
                 },
                 {
-                    "type": "NodeAction",
+                    "type": "action",
                     "targetId": "testIf",
                     "methodName": "stopProgram",
                     "args": [],
                     "targetType": "program"
                 },
                 {
-                    "type": "NodeAction",
+                    "type": "action",
                     "targetId": "test",
                     "methodName": "close",
                     "args": [],
@@ -35,7 +35,7 @@
                 }
                 ,
                 {
-                    "type": "NodeAction",
+                    "type": "action",
                     "targetId": "testPrograms",
                     "methodName": "stopProgram",
                     "args": [],

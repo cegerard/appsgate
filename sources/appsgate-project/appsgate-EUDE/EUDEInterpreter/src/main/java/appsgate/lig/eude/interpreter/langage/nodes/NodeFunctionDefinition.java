@@ -94,7 +94,7 @@ public class NodeFunctionDefinition extends Node {
      */
     public Node getCode(Node parent)
             throws SpokException {
-        Node newRules =  seqRules.copy(parent);
+        Node newRules = seqRules.copy(parent);
         return newRules;
     }
 
@@ -102,7 +102,9 @@ public class NodeFunctionDefinition extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
+            o.put("type", "functionDefinition");
             o.put("id", this.name);
+
             o.put("seqRules", seqRules.getJSONDescription());
             if (getSymbolTable() != null) {
                 o.put("seqDefinitions", getSymbolTable().getJSONDescription());

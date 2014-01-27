@@ -7,7 +7,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
-import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
@@ -26,13 +25,9 @@ public class NodeReturn extends Node {
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeReturn.class.getName());
 
     /**
-     * the node to be evaluated for the return expression
-     */
-    private Node returnNode = null;
-    /**
      * the value to return
      */
-    private SpokObject returnValue = null;
+    private Node returnValue = null;
     /**
      * the parent function of this return node
      */
@@ -56,11 +51,8 @@ public class NodeReturn extends Node {
      */
     public NodeReturn(JSONObject obj, Node parent) throws SpokException {
         super(parent);
-        if (obj.has("NodeFunction")) {
-            returnNode = new NodeFunction(obj.optJSONObject("NodeFunction"), this);
-        }
         if (obj.has("returnValue")) {
-            returnValue = new SpokVariable(obj.optJSONObject("returnValue"));
+            returnValue = NodeBuilder.BuildNodeFromJSON(obj.optJSONObject("returnValue"), this);
         }
     }
 
@@ -70,11 +62,9 @@ public class NodeReturn extends Node {
 
     @Override
     public String getExpertProgramScript() {
-        String returnExp;
-        if (this.returnNode != null) {
-            returnExp = this.returnNode.getExpertProgramScript();
-        } else {
-            return returnValue.toString();
+        String returnExp = "";
+        if (this.returnValue != null) {
+            returnExp = this.returnValue.getExpertProgramScript();
         }
         return "return " + returnExp + ";";
     }
@@ -82,14 +72,8 @@ public class NodeReturn extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeReturn ret = new NodeReturn(parent);
-        try {
-            if (returnNode != null) {
-                ret.returnNode = this.returnNode.copy(parent);
-            }
-            if (returnValue != null) {
-                ret.returnValue = new SpokVariable(returnValue.getJSONDescription());
-            }
-        } catch (SpokException ex) {
+        if (returnValue != null) {
+            ret.returnValue = returnValue.copy(ret);
         }
         return ret;
     }
@@ -101,12 +85,7 @@ public class NodeReturn extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
-        Node source = (Node) e.getSource();
-        try {
-            returnValue = source.getResult();
-        } catch (SpokException ex) {
-            LOGGER.error("Exception raised during evaluation" + ex);
-        }
+        fireEndEvent(new EndEvent(this));
     }
 
     @Override
@@ -120,9 +99,9 @@ public class NodeReturn extends Node {
         }
         addEndEventListener(functionParent);
 
-        if (returnNode != null) {
-            returnNode.addEndEventListener(this);
-            returnNode.call();
+        if (returnValue != null) {
+            returnValue.addEndEventListener(this);
+            returnValue.call();
 
         } else {
             addEndEventListener(this);
@@ -135,11 +114,9 @@ public class NodeReturn extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            if (returnNode != null) {
-                o.put("functionNode", returnNode);
-            }
+            o.put("type", "return");
             if (returnValue != null) {
-                o.put("returnValue", returnValue);
+                o.put("returnValue", returnValue.getJSONDescription());
             }
 
         } catch (JSONException ex) {
