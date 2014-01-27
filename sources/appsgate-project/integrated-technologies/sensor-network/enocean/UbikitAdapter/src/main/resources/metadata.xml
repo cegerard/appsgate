@@ -20,7 +20,6 @@
 		<ipojo:requires field="enoceanBridge"/>			
 
 	</implementation>
-	
-	<apam-instance name="AppsgateUbikitAdapter" implementation="UbikitAdapterImpl"/>
+
 	
 </apam>

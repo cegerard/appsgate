@@ -19,6 +19,8 @@
 			<start implementation="AppsGateHUEServices" name="AppsGateHUEServicesInst"></start>
 
 			<start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
+			
+			<start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
 
 			<start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />
@@ -90,6 +92,14 @@
 			<start implementation="AppsgateContextHistory" name="Global-ContextHistoryManager"></start>
 		</contentMngt>
 	</composite>
+	
+    <composite name="AppsGateUbikitServices" singleton="true">
+        <contentMngt>
+             <start name="UbikitAdapterInst" implementation="UbikitAdapterImpl"/>
+        </contentMngt>
+    </composite>
+	
+   	
 
 	<apam-instance name="appsgate" implementation="AppsGate-Application" />
 

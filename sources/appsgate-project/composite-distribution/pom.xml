@@ -111,6 +111,11 @@
 			<artifactId>PhilipsHUEImpl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>UbikitAdapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>		
 		<!-- <dependency> -->
 		<!-- <groupId>appsgate.components</groupId> -->
 		<!-- <artifactId>CoreObjectSpec</artifactId> -->
