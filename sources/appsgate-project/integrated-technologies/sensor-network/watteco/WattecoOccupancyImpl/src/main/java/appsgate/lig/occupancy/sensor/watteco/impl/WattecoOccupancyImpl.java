@@ -9,8 +9,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.occupancy.sensor.messages.OccupancyNotificationMsg;
 import appsgate.lig.occupancy.sensor.spec.CoreOccupancySpec;
-import appsgate.lig.watteco.adapter.WattecoAdapter;
-import appsgate.lig.watteco.adapter.services.WattecoIOService;
+import appsgate.lig.watteco.adapter.spec.WattecoIOService;
 
 public class WattecoOccupancyImpl implements CoreObjectSpec, CoreOccupancySpec {
 	
@@ -85,7 +84,7 @@ public class WattecoOccupancyImpl implements CoreObjectSpec, CoreOccupancySpec {
 	
 	@Override
 	public boolean getOccupied() {
-		byte[] b = wattecoAdapter.sendCommand(route, WattecoAdapter.OCCUPANCY_SENSING_READ_ATTRIBUTE, true);
+		byte[] b = wattecoAdapter.sendCommand(route, WattecoIOService.OCCUPANCY_SENSING_READ_ATTRIBUTE, true);
 		return (new Byte("1").byteValue() == b[b.length-1]);
 	}
 	

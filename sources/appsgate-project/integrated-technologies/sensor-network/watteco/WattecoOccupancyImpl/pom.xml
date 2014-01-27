@@ -26,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>WattecoAdapter</artifactId>
+			<artifactId>WattecoAdapterSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

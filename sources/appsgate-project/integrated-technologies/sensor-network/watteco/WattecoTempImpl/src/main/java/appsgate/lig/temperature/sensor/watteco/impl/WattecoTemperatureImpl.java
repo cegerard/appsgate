@@ -9,8 +9,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.temperature.sensor.messages.TemperatureNotificationMsg;
 import appsgate.lig.temperature.sensor.spec.CoreTemperatureSensorSpec;
-import appsgate.lig.watteco.adapter.WattecoAdapter;
-import appsgate.lig.watteco.adapter.services.WattecoIOService;
+import appsgate.lig.watteco.adapter.spec.WattecoIOService;
 
 /**
  * 
@@ -103,7 +102,7 @@ public class WattecoTemperatureImpl implements CoreObjectSpec, CoreTemperatureSe
 	public float getTemperature() {
 		int temp;
 		byte[] b = null;
-		b = wattecoAdapter.sendCommand(route, WattecoAdapter.TEMPERATURE_MEASUREMENT_READ_ATTRIBUTE, true);
+		b = wattecoAdapter.sendCommand(route, WattecoIOService.TEMPERATURE_MEASUREMENT_READ_ATTRIBUTE, true);
 		Byte readByte = new Byte(b[8]);
 		temp = (readByte << 8);
 		readByte = new Byte(b[9]);

@@ -15,11 +15,20 @@
 	
 	<description>This sub-project contain Watteco tehcnology integration components for Appsgate</description>
 	
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+	</dependencies>
+	
 	<modules>
 		<module>wattecoAdapter</module>
 		<module>WattecoSmartPlugImpl</module>
 		<module>WattecoOccupancyImpl</module>
 		<module>WattecoTempImpl</module>
 		<module>WattecoCO2Impl</module>
+		<module>WattecoAdapterSpec</module>
 	</modules>
 </project>

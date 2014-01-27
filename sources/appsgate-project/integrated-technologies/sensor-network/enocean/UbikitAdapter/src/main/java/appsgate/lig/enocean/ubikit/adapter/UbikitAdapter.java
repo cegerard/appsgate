@@ -11,13 +11,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.felix.ipojo.annotations.Bind;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Unbind;
-import org.apache.felix.ipojo.annotations.Validate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,10 +77,7 @@ import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
  * @see UbikitAdapterService
  * 
  */
-// @Component(publicFactory=false)
-// @Instantiate(name="AppsgateUbikitAdapter")
-// @Provides(specifications = { EnOceanPairingService.class,
-// UbikitAdapterService.class })
+
 public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		UbikitAdapterService, EnOceanPairingService {
 
@@ -211,7 +201,6 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Called by iPOJO when the bundle is not available
 	 */
-	// @Invalidate
 	public void delInst() {
 		// logger.info("Removed PEM service = " + enoceanBridge.toString());
 
@@ -239,131 +228,12 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		logger.info("EnOcean PEM connector removed");
 	}
 
-	// /**
-	// * Get the EnOcean PEM service form OSGi/iPOJO. This service is required.
-	// *
-	// * @param PEMService
-	// * , the physical environment model OSGi service
-	// */
-	// @Bind(optional = false)
-	// public void bindPEMService(PhysicalEnvironmentModelService PEMService) {
-	// enoceanBridge = PEMService;
-	// logger.debug("EnOcean PEM service dependency resolved");
-	// }
-
-	// /**
-	// * Call when the EnOcean proxy release the required physical environment
-	// * model OSGi service.
-	// *
-	// * @param PEMService
-	// * , the released physical environment model OSGi service
-	// */
-	// // @Unbind(optional = false)
-	// public void unbindPEMService(PhysicalEnvironmentModelService PEMService)
-	// {
-	// enoceanBridge = null;
-	// logger.debug("EnOcean PEM service dependency not available");
-	// }
-
-	// /**
-	// * Get the subscribe service form OSGi/iPOJO. This service is optional.
-	// *
-	// * @param listenerService
-	// * , the subscription service
-	// */
-	// // @Bind(optional = true)
-	// public void bindSubscriptionService(ListenerService addListenerService) {
-	// this.listenerService = addListenerService;
-	// logger.debug("Communication subscription service dependency resolved");
-	// if(listenerService.addConfigListener(CONFIG_TARGET, new
-	// EnOceanConfigListener(this))){
-	// logger.info("Configuration listeners deployed.");
-	// }else{
-	// logger.info("Configuration listeners deployement failed.");
-	// }
-	// }
-
-	// /**
-	// * Call when the EnOcean proxy release the optional subscription service.
-	// *
-	// * @param listenerService
-	// * , the released subscription service
-	// */
-	// // @Unbind(optional = true)
-	// public void unbindSubscriptionService(ListenerService addListenerService)
-	// {
-	// this.listenerService = null;
-	// logger.debug("Subscription service dependency not available");
-	// }
-
-	// /**
-	// * Get the communication service from OSGi/iPojo. This service is
-	// optional.
-	// *
-	// * @param sendToClientService
-	// * , the communication service
-	// */
-	// // @Bind(optional = true)
-	// public void bindCommunicationService(SendWebsocketsService
-	// sendToClientService) {
-	// this.sendToClientService = sendToClientService;
-	// logger.debug("Communication service dependency resolved");
-	// }
-
-	// /**
-	// * Call when the EnOcean proxy release the communication service.
-	// *
-	// * @param sendToClientService
-	// * , the communication service
-	// */
-	// // @Unbind(optional = true)
-	// public void unbindCommunicationService(SendWebsocketsService
-	// sendToClientService) {
-	// this.sendToClientService = null;
-	// logger.debug("Communication service dependency not available");
-	// }
-
-	// /**
-	// * Get the HTTP service form OSGi/iPojo. This service is optional.
-	// *
-	// * @param httpService the HTTP service
-	// */
-	// // @Bind(optional = true)
-	// public void bindHTTPService(HttpService httpService) {
-	// this.httpService = httpService;
-	// logger.debug("HTTP service dependency resolved");
-	// //if (httpService != null) {
-	// final HttpContext httpContext = httpService.createDefaultHttpContext();
-	// final Dictionary<String, String> initParams = new Hashtable<String,
-	// String>();
-	// initParams.put("from", "HttpService");
-	// try {
-	// httpService.registerResources("/configuration/sensors/enocean", "/WEB",
-	// httpContext);
-	// logger.info("Sensors configuration HTML GUI sources registered.");
-	// } catch (NamespaceException ex) {
-	// logger.error("NameSpace exception");
-	// }
-	// //}
-	// }
-
-	// /**
-	// * Call when the EnOcean proxy release the HTTP service.
-	// *
-	// * @param httpService the HTTP service
-	// */
-	// // @Unbind(optional = true)
-	// public void unbindHTTPService(HttpService httpService) {
-	// this.httpService = null;
-	// logger.debug("HTTP service dependency not available");
-	// }
-
 	/**
 	 * Log all the EnOcean event from the EnOcean dongle.
 	 * 
 	 * @see PhysicalEnvironmentModelObserver
 	 */
-	// @Override
+	@Override
 	public void log(String arg0) {
 		logger.info("!EnOcean event! " + arg0);
 
