@@ -1,20 +1,16 @@
 package appsgate.ard;
 
 import appsgate.ard.base.callback.DoorMonitorExceptionHandler;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
 import org.apache.felix.ipojo.Factory;
 import org.apache.felix.ipojo.InstanceManager;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.ow2.chameleon.fuchsia.core.FuchsiaConstants;
 import org.ow2.chameleon.fuchsia.core.component.AbstractImporterComponent;
 import org.ow2.chameleon.fuchsia.core.declaration.ImportDeclaration;
 import org.ow2.chameleon.fuchsia.core.exceptions.ImporterException;
-import appsgate.lig.keycard.sensor.spec.*;
 
 import java.util.*;
 
@@ -23,7 +19,7 @@ import static org.ow2.chameleon.fuchsia.core.ImportationLinker.FILTER_IMPORTERSE
 
 @Component(name = "ARDSwitchImporterFactory")
 @Provides
-public class ARDSwitchImporter extends AbstractImporterComponent implements DoorMonitorExceptionHandler,CoreKeyCardSensorSpec, CoreObjectSpec {
+public class ARDSwitchImporter extends AbstractImporterComponent implements DoorMonitorExceptionHandler {
 
     @ServiceProperty(name = "target")
     private String filter;
@@ -86,8 +82,6 @@ public class ARDSwitchImporter extends AbstractImporterComponent implements Door
     @Override
     protected void denyImportDeclaration(ImportDeclaration importDeclaration) throws ImporterException {
 
-        super.removeImportDeclaration(importDeclaration);
-
         InstanceManager im=monitors.get(importDeclaration);
         ARDSwitchMonitor lm=(ARDSwitchMonitor)im.getPojoObject();
         lm.stopMonitor();
@@ -125,7 +119,7 @@ public class ARDSwitchImporter extends AbstractImporterComponent implements Door
     public String getPictureId() {
         return null;
     }
-
+        /*
     public JSONObject getDescription() throws JSONException {
 
         JSONObject descr = new JSONObject();
@@ -139,5 +133,5 @@ public class ARDSwitchImporter extends AbstractImporterComponent implements Door
 
     public void setPictureId(String pictureId) {
         // Ignore
-    }
+    }       */
 }

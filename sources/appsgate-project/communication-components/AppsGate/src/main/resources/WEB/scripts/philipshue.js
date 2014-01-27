@@ -19,7 +19,7 @@ define([], function () {
 				
 				var lights_tile_list = document.getElementById("lights-tile-list");
 				for(light in lightsArray) {
-					this.addLightTile(lightsArray[light], lights_tile_list);
+					this.addLightTile(lightsArray[light], lights_tile_list, "");
 					appsgateMain.addNotifHandler(lightsArray[light].lightId, this.notificationHandler);
 				}
 				
@@ -78,7 +78,7 @@ define([], function () {
 				
 				var lights_tile_list = document.getElementById("lights-tile-list");
 				for(light in lightsArray) {
-					this.addLightTile(lightsArray[light], lights_tile_list);
+					this.addLightTile(lightsArray[light], lights_tile_list, message.bridgeIp);
 				}
 			
 			} else if (message.hasOwnProperty("lightClickedState")) {
@@ -292,25 +292,25 @@ define([], function () {
 						}
 					}else if(varName == "hue"){
 						currentDomObject = document.getElementById("lightstate-hue-value");
-						currentDomObject.innerHTML = message.value;
+						currentDomObject.value = message.value;
 					}else if(varName == "sat"){
 						currentDomObject = document.getElementById("lightstate-sat-value");
-						currentDomObject.innerHTML = message.value;
+						currentDomObject.value = message.value;
 					}else if(varName == "bri"){
 						currentDomObject = document.getElementById("lightstate-bri-value");
-						currentDomObject.innerHTML = message.value;
+						currentDomObject.value = message.value;
 					}else if(varName == "x"){
 						currentDomObject = document.getElementById("lightstate-x-value");
-						currentDomObject.innerHTML = message.value;
+						currentDomObject.value = message.value;
 					}else if(varName == "y"){
 						currentDomObject = document.getElementById("lightstate-y-value");
-						currentDomObject.innerHTML = message.value;
+						currentDomObject.value = message.value;
 					}else if(varName == "ct"){
 						currentDomObject = document.getElementById("lightstate-ct-value");
-						currentDomObject.innerHTML = message.value;
+						currentDomObject.value = message.value;
 					}else if(varName == "speed"){
 						currentDomObject = document.getElementById("lightstate-tt-value");
-						currentDomObject.innerHTML = message.value;
+						currentDomObject.value = message.value;
 					}else if(varName == "alert"){
 						currentDomObject = document.getElementById("lightstate-alert-value");
 						currentDomObject.value =  message.value;
@@ -412,7 +412,7 @@ define([], function () {
 		}
 		
 		/**  Add a tile in configure GUI for the light in parameter */
-		this.addLightTile = function addLightTile(light, lights_tile_list) {
+		this.addLightTile = function addLightTile(light, lights_tile_list, bridgeIp) {
 			
 			var httpRequest=new XMLHttpRequest();
 			httpRequest.open("GET","./html/hueLightTile.html",false);
@@ -423,8 +423,11 @@ define([], function () {
 			lightDiv.id = light.lightId;
 			
 			var atag = lightDiv.childNodes[0];
-			atag.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().goToLightDisplay(\""+light.bridgeIp+"\", \""+light.bridgeLightId+"\");")
-			
+			if(bridgeIp == "") {
+				atag.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().goToLightDisplay(\""+light.bridgeIp+"\", \""+light.bridgeLightId+"\", \"\");");
+			}else {
+				atag.setAttribute("onclick", "javascript:appsgateMain.getWebSocket().getHue().goToLightDisplay(\""+light.bridgeIp+"\", \""+light.bridgeLightId+"\", \""+bridgeIp+"\");");
+			}
 			var subDiv = atag.childNodes;
 			var nbDiv = subDiv.length;
 			var currentDiv;
@@ -522,10 +525,17 @@ define([], function () {
 			httpRequest.send();
 			
 			// Get the current bridge status from the clicked tile
-			var status = document.getElementById("bridge-status-"+bridge).innerHTML;
+			var status;
+			var bridgeTile = document.getElementById("bridge-status-"+bridge);
+			
+			if(bridgeTile != null) {
+				status = bridgeTile.innerHTML;
+			}else {
+				status = "OK";
+			}
 			
 			//Display the next sub menu and update the navigation bar
-			appsgateMain.gotToNextSubMenu("bridge "+bridge, httpRequest.responseText);
+			appsgateMain.gotToNextSubMenu("bridge "+bridge, httpRequest.responseText, "javascript:appsgateMain.goToHueSubMenu();");
 			
 			if(status.indexOf("OK") != -1) {
 				
@@ -588,14 +598,18 @@ define([], function () {
 			}
 		}
 		
-		this.goToLightDisplay = function goToLightDisplay(bridge, light){
+		this.goToLightDisplay = function goToLightDisplay(bridge, light, fromBridge){
 			var httpRequest=new XMLHttpRequest();
 			httpRequest.open("GET","./html/philipshue-light.html",false);
 			httpRequest.send();
 			
 			//Display the next sub menu and update the navigation bar
-			appsgateMain.gotToNextSubMenu("light-"+light, httpRequest.responseText);
-				
+			if(fromBridge == ""){
+				appsgateMain.gotToNextSubMenu("light-"+light, httpRequest.responseText, "appsgateMain.goToHueSubMenu()");
+			}else {
+				appsgateMain.gotToNextSubMenu("light-"+light, httpRequest.responseText, "javascript:appsgateMain.getWebSocket().getHue().goToBridgeDisplay(\""+fromBridge+"\");");
+			}
+			
 			//fill the tile with bridge information
 			var call = eval({"CONFIGURATION":"getLightClickedState", "getLightClickedState":{"bridge":bridge, "id":light}, "TARGET":"PHILIPSHUE"});
 			appsgateMain.sendCmd(JSON.stringify(call));

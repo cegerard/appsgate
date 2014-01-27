@@ -44,13 +44,11 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 	 
 			//Remove browsed element from navigation bar
 			var navBar = document.getElementById("path-app");
-			var iLength = navBar.getElementsByTagName("li").length;
-			for (i = 1; i < iLength; i++) { 
-				navBar.removeChild(navBar.children[i]);
+			var homeLi = navBar.children[0];
+			while( navBar.firstChild) {
+				navBar.removeChild( navBar.firstChild);
 			}
-	 
-			//Set active the Home link in navigation bar
-			navBar.children[0].setAttribute("class", "active");
+			navBar.appendChild(homeLi);
 		}
 
 		/**
@@ -58,32 +56,22 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 	 	 */
 		this.goToHueSubMenu = function ()
 		{
-			//hide the top panorama div
-			var sections = document.getElementById("top-panorama");
-			sections.style.display="none";
-	 
 			//Get the html source for Philips HUE
 			var httpRequest=new XMLHttpRequest();
 			httpRequest.open("GET","./html/philipshue.html",false);
 			httpRequest.send();
-			//Displays it in the display panorama
-			var panorama = document.getElementById("display-panorama")
-			panorama.innerHTML=httpRequest.responseText;
-			panorama.style.display="";
-	 
-			//Update the navigation bar
-			var navBar = document.getElementById("path-app");
-			var li = document.createElement('li');
-			li.setAttribute("class", "active");
-			var liContent = document.createTextNode("Philips HUE");
-			li.appendChild(liContent);
-			navBar.appendChild(li);
+			
+			this.gotToNextSubMenu("Philips HUE", httpRequest.responseText, "");
 			
 			this.sendCmd("{\"getHUEConfDevices\":{}, \"CONFIGURATION\":\"getHUEConfDevices\", \"TARGET\":\"PHILIPSHUE\"}");
 		}
 		
-		this.gotToNextSubMenu = function(name, html) 
+		this.gotToNextSubMenu = function(name, html, goBackHandler) 
 		{
+			//hide the top panorama div
+			var sections = document.getElementById("top-panorama");
+			sections.style.display="none";
+			
 			//Displays the html source in the display panorama
 			var panorama = document.getElementById("display-panorama")
 			panorama.innerHTML=html;
@@ -92,19 +80,43 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 			//Update the navigation bar
 			var navBar = document.getElementById("path-app");
 			var li = document.createElement('li');
-			li.setAttribute("class", "active");
+			li.className = "active";
 			var liContent = document.createTextNode(name);
 			li.appendChild(liContent);
-			//toggle the previous menu entry to active link
-			var children = navBar.children;
-			var lastChild = children[children.length-1]
 			var divider = document.createElement('span');
 			divider.setAttribute("class", "divider");
 			divider.innerHTML = "/";
-			lastChild.appendChild(divider);
-			//li.setAttribute("class", "active");
+			li.appendChild(divider);
+			
+			if (goBackHandler != "") {
+				//toggle the previous menu entry to active link
+				var children = navBar.children;
+				var pos = children.length-1;
+				var lastChild = children[pos];
+				var devider = lastChild.children[0];
+				
+				if(!devider.hasOwnProperty("href")) {
+					lastChild.removeChild(devider);
+					var linkName = lastChild.innerHTML;
+					lastChild.innerHTML = "";
+					var alink = document.createElement('a');
+					alink.setAttribute("href", "#");
+					alink.setAttribute("onclick", "javascript:appsgateMain.goBackToPreviousNavSubMenu("+pos+");"+goBackHandler);
+					alink.innerHTML = linkName;
+					lastChild.appendChild(alink);
+					lastChild.appendChild(devider);
+				}
+			}
 			
 			navBar.appendChild(li);
+		}
+		
+		this.goBackToPreviousNavSubMenu = function (index) 
+		{
+			var navBar = document.getElementById("path-app");
+			while( navBar.children[index]) {
+				navBar.removeChild( navBar.children[index]);
+			}
 		}
 
 
