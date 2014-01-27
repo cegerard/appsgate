@@ -1,0 +1,24 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+
+	<implementation name="SimulatedAdapterImpl"
+		classname="appsgate.lig.simulation.adapter.SimulationAdapter" 
+		specification="SimulationAdapterSpec" singleton="true">
+
+		<callback onInit="newInst" onRemove="delInst" />
+        
+        <relation specification="AppsgateClientCommunicationManagerSpec"
+			creation="eager"  resolve="external" >
+            <interface field="listenerService"/>
+            <interface field="sendToClientService"/>
+		</relation>
+		
+		<ipojo:requires field="httpService"  />
+
+	</implementation>
+
+	
+</apam>
