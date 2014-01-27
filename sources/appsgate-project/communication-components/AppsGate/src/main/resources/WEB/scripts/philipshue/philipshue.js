@@ -34,7 +34,7 @@ define([], function () {
 					
 					//Push notification to associated the bridge
 					var httpRequest=new XMLHttpRequest();
-					httpRequest.open("GET","./html/hueBridgeSyncAlert.html",false);
+					httpRequest.open("GET","./html/philipshue/hueBridgeSyncAlert.html",false);
 					httpRequest.send();
 					element = document.getElementById("alerts-container");
 					element.innerHTML = httpRequest.responseText;
@@ -207,7 +207,7 @@ define([], function () {
 				
 				//Push notification to associated the bridge
 				var httpRequest=new XMLHttpRequest();
-				httpRequest.open("GET","./html/hueBridgeAlert.html",false);
+				httpRequest.open("GET","./html/philipshue/hueBridgeAlert.html",false);
 				httpRequest.send();
 				element = document.getElementById("alerts-container");
 				element.innerHTML = httpRequest.responseText;
@@ -225,7 +225,7 @@ define([], function () {
 				if(hueDiv != null) {
 					hueDiv = document.getElementById("display-panorama");
 					var httpRequest=new XMLHttpRequest();
-					httpRequest.open("GET","./html/philipshue.html",false);
+					httpRequest.open("GET","./html/philipshue/philipshue.html",false);
 					httpRequest.send();
 					hueDiv.innerHTML = httpRequest.responseText;
 					appsgateMain.sendCmd("{\"getHUEConfDevices\":{}, \"CONFIGURATION\":\"getHUEConfDevices\", \"TARGET\":\"PHILIPSHUE\"}");
@@ -259,6 +259,10 @@ define([], function () {
 					
 					infoTile = document.getElementById("bridgetimeinfoTile");
 					infoTile.className = "tile wide text bg-color-blue";
+					
+					//Get the hue lights
+					call = eval({"CONFIGURATION":"getBridgeLights", "getBridgeLights":{"ip":bridgeAlert}, "TARGET":"PHILIPSHUE"});
+					appsgateMain.sendCmd(JSON.stringify(call));
 					
 					var alert = document.getElementById("alerts-container");
 					alert.innerHTML = "";
@@ -357,7 +361,7 @@ define([], function () {
 		this.addBridgeTile = function addBridgeTile(bridge) {
 
 			var httpRequest=new XMLHttpRequest();
-			httpRequest.open("GET","./html/hueBridgeTile.html",false);
+			httpRequest.open("GET","./html/philipshue/hueBridgeTile.html",false);
 			httpRequest.send();
 			
 			var bridges_tile_list = document.getElementById("bridges-tile-list");
@@ -415,7 +419,7 @@ define([], function () {
 		this.addLightTile = function addLightTile(light, lights_tile_list, bridgeIp) {
 			
 			var httpRequest=new XMLHttpRequest();
-			httpRequest.open("GET","./html/hueLightTile.html",false);
+			httpRequest.open("GET","./html/philipshue/hueLightTile.html",false);
 			httpRequest.send();
 			
 			var lightDiv = document.createElement('div');
@@ -521,7 +525,7 @@ define([], function () {
 		/** Display details for the clicked bridge tile */
 		this.goToBridgeDisplay = function goToBridgeDisplay(bridge) {
 			var httpRequest=new XMLHttpRequest();
-			httpRequest.open("GET","./html/philipshue-bridge.html",false);
+			httpRequest.open("GET","./html/philipshue/philipshue-bridge.html",false);
 			httpRequest.send();
 			
 			// Get the current bridge status from the clicked tile
@@ -600,7 +604,7 @@ define([], function () {
 		
 		this.goToLightDisplay = function goToLightDisplay(bridge, light, fromBridge){
 			var httpRequest=new XMLHttpRequest();
-			httpRequest.open("GET","./html/philipshue-light.html",false);
+			httpRequest.open("GET","./html/philipshue/philipshue-light.html",false);
 			httpRequest.send();
 			
 			//Display the next sub menu and update the navigation bar
