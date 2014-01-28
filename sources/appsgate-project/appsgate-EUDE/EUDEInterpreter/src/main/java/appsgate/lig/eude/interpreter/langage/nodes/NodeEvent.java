@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import java.util.logging.Level;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,16 +122,23 @@ public class NodeEvent extends Node {
     }
 
     @Override
-    public void specificStop() throws SpokException{
+    public void specificStop() {
+        EUDEMediator mediator = null;
+        try {
+            mediator = getMediator();
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Unable to stop this node cause the mediator has not been found");
+            return;
+        }
         if (sourceType.equals("program")) {
-            NodeProgram p = getMediator().getNodeProgram(sourceId);
+            NodeProgram p = mediator.getNodeProgram(sourceId);
             if (eventName.equals("start")) {
                 p.removeStartEventListener(this);
             } else if (eventName.equals("end")) {
                 p.removeEndEventListener(this);
             }
         } else {
-            getMediator().removeNodeListening(this);
+            mediator.removeNodeListening(this);
         }
     }
 

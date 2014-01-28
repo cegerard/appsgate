@@ -200,7 +200,7 @@ public class NodeProgram extends Node {
     }
 
     @Override
-    public void stop() throws SpokException {
+    public void stop() {
         if (runningState == RUNNING_STATE.STARTED && !isStopping()) {
             LOGGER.debug("Stoping program {}", this);
             setStopping(true);

@@ -6,8 +6,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEMediator;
-import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.Iterator;
@@ -91,25 +89,7 @@ public abstract class NodeTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of startEventFired method, of class NodeProgram.
-     */
-    @Test
-    public void testStartEventFired() {
-        printTestName("startEventFired");
-        StartEvent e = new StartEvent(this.instance);
-        this.instance.startEventFired(e);
-    }
 
-    /**
-     * Test of endEventFired method, of the same class.
-     */
-    @Test
-    public void testEndEventFired() {
-        printTestName("endEventFired");
-        EndEvent e = new EndEvent(this.instance);
-        this.instance.endEventFired(e);
-    }
 
     @Test
     public void testgetMediator() {

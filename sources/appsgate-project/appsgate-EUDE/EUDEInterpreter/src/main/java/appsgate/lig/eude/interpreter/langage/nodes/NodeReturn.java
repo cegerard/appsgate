@@ -57,7 +57,7 @@ public class NodeReturn extends Node {
     }
 
     @Override
-    protected void specificStop() throws SpokException {
+    protected void specificStop() {
     }
 
     @Override

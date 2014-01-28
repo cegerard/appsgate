@@ -92,7 +92,7 @@ public class NodeWhen extends Node {
     }
 
     @Override
-    protected void specificStop() throws SpokException {
+    protected void specificStop() {
         seqEvent.removeEndEventListener(this);
         seqEvent.stop();
         seqRules.removeEndEventListener(this);

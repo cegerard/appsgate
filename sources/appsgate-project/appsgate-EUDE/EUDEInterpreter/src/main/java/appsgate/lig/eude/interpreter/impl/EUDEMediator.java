@@ -187,12 +187,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
-            try {
-                p.stop();
-            } catch (SpokException ex) {
-                LOGGER.error("The program " + programId + " failed to stop.");
-                return false;
-            }
+            p.stop();
             p.removeEndEventListener(this);
 
             mapPrograms.remove(programId);
@@ -276,12 +271,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
-            try {
-                p.stop();
-            } catch (SpokException ex) {
-                LOGGER.error("Unable to stop program");
-                return false;
-            }
+            p.stop();
             return true;
         }
 
@@ -598,7 +588,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     }
 
     /**
-     * 
+     *
      * @return appsgate
      */
     public AppsGateSpec getAppsGate() {

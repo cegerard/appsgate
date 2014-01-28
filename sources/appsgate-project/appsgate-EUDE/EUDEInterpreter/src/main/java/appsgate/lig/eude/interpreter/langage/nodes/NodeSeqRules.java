@@ -96,6 +96,9 @@ public class NodeSeqRules extends Node {
         setStarted(true);
         fireStartEvent(new StartEvent(this));
 
+//        while (iterator.hasNext()) {
+//            iterator.next().call();
+//        }
         if (!instructions.isEmpty()) {
             launchNextSeqAndRules();
         } else {
@@ -141,7 +144,7 @@ public class NodeSeqRules extends Node {
     }
 
     @Override
-    public void specificStop() throws SpokException {
+    public void specificStop() {
         for (Node n : instructions) {
             n.removeEndEventListener(this);
             n.stop();

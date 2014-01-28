@@ -13,6 +13,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,8 @@ public class NodeAction extends Node {
 
     /**
      * Private constructor to allow copy function
-     * @param parent 
+     *
+     * @param parent
      */
     private NodeAction(Node parent) {
         super(parent);
@@ -116,9 +118,9 @@ public class NodeAction extends Node {
 
     /**
      * Method that run a device action
-     * 
+     *
      * @param target
-     * @throws SpokException 
+     * @throws SpokException
      */
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
@@ -133,9 +135,9 @@ public class NodeAction extends Node {
 
     /**
      * Method to run a program action
-     * 
+     *
      * @param target
-     * @throws SpokException 
+     * @throws SpokException
      */
     private void callProgramAction(String target) throws SpokException {
         NodeProgram p = getMediator().getNodeProgram(target);
@@ -161,9 +163,9 @@ public class NodeAction extends Node {
 
     /**
      * Method to run a list of action
-     * 
+     *
      * @param target
-     * @throws SpokException 
+     * @throws SpokException
      */
     private void callListAction(String target) throws SpokException {
         LOGGER.debug("Call List action");
@@ -216,10 +218,17 @@ public class NodeAction extends Node {
     }
 
     @Override
-    public void specificStop() throws SpokException {
+    public void specificStop() {
         if (targetType.equals("program")) {
-            NodeProgram p = getMediator().getNodeProgram(targetId);
-            p.stop();
+            NodeProgram p = null;
+            try {
+                p = getMediator().getNodeProgram(targetId);
+            } catch (SpokExecutionException ex) {
+                LOGGER.warn("The mediator has not been found");
+            }
+            if (p != null) {
+                p.stop();
+            }
             setStopping(false);
         } else {
             LOGGER.warn("Trying to stop an action ({}) which is not a program", this);
@@ -236,7 +245,7 @@ public class NodeAction extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("type","action");
+            o.put("type", "action");
             o.put("targetType", targetType);
             o.put("targetId", targetId);
             o.put("methodName", methodName);

@@ -336,7 +336,7 @@ public class EUDEMediatorTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testActions.json")));
         Assert.assertTrue(instance.callProgram("testActions"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
-        Assert.assertFalse(instance.isProgramActive("testActions"));
+//        Assert.assertFalse(instance.isProgramActive("testActions"));
 
     }
 
@@ -456,7 +456,7 @@ public class EUDEMediatorTest {
         Assert.assertTrue(instance.callProgram("whenImb"));
         contextFollower.notifAll("1");
         contextFollower.notifAll("2");
-//        Assert.fail("Fin");
+        synchroniser.waitUntil(tested.is("Yes"), 200);
 
     }
 

@@ -116,7 +116,7 @@ public class NodeIf extends Node {
     }
 
     @Override
-    public void specificStop() throws SpokException {
+    public void specificStop() {
         expBool.removeEndEventListener(this);
         expBool.stop();
         seqRulesTrue.removeEndEventListener(this);

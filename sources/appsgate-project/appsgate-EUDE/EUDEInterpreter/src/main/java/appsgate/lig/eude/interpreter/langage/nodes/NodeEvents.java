@@ -27,11 +27,18 @@ class NodeEvents extends Node {
     /**
      * the sequence of event
      */
-    private ArrayList<Node> seqEvent;
+    private ArrayList<NodeEvent> seqEvent;
     /**
      * The number of events that have fired EndEvent
      */
     private int nbEventEnded = 0;
+
+    /**
+     *
+     */
+    private Integer nbEventToOccur = null;
+
+    private Integer duration = 0;
 
     /**
      * Default constructor for copy
@@ -51,7 +58,7 @@ class NodeEvents extends Node {
     public NodeEvents(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         JSONArray seqEventJSON = getJSONArray(o, "events");
-        seqEvent = new ArrayList<Node>();
+        seqEvent = new ArrayList<NodeEvent>();
         for (int i = 0; i < seqEventJSON.length(); i++) {
             try {
                 seqEvent.add(new NodeEvent(seqEventJSON.getJSONObject(i), this));
@@ -59,11 +66,19 @@ class NodeEvents extends Node {
                 throw new SpokNodeException("NodeSeqEvent", "item " + i, ex);
             }
         }
+        nbEventToOccur = o.optInt("nbEventToOccur");
+        if (nbEventToOccur == null) {
+            nbEventToOccur = seqEvent.size();
+        }
+        // If we just want one event among the events, no need to wait for a duration
+        if (nbEventToOccur > 1) {
+            duration = o.optInt("duration");
+        }
 
     }
 
     @Override
-    protected void specificStop() throws SpokException {
+    protected void specificStop() {
         for (Node e : seqEvent) {
             e.removeEndEventListener(this);
             e.stop();
@@ -94,24 +109,34 @@ class NodeEvents extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeEvents ret = new NodeEvents(parent);
-        ret.seqEvent = new ArrayList<Node>();
+        ret.seqEvent = new ArrayList<NodeEvent>();
         for (Node n : seqEvent) {
-            ret.seqEvent.add(n.copy(ret));
+            ret.seqEvent.add((NodeEvent) n.copy(ret));
         }
+        ret.duration = duration;
+        ret.nbEventToOccur = nbEventToOccur;
         return ret;
 
     }
 
     @Override
     public void endEventFired(EndEvent e) {
-        Node nodeEnded = (Node) e.getSource();
+        NodeEvent nodeEnded = (NodeEvent) e.getSource();
         LOGGER.debug("NEvents end event: {}", nodeEnded);
         if (!isStopping()) {
-            nbEventEnded++;
-            if (nbEventEnded == seqEvent.size()) {
-                LOGGER.debug("All the events have been ended");
-                setStarted(false);
-                fireEndEvent(new EndEvent(this));
+            if (nodeEnded.getSourceId().equals(getClockId())) {
+                nbEventEnded--;
+            } else {
+                nbEventEnded++;
+                if (nbEventEnded >= nbEventToOccur) {
+                    LOGGER.debug("All the events have been ended");
+                    stop();
+                    fireEndEvent(new EndEvent(this));
+                } else {
+                    nodeEnded.addEndEventListener(this);
+                    nodeEnded.call();
+                    startClockEvent();
+                }
             }
         } else {
             LOGGER.warn("endEvent has been fired while the node was stopping");
@@ -124,6 +149,8 @@ class NodeEvents extends Node {
         try {
             ret.put("type", "events");
             ret.put("events", getJSONArray());
+            ret.put("nbEventToOccur", nbEventToOccur);
+            ret.put("duration", duration);
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
@@ -152,6 +179,39 @@ class NodeEvents extends Node {
             }
         }
         return a;
+    }
+
+    /**
+     * TODO: implement this correctly
+     *
+     * @return
+     */
+    public String getClockId() {
+        return "clock";
+    }
+
+    /**
+     *
+     */
+    private void startClockEvent() {
+        if (duration > 0) {
+            LOGGER.debug("Starting a clock event");
+            String d = getTime(duration);
+            NodeEvent ev = new NodeEvent("clock", getClockId(), "clockAlarm", d, this);
+            seqEvent.add(ev);
+            ev.addEndEventListener(this);
+            ev.call();
+
+        }
+    }
+
+    /**
+     * TODO: implement this correctly
+     *
+     * @return
+     */
+    private String getTime(Integer duration) {
+        return duration.toString();
     }
 
 }

@@ -91,7 +91,7 @@ public class NodeBinaryExpression extends Node {
     }
 
     @Override
-    protected void specificStop() throws SpokException {
+    protected void specificStop() {
         if (left != null) {
             left.stop();
         }

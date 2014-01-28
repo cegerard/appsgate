@@ -53,7 +53,7 @@ public class NodeSelect extends Node {
     }
 
     @Override
-    protected void specificStop() throws SpokException {
+    protected void specificStop() {
     }
 
     @Override

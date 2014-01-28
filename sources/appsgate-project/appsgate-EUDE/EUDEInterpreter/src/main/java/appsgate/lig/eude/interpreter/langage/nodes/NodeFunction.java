@@ -121,7 +121,7 @@ public class NodeFunction extends Node {
     }
 
     @Override
-    public void stop() throws SpokException {
+    public void stop() {
         LOGGER.info("The function {} has been stoped.", this);
         if (rules != null) {
             rules.stop();

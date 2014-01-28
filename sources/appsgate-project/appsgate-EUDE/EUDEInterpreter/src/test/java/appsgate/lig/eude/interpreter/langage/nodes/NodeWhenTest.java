@@ -25,6 +25,8 @@ public class NodeWhenTest extends NodeTest {
         JSONObject events = new JSONObject();
         events.put("type", "events");
         events.put("events", new JSONArray());
+        events.put("duration", 0);
+        events.put("nbEventToOccur", 0);
         ruleJSON.put("events", events);
         ruleJSON.put("seqRulesThen", emptySeqRules);
         this.instance = new NodeWhen(this.ruleJSON, null);

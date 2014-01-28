@@ -64,6 +64,13 @@
                             }
                         ]
                     }
+                },
+                {
+                    "type": "action",
+                    "targetType": "device",
+                    "targetId": "test",
+                    "methodName": "assert",
+                    "action": []
                 }
             ]
         }

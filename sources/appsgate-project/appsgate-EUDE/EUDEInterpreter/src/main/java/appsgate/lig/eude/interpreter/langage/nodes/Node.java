@@ -92,7 +92,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      *
      * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokException
      */
-    public void stop() throws SpokException {
+    public void stop() {
         if (isStarted()) {
             setStopping(true);
 
@@ -109,7 +109,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      *
      * @throws SpokException
      */
-    abstract protected void specificStop() throws SpokException;
+    abstract protected void specificStop();
     
     @Override
     abstract public JSONObject call();
