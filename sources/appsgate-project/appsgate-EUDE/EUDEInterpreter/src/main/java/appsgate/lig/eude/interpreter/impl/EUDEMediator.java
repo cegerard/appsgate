@@ -41,12 +41,12 @@ import appsgate.lig.router.spec.RouterApAMSpec;
  * @version 1.0.0
  *
  */
-public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventListener, EndEventListener {
+public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, EndEventListener {
 
     /**
      * Static class member uses to log what happened in each instances
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(EUDEInterpreterImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EUDEMediator.class);
 
     /**
      * Reference to the ApAM context follower. Used to be notified when
@@ -89,7 +89,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
      *
      * @constructor
      */
-    public EUDEInterpreterImpl() {
+    public EUDEMediator() {
         mapPrograms = new HashMap<String, NodeProgram>();
         mapCoreNodeEvent = new HashMap<CoreEventListener, ArrayList<NodeEvent>>();
     }
@@ -485,7 +485,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         /**
          *
          */
-        private final EUDEInterpreterImpl eudeInt;
+        private final EUDEMediator eudeInt;
 
         /**
          *
@@ -495,7 +495,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
          * @param eudeInt
          */
         public CoreEventListener(String objectId, String varName,
-                String varValue, EUDEInterpreterImpl eudeInt) {
+                String varValue, EUDEMediator eudeInt) {
             this.objectId = objectId;
             this.varName = varName;
             this.varValue = varValue;
@@ -620,7 +620,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
 
     @Override
     public String toString() {
-        return "[EUDE Interpreter]";
+        return "[EUDE Mediator]";
     }
 
 }

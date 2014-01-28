@@ -48,14 +48,13 @@ public class NodeWhen extends Node {
         super(parent);
         seqEvent = new NodeEvents(getJSONObject(ruleWhenJSON, "events"), this);
         // initialize the sequences of events and rules
-        seqRules = NodeBuilder.BuildNodeFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
+        seqRules = Builder.BuildNodeFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
 
     }
 
     /**
      * private constructor to copy node
      *
-     * @param interpreter
      * @param parent
      */
     private NodeWhen(Node parent) {

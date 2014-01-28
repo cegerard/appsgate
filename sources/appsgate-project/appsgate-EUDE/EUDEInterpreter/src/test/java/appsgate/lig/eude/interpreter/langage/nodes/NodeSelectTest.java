@@ -24,12 +24,12 @@ public class NodeSelectTest extends NodeTest {
 
         context.checking(new Expectations() {
             {
-                allowing(interpreter).getAppsGate();
+                allowing(mediator).getAppsGate();
                 will(returnValue(appsGate));
                 allowing(appsGate).getSpecificDevices(with(any(JSONArray.class)), with(any(JSONArray.class)), with(any(JSONArray.class)));
                 will(returnValue(null));
-                allowing(programNode).getInterpreter();
-                will(returnValue(interpreter));
+                allowing(programNode).getMediator();
+                will(returnValue(mediator));
             }
         });
     }
@@ -47,10 +47,10 @@ public class NodeSelectTest extends NodeTest {
 
     @Test
     @Override
-    public void testGetInterpreter() {
-        System.out.println("GetInterpreter");
+    public void testgetMediator() {
+        System.out.println("getMediator");
         try {
-            this.instance.getInterpreter();
+            this.instance.getMediator();
         } catch (SpokExecutionException ex) {
             fail("One exception has been raised");
         }

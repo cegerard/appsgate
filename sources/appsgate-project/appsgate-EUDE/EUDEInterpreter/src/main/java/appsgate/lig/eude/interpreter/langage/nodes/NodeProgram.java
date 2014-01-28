@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Node program for the interpreter. Contains the metadata of the program, the
+ * Node program for the mediator. Contains the metadata of the program, the
  * parameters, the variables and the rules
  *
  * @author Rémy Dautriche
@@ -98,7 +98,7 @@ public class NodeProgram extends Node {
      */
     private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
 
-    private EUDEInterpreterImpl interpreter = null;
+    private EUDEMediator mediator = null;
 
     /**
      * Default constructor
@@ -106,21 +106,21 @@ public class NodeProgram extends Node {
      * @param i
      * @constructor
      */
-    public NodeProgram(EUDEInterpreterImpl i) {
+    public NodeProgram(EUDEMediator i) {
         super(null);
-        this.interpreter = i;
+        this.mediator = i;
     }
 
     /**
      * Initialize the program from a JSON object
      *
-     * @param interpreter
+     * @param mediator
      * @param programJSON Abstract tree of the program in JSON
      * @throws SpokNodeException
      */
-    public NodeProgram(EUDEInterpreterImpl interpreter, JSONObject programJSON)
+    public NodeProgram(EUDEMediator mediator, JSONObject programJSON)
             throws SpokException {
-        this(interpreter);
+        this(mediator);
 
         // initialize the program with the JSON
         id = getJSONString(programJSON, "id");
@@ -129,8 +129,8 @@ public class NodeProgram extends Node {
     }
 
     @Override
-    public EUDEInterpreterImpl getInterpreter() {
-        return this.interpreter;
+    public EUDEMediator getMediator() {
+        return this.mediator;
     }
 
     /**
@@ -157,7 +157,7 @@ public class NodeProgram extends Node {
         } else {
             daemon = false;
         }
-        seqRules = NodeBuilder.BuildNodeFromJSON(getJSONObject(source, "seqRules"), this);
+        seqRules = Builder.BuildNodeFromJSON(getJSONObject(source, "seqRules"), this);
 
         return true;
 
@@ -324,7 +324,7 @@ public class NodeProgram extends Node {
         try {
             programJSON.put("runningState", runningState.toString());
             this.runningState = runningState;
-            getInterpreter().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
+            getMediator().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
 
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -390,7 +390,7 @@ public class NodeProgram extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeProgram ret = new NodeProgram(getInterpreter());
+        NodeProgram ret = new NodeProgram(getMediator());
         ret.author = author;
         ret.daemon = daemon;
         ret.id = id;

@@ -122,7 +122,7 @@ public class NodeAction extends Node {
      */
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
-        command = getInterpreter().executeCommand(target, methodName, args);
+        command = getMediator().executeCommand(target, methodName, args);
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, target);
         } else {
@@ -138,7 +138,7 @@ public class NodeAction extends Node {
      * @throws SpokException 
      */
     private void callProgramAction(String target) throws SpokException {
-        NodeProgram p = getInterpreter().getNodeProgram(target);
+        NodeProgram p = getMediator().getNodeProgram(target);
 
         if (p != null) {
             LOGGER.debug("Program running state {}", p.getRunningState());
@@ -146,10 +146,10 @@ public class NodeAction extends Node {
                 // listen to the end of the program
                 p.addEndEventListener(this);
                 // launch the program
-                getInterpreter().callProgram(target);
+                getMediator().callProgram(target);
             } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
                 //stop the running program
-                getInterpreter().stopProgram(target);
+                getMediator().stopProgram(target);
             } else {
                 LOGGER.warn("Cannot run {} on program {}", methodName, target);
             }
@@ -218,7 +218,7 @@ public class NodeAction extends Node {
     @Override
     public void specificStop() throws SpokException {
         if (targetType.equals("program")) {
-            NodeProgram p = getInterpreter().getNodeProgram(targetId);
+            NodeProgram p = getMediator().getNodeProgram(targetId);
             p.stop();
             setStopping(false);
         } else {

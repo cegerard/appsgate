@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
@@ -34,12 +34,12 @@ public abstract class NodeTest {
     };
     protected Node instance;
     protected JSONObject ruleJSON;
-    protected EUDEInterpreterImpl interpreter;
+    protected EUDEMediator mediator;
     
     protected JSONObject emptySeqRules;
 
     public NodeTest() {
-        this.interpreter = context.mock(EUDEInterpreterImpl.class);
+        this.mediator = context.mock(EUDEMediator.class);
         this.emptySeqRules = new JSONObject();
         try {
             emptySeqRules.put("type", "instructions");
@@ -112,10 +112,10 @@ public abstract class NodeTest {
     }
 
     @Test
-    public void testGetInterpreter() {
-        printTestName("GetInterpreter");
+    public void testgetMediator() {
+        printTestName("getMediator");
         try {
-            this.instance.getInterpreter();
+            this.instance.getMediator();
             fail("Should raise an exception");
         } catch (SpokExecutionException ex) {
             System.out.println("Exception catched");

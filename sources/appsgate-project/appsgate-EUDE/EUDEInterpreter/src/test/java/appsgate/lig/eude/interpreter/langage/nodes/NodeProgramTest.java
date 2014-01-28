@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
@@ -31,7 +31,7 @@ public class NodeProgramTest extends NodeTest {
     public NodeProgramTest() {
         context.checking(new Expectations() {
             {
-                allowing(interpreter).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
             }
         });
 
@@ -55,7 +55,7 @@ public class NodeProgramTest extends NodeTest {
         source.put("seqDefinitions", (Collection) null);
         ruleJSON.put("source", source);
 
-        this.programTest = new NodeProgram(interpreter, this.ruleJSON);
+        this.programTest = new NodeProgram(mediator, this.ruleJSON);
 
         this.instance = this.programTest;
     }
@@ -181,10 +181,10 @@ public class NodeProgramTest extends NodeTest {
 
     @Test
     @Override
-    public void testGetInterpreter() {
-        System.out.println("GetInterpreter");
+    public void testgetMediator() {
+        System.out.println("getMediator");
         try {
-            EUDEInterpreterImpl i = this.instance.getInterpreter();
+            EUDEMediator i = this.instance.getMediator();
             Assert.assertNotNull(i);
         } catch (SpokExecutionException ex) {
             fail("Should not have raised an exception");

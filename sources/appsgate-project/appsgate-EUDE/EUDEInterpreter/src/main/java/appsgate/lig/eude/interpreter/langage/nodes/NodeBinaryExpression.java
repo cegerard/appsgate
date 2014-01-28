@@ -76,12 +76,12 @@ public class NodeBinaryExpression extends Node {
         super(parent);
         operator = BinaryOperator.valueOf(getJSONString(o, "operator"));
         if (o.has("leftOperand")) {
-            left = NodeBuilder.BuildNodeFromJSON(o.optJSONObject("leftOperand"), this);
+            left = Builder.BuildNodeFromJSON(o.optJSONObject("leftOperand"), this);
         } else {
             throw new SpokNodeException("BinaryExpression", "leftOperand", null);
         }
         if (o.has("rightOperand")) {
-            right = NodeBuilder.BuildNodeFromJSON(o.optJSONObject("rightOperand"), this);
+            right = Builder.BuildNodeFromJSON(o.optJSONObject("rightOperand"), this);
         } else {
             if (needTwoOperands(operator)) {
                 throw new SpokNodeException("BinaryExpression", "rightOperand", null);

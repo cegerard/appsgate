@@ -52,7 +52,7 @@ public class NodeVariableAssignation extends Node {
     public NodeVariableAssignation(JSONObject obj, Node p) throws SpokException {
         super(p);
         if (obj.has("value")) {
-            value = NodeBuilder.BuildNodeFromJSON(obj.optJSONObject("value"), this);
+            value = Builder.BuildNodeFromJSON(obj.optJSONObject("value"), this);
         }
         name = getJSONString(obj, "name");
     }

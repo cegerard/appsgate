@@ -83,7 +83,7 @@ public class NodeSeqRules extends Node {
                 throw new SpokNodeException("NodeSeqRules", "item " + i, ex);
             }
             if (inst != null) {
-                instructions.add(NodeBuilder.BuildNodeFromJSON(inst, this));
+                instructions.add(Builder.BuildNodeFromJSON(inst, this));
             }
         }
         iterator = instructions.iterator();

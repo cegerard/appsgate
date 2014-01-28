@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
  *
  * @author jr
  */
-public class EUDEInterpreterImplTest {
+public class EUDEMediatorTest {
 
     /**
      *
@@ -63,10 +63,10 @@ public class EUDEInterpreterImplTest {
     private DataBasePushService push_service;
     private RouterApAMSpec router;
     private ContextFollowerTest contextFollower;
-    private EUDEInterpreterImpl instance;
+    private EUDEMediator instance;
     private JSONObject programJSON;
 
-    public EUDEInterpreterImplTest() {
+    public EUDEMediatorTest() {
     }
 
     @BeforeClass
@@ -102,7 +102,7 @@ public class EUDEInterpreterImplTest {
                 allowing(router).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
             }
         });
-        this.instance = new EUDEInterpreterImpl();
+        this.instance = new EUDEMediator();
         this.instance.setTestMocks(pull_service, push_service, router, contextFollower);
         programJSON = new JSONObject();
         programJSON.put("id", "test");
@@ -114,7 +114,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of newInst method, of class EUDEInterpreterImpl.
+     * Test of newInst method, of class EUDEMediator.
      */
     @Test
     public void testNewInst() {
@@ -123,7 +123,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of deleteInst method, of class EUDEInterpreterImpl.
+     * Test of deleteInst method, of class EUDEMediator.
      */
     @Test
     public void testDeleteInst() {
@@ -132,7 +132,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of addProgram method, of class EUDEInterpreterImpl.
+     * Test of addProgram method, of class EUDEMediator.
      *
      * @throws org.json.JSONException
      */
@@ -145,7 +145,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of removeProgram method, of class EUDEInterpreterImpl.
+     * Test of removeProgram method, of class EUDEMediator.
      */
     @Test
     public void testRemoveProgram() {
@@ -157,7 +157,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of update method, of class EUDEInterpreterImpl.
+     * Test of update method, of class EUDEMediator.
      */
     @Test
     public void testUpdate() {
@@ -168,7 +168,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of callProgram method, of class EUDEInterpreterImpl.
+     * Test of callProgram method, of class EUDEMediator.
      */
     @Test
     public void testCallProgram() {
@@ -180,7 +180,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of stopProgram method, of class EUDEInterpreterImpl.
+     * Test of stopProgram method, of class EUDEMediator.
      */
     @Test
     public void testStopProgram() {
@@ -192,7 +192,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of pauseProgram method, of class EUDEInterpreterImpl.
+     * Test of pauseProgram method, of class EUDEMediator.
      */
     @Test
     public void testPauseProgram() {
@@ -204,7 +204,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of getListPrograms method, of class EUDEInterpreterImpl.
+     * Test of getListPrograms method, of class EUDEMediator.
      */
     @Test
     public void testGetListPrograms() {
@@ -214,7 +214,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of isProgramActive method, of class EUDEInterpreterImpl.
+     * Test of isProgramActive method, of class EUDEMediator.
      */
     @Test
     public void testIsProgramActive() {
@@ -226,7 +226,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of getNodeProgram method, of class EUDEInterpreterImpl.
+     * Test of getNodeProgram method, of class EUDEMediator.
      */
     @Test
     public void testGetNodeProgram() {
@@ -238,7 +238,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of executeCommand method, of class EUDEInterpreterImpl.
+     * Test of executeCommand method, of class EUDEMediator.
      */
     @Test
     public void testExecuteCommand() {
@@ -252,7 +252,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of addNodeListening method, of class EUDEInterpreterImpl.
+     * Test of addNodeListening method, of class EUDEMediator.
      *
      * @throws org.json.JSONException
      * @throws SpokNodeException
@@ -271,7 +271,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of removeNodeListening method, of class EUDEInterpreterImpl.
+     * Test of removeNodeListening method, of class EUDEMediator.
      *
      * @throws org.json.JSONException
      * @throws SpokNodeException
@@ -290,7 +290,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of notifyChanges method, of class EUDEInterpreterImpl.
+     * Test of notifyChanges method, of class EUDEMediator.
      */
     @Test
     public void testNotifyChanges() {
@@ -301,7 +301,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of endEventFired method, of class EUDEInterpreterImpl.
+     * Test of endEventFired method, of class EUDEMediator.
      *
      * @throws org.json.JSONException
      */
@@ -313,7 +313,7 @@ public class EUDEInterpreterImplTest {
     }
 
     /**
-     * Test of startEventFired method, of class EUDEInterpreterImpl.
+     * Test of startEventFired method, of class EUDEMediator.
      */
     @Test
     public void testStartEventFired() {

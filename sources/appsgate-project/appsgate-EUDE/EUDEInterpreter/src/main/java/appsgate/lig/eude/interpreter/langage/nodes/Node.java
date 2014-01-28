@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import java.util.concurrent.Callable;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -33,7 +33,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public abstract class Node implements Callable<JSONObject>, StartEventGenerator, StartEventListener, EndEventGenerator, EndEventListener, SpokObject{
+public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
+        StartEventListener, EndEventGenerator, EndEventListener, SpokObject{
 
     /**
      * Logger
@@ -199,14 +200,14 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     /**
      *
-     * @return interpreter
+     * @return mediator
      * @throws SpokExecutionException
      */
-    public EUDEInterpreterImpl getInterpreter() throws SpokExecutionException {
+    public EUDEMediator getMediator() throws SpokExecutionException {
         if (this.parent != null) {
-            return this.parent.getInterpreter();
+            return this.parent.getMediator();
         }
-        throw new SpokExecutionException("No interpreter found");
+        throw new SpokExecutionException("No mediator found");
     }
 
     /**

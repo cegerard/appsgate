@@ -23,7 +23,7 @@ public class NodeIfTest extends NodeTest {
     public NodeIfTest() {
         context.checking(new Expectations() {
             {
-                allowing(interpreter).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
             }
         });
     }

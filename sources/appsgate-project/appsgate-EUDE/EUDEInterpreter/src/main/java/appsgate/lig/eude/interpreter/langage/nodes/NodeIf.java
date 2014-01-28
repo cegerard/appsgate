@@ -51,9 +51,9 @@ public class NodeIf extends Node {
     public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokException {
         super(parent);
 
-        this.expBool = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
-        this.seqRulesTrue = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
-        this.seqRulesFalse = NodeBuilder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
+        this.expBool = Builder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
+        this.seqRulesTrue = Builder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
+        this.seqRulesFalse = Builder.BuildNodeFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
 
     }
 

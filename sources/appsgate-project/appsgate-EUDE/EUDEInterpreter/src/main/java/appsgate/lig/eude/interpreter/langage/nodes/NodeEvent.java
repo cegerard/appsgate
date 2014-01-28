@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
@@ -83,9 +83,9 @@ public class NodeEvent extends Node {
     public JSONObject call() {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
-        EUDEInterpreterImpl interpreter;
+        EUDEMediator mediator;
         try {
-            interpreter = getInterpreter();
+            mediator = getMediator();
         } catch (SpokExecutionException ex) {
             LOGGER.error("Unable to call this node: {}", this);
             return null;
@@ -95,13 +95,13 @@ public class NodeEvent extends Node {
         if (sourceType.equals("program")) {
             // get the node of the program
             NodeProgram p;
-            p = interpreter.getNodeProgram(sourceId);
+            p = mediator.getNodeProgram(sourceId);
             // if it exists
             if (p != null) {
                 // listen to its start event...
                 if (eventName.equals("runningState")) {
                     LOGGER.trace("Node event added for {}", sourceId);
-                    interpreter.addNodeListening(this);
+                    mediator.addNodeListening(this);
                 } else {
                     LOGGER.warn("Event ({}) not supported for programs.", eventName);
                 }
@@ -114,7 +114,7 @@ public class NodeEvent extends Node {
             // sourceType is "device"
         } else {
             LOGGER.trace("Node event added for {}", sourceId);
-            interpreter.addNodeListening(this);
+            mediator.addNodeListening(this);
         }
 
         return null;
@@ -123,14 +123,14 @@ public class NodeEvent extends Node {
     @Override
     public void specificStop() throws SpokException{
         if (sourceType.equals("program")) {
-            NodeProgram p = getInterpreter().getNodeProgram(sourceId);
+            NodeProgram p = getMediator().getNodeProgram(sourceId);
             if (eventName.equals("start")) {
                 p.removeStartEventListener(this);
             } else if (eventName.equals("end")) {
                 p.removeEndEventListener(this);
             }
         } else {
-            getInterpreter().removeNodeListening(this);
+            getMediator().removeNodeListening(this);
         }
     }
 

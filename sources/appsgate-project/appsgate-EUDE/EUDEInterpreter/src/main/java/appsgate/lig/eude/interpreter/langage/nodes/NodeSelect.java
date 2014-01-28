@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
@@ -93,13 +93,13 @@ public class NodeSelect extends Node {
 
     @Override
     public JSONObject call() {
-        EUDEInterpreterImpl interpreter;
+        EUDEMediator mediator;
         try {
-            interpreter = getInterpreter();
+            mediator = getMediator();
         } catch (SpokExecutionException ex) {
             return ex.getJSONDescription();
         }
-        AppsGateSpec appsGate = interpreter.getAppsGate();
+        AppsGateSpec appsGate = mediator.getAppsGate();
         specificDevices = appsGate.getSpecificDevices(what, where, state);
         fireEndEvent(new EndEvent(this));
         return null;

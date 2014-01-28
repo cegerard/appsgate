@@ -56,7 +56,7 @@ public class Appsgate implements AppsGateSpec {
 	 * 
 	 * static class logger member
 	 */
-	private static Logger logger = LoggerFactory.getLogger(Appsgate.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(Appsgate.class);
 
 	/**
 	 * HTTP service dependency resolve by iPojo. Allow to register HTML
@@ -90,12 +90,12 @@ public class Appsgate implements AppsGateSpec {
 	private EUDE_InterpreterSpec interpreter;
 	
 	
-	private String wsPort="8087";
+	private final String wsPort="8087";
 
-	private BundleContext context;
+	private final BundleContext context;
 	private ServiceRegistration<?> serviceRegistration;
 
-	private AppsGateServerDevice upnpDevice;
+	private final AppsGateServerDevice upnpDevice;
 	private ServerInfoService upnpService;
 	private StateVariableServerIP serverIP;
 	private StateVariableServerURL serverURL;
@@ -107,14 +107,14 @@ public class Appsgate implements AppsGateSpec {
 	 * 
 	 */
 	public Appsgate(BundleContext context) {
-		logger.debug("new AppsGate, BundleContext : " + context);
+		LOGGER.debug("new AppsGate, BundleContext : " + context);
 		this.context = context;
 		upnpDevice = new AppsGateServerDevice(context);
-		logger.debug("UPnP Device instanciated");
+		LOGGER.debug("UPnP Device instanciated");
 		registerUpnpDevice();
 		retrieveLocalAdress();
 
-		logger.info("AppsGate instanciated");
+		LOGGER.info("AppsGate instanciated");
 	}
 	
 	
@@ -122,7 +122,7 @@ public class Appsgate implements AppsGateSpec {
 		Dictionary<String, Object> dict = upnpDevice.getDescriptions(null);
 		serviceRegistration = context.registerService(
 				UPnPDevice.class.getName(), upnpDevice, dict);
-		logger.debug("UPnP Device registered");
+		LOGGER.debug("UPnP Device registered");
 		
 		upnpService = (ServerInfoService) upnpDevice.getService(ServerInfoService.SERVICE_ID);
 		serverIP = (StateVariableServerIP) upnpService.getStateVariable(StateVariableServerIP.VAR_NAME);
@@ -134,7 +134,7 @@ public class Appsgate implements AppsGateSpec {
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		logger.debug("AppsGate is starting");
+		LOGGER.debug("AppsGate is starting");
 
 		if (httpService != null) {
 			final HttpContext httpContext = httpService.createDefaultHttpContext();
@@ -142,11 +142,11 @@ public class Appsgate implements AppsGateSpec {
 			initParams.put("from", "HttpService");
 			try {
 				httpService.registerResources("/appsgate", "/WEB", httpContext);
-				logger.debug("Registered URL : "
+				LOGGER.debug("Registered URL : "
 						+ httpContext.getResource("/WEB"));
-				logger.info("Appsgate mains HTML pages registered.");
+				LOGGER.info("Appsgate mains HTML pages registered.");
 			} catch (NamespaceException ex) {
-				logger.error("NameSpace exception");
+				LOGGER.error("NameSpace exception");
 			}
 		}
 	}
@@ -155,7 +155,7 @@ public class Appsgate implements AppsGateSpec {
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		logger.info("AppsGate is stopping");
+		LOGGER.info("AppsGate is stopping");
 		httpService.unregister("/appsgate");
 	}
 
@@ -376,7 +376,7 @@ public class Appsgate implements AppsGateSpec {
 											// find automatically the right
 											// network interface
 					if(!netint.getDisplayName().contentEquals("tun0")) {
-						logger.debug("The newtwork interface {} will be inspected.",netint.getDisplayName());
+						LOGGER.debug("The newtwork interface {} will be inspected.",netint.getDisplayName());
 						Enumeration<InetAddress> addresses = netint.getInetAddresses();
 						for (InetAddress address : Collections.list(addresses)) {
 							if (address instanceof Inet4Address) {
@@ -389,17 +389,17 @@ public class Appsgate implements AppsGateSpec {
 			}
 			
 			serverIP.setStringValue(localAddress.getHostAddress());
-			logger.debug("State Variable name : "+serverIP.getName()+", value : "+serverIP.getCurrentStringValue());
+			LOGGER.debug("State Variable name : "+serverIP.getName()+", value : "+serverIP.getCurrentStringValue());
 			serverURL.setStringValue("http://"+serverIP.getCurrentStringValue()+ "/index.html");
-			logger.debug("State Variable name : "+serverURL.getName()+", value : "+serverURL.getCurrentStringValue());
+			LOGGER.debug("State Variable name : "+serverURL.getName()+", value : "+serverURL.getCurrentStringValue());
 			serverWebsocket.setStringValue("http://"+serverIP.getCurrentStringValue()+ ":"+wsPort+"/");
-			logger.debug("State Variable name : "+serverWebsocket.getName()+", value : "+serverWebsocket.getCurrentStringValue());
+			LOGGER.debug("State Variable name : "+serverWebsocket.getName()+", value : "+serverWebsocket.getCurrentStringValue());
 
 		} catch (UnknownHostException e) {
-			logger.debug("Unknown host: ");
+			LOGGER.debug("Unknown host: ");
 			e.printStackTrace();
 		} catch (SocketException e) {
-			logger.debug("Socket exception for UPnP: ");
+			LOGGER.debug("Socket exception for UPnP: ");
 			e.printStackTrace();
 		}
 	}

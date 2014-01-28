@@ -23,8 +23,8 @@ public class NodeEventTest extends NodeTest {
     public NodeEventTest() {
         context.checking(new Expectations() {
             {
-                allowing(interpreter).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
-                allowing(interpreter).addNodeListening(with(any(NodeEvent.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
+                allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
             }
         });
     }

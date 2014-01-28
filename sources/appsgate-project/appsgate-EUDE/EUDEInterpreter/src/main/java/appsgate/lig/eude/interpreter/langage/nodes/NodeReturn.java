@@ -52,7 +52,7 @@ public class NodeReturn extends Node {
     public NodeReturn(JSONObject obj, Node parent) throws SpokException {
         super(parent);
         if (obj.has("returnValue")) {
-            returnValue = NodeBuilder.BuildNodeFromJSON(obj.optJSONObject("returnValue"), this);
+            returnValue = Builder.BuildNodeFromJSON(obj.optJSONObject("returnValue"), this);
         }
     }
 

@@ -14,7 +14,7 @@ import org.json.JSONObject;
  *
  * @author jr
  */
-public class NodeBuilder {
+public class Builder {
 
     private static enum NODE_TYPE {
 
