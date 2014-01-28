@@ -115,7 +115,19 @@
             <groupId>appsgate.components</groupId>
             <artifactId>UbikitAdapter</artifactId>
             <version>${project.version}</version>
-        </dependency>		
+        </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>WattecoAdapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>     
+                <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>SimulationAdapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>           
+                          
+            		
 		<!-- <dependency> -->
 		<!-- <groupId>appsgate.components</groupId> -->
 		<!-- <artifactId>CoreObjectSpec</artifactId> -->
