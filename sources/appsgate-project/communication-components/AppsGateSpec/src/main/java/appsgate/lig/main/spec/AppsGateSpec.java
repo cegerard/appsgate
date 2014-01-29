@@ -23,6 +23,13 @@ public interface AppsGateSpec {
 	 */
 	public JSONArray getDevices();
 	
+	/**
+	 * Get device details
+	 * @param deviceId the targeted device identifier
+	 * @return the device description as a JSONObject
+	 */
+	public JSONObject getDevice(String deviceId);
+	
 	/***************************/
 	/** Device name management */
 	/***************************/

@@ -220,6 +220,19 @@ public class RouterImpl implements RouterApAMSpec {
 		}
 	}
 	
+	@Override
+	public JSONObject getDevice(String objectId) {
+		
+		Object obj = getObjectRefFromID(objectId);
+		
+		if(obj != null){
+			CoreObjectSpec objSpec =(CoreObjectSpec)obj;
+			return  getObjectDescription(objSpec, "");
+		}
+		
+		return new JSONObject();
+	}
+	
 	/**
 	 * This method get the auto description of an object and add
 	 * the contextual information associate to this object for a specified user
