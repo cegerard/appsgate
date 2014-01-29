@@ -18,6 +18,7 @@
 		<definition name="status" 		type="string" default="2" 			 	field="status"		 method="statusChanged"/>
 		
 		<definition name="isPaired"		type="string" default="false" 		  	field="isPaired"	 method="isPairedChanged"/>
+		<definition name="signal"		 type="string" default="0" 		  	  field="signal" 		method="signalChanged"/>
 		
 		<!-- device specific meta data -->
 		<definition name="plugState"  	type="string" default="false" 		 	field="plugState"    method="plugStateChanged"/>

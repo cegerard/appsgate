@@ -75,7 +75,7 @@ public class EnOceanConfigListener implements ConfigListener {
 				enoceanProxy.validateItem(id, arrayCapa, true);
 
 			} else if (cmd.equalsIgnoreCase("getConfDevices")) {
-				enoceanProxy.getActuator(obj.getInt("clientId"));
+				enoceanProxy.getConfDevices(obj.getInt("clientId"));
 
 			} else if (cmd.equalsIgnoreCase("createActuator")) {
 				//TODO remove this client command
