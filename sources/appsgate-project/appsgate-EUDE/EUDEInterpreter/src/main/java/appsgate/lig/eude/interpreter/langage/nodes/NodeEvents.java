@@ -5,8 +5,10 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.ClockProxy;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -124,19 +126,30 @@ class NodeEvents extends Node {
         NodeEvent nodeEnded = (NodeEvent) e.getSource();
         LOGGER.debug("NEvents end event: {}", nodeEnded);
         if (!isStopping()) {
-            if (nodeEnded.getSourceId().equals(getClockId())) {
-                nbEventEnded--;
-            } else {
-                nbEventEnded++;
-                if (nbEventEnded >= nbEventToOccur) {
-                    LOGGER.debug("All the events have been ended");
-                    stop();
-                    fireEndEvent(new EndEvent(this));
-                } else {
-                    nodeEnded.addEndEventListener(this);
-                    nodeEnded.call();
-                    startClockEvent();
+            try {
+                EUDEMediator mediator = getMediator();
+                ClockProxy p = mediator.getClock();
+                if (p == null) {
+                    throw new SpokExecutionException("Unable to find clock");
                 }
+                if (nodeEnded.getSourceId().equals(p.getId())) {
+                    LOGGER.debug("ClockEvent detected");
+                    nbEventEnded--;
+                } else {
+                    nbEventEnded++;
+                    if (nbEventEnded >= nbEventToOccur) {
+                        LOGGER.debug("All the events have been ended");
+                        stop();
+                        fireEndEvent(new EndEvent(this));
+                    } else {
+                        LOGGER.debug("All the events have not been ended");
+                        nodeEnded.addEndEventListener(this);
+                        nodeEnded.call();
+                        startClockEvent();
+                    }
+                }
+            } catch (SpokExecutionException ex) {
+                LOGGER.error(ex.getMessage());
             }
         } else {
             LOGGER.warn("endEvent has been fired while the node was stopping");
@@ -182,26 +195,16 @@ class NodeEvents extends Node {
     }
 
     /**
-     * TODO: implement this correctly
-     *
-     * @return
-     */
-    public String getClockId() {
-        return "clock";
-    }
-
-    /**
      *
      */
-    private void startClockEvent() {
+    private void startClockEvent() throws SpokExecutionException {
         if (duration > 0) {
             LOGGER.debug("Starting a clock event");
             String d = getTime(duration);
-            NodeEvent ev = new NodeEvent("clock", getClockId(), "clockAlarm", d, this);
+            NodeEvent ev = new NodeEvent("device", getMediator().getClock().getId(), "ClockAlarm", d, this);
             seqEvent.add(ev);
             ev.addEndEventListener(this);
             ev.call();
-
         }
     }
 
@@ -210,8 +213,9 @@ class NodeEvents extends Node {
      *
      * @return
      */
-    private String getTime(Integer duration) {
-        return duration.toString();
+    private String getTime(Integer duration) throws SpokExecutionException {
+        Long time = getMediator().getTime() + duration * 1000;
+        return time.toString();
     }
 
 }

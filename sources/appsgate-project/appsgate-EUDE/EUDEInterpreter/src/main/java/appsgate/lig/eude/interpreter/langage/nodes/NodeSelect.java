@@ -99,8 +99,9 @@ public class NodeSelect extends Node {
         } catch (SpokExecutionException ex) {
             return ex.getJSONDescription();
         }
-        AppsGateSpec appsGate = mediator.getAppsGate();
-        specificDevices = appsGate.getSpecificDevices(what, where, state);
+        // TODO: fix this
+//        AppsGateSpec appsGate = mediator.getAppsGate();
+//        specificDevices = appsGate.getSpecificDevices(what, where, state);
         fireEndEvent(new EndEvent(this));
         return null;
     }

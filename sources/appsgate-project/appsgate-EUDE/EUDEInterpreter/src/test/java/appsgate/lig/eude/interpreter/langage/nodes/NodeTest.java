@@ -33,11 +33,13 @@ public abstract class NodeTest {
     protected Node instance;
     protected JSONObject ruleJSON;
     protected EUDEMediator mediator;
+    protected NodeProgram programNode;
     
     protected JSONObject emptySeqRules;
 
     public NodeTest() {
         this.mediator = context.mock(EUDEMediator.class);
+        programNode = new NodeProgram(mediator);
         this.emptySeqRules = new JSONObject();
         try {
             emptySeqRules.put("type", "instructions");

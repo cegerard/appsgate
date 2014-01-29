@@ -15,6 +15,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
 import java.io.FileNotFoundException;
@@ -83,6 +84,12 @@ public class EUDEMediatorTest {
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
         this.contextFollower = new ContextFollowerTest();
+//        final AppsGateSpec appsgate = context.mock(AppsGateSpec.class);
+        final JSONArray deviceList = new JSONArray();
+        JSONObject clock = new JSONObject();
+        clock.put("id", "1");
+        clock.put("type", 21);
+        deviceList.put(clock);
 
         final GenericCommand gc = new GenericCommand(null, null, this, null);
         tested = context.states("NotYet");
@@ -100,10 +107,13 @@ public class EUDEMediatorTest {
                 allowing(router).executeCommand(with("flag2"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("flag2"));
                 allowing(router).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(router).getDevices();
+                will(returnValue(deviceList));
             }
         });
         this.instance = new EUDEMediator();
         this.instance.setTestMocks(pull_service, push_service, router, contextFollower);
+//        this.instance.setAppsGate(appsgate);
         programJSON = new JSONObject();
         programJSON.put("id", "test");
 

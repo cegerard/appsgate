@@ -27,7 +27,6 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
-import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
@@ -69,10 +68,6 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      */
     private DataBasePushService contextHistory_push;
 
-    /**
-     * The appsgate server
-     */
-    private AppsGateSpec appsgate;
 
     /**
      * Hash map containing the nodes and the events they are listening
@@ -83,6 +78,11 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      * HashMap that contains all the existing programs under a JSON format
      */
     private final HashMap<String, NodeProgram> mapPrograms;
+
+    /**
+     *
+     */
+    public ClockProxy clock;
 
     /**
      * Initialize the list of programs and of events
@@ -156,6 +156,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             p = new NodeProgram(this, programJSON);
         } catch (SpokException e) {
             LOGGER.error("Node error detected while loading a program: {}", e.getMessage());
+            LOGGER.debug("json desc: {}", programJSON.toString());
             return false;
         }
 
@@ -334,6 +335,19 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     }
 
     /**
+     * @return the current time in milliseconds
+     */
+    public Long getTime() {
+        LOGGER.trace("getTime called");
+        GenericCommand cmd = executeCommand(clock.getId(), "getCurrentTimeInMillis", new JSONArray());
+        LOGGER.debug("cmd: " + cmd.toString());
+        cmd.run();
+        Long time = (Long) cmd.getReturn();
+        LOGGER.info("Time is: " + time);
+        return time;
+    }
+
+    /**
      * Add a node to notify when the specified event has been caught. The node
      * is notified only when the event is received
      *
@@ -453,6 +467,26 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public NotificationMsg notifyChanges(NotificationMsg notif) {
         return notif;
 
+    }
+    
+    /**
+     * @return the clock proxy
+     */
+    public ClockProxy getClock() {
+        if (clock == null) {
+            JSONArray devices = router.getDevices();
+            for (int i = 0; i < devices.length(); i++) {
+                try {
+                    if (devices.getJSONObject(i).optInt("type") == 21) {
+                        clock = new ClockProxy(devices.getJSONObject(i));
+                    }
+                } catch (JSONException ex) {
+                    LOGGER.warn("A Json Exception occured during parsing device list");
+                    clock = null;
+                }
+            }
+        }
+        return clock;
     }
 
     /**
@@ -577,22 +611,6 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public void startEventFired(StartEvent e) {
         // TODO Auto-generated method stub
 
-    }
-
-    /**
-     *
-     * @param spec
-     */
-    public void setAppsGate(AppsGateSpec spec) {
-        this.appsgate = spec;
-    }
-
-    /**
-     *
-     * @return appsgate
-     */
-    public AppsGateSpec getAppsGate() {
-        return appsgate;
     }
 
     /**
