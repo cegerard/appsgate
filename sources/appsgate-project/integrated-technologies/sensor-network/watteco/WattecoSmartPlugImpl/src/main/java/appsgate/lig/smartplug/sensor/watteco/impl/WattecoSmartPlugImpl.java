@@ -9,8 +9,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.smartplug.actuator_sensor.messages.SmartPlugNotificationMsg;
 import appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec;
-import appsgate.lig.watteco.adapter.WattecoAdapter;
-import appsgate.lig.watteco.adapter.services.WattecoIOService;
+import appsgate.lig.watteco.adapter.spec.WattecoIOService;
 
 /**
  * 
@@ -104,17 +103,17 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	
 	@Override
 	public void toggle() {
-		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_TOGGLE, false);
+		wattecoAdapter.sendCommand(route, WattecoIOService.ON_OFF_TOGGLE, false);
 	}
 	
 	@Override
 	public void on() {
-		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_ON, false);
+		wattecoAdapter.sendCommand(route, WattecoIOService.ON_OFF_ON, false);
 	}
 
 	@Override
 	public void off() {
-		wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_OFF, false);
+		wattecoAdapter.sendCommand(route, WattecoIOService.ON_OFF_OFF, false);
 	}
 	
 	@Override
@@ -129,7 +128,7 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	
 	@Override
 	public boolean getRelayState() {
-		byte[] b = wattecoAdapter.sendCommand(route, WattecoAdapter.ON_OFF_READ_ATTRIBUTE, true);
+		byte[] b = wattecoAdapter.sendCommand(route, WattecoIOService.ON_OFF_READ_ATTRIBUTE, true);
 		boolean state = extractState(b);
 		plugState = Boolean.toString(state);
 		return state;
@@ -138,7 +137,7 @@ public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, 
 	@Override
 	public SmartPlugValue readAttribute() {
 		byte[] b = null;
-		b = wattecoAdapter.sendCommand(route, WattecoAdapter.SIMPLE_METERING_READ_ATTRIBUTE, true);
+		b = wattecoAdapter.sendCommand(route, WattecoIOService.SIMPLE_METERING_READ_ATTRIBUTE, true);
 		spv = extractValues(b);
 		consumption = String.valueOf(spv.activePower);
 		return spv;

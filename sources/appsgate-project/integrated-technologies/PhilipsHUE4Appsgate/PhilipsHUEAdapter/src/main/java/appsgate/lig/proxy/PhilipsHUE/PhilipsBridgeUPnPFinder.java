@@ -219,6 +219,9 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
         	
         } else if (code == PHMessageType.BRIDGE_NOT_FOUND) {
         	logger.error("BRIDGE NOT FOUND");
+        	if (status == SEARCHING_AP) {
+				sm.upnpSearch();
+			}
         	
         } else if(code != PHHueError.BRIDGE_ALREADY_CONNECTED) { //We just ignore the bridge already connected error case
 			logger.debug("onError(int code : " + code + ", String message : "+ message + ")");

@@ -1,4 +1,4 @@
-package appsgate.lig.enocean.ubikit.adapter.services;
+package appsgate.lig.enocean.ubikit.adapter.spec;
 
 /**
  * 

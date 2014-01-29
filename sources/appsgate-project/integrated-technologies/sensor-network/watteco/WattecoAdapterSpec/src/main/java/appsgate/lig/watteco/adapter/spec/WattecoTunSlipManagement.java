@@ -1,4 +1,4 @@
-package appsgate.lig.watteco.adapter.services;
+package appsgate.lig.watteco.adapter.spec;
 
 /**
  * This interface describe Watteco TunSlip management service API

@@ -9,7 +9,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.on_off.actuator.messages.OnOffActuatorNotificationMsg;
 import appsgate.lig.on_off.actuator.spec.CoreOnOffActuatorSpec;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
+import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 /**
  * This is the class that represent the EnOcean implementation of On/Off actuator.
  * 
@@ -75,7 +75,7 @@ public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 	 * EnOcean proxy service uses to validate the sensor configuration with the
 	 * EnOcean proxy (pairing phase)
 	 */
-	EnOceanService enoceanProxy;
+	UbikitAdapterService enoceanProxy;
 	
 	public String getActuatorName() {
 		return actuatorName;

@@ -7,7 +7,7 @@
 		classname="appsgate.lig.temperature.sensor.watteco.impl.WattecoTemperatureImpl" specification="CoreTemperatureSensorSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<ipojo:requires field="wattecoAdapter"/>
+		<relation field="wattecoAdapter" resolve="exist" />
 		
 		<!-- device kernel meta data -->
 		<definition name="deviceName" 	type="string" default="Unknown" 		 field="sensorName"/>

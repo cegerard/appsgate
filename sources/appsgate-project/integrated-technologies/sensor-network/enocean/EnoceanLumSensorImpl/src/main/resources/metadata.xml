@@ -7,7 +7,7 @@
 		classname="appsgate.lig.luminosity.sensor.enocean.impl.EnoceanLuminositySensorImpl" specification="CoreLuminositySensorSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<ipojo:requires field="enoceanProxy"/>
+		<relation field="enoceanProxy" resolve="exist" />
 		
 		<definition name="deviceName" 		   type="string" default="Unknown" 		  field="sensorName"/>
 		<definition name="deviceId" 		   type="string" default="000000" 		  field="sensorId"/>

@@ -26,5 +26,6 @@
 		<module>SimulatedTempSensorImpl</module>
 		<module>SimulatedAdapter</module>
 		<module>SimulatedONOffActuator</module>
+		<module>SimulationAdapterSpec</module>
 	</modules>
 </project>

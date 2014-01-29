@@ -9,8 +9,7 @@ import appsgate.lig.co2.sensor.messages.Co2NotificationMsg;
 import appsgate.lig.co2.sensor.spec.CoreCO2SensorSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.watteco.adapter.WattecoAdapter;
-import appsgate.lig.watteco.adapter.services.WattecoIOService;
+import appsgate.lig.watteco.adapter.spec.WattecoIOService;
 
 /**
  * 
@@ -97,7 +96,7 @@ public class WattecoCO2Impl implements CoreObjectSpec, CoreCO2SensorSpec {
 	public int getCO2Concentration() {
 		int temp;
 		byte[] b = null;
-		b = wattecoAdapter.sendCommand(route, WattecoAdapter.ANALOG_INPUT_READ_ATTRIBUTE, true);
+		b = wattecoAdapter.sendCommand(route, WattecoIOService.ANALOG_INPUT_READ_ATTRIBUTE, true);
 		Byte readByte = new Byte(b[8]);
 		temp = (readByte << 24);
 		readByte = new Byte(b[9]);

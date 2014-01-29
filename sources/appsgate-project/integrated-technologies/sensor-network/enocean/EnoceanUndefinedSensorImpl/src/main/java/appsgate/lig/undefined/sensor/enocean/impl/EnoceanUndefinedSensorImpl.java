@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
+import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 import appsgate.lig.undefined.sensor.spec.CoreUndefinedSensorSpec;
 
 /**
@@ -67,7 +67,7 @@ public class EnoceanUndefinedSensorImpl implements CoreUndefinedSensorSpec, Core
 	 * EnOcean proxy service uses to validate the sensor configuration with the
 	 * EnOcean proxy (pairing phase)
 	 */
-	EnOceanService enoceanProxy;
+	UbikitAdapterService enoceanProxy;
 	
 	public String getSensorName() {
 		return sensorName;

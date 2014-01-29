@@ -10,7 +10,7 @@ import appsgate.lig.button_switch.sensor.spec.CoreSwitchSensorSpec;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.enocean.ubikit.adapter.services.EnOceanService;
+import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 /**
  * This is the class that represent the EnOcean implementation of switch sensor.
  * 
@@ -86,7 +86,7 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 	 * EnOcean proxy service uses to validate the sensor configuration with the
 	 * EnOcean proxy (pairing phase)
 	 */
-	EnOceanService enoceanProxy;
+	UbikitAdapterService enoceanProxy;
 	
 	@Override
 	public JSONObject getDescription() throws JSONException {

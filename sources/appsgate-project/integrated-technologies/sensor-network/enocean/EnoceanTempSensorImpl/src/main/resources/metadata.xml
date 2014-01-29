@@ -7,7 +7,7 @@
 		classname="appsgate.lig.temperature.sensor.enocean.impl.EnoceanTemperatureSensorImpl" specification="CoreTemperatureSensorSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<ipojo:requires field="enoceanProxy"/>
+		<relation field="enoceanProxy" resolve="exist" />
 		
 		<!-- device kernel meta data -->
 		<definition name="deviceName" 		  type="string" default="Unknown" 	   field="sensorName"/>

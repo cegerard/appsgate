@@ -1,4 +1,4 @@
-package appsgate.lig.enocean.ubikit.adapter.services;
+package appsgate.lig.enocean.ubikit.adapter.spec;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ import org.json.JSONObject;
  * @version 1.0.0
  *
  */
-public interface EnOceanService {
+public interface UbikitAdapterService {
 
 	/**
 	 * Get all items ass a JSONArray

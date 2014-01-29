@@ -18,24 +18,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.felix.ipojo.annotations.Bind;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Unbind;
-import org.apache.felix.ipojo.annotations.Validate;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.watteco.adapter.listeners.WattecoConfigListener;
-import appsgate.lig.watteco.adapter.services.WattecoDiscoveryService;
-import appsgate.lig.watteco.adapter.services.WattecoIOService;
-import appsgate.lig.watteco.adapter.services.WattecoTunSlipManagement;
+import appsgate.lig.watteco.adapter.spec.WattecoDiscoveryService;
+import appsgate.lig.watteco.adapter.spec.WattecoIOService;
+import appsgate.lig.watteco.adapter.spec.WattecoTunSlipManagement;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
@@ -64,9 +58,6 @@ import fr.imag.adele.apam.Instance;
  * @see WattecoTunSlipManagement
  * 
  */
-@Component(publicFactory = false)
-@Instantiate(name = "AppsgateWattecoAdapter")
-@Provides(specifications = { WattecoIOService.class, WattecoDiscoveryService.class })
 public class WattecoAdapter implements WattecoIOService,
 		WattecoDiscoveryService, WattecoTunSlipManagement {
 
@@ -108,6 +99,11 @@ public class WattecoAdapter implements WattecoIOService,
 	private ListenerService listenerService;
 	
 	/**
+	 * Service to communicate with clients
+	 */
+	private SendWebsocketsService sendToClientService;
+	
+	/**
 	 * HTTP service dependency resolve by iPojo. Allow to register HTML
 	 * resources to the Felix HTTP server
 	 */
@@ -132,7 +128,6 @@ public class WattecoAdapter implements WattecoIOService,
 	/**
 	 * Method call by ApAM when a new instance of Watteco adapter is created
 	 */
-	@Validate
 	public void newInst() {
 		//Initiate the SLIP tunnel from C source from Watteco
 		// /!\ this use native source code so it must be compile to the targeted platform
@@ -172,8 +167,30 @@ public class WattecoAdapter implements WattecoIOService,
 			} catch (IOException e) {
 				logger.error(e.getMessage());
 			}
+			
+			
+			if(listenerService.addConfigListener(CONFIG_TARGET, new WattecoConfigListener(this))){
+				logger.info("Listeners services dependency resolved and configuration listener had been deployed.");
+				if (httpService != null) {
+					logger.debug("HTTP service dependency resolved");
+					final HttpContext httpContext = httpService.createDefaultHttpContext();
+					final Dictionary<String, String> initParams = new Hashtable<String, String>();
+					initParams.put("from", "HttpService");
+					try {
+						httpService.registerResources("/configuration/sensors/watteco", "/WEB", httpContext);
+						logger.info("Sensors configuration HTML GUI sources registered.");
+					} catch (NamespaceException ex) {
+						logger.error("NameSpace exception");
+					}
+				}
+			}else{
+				logger.info("Listeners services dependency resolution failed.");
+			}
+			
+			
 		} else {
 			logger.error("This bundle embbeded native C lib executing code and only Linux system are supported.");
+			logger.error("Your are currently runing on "+osName);
 		}  
 		
 		logger.info("Appsgate Watteco adapter initiated.");
@@ -182,7 +199,6 @@ public class WattecoAdapter implements WattecoIOService,
 	/**
 	 * method call by ApAM when a instance of Watteco adapter disappeared
 	 */
-	@Invalidate
 	public void delInst() {
 		//slipTunnelOn = false;
 		borderRouter.stopBorderRouter();
@@ -206,69 +222,7 @@ public class WattecoAdapter implements WattecoIOService,
 //		}
 		logger.info("Appsgate Watteco adapter stopped.");	
 	}
-
-	/**
-	 * Get the subscribe service form OSGi/iPOJO. This service is optional.
-	 * 
-	 * @param listenerService
-	 *            , the subscription service
-	 */
-	@Bind(optional = true)
-	public void bindSubscriptionService(ListenerService listenerService) {
-		this.listenerService = listenerService;
-		logger.debug("Communication subscription service dependency resolved");
-		logger.info("Getting the listeners services...");
-		if(listenerService.addConfigListener(CONFIG_TARGET, new WattecoConfigListener(this))){
-			logger.info("Listeners services dependency resolved.");
-		}else{
-			logger.info("Listeners services dependency resolution failed.");
-		}
-	}
-
-	/**
-	 * Call when the Watteco adapter release the optional subscription service.
-	 * 
-	 * @param listenerService
-	 *            , the released subscription service
-	 */
-	@Unbind(optional = true)
-	public void unbindSubscriptionService(ListenerService listenerService) {
-		this.listenerService = null;
-		logger.debug("Subscription service dependency not available");
-	}
 	
-	/**
-	 * Get the HTTP service form OSGi/iPojo. This service is optional.
-	 * 
-	 * @param httpService the HTTP service
-	 */
-	@Bind(optional = true)
-	public void bindHTTPService(HttpService httpService) {
-		this.httpService = httpService;
-		logger.debug("HTTP service dependency resolved");
-		//if (httpService != null) {
-		final HttpContext httpContext = httpService.createDefaultHttpContext();
-		final Dictionary<String, String> initParams = new Hashtable<String, String>();
-		initParams.put("from", "HttpService");
-		try {
-			httpService.registerResources("/configuration/sensors/watteco", "/WEB", httpContext);
-			logger.info("Sensors configuration HTML GUI sources registered.");
-		} catch (NamespaceException ex) {
-			logger.error("NameSpace exception");
-		}
-		//}
-	}
-	
-	/**
-	 * Call when the EnOcean proxy release the HTTP service.
-	 * 
-	 * @param httpService the HTTP service
-	 */
-	@Unbind(optional = true)
-	public void unbindHTTPService(HttpService httpService) {
-		this.httpService = null;
-		logger.debug("HTTP service dependency not available");
-	}
 	
 	/* ***********************************************************************
 	 * 						  PUBLIC METHODS                                 *
@@ -644,59 +598,6 @@ public class WattecoAdapter implements WattecoIOService,
 	 *********************************************************************** */
 	
 	public static final String BORDER_ROUTER_ADDR 					   = "aaaa::ff:ff00:2bf9";
-	
-	//ON/OFF cluster commands
-	public static final String ON_OFF_CLUSTER				   		   = "6";
-	public static final String ON_OFF_OFF 	 				   		   = "$11$50$00$06$00";
-	public static final String ON_OFF_ON 	 				   		   = "$11$50$00$06$01";
-	public static final String ON_OFF_TOGGLE 				   		   = "$11$50$00$06$02";
-	public static final String ON_OFF_READ_ATTRIBUTE  		   		   = "$11$00$00$06$00$00";
-	public static final String ON_OFF_CONF_REPORTING  		   		   = "$11$06$00$06$00$00$00$10$00$00$FF$FF$01";
-	
-	//Simple metering cluster commands
-	public static final String SIMPLE_METERING_CLUSTER				   = "52";
-	public static final String SIMPLE_METERING_READ_ATTRIBUTE  		   = "$11$00$00$52$00$00";
-	public static final String SIMPLE_METERING_CONF_REPORTING  		   = "$11$06$00$52$00$00$00$41$00$00$02$58$0C$00$00$00$00$00$00$00$00$00$02$00$00"; // 10 minutes reporting or 2W variation.
-	
-	//Temperature measurement cluster commands
-	public static final String TEMPERATURE_MEASUREMENT_CLUSTER		   = "402";
-	public static final String TEMPERATURE_MEASUREMENT_READ_ATTRIBUTE  = "$11$00$04$02$00$00";
-	
-	//Humidity measurement cluster commands
-	public static final String HUMIDITY_MEASUREMENT_CLUSTER		   	   = "405";
-	public static final String HUMIDITY_MEASUREMENT_READ_ATTRIBUTE     = "$11$00$04$05$00$00";
-	
-	//Occupancy sensing cluster commands
-	public static final String OCCUPANCY_SENSING_CLUSTER		   	   = "406";
-	public static final String OCCUPANCY_SENSING_READ_ATTRIBUTE  	   = "$11$00$04$06$00$00";
-	public static final String OCCUPANCY_SENSING_READ_OCCUPIED  	   = "$11$00$04$06$00$10";
-	public static final String OCCUPANCY_SENSING_READ_INOCCUPIED 	   = "$11$00$04$06$00$11";
-	public static final String OCCUPANCY_CONF_REPORTING  		   	   = "$11$06$04$06$00$00$00$18$00$02$00$3C$01"; // 2 seconds minimal reporting and 1 minutes each auto-notification
-
-	//Analog input (basic) cluster commands
-	public static final String ANALOG_INPUT_CLUSTER				   	   = "c";
-	public static final String ANALOG_INPUT_READ_ATTRIBUTE  		   = "$11$00$00$0C$00$55";
-	public static final String ANALOG_INPUT_APPLICATION_ASK  		   = "$11$00$00$0C$01$00";
-	
-	//Binary input (basic) cluster commands
-	public static final String BINARY_INPUT_CLUSTER				   	   = "f";
-	public static final String BINARY_INPUT_READ_ATTRIBUTE  		   = "$11$00$00$0F$00$55";
-	
-	//Illumination measurement cluster commands
-	public static final String ILLUMINATION_MEASUREMENT_CLUSTER		   = "400";
-	public static final String ILLUMINATION_MEASUREMENT_READ_ATTRIBUTE = "$11$00$04$00$00$00";
-	
-	//Configuration cluster commands
-	public static final String CONFIGURATION_CLUSTER		   	   	   = "50";
-	public static final String CONFIGURATION_READ_ATTRIBUTE  		   = "$11$00$00$50$00$01";
-	public static final String CONFIGURATION_DESC 			   		   = "$11$00$00$50$00$04";
-	
-	//Basic cluster commands
-	public static final String BASIC_CLUSTER		 			  	   = "0";
-	public static final String BASIC_READ_ATTRIBUTE  				   = "$11$00$00$00$00$01";
-	
-	//Application type for Watteco analog input cluster
-	public static final int APPLICATION_TYPE_CO2  		   			   = 327680;
 	
 	
 	/* ***********************************************************************

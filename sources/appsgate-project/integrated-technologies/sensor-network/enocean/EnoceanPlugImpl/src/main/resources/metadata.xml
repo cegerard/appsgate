@@ -7,7 +7,7 @@
 		classname="appsgate.lig.plug.actuator_sensors.enocean.impl.EnoceanPlugAcuatorSensorImpl" specification="CoreSmartPlugSpec" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<ipojo:requires field="enoceanProxy"/>
+		<relation field="enoceanProxy" resolve="exist" />
 		
 		<definition name="deviceName"  	type="string" default="Unknown" 	   field="sensorName"/>
 		<definition name="deviceId"  	type="string" default="000000" 		   field="sensorId"/>

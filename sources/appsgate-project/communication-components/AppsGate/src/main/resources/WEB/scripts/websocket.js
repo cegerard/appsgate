@@ -1,4 +1,4 @@
-define(['philipshue'], function (hueRef) {
+define(['philipshue/philipshue'], function (hueRef) {
 //define begin
     var returnedModule = function () {
     

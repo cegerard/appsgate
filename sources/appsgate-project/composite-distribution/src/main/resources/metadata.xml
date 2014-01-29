@@ -3,12 +3,12 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<composite name="AppsGate-Application" singleton="true">
+	<composite name="AppsGate-Application"  singleton="true">
 		<contentMngt>
 
 			<start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
 
-			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
+ 			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
 
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
@@ -19,6 +19,12 @@
 			<start implementation="AppsGateHUEServices" name="AppsGateHUEServicesInst"></start>
 
 			<start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
+			
+			<start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
+			
+            <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start>
+            
+            <start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start>
 
 			<start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />
@@ -79,8 +85,8 @@
 	<composite name="AppsGateGoogleServices" singleton="true">
 		<contentMngt>
 			<start implementation="AppsgateGoogleAdapter" name="AppsgateGoogleAdapterInst"></start>
-			<start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start>
-			<start implementation="GmailImpl" name="GmailInst"></start>
+<!-- 			<start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
+<!-- 			<start implementation="GmailImpl" name="GmailInst"></start> -->
 		</contentMngt>
 	</composite>
 
@@ -90,7 +96,25 @@
 			<start implementation="AppsgateContextHistory" name="Global-ContextHistoryManager"></start>
 		</contentMngt>
 	</composite>
-
+	
+    <composite name="AppsGateUbikitServices" singleton="true">
+        <contentMngt>
+             <start name="UbikitAdapterInst" implementation="UbikitAdapterImpl"/>
+        </contentMngt>
+    </composite>
+	
+    <composite name="AppsGateWattecoServices" singleton="true">
+        <contentMngt>
+             <start name="WattecoAdapterInst" implementation="WattecoAdapterImpl"/>
+        </contentMngt>
+    </composite>
+        
+    <composite name="AppsGateSimulatedServices" singleton="true">
+        <contentMngt>
+             <start name="SimulatedAdapterInst" implementation="SimulatedAdapterImpl"/>
+        </contentMngt>
+    </composite>    
+        
 	<apam-instance name="appsgate" implementation="AppsGate-Application" />
 
 </apam>

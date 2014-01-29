@@ -1,4 +1,4 @@
-package appsgate.lig.simulation.adapter.services;
+package appsgate.lig.simulation.adapter.spec;
 
 import java.util.HashMap;
 
