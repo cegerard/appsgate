@@ -101,4 +101,18 @@ public interface UserBaseSpec {
 	 */
 	public JSONArray getAssociatedDevices(String id);
 
+        /**
+         * 
+         * the object is as this {'type':'role','value':'nameOfRole','children':[roleObjects]}
+         * 
+         * @return the hierarchy of the users as a tree in a JSONObject
+         */
+        public JSONObject getHierarchy();
+        
+        /**
+         * Set the hierarchy
+         * 
+         * @param hierarchy the hierarchy entered as a tree
+         */
+        public void setHierarchy(JSONObject hierarchy);
 }
