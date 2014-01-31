@@ -123,6 +123,7 @@ public class EnoceanUndefinedSensorImpl implements CoreUndefinedSensorSpec, Core
 		descr.put("type", userType); //-1 for undefined sensor
 		descr.put("locationId", "no where");
 		descr.put("status", status);
+		descr.put("deviceType", sensoreType);
 		
 		return descr;
 	}

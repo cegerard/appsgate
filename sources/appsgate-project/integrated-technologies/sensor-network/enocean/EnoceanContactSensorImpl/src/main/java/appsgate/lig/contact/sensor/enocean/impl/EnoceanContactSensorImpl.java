@@ -151,6 +151,7 @@ public class EnoceanContactSensorImpl implements CoreContactSensorSpec, CoreObje
 		descr.put("type", userType); //3 for contact sensor
 		descr.put("status", status);
 		descr.put("contact", currentStatus);
+		descr.put("deviceType", sensoreType);
 		
 		return descr;
 	}

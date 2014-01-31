@@ -232,6 +232,7 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 		descr.put("plugState", plugState);
 		descr.put("consumption", consumption);
 		descr.put("activeEnergy", activeEnergy);
+		descr.put("deviceType", sensoreType);
 		
 		return descr;
 	}

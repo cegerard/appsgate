@@ -159,6 +159,7 @@ public class EnoceanTemperatureSensorImpl implements CoreObjectSpec, CoreTempera
 		descr.put("type", userType); //O for temperature sensor
 		descr.put("status", status);
 		descr.put("value", currentTemperature);
+		descr.put("deviceType", sensorType);
 		
 		return descr;
 	}

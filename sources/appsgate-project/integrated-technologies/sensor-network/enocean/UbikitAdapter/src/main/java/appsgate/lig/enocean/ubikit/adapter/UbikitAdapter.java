@@ -254,7 +254,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			Instance inst = getSensorInstance(id);
 			if (inst != null) {
 				logger.info("Paired sensor found " + id);
-				// TODO replace the use of userTyper by something directly on
+				// TODO replace the use of userType by something directly on
 				// EnOceanProfile
 				String userType = inst.getProperty("userType");
 				if (userType.contentEquals("2")) { // Switch sensor
@@ -435,18 +435,17 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 					}
 					tempEventCapabilitiesMap.put(newItEvent.getSourceItemUID(),
 							tempCapList);
-					JSONObject newUndefinedMsg = new JSONObject();
+					JSONObject onEventMSG = new JSONObject();
+					JSONObject newUndefinedJSON = new JSONObject();
 					try {
-						newUndefinedMsg
-								.put("id", newItEvent.getSourceItemUID());
-						newUndefinedMsg.put("capabilities",
-								getItemCapabilities(newItEvent
-										.getSourceItemUID()));
+						newUndefinedJSON.put("id", newItEvent.getSourceItemUID());
+						newUndefinedJSON.put("capabilities",getItemCapabilities(newItEvent.getSourceItemUID()));
+						onEventMSG.put("newUndefinedSensor", newUndefinedJSON);
+						onEventMSG.put("TARGET", UbikitAdapter.CONFIG_TARGET);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
-					sendToClientService.send("newUndefinedSensor",
-							newUndefinedMsg);
+					sendToClientService.send(onEventMSG.toString());
 
 				} else if (cs == CapabilitySelection.MULTIPLE) {
 					logger.error("Multiple capabality not supported yet for "
@@ -470,17 +469,17 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 					+ unsupportedItEvent.getPemUID() + ", type"
 					+ unsupportedItEvent.getItemType());
 
+			JSONObject onEventMSG = new JSONObject();
 			JSONObject newUnsupportedMsg = new JSONObject();
 			try {
-				newUnsupportedMsg.put("id",
-						unsupportedItEvent.getSourceItemUID());
-				newUnsupportedMsg.put("capabilities",
-						getItemCapabilities(unsupportedItEvent
-								.getSourceItemUID()));
+				newUnsupportedMsg.put("id", unsupportedItEvent.getSourceItemUID());
+				newUnsupportedMsg.put("capabilities", getItemCapabilities(unsupportedItEvent.getSourceItemUID()));
+				onEventMSG.put("newUnsupportedSensor", newUnsupportedMsg);
+				onEventMSG.put("TARGET", UbikitAdapter.CONFIG_TARGET);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			sendToClientService.send("newUnsupportedSensor", newUnsupportedMsg);
+			sendToClientService.send(onEventMSG.toString());
 
 		}
 
@@ -531,20 +530,22 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			properties.put("deviceType", ep.name());
 
 			Instance createInstance = impl.createInstance(null, properties);
-			sidToInstanceName
-					.put(addItEvent.getSourceItemUID(), createInstance);
+			sidToInstanceName.put(addItEvent.getSourceItemUID(), createInstance);
 
 			// Notify configuration UI
+			JSONObject onEventMSG = new JSONObject();
 			JSONObject jsonObj = new JSONObject();
 			try {
 				jsonObj.put("id", addItEvent.getSourceItemUID());
 				jsonObj.put("type", addItEvent.getItemType().name());
 				jsonObj.put("deviceType", ep.name());
 				jsonObj.put("paired", properties.get("isPaired"));
+				onEventMSG.put("newObject", jsonObj);
+				onEventMSG.put("TARGET", UbikitAdapter.CONFIG_TARGET);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			sendToClientService.send("newObject", jsonObj);
+			sendToClientService.send(onEventMSG.toString());
 		}
 
 		/**
@@ -559,6 +560,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 					+ addFailedEvent.getSourceItemUID() + " Error Code = "
 					+ addFailedEvent.getErrorCode() + ", Reason = "
 					+ addFailedEvent.getReason());
+			JSONObject onEventMSG = new JSONObject();
 			JSONObject pairingFailedMsg = new JSONObject();
 			try {
 				pairingFailedMsg.put("id", addFailedEvent.getSourceItemUID());
@@ -566,10 +568,12 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 						getItemCapabilities(addFailedEvent.getSourceItemUID()));
 				pairingFailedMsg.put("code", addFailedEvent.getErrorCode());
 				pairingFailedMsg.put("reason", addFailedEvent.getReason());
+				onEventMSG.put("pairingFailed", pairingFailedMsg);
+				onEventMSG.put("TARGET", UbikitAdapter.CONFIG_TARGET);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			sendToClientService.send("pairingFailed", pairingFailedMsg);
+			sendToClientService.send(onEventMSG.toString());
 		}
 	}
 
@@ -735,7 +739,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * Send all paired actuators and all existing actuator profiles
 	 */
 	public void getConfDevices(int clientId) {
-		JSONObject actuatorsJSON = new JSONObject();
+		JSONObject enoceanConfJSON = new JSONObject();
 		JSONObject resp = new JSONObject();
 		// JSONArray actuatorsProfiles = new JSONArray();
 
@@ -743,18 +747,19 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 
 		try {
 			//actuatorsJSON.put("actuatorProfiles", EnOceanProfiles.getActuatorProfiles());
-			actuatorsJSON.put("enoceanDevices", getAllItem());
+			enoceanConfJSON.put("enoceanDevices", getAllItem());
+			//TODO Get the real EnOcean PEM pairing state
 			setPairingMode(false);
-			actuatorsJSON.put("pairingMode", false);
+			enoceanConfJSON.put("pairingMode", false);
 			PhysicalEnvironmentModelInformations pemi = enoceanBridge.getInformations();
 			//TODO Get serial information from pemi string
 			
 			resp.put("TARGET", UbikitAdapter.CONFIG_TARGET);
-			resp.put("confDevices", actuatorsJSON);
+			resp.put("confDevices", enoceanConfJSON);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		logger.debug(actuatorsJSON.toString());
+		logger.debug(enoceanConfJSON.toString());
 		sendToClientService.send(clientId, resp.toString());
 	}
 
