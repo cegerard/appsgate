@@ -15,6 +15,8 @@
 		<definition name="pictureId" type="string" field="pictureId"/>
 		<definition name="userType" type="string" default="undefined" field="userType"/>
 		<definition name="status" type="string" default="1" field="status" method="statusChanged"/>
+		<definition name="signal"		 type="string" default="0" 		  	  field="signal" 		method="signalChanged"/>
+
 	</implementation>
 
 </apam>

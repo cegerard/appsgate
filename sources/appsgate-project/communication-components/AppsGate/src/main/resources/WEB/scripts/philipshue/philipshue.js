@@ -271,7 +271,7 @@ define([], function () {
 			
 		}
 		
-		this.notificationHandler = function(message) {
+		this.notificationHandler = function notificationHandler (message) {
 			var active_page = document.getElementById("philips-hue-light-sections");
 			var currentDomObject;
 			var varName = message.varName;

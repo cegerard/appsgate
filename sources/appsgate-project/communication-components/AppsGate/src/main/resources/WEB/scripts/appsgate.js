@@ -1,10 +1,25 @@
 var appsgateMain;
+var appsgateVersion = '0.4.1';
 
-require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
+require.config({
+    paths: {
+        'jQuery': 'vendor/jquery-2.1.0.min',
+    },
+    shim: {
+        'jQuery': {
+            exports: '$'
+        }
+    }
+});
+
+require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef, $){
 //Require begin
 
 	appsgateMain = new (function () {
 	
+		console.log('AppsGate configuration GUI version:', appsgateVersion); 
+		console.log('jQuery version:', $.fn.jquery); // 2.1.0
+		
 		var websocket = new websocketRef();
         var clockModule = new clockModuleRef();
         var handlerMap = {};
@@ -66,6 +81,24 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 			this.sendCmd("{\"getHUEConfDevices\":{}, \"CONFIGURATION\":\"getHUEConfDevices\", \"TARGET\":\"PHILIPSHUE\"}");
 		}
 		
+		/**
+		 * Get to the EnOcean configuration sub menu
+	 	 */
+		this.goToEnOceanSubMenu = function ()
+		{
+			//Get the html source for Philips HUE
+			var httpRequest=new XMLHttpRequest();
+			httpRequest.open("GET","./html/enocean/enocean.html",false);
+			httpRequest.send();
+			
+			this.gotToNextSubMenu("EnOcean", httpRequest.responseText, "");
+			
+			this.sendCmd("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\", \"TARGET\":\"ENOCEAN\"}");
+		}
+		
+		/**
+		 * Go to the newt sub menu generic method.
+		 */
 		this.gotToNextSubMenu = function(name, html, goBackHandler) 
 		{
 			//hide the top panorama div
@@ -135,7 +168,7 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
    					currentCount++;
    					hue_tile_light_count.innerHTML = currentCount;
    				}
-
+   				//TODO transmit the notification the notification handler of the correspondig technology
 			} else {
 			
 				if (message.varName == "ClockSet"){

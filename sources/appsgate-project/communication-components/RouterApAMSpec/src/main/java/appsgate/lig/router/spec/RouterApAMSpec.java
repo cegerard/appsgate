@@ -3,6 +3,7 @@ package appsgate.lig.router.spec;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Specification of the router that offer services about
@@ -38,4 +39,11 @@ public interface RouterApAMSpec {
 	 * Get all the devices description as JSONArray
 	 */
 	public JSONArray getDevices();
+	
+	/**
+	 * Get the device description
+	 * @param objectId the object identifier
+	 * @return the object information as a JSONObject
+	 */
+	public JSONObject getDevice(String objectId);
 }

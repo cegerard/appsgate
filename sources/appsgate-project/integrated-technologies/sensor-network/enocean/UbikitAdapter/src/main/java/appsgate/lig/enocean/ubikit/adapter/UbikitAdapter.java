@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ubikit.PhysicalEnvironmentItem;
 import org.ubikit.PhysicalEnvironmentItem.Type;
+import org.ubikit.PhysicalEnvironmentModelInformations;
 import org.ubikit.PhysicalEnvironmentModelObserver;
 import org.ubikit.event.impl.EventGateImpl;
 import org.ubikit.pem.event.AddItemEvent;
@@ -273,7 +274,11 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 						inst.setProperty("switchState", "true");
 					}
 				}
-
+				
+				splited = split1.split("\\(");
+				String signalDBM = splited[1];
+				signalDBM = signalDBM.substring(0, 3);
+				inst.setProperty("signal", signalDBM);
 			}
 		}
 	}
@@ -687,12 +692,16 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 */
 	public void pairingModeChanged(boolean mode) {
 		JSONObject pairingState = new JSONObject();
+		JSONObject enoceanMsg = new JSONObject();
 		try {
 			pairingState.put("pairingMode", mode);
+			enoceanMsg.put("pairingModeChanged", pairingState);
+			enoceanMsg.put("TARGET", UbikitAdapter.CONFIG_TARGET);
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		sendToClientService.send("pairingModeChanged", pairingState);
+		sendToClientService.send(enoceanMsg.toString());
 	}
 
 	// /**
@@ -713,7 +722,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	// JSONObject error = new JSONObject();
 	// try {
 	// error.put("code", "0001");
-	// error.put("deescription",
+	// error.put("description",
 	// "No ubikit<>appsgate actuator profile found !");
 	// } catch (JSONException e) {
 	// e.printStackTrace();
@@ -725,21 +734,28 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	/**
 	 * Send all paired actuators and all existing actuator profiles
 	 */
-	public void getActuator(int clientId) {
+	public void getConfDevices(int clientId) {
 		JSONObject actuatorsJSON = new JSONObject();
+		JSONObject resp = new JSONObject();
 		// JSONArray actuatorsProfiles = new JSONArray();
 
 		// actuatorsProfiles.put(EnOceanProfiles.getActuatorProfiles());
 
 		try {
-			actuatorsJSON.put("actuatorProfiles",
-					EnOceanProfiles.getActuatorProfiles());
+			//actuatorsJSON.put("actuatorProfiles", EnOceanProfiles.getActuatorProfiles());
 			actuatorsJSON.put("enoceanDevices", getAllItem());
+			setPairingMode(false);
+			actuatorsJSON.put("pairingMode", false);
+			PhysicalEnvironmentModelInformations pemi = enoceanBridge.getInformations();
+			//TODO Get serial information from pemi string
+			
+			resp.put("TARGET", UbikitAdapter.CONFIG_TARGET);
+			resp.put("confDevices", actuatorsJSON);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		logger.debug(actuatorsJSON.toString());
-		sendToClientService.send(clientId, "confDevices", actuatorsJSON);
+		sendToClientService.send(clientId, resp.toString());
 	}
 
 	/**

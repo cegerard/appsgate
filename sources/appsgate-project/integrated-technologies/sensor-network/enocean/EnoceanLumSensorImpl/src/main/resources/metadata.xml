@@ -17,6 +17,8 @@
 		<definition name="status" 			   type="string" default="2" 			  field="status" 			  method="statusChanged"/>
 		<definition name="isPaired" 		   type="string" default="false" 		  field="isPaired" 			  method="isPairedChanged"/>
 		<definition name="currentIllumination" type="string" default="9999" 		  field="currentIllumination" method="currentIlluminationChanged"/>
+		<definition name="signal"		 type="string" default="0" 		  	  field="signal" 		method="signalChanged"/>
+		
 	
 	</implementation>
 

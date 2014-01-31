@@ -163,6 +163,11 @@ public class Appsgate implements AppsGateSpec {
 	public JSONArray getDevices() {
 		return router.getDevices();
 	}
+	
+	@Override
+	public JSONObject getDevice(String deviceId) {
+		return router.getDevice(deviceId);
+	}
 
 	@Override
 	public void setUserObjectName(String objectId, String user, String name) {

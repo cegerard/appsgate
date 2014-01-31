@@ -49,6 +49,11 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 	private String isPaired;
 	
 	/**
+	 * Hold the last signal strength in DBM
+	 */
+	private String signal;
+	
+	/**
 	 * the switch number
 	 */
 	private String switchNumber;
@@ -125,6 +130,10 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 	public void setPaired(boolean isPaired) {
 		this.isPaired = String.valueOf(isPaired);
 	}
+	
+	public String getSignal() {
+		return signal;
+	}
 
 	public String getSensorId() {
 		return sensorId;
@@ -177,6 +186,15 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 	
 	public void isPairedChanged(String newPairedState){
 		logger.info("New Paired status, "+newPairedState);
+	}
+	
+	/**
+	 * Called by ApAM when the signal strength changed
+	 * @param newSignalValue the new singal value
+	 */
+	public void signalChanged(String newSignalValue) {
+		logger.info(newSignalValue+" dbm signal strength for "+sensorId);
+		notifyChanges("signal", newSignalValue);
 	}
 	
 //	/**
