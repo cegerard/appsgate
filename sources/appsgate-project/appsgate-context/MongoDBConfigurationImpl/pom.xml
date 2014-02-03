@@ -43,6 +43,10 @@
 	</build>
 
 	<dependencies>
-
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>${mongo-api-version}</version>
+        </dependency>
 	</dependencies>
 </project>
