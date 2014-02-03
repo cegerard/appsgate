@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
-        StartEventListener, EndEventGenerator, EndEventListener, SpokObject{
+        StartEventListener, EndEventGenerator, EndEventListener, SpokObject {
 
     /**
      * Logger
@@ -89,8 +89,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     /**
      * Stop the interpretation of the node. Check if the node is not started
-     *
-     * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokException
      */
     public void stop() {
         if (isStarted()) {
@@ -106,11 +104,9 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     /**
      * This method is called by the stop method
-     *
-     * @throws SpokException
      */
     abstract protected void specificStop();
-    
+
     @Override
     abstract public JSONObject call();
 
@@ -248,7 +244,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param jsonObj
      * @param jsonParam
      * @return the string corresponding to the jsonParam
-     * @throws SpokNodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON
+     * Object
      */
     protected String getJSONString(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
@@ -264,7 +261,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param jsonObj
      * @param jsonParam
      * @return the array corresponding to the jsonParam
-     * @throws SpokNodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON
+     * Object
      */
     protected JSONArray getJSONArray(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
@@ -281,7 +279,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param jsonObj
      * @param jsonParam
      * @return the object corresponding to the jsonParam
-     * @throws SpokNodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON
+     * Object
      */
     protected JSONObject getJSONObject(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
@@ -393,8 +392,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     abstract protected Node copy(Node parent);
 
     /**
-     * Method that return the value associated to a node
-     * Must be overridden
+     * Method that return the value associated to a node Must be overridden
      *
      * @return null by default
      * @throws SpokException
@@ -404,15 +402,15 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     }
 
     /**
-     * Method that find a node of a given class in a tree
-     * This method is recursive
-     * 
+     * Method that find a node of a given class in a tree This method is
+     * recursive
+     *
      * @param aClass the class of the node to find
      * @param parent the parent node to explore
      * @return the node when it is found and null if it is not found
      */
     protected Node findNode(Class aClass, Node parent) {
-        if(parent == null) {
+        if (parent == null) {
             return null;
         }
         if (parent.getClass() == aClass) {
@@ -422,13 +420,14 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     }
 
     /**
-     * Method that add a variable in the Symbol Table and creates it if it does not exist
-     * 
+     * Method that add a variable in the Symbol Table and creates it if it does
+     * not exist
+     *
      * @param name the name of the variable
      * @param v the variable to assign
      */
     protected void setVariable(String name, SpokVariable v) {
-        if(symbolTable == null) {
+        if (symbolTable == null) {
             symbolTable = new SymbolTable();
         }
         symbolTable.addVariable(name, v);
@@ -438,9 +437,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     public String getType() {
         return this.getClass().getSimpleName();
     }
+
     @Override
     public String getValue() {
         return null;
     }
-    
+
 }
