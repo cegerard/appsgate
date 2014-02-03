@@ -48,6 +48,11 @@ public class EnoceanUndefinedSensorImpl implements CoreUndefinedSensorSpec, Core
 	 * The type for end suer
 	 */
 	private String userType;
+	
+	/**
+	 * Hold the last signal strength in DBM
+	 */
+	private String signal;
 
 	/**
 	 * The current sensor status.
@@ -90,6 +95,10 @@ public class EnoceanUndefinedSensorImpl implements CoreUndefinedSensorSpec, Core
 	public String getSensoreType() {
 		return sensoreType;
 	}
+	
+	public String getSignal() {
+		return signal;
+	}
 
 	@Override
 	public String getUserType() {
@@ -114,6 +123,7 @@ public class EnoceanUndefinedSensorImpl implements CoreUndefinedSensorSpec, Core
 		descr.put("type", userType); //-1 for undefined sensor
 		descr.put("locationId", "no where");
 		descr.put("status", status);
+		descr.put("deviceType", sensoreType);
 		
 		return descr;
 	}
@@ -144,6 +154,14 @@ public class EnoceanUndefinedSensorImpl implements CoreUndefinedSensorSpec, Core
 	 */
 	public void statusChanged(String newStatus) {
 		logger.info("The sensor, "+ sensorId+" / "+ sensorName +" status changed to "+newStatus);
+	}
+	
+	/**
+	 * Called by ApAM when the signal strength changed
+	 * @param newSignalValue the new singal value
+	 */
+	public void signalChanged(String newSignalValue) {
+		logger.info(newSignalValue+" dbm signal strength for "+sensorId);
 	}
 
 	@Override

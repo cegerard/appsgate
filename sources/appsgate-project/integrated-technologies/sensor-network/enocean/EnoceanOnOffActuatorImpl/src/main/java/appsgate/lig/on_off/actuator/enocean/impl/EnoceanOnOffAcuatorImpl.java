@@ -46,6 +46,11 @@ public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 	 * True if the device is paired with EnOcean proxy false otherwise
 	 */
 	private String isPaired;
+	
+	/**
+	 * Hold the last signal strength in DBM
+	 */
+	private String signal;
 
 	/**
 	 * The current virtual actuator state
@@ -93,6 +98,10 @@ public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 		this.isPaired = String.valueOf(isPaired);
 	}
 
+	public String getSignal() {
+		return signal;
+	}
+	
 	public String getActuatorId() {
 		return actuatorId;
 	}
@@ -133,6 +142,7 @@ public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 		descr.put("type", userType); //8 for On_Off device
 		descr.put("status", status);
 		descr.put("isOn", isOn);
+		descr.put("deviceType", actuatorType);
 		
 		return descr;
 	}
@@ -159,6 +169,15 @@ public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 	
 	public void isPairedChanged(String newPairedState){
 		logger.info("New Paired status, "+newPairedState+", for "+actuatorId);
+	}
+	
+	/**
+	 * Called by ApAM when the signal strength changed
+	 * @param newSignalValue the new singal value
+	 */
+	public void signalChanged(String newSignalValue) {
+		logger.info(newSignalValue+" dbm signal strength for "+actuatorId);
+		notifyChanges("signal", newSignalValue);
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-define(['philipshue/philipshue'], function (hueRef) {
+define(['philipshue/philipshue', 'enocean/enocean'], function (hueRef, enoceanRef) {
 //define begin
     var returnedModule = function () {
     
@@ -8,10 +8,13 @@ define(['philipshue/philipshue'], function (hueRef) {
         var philipshue = new hueRef();
         this.getHue = function () {return philipshue;}
         
+        var enocean = new enoceanRef();
+        this.getEnocean = function () {return enocean;}
+        
 		var ws;
 		var DEFAULT_SERVER_PORT = 8087;
 
-		/** Open a web socket connexion to the AppsGate server*/
+		/** Open a web socket connection to the AppsGate server*/
 		this.WebSocketOpen = function WebSocketOpen() 
 		{
   			if ("WebSocket" in window)
@@ -37,10 +40,19 @@ define(['philipshue/philipshue'], function (hueRef) {
 						
 						if(jsonMess.TARGET == "PHILIPSHUE"){
 							philipshue.messageHandler(jsonMess);
+						}else if(jsonMess.TARGET == "ENOCEAN"){
+							enocean.messageHandler(jsonMess);
 						}
 						
 					}else if(jsonMess.hasOwnProperty("callId")){
-						appsgateMain.returnCallHandler(jsonMess.callId, jsonMess);
+						callId = jsonMess.callId;
+						if(callId.indexOf("enocean-conf-target") != -1){
+							enocean.messageHandler(jsonMess);
+						}else if(callId.indexOf("philipshue-conf-target") != -1) {
+							philipshue.messageHandler(jsonMess);
+						}else {
+							appsgateMain.returnCallHandler(jsonMess.callId, jsonMess);
+						}
 					}else { //It is a notification
 						appsgateMain.notificationHandler(jsonMess);
 					}

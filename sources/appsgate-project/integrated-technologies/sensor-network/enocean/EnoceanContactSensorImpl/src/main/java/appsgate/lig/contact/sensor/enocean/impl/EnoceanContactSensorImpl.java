@@ -50,6 +50,11 @@ public class EnoceanContactSensorImpl implements CoreContactSensorSpec, CoreObje
 	private String isPaired;
 	
 	/**
+	 * Hold the last signal strength in DBM
+	 */
+	private String signal;
+	
+	/**
 	 * The current status = the last value received from this sensor
 	 */
 	private String currentStatus;
@@ -99,6 +104,10 @@ public class EnoceanContactSensorImpl implements CoreContactSensorSpec, CoreObje
 	public void setPaired(boolean isPaired) {
 		this.isPaired = String.valueOf(isPaired);
 	}
+	
+	public String getSignal() {
+		return signal;
+	}
 
 	public String getSensorId() {
 		return sensorId;
@@ -142,6 +151,7 @@ public class EnoceanContactSensorImpl implements CoreContactSensorSpec, CoreObje
 		descr.put("type", userType); //3 for contact sensor
 		descr.put("status", status);
 		descr.put("contact", currentStatus);
+		descr.put("deviceType", sensoreType);
 		
 		return descr;
 	}
@@ -160,8 +170,17 @@ public class EnoceanContactSensorImpl implements CoreContactSensorSpec, CoreObje
 		logger.info("Contact sensor desapeared, "+sensorId);
 	}
 	
-	public void isPairedChanged(String newPairedState){
+	public void isPairedChanged(String newPairedState) {
 		logger.info("New Paired status, "+newPairedState+", for "+sensorId);
+	}
+	
+	/**
+	 * Called by ApAM when the signal strength changed
+	 * @param newSignalValue the new singal value
+	 */
+	public void signalChanged(String newSignalValue) {
+		logger.info(newSignalValue+" dbm signal strength for "+sensorId);
+		notifyChanges("signal", newSignalValue);
 	}
 	
 	/**

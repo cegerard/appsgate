@@ -26,19 +26,19 @@ public interface CoreSwitchSensorSpec {
 		byte switchNumber;
 		
 		/**
-		 * The state of the button On/Off = Up/Down
+		 * The state of the button On/Off = Up/Down - none = neutral position
 		 */
-		boolean isOn;
+		String state;
 
 		/**
 		 * Constructor for an action object
 		 * @param switchNumber the number of the pressed button
-		 * @param isOn the button state
+		 * @param state the button state
 		 */
-		public Action(byte switchNumber, boolean isOn) {
+		public Action(byte switchNumber, String state) {
 			super();
 			this.switchNumber = switchNumber;
-			this.isOn = isOn;
+			this.state = state;
 		}
 	}
 	

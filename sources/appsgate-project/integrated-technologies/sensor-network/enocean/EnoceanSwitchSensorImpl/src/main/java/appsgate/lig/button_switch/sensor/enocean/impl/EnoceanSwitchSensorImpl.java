@@ -49,12 +49,17 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 	private String isPaired;
 	
 	/**
+	 * Hold the last signal strength in DBM
+	 */
+	private String signal;
+	
+	/**
 	 * the switch number
 	 */
 	private String switchNumber;
 	
 	/**
-	 * the button last status (On=true / Off=false)
+	 * the button last status (On=true / Off=false / neutral="none")
 	 */
 	private String buttonStatus;
 	
@@ -94,12 +99,15 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 		descr.put("id", sensorId);
 		descr.put("type", userType); //2 for switch sensor
 		descr.put("status", status);
+		descr.put("deviceType", sensoreType);
 		descr.put("switchNumber", switchNumber);
-		boolean stateBtn = Boolean.valueOf(buttonStatus);
-		if(stateBtn){
+
+		if(buttonStatus.contentEquals("true")){
 			descr.put("buttonStatus", 1);
-		} else {
+		} else if(buttonStatus.contentEquals("false")){
 			descr.put("buttonStatus", 0);
+		}else {
+			descr.put("buttonStatus", -1);
 		}
 		return descr;
 	}
@@ -107,7 +115,7 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 	@Override
 	public Action getLastAction() {
 		Integer switchButton = new Integer(switchNumber);
-		return new Action(switchButton.byteValue(), Boolean.valueOf(buttonStatus));
+		return new Action(switchButton.byteValue(), buttonStatus);
 	}
 	
 	public String getSensorName() {
@@ -124,6 +132,10 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 
 	public void setPaired(boolean isPaired) {
 		this.isPaired = String.valueOf(isPaired);
+	}
+	
+	public String getSignal() {
+		return signal;
 	}
 
 	public String getSensorId() {
@@ -179,23 +191,14 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 		logger.info("New Paired status, "+newPairedState);
 	}
 	
-//	/**
-//	 * Called by APAM when a new switch is pressed.
-//	 * @param newSwitchNumber the new switch number
-//	 */
-//	public void switchNumberChanged(String newSwitchNumber) {
-//		logger.info("New switch value from "+sensorId+"/"+sensorName+", "+newSwitchNumber);
-//		notifyChanges("switchNumber", newSwitchNumber);
-//	}
-//	
-//	/**
-//	 *  Called by APAM when a switch status changed.
-//	 * @param status the new status
-//	 */
-//	public void buttonStatusChanged(String status) {
-//		logger.info("New switch value from "+sensorId+"/"+sensorName+", "+status);
-//		notifyChanges("buttonStatus", status);
-//	}
+	/**
+	 * Called by ApAM when the signal strength changed
+	 * @param newSignalValue the new signal value
+	 */
+	public void signalChanged(String newSignalValue) {
+		logger.info(newSignalValue+" dbm signal strength for "+sensorId);
+		notifyChanges("signal", newSignalValue);
+	}
 	
 	/**
 	 *  Called by APAM when a switch state changed.
@@ -230,7 +233,7 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new SwitchNotificationMsg(new Integer(switchNumber), Boolean.valueOf(buttonStatus), varName, value, this);
+		return new SwitchNotificationMsg(new Integer(switchNumber), buttonStatus, varName, value, this);
 	}
 
 }

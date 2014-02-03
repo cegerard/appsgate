@@ -47,6 +47,11 @@ public class EnoceanTemperatureSensorImpl implements CoreObjectSpec, CoreTempera
 	 * True if the device is paired with EnOcean proxy false otherwise
 	 */
 	private String isPaired;
+	
+	/**
+	 * Hold the last signal strength in DBM
+	 */
+	private String signal;
 
 	/**
 	 * The current temperature = the last value received from this sensor
@@ -103,6 +108,10 @@ public class EnoceanTemperatureSensorImpl implements CoreObjectSpec, CoreTempera
 	public void setPaired(boolean isPaired) {
 		this.isPaired = String.valueOf(isPaired);
 	}
+	
+	public String getSignal() {
+		return signal;
+	}
 
 	public String getSensorId() {
 		return sensorId;
@@ -150,6 +159,7 @@ public class EnoceanTemperatureSensorImpl implements CoreObjectSpec, CoreTempera
 		descr.put("type", userType); //O for temperature sensor
 		descr.put("status", status);
 		descr.put("value", currentTemperature);
+		descr.put("deviceType", sensorType);
 		
 		return descr;
 	}
@@ -170,6 +180,15 @@ public class EnoceanTemperatureSensorImpl implements CoreObjectSpec, CoreTempera
 	
 	public void isPairedChanged(String newPairedState){
 		logger.info("New Paired status, "+newPairedState+", for "+sensorId);
+	}
+	
+	/**
+	 * Called by ApAM when the signal strength changed
+	 * @param newSignalValue the new singal value
+	 */
+	public void signalChanged(String newSignalValue) {
+		logger.info(newSignalValue+" dbm signal strength for "+sensorId);
+		notifyChanges("signal", newSignalValue);
 	}
 	
 	/**

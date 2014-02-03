@@ -1,10 +1,25 @@
 var appsgateMain;
+var appsgateConfGUIVersion = '0.4.1';
 
-require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
+require.config({
+    paths: {
+        'jQuery': 'vendor/jquery-2.1.0.min',
+    },
+    shim: {
+        'jQuery': {
+            exports: '$'
+        }
+    }
+});
+
+require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef, $){
 //Require begin
 
 	appsgateMain = new (function () {
 	
+		console.log('AppsGate configuration GUI version:', appsgateConfGUIVersion); 
+		console.log('jQuery version:', $.fn.jquery); // 2.1.0
+		
 		var websocket = new websocketRef();
         var clockModule = new clockModuleRef();
         var handlerMap = {};
@@ -49,6 +64,7 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 				navBar.removeChild( navBar.firstChild);
 			}
 			navBar.appendChild(homeLi);
+			this.clearNotifHandler();
 		}
 
 		/**
@@ -66,6 +82,24 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 			this.sendCmd("{\"getHUEConfDevices\":{}, \"CONFIGURATION\":\"getHUEConfDevices\", \"TARGET\":\"PHILIPSHUE\"}");
 		}
 		
+		/**
+		 * Get to the EnOcean configuration sub menu
+	 	 */
+		this.goToEnOceanSubMenu = function ()
+		{
+			//Get the html source for Philips HUE
+			var httpRequest=new XMLHttpRequest();
+			httpRequest.open("GET","./html/enocean/enocean.html",false);
+			httpRequest.send();
+			
+			this.gotToNextSubMenu("EnOcean", httpRequest.responseText, "");
+			
+			this.sendCmd("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\", \"TARGET\":\"ENOCEAN\"}");
+		}
+		
+		/**
+		 * Go to the newt sub menu generic method.
+		 */
 		this.gotToNextSubMenu = function(name, html, goBackHandler) 
 		{
 			//hide the top panorama div
@@ -128,14 +162,24 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 			if(message.hasOwnProperty("newDevice")) {
 				var newDevice = message.newDevice;
 				
-				//Tiles update
-   				if (newDevice.deviceType == "PHILIPS_HUE_LIGHT") {
-   					var hue_tile_light_count = document.getElementById("philips-index-tile-count");
-   					var currentCount = hue_tile_light_count.innerHTML.valueOf();
-   					currentCount++;
-   					hue_tile_light_count.innerHTML = currentCount;
-   				}
-
+				if(newDevice.hasOwnProperty("deviceType")) {
+					//Tiles update
+					if (newDevice.deviceType == "PHILIPS_HUE_LIGHT") {
+						var hue_tile_light_count = document.getElementById("philips-index-tile-count");
+						var currentCount = hue_tile_light_count.innerHTML.valueOf();
+						currentCount++;
+						hue_tile_light_count.innerHTML = currentCount;
+						//Not use cause we ask the PhilipsHUE adapter directly
+						//this.getWebSocket().getHue().notificationHandler(message);
+					} else if (newDevice.deviceType.indexOf("EEP") != -1 || newDevice.deviceType == "EnOcean_DEVICE") {
+						var currentCount = $("#enocean-index-tile-count").html();
+						currentCount++;
+						$("#enocean-index-tile-count").html(currentCount);
+						//Use cause we catch ApAM EnOcean core device instantiation instance 
+						this.getWebSocket().getEnocean().notificationHandler(message);
+   					}
+				}
+   				
 			} else {
 			
 				if (message.varName == "ClockSet"){
@@ -186,11 +230,17 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 						clockModule.setSystemClockFlowRate(obj.flowRate);
        				}
        				
+       				
        				//Tile initialization
-       				if (obj.deviceType == "PHILIPS_HUE_LIGHT") {
-       					PhilipsLightCount++;
-       					var hue_tile_light_count = document.getElementById("philips-index-tile-count");
-       					hue_tile_light_count.innerHTML = PhilipsLightCount;
+       				if(obj.hasOwnProperty("deviceType")) {
+       					if (obj.deviceType == "PHILIPS_HUE_LIGHT") {
+       						PhilipsLightCount++;
+       						var hue_tile_light_count = $("#philips-index-tile-count").html(PhilipsLightCount);
+       					
+       					} else if (obj.deviceType.indexOf("EEP") != -1 || obj.deviceType == "EnOcean_DEVICE") {
+       						PhilipsLightCount++;
+       						$("#enocean-index-tile-count").html(PhilipsLightCount);
+       					}
        				}
        			}
     		}
@@ -208,6 +258,13 @@ require(['websocket', 'clock'], function(websocketRef, clockModuleRef){
 		 */
 		this.removeNotifHandler = function (objectId) {
 			delete handlerMap[objectId];
+		}
+		
+		/**
+		 * Clear the notification map handler
+		 */
+		this.clearNotifHandler = function (objectId) {
+			handlerMap = {};
 		}
 		
 		/**

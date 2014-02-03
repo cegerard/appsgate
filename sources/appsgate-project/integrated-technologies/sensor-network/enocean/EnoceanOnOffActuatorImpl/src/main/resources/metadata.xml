@@ -21,6 +21,7 @@
 		
 		<!-- Sensor network meta data -->
 		<definition name="isPaired" 		  type="string" default="false" 		   field="isPaired" method="isPairedChanged"/>
+		<definition name="signal"		 type="string" default="0" 		  	  field="signal" 		method="signalChanged"/>
 		
 		<!-- device specific meta data -->
 		<definition name="isOn" 			  type="string" 			 		   field="isOn" 	method="isOnChanged"/>

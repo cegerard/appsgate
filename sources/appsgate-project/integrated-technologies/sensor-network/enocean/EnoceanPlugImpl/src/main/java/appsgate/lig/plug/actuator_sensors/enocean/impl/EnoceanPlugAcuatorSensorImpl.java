@@ -28,7 +28,10 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 	private String userType;
 	private String status;
 	private String isPaired;
-	
+	/**
+	 * Hold the last signal strength in DBM
+	 */
+	private String signal;
 	private String plugState;
 	
 	private String consumption;  //In Watt
@@ -70,6 +73,15 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 	 */
 	public void isPairedChanged(String newPairedState){
 		logger.info("New Paired status, "+newPairedState+", for "+sensorId);
+	}
+	
+	/**
+	 * Called by ApAM when the signal strength changed
+	 * @param newSignalValue the new singal value
+	 */
+	public void signalChanged(String newSignalValue) {
+		logger.info(newSignalValue+" dbm signal strength for "+sensorId);
+		notifyChanges("signal", newSignalValue);
 	}
 	
 	/**
@@ -220,6 +232,7 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 		descr.put("plugState", plugState);
 		descr.put("consumption", consumption);
 		descr.put("activeEnergy", activeEnergy);
+		descr.put("deviceType", sensoreType);
 		
 		return descr;
 	}
@@ -235,6 +248,10 @@ public class EnoceanPlugAcuatorSensorImpl implements CoreObjectSpec, CoreSmartPl
 
 	public void setPaired(boolean isPaired) {
 		this.isPaired = String.valueOf(isPaired);
+	}
+	
+	public String getSignal() {
+		return signal;
 	}
 	
 	public String getSensoreType() {

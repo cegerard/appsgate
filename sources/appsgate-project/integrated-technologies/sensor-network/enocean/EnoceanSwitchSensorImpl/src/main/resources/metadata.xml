@@ -21,12 +21,13 @@
 		
 		<!-- Sensor network meta data -->
 		<definition name="isPaired" 	type="string" default="false" 		 field="isPaired" 	  method="isPairedChanged"/>
+		<definition name="signal"		 type="string" default="0" 		  	  field="signal" 	  method="signalChanged"/>
 		
 		<!-- device specific meta data -->
 		<definition name="switchState"  type="string" default="false" 		 field="switchState"  method="switchChanged"/>
 		
 		<definition name="switchNumber" type="string" default="-1" 			 field="switchNumber"/>
-		<definition name="buttonStatus" type="string" default="false" 		 field="buttonStatus"/>
+		<definition name="buttonStatus" type="string" default="none" 		 field="buttonStatus"/>
 		
 	</implementation>
 
