@@ -84,6 +84,7 @@ public class EnoceanKeyCardSensorImpl implements CoreKeyCardSensorSpec, CoreObje
 		descr.put("type", userType); //4 for keyCard sensor
 		descr.put("status", status);
 		descr.put("inserted", currentStatus);
+		descr.put("deviceType", sensoreType);
 		
 		return descr;
 	}

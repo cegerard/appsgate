@@ -15,7 +15,7 @@
 	<description>This sub-project contain all components related to the context management</description>
 
 	<!-- Dependencies Description -->
-    <dependencies>
+	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -31,7 +31,7 @@
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>${ipojo.annotations.version}</version>
 		</dependency>
-    </dependencies>
+	</dependencies>
 
 	<modules>
 		<module>PlaceManager</module>
@@ -40,9 +40,12 @@
 		<module>ContextFollowerSpec</module>
 		<module>DeviceNameTableSpec</module>
 		<module>DeviceNameTable</module>
-		<module>ContextHistoy</module>
 		<module>appsgate-enduser</module>
-		<module>PropertyHistoryManager</module>		
+		<module>ContextHistorySpec</module>
+		<module>PropertyHistoryManagerSpec</module>
+		<module>MongoDBConfigurationImpl</module>
+		<module>ContextHistoryMongoImpl</module>
+		<module>PropertyHistoryManagerMongoImpl</module>
 	</modules>
 
 </project>

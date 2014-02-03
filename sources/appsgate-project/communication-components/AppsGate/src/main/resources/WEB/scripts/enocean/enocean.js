@@ -10,14 +10,9 @@ define([], function () {
 			EnOcean configuration message handler 
 		*/
 		this.messageHandler = function messageHandler(message) {
+			
 			if (message.hasOwnProperty("newObject")){
-	       		var obj = jsonCMD.newObject;
-	       		if (obj.type == "SENSOR"){
-	       			removedUndefinedFromList(obj.id);
-	       		}else if (obj.type == "ACTUATOR") {
-	       			addActuatorToList(obj);
-	       		}	
-	       		
+				$("#undefinedDeviceTile-"+message.newObject.id).remove();
 	       	} else if(message.hasOwnProperty("pairingModeChanged")) {
 	       		var pairingState = message.pairingModeChanged;
 	       		var state = pairingState.pairingMode;
@@ -32,7 +27,7 @@ define([], function () {
 	       		}
 	       		
 	       	} else if (message.hasOwnProperty("newUndefinedSensor")){
-	       		addUndefinedToList(jsonCMD.newUndefinedSensor);
+	       		this.addUndefinedTile(message.newUndefinedSensor);
 	       		
 	       	} else if( message.hasOwnProperty("confDevices")) {
 	       		var confDeviceJSON = message.confDevices
@@ -52,92 +47,125 @@ define([], function () {
 	       		
 	       		if( message.callId == "enocean-conf-target-get-device") {
 	       			var returnedCall = JSON.parse(message.value);
-	       			
-	       			//add device tile
-	       			$( "#no-devices-detected-tag" ).remove();
-	       			$.ajax({
-	       				url : './html/enocean/enoceanDeviceTile.html',
-	       				dataType : 'html',
-	       				success : function(html_code, status){
-	       					$(html_code).appendTo("#devices-tile-list"); 
-	       				},
-	       				error : function(res, status, error){},
-	       				complete : function(res, status){
-	       					
-	       					$("#deviceTile").attr("id", $("#deviceTile").attr("id")+"-"+returnedCall.id);
-	       					
-	       					//Put data into the tile
-	    	       			$( "#enocean-id" ).html(returnedCall.id);
-	    	       			$( "#device-name" ).html(returnedCall.name);
-	    	       			if(returnedCall.status == "2") {
-	    	       				$( "#device-status" ).html("<span class=\"label-success\">Connected</span>");
-	    	       			} else {
-	    	       				$( "#device-status" ).html("<span class=\"label-warning\">Warning</span>");
-	    	       			}
-	    	       			
-	    	       			switch(returnedCall.type) {
-	    	       				case "3": //Contact Sensor
-	    	       					$( "#device-type" ).html("Contact");
-	    	       					break;
-	    	       				case "4": //KeyCard sensor
-	    	       					$( "#device-type" ).html("Key card switch");
-	    	       					break;
-	    	       				case "1": //Illumination sensor
-	    	       					$( "#device-type" ).html("illumination");
-	    	       					break;
-	    	       				case "8": //ON/Off actuator
-	    	       					$( "#device-type" ).html("On/Off actuator");
-	    	       					break;
-	    	       				case "6": //Plug sensor/actuator
-	    	       					$( "#device-type" ).html("Smart plug");
-	    	       					break;
-	    	       				case "2": //Switch sensor
-	    	       					$( "#device-type" ).html("Switch");
-	    	       					break;
-	    	       				case "0": // Temperature sensor
-	    	       					$( "#device-type" ).html("Temperature");
-	    	       					break;
-	    	       				
-	    	       				default: //undefined sensor
-	    	       					$( "#device-type" ).html("Undefined");
-	    	       					break;
-	    	       			}
-	    	       			
-	    	       			$("#device-value").html("N.A.");
-	    	       		
-	    	       			$( "#enocean-id" ).append("<span class=\"icon icon-progress-3\" id=\"icon-signal-"+
-	    	       					returnedCall.id+"\" style=\"margin-left:45px\"></span>");
-	    	       			
-	    	       			$("#device-id").attr("id", $("#device-id").attr("id")+"-"+returnedCall.id);
-	    	       			$("#device-name").attr("id", $("#device-name").attr("id")+"-"+returnedCall.id);
-	    	       			$("#device-status").attr("id", $("#device-status").attr("id")+"-"+returnedCall.id);
-	    	       			$("#device-type").attr("id", $("#device-type").attr("id")+"-"+returnedCall.id);
-	    	       			$("#device-value").attr("id", $("#device-value").attr("id")+"-"+returnedCall.id);
-	       				}
-	       			});
+	       			this.addDeviceTile(returnedCall);
 		       	}
 	       	}
 		}
 		
+		/** catch notification from EnOcean paired devices */
 		this.notificationHandler = function notificationHandler(message) {
-			//TODO handle notification from sensors
+			if (message.hasOwnProperty("newDevice")){ //New EnOcean device notification
+				this.addDeviceTile(message.newDevice);
+				
+			}else { //Device state update notification
+				appsgateMain.getWebSocket().getEnocean().updateTileStatus(message);
+			}
 		}
 
 		
 		/**  Add a tile in configure GUI for the device in parameter */
-		this.addDeviceTile = function addDeviceTile(device, device_tile_list) {
-			
+		this.addDeviceTile = function addDeviceTile(deviceData) {
+   			$( "#no-devices-detected-tag" ).remove();
+   			$.ajax({
+   				url : './html/enocean/enoceanDeviceTile.html',
+   				dataType : 'html',
+   				success : function(html_code, status){
+   					$(html_code).appendTo("#devices-tile-list"); 
+   				},
+   				error : function(res, status, error){},
+   				complete : function(res, status){
+   					
+   					$("#deviceTile").attr("id", $("#deviceTile").attr("id")+"-"+deviceData.id);
+   					
+   					//Put data into the tile
+	       			$( "#enocean-id" ).html(deviceData.id);
+	       			$( "#device-name" ).html(deviceData.name);
+	       			if(deviceData.status == "2") {
+	       				$( "#device-status" ).html("<span class=\"label-success\">Connected</span>");
+	       			} else {
+	       				$( "#device-status" ).html("<span class=\"label-warning\">Warning</span>");
+	       			}
+	       			
+	       			switch(deviceData.type) {
+	       				case "3": //Contact Sensor
+	       					$( "#device-type" ).html("Contact");
+	       					break;
+	       				case "4": //KeyCard sensor
+	       					$( "#device-type" ).html("Key card switch");
+	       					break;
+	       				case "1": //Illumination sensor
+	       					$( "#device-type" ).html("illumination");
+	       					break;
+	       				case "8": //ON/Off actuator
+	       					$( "#device-type" ).html("On/Off actuator");
+	       					break;
+	       				case "6": //Plug sensor/actuator
+	       					$( "#device-type" ).html("Smart plug");
+	       					break;
+	       				case "2": //Switch sensor
+	       					$( "#device-type" ).html("Switch");
+	       					break;
+	       				case "0": // Temperature sensor
+	       					$( "#device-type" ).html("Temperature");
+	       					break;
+	       				
+	       				default: //undefined sensor
+	       					$( "#device-type" ).html("Undefined");
+	       					break;
+	       			}
+	       		
+	       			$( "#enocean-id" ).append("<span class=\"icon icon-progress-3\" id=\"icon-signal-"+
+	       					deviceData.id+"\" style=\"margin-left:45px\"></span>");
+	       			
+	       			$("#enocean-id").attr("id", $("#enocean-id").attr("id")+"-"+deviceData.id);
+	       			$("#device-name").attr("id", $("#device-name").attr("id")+"-"+deviceData.id);
+	       			$("#device-status").attr("id", $("#device-status").attr("id")+"-"+deviceData.id);
+	       			$("#device-type").attr("id", $("#device-type").attr("id")+"-"+deviceData.id);
+	       			$("#device-value").attr("id", $("#device-value").attr("id")+"-"+deviceData.id);
+	       			
+	       			appsgateMain.getWebSocket().getEnocean().setTileStatus(deviceData);
+	       			
+	       			appsgateMain.addNotifHandler(deviceData.id, appsgateMain.getWebSocket().getEnocean().notificationHandler);
+   				}
+   			});
 		}
 		
-		/** Trigger the "type" command on the id object through AppsGate */
-		this.triggerCmd = function triggerCmd(type, id, optBridgeIp){
-			var call;
+		/** Add an undefined tile to check the device and paired it correctly */
+		this.addUndefinedTile = function (deviceData) {
+			$( "#no-undefined-devices-detected-tag" ).remove();
 			
-			if (type == "validate") {
-				call = eval({"method":"setBrightness", "args":[{"type":"long", "value":bri.value}], "objectId":id, "callId":"HUE-cf-light"});
-			}
-			
-			appsgateMain.sendJSONCmd(call);
+			$.ajax({
+   				url : './html/enocean/undefinedDeviceTile.html',
+   				dataType : 'html',
+   				success : function(html_code, status){
+   					$(html_code).appendTo("#undefined-devices-tile-list"); 
+   				},
+   				error : function(res, status, error){},
+   				complete : function(res, status){
+   					
+   					$("#undefinedDeviceTile").attr("id", $("#undefinedDeviceTile").attr("id")+"-"+deviceData.id);
+   					
+   					$( "#undefined-id" ).html(deviceData.id);
+   					
+   					//File the combo box
+   					$( "#device-profiles" ).append('<select id="profile-list-'+deviceData.id+'" name="selectProfile" size="1" style="width: 160px;"></select>');
+	       			var capabilities = deviceData.capabilities;
+	       			
+	       			for(cap in capabilities) {
+	       				$('#profile-list-'+deviceData.id).append(new Option( capabilities[cap].type, capabilities[cap].profile, true, true));
+	       			}
+   	
+   					$( "#undefined-id" ).append('<span class="icon icon-progress-3" id="icon-signal-'+deviceData.id+'" style="margin-left:45px"></span>');
+   					
+   					$("#validate-profile-button").attr("onclick", "appsgateMain.getWebSocket().getEnocean().validateProfile('"+deviceData.id+"')");
+   					
+   					$("#undefined-id").attr("id", $("#undefined-id").attr("id")+"-"+deviceData.id);
+	       			$("#device-profiles").attr("id", $("#device-profiles").attr("id")+"-"+deviceData.id);
+	       			$("#validate-profile").attr("id", $("#validate-profile").attr("id")+"-"+deviceData.id);
+	       			$("#validate-profile-button").attr("id", $("#validate-profile-button").attr("id")+"-"+deviceData.id);
+   				}
+   			});
+
 		}
 		
 		/** send the paring mode on request */
@@ -160,117 +188,261 @@ define([], function () {
 		    	this.pairingON();
 		    }
 		}
-		
-		this.addUndefinedToList = function(jsondevice) {
-			var sensor_list = document.getElementById("sensor-list");
-			var new_sensor = document.createElement('OPTION');
-			new_sensor.value = jsondevice.id;
-			new_sensor.text = jsondevice.id;
-		    sensor_list.add(new_sensor, null);
-		    
-		    deviceToProfiles.setItem(jsondevice.id, jsondevice.capabilities);
+
+		/** Get the selected profile and trigger the validation command  */
+		this.validateProfile = function (id) {
+			var profile_prf = $("#profile-list-"+id+" option:selected");
+			call = eval({"sensorValidation":{"id":id, "nbchoice":"1", "capabilities":[profile_prf[0].value]}, "CONFIGURATION":"sensorValidation", "TARGET":"ENOCEAN"});
+			appsgateMain.sendJSONCmd(call);
 		}
 		
-		this.addActuatorProfileToList = function (profileList) {
-			var cpt = 0;
-			var profile;
-			var profile_list = document.getElementById("actuator-profile");
-			var new_profile;
-			
-			while(cpt < profileList.length) { 
-				profile = profileList[cpt];
-				new_profile = document.createElement('OPTION');
-				new_profile.value = profile;
-				new_profile.text = profile;
-				profile_list.add(new_profile, null);
-				cpt++;
+		/** Set the tile of the device with the current status */
+		this.setTileStatus = function (notif) {
+			var valueField = $("#device-value-"+notif.id);
+			switch(notif.type) {
+				case "3": //Contact Sensor
+					var contactState;
+					if(notif.contact=="true") {
+						contactState = "close";
+					} else {
+						contactState = "open";
+					} 
+					valueField.html('<span id="contact-'+notif.id+'" class="label-info">'+contactState+'</span>');
+					break;
+					
+				case "4": //KeyCard sensor
+					var insertedState;
+					if(notif.inserted=="true") {
+						insertedState = "inserted";
+					} else {
+						insertedState = "removed";
+					} 
+					valueField.html('<span id="keycard-'+notif.id+'" class="label-info">'+insertedState+'</span>');
+					break;
+					
+				case "1": //Illumination sensor
+					valueField.html('<span id="illumination-'+notif.id+'" class="label-info">'+notif.value+' Lux</span>');
+					break;
+					
+				case "8": //ON/Off actuator
+					if(notif.isOn=="true") {
+						valueField.html('<span id="onoff-'+notif.id+'" class="label-success">On</span>');
+					} else {
+						valueField.html('<span id="onoff-'+notif.id+'" class="label-important">Off</span>');
+					} 
+					break;
+					
+				case "6": //Plug sensor/actuator
+					if(notif.plugState == "true") {
+						valueField.html('<span id="smartplug-state-'+notif.id+'" class="label-success">On -</span><span id="smartplug-conso-'+notif.id+'" class="label-info">- '+notif.consumption+' W</span>');
+					}else{
+						valueField.html('<span id="smartplug-state-'+notif.id+'" class="label-important">Off -</span><span id="smartplug-conso-'+notif.id+'" class="label-info">- '+notif.consumption+' W</span>');
+					}
+					
+					var plugConsField = $("#smartplug-cons-"+notif.id);
+					console.log(plugConsField);
+					var consumption = parseFloat(notif.consumption);
+					console.log(consumption);
+					if(0.0 <= consumption && consumption < 21.0) {
+						plugConsField.removeClass();
+						plugConsField.addClass("label-success");
+					}else if(21.0 <= consumption && consumption < 51.0) {
+						//Nothing that's the default value
+					}else if(51.0 <= consumption && consumption < 81.0) {
+						plugConsField.removeClass();
+						plugConsField.addClass("label-warning");
+					}else if(81.0 <= consumption && consumption < 200.1) {
+						plugConsField.removeClass();
+						plugConsField.addClass("label-important");
+					}else if(200.1 <= consumption) {
+						plugConsField.removeClass();
+						plugConsField.addClass("label-inverse");
+					} else {
+						plugConsField.removeClass();
+						plugConsField.addClass("label");
+					}
+					
+					break;
+					
+				case "2": //Switch sensor
+					valueField.html('<span id="switch-0-'+notif.id+'" class="label-default">0: </span> <span id="switchStatus-0-'+notif.id+'"></span> / ');
+					valueField.append('<span id="switch-1-'+notif.id+'" class="label-default">1: </span><span id="switchStatus-1-'+notif.id+'"></span>');
+					
+					var switch0Status = $("#switchStatus-0-"+notif.id);
+					var switch1Status = $("#switchStatus-1-"+notif.id);
+					var switchNumber;
+						
+					switch0Status.html('<span class="label-info">released</span>');
+					switch1Status.html('<span class="label-info">released</span>');
+					
+					if(notif.switchNumber == "0") {
+						switchNumber = $("#switch-0-"+notif.id);
+						valueField = switch0Status;
+					}else if (notif.switchNumber == "1") {
+						switchNumber = $("#switch-1-"+notif.id);
+						valueField = switch1Status;
+					}
+					
+					if(switchNumber != null) {
+						switchNumber.removeClass();
+						switchNumber.addClass("label-success");
+					
+						if(notif.buttonStatus == 0) {
+							valueField.html('<span class="label-inverse">Off</span>');
+						}else if(notif.buttonStatus == 1) {
+							valueField.html('<span class="label-success">On</span>');
+						}else {
+							valueField.html('<span class="label-info">released</span>');
+						}
+					}
+					break;
+					
+				case "0": // Temperature sensor
+					valueField.html('<span id="temperature-'+notif.id+'" class="label-info">'+notif.value.substring(0,4)+' °C</span>');
+					break;
+				
+				default: //undefined sensor
+					valueField.html('<span id="undefined-'+notif.id+'" class="label-warning">undefined</span>');
+					break;
 			}
 		}
 		
-		this.addActuatorToList = function (obj) {
-			var actuator_list = document.getElementById("actuator-list");
-			var  nameInput = document.getElementById("actuatorName-input");
-			
-			var new_actuator = document.createElement('OPTION');
-			new_actuator.value = obj.id;
-			new_actuator.text = obj.name;
+		/** Update the tile with the new state */
+		this.updateTileStatus = function (notif) {
+			var deviceType = $("#device-type-"+notif.objectId).html();
+			var valueField = $("#device-value-"+notif.objectId);
 
-			var act = new device(obj.id, obj.name, obj.type, obj.deviceType, obj.paired);
-			addToDeviceList(act);
+			switch(deviceType) {
 			
-			actuator_list.add(new_actuator, null);
-			nameInput.value = "";
-		}
+				case "Contact": //Contact Sensor
+					if(notif.varName == "contact") {
+						var contactState;
+						if(notif.value=="true") {
+							contactState = "close";
+						} else {
+							contactState = "open";
+						} 
+						valueField.html('<span id="contact-'+notif.objectId+'" class="label-info">'+contactState+'</span>');
+					}
+					break;
+				case "Key card switch": //KeyCard sensor
+					if(notif.varName == "inserted") {
+						var insertedState;
+						if(notif.value=="true") {
+							insertedState = "inserted";
+						} else {
+							insertedState = "removed";
+						} 
+						valueField.html('<span id="keycard-'+notif.objectId+'" class="label-info">'+insertedState+'</span>');
+					}
+					break;
+				
+				case "illumination": //Illumination sensor
+					if(notif.varName == "value") {
+						valueField.html('<span id="illumination-'+notif.objectId+'" class="label-info">'+notif.value+' Lux</span>');
+					}
+					break;
+				
+				case "On/Off actuator": //ON/Off actuator
+					if(notif.varName == "value") {
+						if(notif.value =="true") {
+							valueField.html('<span id="onoff-'+notif.objectId+'" class="label-success">On</span>');
+						} else {
+							valueField.html('<span id="onoff-'+notif.objectId+'" class="label-important">Off</span>');
+						}
+					}
+					break;
+				
+				case "Smart plug": //Plug sensor/actuator
+					if(notif.varName == "plugState") {
+						var plugStateField = $("#smartplug-state-"+notif.objectId);
+						if(notif.value == "true") {
+							plugStateField.html("On -");
+							plugStateField.removeClass();
+							plugStateField.addClass("label-success");
+						}else{
+							plugStateField.html("Off -");
+							plugStateField.removeClass();
+							plugStateField.addClass("label-important");	
+						}
+						
+					}else if(notif.varName == "consumption") {
+						var plugConsField = $("#smartplug-conso-"+notif.objectId);
+						plugConsField.html("- "+notif.value+" W");
+						
+						var consumption = parseFloat(notif.value);
+						if(0.0 <= consumption && consumption < 21.0) {
+							plugConsField.removeClass();
+							plugConsField.addClass("label-success");
+						}else if(21.0 <= consumption && consumption < 51.0) {
+							plugConsField.removeClass();
+							plugConsField.addClass("label-info");
+						}else if(51.0 <= consumption && consumption < 81.0) {
+							plugConsField.removeClass();
+							plugConsField.addClass("label-warning");
+						}else if(81.0 <= consumption && consumption < 200.1) {
+							plugConsField.removeClass();
+							plugConsField.addClass("label-important");
+						}else if(200.1 <= consumption) {
+							plugConsField.removeClass();
+							plugConsField.addClass("label-inverse");
+						}else {
+							plugConsField.removeClass();
+							plugConsField.addClass("label");
+						}
+					}
 
-		/**  */
-		this.removedUndefinedFromList = function (id) {
-			var sensor_list = document.getElementById("sensor-list");
-			var cpt = 0;
-			var end = 0;
-			while(cpt < sensor_list.length && end == 0){ 
-				if(sensor_list.options[cpt].value == id){
-					end=1;
-					sensor_list.remove(cpt);
-					var profile_list = document.getElementById("profile-list");
-					profile_list.length = 0;
-					var profileZone = document.getElementById("selected-profile");
-					profileZone.innerHTML = "";
-				}
-				cpt++;
+					break;
+				
+				case "Switch": //Switch sensor
+
+					var switchNumber0 = $("#switch-0-"+notif.objectId);
+					var switchNumber1 = $("#switch-1-"+notif.objectId);
+					
+					if(notif.varName == "switchNumber") {
+						
+						switchNumber0.removeClass();
+						switchNumber1.removeClass();
+						
+						if(notif.value == "0") {
+							switchNumber0.addClass("label-success");
+							switchNumber1.addClass("label-default");
+						}else {
+							switchNumber0.addClass("label-default");
+							switchNumber1.addClass("label-success");
+						}
+					}
+					
+					if(notif.varName == "buttonStatus") {
+						var switchStatus;
+						
+						if(switchNumber0.hasClass("label-success")) {
+							switchStatus = $("#switchStatus-0-"+notif.objectId);
+						} else {
+							switchStatus = $("#switchStatus-1-"+notif.objectId);
+						}
+						
+						if(notif.value == "false") {
+							switchStatus.html('<span class="label-inverse">Off</span>');
+						}else if(notif.value == "true") {
+							switchStatus.html('<span class="label-success">On</span>');
+						}else {
+							switchStatus.html('<span class="label-info">released</span>');
+						}
+					}
+					
+				case "Temperature": // Temperature sensor
+					if(notif.varName == "value") {
+						valueField.html('<span id="temperature-'+notif.objectId+'" class="label-info">'+notif.value.substring(0,4)+' °C</span>');
+					}
+					break;
+			
+				default: //undefined sensor
+					console.log("no device found");
+					break;
 			}
 		}
-
-		/**  */
-		this.getSensorInfos = function () {
-			var sensor_list = document.getElementById("sensor-list");
-			var sensor_id = sensor_list.options[sensor_list.selectedIndex].value;
-			
-			var profilesJSONArray = deviceToProfiles.getItem(sensor_id);
-			var length = profilesJSONArray.length
-
-			var profile_list = document.getElementById("profile-list");
-			profile_list.length = 0;
-			var profileZone = document.getElementById("selected-profile");
-			profileZone.innerHTML = "";
-			
-			var cpt = 0;
-			while(cpt < length){
-			   addProfileToList(profilesJSONArray[cpt]);
-			   cpt++;
-			}
-			
-			selectNewProfile();
-		}
-
-		/**  */
-		this.addProfileToList = function (profile) {
-			var profile_list = document.getElementById("profile-list");
-			var new_profile = document.createElement('OPTION');
-			
-			new_profile.value = profile.profile;
-			new_profile.text = profile.type;
-			profile_list.add(new_profile, null);
-		}
-
-		/**  */
-		this.selectNewProfile = function () {
-			var profile_list = document.getElementById("profile-list");
-			var profile_prf = profile_list.options[profile_list.selectedIndex].value;
-			
-			var profileZone = document.getElementById("selected-profile");
-			profileZone.innerHTML = profile_prf;
-		}
-
-		/**  */
-		this.validConf = function (){
-			var sensor_list = document.getElementById("sensor-list");
-			var sensor_id = sensor_list.options[sensor_list.selectedIndex].value;
-			var profile_list = document.getElementById("profile-list");
-			var profile_prf = profile_list.options[profile_list.selectedIndex].value;
-		    
-		    ws.send("{\"sensorValidation\":{\"id\":\""+sensor_id+"\", \"nbchoice\":\""+1+"\" ,\"capabilities\":[\""+profile_prf+"\"]}, \"CONFIGURATION\":\"sensorValidation\", \"TARGET\":\"ENOCEAN\"}");
-		}
-
+		
 	};
 	return returnedModule;
 });

@@ -153,6 +153,7 @@ public class EnoceanLuminositySensorImpl implements CoreObjectSpec, CoreLuminosi
 		descr.put("type", userType); //1 for illumination sensor
 		descr.put("status", status);
 		descr.put("value", currentIllumination);
+		descr.put("deviceType", sensoreType);
 		
 		return descr;
 	}

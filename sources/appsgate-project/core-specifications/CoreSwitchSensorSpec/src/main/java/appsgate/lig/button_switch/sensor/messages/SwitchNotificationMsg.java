@@ -28,7 +28,7 @@ public class SwitchNotificationMsg implements NotificationMsg{
 	/**
 	 * The button state On/Off = Up/Down
 	 */
-	private boolean isOn;
+	private String state;
 	
 	/**
 	 * The name of the change variable
@@ -43,11 +43,11 @@ public class SwitchNotificationMsg implements NotificationMsg{
 	/**
 	 * Constructor for this ApAM message
 	 * @param switchNumber the button pressed (for multiple buttons switch)
-	 * @param isOn the button state
+	 * @param state the button state
 	 */
-	public SwitchNotificationMsg (int switchNumber, boolean isOn, String varName, String value, CoreObjectSpec source){
+	public SwitchNotificationMsg (int switchNumber, String state, String varName, String value, CoreObjectSpec source){
 		this.switchNumber = switchNumber;
-		this.isOn = isOn;
+		this.state = state;
 		this.source = source;
 		this.varName = varName;
 		this.value = value;
@@ -58,7 +58,7 @@ public class SwitchNotificationMsg implements NotificationMsg{
 	 * @return a descriptive string of the button state.
 	 */
 	public String getNotificationValue(){
-		return switchNumber+" "+isOn;
+		return switchNumber+" "+state;
 	}
 
 	/**
@@ -74,30 +74,26 @@ public class SwitchNotificationMsg implements NotificationMsg{
 	 * @return isOn, the state of the button
 	 */
 	public boolean isOn() {
-		return isOn;
+		return (state.contentEquals("true"));
+	}
+	
+	/**
+	 * Get the current switch state
+	 * @return the state as a string. (true, false, none)
+	 */
+	public String getState() {
+		return state;
 	}
 
 	@Override
 	public String getNewValue() {
-		return new Integer(switchNumber)+"/"+String.valueOf(isOn);
+		return new Integer(switchNumber)+"/"+String.valueOf(state);
 	}
 
 	@Override
 	public JSONObject JSONize() throws JSONException {
 		
 		JSONObject notif = new JSONObject();
-//		JSONObject content = new JSONObject();
-//		content.put("id", source.getAbstractObjectId());
-//		content.put("name", source.getUserObjectName());
-//		content.put("locationId", String.valueOf(source.getLocationId()));
-//		content.put("status", source.getObjectStatus());
-//		content.put("switchNumber", switchNumber);
-//		if(isOn){
-//			content.put("buttonStatus", 1);
-//		}else{
-//			content.put("buttonStatus", 0);
-//		}
-//		notif.put("updateSwitch", content);
 		
 		notif.put("objectId", source.getAbstractObjectId());
 		notif.put("varName", varName);
