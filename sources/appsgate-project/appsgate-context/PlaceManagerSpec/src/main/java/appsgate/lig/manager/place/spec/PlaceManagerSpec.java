@@ -13,32 +13,43 @@ import org.json.JSONArray;
 public interface PlaceManagerSpec {
 	
 	/**
-	 * Add a new place to the numeric representation of the smart space.
-	 * @param placeId the place identifier
+	 * Add a new place to the hash map.
 	 * @param name the place name
+	 * @param parent the parent of this place, or null if this place is a root
+	 * @return the id of the new place null otherwise.
 	 */
-	public void addPlace(String placeId, String name);
+	public String addPlace(String name, SymbolicPlace parent);
 	
 	/**
 	 * Remove a place from the numeric representation of the smart space.
 	 * @param placeId the identifier of the place
+	 * @return true if the place has been removed, false otherwise
 	 */
-	public void removePlace(String placeId);
+	public boolean removePlace(String placeId);
 	
 	/**
 	 * Move a core object to a specify place.
 	 * @param objId the core object identifier to move
 	 * @param oldPlaceID the source place of the core object
 	 * @param newPlaceID the destination place of the core object
+	 * @return true if the device has moved, false otherwise
 	 */
-	public void moveObject(String objId, String oldPlaceID, String newPlaceID);
+	public boolean moveObject(String objId, String oldPlaceID, String newPlaceID);
 	
 	/**
 	 * Rename a place on the smart space
 	 * @param placeId the identifier of the place to rename
 	 * @param newName the new name of the place
+	 * @return true if the place name has been updated, false otherwise
 	 */
-	public void renamePlace(String placeId, String newName);
+	public boolean renamePlace(String placeId, String newName);
+	
+	/**
+	 * Get the symbolic place object from its identifier
+	 * @param placId the place identifier
+	 * @return the SymbolicPlace instance
+	 */
+	public SymbolicPlace getSymbolicPlace(String placId);
 	
 	/**
 	 * Get a JSON formatted representation of the smart space.
