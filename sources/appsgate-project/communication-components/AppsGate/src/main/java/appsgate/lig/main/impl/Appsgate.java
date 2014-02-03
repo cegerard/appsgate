@@ -168,6 +168,11 @@ public class Appsgate implements AppsGateSpec {
 	public JSONObject getDevice(String deviceId) {
 		return router.getDevice(deviceId);
 	}
+	
+	@Override
+	public JSONArray getDevices(String type) {
+		return router.getDevices(type);
+	}
 
 	@Override
 	public void setUserObjectName(String objectId, String user, String name) {
@@ -409,8 +414,17 @@ public class Appsgate implements AppsGateSpec {
 		}
 	}
 
-    @Override
-    public JSONArray getSpecificDevices(JSONArray types, JSONArray places, JSONArray states) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+
+	@Override
+	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray places) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public JSONArray getSubtypes(JSONArray typeList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

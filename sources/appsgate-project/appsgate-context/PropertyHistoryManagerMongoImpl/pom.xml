@@ -78,6 +78,12 @@
             <groupId>appsgate.components</groupId>
             <artifactId>MongoDBConfigurationImpl</artifactId>
             <version>${project.version}</version>
-        </dependency>		
+        </dependency>
+	 <dependency>
+	  <groupId>org.apache.felix</groupId>
+	  <artifactId>org.apache.felix.ipojo</artifactId>
+	  <version>1.11.0</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 </project>

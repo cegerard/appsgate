@@ -46,4 +46,12 @@ public interface RouterApAMSpec {
 	 * @return the object information as a JSONObject
 	 */
 	public JSONObject getDevice(String objectId);
+	
+	/**
+	 * Get all the device that fit the type parameter
+	 * @param type
+	 * 			the type parameter
+	 * @return the device list of the same "type"
+	 */
+	public JSONArray getDevices(String type);
 }

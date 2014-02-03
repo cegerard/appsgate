@@ -23,7 +23,7 @@ public class NodeSelectTest extends NodeTest {
             {
 //                allowing(mediator).getAppsGate();
 //                will(returnValue(appsGate));
-                allowing(appsGate).getSpecificDevices(with(any(JSONArray.class)), with(any(JSONArray.class)), with(any(JSONArray.class)));
+                allowing(appsGate).getDevicesInSpaces(with(any(JSONArray.class)), with(any(JSONArray.class)));
                 will(returnValue(null));
             }
         });

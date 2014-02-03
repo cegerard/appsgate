@@ -23,40 +23,41 @@ public interface AppsGateSpec {
          * @return 
 	 */
 	public JSONArray getDevices();
-        
-        /**
-         * Return a list of devices that correspond to a combinaison of types, places and states.
-         * 
-         * @param types
-         * @param places
-         * @param states
-         * @return a list of devices corresponding to the request
-         */
-        public JSONArray getSpecificDevices(JSONArray types, JSONArray places, JSONArray states);
-	
+        	
 	/**
 	 * Get device details
 	 * @param deviceId the targeted device identifier
 	 * @return the device description as a JSONObject
 	 */
 	public JSONObject getDevice(String deviceId);
+	
+	/**
+	 * Get all the devices of a specify user type
+	 * @param type the type to filter devices
+	 * @return the device list as a JSONArray
+	 */
+	public JSONArray getDevices(String type);
         
-        /**
-         * Return the devices of a list of type presents in the places
-         * 
-         * @param typeList the list of types to look for (if null, return all objects)
-         * @param places the places where to find the objects (if null return all places)
-         * @return a list of objects contained in these places
-         */
-        public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray places);
-        
-        /**
-         * Return a list of types descending from another types
-         * 
-         * @param typeList the list of types to look for (if null, return all subtypes)
-         * @return an empty array if nothing is found or the array of types
-         */
-        public JSONArray getSubtypes(JSONArray typeList);
+	/**
+	 * Return the devices of a list of type presents in the places
+	 * 
+	 * @param typeList
+	 *            the list of types to look for (if null, return all objects)
+	 * @param places
+	 *            the places where to find the objects (if null return all
+	 *            places)
+	 * @return a list of objects contained in these places
+	 */
+	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray places);
+
+	/**
+	 * Return a list of types descending from another types
+	 * 
+	 * @param typeList
+	 *            the list of types to look for (if null, return all subtypes)
+	 * @return an empty array if nothing is found or the array of types
+	 */
+	public JSONArray getSubtypes(JSONArray typeList);
 
 	
 	/***************************/

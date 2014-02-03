@@ -264,4 +264,16 @@ public class UserBaseImpl implements UserBaseSpec {
 		return new JSONArray();
 	}
 
+	@Override
+	public JSONObject getHierarchy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setHierarchy(JSONObject hierarchy) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -214,3 +214,5 @@ sources/appsgate-project/integrated-technologies/sensor-network/enocean/EnoceanP
 sources/appsgate-project/integrated-technologies/fuchsia-ard-plugin/ard-importer-adaptor/target/classes/metadata.xml
 
 sources/appsgate-project/nb-configuration.xml
+
+sources/appsgate-project/appsgate-context/ContextHistoy/nbactions.xml
