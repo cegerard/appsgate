@@ -188,3 +188,5 @@ sources/appsgate-project/android-utils/UpnpBasedriverAdapter/target/classes/META
 sources/appsgate-project/android-utils/UpnpBasedriverAdapter/target/classes/META-INF/MANIFEST.MF
 
 sources/appsgate-project/android-utils/UpnpBasedriverAdapter/target/classes/META-INF/NOTICE
+
+sources/appsgate-project/appsgate-context/ContextHistoy/nbactions.xml
