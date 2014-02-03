@@ -233,6 +233,30 @@ public class RouterImpl implements RouterApAMSpec {
 		return new JSONObject();
 	}
 	
+	@Override
+	public JSONArray getDevices(String type) {
+		Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
+		
+		CoreObjectSpec adev = null;
+		
+		if (devices != null) {
+			JSONArray jsonDeviceList =  new JSONArray();
+			
+			while (devices.hasNext()) {
+				adev = devices.next();
+				if(type.contentEquals(adev.getUserType())) {
+					jsonDeviceList.put(getObjectDescription(adev, ""));
+				}
+			}
+			
+			return jsonDeviceList;
+			
+		}else{
+			logger.debug("No smart object detected.");
+			return new JSONArray();
+		}
+	}
+	
 	/**
 	 * This method get the auto description of an object and add
 	 * the contextual information associate to this object for a specified user

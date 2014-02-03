@@ -168,6 +168,11 @@ public class Appsgate implements AppsGateSpec {
 	public JSONObject getDevice(String deviceId) {
 		return router.getDevice(deviceId);
 	}
+	
+	@Override
+	public JSONArray getDevices(String type) {
+		return router.getDevices(type);
+	}
 
 	@Override
 	public void setUserObjectName(String objectId, String user, String name) {
@@ -407,5 +412,19 @@ public class Appsgate implements AppsGateSpec {
 			logger.debug("Socket exception for UPnP: ");
 			e.printStackTrace();
 		}
+	}
+
+
+	@Override
+	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray places) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public JSONArray getSubtypes(JSONArray typeList) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
