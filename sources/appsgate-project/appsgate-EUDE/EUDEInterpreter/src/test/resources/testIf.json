@@ -15,7 +15,7 @@
                 {
                     "type": "if",
                     "expBool": {
-                        "type": "binaryExpression",
+                        "type": "booleanExpression",
                         "operator": "EQUALS",
                         "leftOperand": {
                             "type": "action",

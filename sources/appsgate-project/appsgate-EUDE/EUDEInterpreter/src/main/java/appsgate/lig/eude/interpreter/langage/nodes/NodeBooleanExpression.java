@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeBinaryExpression extends Node {
+public class NodeBooleanExpression extends Node {
 
     /**
      * Logger
@@ -62,7 +62,7 @@ public class NodeBinaryExpression extends Node {
      *
      * @param p
      */
-    private NodeBinaryExpression(Node p) {
+    private NodeBooleanExpression(Node p) {
         super(p);
     }
 
@@ -72,19 +72,23 @@ public class NodeBinaryExpression extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeBinaryExpression(JSONObject o, Node parent) throws SpokException {
+    public NodeBooleanExpression(JSONObject o, Node parent) throws SpokException {
         super(parent);
-        operator = BinaryOperator.valueOf(getJSONString(o, "operator"));
+        try {
+            operator = BinaryOperator.valueOf(getJSONString(o, "operator"));
+        } catch (IllegalArgumentException e) {
+            throw new SpokNodeException("BooleanExpression", "operator", e);
+        }
         if (o.has("leftOperand")) {
             left = Builder.BuildNodeFromJSON(o.optJSONObject("leftOperand"), this);
         } else {
-            throw new SpokNodeException("BinaryExpression", "leftOperand", null);
+            throw new SpokNodeException("BooleanExpression", "leftOperand", null);
         }
         if (o.has("rightOperand")) {
             right = Builder.BuildNodeFromJSON(o.optJSONObject("rightOperand"), this);
         } else {
             if (needTwoOperands(operator)) {
-                throw new SpokNodeException("BinaryExpression", "rightOperand", null);
+                throw new SpokNodeException("BooleanExpression", "rightOperand", null);
             }
         }
 
@@ -116,7 +120,7 @@ public class NodeBinaryExpression extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeBinaryExpression ret = new NodeBinaryExpression(parent);
+        NodeBooleanExpression ret = new NodeBooleanExpression(parent);
         ret.operator = operator;
         ret.left = left.copy(ret);
         ret.right = right.copy(ret);
@@ -141,7 +145,7 @@ public class NodeBinaryExpression extends Node {
     public JSONObject getJSONDescription() {
         JSONObject ret = new JSONObject();
         try {
-            ret.put("type", "binaryExpression");
+            ret.put("type", "booleanExpression");
             ret.put("operator", operator);
             ret.put("leftOperand", left.getJSONDescription());
             ret.put("rightOperand", left.getJSONDescription());
@@ -161,7 +165,7 @@ public class NodeBinaryExpression extends Node {
                 result = SpokParser.equals(left.getResult(), right.getResult());
                 break;
             case NOT_EQUALS:
-                result = ! SpokParser.equals(left.getResult(), right.getResult());
+                result = !SpokParser.equals(left.getResult(), right.getResult());
                 break;
             case MORE_THAN:
                 result = SpokParser.getNumericResult(left.getResult()) > SpokParser.getNumericResult(right.getResult());
@@ -218,11 +222,11 @@ public class NodeBinaryExpression extends Node {
         fireEndEvent(new EndEvent(this));
     }
 
-
     /**
      * Method to check whether the node is well formed
+     *
      * @param operator
-     * @return 
+     * @return
      */
     private boolean needTwoOperands(BinaryOperator operator) {
         switch (operator) {
@@ -240,6 +244,5 @@ public class NodeBinaryExpression extends Node {
 
         }
     }
-
 
 }

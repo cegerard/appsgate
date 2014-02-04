@@ -18,7 +18,7 @@ public class Builder {
 
     private static enum NODE_TYPE {
 
-        NODE_ACTION, NODE_BINARY_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
+        NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
         NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_SEQ_RULES, NODE_VALUE, NODE_VARIABLE_ASSIGNATION, NODE_WHEN;
     }
@@ -27,8 +27,8 @@ public class Builder {
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
-        if (type.equalsIgnoreCase("binaryExpression")) {
-            return NODE_TYPE.NODE_BINARY_EXPRESSION;
+        if (type.equalsIgnoreCase("booleanExpression")) {
+            return NODE_TYPE.NODE_BOOLEAN_EXPRESSION;
         }
         if (type.equalsIgnoreCase("event")) {
             return NODE_TYPE.NODE_EVENT;
@@ -92,8 +92,8 @@ public class Builder {
         switch (getType(o.optString("type"))) {
             case NODE_ACTION:
                 return new NodeAction(o, parent);
-            case NODE_BINARY_EXPRESSION:
-                return new NodeBinaryExpression(o, parent);
+            case NODE_BOOLEAN_EXPRESSION:
+                return new NodeBooleanExpression(o, parent);
             case NODE_EVENT:
                 return new NodeEvent(o, parent);
             case NODE_EVENTS:

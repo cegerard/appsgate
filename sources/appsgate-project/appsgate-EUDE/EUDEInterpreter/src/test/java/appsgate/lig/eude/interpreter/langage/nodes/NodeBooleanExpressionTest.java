@@ -16,20 +16,39 @@ import org.junit.Test;
  *
  * @author jr
  */
-public class NodeBinaryExpressionTest extends NodeTest {
+public class NodeBooleanExpressionTest extends NodeTest {
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
         JSONObject l = new JSONObject();
-        ruleJSON.put("type", "binaryExpression");
+        ruleJSON.put("type", "booleanExpression");
         ruleJSON.put("operator", "EQUALS");
         l.put("type", "number");
         l.put("value", 12);
         ruleJSON.put("leftOperand", l);
         ruleJSON.put("rightOperand", l);
-        this.instance = new NodeBinaryExpression(ruleJSON, null);
+        this.instance = new NodeBooleanExpression(ruleJSON, null);
+
+    }
+
+    @Test
+    public void testOperators() throws Exception {
+        ruleJSON.put("operator", "");
+        try {
+            this.instance = new NodeBooleanExpression(ruleJSON, null);
+            Assert.fail("An exception should have been raised");
+        } catch (SpokException ex) {
+            Assert.assertNotNull(ex);
+        }
+        ruleJSON.put("operator", 2);
+        try {
+            this.instance = new NodeBooleanExpression(ruleJSON, null);
+            Assert.fail("An exception should have been raised");
+        } catch (SpokException ex) {
+            Assert.assertNotNull(ex);
+        }
 
     }
 
@@ -56,7 +75,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         o.put("leftOperand", l);
         o.put("rightOperand", l);
         try {
-            NodeBinaryExpression e0 = new NodeBinaryExpression(o, null);
+            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
             e0.getResult();
             Assert.fail("An exception should have been raised");
         } catch (SpokException ex) {
@@ -67,7 +86,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         l.put("value", "true");
         o.put("leftOperand", l);
         o.put("rightOperand", l);
-        NodeBinaryExpression e1 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e1 = new NodeBooleanExpression(o, null);
         SpokObject result = e1.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result.getType());
@@ -77,7 +96,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         r.put("value", "false");
         o.put("leftOperand", l);
         o.put("rightOperand", r);
-        NodeBinaryExpression e2 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e2 = new NodeBooleanExpression(o, null);
         SpokObject result2 = e2.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result2.getType());
@@ -87,7 +106,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         l.put("value", "false");
         o.put("leftOperand", l);
         o.put("rightOperand", r);
-        NodeBinaryExpression e3 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e3 = new NodeBooleanExpression(o, null);
         SpokObject result3 = e3.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result3.getType());
@@ -97,7 +116,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         r.put("value", "true");
         o.put("leftOperand", l);
         o.put("rightOperand", r);
-        NodeBinaryExpression e4 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e4 = new NodeBooleanExpression(o, null);
         SpokObject result4 = e4.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result4.getType());
@@ -117,7 +136,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         o.put("leftOperand", l);
         o.put("rightOperand", l);
         try {
-            NodeBinaryExpression e0 = new NodeBinaryExpression(o, null);
+            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
             e0.getResult();
 
             Assert.fail("An exception should have been raised");
@@ -128,7 +147,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         l.put("value", "12");
         o.put("leftOperand", l);
         o.put("rightOperand", l);
-        NodeBinaryExpression e1 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e1 = new NodeBooleanExpression(o, null);
         SpokObject result = e1.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result.getType());
@@ -137,7 +156,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         r.put("value", "11");
         o.put("leftOperand", l);
         o.put("rightOperand", r);
-        NodeBinaryExpression e2 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e2 = new NodeBooleanExpression(o, null);
         SpokObject result2 = e2.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result2.getType());
@@ -157,7 +176,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         o.put("leftOperand", l);
         o.put("rightOperand", l);
         try {
-            NodeBinaryExpression e0 = new NodeBinaryExpression(o, null);
+            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
             e0.getResult();
 
             Assert.fail("An exception should have been raised");
@@ -169,7 +188,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         l.put("value", "true");
         o.put("leftOperand", l);
         o.put("rightOperand", l);
-        NodeBinaryExpression e1 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e1 = new NodeBooleanExpression(o, null);
         SpokObject result = e1.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result.getType());
@@ -179,7 +198,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         r.put("value", "false");
         o.put("leftOperand", l);
         o.put("rightOperand", r);
-        NodeBinaryExpression e2 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e2 = new NodeBooleanExpression(o, null);
         SpokObject result2 = e2.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result2.getType());
@@ -189,7 +208,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         l.put("value", "false");
         o.put("leftOperand", l);
         o.put("rightOperand", r);
-        NodeBinaryExpression e3 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e3 = new NodeBooleanExpression(o, null);
         SpokObject result3 = e3.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result3.getType());
@@ -199,7 +218,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         r.put("value", "true");
         o.put("leftOperand", l);
         o.put("rightOperand", r);
-        NodeBinaryExpression e4 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e4 = new NodeBooleanExpression(o, null);
         SpokObject result4 = e4.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result4.getType());
@@ -217,7 +236,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         l.put("value", 12);
         o.put("leftOperand", l);
         try {
-            NodeBinaryExpression e0 = new NodeBinaryExpression(o, null);
+            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
             e0.getResult();
             Assert.fail("An exception should have been raised");
         } catch (SpokException ex) {
@@ -227,7 +246,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         l.put("type", "boolean");
         l.put("value", "true");
         o.put("leftOperand", l);
-        NodeBinaryExpression e1 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e1 = new NodeBooleanExpression(o, null);
         SpokObject result1 = e1.getResult();
         Assert.assertNotNull(result1);
         Assert.assertEquals("boolean", result1.getType());
@@ -236,7 +255,7 @@ public class NodeBinaryExpressionTest extends NodeTest {
         l.put("type", "boolean");
         l.put("value", "false");
         o.put("leftOperand", l);
-        NodeBinaryExpression e2 = new NodeBinaryExpression(o, null);
+        NodeBooleanExpression e2 = new NodeBooleanExpression(o, null);
         SpokObject result2 = e2.getResult();
         Assert.assertNotNull(result2);
         Assert.assertEquals("boolean", result2.getType());

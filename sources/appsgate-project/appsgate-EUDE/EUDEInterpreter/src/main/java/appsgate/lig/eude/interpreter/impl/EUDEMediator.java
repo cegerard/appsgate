@@ -334,7 +334,6 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      * @return
      */
     public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
-        JSONArray a = context.getDevicesInSpaces(args, args);
         return router.executeCommand(objectId, methodName, args);
     }
 
