@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import appsgate.lig.main.spec.AppsGateSpec;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONArray;
@@ -17,12 +17,12 @@ public class NodeSelectTest extends NodeTest {
 
 
     public NodeSelectTest() {
-        final AppsGateSpec appsGate = context.mock(AppsGateSpec.class);
+        final ContextAgregatorSpec appsGate = context.mock(ContextAgregatorSpec.class);
 
         context.checking(new Expectations() {
             {
-//                allowing(mediator).getAppsGate();
-//                will(returnValue(appsGate));
+                allowing(mediator).getContext();
+                will(returnValue(appsGate));
                 allowing(appsGate).getDevicesInSpaces(with(any(JSONArray.class)), with(any(JSONArray.class)));
                 will(returnValue(null));
             }

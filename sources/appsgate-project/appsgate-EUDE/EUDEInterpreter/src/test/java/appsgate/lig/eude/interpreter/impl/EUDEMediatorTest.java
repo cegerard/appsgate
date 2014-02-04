@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.impl;
 
+import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
 import appsgate.lig.context.history.services.DataBasePullService;
@@ -84,7 +85,7 @@ public class EUDEMediatorTest {
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
         this.contextFollower = new ContextFollowerTest();
-//        final AppsGateSpec appsgate = context.mock(AppsGateSpec.class);
+        final ContextAgregatorSpec appsgate = context.mock(ContextAgregatorSpec.class);
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
         clock.put("id", "1");
@@ -109,11 +110,14 @@ public class EUDEMediatorTest {
                 allowing(router).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
                 allowing(router).getDevices();
                 will(returnValue(deviceList));
+                allowing(appsgate).getDevicesInSpaces(with(any(JSONArray.class)), with(any(JSONArray.class)));
+                will(returnValue(deviceList));
+                
             }
         });
         this.instance = new EUDEMediator();
         this.instance.setTestMocks(pull_service, push_service, router, contextFollower);
-//        this.instance.setAppsGate(appsgate);
+        this.instance.setContext(appsgate);
         programJSON = new JSONObject();
         programJSON.put("id", "test");
 

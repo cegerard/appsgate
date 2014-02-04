@@ -12,7 +12,7 @@
     <artifactId>EUDEInterpreter</artifactId>
     <packaging>bundle</packaging>
 
-    <name>EUDEInterpreter OSGi Bundle</name>
+    <name>EUDEInterpreter</name>
 
     <!-- Repositories List -->
 
@@ -41,6 +41,11 @@
         <dependency>
             <groupId>appsgate.components</groupId>
             <artifactId>ContextHistory</artifactId>
+            <version>1.0.0</version>
+        </dependency>    
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ContextAgregatorSpec</artifactId>
             <version>1.0.0</version>
         </dependency>    
         <dependency>

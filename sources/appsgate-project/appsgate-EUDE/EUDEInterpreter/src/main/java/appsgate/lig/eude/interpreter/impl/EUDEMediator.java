@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
 import appsgate.lig.context.history.services.DataBasePullService;
@@ -83,6 +84,8 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      *
      */
     public ClockProxy clock;
+    private ContextAgregatorSpec context;
+    
 
     /**
      * Initialize the list of programs and of events
@@ -331,6 +334,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      * @return
      */
     public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
+        JSONArray a = context.getDevicesInSpaces(args, args);
         return router.executeCommand(objectId, methodName, args);
     }
 
@@ -487,6 +491,19 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             }
         }
         return clock;
+    }
+
+    /**
+     * @return the appsgate
+     */
+    public ContextAgregatorSpec getContext() {
+        return context;
+    }
+    /**
+     * set the appsgate
+     */
+    public void setContext(ContextAgregatorSpec s) {
+        context = s;
     }
 
     /**

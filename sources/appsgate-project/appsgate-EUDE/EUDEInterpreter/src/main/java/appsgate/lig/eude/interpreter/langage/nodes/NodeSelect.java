@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
@@ -100,8 +101,8 @@ public class NodeSelect extends Node {
             return ex.getJSONDescription();
         }
         // TODO: fix this
-//        AppsGateSpec appsGate = mediator.getAppsGate();
-//        specificDevices = appsGate.getSpecificDevices(what, where, state);
+        ContextAgregatorSpec ctxt = mediator.getContext();
+        specificDevices = ctxt.getDevicesInSpaces(what, where);
         fireEndEvent(new EndEvent(this));
         return null;
     }
