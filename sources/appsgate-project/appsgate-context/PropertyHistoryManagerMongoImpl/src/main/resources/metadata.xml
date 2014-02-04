@@ -9,14 +9,16 @@
 	and limitations under the License. -->
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="fr.imag.adele.apam http://raw.github.com/AdeleResearchGroup/ApAM/master/runtime/core/src/main/resources/xsd/ApamCore.xsd">
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd">
 
-	<implementation name="PropertyHistoryManager"
-		classname="appsgate.lig.manager.propertyhistory.PropertyHistoryManagerMongoImpl">
-        <relation implementation="MongoDBConfigurationImpl" resolve="external" creation="eager"/>
-	    
-		<callback onInit="start" onRemove="stop" />
+	<implementation name="PropertyHistoryManagerMongoImpl"
+		classname="appsgate.lig.manager.propertyhistory.PropertyHistoryManagerMongoImpl"
+		specification="PropertyHistoryManagerSpec">
 
+        <relation implementation="MongoDBConfigurationImpl" field="myConfigFactory"
+            resolve="external" />
+        
+        <callback onInit="start" onRemove="stop" />
 	</implementation>
 
 </apam>

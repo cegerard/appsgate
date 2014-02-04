@@ -8,8 +8,8 @@ package appsgate.lig.eude.interpreter.impl;
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
-import appsgate.lig.context.history.services.DataBasePullService;
-import appsgate.lig.context.history.services.DataBasePushService;
+import appsgate.lig.context.services.DataBasePullService;
+import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
@@ -19,14 +19,19 @@ import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.jmock.Expectations;
+
 import static org.jmock.Expectations.any;
+
 import org.jmock.Mockery;
 import org.jmock.States;
 import org.jmock.lib.concurrent.Synchroniser;
@@ -39,6 +44,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**

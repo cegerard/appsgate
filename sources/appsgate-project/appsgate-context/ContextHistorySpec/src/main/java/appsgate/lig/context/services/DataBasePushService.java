@@ -1,4 +1,4 @@
-package appsgate.lig.context.history.services;
+package appsgate.lig.context.services;
 
 import java.util.ArrayList;
 import java.util.Map;

@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<implementation name="ContextHistoryTesterImpl" classname="appsgate.validation.context.history.ContextHistoryTester">
+	<implementation name="ContextHistoryTesterImpl" classname="appsgate.validation.context.ContextHistoryTester">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<ipojo:requires field="contextHistory_pull"/>
 		<ipojo:requires field="contextHistory_push"/>

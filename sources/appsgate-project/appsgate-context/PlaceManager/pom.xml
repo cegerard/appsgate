@@ -29,7 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>ContextHistory</artifactId>
+			<artifactId>ContextHistorySpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>

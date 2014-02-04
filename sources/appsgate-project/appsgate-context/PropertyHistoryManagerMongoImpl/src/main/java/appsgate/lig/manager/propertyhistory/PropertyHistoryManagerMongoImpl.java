@@ -4,18 +4,17 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.persistence.MongoDBConfig;
+import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
+import appsgate.lig.persistence.MongoDBConfigFactory;
+import appsgate.lig.persistence.MongoDBConfiguration;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientOptions.Builder;
 import com.mongodb.MongoException;
 
 import fr.imag.adele.apam.ApamManagers;
@@ -28,35 +27,33 @@ import fr.imag.adele.apam.Link;
 import fr.imag.adele.apam.ManagerModel;
 import fr.imag.adele.apam.PropertyManager;
 
-public class PropertyHistoryManagerMongoImpl implements PropertyManager, DynamicManager {
+public class PropertyHistoryManagerMongoImpl implements PropertyManager,
+		DynamicManager, PropertyHistoryManager {
 
+	private final Logger logger = LoggerFactory
+			.getLogger(PropertyHistoryManagerMongoImpl.class);
 
-	private final Logger logger = LoggerFactory.getLogger(PropertyHistoryManagerMongoImpl.class);
-	
-	MongoClient mongoClient=null;
-	
-	public static final String MANAGER_NAME="PropertyHistoryManager";
-	
+	public static final String MANAGER_NAME = "PropertyHistoryManager";
+
 	/*
 	 * The collection containing the attributes created, changed and removed.
 	 */
 	private static final String ChangedAttributes = "Properties";
-	
+
 	private static final String DBNAME_DEFAULT = "AppsGatePropertyHistory-";
-	
-	private int dbNameCounter=0;
+
+	private int dbNameCounter = 0;
+
+	private boolean dropCollections = false;
 
 	/*
 	 * The collection containing the links (wires) created, and deleted
 	 */
 
-
-	private MongoDBConfig data = null;
-	private DB db =null;
+	private MongoDBConfigFactory myConfigFactory = null;
+	private MongoDBConfiguration myConfiguration = null;
 
 	public PropertyHistoryManagerMongoImpl() {
-		data = null;
-
 	}
 
 	@Override
@@ -72,7 +69,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager, Dynamic
 
 	}
 
-
 	@Override
 	public void attributeRemoved(Component comp, String attr, String oldValue) {
 		insertDBEntry(comp, attr, "removed");
@@ -81,12 +77,10 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager, Dynamic
 	private void insertDBEntry(Component comp, String attr, String status) {
 		logger.debug("insertDBEntry(Component comp : " + comp
 				+ ", String attr : " + attr + ", String status : " + status);
-		if (data != null && mongoClient != null) {
+		if (myConfiguration != null && myConfiguration.getDB() != null) {
 			try {
-				// force connection to be established
-				mongoClient.getDatabaseNames();
 
-				DBCollection ChangedAttr = db.getCollection(ChangedAttributes);
+				DBCollection ChangedAttr = myConfiguration.getDB().getCollection(ChangedAttributes);
 
 				ChangedAttr.insert(new BasicDBObject("source", comp.getName())
 						.append("time", System.currentTimeMillis())
@@ -101,7 +95,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager, Dynamic
 		} else {
 			logger.error("Cannot insert DBEntry no valid configuration for DB");
 		}
-
 	}
 
 	@Override
@@ -115,18 +108,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager, Dynamic
 	}
 
 
-	private Properties addDefaultProperties(Properties prop_model) {
-		
-		if (prop_model.get(MongoDBConfig.DBNAME_KEY) == null)
-			prop_model.put(MongoDBConfig.DBNAME_KEY,
-					DBNAME_DEFAULT.concat(String.valueOf(dbNameCounter++)));
-
-		logger.debug(" -> loaded DB Name : " + prop_model.get(MongoDBConfig.DBNAME_KEY));
-
-		return prop_model;
-	}
-
-
 	@Override
 	public void newComposite(ManagerModel model, CompositeType compositeType) {
 		logger.debug("PropertyHistoryManager, newComposite(ManagerModel model = "
@@ -134,88 +115,24 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager, Dynamic
 				+ ", CompositeType compositeType = "
 				+ (compositeType == null ? "null" : compositeType.getName()));
 
-		if (db == null) {
-
-			URL configuration = null;
-			if (model == null) { // model is root
-				// trying to retrieve an external default configuration file
-				File modelDirectory = new File("conf");
-
-				if (modelDirectory.exists() && modelDirectory.isDirectory()) {
-					for (File modelFile : modelDirectory.listFiles()) {
-						try {
-							String modelFileName = modelFile.getName();
-							
-							if (modelFileName.endsWith(".cfg")
-									&& modelFileName
-											.startsWith(CST.ROOT_COMPOSITE_TYPE)
-									&& modelFileName
-											.substring(
-													CST.ROOT_COMPOSITE_TYPE
-															.length() + 1)
-											.startsWith(this.getName())) {
-								configuration = modelFile.toURI().toURL();
-								logger.debug("Found external configuration file : "
-										+ configuration);
-							}
-
-						} catch (MalformedURLException e) {
-							logger.warn("Error when reading url : "
-									+ e.getMessage());
-						}
-					}
-				}
-			} else {
-				configuration = model.getURL();
-			}
-
-			Properties prop = MongoDBConfig.loadProperties(configuration);
-			prop = addDefaultProperties(prop);
-			data = new MongoDBConfig(prop);
-
-			try {
-
-				Builder options = new MongoClientOptions.Builder();
-
-				options.connectTimeout(data.dBTimeout);
-
-				if (mongoClient == null) {
-					mongoClient = new MongoClient(data.dbURL, options.build());
-				}
-
-				logger.info("trying to connect with database {} in host {}",
-						data.dBName, data.dbURL);
-
-				// force connection to be established
-				mongoClient.getDatabaseNames();
-
-				db = mongoClient.getDB(data.dBName);
-
-			} catch (Exception e) {
-				logger.error(
-						"{} is inactive, it was unable to find the DB in {}",
-						this.getName(), data.dbURL);
-			}
-
+		if (myConfiguration != null && myConfiguration.getDB() != null)
 			try {
 
 				/*
 				 * if attribute dropComection is true, drop all collections
 				 */
-				if (data.dropCollections.equals("true")) {
-					db.getCollection(ChangedAttributes).drop();
+				if (dropCollections) {
+					myConfiguration.getDB().getCollection(ChangedAttributes)
+							.drop();
 				}
 				logger.info("First connection with DB OK");
 
 				initialPropertiesPolling();
 
 			} catch (MongoException e) {
-				logger.error("no Mongo Database at URL {} name {}",
-						model.getURL(), data.dBName);
+				logger.error("Error connecting to mongo DB" + e.getMessage());
 				stop();
 			}
-		}
-
 	}
 
 	private void initialPropertiesPolling() {
@@ -233,20 +150,20 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager, Dynamic
 	public void start() throws Exception {
 
 		logger.debug("starting...");
-		ApamManagers.addPropertyManager(this);
-		ApamManagers.addDynamicManager(this);
-
+		if (myConfigFactory != null) {
+			myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
+			ApamManagers.addPropertyManager(this);
+			ApamManagers.addDynamicManager(this);
+		} else {
+			logger.error("Configuration Factory not bound");
+			stop();
+		}
 	}
 
 	public void stop() {
 		logger.debug("stopping...");
 		ApamManagers.removePropertyManager(this);
 		ApamManagers.removeDynamicManager(this);
-		if (mongoClient != null) {
-			mongoClient.close();
-		}
-		data = null;
-		db = null;
 	}
 
 	@Override
@@ -289,6 +206,13 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager, Dynamic
 	public void removedLink(Link wire) {
 		// Nothing to do
 
+	}
+
+	@Override
+	public String getDevicesStatesHistory(Set<String> devicesID,
+			String propertyName, long time_start, long time_end) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

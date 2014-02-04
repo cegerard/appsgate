@@ -13,6 +13,7 @@
 
 	<specification name="PropertyHistoryManagerSpec"
 		interfaces="appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager">
+
 	</specification>
 
 </apam>
