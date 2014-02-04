@@ -1,9 +1,6 @@
 package appsgate.lig.manager.propertyhistory;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +11,6 @@ import appsgate.lig.persistence.MongoDBConfiguration;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientOptions.Builder;
 import com.mongodb.MongoException;
 
 import fr.imag.adele.apam.ApamManagers;
@@ -110,17 +103,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 		return 20;
 	}
 
-	private Properties addDefaultProperties(Properties prop_model) {
-
-		if (prop_model.get(MongoDBConfigFactory.DBNAME_KEY) == null)
-			prop_model.put(MongoDBConfigFactory.DBNAME_KEY,
-					DBNAME_DEFAULT.concat(String.valueOf(dbNameCounter++)));
-
-		logger.debug(" -> loaded DB Name : "
-				+ prop_model.get(MongoDBConfigFactory.DBNAME_KEY));
-
-		return prop_model;
-	}
 
 	@Override
 	public void newComposite(ManagerModel model, CompositeType compositeType) {

@@ -13,8 +13,8 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
 	<specification name="ContextHistorySpec"
-	    interfaces="appsgate.lig.context.history.services.DataBasePullService,
-            appsgate.lig.context.history.services.DataBasePushService">
+	    interfaces="appsgate.lig.context.services.DataBasePullService,
+            appsgate.lig.context.services.DataBasePushService">
 	</specification>
 
 

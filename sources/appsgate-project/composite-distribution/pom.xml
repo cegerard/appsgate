@@ -111,109 +111,31 @@
 			<artifactId>PhilipsHUEImpl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>UbikitAdapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>WattecoAdapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>SimulationAdapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ContextHistoryMongoImpl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
         <dependency>
             <groupId>appsgate.components</groupId>
-            <artifactId>UbikitAdapter</artifactId>
+            <artifactId>PropertyHistoryManagerMongoImpl</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>WattecoAdapter</artifactId>
-            <version>${project.version}</version>
-        </dependency>     
-                <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>SimulationAdapter</artifactId>
-            <version>${project.version}</version>
-        </dependency>           
-                          
-            		
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreObjectSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreClockSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreCalendarSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreTempSensorSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreColorLightBulbSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreWeatherServiceSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreOccupancySpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreMediaBrowserSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreCO2SensorSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreSmartPlugSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreOnOffActuatorSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreContactSensorSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreKeyCardSensorSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreUndefinedSensorSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreSwitchSensorSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreMediaPlayerSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>CoreLumSensorSpec</artifactId> -->
-		<!-- <version>${project.version}</version> -->
-		<!-- </dependency> -->
 
 
 

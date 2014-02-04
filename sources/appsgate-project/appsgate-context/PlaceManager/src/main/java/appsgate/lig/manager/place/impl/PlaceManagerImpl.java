@@ -13,8 +13,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.context.history.services.DataBasePullService;
-import appsgate.lig.context.history.services.DataBasePushService;
+import appsgate.lig.context.services.DataBasePullService;
+import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.manager.place.messages.MoveObjectNotification;
 import appsgate.lig.manager.place.messages.PlaceManagerNotification;

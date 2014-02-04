@@ -92,8 +92,8 @@
 
 	<composite name="AppsGatePersistency" singleton="true">
 		<contentMngt>
-			<start implementation="PropertyHistoryManager" name="Global-PropertyHistoryManager" />
-			<start implementation="AppsgateContextHistory" name="Global-ContextHistoryManager"></start>
+			<start  implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
+			<start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager"></start>
 		</contentMngt>
 	</composite>
 	

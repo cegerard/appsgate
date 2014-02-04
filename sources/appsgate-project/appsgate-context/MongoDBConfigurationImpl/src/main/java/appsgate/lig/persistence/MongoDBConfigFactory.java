@@ -89,7 +89,7 @@ public class MongoDBConfigFactory {
 		return null;
 	}
 	
-	private void configValueChanged(Object newValue) {
+	public void configValueChanged(Object newValue) {
 		// Warning the new value should be injected automatically, do not make affectation
 		logger.debug("A value has changed, new value : "+newValue);
 		
@@ -104,7 +104,7 @@ public class MongoDBConfigFactory {
 	public MongoClient getMongoClient() {
 		logger.debug("Checking mongo client");
 		if (mongoClient != null) {
-			logger.debug("Mongo Client is null (first connection ?), trying to create one");
+			logger.debug("Mongo Client is not null");
 			// Forces the connection to check valid
 			if (!checkMongoClient())
 				return createMongoClient();
@@ -120,6 +120,7 @@ public class MongoDBConfigFactory {
 		try {
 			// Forces the connection to check valid
 			mongoClient.getDatabaseNames();
+			logger.debug("Checking Mongo OK");
 			return true;
 		} catch (MongoException exception) {
 			logger.warn("Retrieving databases names throws an error : "
@@ -130,6 +131,7 @@ public class MongoDBConfigFactory {
 
 	private MongoClient createMongoClient() {
 		try {
+			logger.debug("Creating new mongo client");
 			Builder options = new MongoClientOptions.Builder();
 			options.connectTimeout(dbTimeOut);
 			mongoClient = new MongoClient(new ServerAddress(dbHost, dbPort),

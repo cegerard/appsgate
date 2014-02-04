@@ -12,8 +12,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.context.history.services.DataBasePullService;
-import appsgate.lig.context.history.services.DataBasePushService;
+import appsgate.lig.context.services.DataBasePullService;
+import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.context.user.impl.AppsgateEndUser;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 

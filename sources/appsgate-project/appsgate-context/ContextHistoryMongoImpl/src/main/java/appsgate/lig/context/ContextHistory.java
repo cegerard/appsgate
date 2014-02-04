@@ -1,33 +1,23 @@
-package appsgate.lig.context.history;
+package appsgate.lig.context;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.context.history.services.DataBasePullService;
-import appsgate.lig.context.history.services.DataBasePushService;
+import appsgate.lig.context.services.DataBasePullService;
+import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.persistence.MongoDBConfigFactory;
 import appsgate.lig.persistence.MongoDBConfiguration;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientOptions.Builder;
 import com.mongodb.MongoException;
-
-import fr.imag.adele.apam.CST;
 
 /**
  * The context history is use to all every context component to save its state.

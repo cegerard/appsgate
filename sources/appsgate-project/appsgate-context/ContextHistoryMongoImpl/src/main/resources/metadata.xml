@@ -12,15 +12,15 @@
     xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<implementation name="AppsgateContextHistory"
-		classname="appsgate.lig.context.history.ContextHistory"
+	<implementation name="ContextHistoryMongoImpl"
+		classname="appsgate.lig.context.ContextHistory"
         specification="ContextHistorySpec"
 		singleton="true">
 
 	    <relation implementation="MongoDBConfigurationImpl"  field="myConfigFactory" resolve="external" />
 	    
-	    <ipojo:provides specifications="{appsgate.lig.context.history.services.DataBasePullService,
-	        appsgate.lig.context.history.services.DataBasePushService}"/>
+	    <ipojo:provides specifications="{appsgate.lig.context.services.DataBasePullService,
+	        appsgate.lig.context.services.DataBasePushService}"/>
 
 		<callback onInit="start" onRemove="stop" />
 	</implementation>

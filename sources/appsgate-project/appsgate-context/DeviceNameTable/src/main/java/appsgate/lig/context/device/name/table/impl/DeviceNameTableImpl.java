@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.name.table.messages.TableNameNotificationMsg;
 import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
-import appsgate.lig.context.history.services.DataBasePullService;
-import appsgate.lig.context.history.services.DataBasePushService;
+import appsgate.lig.context.services.DataBasePullService;
+import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
 
 /**
