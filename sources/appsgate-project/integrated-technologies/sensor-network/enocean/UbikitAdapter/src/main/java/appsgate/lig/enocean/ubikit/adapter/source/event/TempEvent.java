@@ -45,8 +45,7 @@ public class TempEvent implements TemperatureEvent.Listener {
 				+ " and in the desk the temp is about " + arg0.getTemperature()
 				+ " Celsius");
 		Instance instRef = enocean.getSensorInstance(arg0.getSourceItemUID());
-		instRef.setProperty("currentTemperature",
-				String.valueOf(arg0.getTemperature()));
+		instRef.setProperty("currentTemperature", String.valueOf(arg0.getTemperature()));
 	}
 
 }

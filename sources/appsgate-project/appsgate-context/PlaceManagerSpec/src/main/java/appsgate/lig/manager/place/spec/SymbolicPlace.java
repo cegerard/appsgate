@@ -70,7 +70,7 @@ public class SymbolicPlace {
 		super();
 		this.id = id;
 		this.name = name;
-		this.parent = parent;
+		setParent(parent);
 		tags = new ArrayList<String>();
 		properties = new HashMap<String, String>();
 		children = new ArrayList<SymbolicPlace>();
@@ -93,7 +93,7 @@ public class SymbolicPlace {
 		this.name = name;
 		this.tags = tags;
 		this.properties = properties;
-		this.parent = parent;
+		setParent(parent);
 		this.children = new ArrayList<SymbolicPlace>();
 		this.abstractsObjects = new ArrayList<String>();
 	}
@@ -116,7 +116,7 @@ public class SymbolicPlace {
 		this.name = name;
 		this.tags = tags;
 		this.properties = properties;
-		this.parent = parent;
+		setParent(parent);
 		this.children = new ArrayList<SymbolicPlace>();
 		this.abstractsObjects = abstractsObjects;
 	}
@@ -141,7 +141,7 @@ public class SymbolicPlace {
 		this.name = name;
 		this.tags = tags;
 		this.properties = properties;
-		this.parent = parent;
+		setParent(parent);
 		this.children = childrens;
 		this.abstractsObjects = abstractsObjects;
 	}
@@ -185,6 +185,9 @@ public class SymbolicPlace {
 	 */
 	public void setParent(SymbolicPlace parent) {
 		this.parent = parent;
+		if(parent != null) {
+			parent.addChild(this);
+		}
 	}
 
 	/**
@@ -196,11 +199,43 @@ public class SymbolicPlace {
 	}
 	
 	/**
+	 * Set tags list
+	 * @param tags the new tags list
+	 */
+	public void setTags(ArrayList<String> tags) {
+		this.tags = tags;
+	}
+	
+	/**
+	 * Remove all tags of this place
+	 */
+	public void clearTags() {
+		tags.clear();
+	}
+	
+	/**
 	 * Add a new tag to the current tag list
 	 * @param newTag the new tag to add
 	 */
-	public void addTag(String newTag) {
-		tags.add(newTag);
+	public boolean addTag(String newTag) {
+		return tags.add(newTag);
+	}
+	
+	/**
+	 * Remove a tag from the current tag list
+	 * @param newTag the new tag to add
+	 */
+	public boolean removeTag(String tag) {
+		return tags.remove(tag);
+	}
+	
+	/**
+	 * Test if a tag is associated to this place
+	 * @param tag the tag to test
+	 * @return true if the tag is associated, false otherwise
+	 */
+	public boolean isTagged(String tag) {
+		return tags.contains(tag);
 	}
 
 	/**
@@ -212,12 +247,55 @@ public class SymbolicPlace {
 	}
 
 	/**
+	 * Set the properties map
+	 * @param properties the new properties map
+	 */
+	public void setProperties(HashMap<String, String> properties) {
+		this.properties = properties;
+	}
+	
+	/**
+	 * Remove all properties associated to this place
+	 */
+	public void clearProperties() {
+		properties.clear();
+	}
+	
+	/**
 	 * Add a new property or update an existing one
 	 * @param key the property key
 	 * @param value the property value
+	 * @return true if key is a new key false if the key exist and the value has been replaced
 	 */
-	public void addProperty(String key, String value) {
-		properties.put(key, value);
+	public boolean addProperty(String key, String value) {
+		return (properties.put(key, value) == null);
+	}
+	
+	/**
+	 * Remove a property from the properties map
+	 * @param key the property key
+	 * @return true if the property has been removed
+	 */
+	public boolean removeProperty(String key) {
+		return (properties.remove(key) != null);
+	}
+	
+	/**
+	 * Get the property value associated to the key parameter
+	 * @param key the property key
+	 * @return the value associated to the key as a String
+	 */
+	public String getPropertyValue(String key) {
+		return properties.get(key);
+	}
+	
+	/**
+	 * Test if the property is associated to this place 
+	 * @param key the key of the property
+	 * @return true if the property key is found, false otherwise
+	 */
+	public boolean hasProperty(String key) {
+		return properties.containsKey(key);
 	}
 	
 	/**
@@ -227,42 +305,87 @@ public class SymbolicPlace {
 	public ArrayList<SymbolicPlace> getChildren() {
 		return children;
 	}
+	
+	/**
+	 * Set children of this place
+	 * @param children the new children list
+	 */
+	public void setChildren( ArrayList<SymbolicPlace> children) {
+		this.children = children;
+		for(SymbolicPlace child : children) {
+			child.setParent(parent);
+		}
+	}
+	
+	/**
+	 * remove all child of this place
+	 */
+	public void clearChildren() {
+		children.clear();
+	}
 
 	/**
 	 * Add a new child to the children list
 	 * @param child the child SymbolicPlace
 	 */
-	public void addChild(SymbolicPlace child) {
-		children.add(child);
+	public boolean addChild(SymbolicPlace child) {
+		return children.add(child);
+	}
+	
+	/**
+	 * Remove a child
+	 * @param child the child to remove
+	 * @return true if the child is removed, false otherwise
+	 */
+	public boolean removeChild(SymbolicPlace child) {
+		return children.remove(child);
+	}
+	
+	/**
+	 * Test if the place contain the place in parameter has a child
+	 * @param child the place to test
+	 * @return true if child is a child of this place, false otherwise
+	 */
+	public boolean hasChild(SymbolicPlace child) {
+		return children.contains(child);
 	}
 	
 	/**
 	 * Get associate core object identifier list
 	 * @return the core object identifier as an ArrayList<String>
 	 */
-	public ArrayList<String> getAbstractsObjects() {
+	public ArrayList<String> getCoreObjects() {
 		return abstractsObjects;
 	}
-
+	
 	/**
-	 * Check if a core object is located in this place
-	 * @param objId the core object identifier
-	 * @return true if the core object is associate to this location, false otherwise
+	 * Set the core objects list
+	 * @param coreObjectsList the new core objects list
 	 */
-	public boolean isHere(String objId) {
-		return abstractsObjects.contains(objId);
+	public void setCoreObjects(ArrayList<String> coreObjectsList) {
+		abstractsObjects = coreObjectsList;
+	}
+	
+	/**
+	 * Remove all core objects of this place
+	 */
+	public void clearCoreObjects() {
+		abstractsObjects.clear();
 	}
 	
 	/**
 	 * Add on object to this place
 	 * @param obj the new abstract object identifier
 	 */
-	public void addObject(String objId) {
+	public boolean addCoreObject(String objId) {
 		if(abstractsObjects.add(objId)){
 			logger.debug("Core device "+objId+ " added to "+name+ "/ "+id);
+			return true;
 		} else {
 			logger.error("Error adding "+objId+" to "+id);
 		}
+		
+		return false;
 	}
 	
 	/**
@@ -270,19 +393,22 @@ public class SymbolicPlace {
 	 * 
 	 * @param obj the object to remove
 	 */
-	public void removeObject(String objId) {
+	public boolean removeCoreObject(String objId) {
 		if(abstractsObjects.remove(objId)) {
 			logger.debug("Core device "+objId+ " remove from "+name+ "/ "+id);
+			return true;
 		} else {
 			logger.error("Error removing "+objId+" to "+id);
 		}
+		return false;
 	}
-
 	/**
-	 * Remove all the objects from this place 
+	 * Check if a core object is located in this place
+	 * @param objId the core object identifier
+	 * @return true if the core object is associate to this location, false otherwise
 	 */
-	public void removeAll() {
-		abstractsObjects.clear();
+	public boolean hasCoreObject(String objId) {
+		return abstractsObjects.contains(objId);
 	}
 
 	/**

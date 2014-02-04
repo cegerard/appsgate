@@ -181,27 +181,30 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized boolean removePlace(String placeId) {
-		SymbolicPlace loc = placeObjectsMap.get(placeId);
-		SymbolicPlace parent = loc.getParent();
+		SymbolicPlace selectedPlace = placeObjectsMap.get(placeId);
+		SymbolicPlace parent = selectedPlace.getParent();
 		
-		loc.removeAll();
-		for(SymbolicPlace child : loc.getChildren()) {
-			child.setParent(parent);
-		}
+		if(parent != null) {
+			for(SymbolicPlace child : selectedPlace.getChildren()) {
+				removePlace(child.getId());
+			}
+			selectedPlace.clearCoreObjects();
+			parent.removeChild(selectedPlace);
+			placeObjectsMap.remove(placeId);
+			notifyPlace(placeId, selectedPlace.getName(), "removePlace");
 		
-		placeObjectsMap.remove(placeId);
-		notifyPlace(placeId, "", "removePlace");
-		
-		// save the new devices name table 
-		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+			// save the new devices name table 
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
 					
-		Set<String> keys = placeObjectsMap.keySet();
-		for(String e : keys) {
-			SymbolicPlace sl = placeObjectsMap.get(e);
-			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-		}
+			Set<String> keys = placeObjectsMap.keySet();
+			for(String e : keys) {
+				SymbolicPlace sl = placeObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}
 					
-		return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, loc.getName(), properties);		
+			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, selectedPlace.getName(), properties);
+		}
+		return false;
 	}
 
 	/**
@@ -213,7 +216,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	private synchronized void addObject(String objId,
 			String placeId) {
 		SymbolicPlace loc = placeObjectsMap.get(placeId);
-		loc.addObject(objId);
+		loc.addCoreObject(objId);
 		
 		// save the new devices name table 
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -240,12 +243,12 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		} else if (!oldPlaceID.contentEquals("-1") && !newPlaceID.contentEquals("-1")) {
 			SymbolicPlace oldLoc = placeObjectsMap.get(oldPlaceID);
 			SymbolicPlace newLoc = placeObjectsMap.get(newPlaceID);
-			oldLoc.removeObject(objId);
-			newLoc.addObject(objId);
+			oldLoc.removeCoreObject(objId);
+			newLoc.addCoreObject(objId);
 			moved = true;
 		} else if (!oldPlaceID.contentEquals("-1") && newPlaceID.contentEquals("-1")) {
 			SymbolicPlace oldLoc = placeObjectsMap.get(oldPlaceID);
-			oldLoc.removeObject(objId);
+			oldLoc.removeCoreObject(objId);
 			moved = true;
 		}
 		
@@ -315,7 +318,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		while(it.hasNext() && !found) {
 			
 			loc = it.next();
-			if(loc.isHere(objId)) {
+			if(loc.hasCoreObject(objId)) {
 				found = true;
 			}
 		}
