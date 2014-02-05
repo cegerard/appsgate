@@ -10,7 +10,4 @@
 		<ipojo:requires field="contextHistory_push"/>
 	</implementation>
 
-<!-- 	<apam-instance name="PlaceManagerInst" implementation="PlaceManagerImpl"> -->
-<!-- 	</apam-instance> -->
-
 </apam>

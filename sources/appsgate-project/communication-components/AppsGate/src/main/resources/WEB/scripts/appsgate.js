@@ -373,9 +373,9 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		/**
  		 * add new place
  		 */
-		this.addPlace = function (id, name)
+		this.addPlace = function (name, parent)
 		{
-			var place = eval({"id":id, "name":name, "devices":[] });
+			var place = eval({"name":name, "parent":parent, "devices":[] });
 			var call = eval({"method":"newPlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-addplace"});
 			websocket.send(JSON.stringify(call));
 		}
