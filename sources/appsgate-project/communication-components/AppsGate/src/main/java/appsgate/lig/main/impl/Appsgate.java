@@ -202,7 +202,7 @@ public class Appsgate implements AppsGateSpec {
 			String parent = place.getString("parent");
 			SymbolicPlace parentPlace = placeManager.getSymbolicPlace(parent);
 			if(parentPlace != null) {
-				String placeId = placeManager.addPlace(place.getString("name"), parentPlace);
+				String placeId = placeManager.addPlace(place.getString("name"), parent);
 				JSONArray devices = place.getJSONArray("devices");
 				int size = devices.length();
 				int i = 0;

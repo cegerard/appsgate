@@ -152,17 +152,13 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	}
 
 	@Override
-	public synchronized String addPlace(String name, SymbolicPlace parent) {
+	public synchronized String addPlace(String name, String parent) {
 
 		String placeId = String.valueOf(new String(name+new Double(Math.random())).hashCode());
 		if (!placeObjectsMap.containsKey(placeId)) {
-			SymbolicPlace newPlace = new SymbolicPlace(placeId, name, parent);
+			SymbolicPlace newPlace = new SymbolicPlace(placeId, name, placeObjectsMap.get(parent));
 			placeObjectsMap.put(placeId, newPlace);
-			if(parent != null) {
-				parent.addChild(newPlace);
-			}
 			notifyPlace(placeId, name, "newPlace");
-			
 			// Save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
 			
@@ -171,7 +167,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 				SymbolicPlace sl = placeObjectsMap.get(e);
 				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
 			}
-			
+
 			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), placeId, name, properties)) {
 				return placeId;
 			}
@@ -290,7 +286,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	}
 	
 	@Override
-	public SymbolicPlace getSymbolicPlace(String placId) {
+	public synchronized SymbolicPlace getSymbolicPlace(String placId) {
 		return placeObjectsMap.get(placId);
 	}
 
@@ -309,7 +305,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	}
 	
 	@Override
-	public String getCoreObjectPlaceId(String objId) {
+	public synchronized String getCoreObjectPlaceId(String objId) {
 		Iterator<SymbolicPlace>  it = placeObjectsMap.values().iterator();
 		
 		SymbolicPlace loc = null;
@@ -362,4 +358,277 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		return notif;
 	}
 
+	@Override
+	public synchronized boolean movePlace(String placeId, String newParentId) {
+		try {
+			SymbolicPlace place = placeObjectsMap.get(placeId);
+			SymbolicPlace newParent = placeObjectsMap.get(newParentId);
+		
+			String oldParent = place.getParent().getId();
+			place.setParent(newParent);
+			
+			notifyPlace(placeId, newParentId, "movePlace");
+			
+			// save in data base
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+								
+			Set<String> keys = placeObjectsMap.keySet();
+			for(String e : keys) {
+				SymbolicPlace sl = placeObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}		
+			return contextHistory_push.pushData_change(this.getClass().getSimpleName(), placeId, oldParent, newParentId, properties);	
+			
+		}catch(Exception e){logger.error(e.getMessage());}
+		return false;
+	}
+
+	@Override
+	public synchronized void setTagsList(String placeId, ArrayList<String> tags) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		place.setTags(tags);
+		
+		notifyPlace(placeId, "newTagList", "updatePlaceTag");
+		
+		// save in data base
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+							
+		Set<String> keys = placeObjectsMap.keySet();
+		for(String e : keys) {
+			SymbolicPlace sl = placeObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+		}		
+		contextHistory_push.pushData_change(this.getClass().getSimpleName(), placeId, "", "tags", properties);
+	}
+
+	@Override
+	public synchronized void clearTagsList(String placeId) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		place.clearTags();
+		
+		notifyPlace(placeId, "taglistFree", "updatePlaceTag");
+		
+		// save in data base
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+
+		Set<String> keys = placeObjectsMap.keySet();
+		for (String e : keys) {
+			SymbolicPlace sl = placeObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String, Object>(e, sl
+					.getDescription().toString()));
+		}
+		contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, "tags", properties);
+	}
+
+	@Override
+	public synchronized boolean addTag(String placeId, String tag) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		if (place.addTag(tag)) {
+
+			notifyPlace(placeId, tag, "updatePlaceTag");
+			
+			// save in data base
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+
+			Set<String> keys = placeObjectsMap.keySet();
+			for (String e : keys) {
+				SymbolicPlace sl = placeObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String, Object>(e,
+						sl.getDescription().toString()));
+			}
+			return contextHistory_push.pushData_add(this.getClass().getSimpleName(), placeId, "tag", tag, properties);
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized boolean removeTag(String placeId, String tag) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		if(place.removeTag(tag)) {
+		
+			notifyPlace(placeId, tag, "removePlaceTag");
+			
+			// save in data base
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+
+			Set<String> keys = placeObjectsMap.keySet();
+			for (String e : keys) {
+				SymbolicPlace sl = placeObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
+			}
+			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, "tag", tag, properties);
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized void setProperties(String placeId, HashMap<String, String> properties) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		place.setProperties(properties);
+		notifyPlace(placeId, "newPropertiesList", "updatePlaceProp");
+		// save in data base
+		ArrayList<Map.Entry<String, Object>> propertiesDB = new ArrayList<Map.Entry<String, Object>>();
+
+		Set<String> keys = placeObjectsMap.keySet();
+		for (String e : keys) {
+			SymbolicPlace sl = placeObjectsMap.get(e);
+			propertiesDB.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
+		}
+		contextHistory_push.pushData_change(this.getClass().getSimpleName(), placeId, "", "properties", propertiesDB);
+	}
+
+	@Override
+	public synchronized void clearPropertiesList(String placeId) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		place.clearProperties();
+		notifyPlace(placeId, "propertiesListFree", "updatePlaceProp");
+		// save in data base
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+
+		Set<String> keys = placeObjectsMap.keySet();
+		for (String e : keys) {
+			SymbolicPlace sl = placeObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String, Object>(e,
+					sl.getDescription().toString()));
+		}
+		contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, "properties", properties);
+	}
+
+	@Override
+	public synchronized boolean addProperty(String placeId, String key, String value) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		if( place.addProperty(key, value)) {
+			notifyPlace(placeId, key+"-"+value, "updatePlaceProp");
+			// save in data base
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+
+			Set<String> keys = placeObjectsMap.keySet();
+			for (String e : keys) {
+				SymbolicPlace sl = placeObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
+			}
+			return contextHistory_push.pushData_add(this.getClass().getSimpleName(), placeId, "property", key, properties);
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized boolean removeProperty(String placeId, String key) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		if( place.removeProperty(key)) {
+			notifyPlace(placeId, key, "removePlaceProp");
+			// save in data base
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+
+			Set<String> keys = placeObjectsMap.keySet();
+			for (String e : keys) {
+				SymbolicPlace sl = placeObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
+			}
+			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, "property", key, properties);
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized void removeAllCoreObject(String placeId) {
+		SymbolicPlace place = placeObjectsMap.get(placeId);
+		place.clearCoreObjects();
+		notifyPlace(placeId, "coreObjectListFree", "updatePlaceObject");
+		// save in data base
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+
+		Set<String> keys = placeObjectsMap.keySet();
+		for (String e : keys) {
+			SymbolicPlace sl = placeObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
+		}
+		contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, "coreObject", properties);
+	}
+
+	@Override
+	public synchronized SymbolicPlace getRootPlace() {
+		SymbolicPlace rootPlace = null;
+		for(SymbolicPlace place : placeObjectsMap.values()) {
+			if(place.getParent() == null) {
+				rootPlace = place;
+				break;
+			}
+		}
+		return rootPlace;
+	}
+
+	@Override
+	public synchronized ArrayList<SymbolicPlace> getPlaces() {
+		return new ArrayList<SymbolicPlace>(placeObjectsMap.values());
+	}
+
+	@Override
+	public synchronized ArrayList<SymbolicPlace> getPlacesWithName(String name) {
+		ArrayList<SymbolicPlace> placeName = new ArrayList<SymbolicPlace>();
+		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
+			if(currentPlace.getName().contentEquals(name)){
+				placeName.add(currentPlace);
+			}
+		}
+		return placeName;
+	}
+
+	@Override
+	public synchronized ArrayList<SymbolicPlace> getPlacesWithTags(ArrayList<String> tags) {
+		ArrayList<SymbolicPlace> placeTags = new ArrayList<SymbolicPlace>();
+		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
+			if(currentPlace.getTags().containsAll(tags)){
+				placeTags.add(currentPlace);
+			}
+		}
+		return placeTags;
+	}
+
+	@Override
+	public synchronized ArrayList<SymbolicPlace> getPlacesWithProperties(
+			ArrayList<String> propertiesKey) {
+		ArrayList<SymbolicPlace> placeprop = new ArrayList<SymbolicPlace>();
+		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
+			if(currentPlace.getProperties().keySet().containsAll(propertiesKey)){
+				placeprop.add(currentPlace);
+			}
+		}
+		return placeprop;
+	}
+
+	@Override
+	public synchronized ArrayList<SymbolicPlace> getPlacesWithPropertiesValue(HashMap<String, String> properties) {
+		ArrayList<SymbolicPlace> placeprop = new ArrayList<SymbolicPlace>();
+		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
+			HashMap<String, String> currentProperties = currentPlace.getProperties();
+			boolean equals =  false;
+			for(String key : properties.keySet()) {
+				if(currentProperties.containsKey(key)){
+					if(currentProperties.get(key).contentEquals(properties.get(key))) {
+						equals = true;
+					}else{
+						equals = false;
+						break;
+					}
+				}else {
+					equals = false;
+					break;
+				}
+			}
+			
+			if(equals){
+				placeprop.add(currentPlace);
+			}
+		}
+		return placeprop;
+	}
+	
+	/*************************/
+	/** for JUnit mock test **/
+	/*************************/
+	public void initiateMock(DataBasePullService pull, DataBasePushService push) {
+		this.contextHistory_pull = pull;
+		this.contextHistory_push = push;
+	}
 }

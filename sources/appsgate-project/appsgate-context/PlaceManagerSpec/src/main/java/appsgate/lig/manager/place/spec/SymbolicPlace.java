@@ -184,9 +184,15 @@ public class SymbolicPlace {
 	 * @param parent the new parent of this place
 	 */
 	public void setParent(SymbolicPlace parent) {
+		SymbolicPlace oldParent = this.parent;
 		this.parent = parent;
+		
 		if(parent != null) {
 			parent.addChild(this);
+		}
+		
+		if(oldParent != null) {
+			oldParent.removeChild(this);
 		}
 	}
 
@@ -315,13 +321,6 @@ public class SymbolicPlace {
 		for(SymbolicPlace child : children) {
 			child.setParent(parent);
 		}
-	}
-	
-	/**
-	 * remove all child of this place
-	 */
-	public void clearChildren() {
-		children.clear();
 	}
 
 	/**

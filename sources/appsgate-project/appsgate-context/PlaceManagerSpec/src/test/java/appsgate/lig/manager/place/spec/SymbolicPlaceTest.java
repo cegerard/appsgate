@@ -157,13 +157,6 @@ public class SymbolicPlaceTest {
 	}
 
 	@Test
-	public void testClearChildren() {
-		assertNotEquals(0, rootPlace.getChildren().size());
-		rootPlace.clearChildren();
-		assertEquals(0, rootPlace.getChildren().size());
-	}
-
-	@Test
 	public void testAddChild() {
 		assertTrue(rootPlace.addChild(living));
 		assertTrue(rootPlace.addChild(kitchen));
