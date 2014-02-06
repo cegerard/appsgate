@@ -152,13 +152,6 @@ public class NodeIf extends Node {
     }
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        expBool.collectVariables(s);
-        seqRulesTrue.collectVariables(s);
-        seqRulesFalse.collectVariables(s);
-    }
-
-    @Override
     protected Node copy(Node parent) {
         NodeIf ret = new NodeIf(parent);
         ret.setSymbolTable(this.getSymbolTable());

@@ -354,34 +354,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         return null;
     }
 
-    /**
-     * Method that returns the SpokVariable name of a given id and type
-     *
-     * @param id
-     * @param type
-     * @return
-     */
-    protected String getElementKey(String id, String type) {
-        if (this.symbolTable != null) {
-            String key;
-            key = this.symbolTable.getAnonymousVariableKey(id, type);
-            if (key != null) {
-                return key;
-            }
-        }
-        if (parent != null) {
-            return parent.getElementKey(id, type);
-        }
-        return null;
-    }
-
-    /**
-     * Helper method to build an expert Program from anonymous variables
-     *
-     * @param s the symbol table to populate
-     */
-    protected void collectVariables(SymbolTable s) {
-    }
 
     /**
      * Method to copy a node and the rules behind

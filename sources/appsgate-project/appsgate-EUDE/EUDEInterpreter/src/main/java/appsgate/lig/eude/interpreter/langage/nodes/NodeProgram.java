@@ -368,7 +368,6 @@ public class NodeProgram extends Node {
 
     public String getExpertProgramScript() {
         SymbolTable vars = new SymbolTable();
-        seqRules.collectVariables(vars);
         this.setSymbolTable(vars);
         return this.getHeader() + vars.getExpertProgramDecl() + "\n" + seqRules.getExpertProgramScript();
     }
@@ -381,11 +380,6 @@ public class NodeProgram extends Node {
         ret += "Author: " + this.author + "\n";
         ret += "Target:" + this.target + "\n";
         return ret;
-    }
-
-    @Override
-    protected void collectVariables(SymbolTable s) {
-        seqRules.collectVariables(s);
     }
 
     @Override

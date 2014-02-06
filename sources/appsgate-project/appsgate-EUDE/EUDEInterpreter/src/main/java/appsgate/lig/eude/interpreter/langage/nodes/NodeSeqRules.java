@@ -210,13 +210,6 @@ public class NodeSeqRules extends Node {
     }
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        for (Node seq : instructions) {
-            seq.collectVariables(s);
-        }
-    }
-
-    @Override
     protected Node copy(Node parent) {
         NodeSeqRules ret = new NodeSeqRules(parent);
         ret.instructions = new ArrayList<Node>();

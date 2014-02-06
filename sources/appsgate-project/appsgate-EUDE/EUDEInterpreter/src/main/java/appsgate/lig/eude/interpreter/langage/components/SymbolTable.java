@@ -11,6 +11,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class to store the variable
+ * @author jr
+ */
 public final class SymbolTable {
 
     // Logger
@@ -73,21 +77,6 @@ public final class SymbolTable {
         }
     }
 
-    /**
-     * Method to add a Variable in the SymbolTable
-     *
-     * @param id the id of the type referenced in the variable
-     * @param type the type referenced by the variable
-     * @return the SpokVariable created
-     */
-    public SpokVariable addAnonymousVariable(String id, String type) {
-        SpokVariable e = new SpokVariable(id, type);
-        if (this.getVariableKey(e) == null) {
-            String keyVal = type.substring(0, 3) + "_" + variables.size();
-            addVariable(keyVal, e);
-        }
-        return e;
-    }
 
     /**
      *
@@ -116,16 +105,6 @@ public final class SymbolTable {
         return null;
     }
 
-    /**
-     * Method that find the key of a variable given his type and id
-     *
-     * @param id
-     * @param type
-     * @return
-     */
-    public String getAnonymousVariableKey(String id, String type) {
-        return getVariableKey(new SpokVariable(id, type));
-    }
 
     /**
      *
@@ -179,10 +158,18 @@ public final class SymbolTable {
         return ret;
     }
 
+    /**
+     * 
+     * @return the list of variables
+     */
     public List<String> getVarList() {
         return varNames;
     }
 
+    /**
+     * 
+     * @return the JSON description of the symbol table
+     */
     public JSONArray getJSONDescription() {
         JSONArray a = new JSONArray();
         int i = 0;

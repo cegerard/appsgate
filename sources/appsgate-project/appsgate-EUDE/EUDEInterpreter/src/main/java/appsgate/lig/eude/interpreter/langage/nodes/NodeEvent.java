@@ -208,11 +208,6 @@ public class NodeEvent extends Node {
     }
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        s.addAnonymousVariable(source.getValue(), source.getType());
-    }
-
-    @Override
     protected Node copy(Node parent) {
         NodeEvent ret = new NodeEvent(parent);
         ret.eventName = eventName;

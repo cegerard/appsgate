@@ -124,12 +124,6 @@ public class NodeWhen extends Node {
     }
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        seqEvent.collectVariables(s);
-        seqRules.collectVariables(s);
-    }
-
-    @Override
     protected Node copy(Node parent) {
         NodeWhen ret = new NodeWhen(parent);
         ret.setSymbolTable(this.getSymbolTable());

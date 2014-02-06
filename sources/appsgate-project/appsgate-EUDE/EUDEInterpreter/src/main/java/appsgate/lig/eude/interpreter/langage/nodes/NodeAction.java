@@ -265,11 +265,6 @@ public class NodeAction extends Node {
     }
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        s.addAnonymousVariable(target.getValue(), target.getType());
-    }
-
-    @Override
     protected Node copy(Node parent) {
         NodeAction ret = new NodeAction(parent);
         ret.setSymbolTable(this.getSymbolTable());

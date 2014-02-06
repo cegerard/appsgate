@@ -39,19 +39,6 @@ public class SymbolTableTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of addAnonymousVariable method, of class SymbolTable.
-     */
-    @Test
-    public void testAddAnonymousVariable() {
-        System.out.println("addAnonymousVariable");
-        String id = "0";
-        String type = "toto";
-        SymbolTable instance = new SymbolTable();
-        SpokVariable expResult = new SpokVariable(id, type);
-        SpokVariable result = instance.addAnonymousVariable(id, type);
-        assertTrue(expResult.equals(result));
-    }
 
     /**
      * Test of addVariable method, of class SymbolTable.
@@ -82,20 +69,6 @@ public class SymbolTableTest {
     }
 
     /**
-     * Test of getAnonymousVariableKey method, of class SymbolTable.
-     */
-    @Test
-    public void testGetAnonymousVariableKey() {
-        System.out.println("getAnonymousVariableKey");
-        String id = "";
-        String type = "";
-        SymbolTable instance = new SymbolTable();
-        String expResult = "";
-        String result = instance.getAnonymousVariableKey(id, type);
-        assertNull(result);
-    }
-
-    /**
      * Test of getVariableByKey method, of class SymbolTable.
      */
     @Test
@@ -110,6 +83,7 @@ public class SymbolTableTest {
 
     /**
      * Test of addFunction method, of class SymbolTable.
+     * @throws java.lang.Exception
      */
     @Test
     public void testAddFunction() throws Exception {
