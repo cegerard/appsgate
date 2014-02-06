@@ -13,8 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import appsgate.lig.context.history.services.DataBasePullService;
-import appsgate.lig.context.history.services.DataBasePushService;
+import appsgate.lig.context.services.DataBasePullService;
+import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 
 public class PlaceManagerImplTest {
