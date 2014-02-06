@@ -13,7 +13,6 @@ import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +34,7 @@ public class NodeAction extends Node {
     /**
      * the type of the target of the action ('device' or 'program')
      */
-    private String targetType;
-    /**
-     * the id of the target of the action
-     */
-    private String targetId;
+    private Node target;
     /**
      * the name of the method to apply
      */
@@ -63,11 +58,10 @@ public class NodeAction extends Node {
      * @throws SpokNodeException if the interpretation of JSON fails
      */
     public NodeAction(JSONObject ruleJSON, Node parent)
-            throws SpokNodeException {
+            throws SpokException {
         super(parent);
 
-        targetType = ruleJSON.optString("targetType");
-        targetId = ruleJSON.optString("targetId");
+        target = Builder.buildFromJSON(getJSONObject(ruleJSON, "target"), this);
         methodName = ruleJSON.optString("methodName");
         args = ruleJSON.optJSONArray("args");
         if (args == null) {
@@ -98,14 +92,14 @@ public class NodeAction extends Node {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         try {
-            if (targetType.equals("device")) {
-                callDeviceAction(targetId);
-            } else if (targetType.equals("program")) {
-                callProgramAction(targetId);
-            } else if (targetType.equals("list")) {
-                callListAction(targetId);
+            if (target.getType().equals("device")) {
+                callDeviceAction(target.getValue());
+            } else if (target.getType().equals("programCall")) {
+                callProgramAction(target.getValue());
+            } else if (target.getType().equals("list")) {
+                callListAction(target.getValue());
             } else {
-                LOGGER.warn("Action type ({}) not supported", targetType);
+                LOGGER.warn("Action type ({}) not supported", target.getType());
             }
         } catch (SpokException e) {
             LOGGER.error("Error at execution: " + e);
@@ -157,7 +151,7 @@ public class NodeAction extends Node {
             }
 
         } else {
-            LOGGER.error("Program not found: {}", targetId);
+            LOGGER.error("Program not found: {}", this.target.getValue());
         }
     }
 
@@ -219,10 +213,10 @@ public class NodeAction extends Node {
 
     @Override
     public void specificStop() {
-        if (targetType.equals("program")) {
+        if (target.getType().equals("programCall")) {
             NodeProgram p = null;
             try {
-                p = getMediator().getNodeProgram(targetId);
+                p = getMediator().getNodeProgram(target.getValue());
             } catch (SpokExecutionException ex) {
                 LOGGER.warn("The mediator has not been found");
             }
@@ -237,7 +231,7 @@ public class NodeAction extends Node {
 
     @Override
     public String toString() {
-        return "[Node Action: " + methodName + " on " + targetId + "]";
+        return "[Node Action: " + methodName + " on " + target.getValue() + "]";
 
     }
 
@@ -246,8 +240,7 @@ public class NodeAction extends Node {
         JSONObject o = new JSONObject();
         try {
             o.put("type", "action");
-            o.put("targetType", targetType);
-            o.put("targetId", targetId);
+            o.put("target", target.getJSONDescription());
             o.put("methodName", methodName);
             o.put("args", args);
             o.put("returnType", returnType);
@@ -262,7 +255,7 @@ public class NodeAction extends Node {
     @Override
     public String getExpertProgramScript() {
         String ret;
-        ret = this.getElementKey(targetId, targetType) + ".";
+        ret = target.getExpertProgramScript() + ".";
         String cmd = "";
         if (this.command != null) {
             cmd = this.command.toString();
@@ -273,7 +266,7 @@ public class NodeAction extends Node {
 
     @Override
     protected void collectVariables(SymbolTable s) {
-        s.addAnonymousVariable(targetId, targetType);
+        s.addAnonymousVariable(target.getValue(), target.getType());
     }
 
     @Override
@@ -286,8 +279,7 @@ public class NodeAction extends Node {
         }
         ret.returnType = returnType;
         ret.methodName = methodName;
-        ret.targetId = targetId;
-        ret.targetType = targetType;
+        ret.target = target.copy(parent);
         ret.command = command;
         return ret;
 

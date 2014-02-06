@@ -21,8 +21,10 @@
                         "events": [
                             {
                                 "type": "event",
-                                "sourceType": "device",
-                                "sourceId": "PremierAppel",
+                                "source": {
+                                    "type": "device",
+                                    "id": "PremierAppel"
+                                },
                                 "eventName": "makeCall",
                                 "eventValue": "1"
                             }
@@ -33,11 +35,13 @@
                         "rules": [
                             {
                                 "type": "action",
-                                "targetId": "FirstWhen",
                                 "methodName": "On",
                                 "args": [],
                                 "action": "DoJob",
-                                "targetType": "device"
+                                "target": {
+                                    "type": "device",
+                                    "id": "FirstWhen"
+                                }
                             },
                             {
                                 "type": "when",
@@ -46,8 +50,10 @@
                                     "events": [
                                         {
                                             "type": "event",
-                                            "sourceType": "device",
-                                            "sourceId": "PremierAppel",
+                                            "source": {
+                                                "type": "device",
+                                                "id": "PremierAppel"
+                                            },
                                             "eventName": "makeCall",
                                             "eventValue": "1"
                                         }
@@ -59,7 +65,10 @@
                                     "methodName": "On",
                                     "args": [],
                                     "action": "DoJob",
-                                    "targetType": "device"
+                                    "target": {
+                                        "type": "device",
+                                        "id": "FirstWhen"
+                                    }
                                 }
                             }
                         ]
@@ -67,8 +76,10 @@
                 },
                 {
                     "type": "action",
-                    "targetType": "device",
-                    "targetId": "test",
+                    "target": {
+                        "type": "device",
+                        "id": "test"
+                    },
                     "methodName": "assert",
                     "action": []
                 }

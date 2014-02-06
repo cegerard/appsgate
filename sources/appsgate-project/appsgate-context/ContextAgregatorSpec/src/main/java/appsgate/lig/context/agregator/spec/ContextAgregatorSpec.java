@@ -27,5 +27,21 @@ public interface ContextAgregatorSpec {
      * @return an empty array if nothing is found or the array of types
      */
     public JSONArray getSubtypes(JSONArray typeList);
+    
+    /**
+     * 
+     * @param brickType
+     * @param stateName
+     * @param value
+     * @return 
+     */
+    public JSONArray getEventsFromState(String brickType, String stateName, String value);
+    
+    /**
+     * 
+     * @param targetId
+     * @return 
+     */
+    public String getBrickType(String targetId);
 
 }

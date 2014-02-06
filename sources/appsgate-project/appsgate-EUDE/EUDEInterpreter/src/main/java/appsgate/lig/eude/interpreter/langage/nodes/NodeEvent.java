@@ -9,7 +9,6 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import java.util.logging.Level;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,21 +32,25 @@ public class NodeEvent extends Node {
     /**
      * Type of the source to listen. Can be "program" or "device"
      */
-    private final String sourceType;
-    /**
-     * ID of the source to listen
-     */
-    private final String sourceId;
+    private Node source;
 
     /**
      * Name of the event to listen
      */
-    private final String eventName;
+    private String eventName;
 
     /**
      * Value of the event to wait
      */
-    private final String eventValue;
+    private String eventValue;
+    
+    /**
+     * 
+     * @param parent 
+     */
+    private NodeEvent(Node parent) {
+        super(parent);
+    }
 
     /**
      *
@@ -59,8 +62,8 @@ public class NodeEvent extends Node {
      */
     public NodeEvent(String s_type, String s_id, String name, String value, Node parent) {
         super(parent);
-        sourceType = s_type;
-        sourceId = s_id;
+        Node s = new NodeValue(s_type, s_id, this);
+        source = s;
         eventName = name;
         eventValue = value;
     }
@@ -71,10 +74,9 @@ public class NodeEvent extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeEvent(JSONObject eventJSON, Node parent) throws SpokNodeException {
+    public NodeEvent(JSONObject eventJSON, Node parent) throws SpokException {
         super(parent);
-        sourceType = getJSONString(eventJSON, "sourceType");
-        sourceId = getJSONString(eventJSON, "sourceId");
+        source = Builder.buildFromJSON(getJSONObject(eventJSON, "source"), this);
         eventName = getJSONString(eventJSON, "eventName");
         eventValue = getJSONString(eventJSON, "eventValue");
 
@@ -93,28 +95,28 @@ public class NodeEvent extends Node {
         }
 
         // if the source of the event is a program
-        if (sourceType.equals("program")) {
+        if (source.getType().equals("programCall")) {
             // get the node of the program
             NodeProgram p;
-            p = mediator.getNodeProgram(sourceId);
+            p = mediator.getNodeProgram(source.getValue());
             // if it exists
             if (p != null) {
                 // listen to its start event...
                 if (eventName.equals("runningState")) {
-                    LOGGER.trace("Node event added for {}", sourceId);
+                    LOGGER.trace("Node event added for {}", source.getValue());
                     mediator.addNodeListening(this);
                 } else {
                     LOGGER.warn("Event ({}) not supported for programs.", eventName);
                 }
             } else {
                 // interpreter does not know the program, then the end event is automatically fired
-                LOGGER.warn("Program {} not found", sourceId);
+                LOGGER.warn("Program {} not found", source.getValue());
                 setStarted(false);
                 fireEndEvent(new EndEvent(this));
             }
-            // sourceType is "device"
+            // source.getType() is "device"
         } else {
-            LOGGER.trace("Node event added for {}", sourceId);
+            LOGGER.trace("Node event added for {}", source.getValue());
             mediator.addNodeListening(this);
         }
 
@@ -123,15 +125,15 @@ public class NodeEvent extends Node {
 
     @Override
     public void specificStop() {
-        EUDEMediator mediator = null;
+        EUDEMediator mediator;
         try {
             mediator = getMediator();
         } catch (SpokExecutionException ex) {
             LOGGER.error("Unable to stop this node cause the mediator has not been found");
             return;
         }
-        if (sourceType.equals("program")) {
-            NodeProgram p = mediator.getNodeProgram(sourceId);
+        if (source.getType().equals("programCall")) {
+            NodeProgram p = mediator.getNodeProgram(source.getValue());
             if (eventName.equals("start")) {
                 p.removeStartEventListener(this);
             } else if (eventName.equals("end")) {
@@ -157,7 +159,7 @@ public class NodeEvent extends Node {
 
     @Override
     public String toString() {
-        return "[Node Event on " + sourceId + "]";
+        return "[Node Event on " + source.getValue() + "]";
     }
     
     @Override
@@ -165,8 +167,7 @@ public class NodeEvent extends Node {
         JSONObject o = new JSONObject();
         try {
             o.put("type", "event");
-            o.put("sourceType", sourceType);
-            o.put("sourceId", sourceId);
+            o.put("source", source.getJSONDescription());
             o.put("eventName", eventName);
             o.put("eventValue", eventValue);
         } catch (JSONException e) {
@@ -181,7 +182,7 @@ public class NodeEvent extends Node {
      * @return the sourceID
      */
     public String getSourceId() {
-        return sourceId;
+        return source.getValue();
     }
 
     /**
@@ -201,19 +202,22 @@ public class NodeEvent extends Node {
     @Override
     public String getExpertProgramScript() {
         String ret;
-        ret = this.getElementKey(sourceId, sourceType) + ".";
+        ret = source.getExpertProgramScript() + ".";
         return ret + eventName + "(\"" + eventName + "\")";
 
     }
 
     @Override
     protected void collectVariables(SymbolTable s) {
-        s.addAnonymousVariable(sourceId, sourceType);
+        s.addAnonymousVariable(source.getValue(), source.getType());
     }
 
     @Override
     protected Node copy(Node parent) {
-        NodeEvent ret = new NodeEvent(this.sourceType, this.sourceId, this.eventName, this.eventValue, parent);
+        NodeEvent ret = new NodeEvent(parent);
+        ret.eventName = eventName;
+        ret.eventValue = eventValue;
+        ret.source = source.copy(parent);
         ret.setSymbolTable(this.getSymbolTable());
         return ret;
 

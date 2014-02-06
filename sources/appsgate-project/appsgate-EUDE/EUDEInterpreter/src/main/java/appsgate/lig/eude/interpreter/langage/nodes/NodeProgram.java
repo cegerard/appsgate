@@ -157,7 +157,7 @@ public class NodeProgram extends Node {
         } else {
             daemon = false;
         }
-        seqRules = Builder.BuildNodeFromJSON(getJSONObject(source, "seqRules"), this);
+        seqRules = Builder.buildFromJSON(getJSONObject(source, "seqRules"), this);
 
         return true;
 

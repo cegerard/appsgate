@@ -28,19 +28,12 @@ public class NodeProgramTest extends NodeTest {
 
     private NodeProgram programTest;
 
-    public NodeProgramTest() {
+    public NodeProgramTest() throws JSONException {
         context.checking(new Expectations() {
             {
                 allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
             }
         });
-
-    }
-
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
         ruleJSON.put("type","program");
         ruleJSON.put("id", "test");
         ruleJSON.put("runningState", "STOPPED");
@@ -55,8 +48,13 @@ public class NodeProgramTest extends NodeTest {
         source.put("seqDefinitions", (Collection) null);
         ruleJSON.put("source", source);
 
-        this.programTest = new NodeProgram(mediator, this.ruleJSON);
+    }
 
+    @Before
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        this.programTest = new NodeProgram(mediator, this.ruleJSON);
         this.instance = this.programTest;
     }
 
@@ -180,7 +178,6 @@ public class NodeProgramTest extends NodeTest {
     }
 
     @Test
-    @Override
     public void testgetMediator() {
         System.out.println("getMediator");
         try {

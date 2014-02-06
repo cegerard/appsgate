@@ -48,7 +48,7 @@ public class NodeWhen extends Node {
         super(parent);
         seqEvent = new NodeEvents(getJSONObject(ruleWhenJSON, "events"), this);
         // initialize the sequences of events and rules
-        seqRules = Builder.BuildNodeFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
+        seqRules = Builder.buildFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
 
     }
 

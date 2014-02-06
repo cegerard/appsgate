@@ -40,7 +40,7 @@ public class NodeFunctionDefinition extends Node {
         super(parent);
         this.name = programJSON.optString("id");
         this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions")));
-        this.seqRules = Builder.BuildNodeFromJSON(programJSON.optJSONObject("seqRules"), this);
+        this.seqRules = Builder.buildFromJSON(programJSON.optJSONObject("seqRules"), this);
     }
 
     /**

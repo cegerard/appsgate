@@ -13,14 +13,13 @@ import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeEventTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
-import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -278,15 +277,11 @@ public class EUDEMediatorTest {
      * @throws SpokNodeException
      */
     @Test
-    public void testAddNodeListening() throws JSONException, SpokNodeException {
+    public void testAddNodeListening() throws JSONException, SpokException {
         System.out.println("addNodeListening");
-        JSONObject ruleJSON = new JSONObject();
-        ruleJSON.put("sourceType", "test");
-        ruleJSON.put("sourceId", "test");
-        ruleJSON.put("eventName", "test");
-        ruleJSON.put("eventValue", "test");
+        NodeEventTest t = new NodeEventTest();
 
-        NodeEvent n = new NodeEvent(ruleJSON, null);
+        NodeEvent n = new NodeEvent(t.getRuleJSON(), null);
         instance.addNodeListening(n);
     }
 
@@ -297,15 +292,12 @@ public class EUDEMediatorTest {
      * @throws SpokNodeException
      */
     @Test
-    public void testRemoveNodeListening() throws JSONException, SpokNodeException {
+    public void testRemoveNodeListening() throws JSONException, SpokException {
         System.out.println("removeNodeListening");
-        JSONObject ruleJSON = new JSONObject();
-        ruleJSON.put("sourceType", "test");
-        ruleJSON.put("sourceId", "test");
-        ruleJSON.put("eventName", "test");
-        ruleJSON.put("eventValue", "test");
+        NodeEventTest t = new NodeEventTest();
 
-        NodeEvent n = new NodeEvent(ruleJSON, null);
+        NodeEvent n = new NodeEvent(t.getRuleJSON(), null);
+
         instance.removeNodeListening(n);
     }
 

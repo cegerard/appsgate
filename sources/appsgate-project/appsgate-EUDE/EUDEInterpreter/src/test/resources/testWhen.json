@@ -16,10 +16,13 @@
                 "events": [
                     {
                         "type": "event",
-                        "sourceType": "device",
-                        "sourceId": "ENO2796f3",
                         "eventName": "switchNumber",
-                        "eventValue": "1"
+                        "eventValue": "1",
+                        "source": {
+                            "type": "device",
+                            "id": "ENO2796f3"
+                        }
+
                     }
                 ]
             },
@@ -28,9 +31,10 @@
                 "rules": [
                     {
                         "type": "action",
-                        "deviceId": "194.199.23.136-2",
-                        "targetType": "device",
-                        "targetId": "test",
+                        "target": {
+                            "type": "device",
+                            "id": "test"
+                        },
                         "methodName": "On"
                     }
                 ]

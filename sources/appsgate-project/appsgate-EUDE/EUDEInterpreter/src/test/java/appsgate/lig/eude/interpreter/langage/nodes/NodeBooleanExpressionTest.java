@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,10 +19,8 @@ import org.junit.Test;
  */
 public class NodeBooleanExpressionTest extends NodeTest {
 
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
+    public NodeBooleanExpressionTest() throws JSONException {
+        super();
         JSONObject l = new JSONObject();
         ruleJSON.put("type", "booleanExpression");
         ruleJSON.put("operator", "EQUALS");
@@ -29,6 +28,13 @@ public class NodeBooleanExpressionTest extends NodeTest {
         l.put("value", 12);
         ruleJSON.put("leftOperand", l);
         ruleJSON.put("rightOperand", l);
+
+    }
+
+    @Before
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
         this.instance = new NodeBooleanExpression(ruleJSON, null);
 
     }

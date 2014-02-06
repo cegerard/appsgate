@@ -35,16 +35,16 @@ public class NodeEventsTest extends NodeTest {
                 will(returnValue(new Long(2000)));
             }
         });
+        ruleJSON.put("type", "events");
+        ruleJSON.put("events", new JSONArray());
+        ruleJSON.put("nbEventToOccur", 1);
+        ruleJSON.put("duration", 0);
 
     }
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ruleJSON.put("type", "events");
-        ruleJSON.put("events", new JSONArray());
-        ruleJSON.put("nbEventToOccur", 1);
-        ruleJSON.put("duration", 0);
         this.instance = new NodeEvents(this.ruleJSON, null);
 
     }

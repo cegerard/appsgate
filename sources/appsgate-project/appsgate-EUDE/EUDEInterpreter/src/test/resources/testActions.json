@@ -15,24 +15,30 @@
                     [
                         {
                             "type": "action",
-                            "targetId": "test",
                             "methodName": "stopProgram",
                             "args": [],
-                            "targetType": "program"
+                            "target" : {
+                                "type":"programCall",
+                                "id":"test"
+                            }
                         },
                         {
                             "type": "action",
-                            "targetId": "test",
                             "methodName": "redAlert",
-                            "targetType": "test",
+                            "target" : {
+                                "type":"device",
+                                "id":"test"
+                            },
                             "args": []
                         },
                         {
                             "type": "action",
-                            "targetId": "test",
                             "methodName": "close",
                             "args": [],
-                            "targetType": "device"
+                            "target" : {
+                                "type":"device",
+                                "id":"test"
+                            }
                         }]
         }
     }

@@ -14,32 +14,42 @@
             "rules": [
                 {
                     "type": "action",
-                    "targetId": "testIf",
                     "methodName": "callProgram",
                     "args": [],
-                    "targetType": "program"
+                    "target": {
+                        "type": "programCall",
+                        "id": "testIf"
+                    }
+
                 },
                 {
                     "type": "action",
-                    "targetId": "testIf",
                     "methodName": "stopProgram",
                     "args": [],
-                    "targetType": "program"
+                    "target": {
+                        "type": "programCall",
+                        "id": "testIf"
+                    }
                 },
                 {
                     "type": "action",
-                    "targetId": "test",
                     "methodName": "close",
                     "args": [],
-                    "targetType": "device"
+                    "target": {
+                        "type": "device",
+                        "id": "test"
+                    }
+
                 }
                 ,
                 {
                     "type": "action",
-                    "targetId": "testPrograms",
                     "methodName": "stopProgram",
                     "args": [],
-                    "targetType": "program"
+                    "target": {
+                        "type": "programCall",
+                        "id": "testPrograms"
+                    }
                 }
 
             ]

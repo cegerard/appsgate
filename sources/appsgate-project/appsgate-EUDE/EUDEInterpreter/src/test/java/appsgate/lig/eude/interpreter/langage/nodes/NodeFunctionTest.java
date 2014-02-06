@@ -4,6 +4,7 @@ import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,16 +17,17 @@ import org.junit.Before;
  */
 public class NodeFunctionTest extends NodeTest {
 
+    public NodeFunctionTest() throws JSONException {
+        ruleJSON.put("id", "test");
+        ruleJSON.put("type", "function");
+        ruleJSON.put("params", new JSONArray());
+    }
+
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ruleJSON.put("id", "test");
-        ruleJSON.put("type", "function");
-           ruleJSON.put("params", new JSONArray());
-
         this.instance = new NodeFunction(ruleJSON, null);
-
     }
 
     @Test

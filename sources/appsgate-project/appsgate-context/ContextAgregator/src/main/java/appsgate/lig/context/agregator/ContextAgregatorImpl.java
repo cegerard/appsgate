@@ -36,4 +36,14 @@ public class ContextAgregatorImpl implements ContextAgregatorSpec {
         return new JSONArray();
     }
 
+    @Override
+    public JSONArray getEventsFromState(String brickType, String stateName, String value) {
+        return new JSONArray();
+    }
+
+    @Override
+    public String getBrickType(String targetId) {
+        return null;
+    }
+
 }

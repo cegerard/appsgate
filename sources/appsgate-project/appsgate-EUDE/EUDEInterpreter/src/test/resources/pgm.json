@@ -21,8 +21,10 @@
                         "events": [
                             {
                                 "type": "event",
-                                "sourceType": "device",
-                                "sourceId": "PremierAppel",
+                                "source": {
+                                    "type": "device",
+                                    "id": "PremierAppel"
+                                },
                                 "eventName": "makeCall",
                                 "eventValue": "1"
                             }
@@ -30,8 +32,10 @@
                     },
                     "seqRulesThen": {
                         "type": "action",
-                        "targetType": "program",
-                        "targetId": "TestWhen",
+                        "target": {
+                            "type": "programCall",
+                            "id": "TestWhen"
+                        },
                         "methodName": "callProgram"
                     }
                 }

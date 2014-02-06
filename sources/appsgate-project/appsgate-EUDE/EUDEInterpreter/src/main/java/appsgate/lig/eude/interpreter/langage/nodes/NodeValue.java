@@ -44,7 +44,11 @@ public class NodeValue extends Node {
     public NodeValue(JSONObject o, Node parent) throws SpokException {
         super(parent);
         type = this.getJSONString(o, "type");
-        value = this.getJSONString(o, "value");
+        if (type.equalsIgnoreCase("device") || type.equalsIgnoreCase("programCall")) {
+            value = this.getJSONString(o, "id");
+        } else {
+            value = this.getJSONString(o, "value");
+        }
     }
 
     /**
@@ -71,7 +75,16 @@ public class NodeValue extends Node {
 
     @Override
     public String getExpertProgramScript() {
-        return getJSONDescription().toString();
+        if (type.equalsIgnoreCase("string")) {
+            return '"' + value + '"';
+        }
+        if (type.equalsIgnoreCase("device")) {
+            return "/" + value + "/";
+        }
+        if (type.equalsIgnoreCase("programCall")) {
+            return "|" + value + "|";
+        }
+        return value;
     }
 
     @Override
@@ -91,7 +104,11 @@ public class NodeValue extends Node {
         JSONObject o = new JSONObject();
         try {
             o.put("type", this.type);
-            o.put("value", this.value);
+            if (type.equalsIgnoreCase("device") || type.equalsIgnoreCase("programCall")) {
+                o.put("id", this.value);
+            } else {
+                o.put("value", this.value);
+            }
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case

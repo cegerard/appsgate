@@ -9,6 +9,8 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -16,13 +18,29 @@ import org.json.JSONObject;
  */
 public class Builder {
 
+    /**
+     * Logger
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(Builder.class);
+
+    /**
+     *
+     */
     private static enum NODE_TYPE {
 
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
-        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM, NODE_RETURN,
-        NODE_SELECT, NODE_SEQ_RULES, NODE_VALUE, NODE_VARIABLE_ASSIGNATION, NODE_WHEN;
+        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM, NODE_RETURN, NODE_SELECT,
+        NODE_STATE, NODE_SEQ_RULES, NODE_VALUE, NODE_VARIABLE_ASSIGNATION, NODE_WHEN,
+        NODE_WHILE;
     }
 
+    /**
+     * Return the type for a given string
+     *
+     * @param type
+     * @return NODE_TYPE
+     * @throws SpokException
+     */
     private static NODE_TYPE getType(String type) throws SpokException {
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
@@ -54,7 +72,13 @@ public class Builder {
         if (type.equalsIgnoreCase("select")) {
             return NODE_TYPE.NODE_SELECT;
         }
+        if (type.equalsIgnoreCase("state")) {
+            return NODE_TYPE.NODE_STATE;
+        }
         if (type.equalsIgnoreCase("number")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
+        if (type.equalsIgnoreCase("device")) {
             return NODE_TYPE.NODE_VALUE;
         }
         if (type.equalsIgnoreCase("string")) {
@@ -66,11 +90,17 @@ public class Builder {
         if (type.equalsIgnoreCase("boolean")) {
             return NODE_TYPE.NODE_VALUE;
         }
+        if (type.equalsIgnoreCase("programCall")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
         if (type.equalsIgnoreCase("assignation")) {
             return NODE_TYPE.NODE_VARIABLE_ASSIGNATION;
         }
         if (type.equalsIgnoreCase("when")) {
             return NODE_TYPE.NODE_WHEN;
+        }
+        if (type.equalsIgnoreCase("while")) {
+            return NODE_TYPE.NODE_WHILE;
         }
         if (type.equalsIgnoreCase("instructions")) {
             return NODE_TYPE.NODE_SEQ_RULES;
@@ -85,7 +115,7 @@ public class Builder {
      * @return
      * @throws SpokNodeException
      */
-    public static Node BuildNodeFromJSON(JSONObject o, Node parent) throws SpokException {
+    public static Node buildFromJSON(JSONObject o, Node parent) throws SpokException {
         if (o == null || !o.has("type")) {
             throw new SpokNodeException("NodeBuilder", "type", null);
         }
@@ -108,18 +138,37 @@ public class Builder {
                 return new NodeReturn(o, parent);
             case NODE_SELECT:
                 return new NodeSelect(o, parent);
+            case NODE_STATE:
+                return new NodeState(o, parent);
             case NODE_VALUE:
                 return new NodeValue(o, parent);
             case NODE_VARIABLE_ASSIGNATION:
                 return new NodeVariableAssignation(o, parent);
             case NODE_WHEN:
                 return new NodeWhen(o, parent);
+            case NODE_WHILE:
+                return new NodeWhile(o, parent);
             case NODE_PROGRAM:
                 throw new SpokException("Unable to build program node inside other programs", null);
             case NODE_SEQ_RULES:
                 return new NodeSeqRules(o, parent);
             default:
                 throw new SpokNodeException("NodeBuilder", "type", null);
+        }
+    }
+
+    /**
+     *
+     * @param o
+     * @param parent
+     * @return
+     */
+    public static Node nodeOrNull(JSONObject o, Node parent) {
+        try {
+            return buildFromJSON(o, parent);
+        } catch (SpokException ex) {
+            LOGGER.trace("There is no node to build: " + ex.getMessage());
+            return null;
         }
     }
 }

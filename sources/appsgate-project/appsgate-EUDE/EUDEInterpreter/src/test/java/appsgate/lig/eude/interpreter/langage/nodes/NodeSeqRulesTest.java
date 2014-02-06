@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,17 +18,15 @@ import org.junit.Test;
  */
 public class NodeSeqRulesTest extends NodeTest {
 
-    public NodeSeqRulesTest() {
+    public NodeSeqRulesTest() throws JSONException {
+        ruleJSON.put("type", "instructions");
+        ruleJSON.put("rules", new JSONArray());
     }
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        JSONArray a = new JSONArray();
-        ruleJSON.put("type", "instructions");
-        ruleJSON.put("rules", a);
-
         this.instance = new NodeSeqRules(this.ruleJSON, null);
     }
 

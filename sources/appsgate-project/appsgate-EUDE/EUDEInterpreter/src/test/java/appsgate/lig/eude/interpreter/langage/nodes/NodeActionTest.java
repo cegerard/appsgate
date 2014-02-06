@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import java.util.Collection;
+import org.json.JSONObject;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -13,19 +14,22 @@ public class NodeActionTest extends NodeTest {
 
     private NodeAction actionTest;
 
-    public NodeActionTest() {
+    public NodeActionTest() throws Exception {
+        super();
+        ruleJSON.put("type", "action");
+        JSONObject o = new JSONObject();
+        o.put("type", "device");
+        o.put("id", "test");
+        ruleJSON.put("target", o);
+        ruleJSON.put("methodName", "test");
+        ruleJSON.put("args", (Collection) null);
+        ruleJSON.put("returnType", "");
     }
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ruleJSON.put("type", "action");
-        ruleJSON.put("targetType", "test");
-        ruleJSON.put("targetId", "test");
-        ruleJSON.put("methodName", "test");
-        ruleJSON.put("args", (Collection) null);
-        ruleJSON.put("returnType", "");
 
         this.actionTest = new NodeAction(ruleJSON, null);
         this.instance = this.actionTest;

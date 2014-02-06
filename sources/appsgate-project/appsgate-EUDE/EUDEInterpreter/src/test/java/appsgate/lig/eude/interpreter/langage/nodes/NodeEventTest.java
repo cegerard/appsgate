@@ -8,6 +8,8 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -20,7 +22,16 @@ public class NodeEventTest extends NodeTest {
 
     private NodeEvent eventTest;
 
-    public NodeEventTest() {
+    public NodeEventTest() throws JSONException {
+        super();
+        JSONObject o = new JSONObject();
+        o.put("type", "device");
+        o.put("id", "test");
+        ruleJSON.put("type", "event");
+        ruleJSON.put("source", o);
+        ruleJSON.put("eventName", "test");
+        ruleJSON.put("eventValue", "test");
+
         context.checking(new Expectations() {
             {
                 allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
@@ -33,11 +44,6 @@ public class NodeEventTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ruleJSON.put("type", "event");
-        ruleJSON.put("sourceType", "test");
-        ruleJSON.put("sourceId", "test");
-        ruleJSON.put("eventName", "test");
-        ruleJSON.put("eventValue", "test");
         this.eventTest = new NodeEvent(ruleJSON, null);
         this.instance = this.eventTest;
     }

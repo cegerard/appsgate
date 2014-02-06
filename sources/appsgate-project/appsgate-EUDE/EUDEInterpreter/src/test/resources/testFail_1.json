@@ -18,11 +18,13 @@
                         "type": "events",
                         "events": [
                             {
-                                "sourceType": "device",
+                                "type": "event",
                                 "eventValue": 1386052200210,
                                 "eventName": "ClockAlarm",
-                                "type": "event",
-                                "sourceId": "21106637055"
+                                "source": {
+                                    "type": "device",
+                                    "id": "21106637055"
+                                }
                             }
                         ]
                     },
@@ -30,53 +32,68 @@
                         "type": "instructions",
                         "rules": [
                             {
-                                "args": [],
-                                "targetId": "00:17:88:0a:99:c1-5",
                                 "type": "action",
+                                "args": [],
                                 "methodName": "setDefault",
-                                "targetType": "device"
+                                "target": {
+                                    "id": "00:17:88:0a:99:c1-4",
+                                    "type": "device"
+                                }
                             },
                             {
-                                "args": [], "targetId": "00:17:88:0a:99:c1-6",
                                 "type": "action",
+                                "args": [],
                                 "methodName": "setDefault",
-                                "targetType": "device"
+                                "target": {
+                                    "id": "00:17:88:0a:99:c1-6",
+                                    "type": "device"
+                                }
                             },
                             {
-                                "args": [],
-                                "targetId": "00:17:88:0a:99:c1-4",
                                 "type": "action",
+                                "args": [],
                                 "methodName": "setOrange",
-                                "targetType": "device"
+                                "target": {
+                                    "id": "00:17:88:0a:99:c1-4",
+                                    "type": "device"
+                                }
                             },
                             {
                                 "type": "when",
                                 "events": {
                                     "type": "events",
                                     "events": [
-                                        {"sourceType": "device",
+                                        {
+                                            "type": "event",
                                             "eventValue": 1386054000210,
                                             "eventName": "ClockAlarm",
-                                            "type": "event",
-                                            "sourceId": "21106637055"}
+                                            "source": {
+                                                "type": "device",
+                                                "id": "21106637055"
+                                            }
+                                        }
                                     ]
                                 },
                                 "seqRulesThen": {
                                     "type": "instructions",
                                     "rules": [
                                         {
-                                            "args": [],
-                                            "targetId": "00:17:88:0a:99:c1-4",
                                             "type": "action",
+                                            "args": [],
                                             "methodName": "setRed",
-                                            "targetType": "device"
+                                            "target": {
+                                                "id": "00:17:88:0a:99:c1-4",
+                                                "type": "device"
+                                            }
                                         },
                                         {
-                                            "args": [],
-                                            "targetId": "00:17:88:0a:99:c1-4",
                                             "type": "action",
+                                            "args": [],
                                             "methodName": "blink",
-                                            "targetType": "device"
+                                            "target": {
+                                                "id": "00:17:88:0a:99:c1-4",
+                                                "type": "device"
+                                            }
                                         }
                                     ]
                                 }

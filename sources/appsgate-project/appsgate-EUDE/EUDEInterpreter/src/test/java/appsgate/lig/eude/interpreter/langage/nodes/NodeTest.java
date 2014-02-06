@@ -32,12 +32,18 @@ public abstract class NodeTest {
     };
     protected Node instance;
     protected JSONObject ruleJSON;
+
     protected EUDEMediator mediator;
     protected NodeProgram programNode;
-    
+
     protected JSONObject emptySeqRules;
 
+    /**
+     * Constructor
+     */
     public NodeTest() {
+        this.ruleJSON = new JSONObject();
+
         this.mediator = context.mock(EUDEMediator.class);
         programNode = new NodeProgram(mediator);
         this.emptySeqRules = new JSONObject();
@@ -50,10 +56,17 @@ public abstract class NodeTest {
 
     @Before
     public void setUp() throws Exception {
-
         this.instance = null;
-        this.ruleJSON = new JSONObject();
 
+    }
+
+    /**
+     * Getter
+     *
+     * @return the ruleJSON
+     */
+    public JSONObject getRuleJSON() {
+        return ruleJSON;
     }
 
     /**
@@ -92,18 +105,6 @@ public abstract class NodeTest {
     }
 
 
-
-    @Test
-    public void testgetMediator() {
-        printTestName("getMediator");
-        try {
-            this.instance.getMediator();
-            fail("Should raise an exception");
-        } catch (SpokExecutionException ex) {
-            System.out.println("Exception catched");
-        }
-    }
-
     @Test
     public void testGetResult() throws Exception {
         printTestName("GetResult");
@@ -129,6 +130,15 @@ public abstract class NodeTest {
         Node copy = this.instance.copy(null);
         assertNotNull(copy);
         Assert.assertTrue("Two copies should have same json description", compareTo(this.instance.getJSONDescription(), copy.getJSONDescription()));
+    }
+
+    @Test
+    public void testIsATypeInJsonDesc() {
+        try {
+            Assert.assertFalse(this.ruleJSON.getString("type").isEmpty());
+        } catch (JSONException ex) {
+            Assert.fail("The type is not defined");
+        }
     }
 
     /**

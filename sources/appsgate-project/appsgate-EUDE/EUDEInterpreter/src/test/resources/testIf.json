@@ -19,11 +19,13 @@
                         "operator": "EQUALS",
                         "leftOperand": {
                             "type": "action",
-                            "targetId": "194.199.23.136-1",
                             "methodName": "getCurrentState",
                             "returnType": "boolean",
                             "action": "fermer les volets",
-                            "targetType": "device",
+                            "target": {
+                                "type": "device",
+                                "id": "194.199.23.136-1"
+                            },
                             "args": []
                         },
                         "rightOperand": {
@@ -37,21 +39,25 @@
                         "rules": [
                             {
                                 "type": "action",
-                                "targetId": "194.199.23.136-5",
                                 "methodName": "Off",
                                 "args": [],
                                 "action": "Ouvrir les volets",
-                                "targetType": "device"
+                                "target": {
+                                    "type": "device",
+                                    "id": "194.199.23.136-5"
+                                }
                             }
                         ]
                     },
                     "seqRulesFalse": {
                         "type": "action",
-                        "targetId": "194.199.23.136-1",
+                        "target": {
+                            "type": "device",
+                            "id": "194.199.23.136-1"
+                        },
                         "methodName": "On",
                         "args": [],
-                        "action": "fermer les volets",
-                        "targetType": "device"
+                        "action": "fermer les volets"
                     }
                 }
             ]

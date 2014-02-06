@@ -80,12 +80,12 @@ public class NodeBooleanExpression extends Node {
             throw new SpokNodeException("BooleanExpression", "operator", e);
         }
         if (o.has("leftOperand")) {
-            left = Builder.BuildNodeFromJSON(o.optJSONObject("leftOperand"), this);
+            left = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
         } else {
             throw new SpokNodeException("BooleanExpression", "leftOperand", null);
         }
         if (o.has("rightOperand")) {
-            right = Builder.BuildNodeFromJSON(o.optJSONObject("rightOperand"), this);
+            right = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
         } else {
             if (needTwoOperands(operator)) {
                 throw new SpokNodeException("BooleanExpression", "rightOperand", null);

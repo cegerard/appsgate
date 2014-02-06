@@ -7,7 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import org.json.JSONObject;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
@@ -18,7 +18,9 @@ import org.junit.Before;
  */
 public class NodeValueTest extends NodeTest {
 
-    public NodeValueTest() {
+    public NodeValueTest() throws JSONException {
+        ruleJSON.put("value", false);
+        ruleJSON.put("type", "boolean");
     }
 
     @Test
@@ -29,8 +31,6 @@ public class NodeValueTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ruleJSON.put("value", false);
-        ruleJSON.put("type", "boolean");
         this.instance = new NodeValue(ruleJSON, null);
 
     }

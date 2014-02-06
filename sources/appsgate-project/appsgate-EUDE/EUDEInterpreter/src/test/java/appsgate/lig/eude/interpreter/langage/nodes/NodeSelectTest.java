@@ -5,6 +5,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONArray;
+import org.json.JSONException;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +16,7 @@ import org.junit.Test;
  */
 public class NodeSelectTest extends NodeTest {
 
-
-    public NodeSelectTest() {
+    public NodeSelectTest() throws JSONException {
         final ContextAgregatorSpec appsGate = context.mock(ContextAgregatorSpec.class);
 
         context.checking(new Expectations() {
@@ -27,28 +27,18 @@ public class NodeSelectTest extends NodeTest {
                 will(returnValue(null));
             }
         });
+        ruleJSON.put("type", "select");
+        ruleJSON.put("where", new JSONArray());
+        ruleJSON.put("state", new JSONArray());
+        ruleJSON.put("what", new JSONArray());
+
     }
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ruleJSON.put("type", "select");
-        ruleJSON.put("where", new JSONArray());
-        ruleJSON.put("state", new JSONArray());
-        ruleJSON.put("what", new JSONArray());
         this.instance = new NodeSelect(ruleJSON, programNode);
-    }
-
-    @Test
-    @Override
-    public void testgetMediator() {
-        System.out.println("getMediator");
-        try {
-            this.instance.getMediator();
-        } catch (SpokExecutionException ex) {
-            fail("One exception has been raised");
-        }
     }
 
 }
