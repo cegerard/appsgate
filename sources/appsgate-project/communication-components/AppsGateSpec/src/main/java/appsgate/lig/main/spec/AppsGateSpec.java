@@ -42,9 +42,9 @@ public interface AppsGateSpec {
 	 * Return the devices of a list of type presents in the places
 	 * 
 	 * @param typeList
-	 *            the list of types to look for (if null, return all objects)
+	 *            the list of types to look for (if empty, return all objects)
 	 * @param places
-	 *            the places where to find the objects (if null return all
+	 *            the places where to find the objects (if empty return all
 	 *            places)
 	 * @return a list of objects contained in these places
 	 */
@@ -54,7 +54,7 @@ public interface AppsGateSpec {
 	 * Return a list of types descending from another types
 	 * 
 	 * @param typeList
-	 *            the list of types to look for (if null, return all subtypes)
+	 *            the list of types to look for (if empty, return all subtypes)
 	 * @return an empty array if nothing is found or the array of types
 	 */
 	public JSONArray getSubtypes(JSONArray typeList);
@@ -98,6 +98,50 @@ public interface AppsGateSpec {
 	public JSONArray getPlaces();
 	
 	/**
+	 * Call AppsGate to get information about a place
+	 * @param placeId the place to get information about
+	 * @return place details as a JSONObject
+	 */
+	public JSONObject getPlaceInfo(String placeId);
+	
+	/**
+	 * Call AppsGate to get all the places that match a specific name
+	 * @param name the name to match
+	 * @return the places with the name <name> as a JSONArray
+	 */
+	public JSONArray getPlacesByName(String name);
+	
+	/**
+	 * Get places that have been tagged with all tags
+	 * give in parameter.
+	 * @param tags the tags list that places have to match
+	 * @return places as a JSONArray
+	 */
+	public JSONArray getPlacesWithTags(JSONArray tags);
+	
+	/**
+	 * Get places that contains the properties keys in parameters
+	 * @param keys all properties that places have to be set
+	 * @return places list as a JSONArray
+	 */
+	public JSONArray getPalcesWithProperties(JSONArray keys);
+	
+	/**
+	 * Get places that contains the properties keys in parameters
+	 * and with the corresponding values
+	 * @param properties all properties that places have to be set with
+	 * the corresponding value
+	 * @return places list as a JSONArray
+	 */
+	public JSONArray getPalcesWithPropertiesValue(JSONArray properties);
+	
+	/**
+	 * Get the root place description
+	 * @return the root place as a JSONObject
+	 */
+	public JSONObject getRootPlace();
+	
+	/**
 	 * Add a new place and move object in it.
 	 * @param place the new place description and the list of object to move in
 	 * @return the new place identifier
@@ -117,6 +161,39 @@ public interface AppsGateSpec {
 	 * @return true if the place has been removed, false otherwise
 	 */
 	public boolean removePlace(String id);
+	
+	/**
+	 * Add a tag to the tag of list of the specified place
+	 * @param placed the place where to add the tag
+	 * @param tag the tag to add
+	 * @return true if the tag has been added, false otherwise
+	 */
+	public boolean addTag(String placeId, String tag);
+	
+	/**
+	 * Remove a tag from a place
+	 * @param placeId the place from where to remove the tag
+	 * @param tag the tag to remove
+	 * @return true if the tag has been removed, false otherwise
+	 */
+	public boolean removeTag(String placeId, String tag);
+	
+	/**
+	 * Add a property to a specified place
+	 * @param placeId the place where to add the property
+	 * @param key the key of the property to add
+	 * @param value the value of the property to add
+	 * @return true f the property has been added, false otherwise
+	 */
+	public boolean addProperty(String placeId, String key, String value);
+	
+	/**
+	 * Remove a property from a specified place
+	 * @param placeId the place from where to remove the property
+	 * @param key the key of the property that have to be removed
+	 * @return true if the property is removed, false otherwise
+	 */
+	public boolean removeProperty(String placeId, String key);
 	
 	/**
 	 * Move a device in a specified place
