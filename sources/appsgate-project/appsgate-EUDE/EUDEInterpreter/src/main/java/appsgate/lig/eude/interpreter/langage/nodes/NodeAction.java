@@ -94,12 +94,14 @@ public class NodeAction extends Node {
         try {
             if (target.getType().equals("device")) {
                 callDeviceAction(target.getValue());
-            } else if (target.getType().equals("programCall")) {
+            } else if (target.getType().equals("programcall")) {
                 callProgramAction(target.getValue());
             } else if (target.getType().equals("list")) {
                 callListAction(target.getValue());
+            } else if (target.getType().equals("variable")) {
+                callVariableAction(getVariableByName(target.getValue()),target.getValue());
             } else {
-                LOGGER.warn("Action type ({}) not supported", target.getType());
+                LOGGER.error("Action type ({}) not supported", target.getType());
             }
         } catch (SpokException e) {
             LOGGER.error("Error at execution: " + e);
@@ -171,7 +173,6 @@ public class NodeAction extends Node {
         }
         List<SpokVariable> elements = list.getElements();
         for (SpokVariable v : elements) {
-
             callVariableAction(v, target);
         }
     }

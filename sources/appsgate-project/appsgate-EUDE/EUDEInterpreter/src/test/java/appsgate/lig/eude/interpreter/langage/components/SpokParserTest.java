@@ -21,7 +21,7 @@ public class SpokParserTest {
 
     @Test
     public void testGetBooleanValue() {
-        NodeValue v = new NodeValue("int", "true", null);
+        NodeValue v = new NodeValue("number", "true", null);
         Boolean r;
         try {
             r = SpokParser.getBooleanResult(v);

@@ -93,6 +93,9 @@ public class Builder {
         if (type.equalsIgnoreCase("programCall")) {
             return NODE_TYPE.NODE_VALUE;
         }
+        if (type.equalsIgnoreCase("list")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
         if (type.equalsIgnoreCase("assignation")) {
             return NODE_TYPE.NODE_VARIABLE_ASSIGNATION;
         }

@@ -31,7 +31,7 @@
                 "returnExp": "v1",
                 "returnValue": {
                     "type": "variable",
-                    "value": "v1"
+                    "id": "v1"
                 }
             }
 

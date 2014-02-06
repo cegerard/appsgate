@@ -88,7 +88,7 @@ public class NodeEventsTest extends NodeTest {
         json.put("nbEventToOccur", 2);
         json.put("duration", 2);
         NodeEvents n = new NodeEvents(json, programNode);
-        NodeEvent clockEvent = new NodeEvent("clock", n.getMediator().getClock().getId(), null, null, instance);
+        NodeEvent clockEvent = new NodeEvent("device", n.getMediator().getClock().getId(), null, null, instance);
 
         n.call();
         n.endEventFired(new EndEvent(nodeEvent));

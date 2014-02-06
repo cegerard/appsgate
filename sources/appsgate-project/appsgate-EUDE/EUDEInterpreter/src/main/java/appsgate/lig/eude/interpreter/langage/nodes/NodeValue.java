@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,14 +18,25 @@ import org.json.JSONObject;
  */
 public class NodeValue extends Node {
 
+    public enum TYPE {
+
+        DEVICE, LIST, PROGRAMCALL, VARIABLE, STRING, BOOLEAN, NUMBER;
+    }
+
     /**
-     *
+     * The type of the value
+     * (device/list/programCall/variable/string/boolean/number)
      */
-    private String type;
+    private TYPE type;
     /**
      *
      */
     private String value;
+
+    /**
+     *
+     */
+    private JSONArray list = null;
 
     /**
      * private constructor to allow copy
@@ -43,11 +55,20 @@ public class NodeValue extends Node {
      */
     public NodeValue(JSONObject o, Node parent) throws SpokException {
         super(parent);
-        type = this.getJSONString(o, "type");
-        if (type.equalsIgnoreCase("device") || type.equalsIgnoreCase("programCall")) {
-            value = this.getJSONString(o, "id");
-        } else {
-            value = this.getJSONString(o, "value");
+        type = TYPE.valueOf(getJSONString(o, "type").toUpperCase());
+        switch (type) {
+            case DEVICE:
+            case LIST:
+            case PROGRAMCALL:
+            case VARIABLE:
+                value = this.getJSONString(o, "id");
+                break;
+            default:
+                value = this.getJSONString(o, "value");
+                break;
+        }
+        if (o.has("list")) {
+            list = getJSONArray(o, "list");
         }
     }
 
@@ -59,7 +80,7 @@ public class NodeValue extends Node {
      */
     public NodeValue(String t, String v, Node parent) {
         super(parent);
-        this.type = t;
+        this.type = TYPE.valueOf(t.toUpperCase());
         this.value = v;
     }
 
@@ -75,16 +96,16 @@ public class NodeValue extends Node {
 
     @Override
     public String getExpertProgramScript() {
-        if (type.equalsIgnoreCase("string")) {
-            return '"' + value + '"';
+        switch (type) {
+            case STRING:
+                return '"' + value + '"';
+            case DEVICE:
+                return "/" + value + "/";
+            case PROGRAMCALL:
+                return "|" + value + "|";
+            default:
+                return value;
         }
-        if (type.equalsIgnoreCase("device")) {
-            return "/" + value + "/";
-        }
-        if (type.equalsIgnoreCase("programCall")) {
-            return "|" + value + "|";
-        }
-        return value;
     }
 
     @Override
@@ -92,6 +113,7 @@ public class NodeValue extends Node {
         NodeValue ret = new NodeValue(parent);
         ret.type = this.type;
         ret.value = this.value;
+        ret.list = this.list;
         return ret;
     }
 
@@ -103,11 +125,20 @@ public class NodeValue extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("type", this.type);
-            if (type.equalsIgnoreCase("device") || type.equalsIgnoreCase("programCall")) {
-                o.put("id", this.value);
-            } else {
-                o.put("value", this.value);
+            o.put("type", getType());
+            switch (type) {
+                case DEVICE:
+                case LIST:
+                case PROGRAMCALL:
+                case VARIABLE:
+                    o.put("id", this.value);
+                    break;
+                default:
+                    o.put("value", this.value);
+                    break;
+            }
+            if (list != null) {
+                o.put("list", list);
             }
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -123,6 +154,10 @@ public class NodeValue extends Node {
 
     @Override
     public String getType() {
+        return type.toString().toLowerCase();
+    }
+    
+    public TYPE getValueType() {
         return type;
     }
 
