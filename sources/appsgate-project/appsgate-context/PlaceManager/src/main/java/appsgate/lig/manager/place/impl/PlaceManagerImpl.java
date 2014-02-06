@@ -181,7 +181,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		SymbolicPlace parent = selectedPlace.getParent();
 		
 		if(parent != null) {
-			for(SymbolicPlace child : selectedPlace.getChildren()) {
+			@SuppressWarnings("unchecked")
+			ArrayList<SymbolicPlace> children = (ArrayList<SymbolicPlace>)selectedPlace.getChildren().clone();
+			for(SymbolicPlace child : children) {
 				removePlace(child.getId());
 			}
 			selectedPlace.clearCoreObjects();
