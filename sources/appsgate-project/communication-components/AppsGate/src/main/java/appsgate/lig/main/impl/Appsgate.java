@@ -215,7 +215,7 @@ public class Appsgate implements AppsGateSpec {
 				
 				return placeId;
 			}else {
-				logger.error("Ne parent place found with id: "+parent);
+				LOGGER.error("Ne parent place found with id: "+parent);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
