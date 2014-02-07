@@ -100,28 +100,32 @@ public interface AppsGateSpec {
 	/**
 	 * Add a new place and move object in it.
 	 * @param place the new place description and the list of object to move in
+	 * @return the new place identifier
 	 */
-	public void newPlace(JSONObject place);
+	public String newPlace(JSONObject place);
 	
 	/**
 	 * Update a place on the smart space
 	 * @param place the new place description
+	 * @param true if the place has been updated, false otherwise
 	 */
-	public void updatePlace(JSONObject place);
+	public boolean updatePlace(JSONObject place);
 	
 	/**
 	 * Remove a place from the smart space
 	 * @param id the place identifier
+	 * @return true if the place has been removed, false otherwise
 	 */
-	public void removePlace(String id);
+	public boolean removePlace(String id);
 	
 	/**
 	 * Move a device in a specified place
 	 * @param objId the object to move
 	 * @param srcPlaceId the previous place of this object
 	 * @param destPlaceId the destination of this object
+	 * @return true if the device has been moved, false otherwise
 	 */
-	public void moveDevice(String objId, String srcPlaceId, String destPlaceId);
+	public boolean moveDevice(String objId, String srcPlaceId, String destPlaceId);
 	
 	/**
 	 * Get the place identifier of a core object

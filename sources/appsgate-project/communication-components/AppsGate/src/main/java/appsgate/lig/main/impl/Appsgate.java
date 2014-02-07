@@ -36,6 +36,7 @@ import appsgate.lig.main.impl.upnp.StateVariableServerURL;
 import appsgate.lig.main.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
+import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
 /**
@@ -196,43 +197,52 @@ public class Appsgate implements AppsGateSpec {
 	}
 
 	@Override
-	public void newPlace(JSONObject place) {
+	public String newPlace(JSONObject place) {
 		try {
-			String placeId = place.getString("id");
-			placeManager.addPlace(placeId, place.getString("name"));
-			JSONArray devices = place.getJSONArray("devices");
-			int size = devices.length();
-			int i = 0;
-			while (i < size) {
-				String objId = (String) devices.get(i);
-				placeManager.moveObject(objId,
-						placeManager.getCoreObjectPlaceId(objId), placeId);
-				i++;
+			String parent = place.getString("parent");
+			SymbolicPlace parentPlace = placeManager.getSymbolicPlace(parent);
+			if(parentPlace != null) {
+				String placeId = placeManager.addPlace(place.getString("name"), parent);
+				JSONArray devices = place.getJSONArray("devices");
+				int size = devices.length();
+				int i = 0;
+				while (i < size) {
+					String objId = (String) devices.get(i);
+					placeManager.moveObject(objId,
+							placeManager.getCoreObjectPlaceId(objId), placeId);
+					i++;
+				}
+				
+				return placeId;
+			}else {
+				logger.error("Ne parent place found with id: "+parent);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@Override
-	public void removePlace(String id) {
-		placeManager.removePlace(id);
+	public boolean removePlace(String id) {
+		return placeManager.removePlace(id);
 	}
 
 	@Override
-	public void updatePlace(JSONObject place) {
+	public boolean updatePlace(JSONObject place) {
 		// for now we could just rename a place
 		try {
-			placeManager.renamePlace(place.getString("id"),
-					place.getString("name"));
+			return placeManager.renamePlace(place.getString("id"),place.getString("name"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		
+		return false;
 	}
 
 	@Override
-	public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
-		placeManager.moveObject(objId, srcPlaceId, destPlaceId);
+	public boolean moveDevice(String objId, String srcPlaceId, String destPlaceId) {
+		return placeManager.moveObject(objId, srcPlaceId, destPlaceId);
 	}
 
 	@Override
