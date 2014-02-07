@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONException;
@@ -83,8 +84,10 @@ public class NodeWhile extends Node {
 
     @Override
     public JSONObject call() {
-        state.call();
-        return null;
+        fireStartEvent(new StartEvent(this));
+        setStarted(true);
+        state.addEndEventListener(this);
+        return state.call();
     }
 
     @Override
@@ -105,6 +108,29 @@ public class NodeWhile extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
+        Node node = (Node) e.getSource();
+        if (node == state) {
+            // We got an event from the states node, we start the rules or the then branch
+            if (state.isOnRules()) {
+                rules.addEndEventListener(state);
+                rules.call();
+            } else {
+                rulesThen.addEndEventListener(state);
+                rulesThen.call();
+            }
+        }
+        if (node == rules) {
+            LOGGER.trace("The rules have been done");
+            if (rulesThen == null) {
+                setStarted(false);
+                fireEndEvent(new EndEvent(this));
+            }
+        }
+        if (node == rulesThen) {
+            LOGGER.trace("Then rules have been done");
+            setStarted(false);
+            fireEndEvent(new EndEvent(this));
+        }
     }
 
     @Override

@@ -1,9 +1,10 @@
 package appsgate.lig.context.agregator.spec;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
- * 
+ *
  * @author jr
  */
 public interface ContextAgregatorSpec {
@@ -27,21 +28,28 @@ public interface ContextAgregatorSpec {
      * @return an empty array if nothing is found or the array of types
      */
     public JSONArray getSubtypes(JSONArray typeList);
-    
+
     /**
-     * 
-     * @param brickType
+     *
+     * @param type
      * @param stateName
-     * @param value
-     * @return 
+     * @return
      */
-    public JSONArray getEventsFromState(String brickType, String stateName, String value);
-    
+    public JSONObject getEventsFromState(String type, String stateName);
+
     /**
-     * 
+     *
      * @param targetId
-     * @return 
+     * @return
      */
     public String getBrickType(String targetId);
+
+    /**
+     * 
+     * @param value
+     * @param stateName
+     * @return 
+     */
+    public boolean isOfState(String value, String stateName);
 
 }

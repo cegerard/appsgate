@@ -2,6 +2,7 @@ package appsgate.lig.context.agregator;
 
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,13 +38,18 @@ public class ContextAgregatorImpl implements ContextAgregatorSpec {
     }
 
     @Override
-    public JSONArray getEventsFromState(String brickType, String stateName, String value) {
-        return new JSONArray();
+    public String getBrickType(String targetId) {
+        return null;
     }
 
     @Override
-    public String getBrickType(String targetId) {
+    public JSONObject getEventsFromState(String type, String stateName) {
         return null;
+    }
+
+    @Override
+    public boolean isOfState(String value, String stateName) {
+        return false;
     }
 
 }
