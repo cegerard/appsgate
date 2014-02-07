@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -36,6 +37,7 @@ import appsgate.lig.main.impl.upnp.StateVariableServerURL;
 import appsgate.lig.main.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
+import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
 /**
@@ -196,43 +198,224 @@ public class Appsgate implements AppsGateSpec {
 	}
 
 	@Override
-	public void newPlace(JSONObject place) {
+	public String newPlace(JSONObject place) {
 		try {
-			String placeId = place.getString("id");
-			placeManager.addPlace(placeId, place.getString("name"));
-			JSONArray devices = place.getJSONArray("devices");
-			int size = devices.length();
-			int i = 0;
-			while (i < size) {
-				String objId = (String) devices.get(i);
-				placeManager.moveObject(objId,
-						placeManager.getCoreObjectPlaceId(objId), placeId);
-				i++;
+			String parent = place.getString("parent");
+			SymbolicPlace parentPlace = placeManager.getSymbolicPlace(parent);
+			if(parentPlace != null) {
+				String placeId = placeManager.addPlace(place.getString("name"), parent);
+				JSONArray devices = place.getJSONArray("devices");
+				int size = devices.length();
+				int i = 0;
+				while (i < size) {
+					String objId = (String) devices.get(i);
+					placeManager.moveObject(objId,
+							placeManager.getCoreObjectPlaceId(objId), placeId);
+					i++;
+				}
+				
+				return placeId;
+			}else {
+				logger.error("Ne parent place found with id: "+parent);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@Override
-	public void removePlace(String id) {
-		placeManager.removePlace(id);
+	public boolean removePlace(String id) {
+		return placeManager.removePlace(id);
 	}
 
 	@Override
-	public void updatePlace(JSONObject place) {
-		// for now we could just rename a place
+	public boolean updatePlace(JSONObject place) {
 		try {
-			placeManager.renamePlace(place.getString("id"),
-					place.getString("name"));
+			String placeID = place.getString("id");
+			boolean isSuccess = true; 
+			
+			//Rename the place
+			if(place.has("name")) {
+				isSuccess &= placeManager.renamePlace(placeID, place.getString("name"));
+			}
+			//Move the place 
+			if(place.has("parent")) {
+				isSuccess &= placeManager.movePlace(placeID, place.getString("parent"));
+			}
+			
+			//Set or clear the tag list
+			if(place.has("taglist")) {
+				
+				JSONArray tagArray = place.getJSONArray("taglist");
+				
+				if(tagArray.length() == 0) {
+					placeManager.clearTagsList(placeID);
+				}else {
+					ArrayList<String> tags = new ArrayList<String>();
+					int nbTag = tagArray.length();
+					for(int i=0; i<nbTag; i++) {
+						tags.add(tagArray.getString(i));
+					}
+					placeManager.setTagsList(placeID, tags);
+				}
+			}
+			
+			//Set or clear the property list
+			if(place.has("proplist")) {
+				
+				JSONArray propArray = place.getJSONArray("proplist");
+				
+				if(propArray.length() == 0) {
+					placeManager.clearPropertiesList(placeID);
+				}else {
+					HashMap<String, String> props = new HashMap<String, String>();
+					int nbProp = propArray.length();
+					for(int i=0; i<nbProp; i++) {
+						JSONObject prop = propArray.getJSONObject(i);
+						props.put(prop.getString("key"), prop.getString("value"));
+					}
+					placeManager.setProperties(placeID, props);
+				}
+			}
+			
+			// Set or clear the core object list
+			if(place.has("coreObjectlist")) {
+				
+				JSONArray tagArray = place.getJSONArray("coreObjectlist");
+				
+				if(tagArray.length() == 0) {
+					placeManager.removeAllCoreObject(placeID);
+				}else {
+					int nbTag = tagArray.length();
+					for(int i=0; i<nbTag; i++) {
+						String objId = tagArray.getString(i);
+						placeManager.moveObject(objId, placeManager.getCoreObjectPlaceId(objId), placeID);
+					}
+				}
+			}
+			
+			
+			return isSuccess;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	@Override
-	public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
-		placeManager.moveObject(objId, srcPlaceId, destPlaceId);
+	public boolean moveDevice(String objId, String srcPlaceId, String destPlaceId) {
+		return placeManager.moveObject(objId, srcPlaceId, destPlaceId);
+	}
+	
+	@Override
+	public JSONObject getPlaceInfo(String placeId) {
+		return placeManager.getSymbolicPlace(placeId).getDescription();
+	}
+
+
+	@Override
+	public JSONArray getPlacesByName(String name) {
+		JSONArray placeByName = new JSONArray();
+		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithName(name);
+		for(SymbolicPlace place : placesList){
+			placeByName.put(place.getDescription());
+		}
+		return placeByName;
+	}
+
+
+	@Override
+	public JSONArray getPlacesWithTags(JSONArray tags) {
+		int tagNb  = tags.length();
+		ArrayList<String> tagsList = new ArrayList<String>();
+		for(int i=0; i<tagNb; i++) {
+			try {
+				tagsList.add(tags.getString(i));
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		
+		JSONArray placeByTag = new JSONArray();
+		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithTags(tagsList);
+		for(SymbolicPlace place : placesList){
+			placeByTag.put(place.getDescription());
+		}
+		return placeByTag;
+	}
+
+
+	@Override
+	public JSONArray getPalcesWithProperties(JSONArray keys) {
+		int keysNb  = keys.length();
+		ArrayList<String> keysList = new ArrayList<String>();
+		for(int i=0; i<keysNb; i++) {
+			try {
+				keysList.add(keys.getString(i));
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		
+		JSONArray placeByProp = new JSONArray();
+		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithProperties(keysList);
+		for(SymbolicPlace place : placesList){
+			placeByProp.put(place.getDescription());
+		}
+		return placeByProp;
+	}
+
+
+	@Override
+	public JSONArray getPalcesWithPropertiesValue(JSONArray properties) {
+		int propertiesNb  = properties.length();
+		HashMap<String, String> propertiesList = new HashMap<String, String>();
+		for(int i=0; i<propertiesNb; i++) {
+			try {
+				JSONObject prop = properties.getJSONObject(i);
+				propertiesList.put(prop.getString("key"), prop.getString("value"));
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		
+		JSONArray placeByPropValue = new JSONArray();
+		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithPropertiesValue(propertiesList);
+		for(SymbolicPlace place : placesList){
+			placeByPropValue.put(place.getDescription());
+		}
+		return placeByPropValue;
+	}
+
+
+	@Override
+	public JSONObject getRootPlace() {
+		return placeManager.getRootPlace().getDescription();
+	}
+
+
+	@Override
+	public boolean addTag(String placeId, String tag) {
+		return placeManager.addTag(placeId, tag);
+	}
+
+
+	@Override
+	public boolean removeTag(String placeId, String tag) {
+		return placeManager.removeTag(placeId, tag);
+	}
+
+
+	@Override
+	public boolean addProperty(String placeId, String key, String value) {
+		return placeManager.addProperty(placeId, key, value);
+	}
+
+
+	@Override
+	public boolean removeProperty(String placeId, String key) {
+		return placeManager.removeProperty(placeId, key);
 	}
 
 	@Override
@@ -427,4 +610,5 @@ public class Appsgate implements AppsGateSpec {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }
