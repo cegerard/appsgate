@@ -38,8 +38,8 @@
 	</dependencies>
 
 	<modules>
-		<module>PlaceManager</module>
-		<module>PlaceManagerSpec</module>
+		<module>SpaceManager</module>
+		<module>SpaceManagerSpec</module>
 		<module>ContextFollower</module>
 		<module>ContextFollowerSpec</module>
 		<module>DeviceNameTableSpec</module>

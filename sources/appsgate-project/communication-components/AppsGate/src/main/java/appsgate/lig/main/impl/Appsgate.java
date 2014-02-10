@@ -36,8 +36,8 @@ import appsgate.lig.main.impl.upnp.StateVariableServerIP;
 import appsgate.lig.main.impl.upnp.StateVariableServerURL;
 import appsgate.lig.main.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.main.spec.AppsGateSpec;
-import appsgate.lig.manager.place.spec.PlaceManagerSpec;
-import appsgate.lig.manager.place.spec.SymbolicPlace;
+import appsgate.lig.manager.space.spec.SpaceManagerSpec;
+import appsgate.lig.manager.space.spec.Space;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
 /**
@@ -74,7 +74,7 @@ public class Appsgate implements AppsGateSpec {
 	/**
 	 * The place manager ApAM component to handle the object place
 	 */
-	private PlaceManagerSpec placeManager;
+	private SpaceManagerSpec placeManager;
 
 	/**
 	 * The user manager ApAM component to handle the user base
@@ -201,7 +201,7 @@ public class Appsgate implements AppsGateSpec {
 	public String newPlace(JSONObject place) {
 		try {
 			String parent = place.getString("parent");
-			SymbolicPlace parentPlace = placeManager.getSymbolicPlace(parent);
+			Space parentPlace = placeManager.getSymbolicPlace(parent);
 			if(parentPlace != null) {
 				String placeId = placeManager.addPlace(place.getString("name"), parent);
 				JSONArray devices = place.getJSONArray("devices");
@@ -317,8 +317,8 @@ public class Appsgate implements AppsGateSpec {
 	@Override
 	public JSONArray getPlacesByName(String name) {
 		JSONArray placeByName = new JSONArray();
-		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithName(name);
-		for(SymbolicPlace place : placesList){
+		ArrayList<Space> placesList = placeManager.getPlacesWithName(name);
+		for(Space place : placesList){
 			placeByName.put(place.getDescription());
 		}
 		return placeByName;
@@ -338,8 +338,8 @@ public class Appsgate implements AppsGateSpec {
 		}
 		
 		JSONArray placeByTag = new JSONArray();
-		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithTags(tagsList);
-		for(SymbolicPlace place : placesList){
+		ArrayList<Space> placesList = placeManager.getPlacesWithTags(tagsList);
+		for(Space place : placesList){
 			placeByTag.put(place.getDescription());
 		}
 		return placeByTag;
@@ -359,8 +359,8 @@ public class Appsgate implements AppsGateSpec {
 		}
 		
 		JSONArray placeByProp = new JSONArray();
-		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithProperties(keysList);
-		for(SymbolicPlace place : placesList){
+		ArrayList<Space> placesList = placeManager.getPlacesWithProperties(keysList);
+		for(Space place : placesList){
 			placeByProp.put(place.getDescription());
 		}
 		return placeByProp;
@@ -381,8 +381,8 @@ public class Appsgate implements AppsGateSpec {
 		}
 		
 		JSONArray placeByPropValue = new JSONArray();
-		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithPropertiesValue(propertiesList);
-		for(SymbolicPlace place : placesList){
+		ArrayList<Space> placesList = placeManager.getPlacesWithPropertiesValue(propertiesList);
+		for(Space place : placesList){
 			placeByPropValue.put(place.getDescription());
 		}
 		return placeByPropValue;

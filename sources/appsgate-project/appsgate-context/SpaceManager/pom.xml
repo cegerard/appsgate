@@ -5,14 +5,13 @@
 
 	<parent>
 		<groupId>appsgate.components</groupId>
-		<artifactId>communication-components</artifactId>
+		<artifactId>appsgate-context</artifactId>
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>AppsGate</artifactId>
+	<artifactId>SpaceManager</artifactId>
 	<packaging>bundle</packaging>
-
-	<name>AppsGate OSGi Bundle</name>
+	<name>Space manager implementation</name>
 
 	<!-- Repositories List -->
 
@@ -20,57 +19,30 @@
 	<dependencies>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>AppsGateSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>${ipojo.annotations.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.upnp.extra</artifactId>
-			<version>0.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<version>${osgi.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>RouterApAMSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
 			<artifactId>SpaceManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>DeviceNameTableSpec</artifactId>
+			<artifactId>CoreObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>UserBaseSpec</artifactId>
+			<artifactId>ContextHistorySpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>EUDEInterpreterSpec</artifactId>
-			<version>1.0.0</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>4.3.0</version>
-			<scope>provided</scope>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit4</artifactId>
+			<version>2.6.0</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -84,13 +56,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Private-Package>
-							appsgate.lig.main.impl,
-							appsgate.lig.main.impl.upnp
-						</Private-Package>
-						<Import-Package>
-							*
-						</Import-Package>
+						<Export-Package>appsgate.lig.manager.location.impl</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
