@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import appsgate.lig.manager.space.spec.Space;
 
-public class SymbolicPlaceTest {
+public class SymbolicSpaceTest {
 	
 	protected Space rootPlace, living, kitchen, restPlace;
 	protected String[] ids = {"0001", "0002", "0003", "0004"};
@@ -19,10 +19,10 @@ public class SymbolicPlaceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		rootPlace = new Space(ids[0], names[4], Space.CATEGORY.ROOT, null);
-		living = new Space(ids[1], names[0], Space.CATEGORY.PLACE, rootPlace);
-		kitchen = new Space(ids[2], names[1], Space.CATEGORY.PLACE, rootPlace);
-		restPlace = new Space(ids[3], names[3], Space.CATEGORY.PLACE, living);
+		rootPlace = new Space(ids[0], names[4], Space.CATEGORY.ROOT.toString(), null);
+		living = new Space(ids[1], names[0], Space.CATEGORY.PLACE.toString(), rootPlace);
+		kitchen = new Space(ids[2], names[1], Space.CATEGORY.PLACE.toString(), rootPlace);
+		restPlace = new Space(ids[3], names[3], Space.CATEGORY.PLACE.toString(), living);
 	}
 
 	@After

@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 
+import appsgate.lig.manager.space.spec.Space.CATEGORY;
+
 /**
- * Specification of services offer by a place manager.
+ * Specification of services offer by a space manager.
  * 
  * @author Cédric Gérard
  * @since February 26, 2013
@@ -16,168 +18,169 @@ import org.json.JSONArray;
 public interface SpaceManagerSpec {
 	
 	/**
-	 * Add a new place to the hash map.
-	 * @param name the place name
-	 * @param parent the parent id of this place, or null if this place is a root
-	 * @return the id of the new place null otherwise.
+	 * Add a new space to the hash map.
+	 * @param name the space name
+	 * @param parent the parent id of this space, or null if this space is a root
+	 * @return the id of the new space null otherwise.
 	 */
-	public String addPlace(String name, String parent);
+	public String addSpace(String name, String category,  String parent);
 	
 	/**
-	 * Remove a place from the numeric representation of the smart space.
-	 * @param placeId the identifier of the place
-	 * @return true if the place has been removed, false otherwise
+	 * Add a new space with tags and properties
+	 * @param name the space name
+	 * @param category the category of this space
+	 * @param tags the tags list to associated to this space
+	 * @param properties the properties list to associated to this space
+	 * @param parent the parent space for this space, or null if it is a root
+	 * @return the id of the new space null otherwise.
 	 */
-	public boolean removePlace(String placeId);
+	public String addSpace(String name, String category, ArrayList<String> tags, HashMap<String, String> properties,  String parent);
 	
 	/**
-	 * Move this place under a new parent place
-	 * @param placeId the place id of the place that move
-	 * @param newParent the identifier of the  new parent place
-	 * @return true if the place has been moved, false otherwise
+	 * Add a complete space
+	 * @param name the space name
+	 * @param tags the tags list to associated to this space
+	 * @param properties the properties list to associated to this space
+	 * @param parent the parent space for this space, or null if it is a root
+	 * @param children the sub-spaces list
+	 * @return the id of the new space null otherwise.
 	 */
-	public boolean movePlace(String placeId, String newParentId);
+	public String addSpace(String name, ArrayList<String> tags, HashMap<String, String> properties,  String parent, ArrayList<Space> children);
+	
 	
 	/**
-	 * Set the tags list of this place
-	 * @param placeId the place identifier
+	 * Remove a space.
+	 * @param spaceId the identifier of the space
+	 * @return true if the space has been removed, false otherwise
+	 */
+	public boolean removeSpace(String spaceId);
+	
+	/**
+	 * Move this space under a new parent space
+	 * @param spaceId the space id of the space that move
+	 * @param newParent the identifier of the  new parent space
+	 * @return true if the space has been moved, false otherwise
+	 */
+	public boolean moveSpace(String spaceId, String newParentId);
+	
+	/**
+	 * Set the tags list of this space
+	 * @param spaceId the space identifier
 	 * @param tags the new tags list
 	 */
-	public void setTagsList(String placeId, ArrayList<String> tags);
+	public void setTagsList(String spaceId, ArrayList<String> tags);
 	
 	/**
-	 * Empty the list of tag of this place
-	 * @param placeId the place identifier
+	 * Empty the list of tag of this space
+	 * @param spaceId the space identifier
 	 */
-	public void clearTagsList(String placeId);
+	public void clearTagsList(String spaceId);
 	
 	/**
-	 * Add a new tag to this place
-	 * @param placeId the place identifier
+	 * Add a new tag to this space
+	 * @param spaceId the space identifier
 	 * @param tag the new tag to add
 	 * @return true if the tag has been add, false otherwise
 	 */
-	public boolean addTag(String placeId, String tag);
+	public boolean addTag(String spaceId, String tag);
 	
 	/**
-	 * remove a tag from this place
-	 * @param placeId the place identifier
+	 * remove a tag from this space
+	 * @param spaceId the space identifier
 	 * @param tag the tag to remove
 	 * @return true if the tag has been removed, false otherwise
 	 */
-	public boolean removeTag(String placeId, String tag);
+	public boolean removeTag(String spaceId, String tag);
 	
 	/**
-	 * Set the properties of this place
-	 * @param placeId the place identifier
+	 * Set the properties of this space
+	 * @param spaceId the space identifier
 	 * @param properties the new properties list
 	 */
-	public void setProperties(String placeId, HashMap<String, String> properties);
+	public void setProperties(String spaceId, HashMap<String, String> properties);
 	
 	/**
-	 * Empty the properties list of this place
-	 * @param placeId the place identifier
+	 * Empty the properties list of this space
+	 * @param spaceId the space identifier
 	 */
-	public void clearPropertiesList(String placeId);
+	public void clearPropertiesList(String spaceId);
 	
 	/**
 	 * Add a new property to the list or update an existing one
-	 * @param placeId the place identifier 
+	 * @param spaceId the space identifier 
 	 * @param key the key of the property
 	 * @param value the value to set
 	 * @return true if key is a newly added false if the key exist and the value has been changed
 	 */
-	public boolean addProperty(String placeId, String key, String value);
+	public boolean addProperty(String spaceId, String key, String value);
 	
 	/**
 	 * Remove an existing property
-	 * @param placeId the place identifier
+	 * @param spaceId the space identifier
 	 * @param key the key of the property to remove
 	 * @return true if the property has been removed, false otherwise
 	 */
-	public boolean removeProperty(String placeId, String key);
+	public boolean removeProperty(String spaceId, String key);
 	
 	/**
-	 * Move a core object to a specify place. If newPalceID attribute equal -1
-	 * the object is just removed from this place 
-	 * @param objId the core object identifier to move
-	 * @param oldPlaceID the source place of the core object
-	 * @param newPlaceID the destination place of the core object
-	 * @return true if the device has moved, false otherwise
+	 * Rename a space on the smart space
+	 * @param spaceId the identifier of the space to rename
+	 * @param newName the new name of the space
+	 * @return true if the space name has been updated, false otherwise
 	 */
-	public boolean moveObject(String objId, String oldPlaceID, String newPlaceID);
+	public boolean renameSpace(String spaceId, String newName);
 	
 	/**
-	 * Move all object to the -1 id place
-	 * @param placeId that will by emptied of its core object
+	 * Get the root space of the hierarchy
+	 * @return the root space reference
 	 */
-	public void removeAllCoreObject(String placeId);
+	public Space getRootSpace();
 	
 	/**
-	 * Rename a place on the smart space
-	 * @param placeId the identifier of the place to rename
-	 * @param newName the new name of the place
-	 * @return true if the place name has been updated, false otherwise
+	 * Get the symbolic space object from its identifier
+	 * @param spaceId the space identifier
+	 * @return the Space instance
 	 */
-	public boolean renamePlace(String placeId, String newName);
+	public Space getSpace(String spaceId);
 	
 	/**
-	 * Get the root place of the hierarchy
-	 * @return the root place reference
+	 * Get all the spaces
+	 * @return spaces as an ArrayList<Space>
 	 */
-	public Space getRootPlace();
-	
-	/**
-	 * Get the symbolic place object from its identifier
-	 * @param placeId the place identifier
-	 * @return the SymbolicPlace instance
-	 */
-	public Space getSymbolicPlace(String placeId);
-	
-	/**
-	 * Get all the places
-	 * @return places as an ArrayList<SymbolicPlace>
-	 */
-	public ArrayList<Space> getPlaces();
+	public ArrayList<Space> getSpaces();
 	
 	/**
 	 * Get a JSON formatted representation of the smart space.
-	 * @return a JSON array that describe each place.
+	 * @return a JSON array that describe each space.
 	 */
-	public JSONArray getJSONPlaces();
+	public JSONArray getJSONSpaces();
 	
 	/**
-	 * Get all the places the have the name in parameter
-	 * @param name the name of the places to get
-	 * @return places as an ArrayList<SymbolicPlace>
+	 * Get all the spaces the have the name in parameter
+	 * @param name the name of the spaces to get
+	 * @return spaces as an ArrayList<Symbolicspace>
 	 */
-	public ArrayList<Space> getPlacesWithName(String name);
+	public ArrayList<Space> getSpacesWithName(String name);
 	
 	/**
-	 * Get all the places that are tagged with the tags list in parameter
+	 * Get all the spaces that are tagged with the tags list in parameter
 	 * @param tags the tags list to check 
-	 * @return places as an ArrayList<SymbolicPlace>
+	 * @return spaces as an ArrayList<Symbolicspace>
 	 */
-	public ArrayList<Space> getPlacesWithTags(ArrayList<String> tags);
+	public ArrayList<Space> getSpacesWithTags(ArrayList<String> tags);
 	
 	/**
-	 * Get all the places that have the properties list set
+	 * Get all the spaces that have the properties list set
 	 * @param propertiesKey the properties key list to check 
-	 * @return places as an ArrayList<SymbolicPlace>
+	 * @return spaces as an ArrayList<Symbolicspace>
 	 */
-	public ArrayList<Space> getPlacesWithProperties(ArrayList<String> propertiesKey);
+	public ArrayList<Space> getSpacesWithProperties(ArrayList<String> propertiesKey);
 	
 	/**
-	 * Get all the places that have the properties list set the specific value
+	 * Get all the spaces that have the properties list set the specific value
 	 * @param properties the properties list to check 
-	 * @return places as an ArrayList<SymbolicPlace>
+	 * @return spaces as an ArrayList<Symbolicspace>
 	 */
-	public ArrayList<Space> getPlacesWithPropertiesValue(HashMap<String, String> properties);
+	public ArrayList<Space> getSpacesWithPropertiesValue(HashMap<String, String> properties);
 	
-	/**
-	 * Get the place identifier of a core object
-	 * @param objId the core object identifier 
-	 * @return the identifier of the place where the core object is placed.
-	 */
-	public String getCoreObjectPlaceId(String objId);
 }

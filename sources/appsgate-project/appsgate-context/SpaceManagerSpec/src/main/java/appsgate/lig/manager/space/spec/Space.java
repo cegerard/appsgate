@@ -62,7 +62,7 @@ public class Space {
 	 * @param category the space category
 	 * @param parent the parent space
 	 */
-	public Space(String id, String name, CATEGORY category, Space parent) {
+	public Space(String id, String name, String category, Space parent) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -84,7 +84,7 @@ public class Space {
 	 * @param properties some properties for this space
 	 * @param parent the parent space
 	 */
-	public Space(String id, String name, CATEGORY category, ArrayList<String> tags,
+	public Space(String id, String name, String category, ArrayList<String> tags,
 			HashMap<String, String> properties, Space parent) {
 		super();
 		this.id = id;
@@ -101,24 +101,44 @@ public class Space {
 	 * 
 	 * @param id the space identifier
 	 * @param name the space name
-	 * @param category the space category
+
 	 * @param tags some tags for this space
 	 * @param properties some properties for this space
 	 * @param parent the parent space
 	 * @param childrens all sub-spaces
 	 */
-	public Space(String id, String name, CATEGORY category, ArrayList<String> tags,
-			HashMap<String, String> properties, Space parent,
-			ArrayList<Space> childrens,
-			ArrayList<String> abstractsObjects) {
+	public Space(String id, String name, ArrayList<String> tags,
+			HashMap<String, String> properties, Space parent) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.tags = tags;
 		this.properties = properties;
-		this.setCategory(category);
+		this.setCategory(properties.get("category"));
 		setParent(parent);
-		this.children = childrens;
+	}
+	
+	/**
+	 * The complete space constructor, it don't update other space
+	 * 
+	 * @param id the space identifier
+	 * @param name the space name
+	 * @param tags some tags for this space
+	 * @param properties some properties for this space
+	 * @param parent the parent space
+	 * @param childrens all sub-spaces
+	 */
+	public Space(String id, String name, ArrayList<String> tags,
+			HashMap<String, String> properties, Space parent,
+			ArrayList<Space> children) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.tags = tags;
+		this.properties = properties;
+		this.setCategory(properties.get("category"));
+		this.parent = parent;
+		this.children = children;
 	}
 
 
@@ -231,8 +251,8 @@ public class Space {
 	 * Use only at initialization to set the category of this space
 	 * @param category the category value
 	 */
-	private void setCategory(CATEGORY category) {
-		properties.put("category", category.toString());
+	private void setCategory(String category) {
+		properties.put("category", category);
 	}
 
 	/**
@@ -404,6 +424,12 @@ public class Space {
 	 */
 	public static enum CATEGORY{
 		ROOT,
+		USER_ROOT,
+		HABITAT_ROOT,
+		PLACE_ROOT,
+		DEVICE_ROOT,
+		SERVICE_ROOT,
+		PROGRAM_ROOT,
 		PLACE,
 		USER,
 		GROUP,
