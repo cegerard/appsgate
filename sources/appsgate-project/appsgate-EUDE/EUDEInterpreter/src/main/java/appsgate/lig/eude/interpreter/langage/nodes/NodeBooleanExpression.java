@@ -24,7 +24,7 @@ public class NodeBooleanExpression extends Node {
     /**
      * Logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(Node.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeBooleanExpression.class);
 
     /**
      * Different operator that are supported by the language

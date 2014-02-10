@@ -1,0 +1,50 @@
+{
+    "runningState": "DEPLOYED",
+    "id": "TestWhile",
+    "userInputSource": "",
+    "source": {
+        "daemon": true,
+        "programName": "TestWhile",
+        "seqParameters": [],
+        "author": "Bob",
+        "target": "Alice",
+        "seqDefinitions": [],
+        "seqRules": {
+            "type": "while",
+            "state": {
+                "type": "state",
+                "stateName": "testState",
+                "object": {
+                    "type": "device",
+                    "id": "test"
+                }
+            },
+            "rules": {
+                "type": "instructions",
+                "rules": [
+                    {
+                        "type": "action",
+                        "target": {
+                            "type": "device",
+                            "id": "flag1"
+                        },
+                        "methodName": "On"
+                    }
+                ]
+            },
+            "rulesThen": {
+                "type": "instructions",
+                "rules": [
+                    {
+                        "type": "action",
+                        "target": {
+                            "type": "device",
+                            "id": "flag2"
+                        },
+                        "methodName": "On"
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -13,7 +13,6 @@ import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEventTest;
@@ -96,6 +95,11 @@ public class EUDEMediatorTest {
         clock.put("id", "1");
         clock.put("type", 21);
         deviceList.put(clock);
+        final JSONObject events = new JSONObject();
+        JSONObject e = new JSONObject();
+        e.put("name", "event");
+        events.put("endEvent", e);
+        events.put("startEvent", e);
 
         final GenericCommand gc = new GenericCommand(null, null, this, null);
         tested = context.states("NotYet");
@@ -117,7 +121,14 @@ public class EUDEMediatorTest {
                 will(returnValue(deviceList));
                 allowing(appsgate).getDevicesInSpaces(with(any(JSONArray.class)), with(any(JSONArray.class)));
                 will(returnValue(deviceList));
-                
+                allowing(appsgate).getBrickType("test");
+                will(returnValue("test"));
+                allowing(appsgate).getEventsFromState(with(any(String.class)), with(any(String.class)));
+                will(returnValue(events));
+                allowing(appsgate).isOfState(with(any(String.class)), with(any(String.class)));
+                will(returnValue(false));
+
+
             }
         });
         this.instance = new EUDEMediator();
@@ -277,7 +288,7 @@ public class EUDEMediatorTest {
      * @throws SpokNodeException
      */
     @Test
-    public void testAddNodeListening() throws JSONException, SpokException {
+    public void testAddNodeListening() throws Exception {
         System.out.println("addNodeListening");
         NodeEventTest t = new NodeEventTest();
 
@@ -292,7 +303,7 @@ public class EUDEMediatorTest {
      * @throws SpokNodeException
      */
     @Test
-    public void testRemoveNodeListening() throws JSONException, SpokException {
+    public void testRemoveNodeListening() throws Exception {
         System.out.println("removeNodeListening");
         NodeEventTest t = new NodeEventTest();
 
@@ -343,7 +354,7 @@ public class EUDEMediatorTest {
      * @throws java.lang.InterruptedException
      */
     @Test
-    public void testActions() throws IOException, FileNotFoundException, JSONException, InterruptedException {
+    public void testActions() throws Exception {
         System.out.println("Actions");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testActions.json")));
         Assert.assertTrue(instance.callProgram("testActions"));
@@ -361,7 +372,7 @@ public class EUDEMediatorTest {
      * @throws java.lang.InterruptedException
      */
     @Test
-    public void testPrograms() throws IOException, FileNotFoundException, JSONException, InterruptedException {
+    public void testPrograms() throws Exception {
         System.out.println("Programs");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testIf.json")));
         System.out.println(instance.getNodeProgram("testIf").getExpertProgramScript());
@@ -385,15 +396,12 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * To test whether reading real program is working
+     * To test whether when node is working
      *
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws JSONException
-     * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @Test
-    public void testWhen() throws IOException, FileNotFoundException, JSONException, InterruptedException {
+    public void testWhen() throws Exception {
         System.out.println("When");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));
         boolean callProgram = instance.callProgram("TestWhen");
@@ -412,12 +420,26 @@ public class EUDEMediatorTest {
     }
 
     /**
+     * To test how the while node is working
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testWhile() throws Exception {
+        System.out.println("While test");
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhile.json")));
+        boolean p = instance.callProgram("TestWhile");
+        Assert.assertTrue(p);
+        contextFollower.notifAll("1");
+        synchroniser.waitUntil(tested.is("flag1"),500);
+        contextFollower.notifAll("2");
+        synchroniser.waitUntil(tested.is("flag2"),500);
+    }
+
+    /**
      * To test whether reading real program is working
      *
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws JSONException
-     * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     //@Test
     public void testPgm() throws Exception {

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class NodeReturn extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeReturn.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeReturn.class);
 
     /**
      * the value to return

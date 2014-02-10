@@ -9,8 +9,6 @@ import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -24,7 +22,7 @@ class NodeState extends Node {
     /**
      * Logger
      */
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Builder.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeState.class);
 
     /**
      * The object to be observed
@@ -171,10 +169,17 @@ class NodeState extends Node {
         return new NodeEvent("device", object.getValue(), name, value, this);
     }
 
+    /**
+     *
+     * @return
+     */
     boolean isOnRules() {
         return isOnRules;
     }
 
+    /**
+     * do the job when the end state event has been raised
+     */
     private void listenEndStateEvent() {
         isOnRules = true;
         fireEndEvent(new EndEvent(this));
@@ -182,4 +187,8 @@ class NodeState extends Node {
         eventEnd.call();
     }
 
+    @Override
+    public String toString() {
+        return "[State " + stateName + "]";
+    }
 }

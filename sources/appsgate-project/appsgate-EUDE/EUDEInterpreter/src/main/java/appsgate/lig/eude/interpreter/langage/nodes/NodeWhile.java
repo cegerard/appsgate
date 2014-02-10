@@ -22,7 +22,7 @@ public class NodeWhile extends Node {
     /**
      * Logger
      */
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Builder.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeWhile.class);
 
     /**
      * The state to check
@@ -112,10 +112,13 @@ public class NodeWhile extends Node {
         if (node == state) {
             // We got an event from the states node, we start the rules or the then branch
             if (state.isOnRules()) {
-                rules.addEndEventListener(state);
+                state.addEndEventListener(this);
+                rules.addEndEventListener(this);
                 rules.call();
+                
             } else {
-                rulesThen.addEndEventListener(state);
+                rules.stop();
+                rulesThen.addEndEventListener(this);
                 rulesThen.call();
             }
         }
@@ -153,4 +156,8 @@ public class NodeWhile extends Node {
         return o;
     }
 
+    @Override
+    public String toString() {
+        return "[Node While " + state.toString() + "]";
+    }
 }

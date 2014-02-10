@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class NodeWhen extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeWhen.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeWhen.class);
 
     /**
      * list of events

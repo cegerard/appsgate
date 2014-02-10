@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public class NodeAction extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeAction.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeAction.class);
 
     /**
      * the type of the target of the action ('device' or 'program')

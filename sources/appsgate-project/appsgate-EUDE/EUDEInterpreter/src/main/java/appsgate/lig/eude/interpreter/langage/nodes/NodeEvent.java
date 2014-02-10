@@ -6,7 +6,6 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import org.json.JSONException;

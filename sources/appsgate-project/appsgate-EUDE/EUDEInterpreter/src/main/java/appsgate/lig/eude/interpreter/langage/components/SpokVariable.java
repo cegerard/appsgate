@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class SpokVariable implements SpokObject {
 
     // Logger
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SpokVariable.class.getName());
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SpokVariable.class);
 
     private final String id;
     private final String type;

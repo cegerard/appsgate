@@ -26,7 +26,7 @@ public class NodeWhileTest extends NodeTest {
         e.put("name", "event");
         events.put("endEvent", e);
         events.put("startEvent", e);
-        
+
         context.checking(new Expectations() {
             {
                 allowing(mediator).getContext();

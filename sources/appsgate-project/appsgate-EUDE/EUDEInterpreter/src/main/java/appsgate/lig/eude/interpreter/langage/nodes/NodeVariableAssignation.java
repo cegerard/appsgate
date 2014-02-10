@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class NodeVariableAssignation extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeVariableAssignation.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeVariableAssignation.class);
 
     /**
      * The name of the variable

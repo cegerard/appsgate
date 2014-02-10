@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public final class SymbolTable {
 
     // Logger
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SymbolTable.class.getName());
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SymbolTable.class);
 
     private final HashMap<String, SpokVariable> variables;
     private final HashMap<String, NodeFunctionDefinition> functions;

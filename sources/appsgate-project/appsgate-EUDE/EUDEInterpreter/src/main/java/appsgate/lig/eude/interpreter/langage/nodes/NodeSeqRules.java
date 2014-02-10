@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public class NodeSeqRules extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class);
 
     /**
      * Contains the block of rules separated by a "THEN" operator

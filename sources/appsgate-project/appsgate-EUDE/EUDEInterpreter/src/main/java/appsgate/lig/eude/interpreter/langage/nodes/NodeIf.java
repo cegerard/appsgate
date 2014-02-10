@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class NodeIf extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeIf.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeIf.class);
 
     /**
      * node representing the boolean expression
