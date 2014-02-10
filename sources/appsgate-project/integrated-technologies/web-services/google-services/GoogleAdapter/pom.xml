@@ -13,7 +13,6 @@
     <name>GoogleAdapter OSGi Bundle</name>
     
     <properties>
-        <ical-version>2.0-beta1-SNAPSHOT</ical-version>
     </properties>
 
 	<!-- Dependencies Description -->
