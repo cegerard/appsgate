@@ -19,10 +19,10 @@ public class SymbolicPlaceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		rootPlace = new Space(ids[0], names[4], null);
-		living = new Space(ids[1], names[0], rootPlace);
-		kitchen = new Space(ids[2], names[1], rootPlace);
-		restPlace = new Space(ids[3], names[3], living);
+		rootPlace = new Space(ids[0], names[4], Space.CATEGORY.ROOT, null);
+		living = new Space(ids[1], names[0], Space.CATEGORY.PLACE, rootPlace);
+		kitchen = new Space(ids[2], names[1], Space.CATEGORY.PLACE, rootPlace);
+		restPlace = new Space(ids[3], names[3], Space.CATEGORY.PLACE, living);
 	}
 
 	@After
@@ -101,7 +101,7 @@ public class SymbolicPlaceTest {
 		properties.put("prop2", "value2");
 		properties.put("prop3", "value3");
 		
-		rootPlace.setProperties(properties);
+		assertTrue(rootPlace.setProperties(properties));
 		assertSame(properties, rootPlace.getProperties());
 	}
 
@@ -111,17 +111,19 @@ public class SymbolicPlaceTest {
 		properties.put("prop1", "value1");
 		properties.put("prop2", "value2");
 		properties.put("prop3", "value3");
-		rootPlace.setProperties(properties);
-		assertNotEquals(0, rootPlace.getProperties().size());
+		assertTrue(rootPlace.setProperties(properties));
+		assertNotEquals(1, rootPlace.getProperties().size());
 		
 		rootPlace.clearProperties();
-		assertEquals(0, rootPlace.getProperties().size());
+		assertEquals(1, rootPlace.getProperties().size());
+		assertNotNull(rootPlace.getPropertyValue("category"));
 	}
 
 	@Test
 	public void testAddProperty() {
 		assertTrue(rootPlace.addProperty("prop10", "value10"));
 		assertFalse(rootPlace.addProperty("prop10", "value11"));
+		assertFalse(rootPlace.addProperty("category", "trytochangeit"));
 	}
 
 	@Test
@@ -140,6 +142,7 @@ public class SymbolicPlaceTest {
 	public void testRemoveProperty() {
 		rootPlace.addProperty("prop10", "value10");
 		assertTrue(rootPlace.removeProperty("prop10"));
+		assertFalse(rootPlace.removeProperty("category"));
 	}
 
 	@Test
@@ -174,45 +177,45 @@ public class SymbolicPlaceTest {
 		assertTrue(rootPlace.hasChild(kitchen));
 	}
 
-	@Test
-	public void testSetGetCoreObjects() {
-		ArrayList<String> coreObject = new ArrayList<String>();
-		coreObject.add("0903964");
-		coreObject.add("0130638");
-		
-		rootPlace.setCoreObjects(coreObject);
-		assertSame(coreObject, rootPlace.getCoreObjects());
-	}
-
-	@Test
-	public void testClearCoreObjects() {
-		ArrayList<String> coreObject = new ArrayList<String>();
-		coreObject.add("0903964");
-		coreObject.add("0130638");
-		rootPlace.setCoreObjects(coreObject);
-		assertNotEquals(0, rootPlace.getCoreObjects().size());
-		
-		rootPlace.clearCoreObjects();
-		assertEquals(0, rootPlace.getCoreObjects().size());
-	}
-
-	@Test
-	public void testAddcoreObject() {
-		assertTrue(rootPlace.addCoreObject("0903964"));
-		assertTrue(rootPlace.addCoreObject("0130638"));
-	}
-
-	@Test
-	public void testRemoveCoreObject() {
-		rootPlace.addCoreObject("0130638");
-		assertTrue(rootPlace.removeCoreObject("0130638"));
-	}
-
-	@Test
-	public void testHasCoreObject() {
-		rootPlace.addCoreObject("0903964");
-		assertTrue(rootPlace.hasCoreObject("0903964"));
-	}
+//	@Test
+//	public void testSetGetCoreObjects() {
+//		ArrayList<String> coreObject = new ArrayList<String>();
+//		coreObject.add("0903964");
+//		coreObject.add("0130638");
+//		
+//		rootPlace.setCoreObjects(coreObject);
+//		assertSame(coreObject, rootPlace.getCoreObjects());
+//	}
+//
+//	@Test
+//	public void testClearCoreObjects() {
+//		ArrayList<String> coreObject = new ArrayList<String>();
+//		coreObject.add("0903964");
+//		coreObject.add("0130638");
+//		rootPlace.setCoreObjects(coreObject);
+//		assertNotEquals(0, rootPlace.getCoreObjects().size());
+//		
+//		rootPlace.clearCoreObjects();
+//		assertEquals(0, rootPlace.getCoreObjects().size());
+//	}
+//
+//	@Test
+//	public void testAddcoreObject() {
+//		assertTrue(rootPlace.addCoreObject("0903964"));
+//		assertTrue(rootPlace.addCoreObject("0130638"));
+//	}
+//
+//	@Test
+//	public void testRemoveCoreObject() {
+//		rootPlace.addCoreObject("0130638");
+//		assertTrue(rootPlace.removeCoreObject("0130638"));
+//	}
+//
+//	@Test
+//	public void testHasCoreObject() {
+//		rootPlace.addCoreObject("0903964");
+//		assertTrue(rootPlace.hasCoreObject("0903964"));
+//	}
 
 	@Test
 	public void testGetDescription() {
