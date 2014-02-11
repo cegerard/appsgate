@@ -1,0 +1,35 @@
+{
+    "friendlyName": "lamp",
+    "properties": [
+    ],
+    "states": [
+        {
+            "name": "isOn",
+            "actions": {
+                "type": "NodeAction",
+                "methodName": "flag1"
+            },
+            "endEvent": {
+                "name" : "lightOff"
+            },
+            "startEvent": {
+                "name" : "lightOn"
+            }
+
+        },
+        {
+            "name": "isOff",
+            "actions": {
+                "type": "NodeAction",
+                "methodName": "flag2"
+            },
+            "endEvent": {
+                "name" : "lightOn"
+            },
+            "startEvent": {
+                "name" : "lightOff"
+            }
+
+        }
+    ]
+}

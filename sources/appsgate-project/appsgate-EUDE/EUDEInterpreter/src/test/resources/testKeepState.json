@@ -1,0 +1,24 @@
+{
+    "runningState": "DEPLOYED",
+    "id": "TestKeepState",
+    "userInputSource": "",
+    "source": {
+        "daemon": true,
+        "programName": "TestKeepState",
+        "seqParameters": [],
+        "author": "Bob",
+        "target": "Alice",
+        "seqDefinitions": [],
+        "seqRules": {
+            "type": "keepstate",
+            "state": {
+                "type": "state",
+                "stateName": "testState",
+                "object": {
+                    "type": "device",
+                    "id": "test"
+                }
+            }
+        }
+    }
+}

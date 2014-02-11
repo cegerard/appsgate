@@ -52,4 +52,12 @@ public interface ContextAgregatorSpec {
      */
     public boolean isOfState(String value, String stateName);
 
+    /**
+     * 
+     * @param stateName
+     * @param type
+     * @return the json description of the action to get the state
+     */
+    public JSONObject getSetter(String stateName, String type);
+
 }

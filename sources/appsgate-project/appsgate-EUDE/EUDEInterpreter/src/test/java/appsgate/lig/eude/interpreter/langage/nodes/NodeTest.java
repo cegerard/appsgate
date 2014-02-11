@@ -7,7 +7,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.Iterator;
 import junit.framework.Assert;
 import org.json.JSONException;

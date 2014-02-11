@@ -15,6 +15,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeActionTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEventTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.router.spec.GenericCommand;
@@ -84,7 +85,7 @@ public class EUDEMediatorTest {
     }
 
     @Before
-    public void setUp() throws JSONException {
+    public void setUp() throws Exception {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
@@ -100,6 +101,7 @@ public class EUDEMediatorTest {
         e.put("name", "event");
         events.put("endEvent", e);
         events.put("startEvent", e);
+        final NodeActionTest a = new NodeActionTest();
 
         final GenericCommand gc = new GenericCommand(null, null, this, null);
         tested = context.states("NotYet");
@@ -128,6 +130,8 @@ public class EUDEMediatorTest {
                 allowing(appsgate).isOfState(with(any(String.class)), with(any(String.class)));
                 will(returnValue(false));
 
+                allowing(appsgate).getSetter(with(any(String.class)), with(any(String.class)));
+                will(returnValue(a.getRuleJSON()));
 
             }
         });
@@ -434,6 +438,19 @@ public class EUDEMediatorTest {
         synchroniser.waitUntil(tested.is("flag1"),500);
         contextFollower.notifAll("2");
         synchroniser.waitUntil(tested.is("flag2"),500);
+    }
+    /**
+     * To test how the while node is working
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testKeepState() throws Exception {
+        System.out.println("Keep State test");
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testKeepState.json")));
+        boolean p = instance.callProgram("TestKeepState");
+        Assert.assertTrue(p);
+        contextFollower.notifAll("1");
     }
 
     /**

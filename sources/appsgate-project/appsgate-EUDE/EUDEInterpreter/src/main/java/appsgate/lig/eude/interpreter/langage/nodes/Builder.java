@@ -27,11 +27,10 @@ public class Builder {
      *
      */
     private static enum NODE_TYPE {
-
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
-        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_PROGRAM, NODE_RETURN, NODE_SELECT,
-        NODE_STATE, NODE_SEQ_RULES, NODE_VALUE, NODE_VARIABLE_ASSIGNATION, NODE_WHEN,
-        NODE_WHILE;
+        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_KEEP_STATE, NODE_PROGRAM, NODE_RETURN,
+        NODE_SELECT, NODE_STATE, NODE_SEQ_RULES, NODE_VALUE, NODE_VARIABLE_ASSIGNATION,
+        NODE_WHEN, NODE_WHILE;
     }
 
     /**
@@ -62,6 +61,9 @@ public class Builder {
         }
         if (type.equalsIgnoreCase("if")) {
             return NODE_TYPE.NODE_IF;
+        }
+        if (type.equalsIgnoreCase("keepstate")) {
+            return NODE_TYPE.NODE_KEEP_STATE;
         }
         if (type.equalsIgnoreCase("program")) {
             return NODE_TYPE.NODE_PROGRAM;
@@ -137,6 +139,8 @@ public class Builder {
                 return new NodeFunctionDefinition(o, parent);
             case NODE_IF:
                 return new NodeIf(o, parent);
+            case NODE_KEEP_STATE:
+                return new NodeKeepState(o, parent);
             case NODE_RETURN:
                 return new NodeReturn(o, parent);
             case NODE_SELECT:

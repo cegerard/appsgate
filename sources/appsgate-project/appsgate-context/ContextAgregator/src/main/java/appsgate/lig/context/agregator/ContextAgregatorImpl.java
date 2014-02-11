@@ -2,11 +2,24 @@ package appsgate.lig.context.agregator;
 
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ContextAgregatorImpl implements ContextAgregatorSpec {
+
+    /**
+     *
+     */
+    private final Library lib;
+
+    /**
+     * Constructor
+     */
+    public ContextAgregatorImpl() {
+        lib = new Library();
+    }
 
     /**
      * Static class member uses to log what happened in each instances
@@ -44,12 +57,22 @@ public class ContextAgregatorImpl implements ContextAgregatorSpec {
 
     @Override
     public JSONObject getEventsFromState(String type, String stateName) {
-        return null;
+        try {
+            return lib.getEventsFromState(type, stateName);
+        } catch (JSONException ex) {
+            LOGGER.error("unable to find events for the given type [{}/{}]", type, stateName);
+            return null;
+        }
     }
 
     @Override
     public boolean isOfState(String value, String stateName) {
         return false;
+    }
+
+    @Override
+    public JSONObject getSetter(String type, String stateName) {
+        return lib.getSetter(type, stateName);
     }
 
 }

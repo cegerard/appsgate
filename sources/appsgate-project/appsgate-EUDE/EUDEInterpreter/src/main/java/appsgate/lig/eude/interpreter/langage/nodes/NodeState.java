@@ -39,6 +39,8 @@ class NodeState extends Node {
     private ContextAgregatorSpec context;
     private boolean isOnRules;
 
+    private String type;
+
     /**
      * Private constructor to allow copy
      *
@@ -59,6 +61,9 @@ class NodeState extends Node {
         object = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
         stateName = getJSONString(o, "stateName");
         context = getMediator().getContext();
+        isOnRules = context.isOfState(object.getValue(), stateName);
+        type = context.getBrickType(object.getValue());
+
     }
 
     @Override
@@ -134,7 +139,6 @@ class NodeState extends Node {
      * @throws SpokExecutionException
      */
     private void buildEventsList() throws SpokExecutionException {
-        String type = context.getBrickType(object.getValue());
         if (type == null || type.isEmpty()) {
             throw new SpokExecutionException("There is no type found for the device " + object.getValue());
         }
@@ -190,5 +194,34 @@ class NodeState extends Node {
     @Override
     public String toString() {
         return "[State " + stateName + "]";
+    }
+
+    /**
+     * @return the method that set the state in the correct shape
+     */
+    NodeAction getSetter() throws SpokException {
+        JSONObject action = context.getSetter(type, stateName);
+        try {
+            action.put("target", object.getJSONDescription());
+        } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return new NodeAction(action, this);
+    }
+
+    /**
+     * @return the id of the object whose state is observed
+     */
+    String getObjectId() {
+        return object.getValue();
+    }
+
+    /**
+     * @return the name of the state that is observed
+     */
+    String getName() {
+        return stateName;
+
     }
 }
