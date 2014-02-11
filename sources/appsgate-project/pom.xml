@@ -238,9 +238,9 @@
 		<module>appsgate-EUDE</module>
 		<module>integrated-technologies</module>
 		<module>communication-components</module>
-		<module>test-components</module>
 		<module>composite-distribution</module>
-
+        <module>test-components</module>
+		
 	</modules>
 
 	<profiles>
