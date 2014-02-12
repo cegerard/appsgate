@@ -9,8 +9,6 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +18,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class Library {
+public final class Library {
 
     /**
      * Static class member uses to log what happened in each instances
@@ -85,42 +83,21 @@ public class Library {
      * @return
      * @throws JSONException
      */
-    public JSONObject getEventsFromState(String type, String stateName) throws JSONException {
-        return getStateForType(type, stateName);
-    }
-
-    /**
-     * 
-     * @param type
-     * @param stateName
-     * @return 
-     */
-    public JSONObject getSetter(String type, String stateName) {
-        JSONObject stateForType = getStateForType(type, stateName);
-        if (stateForType != null) {
-            return stateForType.optJSONObject("actions");
-        }
-            return null;
-    }
-
-    /**
-     *
-     * @param type
-     * @param state
-     * @return
-     */
-    private JSONObject getStateForType(String type, String state) {
+    public JSONObject getStateForType(String type, String stateName) throws JSONException {
         try {
             JSONArray array = root.getJSONArray("states");
             for (int i = 0; i < array.length(); i++) {
-                if (array.getJSONObject(i).getString("name").equalsIgnoreCase(state)) {
+                if (array.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
                     return array.getJSONObject(i);
                 }
             }
         } catch (JSONException ex) {
             LOGGER.error("unable to find the states definition.");
         }
+        LOGGER.error("State not found: {}", stateName);
         return null;
     }
+
+
 
 }

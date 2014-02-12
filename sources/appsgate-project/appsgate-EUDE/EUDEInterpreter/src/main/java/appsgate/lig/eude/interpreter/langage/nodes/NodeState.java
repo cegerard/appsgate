@@ -6,9 +6,12 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
+import appsgate.lig.context.agregator.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.router.spec.GenericCommand;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -39,6 +42,8 @@ class NodeState extends Node {
     private ContextAgregatorSpec context;
     private boolean isOnRules;
 
+    private StateDescription desc = null;
+
     private String type;
 
     /**
@@ -61,10 +66,11 @@ class NodeState extends Node {
         object = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
         stateName = getJSONString(o, "stateName");
         context = getMediator().getContext();
-        isOnRules = context.isOfState(object.getValue(), stateName);
         type = context.getBrickType(object.getValue());
+        desc = context.getEventsFromState(type, stateName);
 
     }
+
 
     @Override
     protected void specificStop() {
@@ -80,13 +86,19 @@ class NodeState extends Node {
             LOGGER.error("Unable to build Events list");
             return ex.getJSONDescription();
         }
-        // We are in state
-        if (context.isOfState(object.getValue(), stateName)) {
-            listenEndStateEvent();
-        } else {
-            isOnRules = false;
-            eventStart.addEndEventListener(this);
-            eventStart.call();
+        try {
+            // We are in state
+            if (isOfState()) {
+                isOnRules = true;
+                listenEndStateEvent();
+            } else {
+                isOnRules = false;
+                eventStart.addEndEventListener(this);
+                eventStart.call();
+            }
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Unable to execute the State node, due to: "+ ex);
+            return ex.getJSONDescription();
         }
         return null;
     }
@@ -142,13 +154,9 @@ class NodeState extends Node {
         if (type == null || type.isEmpty()) {
             throw new SpokExecutionException("There is no type found for the device " + object.getValue());
         }
-        JSONObject eventsFromState = context.getEventsFromState(type, stateName);
-        if (eventsFromState == null) {
-            throw new SpokExecutionException("No events are defined for the given state");
-        }
         // everything is OK
-        eventStart = buildFromOntology(eventsFromState.optJSONObject("startEvent"), type);
-        eventEnd = buildFromOntology(eventsFromState.optJSONObject("endEvent"), type);
+        eventStart = buildFromOntology(desc.getStartEvent(), type);
+        eventEnd = buildFromOntology(desc.getEndEvent(), type);
     }
 
     /**
@@ -200,7 +208,10 @@ class NodeState extends Node {
      * @return the method that set the state in the correct shape
      */
     NodeAction getSetter() throws SpokException {
-        JSONObject action = context.getSetter(type, stateName);
+        JSONObject action = desc.getSetter();
+        if (action == null) {
+            throw new SpokExecutionException("No setter has been found for this state: " + desc.getStateName());
+        }
         try {
             action.put("target", object.getJSONDescription());
         } catch (JSONException ex) {
@@ -224,4 +235,17 @@ class NodeState extends Node {
         return stateName;
 
     }
+        /**
+     * @return true if the state is ok
+     * @throws SpokExecutionException
+     */
+    private boolean isOfState() throws SpokExecutionException {
+        LOGGER.trace("Asking for {}, {}", object.getValue(), desc.getStateName());
+        GenericCommand cmd = getMediator().executeCommand(object.getValue(), desc.getStateName(), new JSONArray());
+        cmd.run();
+        Object aReturn = cmd.getReturn();
+        LOGGER.trace("Is of state: [" + aReturn.toString() + "] compared to: [" + desc.getStateValue() + "]");
+        return (desc.getStateValue().equalsIgnoreCase(aReturn.toString()));
+    }
+
 }

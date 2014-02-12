@@ -5,7 +5,7 @@
     "states": [
         {
             "name": "isOn",
-            "actions": {
+            "setter": {
                 "type": "NodeAction",
                 "methodName": "switchOn"
             },
@@ -16,6 +16,21 @@
                 "name" : "lightOn"
             }
 
+        },
+        {
+            "name": "testState",
+            "setter": {
+                "type": "NodeAction",
+                "methodName": "switchOn"
+            },
+            "endEvent": {
+                "name" : "lightOff"
+            },
+            "startEvent": {
+                "name" : "lightOn"
+            },
+            "stateName" : "testState",
+            "stateValue": "1"
         },
         {
             "name": "isOff",

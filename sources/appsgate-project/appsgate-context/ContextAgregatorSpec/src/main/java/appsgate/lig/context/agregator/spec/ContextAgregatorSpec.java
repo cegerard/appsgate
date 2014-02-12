@@ -35,7 +35,7 @@ public interface ContextAgregatorSpec {
      * @param stateName
      * @return
      */
-    public JSONObject getEventsFromState(String type, String stateName);
+    public StateDescription getEventsFromState(String type, String stateName);
 
     /**
      *
@@ -44,20 +44,5 @@ public interface ContextAgregatorSpec {
      */
     public String getBrickType(String targetId);
 
-    /**
-     * 
-     * @param value
-     * @param stateName
-     * @return 
-     */
-    public boolean isOfState(String value, String stateName);
-
-    /**
-     * 
-     * @param stateName
-     * @param type
-     * @return the json description of the action to get the state
-     */
-    public JSONObject getSetter(String stateName, String type);
 
 }

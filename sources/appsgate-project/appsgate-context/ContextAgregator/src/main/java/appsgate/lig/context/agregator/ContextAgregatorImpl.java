@@ -1,9 +1,9 @@
 package appsgate.lig.context.agregator;
 
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
+import appsgate.lig.context.agregator.spec.StateDescription;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,27 +52,17 @@ public class ContextAgregatorImpl implements ContextAgregatorSpec {
 
     @Override
     public String getBrickType(String targetId) {
-        return null;
+        return "lamp";
     }
 
     @Override
-    public JSONObject getEventsFromState(String type, String stateName) {
+    public StateDescription getEventsFromState(String type, String stateName) {
         try {
-            return lib.getEventsFromState(type, stateName);
+            return new StateDescription(lib.getStateForType(type, stateName));
         } catch (JSONException ex) {
             LOGGER.error("unable to find events for the given type [{}/{}]", type, stateName);
             return null;
         }
-    }
-
-    @Override
-    public boolean isOfState(String value, String stateName) {
-        return false;
-    }
-
-    @Override
-    public JSONObject getSetter(String type, String stateName) {
-        return lib.getSetter(type, stateName);
     }
 
 }

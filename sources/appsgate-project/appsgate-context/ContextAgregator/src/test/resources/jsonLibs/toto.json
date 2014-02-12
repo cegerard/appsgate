@@ -5,15 +5,17 @@
     "states": [
         {
             "name": "isOn",
-            "actions": {
+            "stateName": "value",
+            "stateValue": true,
+            "setter": {
                 "type": "NodeAction",
                 "methodName": "flag1"
             },
             "endEvent": {
-                "name" : "lightOff"
+                "name": "lightOff"
             },
             "startEvent": {
-                "name" : "lightOn"
+                "name": "lightOn"
             }
 
         },
@@ -24,10 +26,10 @@
                 "methodName": "flag2"
             },
             "endEvent": {
-                "name" : "lightOn"
+                "name": "lightOn"
             },
             "startEvent": {
-                "name" : "lightOff"
+                "name": "lightOff"
             }
 
         }

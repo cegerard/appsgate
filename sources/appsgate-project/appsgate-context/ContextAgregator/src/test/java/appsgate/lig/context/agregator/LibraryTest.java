@@ -28,7 +28,7 @@ public class LibraryTest {
     @Test
     public void testGetEvents() throws JSONException {
         Library lib = new Library();
-        JSONObject eventsFromState = lib.getEventsFromState("test", "isOn");
+        JSONObject eventsFromState = lib.getStateForType("test", "isOn");
         Assert.assertNotNull(eventsFromState);
     }
 

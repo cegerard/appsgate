@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.impl;
 
+import appsgate.lig.context.agregator.ContextAgregatorImpl;
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
@@ -34,6 +35,7 @@ import static org.jmock.Expectations.any;
 import org.jmock.Mockery;
 import org.jmock.States;
 import org.jmock.lib.concurrent.Synchroniser;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,6 +65,8 @@ public class EUDEMediatorTest {
     protected Mockery context = new Mockery() {
         {
             setThreadingPolicy(synchroniser);
+            setImposteriser(ClassImposteriser.INSTANCE);
+
         }
     };
     private States tested;
@@ -90,7 +94,7 @@ public class EUDEMediatorTest {
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
         this.contextFollower = new ContextFollowerTest();
-        final ContextAgregatorSpec appsgate = context.mock(ContextAgregatorSpec.class);
+        final ContextAgregatorSpec appsgate = new ContextAgregatorImpl();
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
         clock.put("id", "1");
@@ -103,7 +107,7 @@ public class EUDEMediatorTest {
         events.put("startEvent", e);
         final NodeActionTest a = new NodeActionTest();
 
-        final GenericCommand gc = new GenericCommand(null, null, this, null);
+        final GenericCommand gc = context.mock(GenericCommand.class);
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
@@ -112,26 +116,22 @@ public class EUDEMediatorTest {
                 allowing(push_service).pushData_change(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 allowing(push_service).pushData_add(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 will(returnValue(true));
+                allowing(router).executeCommand(with("test"), with("testState"), with(any(JSONArray.class)));
+                will(returnValue(gc));
                 allowing(router).executeCommand(with("test"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("Yes"));
                 allowing(router).executeCommand(with("flag1"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("flag1"));
                 allowing(router).executeCommand(with("flag2"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("flag2"));
+                
+                allowing(gc).run();
+                allowing(gc).getReturn();
+                will(returnValue("2"));
+
                 allowing(router).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
                 allowing(router).getDevices();
                 will(returnValue(deviceList));
-                allowing(appsgate).getDevicesInSpaces(with(any(JSONArray.class)), with(any(JSONArray.class)));
-                will(returnValue(deviceList));
-                allowing(appsgate).getBrickType("test");
-                will(returnValue("test"));
-                allowing(appsgate).getEventsFromState(with(any(String.class)), with(any(String.class)));
-                will(returnValue(events));
-                allowing(appsgate).isOfState(with(any(String.class)), with(any(String.class)));
-                will(returnValue(false));
-
-                allowing(appsgate).getSetter(with(any(String.class)), with(any(String.class)));
-                will(returnValue(a.getRuleJSON()));
 
             }
         });
@@ -271,19 +271,6 @@ public class EUDEMediatorTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of executeCommand method, of class EUDEMediator.
-     */
-    @Test
-    public void testExecuteCommand() {
-        System.out.println("executeCommand");
-        String objectId = "";
-        String methodName = "";
-        JSONArray args = new JSONArray();
-        GenericCommand expResult = null;
-        GenericCommand result = instance.executeCommand(objectId, methodName, args);
-        assertEquals(expResult, result);
-    }
 
     /**
      * Test of addNodeListening method, of class EUDEMediator.
@@ -425,8 +412,8 @@ public class EUDEMediatorTest {
 
     /**
      * To test how the while node is working
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     @Test
     public void testWhile() throws Exception {
@@ -435,14 +422,15 @@ public class EUDEMediatorTest {
         boolean p = instance.callProgram("TestWhile");
         Assert.assertTrue(p);
         contextFollower.notifAll("1");
-        synchroniser.waitUntil(tested.is("flag1"),500);
+        synchroniser.waitUntil(tested.is("flag1"), 500);
         contextFollower.notifAll("2");
-        synchroniser.waitUntil(tested.is("flag2"),500);
+        synchroniser.waitUntil(tested.is("flag2"), 500);
     }
+
     /**
      * To test how the while node is working
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     @Test
     public void testKeepState() throws Exception {
