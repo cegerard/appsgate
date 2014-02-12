@@ -371,6 +371,60 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		}
 		
 		/**
+ 		 * Get place detail
+ 		 */
+		this.getPlace = function (id)
+		{
+			var call = eval({"method":"getPlaceInfo", "args":[{"type":"String", "value":id}], "callId":"cf-getplace"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Get place by name
+ 		 */
+		this.getPlacesByName = function (name)
+		{
+			var call = eval({"method":"getPlacesByName", "args":[{"type":"String", "value":name}], "callId":"cf-getplacebyname"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Get place by tags
+ 		 */
+		this.getPlacesByTags = function (tagsArray)
+		{
+			var call = eval({"method":"getPlacesWithTags", "args":[{"type":"JSONArray", "value":JSON.stringify(tagsArray)}], "callId":"cf-getplacebytag"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Get place by property keys
+ 		 */
+		this.getPlacesByPropertyKey = function (keysArray)
+		{
+			var call = eval({"method":"getPalcesWithProperties", "args":[{"type":"JSONArray", "value":JSON.stringify(keysArray)}], "callId":"cf-getplacebyprop"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Get place by property keys and associted value
+ 		 */
+		this.getPlacesByPropertiesValue = function (propArray)
+		{
+			var call = eval({"method":"getPalcesWithPropertiesValue", "args":[{"type":"JSONArray", "value":JSON.stringify(propArray)}], "callId":"cf-getplacebypropvalue"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Get root place
+ 		 */
+		this.getRootPlace = function ()
+		{
+			var call = eval({"method":"getRootPlace", "args":[], "callId":"cf-getrootplace"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
  		 * add new place
  		 */
 		this.addPlace = function (name, parent)
@@ -381,12 +435,46 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		}
 		
 		/**
- 		 * rename existing place
+ 		 * rename an existing place
  		 */
 		this.renamePlace = function (id, name)
 		{
 			var place = eval({"id":id, "name":name});
 			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-renameplace"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Move an existing place
+ 		 */
+		this.movePlace = function (id, parent)
+		{
+			var place = eval({"id":id, "parent":parent});
+			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-moveplace"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+		 * Set up completly an existing palce
+		 * id, the id of the palce
+		 * name, the new name
+		 * parent, the new parent of this place
+		 * tagList, the new tagList of an empty JSONArray to clear the existing list
+		 * propList, the new propList of an empty JSONArray to clear the existing list
+		 * objectList, the new objectList of an empty JSONArray to clear the existing list
+		 **/
+		this.setPlace =  function (id, name, parent, tagList, propList, objectList) {
+			var place = eval({"id":id, "parent":parent, "taglist":tagList, "proplist":propList, "coreObjectlist":objectList});
+			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-setPlace"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+		 * Free the place from its tags, porperties and object list
+		 */
+		this.clearPlace = function(id) {
+			var place = eval({"id":id, "taglist":[], "proplist":[], "coreObjectlist":[]});
+			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-clearPlaceList"});
 			websocket.send(JSON.stringify(call));
 		}
 		
@@ -409,6 +497,42 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		}
 		
 		/**
+ 		 * Add a tag
+ 		 */
+		this.addTag = function (id, tag)
+		{
+			var call = eval({"method":"addTag", "args":[{"type":"String", "value":id}, {"type":"String", "value":tag}], "callId":"cf-addTag"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Remove a tag
+ 		 */
+		this.removeTag = function (id, tag)
+		{
+			var call = eval({"method":"removeTag", "args":[{"type":"String", "value":id}, {"type":"String", "value":tag}], "callId":"cf-removeTag"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Add a property
+ 		 */
+		this.addProperty = function (id, key, value)
+		{
+			var call = eval({"method":"addProperty", "args":[{"type":"String", "value":id}, {"type":"String", "value":key}, {"type":"String", "value":value}], "callId":"cf-addProp"});
+			websocket.send(JSON.stringify(call));
+		}
+	
+		/**
+		 * Remove a porperty
+		 */
+		this.removeProperty = function (id, key)
+		{
+			var call = eval({"method":"removeProperty", "args":[{"type":"String", "value":id}, {"type":"String", "value":key}], "callId":"cf-removeProp"});
+			websocket.send(JSON.stringify(call));
+		}
+	
+		/**
  		 * Get core object place id
  		 */
 		this.getCoreObjectPlaceId = function (objId)
@@ -416,15 +540,7 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			var call = eval({"method":"getCoreObjectPlaceId", "args":[{"type":"String", "value":objId}], "callId":"cf-getcoreobjectplaceid"});
 			websocket.send(JSON.stringify(call));
 		}
-		
-		/**
- 		 * Get object associated place id
- 		 */
-		this.getCoreObjectPlaceId = function (objectId)
-		{
-			var call = eval({"method":"getCoreObjectPlaceId", "args":[{"type":"String", "value":objectId}], "callId":"cf-getcoreobjectplaceid"});
-			websocket.send(JSON.stringify(call));
-		}
+	
 		
 		/********
 		 End User management

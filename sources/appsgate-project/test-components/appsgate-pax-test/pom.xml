@@ -1,0 +1,402 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>test-components</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>appsgate-pax-test</artifactId>
+	<packaging>jar</packaging>
+
+	<properties>
+		<url.version>1.6.0</url.version>
+		<exam.version>3.3.0</exam.version>
+	</properties>
+
+	<dependencies>
+
+		<!-- Appsgate modules -->
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreObjectSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreWeatherServiceSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreClockSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreCalendarSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>core-mail-service-specification</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		<!-- repackaged/patched dependencies (as osgi bundles, or apamcomponents) 
+			for appsgate -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>2.12.0-PATCHED</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.android</groupId>
+			<artifactId>JavaWebSocketAndroidAdapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.android</groupId>
+			<artifactId>JavamailAndroidAdapter</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+
+		<!-- Dependencies for appsgate (not modified, already bundles) -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.configadmin</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.fileinstall</artifactId>
+			<version>3.2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.http.api</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.http.jetty</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.50</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openengsb.wrapped</groupId>
+			<artifactId>com.google.gdata-calendar</artifactId>
+			<version>1.41.5.w1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.kxml2</artifactId>
+			<version>2.3.0_3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.xmlpull</artifactId>
+			<version>1.1.3.1_2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.guava-osgi</groupId>
+			<artifactId>guava-osgi</artifactId>
+			<version>10.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j</artifactId>
+			<version>${ical-version}</version>
+		</dependency>
+
+
+		<!-- OSGi Framework (packOSGi) -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>${osgi.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>${ipojo.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>${osgi.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.bundlerepository</artifactId>
+			<version>${felix.bundlerepository.version}</version>
+		</dependency>
+
+
+		<!-- Logging utils (packLog) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>test</scope>
+
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.log</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
+
+		<!-- ApAM dependencies (packApamCore & cie) -->
+		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-bundle</artifactId>
+			<version>${apam.current.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>obrman</artifactId>
+			<version>${apam.current.version}</version>
+		</dependency>
+
+
+		<!-- Dependencies for shell (packApamShell) -->
+		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-universal-shell</artifactId>
+			<version>${apam.current.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.command</artifactId>
+			<version>${felix.gogo.command.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.runtime</artifactId>
+			<version>${felix.gogo.runtime.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.shell</artifactId>
+			<version>${felix.gogo.shell.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.shell</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.arch.gogo</artifactId>
+			<version>${felix.ipojo.arch.gogo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-gogo-shell</artifactId>
+			<version>${apam.current.version}</version>
+		</dependency>
+
+
+		<!-- Junit Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-container-forked</artifactId>
+			<version>${exam.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-junit4</artifactId>
+			<version>${exam.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-link-assembly</artifactId>
+			<version>${exam.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.url</groupId>
+			<artifactId>pax-url-link</artifactId>
+			<version>${url.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.url</groupId>
+			<artifactId>pax-url-commons</artifactId>
+			<version>${url.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.url</groupId>
+			<artifactId>pax-url-classpath</artifactId>
+			<version>${url.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.url</groupId>
+			<artifactId>pax-url-aether</artifactId>
+			<version>${url.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.url</groupId>
+			<artifactId>pax-url-mvn</artifactId>
+			<version>1.3.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-spi</artifactId>
+			<version>${exam.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>ops4j-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/ops4j-snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ops4j-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/ops4j-releases/</url>
+			<snapshots>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ical4j-repository</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<build>
+
+		<pluginManagement>
+
+			<plugins>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<!-- This plugin allow to use versionAsProject() by generating a file 
+						in maven/dependencies.properties -->
+					<groupId>org.apache.servicemix.tooling</groupId>
+					<artifactId>depends-maven-plugin</artifactId>
+					<version>1.2</version>
+					<executions>
+						<execution>
+							<id>generate-depends-file</id>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>generate-depends-file</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<outputFile>${basedir}/src/test/resources/META-INF/maven/dependencies.properties</outputFile>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.12.4</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.surefire</groupId>
+							<artifactId>surefire-junit47</artifactId>
+							<version>2.12.4</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<!--<forkMode>once</forkMode> -->
+						<classpathDependencyScopeExclude>provided</classpathDependencyScopeExclude>
+						<systemProperties>
+							<pax.exam.framework>felix</pax.exam.framework>
+						</systemProperties>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.servicemix.tooling</groupId>
+				<artifactId>depends-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

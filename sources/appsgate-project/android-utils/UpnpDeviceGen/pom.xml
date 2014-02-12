@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>appsgate.android</groupId>
+		<artifactId>android-utils</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<groupId>org.apache.felix.sandbox</groupId>
+	<artifactId>org.apache.felix.upnp.devicegen.util</artifactId>
+	<version>0.1.0</version>
+
+
+	<packaging>bundle</packaging>
+
+
+	<name>###### UPnP Device Generator Adapter ######</name>
+	<description>Jar files from http://svn.apache.org/repos/asf/felix/sandbox/donsez/upnp.devicegen.util/ </description>
+
+	<!-- Original bundle file come from Didier Donsez Sandbox : http://svn.apache.org/repos/asf/felix/sandbox/donsez/upnp.devicegen.util 
+		org.apache.felix.upnp.devicegen.util-0.1.0.jar to install this legacy jar 
+		file in the local maven repository : mvn deploy:deploy-file -Durl=file://PATH-TO-PROJECT/repo 
+		-Dfile=repo/org.apache.felix.upnp.devicegen.util-0.1.0.jar -DgroupId=org.apache.felix.sandbox 
+		-DartifactId=org.apache.felix.upnp.devicegen.util -Dversion=0.1.0 -Dpackaging=jar -->
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+
+
+	<repositories>
+		<repository>
+			<id>private-repo</id>
+			<url>file://${project.basedir}/repo</url>
+		</repository>
+	</repositories>
+
+	<!-- Dependencies Description -->
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.felix.sandbox</groupId>
+			<artifactId>org.apache.felix.upnp.devicegen.util</artifactId>
+			<version>0.1.0</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+
+
+	<!-- Build Description -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+
+						<!-- docs in http://cwiki.apache.org/FELIX/bundle-plugin-for-maven-bnd.html 
+							and http://cwiki.apache.org/FELIX/osgi-plugin-for-maven-2.html -->
+
+						<Export-Package>
+							org.apache.felix.upnp.devicegen.holder,
+							org.apache.felix.upnp.devicegen.util,
+							org.apache.felix.upnp.devicegen.uuid
+						</Export-Package>
+
+						<Import-Package>*</Import-Package>
+
+						<Bundle-DocURL>${repositoryLocation}${pom.artifactId}/index.html</Bundle-DocURL>
+						<Bundle-Url>${repositoryLocation}${pom.artifactId}/${pom.artifactId}-${pom.version}.jar</Bundle-Url>
+						<Bundle-Source>${repositoryLocation}${pom.artifactId}/${pom.artifactId}-${pom.version}-src.jar</Bundle-Source>
+
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Bundle-Description>${description}</Bundle-Description>
+						<Bundle-Vendor>Apache Software Foundation</Bundle-Vendor>
+
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
