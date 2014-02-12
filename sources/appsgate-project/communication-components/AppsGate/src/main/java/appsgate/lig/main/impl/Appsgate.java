@@ -333,7 +333,7 @@ public class Appsgate implements AppsGateSpec {
 			try {
 				tagsList.add(tags.getString(i));
 			} catch (JSONException e) {
-				logger.error(e.getMessage());
+				LOGGER.error(e.getMessage());
 			}
 		}
 		
@@ -354,7 +354,7 @@ public class Appsgate implements AppsGateSpec {
 			try {
 				keysList.add(keys.getString(i));
 			} catch (JSONException e) {
-				logger.error(e.getMessage());
+				LOGGER.error(e.getMessage());
 			}
 		}
 		
@@ -376,7 +376,7 @@ public class Appsgate implements AppsGateSpec {
 				JSONObject prop = properties.getJSONObject(i);
 				propertiesList.put(prop.getString("key"), prop.getString("value"));
 			} catch (JSONException e) {
-				logger.error(e.getMessage());
+				LOGGER.error(e.getMessage());
 			}
 		}
 		
