@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,52 +29,34 @@ public final class Library {
     /**
      *
      */
-    private JSONObject root;
+    private HashMap<String, JSONObject> root;
 
     /**
      * Constructor
      */
     public Library() {
-        readFile();
+        root = new HashMap<String, JSONObject>();
     }
 
     /**
      *
+     * @param o
      */
-    public void readFile() {
-        try {
-            root = loadFileJSON("src/test/resources/jsonLibs/toto.json");
-        } catch (IOException ex) {
-            LOGGER.error("Unable to load file:", ex);
-        } catch (JSONException ex) {
-            LOGGER.error("File not in the correct format: {}", ex);
+    public void addDesc(JSONObject o) {
+        if (!o.has("typename")) {
+            LOGGER.error("The description has no type name");
+            return;
         }
+        addDescForType(o.optString("typename"), o);
     }
 
     /**
      *
-     * @param filename
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws JSONException
+     * @param type
+     * @param o
      */
-    private JSONObject loadFileJSON(String filename) throws FileNotFoundException, IOException, JSONException {
-        FileInputStream fis = new FileInputStream(filename);
-        DataInputStream dis = new DataInputStream(fis);
-
-        byte[] buf = new byte[dis.available()];
-        dis.readFully(buf);
-
-        String fileContent = "";
-        for (byte b : buf) {
-            fileContent += (char) b;
-        }
-
-        dis.close();
-        fis.close();
-
-        return new JSONObject(fileContent);
+    public void addDescForType(String type, JSONObject o) {
+        root.put(type, o);
     }
 
     /**
@@ -84,20 +67,45 @@ public final class Library {
      * @throws JSONException
      */
     public JSONObject getStateForType(String type, String stateName) throws JSONException {
+        JSONObject desc = getDescriptionFromType(type);
+        if (desc == null) {
+            LOGGER.error("No description found for this type");
+            return null;
+        }
+        JSONArray array;
         try {
-            JSONArray array = root.getJSONArray("states");
-            for (int i = 0; i < array.length(); i++) {
-                if (array.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
-                    return array.getJSONObject(i);
-                }
-            }
+            array = desc.getJSONArray("states");
         } catch (JSONException ex) {
             LOGGER.error("unable to find the states definition.");
+            return null;
+        }
+
+        for (int i = 0; i < array.length(); i++) {
+            if (array.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
+                return array.getJSONObject(i);
+            }
         }
         LOGGER.error("State not found: {}", stateName);
         return null;
     }
 
+    /**
+     * 
+     * @param type
+     * @return 
+     */
+    public JSONObject getDescriptionFromType(String type) {
 
+        if (root == null) {
+            LOGGER.error("The library is not inited");
+            return null;
+        }
+        if (root.containsKey(type)) {
+            return root.get(type);
+        } 
+        LOGGER.error("type not found");
+        return null;
+
+    }
 
 }

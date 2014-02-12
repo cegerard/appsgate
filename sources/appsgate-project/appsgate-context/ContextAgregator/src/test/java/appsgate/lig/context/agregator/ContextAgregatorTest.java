@@ -3,26 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package appsgate.lig.context.agregator;
 
+import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author jr
  */
 public class ContextAgregatorTest {
-    
+
     public ContextAgregatorTest() {
     }
 
     @Test
-    public void testSomeMethod() {
+    public void testAgregator() {
+        ContextAgregatorMock m = new ContextAgregatorMock("src/test/resources/jsonLibs/toto.json");
+        Assert.assertNotNull(m);
+        Assert.assertNotNull(m.getEventsFromState("test", "testState"));
     }
-    
-    public ContextAgregatorImpl getAgregator() {
-        return new ContextAgregatorImpl();
-    }
+
 }

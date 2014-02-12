@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.agregator.ContextAgregatorImpl;
+import appsgate.lig.context.agregator.ContextAgregatorMock;
+import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -16,7 +17,7 @@ public class NodeKeepStateTest extends NodeTest {
 
     public NodeKeepStateTest() throws Exception {
         super();
-        final ContextAgregatorImpl c = new ContextAgregatorImpl();
+        final ContextAgregatorSpec c = new ContextAgregatorMock("src/test/resources/jsonLibs/toto.json");
         final GenericCommand cmd = context.mock(GenericCommand.class);
 
         context.checking(new Expectations() {

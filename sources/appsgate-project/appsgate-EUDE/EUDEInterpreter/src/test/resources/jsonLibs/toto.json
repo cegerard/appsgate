@@ -1,5 +1,6 @@
 {
     "friendlyName": "lamp",
+    "typename":"lamp",
     "properties": [
     ],
     "states": [

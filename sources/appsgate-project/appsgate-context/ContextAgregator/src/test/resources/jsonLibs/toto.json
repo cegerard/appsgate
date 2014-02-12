@@ -1,10 +1,11 @@
 {
     "friendlyName": "lamp",
+    "typename" : "test",
     "properties": [
     ],
     "states": [
         {
-            "name": "isOn",
+            "name": "testState",
             "stateName": "value",
             "stateValue": true,
             "setter": {
@@ -16,20 +17,6 @@
             },
             "startEvent": {
                 "name": "lightOn"
-            }
-
-        },
-        {
-            "name": "isOff",
-            "actions": {
-                "type": "NodeAction",
-                "methodName": "flag2"
-            },
-            "endEvent": {
-                "name": "lightOn"
-            },
-            "startEvent": {
-                "name": "lightOff"
             }
 
         }

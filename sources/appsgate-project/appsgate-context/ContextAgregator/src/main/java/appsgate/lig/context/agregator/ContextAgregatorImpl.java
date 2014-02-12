@@ -8,11 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ContextAgregatorImpl implements ContextAgregatorSpec {
+    /**
+     * Static class member uses to log what happened in each instances
+     */
+    private final static Logger LOGGER = LoggerFactory.getLogger(ContextAgregatorImpl.class);
 
     /**
      *
      */
-    private final Library lib;
+    protected Library lib;
 
     /**
      * Constructor
@@ -21,10 +25,6 @@ public class ContextAgregatorImpl implements ContextAgregatorSpec {
         lib = new Library();
     }
 
-    /**
-     * Static class member uses to log what happened in each instances
-     */
-    private final static Logger LOGGER = LoggerFactory.getLogger(ContextAgregatorImpl.class);
 
     /**
      * Called by APAM when an instance of this implementation is created

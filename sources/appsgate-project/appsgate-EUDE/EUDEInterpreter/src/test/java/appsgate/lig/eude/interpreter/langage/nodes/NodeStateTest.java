@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.agregator.ContextAgregatorImpl;
+import appsgate.lig.context.agregator.ContextAgregatorMock;
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import org.jmock.Expectations;
@@ -24,7 +24,7 @@ import org.junit.Before;
 public class NodeStateTest extends NodeTest {
 
     public NodeStateTest() throws Exception {
-        final ContextAgregatorSpec c = new ContextAgregatorImpl();
+        final ContextAgregatorSpec c = new ContextAgregatorMock("src/test/resources/jsonLibs/toto.json");
         final JSONObject events = new JSONObject();
         JSONObject e = new JSONObject();
         e.put("name", "event");
