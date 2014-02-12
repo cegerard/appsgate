@@ -17,6 +17,9 @@ import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.manager.space.spec.Space;
+import appsgate.lig.manager.space.spec.SpaceManagerSpec;
+import appsgate.lig.manager.space.spec.Space.TYPE;
 
 /**
  * This class is use to allow other components to subscribe for specific
@@ -47,6 +50,11 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 	 * The AppsGate time sensor 
 	 */
 	private CoreClockSpec coreClock;
+	
+	/**
+	 * Field to handle the space manager API
+	 */
+	private SpaceManagerSpec spaceManager;
 
 	/**
 	 * Called by APAM when an instance of this implementation is created
@@ -145,17 +153,50 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		try {
 			logger.debug("Event message receive, " + notif.JSONize());
 			JSONObject event = notif.JSONize();
-			
-			//TODO delete this test when the notification
-			//mechanism will be totally define. Use to ignore context notification (device name, place added etc.)
-			if(!event.has("objectId")) {
+
+			if(event.has("newDevice")){
+				Space deviceRoot = spaceManager.getDeviceRoot(spaceManager.getCurrentHabitat());
+
+				String categoryName;
+				String type  = event.getString("type");
+				if(type.contentEquals("0")) {
+					categoryName = "temperature";
+				} else if(type.contentEquals("1")) {
+					categoryName = "illumination";
+				} else if(type.contentEquals("2")) {
+					categoryName = "switch";
+				} else if(type.contentEquals("3")) {
+					categoryName = "contact";
+				} else if(type.contentEquals("4")) {
+					categoryName = "keycard";
+				} else if(type.contentEquals("5")) {
+					categoryName = "occupancy";
+				} else if(type.contentEquals("6")) {
+					categoryName = "Smart plug";
+				} else if(type.contentEquals("7")) {
+					categoryName = "colored light";
+				} else if(type.contentEquals("8")) {
+					categoryName = "on/off actuator";
+				} else if(type.contentEquals("9")) {
+					categoryName = "CO2";
+				}else {
+					logger.debug("device type not supported for context now");
+					return;
+				}
+				//TODO add category for device and add device in the correct category
+				
+			}else if(event.has("removeDevice")){
+				event.getString("id");
+				event.getString("type");
+				//TODO manage to find all space related to this device and delete them
+			} else if(!event.has("objectId")) {
 				return;
 			}
 				
 			Entry eventKey = new Entry(event.getString("objectId"), event.getString("varName"), event.getString("value"));
 			ArrayList<Entry> keys = new ArrayList<Entry>();
 		
-			//Copy the listener just to avoid concurrent exeption with program
+			//Copy the listener just to avoid concurrent exception with program
 			//when daemon try to add listener again when they restart
 			synchronized(this) {
 				Iterator<Entry> tempKeys = eventsListeners.keySet().iterator();

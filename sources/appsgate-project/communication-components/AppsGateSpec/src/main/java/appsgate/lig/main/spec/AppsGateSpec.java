@@ -93,123 +93,128 @@ public interface AppsGateSpec {
 	
 	/**
 	 * Call AppsGate to get all existing place definition.
+	 * @param habitatID the identifier of the habitat
 	 * @return a JSON array that describe each place.
 	 */
-	public JSONArray getPlaces();
+	public JSONObject getPlaces(String habitatID);
 	
 	/**
 	 * Call AppsGate to get information about a place
+	 * @param habitatID the identifier of the habitat
 	 * @param placeId the place to get information about
 	 * @return place details as a JSONObject
 	 */
-	public JSONObject getPlaceInfo(String placeId);
+	public JSONObject getPlaceInfo(String habitatID, String placeId);
+	
+	
+	/***************************/
+	/**    Space management    */
+	/***************************/
 	
 	/**
-	 * Call AppsGate to get all the places that match a specific name
+	 * Call AppsGate to get all existing space definition.
+	 * @return a JSON array that describe each space.
+	 */
+	public JSONArray getJSONSpaces();
+	
+	/**
+	 * Call AppsGate to get information about a specific space
+	 * @param spaceId the space to get information about
+	 * @return space details as a JSONObject
+	 */
+	public JSONObject getSpaceInfo(String spaceId);
+	
+	/**
+	 * Call AppsGate to get all the spaces that match a specific name
 	 * @param name the name to match
-	 * @return the places with the name <name> as a JSONArray
+	 * @return the spaces with the name <name> as a JSONArray
 	 */
-	public JSONArray getPlacesByName(String name);
+	public JSONArray getSpacesByName(String name);
 	
 	/**
-	 * Get places that have been tagged with all tags
+	 * Get spaces that have been tagged with all tags
 	 * give in parameter.
-	 * @param tags the tags list that places have to match
-	 * @return places as a JSONArray
+	 * @param tags the tags list that spaces have to match
+	 * @return spaces as a JSONArray
 	 */
-	public JSONArray getPlacesWithTags(JSONArray tags);
+	public JSONArray getSpacesWithTags(JSONArray tags);
 	
 	/**
-	 * Get places that contains the properties keys in parameters
-	 * @param keys all properties that places have to be set
-	 * @return places list as a JSONArray
+	 * Get spaces that contains the properties keys in parameters
+	 * @param keys all properties that spaces have to be set
+	 * @return spaces list as a JSONArray
 	 */
-	public JSONArray getPalcesWithProperties(JSONArray keys);
+	public JSONArray getSpacesWithProperties(JSONArray keys);
 	
 	/**
-	 * Get places that contains the properties keys in parameters
+	 * Get spaces that contains the properties keys in parameters
 	 * and with the corresponding values
-	 * @param properties all properties that places have to be set with
+	 * @param properties all properties that spaces have to be set with
 	 * the corresponding value
-	 * @return places list as a JSONArray
+	 * @return spaces list as a JSONArray
 	 */
-	public JSONArray getPalcesWithPropertiesValue(JSONArray properties);
+	public JSONArray getSpacesWithPropertiesValue(JSONArray properties);
 	
 	/**
-	 * Get the root place description
-	 * @return the root place as a JSONObject
+	 * Get the root space description
+	 * @return the root space as a JSONObject
 	 */
-	public JSONObject getRootPlace();
+	public JSONObject getRootSpace();
 	
 	/**
-	 * Add a new place and move object in it.
-	 * @param place the new place description and the list of object to move in
-	 * @return the new place identifier
+	 * Add a new space and move object in it.
+	 * @param space the new space description and the list of object to move in
+	 * @return the new space identifier
 	 */
-	public String newPlace(JSONObject place);
+	public String newSpace(JSONObject space);
 	
 	/**
-	 * Update a place on the smart space
-	 * @param place the new place description
-	 * @param true if the place has been updated, false otherwise
+	 * Update a space on the smart space
+	 * @param space the new space description
+	 * @param true if the space has been updated, false otherwise
 	 */
-	public boolean updatePlace(JSONObject place);
+	public boolean updateSpace(JSONObject space);
 	
 	/**
-	 * Remove a place from the smart space
-	 * @param id the place identifier
-	 * @return true if the place has been removed, false otherwise
+	 * Remove a space from the smart space
+	 * @param id the space identifier
+	 * @return true if the space has been removed, false otherwise
 	 */
-	public boolean removePlace(String id);
+	public boolean removeSpace(String id);
 	
 	/**
-	 * Add a tag to the tag of list of the specified place
-	 * @param placed the place where to add the tag
+	 * Add a tag to the tag of list of the specified space
+	 * @param spaceId the space where to add the tag
 	 * @param tag the tag to add
 	 * @return true if the tag has been added, false otherwise
 	 */
-	public boolean addTag(String placeId, String tag);
+	public boolean addTag(String spaceId, String tag);
 	
 	/**
-	 * Remove a tag from a place
-	 * @param placeId the place from where to remove the tag
+	 * Remove a tag from a space
+	 * @param spaceId the space from where to remove the tag
 	 * @param tag the tag to remove
 	 * @return true if the tag has been removed, false otherwise
 	 */
-	public boolean removeTag(String placeId, String tag);
+	public boolean removeTag(String spaceId, String tag);
 	
 	/**
-	 * Add a property to a specified place
-	 * @param placeId the place where to add the property
+	 * Add a property to a specified space
+	 * @param spaceId the space where to add the property
 	 * @param key the key of the property to add
 	 * @param value the value of the property to add
 	 * @return true f the property has been added, false otherwise
 	 */
-	public boolean addProperty(String placeId, String key, String value);
+	public boolean addProperty(String spaceId, String key, String value);
 	
 	/**
-	 * Remove a property from a specified place
-	 * @param placeId the place from where to remove the property
+	 * Remove a property from a specified space
+	 * @param spaceId the space from where to remove the property
 	 * @param key the key of the property that have to be removed
 	 * @return true if the property is removed, false otherwise
 	 */
-	public boolean removeProperty(String placeId, String key);
+	public boolean removeProperty(String spaceId, String key);
 	
-	/**
-	 * Move a device in a specified place
-	 * @param objId the object to move
-	 * @param srcPlaceId the previous place of this object
-	 * @param destPlaceId the destination of this object
-	 * @return true if the device has been moved, false otherwise
-	 */
-	public boolean moveDevice(String objId, String srcPlaceId, String destPlaceId);
-	
-	/**
-	 * Get the place identifier of a core object
-	 * @param objId the core object identifier 
-	 * @return the identifier of the place where the core object is placed.
-	 */
-	public String getCoreObjectPlaceId(String objId);
 	
 	/***************************/
 	/**  End User management   */

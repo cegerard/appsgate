@@ -3,8 +3,6 @@ package appsgate.lig.manager.space.impl;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +18,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.manager.space.messages.SpaceManagerNotification;
 import appsgate.lig.manager.space.spec.SpaceManagerSpec;
 import appsgate.lig.manager.space.spec.Space;
-import appsgate.lig.manager.space.spec.Space.CATEGORY;
+import appsgate.lig.manager.space.spec.Space.TYPE;
 
 /**
  * This ApAM component is used to maintain space information for any object
@@ -28,7 +26,7 @@ import appsgate.lig.manager.space.spec.Space.CATEGORY;
  * 
  * @author Cédric Gérard
  * @version 1.0.0
- * @since February 26, 2013
+ * @since February 10, 2014
  * 
  * @see SpaceManagerSpec
  * 
@@ -76,15 +74,15 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 					
 					String spaceId = (String)obj.keys().next();
 					JSONObject jsonspace = new JSONObject(obj.getString(spaceId));
-					String name = jsonspace.getString("name");
+					String type = jsonspace.getString("type");
 					String parentId = jsonspace.getString("parent");
 					JSONArray tags = jsonspace.getJSONArray("tags");
 					JSONArray properties = jsonspace.getJSONArray("properties");
-					JSONArray devices = jsonspace.getJSONArray("children");
+					//JSONArray children = jsonspace.getJSONArray("children");
 					
 					ArrayList<String> tagsList = new ArrayList<String>();
 					HashMap<String, String> propertiesList = new HashMap<String, String>();
-					ArrayList<String> coreObjectList = new ArrayList<String>();
+					//ArrayList<String> coreObjectList = new ArrayList<String>();
 					
 					int iTagsArray = 0;
 					int tagsArrayLength = tags.length();
@@ -102,12 +100,12 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 						ipropArray++;
 					}
 					
-					int ideviceArray = 0;
-					int deviceArrayLength = devices.length();
-					while(ideviceArray < deviceArrayLength) {
-						coreObjectList.add(devices.getString(ideviceArray));
-						ideviceArray++;
-					}
+//					int ideviceArray = 0;
+//					int deviceArrayLength = devices.length();
+//					while(ideviceArray < deviceArrayLength) {
+//						coreObjectList.add(devices.getString(ideviceArray));
+//						ideviceArray++;
+//					}
 					
 //					JSONArray children = jsonspace.getJSONArray("children");
 //					ArrayList<String> childIdList = new ArrayList<String>();
@@ -121,7 +119,7 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 //						tempChildrenMap.put(spaceId, childIdList);
 //					}
 					
-					Space loc = new Space(spaceId, name, tagsList, propertiesList, spaceObjectsMap.get(parentId));
+					Space loc = new Space(spaceId, TYPE.valueOf(type), tagsList, propertiesList, spaceObjectsMap.get(parentId));
 
 					spaceObjectsMap.put(spaceId, loc);
 					i++;
@@ -140,14 +138,17 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 				e.printStackTrace();
 			}
 		} else {
-			String rootID = addSpace("root", CATEGORY.ROOT.toString(), null);
-			addSpace("user", CATEGORY.USER_ROOT.toString(), rootID);
-			String habitatID = addSpace("habitat1", CATEGORY.HABITAT_ROOT.toString(), rootID);
-			addSpace("place", CATEGORY.PLACE_ROOT.toString(), habitatID);
-			addSpace("devices", CATEGORY.DEVICE_ROOT.toString(), habitatID);
-			addSpace("services", CATEGORY.SERVICE_ROOT.toString(), habitatID);
-			addSpace("pgms", CATEGORY.PROGRAM_ROOT.toString(), habitatID);
-			
+			addSpace(TYPE.ROOT, null);
+			Space root = getRootSpace();
+			root.addProperty("name", "root");
+			addSpace(TYPE.USER_ROOT, root);
+			addSpace(TYPE.HABITAT_CURRENT, root);
+			Space currentHab = getCurrentHabitat();
+			currentHab.addProperty("name", "habitat1");
+			addSpace(TYPE.SPATIAL_ROOT, currentHab);
+			addSpace(TYPE.DEVICE_ROOT, currentHab);
+			addSpace(TYPE.SERVICE_ROOT, currentHab);
+			addSpace(TYPE.PROGRAM_ROOT, currentHab);
 		}
 		logger.debug("The space manager has been initialized");
 	}
@@ -160,13 +161,13 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 	}
 
 	@Override
-	public synchronized String addSpace(String name, String category,  String parent) {
+	public synchronized String addSpace(TYPE type, Space parent) {
 
-		String spaceId = String.valueOf(new String(name+new Double(Math.random())).hashCode());
+		String spaceId = String.valueOf(new String(type.toString()+new Double(Math.random())).hashCode());
 		if (!spaceObjectsMap.containsKey(spaceId)) {
-			Space newspace = new Space(spaceId, name, category, spaceObjectsMap.get(parent));
+			Space newspace = new Space(spaceId, type, parent);
 			spaceObjectsMap.put(spaceId, newspace);
-			notifyspace(spaceId, name, "newspace");
+			notifyspace(spaceId, type.toString(), "newspace");
 			
 			// Save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -177,7 +178,7 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
 			}
 
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, name, properties)) {
+			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), properties)) {
 				return spaceId;
 			}
 		}
@@ -185,15 +186,13 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 	}
 	
 	@Override
-	public String addSpace(String name, String category,
-			ArrayList<String> tags, HashMap<String, String> properties,
-			String parent) {
-		
-		String spaceId = String.valueOf(new String(name+new Double(Math.random())).hashCode());
+	public String addSpace(TYPE type, HashMap<String, String> properties,
+			Space parent) {
+		String spaceId = String.valueOf(new String(type.toString()+new Double(Math.random())).hashCode());
 		if (!spaceObjectsMap.containsKey(spaceId)) {
-			Space newspace = new Space(spaceId, name, category, tags, properties, spaceObjectsMap.get(parent));
+			Space newspace = new Space(spaceId, type, properties, parent);
 			spaceObjectsMap.put(spaceId, newspace);
-			notifyspace(spaceId, name, "newspace");
+			notifyspace(spaceId, type.toString(), "newspace");
 			
 			// Save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
@@ -204,23 +203,21 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
 			}
 
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, name, propertiesSpace)) {
+			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), propertiesSpace)) {
 				return spaceId;
 			}
 		}
 		return null;
 	}
-
+	
 	@Override
-	public String addSpace(String name, ArrayList<String> tags,
-			HashMap<String, String> properties, String parent,
-			ArrayList<Space> children) {
+	public String  addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties,  Space parent) {
 		
-		String spaceId = String.valueOf(new String(name+new Double(Math.random())).hashCode());
+		String spaceId = String.valueOf(new String(type.toString()+new Double(Math.random())).hashCode());
 		if (!spaceObjectsMap.containsKey(spaceId)) {
-			Space newspace = new Space(spaceId, name, tags, properties, spaceObjectsMap.get(parent), children);
+			Space newspace = new Space(spaceId, type, tags, properties, parent);
 			spaceObjectsMap.put(spaceId, newspace);
-			notifyspace(spaceId, name, "newspace");
+			notifyspace(spaceId, type.toString(), "newspace");
 			
 			// Save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
@@ -231,7 +228,7 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
 			}
 
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, name, propertiesSpace)) {
+			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), propertiesSpace)) {
 				return spaceId;
 			}
 		}
@@ -239,19 +236,43 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 	}
 
 	@Override
-	public synchronized boolean removeSpace(String spaceId) {
-		Space selectedspace = spaceObjectsMap.get(spaceId);
-		Space parent = selectedspace.getParent();
+	public String addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties, Space parent, ArrayList<Space> children) {
+		
+		String spaceId = String.valueOf(new String(type.toString()+new Double(Math.random())).hashCode());
+		if (!spaceObjectsMap.containsKey(spaceId)) {
+			Space newspace = new Space(spaceId, type, tags, properties, parent, children);
+			spaceObjectsMap.put(spaceId, newspace);
+			notifyspace(spaceId, type.toString(), "newspace");
+			
+			// Save the new devices name table 
+			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
+			
+			Set<String> keys = spaceObjectsMap.keySet();
+			for(String e : keys) {
+				Space sl = spaceObjectsMap.get(e);
+				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}
+
+			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), propertiesSpace)) {
+				return spaceId;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public synchronized boolean removeSpace(Space space) {
+		Space parent = space.getParent();
 		
 		if(parent != null) {
 			@SuppressWarnings("unchecked")
-			ArrayList<Space> children = (ArrayList<Space>)selectedspace.getChildren().clone();
+			ArrayList<Space> children = (ArrayList<Space>)space.getChildren().clone();
 			for(Space child : children) {
-				removeSpace(child.getId());
+				removeSpace(child);
 			}
-			parent.removeChild(selectedspace);
-			spaceObjectsMap.remove(spaceId);
-			notifyspace(spaceId, selectedspace.getName(), "removespace");
+			parent.removeChild(space);
+			spaceObjectsMap.remove(space.getId());
+			notifyspace(space.getId(), space.getType().toString(), "removespace");
 		
 			// save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -262,81 +283,24 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
 			}
 					
-			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), spaceId, selectedspace.getName(), properties);
+			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), space.getId(), space.getType().toString(), properties);
 		}
 		return false;
-	}
-
-	@Override
-	public synchronized boolean renameSpace(String spaceId, String newName) {
-		Space loc = spaceObjectsMap.get(spaceId);
-		String oldName = loc.getName();
-		loc.setName(newName);
-		
-		notifyspace(spaceId, newName, "updatespace");
-		
-		// save the new devices name table 
-		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-							
-		Set<String> keys = spaceObjectsMap.keySet();
-		for(String e : keys) {
-			Space sl = spaceObjectsMap.get(e);
-			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-		}
-							
-		return contextHistory_push.pushData_change(this.getClass().getSimpleName(), spaceId, oldName, newName, properties);		
 	}
 	
 	@Override
 	public synchronized Space getSpace(String placId) {
 		return spaceObjectsMap.get(placId);
 	}
-
-	@Override
-	public synchronized JSONArray getJSONSpaces() {
-		Iterator<Space> spaces = spaceObjectsMap.values().iterator();
-		JSONArray jsonspaceList = new JSONArray();
-		Space loc;
-
-		while (spaces.hasNext()) {
-			loc = spaces.next();
-			jsonspaceList.put(loc.getDescription());
-		}
-
-		return jsonspaceList;
-	}
 	
-	/**
-	 * Use to notify that new space has been created or has changed
-	 * 
-	 * @param spaceId the space identifier
-	 * @param spaceName the user name of this space
-	 * @param type indicate if this notification is a space creation (0) or an update (1)
-	 */
-	private void notifyspace(String spaceId, String spaceName, String type) {
-		notifyChanged(new SpaceManagerNotification(spaceId, spaceName, type));
-	}
-	
-	/**
-	 * This method notify ApAM that a new notification message has been produced.
-	 * @param notif the notification message to send.
-	 * @return nothing it just notify ApAM.
-	 */
-	public NotificationMsg notifyChanged (NotificationMsg notif) {
-		logger.debug("space Notify: "+ notif);
-		return notif;
-	}
-
 	@Override
-	public synchronized boolean moveSpace(String spaceId, String newParentId) {
+	public synchronized boolean moveSpace(Space space, Space newParent) {
 		try {
-			Space space = spaceObjectsMap.get(spaceId);
-			Space newParent = spaceObjectsMap.get(newParentId);
 		
-			String oldParent = space.getParent().getId();
+			Space oldParent = space.getParent();
 			space.setParent(newParent);
 			
-			notifyspace(spaceId, newParentId, "movespace");
+			notifyspace(space.getId(), newParent.getId(), "movespace");
 			
 			// save in data base
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -346,156 +310,9 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 				Space sl = spaceObjectsMap.get(e);
 				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
 			}		
-			return contextHistory_push.pushData_change(this.getClass().getSimpleName(), spaceId, oldParent, newParentId, properties);	
+			return contextHistory_push.pushData_change(this.getClass().getSimpleName(), space.getId(), oldParent.getId(), newParent.getId(), properties);	
 			
 		}catch(Exception e){logger.error(e.getMessage());}
-		return false;
-	}
-
-	@Override
-	public synchronized void setTagsList(String spaceId, ArrayList<String> tags) {
-		Space space = spaceObjectsMap.get(spaceId);
-		space.setTags(tags);
-		
-		notifyspace(spaceId, "newTagList", "updatespaceTag");
-		
-		// save in data base
-		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-							
-		Set<String> keys = spaceObjectsMap.keySet();
-		for(String e : keys) {
-			Space sl = spaceObjectsMap.get(e);
-			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-		}		
-		contextHistory_push.pushData_change(this.getClass().getSimpleName(), spaceId, "", "tags", properties);
-	}
-
-	@Override
-	public synchronized void clearTagsList(String spaceId) {
-		Space space = spaceObjectsMap.get(spaceId);
-		space.clearTags();
-		
-		notifyspace(spaceId, "taglistFree", "updatespaceTag");
-		
-		// save in data base
-		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-
-		Set<String> keys = spaceObjectsMap.keySet();
-		for (String e : keys) {
-			Space sl = spaceObjectsMap.get(e);
-			properties.add(new AbstractMap.SimpleEntry<String, Object>(e, sl
-					.getDescription().toString()));
-		}
-		contextHistory_push.pushData_remove(this.getClass().getSimpleName(), spaceId, "tags", properties);
-	}
-
-	@Override
-	public synchronized boolean addTag(String spaceId, String tag) {
-		Space space = spaceObjectsMap.get(spaceId);
-		if (space.addTag(tag)) {
-
-			notifyspace(spaceId, tag, "updatespaceTag");
-			
-			// save in data base
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-
-			Set<String> keys = spaceObjectsMap.keySet();
-			for (String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String, Object>(e,
-						sl.getDescription().toString()));
-			}
-			return contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, "tag", tag, properties);
-		}
-		return false;
-	}
-
-	@Override
-	public synchronized boolean removeTag(String spaceId, String tag) {
-		Space space = spaceObjectsMap.get(spaceId);
-		if(space.removeTag(tag)) {
-		
-			notifyspace(spaceId, tag, "removespaceTag");
-			
-			// save in data base
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-
-			Set<String> keys = spaceObjectsMap.keySet();
-			for (String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
-			}
-			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), spaceId, "tag", tag, properties);
-		}
-		return false;
-	}
-
-	@Override
-	public synchronized void setProperties(String spaceId, HashMap<String, String> properties) {
-		Space space = spaceObjectsMap.get(spaceId);
-		space.setProperties(properties);
-		notifyspace(spaceId, "newPropertiesList", "updatespaceProp");
-		// save in data base
-		ArrayList<Map.Entry<String, Object>> propertiesDB = new ArrayList<Map.Entry<String, Object>>();
-
-		Set<String> keys = spaceObjectsMap.keySet();
-		for (String e : keys) {
-			Space sl = spaceObjectsMap.get(e);
-			propertiesDB.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
-		}
-		contextHistory_push.pushData_change(this.getClass().getSimpleName(), spaceId, "", "properties", propertiesDB);
-	}
-
-	@Override
-	public synchronized void clearPropertiesList(String spaceId) {
-		Space space = spaceObjectsMap.get(spaceId);
-		space.clearProperties();
-		notifyspace(spaceId, "propertiesListFree", "updatespaceProp");
-		// save in data base
-		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-
-		Set<String> keys = spaceObjectsMap.keySet();
-		for (String e : keys) {
-			Space sl = spaceObjectsMap.get(e);
-			properties.add(new AbstractMap.SimpleEntry<String, Object>(e,
-					sl.getDescription().toString()));
-		}
-		contextHistory_push.pushData_remove(this.getClass().getSimpleName(), spaceId, "properties", properties);
-	}
-
-	@Override
-	public synchronized boolean addProperty(String spaceId, String key, String value) {
-		Space space = spaceObjectsMap.get(spaceId);
-		if( space.addProperty(key, value)) {
-			notifyspace(spaceId, key+"-"+value, "updatespaceProp");
-			// save in data base
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-
-			Set<String> keys = spaceObjectsMap.keySet();
-			for (String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
-			}
-			return contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, "property", key, properties);
-		}
-		return false;
-	}
-
-	@Override
-	public synchronized boolean removeProperty(String spaceId, String key) {
-		Space space = spaceObjectsMap.get(spaceId);
-		if( space.removeProperty(key)) {
-			notifyspace(spaceId, key, "removespaceProp");
-			// save in data base
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-
-			Set<String> keys = spaceObjectsMap.keySet();
-			for (String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String, Object>(e,sl.getDescription().toString()));
-			}
-			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), spaceId, "property", key, properties);
-		}
 		return false;
 	}
 
@@ -503,12 +320,84 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 	public synchronized Space getRootSpace() {
 		Space rootspace = null;
 		for(Space space : spaceObjectsMap.values()) {
-			if(space.getParent() == null) {
+			if(space.getType().equals(TYPE.ROOT)) {
 				rootspace = space;
 				break;
 			}
 		}
 		return rootspace;
+	}
+	
+	@Override
+	public Space getCurrentHabitat() {
+		Space habitat = null;
+		for(Space space : spaceObjectsMap.values()) {
+			if(space.getType().equals(TYPE.HABITAT_CURRENT)) {
+				habitat = space;
+				break;
+			}
+		}
+		return habitat;
+	}
+	
+	@Override
+	public Space getDeviceRoot(Space habitat) {
+		Space deviceSpace = null;
+		for(Space space : habitat.getChildren()) {
+			if(space.getType().equals(TYPE.DEVICE_ROOT)) {
+				deviceSpace = space;
+				break;
+			}
+		}
+		return deviceSpace;
+	}
+
+	@Override
+	public Space getServiceRoot(Space habitat) {
+		Space serviceSpace = null;
+		for(Space space : habitat.getChildren()) {
+			if(space.getType().equals(TYPE.SERVICE_ROOT)) {
+				serviceSpace = space;
+				break;
+			}
+		}
+		return serviceSpace;
+	}
+
+	@Override
+	public Space getUserRoot() {
+		Space userSpace = null;
+		for(Space space : spaceObjectsMap.values()) {
+			if(space.getType().equals(TYPE.USER_ROOT)) {
+				userSpace = space;
+				break;
+			}
+		}
+		return userSpace;
+	}
+
+	@Override
+	public Space getProgramRoot(Space habitat) {
+		Space pgmSpace = null;
+		for(Space space : habitat.getChildren()) {
+			if(space.getType().equals(TYPE.PROGRAM_ROOT)) {
+				pgmSpace = space;
+				break;
+			}
+		}
+		return pgmSpace;
+	}
+
+	@Override
+	public Space getSpatialRoot(Space habitat) {
+		Space spatialSpace = null;
+		for(Space space : habitat.getChildren()) {
+			if(space.getType().equals(TYPE.SPATIAL_ROOT)) {
+				spatialSpace = space;
+				break;
+			}
+		}
+		return spatialSpace;
 	}
 
 	@Override
@@ -576,6 +465,62 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 		}
 		return spaceprop;
 	}
+
+	@Override
+	public JSONObject getTreeDescription() {
+		Space root = getRootSpace();
+		JSONObject tree = root.getDescription();
+		
+		try {
+			for(Space child : root.getChildren()) {
+				tree.put(child.getId(), getTreeDescription(child));
+			}
+		} catch (JSONException e) {e.printStackTrace();}
+
+		return tree;
+	}
+
+	@Override
+	public JSONObject getTreeDescription(Space root) {
+		JSONObject subTree = root.getDescription();
+				
+		try {
+			for(Space child : root.getChildren()) {
+				subTree.put(child.getId(), getTreeDescription(child));
+			}
+		} catch (JSONException e) {e.printStackTrace();}
+				
+		return subTree;
+	}
+	
+	@Override
+	public void updateSpace(JSONObject update) {
+		// TODO Auto-generated method stub
+		logger.debug("updateSpace method of the SpaceManager not implemented yet");
+	}
+
+	/**
+	 * Use to notify that new space has been created or has changed
+	 * 
+	 * @param spaceId the space identifier
+	 * @param spaceName the user name of this space
+	 * @param type indicate if this notification is a space creation (0) or an update (1)
+	 */
+	private void notifyspace(String spaceId, String spaceName, String type) {
+		notifyChanged(new SpaceManagerNotification(spaceId, spaceName, type));
+	}
+	
+	/**
+	 * This method notify ApAM that a new notification message has been produced.
+	 * @param notif the notification message to send.
+	 * @return nothing it just notify ApAM.
+	 */
+	public NotificationMsg notifyChanged (NotificationMsg notif) {
+		logger.debug("space Notify: "+ notif);
+		return notif;
+	}
+	
+	
 	
 	/*************************/
 	/** for JUnit mock test **/
@@ -584,4 +529,5 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 		this.contextHistory_pull = pull;
 		this.contextHistory_push = push;
 	}
+
 }

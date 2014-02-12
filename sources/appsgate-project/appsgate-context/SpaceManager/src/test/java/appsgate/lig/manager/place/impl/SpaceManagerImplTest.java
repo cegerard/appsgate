@@ -9,6 +9,7 @@ import java.util.Map;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.concurrent.Synchroniser;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.manager.space.impl.SpaceManagerImpl;
 import appsgate.lig.manager.space.spec.Space;
+import appsgate.lig.manager.space.spec.Space.TYPE;
 
 public class SpaceManagerImplTest {
 
@@ -32,7 +34,7 @@ public class SpaceManagerImplTest {
     private DataBasePushService push_service;
     
     private SpaceManagerImpl spaceManager; 
-    private String rootId;
+    private Space rootSpace;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -58,8 +60,8 @@ public class SpaceManagerImplTest {
 		 spaceManager = new SpaceManagerImpl();
 		 spaceManager.initiateMock(pull_service, push_service);
 		 spaceManager.newInst();
-		 rootId = spaceManager.getRootSpace().getId();
-		 assertNotNull(rootId);
+		 rootSpace = spaceManager.getRootSpace();
+		 assertNotNull(rootSpace);
 	}
 
 	@After
@@ -69,156 +71,80 @@ public class SpaceManagerImplTest {
 
 	@Test
 	public void testAddSpace() {
-		assertNotNull(spaceManager.addSpace("NewRoom", Space.CATEGORY.PLACE.toString(), rootId));
+		assertNotNull(spaceManager.addSpace(TYPE.PLACE, rootSpace));
 	}
 
 	@Test
 	public void testRemoveSpace() {
-		String placeId = spaceManager.addSpace("NewRoom1", Space.CATEGORY.PLACE.toString(), rootId);
-		assertTrue(spaceManager.removeSpace(placeId));
-	}
-
-	@Test
-	public void testRenameSpace() {
-		String placeId = spaceManager.addSpace("NewRoom3", Space.CATEGORY.PLACE.toString(), rootId);
-		assertTrue(spaceManager.renameSpace(placeId, "NewPlaceName"));
+		String placeId = spaceManager.addSpace(TYPE.PLACE, rootSpace);
+		assertTrue(spaceManager.removeSpace(spaceManager.getSpace(placeId)));
 	}
 
 	@Test
 	public void testGetSpace() {
-		String placeId = spaceManager.addSpace("NewRoom4", Space.CATEGORY.PLACE.toString(), rootId);
+		HashMap<String, String> prop =  new HashMap<String, String>();
+		prop.put("name", "NewRoom4");
+		String placeId = spaceManager.addSpace(TYPE.PLACE, prop, rootSpace);
 		assertEquals("NewRoom4", spaceManager.getSpace(placeId).getName());
 	}
 
 	@Test
-	public void getJSONSpaces() {
-		assertNotNull(spaceManager.getJSONSpaces());
-		System.out.println("testGetJSONPlaces ---- return :"+spaceManager.getJSONSpaces().toString());
+	public void getSpaces() {
+		assertNotNull(spaceManager.getSpaces());
 	}
 
 	@Test
 	public void testMoveSpace() {
-		String placeId  = spaceManager.addSpace("livingRoom", Space.CATEGORY.PLACE.toString(), rootId);
-		String placeId2 = spaceManager.addSpace("readingPlace", Space.CATEGORY.PLACE.toString(), rootId);
+		String placeId  = spaceManager.addSpace(TYPE.PLACE, rootSpace);
+		Space place1 = spaceManager.getSpace(placeId);
+		String placeId2 = spaceManager.addSpace(TYPE.PLACE, rootSpace);
+		Space place2 = spaceManager.getSpace(placeId2);
 		
 		assertNotSame(spaceManager.getSpace(placeId), spaceManager.getSpace(placeId2).getParent());
-		assertSame(spaceManager.getRootSpace(), spaceManager.getSpace(placeId2).getParent());
-		assertTrue(spaceManager.getRootSpace().hasChild(spaceManager.getSpace(placeId2)));
+		assertSame(rootSpace, spaceManager.getSpace(placeId2).getParent());
+		assertTrue(rootSpace.hasChild(spaceManager.getSpace(placeId2)));
 		assertFalse(spaceManager.getSpace(placeId).hasChild(spaceManager.getSpace(placeId2)));
 		
-		spaceManager.moveSpace(placeId2, placeId);
+		spaceManager.moveSpace(place2, place1);
 		
-		assertNotSame(spaceManager.getRootSpace(), spaceManager.getSpace(placeId2).getParent());
+		assertNotSame(rootSpace, spaceManager.getSpace(placeId2).getParent());
 		assertSame(spaceManager.getSpace(placeId), spaceManager.getSpace(placeId2).getParent());
 		assertTrue(spaceManager.getSpace(placeId).hasChild(spaceManager.getSpace(placeId2)));
-		assertFalse(spaceManager.getRootSpace().hasChild(spaceManager.getSpace(placeId2)));
-	}
-
-	@Test
-	public void testSetTagsList() {
-		String placeId  = spaceManager.addSpace("livingRoom1", Space.CATEGORY.PLACE.toString(), rootId);
-		ArrayList<String> tags = new ArrayList<String>();
-		tags.add("blue");
-		tags.add("bedroom");
-		spaceManager.setTagsList(placeId, tags);
-		
-		assertSame(tags, spaceManager.getSpace(placeId).getTags());
-	}
-
-	@Test
-	public void testClearTagsList() {
-		String placeId  = spaceManager.addSpace("livingRoom2",  Space.CATEGORY.PLACE.toString(), rootId);
-		ArrayList<String> tags = new ArrayList<String>();
-		tags.add("blue");
-		tags.add("bedroom");
-		spaceManager.setTagsList(placeId, tags);
-		assertEquals(2, spaceManager.getSpace(placeId).getTags().size());
-		
-		spaceManager.clearTagsList(placeId);
-		assertEquals(0, spaceManager.getSpace(placeId).getTags().size());
-	}
-
-	@Test
-	public void testAddTag() {
-		assertTrue(spaceManager.addTag(rootId, "plop"));
-	}
-
-	@Test
-	public void testRemoveTag() {
-		assertTrue(spaceManager.addTag(rootId, "plop"));
-		assertTrue(spaceManager.getSpace(rootId).getTags().contains("plop"));
-		spaceManager.removeTag(rootId, "plop");
-		assertFalse(spaceManager.getSpace(rootId).getTags().contains("plop"));
-	}
-
-	@Test
-	public void testSetProperties() {
-		HashMap<String, String> prop = new HashMap<String, String>();
-		prop.put("color", "blue");
-		prop.put("type", "bedroom");
-		spaceManager.setProperties(rootId, prop);
-		
-		assertSame(prop, spaceManager.getSpace(rootId).getProperties());
-	}
-
-	@Test
-	public void testClearPropertiesList() {
-		HashMap<String, String> prop = new HashMap<String, String>();
-		prop.put("color", "blue");
-		prop.put("type", "bedroom");
-		spaceManager.setProperties(rootId, prop);		
-		
-		assertEquals(3, spaceManager.getSpace(rootId).getProperties().size());
-		
-		spaceManager.clearPropertiesList(rootId);
-		assertEquals(1, spaceManager.getSpace(rootId).getProperties().size());
-	}
-
-	@Test
-	public void testAddProperty() {
-		assertTrue(spaceManager.addProperty(rootId, "border", "green"));
-		assertFalse(spaceManager.addProperty(rootId, "border", "black"));
-	}
-
-	@Test
-	public void testRemoveProperty() {
-		spaceManager.addProperty(rootId, "border", "green");
-		assertTrue(spaceManager.removeProperty(rootId, "border"));
+		assertFalse(rootSpace.hasChild(spaceManager.getSpace(placeId2)));
 	}
 
 	@Test
 	public void testGetRootSpace() {
-		assertSame(spaceManager.getSpace(rootId), spaceManager.getRootSpace());
+		assertSame(rootSpace, spaceManager.getRootSpace());
 	}
 
 	@Test
 	public void testGetPlaceWithName() {
 		ArrayList<Space> placeList = new ArrayList<Space>();
-		placeList.add(spaceManager.getRootSpace());
-		
+		placeList.add(rootSpace);
 		assertEquals(placeList, spaceManager.getSpacesWithName("root"));
 	}
 
 	@Test
 	public void testGetPlaceWithTags() {
-		spaceManager.getRootSpace().addTag("TEST_TAG");
-		spaceManager.getRootSpace().addTag("TEST_TAG_OTHER");
+		rootSpace.addTag("TEST_TAG");
+		rootSpace.addTag("TEST_TAG_OTHER");
 		ArrayList<String> tagsList = new ArrayList<String>();
 		tagsList.add("TEST_TAG");
 		tagsList.add("TEST_TAG_OTHER");
 		
 		ArrayList<Space> placeList = new ArrayList<Space>();
-		placeList.add(spaceManager.getRootSpace());
+		placeList.add(rootSpace);
 		
 		assertEquals(placeList, spaceManager.getSpacesWithTags(tagsList));
 	}
 
 	@Test
 	public void testGetPlaceWithProperties() {
-		spaceManager.getRootSpace().addProperty("k1", "val");
-		spaceManager.getRootSpace().addProperty("k2", "val");
+		rootSpace.addProperty("k1", "val");
+		rootSpace.addProperty("k2", "val");
 		
-		String placeId = spaceManager.addSpace("plop", Space.CATEGORY.PLACE.toString(), spaceManager.getRootSpace().getId());
+		String placeId = spaceManager.addSpace(TYPE.PLACE, spaceManager.getRootSpace());
 		Space place = spaceManager.getSpace(placeId);
 		place.addProperty("k1", "val");
 		place.addProperty("k2", "val");
@@ -239,7 +165,7 @@ public class SpaceManagerImplTest {
 		spaceManager.getRootSpace().addProperty("k1", "val1");
 		spaceManager.getRootSpace().addProperty("k2", "val2");
 		
-		String placeId = spaceManager.addSpace("plop", Space.CATEGORY.PLACE.toString(), spaceManager.getRootSpace().getId());
+		String placeId = spaceManager.addSpace(TYPE.PLACE, spaceManager.getRootSpace());
 		Space place = spaceManager.getSpace(placeId);
 		place.addProperty("k1", "val1");
 		place.addProperty("k2", "val3");
@@ -252,6 +178,20 @@ public class SpaceManagerImplTest {
 		placeList.add(spaceManager.getRootSpace());
 		
 		assertEquals(placeList, spaceManager.getSpacesWithPropertiesValue(propertiesKeyValue));
+	}
+	
+	@Test
+	public void testGetTreeDescription() {
+		JSONObject obj = spaceManager.getTreeDescription();
+		assertNotNull(obj);
+		System.out.println(obj);
+	}
+	
+	@Test
+	public void testGetTreeDescriptionSpace() {
+		JSONObject obj = spaceManager.getTreeDescription(spaceManager.getDeviceRoot(spaceManager.getCurrentHabitat()));
+		assertNotNull(obj);
+		System.out.println(obj);
 	}
 
 }

@@ -2,11 +2,9 @@ package appsgate.lig.manager.space.spec;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.json.JSONObject;
 
-import org.json.JSONArray;
-
-import appsgate.lig.manager.space.spec.Space.CATEGORY;
-
+import appsgate.lig.manager.space.spec.Space.TYPE;
 /**
  * Specification of services offer by a space manager.
  * 
@@ -19,116 +17,57 @@ public interface SpaceManagerSpec {
 	
 	/**
 	 * Add a new space to the hash map.
-	 * @param name the space name
+	 * @param type the space type
 	 * @param parent the parent id of this space, or null if this space is a root
 	 * @return the id of the new space null otherwise.
 	 */
-	public String addSpace(String name, String category,  String parent);
+	public String addSpace(TYPE type, Space parent);
+	
+	/**
+	 * Add a new space to the hash map.
+	 * @param type the space type
+	 * @param properties the properties list to associated to this space
+	 * @param parent the parent id of this space, or null if this space is a root
+	 * @return the id of the new space null otherwise.
+	 */
+	public String addSpace(TYPE type, HashMap<String, String> properties, Space parent);
 	
 	/**
 	 * Add a new space with tags and properties
-	 * @param name the space name
-	 * @param category the category of this space
+	 * @param type the space type
 	 * @param tags the tags list to associated to this space
 	 * @param properties the properties list to associated to this space
 	 * @param parent the parent space for this space, or null if it is a root
 	 * @return the id of the new space null otherwise.
 	 */
-	public String addSpace(String name, String category, ArrayList<String> tags, HashMap<String, String> properties,  String parent);
+	public String addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties,  Space parent);
 	
 	/**
 	 * Add a complete space
-	 * @param name the space name
+	 * @param type the space type
 	 * @param tags the tags list to associated to this space
 	 * @param properties the properties list to associated to this space
 	 * @param parent the parent space for this space, or null if it is a root
 	 * @param children the sub-spaces list
 	 * @return the id of the new space null otherwise.
 	 */
-	public String addSpace(String name, ArrayList<String> tags, HashMap<String, String> properties,  String parent, ArrayList<Space> children);
+	public String addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties, Space parent, ArrayList<Space> children);
 	
 	
 	/**
-	 * Remove a space.
-	 * @param spaceId the identifier of the space
+	 * Remove a space and all its children
+	 * @param space the space to remove
 	 * @return true if the space has been removed, false otherwise
 	 */
-	public boolean removeSpace(String spaceId);
+	public boolean removeSpace(Space space);
 	
 	/**
 	 * Move this space under a new parent space
-	 * @param spaceId the space id of the space that move
-	 * @param newParent the identifier of the  new parent space
+	 * @param space the space that move
+	 * @param newParent the new parent space
 	 * @return true if the space has been moved, false otherwise
 	 */
-	public boolean moveSpace(String spaceId, String newParentId);
-	
-	/**
-	 * Set the tags list of this space
-	 * @param spaceId the space identifier
-	 * @param tags the new tags list
-	 */
-	public void setTagsList(String spaceId, ArrayList<String> tags);
-	
-	/**
-	 * Empty the list of tag of this space
-	 * @param spaceId the space identifier
-	 */
-	public void clearTagsList(String spaceId);
-	
-	/**
-	 * Add a new tag to this space
-	 * @param spaceId the space identifier
-	 * @param tag the new tag to add
-	 * @return true if the tag has been add, false otherwise
-	 */
-	public boolean addTag(String spaceId, String tag);
-	
-	/**
-	 * remove a tag from this space
-	 * @param spaceId the space identifier
-	 * @param tag the tag to remove
-	 * @return true if the tag has been removed, false otherwise
-	 */
-	public boolean removeTag(String spaceId, String tag);
-	
-	/**
-	 * Set the properties of this space
-	 * @param spaceId the space identifier
-	 * @param properties the new properties list
-	 */
-	public void setProperties(String spaceId, HashMap<String, String> properties);
-	
-	/**
-	 * Empty the properties list of this space
-	 * @param spaceId the space identifier
-	 */
-	public void clearPropertiesList(String spaceId);
-	
-	/**
-	 * Add a new property to the list or update an existing one
-	 * @param spaceId the space identifier 
-	 * @param key the key of the property
-	 * @param value the value to set
-	 * @return true if key is a newly added false if the key exist and the value has been changed
-	 */
-	public boolean addProperty(String spaceId, String key, String value);
-	
-	/**
-	 * Remove an existing property
-	 * @param spaceId the space identifier
-	 * @param key the key of the property to remove
-	 * @return true if the property has been removed, false otherwise
-	 */
-	public boolean removeProperty(String spaceId, String key);
-	
-	/**
-	 * Rename a space on the smart space
-	 * @param spaceId the identifier of the space to rename
-	 * @param newName the new name of the space
-	 * @return true if the space name has been updated, false otherwise
-	 */
-	public boolean renameSpace(String spaceId, String newName);
+	public boolean moveSpace(Space space, Space newParent);
 	
 	/**
 	 * Get the root space of the hierarchy
@@ -137,6 +76,49 @@ public interface SpaceManagerSpec {
 	public Space getRootSpace();
 	
 	/**
+	 * Get the current habitat space
+	 * @return the space that correspond to the AppsGate box location
+	 */
+	public Space getCurrentHabitat();
+	
+	/**
+	 * Get the device root node from a specific habitat
+	 * precondition: the space need to be a habitat 
+	 * @param habitat the habitat
+	 * @return the device space
+	 */
+	public Space getDeviceRoot(Space habitat);
+	
+	/**
+	 * Get the service root node
+	 * @param habitat the habitat
+	 * @return the device space
+	 */
+	public Space getServiceRoot(Space habitat);
+	
+	/**
+	 * Get the programs root node from a specific habitat
+	 * precondition: the space need to be a habitat 
+	 * @param habitat the habitat
+	 * @return the program space
+	 */
+	public Space getProgramRoot(Space habitat);
+	
+	/**
+	 * Get the spatial root node from a specific habitat
+	 * precondition: the space need to be a habitat 
+	 * @param habitat the habitat
+	 * @return the spatial space
+	 */
+	public Space getSpatialRoot(Space habitat);
+	
+	/**
+	 * Get the users root node
+	 * @return the user space
+	 */
+	public Space getUserRoot();
+
+	/**
 	 * Get the symbolic space object from its identifier
 	 * @param spaceId the space identifier
 	 * @return the Space instance
@@ -144,16 +126,10 @@ public interface SpaceManagerSpec {
 	public Space getSpace(String spaceId);
 	
 	/**
-	 * Get all the spaces
+	 * Get all the spaces in planar view
 	 * @return spaces as an ArrayList<Space>
 	 */
 	public ArrayList<Space> getSpaces();
-	
-	/**
-	 * Get a JSON formatted representation of the smart space.
-	 * @return a JSON array that describe each space.
-	 */
-	public JSONArray getJSONSpaces();
 	
 	/**
 	 * Get all the spaces the have the name in parameter
@@ -182,5 +158,26 @@ public interface SpaceManagerSpec {
 	 * @return spaces as an ArrayList<Symbolicspace>
 	 */
 	public ArrayList<Space> getSpacesWithPropertiesValue(HashMap<String, String> properties);
+	
+	/**
+	 * Get the tree representation of all spaces
+	 * @return the tree representation as a JSONObject
+	 */
+	public JSONObject getTreeDescription();
+	
+	/**
+	 * Get the sub-tree of all spaces from
+	 * the space give in parameter
+	 * @param root the root of the sub tree
+	 * @return the tree as a JSONObject
+	 */
+	public JSONObject getTreeDescription(Space root);
+	
+	/**
+	 * Notify on update of the Space model that trigger ApAM 
+	 * notification message.
+	 * @param update the update as a JSONObject
+	 */
+	public void updateSpace(JSONObject update);
 	
 }

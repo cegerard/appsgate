@@ -5,8 +5,6 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is an abstract representation of
@@ -18,11 +16,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class Space {
-	
-	/**
-	 * class logger member
-	 */
-	private static Logger logger = LoggerFactory.getLogger(Space.class);
 
 	/**
 	 * The space unique identifier
@@ -30,9 +23,9 @@ public class Space {
 	private String id;
 	
 	/**
-	 * The space name
+	 * The space type
 	 */
-	private String name;
+	private TYPE type;
 	
 	/**
 	 * tags list for this space
@@ -58,85 +51,79 @@ public class Space {
 	 * Build a new space instance from the less information possible
 	 * 
 	 * @param id the space identifier
-	 * @param name the space user name
-	 * @param category the space category
+	 * @param type the space type
 	 * @param parent the parent space
 	 */
-	public Space(String id, String name, String category, Space parent) {
+	public Space(String id, TYPE type, Space parent) {
 		super();
 		this.id = id;
-		this.name = name;
-		setParent(parent);
-		children = new ArrayList<Space>();
+		this.type = type;
 		tags = new ArrayList<String>();
 		properties = new HashMap<String, String>();
-		this.setCategory(category);
-
+		
+		setParent(parent);
+		children = new ArrayList<Space>();
+	}
+	
+	/**
+	 * Build a new space instance from the less information possible
+	 * 
+	 * @param id the space identifier
+	 * @param type the space type
+	 * @param properties some properties for this space
+	 * @param parent the parent space
+	 */
+	public Space(String id, TYPE type, HashMap<String, String> properties, Space parent) {
+		super();
+		this.id = id;
+		this.type = type;
+		tags = new ArrayList<String>();
+		this.properties = properties;
+		
+		setParent(parent);
+		children = new ArrayList<Space>();
 	}
 
 	/**
 	 * Build a space with tags and properties
 	 * 
 	 * @param id the space identifier
-	 * @param name the space name
-	 * @param category the space category
+	 * @param type the space type
 	 * @param tags some tags for this space
 	 * @param properties some properties for this space
 	 * @param parent the parent space
 	 */
-	public Space(String id, String name, String category, ArrayList<String> tags,
+	public Space(String id, TYPE type, ArrayList<String> tags,
 			HashMap<String, String> properties, Space parent) {
 		super();
 		this.id = id;
-		this.name = name;
+		this.type = type;
 		this.tags = tags;
 		this.properties = properties;
-		this.setCategory(category);
+		
 		setParent(parent);
 		this.children = new ArrayList<Space>();
-	}
-	
-	/**
-	 * The complete Symbolic space constructor
-	 * 
-	 * @param id the space identifier
-	 * @param name the space name
-
-	 * @param tags some tags for this space
-	 * @param properties some properties for this space
-	 * @param parent the parent space
-	 * @param childrens all sub-spaces
-	 */
-	public Space(String id, String name, ArrayList<String> tags,
-			HashMap<String, String> properties, Space parent) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.tags = tags;
-		this.properties = properties;
-		this.setCategory(properties.get("category"));
-		setParent(parent);
 	}
 	
 	/**
 	 * The complete space constructor, it don't update other space
 	 * 
 	 * @param id the space identifier
-	 * @param name the space name
+	 * @param type the space type
 	 * @param tags some tags for this space
 	 * @param properties some properties for this space
 	 * @param parent the parent space
 	 * @param childrens all sub-spaces
 	 */
-	public Space(String id, String name, ArrayList<String> tags,
+	public Space(String id, TYPE type, ArrayList<String> tags,
 			HashMap<String, String> properties, Space parent,
 			ArrayList<Space> children) {
 		super();
 		this.id = id;
-		this.name = name;
+		this.type = type;
 		this.tags = tags;
 		this.properties = properties;
-		this.setCategory(properties.get("category"));
+		
 		this.parent = parent;
 		this.children = children;
 	}
@@ -149,21 +136,25 @@ public class Space {
 	public String getId() {
 		return id;
 	}
-
+	
 	/**
-	 * Get the space name
-	 * @return the current space name
+	 * Get the type of this space
+	 * @return the type enumerate value
 	 */
-	public String getName() {
-		return name;
+	public TYPE getType(){
+		return type;
 	}
 
 	/**
-	 * Change the name of this space
-	 * @param name the new name of this space
+	 * Get the space name if it is set
+	 * @return the current space name or an empty string
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public String getName() {
+		String name = properties.get("name");
+		if(name != null) {
+			return name;
+		}
+		return "";
 	}
 	
 	/**
@@ -246,31 +237,13 @@ public class Space {
 	public HashMap<String, String> getProperties() {
 		return properties;
 	}
-	
-	/**
-	 * Use only at initialization to set the category of this space
-	 * @param category the category value
-	 */
-	private void setCategory(String category) {
-		properties.put("category", category);
-	}
 
 	/**
 	 * Set the properties map
 	 * @param properties the new properties map
-	 * @return true if the new properties map has been set, false otherwise
 	 */
-	public boolean setProperties(HashMap<String, String> properties) {
-		boolean isOK = false;
-		if(this.properties.containsKey("category")) {
-			properties.put("category", this.properties.get("category"));
-			this.properties = properties;
-			isOK = true;
-		}else if(properties.containsKey("category")) {
-			this.properties = properties;
-			isOK = true;
-		}
-		return isOK;
+	public void setProperties(HashMap<String, String> properties) {
+		this.properties = properties;
 	}
 	
 	/**
@@ -278,36 +251,26 @@ public class Space {
 	 * except the category entry
 	 */
 	public void clearProperties() {
-		String category = this.properties.get("category");
 		properties.clear();
-		properties.put("category", category);
 	}
 	
 	/**
-	 * Add a new property or update an existing one the category entry
-	 * can not be replaced
+	 * Add a new property or update an existing one
 	 * @param key the property key
 	 * @param value the property value
 	 * @return true if key is a new key false if the key exist and the value has been replaced
 	 */
 	public boolean addProperty(String key, String value) {
-		if(!key.contentEquals("category")) {
-			return (properties.put(key, value) == null);
-		}
-		return false;
+		return (properties.put(key, value) == null);
 	}
 	
 	/**
-	 * Remove a property from the properties map, the category entry
-	 * can not be removed
+	 * Remove a property from the properties map
 	 * @param key the property key
 	 * @return true if the property has been removed
 	 */
 	public boolean removeProperty(String key) {
-		if(!key.contentEquals("category")) {
-			return (properties.remove(key) != null);
-		}
-		return false;
+		return (properties.remove(key) != null);
 	}
 	
 	/**
@@ -330,20 +293,59 @@ public class Space {
 	
 	/**
 	 * Get all children of this space
-	 * @return the children list as an ArrayList<Symbolicspace>
+	 * @return the children list as an ArrayList<Space>
 	 */
 	public ArrayList<Space> getChildren() {
 		return children;
 	}
 	
 	/**
-	 * Set children of this space
+	 * Set children of this space but do not update parent field for each child
 	 * @param children the new children list
 	 */
 	public void setChildren( ArrayList<Space> children) {
 		this.children = children;
-		for(Space child : children) {
-			child.setParent(parent);
+	}
+	
+	/**
+	 * Get a specify sub-space of this space
+	 * @param spaceId the space to get
+	 * @return the space corresponding to the space id
+	 */
+	public Space getSubSpace(String spaceId) {
+		Space theSubSpace = null;
+		for(Space subSpace : children) {
+			if(subSpace.getId() == spaceId) {
+				theSubSpace = subSpace;
+				break;
+			}else {
+				theSubSpace = subSpace.getSubSpace(spaceId);
+				if(theSubSpace != null) {
+					break;
+				}
+			}
+		}
+		return theSubSpace;
+	}
+	
+	/**
+	 * Get all sub-spaces of the this space as list
+	 * @return an ArrayList<Space> of all sub-spaces
+	 */
+	public ArrayList<Space> getSubSpaces() {
+		ArrayList<Space> subSpaces = new ArrayList<Space>();
+		addSubSpaces(subSpaces);
+		return subSpaces;
+	}
+	
+	/**
+	 * Add all sub-spaces recursively to an ArrayList<Space>
+	 * @param subSpaceList the in/out ArrayList<Space>
+	 */
+	private void addSubSpaces(ArrayList<Space> subSpaceList) {
+		for(Space subSpace : children) {
+			subSpace.addSubSpaces(subSpaceList);
+			subSpaceList.add(subSpace);
 		}
 	}
 
@@ -381,7 +383,6 @@ public class Space {
 		JSONObject obj = new JSONObject();
 		try {
 			obj.put("id", id);
-			obj.put("name", name);
 			if(parent != null) {
 				obj.put("parent", parent.getId());
 			}else {
@@ -418,24 +419,26 @@ public class Space {
 	}
 	
 	/**
-	 * Enumeration use to standardize the basic category
+	 * Enumeration use to standardize the basic type
 	 * @author Cédric Gérard
 	 * @since February 10, 2014
 	 */
-	public static enum CATEGORY{
-		ROOT,
-		USER_ROOT,
-		HABITAT_ROOT,
-		PLACE_ROOT,
-		DEVICE_ROOT,
-		SERVICE_ROOT,
-		PROGRAM_ROOT,
-		PLACE,
-		USER,
-		GROUP,
-		DEVICE,
-		SERVICE,
-		PROGRAM;
+	public static enum TYPE{
+		ROOT, 			 // The model tree main root
+		USER_ROOT, 		 // The user root in the model
+		HABITAT_CURRENT, // The habitat where the system is installed root
+		HABITAT_OTHER,   // Root of other habitat
+		SPATIAL_ROOT, 	 // The root of places
+		DEVICE_ROOT,	 // The root of devices
+		SERVICE_ROOT,	 // The root of services
+		PROGRAM_ROOT,	 // The root of programs
+		PLACE,			 // Space that hold a place
+		USER,			 // Space that hold a user
+		GROUP,			 // Space that hold a group
+		CATEGORY,		 // Space that hold a category
+		DEVICE,			 // Space that hold a device
+		SERVICE,		 // Space that hold a service
+		PROGRAM;		 // Space that hold a program
 	}
 
 }

@@ -361,138 +361,153 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		/********
 		 Place management
 		 	     ********/
+		
 		/**
- 		 * Get all places
+ 		 * Get all places for an habitat
  		 */
-		this.getPlaces = function ()
+		this.getPlaces = function (habitatId)
 		{
-			var call = eval({"method":"getPlaces", "args":[], "callId":"cf-getplaces"});
+			var call = eval({"method":"getPlaces", "args":[{"type":"String", "value":habitatId}], "callId":"cf-getplaces"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
  		 * Get place detail
  		 */
-		this.getPlace = function (id)
+		this.getPlace = function (habitatId, placeId)
 		{
-			var call = eval({"method":"getPlaceInfo", "args":[{"type":"String", "value":id}], "callId":"cf-getplace"});
+			var call = eval({"method":"getPlaceInfo", "args":[{"type":"String", "value":habitatId}, {"type":"String", "value":placeId}], "callId":"cf-getplace"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/********
+		 Space management
+		 	     ********/
+		
+		/**
+		 * Get json spaces
+		 */
+		this.getJSONSpaces = function ()
+		{
+			var call = eval({"method":"getJSONSpaces", "args":[], "callId":"cf-getspaces"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get place by name
- 		 */
-		this.getPlacesByName = function (name)
+		 * Get space description
+		 */
+		this.getSpaceInfo = function (spaceId)
 		{
-			var call = eval({"method":"getPlacesByName", "args":[{"type":"String", "value":name}], "callId":"cf-getplacebyname"});
+			var call = eval({"method":"getSpaceInfo", "args":[{"type":"String", "value":spaceId}], "callId":"cf-getspace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get place by tags
+ 		 * Get space by name
  		 */
-		this.getPlacesByTags = function (tagsArray)
+		this.getSpacesByName = function (name)
 		{
-			var call = eval({"method":"getPlacesWithTags", "args":[{"type":"JSONArray", "value":JSON.stringify(tagsArray)}], "callId":"cf-getplacebytag"});
+			var call = eval({"method":"getSpacesByName", "args":[{"type":"String", "value":name}], "callId":"cf-getspacesbyname"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get place by property keys
+ 		 * Get space by tags
  		 */
-		this.getPlacesByPropertyKey = function (keysArray)
+		this.getSpacesByTags = function (tagsArray)
 		{
-			var call = eval({"method":"getPalcesWithProperties", "args":[{"type":"JSONArray", "value":JSON.stringify(keysArray)}], "callId":"cf-getplacebyprop"});
+			var call = eval({"method":"getSpacesWithTags", "args":[{"type":"JSONArray", "value":JSON.stringify(tagsArray)}], "callId":"cf-getspacesbytag"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get place by property keys and associted value
+ 		 * Get space by property keys
  		 */
-		this.getPlacesByPropertiesValue = function (propArray)
+		this.getSpacesByPropertyKey = function (keysArray)
 		{
-			var call = eval({"method":"getPalcesWithPropertiesValue", "args":[{"type":"JSONArray", "value":JSON.stringify(propArray)}], "callId":"cf-getplacebypropvalue"});
+			var call = eval({"method":"getSpacesWithProperties", "args":[{"type":"JSONArray", "value":JSON.stringify(keysArray)}], "callId":"cf-getspacesbyprop"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get root place
+ 		 * Get space by property keys and associated value
  		 */
-		this.getRootPlace = function ()
+		this.getSpacesWithPropertiesValue = function (propArray)
 		{
-			var call = eval({"method":"getRootPlace", "args":[], "callId":"cf-getrootplace"});
+			var call = eval({"method":"getSpacesWithPropertiesValue", "args":[{"type":"JSONArray", "value":JSON.stringify(propArray)}], "callId":"cf-getspacesbypropvalue"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * add new place
+ 		 * Get root pace
  		 */
-		this.addPlace = function (name, parent)
+		this.getRootSpace = function ()
 		{
-			var place = eval({"name":name, "parent":parent, "devices":[] });
-			var call = eval({"method":"newPlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-addplace"});
+			var call = eval({"method":"getRootSpace", "args":[], "callId":"cf-getrootspace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * rename an existing place
+ 		 * add new space
  		 */
-		this.renamePlace = function (id, name)
+		this.addSpace = function (name, category, parent)
+		{
+			var place = eval({"name":name, "category":category, "parent":parent });
+			var call = eval({"method":"newSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-addspace"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * rename an existing space
+ 		 */
+		this.renameSpace = function (id, name)
 		{
 			var place = eval({"id":id, "name":name});
-			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-renameplace"});
+			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-renamespace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Move an existing place
+ 		 * Move an existing space
  		 */
-		this.movePlace = function (id, parent)
+		this.moveSpace = function (id, parent)
 		{
 			var place = eval({"id":id, "parent":parent});
-			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-moveplace"});
+			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-movespace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
-		 * Set up completly an existing palce
-		 * id, the id of the palce
+		 * Set up completly an existing space
+		 * id, the id of the space
 		 * name, the new name
-		 * parent, the new parent of this place
+		 * category, the category of this space
+		 * parent, the new parent of this space
 		 * tagList, the new tagList of an empty JSONArray to clear the existing list
 		 * propList, the new propList of an empty JSONArray to clear the existing list
 		 * objectList, the new objectList of an empty JSONArray to clear the existing list
 		 **/
-		this.setPlace =  function (id, name, parent, tagList, propList, objectList) {
-			var place = eval({"id":id, "parent":parent, "taglist":tagList, "proplist":propList, "coreObjectlist":objectList});
-			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-setPlace"});
+		this.setSpace =  function (id, name, parent, tagList, propList, objectList) {
+			var place = eval({"id":id, "name":name, "parent":parent, "taglist":tagList, "proplist":propList, "coreObjectlist":objectList});
+			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-setSpace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
-		 * Free the place from its tags, porperties and object list
+		 * Free the space from its tags, porperties and object list
 		 */
-		this.clearPlace = function(id) {
+		this.clearSpace = function(id) {
 			var place = eval({"id":id, "taglist":[], "proplist":[], "coreObjectlist":[]});
-			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-clearPlaceList"});
+			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-clearSpaceList"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * remove a place
+ 		 * remove a space
  		 */
-		this.removePlace = function (id)
+		this.removeSpace = function (id)
 		{
-			var call = eval({"method":"removePlace", "args":[{"type":"String", "value":id}], "callId":"cf-removeplace"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
- 		 * move device into a place
- 		 */
-		this.moveDeviceTo = function (objId, srcPlaceId, destPlaceId)
-		{
-			var call = eval({"method":"moveDevice", "args":[{"type":"String", "value":objId}, {"type":"String", "value":srcPlaceId}, {"type":"String", "value":destPlaceId}], "callId":"cf-movedeviceto"});
+			var call = eval({"method":"removeSpace", "args":[{"type":"String", "value":id}], "callId":"cf-removespace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
@@ -529,15 +544,6 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		this.removeProperty = function (id, key)
 		{
 			var call = eval({"method":"removeProperty", "args":[{"type":"String", "value":id}, {"type":"String", "value":key}], "callId":"cf-removeProp"});
-			websocket.send(JSON.stringify(call));
-		}
-	
-		/**
- 		 * Get core object place id
- 		 */
-		this.getCoreObjectPlaceId = function (objId)
-		{
-			var call = eval({"method":"getCoreObjectPlaceId", "args":[{"type":"String", "value":objId}], "callId":"cf-getcoreobjectplaceid"});
 			websocket.send(JSON.stringify(call));
 		}
 	
