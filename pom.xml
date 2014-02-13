@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>appsgate.components</groupId>
+	<artifactId>appsGate-server</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<name>Appsgate main project (root directory)</name>
+
+	<description>This project contain all top level dependencies and properties.</description>
+	<modules>
+		<module>sources</module>
+        <!-- Maybe to include distrib for automatic creation using assembly-->
+	</modules>
+
+	<profiles>
+
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.jdbc.url>
+					jdbc:mysql://bogota.imag.fr:3306/sonar?useUnicode=true&amp;characterEncoding=utf8
+				</sonar.jdbc.url>
+				<sonar.jdbc.driverClassName>com.mysql.jdbc.Driver</sonar.jdbc.driverClassName>
+				<sonar.host.url>http://bogota.imag.fr:9042</sonar.host.url>
+				<sonar.jdbc.username>sonar</sonar.jdbc.username>
+				<sonar.jdbc.password>S0n4r-Adele</sonar.jdbc.password>
+			</properties>
+		</profile>
+	</profiles>
+
+</project>

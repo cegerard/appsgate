@@ -1,10 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
-	<groupId>appsgate.components</groupId>
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>sources</artifactId>
+		<version>1.0.0</version>
+	</parent>
 	<artifactId>appsgate-project</artifactId>
-	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>Appsgate main project</name>
 
@@ -19,6 +21,8 @@
 		<ipojo.annotations.version>1.11.0</ipojo.annotations.version>
 		<logback.version>1.0.7</logback.version>
         <slf4j.version>1.7.5</slf4j.version>
+        <ical-version>2.0-beta1-SNAPSHOT</ical-version>
+        
         
         <!--  Felix related versions -->
         <felix.gogo.command.version>0.10.0</felix.gogo.command.version>
@@ -236,9 +240,9 @@
 		<module>appsgate-EUDE</module>
 		<module>integrated-technologies</module>
 		<module>communication-components</module>
-		<module>test-components</module>
 		<module>composite-distribution</module>
-
+        <module>test-components</module>
+		
 	</modules>
 
 	<profiles>

@@ -17,6 +17,153 @@
 	</properties>
 
 	<dependencies>
+
+		<!-- Appsgate modules -->
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreObjectSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreWeatherServiceSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreClockSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreCalendarSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>core-mail-service-specification</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		<!-- repackaged/patched dependencies (as osgi bundles, or apamcomponents) 
+			for appsgate -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>2.12.0-PATCHED</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.android</groupId>
+			<artifactId>JavaWebSocketAndroidAdapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.android</groupId>
+			<artifactId>JavamailAndroidAdapter</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appsgate.android</groupId>
+			<artifactId>CyberGarageAdapter</artifactId>
+			<version>2.1.0-PATCHED</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.upnp.basedriver</artifactId>
+			<version>0.9.0-PATCHED</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix.sandbox</groupId>
+			<artifactId>org.apache.felix.upnp.devicegen.util</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.upnp.extra</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+
+
+		<!-- Dependencies for appsgate (not modified, already bundles) -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.configadmin</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.fileinstall</artifactId>
+			<version>3.2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.http.api</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.http.jetty</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.50</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openengsb.wrapped</groupId>
+			<artifactId>com.google.gdata-calendar</artifactId>
+			<version>1.41.5.w1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.kxml2</artifactId>
+			<version>2.3.0_3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.xmlpull</artifactId>
+			<version>1.1.3.1_2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.guava-osgi</groupId>
+			<artifactId>guava-osgi</artifactId>
+			<version>10.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j</artifactId>
+			<version>${ical-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.upnp.extra</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+
+
 		<!-- OSGi Framework (packOSGi) -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -178,12 +325,6 @@
 			<artifactId>pax-exam-spi</artifactId>
 			<version>${exam.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>CoreObjectSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-
 
 	</dependencies>
 
@@ -203,32 +344,83 @@
 				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>ical4j-repository</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<build>
 
+		<pluginManagement>
+
+			<plugins>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<!-- This plugin allow to use versionAsProject() by generating a file 
+						in maven/dependencies.properties -->
+					<groupId>org.apache.servicemix.tooling</groupId>
+					<artifactId>depends-maven-plugin</artifactId>
+					<version>1.2</version>
+					<executions>
+						<execution>
+							<id>generate-depends-file</id>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>generate-depends-file</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<outputFile>${basedir}/src/test/resources/META-INF/maven/dependencies.properties</outputFile>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.12.4</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.surefire</groupId>
+							<artifactId>surefire-junit47</artifactId>
+							<version>2.12.4</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<!--<forkMode>once</forkMode> -->
+						<classpathDependencyScopeExclude>provided</classpathDependencyScopeExclude>
+						<systemProperties>
+							<pax.exam.framework>felix</pax.exam.framework>
+						</systemProperties>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.servicemix.tooling</groupId>
 				<artifactId>depends-maven-plugin</artifactId>
-				<version>1.2</version>
-				<executions>
-					<execution>
-						<id>generate-depends-file</id>
-						<goals>
-							<goal>generate-depends-file</goal>
-						</goals>
-					</execution>
-				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
+				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 
 		</plugins>

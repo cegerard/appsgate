@@ -11,8 +11,8 @@ import org.json.JSONException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +31,15 @@ import org.slf4j.LoggerFactory;
  *   limitations under the License.
  *
  * SwingClockTest.java - 31 juil. 2013
+ * 
+ * Update 02/02/2014 - Tests ignored because too long to execute
  */
 
 /**
  * @author thibaud
  * 
  */
+@Ignore
 public class SimpleClockTest implements AlarmEventObserver {
 
 	long errorTolerance = 10;
