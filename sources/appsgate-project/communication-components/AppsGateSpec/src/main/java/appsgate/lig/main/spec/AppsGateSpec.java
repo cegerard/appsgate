@@ -44,20 +44,11 @@ public interface AppsGateSpec {
 	 * @param typeList
 	 *            the list of types to look for (if empty, return all objects)
 	 * @param places
-	 *            the places where to find the objects (if empty return all
+	 *            the spaces where to find the objects (if empty return all
 	 *            places)
-	 * @return a list of objects contained in these places
+	 * @return a list of objects contained in these spaces
 	 */
-	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray places);
-
-	/**
-	 * Return a list of types descending from another types
-	 * 
-	 * @param typeList
-	 *            the list of types to look for (if empty, return all subtypes)
-	 * @return an empty array if nothing is found or the array of types
-	 */
-	public JSONArray getSubtypes(JSONArray typeList);
+	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray spaces);
 
 	
 	/***************************/
@@ -93,123 +84,142 @@ public interface AppsGateSpec {
 	
 	/**
 	 * Call AppsGate to get all existing place definition.
+	 * @param habitatID the identifier of the habitat
 	 * @return a JSON array that describe each place.
 	 */
-	public JSONArray getPlaces();
+	public JSONObject getPlaces(String habitatID);
 	
 	/**
 	 * Call AppsGate to get information about a place
+	 * @param habitatID the identifier of the habitat
 	 * @param placeId the place to get information about
 	 * @return place details as a JSONObject
 	 */
-	public JSONObject getPlaceInfo(String placeId);
+	public JSONObject getPlaceInfo(String habitatID, String placeId);
+	
+	
+	/***************************/
+	/**    Space management    */
+	/***************************/
 	
 	/**
-	 * Call AppsGate to get all the places that match a specific name
+	 * Call AppsGate to get all existing space definition.
+	 * @return a JSON array that describe each space.
+	 */
+	public JSONArray getJSONSpaces();
+	
+	/**
+	 * Call AppsGate to get information about a specific space
+	 * @param spaceId the space to get information about
+	 * @return space details as a JSONObject
+	 */
+	public JSONObject getSpaceInfo(String spaceId);
+	
+	/**
+	 * Call AppsGate to get all the spaces that match a specific name
 	 * @param name the name to match
-	 * @return the places with the name <name> as a JSONArray
+	 * @return the spaces with the name <name> as a JSONArray
 	 */
-	public JSONArray getPlacesByName(String name);
+	public JSONArray getSpacesByName(String name);
 	
 	/**
-	 * Get places that have been tagged with all tags
+	 * Get spaces that have been tagged with all tags
 	 * give in parameter.
-	 * @param tags the tags list that places have to match
-	 * @return places as a JSONArray
+	 * @param tags the tags list that spaces have to match
+	 * @return spaces as a JSONArray
 	 */
-	public JSONArray getPlacesWithTags(JSONArray tags);
+	public JSONArray getSpacesWithTags(JSONArray tags);
 	
 	/**
-	 * Get places that contains the properties keys in parameters
-	 * @param keys all properties that places have to be set
-	 * @return places list as a JSONArray
+	 * Get spaces that contains the properties keys in parameters
+	 * @param keys all properties that spaces have to be set
+	 * @return spaces list as a JSONArray
 	 */
-	public JSONArray getPalcesWithProperties(JSONArray keys);
+	public JSONArray getSpacesWithProperties(JSONArray keys);
 	
 	/**
-	 * Get places that contains the properties keys in parameters
+	 * Get spaces that contains the properties keys in parameters
 	 * and with the corresponding values
-	 * @param properties all properties that places have to be set with
+	 * @param properties all properties that spaces have to be set with
 	 * the corresponding value
-	 * @return places list as a JSONArray
+	 * @return spaces list as a JSONArray
 	 */
-	public JSONArray getPalcesWithPropertiesValue(JSONArray properties);
+	public JSONArray getSpacesWithPropertiesValue(JSONArray properties);
 	
 	/**
-	 * Get the root place description
-	 * @return the root place as a JSONObject
+	 * Get the tree representation of all spaces
+	 * @return the tree representation as a JSONObject
 	 */
-	public JSONObject getRootPlace();
+	public JSONObject getTreeDescription();
 	
 	/**
-	 * Add a new place and move object in it.
-	 * @param place the new place description and the list of object to move in
-	 * @return the new place identifier
+	 * Get the sub-tree of all spaces from
+	 * the space give in parameter
+	 * @param rootid the root identifier of the sub tree
+	 * @return the tree as a JSONObject
 	 */
-	public String newPlace(JSONObject place);
+	public JSONObject getTreeDescription(String rootId);
 	
 	/**
-	 * Update a place on the smart space
-	 * @param place the new place description
-	 * @param true if the place has been updated, false otherwise
+	 * Get the root space description
+	 * @return the root space as a JSONObject
 	 */
-	public boolean updatePlace(JSONObject place);
+	public JSONObject getRootSpace();
 	
 	/**
-	 * Remove a place from the smart space
-	 * @param id the place identifier
-	 * @return true if the place has been removed, false otherwise
+	 * Add a new space and move object in it.
+	 * @param space the new space description and the list of object to move in
+	 * @return the new space identifier
 	 */
-	public boolean removePlace(String id);
+	public String newSpace(JSONObject space);
 	
 	/**
-	 * Add a tag to the tag of list of the specified place
-	 * @param placed the place where to add the tag
+	 * Update a space on the smart space
+	 * @param space the new space description
+	 * @param true if the space has been updated, false otherwise
+	 */
+	public boolean updateSpace(JSONObject space);
+	
+	/**
+	 * Remove a space from the smart space
+	 * @param id the space identifier
+	 * @return true if the space has been removed, false otherwise
+	 */
+	public boolean removeSpace(String id);
+	
+	/**
+	 * Add a tag to the tag of list of the specified space
+	 * @param spaceId the space where to add the tag
 	 * @param tag the tag to add
 	 * @return true if the tag has been added, false otherwise
 	 */
-	public boolean addTag(String placeId, String tag);
+	public boolean addTag(String spaceId, String tag);
 	
 	/**
-	 * Remove a tag from a place
-	 * @param placeId the place from where to remove the tag
+	 * Remove a tag from a space
+	 * @param spaceId the space from where to remove the tag
 	 * @param tag the tag to remove
 	 * @return true if the tag has been removed, false otherwise
 	 */
-	public boolean removeTag(String placeId, String tag);
+	public boolean removeTag(String spaceId, String tag);
 	
 	/**
-	 * Add a property to a specified place
-	 * @param placeId the place where to add the property
+	 * Add a property to a specified space
+	 * @param spaceId the space where to add the property
 	 * @param key the key of the property to add
 	 * @param value the value of the property to add
 	 * @return true f the property has been added, false otherwise
 	 */
-	public boolean addProperty(String placeId, String key, String value);
+	public boolean addProperty(String spaceId, String key, String value);
 	
 	/**
-	 * Remove a property from a specified place
-	 * @param placeId the place from where to remove the property
+	 * Remove a property from a specified space
+	 * @param spaceId the space from where to remove the property
 	 * @param key the key of the property that have to be removed
 	 * @return true if the property is removed, false otherwise
 	 */
-	public boolean removeProperty(String placeId, String key);
+	public boolean removeProperty(String spaceId, String key);
 	
-	/**
-	 * Move a device in a specified place
-	 * @param objId the object to move
-	 * @param srcPlaceId the previous place of this object
-	 * @param destPlaceId the destination of this object
-	 * @return true if the device has been moved, false otherwise
-	 */
-	public boolean moveDevice(String objId, String srcPlaceId, String destPlaceId);
-	
-	/**
-	 * Get the place identifier of a core object
-	 * @param objId the core object identifier 
-	 * @return the identifier of the place where the core object is placed.
-	 */
-	public String getCoreObjectPlaceId(String objId);
 	
 	/***************************/
 	/**  End User management   */
@@ -223,14 +233,14 @@ public interface AppsGateSpec {
 	
 	/**
 	 * Create a new end user
-	 * @param id the user identifier
+	 * @param login the user identifier
 	 * @param password the user password
 	 * @param lastName the user last name
 	 * @param firstName the user first name
 	 * @param role the user role
-	 * @return true if the user is created, false otherwise
+	 * @return the user space id
 	 */
-	public boolean createUser(String id, String password, String lastName, String firstName, String role);
+	public String createUser(String login, String password, String lastName, String firstName, String role);
 	
 	/**
 	 * Delete an existing end user
@@ -247,55 +257,55 @@ public interface AppsGateSpec {
 	 */
 	public JSONObject getUserDetails(String id);
 	
-	/**
-	 * Get all information on a specify user
-	 * @param id the identifier of the user
-	 * @return user information as a JSONObject
-	 */
-	public JSONObject getUserFullDetails(String id);
+//	/**
+//	 * Get all information on a specify user
+//	 * @param id the identifier of the user
+//	 * @return user information as a JSONObject
+//	 */
+//	public JSONObject getUserFullDetails(String id);
 	
 	/**
 	 * Check if the wanted identifier already existing.
 	 * @param id the identifier to check
 	 * @return true if the identifier is not use, false otherwise
 	 */
-	public boolean checkIfIdIsFree(String id);
+	public boolean checkIfLoginIsFree(String id);
 	
-	/**
-	 * Synchronize a web service account with an end user profile
-	 * @param id the end user identifier
-	 * @param password the end user password
-	 * @param accountDetails all service account needed to be connected
-	 * @return true if the service account has been synchronized, false otherwise
-	 */
-	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails);
-	
-	/**
-	 * delete service account synchronization
-	 * @param id the end user identifier
-	 * @param password the end user password
-	 * @param accountDetails all information needed to removed connection
-	 * @return true it the synchronization has been canceled, false otherwise.
-	 */
-	public boolean desynchronizedAccount(String id, String password, JSONObject accountDetails);
-	
-	/**
-	 * Associate a device to an end user
-	 * @param id the end user identifier
-	 * @param password the end user password
-	 * @param deviceId the device identifier
-	 * @return true if the association has been completed, false otherwise
-	 */
-	public boolean associateDevice(String id, String password, String deviceId);
-	
-	/**
-	 * Remove end user and device association
-	 * @param id the end user identifier
-	 * @param password the end user password
-	 * @param deviceId the device identifier
-	 * @return true if the association has been deleted, false otherwise
-	 */
-	public boolean separateDevice(String id, String password, String deviceId);
+//	/**
+//	 * Synchronize a web service account with an end user profile
+//	 * @param id the end user identifier
+//	 * @param password the end user password
+//	 * @param accountDetails all service account needed to be connected
+//	 * @return true if the service account has been synchronized, false otherwise
+//	 */
+//	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails);
+//	
+//	/**
+//	 * delete service account synchronization
+//	 * @param id the end user identifier
+//	 * @param password the end user password
+//	 * @param accountDetails all information needed to removed connection
+//	 * @return true it the synchronization has been canceled, false otherwise.
+//	 */
+//	public boolean desynchronizedAccount(String id, String password, JSONObject accountDetails);
+//	
+//	/**
+//	 * Associate a device to an end user
+//	 * @param id the end user identifier
+//	 * @param password the end user password
+//	 * @param deviceId the device identifier
+//	 * @return true if the association has been completed, false otherwise
+//	 */
+//	public boolean associateDevice(String id, String password, String deviceId);
+//	
+//	/**
+//	 * Remove end user and device association
+//	 * @param id the end user identifier
+//	 * @param password the end user password
+//	 * @param deviceId the device identifier
+//	 * @return true if the association has been deleted, false otherwise
+//	 */
+//	public boolean separateDevice(String id, String password, String deviceId);
 	
 	/************************************/
 	/**   End User programs management  */
@@ -373,5 +383,22 @@ public interface AppsGateSpec {
 	 * (Restart the system bundle from OSGi)
 	 */
 	public void restart();
+	
+	/************************************/
+	/** Context auto-management command */
+	/************************************/
+	
+	/**
+	 * Add a new device space in the space manager
+	 * @param description the device description
+	 */
+	public void addNewDeviceSpace(JSONObject description);
+	
+	/**
+	 * Remove the device space in device root
+	 * @param deviceId the device identifier
+	 * @param type the device type
+	 */
+	public void removeDeviceSpace(String deviceId, String type);
 	
 }

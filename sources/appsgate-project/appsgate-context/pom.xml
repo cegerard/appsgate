@@ -38,13 +38,13 @@
 	</dependencies>
 
 	<modules>
-		<module>PlaceManager</module>
-		<module>PlaceManagerSpec</module>
+		<module>SpaceManager</module>
+		<module>SpaceManagerSpec</module>
 		<module>ContextFollower</module>
 		<module>ContextFollowerSpec</module>
-		<module>DeviceNameTableSpec</module>
-		<module>DeviceNameTable</module>
-		<module>appsgate-enduser</module>
+<!-- 		<module>DeviceNameTableSpec</module> -->
+<!-- 		<module>DeviceNameTable</module> -->
+<!-- 		<module>appsgate-enduser</module> -->
 		<module>ContextHistorySpec</module>
 		<module>PropertyHistoryManagerSpec</module>
 		<module>MongoDBConfigurationImpl</module>
