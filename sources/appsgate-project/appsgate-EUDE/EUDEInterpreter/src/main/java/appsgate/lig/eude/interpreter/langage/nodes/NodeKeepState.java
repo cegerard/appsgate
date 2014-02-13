@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +22,7 @@ public class NodeKeepState extends Node {
     /**
      *
      */
-    private NodeState state;
+    protected NodeState state;
 
     /**
      *
@@ -38,12 +38,15 @@ public class NodeKeepState extends Node {
         super(p);
     }
 
-    public NodeKeepState(JSONObject o, Node parent) throws SpokException {
+    public NodeKeepState(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         try {
             state = new NodeState(o.getJSONObject("state"), this);
             setter = state.getSetter();
         } catch (JSONException ex) {
+            throw new SpokNodeException("NodeKeepState", "state", ex);
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Unable to get setter from state");
             throw new SpokNodeException("NodeKeepState", "state", ex);
         }
     }
@@ -103,7 +106,7 @@ public class NodeKeepState extends Node {
     }
 
     /**
-     * 
+     *
      */
     private void listenEndEvents() {
         state.call();

@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -72,21 +73,21 @@ public class NodeBooleanExpression extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeBooleanExpression(JSONObject o, Node parent) throws SpokException {
+    public NodeBooleanExpression(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         try {
             operator = BinaryOperator.valueOf(getJSONString(o, "operator"));
         } catch (IllegalArgumentException e) {
             throw new SpokNodeException("BooleanExpression", "operator", e);
         }
-        if (o.has("leftOperand")) {
+        try {
             left = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
-        } else {
-            throw new SpokNodeException("BooleanExpression", "leftOperand", null);
+        } catch(SpokTypeException ex) {
+            throw new SpokNodeException("BooleanExpression", "leftOperand", ex);
         }
-        if (o.has("rightOperand")) {
+        try{
             right = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
-        } else {
+        } catch(SpokTypeException ex) {
             if (needTwoOperands(operator)) {
                 throw new SpokNodeException("BooleanExpression", "rightOperand", null);
             }

@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.Iterator;
 import java.util.List;
 import org.json.JSONArray;
@@ -36,11 +37,20 @@ public class NodeFunctionDefinition extends Node {
      * @throws SpokNodeException
      */
     public NodeFunctionDefinition(JSONObject programJSON, Node parent)
-            throws SpokException {
+            throws SpokNodeException {
         super(parent);
         this.name = programJSON.optString("id");
-        this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions")));
-        this.seqRules = Builder.buildFromJSON(programJSON.optJSONObject("seqRules"), this);
+        try {
+            this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions")));
+        } catch (SpokException ex) {
+            LOGGER.error("Unable to set the symbol table");
+            throw new SpokNodeException("NodeFunctionDefinition", "seqDefinitions", ex);
+        }
+        try {
+            this.seqRules = Builder.buildFromJSON(programJSON.optJSONObject("seqRules"), this);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeFunctionDefinition", "seqRules", ex);
+        }
     }
 
     /**

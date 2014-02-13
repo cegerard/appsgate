@@ -11,10 +11,12 @@
                 "methodName": "switchOn"
             },
             "endEvent": {
-                "name" : "lightOff"
+                "name" : "value",
+                "value" : "false" 
             },
             "startEvent": {
-                "name" : "lightOn"
+                "name" : "value",
+                "value" : "true" 
             }
 
         },

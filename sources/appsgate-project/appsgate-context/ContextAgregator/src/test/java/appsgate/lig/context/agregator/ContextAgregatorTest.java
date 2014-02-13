@@ -18,10 +18,17 @@ public class ContextAgregatorTest {
     }
 
     @Test
-    public void testAgregator() {
-        ContextAgregatorMock m = new ContextAgregatorMock("src/test/resources/jsonLibs/toto.json");
+    public void testAgregator() throws Exception{
+        ContextAgregatorMock m = new ContextAgregatorMock("src/test/resources/jsonLibs/testMock.json");
         Assert.assertNotNull(m);
         Assert.assertNotNull(m.getEventsFromState("test", "testState"));
+    }
+    
+    @Test
+    public void testNewInst() throws Exception{
+        ContextAgregatorImpl m = new ContextAgregatorImpl();
+        m.newInst();
+        m.deleteInst();
     }
 
 }

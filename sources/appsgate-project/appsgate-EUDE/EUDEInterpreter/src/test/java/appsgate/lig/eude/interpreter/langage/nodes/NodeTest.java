@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.jmock.Mockery;
+import org.jmock.lib.concurrent.Synchroniser;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.json.JSONArray;
 
@@ -24,8 +25,11 @@ import org.json.JSONArray;
  */
 public abstract class NodeTest {
 
+    protected Synchroniser synchroniser = new Synchroniser();
+
     protected Mockery context = new Mockery() {
         {
+            setThreadingPolicy(synchroniser);
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
@@ -102,7 +106,6 @@ public abstract class NodeTest {
         SymbolTable result = this.instance.getSymbolTable();
         assertEquals(expResult, result);
     }
-
 
     @Test
     public void testGetResult() throws Exception {

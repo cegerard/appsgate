@@ -13,6 +13,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,10 +59,14 @@ public class NodeAction extends Node {
      * @throws SpokNodeException if the interpretation of JSON fails
      */
     public NodeAction(JSONObject ruleJSON, Node parent)
-            throws SpokException {
+            throws SpokNodeException {
         super(parent);
-
-        target = Builder.buildFromJSON(getJSONObject(ruleJSON, "target"), this);
+        try {
+            target = Builder.buildFromJSON(getJSONObject(ruleJSON, "target"), this);
+        } catch (SpokTypeException ex) {
+            LOGGER.error("Unable to build the target of the action node");
+            throw new SpokNodeException("NodeAction", "value", ex);
+        }
         methodName = ruleJSON.optString("methodName");
         args = ruleJSON.optJSONArray("args");
         if (args == null) {
@@ -99,7 +104,7 @@ public class NodeAction extends Node {
             } else if (target.getType().equals("list")) {
                 callListAction(target.getValue());
             } else if (target.getType().equals("variable")) {
-                callVariableAction(getVariableByName(target.getValue()),target.getValue());
+                callVariableAction(getVariableByName(target.getValue()), target.getValue());
             } else {
                 LOGGER.error("Action type ({}) not supported", target.getType());
             }

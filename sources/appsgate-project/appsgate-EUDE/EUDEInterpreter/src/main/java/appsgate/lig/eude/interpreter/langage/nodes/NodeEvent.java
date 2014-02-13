@@ -6,8 +6,8 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,9 +73,14 @@ public class NodeEvent extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeEvent(JSONObject eventJSON, Node parent) throws SpokException {
+    public NodeEvent(JSONObject eventJSON, Node parent) 
+            throws SpokNodeException {
         super(parent);
-        source = Builder.buildFromJSON(getJSONObject(eventJSON, "source"), this);
+        try {
+            source = Builder.buildFromJSON(getJSONObject(eventJSON, "source"), this);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeEvent", "source", ex);
+        }
         eventName = getJSONString(eventJSON, "eventName");
         eventValue = getJSONString(eventJSON, "eventValue");
 

@@ -8,7 +8,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.impl.ClockProxy;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ class NodeEvents extends Node {
      * @param o the json description
      * @param parent the parent node
      */
-    public NodeEvents(JSONObject o, Node parent) throws SpokException {
+    public NodeEvents(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         JSONArray seqEventJSON = getJSONArray(o, "events");
         seqEvent = new ArrayList<NodeEvent>();

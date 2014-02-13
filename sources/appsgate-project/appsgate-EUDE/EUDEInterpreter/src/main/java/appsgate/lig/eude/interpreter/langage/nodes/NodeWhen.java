@@ -5,8 +5,7 @@ import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +43,15 @@ public class NodeWhen extends Node {
      * @param parent the parent node
      * @throws SpokNodeException
      */
-    public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws SpokException {
+    public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws SpokNodeException {
         super(parent);
         seqEvent = new NodeEvents(getJSONObject(ruleWhenJSON, "events"), this);
-        // initialize the sequences of events and rules
-        seqRules = Builder.buildFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
+        try {
+            // initialize the sequences of events and rules
+            seqRules = Builder.buildFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeWhen", "seqRulesThen", ex);
+        }
 
     }
 

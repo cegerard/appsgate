@@ -10,6 +10,9 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,12 +50,17 @@ public class NodeVariableAssignation extends Node {
      *
      * @param obj the json description
      * @param p the parent
-     * @throws SpokException
+     * @throws SpokNodeException
      */
-    public NodeVariableAssignation(JSONObject obj, Node p) throws SpokException {
+    public NodeVariableAssignation(JSONObject obj, Node p) throws SpokNodeException {
         super(p);
         if (obj.has("value")) {
-            value = Builder.buildFromJSON(obj.optJSONObject("value"), this);
+            try {
+                value = Builder.buildFromJSON(obj.optJSONObject("value"), this);
+            } catch (SpokTypeException ex) {
+                LOGGER.error("Unable to build the value of the variable assignation");
+                throw new SpokNodeException("NodeVariableAssignation", "value", ex);
+            }
         }
         name = getJSONString(obj, "name");
     }

@@ -13,10 +13,12 @@
                 "methodName": "flag1"
             },
             "endEvent": {
-                "name": "lightOff"
+                "name": "value",
+                "value": "false"
             },
             "startEvent": {
-                "name": "lightOn"
+                "name": "value",
+                "value": "true"
             }
 
         }

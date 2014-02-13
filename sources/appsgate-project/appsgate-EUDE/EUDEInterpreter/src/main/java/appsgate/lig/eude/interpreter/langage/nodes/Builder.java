@@ -27,6 +27,7 @@ public class Builder {
      *
      */
     private static enum NODE_TYPE {
+
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
         NODE_FUNCTION_DEFINITION, NODE_IF, NODE_KEEP_STATE, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
@@ -40,7 +41,7 @@ public class Builder {
      * @return NODE_TYPE
      * @throws SpokException
      */
-    private static NODE_TYPE getType(String type) throws SpokException {
+    private static NODE_TYPE getType(String type) throws SpokTypeException {
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
@@ -121,51 +122,61 @@ public class Builder {
      * @param o
      * @param parent
      * @return
-     * @throws SpokNodeException
+     * @throws SpokTypeException
      */
-    public static Node buildFromJSON(JSONObject o, Node parent) throws SpokException {
-        if (o == null || !o.has("type")) {
-            throw new SpokNodeException("NodeBuilder", "type", null);
+    public static Node buildFromJSON(JSONObject o, Node parent)
+            throws SpokTypeException {
+        if (o == null) {
+            LOGGER.warn("No node to build");
+            throw new SpokTypeException("no node");
+
         }
-        switch (getType(o.optString("type"))) {
-            case NODE_ACTION:
-                return new NodeAction(o, parent);
-            case NODE_BOOLEAN_EXPRESSION:
-                return new NodeBooleanExpression(o, parent);
-            case NODE_EVENT:
-                return new NodeEvent(o, parent);
-            case NODE_EVENTS:
-                return new NodeEvents(o, parent);
-            case NODE_FUNCTION:
-                return new NodeFunction(o, parent);
-            case NODE_FUNCTION_DEFINITION:
-                return new NodeFunctionDefinition(o, parent);
-            case NODE_IF:
-                return new NodeIf(o, parent);
-            case NODE_KEEP_STATE:
-                return new NodeKeepState(o, parent);
-            case NODE_RETURN:
-                return new NodeReturn(o, parent);
-            case NODE_SELECT:
-                return new NodeSelect(o, parent);
-            case NODE_STATE:
-                return new NodeState(o, parent);
-            case NODE_VALUE:
-                return new NodeValue(o, parent);
-            case NODE_VARIABLE_ASSIGNATION:
-                return new NodeVariableAssignation(o, parent);
-            case NODE_WHEN:
-                return new NodeWhen(o, parent);
-            case NODE_WHILE:
-                return new NodeWhile(o, parent);
-            case NODE_PROGRAM:
-                throw new SpokException("Unable to build program node inside other programs", null);
-            case NODE_SEQ_RULES:
-                return new NodeSeqRules(o, parent);
-            case NODE_SET_OF_RULES:
-                return new NodeSetOfRules(o, parent);
-            default:
-                throw new SpokNodeException("NodeBuilder", "type", null);
+        if (!o.has("type")) {
+            throw new SpokTypeException("no type");
+        }
+        try {
+            switch (getType(o.optString("type"))) {
+                case NODE_ACTION:
+                    return new NodeAction(o, parent);
+                case NODE_BOOLEAN_EXPRESSION:
+                    return new NodeBooleanExpression(o, parent);
+                case NODE_EVENT:
+                    return new NodeEvent(o, parent);
+                case NODE_EVENTS:
+                    return new NodeEvents(o, parent);
+                case NODE_FUNCTION:
+                    return new NodeFunction(o, parent);
+                case NODE_FUNCTION_DEFINITION:
+                    return new NodeFunctionDefinition(o, parent);
+                case NODE_IF:
+                    return new NodeIf(o, parent);
+                case NODE_KEEP_STATE:
+                    return new NodeKeepState(o, parent);
+                case NODE_RETURN:
+                    return new NodeReturn(o, parent);
+                case NODE_SELECT:
+                    return new NodeSelect(o, parent);
+                case NODE_STATE:
+                    return new NodeState(o, parent);
+                case NODE_VALUE:
+                    return new NodeValue(o, parent);
+                case NODE_VARIABLE_ASSIGNATION:
+                    return new NodeVariableAssignation(o, parent);
+                case NODE_WHEN:
+                    return new NodeWhen(o, parent);
+                case NODE_WHILE:
+                    return new NodeWhile(o, parent);
+                case NODE_PROGRAM:
+                    throw new SpokTypeException("Unable to build program node inside other programs", null);
+                case NODE_SEQ_RULES:
+                    return new NodeSeqRules(o, parent);
+                case NODE_SET_OF_RULES:
+                    return new NodeSetOfRules(o, parent);
+                default:
+                    throw new SpokNodeException("NodeBuilder", "type", null);
+            }
+        } catch (SpokNodeException ex) {
+            throw new SpokTypeException("A node has not been built", ex);
         }
     }
 
@@ -174,13 +185,13 @@ public class Builder {
      * @param o
      * @param parent
      * @return
+     * @throws SpokTypeException
      */
-    public static Node nodeOrNull(JSONObject o, Node parent) {
-        try {
-            return buildFromJSON(o, parent);
-        } catch (SpokException ex) {
-            LOGGER.trace("There is no node to build: " + ex.getMessage());
+    public static Node nodeOrNull(JSONObject o, Node parent)
+            throws SpokTypeException {
+        if (o == null) {
             return null;
         }
+        return buildFromJSON(o, parent);
     }
 }

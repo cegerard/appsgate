@@ -7,8 +7,8 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -54,21 +54,28 @@ public class NodeWhile extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeWhile(JSONObject o, Node parent) throws SpokException {
+    public NodeWhile(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         try {
             this.state = (NodeState) Builder.buildFromJSON(o.getJSONObject("state"), this);
-        } catch (JSONException e) {
-            throw new SpokNodeException("NodeWhile", "state", e);
+        } catch (JSONException ex) {
+            throw new SpokNodeException("NodeWhile", "state", ex);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeWhile", "state", ex);
         }
         try {
             this.rules = Builder.buildFromJSON(o.getJSONObject("rules"), this);
         } catch (JSONException ex) {
             throw new SpokNodeException("NodeWhile", "rules", ex);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeWhile", "rules", ex);
         }
         try {
             this.rulesThen = Builder.nodeOrNull(o.getJSONObject("rulesThen"), this);
         } catch (JSONException ex) {
+            LOGGER.trace("There is no rulesThen");
+            this.rulesThen = null;
+        } catch (SpokTypeException ex) {
             LOGGER.trace("There is no rulesThen");
             this.rulesThen = null;
         }
@@ -77,16 +84,22 @@ public class NodeWhile extends Node {
 
     @Override
     protected void specificStop() {
+        state.removeEndEventListener(this);
+        state.removeStartEventListener(this);
         state.stop();
+        rules.removeEndEventListener(this);
         rules.stop();
-        rulesThen.stop();
+        if (rulesThen != null) {
+            rulesThen.removeEndEventListener(this);
+            rulesThen.stop();
+        }
     }
 
     @Override
     public JSONObject call() {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
-        state.addEndEventListener(this);
+        state.addStartEventListener(this);
         return state.call();
     }
 
@@ -107,21 +120,29 @@ public class NodeWhile extends Node {
     }
 
     @Override
+    public void startEventFired(StartEvent e) {
+        Node node = (Node) e.getSource();
+        if (node == state) {
+            state.addEndEventListener(this);
+            rules.addEndEventListener(this);
+            rules.call();
+        }
+    }
+
+    @Override
     public void endEventFired(EndEvent e) {
         Node node = (Node) e.getSource();
         if (node == state) {
-            // We got an event from the states node, we start the rules or the then branch
-            if (state.isOnRules()) {
-                state.addEndEventListener(this);
-                rules.addEndEventListener(this);
-                rules.call();
-                
-            } else {
-                rules.stop();
+            // We got end event from the states node, we start the then branch
+            rules.stop();
+            if (rulesThen != null) {
                 rulesThen.addEndEventListener(this);
                 rulesThen.call();
+            } else {
+                stop();
             }
         }
+
         if (node == rules) {
             LOGGER.trace("The rules have been done");
             if (rulesThen == null) {

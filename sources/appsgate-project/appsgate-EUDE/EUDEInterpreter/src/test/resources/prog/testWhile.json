@@ -11,7 +11,7 @@
         "type": "while",
         "state": {
             "type": "state",
-            "stateName": "testState",
+            "name": "testState",
             "object": {
                 "type": "device",
                 "id": "test"

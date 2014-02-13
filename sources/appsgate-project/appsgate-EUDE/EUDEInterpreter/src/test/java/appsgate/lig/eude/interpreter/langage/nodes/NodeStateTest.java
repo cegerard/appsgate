@@ -50,7 +50,7 @@ public class NodeStateTest extends NodeTest {
         o.put("id", "test");
         ruleJSON.put("type", "state");
         ruleJSON.put("object", o);
-        ruleJSON.put("stateName", "isOn");
+        ruleJSON.put("name", "isOn");
     }
 
     @Before

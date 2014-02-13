@@ -8,8 +8,10 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
 import appsgate.lig.context.agregator.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import appsgate.lig.router.spec.GenericCommand;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,20 +63,30 @@ class NodeState extends Node {
      * @param o the json description
      * @param parent the parent node
      */
-    public NodeState(JSONObject o, Node parent) throws SpokException {
+    public NodeState(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
-        object = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
-        stateName = getJSONString(o, "stateName");
-        context = getMediator().getContext();
+        try {
+            object = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeState", "object", ex);
+        }
+        stateName = getJSONString(o, "name");
+        try {
+            context = getMediator().getContext();
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("unable to find context");
+            throw new SpokNodeException("NodeState", "context unavailable", ex);
+        }
         type = context.getBrickType(object.getValue());
         desc = context.getEventsFromState(type, stateName);
 
     }
 
-
     @Override
     protected void specificStop() {
+        eventEnd.removeEndEventListener(this);
         eventEnd.stop();
+        eventStart.removeEndEventListener(this);
         eventStart.stop();
     }
 
@@ -90,6 +102,7 @@ class NodeState extends Node {
             // We are in state
             if (isOfState()) {
                 isOnRules = true;
+                fireStartEvent(new StartEvent(this));
                 listenEndStateEvent();
             } else {
                 isOnRules = false;
@@ -97,7 +110,7 @@ class NodeState extends Node {
                 eventStart.call();
             }
         } catch (SpokExecutionException ex) {
-            LOGGER.error("Unable to execute the State node, due to: "+ ex);
+            LOGGER.error("Unable to execute the State node, due to: " + ex);
             return ex.getJSONDescription();
         }
         return null;
@@ -121,6 +134,8 @@ class NodeState extends Node {
         Node n = (Node) e.getSource();
         if (n == eventStart) {
             LOGGER.trace("the start event of the state {} has been thrown", stateName);
+            isOnRules = true;
+            fireStartEvent(new StartEvent(this));
             listenEndStateEvent();
         } else {
             LOGGER.trace("the end event of the state {} has been thrown", stateName);
@@ -136,7 +151,7 @@ class NodeState extends Node {
         try {
             o.put("type", "state");
             o.put("object", object.getJSONDescription());
-            o.put("stateName", stateName);
+            o.put("name", stateName);
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
@@ -151,12 +166,16 @@ class NodeState extends Node {
      * @throws SpokExecutionException
      */
     private void buildEventsList() throws SpokExecutionException {
-        if (type == null || type.isEmpty()) {
+        if (desc == null) {
             throw new SpokExecutionException("There is no type found for the device " + object.getValue());
         }
         // everything is OK
-        eventStart = buildFromOntology(desc.getStartEvent(), type);
-        eventEnd = buildFromOntology(desc.getEndEvent(), type);
+        if (eventStart == null) {
+            eventStart = buildFromOntology(desc.getStartEvent());
+        }
+        if (eventEnd == null) {
+            eventEnd = buildFromOntology(desc.getEndEvent());
+        }
     }
 
     /**
@@ -166,7 +185,7 @@ class NodeState extends Node {
      * @return
      * @throws SpokExecutionException
      */
-    private NodeEvent buildFromOntology(JSONObject o, String type) throws SpokExecutionException {
+    private NodeEvent buildFromOntology(JSONObject o) throws SpokExecutionException {
         String name;
         String value;
         if (o == null) {
@@ -193,8 +212,6 @@ class NodeState extends Node {
      * do the job when the end state event has been raised
      */
     private void listenEndStateEvent() {
-        isOnRules = true;
-        fireEndEvent(new EndEvent(this));
         eventEnd.addEndEventListener(this);
         eventEnd.call();
     }
@@ -207,7 +224,7 @@ class NodeState extends Node {
     /**
      * @return the method that set the state in the correct shape
      */
-    NodeAction getSetter() throws SpokException {
+    NodeAction getSetter() throws SpokExecutionException, SpokNodeException {
         JSONObject action = desc.getSetter();
         if (action == null) {
             throw new SpokExecutionException("No setter has been found for this state: " + desc.getStateName());
@@ -235,15 +252,22 @@ class NodeState extends Node {
         return stateName;
 
     }
-        /**
+
+    /**
      * @return true if the state is ok
      * @throws SpokExecutionException
      */
     private boolean isOfState() throws SpokExecutionException {
         LOGGER.trace("Asking for {}, {}", object.getValue(), desc.getStateName());
         GenericCommand cmd = getMediator().executeCommand(object.getValue(), desc.getStateName(), new JSONArray());
+        if (cmd == null) {
+            throw new SpokExecutionException("The command has not been created");
+        }
         cmd.run();
         Object aReturn = cmd.getReturn();
+        if (aReturn == null) {
+            throw new SpokExecutionException("The command has no return");
+        }
         LOGGER.trace("Is of state: [" + aReturn.toString() + "] compared to: [" + desc.getStateValue() + "]");
         return (desc.getStateValue().equalsIgnoreCase(aReturn.toString()));
     }

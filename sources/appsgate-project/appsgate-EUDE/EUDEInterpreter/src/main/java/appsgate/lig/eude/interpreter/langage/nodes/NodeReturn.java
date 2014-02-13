@@ -10,6 +10,8 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -49,10 +51,12 @@ public class NodeReturn extends Node {
      * @param parent the parent node
      * @throws SpokNodeException if something is not correctly written
      */
-    public NodeReturn(JSONObject obj, Node parent) throws SpokException {
+    public NodeReturn(JSONObject obj, Node parent) throws SpokNodeException {
         super(parent);
-        if (obj.has("returnValue")) {
+        try {
             returnValue = Builder.buildFromJSON(obj.optJSONObject("returnValue"), this);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeReturn", "returnValue", ex);
         }
     }
 

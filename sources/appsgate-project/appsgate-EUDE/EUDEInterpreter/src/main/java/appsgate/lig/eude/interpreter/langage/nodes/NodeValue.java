@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,9 +52,9 @@ public class NodeValue extends Node {
      *
      * @param o
      * @param parent
-     * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokException
+     * @throws SpokNodeException
      */
-    public NodeValue(JSONObject o, Node parent) throws SpokException {
+    public NodeValue(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         type = TYPE.valueOf(getJSONString(o, "type").toUpperCase());
         switch (type) {

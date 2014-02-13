@@ -5,10 +5,6 @@
  */
 package appsgate.lig.context.agregator;
 
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,7 +99,7 @@ public final class Library {
         if (root.containsKey(type)) {
             return root.get(type);
         } 
-        LOGGER.error("type not found");
+        LOGGER.error("type [{}] not found in library", type);
         return null;
 
     }

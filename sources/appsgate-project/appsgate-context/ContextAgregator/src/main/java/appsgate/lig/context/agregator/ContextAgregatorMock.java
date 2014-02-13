@@ -21,7 +21,7 @@ public class ContextAgregatorMock extends ContextAgregatorImpl {
      * @param filepath
      */
 
-    public ContextAgregatorMock(String filepath) {
+    public ContextAgregatorMock(String filepath) throws JSONException {
         super();
         try {
             lib.addDesc(loadFileJSON(filepath));

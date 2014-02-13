@@ -6,8 +6,8 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +48,23 @@ public class NodeIf extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokException {
+    public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokNodeException {
         super(parent);
-
-        this.expBool = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
-        this.seqRulesTrue = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
-        this.seqRulesFalse = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
+        try {
+            this.expBool = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeIf", "expbool", ex);
+        }
+        try {
+            this.seqRulesTrue = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeIf", "expbool", ex);
+        }
+        try {
+            this.seqRulesFalse = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeIf", "expbool", ex);
+        }
 
     }
 

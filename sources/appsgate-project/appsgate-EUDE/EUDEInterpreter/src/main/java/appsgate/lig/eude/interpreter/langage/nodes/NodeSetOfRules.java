@@ -8,8 +8,7 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import java.util.Iterator;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.List;
 import org.json.JSONObject;
 
@@ -60,7 +59,7 @@ public class NodeSetOfRules extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeSetOfRules(JSONObject seqInstructions, Node parent) throws SpokException {
+    public NodeSetOfRules(JSONObject seqInstructions, Node parent) throws SpokNodeException {
         super(parent);
         JSONArray seqRulesJSON = seqInstructions.optJSONArray("rules");
 
@@ -72,14 +71,12 @@ public class NodeSetOfRules extends Node {
         }
 
         for (int i = 0; i < seqRulesJSON.length(); i++) {
-            JSONObject inst = null;
             try {
-                inst = seqRulesJSON.getJSONObject(i);
+                instructions.add(Builder.buildFromJSON(seqRulesJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
                 throw new SpokNodeException("NodeSetOfRules", "item " + i, ex);
-            }
-            if (inst != null) {
-                instructions.add(Builder.buildFromJSON(inst, this));
+            } catch (SpokTypeException ex) {
+                throw new SpokNodeException("NodeSetOfRules", "item " + i, ex);
             }
         }
 
