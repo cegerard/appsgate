@@ -1,0 +1,45 @@
+{
+    "id": "testActions",
+    "runningState": "DEPLOYED",
+    "userSource": "",
+    "daemon": false,
+    "name": "ColorLoopMode",
+    "parameters": [],
+    "author": "Bob",
+    "target": "Alice",
+    "definitions": [],
+    "body": {
+        "type": "instructions",
+        "rules":
+                [
+                    {
+                        "type": "action",
+                        "methodName": "stopProgram",
+                        "args": [],
+                        "target": {
+                            "type": "programCall",
+                            "id": "test"
+                        }
+                    },
+                    {
+                        "type": "action",
+                        "methodName": "redAlert",
+                        "target": {
+                            "type": "device",
+                            "id": "test"
+                        },
+                        "args": []
+                    },
+                    {
+                        "type": "action",
+                        "methodName": "close",
+                        "args": [],
+                        "target": {
+                            "type": "device",
+                            "id": "test"
+                        }
+                    }
+                ]
+    }
+}
+

@@ -175,7 +175,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), properties)) {
             p.setDeployed();
             try {
-                notifyAddProgram(p.getId(), p.getRunningState().toString(), p.getProgramJSON().getJSONObject("source"), p.getUserInputSource());
+                notifyAddProgram(p.getId(), p.getRunningState().toString(), p.getProgramJSON().getJSONObject("source"), p.getUserSource());
             } catch (JSONException e) {
                 LOGGER.warn("JSON exception [{}] detected while notifying programs.", e.getMessage());
             }
@@ -237,7 +237,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             }
 
             if (p.update(jsonProgram)) {
-                notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getJSONSource(), p.getUserInputSource());
+                notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getJSONSource(), p.getUserSource());
                 //save program map state
                 ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
                 Set<String> keys = mapPrograms.keySet();
@@ -434,10 +434,10 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      * @param id
      * @param runningState
      * @param source
-     * @param userInputSource
+     * @param userSource
      */
-    private void notifyUpdateProgram(String id, String runningState, JSONObject source, String userInputSource) {
-        notifyChanges(new ProgramNotification("updateProgram", id, runningState, source, userInputSource));
+    private void notifyUpdateProgram(String id, String runningState, JSONObject source, String userSource) {
+        notifyChanges(new ProgramNotification("updateProgram", id, runningState, source, userSource));
     }
 
     /**
@@ -445,10 +445,10 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      * @param id
      * @param runningState
      * @param source
-     * @param userInputSource
+     * @param userSource
      */
-    private void notifyAddProgram(String id, String runningState, JSONObject source, String userInputSource) {
-        notifyChanges(new ProgramNotification("newProgram", id, runningState, source, userInputSource));
+    private void notifyAddProgram(String id, String runningState, JSONObject source, String userSource) {
+        notifyChanges(new ProgramNotification("newProgram", id, runningState, source, userSource));
     }
 
     /**

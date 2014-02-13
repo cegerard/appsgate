@@ -46,7 +46,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
 
     @Test
     public void testBuildNodeFromJson() throws Exception {
-        NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/testFunction.json"), null);
+        NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/node/testFunction.json"), null);
         assertNotNull(defNode);
         System.out.println(defNode.getExpertProgramScript());
         Node code = defNode.getCode(instance);

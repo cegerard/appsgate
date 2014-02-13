@@ -31,7 +31,7 @@ public class ProgramNotification implements NotificationMsg {
     /**
      * Field for user
      */
-    private final String userInputSource;
+    private final String userSource;
 
     /**
      * Constructor
@@ -40,16 +40,16 @@ public class ProgramNotification implements NotificationMsg {
      * @param programId
      * @param runningState
      * @param source
-     * @param userInputSource 
+     * @param userSource 
      */
     public ProgramNotification(String changes, String programId, String runningState,
-            JSONObject source, String userInputSource) {
+            JSONObject source, String userSource) {
         super();
         this.changes = changes;
         this.programId = programId;
         this.runningState = runningState;
         this.source = source;
-        this.userInputSource = userInputSource;
+        this.userSource = userSource;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ProgramNotification implements NotificationMsg {
         content.put("id", programId);
         content.put("runningState", runningState);
         content.put("source", source);
-        content.put("userInputSource", userInputSource);
+        content.put("userSource", userSource);
 
         notif.put(changes, content);
 

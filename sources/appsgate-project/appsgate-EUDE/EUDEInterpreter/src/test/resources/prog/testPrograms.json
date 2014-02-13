@@ -1,0 +1,55 @@
+{
+    "id": "testPrograms",
+    "runningState": "DEPLOYED",
+    "userSource": "",
+    "daemon": true,
+    "name": "ColorLoopMode",
+    "parameters": [],
+    "author": "Bob",
+    "target": "Alice",
+    "definitions": [],
+    "body": {
+        "type": "instructions",
+        "rules": [
+            {
+                "type": "action",
+                "methodName": "callProgram",
+                "args": [],
+                "target": {
+                    "type": "programCall",
+                    "id": "testIf"
+                }
+
+            },
+            {
+                "type": "action",
+                "methodName": "stopProgram",
+                "args": [],
+                "target": {
+                    "type": "programCall",
+                    "id": "testIf"
+                }
+            },
+            {
+                "type": "action",
+                "methodName": "close",
+                "args": [],
+                "target": {
+                    "type": "device",
+                    "id": "test"
+                }
+
+            },
+            {
+                "type": "action",
+                "methodName": "stopProgram",
+                "args": [],
+                "target": {
+                    "type": "programCall",
+                    "id": "testPrograms"
+                }
+            }
+
+        ]
+    }
+}

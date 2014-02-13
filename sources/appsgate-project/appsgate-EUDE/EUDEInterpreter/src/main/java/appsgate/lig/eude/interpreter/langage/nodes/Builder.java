@@ -29,8 +29,8 @@ public class Builder {
     private static enum NODE_TYPE {
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
         NODE_FUNCTION_DEFINITION, NODE_IF, NODE_KEEP_STATE, NODE_PROGRAM, NODE_RETURN,
-        NODE_SELECT, NODE_STATE, NODE_SEQ_RULES, NODE_VALUE, NODE_VARIABLE_ASSIGNATION,
-        NODE_WHEN, NODE_WHILE;
+        NODE_SELECT, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
+        NODE_VARIABLE_ASSIGNATION, NODE_WHEN, NODE_WHILE;
     }
 
     /**
@@ -110,6 +110,9 @@ public class Builder {
         if (type.equalsIgnoreCase("instructions")) {
             return NODE_TYPE.NODE_SEQ_RULES;
         }
+        if (type.equalsIgnoreCase("setOfRules")) {
+            return NODE_TYPE.NODE_SET_OF_RULES;
+        }
         throw new SpokTypeException(type);
     }
 
@@ -159,6 +162,8 @@ public class Builder {
                 throw new SpokException("Unable to build program node inside other programs", null);
             case NODE_SEQ_RULES:
                 return new NodeSeqRules(o, parent);
+            case NODE_SET_OF_RULES:
+                return new NodeSetOfRules(o, parent);
             default:
                 throw new SpokNodeException("NodeBuilder", "type", null);
         }

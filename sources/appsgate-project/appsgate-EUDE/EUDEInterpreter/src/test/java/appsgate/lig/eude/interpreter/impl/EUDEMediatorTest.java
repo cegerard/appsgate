@@ -347,7 +347,7 @@ public class EUDEMediatorTest {
     @Test
     public void testActions() throws Exception {
         System.out.println("Actions");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testActions.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testActions.json")));
         Assert.assertTrue(instance.callProgram("testActions"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
 //        Assert.assertFalse(instance.isProgramActive("testActions"));
@@ -365,13 +365,13 @@ public class EUDEMediatorTest {
     @Test
     public void testPrograms() throws Exception {
         System.out.println("Programs");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testIf.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testIf.json")));
         System.out.println(instance.getNodeProgram("testIf").getExpertProgramScript());
 
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testPrograms.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testPrograms.json")));
         System.out.println(instance.getNodeProgram("testPrograms").getExpertProgramScript());
 
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testFail_1.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testFail_1.json")));
         System.out.println(instance.getNodeProgram("program-4050").getExpertProgramScript());
 
         System.out.println("********************testIf************************");
@@ -394,7 +394,7 @@ public class EUDEMediatorTest {
     @Test
     public void testWhen() throws Exception {
         System.out.println("When");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhen.json")));
         boolean callProgram = instance.callProgram("TestWhen");
         Assert.assertTrue(callProgram);
         contextFollower.notifAll("1");
@@ -418,7 +418,7 @@ public class EUDEMediatorTest {
     @Test
     public void testWhile() throws Exception {
         System.out.println("While test");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhile.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhile.json")));
         boolean p = instance.callProgram("TestWhile");
         Assert.assertTrue(p);
         contextFollower.notifAll("1");
@@ -435,7 +435,7 @@ public class EUDEMediatorTest {
     @Test
     public void testKeepState() throws Exception {
         System.out.println("Keep State test");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testKeepState.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testKeepState.json")));
         boolean p = instance.callProgram("TestKeepState");
         Assert.assertTrue(p);
         contextFollower.notifAll("1");
@@ -449,8 +449,8 @@ public class EUDEMediatorTest {
     //@Test
     public void testPgm() throws Exception {
         System.out.println("Pgm calling TestWhen");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/pgm.json")));
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/pgm.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhen.json")));
         Assert.assertTrue(instance.callProgram("pgm"));
         Assert.assertFalse(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
@@ -468,7 +468,7 @@ public class EUDEMediatorTest {
     //@Test
     public void testStopAndStart() throws Exception {
         System.out.println("Stop And Start");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhen.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhen.json")));
         System.out.println("Start");
         Assert.assertTrue(instance.callProgram("TestWhen"));
         System.out.println("Stop 1");
@@ -490,7 +490,7 @@ public class EUDEMediatorTest {
     @Test
     public void testWhenImbricated() throws Exception {
         System.out.println("Stop And Start");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/testWhenImb.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhenImb.json")));
         System.out.println("Start");
         Assert.assertTrue(instance.callProgram("whenImb"));
         contextFollower.notifAll("1");

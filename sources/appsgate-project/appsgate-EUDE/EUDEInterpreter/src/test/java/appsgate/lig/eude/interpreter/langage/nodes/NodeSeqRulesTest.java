@@ -32,7 +32,7 @@ public class NodeSeqRulesTest extends NodeTest {
 
     @Test
     public void testBuildFromJson() throws Exception {
-        NodeSeqRules seq = new NodeSeqRules(TestUtilities.loadFileJSON("src/test/resources/seqRules.json"), null);
+        NodeSeqRules seq = new NodeSeqRules(TestUtilities.loadFileJSON("src/test/resources/node/seqRules.json"), null);
         Assert.assertNotNull(seq);
         System.out.println(seq.getExpertProgramScript());
         seq.call();

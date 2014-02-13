@@ -8,7 +8,6 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import java.util.Iterator;
 import java.util.List;
@@ -96,9 +95,6 @@ public class NodeSeqRules extends Node {
         setStarted(true);
         fireStartEvent(new StartEvent(this));
 
-//        while (iterator.hasNext()) {
-//            iterator.next().call();
-//        }
         if (!instructions.isEmpty()) {
             launchNextSeqAndRules();
         } else {
@@ -202,11 +198,11 @@ public class NodeSeqRules extends Node {
             return instructions.get(0).getExpertProgramScript();
         }
 
-        String ret = "[";
+        String ret = "{";
         for (Node s : instructions) {
             ret += s.getExpertProgramScript() + ",";
         }
-        return ret.substring(0, ret.length() - 1) + "]";
+        return ret.substring(0, ret.length() - 1) + "}";
     }
 
     @Override

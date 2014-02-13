@@ -86,6 +86,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     protected void setParent(Node n) {
         this.parent = n;
     }
+    
+    protected Node getParent() {
+        return parent;
+    }
 
     /**
      * Stop the interpretation of the node. Check if the node is not started

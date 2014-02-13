@@ -1,0 +1,42 @@
+{
+    "id": "pgm",
+    "runningState": "DEPLOYED",
+    "userSource": "",
+    "name": "TestLaunchPgm",
+    "daemon": true,
+    "parameters": [],
+    "author": "Bob",
+    "definitions": [
+    ],
+    "body": {
+        "type": "instructions",
+        "rules": [
+            {
+                "type": "when",
+                "events": {
+                    "type": "events",
+                    "events": [
+                        {
+                            "type": "event",
+                            "source": {
+                                "type": "device",
+                                "id": "PremierAppel"
+                            },
+                            "eventName": "makeCall",
+                            "eventValue": "1"
+                        }
+                    ]
+                },
+                "seqRulesThen": {
+                    "type": "action",
+                    "target": {
+                        "type": "programCall",
+                        "id": "TestWhen"
+                    },
+                    "methodName": "callProgram"
+                }
+            }
+        ]
+    }
+}
+

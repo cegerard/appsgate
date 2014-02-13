@@ -32,7 +32,7 @@ public class NodeFunctionTest extends NodeTest {
 
     @Test
     public void testBuildNodeFromJson() throws Exception {
-        NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/testFunction.json"), null);
+        NodeFunctionDefinition defNode = new NodeFunctionDefinition(TestUtilities.loadFileJSON("src/test/resources/node/testFunction.json"), null);
         assertNotNull(defNode);
         JSONArray p = new JSONArray("[{'type':'number', 'value':'40'}, {'type':'boolean', 'value':'true'}, {'type':'string', 'value':'c'}]");
         NodeFunction func = new NodeFunction("test", defNode, p);

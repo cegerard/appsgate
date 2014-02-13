@@ -68,11 +68,6 @@ public class NodeProgram extends Node {
     private String author;
 
     /**
-     * Target user
-     */
-    private String target;
-
-    /**
      * Daemon attribute
      */
     private Boolean daemon;
@@ -80,12 +75,12 @@ public class NodeProgram extends Node {
     /**
      * Use for simplify user interface reverse compute
      */
-    private String userInputSource;
+    private String userSource;
 
     /**
      * Sequence of rules to interpret
      */
-    private Node seqRules;
+    private Node body;
 
     /**
      * JSON representation of the program
@@ -123,8 +118,11 @@ public class NodeProgram extends Node {
         this(mediator);
 
         // initialize the program with the JSON
-        id = getJSONString(programJSON, "id");
-        runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
+        id = programJSON.optString("id");
+        if (programJSON.has("runningState")) {
+            runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
+        }
+
         update(programJSON);
     }
 
@@ -144,20 +142,18 @@ public class NodeProgram extends Node {
     public final boolean update(JSONObject jsonProgram) throws SpokException {
 
         this.programJSON = jsonProgram;
-        userInputSource = getJSONString(programJSON, "userInputSource");
+        userSource = programJSON.optString("userSource");
 
-        JSONObject source = getJSONObject(jsonProgram, "source");
-        name = getJSONString(source, "programName");
-//        author = getJSONString(source, "author");
-//        target = getJSONString(source, "target");
+        name = getJSONString(jsonProgram, "name");
+        author = jsonProgram.optString("author");
 
-        this.setSymbolTable(new SymbolTable(source.optJSONArray("seqDefinitions")));
-        if (source.has("daemon")) {
-            daemon = source.optBoolean("daemon");
+        this.setSymbolTable(new SymbolTable(jsonProgram.optJSONArray("definitions")));
+        if (jsonProgram.has("daemon")) {
+            daemon = jsonProgram.optBoolean("daemon");
         } else {
             daemon = false;
         }
-        seqRules = Builder.buildFromJSON(getJSONObject(source, "seqRules"), this);
+        body = Builder.nodeOrNull(getJSONObject(jsonProgram, "body"), this);
 
         return true;
 
@@ -178,10 +174,9 @@ public class NodeProgram extends Node {
         JSONObject ret = new JSONObject();
         if (runningState != RUNNING_STATE.PAUSED) {
             fireStartEvent(new StartEvent(this));
-            seqRules.addStartEventListener(this);
-            seqRules.addEndEventListener(this);
-            // seqRulesThread = pool.submit(seqRules);
-            seqRules.call();
+            body.addStartEventListener(this);
+            body.addEndEventListener(this);
+            body.call();
             try {
                 ret.put("status", true);
             } catch (JSONException ex) {
@@ -204,8 +199,8 @@ public class NodeProgram extends Node {
         if (runningState == RUNNING_STATE.STARTED && !isStopping()) {
             LOGGER.debug("Stoping program {}", this);
             setStopping(true);
-            seqRules.stop();
-            seqRules.removeEndEventListener(this);
+            body.stop();
+            body.removeEndEventListener(this);
             setRunningState(RUNNING_STATE.STOPPED);
             fireEndEvent(new EndEvent(this));
             setStopping(false);
@@ -235,8 +230,8 @@ public class NodeProgram extends Node {
     public void endEventFired(EndEvent e) {
         if (isDaemon()) {
             LOGGER.debug("The end event ({}) has been fired on a daemon, program is still running", e.getSource());
-            seqRules.addEndEventListener(this);
-            seqRules.call();
+            body.addEndEventListener(this);
+            body.call();
             LOGGER.debug("Call rearmed");
         } else {
             setRunningState(RUNNING_STATE.STOPPED);
@@ -269,14 +264,6 @@ public class NodeProgram extends Node {
     }
 
     /**
-     *
-     * @return the target
-     */
-    public String getTarget() {
-        return target;
-    }
-
-    /**
      * @return true if the Program is a daemon
      */
     public boolean isDaemon() {
@@ -286,8 +273,8 @@ public class NodeProgram extends Node {
     /**
      * @return the user input source
      */
-    public String getUserInputSource() {
-        return userInputSource;
+    public String getUserSource() {
+        return userSource;
     }
 
     /**
@@ -342,17 +329,17 @@ public class NodeProgram extends Node {
         JSONObject o = new JSONObject();
         try {
             o.put("id", id);
-            o.put("runningState", runningState.name);
             o.put("type", "program");
+            o.put("runningState", runningState.name);
+            o.put("name", name);
+            o.put("daemon", daemon);
+            o.put("author", author);
+            o.put("package", getPath());
 
-            JSONObject source = new JSONObject();
-            source.put("seqRules", seqRules.getJSONDescription());
-            source.put("daemon", daemon);
-            source.put("programName", name);
-            source.put("userInputSource", userInputSource);
-            source.put("seqDefinitions", getSymbolTable().getJSONDescription());
+            o.put("userSource", userSource);
+            o.put("body", body.getJSONDescription());
+            o.put("definitions", getSymbolTable().getJSONDescription());
 
-            o.put("source", source);
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
@@ -369,7 +356,7 @@ public class NodeProgram extends Node {
     public String getExpertProgramScript() {
         SymbolTable vars = new SymbolTable();
         this.setSymbolTable(vars);
-        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + seqRules.getExpertProgramScript();
+        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + body.getExpertProgramScript();
     }
 
     /**
@@ -378,28 +365,37 @@ public class NodeProgram extends Node {
     private String getHeader() {
         String ret = "";
         ret += "Author: " + this.author + "\n";
-        ret += "Target:" + this.target + "\n";
         return ret;
     }
 
     @Override
     protected Node copy(Node parent) {
         NodeProgram ret = new NodeProgram(getMediator());
-        ret.author = author;
-        ret.daemon = daemon;
         ret.id = id;
-        ret.name = name;
         ret.runningState = runningState;
-        ret.target = target;
-        ret.userInputSource = userInputSource;
+        ret.name = name;
+        ret.daemon = daemon;
+        ret.author = author;
+
+        ret.userSource = userSource;
+
         ret.programJSON = new JSONObject(programJSON);
         try {
-            boolean update = ret.update(programJSON);
+            ret.update(programJSON);
         } catch (SpokException ex) {
             LOGGER.error("Unable to copy the program", ex);
             return null;
         }
         return ret;
+    }
+
+    private String getPath() {
+        NodeProgram p = (NodeProgram) this.getParent();
+        if (p == null) {
+            return name;
+        } else {
+            return p.getPath() + "." + name;
+        }
     }
 
 }

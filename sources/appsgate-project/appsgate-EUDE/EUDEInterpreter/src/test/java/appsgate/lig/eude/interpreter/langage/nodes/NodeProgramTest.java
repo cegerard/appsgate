@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
+import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.Collection;
@@ -34,19 +35,20 @@ public class NodeProgramTest extends NodeTest {
                 allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
             }
         });
-        ruleJSON.put("type","program");
+
         ruleJSON.put("id", "test");
+        ruleJSON.put("type", "program");
         ruleJSON.put("runningState", "STOPPED");
-        ruleJSON.put("userInputSource", "test");
+        ruleJSON.put("name", "test");
+        ruleJSON.put("daemon", false);
+        ruleJSON.put("author", "test");
+        ruleJSON.put("package", "test");
         JSONObject rules = new JSONObject();
-        rules.put("type", "instructions");
-        rules.put("rules", new JSONArray());
-        JSONObject source = new JSONObject();
-        source.put("programName", "test");
-        source.put("daemon", false);
-        source.put("seqRules", rules);
-        source.put("seqDefinitions", (Collection) null);
-        ruleJSON.put("source", source);
+        rules.put("type", "setOfRules");
+        rules.put("rules", (Collection) null);
+        ruleJSON.put("body", rules);
+        ruleJSON.put("definitions", (Collection) null);
+        ruleJSON.put("userSource", "test");
 
     }
 
@@ -70,13 +72,13 @@ public class NodeProgramTest extends NodeTest {
     }
 
     /**
-     * Test of getUserInputSource method, of class NodeProgram.
+     * Test of getuserSource method, of class NodeProgram.
      */
     @Test
-    public void testGetUserInputSource() {
-        System.out.println("getUserInputSource");
+    public void testGetuserSource() {
+        System.out.println("getuserSource");
         String expResult = "test";
-        String result = this.programTest.getUserInputSource();
+        String result = this.programTest.getUserSource();
         assertEquals(expResult, result);
     }
 
@@ -110,23 +112,19 @@ public class NodeProgramTest extends NodeTest {
     @Test
     public void testUpdate() throws Exception {
         System.out.println("update");
-        JSONObject jsonProgram = new JSONObject();
-        jsonProgram.put("userInputSource", "test");
         JSONObject rules = new JSONObject();
+        rules.put("userSource", "test");
         rules.put("type", "instructions");
         rules.put("rules", new JSONArray());
 
-        JSONObject src = new JSONObject();
-        src.put("programName", "test");
-        src.put("author", "test");
-        src.put("target", "test");
-        src.put("daemon", true);
-        src.put("seqRules", rules);
-        src.put("seqDefinitions", (Collection) null);
-        jsonProgram.put("source", src);
+        rules.put("name", "test");
+        rules.put("author", "test");
+        rules.put("daemon", true);
+        rules.put("body", rules);
+        rules.put("definitions", (Collection) null);
 
         boolean expResult = true;
-        boolean result = this.programTest.update(jsonProgram);
+        boolean result = this.programTest.update(rules);
         assertEquals(expResult, result);
     }
 
@@ -186,5 +184,13 @@ public class NodeProgramTest extends NodeTest {
         } catch (SpokExecutionException ex) {
             fail("Should not have raised an exception");
         }
+    }
+
+    @Test
+    public void testFromJSONFile() throws Exception {
+        printTestName("FromJSONFiles");
+        NodeProgram defNode = new NodeProgram(null, TestUtilities.loadFileJSON("src/test/resources/node/newjson.json"));
+        assertNotNull(defNode);
+        System.out.println(defNode.getExpertProgramScript());
     }
 }

@@ -1,0 +1,63 @@
+{
+    "id": "testIf",
+    "runningState": "DEPLOYED",
+    "userSource": "",
+    "name": "testIf",
+    "daemon": false,
+    "parameters": [],
+    "author": "Bob",
+    "definitions": [],
+    "body": {
+        "type": "instructions",
+        "rules": [
+            {
+                "type": "if",
+                "expBool": {
+                    "type": "booleanExpression",
+                    "operator": "EQUALS",
+                    "leftOperand": {
+                        "type": "action",
+                        "methodName": "getCurrentState",
+                        "returnType": "boolean",
+                        "action": "fermer les volets",
+                        "target": {
+                            "type": "device",
+                            "id": "194.199.23.136-1"
+                        },
+                        "args": []
+                    },
+                    "rightOperand": {
+                        "type": "boolean",
+                        "value": true
+                    }
+                }
+                ,
+                "seqRulesTrue": {
+                    "type": "instructions",
+                    "rules": [
+                        {
+                            "type": "action",
+                            "methodName": "Off",
+                            "args": [],
+                            "action": "Ouvrir les volets",
+                            "target": {
+                                "type": "device",
+                                "id": "194.199.23.136-5"
+                            }
+                        }
+                    ]
+                },
+                "seqRulesFalse": {
+                    "type": "action",
+                    "target": {
+                        "type": "device",
+                        "id": "194.199.23.136-1"
+                    },
+                    "methodName": "On",
+                    "args": [],
+                    "action": "fermer les volets"
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "name": "toto",
+    "package": "root",
+    "daemon": false,
+    "userSource": "",
+    "parameters": [],
+    "definitions": [
+        {
+            "type": "boolean",
+            "value": "true",
+            "var_name": "c"
+        },
+        {
+            "var_name": "b",
+            "type": "variable"
+        },
+        {
+            "type": "variable",
+            "id": "c",
+            "var_name": "a"
+        }
+    ],
+    "body": {
+        "type": "setOfRules",
+        "rules": ""
+
+    }
+}
