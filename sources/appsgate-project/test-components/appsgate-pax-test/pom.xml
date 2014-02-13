@@ -72,6 +72,28 @@
 			<version>1.4.7</version>
 		</dependency>
 
+		<dependency>
+			<groupId>appsgate.android</groupId>
+			<artifactId>CyberGarageAdapter</artifactId>
+			<version>2.1.0-PATCHED</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.upnp.basedriver</artifactId>
+			<version>0.9.0-PATCHED</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix.sandbox</groupId>
+			<artifactId>org.apache.felix.upnp.devicegen.util</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.upnp.extra</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+
+
 		<!-- Dependencies for appsgate (not modified, already bundles) -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -134,6 +156,11 @@
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
 			<version>${ical-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.upnp.extra</artifactId>
+			<version>0.4.0</version>
 		</dependency>
 
 
