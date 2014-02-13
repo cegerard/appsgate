@@ -51,16 +51,16 @@
 			<artifactId>SpaceManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>DeviceNameTableSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>UserBaseSpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>appsgate.components</groupId> -->
+<!-- 			<artifactId>DeviceNameTableSpec</artifactId> -->
+<!-- 			<version>1.0.0</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>appsgate.components</groupId> -->
+<!-- 			<artifactId>UserBaseSpec</artifactId> -->
+<!-- 			<version>1.0.0</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>EUDEInterpreterSpec</artifactId>

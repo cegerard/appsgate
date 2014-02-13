@@ -44,20 +44,11 @@ public interface AppsGateSpec {
 	 * @param typeList
 	 *            the list of types to look for (if empty, return all objects)
 	 * @param places
-	 *            the places where to find the objects (if empty return all
+	 *            the spaces where to find the objects (if empty return all
 	 *            places)
-	 * @return a list of objects contained in these places
+	 * @return a list of objects contained in these spaces
 	 */
-	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray places);
-
-	/**
-	 * Return a list of types descending from another types
-	 * 
-	 * @param typeList
-	 *            the list of types to look for (if empty, return all subtypes)
-	 * @return an empty array if nothing is found or the array of types
-	 */
-	public JSONArray getSubtypes(JSONArray typeList);
+	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray spaces);
 
 	
 	/***************************/
@@ -156,6 +147,20 @@ public interface AppsGateSpec {
 	public JSONArray getSpacesWithPropertiesValue(JSONArray properties);
 	
 	/**
+	 * Get the tree representation of all spaces
+	 * @return the tree representation as a JSONObject
+	 */
+	public JSONObject getTreeDescription();
+	
+	/**
+	 * Get the sub-tree of all spaces from
+	 * the space give in parameter
+	 * @param rootid the root identifier of the sub tree
+	 * @return the tree as a JSONObject
+	 */
+	public JSONObject getTreeDescription(String rootId);
+	
+	/**
 	 * Get the root space description
 	 * @return the root space as a JSONObject
 	 */
@@ -228,14 +233,14 @@ public interface AppsGateSpec {
 	
 	/**
 	 * Create a new end user
-	 * @param id the user identifier
+	 * @param login the user identifier
 	 * @param password the user password
 	 * @param lastName the user last name
 	 * @param firstName the user first name
 	 * @param role the user role
-	 * @return true if the user is created, false otherwise
+	 * @return the user space id
 	 */
-	public boolean createUser(String id, String password, String lastName, String firstName, String role);
+	public String createUser(String login, String password, String lastName, String firstName, String role);
 	
 	/**
 	 * Delete an existing end user
@@ -252,55 +257,55 @@ public interface AppsGateSpec {
 	 */
 	public JSONObject getUserDetails(String id);
 	
-	/**
-	 * Get all information on a specify user
-	 * @param id the identifier of the user
-	 * @return user information as a JSONObject
-	 */
-	public JSONObject getUserFullDetails(String id);
+//	/**
+//	 * Get all information on a specify user
+//	 * @param id the identifier of the user
+//	 * @return user information as a JSONObject
+//	 */
+//	public JSONObject getUserFullDetails(String id);
 	
 	/**
 	 * Check if the wanted identifier already existing.
 	 * @param id the identifier to check
 	 * @return true if the identifier is not use, false otherwise
 	 */
-	public boolean checkIfIdIsFree(String id);
+	public boolean checkIfLoginIsFree(String id);
 	
-	/**
-	 * Synchronize a web service account with an end user profile
-	 * @param id the end user identifier
-	 * @param password the end user password
-	 * @param accountDetails all service account needed to be connected
-	 * @return true if the service account has been synchronized, false otherwise
-	 */
-	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails);
-	
-	/**
-	 * delete service account synchronization
-	 * @param id the end user identifier
-	 * @param password the end user password
-	 * @param accountDetails all information needed to removed connection
-	 * @return true it the synchronization has been canceled, false otherwise.
-	 */
-	public boolean desynchronizedAccount(String id, String password, JSONObject accountDetails);
-	
-	/**
-	 * Associate a device to an end user
-	 * @param id the end user identifier
-	 * @param password the end user password
-	 * @param deviceId the device identifier
-	 * @return true if the association has been completed, false otherwise
-	 */
-	public boolean associateDevice(String id, String password, String deviceId);
-	
-	/**
-	 * Remove end user and device association
-	 * @param id the end user identifier
-	 * @param password the end user password
-	 * @param deviceId the device identifier
-	 * @return true if the association has been deleted, false otherwise
-	 */
-	public boolean separateDevice(String id, String password, String deviceId);
+//	/**
+//	 * Synchronize a web service account with an end user profile
+//	 * @param id the end user identifier
+//	 * @param password the end user password
+//	 * @param accountDetails all service account needed to be connected
+//	 * @return true if the service account has been synchronized, false otherwise
+//	 */
+//	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails);
+//	
+//	/**
+//	 * delete service account synchronization
+//	 * @param id the end user identifier
+//	 * @param password the end user password
+//	 * @param accountDetails all information needed to removed connection
+//	 * @return true it the synchronization has been canceled, false otherwise.
+//	 */
+//	public boolean desynchronizedAccount(String id, String password, JSONObject accountDetails);
+//	
+//	/**
+//	 * Associate a device to an end user
+//	 * @param id the end user identifier
+//	 * @param password the end user password
+//	 * @param deviceId the device identifier
+//	 * @return true if the association has been completed, false otherwise
+//	 */
+//	public boolean associateDevice(String id, String password, String deviceId);
+//	
+//	/**
+//	 * Remove end user and device association
+//	 * @param id the end user identifier
+//	 * @param password the end user password
+//	 * @param deviceId the device identifier
+//	 * @return true if the association has been deleted, false otherwise
+//	 */
+//	public boolean separateDevice(String id, String password, String deviceId);
 	
 	/************************************/
 	/**   End User programs management  */
@@ -378,5 +383,22 @@ public interface AppsGateSpec {
 	 * (Restart the system bundle from OSGi)
 	 */
 	public void restart();
+	
+	/************************************/
+	/** Context auto-management command */
+	/************************************/
+	
+	/**
+	 * Add a new device space in the space manager
+	 * @param description the device description
+	 */
+	public void addNewDeviceSpace(JSONObject description);
+	
+	/**
+	 * Remove the device space in device root
+	 * @param deviceId the device identifier
+	 * @param type the device type
+	 */
+	public void removeDeviceSpace(String deviceId, String type);
 	
 }

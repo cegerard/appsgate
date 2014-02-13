@@ -174,10 +174,10 @@ public interface SpaceManagerSpec {
 	public JSONObject getTreeDescription(Space root);
 	
 	/**
-	 * Notify on update of the Space model that trigger ApAM 
+	 * Notify on update of the space model that trigger ApAM 
 	 * notification message.
 	 * @param update the update as a JSONObject
 	 */
-	public void updateSpace(JSONObject update);
+	public void spaceUpdated(JSONObject update);
 	
 }

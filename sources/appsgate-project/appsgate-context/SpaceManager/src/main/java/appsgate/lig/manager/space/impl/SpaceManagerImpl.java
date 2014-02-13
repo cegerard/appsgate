@@ -167,7 +167,11 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 		if (!spaceObjectsMap.containsKey(spaceId)) {
 			Space newspace = new Space(spaceId, type, parent);
 			spaceObjectsMap.put(spaceId, newspace);
-			notifyspace(spaceId, type.toString(), "newspace");
+			if(!type.equals(TYPE.ROOT)) {
+				notifyspace("newspace", spaceId, type.toString(), null, null, parent.getId(), null);
+			}else {
+				notifyspace("newspace", spaceId, type.toString(), null, null, "null", null);
+			}
 			
 			// Save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -192,7 +196,7 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 		if (!spaceObjectsMap.containsKey(spaceId)) {
 			Space newspace = new Space(spaceId, type, properties, parent);
 			spaceObjectsMap.put(spaceId, newspace);
-			notifyspace(spaceId, type.toString(), "newspace");
+			notifyspace("newspace", spaceId, type.toString(), null, properties, parent.getId(), null);
 			
 			// Save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
@@ -217,7 +221,8 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 		if (!spaceObjectsMap.containsKey(spaceId)) {
 			Space newspace = new Space(spaceId, type, tags, properties, parent);
 			spaceObjectsMap.put(spaceId, newspace);
-			notifyspace(spaceId, type.toString(), "newspace");
+			notifyspace("newspace", spaceId, type.toString(), tags, properties, parent.getId(), null);
+			
 			
 			// Save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
@@ -242,7 +247,11 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 		if (!spaceObjectsMap.containsKey(spaceId)) {
 			Space newspace = new Space(spaceId, type, tags, properties, parent, children);
 			spaceObjectsMap.put(spaceId, newspace);
-			notifyspace(spaceId, type.toString(), "newspace");
+			ArrayList<String> childrenId =  new ArrayList<String>();
+			for(Space child : children) {
+				childrenId.add(child.getId());
+			}
+			notifyspace("newspace", spaceId, type.toString(), tags, properties, parent.getId(), childrenId);
 			
 			// Save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
@@ -272,7 +281,7 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 			}
 			parent.removeChild(space);
 			spaceObjectsMap.remove(space.getId());
-			notifyspace(space.getId(), space.getType().toString(), "removespace");
+			notifyspace("removespace", space.getId(), space.getType().toString(), null, null, null, null);
 		
 			// save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -300,7 +309,7 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 			Space oldParent = space.getParent();
 			space.setParent(newParent);
 			
-			notifyspace(space.getId(), newParent.getId(), "movespace");
+			notifyspace("movespace", space.getId(), space.getType().toString(), null, null, newParent.getId(), null);
 			
 			// save in data base
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -494,20 +503,48 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 	}
 	
 	@Override
-	public void updateSpace(JSONObject update) {
-		// TODO Auto-generated method stub
-		logger.debug("updateSpace method of the SpaceManager not implemented yet");
+	public void spaceUpdated(JSONObject update) {
+		try {
+			Space space = getSpace(update.getString("spaceId"));
+
+			ArrayList<String> tags = null;
+			HashMap<String, String> prop = null;
+			String parentId = null;
+			ArrayList<String> childrenIds = null;
+
+			if (update.has("tags")) {
+				tags = space.getTags();
+			}
+
+			if (update.has("properties")) {
+				prop = space.getProperties();
+			}
+
+			if (update.has("parentId")) {
+				parentId = space.getParent().getId();
+			}
+
+			if (update.has("childrenIds")) {
+				childrenIds = new ArrayList<String>();
+				for (Space child : space.getChildren()) {
+					childrenIds.add(child.getId());
+				}
+			}
+
+			notifyspace(update.getString("reason"), space.getId(), space.getType().toString(),
+					tags, prop, parentId, childrenIds);
+		} catch (JSONException jsonex) {
+			jsonex.printStackTrace();
+		}
+
 	}
 
 	/**
 	 * Use to notify that new space has been created or has changed
-	 * 
-	 * @param spaceId the space identifier
-	 * @param spaceName the user name of this space
-	 * @param type indicate if this notification is a space creation (0) or an update (1)
 	 */
-	private void notifyspace(String spaceId, String spaceName, String type) {
-		notifyChanged(new SpaceManagerNotification(spaceId, spaceName, type));
+	private void notifyspace(String reason, String spaceId, String type, ArrayList<String> tags,
+			HashMap<String, String> properties, String parentId, ArrayList<String> childrenIds) {
+		notifyChanged(new SpaceManagerNotification(reason, spaceId, type, tags, properties, parentId, childrenIds));
 	}
 	
 	/**
@@ -516,7 +553,6 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 	 * @return nothing it just notify ApAM.
 	 */
 	public NotificationMsg notifyChanged (NotificationMsg notif) {
-		logger.debug("space Notify: "+ notif);
 		return notif;
 	}
 	

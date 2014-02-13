@@ -383,6 +383,8 @@ public class Space {
 		JSONObject obj = new JSONObject();
 		try {
 			obj.put("id", id);
+			obj.put("type", type.toString());
+			
 			if(parent != null) {
 				obj.put("parent", parent.getId());
 			}else {

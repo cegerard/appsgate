@@ -328,6 +328,34 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
+		/**
+ 		 * Get a device
+ 		 */
+		this.getDevice = function (deviceId)
+		{
+			var call = eval({"method":"getDevice", "args":[{"type":"String", "value":deviceId}], "callId":"cf-getdevice"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Get a device
+ 		 */
+		this.getDeviceByType = function (type)
+		{
+			var call = eval({"method":"getDevices", "args":[{"type":"String", "value":type}], "callId":"cf-getdevicesbytype"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+ 		 * Get devices of specifics types in
+ 		 * specifoed spaces
+ 		 */
+		this.getDevicesInSpaces = function (typeList, spaces)
+		{
+			var call = eval({"method":"getDevicesInSpaces", "args":[{"type":"JSONArray", "value":typeList}, {"type":"JSONArray", "value":spaces}], "callId":"cf-getdevicesinspaces"});
+			websocket.send(JSON.stringify(call));
+		}
+		
 		/********
 		 Device name management
 		 			   ********/
@@ -403,6 +431,24 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		}
 		
 		/**
+		 * Get json spaces as a tree
+		 */
+		this.getJSONTreeSpaces = function ()
+		{
+			var call = eval({"method":"getTreeDescription", "args":[], "callId":"cf-gettreespaces"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+		 * Get json spaces as a tree
+		 */
+		this.getJSONSubTreeSpaces = function (nodeId)
+		{
+			var call = eval({"method":"getTreeDescription", "args":[{"type":"String", "value":nodeId}], "callId":"cf-getsubtreespaces"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
  		 * Get space by name
  		 */
 		this.getSpacesByName = function (name)
@@ -448,25 +494,24 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		}
 		
 		/**
- 		 * add new space
+ 		 * Add new space
  		 */
-		this.addSpace = function (name, category, parent)
+		this.newSpace = function (type, parent)
 		{
-			var place = eval({"name":name, "category":category, "parent":parent });
-			var call = eval({"method":"newSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-addspace"});
+			var place = eval({"type":category, "parent":parent });
+			var call = eval({"method":"newSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-newspace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * rename an existing space
- 		 */
-		this.renameSpace = function (id, name)
+		 * Update an existing space
+		 */
+		this.updateSpace = function (data)
 		{
-			var place = eval({"id":id, "name":name});
-			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-renamespace"});
+			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(data)}], "callId":"cf-updatespace"});
 			websocket.send(JSON.stringify(call));
 		}
-		
+
 		/**
  		 * Move an existing space
  		 */
@@ -587,41 +632,41 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
-		/**
- 		 * Get user complete inforamtion
- 		 */
-		this.getUserFullDetails = function (login)
-		{
-			var call = eval({"method":"getUserFullDetails", "args":[{"type":"String", "value":login}], "callId":"cf-getUserfulldetails"});
-			websocket.send(JSON.stringify(call));
-		}
+//		/**
+// 		 * Get user complete inforamtion
+// 		 */
+//		this.getUserFullDetails = function (login)
+//		{
+//			var call = eval({"method":"getUserFullDetails", "args":[{"type":"String", "value":login}], "callId":"cf-getUserfulldetails"});
+//			websocket.send(JSON.stringify(call));
+//		}
 		
 		/**
  		 * Check the unicity of a login
  		 */
-		this.checkIfIdIsFree = function (login)
+		this.checkIfLoginIsFree = function (login)
 		{
-			var call = eval({"method":"checkIfIdIsFree", "args":[{"type":"String", "value":login}], "callId":"cf-checkforfreelogin"});
+			var call = eval({"method":"checkIfLoginIsFree", "args":[{"type":"String", "value":login}], "callId":"cf-checkforfreelogin"});
 			websocket.send(JSON.stringify(call));
 		}
 		
-		/**
-		 * Associate a device id user
-		 */
-		this.associateDevice = function (login, psw, objId)
-		{
-			var call = eval({"method":"associateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-associatedevice"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
-		 * Associate a device id user
-		 */
-		this.separateDevice = function (login, psw, objId)
-		{
-			var call = eval({"method":"separateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-separatedevice"});
-			websocket.send(JSON.stringify(call));
-		}
+//		/**
+//		 * Associate a device id user
+//		 */
+//		this.associateDevice = function (login, psw, objId)
+//		{
+//			var call = eval({"method":"associateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-associatedevice"});
+//			websocket.send(JSON.stringify(call));
+//		}
+//		
+//		/**
+//		 * Associate a device id user
+//		 */
+//		this.separateDevice = function (login, psw, objId)
+//		{
+//			var call = eval({"method":"separateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-separatedevice"});
+//			websocket.send(JSON.stringify(call));
+//		}
 		
 		/********
 		 Programs management

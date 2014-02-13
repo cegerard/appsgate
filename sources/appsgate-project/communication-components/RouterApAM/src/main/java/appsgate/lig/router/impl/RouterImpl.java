@@ -90,6 +90,7 @@ public class RouterImpl implements RouterApAMSpec {
 		//notify that a new object appeared
 		CoreObjectSpec newObj = (CoreObjectSpec)inst.getServiceObject();
 		sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
+		appsgate.addNewDeviceSpace(getObjectDescription(newObj, ""));
 	}
 
 	/**
@@ -100,11 +101,13 @@ public class RouterImpl implements RouterApAMSpec {
 	 */
 	public void removedAbstractObject(Instance inst) {
 		logger.debug("Abstract device removed: " + inst.getName());
+		String deviceId = inst.getProperty("deviceId");
 		JSONObject obj = new JSONObject();
 		try {
-			obj.put("objectId", inst.getProperty("deviceId"));
+			obj.put("objectId", deviceId);
 		} catch (JSONException e) {e.printStackTrace();}
 		sendToClientService.send("removeDevice",  obj);
+		appsgate.removeDeviceSpace(deviceId, inst.getProperty("userType"));
 	}
 
 	/**
@@ -269,8 +272,10 @@ public class RouterImpl implements RouterApAMSpec {
 		try {
 			//Get object auto description
 			JSONDescription = obj.getDescription();
+			//WE DONT FILL THE DESCRITPION AUTOMATICALLY WITH CONTEXUAL DATA
+			//CLIENT SOFTWARE HAVE TO GET IT BY THEIR OWN MEANS
 			//Add context description for this abject
-			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
+			//JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
 			//JSONDescription.put("placeId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
 			//TODO put the contextual neighborhood of each device
 		} catch (JSONException e) {

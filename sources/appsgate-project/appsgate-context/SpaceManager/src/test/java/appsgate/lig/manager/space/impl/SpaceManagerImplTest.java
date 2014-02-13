@@ -1,4 +1,4 @@
-package appsgate.lig.manager.place.impl;
+package appsgate.lig.manager.space.impl;
 
 import static org.junit.Assert.*;
 

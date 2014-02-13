@@ -153,43 +153,8 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		try {
 			logger.debug("Event message receive, " + notif.JSONize());
 			JSONObject event = notif.JSONize();
-
-			if(event.has("newDevice")){
-				Space deviceRoot = spaceManager.getDeviceRoot(spaceManager.getCurrentHabitat());
-
-				String categoryName;
-				String type  = event.getString("type");
-				if(type.contentEquals("0")) {
-					categoryName = "temperature";
-				} else if(type.contentEquals("1")) {
-					categoryName = "illumination";
-				} else if(type.contentEquals("2")) {
-					categoryName = "switch";
-				} else if(type.contentEquals("3")) {
-					categoryName = "contact";
-				} else if(type.contentEquals("4")) {
-					categoryName = "keycard";
-				} else if(type.contentEquals("5")) {
-					categoryName = "occupancy";
-				} else if(type.contentEquals("6")) {
-					categoryName = "Smart plug";
-				} else if(type.contentEquals("7")) {
-					categoryName = "colored light";
-				} else if(type.contentEquals("8")) {
-					categoryName = "on/off actuator";
-				} else if(type.contentEquals("9")) {
-					categoryName = "CO2";
-				}else {
-					logger.debug("device type not supported for context now");
-					return;
-				}
-				//TODO add category for device and add device in the correct category
 				
-			}else if(event.has("removeDevice")){
-				event.getString("id");
-				event.getString("type");
-				//TODO manage to find all space related to this device and delete them
-			} else if(!event.has("objectId")) {
+			if(!event.has("objectId")) {
 				return;
 			}
 				
