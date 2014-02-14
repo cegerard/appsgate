@@ -19,6 +19,7 @@ import appsgate.lig.manager.space.messages.SpaceManagerNotification;
 import appsgate.lig.manager.space.spec.SpaceManagerSpec;
 import appsgate.lig.manager.space.spec.Space;
 import appsgate.lig.manager.space.spec.Space.TYPE;
+import appsgate.lig.manager.space.spec.subSpace.UserSpace;
 
 /**
  * This ApAM component is used to maintain space information for any object
@@ -119,7 +120,12 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 //						tempChildrenMap.put(spaceId, childIdList);
 //					}
 					
-					Space loc = new Space(spaceId, TYPE.valueOf(type), tagsList, propertiesList, spaceObjectsMap.get(parentId));
+					Space loc;
+					if(type.contentEquals(TYPE.USER.toString())) {
+						loc = new UserSpace(spaceId, tagsList, propertiesList, spaceObjectsMap.get(parentId), jsonspace.getString("hashPSWD") );
+					}else {
+						loc = new Space(spaceId, TYPE.valueOf(type), tagsList, propertiesList, spaceObjectsMap.get(parentId));
+					}
 
 					spaceObjectsMap.put(spaceId, loc);
 					i++;
@@ -263,6 +269,86 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 			}
 
 			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), propertiesSpace)) {
+				return spaceId;
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public String addUserSpace(Space parent, String pwsd) {
+		String spaceId = String.valueOf(new Double(Math.random()).hashCode());
+		if (!spaceObjectsMap.containsKey(spaceId)) {
+			UserSpace newspace = new UserSpace(spaceId, parent, pwsd);
+			spaceObjectsMap.put(spaceId, newspace);
+			notifyspace("newspace", spaceId, TYPE.USER.toString(), null, null, parent.getId(), null);
+			
+			// Save the new devices name table 
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+			
+			Set<String> keys = spaceObjectsMap.keySet();
+			for(String e : keys) {
+				Space sl = spaceObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}
+
+			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, TYPE.USER.toString(), properties)) {
+				return spaceId;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String addUserSpace(HashMap<String, String> properties,
+			Space parent, String pwd) {
+		String spaceId = String.valueOf(new Double(Math.random()).hashCode());
+		if (!spaceObjectsMap.containsKey(spaceId)) {
+			UserSpace newspace = new UserSpace(spaceId, properties, parent, pwd);
+			spaceObjectsMap.put(spaceId, newspace);
+			notifyspace("newspace", spaceId, TYPE.USER.toString(), null, properties, parent.getId(), null);
+			
+			// Save the new devices name table 
+			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
+			
+			Set<String> keys = spaceObjectsMap.keySet();
+			for(String e : keys) {
+				Space sl = spaceObjectsMap.get(e);
+				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}
+
+			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, TYPE.USER.toString(), propertiesSpace)) {
+				return spaceId;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String addUserSpace(ArrayList<String> tags,
+			HashMap<String, String> properties, Space parent,
+			ArrayList<Space> children, String pwd) {
+		
+		String spaceId = String.valueOf(new Double(Math.random()).hashCode());
+		if (!spaceObjectsMap.containsKey(spaceId)) {
+			UserSpace newspace = new UserSpace(spaceId, tags, properties, parent, children, pwd);
+			spaceObjectsMap.put(spaceId, newspace);
+			ArrayList<String> childrenId =  new ArrayList<String>();
+			for(Space child : children) {
+				childrenId.add(child.getId());
+			}
+			notifyspace("newspace", spaceId, TYPE.USER.toString(), tags, properties, parent.getId(), childrenId);
+			
+			// Save the new devices name table 
+			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
+			
+			Set<String> keys = spaceObjectsMap.keySet();
+			for(String e : keys) {
+				Space sl = spaceObjectsMap.get(e);
+				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}
+
+			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, TYPE.USER.toString(), propertiesSpace)) {
 				return spaceId;
 			}
 		}
@@ -565,5 +651,6 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 		this.contextHistory_pull = pull;
 		this.contextHistory_push = push;
 	}
+
 
 }

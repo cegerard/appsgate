@@ -23,6 +23,16 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mindrot</groupId>
+			<artifactId>jbcrypt</artifactId>
+			<version>0.3m</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.imag.adele.apam</groupId>
+			<artifactId>apam-core</artifactId>
+			<version>${apam.current.version}</version>
+		</dependency>
 	</dependencies>
 
 
@@ -36,6 +46,10 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Export-Package>
+							appsgate.lig.manager.*,
+							org.mindrot.jbcrypt
+						</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

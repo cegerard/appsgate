@@ -53,6 +53,40 @@ public interface SpaceManagerSpec {
 	 */
 	public String addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties, Space parent, ArrayList<Space> children);
 	
+	/***********************************/
+	/**	BEGIN User Space dedicated API */
+	/***********************************/
+	/**
+	 * Add a new user space to the hash map.
+	 * @param parent the parent id of this space, or null if this space is a root
+	 * @param pwd the user password
+	 * @return the id of the new space null otherwise.
+	 */
+	public String addUserSpace(Space parent, String pwsd);
+	
+	/**
+	 * Add a new space to the hash map.
+	 * @param properties the properties list to associated to this space
+	 * @param parent the parent id of this space, or null if this space is a root
+	 * @param pwd the user password
+	 * @return the id of the new space null otherwise.
+	 */
+	public String addUserSpace(HashMap<String, String> properties, Space parent, String pwd);
+	
+	/**
+	 * Add a complete space
+	 * @param tags the tags list to associated to this space
+	 * @param properties the properties list to associated to this space
+	 * @param parent the parent space for this space, or null if it is a root
+	 * @param children the sub-spaces list
+	 * @param the password of the user
+	 * @return the id of the new space null otherwise.
+	 */
+	public String addUserSpace(ArrayList<String> tags, HashMap<String, String> properties, Space parent, ArrayList<Space> children, String pwd);
+	
+	/*********************************/
+	/**	END User Space dedicated API */
+	/*********************************/
 	
 	/**
 	 * Remove a space and all its children
