@@ -54,7 +54,7 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 	/**
 	 * Field to handle the space manager API
 	 */
-	private ContextManagerSpec spaceManager;
+	private ContextManagerSpec contextManager;
 
 	/**
 	 * Called by APAM when an instance of this implementation is created

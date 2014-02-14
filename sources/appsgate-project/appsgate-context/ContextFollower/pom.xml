@@ -34,7 +34,7 @@
 		</dependency>
 				<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>SpaceManagerSpec</artifactId>
+			<artifactId>ContextManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
     </dependencies>
