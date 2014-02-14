@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -58,4 +59,10 @@ public class NodeFunctionDefinitionTest extends NodeTest {
         assertNotNull(this.node.getCode(instance));
     }
 
+    @Test
+    @Override
+    public void testCall() throws Exception {
+        JSONObject call = this.instance.call();
+        Assert.assertNotNull(call);
+    }
 }

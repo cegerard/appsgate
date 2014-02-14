@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import java.util.Collection;
+import junit.framework.Assert;
 import org.json.JSONObject;
 import org.junit.Before;
 import static org.junit.Assert.*;
@@ -47,4 +48,14 @@ public class NodeActionTest extends NodeTest {
         assertEquals(expResult, result);
     }
 
+    @Test
+    @Override
+        public void testCall() throws Exception {
+        printTestName("call");
+        JSONObject expResult = null;
+        JSONObject result = this.instance.call();
+        assertEquals(expResult, result);
+        Assert.assertFalse("Simple action can not be stopped, so once the action is done, it is stopped", this.instance.isStarted());
+
+        }
 }

@@ -40,6 +40,8 @@ public class NodeKeepStateTest extends NodeTest {
                 will(returnValue(c));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
                 then(tested.is("listening"));
+                allowing(mediator).removeNodeListening(with(any(NodeEvent.class)));
+                then(tested.is("no"));
             }
         });
         NodeStateTest s = new NodeStateTest();
@@ -67,7 +69,6 @@ public class NodeKeepStateTest extends NodeTest {
         n.endEventFired(new EndEvent(n.state));
         n.endEventFired(new EndEvent(n.state));
         synchroniser.waitUntil(tested.is("listening"), 200);
-        tested.become("no");
         n.stop();
         synchroniser.waitUntil(tested.is("no"), 200);
         n.call();

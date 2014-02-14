@@ -139,7 +139,7 @@ public class NodeFunctionDefinition extends Node {
     @Override
     public JSONObject call() {
         LOGGER.warn("Trying to call a non functional node");
-        return null;
+        return getJSONDescription();
     }
 
 }

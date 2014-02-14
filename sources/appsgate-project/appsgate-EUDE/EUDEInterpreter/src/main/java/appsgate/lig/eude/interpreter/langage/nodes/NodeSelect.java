@@ -6,7 +6,6 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import appsgate.lig.main.spec.AppsGateSpec;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,6 +93,7 @@ public class NodeSelect extends Node {
 
     @Override
     public JSONObject call() {
+        setStarted(true);
         EUDEMediator mediator;
         try {
             mediator = getMediator();

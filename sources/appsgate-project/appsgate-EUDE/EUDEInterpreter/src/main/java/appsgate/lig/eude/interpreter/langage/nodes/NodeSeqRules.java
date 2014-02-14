@@ -8,6 +8,7 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.Iterator;
 import java.util.List;
@@ -83,8 +84,6 @@ public class NodeSeqRules extends Node {
                 throw new SpokNodeException("NodeSeqRules", "item " + i, ex);
             }
         }
-        iterator = instructions.iterator();
-
     }
 
     @Override
@@ -96,11 +95,9 @@ public class NodeSeqRules extends Node {
         if (!instructions.isEmpty()) {
             launchNextSeqAndRules();
         } else {
-            LOGGER.warn("Trying to call a seq rule on an empty sequence");
-            setStarted(false);
-            fireEndEvent(new EndEvent(this));
+            SpokExecutionException ex = new SpokExecutionException("There is no instructions to execute");
+            return ex.getJSONDescription();
         }
-
         return null;
     }
 

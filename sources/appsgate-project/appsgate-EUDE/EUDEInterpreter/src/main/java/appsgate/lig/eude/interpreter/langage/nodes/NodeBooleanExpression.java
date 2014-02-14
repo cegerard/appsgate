@@ -107,6 +107,7 @@ public class NodeBooleanExpression extends Node {
 
     @Override
     public JSONObject call() {
+        setStarted(true);
         if (left != null) {
             left.call();
             left.addEndEventListener(this);

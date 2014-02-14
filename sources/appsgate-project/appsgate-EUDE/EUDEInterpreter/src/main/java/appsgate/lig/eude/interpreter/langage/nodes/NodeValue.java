@@ -7,7 +7,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,6 +90,7 @@ public class NodeValue extends Node {
 
     @Override
     public JSONObject call() {
+        setStarted(true);
         fireEndEvent(new EndEvent(this));
         return null;
     }

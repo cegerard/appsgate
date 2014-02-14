@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,5 +37,15 @@ public class NodeSeqRulesTest extends NodeTest {
         Assert.assertNotNull(seq);
         System.out.println(seq.getExpertProgramScript());
         seq.call();
+    }
+
+    @Test
+    @Override
+    public void testCall() throws Exception {
+        printTestName("call");
+        JSONObject result = this.instance.call();
+        Assert.assertNotNull(result);
+        junit.framework.Assert.assertTrue("supposed to be started", this.instance.isStarted());
+
     }
 }

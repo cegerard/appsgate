@@ -60,6 +60,7 @@ public class NodeKeepState extends Node {
 
     @Override
     public JSONObject call() {
+        setStarted(true);
         if (!state.isOnRules()) {
             setter.call();
         }

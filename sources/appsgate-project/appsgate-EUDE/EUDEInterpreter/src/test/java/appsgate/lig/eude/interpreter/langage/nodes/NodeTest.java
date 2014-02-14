@@ -94,6 +94,7 @@ public abstract class NodeTest {
         JSONObject expResult = null;
         JSONObject result = this.instance.call();
         assertEquals(expResult, result);
+        Assert.assertTrue("supposed to be started", this.instance.isStarted());
     }
 
     /**

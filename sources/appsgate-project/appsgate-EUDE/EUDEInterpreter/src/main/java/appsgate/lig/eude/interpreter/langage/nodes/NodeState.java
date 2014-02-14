@@ -92,6 +92,7 @@ class NodeState extends Node {
 
     @Override
     public JSONObject call() {
+        setStarted(true);
         try {
             buildEventsList();
         } catch (SpokExecutionException ex) {

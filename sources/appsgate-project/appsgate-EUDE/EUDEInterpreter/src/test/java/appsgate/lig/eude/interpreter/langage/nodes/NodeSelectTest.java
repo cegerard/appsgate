@@ -1,14 +1,11 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONArray;
 import org.json.JSONException;
-import static org.junit.Assert.fail;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  *
