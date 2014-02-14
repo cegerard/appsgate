@@ -17,9 +17,9 @@ import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.manager.space.spec.Space;
-import appsgate.lig.manager.space.spec.SpaceManagerSpec;
-import appsgate.lig.manager.space.spec.Space.TYPE;
+import appsgate.lig.manager.context.spec.ContextManagerSpec;
+import appsgate.lig.manager.space.spec.subSpace.Space;
+import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
 
 /**
  * This class is use to allow other components to subscribe for specific
@@ -54,7 +54,7 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 	/**
 	 * Field to handle the space manager API
 	 */
-	private SpaceManagerSpec spaceManager;
+	private ContextManagerSpec spaceManager;
 
 	/**
 	 * Called by APAM when an instance of this implementation is created

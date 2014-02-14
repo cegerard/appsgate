@@ -34,10 +34,10 @@ import appsgate.lig.main.impl.upnp.StateVariableServerIP;
 import appsgate.lig.main.impl.upnp.StateVariableServerURL;
 import appsgate.lig.main.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.main.spec.AppsGateSpec;
-import appsgate.lig.manager.space.spec.Space;
-import appsgate.lig.manager.space.spec.Space.TYPE;
-import appsgate.lig.manager.space.spec.SpaceManagerSpec;
+import appsgate.lig.manager.context.spec.ContextManagerSpec;
+import appsgate.lig.manager.space.spec.subSpace.Space;
 import appsgate.lig.manager.space.spec.subSpace.UserSpace;
+import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
 
@@ -71,7 +71,7 @@ public class Appsgate implements AppsGateSpec {
 	/**
 	 * The place manager ApAM component to handle the space manager service reference
 	 */
-	private SpaceManagerSpec spaceManager;
+	private ContextManagerSpec spaceManager;
 
 	/**
 	 * Reference on the AppsGate Router to execute command on devices
