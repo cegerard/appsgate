@@ -2,9 +2,6 @@ package appsgate.lig.manager.space.spec.subSpace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,10 +28,10 @@ public class UserSpace extends Space {
 	 */
 	private static Logger logger = LoggerFactory.getLogger(UserSpace.class);
 	
-	/**
-	 * Executor use to manage user service account instantiation
-	 */
-	private ScheduledExecutorService instanciationService;
+//	/**
+//	 * Executor use to manage user service account instantiation
+//	 */
+//	private ScheduledExecutorService instanciationService;
 
 
 	/**
@@ -58,7 +55,7 @@ public class UserSpace extends Space {
 	 */
 	public UserSpace(String id, ArrayList<String> tags, HashMap<String, String> properties, Space parent, ArrayList<Space> children, String pswd) {
 		super(id, TYPE.USER, tags, properties, parent, children);
-		this.instanciationService = Executors.newScheduledThreadPool(1);
+		//this.instanciationService = Executors.newScheduledThreadPool(1);
 		this.hashPSWD = BCrypt.hashpw(pswd, BCrypt.gensalt(11));
 	}
 
@@ -71,7 +68,7 @@ public class UserSpace extends Space {
 	 */
 	public UserSpace(String id, HashMap<String, String> properties, Space parent, String pswd) {
 		super(id, TYPE.USER, properties, parent);
-		this.instanciationService = Executors.newScheduledThreadPool(1);
+		//this.instanciationService = Executors.newScheduledThreadPool(1);
 		this.hashPSWD = BCrypt.hashpw(pswd, BCrypt.gensalt(11));
 	}
 
@@ -83,7 +80,7 @@ public class UserSpace extends Space {
 	 */
 	public UserSpace(String id, Space parent, String pswd) {
 		super(id, TYPE.USER, parent);
-		this.instanciationService = Executors.newScheduledThreadPool(1);
+		//this.instanciationService = Executors.newScheduledThreadPool(1);
 		this.hashPSWD = BCrypt.hashpw(pswd, BCrypt.gensalt(11));
 	}
 	
@@ -98,7 +95,7 @@ public class UserSpace extends Space {
 	 */
 	public UserSpace(String id, ArrayList<String> tags, HashMap<String, String> properties, Space parent, String hashPwd) {
 		super(id, TYPE.USER, tags, properties, parent);
-		this.instanciationService = Executors.newScheduledThreadPool(1);
+		//this.instanciationService = Executors.newScheduledThreadPool(1);
 		this.hashPSWD = hashPwd;
 		
 	}
@@ -159,7 +156,7 @@ public class UserSpace extends Space {
 			JSONObject saAccountSynchDetails = accountDetails.getJSONObject("details");
 		
 			ServiceAccount sa = new ServiceAccount(saLogin, saPswd, saService, saAccountSynchDetails); 
-	
+				
 			return serviceAccountList.add(sa);
 			
 		} catch (JSONException e) {e.printStackTrace();}
@@ -204,45 +201,63 @@ public class UserSpace extends Space {
 		return false;
 	}
 	
-	
 	/**
-	 * Inner class for user account instanciation thread
-	 * @author Cédric Gérard
-	 * @since Septembre 10, 2013
-	 * @version 1.0.0
+	 * Instantiate a service account to a coreObject
+	 * @param account the JSONObject description of the service account
 	 */
-	private class accountInstanciation implements Runnable {
+	public void instanciateAccount (JSONObject account) {
+		try {
 
-		JSONArray accounts;
-		
-		public accountInstanciation(JSONArray accounts) {
-			super();
-			this.accounts = accounts;
-			logger.info("user account instanciation service ready.");
-		}
+			String login = account.getString("login");
+			String hashPswd = account.getString("hasPSWD");
+			String service = account.getString("service");
+			JSONObject accountSynchDetails = account.getJSONObject("synchDetails");
+			
+			ServiceAccount sa = new ServiceAccount(login, hashPswd, service, accountSynchDetails);
+			serviceAccountList.add(sa);
 
-		public void run() {
-			JSONObject acc;
-			ServiceAccount sa;
-			int size = accounts.length();
-			int i=0;
-			while (i<size){
-				try {
-					acc = accounts.getJSONObject(i);
-
-					String login = acc.getString("login");
-					String hashPswd = acc.getString("hasPSWD");
-					String service = acc.getString("service");
-					JSONObject accountSynchDetails = acc.getJSONObject("synchDetails");
-				
-					sa = new ServiceAccount(login, hashPswd, service, accountSynchDetails);
-					serviceAccountList.add(sa);
-					i++;
-					
-				} catch (JSONException e) {logger.error(e.getMessage());}
-			}
-		}
-		
-		
+			} catch (JSONException e) {logger.error(e.getMessage());}
 	}
+	
+	
+//	/**
+//	 * Inner class for user account instantiation thread
+//	 * @author Cédric Gérard
+//	 * @since September 10, 2013
+//	 * @version 1.0.0
+//	 */
+//	private class accountInstanciation implements Runnable {
+//
+//		JSONArray accounts;
+//		
+//		public accountInstanciation(JSONArray accounts) {
+//			super();
+//			this.accounts = accounts;
+//			logger.info("user account instanciation service ready.");
+//		}
+//
+//		public void run() {
+//			JSONObject acc;
+//			ServiceAccount sa;
+//			int size = accounts.length();
+//			int i=0;
+//			while (i<size){
+//				try {
+//					acc = accounts.getJSONObject(i);
+//
+//					String login = acc.getString("login");
+//					String hashPswd = acc.getString("hasPSWD");
+//					String service = acc.getString("service");
+//					JSONObject accountSynchDetails = acc.getJSONObject("synchDetails");
+//				
+//					sa = new ServiceAccount(login, hashPswd, service, accountSynchDetails);
+//					serviceAccountList.add(sa);
+//					i++;
+//					
+//				} catch (JSONException e) {logger.error(e.getMessage());}
+//			}
+//		}
+//		
+//	}
+	
 }

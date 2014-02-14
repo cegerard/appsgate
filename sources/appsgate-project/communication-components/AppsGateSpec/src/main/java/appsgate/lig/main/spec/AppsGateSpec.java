@@ -235,12 +235,9 @@ public interface AppsGateSpec {
 	 * Create a new end user
 	 * @param login the user identifier
 	 * @param password the user password
-	 * @param lastName the user last name
-	 * @param firstName the user first name
-	 * @param role the user role
 	 * @return the user space id
 	 */
-	public String createUser(String login, String password, String lastName, String firstName, String role);
+	public String createUser(String login, String password);
 	
 	/**
 	 * Delete an existing end user
@@ -257,13 +254,6 @@ public interface AppsGateSpec {
 	 */
 	public JSONObject getUserDetails(String id);
 	
-//	/**
-//	 * Get all information on a specify user
-//	 * @param id the identifier of the user
-//	 * @return user information as a JSONObject
-//	 */
-//	public JSONObject getUserFullDetails(String id);
-	
 	/**
 	 * Check if the wanted identifier already existing.
 	 * @param id the identifier to check
@@ -271,41 +261,24 @@ public interface AppsGateSpec {
 	 */
 	public boolean checkIfLoginIsFree(String id);
 	
-//	/**
-//	 * Synchronize a web service account with an end user profile
-//	 * @param id the end user identifier
-//	 * @param password the end user password
-//	 * @param accountDetails all service account needed to be connected
-//	 * @return true if the service account has been synchronized, false otherwise
-//	 */
-//	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails);
-//	
-//	/**
-//	 * delete service account synchronization
-//	 * @param id the end user identifier
-//	 * @param password the end user password
-//	 * @param accountDetails all information needed to removed connection
-//	 * @return true it the synchronization has been canceled, false otherwise.
-//	 */
-//	public boolean desynchronizedAccount(String id, String password, JSONObject accountDetails);
-//	
-//	/**
-//	 * Associate a device to an end user
-//	 * @param id the end user identifier
-//	 * @param password the end user password
-//	 * @param deviceId the device identifier
-//	 * @return true if the association has been completed, false otherwise
-//	 */
-//	public boolean associateDevice(String id, String password, String deviceId);
-//	
-//	/**
-//	 * Remove end user and device association
-//	 * @param id the end user identifier
-//	 * @param password the end user password
-//	 * @param deviceId the device identifier
-//	 * @return true if the association has been deleted, false otherwise
-//	 */
-//	public boolean separateDevice(String id, String password, String deviceId);
+	/**
+	 * Synchronize a web service account with an end user profile
+	 * @param id the end user identifier
+	 * @param password the end user password
+	 * @param accountDetails all service account needed to be connected
+	 * @return true if the service account has been synchronized, false otherwise
+	 */
+	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails);
+	
+	/**
+	 * delete service account synchronization
+	 * @param id the end user identifier
+	 * @param password the end user password
+	 * @param accountDetails all information needed to removed connection
+	 * @return true it the synchronization has been canceled, false otherwise.
+	 */
+	public boolean desynchronizeAccount(String id, String password, JSONObject accountDetails);
+
 	
 	/************************************/
 	/**   End User programs management  */

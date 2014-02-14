@@ -37,6 +37,7 @@ import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.manager.space.spec.Space;
 import appsgate.lig.manager.space.spec.Space.TYPE;
 import appsgate.lig.manager.space.spec.SpaceManagerSpec;
+import appsgate.lig.manager.space.spec.subSpace.UserSpace;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
 
@@ -661,26 +662,27 @@ public class Appsgate implements AppsGateSpec {
 	}
 
 	@Override
-	public String createUser(String login, String password, String lastName,
-			String firstName, String role) {
+	public String createUser(String login, String password) {
 		
 		HashMap<String, String> properties = new HashMap<String, String>();
 		properties.put("login", login);
 		properties.put("name", login);
-		properties.put("password", password);
-		properties.put("lastname", lastName);
-		properties.put("firsname", firstName);
-		properties.put("role", role);
 		
-		return spaceManager.addSpace(TYPE.USER, properties, spaceManager.getUserRoot());
+		return spaceManager.addUserSpace(properties, spaceManager.getUserRoot(), password);
 	}
 
 	@Override
 	public boolean deleteUser(String id, String password) {
-		Space userSpace = spaceManager.getSpace(id);
-		//TODO manage to authenticate the user with the password value
-		// see the former user base to authenticate
-		return spaceManager.removeSpace(userSpace);
+		Space space = spaceManager.getSpace(id);
+		if(space instanceof UserSpace) {
+			UserSpace userSpace = (UserSpace)space;
+			if(userSpace.authenticate(password)) {
+				return spaceManager.removeSpace(userSpace);
+			}
+			logger.error("Incorrect password !");
+		}
+		logger.info("user deletion failed, maybe wrong identifier or password.");
+		return false;
 	}
 
 	@Override
@@ -689,47 +691,38 @@ public class Appsgate implements AppsGateSpec {
 		return userSpace.getDescription();
 	}
 
-//	@Override
-//	public JSONObject getUserFullDetails(String id) {
-//		JSONObject obj = new JSONObject();
-//
-//		try {
-//			obj.put("user", userManager.getUserDetails(id));
-//			obj.put("devices", userManager.getAssociatedDevices(id));
-//			obj.put("accounts", userManager.getAccountsDetails(id));
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return obj;
-//	}
-
 	@Override
 	public boolean checkIfLoginIsFree(String login) {
 		return spaceManager.getSpacesWithName(login).isEmpty();
 	}
 
-//	@Override
-//	public boolean synchronizeAccount(String id, String password,
-//			JSONObject accountDetails) {
-//		return userManager.addAccount(id, password, accountDetails);
-//	}
-//
-//	@Override
-//	public boolean desynchronizedAccount(String id, String password,
-//			JSONObject accountDetails) {
-//		return userManager.removeAccount(id, password, accountDetails);
-//	}
-//
-//	@Override
-//	public boolean associateDevice(String id, String password, String deviceId) {
-//		return userManager.addDevice(id, password, deviceId);
-//	}
-//
-//	@Override
-//	public boolean separateDevice(String id, String password, String deviceId) {
-//		return userManager.removeDevice(id, password, deviceId);
-//	}
+	@Override
+	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails) {
+		Space space = spaceManager.getSpace(id);
+		if(space instanceof UserSpace) {
+			UserSpace userSpace = (UserSpace)space;
+			if(userSpace.authenticate(password)) {
+				return userSpace.addAccount(accountDetails);
+			}
+			logger.error("Incorrect password !");
+		}
+		logger.info("account syncronization failed, maybe wrong identifier or password.");
+		return false;
+	}
+
+	@Override
+	public boolean desynchronizeAccount(String id, String password, JSONObject accountDetails) {
+		Space space = spaceManager.getSpace(id);
+		if(space instanceof UserSpace) {
+			UserSpace userSpace = (UserSpace)space;
+			if(userSpace.authenticate(password)) {
+				return userSpace.removeAccount(accountDetails);
+			}
+			logger.error("Incorrect password !");
+		}
+		logger.info("service account deletion failed, maybe wrong identifier or password.");
+		return false;
+	}
 
 	@Override
 	public boolean addProgram(JSONObject jsonProgram) {
@@ -807,7 +800,7 @@ public class Appsgate implements AppsGateSpec {
 			//Looking for the device space category
 			String type  = description.getString("type");
 			Space deviceCat = null;
-			for(Space child : deviceRoot.getChildren()) {
+			for(Space child : deviceRoot.getSubSpaces()) {
 				if(child.getType().equals(TYPE.CATEGORY) && child.getPropertyValue("deviceType").contentEquals(type)){
 					deviceCat = child;
 					break;

@@ -122,7 +122,15 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 					
 					Space loc;
 					if(type.contentEquals(TYPE.USER.toString())) {
-						loc = new UserSpace(spaceId, tagsList, propertiesList, spaceObjectsMap.get(parentId), jsonspace.getString("hashPSWD") );
+						loc = new UserSpace(spaceId, tagsList, propertiesList, spaceObjectsMap.get(parentId), jsonspace.getString("hashPSWD"));
+						UserSpace user = (UserSpace)loc;
+						JSONArray accounts = jsonspace.getJSONArray("accounts");
+						int nbAccount = accounts.length();
+						int accountCpt = 0;
+						while(accountCpt < nbAccount){
+							user.addAccount(accounts.getJSONObject(accountCpt));
+							accountCpt++;
+						}
 					}else {
 						loc = new Space(spaceId, TYPE.valueOf(type), tagsList, propertiesList, spaceObjectsMap.get(parentId));
 					}
@@ -357,15 +365,17 @@ public class SpaceManagerImpl implements SpaceManagerSpec {
 
 	@Override
 	public synchronized boolean removeSpace(Space space) {
-		Space parent = space.getParent();
 		
-		if(parent != null) {
+		if(!space.getType().equals(TYPE.ROOT) && !space.getType().equals(TYPE.CATEGORY)) {
+			Space parent = space.getParent();
 			@SuppressWarnings("unchecked")
 			ArrayList<Space> children = (ArrayList<Space>)space.getChildren().clone();
 			for(Space child : children) {
-				removeSpace(child);
+				child.setParent(parent);
 			}
-			parent.removeChild(space);
+			if(parent != null){
+				parent.removeChild(space);
+			}
 			spaceObjectsMap.remove(space.getId());
 			notifyspace("removespace", space.getId(), space.getType().toString(), null, null, null, null);
 		
