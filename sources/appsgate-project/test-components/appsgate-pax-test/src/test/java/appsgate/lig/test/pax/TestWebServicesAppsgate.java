@@ -26,6 +26,7 @@ import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.mail.Mail;
 import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
+import appsgate.lig.test.pax.helpers.PaxedDistribution.resolveFrom;
 import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 
 /**
@@ -76,24 +77,9 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 
 	}
 	
-	public static Object initTestClock() {	
-		
-		Implementation clockService = (Implementation) ApAMHelper
-				.waitForComponentByName(null, "ConfigurableClockImpl",
-						ApAMHelper.RESOLVE_TIMEOUT);
-
-		Assert.assertTrue("Specification should have been retrieved",
-				CST.componentBroker.getSpec("CoreClockSpec") != null);
-		Assert.assertTrue("Implementation should have been retrieved",
-				CST.componentBroker.getImpl("ConfigurableClockImpl") != null);
-
-		Instance inst = clockService.createInstance(null, null);
-		Assert.assertTrue("An instance should have been created", inst != null);
-
-		CoreClockSpec service = (CoreClockSpec) inst.getServiceObject();
-		Assert.assertNotNull("Clock service should not be null", service != null);
-		
-		return service;
+	public static Object initTestClock() {
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"CoreClockSpec",
+				"ConfigurableClockImpl", null);
 	}
 
 	long errorTolerance = 10;
@@ -117,6 +103,7 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	@Test
 	public void testYahooWeather() {
 		TestCoreAppsgate.testEmptyAppsgate();
+		logger.debug("This test creates and runs an instance of Yahoo Weather");
 		
 		CoreWeatherServiceSpec service = (CoreWeatherServiceSpec) initWeather();
 		
@@ -133,25 +120,8 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	}
 	
 	public static Object initWeather() {
-
-		logger.debug("This test creates and runs an instance of Yahoo Weather");
-		Implementation weatherService = (Implementation) ApAMHelper
-				.waitForComponentByName(null, "YahooWeatherImpl",
-						ApAMHelper.RESOLVE_TIMEOUT);
-
-		Assert.assertTrue("Specification should have been retrieved",
-				CST.componentBroker.getSpec("CoreWeatherServiceSpec") != null);
-		Assert.assertTrue("Implementation should have been retrieved",
-				CST.componentBroker.getImpl("YahooWeatherImpl") != null);
-
-		Instance inst = weatherService.createInstance(null, null);
-		Assert.assertTrue("An instance should have been created", inst != null);
-
-		CoreWeatherServiceSpec service = (CoreWeatherServiceSpec) inst
-				.getServiceObject();
-		Assert.assertNotNull("Weather should not be null", service);
-		
-		return service;	
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"CoreWeatherServiceSpec",
+				"YahooWeatherImpl", null);
 	}
 
 	@Test
@@ -159,36 +129,22 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		TestCoreAppsgate.testEmptyAppsgate();
 
 		logger.debug("This test is about Google calendar modules (adapter and instance)");
-		Implementation googleAdapter = (Implementation) ApAMHelper
-				.waitForComponentByName(null, "AppsgateGoogleAdapter",
-						ApAMHelper.RESOLVE_TIMEOUT);
-		Assert.assertTrue(
-				"Implementation of google adapter should have been retrieved",
-				CST.componentBroker.getImpl("AppsgateGoogleAdapter") != null);
-
-		Implementation googleCalendar = (Implementation) ApAMHelper
-				.waitForComponentByName(null, "GoogleCalendarImpl",
-						ApAMHelper.RESOLVE_TIMEOUT);
-		Assert.assertTrue(
-				"Implementation of google calendar should have been retrieved",
-				CST.componentBroker.getImpl("GoogleCalendarImpl") != null);
-
-		Instance instAdapter = googleAdapter.createInstance(null, null);
-		Assert.assertTrue("An instance of Adapter should have been created",
-				instAdapter != null);
-		
 		// The calendar needs a clock
 		initTestClock();
 
-		Instance instCalendar = googleCalendar.createInstance(null, null);
-		 Assert.assertTrue("An instance of Calendar should have been created",
-		 instCalendar!= null);
-		 
-		 CoreCalendarSpec calendar = (CoreCalendarSpec) instCalendar.getServiceObject();
-		 Assert.assertNotNull("Calendar service should not be null", calendar != null);
-		 
+		initGoogleAdapter();
+		initGoogleCalendar();
 		// TODO : Test the calendar with a valid account (a simple set/get event)
 		 
+	}
+	
+	public static Object initGoogleAdapter() {
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,null,
+				"AppsgateGoogleAdapter", null);
+	}	
+	public static Object initGoogleCalendar() {
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"CoreCalendarSpec",
+				"GoogleCalendarImpl", null);
 	}
 
 	
@@ -198,26 +154,13 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		logger.debug("This test is for the Configurable Clock");
 		Mail service = (Mail) initGoogleMail();
 		
-		// TODO : Test the mail with a valid account (a simple set/get a mail)
+		// TODO : Test the mail with a valid account (a simple send/receive a mail)
 	}
 	
 	
 	public static Object initGoogleMail() {
-		Implementation mailService = (Implementation) ApAMHelper
-				.waitForComponentByName(null, "GmailImpl",
-						ApAMHelper.RESOLVE_TIMEOUT);
-
-		Assert.assertTrue("Specification should have been retrieved",
-				CST.componentBroker.getSpec("mail-service-specification") != null);
-		Assert.assertTrue("Implementation should have been retrieved",
-				CST.componentBroker.getImpl("GmailImpl") != null);
-
-		Instance inst = mailService.createInstance(null, null);
-		Assert.assertTrue("An instance should have been created", inst != null);
-
-		Mail service = (Mail) inst.getServiceObject();
-		Assert.assertNotNull("Clock service should not be null", service != null);	
-		return service;
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"mail-service-specification",
+				"GmailImpl", null);
 	}
 	
 	

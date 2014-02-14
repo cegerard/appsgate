@@ -17,6 +17,9 @@ import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.manager.space.spec.Space;
+import appsgate.lig.manager.space.spec.SpaceManagerSpec;
+import appsgate.lig.manager.space.spec.Space.TYPE;
 
 /**
  * This class is use to allow other components to subscribe for specific
@@ -47,6 +50,11 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 	 * The AppsGate time sensor 
 	 */
 	private CoreClockSpec coreClock;
+	
+	/**
+	 * Field to handle the space manager API
+	 */
+	private SpaceManagerSpec spaceManager;
 
 	/**
 	 * Called by APAM when an instance of this implementation is created
@@ -145,9 +153,7 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		try {
 			logger.debug("Event message receive, " + notif.JSONize());
 			JSONObject event = notif.JSONize();
-			
-			//TODO delete this test when the notification
-			//mechanism will be totally define. Use to ignore context notification (device name, place added etc.)
+				
 			if(!event.has("objectId")) {
 				return;
 			}
@@ -155,7 +161,7 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 			Entry eventKey = new Entry(event.getString("objectId"), event.getString("varName"), event.getString("value"));
 			ArrayList<Entry> keys = new ArrayList<Entry>();
 		
-			//Copy the listener just to avoid concurrent exeption with program
+			//Copy the listener just to avoid concurrent exception with program
 			//when daemon try to add listener again when they restart
 			synchronized(this) {
 				Iterator<Entry> tempKeys = eventsListeners.keySet().iterator();

@@ -37,21 +37,21 @@
         </dependency>
     </dependencies>
 
-    <modules>
-        <module>PlaceManager</module>
-        <module>PlaceManagerSpec</module>
-        <module>ContextFollower</module>
-        <module>ContextFollowerSpec</module>
-        <module>DeviceNameTableSpec</module>
-        <module>DeviceNameTable</module>
-        <module>appsgate-enduser</module>
-        <module>ContextHistorySpec</module>
-        <module>PropertyHistoryManagerSpec</module>
-        <module>MongoDBConfigurationImpl</module>
-        <module>ContextHistoryMongoImpl</module>
-        <module>PropertyHistoryManagerMongoImpl</module>
+	<modules>
+		<module>SpaceManager</module>
+		<module>SpaceManagerSpec</module>
+		<module>ContextFollower</module>
+		<module>ContextFollowerSpec</module>
+<!-- 		<module>DeviceNameTableSpec</module> -->
+<!-- 		<module>DeviceNameTable</module> -->
+<!-- 		<module>appsgate-enduser</module> -->
+		<module>ContextHistorySpec</module>
+		<module>PropertyHistoryManagerSpec</module>
+		<module>MongoDBConfigurationImpl</module>
+		<module>ContextHistoryMongoImpl</module>
+		<module>PropertyHistoryManagerMongoImpl</module>
         <module>ContextAgregator</module>
         <module>ContextAgregatorSpec</module>
-    </modules>
+	</modules>
 
 </project>

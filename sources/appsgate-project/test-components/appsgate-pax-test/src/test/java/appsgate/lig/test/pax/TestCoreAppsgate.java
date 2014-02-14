@@ -41,8 +41,7 @@ public class TestCoreAppsgate extends PaxedDistribution {
 
 	
 	public static void testEmptyAppsgate() {
-		logger.debug("This test as a complete provisionning of Core Appsgate Bundles"
-				+ " (without technology specific as ubikit, watteco, upnp)");
+		logger.debug("This test as a complete provisionning of Core Appsgate Bundles");
 		ApAMHelper.waitForApam(ApAMHelper.RESOLVE_TIMEOUT);
 		ApAMHelper.waitForComponentByName(null,
 				"OBRMAN-Instance", ApAMHelper.RESOLVE_TIMEOUT);

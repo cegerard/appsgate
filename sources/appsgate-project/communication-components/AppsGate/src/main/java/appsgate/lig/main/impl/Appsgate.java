@@ -27,8 +27,6 @@ import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.context.device.name.table.spec.DeviceNameTableSpec;
-import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.main.impl.upnp.AppsGateServerDevice;
 import appsgate.lig.main.impl.upnp.ServerInfoService;
@@ -36,15 +34,18 @@ import appsgate.lig.main.impl.upnp.StateVariableServerIP;
 import appsgate.lig.main.impl.upnp.StateVariableServerURL;
 import appsgate.lig.main.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.main.spec.AppsGateSpec;
-import appsgate.lig.manager.place.spec.PlaceManagerSpec;
-import appsgate.lig.manager.place.spec.SymbolicPlace;
+import appsgate.lig.manager.space.spec.Space;
+import appsgate.lig.manager.space.spec.Space.TYPE;
+import appsgate.lig.manager.space.spec.SpaceManagerSpec;
 import appsgate.lig.router.spec.RouterApAMSpec;
+
+
 
 /**
  * This class is the central component for AppsGate server. It allow client part
  * to make methods call from HMI managers.
  * 
- * It expose Appsgate server as an UPnP device to gather informations about it
+ * It expose AppGate server as an UPnP device to gather informations about it
  * through the SSDP discovery protocol
  * 
  * @author Cédric Gérard
@@ -67,19 +68,9 @@ public class Appsgate implements AppsGateSpec {
 	private HttpService httpService;
 
 	/**
-	 * Table for deviceId, user and device name association
+	 * The place manager ApAM component to handle the space manager service reference
 	 */
-	private DeviceNameTableSpec deviceNameTable;
-
-	/**
-	 * The place manager ApAM component to handle the object place
-	 */
-	private PlaceManagerSpec placeManager;
-
-	/**
-	 * The user manager ApAM component to handle the user base
-	 */
-	private UserBaseSpec userManager;
+	private SpaceManagerSpec spaceManager;
 
 	/**
 	 * Reference on the AppsGate Router to execute command on devices
@@ -104,7 +95,7 @@ public class Appsgate implements AppsGateSpec {
 	private StateVariableServerWebsocket serverWebsocket;	
 
 	/**
-	 * Default constructor for Appsgate java object. it load UPnP device and
+	 * Default constructor for AppsGate java object. it load UPnP device and
 	 * services profiles and subscribes the corresponding listeners.
 	 * 
 	 */
@@ -178,43 +169,127 @@ public class Appsgate implements AppsGateSpec {
 
 	@Override
 	public void setUserObjectName(String objectId, String user, String name) {
-		deviceNameTable.addName(objectId, user, name);
-
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("ref", objectId);
+		ArrayList<Space> spaces = spaceManager.getSpacesWithPropertiesValue(properties);
+		for(Space space : spaces) {
+			space.addProperty("name", name);
+			
+			//Send notification
+			try {
+				JSONObject notify = new JSONObject();
+				notify.put("reason", "spaceNameChanged");
+				notify.put("spaceId", space.getId());
+				notify.put("properties", "");
+			
+				spaceManager.spaceUpdated(notify);
+			}catch(JSONException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
 	public String getUserObjectName(String objectId, String user) {
-		return deviceNameTable.getName(objectId, user);
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("ref", objectId);
+		ArrayList<Space> spaces = spaceManager.getSpacesWithPropertiesValue(properties);
+		return spaces.get(0).getName();
 	}
 
 	@Override
 	public void deleteUserObjectName(String objectId, String user) {
-		deviceNameTable.deleteName(objectId, user);
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("ref", objectId);
+		ArrayList<Space> spaces = spaceManager.getSpacesWithPropertiesValue(properties);
+		for(Space space : spaces) {
+			space.removeProperty("name");
+			
+			//Send notification
+			try {
+				JSONObject notify = new JSONObject();
+				notify.put("reason", "spaceNameRemoved");
+				notify.put("spaceId", space.getId());
+				notify.put("properties", "");
+			
+				spaceManager.spaceUpdated(notify);
+			}catch(JSONException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
-	public JSONArray getPlaces() {
-		return placeManager.getJSONPlaces();
+	public JSONArray getJSONSpaces() {
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<Space> spaces =  (ArrayList<Space>) spaceManager.getSpaces().clone();
+		JSONArray jsonspaceList = new JSONArray();
+		
+		for(Space space : spaces) {
+			jsonspaceList.put(space.getDescription());
+		}
+
+		return jsonspaceList;
 	}
 
 	@Override
-	public String newPlace(JSONObject place) {
+	public String newSpace(JSONObject place) {
 		try {
 			String parent = place.getString("parent");
-			SymbolicPlace parentPlace = placeManager.getSymbolicPlace(parent);
+			String spaceId = null;
+			Space parentPlace = spaceManager.getSpace(parent);
 			if(parentPlace != null) {
-				String placeId = placeManager.addPlace(place.getString("name"), parent);
-				JSONArray devices = place.getJSONArray("devices");
-				int size = devices.length();
-				int i = 0;
-				while (i < size) {
-					String objId = (String) devices.get(i);
-					placeManager.moveObject(objId,
-							placeManager.getCoreObjectPlaceId(objId), placeId);
-					i++;
+				String spaceName = place.getString("name");
+				String category = place.getString("category");
+				boolean isTagged = false;
+				ArrayList<String> tagsList =  new ArrayList<String>();
+				boolean isProperties = false;
+				HashMap<String, String> propertiesMap =  new HashMap<String, String>();
+				
+				if(place.has("tags")) {
+					JSONArray tags = place.getJSONArray("tags");
+					int size = tags.length();
+					int i = 0;
+					while (i < size) {
+						String tag = (String) tags.get(i);
+						tagsList.add(tag);
+						i++;
+					}
+					isTagged = true;
 				}
 				
-				return placeId;
+				if(place.has("properties")){
+					JSONArray tags = place.getJSONArray("properties");
+					int size = tags.length();
+					int i = 0;
+					while (i < size) {
+						JSONObject prop = tags.getJSONObject(i);
+						propertiesMap.put(prop.getString("key"), prop.getString("value"));
+						i++;
+					}
+					isProperties = true;
+				}
+				
+				if( isTagged && isProperties) {
+					spaceId = spaceManager.addSpace(TYPE.valueOf(category), tagsList, propertiesMap, spaceManager.getSpace(parent));
+				}else {
+					spaceId = spaceManager.addSpace(TYPE.valueOf(category), spaceManager.getSpace(parent));
+					Space spaceRef = spaceManager.getSpace(spaceId);
+					if(isTagged) {
+						spaceRef.setTags(tagsList);
+					}
+					
+					if(isProperties) {
+						spaceRef.setProperties(propertiesMap);
+					}
+					
+					if(place.has("name")) {
+						spaceRef.addProperty("name", spaceName);
+					}
+				}
+				
+				return spaceId;
 			}else {
 				LOGGER.error("Ne parent place found with id: "+parent);
 			}
@@ -225,49 +300,61 @@ public class Appsgate implements AppsGateSpec {
 	}
 
 	@Override
-	public boolean removePlace(String id) {
-		return placeManager.removePlace(id);
+	public boolean removeSpace(String id) {
+		Space space = spaceManager.getSpace(id);
+		if(space != null) {
+			return spaceManager.removeSpace(space);
+		}
+		return false;
 	}
 
 	@Override
-	public boolean updatePlace(JSONObject place) {
+	public boolean updateSpace(JSONObject space) {
 		try {
-			String placeID = place.getString("id");
+			String spaceID = space.getString("id");
+			Space spaceRef = spaceManager.getSpace(spaceID);
 			boolean isSuccess = true; 
+			JSONObject notify = new JSONObject();
+			notify.put("reason", "updateSpace");
+			notify.put("spaceId", spaceID);
 			
-			//Rename the place
-			if(place.has("name")) {
-				isSuccess &= placeManager.renamePlace(placeID, place.getString("name"));
+			//Rename the space
+			if(space.has("name")) {
+				spaceRef.addProperty("name", space.getString("name"));
+				isSuccess &= true;
+				notify.put("properties", "");
 			}
-			//Move the place 
-			if(place.has("parent")) {
-				isSuccess &= placeManager.movePlace(placeID, place.getString("parent"));
+			//Move the space 
+			if(space.has("parent")) {
+				isSuccess &= spaceManager.moveSpace(spaceRef, spaceManager.getSpace(space.getString("parent")));
+				notify.put("parentId", "");
 			}
 			
 			//Set or clear the tag list
-			if(place.has("taglist")) {
+			if(space.has("taglist")) {
 				
-				JSONArray tagArray = place.getJSONArray("taglist");
+				JSONArray tagArray = space.getJSONArray("taglist");
 				
 				if(tagArray.length() == 0) {
-					placeManager.clearTagsList(placeID);
+					spaceRef.clearTags();
 				}else {
 					ArrayList<String> tags = new ArrayList<String>();
 					int nbTag = tagArray.length();
 					for(int i=0; i<nbTag; i++) {
 						tags.add(tagArray.getString(i));
 					}
-					placeManager.setTagsList(placeID, tags);
+					spaceRef.setTags(tags);
 				}
+				notify.put("tags", "");
 			}
 			
 			//Set or clear the property list
-			if(place.has("proplist")) {
+			if(space.has("proplist")) {
 				
-				JSONArray propArray = place.getJSONArray("proplist");
+				JSONArray propArray = space.getJSONArray("proplist");
 				
 				if(propArray.length() == 0) {
-					placeManager.clearPropertiesList(placeID);
+					spaceRef.clearProperties();
 				}else {
 					HashMap<String, String> props = new HashMap<String, String>();
 					int nbProp = propArray.length();
@@ -275,26 +362,13 @@ public class Appsgate implements AppsGateSpec {
 						JSONObject prop = propArray.getJSONObject(i);
 						props.put(prop.getString("key"), prop.getString("value"));
 					}
-					placeManager.setProperties(placeID, props);
+					spaceRef.setProperties(props);
 				}
+				notify.put("properties", "");
 			}
 			
-			// Set or clear the core object list
-			if(place.has("coreObjectlist")) {
-				
-				JSONArray tagArray = place.getJSONArray("coreObjectlist");
-				
-				if(tagArray.length() == 0) {
-					placeManager.removeAllCoreObject(placeID);
-				}else {
-					int nbTag = tagArray.length();
-					for(int i=0; i<nbTag; i++) {
-						String objId = tagArray.getString(i);
-						placeManager.moveObject(objId, placeManager.getCoreObjectPlaceId(objId), placeID);
-					}
-				}
-			}
-			
+			//Send notification
+			spaceManager.spaceUpdated(notify);
 			
 			return isSuccess;
 		} catch (JSONException e) {
@@ -302,31 +376,26 @@ public class Appsgate implements AppsGateSpec {
 		}
 		return false;
 	}
-
-	@Override
-	public boolean moveDevice(String objId, String srcPlaceId, String destPlaceId) {
-		return placeManager.moveObject(objId, srcPlaceId, destPlaceId);
-	}
 	
 	@Override
-	public JSONObject getPlaceInfo(String placeId) {
-		return placeManager.getSymbolicPlace(placeId).getDescription();
+	public JSONObject getSpaceInfo(String spaceId) {
+		return spaceManager.getSpace(spaceId).getDescription();
 	}
 
 
 	@Override
-	public JSONArray getPlacesByName(String name) {
-		JSONArray placeByName = new JSONArray();
-		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithName(name);
-		for(SymbolicPlace place : placesList){
-			placeByName.put(place.getDescription());
+	public JSONArray getSpacesByName(String name) {
+		JSONArray spaceByName = new JSONArray();
+		ArrayList<Space> spacesList = spaceManager.getSpacesWithName(name);
+		for(Space space : spacesList){
+			spaceByName.put(space.getDescription());
 		}
-		return placeByName;
+		return spaceByName;
 	}
 
 
 	@Override
-	public JSONArray getPlacesWithTags(JSONArray tags) {
+	public JSONArray getSpacesWithTags(JSONArray tags) {
 		int tagNb  = tags.length();
 		ArrayList<String> tagsList = new ArrayList<String>();
 		for(int i=0; i<tagNb; i++) {
@@ -337,17 +406,17 @@ public class Appsgate implements AppsGateSpec {
 			}
 		}
 		
-		JSONArray placeByTag = new JSONArray();
-		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithTags(tagsList);
-		for(SymbolicPlace place : placesList){
-			placeByTag.put(place.getDescription());
+		JSONArray spaceByTag = new JSONArray();
+		ArrayList<Space> spacesList = spaceManager.getSpacesWithTags(tagsList);
+		for(Space space : spacesList){
+			spaceByTag.put(space.getDescription());
 		}
-		return placeByTag;
+		return spaceByTag;
 	}
 
 
 	@Override
-	public JSONArray getPalcesWithProperties(JSONArray keys) {
+	public JSONArray getSpacesWithProperties(JSONArray keys) {
 		int keysNb  = keys.length();
 		ArrayList<String> keysList = new ArrayList<String>();
 		for(int i=0; i<keysNb; i++) {
@@ -358,17 +427,17 @@ public class Appsgate implements AppsGateSpec {
 			}
 		}
 		
-		JSONArray placeByProp = new JSONArray();
-		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithProperties(keysList);
-		for(SymbolicPlace place : placesList){
-			placeByProp.put(place.getDescription());
+		JSONArray spaceByProp = new JSONArray();
+		ArrayList<Space> spacesList = spaceManager.getSpacesWithProperties(keysList);
+		for(Space space : spacesList){
+			spaceByProp.put(space.getDescription());
 		}
-		return placeByProp;
+		return spaceByProp;
 	}
 
 
 	@Override
-	public JSONArray getPalcesWithPropertiesValue(JSONArray properties) {
+	public JSONArray getSpacesWithPropertiesValue(JSONArray properties) {
 		int propertiesNb  = properties.length();
 		HashMap<String, String> propertiesList = new HashMap<String, String>();
 		for(int i=0; i<propertiesNb; i++) {
@@ -380,111 +449,287 @@ public class Appsgate implements AppsGateSpec {
 			}
 		}
 		
-		JSONArray placeByPropValue = new JSONArray();
-		ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithPropertiesValue(propertiesList);
-		for(SymbolicPlace place : placesList){
-			placeByPropValue.put(place.getDescription());
+		JSONArray spaceByPropValue = new JSONArray();
+		ArrayList<Space> spacesList = spaceManager.getSpacesWithPropertiesValue(propertiesList);
+		for(Space space : spacesList){
+			spaceByPropValue.put(space.getDescription());
 		}
-		return placeByPropValue;
+		return spaceByPropValue;
+	}
+	
+
+	@Override
+	public JSONObject getTreeDescription() {
+		return spaceManager.getTreeDescription();
 	}
 
 
 	@Override
-	public JSONObject getRootPlace() {
-		return placeManager.getRootPlace().getDescription();
+	public JSONObject getTreeDescription(String rootId) {
+		Space root = spaceManager.getSpace(rootId);
+		return spaceManager.getTreeDescription(root);
+	}
+
+
+	@Override
+	public JSONObject getRootSpace() {
+		return spaceManager.getRootSpace().getDescription();
 	}
 
 
 	@Override
 	public boolean addTag(String placeId, String tag) {
-		return placeManager.addTag(placeId, tag);
+		Space spaceRef = spaceManager.getSpace(placeId);
+		if(spaceRef != null) {
+			if(spaceRef.addTag(tag)) {
+				//Send notification
+				try {
+					JSONObject notify = new JSONObject();
+					notify.put("reason", "addTag");
+					notify.put("spaceId", placeId);
+					notify.put("tags", "");
+			
+					spaceManager.spaceUpdated(notify);
+				}catch(JSONException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 
 	@Override
 	public boolean removeTag(String placeId, String tag) {
-		return placeManager.removeTag(placeId, tag);
+		Space spaceRef = spaceManager.getSpace(placeId);
+		if(spaceRef != null) {
+			if(spaceRef.removeTag(tag)) {
+				//Send notification
+				try {
+					JSONObject notify = new JSONObject();
+					notify.put("reason", "removeTag");
+					notify.put("spaceId", placeId);
+					notify.put("tags", "");
+			
+					spaceManager.spaceUpdated(notify);
+				}catch(JSONException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+		}
+		return false;
+
 	}
 
 
 	@Override
 	public boolean addProperty(String placeId, String key, String value) {
-		return placeManager.addProperty(placeId, key, value);
+		Space spaceRef = spaceManager.getSpace(placeId);
+		if(spaceRef != null) {
+			if( spaceRef.addProperty(key, value)) {
+				//Send notification
+				try {
+					JSONObject notify = new JSONObject();
+					notify.put("reason", "addProperty");
+					notify.put("spaceId", placeId);
+					notify.put("properties", "");
+			
+					spaceManager.spaceUpdated(notify);
+				}catch(JSONException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+		}
+		return false;
+
 	}
 
 
 	@Override
 	public boolean removeProperty(String placeId, String key) {
-		return placeManager.removeProperty(placeId, key);
+		Space spaceRef = spaceManager.getSpace(placeId);
+		if(spaceRef != null) {
+			if(spaceRef.removeProperty(key)) {
+				//Send notification
+				try {
+					JSONObject notify = new JSONObject();
+					notify.put("reason", "removeProperty");
+					notify.put("spaceId", placeId);
+					notify.put("properties", "");
+			
+					spaceManager.spaceUpdated(notify);
+				}catch(JSONException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+		}
+		return false;
+
+	}
+	
+	@Override
+	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray spaces) {
+		ArrayList<Space> spacesList = new ArrayList<Space>();
+		ArrayList<String> typeArray = new ArrayList<String>();
+		JSONArray coreObject = new JSONArray();
+		
+		try {
+			
+			//First get all Space from their space id, if the spaces array if empty
+			//we get only the root space
+			int size = spaces.length();
+			int i = 0;
+			if(size > 0) {
+				while(i < size){
+					spacesList.add(spaceManager.getSpace(spaces.getString(i)));
+					i++;
+				}
+			}else {
+				spacesList.add(spaceManager.getRootSpace());
+			}
+			
+			//Second convert unusable JSONArray type to an ArrayList<String>
+			size = typeList.length();
+			i = 0;
+			while(i < size){
+				typeArray.add(typeList.getString(i));
+				i++;
+			}
+			
+			// For each selected space we check if one of its descendant
+			// match any type in the type list
+			for(Space place : spacesList) {
+				ArrayList<Space> subSpaces = place.getSubSpaces();
+				for(Space subSpace : subSpaces) {
+					//TODO the TYPE.DEVICE check will be move latter whit service integration
+					//If no type is specified we get all devices
+					if(size > 0) {
+						if(subSpace.getType().equals(TYPE.DEVICE) && typeArray.contains(subSpace.getPropertyValue("type"))) {
+							coreObject.put(router.getDevice(subSpace.getPropertyValue("ref")));
+						}
+					}else {
+						if(subSpace.getType().equals(TYPE.DEVICE)) {
+							coreObject.put(router.getDevice(subSpace.getPropertyValue("ref")));
+						}
+					}
+				}
+			}
+		}catch(JSONException jsonEx) {
+			jsonEx.printStackTrace();
+		}
+		
+		return coreObject;
 	}
 
 	@Override
-	public String getCoreObjectPlaceId(String objId) {
-		return placeManager.getCoreObjectPlaceId(objId);
+	public JSONObject getPlaces(String habitatID) {
+		JSONObject jsonPlaces = null;
+		for(Space subSpace : spaceManager.getSpace(habitatID).getChildren()){
+			if(subSpace.getName().contentEquals("places")) {
+				jsonPlaces = subSpace.getDescription();
+				break;
+			}
+		}
+		return jsonPlaces;
+	}
+
+	@Override
+	public JSONObject getPlaceInfo(String habitatID, String placeID) {
+		JSONObject jsonPlaces = null;
+		for(Space subSpace : spaceManager.getSpace(habitatID).getChildren()){
+			if(subSpace.getName().contentEquals("places")) {
+				jsonPlaces = subSpace.getSubSpace(placeID).getDescription();
+				break;
+			}
+		}
+		return jsonPlaces;
 	}
 
 	@Override
 	public JSONArray getUsers() {
-		return userManager.getUsers();
+		JSONArray userArray = new JSONArray();
+		Space userRoot = spaceManager.getUserRoot();
+		userArray.put(userRoot.getDescription());
+		for(Space user : userRoot.getSubSpaces()) {
+			userArray.put(user.getDescription());
+		}
+		return userArray;
 	}
 
 	@Override
-	public boolean createUser(String id, String password, String lastName,
+	public String createUser(String login, String password, String lastName,
 			String firstName, String role) {
-		return userManager.adduser(id, password, lastName, lastName, role);
+		
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("login", login);
+		properties.put("name", login);
+		properties.put("password", password);
+		properties.put("lastname", lastName);
+		properties.put("firsname", firstName);
+		properties.put("role", role);
+		
+		return spaceManager.addSpace(TYPE.USER, properties, spaceManager.getUserRoot());
 	}
 
 	@Override
 	public boolean deleteUser(String id, String password) {
-		return userManager.removeUser(id, password);
+		Space userSpace = spaceManager.getSpace(id);
+		//TODO manage to authenticate the user with the password value
+		// see the former user base to authenticate
+		return spaceManager.removeSpace(userSpace);
 	}
 
 	@Override
 	public JSONObject getUserDetails(String id) {
-		return userManager.getUserDetails(id);
+		Space userSpace = spaceManager.getSpace(id);
+		return userSpace.getDescription();
 	}
+
+//	@Override
+//	public JSONObject getUserFullDetails(String id) {
+//		JSONObject obj = new JSONObject();
+//
+//		try {
+//			obj.put("user", userManager.getUserDetails(id));
+//			obj.put("devices", userManager.getAssociatedDevices(id));
+//			obj.put("accounts", userManager.getAccountsDetails(id));
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return obj;
+//	}
 
 	@Override
-	public JSONObject getUserFullDetails(String id) {
-		JSONObject obj = new JSONObject();
-
-		try {
-			obj.put("user", userManager.getUserDetails(id));
-			obj.put("devices", userManager.getAssociatedDevices(id));
-			obj.put("accounts", userManager.getAccountsDetails(id));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		return obj;
+	public boolean checkIfLoginIsFree(String login) {
+		return spaceManager.getSpacesWithName(login).isEmpty();
 	}
 
-	@Override
-	public boolean checkIfIdIsFree(String id) {
-		return userManager.checkIfIdIsFree(id);
-	}
-
-	@Override
-	public boolean synchronizeAccount(String id, String password,
-			JSONObject accountDetails) {
-		return userManager.addAccount(id, password, accountDetails);
-	}
-
-	@Override
-	public boolean desynchronizedAccount(String id, String password,
-			JSONObject accountDetails) {
-		return userManager.removeAccount(id, password, accountDetails);
-	}
-
-	@Override
-	public boolean associateDevice(String id, String password, String deviceId) {
-		return userManager.addDevice(id, password, deviceId);
-	}
-
-	@Override
-	public boolean separateDevice(String id, String password, String deviceId) {
-		return userManager.removeDevice(id, password, deviceId);
-	}
+//	@Override
+//	public boolean synchronizeAccount(String id, String password,
+//			JSONObject accountDetails) {
+//		return userManager.addAccount(id, password, accountDetails);
+//	}
+//
+//	@Override
+//	public boolean desynchronizedAccount(String id, String password,
+//			JSONObject accountDetails) {
+//		return userManager.removeAccount(id, password, accountDetails);
+//	}
+//
+//	@Override
+//	public boolean associateDevice(String id, String password, String deviceId) {
+//		return userManager.addDevice(id, password, deviceId);
+//	}
+//
+//	@Override
+//	public boolean separateDevice(String id, String password, String deviceId) {
+//		return userManager.removeDevice(id, password, deviceId);
+//	}
 
 	@Override
 	public boolean addProgram(JSONObject jsonProgram) {
@@ -554,6 +799,69 @@ public class Appsgate implements AppsGateSpec {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void addNewDeviceSpace(JSONObject description) {
+		Space deviceRoot = spaceManager.getDeviceRoot(spaceManager.getCurrentHabitat());
+		try {
+			//Looking for the device space category
+			String type  = description.getString("type");
+			Space deviceCat = null;
+			for(Space child : deviceRoot.getChildren()) {
+				if(child.getType().equals(TYPE.CATEGORY) && child.getPropertyValue("deviceType").contentEquals(type)){
+					deviceCat = child;
+					break;
+				}
+			}
+		
+			if(deviceCat == null) { //if no category exist for this device type we create it.
+				HashMap<String, String> properties = new HashMap<String, String>();
+				properties.put("deviceType", type);
+				String spaceId = spaceManager.addSpace(TYPE.CATEGORY, properties, deviceRoot);
+				deviceCat = spaceManager.getSpace(spaceId);
+			}
+		
+			//Now we create the device space...
+			//... and we add it to the device category
+			HashMap<String, String> deviceProperties = new HashMap<String, String>();
+			deviceProperties.put("deviceType", type);
+			deviceProperties.put("ref", description.getString("id"));
+			spaceManager.addSpace(TYPE.DEVICE, deviceProperties, deviceCat);
+			
+		}catch(JSONException jsonex) {
+			jsonex.printStackTrace();
+		}
+		
+	}
+
+
+	@Override
+	public void removeDeviceSpace(String deviceId, String type) {
+		Space deviceRoot = spaceManager.getDeviceRoot(spaceManager
+				.getCurrentHabitat());
+
+		// Looking for the device space category
+		Space deviceCat = null;
+		for (Space child : deviceRoot.getChildren()) {
+			if (child.getType().equals(TYPE.CATEGORY)
+					&& child.getPropertyValue("deviceType").contentEquals(type)) {
+				deviceCat = child;
+				break;
+			}
+		}
+
+		Space deviceSpace = null;
+		// Looking for the device space in the category children
+		for (Space child : deviceCat.getChildren()) {
+			if (child.getPropertyValue("ref").contentEquals(deviceId)) {
+				deviceSpace = child;
+				break;
+			}
+		}
+
+		// remove the device auto manage space from the space manager
+		spaceManager.removeSpace(deviceSpace);
+	}
 
 	private void retrieveLocalAdress() {
 		// initiate UPnP state variables
@@ -595,20 +903,6 @@ public class Appsgate implements AppsGateSpec {
 			LOGGER.debug("Socket exception for UPnP: ");
 			e.printStackTrace();
 		}
-	}
-
-
-	@Override
-	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray places) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public JSONArray getSubtypes(JSONArray typeList) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
