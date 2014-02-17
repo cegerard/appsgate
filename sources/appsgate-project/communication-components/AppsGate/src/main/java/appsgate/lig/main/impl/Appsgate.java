@@ -797,29 +797,33 @@ public class Appsgate implements AppsGateSpec {
 	public void addNewDeviceSpace(JSONObject description) {
 		Space deviceRoot = contextManager.getDeviceRoot(contextManager.getCurrentHabitat());
 		try {
-			//Looking for the device space category
-			String type  = description.getString("type");
-			Space deviceCat = null;
-			for(Space child : deviceRoot.getSubSpaces()) {
-				if(child.getType().equals(TYPE.CATEGORY) && child.getPropertyValue("deviceType").contentEquals(type)){
-					deviceCat = child;
-					break;
+			//If the device has no type attribute we can't put it in the good space or and the
+			//corresponding space
+			if(description.has("type")) {
+				//Looking for the device space category
+				String type  = description.getString("type");
+				Space deviceCat = null;
+				for(Space child : deviceRoot.getSubSpaces()) {
+					if(child.getType().equals(TYPE.CATEGORY) && child.getPropertyValue("deviceType").contentEquals(type)){
+						deviceCat = child;
+						break;
+					}
 				}
-			}
 		
-			if(deviceCat == null) { //if no category exist for this device type we create it.
-				HashMap<String, String> properties = new HashMap<String, String>();
-				properties.put("deviceType", type);
-				String spaceId = contextManager.addSpace(TYPE.CATEGORY, properties, deviceRoot);
-				deviceCat = contextManager.getSpace(spaceId);
-			}
+				if(deviceCat == null) { //if no category exist for this device type we create it.
+					HashMap<String, String> properties = new HashMap<String, String>();
+					properties.put("deviceType", type);
+					String spaceId = contextManager.addSpace(TYPE.CATEGORY, properties, deviceRoot);
+					deviceCat = contextManager.getSpace(spaceId);
+				}
 		
-			//Now we create the device space...
-			//... and we add it to the device category
-			HashMap<String, String> deviceProperties = new HashMap<String, String>();
-			deviceProperties.put("deviceType", type);
-			deviceProperties.put("ref", description.getString("id"));
-			contextManager.addSpace(TYPE.DEVICE, deviceProperties, deviceCat);
+				//Now we create the device space...
+				//... and we add it to the device category
+				HashMap<String, String> deviceProperties = new HashMap<String, String>();
+				deviceProperties.put("deviceType", type);
+				deviceProperties.put("ref", description.getString("id"));
+				contextManager.addSpace(TYPE.DEVICE, deviceProperties, deviceCat);
+			}
 			
 		}catch(JSONException jsonex) {
 			jsonex.printStackTrace();

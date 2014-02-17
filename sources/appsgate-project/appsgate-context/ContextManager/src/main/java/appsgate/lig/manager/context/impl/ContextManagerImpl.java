@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
+import appsgate.lig.context.services.DataBasePushService.OP;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.manager.context.messages.ContextManagerNotification;
 import appsgate.lig.manager.context.spec.ContextManagerSpec;
@@ -187,16 +188,8 @@ public class ContextManagerImpl implements ContextManagerSpec {
 				notifyspace("newspace", spaceId, type.toString(), null, null, "null", null);
 			}
 			
-			// Save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-			
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), properties)) {
+			// Save the new devices name table
+			if(saveInDB(newspace, OP.ADD, null)) {
 				return spaceId;
 			}
 		}
@@ -212,16 +205,8 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			spaceObjectsMap.put(spaceId, newspace);
 			notifyspace("newspace", spaceId, type.toString(), null, properties, parent.getId(), null);
 			
-			// Save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
-			
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), propertiesSpace)) {
+			// Save the new context state
+			if(saveInDB(newspace, OP.ADD, null)) {
 				return spaceId;
 			}
 		}
@@ -238,16 +223,8 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			notifyspace("newspace", spaceId, type.toString(), tags, properties, parent.getId(), null);
 			
 			
-			// Save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
-			
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), propertiesSpace)) {
+			// Save the new context state
+			if(saveInDB(newspace, OP.ADD, null)) {
 				return spaceId;
 			}
 		}
@@ -267,16 +244,8 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			}
 			notifyspace("newspace", spaceId, type.toString(), tags, properties, parent.getId(), childrenId);
 			
-			// Save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
-			
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, type.toString(), propertiesSpace)) {
+			// Save the new context state
+			if(saveInDB(newspace, OP.ADD, null)) {
 				return spaceId;
 			}
 		}
@@ -291,16 +260,8 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			spaceObjectsMap.put(spaceId, newspace);
 			notifyspace("newspace", spaceId, TYPE.USER.toString(), null, null, parent.getId(), null);
 			
-			// Save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-			
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, TYPE.USER.toString(), properties)) {
+			// Save the new context state
+			if(saveInDB(newspace, OP.ADD, null)) {
 				return spaceId;
 			}
 		}
@@ -316,16 +277,8 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			spaceObjectsMap.put(spaceId, newspace);
 			notifyspace("newspace", spaceId, TYPE.USER.toString(), null, properties, parent.getId(), null);
 			
-			// Save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
-			
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, TYPE.USER.toString(), propertiesSpace)) {
+			// Save the new context state
+			if(saveInDB(newspace, OP.ADD, null)) {
 				return spaceId;
 			}
 		}
@@ -347,16 +300,8 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			}
 			notifyspace("newspace", spaceId, TYPE.USER.toString(), tags, properties, parent.getId(), childrenId);
 			
-			// Save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> propertiesSpace = new ArrayList<Map.Entry<String, Object>>();
-			
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				propertiesSpace.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-
-			if( contextHistory_push.pushData_add(this.getClass().getSimpleName(), spaceId, TYPE.USER.toString(), propertiesSpace)) {
+			// Save the new context state
+			if(saveInDB(newspace, OP.ADD, null)) {
 				return spaceId;
 			}
 		}
@@ -380,45 +325,33 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			notifyspace("removespace", space.getId(), space.getType().toString(), null, null, null, null);
 		
 			// save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-					
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-					
-			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), space.getId(), space.getType().toString(), properties);
+			return saveInDB(space, OP.REMOVE, null);
 		}
 		return false;
-	}
-	
-	@Override
-	public synchronized Space getSpace(String placId) {
-		return spaceObjectsMap.get(placId);
 	}
 	
 	@Override
 	public synchronized boolean moveSpace(Space space, Space newParent) {
 		try {
 		
-			Space oldParent = space.getParent();
+			String oldParentID = space.getParent().getId();
 			space.setParent(newParent);
 			
 			notifyspace("movespace", space.getId(), space.getType().toString(), null, null, newParent.getId(), null);
 			
 			// save in data base
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-								
-			Set<String> keys = spaceObjectsMap.keySet();
-			for(String e : keys) {
-				Space sl = spaceObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}		
-			return contextHistory_push.pushData_change(this.getClass().getSimpleName(), space.getId(), oldParent.getId(), newParent.getId(), properties);	
-			
+			HashMap<String, String> changeDetail = new HashMap<String, String>();
+			changeDetail.put("oldValue", oldParentID);
+			changeDetail.put("newValue", newParent.getId());
+			return saveInDB(space, OP.CHANGE, changeDetail);
+		
 		}catch(Exception e){logger.error(e.getMessage());}
 		return false;
+	}
+	
+	@Override
+	public synchronized Space getSpace(String placId) {
+		return spaceObjectsMap.get(placId);
 	}
 
 	@Override
@@ -652,7 +585,37 @@ public class ContextManagerImpl implements ContextManagerSpec {
 		return notif;
 	}
 	
-	
+	/**
+	 * Save the current state with the an header containing
+	 * the last modification
+	 * @param space the space that trigger the state change
+	 * @param operation the wanted operation in data base
+	 * @param changeDetail contain detail on a change operation, null otherwise
+	 * @return true of the save done well, false otherwise
+	 */
+	private boolean saveInDB(Space space, OP operation, HashMap<String, String> changeDetail) {
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+		
+		//Get a copy of the current Context State
+		Set<String> keys = spaceObjectsMap.keySet();
+		for(String e : keys) {
+			Space sl = spaceObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+		}
+		//Push the new state in the DB with the corresponding header
+		String className = this.getClass().getSimpleName();
+		if(operation.equals(OP.ADD)) {
+			return contextHistory_push.pushData_add(className, space.getId(), space.getType().toString(), properties);
+		}else if(operation.equals(OP.REMOVE)) {
+			return contextHistory_push.pushData_remove(className, space.getId(), space.getType().toString(), properties);
+		}else if(operation.equals(OP.CHANGE)) {
+			return contextHistory_push.pushData_change(className, space.getId(), changeDetail.get("oldValue"), changeDetail.get("newValue"), properties);
+		}else {
+			logger.error("Operation not permitted : "+operation);
+		}
+		
+		return false;
+	}
 	
 	/*************************/
 	/** for JUnit mock test **/
