@@ -4,7 +4,10 @@
     "userSource": "",
     "daemon": true,
     "name": "TestWhen",
-    "author": "Bob",
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
     "parameters": [],
     "definitions": [],
     "body": {

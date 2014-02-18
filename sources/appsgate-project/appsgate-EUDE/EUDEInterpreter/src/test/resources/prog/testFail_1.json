@@ -4,7 +4,10 @@
     "userSource": "",
     "daemon": true,
     "name": "CAREGIVER_SERVICE",
-    "author": "Bob",
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
     "definitions": [],
     "parameters": [],
     "body": {

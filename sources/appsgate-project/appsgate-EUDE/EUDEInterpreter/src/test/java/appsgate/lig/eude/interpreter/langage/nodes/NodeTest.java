@@ -48,7 +48,7 @@ public abstract class NodeTest {
         this.ruleJSON = new JSONObject();
 
         this.mediator = context.mock(EUDEMediator.class);
-        programNode = new NodeProgram(mediator);
+        programNode = new NodeProgram(mediator, null);
         this.emptySeqRules = new JSONObject();
         try {
             emptySeqRules.put("type", "instructions");

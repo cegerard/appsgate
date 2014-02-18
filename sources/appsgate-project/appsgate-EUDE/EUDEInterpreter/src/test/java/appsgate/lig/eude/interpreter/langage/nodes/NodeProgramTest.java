@@ -41,8 +41,10 @@ public class NodeProgramTest extends NodeTest {
         ruleJSON.put("runningState", "STOPPED");
         ruleJSON.put("name", "test");
         ruleJSON.put("daemon", false);
-        ruleJSON.put("author", "test");
         ruleJSON.put("package", "test");
+        JSONObject header = new JSONObject();
+        header.put("author", "toto");
+        ruleJSON.put("header", header);
         JSONObject rules = new JSONObject();
         rules.put("type", "setOfRules");
         rules.put("rules", (Collection) null);
@@ -56,7 +58,7 @@ public class NodeProgramTest extends NodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        this.programTest = new NodeProgram(mediator, this.ruleJSON);
+        this.programTest = new NodeProgram(mediator, this.ruleJSON, null);
         this.instance = this.programTest;
     }
 
@@ -83,17 +85,6 @@ public class NodeProgramTest extends NodeTest {
     }
 
     /**
-     * Test of getProgramJSON method, of class NodeProgram.
-     */
-    @Test
-    public void testGetProgramJSON() {
-        System.out.println("getProgramJSON");
-        JSONObject expResult = this.ruleJSON;
-        JSONObject result = this.programTest.getProgramJSON();
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of getRunningState method, of class NodeProgram.
      */
     @Test
@@ -116,9 +107,12 @@ public class NodeProgramTest extends NodeTest {
         rules.put("userSource", "test");
         rules.put("type", "instructions");
         rules.put("rules", new JSONArray());
+        JSONObject header = new JSONObject();
+        header.put("author", "toto");
+
+        rules.put("header", header);
 
         rules.put("name", "test");
-        rules.put("author", "test");
         rules.put("daemon", true);
         rules.put("body", rules);
         rules.put("definitions", (Collection) null);
@@ -189,7 +183,7 @@ public class NodeProgramTest extends NodeTest {
     @Test
     public void testFromJSONFile() throws Exception {
         printTestName("FromJSONFiles");
-        NodeProgram defNode = new NodeProgram(null, TestUtilities.loadFileJSON("src/test/resources/node/newjson.json"));
+        NodeProgram defNode = new NodeProgram(null, TestUtilities.loadFileJSON("src/test/resources/node/newjson.json"), null);
         assertNotNull(defNode);
         System.out.println(defNode.getExpertProgramScript());
     }

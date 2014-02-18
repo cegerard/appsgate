@@ -5,7 +5,10 @@
     "name": "testIf",
     "daemon": false,
     "parameters": [],
-    "author": "Bob",
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
     "definitions": [],
     "body": {
         "type": "instructions",

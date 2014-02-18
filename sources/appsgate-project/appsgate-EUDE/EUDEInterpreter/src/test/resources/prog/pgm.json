@@ -5,7 +5,9 @@
     "name": "TestLaunchPgm",
     "daemon": true,
     "parameters": [],
-    "author": "Bob",
+    "header": {
+        "author": "Bob"
+    },
     "definitions": [
     ],
     "body": {

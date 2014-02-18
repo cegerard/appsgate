@@ -129,7 +129,6 @@ public class NodeWhen extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeWhen ret = new NodeWhen(parent);
-        ret.setSymbolTable(this.getSymbolTable());
         ret.seqEvent = (NodeEvents) seqEvent.copy(ret);
         ret.seqRules = seqRules.copy(ret);
         return ret;

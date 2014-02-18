@@ -5,7 +5,10 @@
     "name": "TestWhenImb",
     "daemon": true,
     "parameters": [],
-    "author": "Bob",
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
     "definitions": [],
     "body": {
         "type": "instructions",

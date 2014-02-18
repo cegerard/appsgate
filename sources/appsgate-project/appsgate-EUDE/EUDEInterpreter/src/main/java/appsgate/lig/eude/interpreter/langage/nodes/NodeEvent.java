@@ -217,7 +217,6 @@ public class NodeEvent extends Node {
         ret.eventName = eventName;
         ret.eventValue = eventValue;
         ret.source = source.copy(parent);
-        ret.setSymbolTable(this.getSymbolTable());
         return ret;
 
     }

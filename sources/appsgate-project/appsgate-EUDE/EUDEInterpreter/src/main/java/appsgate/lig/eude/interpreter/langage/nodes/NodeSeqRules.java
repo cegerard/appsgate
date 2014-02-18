@@ -208,7 +208,6 @@ public class NodeSeqRules extends Node {
             ret.instructions.add(n.copy(ret));
         }
 
-        ret.setSymbolTable(this.getSymbolTable());
         return ret;
 
     }

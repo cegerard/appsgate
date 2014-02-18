@@ -6,7 +6,10 @@
     "daemon": true,
     "programName": "TestKeepState",
     "parameters": [],
-    "author": "Bob",
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
     "definitions": [],
     "body": {
         "type": "keepstate",

@@ -5,7 +5,10 @@
     "daemon": true,
     "name": "TestWhile",
     "parameters": [],
-    "author": "Bob",
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
     "definitions": [],
     "body": {
         "type": "while",

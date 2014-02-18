@@ -87,7 +87,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         this.parent = n;
     }
     
-    protected Node getParent() {
+    public Node getParent() {
         return parent;
     }
 
@@ -314,6 +314,17 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         return symbolTable;
     }
 
+    /**
+     * Method that return the SymbolTable description in json format
+     * @return 
+     */
+    public JSONArray getSymbolTableDescription() {
+        if (symbolTable != null) {
+            return symbolTable.getJSONDescription();
+        }
+        return new JSONArray();
+    }
+    
     /**
      * Method to find a variable by its name
      *

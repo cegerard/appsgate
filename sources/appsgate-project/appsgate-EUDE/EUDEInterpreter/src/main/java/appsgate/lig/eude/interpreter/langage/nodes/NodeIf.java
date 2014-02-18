@@ -165,7 +165,6 @@ public class NodeIf extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeIf ret = new NodeIf(parent);
-        ret.setSymbolTable(this.getSymbolTable());
         ret.expBool = expBool.copy(ret);
         ret.seqRulesFalse = seqRulesFalse.copy(ret);
         ret.seqRulesTrue = seqRulesTrue.copy(ret);

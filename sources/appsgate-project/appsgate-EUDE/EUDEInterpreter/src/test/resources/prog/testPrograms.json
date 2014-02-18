@@ -5,8 +5,10 @@
     "daemon": true,
     "name": "ColorLoopMode",
     "parameters": [],
-    "author": "Bob",
-    "target": "Alice",
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
     "definitions": [],
     "body": {
         "type": "instructions",

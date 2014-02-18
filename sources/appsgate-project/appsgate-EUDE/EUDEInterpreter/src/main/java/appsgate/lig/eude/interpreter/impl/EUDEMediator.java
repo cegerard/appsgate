@@ -69,7 +69,6 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      */
     private DataBasePushService contextHistory_push;
 
-
     /**
      * Hash map containing the nodes and the events they are listening
      */
@@ -80,12 +79,13 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      */
     private final HashMap<String, NodeProgram> mapPrograms;
 
+    private NodeProgram root;
+
     /**
      *
      */
     public ClockProxy clock;
     private ContextAgregatorSpec context;
-    
 
     /**
      * Initialize the list of programs and of events
@@ -95,6 +95,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public EUDEMediator() {
         mapPrograms = new HashMap<String, NodeProgram>();
         mapCoreNodeEvent = new HashMap<CoreEventListener, ArrayList<NodeEvent>>();
+        root = new NodeProgram(this, null);
     }
 
     /**
@@ -102,32 +103,8 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      */
     public void newInst() {
 
-        LOGGER.debug("Restore interpreter program list from database");
-        JSONObject userbase = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
-        if (userbase != null) {
-            try {
-                JSONArray state = userbase.getJSONArray("state");
-                int length = state.length();
-                int i = 0;
-                NodeProgram np;
-                while (i < length) {
-                    JSONObject obj = state.getJSONObject(i);
-                    String key = (String) obj.keys().next();
-                    np = new NodeProgram(this, new JSONObject(obj.getString(key)));
-                    mapPrograms.put(key, np);
-                    if (np.getRunningState() == RUNNING_STATE.STARTED) {
-                        //TODO:Restore complete interpreter and programs state
-                        this.callProgram(np.getId());
-                    }
-                    i++;
-                }
-            } catch (JSONException e) {
-                LOGGER.warn("JSONException: {}", e.getMessage());
-            } catch (SpokException e) {
-                LOGGER.warn(e.getMessage());
-            }
-        }
-
+        LOGGER.debug("A new instance of Mediator is created");
+        restorePrograms();
         LOGGER.debug("The interpreter component is initialized");
     }
 
@@ -142,12 +119,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         }
 
         //save program map state
-        ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
-        Set<String> keys = mapPrograms.keySet();
-        for (String key : keys) {
-            properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
-        }
-        contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", properties);
+        contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", getProgramsDesc());
     }
 
     @Override
@@ -156,7 +128,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
 
         // initialize a program node from the JSON
         try {
-            p = new NodeProgram(this, programJSON);
+            p = new NodeProgram(this, programJSON, null);
         } catch (SpokException e) {
             LOGGER.error("Node error detected while loading a program: {}", e.getMessage());
             LOGGER.debug("json desc: {}", programJSON.toString());
@@ -166,19 +138,9 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         mapPrograms.put(p.getId(), p);
 
         //save program map state
-        ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
-        Set<String> keys = mapPrograms.keySet();
-        for (String key : keys) {
-            properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
-        }
-
-        if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), properties)) {
+        if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), getProgramsDesc())) {
             p.setDeployed();
-            try {
-                notifyAddProgram(p.getId(), p.getRunningState().toString(), p.getProgramJSON().getJSONObject("source"), p.getUserSource());
-            } catch (JSONException e) {
-                LOGGER.warn("JSON exception [{}] detected while notifying programs.", e.getMessage());
-            }
+            notifyAddProgram(p.getId(), p.getRunningState().toString(), p.getJSONDescription(), p.getUserSource());
             return true;
         } else {
             mapPrograms.remove(p.getId());
@@ -190,25 +152,28 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public boolean removeProgram(String programId) {
         NodeProgram p = mapPrograms.get(programId);
 
-        if (p != null) {
-            p.stop();
-            p.removeEndEventListener(this);
-
-            mapPrograms.remove(programId);
-            //save program map state
-            ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
-            Set<String> keys = mapPrograms.keySet();
-            for (String key : keys) {
-                properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
-            }
-            if (contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getName(), properties)) {
-                notifyRemoveProgram(p.getId());
-                return true;
-            }
-
-        } else {
+        if (p == null) {
             LOGGER.error("The program " + programId + " does not exist.");
+            return false;
         }
+        p.stop();
+        p.removeEndEventListener(this);
+        // remove the sub program from its father
+        NodeProgram parent = (NodeProgram) p.getParent();
+        if (parent == null) {
+            LOGGER.error("trying to remove the root program : this operation is not authorized");
+            return false;
+        }
+        parent.removeSubProgram(programId);
+
+        mapPrograms.remove(programId);
+
+        //save program map state
+        if (contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getName(), getProgramsDesc())) {
+            notifyRemoveProgram(p.getId());
+            return true;
+        }
+        LOGGER.debug("Unable to warn save the state");
 
         return false;
     }
@@ -232,20 +197,15 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         try {
             if (p.getRunningState() == NodeProgram.RUNNING_STATE.STARTED
                     || p.getRunningState() == NodeProgram.RUNNING_STATE.PAUSED) {
-                p.stop();
                 p.removeEndEventListener(this);
+                p.stop();
             }
 
             if (p.update(jsonProgram)) {
                 notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getJSONSource(), p.getUserSource());
                 //save program map state
-                ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
-                Set<String> keys = mapPrograms.keySet();
-                for (String key : keys) {
-                    properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getProgramJSON().toString()));
-                }
 
-                if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), properties)) {
+                if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), getProgramsDesc())) {
                     return true;
                 }
             }
@@ -297,7 +257,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public HashMap<String, JSONObject> getListPrograms() {
         HashMap<String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
         for (NodeProgram p : mapPrograms.values()) {
-            mapProgramJSON.put(p.getId(), p.getProgramJSON());
+            mapProgramJSON.put(p.getId(), p.getJSONDescription());
         }
 
         return mapProgramJSON;
@@ -471,7 +431,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         return notif;
 
     }
-    
+
     /**
      * @return the clock proxy
      */
@@ -493,16 +453,58 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     }
 
     /**
-     * @return the appsgate
+     * @return the context agregator
      */
     public ContextAgregatorSpec getContext() {
         return context;
     }
+
     /**
-     * set the appsgate
+     * set the context agregator
      */
     public void setContext(ContextAgregatorSpec s) {
         context = s;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private ArrayList<Entry<String, Object>> getProgramsDesc() {
+        ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
+        Set<String> keys = mapPrograms.keySet();
+        for (String key : keys) {
+            properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getJSONDescription().toString()));
+        }
+        return properties;
+    }
+
+    /**
+     *
+     */
+    private void restorePrograms() {
+        LOGGER.debug("Restore interpreter program list from database");
+        JSONObject userbase = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+        if (userbase != null) {
+            try {
+                JSONArray state = userbase.getJSONArray("state");
+                for (int i = 0; i < state.length(); i++) {
+                    JSONObject obj = state.getJSONObject(i);
+                    String key = (String) obj.keys().next();
+                    NodeProgram np = new NodeProgram(this, new JSONObject(obj.getString(key)), null);
+                    mapPrograms.put(key, np);
+                    if (np.getRunningState() == RUNNING_STATE.STARTED) {
+                        //TODO:Restore complete interpreter and programs state
+                        this.callProgram(np.getId());
+                    }
+                }
+            } catch (JSONException e) {
+                LOGGER.warn("JSONException: {}", e.getMessage());
+            } catch (SpokException e) {
+                LOGGER.warn(e.getMessage());
+            }
+        }
+
     }
 
     /**

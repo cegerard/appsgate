@@ -8,12 +8,10 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -273,7 +271,6 @@ public class NodeAction extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeAction ret = new NodeAction(parent);
-        ret.setSymbolTable(this.getSymbolTable());
         try {
             ret.args = new JSONArray(args.toString());
         } catch (JSONException ex) {

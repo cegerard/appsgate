@@ -124,7 +124,7 @@ public class EUDEMediatorTest {
                 then(tested.is("flag1"));
                 allowing(router).executeCommand(with("flag2"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("flag2"));
-                
+
                 allowing(gc).run();
                 allowing(gc).getReturn();
                 will(returnValue("2"));
@@ -271,7 +271,6 @@ public class EUDEMediatorTest {
         assertEquals(expResult, result);
     }
 
-
     /**
      * Test of addNodeListening method, of class EUDEMediator.
      *
@@ -322,7 +321,7 @@ public class EUDEMediatorTest {
     @Test
     public void testEndEventFired() throws JSONException {
         System.out.println("endEventFired");
-        EndEvent e = new EndEvent(new NodeProgram(this.instance));
+        EndEvent e = new EndEvent(new NodeProgram(this.instance, null));
         instance.endEventFired(e);
     }
 

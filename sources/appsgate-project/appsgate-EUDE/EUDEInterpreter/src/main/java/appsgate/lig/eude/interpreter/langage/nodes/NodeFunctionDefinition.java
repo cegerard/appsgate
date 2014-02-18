@@ -12,7 +12,6 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.Iterator;
 import java.util.List;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -116,11 +115,7 @@ public class NodeFunctionDefinition extends Node {
             o.put("id", this.name);
 
             o.put("seqRules", seqRules.getJSONDescription());
-            if (getSymbolTable() != null) {
-                o.put("seqDefinitions", getSymbolTable().getJSONDescription());
-            } else {
-                o.put("seqDefinitions", new JSONArray());
-            }
+            o.put("seqDefinitions", getSymbolTableDescription());
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case           

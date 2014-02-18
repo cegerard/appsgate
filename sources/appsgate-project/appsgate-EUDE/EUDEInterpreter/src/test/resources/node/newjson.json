@@ -4,6 +4,7 @@
     "daemon": false,
     "userSource": "",
     "parameters": [],
+    "header": {},
     "definitions": [
         {
             "type": "boolean",
