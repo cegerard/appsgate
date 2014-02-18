@@ -822,7 +822,17 @@ public class Appsgate implements AppsGateSpec {
 				HashMap<String, String> deviceProperties = new HashMap<String, String>();
 				deviceProperties.put("deviceType", type);
 				deviceProperties.put("ref", description.getString("id"));
-				contextManager.addSpace(TYPE.DEVICE, deviceProperties, deviceCat);
+					//Test needed to determine whether a device space in the system category already exist or not.
+				ArrayList<Space> children = deviceCat.getChildren();
+				boolean exist = false;
+				for(Space space : children) {
+					if(space.getPropertyValue("ref").contentEquals(description.getString("id"))) {
+							exist = true;
+					}
+				}
+				if(!exist) {
+					contextManager.addSpace(TYPE.DEVICE, deviceProperties, deviceCat);
+				}
 			}
 			
 		}catch(JSONException jsonex) {
@@ -834,30 +844,31 @@ public class Appsgate implements AppsGateSpec {
 
 	@Override
 	public void removeDeviceSpace(String deviceId, String type) {
-		Space deviceRoot = contextManager.getDeviceRoot(contextManager
-				.getCurrentHabitat());
+		if(Bundle.STOPPING != context.getBundle(0).getState()) {
+			Space deviceRoot = contextManager.getDeviceRoot(contextManager.getCurrentHabitat());
 
-		// Looking for the device space category
-		Space deviceCat = null;
-		for (Space child : deviceRoot.getChildren()) {
-			if (child.getType().equals(TYPE.CATEGORY)
-					&& child.getPropertyValue("deviceType").contentEquals(type)) {
-				deviceCat = child;
-				break;
+			// Looking for the device space category
+			Space deviceCat = null;
+			for (Space child : deviceRoot.getChildren()) {
+				if (child.getType().equals(TYPE.CATEGORY)
+						&& child.getPropertyValue("deviceType").contentEquals(type)) {
+					deviceCat = child;
+					break;
+				}
 			}
-		}
 
-		Space deviceSpace = null;
-		// Looking for the device space in the category children
-		for (Space child : deviceCat.getChildren()) {
-			if (child.getPropertyValue("ref").contentEquals(deviceId)) {
-				deviceSpace = child;
-				break;
+			Space deviceSpace = null;
+			// Looking for the device space in the category children
+			for (Space child : deviceCat.getChildren()) {
+				if (child.getPropertyValue("ref").contentEquals(deviceId)) {
+					deviceSpace = child;
+					break;
+				}
 			}
-		}
 
-		// remove the device auto manage space from the space manager
-		contextManager.removeSpace(deviceSpace);
+			// remove the device auto manage space from the space manager
+			contextManager.removeSpace(deviceSpace);
+		}
 	}
 
 	private void retrieveLocalAdress() {
