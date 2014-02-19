@@ -173,6 +173,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	 */
 	public void deleteInst() {
 		logger.info("Removing space manager...");
+		
 	}
 
 	@Override
