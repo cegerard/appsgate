@@ -1,0 +1,27 @@
+{
+    "id": "",
+    "runningState": "STARTED",
+    "userSource": "",
+    "name": "init",
+    "daemon": false,
+    "parameters": [],
+    "header": {
+        "author": "SuperUser"
+    },
+    "definitions": [
+    ],
+    "body": {
+        "type": "instructions",
+        "rules": [
+            {
+                "type": "action",
+                "target": {
+                    "type": "device",
+                    "id": "00:17:88:0a:99:c1-2"
+                },
+                "methodName": "blink",
+                "action": []
+            }
+        ]
+    }
+}

@@ -30,6 +30,9 @@ import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * This class is the interpreter component for end user development environment.
@@ -79,7 +82,10 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      */
     private final HashMap<String, NodeProgram> mapPrograms;
 
-    private NodeProgram root;
+    /**
+     * The root program of the interpreter
+     */
+    private final NodeProgram root;
 
     /**
      *
@@ -95,7 +101,8 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public EUDEMediator() {
         mapPrograms = new HashMap<String, NodeProgram>();
         mapCoreNodeEvent = new HashMap<CoreEventListener, ArrayList<NodeEvent>>();
-        root = new NodeProgram(this, null);
+        root = initRootProgram();
+        mapPrograms.put("root", root);
     }
 
     /**
@@ -104,6 +111,8 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public void newInst() {
 
         LOGGER.debug("A new instance of Mediator is created");
+
+        
         restorePrograms();
         LOGGER.debug("The interpreter component is initialized");
     }
@@ -472,8 +481,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      */
     private ArrayList<Entry<String, Object>> getProgramsDesc() {
         ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
-        Set<String> keys = mapPrograms.keySet();
-        for (String key : keys) {
+        for (String key : mapPrograms.keySet()) {
             properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getJSONDescription().toString()));
         }
         return properties;
@@ -505,6 +513,40 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             }
         }
 
+    }
+
+    /**
+     *
+     * @return
+     */
+    private NodeProgram initRootProgram() {
+        try {
+            FileInputStream fis = new FileInputStream("conf/root.json");
+            DataInputStream dis = new DataInputStream(fis);
+
+            byte[] buf = new byte[dis.available()];
+            dis.readFully(buf);
+
+            String fileContent = "";
+            for (byte b : buf) {
+                fileContent += (char) b;
+            }
+
+            dis.close();
+            fis.close();
+
+            JSONObject o = new JSONObject(fileContent);
+            return new NodeProgram(this, o, null);
+
+        } catch (IOException ex) {
+            LOGGER.error("unable to read root file.");
+        } catch (JSONException ex) {
+            LOGGER.error("unable to parse root file.");
+        } catch (SpokException ex) {
+            LOGGER.error("unable to build root program from file.");
+            LOGGER.debug(ex.getMessage());
+        }
+        return null;
     }
 
     /**

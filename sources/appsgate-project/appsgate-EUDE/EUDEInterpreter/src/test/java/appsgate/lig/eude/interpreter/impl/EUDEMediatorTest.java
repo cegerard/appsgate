@@ -244,7 +244,7 @@ public class EUDEMediatorTest {
     public void testGetListPrograms() {
         System.out.println("getListPrograms");
         HashMap<String, JSONObject> result = instance.getListPrograms();
-        assertEquals(0, result.size());
+        assertEquals(1, result.size());
     }
 
     /**
@@ -498,6 +498,17 @@ public class EUDEMediatorTest {
 
     }
 
+    @Test
+    public void testTreeImplementation() {
+        System.out.println("Implementation");
+        
+    }
+    
+    @Test
+    public void testIsThereARootProgram() {
+        System.out.println("Test root program");
+        Assert.assertNotNull("There must be a root program", instance.getNodeProgram("root"));
+    }
     /**
      * Class to make some tests on the events
      */
