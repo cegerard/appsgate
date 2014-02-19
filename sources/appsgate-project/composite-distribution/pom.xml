@@ -32,11 +32,11 @@
 			<artifactId>RouterApAM</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>appsgate.components</groupId> -->
-<!-- 			<artifactId>PlaceManager</artifactId> -->
-<!-- 			<version>${project.version}</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ContextManager</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>ConfigurableClockImpl</artifactId>
