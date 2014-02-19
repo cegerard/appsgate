@@ -157,11 +157,6 @@
 			<artifactId>ical4j</artifactId>
 			<version>${ical-version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.upnp.extra</artifactId>
-			<version>0.4.0</version>
-		</dependency>
 
 
 		<!-- OSGi Framework (packOSGi) -->
