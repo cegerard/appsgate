@@ -168,57 +168,57 @@ public class Appsgate implements AppsGateSpec {
 		return router.getDevices(type);
 	}
 
-	@Override
-	public void setUserObjectName(String objectId, String user, String name) {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		properties.put("ref", objectId);
-		ArrayList<Space> spaces = contextManager.getSpacesWithPropertiesValue(properties);
-		for(Space space : spaces) {
-			space.addProperty("name", name);
-			
-			//Send notification
-			try {
-				JSONObject notify = new JSONObject();
-				notify.put("reason", "spaceNameChanged");
-				notify.put("spaceId", space.getId());
-				notify.put("properties", "");
-			
-				contextManager.spaceUpdated(notify);
-			}catch(JSONException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public String getUserObjectName(String objectId, String user) {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		properties.put("ref", objectId);
-		ArrayList<Space> spaces = contextManager.getSpacesWithPropertiesValue(properties);
-		return spaces.get(0).getName();
-	}
-
-	@Override
-	public void deleteUserObjectName(String objectId, String user) {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		properties.put("ref", objectId);
-		ArrayList<Space> spaces = contextManager.getSpacesWithPropertiesValue(properties);
-		for(Space space : spaces) {
-			space.removeProperty("name");
-			
-			//Send notification
-			try {
-				JSONObject notify = new JSONObject();
-				notify.put("reason", "spaceNameRemoved");
-				notify.put("spaceId", space.getId());
-				notify.put("properties", "");
-			
-				contextManager.spaceUpdated(notify);
-			}catch(JSONException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+//	@Override
+//	public void setUserObjectName(String objectId, String user, String name) {
+//		HashMap<String, String> properties = new HashMap<String, String>();
+//		properties.put("ref", objectId);
+//		ArrayList<Space> spaces = contextManager.getSpacesWithPropertiesValue(properties);
+//		for(Space space : spaces) {
+//			space.addProperty("name", name);
+//			
+//			//Send notification
+//			try {
+//				JSONObject notify = new JSONObject();
+//				notify.put("reason", "spaceNameChanged");
+//				notify.put("spaceId", space.getId());
+//				notify.put("properties", "");
+//			
+//				contextManager.spaceUpdated(notify);
+//			}catch(JSONException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public String getUserObjectName(String objectId, String user) {
+//		HashMap<String, String> properties = new HashMap<String, String>();
+//		properties.put("ref", objectId);
+//		ArrayList<Space> spaces = contextManager.getSpacesWithPropertiesValue(properties);
+//		return spaces.get(0).getName();
+//	}
+//
+//	@Override
+//	public void deleteUserObjectName(String objectId, String user) {
+//		HashMap<String, String> properties = new HashMap<String, String>();
+//		properties.put("ref", objectId);
+//		ArrayList<Space> spaces = contextManager.getSpacesWithPropertiesValue(properties);
+//		for(Space space : spaces) {
+//			space.removeProperty("name");
+//			
+//			//Send notification
+//			try {
+//				JSONObject notify = new JSONObject();
+//				notify.put("reason", "spaceNameRemoved");
+//				notify.put("spaceId", space.getId());
+//				notify.put("properties", "");
+//			
+//				contextManager.spaceUpdated(notify);
+//			}catch(JSONException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 
 	@Override
 	public JSONArray getJSONSpaces() {
@@ -235,14 +235,11 @@ public class Appsgate implements AppsGateSpec {
 	}
 
 	@Override
-	public String newSpace(JSONObject place) {
+	public String newSpace(String parentId, String category, JSONObject place) {
 		try {
-			String parent = place.getString("parent");
 			String spaceId = null;
-			Space parentPlace = contextManager.getSpace(parent);
+			Space parentPlace = contextManager.getSpace(parentId);
 			if(parentPlace != null) {
-				String spaceName = place.getString("name");
-				String category = place.getString("category");
 				boolean isTagged = false;
 				ArrayList<String> tagsList =  new ArrayList<String>();
 				boolean isProperties = false;
@@ -273,9 +270,9 @@ public class Appsgate implements AppsGateSpec {
 				}
 				
 				if( isTagged && isProperties) {
-					spaceId = contextManager.addSpace(TYPE.valueOf(category), tagsList, propertiesMap, contextManager.getSpace(parent));
+					spaceId = contextManager.addSpace(TYPE.valueOf(category), tagsList, propertiesMap, contextManager.getSpace(parentId));
 				}else {
-					spaceId = contextManager.addSpace(TYPE.valueOf(category), contextManager.getSpace(parent));
+					spaceId = contextManager.addSpace(TYPE.valueOf(category), contextManager.getSpace(parentId));
 					Space spaceRef = contextManager.getSpace(spaceId);
 					if(isTagged) {
 						spaceRef.setTags(tagsList);
@@ -286,13 +283,13 @@ public class Appsgate implements AppsGateSpec {
 					}
 					
 					if(place.has("name")) {
-						spaceRef.addProperty("name", spaceName);
+						spaceRef.addProperty("name", place.getString("name"));
 					}
 				}
 				
 				return spaceId;
 			}else {
-				logger.error("No parent place found with id: "+parent);
+				logger.error("No parent place found with id: "+parentId);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -310,14 +307,13 @@ public class Appsgate implements AppsGateSpec {
 	}
 
 	@Override
-	public boolean updateSpace(JSONObject space) {
+	public boolean updateSpace(String spaceId, JSONObject space) {
 		try {
-			String spaceID = space.getString("id");
-			Space spaceRef = contextManager.getSpace(spaceID);
+			Space spaceRef = contextManager.getSpace(spaceId);
 			boolean isSuccess = true; 
 			JSONObject notify = new JSONObject();
 			notify.put("reason", "updateSpace");
-			notify.put("spaceId", spaceID);
+			notify.put("spaceId", spaceId);
 			
 			//Rename the space
 			if(space.has("name")) {

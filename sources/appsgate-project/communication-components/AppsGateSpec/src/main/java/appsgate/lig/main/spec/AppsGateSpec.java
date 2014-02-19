@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 /**
  * AppsGate specification that define all method that a client can remote call
- * to interact with the Appsgate system.
+ * to interact with the AppsGate system.
  * 
  * @author Cedric Gérard
  * @since June 19, 2013
@@ -51,32 +51,32 @@ public interface AppsGateSpec {
 	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray spaces);
 
 	
-	/***************************/
-	/** Device name management */
-	/***************************/
-	
-	/**
-	 * Call AppsGate to add a user object name 
-	 * @param objectId the object
-	 * @param user the user that name this object
-	 * @param name the new name of this object
-	 */
-	public void setUserObjectName(String objectId, String user, String name);
-	
-	/**
-	 * Get the name of an object for a specific user
-	 * @param objectId the object
-	 * @param user the user who ask
-	 * @return the name of the object named by user
-	 */
-	public String getUserObjectName(String objectId, String user);
-	
-	/**
-	 * Delete an name for an object set by a user
-	 * @param objectId the object
-	 * @param user the user who give the name to this object
-	 */
-	public void deleteUserObjectName(String objectId, String user);
+//	/***************************/
+//	/** Device name management */
+//	/***************************/
+//	
+//	/**
+//	 * Call AppsGate to add a user object name 
+//	 * @param objectId the object
+//	 * @param user the user that name this object
+//	 * @param name the new name of this object
+//	 */
+//	public void setUserObjectName(String objectId, String user, String name);
+//	
+//	/**
+//	 * Get the name of an object for a specific user
+//	 * @param objectId the object
+//	 * @param user the user who ask
+//	 * @return the name of the object named by user
+//	 */
+//	public String getUserObjectName(String objectId, String user);
+//	
+//	/**
+//	 * Delete an name for an object set by a user
+//	 * @param objectId the object
+//	 * @param user the user who give the name to this object
+//	 */
+//	public void deleteUserObjectName(String objectId, String user);
 	
 	/***************************/
 	/**    Place management    */
@@ -168,17 +168,20 @@ public interface AppsGateSpec {
 	
 	/**
 	 * Add a new space and move object in it.
+	 * @param parentId the parent node identifier
+	 * @param category the new node category
 	 * @param space the new space description and the list of object to move in
 	 * @return the new space identifier
 	 */
-	public String newSpace(JSONObject space);
+	public String newSpace(String parentId, String category, JSONObject space);
 	
 	/**
 	 * Update a space on the smart space
+	 * @param spaceId the space identifier 
 	 * @param space the new space description
 	 * @param true if the space has been updated, false otherwise
 	 */
-	public boolean updateSpace(JSONObject space);
+	public boolean updateSpace(String spaceId, JSONObject space);
 	
 	/**
 	 * Remove a space from the smart space
@@ -285,7 +288,7 @@ public interface AppsGateSpec {
 	/************************************/
 	
 	/**
-	 * Deploy a new end user program in Appsgate system
+	 * Deploy a new end user program in AppsGate system
 	 * @param jsonProgram the JSONtree of the program
 	 * @return true if the program has been deployed, false otherwise
 	 */
@@ -342,20 +345,22 @@ public interface AppsGateSpec {
 	public boolean isProgramActive(String programId);
 	
 	/************************************/
-	/**    General Appsgate commands    */
+	/**    General AppsGate commands    */
 	/************************************/
 	
 	/**
-	 * Shutdown the Appsgate system
+	 * Shutdown the AppsGate system
 	 * (Shutdown the OSGi distribution)
 	 */
 	public void shutdown();
 	
 	/**
-	 * restart the Appsgate system
+	 * restart the AppsGate system
 	 * (Restart the system bundle from OSGi)
 	 */
 	public void restart();
+	
+	
 	
 	/************************************/
 	/** Context auto-management command */
