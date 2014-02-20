@@ -5,8 +5,8 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
-import appsgate.lig.context.agregator.spec.StateDescription;
+import appsgate.lig.context.proxy.spec.ContextProxySpec;
+import appsgate.lig.context.proxy.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
@@ -41,7 +41,7 @@ class NodeState extends Node {
     private NodeEvent eventStart = null;
     private NodeEvent eventEnd = null;
 
-    private ContextAgregatorSpec context;
+    private ContextProxySpec context;
     private boolean isOnRules;
 
     private StateDescription desc = null;

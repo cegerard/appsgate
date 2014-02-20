@@ -15,6 +15,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,7 +87,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     protected void setParent(Node n) {
         this.parent = n;
     }
-    
+
     public Node getParent() {
         return parent;
     }
@@ -316,7 +317,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     /**
      * Method that return the SymbolTable description in json format
-     * @return 
+     *
+     * @return
      */
     public JSONArray getSymbolTableDescription() {
         if (symbolTable != null) {
@@ -324,7 +326,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         }
         return new JSONArray();
     }
-    
+
     /**
      * Method to find a variable by its name
      *
@@ -368,7 +370,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         }
         return null;
     }
-
 
     /**
      * Method to copy a node and the rules behind
@@ -428,6 +429,19 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     @Override
     public String getValue() {
         return null;
+    }
+
+    protected JSONArray getDevicesInSpaces(JSONArray what, JSONArray where) throws SpokExecutionException {
+        ArrayList<String> WHAT = new ArrayList<String>();
+        for (int i = 0; i < what.length(); i++) {
+            WHAT.add(what.optString(i));
+        }
+        ArrayList<String> WHERE = new ArrayList<String>();
+        for (int i = 0; i < where.length(); i++) {
+            WHERE.add(where.optString(i));
+        }
+        ArrayList<String> devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
+        return new JSONArray(devicesInSpaces);
     }
 
 }

@@ -198,7 +198,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 	
 	@Override
-	public String addSpace(TYPE type, HashMap<String, String> properties,
+	public synchronized String addSpace(TYPE type, HashMap<String, String> properties,
 			Space parent) {
 		String spaceId = String.valueOf(new String(type.toString()+new Double(Math.random())).hashCode());
 		if (!spaceObjectsMap.containsKey(spaceId)) {
@@ -215,7 +215,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 	
 	@Override
-	public String  addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties,  Space parent) {
+	public synchronized String addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties,  Space parent) {
 		
 		String spaceId = String.valueOf(new String(type.toString()+new Double(Math.random())).hashCode());
 		if (!spaceObjectsMap.containsKey(spaceId)) {
@@ -233,7 +233,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public String addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties, Space parent, ArrayList<Space> children) {
+	public synchronized String addSpace(TYPE type, ArrayList<String> tags, HashMap<String, String> properties, Space parent, ArrayList<Space> children) {
 		
 		String spaceId = String.valueOf(new String(type.toString()+new Double(Math.random())).hashCode());
 		if (!spaceObjectsMap.containsKey(spaceId)) {
@@ -254,7 +254,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 	
 	@Override
-	public String addUserSpace(Space parent, String pwsd) {
+	public synchronized String addUserSpace(Space parent, String pwsd) {
 		String spaceId = String.valueOf(new Double(Math.random()).hashCode());
 		if (!spaceObjectsMap.containsKey(spaceId)) {
 			UserSpace newspace = new UserSpace(spaceId, parent, pwsd);
@@ -270,7 +270,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public String addUserSpace(HashMap<String, String> properties,
+	public synchronized String addUserSpace(HashMap<String, String> properties,
 			Space parent, String pwd) {
 		String spaceId = String.valueOf(new Double(Math.random()).hashCode());
 		if (!spaceObjectsMap.containsKey(spaceId)) {
@@ -287,7 +287,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public String addUserSpace(ArrayList<String> tags,
+	public synchronized String addUserSpace(ArrayList<String> tags,
 			HashMap<String, String> properties, Space parent,
 			ArrayList<Space> children, String pwd) {
 		
@@ -318,6 +318,40 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			ArrayList<Space> children = (ArrayList<Space>)space.getChildren().clone();
 			for(Space child : children) {
 				child.setParent(parent);
+			}
+			if(parent != null){
+				parent.removeChild(space);
+			}
+			spaceObjectsMap.remove(space.getId());
+			notifyspace("removespace", space.getId(), space.getType().toString(), null, null, null, null);
+		
+			// save the new devices name table 
+			return saveInDB(space, OP.REMOVE, null);
+		}
+		return false;
+	}
+	
+	@Override
+	public synchronized boolean removeTree(Space space) {
+		boolean canBeRemoved = checkBeforeRemoveTree(space);
+		
+		if(canBeRemoved){
+			deleteSpace(space);
+			// save the new devices name table 
+			return saveInDB(space, OP.REMOVE, null);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean removeSpaceAndUserChildren(Space space) {
+		if(!space.getType().equals(TYPE.ROOT) && !space.getType().equals(TYPE.CATEGORY)) {
+			
+			Space parent = space.getParent();
+			@SuppressWarnings("unchecked")
+			ArrayList<Space> children = (ArrayList<Space>)space.getChildren().clone();
+			for(Space child : children) {
+				removeRemovableSpace(child, parent);
 			}
 			if(parent != null){
 				parent.removeChild(space);
@@ -368,7 +402,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 	
 	@Override
-	public Space getCurrentHabitat() {
+	public synchronized Space getCurrentHabitat() {
 		Space habitat = null;
 		for(Space space : spaceObjectsMap.values()) {
 			if(space.getType().equals(TYPE.HABITAT_CURRENT)) {
@@ -380,7 +414,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 	
 	@Override
-	public Space getDeviceRoot(Space habitat) {
+	public synchronized Space getDeviceRoot(Space habitat) {
 		Space deviceSpace = null;
 		for(Space space : habitat.getChildren()) {
 			if(space.getType().equals(TYPE.DEVICE_ROOT)) {
@@ -392,7 +426,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public Space getServiceRoot(Space habitat) {
+	public synchronized Space getServiceRoot(Space habitat) {
 		Space serviceSpace = null;
 		for(Space space : habitat.getChildren()) {
 			if(space.getType().equals(TYPE.SERVICE_ROOT)) {
@@ -404,7 +438,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public Space getUserRoot() {
+	public synchronized Space getUserRoot() {
 		Space userSpace = null;
 		for(Space space : spaceObjectsMap.values()) {
 			if(space.getType().equals(TYPE.USER_ROOT)) {
@@ -416,7 +450,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public Space getProgramRoot(Space habitat) {
+	public synchronized Space getProgramRoot(Space habitat) {
 		Space pgmSpace = null;
 		for(Space space : habitat.getChildren()) {
 			if(space.getType().equals(TYPE.PROGRAM_ROOT)) {
@@ -428,7 +462,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public Space getSpatialRoot(Space habitat) {
+	public synchronized Space getSpatialRoot(Space habitat) {
 		Space spatialSpace = null;
 		for(Space space : habitat.getChildren()) {
 			if(space.getType().equals(TYPE.SPATIAL_ROOT)) {
@@ -442,6 +476,17 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	@Override
 	public synchronized ArrayList<Space> getSpaces() {
 		return new ArrayList<Space>(spaceObjectsMap.values());
+	}
+	
+	@Override
+	public ArrayList<Space> getSpacesWithType(TYPE type) {
+		ArrayList<Space> spaceType = new ArrayList<Space>();
+		for(Space currentspace : spaceObjectsMap.values()) {
+			if(currentspace.getType().equals(type)){
+				spaceType.add(currentspace);
+			}
+		}
+		return spaceType;
 	}
 
 	@Override
@@ -506,7 +551,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public JSONObject getTreeDescription() {
+	public synchronized JSONObject getTreeDescription() {
 		Space root = getRootSpace();
 		JSONObject tree = root.getDescription();
 		
@@ -520,7 +565,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 
 	@Override
-	public JSONObject getTreeDescription(Space root) {
+	public synchronized JSONObject getTreeDescription(Space root) {
 		JSONObject subTree = root.getDescription();
 				
 		try {
@@ -533,7 +578,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	}
 	
 	@Override
-	public void spaceUpdated(JSONObject update) {
+	public synchronized void spaceUpdated(JSONObject update) {
 		try {
 			Space space = getSpace(update.getString("spaceId"));
 
@@ -567,6 +612,81 @@ public class ContextManagerImpl implements ContextManagerSpec {
 			jsonex.printStackTrace();
 		}
 
+	}
+	
+	/**
+	 * This method check a space and its subspace type to determine if
+	 * the complete tree can be removed or not
+	 * @param space the root of the tree
+	 * @param canBeRemoved determine if the space can be removed.
+	 * <b>precond</b> canBeRemoved must be set to true and it is an in/out parameter
+	 */
+	private boolean checkBeforeRemoveTree(Space space) {
+		boolean canBeRemoved = false;
+		if(!space.getType().equals(TYPE.ROOT) && !space.getType().equals(TYPE.CATEGORY)) {
+			canBeRemoved = true;
+			@SuppressWarnings("unchecked")
+			ArrayList<Space> children = (ArrayList<Space>)space.getChildren().clone();
+			for(Space child : children) {
+				canBeRemoved &= checkBeforeRemoveTree(child);
+				if(!canBeRemoved) {
+					break;
+				}
+			}
+		}
+		return canBeRemoved;
+	}
+	
+	/**
+	 * This method delete a space and its children recursively without any check
+	 * @param space the root of the sub tree to delete
+	 */
+	private void deleteSpace(Space space) {
+		Space parent = space.getParent();
+		@SuppressWarnings("unchecked")
+		ArrayList<Space> children = (ArrayList<Space>)space.getChildren().clone();
+		for(Space child : children) {
+			deleteSpace(child);
+		}
+		if(parent != null){
+			parent.removeChild(space);
+		}
+		spaceObjectsMap.remove(space.getId());
+		notifyspace("removespace", space.getId(), space.getType().toString(), null, null, null, null);
+	}
+	
+	/**
+	 * Remove only removable space and move space that can't be remove to
+	 * the next available parent
+	 * @param space the space to remove
+	 * @param parentRoot the next available parent
+	 */
+	private void removeRemovableSpace(Space space, Space parentRoot){
+		if(space.getType().equals(TYPE.PLACE) ||
+				space.getType().equals(TYPE.UNIVERSE) ||
+				space.getType().equals(TYPE.GROUP) ) {
+			
+			@SuppressWarnings("unchecked")
+			ArrayList<Space> children = (ArrayList<Space>)space.getChildren().clone();
+			for(Space child : children) {
+				removeRemovableSpace(child, parentRoot);
+			}
+			if(parentRoot != null){
+				parentRoot.removeChild(space);
+			}
+			spaceObjectsMap.remove(space.getId());
+			notifyspace("removespace", space.getId(), space.getType().toString(), null, null, null, null);
+		}else {
+			@SuppressWarnings("unchecked")
+			ArrayList<Space> children = (ArrayList<Space>)space.getChildren().clone();
+			for(Space child : children) {
+				removeRemovableSpace(child, space);
+			}
+			if(!parentRoot.equals(space.getParent())) {
+				space.setParent(parentRoot);
+				notifyspace("movespace", space.getId(), space.getType().toString(), null, null, parentRoot.getId(), null);
+			}
+		}
 	}
 
 	/**
@@ -625,6 +745,5 @@ public class ContextManagerImpl implements ContextManagerSpec {
 		this.contextHistory_pull = pull;
 		this.contextHistory_push = push;
 	}
-
 
 }

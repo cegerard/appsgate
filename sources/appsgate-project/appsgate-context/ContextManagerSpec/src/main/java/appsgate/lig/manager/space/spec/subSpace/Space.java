@@ -440,7 +440,8 @@ public class Space {
 		CATEGORY,		 // Space that hold a category
 		DEVICE,			 // Space that hold a device
 		SERVICE,		 // Space that hold a service
-		PROGRAM;		 // Space that hold a program
+		PROGRAM,		 // Space that hold a program
+		UNIVERSE,		 // Space that hold a custom universe
 	}
 
 }

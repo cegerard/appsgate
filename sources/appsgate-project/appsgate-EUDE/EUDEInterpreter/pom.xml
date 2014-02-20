@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>appsgate.components</groupId>
-            <artifactId>ContextFollowerSpec</artifactId>
+            <artifactId>ContextProxySpec</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

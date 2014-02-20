@@ -7,8 +7,9 @@ package appsgate.lig.eude.interpreter.impl;
 
 import appsgate.lig.context.agregator.ContextAgregatorMock;
 import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
-import appsgate.lig.context.follower.listeners.CoreListener;
-import appsgate.lig.context.follower.spec.ContextFollowerSpec;
+import appsgate.lig.context.proxy.listeners.CoreListener;
+import appsgate.lig.context.proxy.spec.ContextProxySpec;
+import appsgate.lig.context.proxy.spec.StateDescription;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -25,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -73,7 +75,7 @@ public class EUDEMediatorTest {
     private DataBasePullService pull_service;
     private DataBasePushService push_service;
     private RouterApAMSpec router;
-    private ContextFollowerTest contextFollower;
+    private ContextProxyTest contextProxy;
     private EUDEMediator instance;
     private JSONObject programJSON;
 
@@ -93,7 +95,7 @@ public class EUDEMediatorTest {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
-        this.contextFollower = new ContextFollowerTest();
+        this.contextProxy = new ContextProxyTest();
         final ContextAgregatorSpec c = new ContextAgregatorMock("src/test/resources/jsonLibs/toto.json");
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
@@ -108,6 +110,8 @@ public class EUDEMediatorTest {
         final NodeActionTest a = new NodeActionTest();
 
         final GenericCommand gc = context.mock(GenericCommand.class);
+        this.contextProxy = new ContextProxyTest();
+
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
@@ -136,8 +140,7 @@ public class EUDEMediatorTest {
             }
         });
         this.instance = new EUDEMediator();
-        this.instance.setTestMocks(pull_service, push_service, router, contextFollower);
-        this.instance.setContext(c);
+        this.instance.setTestMocks(pull_service, push_service, router, contextProxy);
         programJSON = new JSONObject();
         programJSON.put("id", "test");
 
@@ -396,15 +399,15 @@ public class EUDEMediatorTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhen.json")));
         boolean callProgram = instance.callProgram("TestWhen");
         Assert.assertTrue(callProgram);
-        contextFollower.notifAll("1");
+        contextProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         System.out.println("become no");
         tested.become("no");
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         tested.become("no");
-        contextFollower.notifAll("3");
+        contextProxy.notifAll("3");
         synchroniser.waitUntil(tested.is("Yes"), 500);
 
     }
@@ -420,9 +423,9 @@ public class EUDEMediatorTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhile.json")));
         boolean p = instance.callProgram("TestWhile");
         Assert.assertTrue(p);
-        contextFollower.notifAll("1");
+        contextProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("flag1"), 500);
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("flag2"), 500);
     }
 
@@ -437,7 +440,7 @@ public class EUDEMediatorTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testKeepState.json")));
         boolean p = instance.callProgram("TestKeepState");
         Assert.assertTrue(p);
-        contextFollower.notifAll("1");
+        contextProxy.notifAll("1");
     }
 
     /**
@@ -453,11 +456,11 @@ public class EUDEMediatorTest {
         Assert.assertTrue(instance.callProgram("pgm"));
         Assert.assertFalse(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
-        contextFollower.notifAll("1");
+        contextProxy.notifAll("1");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
         Assert.assertTrue(tested.isNot("yes").isActive());
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
@@ -478,9 +481,9 @@ public class EUDEMediatorTest {
         System.out.println("Start 2");
         Assert.assertTrue(instance.callProgram("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
-        contextFollower.notifAll("1");
+        contextProxy.notifAll("1");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("2");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
 //        Assert.fail("Fin");
 
@@ -492,8 +495,8 @@ public class EUDEMediatorTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhenImb.json")));
         System.out.println("Start");
         Assert.assertTrue(instance.callProgram("whenImb"));
-        contextFollower.notifAll("1");
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("1");
+        contextProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 200);
 
     }
@@ -512,7 +515,7 @@ public class EUDEMediatorTest {
     /**
      * Class to make some tests on the events
      */
-    public class ContextFollowerTest implements ContextFollowerSpec {
+    public class ContextProxyTest implements ContextProxySpec {
 
         private final ConcurrentLinkedQueue<CoreListener> list = new ConcurrentLinkedQueue<CoreListener>();
 
@@ -539,6 +542,27 @@ public class EUDEMediatorTest {
             }
             System.out.println("NotifAll End " + msg);
 
+        }
+
+		@Override
+		public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
+				ArrayList<String> spaces) {
+			return new ArrayList<String>();
+		}
+
+        @Override
+        public List<String> getSubtypes(List<String> typeList) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public StateDescription getEventsFromState(String type, String stateName) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String getBrickType(String targetId) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
     }

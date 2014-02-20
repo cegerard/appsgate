@@ -1,4 +1,4 @@
-package appsgate.lig.context.follower.listeners;
+package appsgate.lig.context.proxy.listeners;
 
 /**
  * This interface describe a core listener to by notified when a specific

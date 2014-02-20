@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 /**
  * AppsGate specification that define all method that a client can remote call
- * to interact with the Appsgate system.
+ * to interact with the AppsGate system.
  * 
  * @author Cedric Gérard
  * @since June 19, 2013
@@ -51,32 +51,32 @@ public interface AppsGateSpec {
 	public JSONArray getDevicesInSpaces(JSONArray typeList, JSONArray spaces);
 
 	
-	/***************************/
-	/** Device name management */
-	/***************************/
-	
-	/**
-	 * Call AppsGate to add a user object name 
-	 * @param objectId the object
-	 * @param user the user that name this object
-	 * @param name the new name of this object
-	 */
-	public void setUserObjectName(String objectId, String user, String name);
-	
-	/**
-	 * Get the name of an object for a specific user
-	 * @param objectId the object
-	 * @param user the user who ask
-	 * @return the name of the object named by user
-	 */
-	public String getUserObjectName(String objectId, String user);
-	
-	/**
-	 * Delete an name for an object set by a user
-	 * @param objectId the object
-	 * @param user the user who give the name to this object
-	 */
-	public void deleteUserObjectName(String objectId, String user);
+//	/***************************/
+//	/** Device name management */
+//	/***************************/
+//	
+//	/**
+//	 * Call AppsGate to add a user object name 
+//	 * @param objectId the object
+//	 * @param user the user that name this object
+//	 * @param name the new name of this object
+//	 */
+//	public void setUserObjectName(String objectId, String user, String name);
+//	
+//	/**
+//	 * Get the name of an object for a specific user
+//	 * @param objectId the object
+//	 * @param user the user who ask
+//	 * @return the name of the object named by user
+//	 */
+//	public String getUserObjectName(String objectId, String user);
+//	
+//	/**
+//	 * Delete an name for an object set by a user
+//	 * @param objectId the object
+//	 * @param user the user who give the name to this object
+//	 */
+//	public void deleteUserObjectName(String objectId, String user);
 	
 	/***************************/
 	/**    Place management    */
@@ -168,24 +168,43 @@ public interface AppsGateSpec {
 	
 	/**
 	 * Add a new space and move object in it.
+	 * @param parentId the parent node identifier
+	 * @param category the new node category
 	 * @param space the new space description and the list of object to move in
 	 * @return the new space identifier
 	 */
-	public String newSpace(JSONObject space);
+	public String newSpace(String parentId, String category, JSONObject space);
 	
 	/**
 	 * Update a space on the smart space
+	 * @param spaceId the space identifier 
 	 * @param space the new space description
 	 * @param true if the space has been updated, false otherwise
 	 */
-	public boolean updateSpace(JSONObject space);
+	public boolean updateSpace(String spaceId, JSONObject space);
 	
 	/**
-	 * Remove a space from the smart space
+	 * Remove a space from the smart space and move up its children
 	 * @param id the space identifier
 	 * @return true if the space has been removed, false otherwise
 	 */
 	public boolean removeSpace(String id);
+	
+	/**
+	 * Remove a space from the smart space and all its children if it is possible
+	 * @param id the space identifier
+	 * @return true if the space has been removed, false otherwise
+	 */
+	public boolean removeTree(String id);
+	
+	/**
+	 * Remove a space from the smart space and its children that can be removed, if
+	 * not they are moved up in the tree;
+	 * @param id the space identifier
+	 * @return true if the space has been removed, false otherwise
+	 */
+	public boolean removeSpaceAndUserChildren(String id);
+	
 	
 	/**
 	 * Add a tag to the tag of list of the specified space
@@ -235,12 +254,9 @@ public interface AppsGateSpec {
 	 * Create a new end user
 	 * @param login the user identifier
 	 * @param password the user password
-	 * @param lastName the user last name
-	 * @param firstName the user first name
-	 * @param role the user role
 	 * @return the user space id
 	 */
-	public String createUser(String login, String password, String lastName, String firstName, String role);
+	public String createUser(String login, String password);
 	
 	/**
 	 * Delete an existing end user
@@ -257,13 +273,6 @@ public interface AppsGateSpec {
 	 */
 	public JSONObject getUserDetails(String id);
 	
-//	/**
-//	 * Get all information on a specify user
-//	 * @param id the identifier of the user
-//	 * @return user information as a JSONObject
-//	 */
-//	public JSONObject getUserFullDetails(String id);
-	
 	/**
 	 * Check if the wanted identifier already existing.
 	 * @param id the identifier to check
@@ -271,48 +280,31 @@ public interface AppsGateSpec {
 	 */
 	public boolean checkIfLoginIsFree(String id);
 	
-//	/**
-//	 * Synchronize a web service account with an end user profile
-//	 * @param id the end user identifier
-//	 * @param password the end user password
-//	 * @param accountDetails all service account needed to be connected
-//	 * @return true if the service account has been synchronized, false otherwise
-//	 */
-//	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails);
-//	
-//	/**
-//	 * delete service account synchronization
-//	 * @param id the end user identifier
-//	 * @param password the end user password
-//	 * @param accountDetails all information needed to removed connection
-//	 * @return true it the synchronization has been canceled, false otherwise.
-//	 */
-//	public boolean desynchronizedAccount(String id, String password, JSONObject accountDetails);
-//	
-//	/**
-//	 * Associate a device to an end user
-//	 * @param id the end user identifier
-//	 * @param password the end user password
-//	 * @param deviceId the device identifier
-//	 * @return true if the association has been completed, false otherwise
-//	 */
-//	public boolean associateDevice(String id, String password, String deviceId);
-//	
-//	/**
-//	 * Remove end user and device association
-//	 * @param id the end user identifier
-//	 * @param password the end user password
-//	 * @param deviceId the device identifier
-//	 * @return true if the association has been deleted, false otherwise
-//	 */
-//	public boolean separateDevice(String id, String password, String deviceId);
+	/**
+	 * Synchronize a web service account with an end user profile
+	 * @param id the end user identifier
+	 * @param password the end user password
+	 * @param accountDetails all service account needed to be connected
+	 * @return true if the service account has been synchronized, false otherwise
+	 */
+	public boolean synchronizeAccount(String id, String password, JSONObject accountDetails);
+	
+	/**
+	 * delete service account synchronization
+	 * @param id the end user identifier
+	 * @param password the end user password
+	 * @param accountDetails all information needed to removed connection
+	 * @return true it the synchronization has been canceled, false otherwise.
+	 */
+	public boolean desynchronizeAccount(String id, String password, JSONObject accountDetails);
+
 	
 	/************************************/
 	/**   End User programs management  */
 	/************************************/
 	
 	/**
-	 * Deploy a new end user program in Appsgate system
+	 * Deploy a new end user program in AppsGate system
 	 * @param jsonProgram the JSONtree of the program
 	 * @return true if the program has been deployed, false otherwise
 	 */
@@ -369,17 +361,17 @@ public interface AppsGateSpec {
 	public boolean isProgramActive(String programId);
 	
 	/************************************/
-	/**    General Appsgate commands    */
+	/**    General AppsGate commands    */
 	/************************************/
 	
 	/**
-	 * Shutdown the Appsgate system
+	 * Shutdown the AppsGate system
 	 * (Shutdown the OSGi distribution)
 	 */
 	public void shutdown();
 	
 	/**
-	 * restart the Appsgate system
+	 * restart the AppsGate system
 	 * (Restart the system bundle from OSGi)
 	 */
 	public void restart();
