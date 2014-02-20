@@ -65,7 +65,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 		//restore spaces from data base
 		JSONObject spaceMap = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
 		if(spaceMap != null){
-//			HashMap<String, List<String>> tempChildrenMap = new HashMap<String, List<String>>();
+			HashMap<String,String> tempNodeParentMap = new HashMap<String, String>();
 			try {
 				JSONArray state = spaceMap.getJSONArray("state");
 				int length = state.length();
@@ -80,11 +80,13 @@ public class ContextManagerImpl implements ContextManagerSpec {
 					String parentId = jsonspace.getString("parent");
 					JSONArray tags = jsonspace.getJSONArray("tags");
 					JSONArray properties = jsonspace.getJSONArray("properties");
-					//JSONArray children = jsonspace.getJSONArray("children");
+					
+					if(!parentId.contentEquals("null")) {
+						tempNodeParentMap.put(spaceId, parentId);
+					}
 					
 					ArrayList<String> tagsList = new ArrayList<String>();
 					HashMap<String, String> propertiesList = new HashMap<String, String>();
-					//ArrayList<String> coreObjectList = new ArrayList<String>();
 					
 					int iTagsArray = 0;
 					int tagsArrayLength = tags.length();
@@ -102,28 +104,9 @@ public class ContextManagerImpl implements ContextManagerSpec {
 						ipropArray++;
 					}
 					
-//					int ideviceArray = 0;
-//					int deviceArrayLength = devices.length();
-//					while(ideviceArray < deviceArrayLength) {
-//						coreObjectList.add(devices.getString(ideviceArray));
-//						ideviceArray++;
-//					}
-					
-//					JSONArray children = jsonspace.getJSONArray("children");
-//					ArrayList<String> childIdList = new ArrayList<String>();
-//					int ichildArray = 0;
-//					int childArrayLength = children.length();
-//					while(ichildArray < childArrayLength) {
-//						childIdList.add(children.getString(ichildArray));
-//						ichildArray++;
-//					}
-//					if(childArrayLength > 0) {
-//						tempChildrenMap.put(spaceId, childIdList);
-//					}
-					
 					Space loc;
 					if(type.contentEquals(TYPE.USER.toString())) {
-						loc = new UserSpace(spaceId, tagsList, propertiesList, spaceObjectsMap.get(parentId), jsonspace.getString("hashPSWD"));
+						loc = new UserSpace(spaceId, tagsList, propertiesList, null, jsonspace.getString("hashPSWD"));
 						UserSpace user = (UserSpace)loc;
 						JSONArray accounts = jsonspace.getJSONArray("accounts");
 						int nbAccount = accounts.length();
@@ -133,21 +116,19 @@ public class ContextManagerImpl implements ContextManagerSpec {
 							accountCpt++;
 						}
 					}else {
-						loc = new Space(spaceId, TYPE.valueOf(type), tagsList, propertiesList, spaceObjectsMap.get(parentId));
+						loc = new Space(spaceId, TYPE.valueOf(type), tagsList, propertiesList, null);
 					}
 
 					spaceObjectsMap.put(spaceId, loc);
 					i++;
 				}
 				
-//				//Restore children if any
-//				for(String key : tempChildrenMap.keySet()) {
-//					Space loc = spaceObjectsMap.get(key);
-//					List<String> childrenList = tempChildrenMap.get(key);
-//					for(String child : childrenList) {
-//						loc.addChild(spaceObjectsMap.get(child));
-//					}
-//				}
+				//Restore Parent/child link if any
+				for(String spaceId : tempNodeParentMap.keySet()) {
+					Space loc = spaceObjectsMap.get(spaceId);
+					Space ParentLoc = spaceObjectsMap.get(tempNodeParentMap.get(spaceId));
+					loc.setParent(ParentLoc);
+				}
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
