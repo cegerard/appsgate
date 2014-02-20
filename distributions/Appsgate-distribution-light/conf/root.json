@@ -1,12 +1,12 @@
 {
-    "id": "",
+    "id": "program-0",
     "runningState": "STARTED",
     "userSource": "",
     "name": "init",
     "daemon": false,
     "parameters": [],
     "header": {
-        "author": "SuperUser"
+        "author": "superUser"
     },
     "definitions": [
     ],

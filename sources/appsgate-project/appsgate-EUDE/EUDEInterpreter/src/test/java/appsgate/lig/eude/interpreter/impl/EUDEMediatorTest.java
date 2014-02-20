@@ -507,7 +507,7 @@ public class EUDEMediatorTest {
     @Test
     public void testIsThereARootProgram() {
         System.out.println("Test root program");
-        Assert.assertNotNull("There must be a root program", instance.getNodeProgram("root"));
+        Assert.assertNotNull("There must be a root program", instance.getNodeProgram("program-0"));
     }
     /**
      * Class to make some tests on the events

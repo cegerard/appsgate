@@ -39,8 +39,6 @@
 			<version>${osgi.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
-
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>RouterApAMSpec</artifactId>

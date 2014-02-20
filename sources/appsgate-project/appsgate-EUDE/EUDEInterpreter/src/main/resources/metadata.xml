@@ -13,7 +13,7 @@
 		<ipojo:requires field="contextHistory_push"/>
 	</implementation>
 	
-	<apam-instance name="EUDEInterpreterInst" implementation="EUDEMediator">
-	</apam-instance>
+<!-- 	<apam-instance name="EUDEInterpreterInst" implementation="EUDEInterpreterImpl"> -->
+<!-- 	</apam-instance> -->
 
 </apam>

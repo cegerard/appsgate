@@ -23,7 +23,7 @@ public interface DataBasePushService {
 	 * @param properties the complete object state
 	 * @return true if the save is done correctly false otherwise
 	 */
-	public boolean pushData_add(   String name, String userID, String objectID, String addedValue, ArrayList<Map.Entry<String, Object>> properties);
+	public boolean pushData_add(String name, String userID, String objectID, String addedValue, ArrayList<Map.Entry<String, Object>> properties);
 	
 	/**
 	 * Push the last state of an object name "name". The state is represent by a set of properties
@@ -61,7 +61,7 @@ public interface DataBasePushService {
 	 * @param properties the complete object state
 	 * @return true if the save is done correctly false otherwise
 	 */
-	public boolean pushData_add(   String name, String objectID, String addedValue, ArrayList<Map.Entry<String, Object>> properties);
+	public boolean pushData_add(String name, String objectID, String addedValue, ArrayList<Map.Entry<String, Object>> properties);
 	
 	/**
 	 * Push the last state of an object name "name". The state is represent by a set of properties

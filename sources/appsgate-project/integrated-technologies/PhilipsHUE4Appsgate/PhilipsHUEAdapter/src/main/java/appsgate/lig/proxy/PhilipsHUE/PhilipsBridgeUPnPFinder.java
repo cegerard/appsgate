@@ -147,6 +147,7 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 		pb.getBridgeConfigurations(new BridgeConfListener(pb));
 		adapter.notifyNewBridge(pb);
 		removeBridgeFromUnauthorizedList(phbc.getIpAddress());
+		status = IDLE; 
 	}
 
 	@Override
@@ -225,9 +226,9 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
         	
         } else if(code != PHHueError.BRIDGE_ALREADY_CONNECTED) { //We just ignore the bridge already connected error case
 			logger.debug("onError(int code : " + code + ", String message : "+ message + ")");
-			if (status == SEARCHING_AP) {
-				sm.upnpSearch();
-			}
+//			if (status == SEARCHING_AP) {
+//				sm.upnpSearch();
+//			}
 		}
 		
 		}catch(JSONException e){

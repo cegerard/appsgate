@@ -17,9 +17,7 @@ import appsgate.lig.context.follower.listeners.CoreListener;
 import appsgate.lig.context.follower.spec.ContextFollowerSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.manager.space.spec.Space;
 import appsgate.lig.manager.space.spec.SpaceManagerSpec;
-import appsgate.lig.manager.space.spec.Space.TYPE;
 
 /**
  * This class is use to allow other components to subscribe for specific

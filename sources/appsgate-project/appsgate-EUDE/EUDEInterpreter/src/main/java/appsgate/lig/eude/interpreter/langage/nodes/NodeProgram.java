@@ -10,7 +10,9 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,13 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeProgram extends Node {
 
+    public Collection<NodeProgram> getSubPrograms() {
+        if (subPrograms != null) {
+            return subPrograms.values();
+        }
+        return new HashSet<NodeProgram>();
+    }
+
     /**
      * Program running state static enumeration
      *
@@ -34,16 +43,16 @@ public class NodeProgram extends Node {
      * @since September 13, 2013
      */
     public static enum RUNNING_STATE {
-        
+
         DEPLOYED("DEPLOYED"), STARTED("STARTED"), FAILED("FAILED"),
         STOPPED("STOPPED"), PAUSED("PAUSED");
-        
+
         private String name = "";
-        
+
         RUNNING_STATE(String name) {
             this.name = name;
         }
-        
+
         @Override
         public String toString() {
             return name;
@@ -82,7 +91,7 @@ public class NodeProgram extends Node {
      * Sequence of rules to interpret
      */
     private Node body;
-    
+
     private HashMap<String, NodeProgram> subPrograms;
 
     /**
@@ -126,10 +135,10 @@ public class NodeProgram extends Node {
         if (programJSON.has("runningState")) {
             runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
         }
-        
+
         update(programJSON);
     }
-    
+
     @Override
     public EUDEMediator getMediator() {
         return this.mediator;
@@ -147,10 +156,10 @@ public class NodeProgram extends Node {
 
         //  this.programJSON = json;
         userSource = json.optString("userSource");
-        
+
         name = getJSONString(json, "name");
         header = getJSONObject(json, "header");
-        
+
         this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions")));
         if (json.has("daemon")) {
             daemon = json.optBoolean("daemon");
@@ -158,11 +167,11 @@ public class NodeProgram extends Node {
             daemon = false;
         }
         body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
-        
+
         return true;
-        
+
     }
-    
+
     public boolean pause() {
         // TODO Auto-generated method stub
         return false;
@@ -197,7 +206,7 @@ public class NodeProgram extends Node {
         }
         return null;
     }
-    
+
     @Override
     public void stop() {
         if (runningState == RUNNING_STATE.STARTED && !isStopping()) {
@@ -212,7 +221,7 @@ public class NodeProgram extends Node {
             LOGGER.warn("Trying to stop {}, while being at state {}", this, this.runningState);
         }
     }
-    
+
     @Override
     protected void specificStop() {
     }
@@ -223,13 +232,13 @@ public class NodeProgram extends Node {
     public void setDeployed() {
         setRunningState(RUNNING_STATE.DEPLOYED);
     }
-    
+
     @Override
     public void startEventFired(StartEvent e) {
         LOGGER.debug("The start event ({}) has been catched by {}", e.getSource(), this);
         setRunningState(RUNNING_STATE.STARTED);
     }
-    
+
     @Override
     public void endEventFired(EndEvent e) {
         if (isDaemon()) {
@@ -278,7 +287,13 @@ public class NodeProgram extends Node {
      * @return the user input source
      */
     public String getUserSource() {
-        return userSource;
+        if (userSource.isEmpty()) {
+            return getExpertProgramScript();
+
+        } else {
+            return userSource;
+
+        }
     }
 
     /**
@@ -304,12 +319,12 @@ public class NodeProgram extends Node {
         this.runningState = runningState;
         getMediator().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
     }
-    
+
     @Override
     public String toString() {
         return "[Node Program : " + name + "]";
     }
-    
+
     @Override
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
@@ -321,25 +336,25 @@ public class NodeProgram extends Node {
             o.put("daemon", daemon);
             o.put("header", header);
             o.put("package", getPath());
-            
-            o.put("userSource", userSource);
+
+            o.put("userSource", getUserSource());
             o.put("body", body.getJSONDescription());
-            
+
             o.put("definitions", getSymbolTableDescription());
-            
+
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
         }
         return o;
-        
+
     }
 
     /**
      * @return the script of a program, more readable than the json structure
      */
     @Override
-    
+
     public String getExpertProgramScript() {
         SymbolTable vars = new SymbolTable();
         this.setSymbolTable(vars);
@@ -351,10 +366,12 @@ public class NodeProgram extends Node {
      */
     private String getHeader() {
         String ret = "";
-        ret += "Author: " + getAuthor() + "\n";
+        if (!getAuthor().isEmpty()) {
+            ret += "Author: " + getAuthor() + "\n";
+        }
         return ret;
     }
-    
+
     @Override
     protected Node copy(Node parent) {
         NodeProgram ret = new NodeProgram(getMediator(), parent);
@@ -363,8 +380,8 @@ public class NodeProgram extends Node {
         ret.name = name;
         ret.daemon = daemon;
         ret.header = new JSONObject(header);
-        
-        ret.userSource = userSource;
+
+        ret.userSource = getUserSource();
         if (body != null) {
             ret.body = body.copy(ret);
         }
@@ -383,7 +400,7 @@ public class NodeProgram extends Node {
             return p.getPath() + "." + id;
         }
     }
-    
+
     /**
      * Add a sub program if no program already exists
      *
@@ -406,7 +423,7 @@ public class NodeProgram extends Node {
 
     /**
      * Retrieve a program with a given id
-     * 
+     *
      * @param id the name of the program
      * @return the program corresponding to the name if it exists, null
      * otherwise
@@ -418,12 +435,13 @@ public class NodeProgram extends Node {
         }
         return subPrograms.get(id);
     }
-    
+
     /**
      * Remove a sub program from the list of sub programs
-     * 
+     *
      * @param id the id of the sub program
-     * @return true if the program has been removed, false if the program did not exist
+     * @return true if the program has been removed, false if the program did
+     * not exist
      */
     public boolean removeSubProgram(String id) {
         if (subPrograms.containsKey(id)) {

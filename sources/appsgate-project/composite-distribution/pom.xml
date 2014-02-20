@@ -34,7 +34,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>PlaceManager</artifactId>
+			<artifactId>ContextManager</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -43,16 +43,16 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>UserBaseImpl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>DeviceNameTable</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>appsgate.components</groupId> -->
+<!-- 			<artifactId>UserBaseImpl</artifactId> -->
+<!-- 			<version>${project.version}</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>appsgate.components</groupId> -->
+<!-- 			<artifactId>DeviceNameTable</artifactId> -->
+<!-- 			<version>${project.version}</version> -->
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>appsgate.components</groupId>

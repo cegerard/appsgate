@@ -33,6 +33,8 @@ import appsgate.lig.router.spec.RouterApAMSpec;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * This class is the interpreter component for end user development environment.
@@ -102,17 +104,14 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         mapPrograms = new HashMap<String, NodeProgram>();
         mapCoreNodeEvent = new HashMap<CoreEventListener, ArrayList<NodeEvent>>();
         root = initRootProgram();
-        mapPrograms.put("root", root);
+        mapPrograms.put(root.getId(), root);
     }
 
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-
         LOGGER.debug("A new instance of Mediator is created");
-
-        
         restorePrograms();
         LOGGER.debug("The interpreter component is initialized");
     }
@@ -133,19 +132,11 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
 
     @Override
     public boolean addProgram(JSONObject programJSON) {
-        NodeProgram p;
-
-        // initialize a program node from the JSON
-        try {
-            p = new NodeProgram(this, programJSON, null);
-        } catch (SpokException e) {
-            LOGGER.error("Node error detected while loading a program: {}", e.getMessage());
-            LOGGER.debug("json desc: {}", programJSON.toString());
+        NodeProgram p = putProgram(programJSON);
+        if (p == null) {
+            LOGGER.debug("Unable to add program");
             return false;
         }
-
-        mapPrograms.put(p.getId(), p);
-
         //save program map state
         if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), getProgramsDesc())) {
             p.setDeployed();
@@ -165,16 +156,19 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             LOGGER.error("The program " + programId + " does not exist.");
             return false;
         }
+        if (p == root) {
+            LOGGER.error("trying to remove the root program : this operation is not authorized");
+            return false;
+        }
         p.stop();
         p.removeEndEventListener(this);
         // remove the sub program from its father
         NodeProgram parent = (NodeProgram) p.getParent();
         if (parent == null) {
-            LOGGER.error("trying to remove the root program : this operation is not authorized");
-            return false;
+            LOGGER.warn("trying to remove a program without parent");
+        } else {
+            parent.removeSubProgram(programId);
         }
-        parent.removeSubProgram(programId);
-
         mapPrograms.remove(programId);
 
         //save program map state
@@ -211,7 +205,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             }
 
             if (p.update(jsonProgram)) {
-                notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getJSONSource(), p.getUserSource());
+                notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getJSONDescription(), p.getUserSource());
                 //save program map state
 
                 if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), getProgramsDesc())) {
@@ -260,6 +254,18 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         }
 
         return false;
+    }
+
+    /**
+     *
+     */
+    public List<String> getListProgramIds(NodeProgram node) {
+        List<String> list = new ArrayList<String>();
+        list.add(node.getId());
+        for (NodeProgram n : node.getSubPrograms()) {
+            list.addAll(getListProgramIds(n));
+        }
+        return list;
     }
 
     @Override
@@ -481,14 +487,14 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      */
     private ArrayList<Entry<String, Object>> getProgramsDesc() {
         ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
-        for (String key : mapPrograms.keySet()) {
+        for (String key : getListProgramIds(root)) {
             properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getJSONDescription().toString()));
         }
         return properties;
     }
 
     /**
-     *
+     * Retrieve the programs from database and put them in the interpreter
      */
     private void restorePrograms() {
         LOGGER.debug("Restore interpreter program list from database");
@@ -499,8 +505,12 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
                 for (int i = 0; i < state.length(); i++) {
                     JSONObject obj = state.getJSONObject(i);
                     String key = (String) obj.keys().next();
-                    NodeProgram np = new NodeProgram(this, new JSONObject(obj.getString(key)), null);
-                    mapPrograms.put(key, np);
+                    NodeProgram np;
+                    np = putProgram(new JSONObject(obj.getString(key)));
+                    if (np == null) {
+                        LOGGER.error("Unable to restore a program");
+                        return;
+                    }
                     if (np.getRunningState() == RUNNING_STATE.STARTED) {
                         //TODO:Restore complete interpreter and programs state
                         this.callProgram(np.getId());
@@ -508,8 +518,6 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
                 }
             } catch (JSONException e) {
                 LOGGER.warn("JSONException: {}", e.getMessage());
-            } catch (SpokException e) {
-                LOGGER.warn(e.getMessage());
             }
         }
 
@@ -547,6 +555,43 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             LOGGER.debug(ex.getMessage());
         }
         return null;
+    }
+
+    /**
+     *
+     * @param programJSON
+     * @return
+     */
+    private NodeProgram getProgramParent(JSONObject programJSON) {
+        String parentId = programJSON.optString("package");
+        if (parentId == null || parentId.isEmpty()) {
+            return null;
+        }
+        if (mapPrograms.containsKey(parentId)) {
+            return mapPrograms.get(parentId);
+        }
+        return null;
+    }
+
+    private NodeProgram putProgram(JSONObject programJSON) {
+        NodeProgram p;
+
+        NodeProgram parent = getProgramParent(programJSON);
+
+        // initialize a program node from the JSON
+        try {
+            p = new NodeProgram(this, programJSON, parent);
+        } catch (SpokException e) {
+            LOGGER.error("Node error detected while loading a program: {}", e.getMessage());
+            LOGGER.debug("json desc: {}", programJSON.toString());
+            return null;
+        }
+        if (parent != null && !parent.addSubProgram(p.getId(), p)) {
+            LOGGER.error("The program already has a subprogram of this id");
+            return null;
+        }
+        mapPrograms.put(p.getId(), p);
+        return p;
     }
 
     /**

@@ -458,6 +458,8 @@ public class Appsgate implements AppsGateSpec {
 	}
 	
 
+	
+
 	@Override
 	public JSONObject getTreeDescription() {
 		return spaceManager.getTreeDescription();
@@ -522,7 +524,6 @@ public class Appsgate implements AppsGateSpec {
 		return false;
 
 	}
-
 
 	@Override
 	public boolean addProperty(String placeId, String key, String value) {
