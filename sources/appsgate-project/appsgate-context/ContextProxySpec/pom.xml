@@ -8,9 +8,9 @@
 		<version>1.0.0</version>
 	</parent>
 
-    <artifactId>ContextFollowerSpec</artifactId>
+    <artifactId>ContextProxySpec</artifactId>
     <packaging>bundle</packaging>
-    <name>ContextFollowerSpec OSGi Bundle</name>
+    <name>ContextProxySpec OSGi Bundle</name>
 
 	<!-- Repositories List -->
 

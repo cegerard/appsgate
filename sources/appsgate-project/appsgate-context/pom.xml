@@ -40,8 +40,8 @@
 	<modules>
 		<module>ContextManager</module>
 		<module>ContextManagerSpec</module>
-		<module>ContextFollower</module>
-		<module>ContextFollowerSpec</module>
+		<module>ContextProxy</module>
+		<module>ContextProxySpec</module>
 		<module>ContextHistorySpec</module>
 		<module>PropertyHistoryManagerSpec</module>
 		<module>MongoDBConfigurationImpl</module>

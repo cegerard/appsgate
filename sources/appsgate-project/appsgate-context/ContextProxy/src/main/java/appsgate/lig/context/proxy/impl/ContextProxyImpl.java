@@ -1,4 +1,4 @@
-package appsgate.lig.context.follower.impl;
+package appsgate.lig.context.proxy.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
-import appsgate.lig.context.follower.listeners.CoreListener;
-import appsgate.lig.context.follower.spec.ContextFollowerSpec;
+import appsgate.lig.context.proxy.listeners.CoreListener;
+import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.manager.context.spec.ContextManagerSpec;
@@ -29,12 +29,12 @@ import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
  * @since May 28, 2013
  * @version 1.0.0
  */
-public class ContextFollowerImpl implements ContextFollowerSpec {
+public class ContextProxyImpl implements ContextProxySpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory.getLogger(ContextFollowerImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(ContextProxyImpl.class);
 	
 	/**
 	 * Events subscribers list
@@ -140,6 +140,46 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		}
 
 		logger.debug("Listeners deleted");
+	}
+	
+	@Override
+	public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
+			ArrayList<String> spaces) {
+		
+		ArrayList<Space> spacesList = new ArrayList<Space>();
+		ArrayList<String> coreObject = new ArrayList<String>();
+			
+		//First get all Space from their space id, if the spaces array if empty
+		//we get only the root space
+		if(!spaces.isEmpty()) {
+			for(String spaceId : spaces){
+				spacesList.add(contextManager.getSpace(spaceId));
+			}
+		}else {
+			spacesList.add(contextManager.getRootSpace());
+		}
+			
+		// For each selected space we check if one of its descendant
+		// match any type in the type list
+		for(Space place : spacesList) {
+			ArrayList<Space> subSpaces = place.getSubSpaces();
+			for(Space subSpace : subSpaces) {
+				//TODO the TYPE.DEVICE check will be move latter with service integration
+				//If no type is specified we get all devices
+				if(!typeList.isEmpty()) {
+					if(subSpace.getType().equals(TYPE.DEVICE) && typeList.contains(subSpace.getPropertyValue("type"))) {
+						coreObject.add(subSpace.getPropertyValue("ref"));
+					}
+				}else {
+					if(subSpace.getType().equals(TYPE.DEVICE)) {
+						coreObject.add(subSpace.getPropertyValue("ref"));
+					}
+				}
+			}
+		}
+		
+		return coreObject;
+
 	}
 
 	/**
@@ -307,6 +347,5 @@ public class ContextFollowerImpl implements ContextFollowerSpec {
 		}
 		
 	}
-	
 
 }

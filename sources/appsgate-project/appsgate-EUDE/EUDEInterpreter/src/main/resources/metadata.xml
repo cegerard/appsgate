@@ -6,7 +6,7 @@
 	<implementation name="EUDEInterpreterImpl" classname="appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl" specification="EUDEInterpreterSpec" singleton="true" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<relation field="router" fail="wait" resolve="exist"/>
-		<relation field="contextFollower" fail="wait" resolve="exist"/>
+		<relation field="contextProxy" fail="wait" resolve="exist"/>
 		<ipojo:requires field="contextHistory_pull"/>
 		<ipojo:requires field="contextHistory_push"/>
 	</implementation>

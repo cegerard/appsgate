@@ -8,9 +8,9 @@
 		<version>1.0.0</version>
 	</parent>
 
-    <artifactId>ContextFollower</artifactId>
+    <artifactId>ContextProxy</artifactId>
     <packaging>bundle</packaging>
-    <name>ContextFollowerImpl OSGi Bundle</name>
+    <name>ContextProxyImpl OSGi Bundle</name>
 
 
 	<!-- Repositories List -->
@@ -19,7 +19,7 @@
     <dependencies>
      	<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>ContextFollowerSpec</artifactId>
+			<artifactId>ContextProxySpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

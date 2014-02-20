@@ -13,8 +13,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.context.follower.listeners.CoreListener;
-import appsgate.lig.context.follower.spec.ContextFollowerSpec;
+import appsgate.lig.context.proxy.listeners.CoreListener;
+import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -48,10 +48,10 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
     private static final Logger LOGGER = LoggerFactory.getLogger(EUDEInterpreterImpl.class);
 
     /**
-     * Reference to the ApAM context follower. Used to be notified when
+     * Reference to the ApAM context proxy. Used to be notified when
      * something happen.
      */
-    private ContextFollowerSpec contextFollower;
+    private ContextProxySpec contextProxy;
 
     /**
      * Reference to the ApAM router. Used to send action to the objects
@@ -129,7 +129,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
         LOGGER.debug("The router interpreter components has been stopped");
         // delete the event listeners from the context
         for (CoreEventListener listener : mapCoreNodeEvent.keySet()) {
-            contextFollower.deleteListener(listener);
+            contextProxy.deleteListener(listener);
         }
 
         //save program map state
@@ -362,7 +362,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
             nodeList.add(nodeEvent);
 
             // add the listener to the context
-            contextFollower.addListener(listener);
+            contextProxy.addListener(listener);
 
             // fill the map with the new entry
             mapCoreNodeEvent.put(listener, nodeList);
@@ -399,7 +399,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
             LOGGER.debug("Remove nodeEvent from listener list.");
             // remove the listener if there is no node any more to notify
             if (nodeEventList.isEmpty()) {
-                contextFollower.deleteListener(cel);
+                contextProxy.deleteListener(cel);
                 mapCoreNodeEvent.remove(cel);
                 LOGGER.debug("Remove node event listener list.");
             }
@@ -492,7 +492,7 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
                     LOGGER.debug("Notifying node: {}",n);
                     n.coreEventFired();
                 }
-                contextFollower.deleteListener(this);
+                contextProxy.deleteListener(this);
             }
         }
 
@@ -530,11 +530,11 @@ public class EUDEInterpreterImpl implements EUDE_InterpreterSpec, StartEventList
      * @param pull
      * @param push
      */
-    public void setTestMocks(DataBasePullService pull, DataBasePushService push, RouterApAMSpec router, ContextFollowerSpec c) {
+    public void setTestMocks(DataBasePullService pull, DataBasePushService push, RouterApAMSpec router, ContextProxySpec c) {
         this.contextHistory_pull = pull;
         this.contextHistory_push = push;
         this.router = router;
-        this.contextFollower = c;
+        this.contextProxy = c;
     }
     
     @Override

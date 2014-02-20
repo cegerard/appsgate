@@ -40,8 +40,6 @@ import appsgate.lig.manager.space.spec.subSpace.UserSpace;
 import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
-
-
 /**
  * This class is the central component for AppsGate server. It allow client part
  * to make methods call from HMI managers.

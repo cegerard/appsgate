@@ -5,8 +5,8 @@
  */
 package appsgate.lig.eude.interpreter.impl;
 
-import appsgate.lig.context.follower.listeners.CoreListener;
-import appsgate.lig.context.follower.spec.ContextFollowerSpec;
+import appsgate.lig.context.proxy.listeners.CoreListener;
+import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -69,7 +69,7 @@ public class EUDEInterpreterImplTest {
     private DataBasePullService pull_service;
     private DataBasePushService push_service;
     private RouterApAMSpec router;
-    private ContextFollowerTest contextFollower;
+    private ContextProxyTest contextProxy;
     private EUDEInterpreterImpl instance;
     private JSONObject programJSON;
 
@@ -89,7 +89,7 @@ public class EUDEInterpreterImplTest {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
-        this.contextFollower = new ContextFollowerTest();
+        this.contextProxy = new ContextProxyTest();
 
         final GenericCommand gc = new GenericCommand(null, null, this, null);
         tested = context.states("NotYet");
@@ -110,7 +110,7 @@ public class EUDEInterpreterImplTest {
             }
         });
         this.instance = new EUDEInterpreterImpl();
-        this.instance.setTestMocks(pull_service, push_service, router, contextFollower);
+        this.instance.setTestMocks(pull_service, push_service, router, contextProxy);
         programJSON = new JSONObject();
         programJSON.put("id", "test");
 
@@ -383,15 +383,15 @@ public class EUDEInterpreterImplTest {
         System.out.println("When");
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhen.json")));
         Assert.assertTrue(instance.callProgram("TestWhen"));
-        contextFollower.notifAll("1");
+        contextProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         System.out.println("become no");
         tested.become("no");
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         tested.become("no");
-        contextFollower.notifAll("3");
+        contextProxy.notifAll("3");
         synchroniser.waitUntil(tested.is("Yes"), 500);
 
     }
@@ -412,11 +412,11 @@ public class EUDEInterpreterImplTest {
         Assert.assertTrue(instance.callProgram("pgm"));
         Assert.assertFalse(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
-        contextFollower.notifAll("1");
+        contextProxy.notifAll("1");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
         Assert.assertTrue(tested.isNot("yes").isActive());
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
@@ -437,9 +437,9 @@ public class EUDEInterpreterImplTest {
         System.out.println("Start 2");
         Assert.assertTrue(instance.callProgram("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
-        contextFollower.notifAll("1");
+        contextProxy.notifAll("1");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("2");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
 //        Assert.fail("Fin");
 
@@ -450,8 +450,8 @@ public class EUDEInterpreterImplTest {
         Assert.assertTrue(instance.addProgram(loadFileJSON("src/test/resources/testWhenImb.json")));
         System.out.println("Start");
         Assert.assertTrue(instance.callProgram("whenImb"));
-        contextFollower.notifAll("1");
-        contextFollower.notifAll("2");
+        contextProxy.notifAll("1");
+        contextProxy.notifAll("2");
 //        Assert.fail("Fin");
 
     }
@@ -486,7 +486,7 @@ public class EUDEInterpreterImplTest {
     /**
      * Class to make some tests on the events
      */
-    public class ContextFollowerTest implements ContextFollowerSpec {
+    public class ContextProxyTest implements ContextProxySpec {
 
         private final ConcurrentLinkedQueue<CoreListener> list = new ConcurrentLinkedQueue<CoreListener>();
 
@@ -514,6 +514,12 @@ public class EUDEInterpreterImplTest {
             System.out.println("NotifAll End " + msg);
 
         }
+
+		@Override
+		public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
+				ArrayList<String> spaces) {
+			return new ArrayList<String>();
+		}
 
     }
 }
