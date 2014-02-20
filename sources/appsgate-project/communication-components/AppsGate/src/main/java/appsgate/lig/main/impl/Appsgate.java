@@ -305,6 +305,25 @@ public class Appsgate implements AppsGateSpec {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean removeTree(String id) {
+		Space space = contextManager.getSpace(id);
+		if(space != null) {
+			return contextManager.removeTree(space);
+		}
+		return false;
+	}
+
+
+	@Override
+	public boolean removeSpaceAndUserChildren(String id) {
+		Space space = contextManager.getSpace(id);
+		if(space != null) {
+			return contextManager.removeSpaceAndUserChildren(space);
+		}
+		return false;
+	}
 
 	@Override
 	public boolean updateSpace(String spaceId, JSONObject space) {

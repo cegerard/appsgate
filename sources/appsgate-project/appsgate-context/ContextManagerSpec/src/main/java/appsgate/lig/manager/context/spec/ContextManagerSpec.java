@@ -90,11 +90,26 @@ public interface ContextManagerSpec {
 	/*********************************/
 	
 	/**
-	 * Remove a space and all its children
+	 * Remove a space and attached its children to its parent
 	 * @param space the space to remove
 	 * @return true if the space has been removed, false otherwise
 	 */
 	public boolean removeSpace(Space space);
+	
+	/**
+	 * Remove a space and all its children
+	 * @param space the root of the tree to remove
+	 * @return true if the tree has been removed completely, false otherwise
+	 */
+	public boolean removeTree(Space space);
+	
+	/**
+	 * Remove a space and all its children if they can be removed, otherwise children are
+	 * attached to its parent
+	 * @param space the space to remove
+	 * @return true if the space has been removed, false otherwise
+	 */
+	public boolean removeSpaceAndUserChildren(Space space);
 	
 	/**
 	 * Move this space under a new parent space
@@ -165,6 +180,13 @@ public interface ContextManagerSpec {
 	 * @return spaces as an ArrayList<Space>
 	 */
 	public ArrayList<Space> getSpaces();
+	
+	/**
+	 * Get all space that match the type in parameter
+	 * @param type the space type
+	 * @return An ArrayList of space
+	 */
+	public ArrayList<Space> getSpacesWithType(TYPE type);
 	
 	/**
 	 * Get all the spaces the have the name in parameter

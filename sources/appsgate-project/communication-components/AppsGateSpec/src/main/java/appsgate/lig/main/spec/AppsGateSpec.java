@@ -184,11 +184,27 @@ public interface AppsGateSpec {
 	public boolean updateSpace(String spaceId, JSONObject space);
 	
 	/**
-	 * Remove a space from the smart space
+	 * Remove a space from the smart space and move up its children
 	 * @param id the space identifier
 	 * @return true if the space has been removed, false otherwise
 	 */
 	public boolean removeSpace(String id);
+	
+	/**
+	 * Remove a space from the smart space and all its children if it is possible
+	 * @param id the space identifier
+	 * @return true if the space has been removed, false otherwise
+	 */
+	public boolean removeTree(String id);
+	
+	/**
+	 * Remove a space from the smart space and its children that can be removed, if
+	 * not they are moved up in the tree;
+	 * @param id the space identifier
+	 * @return true if the space has been removed, false otherwise
+	 */
+	public boolean removeSpaceAndUserChildren(String id);
+	
 	
 	/**
 	 * Add a tag to the tag of list of the specified space

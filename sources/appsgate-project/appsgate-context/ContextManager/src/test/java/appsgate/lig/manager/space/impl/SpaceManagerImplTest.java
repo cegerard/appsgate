@@ -79,6 +79,26 @@ public class SpaceManagerImplTest {
 		String placeId = spaceManager.addSpace(TYPE.PLACE, rootSpace);
 		assertTrue(spaceManager.removeSpace(spaceManager.getSpace(placeId)));
 	}
+	
+	@Test
+	public void testRemoveTree() {
+		assertFalse(spaceManager.removeTree(spaceManager.getRootSpace()));
+		String placeId1  = spaceManager.addSpace(TYPE.PLACE, rootSpace);
+		String placeId2  = spaceManager.addSpace(TYPE.PLACE, spaceManager.getSpace(placeId1));
+		String placeId3  = spaceManager.addSpace(TYPE.PLACE, spaceManager.getSpace(placeId1));
+		spaceManager.addSpace(TYPE.PLACE, spaceManager.getSpace(placeId2));
+		spaceManager.addSpace(TYPE.PLACE, spaceManager.getSpace(placeId3));
+		System.out.println("Before removing:"+spaceManager.getTreeDescription());
+		assertEquals(5, spaceManager.getSpacesWithType(TYPE.PLACE).size());
+		assertTrue(spaceManager.removeTree(spaceManager.getSpace(placeId1)));
+		System.out.println("After removing: "+spaceManager.getTreeDescription());
+		assertEquals(0, spaceManager.getSpacesWithType(TYPE.PLACE).size());
+	}
+	
+	@Test
+	public void testRemoveSpaceAndUserChildren() {
+		
+	}
 
 	@Test
 	public void testGetSpace() {
