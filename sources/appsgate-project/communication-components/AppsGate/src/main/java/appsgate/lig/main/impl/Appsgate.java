@@ -883,6 +883,83 @@ public class Appsgate implements AppsGateSpec {
 			contextManager.removeSpace(deviceSpace);
 		}
 	}
+	
+	@Override
+	public void addNewServiceSpace(JSONObject description) {
+		Space serviceRoot = contextManager.getServiceRoot(contextManager.getCurrentHabitat());
+		try {
+			//If the service has no type attribute we can't put it in the good space or and the
+			//corresponding space
+			if(description.has("type")) {
+				//Looking for the service space category
+				String type  = description.getString("type");
+				Space serviceCat = null;
+				for(Space child : serviceRoot.getSubSpaces()) {
+					if(child.getType().equals(TYPE.CATEGORY) && child.getPropertyValue("serviceType").contentEquals(type)){
+						serviceCat = child;
+						break;
+					}
+				}
+		
+				if(serviceCat == null) { //if no category exist for this device type we create it.
+					HashMap<String, String> properties = new HashMap<String, String>();
+					properties.put("serviceType", type);
+					String spaceId = contextManager.addSpace(TYPE.CATEGORY, properties, serviceRoot);
+					serviceCat = contextManager.getSpace(spaceId);
+				}
+		
+				//Now we create the device space...
+				//... and we add it to the device category
+				HashMap<String, String> serviceProperties = new HashMap<String, String>();
+				serviceProperties.put("serviceType", type);
+				serviceProperties.put("ref", description.getString("id"));
+					//Test needed to determine whether a device space in the system category already exist or not.
+				ArrayList<Space> children = serviceCat.getChildren();
+				boolean exist = false;
+				for(Space space : children) {
+					if(space.getPropertyValue("ref").contentEquals(description.getString("id"))) {
+							exist = true;
+					}
+				}
+				if(!exist) {
+					contextManager.addSpace(TYPE.SERVICE, serviceProperties, serviceCat);
+				}
+			}
+			
+		}catch(JSONException jsonex) {
+			jsonex.printStackTrace();
+		}
+	}
+
+
+	@Override
+	public void removeServiceSpace(String serviceId, String type) {
+		if(Bundle.STOPPING != context.getBundle(0).getState()) {
+			Space serviceRoot = contextManager.getServiceRoot(contextManager.getCurrentHabitat());
+
+			// Looking for the service space category
+			Space serviceCat = null;
+			for (Space child : serviceRoot.getChildren()) {
+				if (child.getType().equals(TYPE.CATEGORY)
+						&& child.getPropertyValue("serviceType").contentEquals(type)) {
+					serviceCat = child;
+					break;
+				}
+			}
+
+			Space serviceSpace = null;
+			// Looking for the service space in the category children
+			for (Space child : serviceCat.getChildren()) {
+				if (child.getPropertyValue("ref").contentEquals(serviceId)) {
+					serviceSpace = child;
+					break;
+				}
+			}
+
+			// remove the device auto manage space from the space manager
+			contextManager.removeSpace(serviceSpace);
+		}
+	}
 
 	private void retrieveLocalAdress() {
 		// initiate UPnP state variables

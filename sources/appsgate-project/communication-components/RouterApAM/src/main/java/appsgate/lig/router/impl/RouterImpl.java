@@ -14,6 +14,7 @@ import appsGate.lig.manager.client.communication.service.send.SendWebsocketsServ
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
 import appsgate.lig.main.spec.AppsGateSpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
 import appsgate.lig.router.spec.GenericCommand;
@@ -86,11 +87,29 @@ public class RouterImpl implements RouterApAMSpec {
 	 */
 	public void addAbstractObject(Instance inst) {
 		logger.debug("New abstract device added: " + inst.getName());
-		
-		//notify that a new object appeared
-		CoreObjectSpec newObj = (CoreObjectSpec)inst.getServiceObject();
-		sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
-		appsgate.addNewDeviceSpace(getObjectDescription(newObj, ""));
+		try{
+			//notify that a new device, service or simulated instance appeared
+			CoreObjectSpec newObj = (CoreObjectSpec)inst.getServiceObject();
+			if(newObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
+				sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
+				appsgate.addNewDeviceSpace(getObjectDescription(newObj, ""));
+			}else if (newObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
+				sendToClientService.send("newService", getObjectDescription(newObj, ""));
+				appsgate.addNewServiceSpace(getObjectDescription(newObj, ""));
+			}else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
+				sendToClientService.send("newSimulatedDevice", getObjectDescription(newObj, ""));
+				//TODO manage the simulated device
+				logger.debug("Simulated device core type not supported yet for EHMI");
+			}else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
+				sendToClientService.send("newSimulatedService", getObjectDescription(newObj, ""));
+				//TODO manage the simulated service
+				logger.error("Simulated service core type not supported yet for EHMI");
+			}
+		}catch(Exception ex) {
+			logger.error("If getCoreType method error trace appeare below it is because the service or the device doesn't implement all methode in" +
+					"the CoreObjectSpec interface but this erro doesn't impact the EHMI.");
+			ex.printStackTrace();
+		}
 	}
 
 	/**
@@ -106,6 +125,8 @@ public class RouterImpl implements RouterApAMSpec {
 		try {
 			obj.put("objectId", deviceId);
 		} catch (JSONException e) {e.printStackTrace();}
+		CoreObjectSpec rmObj = (CoreObjectSpec)inst.getServiceObject();
+		System.out.println("11111111111: "+rmObj.getCoreType());
 		sendToClientService.send("removeDevice",  obj);
 		appsgate.removeDeviceSpace(deviceId, inst.getProperty("userType"));
 	}

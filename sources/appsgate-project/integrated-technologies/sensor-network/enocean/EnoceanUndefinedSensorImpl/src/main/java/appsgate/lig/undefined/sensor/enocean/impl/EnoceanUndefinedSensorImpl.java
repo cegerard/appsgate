@@ -176,5 +176,10 @@ public class EnoceanUndefinedSensorImpl implements CoreUndefinedSensorSpec, Core
 		caps.add(profile);
 		enoceanProxy.validateItem(sensorId,	caps, true);
 	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
 	
 }

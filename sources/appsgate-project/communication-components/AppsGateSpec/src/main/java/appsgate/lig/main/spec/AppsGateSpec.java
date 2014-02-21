@@ -395,4 +395,17 @@ public interface AppsGateSpec {
 	 */
 	public void removeDeviceSpace(String deviceId, String type);
 	
+	/**
+	 * Add a new service space in the space manager
+	 * @param description the service description
+	 */
+	public void addNewServiceSpace(JSONObject description);
+	
+	/**
+	 * Remove the service space in service root
+	 * @param serviceId the service identifier
+	 * @param type the service type
+	 */
+	public void removeServiceSpace(String serviceId, String type);
+	
 }

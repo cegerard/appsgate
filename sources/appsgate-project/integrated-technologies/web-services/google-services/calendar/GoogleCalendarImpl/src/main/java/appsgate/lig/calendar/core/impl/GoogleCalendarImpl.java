@@ -519,4 +519,9 @@ public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
 		return cal;
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}
+
 }

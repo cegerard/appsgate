@@ -433,5 +433,10 @@ public class Gmail implements Mail, CoreObjectSpec {
 
 	@Override
 	public void setPictureId(String pictureId) {}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}
 	
 }

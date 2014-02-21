@@ -166,4 +166,9 @@ public class WattecoCO2Impl implements CoreObjectSpec, CoreCO2SensorSpec {
 		this.sensorName = sensorName;
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }

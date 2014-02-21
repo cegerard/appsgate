@@ -214,4 +214,9 @@ public class EnoceanContactSensorImpl implements CoreContactSensorSpec, CoreObje
 		return new ContactNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this);
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }

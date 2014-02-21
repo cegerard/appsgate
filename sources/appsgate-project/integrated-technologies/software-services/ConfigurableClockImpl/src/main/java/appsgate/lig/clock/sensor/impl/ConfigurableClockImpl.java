@@ -684,4 +684,9 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		}
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}
+
 }

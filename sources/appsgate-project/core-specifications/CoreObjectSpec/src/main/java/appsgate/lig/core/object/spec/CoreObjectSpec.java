@@ -66,4 +66,23 @@ public interface CoreObjectSpec {
 	 */
 	public void setPictureId(String pictureId);
 	
+	/**
+	 * Get the type of the core object it can
+	 * be service or device
+	 * @return the core type value
+	 */
+	public CORE_TYPE getCoreType();
+	
+	/**
+	 * Core type value enumeration type
+	 * @author Cédric Gérard
+	 * @since 21 February, 2014
+	 */
+	public enum CORE_TYPE{
+		SERVICE,
+		DEVICE,
+		SIMULATED_DEVICE,
+		SIMULATED_SERVICE;
+	}
+	
 }

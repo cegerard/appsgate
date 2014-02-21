@@ -325,4 +325,9 @@ public class SimulatedTemperatureSensorImpl implements CoreObjectSpec,
 			setTemperature(String.valueOf(res));
 		}
 	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SIMULATED_DEVICE;
+	}
 }
