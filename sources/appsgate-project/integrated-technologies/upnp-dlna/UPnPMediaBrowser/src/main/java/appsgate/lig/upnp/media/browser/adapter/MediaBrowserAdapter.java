@@ -214,4 +214,9 @@ public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
         return "toto";
     }
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}
+
 }

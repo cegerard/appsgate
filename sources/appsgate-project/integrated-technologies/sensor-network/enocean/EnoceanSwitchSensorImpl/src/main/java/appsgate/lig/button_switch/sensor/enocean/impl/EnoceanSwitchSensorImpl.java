@@ -236,4 +236,9 @@ public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensor
 		return new SwitchNotificationMsg(new Integer(switchNumber), buttonStatus, varName, value, this);
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }

@@ -769,6 +769,11 @@ public class PhilipsHUEImpl implements CoreColorLightSpec, CoreObjectSpec {
 		return effect;
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }
 
 

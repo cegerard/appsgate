@@ -190,6 +190,11 @@ public class DeviceProxyGenerator {
 		output.write("		return description;\n");
 		output.write("	}\n");
 		output.write("\n");
+		output.write("	@Override\n");
+		output.write("	public CORE_TYPE getCoreType() {\n");
+		output.write("		return CORE_TYPE.SERVICE;\n");
+		output.write("	}\n");
+		output.write("\n");
 		output.flush();
 		
 		for (Service service : device.getServices()) {

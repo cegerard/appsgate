@@ -226,4 +226,9 @@ public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuato
 		enoceanProxy.turnOffActuator(actuatorId);
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }

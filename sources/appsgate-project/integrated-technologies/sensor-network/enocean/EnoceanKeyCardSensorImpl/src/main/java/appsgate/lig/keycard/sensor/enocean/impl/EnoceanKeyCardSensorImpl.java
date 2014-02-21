@@ -217,4 +217,9 @@ public class EnoceanKeyCardSensorImpl implements CoreKeyCardSensorSpec, CoreObje
 		return new KeyCardNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this);
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }

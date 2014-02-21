@@ -168,4 +168,9 @@ public class WattecoTemperatureImpl implements CoreObjectSpec, CoreTemperatureSe
 		this.sensorName = sensorName;
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }

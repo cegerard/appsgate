@@ -203,4 +203,9 @@ public class SimulatedOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActua
 		isOn = "false";
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SIMULATED_DEVICE;
+	}
+
 }

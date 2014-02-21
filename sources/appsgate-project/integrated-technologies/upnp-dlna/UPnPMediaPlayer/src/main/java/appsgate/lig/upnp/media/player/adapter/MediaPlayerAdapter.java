@@ -184,5 +184,10 @@ public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {
 			}
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}
+
 
 }

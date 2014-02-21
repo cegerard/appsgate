@@ -216,4 +216,9 @@ public class EnoceanLuminositySensorImpl implements CoreObjectSpec, CoreLuminosi
 		return new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value,  this);
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }

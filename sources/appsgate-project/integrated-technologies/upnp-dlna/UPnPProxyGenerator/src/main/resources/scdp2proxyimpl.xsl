@@ -122,6 +122,10 @@ public class <xsl:value-of select="$classname"/> implements CoreObjectSpec, <xsl
 <xsl:apply-templates select="serviceStateTable/stateVariable[not(starts-with(name,'A_ARG')) and sendEventsAttribute !='no']" mode="description"/>	
 		return description;
 	}
+	
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}
 
 	@SuppressWarnings("unused")
 	private Filter upnpEventFilter;

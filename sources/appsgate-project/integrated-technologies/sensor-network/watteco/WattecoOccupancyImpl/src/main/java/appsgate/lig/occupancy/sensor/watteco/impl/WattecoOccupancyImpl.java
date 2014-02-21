@@ -144,4 +144,9 @@ public class WattecoOccupancyImpl implements CoreObjectSpec, CoreOccupancySpec {
 		this.sensorName = sensorName;
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.DEVICE;
+	}
+
 }

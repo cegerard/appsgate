@@ -545,4 +545,9 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 		return nameLoc;
 	}
 
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}
+
 }
