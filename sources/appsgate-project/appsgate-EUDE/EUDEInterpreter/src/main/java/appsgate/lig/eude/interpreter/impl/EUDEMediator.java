@@ -29,9 +29,10 @@ import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 /**
@@ -52,8 +53,8 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     private static final Logger LOGGER = LoggerFactory.getLogger(EUDEMediator.class);
 
     /**
-     * Reference to the ApAM context proxy. Used to be notified when
-     * something happen.
+     * Reference to the ApAM context proxy. Used to be notified when something
+     * happen.
      */
     private ContextProxySpec contextProxy;
 
@@ -464,7 +465,6 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         return clock;
     }
 
-
     /**
      *
      * @return
@@ -513,29 +513,33 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      */
     private NodeProgram initRootProgram() {
         try {
-            FileInputStream fis = new FileInputStream("conf/root.json");
-            DataInputStream dis = new DataInputStream(fis);
+            InputStream in = this.getClass().getResourceAsStream("root.json");
+            if (in == null) {
+                LOGGER.error("unable to read root.json");
+                return null;
+            }
+            InputStreamReader is = new InputStreamReader(in);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(is);
+            String read = br.readLine();
 
-            byte[] buf = new byte[dis.available()];
-            dis.readFully(buf);
+            while (read != null) {
+                //System.out.println(read);
+                sb.append(read);
+                read = br.readLine();
 
-            String fileContent = "";
-            for (byte b : buf) {
-                fileContent += (char) b;
             }
 
-            dis.close();
-            fis.close();
-
-            JSONObject o = new JSONObject(fileContent);
+            JSONObject o = new JSONObject(sb.toString());
             return new NodeProgram(this, o, null);
 
-        } catch (IOException ex) {
-            LOGGER.error("unable to read root file.");
-        } catch (JSONException ex) {
-            LOGGER.error("unable to parse root file.");
         } catch (SpokException ex) {
             LOGGER.error("unable to build root program from file.");
+            LOGGER.debug(ex.getMessage());
+        } catch (IOException ex) {
+            LOGGER.error("An error occured during reading file");
+        } catch (JSONException ex) {
+            LOGGER.error("An error occured during parsing the file");
             LOGGER.debug(ex.getMessage());
         }
         return null;
@@ -581,6 +585,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public ContextProxySpec getContext() {
         return contextProxy;
     }
+
     /**
      *
      */
