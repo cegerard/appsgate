@@ -9,10 +9,61 @@
 	<name>Appsgate main project (root directory)</name>
 
 	<description>This project contain all top level dependencies and properties.</description>
+	
+    <scm>
+        <developerConnection>scm:git:https://github.com/cegerard/appsGate-server.git</developerConnection>
+        <tag>appsGate-server-1.0.0</tag>
+    </scm>
+
+    <properties>
+        <!-- java compilation version -->
+        <compiler.plugin.version>2.5.1</compiler.plugin.version>
+        <java.version>1.6</java.version>
+
+
+        <!-- JackRabbit -->
+        <jackrabbit.version>2.2</jackrabbit.version>
+
+        <!-- Encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    </properties>
+		
+	
+    <distributionManagement>
+        <repository>
+            <id>cloudbees-release-repository</id>
+            <name>Cloudbees Release Repository</name>
+            <url>dav:https://repository-apam.forge.cloudbees.com/release/repository</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>cloudbees-snapshot-repository</id>
+            <url>dav:https://repository-apam.forge.cloudbees.com/snapshot/repository</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+
+    </distributionManagement>	
+	
 	<modules>
 		<module>sources</module>
-        <!-- Maybe to include distrib for automatic creation using assembly-->
+		<!-- Maybe to include distrib for automatic creation using assembly -->
 	</modules>
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav-jackrabbit</artifactId>
+				<version>${jackrabbit.version}</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${compiler.plugin.version}</version>
+			</extension>
+		</extensions>
+
+	</build>
 
 	<profiles>
 
@@ -31,6 +82,17 @@
 				<sonar.jdbc.password>S0n4r-Adele</sonar.jdbc.password>
 			</properties>
 		</profile>
+		<profile>
+			<id>complete</id>
+			<properties>
+				<remoteOBR>true</remoteOBR>
+				<remote.obr.url>dav:https://repository-apam.forge.cloudbees.com/snapshot/repository/</remote.obr.url>
+			</properties>
+			<modules>
+				<module>sources</module>
+			</modules>
+		</profile>
+
 	</profiles>
 
 </project>
