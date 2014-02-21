@@ -47,8 +47,6 @@
 		<module>MongoDBConfigurationImpl</module>
 		<module>ContextHistoryMongoImpl</module>
 		<module>PropertyHistoryManagerMongoImpl</module>
-        <module>ContextAgregator</module>
-        <module>ContextAgregatorSpec</module>
 	</modules>
 
 </project>

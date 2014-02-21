@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
+import appsgate.lig.context.proxy.spec.ContextProxyMock;
+import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONArray;
@@ -14,14 +15,12 @@ import org.junit.Before;
 public class NodeSelectTest extends NodeTest {
 
     public NodeSelectTest() throws JSONException {
-        final ContextAgregatorSpec appsGate = context.mock(ContextAgregatorSpec.class);
+        final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
 
         context.checking(new Expectations() {
             {
                 allowing(mediator).getContext();
-                will(returnValue(appsGate));
-                allowing(appsGate).getDevicesInSpaces(with(any(JSONArray.class)), with(any(JSONArray.class)));
-                will(returnValue(null));
+                will(returnValue(c));
             }
         });
         ruleJSON.put("type", "select");

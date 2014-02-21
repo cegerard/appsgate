@@ -40,8 +40,6 @@ import appsgate.lig.manager.space.spec.subSpace.UserSpace;
 import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
 import appsgate.lig.router.spec.RouterApAMSpec;
 
-
-
 /**
  * This class is the central component for AppsGate server. It allow client part
  * to make methods call from HMI managers.
@@ -60,7 +58,7 @@ public class Appsgate implements AppsGateSpec {
 	 * 
 	 * static class logger member
 	 */
-	private final static Logger LOGGER = LoggerFactory.getLogger(Appsgate.class);
+	private static Logger logger = LoggerFactory.getLogger(Appsgate.class);
 
 	/**
 	 * HTTP service dependency resolve by iPojo. Allow to register HTML
@@ -84,12 +82,12 @@ public class Appsgate implements AppsGateSpec {
 	private EUDE_InterpreterSpec interpreter;
 	
 	
-	private final String wsPort="8087";
+	private String wsPort="8087";
 
-	private final BundleContext context;
+	private BundleContext context;
 	private ServiceRegistration<?> serviceRegistration;
 
-	private final AppsGateServerDevice upnpDevice;
+	private AppsGateServerDevice upnpDevice;
 	private ServerInfoService upnpService;
 	private StateVariableServerIP serverIP;
 	private StateVariableServerURL serverURL;
@@ -101,14 +99,14 @@ public class Appsgate implements AppsGateSpec {
 	 * 
 	 */
 	public Appsgate(BundleContext context) {
-		LOGGER.debug("new AppsGate, BundleContext : " + context);
+		logger.debug("new AppsGate, BundleContext : " + context);
 		this.context = context;
 		upnpDevice = new AppsGateServerDevice(context);
-		LOGGER.debug("UPnP Device instanciated");
+		logger.debug("UPnP Device instanciated");
 		registerUpnpDevice();
 		retrieveLocalAdress();
 
-		LOGGER.info("AppsGate instanciated");
+		logger.info("AppsGate instanciated");
 	}
 	
 	
@@ -116,7 +114,7 @@ public class Appsgate implements AppsGateSpec {
 		Dictionary<String, Object> dict = upnpDevice.getDescriptions(null);
 		serviceRegistration = context.registerService(
 				UPnPDevice.class.getName(), upnpDevice, dict);
-		LOGGER.debug("UPnP Device registered");
+		logger.debug("UPnP Device registered");
 		
 		upnpService = (ServerInfoService) upnpDevice.getService(ServerInfoService.SERVICE_ID);
 		serverIP = (StateVariableServerIP) upnpService.getStateVariable(StateVariableServerIP.VAR_NAME);
@@ -128,7 +126,7 @@ public class Appsgate implements AppsGateSpec {
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		LOGGER.debug("AppsGate is starting");
+		logger.debug("AppsGate is starting");
 
 		if (httpService != null) {
 			final HttpContext httpContext = httpService.createDefaultHttpContext();
@@ -136,11 +134,11 @@ public class Appsgate implements AppsGateSpec {
 			initParams.put("from", "HttpService");
 			try {
 				httpService.registerResources("/appsgate", "/WEB", httpContext);
-				LOGGER.debug("Registered URL : "
+				logger.debug("Registered URL : "
 						+ httpContext.getResource("/WEB"));
 				logger.info("AppsGate mains HTML pages registered.");
 			} catch (NamespaceException ex) {
-				LOGGER.error("NameSpace exception");
+				logger.error("NameSpace exception");
 			}
 		}
 	}
@@ -149,7 +147,7 @@ public class Appsgate implements AppsGateSpec {
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		LOGGER.info("AppsGate is stopping");
+		logger.info("AppsGate is stopping");
 		httpService.unregister("/appsgate");
 	}
 
@@ -418,7 +416,7 @@ public class Appsgate implements AppsGateSpec {
 			try {
 				tagsList.add(tags.getString(i));
 			} catch (JSONException e) {
-				LOGGER.error(e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 		
@@ -439,7 +437,7 @@ public class Appsgate implements AppsGateSpec {
 			try {
 				keysList.add(keys.getString(i));
 			} catch (JSONException e) {
-				LOGGER.error(e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 		
@@ -461,7 +459,7 @@ public class Appsgate implements AppsGateSpec {
 				JSONObject prop = properties.getJSONObject(i);
 				propertiesList.put(prop.getString("key"), prop.getString("value"));
 			} catch (JSONException e) {
-				LOGGER.error(e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 		
@@ -478,9 +476,7 @@ public class Appsgate implements AppsGateSpec {
 	public JSONObject getTreeDescription() {
 		return contextManager.getTreeDescription();
 	}
-	
 
-	
 
 	@Override
 	public JSONObject getTreeDescription(String rootId) {
@@ -538,6 +534,7 @@ public class Appsgate implements AppsGateSpec {
 			}
 		}
 		return false;
+
 	}
 
 
@@ -561,6 +558,7 @@ public class Appsgate implements AppsGateSpec {
 			}
 		}
 		return false;
+
 	}
 
 
@@ -676,8 +674,6 @@ public class Appsgate implements AppsGateSpec {
 		return userArray;
 	}
 
-	}
-	
 	@Override
 	public String createUser(String login, String password) {
 		
@@ -740,54 +736,6 @@ public class Appsgate implements AppsGateSpec {
 		logger.info("service account deletion failed, maybe wrong identifier or password.");
 		return false;
 	}
-
-	@Override
-	public JSONObject getUserDetails(String id) {
-		Space userSpace = spaceManager.getSpace(id);
-		return userSpace.getDescription();
-	}
-
-//	@Override
-//	public JSONObject getUserFullDetails(String id) {
-//		JSONObject obj = new JSONObject();
-//
-//		try {
-//			obj.put("user", userManager.getUserDetails(id));
-//			obj.put("devices", userManager.getAssociatedDevices(id));
-//			obj.put("accounts", userManager.getAccountsDetails(id));
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return obj;
-//	}
-
-	@Override
-	public boolean checkIfLoginIsFree(String login) {
-		return spaceManager.getSpacesWithName(login).isEmpty();
-	}
-
-//	@Override
-//	public boolean synchronizeAccount(String id, String password,
-//			JSONObject accountDetails) {
-//		return userManager.addAccount(id, password, accountDetails);
-//	}
-//
-//	@Override
-//	public boolean desynchronizedAccount(String id, String password,
-//			JSONObject accountDetails) {
-//		return userManager.removeAccount(id, password, accountDetails);
-//	}
-//
-//	@Override
-//	public boolean associateDevice(String id, String password, String deviceId) {
-//		return userManager.addDevice(id, password, deviceId);
-//	}
-//
-//	@Override
-//	public boolean separateDevice(String id, String password, String deviceId) {
-//		return userManager.removeDevice(id, password, deviceId);
-//	}
 
 	@Override
 	public boolean addProgram(JSONObject jsonProgram) {
@@ -935,6 +883,83 @@ public class Appsgate implements AppsGateSpec {
 			contextManager.removeSpace(deviceSpace);
 		}
 	}
+	
+	@Override
+	public void addNewServiceSpace(JSONObject description) {
+		Space serviceRoot = contextManager.getServiceRoot(contextManager.getCurrentHabitat());
+		try {
+			//If the service has no type attribute we can't put it in the good space or and the
+			//corresponding space
+			if(description.has("type")) {
+				//Looking for the service space category
+				String type  = description.getString("type");
+				Space serviceCat = null;
+				for(Space child : serviceRoot.getSubSpaces()) {
+					if(child.getType().equals(TYPE.CATEGORY) && child.getPropertyValue("serviceType").contentEquals(type)){
+						serviceCat = child;
+						break;
+					}
+				}
+		
+				if(serviceCat == null) { //if no category exist for this device type we create it.
+					HashMap<String, String> properties = new HashMap<String, String>();
+					properties.put("serviceType", type);
+					String spaceId = contextManager.addSpace(TYPE.CATEGORY, properties, serviceRoot);
+					serviceCat = contextManager.getSpace(spaceId);
+				}
+		
+				//Now we create the device space...
+				//... and we add it to the device category
+				HashMap<String, String> serviceProperties = new HashMap<String, String>();
+				serviceProperties.put("serviceType", type);
+				serviceProperties.put("ref", description.getString("id"));
+					//Test needed to determine whether a device space in the system category already exist or not.
+				ArrayList<Space> children = serviceCat.getChildren();
+				boolean exist = false;
+				for(Space space : children) {
+					if(space.getPropertyValue("ref").contentEquals(description.getString("id"))) {
+							exist = true;
+					}
+				}
+				if(!exist) {
+					contextManager.addSpace(TYPE.SERVICE, serviceProperties, serviceCat);
+				}
+			}
+			
+		}catch(JSONException jsonex) {
+			jsonex.printStackTrace();
+		}
+	}
+
+
+	@Override
+	public void removeServiceSpace(String serviceId, String type) {
+		if(Bundle.STOPPING != context.getBundle(0).getState()) {
+			Space serviceRoot = contextManager.getServiceRoot(contextManager.getCurrentHabitat());
+
+			// Looking for the service space category
+			Space serviceCat = null;
+			for (Space child : serviceRoot.getChildren()) {
+				if (child.getType().equals(TYPE.CATEGORY)
+						&& child.getPropertyValue("serviceType").contentEquals(type)) {
+					serviceCat = child;
+					break;
+				}
+			}
+
+			Space serviceSpace = null;
+			// Looking for the service space in the category children
+			for (Space child : serviceCat.getChildren()) {
+				if (child.getPropertyValue("ref").contentEquals(serviceId)) {
+					serviceSpace = child;
+					break;
+				}
+			}
+
+			// remove the device auto manage space from the space manager
+			contextManager.removeSpace(serviceSpace);
+		}
+	}
 
 	private void retrieveLocalAdress() {
 		// initiate UPnP state variables
@@ -950,7 +975,7 @@ public class Appsgate implements AppsGateSpec {
 											// find automatically the right
 											// network interface
 					if(!netint.getDisplayName().contentEquals("tun0")) {
-						LOGGER.debug("The newtwork interface {} will be inspected.",netint.getDisplayName());
+						logger.debug("The newtwork interface {} will be inspected.",netint.getDisplayName());
 						Enumeration<InetAddress> addresses = netint.getInetAddresses();
 						for (InetAddress address : Collections.list(addresses)) {
 							if (address instanceof Inet4Address) {
@@ -963,17 +988,17 @@ public class Appsgate implements AppsGateSpec {
 			}
 			
 			serverIP.setStringValue(localAddress.getHostAddress());
-			LOGGER.debug("State Variable name : "+serverIP.getName()+", value : "+serverIP.getCurrentStringValue());
+			logger.debug("State Variable name : "+serverIP.getName()+", value : "+serverIP.getCurrentStringValue());
 			serverURL.setStringValue("http://"+serverIP.getCurrentStringValue()+ "/index.html");
-			LOGGER.debug("State Variable name : "+serverURL.getName()+", value : "+serverURL.getCurrentStringValue());
+			logger.debug("State Variable name : "+serverURL.getName()+", value : "+serverURL.getCurrentStringValue());
 			serverWebsocket.setStringValue("http://"+serverIP.getCurrentStringValue()+ ":"+wsPort+"/");
-			LOGGER.debug("State Variable name : "+serverWebsocket.getName()+", value : "+serverWebsocket.getCurrentStringValue());
+			logger.debug("State Variable name : "+serverWebsocket.getName()+", value : "+serverWebsocket.getCurrentStringValue());
 
 		} catch (UnknownHostException e) {
-			LOGGER.debug("Unknown host: ");
+			logger.debug("Unknown host: ");
 			e.printStackTrace();
 		} catch (SocketException e) {
-			LOGGER.debug("Socket exception for UPnP: ");
+			logger.debug("Socket exception for UPnP: ");
 			e.printStackTrace();
 		}
 	}

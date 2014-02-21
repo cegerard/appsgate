@@ -44,11 +44,6 @@
             <version>1.0.0</version>
         </dependency>    
         <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>ContextAgregatorSpec</artifactId>
-            <version>1.0.0</version>
-        </dependency>    
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit-dep</artifactId>
             <version>4.8.2</version>
@@ -100,12 +95,6 @@
         <dependency>
             <groupId>appsgate.components</groupId>
             <artifactId>AppsGateSpec</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>ContextAgregator</artifactId>
             <version>1.0.0</version>
             <type>jar</type>
         </dependency>

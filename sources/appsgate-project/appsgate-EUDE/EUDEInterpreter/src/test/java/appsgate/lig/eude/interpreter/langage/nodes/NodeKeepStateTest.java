@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.agregator.ContextAgregatorMock;
-import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
+import appsgate.lig.context.proxy.spec.ContextProxyMock;
+import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.router.spec.GenericCommand;
 import org.jmock.Expectations;
@@ -23,7 +23,7 @@ public class NodeKeepStateTest extends NodeTest {
     
     public NodeKeepStateTest() throws Exception {
         super();
-        final ContextAgregatorSpec c = new ContextAgregatorMock("src/test/resources/jsonLibs/toto.json");
+        final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
         final GenericCommand cmd = context.mock(GenericCommand.class);
         tested = context.states("NotYet");
 

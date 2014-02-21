@@ -5,11 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.impl;
 
-import appsgate.lig.context.agregator.ContextAgregatorMock;
-import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
-import appsgate.lig.context.proxy.listeners.CoreListener;
-import appsgate.lig.context.proxy.spec.ContextProxySpec;
-import appsgate.lig.context.proxy.spec.StateDescription;
+import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -26,9 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jmock.Expectations;
 
@@ -75,9 +69,9 @@ public class EUDEMediatorTest {
     private DataBasePullService pull_service;
     private DataBasePushService push_service;
     private RouterApAMSpec router;
-    private ContextProxyTest contextProxy;
     private EUDEMediator instance;
     private JSONObject programJSON;
+    private ContextProxyMock contextProxy;
 
     public EUDEMediatorTest() {
     }
@@ -95,8 +89,7 @@ public class EUDEMediatorTest {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
         this.router = context.mock(RouterApAMSpec.class);
-        this.contextProxy = new ContextProxyTest();
-        final ContextAgregatorSpec c = new ContextAgregatorMock("src/test/resources/jsonLibs/toto.json");
+        this.contextProxy = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
         clock.put("id", "1");
@@ -110,7 +103,6 @@ public class EUDEMediatorTest {
         final NodeActionTest a = new NodeActionTest();
 
         final GenericCommand gc = context.mock(GenericCommand.class);
-        this.contextProxy = new ContextProxyTest();
 
         tested = context.states("NotYet");
         context.checking(new Expectations() {
@@ -504,66 +496,14 @@ public class EUDEMediatorTest {
     @Test
     public void testTreeImplementation() {
         System.out.println("Implementation");
-        
+
     }
-    
+
     @Test
     public void testIsThereARootProgram() {
         System.out.println("Test root program");
         Assert.assertNotNull("There must be a root program", instance.getNodeProgram("program-0"));
     }
-    /**
-     * Class to make some tests on the events
-     */
-    public class ContextProxyTest implements ContextProxySpec {
 
-        private final ConcurrentLinkedQueue<CoreListener> list = new ConcurrentLinkedQueue<CoreListener>();
 
-        @Override
-        public void addListener(CoreListener coreListener) {
-            list.add(coreListener);
-            System.out.println("Listener added: " + coreListener.getObjectId());
-        }
-
-        @Override
-        public void deleteListener(CoreListener coreListener) {
-            System.out.println("removing listener: " + coreListener.getObjectId());
-            list.remove(coreListener);
-        }
-
-        public void notifAll(String msg) {
-            System.out.println("NotifAll Start " + msg);
-            ConcurrentLinkedQueue<CoreListener> buf = new ConcurrentLinkedQueue<CoreListener>();
-            for (CoreListener l : list) {
-                buf.add(l);
-            }
-            for (CoreListener l1 : buf) {
-                l1.notifyEvent();
-            }
-            System.out.println("NotifAll End " + msg);
-
-        }
-
-		@Override
-		public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
-				ArrayList<String> spaces) {
-			return new ArrayList<String>();
-		}
-
-        @Override
-        public List<String> getSubtypes(List<String> typeList) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public StateDescription getEventsFromState(String type, String stateName) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public String getBrickType(String targetId) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-    }
 }

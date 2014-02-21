@@ -5,8 +5,8 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.agregator.ContextAgregatorMock;
-import appsgate.lig.context.agregator.spec.ContextAgregatorSpec;
+import appsgate.lig.context.proxy.spec.ContextProxyMock;
+import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.router.spec.GenericCommand;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -23,7 +23,7 @@ public class NodeWhileTest extends NodeTest {
 
     public NodeWhileTest() throws Exception {
         super();
-        final ContextAgregatorSpec c = new ContextAgregatorMock("src/test/resources/jsonLibs/toto.json");
+        final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONObject events = new JSONObject();
         JSONObject e = new JSONObject();
         e.put("name", "event");

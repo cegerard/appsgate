@@ -7,7 +7,7 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
  		<relation field="router" creation="eager" resolve="external"/>
 <!-- 		<relation field="deviceNameTable" creation="eager" resolve="external"/> -->
-		<relation field="spaceManager" creation="eager" resolve="external"/>
+		<relation field="contextManager" creation="eager" resolve="external"/>
 <!-- 		<relation field="userManager" creation="eager" resolve="external" /> -->
 		<relation field="interpreter" creation="eager"  resolve="external"/>
 		<ipojo:requires field="httpService"  />

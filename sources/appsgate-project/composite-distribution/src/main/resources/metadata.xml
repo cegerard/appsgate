@@ -12,7 +12,7 @@
 
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
-			<start implementation="AppsGateContextFollowerImpl" name="AppsGateContextFollowerInst"></start>
+			<start implementation="AppsGateContextProxyImpl" name="AppsGateContextProxyInst"></start>
                         
 			<start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 

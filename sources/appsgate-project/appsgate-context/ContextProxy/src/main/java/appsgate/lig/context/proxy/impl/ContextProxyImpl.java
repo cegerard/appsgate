@@ -15,11 +15,13 @@ import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.context.proxy.listeners.CoreListener;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
+import appsgate.lig.context.proxy.spec.StateDescription;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.manager.context.spec.ContextManagerSpec;
 import appsgate.lig.manager.space.spec.subSpace.Space;
 import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
+import java.util.List;
 
 /**
  * This class is use to allow other components to subscribe for specific
@@ -236,6 +238,22 @@ public class ContextProxyImpl implements ContextProxySpec {
 			e.printStackTrace();
 		}
 	}
+
+        // TODO: remove this method
+    @Override
+    public List<String> getSubtypes(List<String> typeList) {
+        return null;
+    }
+
+    @Override
+    public StateDescription getEventsFromState(String type, String stateName) {
+        return null;
+    }
+
+    @Override
+    public String getBrickType(String targetId) {
+        return null;
+    }
 
 	/**
 	 * Inner class use to create an event notify condition
