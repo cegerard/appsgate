@@ -1,0 +1,53 @@
+{
+    "friendlyName": "lamp",
+    "typename":"lamp",
+    "properties": [
+    ],
+    "states": [
+        {
+            "name": "isOn",
+            "setter": {
+                "type": "NodeAction",
+                "methodName": "switchOn"
+            },
+            "endEvent": {
+                "name" : "value",
+                "value" : "false" 
+            },
+            "startEvent": {
+                "name" : "value",
+                "value" : "true" 
+            }
+
+        },
+        {
+            "name": "testState",
+            "setter": {
+                "type": "NodeAction",
+                "methodName": "switchOn"
+            },
+            "endEvent": {
+                "name" : "lightOff"
+            },
+            "startEvent": {
+                "name" : "lightOn"
+            },
+            "stateName" : "testState",
+            "stateValue": "1"
+        },
+        {
+            "name": "isOff",
+            "actions": {
+                "type": "NodeAction",
+                "methodName": "switchOff"
+            },
+            "endEvent": {
+                "name" : "lightOn"
+            },
+            "startEvent": {
+                "name" : "lightOff"
+            }
+
+        }
+    ]
+}
