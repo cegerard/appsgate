@@ -826,6 +826,8 @@ public class Appsgate implements AppsGateSpec {
 				if(deviceCat == null) { //if no category exist for this device type we create it.
 					HashMap<String, String> properties = new HashMap<String, String>();
 					properties.put("deviceType", type);
+					String name = description.getString("name");
+					properties.put("name", name.replace("singular", "plural"));
 					String spaceId = contextManager.addSpace(TYPE.CATEGORY, properties, deviceRoot);
 					deviceCat = contextManager.getSpace(spaceId);
 				}
@@ -835,6 +837,7 @@ public class Appsgate implements AppsGateSpec {
 				HashMap<String, String> deviceProperties = new HashMap<String, String>();
 				deviceProperties.put("deviceType", type);
 				deviceProperties.put("ref", description.getString("id"));
+				deviceProperties.put("name", description.getString("name"));
 					//Test needed to determine whether a device space in the system category already exist or not.
 				ArrayList<Space> children = deviceCat.getChildren();
 				boolean exist = false;
@@ -904,6 +907,8 @@ public class Appsgate implements AppsGateSpec {
 				if(serviceCat == null) { //if no category exist for this device type we create it.
 					HashMap<String, String> properties = new HashMap<String, String>();
 					properties.put("serviceType", type);
+					String name = description.getString("name");
+					properties.put("name", name.replace("singular", "plural"));
 					String spaceId = contextManager.addSpace(TYPE.CATEGORY, properties, serviceRoot);
 					serviceCat = contextManager.getSpace(spaceId);
 				}
