@@ -2,7 +2,6 @@ package appsgate.lig.context.proxy.spec;
 
 import java.util.ArrayList;
 import appsgate.lig.context.proxy.listeners.CoreListener;
-import java.util.List;
 
 /**
  * This interface describe services offered by context follower implementation
@@ -40,14 +39,6 @@ public interface ContextProxySpec {
      */
     public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList, ArrayList<String> spaces);
 
-    /**
-     * Return a list of types descending from another types
-     *
-     * @param typeList the list of types to look for (if null, return all
-     * subtypes)
-     * @return an empty array if nothing is found or the array of types
-     */
-    public List<String> getSubtypes(List<String> typeList);
 
     /**
      *

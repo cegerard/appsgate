@@ -171,14 +171,16 @@ public class <xsl:value-of select="$classname"/> implements CoreObjectSpec, <xsl
 		}
 
 		@Override
-		public JSONObject JSONize() throws JSONException {
+		public JSONObject JSONize()  {
 			
 			JSONObject notification = new JSONObject();
-			
-			notification.put("objectId", getAbstractObjectId());
-			notification.put("varName", variable);
-			notification.put("value", value);
-		
+			try {
+                            notification.put("objectId", getAbstractObjectId());
+                            notification.put("varName", variable);
+                            notification.put("value", value);
+                        } catch (JSONException ex) {
+                            // Will never be thrown
+                        }
 			return notification;
 		}	
 	

@@ -116,12 +116,13 @@ public class DeviceProxyGenerator {
 		output.write("			return value;\n");
 		output.write("		}\n");
 		output.write("\n");
-		output.write("		public JSONObject JSONize() throws JSONException {\n");
+		output.write("		public JSONObject JSONize() {\n");
 		output.write("			JSONObject notification = new JSONObject();\n");
-		output.write("\n");
-		output.write("			notification.put(\"objectId\", getAbstractObjectId());\n");
-		output.write("			notification.put(\"varName\", variable);\n");
-		output.write("			notification.put(\"value\", value);\n");
+		output.write("                  try {\n");
+		output.write("                      notification.put(\"objectId\", getAbstractObjectId());\n");
+		output.write("                      notification.put(\"varName\", variable);\n");
+		output.write("                      notification.put(\"value\", value);\n");
+		output.write("			} catch (JSONException ex) {}\n");
 		output.write("			return notification;\n");
 		output.write("		}\n");
 		output.write("	}");

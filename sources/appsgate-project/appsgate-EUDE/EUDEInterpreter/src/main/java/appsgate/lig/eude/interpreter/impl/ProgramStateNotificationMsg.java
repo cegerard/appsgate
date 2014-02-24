@@ -52,12 +52,15 @@ public class ProgramStateNotificationMsg implements NotificationMsg {
     }
 
     @Override
-    public JSONObject JSONize() throws JSONException {
+    public JSONObject JSONize() {
         JSONObject obj = new JSONObject();
-
-        obj.put("objectId", programId);
-        obj.put("varName", varName);
-        obj.put("value", value);
+        try {
+            obj.put("objectId", programId);
+            obj.put("varName", varName);
+            obj.put("value", value);
+        } catch (JSONException e) {
+            // No exception will be raised since put value is always set
+        }
 
         return obj;
     }

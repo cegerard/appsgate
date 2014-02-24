@@ -35,12 +35,12 @@ public class ProgramNotification implements NotificationMsg {
 
     /**
      * Constructor
-     * 
+     *
      * @param changes
      * @param programId
      * @param runningState
      * @param source
-     * @param userSource 
+     * @param userSource
      */
     public ProgramNotification(String changes, String programId, String runningState,
             JSONObject source, String userSource) {
@@ -63,18 +63,27 @@ public class ProgramNotification implements NotificationMsg {
     }
 
     @Override
-    public JSONObject JSONize() throws JSONException {
+    public JSONObject JSONize() {
         JSONObject notif = new JSONObject();
         JSONObject content = new JSONObject();
+        try {
 
-        content.put("id", programId);
-        content.put("runningState", runningState);
-        content.put("source", source);
-        content.put("userSource", userSource);
+            content.put("id", programId);
+            content.put("runningState", runningState);
+            content.put("source", source);
+            content.put("userSource", userSource);
 
-        notif.put(changes, content);
+            if (changes.isEmpty()) {
+                notif.put("", content);
+            } else {
+                notif.put(changes, content);
+            }
 
+        } catch (JSONException ex) {
+            //  No exception will be thrown since changes is not empty
+        }
         return notif;
+
     }
 
 }

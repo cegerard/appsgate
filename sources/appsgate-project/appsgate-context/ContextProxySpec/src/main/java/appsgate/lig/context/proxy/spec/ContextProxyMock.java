@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,10 +108,6 @@ public class ContextProxyMock implements ContextProxySpec {
             }
             System.out.println("NotifAll End " + msg);
 
-        }
-        @Override
-        public List<String> getSubtypes(List<String> typeList) {
-            return null;
         }
 
         @Override

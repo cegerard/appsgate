@@ -26,9 +26,13 @@ public class GrammarTest {
         testStream(CoreCO2SensorSpec.class);
     }
 
+    /**
+     * @param c 
+     * @throws Exception 
+     */
     private void testStream(Class c) throws Exception {
         String className = c.getSimpleName();
-        System.out.println("==== Testing grammar for " + className);
+        System.out.println("==== Testing grammar for " + className + " =====");
         InputStream stream = c.getResourceAsStream("grammar.json");
         Assert.assertNotNull("Unable to read the file",stream);
         JSONObject o = loadJSONStream(stream);
