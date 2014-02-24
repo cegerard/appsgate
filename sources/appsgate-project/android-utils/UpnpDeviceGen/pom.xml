@@ -68,12 +68,12 @@
 
 						<Import-Package>*</Import-Package>
 
-						<Bundle-DocURL>${repositoryLocation}${pom.artifactId}/index.html</Bundle-DocURL>
-						<Bundle-Url>${repositoryLocation}${pom.artifactId}/${pom.artifactId}-${pom.version}.jar</Bundle-Url>
-						<Bundle-Source>${repositoryLocation}${pom.artifactId}/${pom.artifactId}-${pom.version}-src.jar</Bundle-Source>
+						<Bundle-DocURL>${repositoryLocation}${project.artifactId}/index.html</Bundle-DocURL>
+						<Bundle-Url>${repositoryLocation}${project.artifactId}/${project.artifactId}-${project.version}.jar</Bundle-Url>
+						<Bundle-Source>${repositoryLocation}${project.artifactId}/${project.artifactId}-${project.version}-src.jar</Bundle-Source>
 
-						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-						<Bundle-Description>${description}</Bundle-Description>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Description>${project.description}</Bundle-Description>
 						<Bundle-Vendor>Apache Software Foundation</Bundle-Vendor>
 
 					</instructions>
