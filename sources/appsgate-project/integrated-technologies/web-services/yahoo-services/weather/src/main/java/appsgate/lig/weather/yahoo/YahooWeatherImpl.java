@@ -390,7 +390,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 
 	private void initAppsgateFields() {
 		appsgatePictureId = null;
-		appsgateUserType = "20"; // 20 stands for weather forecast service
+		appsgateUserType = "103"; // 103 stands for weather forecast service
 		appsgateDeviceStatus = "2"; // 2 means device paired (for a device, not
 									// relevant for service)
 		appsgateObjectId = appsgateUserType

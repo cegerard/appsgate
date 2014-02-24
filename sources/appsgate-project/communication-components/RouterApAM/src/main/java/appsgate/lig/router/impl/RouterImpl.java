@@ -107,7 +107,7 @@ public class RouterImpl implements RouterApAMSpec {
 			}
 		}catch(Exception ex) {
 			logger.error("If getCoreType method error trace appeare below it is because the service or the device doesn't implement all methode in" +
-					"the CoreObjectSpec interface but this erro doesn't impact the EHMI.");
+					"the CoreObjectSpec interface but this error doesn't impact the EHMI.");
 			ex.printStackTrace();
 		}
 	}
@@ -126,9 +126,20 @@ public class RouterImpl implements RouterApAMSpec {
 			obj.put("objectId", deviceId);
 		} catch (JSONException e) {e.printStackTrace();}
 		CoreObjectSpec rmObj = (CoreObjectSpec)inst.getServiceObject();
-		System.out.println("11111111111: "+rmObj.getCoreType());
-		sendToClientService.send("removeDevice",  obj);
-		appsgate.removeDeviceSpace(deviceId, inst.getProperty("userType"));
+		
+		if(rmObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
+			sendToClientService.send("removeDevice",  obj);
+			appsgate.removeDeviceSpace(deviceId, inst.getProperty("userType"));
+		}else if (rmObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
+			sendToClientService.send("removeService",  obj);
+			appsgate.removeServiceSpace(deviceId, inst.getProperty("userType"));
+		}else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
+			sendToClientService.send("removeSimulatedDevice",  obj);
+			//TODO manage the simulated device
+		}else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
+			sendToClientService.send("removeSimulatedService",  obj);
+			//TODO manage the simulated service
+		}
 	}
 
 	/**
@@ -291,14 +302,106 @@ public class RouterImpl implements RouterApAMSpec {
 	private JSONObject getObjectDescription(CoreObjectSpec obj, String user) {
 		JSONObject JSONDescription = null;
 		try {
-			//Get object auto description
+			// Get object auto description
 			JSONDescription = obj.getDescription();
-			//WE DONT FILL THE DESCRITPION AUTOMATICALLY WITH CONTEXUAL DATA
-			//CLIENT SOFTWARE HAVE TO GET IT BY THEIR OWN MEANS
-			//Add context description for this abject
-			//JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
-			//JSONDescription.put("placeId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
-			//TODO put the contextual neighborhood of each device
+			
+			// Get the user type of the device and put 
+			// a string that allow internationalization
+			// of the type string 
+			int userType = Integer.valueOf(obj.getUserType());
+			switch(userType) {
+			
+				/** Devices  **/
+				case 0: //Temperature
+					JSONDescription.put("name", "devices.temperature.name.singular");
+					break;
+				
+				case 1: //Illumination
+					JSONDescription.put("name", "devices.illumination.name.singular");
+					break;
+				
+				case 2: //Switch
+					JSONDescription.put("name", "devices.switch.name.singular");
+					break;
+				
+				case 3: //Contact
+					JSONDescription.put("name", "devices.contact.name.singular");
+					break;
+				
+				case 4: //Key card Switch
+					JSONDescription.put("name", "devices.keycard-reader.name.singular");
+					break;
+					
+				case 5: //Occupancy
+					JSONDescription.put("name", "devices.occupancy.name.singular");
+					break;
+				
+				case 6: //Smart plug
+					JSONDescription.put("name", "devices.plug.name.singular");
+					break;
+				
+				case 7: //PhilipsHUE
+					JSONDescription.put("name", "devices.lamp.name.singular");
+					break;
+					
+				case 8: //On/Off actuator
+					JSONDescription.put("name", "devices.actuator.name.singular");
+					break;
+				
+				case 9: //CO2
+					JSONDescription.put("name", "devices.co2.name.singular");
+					break;
+				/** AppsGate System services **/
+				case 21: //System clock
+					JSONDescription.put("name", "devices.clock.name.singular");
+					break;
+					
+				/** UPnP devices **/
+				case 31: //Media player
+					JSONDescription.put("name", "devices.mediaplayer.name.singular");
+					break;
+					
+				case 36: //Media browser
+					JSONDescription.put("name", "devices.mediabrowser.name.singular");
+					break;
+					
+				/** UPnP services **/
+				case 415992004: //AV Transport
+					JSONDescription.put("name", "devices.avtransport.name.singular");
+					break;
+				case 794225618: //Content directory
+					JSONDescription.put("name", "devices.contentdirectory.name.singular");
+					break;
+				case 2052964255: //Connection manager
+					JSONDescription.put("name", "devices.connectionManager.name.singular");
+					break;
+				case -164696113: //Rendering control
+					JSONDescription.put("name", "devices.renderingControl.name.singular");
+					break;
+				case -532540516: //???
+					JSONDescription.put("name", "devices.unknow");
+					break;
+				case -1943939940: //???
+					JSONDescription.put("name", "devices.unknow");
+					break;
+				
+				/** Web services **/
+				case 101: //Google calendar
+					JSONDescription.put("name", "devices.googlecalendar.name.singular");
+					break;
+				case 102: //Mail
+					JSONDescription.put("name", "devices.mail.name.singular");
+					break;
+				case 103: //Weather
+					JSONDescription.put("name", "devices.weather.name.singular");
+					break;
+					
+				/** Default **/
+				default:
+					JSONDescription.put("name", "devices.device-no-name");
+				
+			}
+
 		} catch (JSONException e) {
 			logger.error(e.getMessage());
 		} catch (Exception e) {
