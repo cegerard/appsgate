@@ -357,55 +357,58 @@ public class RouterImpl implements RouterApAMSpec {
 					JSONDescription.put("name", "devices.clock.name.singular");
 					break;
 					
-				/** UPnP devices **/
+				/** UPnP aggregate services **/
 				case 31: //Media player
-					friendlyName = JSONDescription.getString("friendlyname");
-					if(friendlyName.isEmpty()) {
-						JSONDescription.put("name", "devices.mediaplayer.name.singular");
-					}else{
-						JSONDescription.put("name", friendlyName);
-					}
+					try{
+						friendlyName = JSONDescription.getString("friendlyName");
+						if(!friendlyName.isEmpty()) {
+							JSONDescription.put("name", friendlyName);
+							break;
+						}
+					}catch(JSONException ex) {}
+					JSONDescription.put("name", "services.mediaplayer.name.singular");
 					break;
 					
 				case 36: //Media browser
-					friendlyName = JSONDescription.getString("friendlyname");
-					if(friendlyName.isEmpty()) {
-						JSONDescription.put("name", "devices.mediaplayer.name.singular");
-					}else{
-						JSONDescription.put("name", friendlyName);
-					}
-					JSONDescription.put("name", "devices.mediabrowser.name.singular");
+					try{
+						friendlyName = JSONDescription.getString("friendlyName");
+						if(!friendlyName.isEmpty()) {
+							JSONDescription.put("name", friendlyName);
+							break;
+						}
+					}catch(JSONException ex) {}
+					JSONDescription.put("name", "services.mediabrowser.name.singular");
 					break;
 					
 				/** UPnP services **/
 				case 415992004: //AV Transport
-					JSONDescription.put("name", "devices.avtransport.name.singular");
+					JSONDescription.put("name", "services.avtransport.name.singular");
 					break;
 				case 794225618: //Content directory
-					JSONDescription.put("name", "devices.contentdirectory.name.singular");
+					JSONDescription.put("name", "services.contentdirectory.name.singular");
 					break;
 				case 2052964255: //Connection manager
-					JSONDescription.put("name", "devices.connectionManager.name.singular");
+					JSONDescription.put("name", "services.connectionManager.name.singular");
 					break;
 				case -164696113: //Rendering control
-					JSONDescription.put("name", "devices.renderingControl.name.singular");
+					JSONDescription.put("name", "services.renderingControl.name.singular");
 					break;
 				case -532540516: //???
-					JSONDescription.put("name", "devices.unknown");
+					JSONDescription.put("name", "services.unknown");
 					break;
 				case -1943939940: //???
-					JSONDescription.put("name", "devices.unknown");
+					JSONDescription.put("name", "services.unknown");
 					break;
 				
 				/** Web services **/
 				case 101: //Google calendar
-					JSONDescription.put("name", "devices.googlecalendar.name.singular");
+					JSONDescription.put("name", "webservices.googlecalendar.name.singular");
 					break;
 				case 102: //Mail
-					JSONDescription.put("name", "devices.mail.name.singular");
+					JSONDescription.put("name", "webservices.mail.name.singular");
 					break;
 				case 103: //Weather
-					JSONDescription.put("name", "devices.weather.name.singular");
+					JSONDescription.put("name", "webservices.weather.name.singular");
 					break;
 					
 				/** Default **/
