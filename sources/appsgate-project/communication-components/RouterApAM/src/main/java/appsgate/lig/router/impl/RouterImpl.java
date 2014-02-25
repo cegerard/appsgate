@@ -304,6 +304,7 @@ public class RouterImpl implements RouterApAMSpec {
 		try {
 			// Get object auto description
 			JSONDescription = obj.getDescription();
+			String friendlyName;
 			
 			// Get the user type of the device and put 
 			// a string that allow internationalization
@@ -358,10 +359,21 @@ public class RouterImpl implements RouterApAMSpec {
 					
 				/** UPnP devices **/
 				case 31: //Media player
-					JSONDescription.put("name", "devices.mediaplayer.name.singular");
+					friendlyName = JSONDescription.getString("friendlyname");
+					if(friendlyName.isEmpty()) {
+						JSONDescription.put("name", "devices.mediaplayer.name.singular");
+					}else{
+						JSONDescription.put("name", friendlyName);
+					}
 					break;
 					
 				case 36: //Media browser
+					friendlyName = JSONDescription.getString("friendlyname");
+					if(friendlyName.isEmpty()) {
+						JSONDescription.put("name", "devices.mediaplayer.name.singular");
+					}else{
+						JSONDescription.put("name", friendlyName);
+					}
 					JSONDescription.put("name", "devices.mediabrowser.name.singular");
 					break;
 					
