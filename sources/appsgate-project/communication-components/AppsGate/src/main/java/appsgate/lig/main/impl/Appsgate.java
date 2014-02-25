@@ -822,12 +822,15 @@ public class Appsgate implements AppsGateSpec {
 						break;
 					}
 				}
-		
+
+				String[] retValue = fillCategoryAndObjectNames(description);
+				String objectName = retValue[0];
+				String categoryName = retValue[1];
+				
 				if(deviceCat == null) { //if no category exist for this device type we create it.
 					HashMap<String, String> properties = new HashMap<String, String>();
 					properties.put("deviceType", type);
-					String name = description.getString("name");
-					properties.put("name", name.replace("singular", "plural"));
+					properties.put("name", categoryName);
 					String spaceId = contextManager.addSpace(TYPE.CATEGORY, properties, deviceRoot);
 					deviceCat = contextManager.getSpace(spaceId);
 				}
@@ -837,7 +840,7 @@ public class Appsgate implements AppsGateSpec {
 				HashMap<String, String> deviceProperties = new HashMap<String, String>();
 				deviceProperties.put("deviceType", type);
 				deviceProperties.put("ref", description.getString("id"));
-				deviceProperties.put("name", description.getString("name"));
+				deviceProperties.put("name", objectName);
 					//Test needed to determine whether a device space in the system category already exist or not.
 				ArrayList<Space> children = deviceCat.getChildren();
 				boolean exist = false;
@@ -856,6 +859,9 @@ public class Appsgate implements AppsGateSpec {
 		}
 		
 	}
+
+
+	
 
 
 	@Override
@@ -903,12 +909,15 @@ public class Appsgate implements AppsGateSpec {
 						break;
 					}
 				}
+				
+				String[] retValue = fillCategoryAndObjectNames(description);
+				String objectName = retValue[0];
+				String categoryName = retValue[1];
 		
 				if(serviceCat == null) { //if no category exist for this device type we create it.
 					HashMap<String, String> properties = new HashMap<String, String>();
 					properties.put("serviceType", type);
-					String name = description.getString("name");
-					properties.put("name", name.replace("singular", "plural"));
+					properties.put("name", categoryName);
 					String spaceId = contextManager.addSpace(TYPE.CATEGORY, properties, serviceRoot);
 					serviceCat = contextManager.getSpace(spaceId);
 				}
@@ -918,7 +927,7 @@ public class Appsgate implements AppsGateSpec {
 				HashMap<String, String> serviceProperties = new HashMap<String, String>();
 				serviceProperties.put("serviceType", type);
 				serviceProperties.put("ref", description.getString("id"));
-				serviceProperties.put("name", description.getString("name"));
+				serviceProperties.put("name", objectName);
 					//Test needed to determine whether a device space in the system category already exist or not.
 				ArrayList<Space> children = serviceCat.getChildren();
 				boolean exist = false;
@@ -1007,6 +1016,155 @@ public class Appsgate implements AppsGateSpec {
 			logger.debug("Socket exception for UPnP: ");
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * File String with the object name and category name for EHMI GUI
+	 * @param objectName the name of the object
+	 * @param categoryName the name of the category to create for this object
+	 * @param description the object JSON description
+	 * @throws NumberFormatException
+	 * @throws JSONException
+	 */
+	private String[] fillCategoryAndObjectNames(JSONObject description) throws NumberFormatException, JSONException {
+		String objectName = null;
+		String categoryName = null;
+		
+		// Get the user type of the device and put 
+		// a string that allow internationalization
+		// of the type string 
+		int userType = Integer.valueOf(description.getString("type"));
+		switch(userType) {
+		
+			/** Devices  **/
+			case 0: //Temperature
+				objectName = "devices.temperature.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			
+			case 1: //Illumination
+				objectName = "devices.illumination.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			
+			case 2: //Switch
+				objectName = "devices.switch.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			
+			case 3: //Contact
+				objectName = "devices.contact.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			
+			case 4: //Key card Switch
+				objectName = "devices.keycard-reader.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+				
+			case 5: //Occupancy
+				objectName = "devices.occupancy.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			
+			case 6: //Smart plug
+				objectName = "devices.plug.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			
+			case 7: //PhilipsHUE
+				objectName = "devices.lamp.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+				
+			case 8: //On/Off actuator
+				objectName = "devices.actuator.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			
+			case 9: //CO2
+				objectName = "devices.co2.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+				
+			/** AppsGate System services **/
+			case 21: //System clock
+				objectName = "devices.clock.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+				
+			/** UPnP aggregate services **/
+			case 31: //Media player
+				categoryName = "services.mediaplayer.name.plural";
+				try{
+					objectName = description.getString("friendlyName");
+					if(!objectName.isEmpty()) {
+						break;
+					}
+				}catch(JSONException ex) {}
+				objectName = "services.mediaplayer.name.singular";
+				break;
+				
+			case 36: //Media browser
+				categoryName = "services.mediabrowser.name.plural";
+				try{
+					objectName = description.getString("friendlyName");
+					if(!objectName.isEmpty()) {
+						break;
+					}
+				}catch(JSONException ex) {}
+				objectName = "services.mediabrowser.name.singular";
+				break;
+				
+			/** UPnP services **/
+			case 415992004: //AV Transport
+				objectName = "services.avtransport.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			case 794225618: //Content directory
+				objectName = "services.contentdirectory.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			case 2052964255: //Connection manager
+				objectName = "services.connectionManager.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			case -164696113: //Rendering control
+				objectName = "services.renderingControl.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			case -532540516: //???
+				objectName = "services.unknown";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			case -1943939940: //???
+				objectName = "services.unknown";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			
+			/** Web services **/
+			case 101: //Google calendar
+				objectName = "webservices.googlecalendar.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			case 102: //Mail
+				objectName = "webservices.mail.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+			case 103: //Weather
+				objectName = "webservices.weather.name.singular";
+				categoryName = objectName.replace("singular", "plural");
+				break;
+				
+			/** Default **/
+			default:
+				objectName = "devices.device-no-name";
+				categoryName = objectName.replace("singular", "plural");
+		}
+		String [] retValue = new String[2];
+		retValue[0] =  objectName;
+		retValue[1] = categoryName;
+		return retValue;		
 	}
 
 }
