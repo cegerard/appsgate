@@ -918,6 +918,7 @@ public class Appsgate implements AppsGateSpec {
 				HashMap<String, String> serviceProperties = new HashMap<String, String>();
 				serviceProperties.put("serviceType", type);
 				serviceProperties.put("ref", description.getString("id"));
+				serviceProperties.put("name", description.getString("name"));
 					//Test needed to determine whether a device space in the system category already exist or not.
 				ArrayList<Space> children = serviceCat.getChildren();
 				boolean exist = false;
