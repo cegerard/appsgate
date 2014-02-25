@@ -379,10 +379,10 @@ public class RouterImpl implements RouterApAMSpec {
 					JSONDescription.put("name", "devices.renderingControl.name.singular");
 					break;
 				case -532540516: //???
-					JSONDescription.put("name", "devices.unknow");
+					JSONDescription.put("name", "devices.unknown");
 					break;
 				case -1943939940: //???
-					JSONDescription.put("name", "devices.unknow");
+					JSONDescription.put("name", "devices.unknown");
 					break;
 				
 				/** Web services **/
