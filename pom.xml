@@ -9,42 +9,44 @@
 	<name>Appsgate main project (root directory)</name>
 
 	<description>This project contain all top level dependencies and properties.</description>
-	
-    <scm>
-        <developerConnection>scm:git:https://github.com/cegerard/appsGate-server.git</developerConnection>
-        <tag>appsGate-server-1.0.0</tag>
-    </scm>
 
-    <properties>
-        <!-- java compilation version -->
-        <compiler.plugin.version>2.5.1</compiler.plugin.version>
-        <java.version>1.6</java.version>
+	<scm>
+		<developerConnection>scm:git:https://github.com/cegerard/appsGate-server.git</developerConnection>
+		<tag>appsGate-server-1.0.0</tag>
+	</scm>
+
+	<properties>
+		<!-- java compilation version -->
+		<compiler.plugin.version>2.5.1</compiler.plugin.version>
+		<java.version>1.6</java.version>
 
 
-        <!-- JackRabbit -->
-        <jackrabbit.version>2.2</jackrabbit.version>
+		<!-- JackRabbit -->
+		<jackrabbit.version>2.2</jackrabbit.version>
 
-        <!-- Encoding -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Encoding -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    </properties>
-		
-	
-    <distributionManagement>
-        <repository>
-            <id>cloudbees-release-repository</id>
+	</properties>
+
+
+	<distributionManagement>
+
+		<repository>
+            <id>cloudbees-private-release-repository</id>
+<!--             <id>cloudbees-release-repository</id> -->
             <name>Cloudbees Release Repository</name>
-            <url>dav:https://repository-apam.forge.cloudbees.com/release/repository</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-        <snapshotRepository>
-            <id>cloudbees-snapshot-repository</id>
-            <url>dav:https://repository-apam.forge.cloudbees.com/snapshot/repository</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
+			<url>dav:https://repository-apam.forge.cloudbees.com/release/repository</url>
+		</repository>
+		<snapshotRepository>
+			<id>cloudbees-private-snapshot-repository</id>
+<!-- 			<id>cloudbees-snapshot-repository</id> -->
+			<name>Cloudbees Snapshot Repository</name>
+			<url>dav:https://repository-apam.forge.cloudbees.com/snapshot/repository</url>
+		</snapshotRepository>
 
-    </distributionManagement>	
-	
+	</distributionManagement>
+
 	<modules>
 		<module>sources</module>
 		<!-- Maybe to include distrib for automatic creation using assembly -->
