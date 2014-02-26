@@ -39,6 +39,7 @@ import appsgate.lig.calendar.service.spec.CoreCalendarSpec;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter;
 
@@ -51,7 +52,7 @@ import appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter;
  * @version 1.0.0
  * 
  */
-public class GoogleCalendarImpl implements CoreCalendarSpec, CoreObjectSpec {
+public class GoogleCalendarImpl extends CoreObjectBehavior implements CoreCalendarSpec, CoreObjectSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances

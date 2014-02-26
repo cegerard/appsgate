@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreClockSpec"
-		interfaces="appsgate.lig.clock.sensor.spec.CoreClockSpec"
+		interfaces="appsgate.lig.clock.sensor.spec.CoreClockSpec, appsgate.lig.core.object.spec.CoreObjectSpec"
         messages="appsgate.lig.core.object.messages.NotificationMsg">
         
         <!-- device kernel meta data -->

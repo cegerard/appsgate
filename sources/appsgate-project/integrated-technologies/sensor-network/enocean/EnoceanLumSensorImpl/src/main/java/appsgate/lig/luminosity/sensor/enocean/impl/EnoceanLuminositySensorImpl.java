@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.luminosity.sensor.messages.IlluminationNotificationMsg;
 import appsgate.lig.luminosity.sensor.spec.CoreLuminositySensorSpec;
@@ -20,7 +21,7 @@ import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
  * @see LuminositySensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanLuminositySensorImpl implements CoreObjectSpec, CoreLuminositySensorSpec {
+public class EnoceanLuminositySensorImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreLuminositySensorSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances

@@ -5,6 +5,7 @@ package appsgate.lig.upnp.media.player.adapter;
 import appsgate.lig.upnp.media.player.MediaPlayer;
 import appsgate.lig.upnp.media.proxy.MediaRendererProxyImpl;
 
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 import org.osgi.service.upnp.UPnPDevice;
@@ -16,7 +17,7 @@ import org.json.JSONObject;
 
 import fr.imag.adele.apam.Instance;
 
-public class MediaPlayerAdapter implements MediaPlayer, CoreObjectSpec {	
+public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlayer, CoreObjectSpec {	
 
 	private MediaRendererProxyImpl mediaRenderer;
 

@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreSmartPlugSpec"
-		interfaces="appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec"
+		interfaces="appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec, appsgate.lig.core.object.spec.CoreObjectSpec"
 		messages="appsgate.lig.core.object.messages.NotificationMsg">
 		
 		

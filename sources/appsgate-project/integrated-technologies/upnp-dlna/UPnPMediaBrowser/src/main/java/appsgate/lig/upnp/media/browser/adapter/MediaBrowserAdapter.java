@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.upnp.media.browser.MediaBrowser;
 import appsgate.lig.upnp.media.proxy.MediaServerProxyImpl;
@@ -26,7 +27,7 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 
-public class MediaBrowserAdapter implements MediaBrowser, CoreObjectSpec {
+public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrowser, CoreObjectSpec {
 
     private MediaServerProxyImpl mediaServer;
 

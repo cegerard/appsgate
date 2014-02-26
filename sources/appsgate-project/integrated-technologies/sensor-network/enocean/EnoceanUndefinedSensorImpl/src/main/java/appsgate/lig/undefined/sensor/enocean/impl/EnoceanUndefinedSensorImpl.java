@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 import appsgate.lig.undefined.sensor.spec.CoreUndefinedSensorSpec;
@@ -22,7 +23,7 @@ import appsgate.lig.undefined.sensor.spec.CoreUndefinedSensorSpec;
  * @see UndefinedSensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanUndefinedSensorImpl implements CoreUndefinedSensorSpec, CoreObjectSpec {
+public class EnoceanUndefinedSensorImpl extends CoreObjectBehavior implements CoreUndefinedSensorSpec, CoreObjectSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances

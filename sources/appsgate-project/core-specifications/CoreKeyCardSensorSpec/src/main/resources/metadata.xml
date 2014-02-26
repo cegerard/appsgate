@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreKeyCardSensorSpec"
-		interfaces="appsgate.lig.keycard.sensor.spec.CoreKeyCardSensorSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
+		interfaces="appsgate.lig.keycard.sensor.spec.CoreKeyCardSensorSpec, appsgate.lig.core.object.spec.CoreObjectSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
 		
 		<definition name="deviceName" 	 type="string" />
 		<definition name="deviceId"   	 type="string" />

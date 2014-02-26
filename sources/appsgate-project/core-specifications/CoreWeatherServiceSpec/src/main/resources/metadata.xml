@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreWeatherServiceSpec"
-		interfaces="appsgate.lig.weather.spec.CoreWeatherServiceSpec"
+		interfaces="appsgate.lig.weather.spec.CoreWeatherServiceSpec, appsgate.lig.core.object.spec.CoreObjectSpec"
 		messages="appsgate.lig.core.object.messages.NotificationMsg">
 
 		<!-- Appsgate mandatory property -->

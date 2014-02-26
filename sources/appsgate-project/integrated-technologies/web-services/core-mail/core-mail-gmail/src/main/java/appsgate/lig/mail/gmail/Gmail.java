@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.mail.Mail;
 
@@ -38,7 +39,7 @@ import com.sun.mail.imap.IMAPFolder;
  * @author Cédric Gérard
  *
  */
-public class Gmail implements Mail, CoreObjectSpec {
+public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 	
 	private Logger logger = Logger.getLogger(Gmail.class.getSimpleName());
 	private Timer refreshTimer;

@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreCalendarSpec"
-		interfaces="appsgate.lig.calendar.service.spec.CoreCalendarSpec"
+		interfaces="appsgate.lig.calendar.service.spec.CoreCalendarSpec, appsgate.lig.core.object.spec.CoreObjectSpec"
 		messages="appsgate.lig.core.object.messages.NotificationMsg">
 		
 		<definition name="calendarName" type="string"/>

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.temperature.sensor.messages.TemperatureNotificationMsg;
 import appsgate.lig.temperature.sensor.spec.CoreTemperatureSensorSpec;
@@ -16,7 +17,7 @@ import appsgate.lig.watteco.adapter.spec.WattecoIOService;
  * @author Cédric Gérard
  *
  */
-public class WattecoTemperatureImpl implements CoreObjectSpec, CoreTemperatureSensorSpec {
+public class WattecoTemperatureImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreTemperatureSensorSpec {
 
 
 	/**

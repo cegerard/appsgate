@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 import appsgate.lig.temperature.sensor.messages.TemperatureNotificationMsg;
@@ -21,7 +22,7 @@ import appsgate.lig.temperature.sensor.spec.CoreTemperatureSensorSpec;
  * @see TemperatureSensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanTemperatureSensorImpl implements CoreObjectSpec, CoreTemperatureSensorSpec  {
+public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreTemperatureSensorSpec  {
 	
 	/**
 	 * Static class member uses to log what happened in each instances

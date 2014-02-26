@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.keycard.sensor.messages.KeyCardNotificationMsg;
 import appsgate.lig.keycard.sensor.spec.CoreKeyCardSensorSpec;
@@ -21,7 +22,7 @@ import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
  * @see KeyCardSensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanKeyCardSensorImpl implements CoreKeyCardSensorSpec, CoreObjectSpec {
+public class EnoceanKeyCardSensorImpl extends CoreObjectBehavior implements CoreKeyCardSensorSpec, CoreObjectSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.on_off.actuator.messages.OnOffActuatorNotificationMsg;
 import appsgate.lig.on_off.actuator.spec.CoreOnOffActuatorSpec;
@@ -20,7 +21,7 @@ import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
  * @see OnOffActuatorSpec
  * @see AbstractObjectSpec
  */
-public class EnoceanOnOffAcuatorImpl implements CoreObjectSpec, CoreOnOffActuatorSpec {
+public class EnoceanOnOffAcuatorImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreOnOffActuatorSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances
