@@ -106,7 +106,7 @@ public class RouterImpl implements RouterApAMSpec {
             }
         } catch (Exception ex) {
             logger.error("If getCoreType method error trace appeare below it is because the service or the device doesn't implement all methode in"
-                    + "the CoreObjectSpec interface but this erro doesn't impact the EHMI.");
+                    + "the CoreObjectSpec interface but this error doesn't impact the EHMI.");
             ex.printStackTrace();
         }
     }
@@ -123,18 +123,29 @@ public class RouterImpl implements RouterApAMSpec {
         try {
             obj.put("objectId", deviceId);
         } catch (JSONException e) {
-            // Will never be raised
+            // No exception is thrown
         }
         CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
-        System.out.println("11111111111: " + rmObj.getCoreType());
-        sendToClientService.send("removeDevice", obj);
-        appsgate.removeDeviceSpace(deviceId, inst.getProperty("userType"));
+
+        if (rmObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
+            sendToClientService.send("removeDevice", obj);
+            appsgate.removeDeviceSpace(deviceId, inst.getProperty("userType"));
+        } else if (rmObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
+            sendToClientService.send("removeService", obj);
+            appsgate.removeServiceSpace(deviceId, inst.getProperty("userType"));
+        } else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
+            sendToClientService.send("removeSimulatedDevice", obj);
+            //TODO manage the simulated device
+        } else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
+            sendToClientService.send("removeSimulatedService", obj);
+            //TODO manage the simulated service
+        }
     }
 
     /**
      * Get the AbstractObjectSpec reference corresponding to the id objectID
      *
-     * @param objectID , the AbstractObjectSpec identifier
+     * @param objectID the AbstractObjectSpec identifier
      * @return an AbstractObjectSpec object that have objectID as identifier
      */
     public Object getObjectRefFromID(String objectID) {
@@ -255,7 +266,8 @@ public class RouterImpl implements RouterApAMSpec {
     @Override
     public JSONArray getDevices(String type) {
         Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
-        
+
+
         if (devices != null) {
             JSONArray jsonDeviceList = new JSONArray();
 
@@ -285,14 +297,9 @@ public class RouterImpl implements RouterApAMSpec {
     private JSONObject getObjectDescription(CoreObjectSpec obj, String user) {
         JSONObject JSONDescription = null;
         try {
-            //Get object auto description
+            // Get object auto description
             JSONDescription = obj.getDescription();
-			//WE DONT FILL THE DESCRITPION AUTOMATICALLY WITH CONTEXUAL DATA
-            //CLIENT SOFTWARE HAVE TO GET IT BY THEIR OWN MEANS
-            //Add context description for this abject
-            //JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
-            //JSONDescription.put("placeId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
-            //TODO put the contextual neighborhood of each device
+
         } catch (JSONException e) {
             logger.error(e.getMessage());
         } catch (Exception e) {

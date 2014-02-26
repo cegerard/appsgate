@@ -5,6 +5,7 @@
 		<groupId>appsgate.components</groupId>
 		<artifactId>sources</artifactId>
 		<version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>appsgate-project</artifactId>
 	<packaging>pom</packaging>
