@@ -429,7 +429,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      * @param id
      */
     private void notifyRemoveProgram(String id) {
-        notifyChanges(new ProgramNotification("removeProgram", id, RUNNING_STATE.STOPPED.toString(), new JSONObject(), ""));
+        notifyChanges(new ProgramNotification("removeProgram", id, RUNNING_STATE.STOPPED.toString(), null, ""));
     }
 
     /**

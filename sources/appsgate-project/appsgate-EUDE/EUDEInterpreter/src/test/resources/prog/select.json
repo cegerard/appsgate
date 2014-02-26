@@ -1,0 +1,12 @@
+{"name":"select",
+"header":{"author":"me"},
+"definitions":[{"type":"select",
+"what":["lamp"],
+"where":[],
+"var_name":"v1"}],
+"body":{"type":"setOfRules",
+"rules":[{"type":"action",
+"target":{"type":"variable",
+"id":"v1"},
+"methodName":"blink",
+"action":[]}]}}

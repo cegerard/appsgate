@@ -20,7 +20,8 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.manager.context.spec.ContextManagerSpec;
 import appsgate.lig.manager.space.spec.subSpace.Space;
 import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
-import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * This class is use to allow other components to subscribe for specific
@@ -74,7 +75,7 @@ public class ContextProxyImpl implements ContextProxySpec {
     @Override
     public synchronized void addListener(CoreListener coreListener) {
         logger.debug("Adding a listener...");
-        Entry eventKey = new Entry(coreListener.getObjectId(), coreListener.getEvent(), coreListener.getValue());
+        Entry eventKey = new Entry(coreListener);
 
         //Check if the need to by register in the core clock implementation
         CoreObjectSpec abstractClock = (CoreObjectSpec) coreClock;
@@ -117,14 +118,14 @@ public class ContextProxyImpl implements ContextProxySpec {
     @Override
     public synchronized void deleteListener(CoreListener coreListener) {
         logger.debug("Deleting a listener...");
-        Entry eventKey = new Entry(coreListener.getObjectId(), coreListener.getEvent(), coreListener.getValue());
+        Entry eventKey = new Entry(coreListener);
 
         Set<Entry> keys = eventsListeners.keySet();
         Iterator<Entry> keysIt = keys.iterator();
 
         while (keysIt.hasNext()) {
             Entry key = keysIt.next();
-            if (eventKey.equals(key)) {
+            if (key.equals(eventKey)) {
                 ArrayList<CoreListener> coreListenerList = eventsListeners.get(key);
                 coreListenerList.remove(coreListener);
                 if (coreListenerList.isEmpty()) {
@@ -150,7 +151,7 @@ public class ContextProxyImpl implements ContextProxySpec {
         ArrayList<Space> spacesList = new ArrayList<Space>();
         ArrayList<String> coreObject = new ArrayList<String>();
 
-		//First get all Space from their space id, if the spaces array if empty
+        //First get all Space from their space id, if the spaces array if empty
         //we get only the root space
         if (!spaces.isEmpty()) {
             for (String spaceId : spaces) {
@@ -160,15 +161,15 @@ public class ContextProxyImpl implements ContextProxySpec {
             spacesList.add(contextManager.getRootSpace());
         }
 
-		// For each selected space we check if one of its descendant
+        // For each selected space we check if one of its descendant
         // match any type in the type list
         for (Space place : spacesList) {
             ArrayList<Space> subSpaces = place.getSubSpaces();
             for (Space subSpace : subSpaces) {
-				//TODO the TYPE.DEVICE check will be move latter with service integration
+                //TODO the TYPE.DEVICE check will be move latter with service integration
                 //If no type is specified we get all devices
                 if (!typeList.isEmpty()) {
-                    if (subSpace.getType().equals(TYPE.DEVICE) && typeList.contains(subSpace.getPropertyValue("type"))) {
+                    if (subSpace.getType().equals(TYPE.DEVICE) && typeList.contains(subSpace.getPropertyValue("deviceType"))) {
                         coreObject.add(subSpace.getPropertyValue("ref"));
                     }
                 } else {
@@ -178,9 +179,7 @@ public class ContextProxyImpl implements ContextProxySpec {
                 }
             }
         }
-
         return coreObject;
-
     }
 
     /**
@@ -192,15 +191,25 @@ public class ContextProxyImpl implements ContextProxySpec {
     public void gotNotification(NotificationMsg notif) {
         logger.debug("Event message receive, " + notif.JSONize());
         JSONObject event = notif.JSONize();
+        Entry eventKey;
 
-        if (!event.has("objectId")) {
+        if (event.has("newspace")) {
+            logger.debug("New space detected");
+            try {
+                eventKey = new Entry("connected", event.getJSONObject("newspace").getJSONArray("properties"));
+            } catch (JSONException ex) {
+                return;
+            }
+        } else if (event.has("objectId")) {
+            eventKey = new Entry(event);
+        } else {
+            logger.trace("this kind of message is not treated");
             return;
         }
 
-        Entry eventKey = new Entry(event.optString("objectId"), event.optString("varName"), event.optString("value"));
         ArrayList<Entry> keys = new ArrayList<Entry>();
 
-	// Copy the listener just to avoid concurrent exception with program
+        // Copy the listener just to avoid concurrent exception with program
         // when daemon try to add listener again when they restart
         synchronized (this) {
             Iterator<Entry> tempKeys = eventsListeners.keySet().iterator();
@@ -210,8 +219,8 @@ public class ContextProxyImpl implements ContextProxySpec {
         }
 
         for (Entry key : keys) {
-            if (eventKey.equals(key)) {
-                logger.debug("Event is followed, retreiving listeners...");
+            if (eventKey.match(key)) {
+                logger.trace("Event is followed, retreiving listeners...");
 
                 ArrayList<CoreListener> coreListenerList;
                 synchronized (this) {
@@ -219,25 +228,44 @@ public class ContextProxyImpl implements ContextProxySpec {
                     // override method someone call the deleteListener method that made deadlock
                     coreListenerList = (ArrayList<CoreListener>) eventsListeners.get(key).clone();
                 }
-
-                Iterator<CoreListener> it = coreListenerList.iterator();
-                while (it.hasNext()) {
-                    it.next().notifyEvent();
-                    logger.debug("Notify listener.");
+                for (CoreListener listener : coreListenerList) {
+                    logger.trace("Notify listener.");
+                    listener.notifyEvent();
                 }
             }
         }
 
     }
 
-
     @Override
     public StateDescription getEventsFromState(String type, String stateName) {
-        return null;
-    }
-
-    @Override
-    public String getBrickType(String targetId) {
+        Space space = contextManager.getSpace(type);
+        if (space == null) {
+            logger.error("Unable to retrieve object");
+            return null;
+        }
+        Space parent = space.getParent();
+        if (parent == null || parent.getType() != TYPE.DEVICE) {
+            logger.debug("Parent category not found");
+            return null;
+        }
+        String propertyValue = parent.getPropertyValue("grammar");
+        if (propertyValue == null || propertyValue.isEmpty()) {
+            logger.error("grammar not found for given object");
+            return null;
+        }
+        try {
+            JSONObject o = new JSONObject(propertyValue);
+            JSONArray array = o.getJSONArray("states");
+            for (int i = 0; i < array.length(); i++) {
+                if (array.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
+                    return new StateDescription(array.getJSONObject(i));
+                }
+            }
+        } catch (JSONException ex) {
+            logger.error("Grammar not well formattted");
+            return null;
+        }
         return null;
     }
 
@@ -253,12 +281,12 @@ public class ContextProxyImpl implements ContextProxySpec {
         /**
          * Identifier of the source f the event
          */
-        private final String objectId;
+        private String objectId;
 
         /**
          * The variable name to follow
          */
-        private final String varName;
+        private String varName;
 
         /**
          * The threshold value
@@ -269,7 +297,8 @@ public class ContextProxyImpl implements ContextProxySpec {
          * The kind of entry "eventValue": for specific value of an event
          * "eventName" : for a specific event but don't care about the value
          */
-        private final String entryType;
+        private String entryType;
+
 
         /**
          * Constructor for an Entry
@@ -279,6 +308,38 @@ public class ContextProxyImpl implements ContextProxySpec {
          * @param value
          */
         public Entry(String objectId, String varName, String value) {
+            initWith(objectId, varName, value);
+        }
+
+        public Entry(JSONObject event) {
+            initWith(event.optString("objectId"), event.optString("varName"), event.optString("value"));
+        }
+
+        public Entry(CoreListener core) {
+            initWith(core.getObjectId(), core.getEvent(), core.getValue());
+        }
+
+        public Entry(String vName, JSONArray a) throws JSONException {
+            String v = null;
+            String id = null;
+            for (int i = 0; i < a.length(); i++) {
+                JSONObject jsonObject = a.getJSONObject(i);
+                if (jsonObject.has("deviceType")) {
+                    v = jsonObject.getString("deviceType");
+                }
+                if (jsonObject.has("ref")) {
+                    id = jsonObject.getString("ref");
+                }
+            }
+            initWith(vName, v, id);
+        }
+        /**
+         * 
+         * @param objectId
+         * @param varName
+         * @param value 
+         */
+        private void initWith(String objectId, String varName, String value) {
             this.objectId = objectId;
             this.varName = varName;
             this.value = value;
@@ -289,13 +350,18 @@ public class ContextProxyImpl implements ContextProxySpec {
             }
         }
 
+        /**
+         *
+         * @return the object Id
+         */
         public String getObjectId() {
             return objectId;
         }
 
         /**
          * get the var name
-         * @return 
+         *
+         * @return
          */
         public String getVarName() {
             return varName;
@@ -303,7 +369,8 @@ public class ContextProxyImpl implements ContextProxySpec {
 
         /**
          * Get the value
-         * @return 
+         *
+         * @return
          */
         public String getValue() {
             return value;
@@ -311,7 +378,8 @@ public class ContextProxyImpl implements ContextProxySpec {
 
         /**
          * Set the value
-         * @param value 
+         *
+         * @param value
          */
         public void setValue(String value) {
             this.value = value;
@@ -355,6 +423,26 @@ public class ContextProxyImpl implements ContextProxySpec {
             hash = 23 * hash + (this.varName != null ? this.varName.hashCode() : 0);
             hash = 23 * hash + (this.value != null ? this.value.hashCode() : 0);
             return hash;
+        }
+
+        /**
+         *
+         * @param key
+         * @return
+         */
+        private boolean match(Entry key) {
+            // if value does not match
+            if (key.value == null ? this.value != null : !key.value.equals(this.value)) {
+                return false;
+            }
+            // if var name does not match
+            if (key.varName == null ? this.varName != null : !key.varName.equals(this.varName)) {
+                return false;
+            }
+            if (key.objectId == null || key.objectId.isEmpty()) {
+                return true;
+            }
+            return key.objectId.equals(this.objectId);
         }
 
     }

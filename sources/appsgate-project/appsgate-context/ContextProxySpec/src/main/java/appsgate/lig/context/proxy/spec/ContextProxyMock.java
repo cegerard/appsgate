@@ -42,17 +42,13 @@ public class ContextProxyMock implements ContextProxySpec {
         }
     }
 
-    @Override
-    public String getBrickType(String targetId) {
-        return "lamp";
-    }
 
     @Override
-    public StateDescription getEventsFromState(String type, String stateName) {
+    public StateDescription getEventsFromState(String objectId, String stateName) {
         try {
-            return new StateDescription(lib.getStateForType(type, stateName));
+            return new StateDescription(lib.getStateForType("lamp", stateName));
         } catch (JSONException ex) {
-            LOGGER.error("unable to find events for the given type [{}/{}]", type, stateName);
+            LOGGER.error("unable to find events for the given type [{}/{}]", objectId, stateName);
             return null;
         }
     }

@@ -441,7 +441,12 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             WHERE.add(where.optString(i));
         }
         ArrayList<String> devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
-        return new JSONArray(devicesInSpaces);
+        JSONArray retArray = new JSONArray();
+        for (String name : devicesInSpaces) {
+            NodeValue n = new NodeValue("device", name, this);
+            retArray.put(n.getJSONDescription());
+        }
+        return retArray;
     }
 
 }

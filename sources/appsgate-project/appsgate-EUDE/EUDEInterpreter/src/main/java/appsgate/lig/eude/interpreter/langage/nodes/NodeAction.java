@@ -85,6 +85,7 @@ public class NodeAction extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
+        callAction();
         setStarted(false);
         fireEndEvent(new EndEvent(this));
     }
@@ -94,13 +95,22 @@ public class NodeAction extends Node {
         LOGGER.debug("##### Action call [{}]!", methodName);
         fireStartEvent(new StartEvent(this));
         setStarted(true);
+        target.addEndEventListener(this);
+        
+        return target.call();
+    }
+
+    /**
+     * 
+     */
+    private void callAction() {
         try {
             if (target.getType().equals("device")) {
                 callDeviceAction(target.getValue());
             } else if (target.getType().equals("programcall")) {
                 callProgramAction(target.getValue());
             } else if (target.getType().equals("list")) {
-                callListAction(target.getValue());
+                callListAction((SpokVariable)target.getResult());
             } else if (target.getType().equals("variable")) {
                 callVariableAction(getVariableByName(target.getValue()), target.getValue());
             } else {
@@ -110,9 +120,6 @@ public class NodeAction extends Node {
             LOGGER.error("Error at execution: " + e);
         }
 
-        setStarted(false);
-        fireEndEvent(new EndEvent(this));
-        return null;
     }
 
     /**
@@ -166,17 +173,12 @@ public class NodeAction extends Node {
      * @param target
      * @throws SpokException
      */
-    private void callListAction(String target) throws SpokException {
+    private void callListAction(SpokVariable list) throws SpokException {
         LOGGER.debug("Call List action");
 
-        SpokVariable list = getVariableByName(target);
-        if (list == null) {
-            LOGGER.error("No such variable found in the symbol table");
-            return;
-        }
         List<SpokVariable> elements = list.getElements();
         for (SpokVariable v : elements) {
-            callVariableAction(v, target);
+            callVariableAction(v, "");
         }
     }
 
@@ -196,7 +198,7 @@ public class NodeAction extends Node {
         } else if (v.getType().equals("device")) {
             callDeviceAction(v.getName());
         } else if (v.getType().equals("list")) {
-            callListAction(v.getName());
+            callListAction(v);
         }
 
     }

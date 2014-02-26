@@ -435,6 +435,13 @@ public class EUDEMediatorTest {
         contextProxy.notifAll("1");
     }
 
+    @Test
+    public void testSelect() throws Exception {
+        System.out.println("Select");
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/select.json")));
+        
+    }
+    
     /**
      * To test whether reading real program is working
      *

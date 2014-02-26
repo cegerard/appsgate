@@ -116,5 +116,12 @@ public class NodeSelect extends Node {
         return o;
     }
 
+    
+    
+    @Override
+    public String getType() {
+        return "list";
+        
+    }
 
 }

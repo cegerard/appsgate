@@ -176,7 +176,7 @@ public final class SymbolTable {
         try {
             for (String name : varNames) {
                 JSONObject v = variables.get(name).getJSONDescription();
-                v.put("var_name", v);
+                v.put("var_name", name);
                 a.put(i++, v);
             }
             for (NodeFunctionDefinition f: functions.values()) {

@@ -42,17 +42,11 @@ public interface ContextProxySpec {
 
     /**
      *
-     * @param type
+     * @param objectId
      * @param stateName
      * @return
      */
-    public StateDescription getEventsFromState(String type, String stateName);
+    public StateDescription getEventsFromState(String objectId, String stateName);
 
-    /**
-     *
-     * @param targetId
-     * @return
-     */
-    public String getBrickType(String targetId);
 
 }

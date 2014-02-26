@@ -162,7 +162,7 @@ public class SpokVariable implements SpokObject {
     public List<SpokVariable> getElements() {
         try {
             ArrayList<SpokVariable> a = new ArrayList<SpokVariable>();
-            JSONArray list = this.json.getJSONArray("list");
+            JSONArray list = this.json.getJSONArray("value");
             for (int i = 0; i < list.length(); i++) {
                 a.add(new SpokVariable(list.getJSONObject(i)));
             }
@@ -194,6 +194,9 @@ public class SpokVariable implements SpokObject {
      */
     @Override
     public JSONObject getJSONDescription() {
+        if (json != null) {
+            return json;
+        }
         JSONObject o = new JSONObject();
         try {
             o.put("id", id);

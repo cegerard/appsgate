@@ -38,7 +38,7 @@ public class ContextManagerImpl implements ContextManagerSpec {
 	/**
 	 * class logger member
 	 */
-	private static Logger logger = LoggerFactory.getLogger(ContextManagerImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(ContextManagerImpl.class);
 
 	/**
 	 * This is the hash map to match the space of devices.
