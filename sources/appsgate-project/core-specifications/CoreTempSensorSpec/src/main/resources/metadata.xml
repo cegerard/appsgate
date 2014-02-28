@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreTemperatureSensorSpec"
-		interfaces="appsgate.lig.temperature.sensor.spec.CoreTemperatureSensorSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
+		interfaces="appsgate.lig.temperature.sensor.spec.CoreTemperatureSensorSpec, appsgate.lig.core.object.spec.CoreObjectSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
 	
 		<!-- device kernel meta data -->
 		<definition name="deviceName" 		  type="string" />

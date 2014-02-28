@@ -3,7 +3,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="mail-service-specification"
-		interfaces="appsgate.lig.mail.Mail" messages="appsgate.lig.core.object.messages.NotificationMsg">
+		interfaces="appsgate.lig.mail.Mail, appsgate.lig.core.object.spec.CoreObjectSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
 		<definition name="user" type="string" />
 		<definition name="password" type="string" />
 		<definition name="auto-refresh" type="int" />

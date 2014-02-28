@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreMediaBrowserSpec"
-		interfaces="appsgate.lig.upnp.media.browser.MediaBrowser">
+		interfaces="appsgate.lig.upnp.media.browser.MediaBrowser, appsgate.lig.core.object.spec.CoreObjectSpec">
 	</specification>
 
 </apam>

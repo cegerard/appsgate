@@ -9,6 +9,7 @@ import appsgate.lig.button_switch.sensor.messages.SwitchNotificationMsg;
 import appsgate.lig.button_switch.sensor.spec.CoreSwitchSensorSpec;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 /**
@@ -21,7 +22,7 @@ import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
  * @see SwitchSensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanSwitchSensorImpl implements CoreObjectSpec, CoreSwitchSensorSpec {
+public class EnoceanSwitchSensorImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreSwitchSensorSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances

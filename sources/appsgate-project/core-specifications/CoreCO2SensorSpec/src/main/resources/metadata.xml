@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreCO2SensorSpec"
-		interfaces="appsgate.lig.co2.sensor.spec.CoreCO2SensorSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
+		interfaces="appsgate.lig.co2.sensor.spec.CoreCO2SensorSpec, appsgate.lig.core.object.spec.CoreObjectSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
 		
 		
 		<definition name="deviceName" 		   	   type="string" />

@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreOccupancySpec"
-		interfaces="appsgate.lig.occupancy.sensor.spec.CoreOccupancySpec"
+		interfaces="appsgate.lig.occupancy.sensor.spec.CoreOccupancySpec, appsgate.lig.core.object.spec.CoreObjectSpec"
 		messages="appsgate.lig.core.object.messages.NotificationMsg">
 		
 		

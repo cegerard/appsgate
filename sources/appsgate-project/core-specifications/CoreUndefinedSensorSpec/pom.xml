@@ -19,10 +19,10 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-		</dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreObjectSpec</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 	</dependencies>
 
 	<!-- Build Description -->

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.smartplug.actuator_sensor.messages.SmartPlugNotificationMsg;
 import appsgate.lig.smartplug.actuator_sensor.spec.CoreSmartPlugSpec;
@@ -16,7 +17,7 @@ import appsgate.lig.watteco.adapter.spec.WattecoIOService;
  * @author Cédric Gérard
  *
  */
-public class WattecoSmartPlugImpl implements CoreObjectSpec, CoreSmartPlugSpec, SmartPlugServices {
+public class WattecoSmartPlugImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreSmartPlugSpec, SmartPlugServices {
 
 	/**
 	 * Static class member uses to log what happened in each instances

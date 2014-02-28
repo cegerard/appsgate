@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.contact.sensor.messages.ContactNotificationMsg;
 import appsgate.lig.contact.sensor.spec.CoreContactSensorSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
 
@@ -22,7 +23,7 @@ import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
  * @see ContactSensorSpec
  * @see CoreObjectSpec
  */
-public class EnoceanContactSensorImpl implements CoreContactSensorSpec, CoreObjectSpec {
+public class EnoceanContactSensorImpl extends CoreObjectBehavior implements CoreContactSensorSpec, CoreObjectSpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances

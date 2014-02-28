@@ -4,7 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="CoreMediaPlayerSpec"
-		interfaces="appsgate.lig.upnp.media.player.MediaPlayer">
+		interfaces="appsgate.lig.upnp.media.player.MediaPlayer, appsgate.lig.core.object.spec.CoreObjectSpec">
 	</specification>
 
 </apam>

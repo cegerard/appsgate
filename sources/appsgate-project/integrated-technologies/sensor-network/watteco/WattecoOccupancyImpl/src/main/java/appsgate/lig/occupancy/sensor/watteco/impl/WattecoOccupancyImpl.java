@@ -6,12 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.occupancy.sensor.messages.OccupancyNotificationMsg;
 import appsgate.lig.occupancy.sensor.spec.CoreOccupancySpec;
 import appsgate.lig.watteco.adapter.spec.WattecoIOService;
 
-public class WattecoOccupancyImpl implements CoreObjectSpec, CoreOccupancySpec {
+public class WattecoOccupancyImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreOccupancySpec {
 	
 	/**
 	 * Static class member uses to log what happened in each instances

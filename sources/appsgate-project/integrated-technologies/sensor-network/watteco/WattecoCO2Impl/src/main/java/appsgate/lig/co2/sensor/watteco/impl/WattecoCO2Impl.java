@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.co2.sensor.messages.Co2NotificationMsg;
 import appsgate.lig.co2.sensor.spec.CoreCO2SensorSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.watteco.adapter.spec.WattecoIOService;
 
@@ -16,7 +17,7 @@ import appsgate.lig.watteco.adapter.spec.WattecoIOService;
  * @author Cédric Gérard
  *
  */
-public class WattecoCO2Impl implements CoreObjectSpec, CoreCO2SensorSpec {
+public class WattecoCO2Impl extends CoreObjectBehavior implements CoreObjectSpec, CoreCO2SensorSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances
