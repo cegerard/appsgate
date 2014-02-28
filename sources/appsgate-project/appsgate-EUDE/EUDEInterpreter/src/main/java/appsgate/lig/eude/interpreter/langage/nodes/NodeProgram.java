@@ -160,7 +160,7 @@ public class NodeProgram extends Node {
         name = getJSONString(json, "name");
         header = getJSONObject(json, "header");
 
-        this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions")));
+        this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
         if (json.has("daemon")) {
             daemon = json.optBoolean("daemon");
         } else {
@@ -356,7 +356,7 @@ public class NodeProgram extends Node {
     @Override
 
     public String getExpertProgramScript() {
-        SymbolTable vars = new SymbolTable();
+        SymbolTable vars = new SymbolTable(this);
         this.setSymbolTable(vars);
         return this.getHeader() + vars.getExpertProgramDecl() + "\n" + body.getExpertProgramScript();
     }

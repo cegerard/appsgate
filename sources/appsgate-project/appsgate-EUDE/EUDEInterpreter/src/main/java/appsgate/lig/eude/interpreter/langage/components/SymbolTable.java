@@ -1,8 +1,11 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
+import appsgate.lig.eude.interpreter.langage.nodes.NodeVariableDefinition;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokSymbolTableException;
+import appsgate.lig.eude.interpreter.langage.nodes.Node;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeFunctionDefinition;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Class to store the variable
+ *
  * @author jr
  */
 public final class SymbolTable {
@@ -20,27 +24,32 @@ public final class SymbolTable {
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SymbolTable.class);
 
-    private final HashMap<String, SpokVariable> variables;
+    private final HashMap<String, NodeVariableDefinition> variables;
     private final HashMap<String, NodeFunctionDefinition> functions;
     private final List<String> varNames;
+    private final Node parent;
 
     /**
      * Constructor
+     *
+     * @param p
      */
-    public SymbolTable() {
-        variables = new HashMap<String, SpokVariable>();
+    public SymbolTable(Node p) {
+        variables = new HashMap<String, NodeVariableDefinition>();
         functions = new HashMap<String, NodeFunctionDefinition>();
         varNames = new ArrayList<String>();
+        parent = p;
     }
 
     /**
      * Constructor
      *
      * @param jsonArray
+     * @param parent
      * @throws SpokException
      */
-    public SymbolTable(JSONArray jsonArray) throws SpokException {
-        this();
+    public SymbolTable(JSONArray jsonArray, Node parent) throws SpokException {
+        this(parent);
         this.buildFromJson(jsonArray);
     }
 
@@ -55,12 +64,12 @@ public final class SymbolTable {
                 JSONObject vJson;
                 try {
                     vJson = jsonArray.getJSONObject(i);
-                    String varName = vJson.optString("var_name");
+                    String varName = vJson.optString("id");
                     if (varName != null) {
                         if (variables.get(varName) != null) {
                             throw new SpokSymbolTableException("The var_name has already been used in the same scope: " + varName, null);
                         }
-                        addVariable(varName, new SpokVariable(vJson));
+                        addVariable(varName, vJson.getJSONObject("value"));
                     } else {
                         String functName = vJson.optString("func_name");
                         if (functName != null) {
@@ -77,14 +86,25 @@ public final class SymbolTable {
         }
     }
 
-
     /**
      *
      * @param varName
-     * @param var
+     * @param value
      * @return the new variable created
      */
-    public SpokVariable addVariable(String varName, SpokVariable var) {
+    public NodeVariableDefinition addVariable(String varName, JSONObject value) {
+        NodeVariableDefinition var;
+        try {
+            if (value == null) {
+                var = new NodeVariableDefinition(varName, null, this.parent);
+            } else {
+                var = new NodeVariableDefinition(varName, value, this.parent);
+            }
+        } catch (SpokException ex) {
+            LOGGER.error("Unable to create a variable of name {} with value {}", varName, value);
+            LOGGER.debug(ex.getMessage());
+            return null;
+        }
         variables.put(varName, var);
         varNames.add(varName);
         return var;
@@ -96,7 +116,7 @@ public final class SymbolTable {
      * @param l
      * @return
      */
-    public String getVariableKey(SpokVariable l) {
+    public String getVariableKey(NodeVariableDefinition l) {
         for (String k : variables.keySet()) {
             if (variables.get(k).equals(l)) {
                 return k;
@@ -105,14 +125,13 @@ public final class SymbolTable {
         return null;
     }
 
-
     /**
      *
      * @param key
      * @return
      */
-    public SpokVariable getVariableByKey(String key) {
-        return variables.get(key);
+    public NodeVariableDefinition getVariableByKey(String key) {
+        return (NodeVariableDefinition) variables.get(key);
     }
 
     /**
@@ -159,7 +178,7 @@ public final class SymbolTable {
     }
 
     /**
-     * 
+     *
      * @return the list of variables
      */
     public List<String> getVarList() {
@@ -167,7 +186,7 @@ public final class SymbolTable {
     }
 
     /**
-     * 
+     *
      * @return the JSON description of the symbol table
      */
     public JSONArray getJSONDescription() {
@@ -179,7 +198,7 @@ public final class SymbolTable {
                 v.put("var_name", name);
                 a.put(i++, v);
             }
-            for (NodeFunctionDefinition f: functions.values()) {
+            for (NodeFunctionDefinition f : functions.values()) {
                 JSONObject json = f.getJSONDescription();
                 json.put("func_name", f.getName());
                 a.put(i++, json);

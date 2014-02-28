@@ -2,7 +2,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
-import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +38,7 @@ public class NodeFunctionTest extends NodeTest {
         assertNotNull(func);
         System.out.println(func.getExpertProgramScript());
         Assert.assertEquals(null, func.call());
-        SpokVariable v1 = func.getVariableByName("v1");
+        NodeVariableDefinition v1 = func.getVariableByName("v1");
         Assert.assertNotNull(v1);
         System.out.println(v1);
         SpokObject result = func.getResult();

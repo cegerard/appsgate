@@ -40,7 +40,7 @@ public class NodeFunctionDefinition extends Node {
         super(parent);
         this.name = programJSON.optString("id");
         try {
-            this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions")));
+            this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions"), this));
         } catch (SpokException ex) {
             LOGGER.error("Unable to set the symbol table");
             throw new SpokNodeException("NodeFunctionDefinition", "seqDefinitions", ex);

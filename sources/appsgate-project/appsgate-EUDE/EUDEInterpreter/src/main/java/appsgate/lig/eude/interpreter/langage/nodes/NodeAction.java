@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.router.spec.GenericCommand;
 import java.util.List;
@@ -96,23 +95,24 @@ public class NodeAction extends Node {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         target.addEndEventListener(this);
-        
+
         return target.call();
     }
 
     /**
-     * 
+     *
      */
     private void callAction() {
         try {
-            if (target.getType().equals("device")) {
+            if (target.getType().equalsIgnoreCase("device")) {
                 callDeviceAction(target.getValue());
-            } else if (target.getType().equals("programcall")) {
+            } else if (target.getType().equalsIgnoreCase("programcall")) {
                 callProgramAction(target.getValue());
-            } else if (target.getType().equals("list")) {
-                callListAction((SpokVariable)target.getResult());
-            } else if (target.getType().equals("variable")) {
-                callVariableAction(getVariableByName(target.getValue()), target.getValue());
+            } else if (target.getType().equalsIgnoreCase("list")) {
+                callListAction((NodeValue) target.getResult());
+            } else if (target.getType().equalsIgnoreCase("variable")) {
+                NodeVariableDefinition var = getVariableByName(target.getValue());
+                callVariableAction(var, target.getValue());
             } else {
                 LOGGER.error("Action type ({}) not supported", target.getType());
             }
@@ -130,6 +130,7 @@ public class NodeAction extends Node {
      */
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
+        LOGGER.debug("Call Device action: {}", target);
         command = getMediator().executeCommand(target, methodName, args);
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, target);
@@ -146,6 +147,7 @@ public class NodeAction extends Node {
      * @throws SpokException
      */
     private void callProgramAction(String target) throws SpokException {
+        LOGGER.debug("Call Program action: {}", target);
         NodeProgram p = getMediator().getNodeProgram(target);
 
         if (p != null) {
@@ -173,12 +175,14 @@ public class NodeAction extends Node {
      * @param target
      * @throws SpokException
      */
-    private void callListAction(SpokVariable list) throws SpokException {
+    private void callListAction(Node n) throws SpokException {
         LOGGER.debug("Call List action");
-
-        List<SpokVariable> elements = list.getElements();
-        for (SpokVariable v : elements) {
-            callVariableAction(v, "");
+       // Node n =  list.getNodeValue();
+        if (n != null) {
+            List<NodeValue> elements = n.getElements();
+            for (NodeValue v : elements) {
+                callVariableAction(v, "");
+            }
         }
     }
 
@@ -187,18 +191,21 @@ public class NodeAction extends Node {
      * @param v
      * @param target
      */
-    private void callVariableAction(SpokVariable v, String target) throws SpokException {
-        LOGGER.debug("Call Variable action: {}", v.getName());
-        if (v.getType().equals("variable")) {
-            if (v.getName().equals(target)) {
-                LOGGER.warn("Stopping cause there was a recursive loop");
-                return;
-            }
-            callVariableAction(getVariableByName(v.getName()), v.getName());
-        } else if (v.getType().equals("device")) {
-            callDeviceAction(v.getName());
-        } else if (v.getType().equals("list")) {
-            callListAction(v);
+    private void callVariableAction(SpokObject v, String target) throws SpokException {
+        if (v == null) {
+            LOGGER.error("Unable to find variable: " + target);
+            return;
+        }
+        if (v.getType().equalsIgnoreCase("variable")) {
+            NodeVariableDefinition var = getVariableByName(v.getValue());
+            callVariableAction(var, v.getValue());
+        } else if (v.getType().equalsIgnoreCase("device")) {
+            callDeviceAction(v.getValue());
+        } else if (v.getType().equalsIgnoreCase("list")) {
+            callListAction((Node) v);
+        } else {
+            LOGGER.warn("Action has not been executed: {}", this);
+            LOGGER.debug("The type was: {}", v.getType());
         }
 
     }
@@ -209,9 +216,9 @@ public class NodeAction extends Node {
      * has been passed
      */
     @Override
-    public SpokObject getResult() {
+    public Node getResult() {
         if (command != null) {
-            return new SpokVariable(returnType, command.getReturn());
+            return new NodeValue(returnType, command.getReturn().toString(), this);
         } else {
             return null;
         }

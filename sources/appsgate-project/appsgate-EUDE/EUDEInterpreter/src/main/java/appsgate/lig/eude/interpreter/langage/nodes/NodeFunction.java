@@ -3,7 +3,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
-import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
@@ -63,7 +62,7 @@ public class NodeFunction extends Node {
         name = n;
         functionDef = def;
         params = par;
-        setSymbolTable(new SymbolTable());
+        setSymbolTable(new SymbolTable(this));
 
     }
 
@@ -80,7 +79,7 @@ public class NodeFunction extends Node {
         name = getJSONString(programJSON, "id");
         functionDef = this.getFunctionByName(name);
         params = programJSON.optJSONArray("params");
-        setSymbolTable(new SymbolTable());
+        setSymbolTable(new SymbolTable(this));
 
     }
 
@@ -253,8 +252,8 @@ public class NodeFunction extends Node {
         int i = 0;
         for (String v_name : varList) {
             JSONObject jsonVariable = (JSONObject) params.opt(i);
-            SpokVariable v = new SpokVariable(v_name, jsonVariable);
-            this.getSymbolTable().addVariable(v_name, v);
+            NodeVariableDefinition v = new NodeVariableDefinition(v_name, jsonVariable, this);
+            this.getSymbolTable().addVariable(v_name, v.getJSONDescription());
         }
     }
 

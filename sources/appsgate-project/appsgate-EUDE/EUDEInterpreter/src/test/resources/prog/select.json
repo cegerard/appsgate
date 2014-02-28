@@ -1,12 +1,34 @@
-{"name":"select",
-"header":{"author":"me"},
-"definitions":[{"type":"select",
-"what":["lamp"],
-"where":[],
-"var_name":"v1"}],
-"body":{"type":"setOfRules",
-"rules":[{"type":"action",
-"target":{"type":"variable",
-"id":"v1"},
-"methodName":"blink",
-"action":[]}]}}
+{
+    "name": "select",
+    "header": {
+        "author": "me"
+    },
+    "definitions": [
+        {
+            "value": {
+                "type": "select",
+                "what": [
+                    "lamp"
+                ],
+                "where": [
+                ]
+            },
+            "id": "v1"
+        }
+    ],
+    "body": {
+        "type": "setOfRules",
+        "rules": [
+            {
+                "type": "action",
+                "target": {
+                    "type": "variable",
+                    "id": "v1"
+                },
+                "methodName": "blink",
+                "action": [
+                ]
+            }
+        ]
+    }
+}

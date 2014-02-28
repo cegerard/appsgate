@@ -12,10 +12,10 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
-import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -333,19 +333,21 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * it recursively parse the tree to find the name
      *
      * @param varName the name of the variable
-     * @return The SpokVariable
+     * @return The NodeVariableDefinition
      */
-    protected SpokVariable getVariableByName(String varName) {
+    protected NodeVariableDefinition getVariableByName(String varName) {
         if (this.getSymbolTable() != null) {
-            SpokVariable element;
+            NodeVariableDefinition element;
             element = this.getSymbolTable().getVariableByKey(varName);
             if (element != null) {
                 return element;
             }
         }
         if (parent != null) {
+            LOGGER.trace("looking for variable in the parent node");
             return parent.getVariableByName(varName);
         }
+        LOGGER.warn("variable not found");
         return null;
     }
 
@@ -414,11 +416,11 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param name the name of the variable
      * @param v the variable to assign
      */
-    protected void setVariable(String name, SpokVariable v) {
+    protected void setVariable(String name, SpokObject v) {
         if (symbolTable == null) {
-            symbolTable = new SymbolTable();
+            symbolTable = new SymbolTable(this);
         }
-        symbolTable.addVariable(name, v);
+        symbolTable.addVariable(name, v.getJSONDescription());
     }
 
     @Override
@@ -431,7 +433,15 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         return null;
     }
 
-    protected JSONArray getDevicesInSpaces(JSONArray what, JSONArray where) throws SpokExecutionException {
+    /**
+     *
+     * @param what
+     * @param where
+     * @return
+     * @throws SpokExecutionException
+     */
+    protected JSONArray getDevicesInSpaces(JSONArray what, JSONArray where)
+            throws SpokExecutionException {
         ArrayList<String> WHAT = new ArrayList<String>();
         for (int i = 0; i < what.length(); i++) {
             WHAT.add(what.optString(i));
@@ -447,6 +457,14 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             retArray.put(n.getJSONDescription());
         }
         return retArray;
+    }
+
+    /**
+     *
+     * @return the elements from a list
+     */
+    public List<NodeValue> getElements() {
+        return new ArrayList<NodeValue>();
     }
 
 }

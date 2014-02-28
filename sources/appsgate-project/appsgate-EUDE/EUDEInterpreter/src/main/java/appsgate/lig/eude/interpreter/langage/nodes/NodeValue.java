@@ -6,17 +6,31 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.SpokObject;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jr
  */
 public class NodeValue extends Node {
+
+    // Logger
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeVariableDefinition.class);
+
+    private JSONObject callVariable() {
+        NodeVariableDefinition variableByName = this.getVariableByName(value);
+        variableByName.addEndEventListener(this);
+        return variableByName.call();
+    }
 
     public enum TYPE {
 
@@ -33,10 +47,7 @@ public class NodeValue extends Node {
      */
     private String value;
 
-    /**
-     *
-     */
-    private JSONArray list = null;
+    private JSONArray list;
 
     /**
      * private constructor to allow copy
@@ -58,17 +69,17 @@ public class NodeValue extends Node {
         type = TYPE.valueOf(getJSONString(o, "type").toUpperCase());
         switch (type) {
             case DEVICE:
-            case LIST:
             case PROGRAMCALL:
             case VARIABLE:
                 value = this.getJSONString(o, "id");
                 break;
+            case LIST:
+                list = this.getJSONArray(o, "value");
+                value = list.toString();
+                break;
             default:
                 value = this.getJSONString(o, "value");
                 break;
-        }
-        if (o.has("list")) {
-            list = getJSONArray(o, "list");
         }
     }
 
@@ -90,6 +101,9 @@ public class NodeValue extends Node {
 
     @Override
     public JSONObject call() {
+        if (type==TYPE.VARIABLE) {
+            return callVariable();
+        }
         setStarted(true);
         fireEndEvent(new EndEvent(this));
         return null;
@@ -114,12 +128,18 @@ public class NodeValue extends Node {
         NodeValue ret = new NodeValue(parent);
         ret.type = this.type;
         ret.value = this.value;
-        ret.list = this.list;
+        try {
+            if (list != null) {
+                ret.list = new JSONArray(this.value);
+            }
+        } catch (JSONException ex) {
+        }
         return ret;
     }
 
     @Override
     public void endEventFired(EndEvent e) {
+        fireEndEvent(new EndEvent(this));
     }
 
     @Override
@@ -129,17 +149,16 @@ public class NodeValue extends Node {
             o.put("type", getType());
             switch (type) {
                 case DEVICE:
-                case LIST:
                 case PROGRAMCALL:
                 case VARIABLE:
                     o.put("id", this.value);
                     break;
+                case LIST:
+                    o.put("value", this.list);
+                    break;
                 default:
                     o.put("value", this.value);
                     break;
-            }
-            if (list != null) {
-                o.put("list", list);
             }
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -153,17 +172,52 @@ public class NodeValue extends Node {
         return value;
     }
 
+    /**
+     * Method to get the variables of a list, if the variable is not a list, it
+     * returns null
+     *
+     * @return a list of Variable or null
+     */
+    @Override
+    public List<NodeValue> getElements() {
+        try {
+            ArrayList<NodeValue> a = new ArrayList<NodeValue>();
+            for (int i = 0; i < list.length(); i++) {
+                a.add(new NodeValue(list.getJSONObject(i), this));
+            }
+            return a;
+
+        } catch (JSONException ex) {
+            LOGGER.error("list without a list");
+            return null;
+        } catch (SpokNodeException ex) {
+            LOGGER.error("The variable was not well formed");
+            return null;
+        }
+    }
+
+    /**
+     * @return the value of the variable
+     */
+    public String getVariableValue() {
+        if (type == TYPE.VARIABLE) {
+            NodeVariableDefinition var = getVariableByName(value);
+            return var.getValue();
+        }
+        return null;
+    }
+
     @Override
     public String getType() {
         return type.toString().toLowerCase();
     }
-    
+
     public TYPE getValueType() {
         return type;
     }
 
     @Override
-    public SpokObject getResult() {
+    public Node getResult() {
         return this;
     }
 

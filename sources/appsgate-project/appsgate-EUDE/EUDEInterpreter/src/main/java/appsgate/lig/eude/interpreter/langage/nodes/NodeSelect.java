@@ -1,18 +1,26 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.SpokVariable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jr
  */
 public class NodeSelect extends Node {
+
+    /**
+     * Static class member uses to log what happened in each instances
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSelect.class);
 
     private JSONArray what;
     private JSONArray where;
@@ -30,9 +38,9 @@ public class NodeSelect extends Node {
 
     /**
      * Constructor
-     * 
+     *
      * @param o
-     * @param parent 
+     * @param parent
      */
     public NodeSelect(JSONObject o, Node parent) {
         super(parent);
@@ -76,7 +84,7 @@ public class NodeSelect extends Node {
     }
 
     @Override
-    public SpokVariable getResult() throws SpokException {
+    public NodeValue getResult() throws SpokException {
         if (specificDevices == null) {
             return null;
         }
@@ -86,7 +94,7 @@ public class NodeSelect extends Node {
             o.put("value", specificDevices);
         } catch (JSONException ex) {
         }
-        return new SpokVariable(o);
+        return new NodeValue(o, this);
     }
 
     @Override
@@ -116,12 +124,33 @@ public class NodeSelect extends Node {
         return o;
     }
 
-    
-    
+    /**
+     * Method to get the variables of a list, if the variable is not a list, it
+     * returns null
+     *
+     * @return a list of Variable or null
+     */
+    public List<NodeValue> getElements() {
+        try {
+            ArrayList<NodeValue> a = new ArrayList<NodeValue>();
+            for (int i = 0; i < specificDevices.length(); i++) {
+                a.add(new NodeValue(specificDevices.getJSONObject(i), this));
+            }
+            return a;
+
+        } catch (JSONException ex) {
+            LOGGER.error("list without a list");
+            return null;
+        } catch (SpokException ex) {
+            LOGGER.error("The variable was not well formed");
+            return null;
+        }
+    }
+
     @Override
     public String getType() {
         return "list";
-        
+
     }
 
 }

@@ -160,7 +160,7 @@ public class NodeBooleanExpression extends Node {
     }
 
     @Override
-    public SpokObject getResult() throws SpokException {
+    public Node getResult() throws SpokException {
         Boolean result = false;
         switch (operator) {
             case EQUALS:

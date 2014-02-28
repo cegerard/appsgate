@@ -1,7 +1,11 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import java.util.Collection;
 import junit.framework.Assert;
+import org.jmock.Expectations;
+import org.jmock.States;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import static org.junit.Assert.*;
@@ -50,12 +54,37 @@ public class NodeActionTest extends NodeTest {
 
     @Test
     @Override
-        public void testCall() throws Exception {
+    public void testCall() throws Exception {
         printTestName("call");
         JSONObject expResult = null;
         JSONObject result = this.instance.call();
         assertEquals(expResult, result);
         Assert.assertFalse("Simple action can not be stopped, so once the action is done, it is stopped", this.instance.isStarted());
+    }
 
-        }
+    @Test
+    public void testCallOnVariable() throws Exception {
+        final States tested = context.states("NotYet");
+        context.checking(new Expectations() {
+            {
+                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+                then(tested.is("Yes"));
+
+            }
+        });
+
+        printTestName("Call on Variable");
+        programNode.setVariable("test", new NodeValue(new JSONObject("{'type':'device', 'id':'tt'}"), programNode));
+        NodeAction a = new NodeAction(TestUtilities.loadFileJSON("src/test/resources/node/actionVariable.json"), programNode);
+        Assert.assertNotNull(a);
+        JSONObject res = a.call();
+        synchroniser.waitUntil(tested.is("Yes"), 500);
+        tested.become("no");
+
+        Assert.assertNull(res);
+        programNode.setVariable("ref", new NodeValue(new JSONObject("{'type':'device', 'id':'tt'}"), programNode));
+        programNode.setVariable("test", new NodeValue(new JSONObject("{'type':'variable', 'id':'ref'}"), programNode));
+        res = a.call();
+        synchroniser.waitUntil(tested.is("Yes"), 500);
+    }
 }

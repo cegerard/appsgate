@@ -31,7 +31,7 @@ public class Builder {
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
         NODE_FUNCTION_DEFINITION, NODE_IF, NODE_KEEP_STATE, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
-        NODE_VARIABLE_ASSIGNATION, NODE_WHEN, NODE_WHILE;
+        NODE_VARIABLE_ASSIGNATION, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
     }
 
     /**
@@ -59,6 +59,9 @@ public class Builder {
         }
         if (type.equalsIgnoreCase("functionDefinition")) {
             return NODE_TYPE.NODE_FUNCTION_DEFINITION;
+        }
+        if (type.equalsIgnoreCase("variableDefinition")) {
+            return NODE_TYPE.NODE_VARIABLE_DEFINITION;
         }
         if (type.equalsIgnoreCase("if")) {
             return NODE_TYPE.NODE_IF;
@@ -94,9 +97,6 @@ public class Builder {
             return NODE_TYPE.NODE_VALUE;
         }
         if (type.equalsIgnoreCase("programCall")) {
-            return NODE_TYPE.NODE_VALUE;
-        }
-        if (type.equalsIgnoreCase("list")) {
             return NODE_TYPE.NODE_VALUE;
         }
         if (type.equalsIgnoreCase("assignation")) {
@@ -172,11 +172,15 @@ public class Builder {
                     return new NodeSeqRules(o, parent);
                 case NODE_SET_OF_RULES:
                     return new NodeSetOfRules(o, parent);
+                case NODE_VARIABLE_DEFINITION:
+                    return new NodeVariableDefinition(o, parent);
                 default:
                     throw new SpokNodeException("NodeBuilder", "type", null);
             }
         } catch (SpokNodeException ex) {
             throw new SpokTypeException("A node has not been built", ex);
+        } catch (SpokException ex) {
+            throw new SpokTypeException("Variable node definition can not be built", ex);
         }
     }
 

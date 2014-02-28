@@ -4,16 +4,13 @@
     "seqDefinitions": [
         {
             "type": "variable",
-            "id": "v1",
-            "var_name": "v1"},
+            "id": "v1"},
         {
             "type": "variable",
-            "id": "v2",
-            "var_name": "v2"},
+            "id": "v2"},
         {
             "type": "variable",
-            "id": "v3",
-            "var_name": "v3"}
+            "id": "v3"}
     ],
     "seqRules": {
         "type": "instructions",

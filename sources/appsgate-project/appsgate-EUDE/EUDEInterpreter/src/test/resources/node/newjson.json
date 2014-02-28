@@ -7,18 +7,17 @@
     "header": {},
     "definitions": [
         {
-            "type": "boolean",
-            "value": "true",
-            "var_name": "c"
-        },
-        {
-            "var_name": "b",
-            "type": "variable"
-        },
-        {
-            "type": "variable",
             "id": "c",
-            "var_name": "a"
+            "value": {
+                "type": "boolean",
+                "value": "true"
+            }
+        },
+        {
+            "id": "b"
+        },
+        {
+            "id": "a"
         }
     ],
     "body": {
