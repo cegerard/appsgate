@@ -31,11 +31,11 @@
 			<artifactId>WattecoAdapterSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
-			 <groupId>appsgate.components</groupId>
-			 <artifactId>CoreObjectSpec</artifactId>
-			 <version>1.0.0</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			 <groupId>appsgate.components</groupId> -->
+<!-- 			 <artifactId>CoreObjectSpec</artifactId> -->
+<!-- 			 <version>1.0.0</version> -->
+<!-- 		</dependency> -->
 	</dependencies>
 	
 	<!-- Build Description -->
