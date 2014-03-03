@@ -5,7 +5,6 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokSymbolTableException;
 import appsgate.lig.eude.interpreter.langage.nodes.Node;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeFunctionDefinition;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

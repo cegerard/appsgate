@@ -16,7 +16,6 @@
 
 	<modules>
 	    <module>appsgate-pax-test</module>
-	    <module>grammar-test</module>
 	    
 <!-- 		<module>ExecuteCommandTest</module> -->
 <!-- 		<module>DeviceNameTableTester</module> -->

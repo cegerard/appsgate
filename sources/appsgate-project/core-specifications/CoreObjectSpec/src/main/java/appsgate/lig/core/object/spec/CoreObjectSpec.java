@@ -56,6 +56,7 @@ public interface CoreObjectSpec {
 	/**
 	 * Get the JSON of an object
 	 * @return the description as an JSONObject
+     * @throws org.json.JSONException
 	 */
 	public JSONObject getDescription() throws JSONException;
 	
@@ -78,11 +79,14 @@ public interface CoreObjectSpec {
 	 * @author Cédric Gérard
 	 * @since 21 February, 2014
 	 */
-	public enum CORE_TYPE{
+
+        
+        public enum CORE_TYPE{
 		SERVICE,
 		DEVICE,
 		SIMULATED_DEVICE,
 		SIMULATED_SERVICE;
 	}
+        
 	
 }

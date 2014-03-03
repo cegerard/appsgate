@@ -239,18 +239,13 @@ public class ContextProxyImpl implements ContextProxySpec {
 
     @Override
     public StateDescription getEventsFromState(String objectId, String stateName) {
-        String type = getTypeOf(objectId);
-        Space space = contextManager.getSpace(type);
+        Space space = getSpaceTypeOf(objectId);
+
         if (space == null) {
             logger.error("Unable to retrieve object");
             return null;
         }
-        Space parent = space.getParent();
-        if (parent == null || parent.getType() != TYPE.DEVICE) {
-            logger.debug("Parent category not found");
-            return null;
-        }
-        String propertyValue = parent.getPropertyValue("grammar");
+        String propertyValue = space.getPropertyValue("grammar");
         if (propertyValue == null || propertyValue.isEmpty()) {
             logger.error("grammar not found for given object");
             return null;
@@ -275,8 +270,29 @@ public class ContextProxyImpl implements ContextProxySpec {
      * @param objectId
      * @return 
      */
-    private String getTypeOf(String objectId) {
-        return "lamp";
+    private Space getSpaceTypeOf(String objectId) {
+        HashMap<String, String> refId = new HashMap<String, String>();
+        refId.put("ref", objectId);
+        ArrayList<Space> o = contextManager.getSpacesWithPropertiesValue(refId);
+        if (o.isEmpty()) {
+            logger.error("No such object id: {}", objectId );
+            return null;
+        }
+        Space object = o.get(0);
+        String propertyValue = object.getPropertyValue("deviceType");
+        if (propertyValue == null || propertyValue.isEmpty()){
+            logger.error("Unable to find the device type of {}", objectId);
+            return null;
+        }
+        refId.clear();
+        refId.put("deviceType", propertyValue);
+        ArrayList<Space> t = contextManager.getSpacesWithPropertiesValue(refId);
+        for (Space s : t) {
+            if (s.getType().equals(TYPE.CATEGORY)) {
+                return s;
+            }
+        }
+        return null;
     }
 
     /**

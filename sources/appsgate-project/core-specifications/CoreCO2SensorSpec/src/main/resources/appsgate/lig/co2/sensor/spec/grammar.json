@@ -1,9 +1,0 @@
-{
-    "friendlyName": "co2",
-    "typename": "CoreCo2Sensor",
-    "properties": [
-    ],
-    "states": [
-    ]
-
-}

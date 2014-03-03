@@ -1,0 +1,8 @@
+{
+    "friendlyName": "illumination sensor",
+    "typename":"illumination",
+    "properties": [
+    ],
+    "states": [
+    ]
+}

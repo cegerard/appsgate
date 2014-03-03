@@ -22,23 +22,23 @@ import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
  */
 public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLightSpec, CoreObjectSpec {
 	
-	private static long HUE_RED     = 0;
-	private static long HUE_BLUE    = 46920;
-	private static long HUE_GREEN   = 25500;
-	private static long HUE_YELLOW  = 18456;
-	private static long HUE_ORANGE  = 12750;
-	private static long HUE_PURPLE  = 48765;
-	private static long HUE_PINK    = 54332;
-	private static long HUE_DEFAULT = 14922;
+	private static final long HUE_RED     = 0;
+	private static final long HUE_BLUE    = 46920;
+	private static final long HUE_GREEN   = 25500;
+	private static final long HUE_YELLOW  = 18456;
+	private static final long HUE_ORANGE  = 12750;
+	private static final long HUE_PURPLE  = 48765;
+	private static final long HUE_PINK    = 54332;
+	private static final long HUE_DEFAULT = 14922;
 	
-	private static int SAT_DEFAULT = 254;
-	private static long BRI_DEFAULT = 180;
+	private static final int SAT_DEFAULT = 254;
+	private static final long BRI_DEFAULT = 180;
 	
 	
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory.getLogger(PhilipsHUEImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(PhilipsHUEImpl.class);
 	
 	private PhilipsHUEServices PhilipsBridge;
 	
@@ -459,11 +459,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	
 	@Override
 	public boolean setDefault() {
-		if(setSaturatedColor(HUE_DEFAULT)) {
-			return true;
-		}
 		
-		return false;
+		return setSaturatedColor(HUE_DEFAULT);
 	}
 
 	@Override
