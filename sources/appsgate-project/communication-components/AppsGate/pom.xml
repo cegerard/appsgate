@@ -20,6 +20,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>appsgate.components</groupId>
+			<artifactId>TestingWebArchiveDependency</artifactId>
+			<version>${project.version}</version>
+			<classifier>resources</classifier>
+			<type>zip</type>
+			<!-- Make sure this isn't included on any classpath -->
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
 			<artifactId>AppsGateSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
@@ -49,16 +58,16 @@
 			<artifactId>ContextManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>appsgate.components</groupId> -->
-<!-- 			<artifactId>DeviceNameTableSpec</artifactId> -->
-<!-- 			<version>1.0.0</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>appsgate.components</groupId> -->
-<!-- 			<artifactId>UserBaseSpec</artifactId> -->
-<!-- 			<version>1.0.0</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>DeviceNameTableSpec</artifactId> -->
+		<!-- <version>1.0.0</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>appsgate.components</groupId> -->
+		<!-- <artifactId>UserBaseSpec</artifactId> -->
+		<!-- <version>1.0.0</version> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>EUDEInterpreterSpec</artifactId>
@@ -72,9 +81,36 @@
 		</dependency>
 	</dependencies>
 
+
+
 	<!-- Build Description -->
 	<build>
+
+
+
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-shared-resources</id>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
+							<includeArtifactIds>TestingWebArchiveDependency</includeArtifactIds>
+							<excludeTransitive>true</excludeTransitive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+
+
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
