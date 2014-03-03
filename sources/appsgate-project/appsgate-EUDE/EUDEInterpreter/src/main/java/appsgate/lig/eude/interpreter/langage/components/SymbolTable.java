@@ -67,7 +67,7 @@ public final class SymbolTable {
                     String varName = vJson.optString("id");
                     if (varName != null) {
                         if (variables.get(varName) != null) {
-                            throw new SpokSymbolTableException("The var_name has already been used in the same scope: " + varName, null);
+                            throw new SpokSymbolTableException("The variable name has already been used in the same scope: " + varName, null);
                         }
                         addVariable(varName, vJson.getJSONObject("value"));
                     } else {
@@ -195,7 +195,6 @@ public final class SymbolTable {
         try {
             for (String name : varNames) {
                 JSONObject v = variables.get(name).getJSONDescription();
-                v.put("var_name", name);
                 a.put(i++, v);
             }
             for (NodeFunctionDefinition f : functions.values()) {

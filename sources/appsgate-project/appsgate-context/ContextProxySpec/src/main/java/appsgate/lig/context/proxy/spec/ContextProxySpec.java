@@ -47,6 +47,4 @@ public interface ContextProxySpec {
      * @return
      */
     public StateDescription getEventsFromState(String objectId, String stateName);
-
-
 }

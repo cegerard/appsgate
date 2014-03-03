@@ -6,12 +6,10 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +26,10 @@ public class NodeValue extends Node {
 
     private JSONObject callVariable() {
         NodeVariableDefinition variableByName = this.getVariableByName(value);
+        if (variableByName == null) {
+            SpokExecutionException e = new SpokExecutionException("Variable " + value + "not found");
+            return e.getJSONDescription();
+        }
         variableByName.addEndEventListener(this);
         return variableByName.call();
     }
@@ -101,7 +103,7 @@ public class NodeValue extends Node {
 
     @Override
     public JSONObject call() {
-        if (type==TYPE.VARIABLE) {
+        if (type == TYPE.VARIABLE) {
             return callVariable();
         }
         setStarted(true);

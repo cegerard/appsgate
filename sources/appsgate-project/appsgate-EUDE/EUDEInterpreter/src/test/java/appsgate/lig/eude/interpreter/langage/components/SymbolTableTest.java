@@ -7,7 +7,9 @@ package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.eude.interpreter.langage.nodes.NodeVariableDefinition;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeFunctionDefinition;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeValue;
 import junit.framework.Assert;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -108,5 +110,22 @@ public class SymbolTableTest {
         String result = instance.getExpertProgramDecl();
         assertEquals(expResult, result);
     }
+    
+       @Test
+    public void testAddVariableList() throws Exception{
+        System.out.println("add list");
+        String varName = "v1";
+        SymbolTable instance = new SymbolTable(null);
+        NodeValue v = new NodeValue(new JSONObject("{'type':'list', 'value':[{'type':'boolean', 'value':true}]}"), null);
+        Assert.assertNotNull(v);
+        NodeVariableDefinition expResult = new NodeVariableDefinition(varName, new JSONObject("{'type':'list', 'value':[{'type':'boolean', 'value':true}]}"), null);
+        Assert.assertNotNull(expResult);
+        NodeVariableDefinition result = instance.addVariable(varName, null);
+                Assert.assertNotNull(result);
+
+        assertTrue(expResult.equals(result));
+    }
+
+
 
 }

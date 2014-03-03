@@ -77,6 +77,7 @@ class NodeState extends Node {
             LOGGER.error("unable to find context");
             throw new SpokNodeException("NodeState", "context unavailable", ex);
         }
+        
         desc = context.getEventsFromState(object.getValue(), stateName);
 
     }

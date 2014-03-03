@@ -6,6 +6,8 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokSymbolTableException;
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -245,6 +247,15 @@ public class NodeVariableDefinition extends Node {
             return (Node) value;
         }
         return null;
+    }
+    
+    @Override
+    public List<NodeValue> getElements() {
+        Node n = getNodeValue();
+        if (n != null) {
+            return n.getElements();
+        }
+        return new ArrayList<NodeValue>();
     }
 
     /**

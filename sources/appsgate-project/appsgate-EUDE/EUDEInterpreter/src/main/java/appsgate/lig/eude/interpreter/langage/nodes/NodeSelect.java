@@ -130,6 +130,7 @@ public class NodeSelect extends Node {
      *
      * @return a list of Variable or null
      */
+    @Override
     public List<NodeValue> getElements() {
         try {
             ArrayList<NodeValue> a = new ArrayList<NodeValue>();

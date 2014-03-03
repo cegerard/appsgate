@@ -238,7 +238,8 @@ public class ContextProxyImpl implements ContextProxySpec {
     }
 
     @Override
-    public StateDescription getEventsFromState(String type, String stateName) {
+    public StateDescription getEventsFromState(String objectId, String stateName) {
+        String type = getTypeOf(objectId);
         Space space = contextManager.getSpace(type);
         if (space == null) {
             logger.error("Unable to retrieve object");
@@ -267,6 +268,15 @@ public class ContextProxyImpl implements ContextProxySpec {
             return null;
         }
         return null;
+    }
+
+    /**
+     * 
+     * @param objectId
+     * @return 
+     */
+    private String getTypeOf(String objectId) {
+        return "lamp";
     }
 
     /**

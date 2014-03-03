@@ -84,6 +84,9 @@ public class Builder {
         if (type.equalsIgnoreCase("number")) {
             return NODE_TYPE.NODE_VALUE;
         }
+        if (type.equalsIgnoreCase("list")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
         if (type.equalsIgnoreCase("device")) {
             return NODE_TYPE.NODE_VALUE;
         }
