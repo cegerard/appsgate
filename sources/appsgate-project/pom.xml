@@ -15,7 +15,7 @@
 
 	<properties>
 		<!-- apam version -->
-		<apam.current.version>0.0.5</apam.current.version>
+		<apam.current.version>0.0.6</apam.current.version>
 		<!-- Dependencies version -->
 		<osgi.version>4.2.0</osgi.version>
 		<ipojo.version>1.11.0</ipojo.version>
