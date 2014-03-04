@@ -59,6 +59,7 @@ public class DeviceProxyGenerator {
 		output.write("import fr.imag.adele.apam.Instance;\n");
 		output.write("\n");
 		output.write("import appsgate.lig.core.object.spec.CoreObjectSpec;\n");
+		output.write("import appsgate.lig.core.object.spec.CoreObjectBehavior;\n");
 		output.write("import appsgate.lig.core.object.messages.NotificationMsg;\n");
 		output.write("\n");
 		output.flush();
