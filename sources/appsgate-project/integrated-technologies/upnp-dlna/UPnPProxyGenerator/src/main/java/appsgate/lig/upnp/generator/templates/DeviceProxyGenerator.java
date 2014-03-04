@@ -82,7 +82,7 @@ public class DeviceProxyGenerator {
 		output.flush();
 		
 		output.write("\n");
-		output.write("public class "+device.getMapping().getClassName()+" implements CoreObjectSpec {\n");
+		output.write("public class "+device.getMapping().getClassName()+" extends CoreObjectBehavior implements CoreObjectSpec {\n");
 		output.write("\n");
 		output.write("	private String 		deviceType;\n");
 		output.write("	private String 		deviceId;\n");

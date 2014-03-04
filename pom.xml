@@ -33,14 +33,14 @@
 	<distributionManagement>
 
 		<repository>
-            <id>cloudbees-private-release-repository</id>
-<!--             <id>cloudbees-release-repository</id> -->
-            <name>Cloudbees Release Repository</name>
+			<id>cloudbees-private-release-repository</id>
+			<!-- <id>cloudbees-release-repository</id> -->
+			<name>Cloudbees Release Repository</name>
 			<url>dav:https://repository-apam.forge.cloudbees.com/release/repository</url>
 		</repository>
 		<snapshotRepository>
 			<id>cloudbees-private-snapshot-repository</id>
-<!-- 			<id>cloudbees-snapshot-repository</id> -->
+			<!-- <id>cloudbees-snapshot-repository</id> -->
 			<name>Cloudbees Snapshot Repository</name>
 			<url>dav:https://repository-apam.forge.cloudbees.com/snapshot/repository</url>
 		</snapshotRepository>
@@ -49,7 +49,6 @@
 
 	<modules>
 		<module>sources</module>
-		<!-- Maybe to include distrib for automatic creation using assembly -->
 	</modules>
 	<build>
 		<extensions>
@@ -64,8 +63,23 @@
 				<version>${compiler.plugin.version}</version>
 			</extension>
 		</extensions>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.8</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
 	</build>
+
 
 	<profiles>
 

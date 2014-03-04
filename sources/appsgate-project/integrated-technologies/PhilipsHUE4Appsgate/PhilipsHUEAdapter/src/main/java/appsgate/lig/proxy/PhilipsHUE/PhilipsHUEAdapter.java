@@ -107,7 +107,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		for(Instance inst: sidToInstanceName.values()) {
 			inst.setProperty("status", "0");
 			removeInSensorInstance(inst.getProperty("deviceId"));
-			ComponentBrokerImpl.disappearedComponent(inst.getName());
+			((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(inst.getName());
 		}
 		
 		logger.debug("PhilipsHUEAdapter stopped");
@@ -552,7 +552,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		Set<Instance> insts = impl.getInsts();
 		for(Instance inst : insts) {
 			if(inst.getProperty("lightBridgeIP").contentEquals(ap.getIpAddress())) {
-				ComponentBrokerImpl.disappearedComponent(inst.getName());
+				((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(inst.getName());
 			}
 		}
 	}

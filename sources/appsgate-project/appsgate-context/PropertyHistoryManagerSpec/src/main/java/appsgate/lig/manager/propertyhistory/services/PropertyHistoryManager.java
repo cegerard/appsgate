@@ -2,6 +2,8 @@ package appsgate.lig.manager.propertyhistory.services;
 
 import java.util.Set;
 
+import org.json.JSONArray;
+
 /**
  * Interface for PropertyHistory Persistence Manager.
  * Mostly a getter for property changes (designed to reflect state change of ApAM components).
@@ -28,5 +30,17 @@ public interface PropertyHistoryManager {
 	 * ...
 	 * ]
 	 */
-	String getDevicesStatesHistory(Set<String> devicesID, String propertyName, long time_start, long time_end);
+	String getDevicesStatesHistoryAsString(Set<String> devicesID, String propertyName, long time_start, long time_end);
+	
+	/**
+	 * @see PropertyHistoryManager#getDevicesStatesHistoryAsString , but ...  
+	 * @return Directly the JSON Array (itself containing Arrays), example :
+	 * [
+	 * deviceID1 : [{time: time_start, state: v0},{time:t1,state:v1},...,{time:tf,state:vf} ],
+	 * deviceID2 : [...],
+	 * ...
+	 * ]
+	 */
+	JSONArray getDevicesStatesHistoryAsJSON(Set<String> devicesID, String propertyName, long time_start, long time_end);
+
 }

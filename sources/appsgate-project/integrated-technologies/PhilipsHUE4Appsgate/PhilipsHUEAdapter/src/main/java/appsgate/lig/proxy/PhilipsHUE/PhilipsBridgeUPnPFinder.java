@@ -24,6 +24,7 @@ import com.philips.lighting.model.PHHueError;
 import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLightState;
 
+import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 
@@ -164,7 +165,7 @@ public class PhilipsBridgeUPnPFinder implements PHSDKListener {
 			if(inst != null) {
 				if(!light.isReachable()) {
 					inst.setProperty("reachable", "false");
-					ComponentBrokerImpl.disappearedComponent(inst.getName());
+					((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(inst.getName());
 					adapter.removeInSensorInstance(deviceID);
 				}else {
 					adapter.initiateLightStateProperties(properties, lightState);

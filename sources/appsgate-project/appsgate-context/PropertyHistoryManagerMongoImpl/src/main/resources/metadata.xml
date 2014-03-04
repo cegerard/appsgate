@@ -13,7 +13,7 @@
 
 	<implementation name="PropertyHistoryManagerMongoImpl"
 		classname="appsgate.lig.manager.propertyhistory.PropertyHistoryManagerMongoImpl"
-		specification="PropertyHistoryManagerSpec">
+ 		specification="PropertyHistoryManagerSpec">
 
         <relation implementation="MongoDBConfigurationImpl" field="myConfigFactory"
             resolve="external" />

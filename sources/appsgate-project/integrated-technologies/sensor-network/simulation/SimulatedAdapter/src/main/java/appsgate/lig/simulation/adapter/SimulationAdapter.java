@@ -83,7 +83,7 @@ public class SimulationAdapter implements SimulatedObjectManagementService {
 	@Override
 	public boolean removeSimulatedObject(String objectId) {
 		Instance inst = objectList.get(objectId);
-		ComponentBrokerImpl.disappearedComponent(inst.getName());
+		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(inst.getName());
 		objectList.remove(objectId);
 		return true;
 	}

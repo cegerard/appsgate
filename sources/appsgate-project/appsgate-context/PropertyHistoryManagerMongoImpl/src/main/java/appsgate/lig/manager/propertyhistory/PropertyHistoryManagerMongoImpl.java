@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.Set;
 
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,13 +103,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 		return MANAGER_NAME;
 	}
 
-	@Override
-	public int getPriority() {
-		return 20;
-	}
-
-
-	@Override
 	public void newComposite(ManagerModel model, CompositeType compositeType) {
 		logger.debug("PropertyHistoryManager, newComposite(ManagerModel model = "
 				+ (model == null ? "null" : model.getManagerName())
@@ -154,6 +148,7 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 			myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
 			ApamManagers.addPropertyManager(this);
 			ApamManagers.addDynamicManager(this);
+			newComposite(null, null);
 		} else {
 			logger.error("Configuration Factory not bound");
 			stop();
@@ -209,7 +204,18 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 	}
 
 	@Override
-	public String getDevicesStatesHistory(Set<String> devicesID,
+	public String getDevicesStatesHistoryAsString(Set<String> devicesID,
+			String propertyName, long time_start, long time_end) {
+		JSONArray result = getDevicesStatesHistoryAsJSON(devicesID,
+				propertyName, time_start, time_end);
+		if(result != null) {
+			return result.toString();
+		}
+		return null;
+	}
+
+	@Override
+	public JSONArray getDevicesStatesHistoryAsJSON(Set<String> devicesID,
 			String propertyName, long time_start, long time_end) {
 		// TODO Auto-generated method stub
 		return null;

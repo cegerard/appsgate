@@ -48,6 +48,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
 			<artifactId>apam-core</artifactId>
 			<version>${apam.current.version}</version>
@@ -67,23 +72,23 @@
 			<artifactId>mongo-java-driver</artifactId>
 			<version>${mongo-api-version}</version>
 		</dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>PropertyHistoryManagerSpec</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-                
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>PropertyHistoryManagerSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>MongoDBConfigurationImpl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-	 <dependency>
-	  <groupId>org.apache.felix</groupId>
-	  <artifactId>org.apache.felix.ipojo</artifactId>
-	  <version>1.11.0</version>
-	  <type>jar</type>
-	 </dependency>
+
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>MongoDBConfigurationImpl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.11.0</version>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 </project>
