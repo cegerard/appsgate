@@ -1,4 +1,5 @@
 {
+    "id" : "toto",
     "name": "toto",
     "package": "root",
     "daemon": false,

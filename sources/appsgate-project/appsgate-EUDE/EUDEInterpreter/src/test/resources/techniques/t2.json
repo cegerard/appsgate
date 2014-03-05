@@ -1,0 +1,53 @@
+{
+    "name": "T2",
+    "id": "t2",
+    "header": {
+        "author": "testMaker",
+        "desc": "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2."
+    },
+    "definitions": [
+        {
+            "id": "l1"
+        },
+        {
+            "id": "l2"
+        }
+    ],
+    "body": {
+        "type": "setOfRules",
+        "rules": [
+            {
+                "type": "while",
+                "state": {
+                    "type": "state",
+                    "object": {
+                        "type": "variable",
+                        "id": "l1"
+                    },
+                    "name": "isOn"
+                },
+                "rules": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "methodName": "switchOn",
+                    "action": [
+                    ]
+                },
+                "rulesThen": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "methodName": "switchOff",
+                    "action": [
+                    ]
+                }
+            }
+        ]
+    },
+    "userSource": "name: T1\n  var l1 = /L1/;\n var l2 = /L2/;\n  _while(l1.isOfState(isOn)) { l2.switchOn(); } then { l2.switchOff(); }"
+}

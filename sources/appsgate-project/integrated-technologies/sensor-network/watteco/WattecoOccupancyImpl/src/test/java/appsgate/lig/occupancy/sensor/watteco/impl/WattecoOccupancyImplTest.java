@@ -1,6 +1,8 @@
 package appsgate.lig.occupancy.sensor.watteco.impl;
 
 import appsgate.lig.core.object.spec.CoreObjectBehaviorTest;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
@@ -9,7 +11,12 @@ import appsgate.lig.core.object.spec.CoreObjectBehaviorTest;
 public class WattecoOccupancyImplTest extends CoreObjectBehaviorTest {
 
     public WattecoOccupancyImplTest() {
-        super(new WattecoOccupancyImpl());
+        super(new WattecoOccupancyImpl(), "");
+    }
+
+    @Test
+    public void tests() {
+        Assert.assertEquals("", this.testMethod());
     }
 
 }

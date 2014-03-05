@@ -132,7 +132,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     public boolean addProgram(JSONObject programJSON) {
         NodeProgram p = putProgram(programJSON);
         if (p == null) {
-            LOGGER.debug("Unable to add program");
+            LOGGER.warn("Unable to add program.");
             return false;
         }
         //save program map state
@@ -553,7 +553,8 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     private NodeProgram getProgramParent(JSONObject programJSON) {
         String parentId = programJSON.optString("package");
         if (parentId == null || parentId.isEmpty()) {
-            return null;
+            LOGGER.debug("By default the program is stored as a child of program-0");
+            return mapPrograms.get("program-0");
         }
         if (mapPrograms.containsKey(parentId)) {
             return mapPrograms.get(parentId);
@@ -571,7 +572,6 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             p = new NodeProgram(this, programJSON, parent);
         } catch (SpokException e) {
             LOGGER.error("Node error detected while loading a program: {}", e.getMessage());
-            LOGGER.debug("json desc: {}", programJSON.toString());
             return null;
         }
         if (parent != null && !parent.addSubProgram(p.getId(), p)) {

@@ -23,7 +23,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
         super();
         JSONObject l = new JSONObject();
         ruleJSON.put("type", "booleanExpression");
-        ruleJSON.put("operator", "EQUALS");
+        ruleJSON.put("operator", "==");
         l.put("type", "number");
         l.put("value", 12);
         ruleJSON.put("leftOperand", l);
@@ -74,7 +74,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
         JSONObject o = new JSONObject();
         JSONObject l = new JSONObject();
         JSONObject r = new JSONObject();
-        o.put("operator", "AND");
+        o.put("operator", "&&");
         // Test with numbers
         l.put("type", "number");
         l.put("value", 12);
@@ -135,7 +135,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
         JSONObject o = new JSONObject();
         JSONObject l = new JSONObject();
         JSONObject r = new JSONObject();
-        o.put("operator", "MORE_THAN");
+        o.put("operator", ">");
         // Test with numbers
         l.put("type", "boolean");
         l.put("value", true);
@@ -175,7 +175,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
         JSONObject o = new JSONObject();
         JSONObject l = new JSONObject();
         JSONObject r = new JSONObject();
-        o.put("operator", "OR");
+        o.put("operator", "||");
         // Test with numbers
         l.put("type", "number");
         l.put("value", 12);
@@ -236,7 +236,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
         printTestName("NotOperation");
         JSONObject o = new JSONObject();
         JSONObject l = new JSONObject();
-        o.put("operator", "NOT");
+        o.put("operator", "!");
         // Test with numbers
         l.put("type", "number");
         l.put("value", 12);

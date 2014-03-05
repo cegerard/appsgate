@@ -17,7 +17,7 @@
                 "type": "if",
                 "expBool": {
                     "type": "booleanExpression",
-                    "operator": "EQUALS",
+                    "operator": "==",
                     "leftOperand": {
                         "type": "action",
                         "methodName": "getCurrentState",

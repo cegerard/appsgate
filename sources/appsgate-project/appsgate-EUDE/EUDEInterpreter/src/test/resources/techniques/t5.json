@@ -1,0 +1,157 @@
+{
+    "name": "T5",
+    "id": "t5",
+    "header": {
+        "author": "testMaker"
+    },
+    "definitions": [
+        {
+            "id": "l1"
+
+        },
+        {
+            "id": "l2"
+
+        },
+        {
+            "id": "b1"
+
+        },
+        {
+            "id": "b2"
+
+        },
+        {
+            "id": "b3"
+
+        }
+    ],
+    "body": {
+        "type": "setOfRules",
+        "rules": [
+            {
+                "type": "when",
+                "seqRulesThen": {
+                    "type": "instructions",
+                    "rules": [
+                        {
+                            "type": "if",
+                            "expBool": {
+                                "type": "booleanExpression",
+                                "operator": "==",
+                                "leftOperand": {
+                                    "type":"action",
+                                    "target": {
+                                        "type": "variable",
+                                        "id": "l1"
+                                    },
+                                    "methodName": "isOn",
+                                    "action": [
+                                    ]
+                                },
+                                "rightOperand": {
+                                    "type": "boolean",
+                                    "value": "true"
+                                }
+                            },
+                            "seqRulesTrue": {
+                                "type": "instructions",
+                                "rules": [
+                                    {
+                                        "type": "action",
+                                        "target": {
+                                            "type": "variable",
+                                            "id": "l1"
+                                        },
+                                        "methodName": "switchOff",
+                                        "action": [
+                                        ]
+                                    }
+                                ]
+                            },
+                            "seqRulesFalse": {
+                                "type": "instructions",
+                                "rules": [
+                                    {
+                                        "type": "action",
+                                        "target": {
+                                            "type": "variable",
+                                            "id": "l1"
+                                        },
+                                        "methodName": "switchOn",
+                                        "action": [
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "events": {
+                    "type": "events",
+                    "duration": "10",
+                    "nbEventToOccur": "2",
+                    "events": [
+                        {
+                            "type": "event",
+                            "source": {
+                                "type": "variable",
+                                "id": "l2"
+                            },
+                            "eventName": "switchOn",
+                            "eventValue": ""
+                        },
+                        {
+                            "type": "events",
+                            "duration": "5",
+                            "nbEventToOccur": "2",
+                            "events": [
+                                {
+                                    "type": "event",
+                                    "source": {
+                                        "type": "variable",
+                                        "id": "b1"
+                                    },
+                                    "eventName": "isPressed",
+                                    "eventValue": ""
+                                },
+                                {
+                                    "type": "instructions",
+                                    "rules": [
+                                        {
+                                            "type": "event",
+                                            "source": {
+                                                "type": "variable",
+                                                "id": "b2"
+                                            },
+                                            "eventName": "isPressed",
+                                            "eventValue": ""
+                                        },
+                                        {
+                                            "type": "event",
+                                            "source": {
+                                                "type": "variable",
+                                                "id": "b3"
+                                            },
+                                            "eventName": "isPressed",
+                                            "eventValue": ""
+                                        },
+                                        {
+                                            "type": "event",
+                                            "source": {
+                                                "type": "variable",
+                                                "id": "b2"
+                                            },
+                                            "eventName": "isPressed",
+                                            "eventValue": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

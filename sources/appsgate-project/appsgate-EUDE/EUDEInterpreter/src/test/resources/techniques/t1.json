@@ -1,0 +1,70 @@
+{
+  "name": "T1",
+  "id": "t1",
+  "header" : {
+      "author":"testMaker"
+  },
+  "definitions": [
+    {
+      "id": "l1"
+
+    },
+    {
+      "id": "l2"
+
+    },
+    {
+      "id": "b1"
+
+    }
+  ],
+  "body": {
+    "type": "setOfRules",
+    "rules": [
+      {
+        "type": "when",
+        "events": {
+          "type": "events",
+          "events": [
+            {
+              "type": "event",
+              "source": {
+                "type": "variable",
+                "id": "l1"
+              },
+              "eventName": "switchOn",
+              "eventValue": ""
+            },
+            {
+              "type": "event",
+              "source": {
+                "type": "variable",
+                "id": "b1"
+              },
+              "eventName": "isPressed",
+              "eventValue": ""
+            }
+          ],
+          "duration": "5",
+          "nbEventToOccur": "0"
+        },
+        "seqRulesThen": {
+          "type": "instructions",
+          "rules": [
+            {
+              "type": "action",
+              "target": {
+                "type": "variable",
+                "id": "l2"
+              },
+              "methodName": "switchOn",
+              "action": [
+                
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

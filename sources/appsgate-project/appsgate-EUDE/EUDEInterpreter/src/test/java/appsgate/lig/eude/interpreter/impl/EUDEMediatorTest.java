@@ -35,11 +35,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -70,18 +67,12 @@ public class EUDEMediatorTest {
     private DataBasePushService push_service;
     private RouterApAMSpec router;
     private EUDEMediator instance;
-    private JSONObject programJSON;
+    private final JSONObject programJSON;
     private ContextProxyMock contextProxy;
+    private final String programId = "test";
 
-    public EUDEMediatorTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
+    public EUDEMediatorTest() throws Exception{
+        programJSON = TestUtilities.loadFileJSON("src/test/resources/prog/testEmpty.json");
     }
 
     @Before
@@ -112,6 +103,8 @@ public class EUDEMediatorTest {
                 allowing(push_service).pushData_change(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 allowing(push_service).pushData_add(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 will(returnValue(true));
+                allowing(push_service).pushData_remove(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
+                will(returnValue(true));
                 allowing(router).executeCommand(with("test"), with("testState"), with(any(JSONArray.class)));
                 will(returnValue(gc));
                 allowing(router).executeCommand(with("test"), with(any(String.class)), with(any(JSONArray.class)));
@@ -133,13 +126,7 @@ public class EUDEMediatorTest {
         });
         this.instance = new EUDEMediator();
         this.instance.setTestMocks(pull_service, push_service, router, contextProxy);
-        programJSON = new JSONObject();
-        programJSON.put("id", "test");
 
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -168,21 +155,23 @@ public class EUDEMediatorTest {
     @Test
     public void testAddProgram() throws JSONException {
         System.out.println("addProgram");
-        boolean expResult = false;
         boolean result = instance.addProgram(programJSON);
-        assertEquals(expResult, result);
+        instance.getNodeProgram(programId);
+        assertTrue("Program should be added", result);
     }
 
     /**
      * Test of removeProgram method, of class EUDEMediator.
      */
     @Test
-    public void testRemoveProgram() {
+    public void testRemoveProgram() throws Exception{
         System.out.println("removeProgram");
-        String programId = "";
-        boolean expResult = false;
-        boolean result = instance.removeProgram(programId);
-        assertEquals(expResult, result);
+        boolean result = instance.removeProgram("NoTEst");
+        assertFalse("The program does not exist so there is no removing", result);
+        instance.addProgram(programJSON);
+        boolean remove = instance.removeProgram(programId);
+        assertTrue("Program should be removed", remove);
+        
     }
 
     /**
@@ -191,9 +180,9 @@ public class EUDEMediatorTest {
     @Test
     public void testUpdate() {
         System.out.println("update");
-        boolean expResult = false;
+        instance.addProgram(this.programJSON);
         boolean result = instance.update(this.programJSON);
-        assertEquals(expResult, result);
+        assertTrue("Update should work on a correct program", result);
     }
 
     /**
@@ -202,10 +191,11 @@ public class EUDEMediatorTest {
     @Test
     public void testCallProgram() {
         System.out.println("callProgram");
-        String programId = "";
-        boolean expResult = false;
-        boolean result = instance.callProgram(programId);
-        assertEquals(expResult, result);
+        boolean result = instance.callProgram("noTest");
+        assertFalse("No test have no program to call", result);
+        instance.addProgram(programJSON);
+        result = instance.callProgram(programId);
+        assertTrue("Program should be called", result);
     }
 
     /**
@@ -214,10 +204,8 @@ public class EUDEMediatorTest {
     @Test
     public void testStopProgram() {
         System.out.println("stopProgram");
-        String programId = "";
-        boolean expResult = false;
         boolean result = instance.stopProgram(programId);
-        assertEquals(expResult, result);
+        assertFalse("The program has not been called", result);
     }
 
     /**
@@ -226,10 +214,8 @@ public class EUDEMediatorTest {
     @Test
     public void testPauseProgram() {
         System.out.println("pauseProgram");
-        String programId = "";
-        boolean expResult = false;
         boolean result = instance.pauseProgram(programId);
-        assertEquals(expResult, result);
+        assertFalse("This is not supposed to be implemented", result);
     }
 
     /**
@@ -248,10 +234,9 @@ public class EUDEMediatorTest {
     @Test
     public void testIsProgramActive() {
         System.out.println("isProgramActive");
-        String programId = "";
         boolean expResult = false;
         boolean result = instance.isProgramActive(programId);
-        assertEquals(expResult, result);
+        assertFalse("No program has been activated now", result);
     }
 
     /**
@@ -260,10 +245,9 @@ public class EUDEMediatorTest {
     @Test
     public void testGetNodeProgram() {
         System.out.println("getNodeProgram");
-        String programId = "";
         NodeProgram expResult = null;
         NodeProgram result = instance.getNodeProgram(programId);
-        assertEquals(expResult, result);
+        assertEquals("No test has been added to the mediator", expResult, result);
     }
 
     /**
@@ -439,9 +423,9 @@ public class EUDEMediatorTest {
     public void testSelect() throws Exception {
         System.out.println("Select");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/select.json")));
-        
+
     }
-    
+
     /**
      * To test whether reading real program is working
      *
@@ -511,6 +495,5 @@ public class EUDEMediatorTest {
         System.out.println("Test root program");
         Assert.assertNotNull("There must be a root program", instance.getNodeProgram("program-0"));
     }
-
 
 }

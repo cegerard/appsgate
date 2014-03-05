@@ -117,6 +117,7 @@ public class Builder {
         if (type.equalsIgnoreCase("setOfRules")) {
             return NODE_TYPE.NODE_SET_OF_RULES;
         }
+        LOGGER.debug("The type [{}] does not exists", type);
         throw new SpokTypeException(type);
     }
 
@@ -135,6 +136,7 @@ public class Builder {
 
         }
         if (!o.has("type")) {
+            LOGGER.debug("No type: {}", o.toString());
             throw new SpokTypeException("no type");
         }
         try {
@@ -178,10 +180,12 @@ public class Builder {
                 case NODE_VARIABLE_DEFINITION:
                     return new NodeVariableDefinition(o, parent);
                 default:
+                    LOGGER.debug("No such type found : {}", o.toString());
                     throw new SpokNodeException("NodeBuilder", "type", null);
             }
         } catch (SpokNodeException ex) {
-            throw new SpokTypeException("A node has not been built", ex);
+            LOGGER.debug("Unable to build node: {}", o.optString("type"));
+            throw new SpokTypeException("Node not built: " + o.toString(), ex);
         } catch (SpokException ex) {
             throw new SpokTypeException("Variable node definition can not be built", ex);
         }

@@ -80,6 +80,11 @@ public interface CoreObjectSpec {
 	 * @since 21 February, 2014
 	 */
 
+        /**
+         * 
+         * @return 
+         */
+        public JSONObject getGrammarDescription();
         
         public enum CORE_TYPE{
 		SERVICE,

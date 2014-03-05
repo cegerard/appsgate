@@ -6,7 +6,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -43,6 +42,15 @@ public class NodeBooleanExpression extends Node {
         public String getVal() {
             return val;
         }
+
+        public final static BinaryOperator get(String s) {
+            for (BinaryOperator o : BinaryOperator.values()) {
+                if (o.val.equalsIgnoreCase(s)) {
+                    return o;
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -75,20 +83,22 @@ public class NodeBooleanExpression extends Node {
      */
     public NodeBooleanExpression(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
-        try {
-            operator = BinaryOperator.valueOf(getJSONString(o, "operator"));
-        } catch (IllegalArgumentException e) {
-            throw new SpokNodeException("BooleanExpression", "operator", e);
+        operator = BinaryOperator.get(getJSONString(o, "operator"));
+        if (operator == null) {
+            LOGGER.debug("Unknown operator: {}", getJSONString(o, "operator"));
+            throw new SpokNodeException("BooleanExpression", "operator", null);
         }
         try {
             left = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
-        } catch(SpokTypeException ex) {
+        } catch (SpokTypeException ex) {
+            LOGGER.debug("Missing left operand");
             throw new SpokNodeException("BooleanExpression", "leftOperand", ex);
         }
-        try{
+        try {
             right = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
-        } catch(SpokTypeException ex) {
+        } catch (SpokTypeException ex) {
             if (needTwoOperands(operator)) {
+                LOGGER.debug("Missing right operand");
                 throw new SpokNodeException("BooleanExpression", "rightOperand", null);
             }
         }

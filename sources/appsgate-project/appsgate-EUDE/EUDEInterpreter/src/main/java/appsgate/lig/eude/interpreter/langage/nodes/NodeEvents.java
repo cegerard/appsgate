@@ -10,7 +10,9 @@ import appsgate.lig.eude.interpreter.impl.ClockProxy;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +31,7 @@ class NodeEvents extends Node {
     /**
      * the sequence of event
      */
-    private ArrayList<NodeEvent> seqEvent;
+    private ArrayList<Node> seqEvent;
     /**
      * The number of events that have fired EndEvent
      */
@@ -60,12 +62,14 @@ class NodeEvents extends Node {
     public NodeEvents(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         JSONArray seqEventJSON = getJSONArray(o, "events");
-        seqEvent = new ArrayList<NodeEvent>();
+        seqEvent = new ArrayList<Node>();
         for (int i = 0; i < seqEventJSON.length(); i++) {
             try {
-                seqEvent.add(new NodeEvent(seqEventJSON.getJSONObject(i), this));
+                seqEvent.add(Builder.buildFromJSON(seqEventJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
                 throw new SpokNodeException("NodeSeqEvent", "item " + i, ex);
+            } catch (SpokTypeException ex) {
+                throw new SpokNodeException("NodeSeqEvent", "event", ex);
             }
         }
         nbEventToOccur = o.optInt("nbEventToOccur");
@@ -111,7 +115,7 @@ class NodeEvents extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeEvents ret = new NodeEvents(parent);
-        ret.seqEvent = new ArrayList<NodeEvent>();
+        ret.seqEvent = new ArrayList<Node>();
         for (Node n : seqEvent) {
             ret.seqEvent.add((NodeEvent) n.copy(ret));
         }

@@ -131,7 +131,7 @@ public class NodeProgram extends Node {
         this(mediator, p);
 
         // initialize the program with the JSON
-        id = programJSON.optString("id");
+        id = getJSONString(programJSON,"id");
         if (programJSON.has("runningState")) {
             runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
         }
@@ -410,7 +410,11 @@ public class NodeProgram extends Node {
      */
     public boolean addSubProgram(String id, NodeProgram subProgram) {
         if (id == null || id.isEmpty()) {
-            LOGGER.warn("Unable to add a sub program without a name");
+            LOGGER.warn("Unable to add a sub program without an id");
+            return false;
+        }
+        if (subProgram == this) {
+            LOGGER.warn("trying to add the program as its own child");
             return false;
         }
         if (subPrograms.containsKey(id)) {

@@ -1,4 +1,5 @@
 {
+    "id" : "select-prog",
     "name": "select",
     "header": {
         "author": "me"
