@@ -59,6 +59,7 @@ public class DeviceProxyGenerator {
 		output.write("import fr.imag.adele.apam.Instance;\n");
 		output.write("\n");
 		output.write("import appsgate.lig.core.object.spec.CoreObjectSpec;\n");
+		output.write("import appsgate.lig.core.object.spec.CoreObjectBehavior;\n");
 		output.write("import appsgate.lig.core.object.messages.NotificationMsg;\n");
 		output.write("\n");
 		output.flush();
@@ -82,7 +83,7 @@ public class DeviceProxyGenerator {
 		output.flush();
 		
 		output.write("\n");
-		output.write("public class "+device.getMapping().getClassName()+" implements CoreObjectSpec {\n");
+		output.write("public class "+device.getMapping().getClassName()+" extends CoreObjectBehavior implements CoreObjectSpec {\n");
 		output.write("\n");
 		output.write("	private String 		deviceType;\n");
 		output.write("	private String 		deviceId;\n");

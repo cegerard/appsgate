@@ -43,13 +43,14 @@ import fr.imag.adele.apam.Instance;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 
 <xsl:apply-templates select="*"/>
 </xsl:template>
 
 <xsl:template match="scpd">
 
-public class <xsl:value-of select="$classname"/> implements CoreObjectSpec, <xsl:value-of select="$interfaceName"/>, UPnPEventListener {		
+public class <xsl:value-of select="$classname"/> extends CoreObjectBehavior implements CoreObjectSpec, <xsl:value-of select="$interfaceName"/>, UPnPEventListener {		
 
 	private String 		userObjectName;
 	private int			locationId;
