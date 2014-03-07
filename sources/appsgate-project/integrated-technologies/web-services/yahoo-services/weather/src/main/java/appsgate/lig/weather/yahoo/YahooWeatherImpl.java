@@ -40,8 +40,7 @@ import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
  */
 public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec {
 
-	private Logger logger = Logger.getLogger(YahooWeatherImpl.class
-			.getSimpleName());
+	private final Logger logger = Logger.getLogger(YahooWeatherImpl.class.getSimpleName());
 
 
 
@@ -549,5 +548,10 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.SERVICE;
 	}
+
+    @Override
+    public JSONObject getGrammarDescription() {
+        return null;
+    }
 
 }

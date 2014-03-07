@@ -102,9 +102,9 @@ public class MongoDBConfigFactory {
 	
 	
 	public MongoClient getMongoClient() {
-		logger.debug("Checking mongo client");
+		logger.trace("Checking mongo client");
 		if (mongoClient != null) {
-			logger.debug("Mongo Client is not null");
+			logger.trace("Mongo Client is not null");
 			// Forces the connection to check valid
 			if (!checkMongoClient())
 				return createMongoClient();
@@ -120,7 +120,7 @@ public class MongoDBConfigFactory {
 		try {
 			// Forces the connection to check valid
 			mongoClient.getDatabaseNames();
-			logger.debug("Checking Mongo OK");
+			logger.trace("Checking Mongo OK");
 			return true;
 		} catch (MongoException exception) {
 			logger.warn("Retrieving databases names throws an error : "

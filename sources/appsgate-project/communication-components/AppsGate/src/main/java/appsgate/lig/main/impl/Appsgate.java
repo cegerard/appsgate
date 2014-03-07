@@ -332,12 +332,6 @@ public class Appsgate implements AppsGateSpec {
 			notify.put("reason", "updateSpace");
 			notify.put("spaceId", spaceId);
 			
-			//Rename the space
-			if(space.has("name")) {
-				spaceRef.addProperty("name", space.getString("name"));
-				isSuccess &= true;
-				notify.put("properties", "");
-			}
 			//Move the space 
 			if(space.has("parent")) {
 				isSuccess &= contextManager.moveSpace(spaceRef, contextManager.getSpace(space.getString("parent")));
@@ -345,9 +339,9 @@ public class Appsgate implements AppsGateSpec {
 			}
 			
 			//Set or clear the tag list
-			if(space.has("taglist")) {
+			if(space.has("tags")) {
 				
-				JSONArray tagArray = space.getJSONArray("taglist");
+				JSONArray tagArray = space.getJSONArray("tags");
 				
 				if(tagArray.length() == 0) {
 					spaceRef.clearTags();
@@ -363,9 +357,9 @@ public class Appsgate implements AppsGateSpec {
 			}
 			
 			//Set or clear the property list
-			if(space.has("proplist")) {
+			if(space.has("properties")) {
 				
-				JSONArray propArray = space.getJSONArray("proplist");
+				JSONArray propArray = space.getJSONArray("properties");
 				
 				if(propArray.length() == 0) {
 					spaceRef.clearProperties();
@@ -378,6 +372,13 @@ public class Appsgate implements AppsGateSpec {
 					}
 					spaceRef.setProperties(props);
 				}
+				notify.put("properties", "");
+			}
+			
+			//Rename the space
+			if(space.has("name")) {
+				spaceRef.addProperty("name", space.getString("name"));
+				isSuccess &= true;
 				notify.put("properties", "");
 			}
 			
