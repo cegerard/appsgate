@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.spec;
 
 import java.util.HashMap;
+import org.json.JSONArray;
 
 import org.json.JSONObject;
 
@@ -44,6 +45,14 @@ public interface EUDE_InterpreterSpec {
 	 * @return true if the program has been successfully launched, false otherwise
 	 */
 	public boolean callProgram(String programId);
+	/**
+	 * Launch the interpretation of a program
+	 * 
+	 * @param programId identifier of the program to launch
+         * @param args the args of the program
+	 * @return true if the program has been successfully launched, false otherwise
+	 */
+	public boolean callProgram(String programId, JSONArray args);
 	
 	/**
 	 * Stop the program interpretation

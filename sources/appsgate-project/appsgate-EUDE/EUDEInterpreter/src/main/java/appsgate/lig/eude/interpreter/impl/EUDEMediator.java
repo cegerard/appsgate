@@ -220,15 +220,28 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
 
     @Override
     public boolean callProgram(String programId) {
+        return callProgram(programId, null);
+    }
+
+    /**
+     *
+     * @param programId
+     * @param args
+     * @return
+     */
+    @Override
+    public boolean callProgram(String programId, JSONArray args) {
         NodeProgram p = mapPrograms.get(programId);
         JSONObject calledStatus = null;
 
         if (p != null) {
+            p.getSymbolTable().fillWith(args);
             p.addEndEventListener(this);
             calledStatus = p.call();
         }
 
         return (calledStatus != null);
+
     }
 
     @Override

@@ -156,7 +156,7 @@ public class NodeAction extends Node {
                 // listen to the end of the program
                 p.addEndEventListener(this);
                 // launch the program
-                getMediator().callProgram(target);
+                getMediator().callProgram(target, args);
             } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
                 //stop the running program
                 getMediator().stopProgram(target);

@@ -8,8 +8,11 @@ package appsgate.lig.eude.interpreter.impl;
 import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -26,7 +29,6 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  *
@@ -56,7 +58,18 @@ public class TechnicalTest {
     private EUDEMediator instance;
     private ContextProxyMock contextProxy;
 
-    public TechnicalTest() throws Exception{
+    private final File[] listFiles;
+
+    public TechnicalTest() {
+
+        final File folder = new File("src/test/resources/techniques/");
+        listFiles = folder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".json");
+            }
+        });
+
     }
 
     @Before
@@ -107,6 +120,17 @@ public class TechnicalTest {
 
     }
 
+    @Test
+    public void testReadProgram() throws Exception{
+        for (File f:listFiles) {
+            System.out.println("Reading " + f.getName());
+            JSONObject o = TestUtilities.loadFileJSON(f.getPath());
+            Assert.assertNotNull(o);
+            NodeProgram p = new NodeProgram(instance, o, null);
+            Assert.assertNotNull(p);
+        }
+    }
+
     /**
      * To test whether reading real program is working
      *
@@ -115,47 +139,8 @@ public class TechnicalTest {
     @Test
     public void test1() throws Exception {
         System.out.println("Test 1");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/techniques/t1.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/techniques/t01.json")));
     }
-    /**
-     * To test whether reading real program is working
-     *
-     * @throws Exception
-     */
-    @Test
-    public void test2() throws Exception {
-        System.out.println("Test 2");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/techniques/t2.json")));
-    }
-    /**
-     * To test whether reading real program is working
-     *
-     * @throws Exception
-     */
-    @Test
-    public void test3() throws Exception {
-        System.out.println("Test 3");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/techniques/t3.json")));
-    }
-    /**
-     * To test whether reading real program is working
-     *
-     * @throws Exception
-     */
-    @Test
-    public void test4() throws Exception {
-        System.out.println("Test 4");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/techniques/t4.json")));
-    }
-    /**
-     * To test whether reading real program is working
-     *
-     * @throws Exception
-     */
-    @Test
-    public void test5() throws Exception {
-        System.out.println("Test 5");
-            Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/techniques/t5.json")));
-    }
+
 
 }

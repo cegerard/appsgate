@@ -3,7 +3,7 @@
     "id": "t2",
     "header": {
         "author": "testMaker",
-        "desc": "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2."
+        "comment": "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2."
     },
     "definitions": [
         {
@@ -48,6 +48,5 @@
                 }
             }
         ]
-    },
-    "userSource": "name: T1\n  var l1 = /L1/;\n var l2 = /L2/;\n  _while(l1.isOfState(isOn)) { l2.switchOn(); } then { l2.switchOff(); }"
+    }
 }
