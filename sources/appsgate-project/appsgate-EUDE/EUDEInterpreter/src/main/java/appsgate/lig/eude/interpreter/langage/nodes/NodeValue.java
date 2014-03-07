@@ -184,8 +184,12 @@ public class NodeValue extends Node {
     public List<NodeValue> getElements() {
         try {
             ArrayList<NodeValue> a = new ArrayList<NodeValue>();
-            for (int i = 0; i < list.length(); i++) {
-                a.add(new NodeValue(list.getJSONObject(i), this));
+            if (list != null) {
+                for (int i = 0; i < list.length(); i++) {
+                    a.add(new NodeValue(list.getJSONObject(i), this));
+                }
+            } else {
+                a.add(this);
             }
             return a;
 

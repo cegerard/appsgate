@@ -3,7 +3,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import org.jmock.Expectations;
-import static org.jmock.Expectations.any;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Before;
@@ -25,7 +24,6 @@ public class NodeSelectTest extends NodeTest {
         });
         ruleJSON.put("type", "select");
         ruleJSON.put("where", new JSONArray());
-        ruleJSON.put("state", new JSONArray());
         ruleJSON.put("what", new JSONArray());
 
     }

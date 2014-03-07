@@ -27,6 +27,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
 import java.io.BufferedReader;
@@ -92,6 +93,11 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      *
      */
     public ClockProxy clock;
+    
+    /**
+     * The property history proxy
+     */
+    private PropertyHistoryManager propHistoryManager;
 
     /**
      * Initialize the list of programs and of events
@@ -595,10 +601,20 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         return p;
     }
 
+    /**
+     * Method to get the context
+     * @return the context proxy
+     */
     public ContextProxySpec getContext() {
         return contextProxy;
     }
-
+    
+    /**
+     * @return the property history manager
+     */
+    public PropertyHistoryManager getPropHistManager() {
+        return propHistoryManager;
+    }
     /**
      *
      */

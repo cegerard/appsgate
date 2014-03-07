@@ -8,16 +8,15 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import java.util.Iterator;
-import junit.framework.Assert;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.jmock.Mockery;
 import org.jmock.lib.concurrent.Synchroniser;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.json.JSONArray;
+import org.junit.Assert;
 
 /**
  *
@@ -93,7 +92,7 @@ public abstract class NodeTest {
         printTestName("call");
         JSONObject expResult = null;
         JSONObject result = this.instance.call();
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
         Assert.assertTrue("supposed to be started", this.instance.isStarted());
     }
 
@@ -105,13 +104,13 @@ public abstract class NodeTest {
         printTestName("getSymbolTable");
         SymbolTable expResult = null;
         SymbolTable result = this.instance.getSymbolTable();
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
     }
 
     @Test
     public void testGetResult() throws Exception {
         printTestName("GetResult");
-        assertNull("result should be null in the default case", this.instance.getResult());
+        Assert.assertNull("result should be null in the default case", this.instance.getResult());
     }
 
     @Test
@@ -122,7 +121,7 @@ public abstract class NodeTest {
             Assert.assertNotNull(jsonDescription.getString("type"));
             Assert.assertTrue("Two Json Object should be equals", compareTo(this.ruleJSON, jsonDescription));
         } catch (UnsupportedOperationException e) {
-            fail("It is supposed to be supported now");
+            Assert.fail("It is supposed to be supported now");
         }
     }
 
@@ -131,7 +130,7 @@ public abstract class NodeTest {
         printTestName("Copy");
 
         Node copy = this.instance.copy(null);
-        assertNotNull(copy);
+        Assert.assertNotNull(copy);
         Assert.assertTrue("Two copies should have same json description", compareTo(this.instance.getJSONDescription(), copy.getJSONDescription()));
     }
 

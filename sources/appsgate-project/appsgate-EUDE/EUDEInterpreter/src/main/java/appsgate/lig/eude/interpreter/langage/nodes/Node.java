@@ -16,6 +16,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -457,6 +458,20 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             retArray.put(n.getJSONDescription());
         }
         return retArray;
+    }
+
+    /**
+     *
+     * @param ids
+     * @param prop
+     * @param time_start
+     * @param time_end
+     * @return 
+     * @throws SpokExecutionException 
+     */
+    protected JSONObject getEvents(Set<String> ids, String prop, long time_start, long time_end) throws SpokExecutionException {
+        return getMediator().getPropHistManager().getDevicesStatesHistoryAsJSON(ids, prop, time_start, time_end);
+
     }
 
     /**

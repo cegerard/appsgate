@@ -3,6 +3,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
@@ -24,7 +25,6 @@ public class NodeSelect extends Node {
 
     private JSONArray what;
     private JSONArray where;
-    private JSONArray state;
     private JSONArray specificDevices;
 
     /**
@@ -52,14 +52,11 @@ public class NodeSelect extends Node {
         if (where == null) {
             where = new JSONArray();
         }
-        state = o.optJSONArray("state");
-        if (state == null) {
-            state = new JSONArray();
-        }
     }
 
     @Override
     protected void specificStop() {
+        // No sub nodes to stop
     }
 
     @Override
@@ -69,6 +66,7 @@ public class NodeSelect extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
+        // This node does not wait for any other node
     }
 
     @Override
@@ -77,7 +75,6 @@ public class NodeSelect extends Node {
         try {
             ret.what = new JSONArray(what.toString());
             ret.where = new JSONArray(where.toString());
-            ret.state = new JSONArray(state.toString());
         } catch (JSONException ex) {
         }
         return ret;
@@ -116,7 +113,6 @@ public class NodeSelect extends Node {
             o.put("type", "select");
             o.put("what", what);
             o.put("where", where);
-            o.put("state", state);
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
@@ -135,14 +131,16 @@ public class NodeSelect extends Node {
         try {
             ArrayList<NodeValue> a = new ArrayList<NodeValue>();
             for (int i = 0; i < specificDevices.length(); i++) {
-                a.add(new NodeValue(specificDevices.getJSONObject(i), this));
+                JSONObject o = specificDevices.optJSONObject(i);
+                if (o != null) {
+                    a.add(new NodeValue(o, this));
+                } else {
+                    LOGGER.warn("An empty value has been returned for element {}", i);
+                }
             }
             return a;
 
-        } catch (JSONException ex) {
-            LOGGER.error("list without a list");
-            return null;
-        } catch (SpokException ex) {
+        } catch (SpokNodeException ex) {
             LOGGER.error("The variable was not well formed");
             return null;
         }
@@ -151,7 +149,6 @@ public class NodeSelect extends Node {
     @Override
     public String getType() {
         return "list";
-
     }
 
 }

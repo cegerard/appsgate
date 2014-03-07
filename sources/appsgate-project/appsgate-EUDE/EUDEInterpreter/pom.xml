@@ -105,6 +105,12 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>PropertyHistoryManagerSpec</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <!-- Build Description -->
