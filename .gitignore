@@ -192,3 +192,9 @@ sources/appsgate-project/android-utils/UpnpBasedriverAdapter/target/classes/META
 sources/appsgate-project/android-utils/UpnpBasedriverAdapter/target/classes/META-INF/NOTICE
 
 sources/appsgate-project/appsgate-context/ContextHistoy/nbactions.xml
+
+distributions/AppsGate-autodistrib/bundle/*
+distributions/AppsGate-autodistrib/conf/*
+distributions/AppsGate-autodistrib/bin/*
+distributions/AppsGate-autodistrib/log/*
+distributions/AppsGate-autodistrib/apam*
