@@ -202,8 +202,8 @@
 									<version>${project.version}</version>
 								</dependency>
 								<dependency>
-									<artifactId>PhilipsHUEAndroidAdapter</artifactId>
-									<groupId>appsgate.android</groupId>
+									<artifactId>PhilipsHUESdKAdapter</artifactId>
+									<groupId>appsgate.libs</groupId>
 									<version>1.1.1beta</version>
 								</dependency>
 								<dependency>
@@ -212,18 +212,18 @@
 									<version>2.12.0-PATCHED</version>
 								</dependency>
 								<dependency>
-									<groupId>appsgate.android</groupId>
-									<artifactId>JavaWebSocketAndroidAdapter</artifactId>
+									<groupId>appsgate.libs</groupId>
+									<artifactId>JavaWebSocketAdapter</artifactId>
 									<version>${project.version}</version>
 								</dependency>
 								<dependency>
-									<groupId>appsgate.android</groupId>
+									<groupId>appsgate.libs</groupId>
 									<artifactId>JavamailAndroidAdapter</artifactId>
 									<version>1.4.7</version>
 								</dependency>
 
 								<dependency>
-									<groupId>appsgate.android</groupId>
+									<groupId>appsgate.libs</groupId>
 									<artifactId>CyberGarageAdapter</artifactId>
 									<version>2.1.0-PATCHED</version>
 								</dependency>

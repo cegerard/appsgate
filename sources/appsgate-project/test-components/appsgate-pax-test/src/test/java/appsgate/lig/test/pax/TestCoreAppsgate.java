@@ -84,8 +84,8 @@ public class TestCoreAppsgate extends PaxedDistribution {
 		
 		testApps.put("json", "org.json");
 		testApps.put("mongo-java-driver", "org.mongodb");		
-		testApps.put("JavamailAndroidAdapter", "appsgate.android");	
-		testApps.put("JavaWebSocketAndroidAdapter", "appsgate.android");	
+		testApps.put("JavamailAndroidAdapter", "appsgate.libs");	
+		testApps.put("JavaWebSocketAdapter", "appsgate.libs");	
 		
 	}
 	

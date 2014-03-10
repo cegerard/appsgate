@@ -2,8 +2,8 @@
     <groupId>org.apache.felix</groupId>
 
     <parent>
-        <groupId>appsgate.android</groupId>
-        <artifactId>android-utils</artifactId>
+        <groupId>appsgate.libs</groupId>
+        <artifactId>lib-utils</artifactId>
         <version>1.0.0</version>
     </parent>
     
@@ -96,7 +96,7 @@
       <version>1.0.0</version>
     </dependency>
     <dependency>
-        <groupId>appsgate.android</groupId>
+        <groupId>appsgate.libs</groupId>
         <artifactId>CyberGarageAdapter</artifactId>
         <version>2.1.0-PATCHED</version>
     </dependency>

@@ -182,10 +182,9 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		testApps.put("com.google.gdata-calendar", "org.openengsb.wrapped");
 		testApps.put("commons-logging", "commons-logging");
 		testApps.put("commons-lang3", "org.apache.commons");
-		testApps.put("org.apache.servicemix.bundles.xmlpull",
-				"org.apache.servicemix.bundles");
-		testApps.put("org.apache.servicemix.bundles.kxml2",
-				"org.apache.servicemix.bundles");
+		testApps.put("org.apache.servicemix.bundles.xmlpull", "org.apache.servicemix.bundles");
+		testApps.put("org.apache.servicemix.bundles.xpp3", "org.apache.servicemix.bundles");
+		testApps.put("org.apache.servicemix.bundles.kxml2", "org.apache.servicemix.bundles");
 		testApps.put("guava-osgi", "com.googlecode.guava-osgi");
 		testApps.put("ical4j", "org.mnode.ical4j");
 	}

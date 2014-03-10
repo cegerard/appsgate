@@ -37,8 +37,8 @@
 			<version>${apam.current.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>appsgate.android</groupId>
-			<artifactId>PhilipsHUEAndroidAdapter</artifactId>
+			<groupId>appsgate.libs</groupId>
+			<artifactId>PhilipsHUESdKAdapter</artifactId>
 			<version>1.1.1beta</version>
 		</dependency>
 		<dependency>

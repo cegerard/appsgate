@@ -80,7 +80,7 @@ public class TestUpnPAppsgate extends PaxedDistribution {
 		testApps.put("org.apache.servicemix.bundles.xmlpull", "org.apache.servicemix.bundles");
 		testApps.put("org.apache.servicemix.bundles.xpp3", "org.apache.servicemix.bundles");
 		testApps.put("org.apache.servicemix.bundles.kxml2", "org.apache.servicemix.bundles");
-		testApps.put("CyberGarageAdapter", "appsgate.android");
+		testApps.put("CyberGarageAdapter", "appsgate.libs");
 		testApps.put("org.apache.felix.upnp.basedriver", "org.apache.felix");
 		testApps.put("org.apache.felix.upnp.extra", "org.apache.felix");
 		testApps.put("org.apache.felix.upnp.tester", "org.apache.felix");
