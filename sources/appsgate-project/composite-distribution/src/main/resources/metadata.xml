@@ -22,9 +22,9 @@
 			
 			<start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
 			
-            <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start>
+<!--             <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start> -->
             
-            <start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start>
+<!--             <start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start> -->
 
 			<start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />

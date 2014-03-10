@@ -45,6 +45,7 @@ public class TestUpnPAppsgate extends PaxedDistribution {
 		initUPnPAdapter();
 		initMediaPlayerFactory();
 		initMediaBrowserFactory();
+			
 		//TODO
 
 	}
@@ -76,9 +77,14 @@ public class TestUpnPAppsgate extends PaxedDistribution {
 	}
 
 	public static void fillUpnpBundleList(Map<String, String> testApps) {
+		testApps.put("org.apache.servicemix.bundles.xmlpull", "org.apache.servicemix.bundles");
+		testApps.put("org.apache.servicemix.bundles.xpp3", "org.apache.servicemix.bundles");
+		testApps.put("org.apache.servicemix.bundles.kxml2", "org.apache.servicemix.bundles");
 		testApps.put("CyberGarageAdapter", "appsgate.android");
 		testApps.put("org.apache.felix.upnp.basedriver", "org.apache.felix");
 		testApps.put("org.apache.felix.upnp.extra", "org.apache.felix");
+		testApps.put("org.apache.felix.upnp.tester", "org.apache.felix");
+		
 		testApps.put("org.apache.felix.upnp.devicegen.util", "org.apache.felix.sandbox");		
 	}
 
