@@ -198,3 +198,8 @@ distributions/AppsGate-autodistrib/conf/*
 distributions/AppsGate-autodistrib/bin/*
 distributions/AppsGate-autodistrib/log/*
 distributions/AppsGate-autodistrib/apam*
+distributions/AppsGate-autodistrib/certificates/*
+distributions/AppsGate-autodistrib/natives/*
+
+
+
