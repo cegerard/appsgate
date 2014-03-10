@@ -7,16 +7,17 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Project parent -->
-    <parent>
-        <groupId>appsgate.components</groupId>
-        <artifactId>distributions</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>appsgate.components</groupId>
+		<artifactId>distributions</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
 	<!-- Project coordinates -->
 
@@ -96,12 +97,12 @@
 									<artifactId>obrman</artifactId>
 									<version>${apam.current.version}</version>
 								</artifactItem>
-                                <artifactItem>
-                                    <groupId>fr.imag.adele.apam</groupId>
-                                    <artifactId>apam-gogo-shell</artifactId>
-                                    <version>${apam.current.version}</version>
-                                </artifactItem>
-																
+								<artifactItem>
+									<groupId>fr.imag.adele.apam</groupId>
+									<artifactId>apam-gogo-shell</artifactId>
+									<version>${apam.current.version}</version>
+								</artifactItem>
+
 
 								<!-- Felix Dependencies -->
 								<artifactItem>
@@ -126,7 +127,7 @@
 									<artifactId>org.osgi.compendium</artifactId>
 									<version>${osgi.version}</version>
 								</artifactItem>
-								
+
 								<!--GOGO -->
 								<artifactItem>
 									<groupId>org.apache.felix</groupId>
@@ -176,8 +177,8 @@
 									<artifactId>slf4j-api</artifactId>
 									<version>${slf4j.version}</version>
 								</artifactItem>
-								
-								
+
+
 								<artifactItem>
 									<groupId>org.apache.felix</groupId>
 									<artifactId>org.apache.felix.http.api</artifactId>
@@ -188,7 +189,132 @@
 									<artifactId>org.apache.felix.http.jetty</artifactId>
 									<version>${org.apache.felix.http.version}</version>
 								</artifactItem>
+
+
+								<!-- Appsgate modules -->
+								<dependency>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CoreObjectSpec</artifactId>
+									<version>${project.version}</version>
+								</dependency>
+								<dependency>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CoreWeatherServiceSpec</artifactId>
+									<version>${project.version}</version>
+								</dependency>
+
+								<dependency>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CoreClockSpec</artifactId>
+									<version>${project.version}</version>
+								</dependency>
+
+								<dependency>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CoreCalendarSpec</artifactId>
+									<version>${project.version}</version>
+								</dependency>
+
+								<dependency>
+									<groupId>appsgate.components</groupId>
+									<artifactId>core-mail-service-specification</artifactId>
+									<version>${project.version}</version>
+								</dependency>
+
+
+								<!-- repackaged/patched dependencies (as osgi bundles, or apamcomponents) 
+									for appsgate -->
+								<dependency>
+									<groupId>org.json</groupId>
+									<artifactId>json</artifactId>
+									<version>${project.version}</version>
+								</dependency>
+								<dependency>
+									<groupId>org.mongodb</groupId>
+									<artifactId>mongo-java-driver</artifactId>
+									<version>2.12.0-PATCHED</version>
+								</dependency>
+								<dependency>
+									<groupId>appsgate.android</groupId>
+									<artifactId>JavaWebSocketAndroidAdapter</artifactId>
+									<version>${project.version}</version>
+								</dependency>
+								<dependency>
+									<groupId>appsgate.android</groupId>
+									<artifactId>JavamailAndroidAdapter</artifactId>
+									<version>1.4.7</version>
+								</dependency>
+
+								<dependency>
+									<groupId>appsgate.android</groupId>
+									<artifactId>CyberGarageAdapter</artifactId>
+									<version>2.1.0-PATCHED</version>
+								</dependency>
+								<dependency>
+									<groupId>org.apache.felix</groupId>
+									<artifactId>org.apache.felix.upnp.basedriver</artifactId>
+									<version>0.9.0-PATCHED</version>
+								</dependency>
+								<dependency>
+									<groupId>org.apache.felix.sandbox</groupId>
+									<artifactId>org.apache.felix.upnp.devicegen.util</artifactId>
+									<version>0.1.0</version>
+								</dependency>
+								<dependency>
+									<groupId>org.apache.felix</groupId>
+									<artifactId>org.apache.felix.upnp.extra</artifactId>
+									<version>0.4.0</version>
+								</dependency>
+
+
+                                <!-- legacy dependencies (already osgi bundles, or apamcomponents) 
+                                    for appsgate -->
+								<dependency>
+									<groupId>org.bouncycastle</groupId>
+									<artifactId>bcprov-jdk15on</artifactId>
+									<version>1.50</version>
+								</dependency>
+								<dependency>
+									<groupId>org.openengsb.wrapped</groupId>
+									<artifactId>com.google.gdata-calendar</artifactId>
+									<version>1.41.5.w1</version>
+								</dependency>
+								<dependency>
+									<groupId>commons-logging</groupId>
+									<artifactId>commons-logging</artifactId>
+									<version>1.1.3</version>
+								</dependency>
+								<dependency>
+									<groupId>org.apache.commons</groupId>
+									<artifactId>commons-lang3</artifactId>
+									<version>3.2.1</version>
+								</dependency>
+								<dependency>
+									<groupId>org.apache.servicemix.bundles</groupId>
+									<artifactId>org.apache.servicemix.bundles.kxml2</artifactId>
+									<version>2.3.0_3</version>
+								</dependency>
+
+								<dependency>
+									<groupId>org.apache.servicemix.bundles</groupId>
+									<artifactId>org.apache.servicemix.bundles.xmlpull</artifactId>
+									<version>1.1.3.1_2</version>
+								</dependency>
+
+								<dependency>
+									<groupId>com.googlecode.guava-osgi</groupId>
+									<artifactId>guava-osgi</artifactId>
+									<version>10.0.1</version>
+								</dependency>
+								<dependency>
+									<groupId>org.mnode.ical4j</groupId>
+									<artifactId>ical4j</artifactId>
+									<version>${ical-version}</version>
+								</dependency>
 								
+
+
+
 							</artifactItems>
 							<outputDirectory>${basedir}/bundle</outputDirectory>
 							<overWriteSnapshots>true</overWriteSnapshots>
@@ -263,7 +389,8 @@
 									</fileset>
 								</copy>
 								<copy failonerror="true" overwrite="true" todir="${basedir}/bundle/">
-									<fileset dir="${project.build.directory}/distrib-temp/neededBundles/">
+									<fileset
+										dir="${project.build.directory}/distrib-temp/neededBundles/">
 										<include name="*.jar" />
 									</fileset>
 								</copy>
@@ -297,20 +424,20 @@
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>2.5</version>
 				<configuration>
-				<filesets>
-					<fileset>
-						<directory>.</directory>
-						<includes>
-							<include>**/*</include>
-						</includes>
-						<excludes>
-							<exclude>conf/*</exclude>
-							<exclude>pom.xml</exclude>
+					<filesets>
+						<fileset>
+							<directory>.</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+							<excludes>
+								<exclude>conf/*</exclude>
+								<exclude>pom.xml</exclude>
 
-						</excludes>
-						<followSymlinks>false</followSymlinks>
-					</fileset>
-				</filesets>
+							</excludes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
 				</configuration>
 			</plugin>
 

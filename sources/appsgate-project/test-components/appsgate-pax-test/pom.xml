@@ -323,31 +323,6 @@
 
 	</dependencies>
 
-	<repositories>
-		<repository>
-			<id>ops4j-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/ops4j-snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>ops4j-releases</id>
-			<url>https://oss.sonatype.org/content/repositories/ops4j-releases/</url>
-			<snapshots>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>ical4j-repository</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<build>
 
 		<pluginManagement>
