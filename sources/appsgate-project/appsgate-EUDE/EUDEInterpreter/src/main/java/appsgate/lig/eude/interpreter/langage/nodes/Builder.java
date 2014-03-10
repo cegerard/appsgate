@@ -30,7 +30,7 @@ public class Builder {
 
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
         NODE_FUNCTION_DEFINITION, NODE_IF, NODE_KEEP_STATE, NODE_PROGRAM, NODE_RETURN,
-        NODE_SELECT, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
+        NODE_SELECT, NODE_SELECT_STATE, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
         NODE_VARIABLE_ASSIGNATION, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
     }
 
@@ -77,6 +77,9 @@ public class Builder {
         }
         if (type.equalsIgnoreCase("select")) {
             return NODE_TYPE.NODE_SELECT;
+        }
+        if (type.equalsIgnoreCase("selectState")) {
+            return NODE_TYPE.NODE_SELECT_STATE;
         }
         if (type.equalsIgnoreCase("state")) {
             return NODE_TYPE.NODE_STATE;
@@ -161,6 +164,8 @@ public class Builder {
                     return new NodeReturn(o, parent);
                 case NODE_SELECT:
                     return new NodeSelect(o, parent);
+                case NODE_SELECT_STATE:
+                    return new NodeSelectState(o, parent);
                 case NODE_STATE:
                     return new NodeState(o, parent);
                 case NODE_VALUE:

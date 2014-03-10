@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,9 +37,15 @@ public class NodeSelectState extends Node {
 
     private String stateValue;
 
-    private long timeStart;
+    /**
+     * the time of start given in seconds 0 means the time of the execution
+     */
+    private Long timeStart;
 
-    private long timeEnd;
+    /**
+     * The duration of the select state in seconds 0, means till now must be > 0
+     */
+    private Long duration;
 
     private JSONArray devicesSelected;
 
@@ -67,6 +72,18 @@ public class NodeSelectState extends Node {
         devicesToCheck = Builder.buildFromJSON(o.optJSONObject("devices"), this);
         stateToCheck = getJSONString(o, "state");
         stateValue = getJSONString(o, "value");
+        timeStart = o.optLong("start");
+        if (timeStart == null) {
+            timeStart = new Long(0);
+        }
+        duration = o.optLong("duration");
+        if (duration == null) {
+            duration = new Long(0);
+        }
+        if (duration < 0) {
+            LOGGER.error("duration cannot be a negative value");
+            throw new SpokNodeException("SelectState", "duration", null);
+        }
 
     }
 
@@ -93,6 +110,8 @@ public class NodeSelectState extends Node {
         s.devicesToCheck = devicesToCheck.copy(s);
         s.stateToCheck = stateToCheck;
         s.stateValue = stateValue;
+        s.timeStart = timeStart;
+        s.duration = duration;
         return s;
     }
 
@@ -118,6 +137,8 @@ public class NodeSelectState extends Node {
             o.put("devices", devicesToCheck.getJSONDescription());
             o.put("state", stateToCheck);
             o.put("value", stateValue);
+            o.put("start", timeStart);
+            o.put("duration", duration);
         } catch (JSONException ex) {
             // Exception never thrown
         }
@@ -170,10 +191,10 @@ public class NodeSelectState extends Node {
     }
 
     /**
-     * 
+     *
      * @param result
      * @param devices
-     * @return 
+     * @return
      */
     private JSONArray checkStates(JSONObject result, List<NodeValue> devices) {
         LOGGER.trace("check states");
@@ -215,10 +236,12 @@ public class NodeSelectState extends Node {
                 l.add(v.getValue());
             }
         }
-        // :TODO: compute the time correctly
-        // (we want to have a start and an end, but the user can ask for
-        // the last hour or three hours after...
-        return getEvents(l, stateValue, timeStart, timeEnd);
+        Long begin = timeStart;
+        if (timeStart <= 0) {
+            begin = getMediator().getTime() + timeStart * 1000;
+        }
+
+        return getEvents(l, stateValue, begin, begin + duration * 1000);
     }
 
     @Override

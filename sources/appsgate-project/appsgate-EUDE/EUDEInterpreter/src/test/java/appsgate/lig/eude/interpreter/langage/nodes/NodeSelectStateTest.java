@@ -28,6 +28,8 @@ public class NodeSelectStateTest extends NodeTest {
                 will(returnValue(c));
                 allowing(mediator).getPropHistManager();
                 will(returnValue(prop));
+                allowing(mediator).getTime();
+                will(returnValue(new Long(0)));
             }
         });
         ruleJSON.put("type", "selectState");
@@ -51,6 +53,5 @@ public class NodeSelectStateTest extends NodeTest {
         SpokObject result = instance.getResult();
         Assert.assertNotNull(result);
         System.out.println(result.getJSONDescription().toString());
-        Assert.fail("tmp");
     }
 }
