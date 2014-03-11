@@ -143,6 +143,13 @@ public abstract class NodeTest {
         }
     }
 
+    @Test
+    public void testEquals() {
+        printTestName("Equals");
+        Node copy = this.instance.copy(null);
+        Assert.assertFalse("Should not be equal", this.instance.equals(copy));
+    }
+
     /**
      * Method that compare two JSON Objects and tell where they differ
      *

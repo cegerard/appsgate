@@ -12,6 +12,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
+import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.ArrayList;
@@ -466,8 +467,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param prop
      * @param time_start
      * @param time_end
-     * @return 
-     * @throws SpokExecutionException 
+     * @return
+     * @throws SpokExecutionException
      */
     protected JSONObject getEvents(Set<String> ids, String prop, long time_start, long time_end) throws SpokExecutionException {
         return getMediator().getPropHistManager().getDevicesStatesHistoryAsJSON(ids, prop, time_start, time_end);
@@ -480,6 +481,44 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     public List<NodeValue> getElements() {
         return new ArrayList<NodeValue>();
+    }
+
+    /**
+     *
+     * @param o
+     * @return
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof SpokObject)) {
+            return false;
+        }
+        return SpokParser.equals(this, (SpokObject) o);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    /**
+     *
+     * @return the programName
+     */
+    protected String getProgramName() {
+        NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
+        if (p != null) {
+            return p.getProgramName();
+        }
+        return null;
     }
 
 }

@@ -91,7 +91,7 @@ public class NodeAction extends Node {
 
     @Override
     public JSONObject call() {
-        LOGGER.debug("##### Action call [{}]!", methodName);
+        LOGGER.trace("##### Action call [{}]!", methodName);
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         target.addEndEventListener(this);
@@ -130,12 +130,11 @@ public class NodeAction extends Node {
      */
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
-        LOGGER.debug("Call Device action: {}", target);
+        LOGGER.debug("Device action {} on {}", methodName, target);
         command = getMediator().executeCommand(target, methodName, args);
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, target);
         } else {
-            LOGGER.debug("Run command: {}", command.toString());
             command.run();
         }
     }
@@ -147,14 +146,11 @@ public class NodeAction extends Node {
      * @throws SpokException
      */
     private void callProgramAction(String target) throws SpokException {
-        LOGGER.debug("Call Program action: {}", target);
-        NodeProgram p = getMediator().getNodeProgram(target);
+        LOGGER.debug("Program [{}] action {} on {}", new String[] {getProgramName(), methodName, target});
 
+        NodeProgram p = getMediator().getNodeProgram(target);
         if (p != null) {
-            LOGGER.debug("Program running state {}", p.getRunningState());
             if (methodName.contentEquals("callProgram") && p.getRunningState() != RUNNING_STATE.STARTED) {
-                // listen to the end of the program
-                p.addEndEventListener(this);
                 // launch the program
                 getMediator().callProgram(target, args);
             } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
@@ -177,7 +173,7 @@ public class NodeAction extends Node {
      */
     private void callListAction(Node n) throws SpokException {
         LOGGER.debug("Call List action");
-       // Node n =  list.getNodeValue();
+        // Node n =  list.getNodeValue();
         if (n != null) {
             List<NodeValue> elements = n.getElements();
             for (NodeValue v : elements) {

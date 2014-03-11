@@ -142,7 +142,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
             return false;
         }
         //save program map state
-        if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), getProgramsDesc())) {
+        if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
             p.setDeployed();
             notifyAddProgram(p.getId(), p.getRunningState().toString(), p.getJSONDescription(), p.getUserSource());
             return true;
@@ -176,7 +176,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         mapPrograms.remove(programId);
 
         //save program map state
-        if (contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getName(), getProgramsDesc())) {
+        if (contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
             notifyRemoveProgram(p.getId());
             return true;
         }
@@ -212,7 +212,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
                 notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getJSONDescription(), p.getUserSource());
                 //save program map state
 
-                if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getName(), getProgramsDesc())) {
+                if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
                     return true;
                 }
             }
@@ -730,7 +730,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
     @Override
     public void endEventFired(EndEvent e) {
         NodeProgram p = (NodeProgram) e.getSource();
-        LOGGER.info("Program " + p.getName() + " ended.");
+        LOGGER.info("Program " + p.getProgramName() + " ended.");
     }
 
     @Override

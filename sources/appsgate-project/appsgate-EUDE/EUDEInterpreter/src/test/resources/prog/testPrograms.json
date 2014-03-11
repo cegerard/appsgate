@@ -3,7 +3,7 @@
     "runningState": "DEPLOYED",
     "userSource": "",
     "daemon": true,
-    "name": "ColorLoopMode",
+    "name": "Programs",
     "parameters": [],
     "header": {
         "target": "Alice",

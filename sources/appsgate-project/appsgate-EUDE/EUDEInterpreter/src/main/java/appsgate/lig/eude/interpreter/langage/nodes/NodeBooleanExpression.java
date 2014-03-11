@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
@@ -118,11 +119,14 @@ public class NodeBooleanExpression extends Node {
     @Override
     public JSONObject call() {
         setStarted(true);
-        if (left != null) {
-            left.call();
-            left.addEndEventListener(this);
+
+        if (left == null) {
+            LOGGER.error("A left operand is null: unable to evaluate this node");
+            SpokExecutionException ex = new SpokExecutionException("There were no left branch to evaluate");
+            return ex.getJSONDescription();
         }
-        return null;
+        left.addEndEventListener(this);
+        return left.call();
     }
 
     @Override
@@ -131,7 +135,8 @@ public class NodeBooleanExpression extends Node {
     }
 
     @Override
-    protected Node copy(Node parent) {
+    protected Node copy(Node parent
+    ) {
         NodeBooleanExpression ret = new NodeBooleanExpression(parent);
         ret.operator = operator;
         ret.left = left.copy(ret);
@@ -140,7 +145,8 @@ public class NodeBooleanExpression extends Node {
     }
 
     @Override
-    public void endEventFired(EndEvent e) {
+    public void endEventFired(EndEvent e
+    ) {
         Node n = (Node) e.getSource();
         if (n == left) {
             leftNodeEvaluated();

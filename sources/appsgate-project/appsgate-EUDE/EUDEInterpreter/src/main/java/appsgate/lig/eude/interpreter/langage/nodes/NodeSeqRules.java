@@ -88,6 +88,7 @@ public class NodeSeqRules extends Node {
 
     @Override
     public JSONObject call() {
+        LOGGER.debug("iterator reinited for {}", getProgramName());
         iterator = instructions.iterator();
         setStarted(true);
         fireStartEvent(new StartEvent(this));
@@ -122,10 +123,12 @@ public class NodeSeqRules extends Node {
      */
     private void launchNextSeqAndRules() {
 
-        synchronized (this) {
-            // get the next sequence of rules to launch
-            currentNode = iterator.next();
-        }
+        LOGGER.debug("CurrentNode : {}", currentNode);
+                LOGGER.debug("Iterator has next: {}", iterator.hasNext());
+
+        // get the next sequence of rules to launch
+        currentNode = iterator.next();
+        LOGGER.debug("CurrentNode After next : {}", currentNode);
 
         if (!isStopping()) {
             // launch the sequence of rules
@@ -211,4 +214,5 @@ public class NodeSeqRules extends Node {
         return ret;
 
     }
+
 }

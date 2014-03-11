@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -22,17 +23,7 @@ import org.slf4j.LoggerFactory;
 public class NodeValue extends Node {
 
     // Logger
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeVariableDefinition.class);
-
-    private JSONObject callVariable() {
-        NodeVariableDefinition variableByName = this.getVariableByName(value);
-        if (variableByName == null) {
-            SpokExecutionException e = new SpokExecutionException("Variable " + value + "not found");
-            return e.getJSONDescription();
-        }
-        variableByName.addEndEventListener(this);
-        return variableByName.call();
-    }
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeValue.class);
 
     public enum TYPE {
 
@@ -120,6 +111,8 @@ public class NodeValue extends Node {
                 return "/" + value + "/";
             case PROGRAMCALL:
                 return "|" + value + "|";
+            case LIST:
+                return listExpert();
             default:
                 return value;
         }
@@ -227,9 +220,43 @@ public class NodeValue extends Node {
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
+    private JSONObject callVariable() {
+        NodeVariableDefinition variableByName = this.getVariableByName(value);
+        if (variableByName == null) {
+            SpokExecutionException e = new SpokExecutionException("Variable " + value + "not found");
+            return e.getJSONDescription();
+        }
+        variableByName.addEndEventListener(this);
+        return variableByName.call();
+    }
+
+    /**
+     *
+     * @return the list string in the expert language
+     */
+    private String listExpert() {
+        String[] array;
+        List<NodeValue> elements = getElements();
+        if (elements == null) {
+            return "[]";
+        }
+        array = new String[elements.size()];
+        int i = 0;
+        for (NodeValue v : elements) {
+            array[i++] = v.getExpertProgramScript();
+        }
+
+        return "[" + StringUtils.join(array, ",") + "]";
+
+    }
+
     @Override
     public String toString() {
-        return "[NodeValue type: " + getType() + ", value: " + getValue() + "]";
+        return "[NodeValue type: " + getType() + ", value: " + getExpertProgramScript() + "]";
     }
 
 }

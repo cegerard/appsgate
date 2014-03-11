@@ -71,7 +71,7 @@ public class EUDEMediatorTest {
     private ContextProxyMock contextProxy;
     private final String programId = "test";
 
-    public EUDEMediatorTest() throws Exception{
+    public EUDEMediatorTest() throws Exception {
         programJSON = TestUtilities.loadFileJSON("src/test/resources/prog/testEmpty.json");
     }
 
@@ -162,16 +162,17 @@ public class EUDEMediatorTest {
 
     /**
      * Test of removeProgram method, of class EUDEMediator.
+     * @throws Exception
      */
     @Test
-    public void testRemoveProgram() throws Exception{
+    public void testRemoveProgram() throws Exception {
         System.out.println("removeProgram");
         boolean result = instance.removeProgram("NoTEst");
         assertFalse("The program does not exist so there is no removing", result);
         instance.addProgram(programJSON);
         boolean remove = instance.removeProgram(programId);
         assertTrue("Program should be removed", remove);
-        
+
     }
 
     /**
@@ -343,20 +344,26 @@ public class EUDEMediatorTest {
     @Test
     public void testPrograms() throws Exception {
         System.out.println("Programs");
-        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testIf.json")));
-        System.out.println(instance.getNodeProgram("testIf").getExpertProgramScript());
 
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testPrograms.json")));
-        System.out.println(instance.getNodeProgram("testPrograms").getExpertProgramScript());
-
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testIf.json")));
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testFail_1.json")));
-        System.out.println(instance.getNodeProgram("program-4050").getExpertProgramScript());
 
-        System.out.println("********************testIf************************");
-        Assert.assertTrue(instance.callProgram("testIf"));
         System.out.println("*******************testPrograms*************************");
+        System.out.println(instance.getNodeProgram("testPrograms").getExpertProgramScript());
+        System.out.println("********************************************************");
         Assert.assertTrue(instance.callProgram("testPrograms"));
+        
+        
+        System.out.println("********************testIf************************");
+        System.out.println(instance.getNodeProgram("testIf").getExpertProgramScript());
+        System.out.println("********************************************************");
+        Assert.assertTrue(instance.callProgram("testIf"));
+
+        
         System.out.println("********************program-4050************************");
+        System.out.println(instance.getNodeProgram("program-4050").getExpertProgramScript());
+        System.out.println("********************************************************");
         Assert.assertTrue(instance.callProgram("program-4050"));
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertFalse(instance.isProgramActive("testPrograms"));

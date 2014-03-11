@@ -132,7 +132,7 @@ public class TechnicalTest {
     }
 
     /**
-     * To test whether reading real program is working
+     * To test if reading real program is working
      *
      * @throws Exception
      */

@@ -12,6 +12,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
  * @author jr
  */
 public class SpokParser {
+
     /**
      *
      * @param result
@@ -49,6 +50,9 @@ public class SpokParser {
      * @return
      */
     public static Boolean equals(SpokObject l, SpokObject r) {
+        if (l.getValue() == null) {
+            return false;
+        }
         return l.getType().equalsIgnoreCase(r.getType())
                 && l.getValue().equalsIgnoreCase(r.getValue());
 

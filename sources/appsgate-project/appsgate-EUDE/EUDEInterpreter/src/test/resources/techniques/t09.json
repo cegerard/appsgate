@@ -1,0 +1,47 @@
+{
+  "name": "T9",
+  "id": "t9",
+  "header": {
+    "author": "testMaker",
+    "comment": "Faire clignoter toutes les lampes sauf celles du salon."
+  },
+  "definitions": [
+    
+  ],
+  "body": {
+    "type": "setOfRules",
+    "rules": [
+      {
+        "type": "action",
+        "target": {
+          "type": "lists",
+          "left": {
+            "type": "select",
+            "what": [
+              "lamp"
+            ],
+            "where": [
+            ]
+          },
+          "right": {
+            "type": "select",
+            "what": [
+              "lamp"
+            ],
+            "where": [
+              {
+                "type": "string",
+                "value": "salon"
+              }
+            ]
+          },
+          "operator": "N"
+        },
+        "methodName": "blink",
+        "action": [
+          
+        ]
+      }
+    ]
+  }
+}

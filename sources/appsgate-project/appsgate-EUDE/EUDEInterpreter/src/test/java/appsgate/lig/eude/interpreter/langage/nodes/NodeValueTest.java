@@ -135,4 +135,15 @@ public class NodeValueTest extends NodeTest {
         Assert.assertEquals("12.3", v.getValue());
         Assert.assertEquals("12.3", v.getExpertProgramScript());
     }
+    
+    
+    @Test
+    @Override
+    public void testEquals() {
+        printTestName("Equals");
+        Node copy = this.instance.copy(null);
+        Assert.assertTrue("Should be equal", this.instance.equals(copy));
+    }
+
+    
 }

@@ -262,9 +262,10 @@ public class NodeProgram extends Node {
 
     /**
      *
-     * @return the name
+     * @return the program name
      */
-    public String getName() {
+    @Override
+    public String getProgramName() {
         return name;
     }
 
