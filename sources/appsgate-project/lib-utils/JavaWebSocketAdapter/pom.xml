@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>appsgate.android</groupId>
-        <artifactId>android-utils</artifactId>
+        <groupId>appsgate.libs</groupId>
+        <artifactId>lib-utils</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>JavaWebSocketAndroidAdapter</artifactId>
+    <artifactId>JavaWebSocketAdapter</artifactId>
     <packaging>bundle</packaging>
 
 

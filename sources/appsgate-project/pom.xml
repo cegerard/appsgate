@@ -91,7 +91,7 @@
 	</build>
 
 	<modules>
-		<module>android-utils</module>
+		<module>lib-utils</module>
 		<module>core-specifications</module>
 		<module>appsgate-context</module>
 		<module>appsgate-EUDE</module>

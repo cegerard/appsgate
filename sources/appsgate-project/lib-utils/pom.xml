@@ -8,11 +8,11 @@
         <relativePath>../pom.xml</relativePath>
 	</parent>
     
-	<groupId>appsgate.android</groupId>
-	<artifactId>android-utils</artifactId>
+	<groupId>appsgate.libs</groupId>
+	<artifactId>lib-utils</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
-	<name>Appsgate utilities to run with Android</name>
+	<name>Package and Patch Existing Utilities for OSGi and AppsGate</name>
 
 	<properties>
 		<!-- apam version -->
@@ -56,11 +56,11 @@
 	</build>
 
 	<modules>
-		<module>JSONAndroidAdapter</module>
-		<module>CyberGarageAndroidAdapter</module>
+		<module>JSONAdapter</module>
+		<module>CyberGarageAdapter</module>
 		<module>JavamailAndroidAdapter</module>
-		<module>JavaWebSocketAndroidAdapter</module>
-		<module>HUESdKAndroidAdapter</module>
+		<module>JavaWebSocketAdapter</module>
+		<module>HUESdKAdapter</module>
 		<module>mongo-java-driver</module>
 		<module>StaxAndroidAdapter</module>
 		<module>UpnpBasedriverAdapter</module>

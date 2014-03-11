@@ -1,4 +1,4 @@
-define(['philipshue/philipshue', 'enocean/enocean'], function (hueRef, enoceanRef) {
+define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp'], function (hueRef, enoceanRef,upnpRef) {
 //define begin
     var returnedModule = function () {
     
@@ -10,7 +10,10 @@ define(['philipshue/philipshue', 'enocean/enocean'], function (hueRef, enoceanRe
         
         var enocean = new enoceanRef();
         this.getEnocean = function () {return enocean;}
-        
+       
+       var upnp = new upnpRef();
+       this.getUPnP = function () {return upnp;}
+       
 		var ws;
 		var DEFAULT_SERVER_PORT = 8087;
 
@@ -42,15 +45,18 @@ define(['philipshue/philipshue', 'enocean/enocean'], function (hueRef, enoceanRe
 							philipshue.messageHandler(jsonMess);
 						}else if(jsonMess.TARGET == "ENOCEAN"){
 							enocean.messageHandler(jsonMess);
-						}
-						
+                        }else if(jsonMess.TARGET == "UPNP"){
+                            upnp.messageHandler(jsonMess);
+                        }
 					}else if(jsonMess.hasOwnProperty("callId")){
 						callId = jsonMess.callId;
 						if(callId.indexOf("enocean-conf-target") != -1){
 							enocean.messageHandler(jsonMess);
 						}else if(callId.indexOf("philipshue-conf-target") != -1) {
 							philipshue.messageHandler(jsonMess);
-						}else {
+                        }else if(callId.indexOf("upnp-conf-target") != -1) {
+                            upnp.messageHandler(jsonMess);
+                        }else {
 							appsgateMain.returnCallHandler(jsonMess.callId, jsonMess);
 						}
 					}else { //It is a notification

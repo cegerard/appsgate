@@ -23,6 +23,8 @@ felix-cache
 
 nbaction.xml
 
+sources/appsgate-project/communication-components/AppsGate/src/main/resources/WEB/index-TER.html
+sources/appsgate-project/communication-components/AppsGate/src/main/resources/readme.txt
 sources/PhilipsHUE4Appsgate/PhilipsHUEAdapter/.classpath
 
 sources/UPnPMediaServices/.classpath
@@ -215,3 +217,15 @@ sources/appsgate-project/integrated-technologies/fuchsia-ard-plugin/ard-importer
 sources/appsgate-project/nb-configuration.xml
 
 sources/appsgate-project/appsgate-context/ContextHistoy/nbactions.xml
+
+distributions/AppsGate-autodistrib/bundle/*
+distributions/AppsGate-autodistrib/conf/*
+distributions/AppsGate-autodistrib/bin/*
+distributions/AppsGate-autodistrib/log/*
+distributions/AppsGate-autodistrib/apam*
+distributions/AppsGate-autodistrib/certificates/*
+distributions/AppsGate-autodistrib/natives/*
+distributions/AppsGate-autodistrib/load/*
+
+
+
