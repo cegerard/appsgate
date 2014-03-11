@@ -40,6 +40,16 @@
 			<artifactId>CoreObjectSpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ClientCommunicationManager</artifactId>
+            <version>${project.version}</version>
+        </dependency>		
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreMediaPlayerSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>        
 	</dependencies>
 
 	<description>UPnP Adapter (based on UPnP BaseDriver)</description>

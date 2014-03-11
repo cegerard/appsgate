@@ -97,6 +97,20 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			this.sendCmd("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\", \"TARGET\":\"ENOCEAN\"}");
 		}
 		
+                        /**
+                         * Get to the UPnP configuration sub menu
+                         */
+                        this.goToUPnPSubMenu = function ()
+                        {
+                        //Get the html source for Philips HUE
+                        var httpRequest=new XMLHttpRequest();
+                        httpRequest.open("GET","./html/upnp/upnp.html",false);
+                        httpRequest.send();
+                        
+                        this.gotToNextSubMenu("UPnP", httpRequest.responseText, "");
+                        
+                        this.sendCmd("{\"getMediaServices\":{}, \"CONFIGURATION\":\"getMediaServices\", \"TARGET\":\"UPNP\"}");
+                        }
 		/**
 		 * Go to the newt sub menu generic method.
 		 */
