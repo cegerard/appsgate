@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({TestEmptyApAM.class,TestWebServicesAppsgate.class,TestUpnPAppsgate.class,TestCoreAppsgate.class})
+@SuiteClasses({TestEmptyApAM.class,TestWebServicesAppsgate.class,TestUpnPAppsgate.class,TestCoreAppsgate.class,TestAutoDeployAppsgate.class})
 public class AllTests {
 
 }
