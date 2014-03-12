@@ -1,5 +1,8 @@
 package appsgate.lig.persistence;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 import org.slf4j.Logger;
@@ -35,9 +38,6 @@ public class MongoDBConfigFactory {
 	private Integer dbTimeOut;
 
 	private MongoClient mongoClient;
-
-
-
 
 	/**
 	 * Default constructor
@@ -76,31 +76,30 @@ public class MongoDBConfigFactory {
 		if (tmp_timeout != null)
 			this.dbTimeOut = tmp_timeout;
 	}
-	
-	
+
 	public MongoDBConfiguration newConfiguration(String dbName) {
 
-		if (dbName != null ) {
-			return new MongoDBConfiguration(dbName,
-					this);
+		if (dbName != null) {
+			return new MongoDBConfiguration(dbName, this);
 		} else {
 			logger.error("Not creating the configuration," + " dbName = ");
 		}
 		return null;
 	}
-	
+
 	public void configValueChanged(Object newValue) {
-		// Warning the new value should be injected automatically, do not make affectation
-		logger.debug("A value has changed, new value : "+newValue);
-		
-		// we only reset the mongo client (to be sure to recreate when necessary)
-		if(mongoClient != null)
+		// Warning the new value should be injected automatically, do not make
+		// affectation
+		logger.debug("A value has changed, new value : " + newValue);
+
+		// we only reset the mongo client (to be sure to recreate when
+		// necessary)
+		if (mongoClient != null)
 			mongoClient.close();
-		
+
 		mongoClient = null;
 	}
-	
-	
+
 	public MongoClient getMongoClient() {
 		logger.trace("Checking mongo client");
 		if (mongoClient != null) {
@@ -131,7 +130,18 @@ public class MongoDBConfigFactory {
 
 	private MongoClient createMongoClient() {
 		try {
+			logger.debug("Testing Mongo socket address...");
+			Socket testingSocket = new Socket(dbHost, dbPort);
+			testingSocket.close();
+		} catch (Exception e) {
+			logger.warn("Cannot connect to "+dbHost+" / "+dbPort
+					+", No MongoDB running or wrong configuration : "+e.getMessage());
+			return null;
+		}
+
+		try {
 			logger.debug("Creating new mongo client");
+
 			Builder options = new MongoClientOptions.Builder();
 			options.connectTimeout(dbTimeOut);
 			mongoClient = new MongoClient(new ServerAddress(dbHost, dbPort),
