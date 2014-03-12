@@ -72,15 +72,21 @@ public class TestCoreAppsgate extends PaxedDistribution {
 	@Configuration
 	public Option[] configuration() {
 		Map<String, String> testApps = new HashMap<String, String>();
+		fillHttpBundleList(testApps);
 		fillCoreBundleList(testApps);
-		return super.configuration(testApps);
+		return super.configuration(testApps, null);
 	}
+	
+	public static void fillHttpBundleList(Map<String, String> testApps) {
+		testApps.put("org.apache.felix.http.api", "org.apache.felix");
+		testApps.put("org.apache.felix.http.jetty", "org.apache.felix");
+		
+	}
+	
 	
 	public static void fillCoreBundleList(Map<String, String> testApps) {
 		testApps.put("org.apache.felix.configadmin", "org.apache.felix");
 		testApps.put("org.apache.felix.fileinstall", "org.apache.felix");
-		testApps.put("org.apache.felix.http.api", "org.apache.felix");
-		testApps.put("org.apache.felix.http.jetty", "org.apache.felix");
 		
 		testApps.put("json", "org.json");
 		testApps.put("mongo-java-driver", "org.mongodb");		
