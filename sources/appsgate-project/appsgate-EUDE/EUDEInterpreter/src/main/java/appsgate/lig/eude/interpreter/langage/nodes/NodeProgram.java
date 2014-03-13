@@ -78,11 +78,6 @@ public class NodeProgram extends Node {
     private JSONObject header;
 
     /**
-     * Daemon attribute
-     */
-    private Boolean daemon;
-
-    /**
      * Use for simplify user interface reverse compute
      */
     private String userSource;
@@ -131,7 +126,7 @@ public class NodeProgram extends Node {
         this(mediator, p);
 
         // initialize the program with the JSON
-        id = getJSONString(programJSON,"id");
+        id = getJSONString(programJSON, "id");
         if (programJSON.has("runningState")) {
             runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
         }
@@ -161,11 +156,6 @@ public class NodeProgram extends Node {
         header = getJSONObject(json, "header");
 
         this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
-        if (json.has("daemon")) {
-            daemon = json.optBoolean("daemon");
-        } else {
-            daemon = false;
-        }
         body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
 
         return true;
@@ -241,15 +231,8 @@ public class NodeProgram extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
-        if (isDaemon()) {
-            LOGGER.debug("The end event ({}) has been fired on a daemon, program is still running", e.getSource());
-            body.addEndEventListener(this);
-            body.call();
-            LOGGER.debug("Call rearmed");
-        } else {
-            setRunningState(RUNNING_STATE.STOPPED);
-            fireEndEvent(new EndEvent(this));
-        }
+        setRunningState(RUNNING_STATE.STOPPED);
+        fireEndEvent(new EndEvent(this));
     }
 
     /**
@@ -275,13 +258,6 @@ public class NodeProgram extends Node {
      */
     public String getAuthor() {
         return header.optString("author");
-    }
-
-    /**
-     * @return true if the Program is a daemon
-     */
-    public boolean isDaemon() {
-        return this.daemon;
     }
 
     /**
@@ -334,7 +310,6 @@ public class NodeProgram extends Node {
             o.put("type", "program");
             o.put("runningState", runningState.name);
             o.put("name", name);
-            o.put("daemon", daemon);
             o.put("header", header);
             o.put("package", getPath());
 
@@ -379,7 +354,6 @@ public class NodeProgram extends Node {
         ret.id = id;
         ret.runningState = runningState;
         ret.name = name;
-        ret.daemon = daemon;
         ret.header = new JSONObject(header);
 
         ret.userSource = getUserSource();

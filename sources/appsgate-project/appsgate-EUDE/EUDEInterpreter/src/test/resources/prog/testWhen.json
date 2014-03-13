@@ -11,34 +11,39 @@
     "parameters": [],
     "definitions": [],
     "body": {
-        "type": "when",
-        "events": {
-            "type": "eventsOr",
-            "events": [
-                {
-                    "type": "event",
-                    "eventName": "switchNumber",
-                    "eventValue": "1",
-                    "source": {
-                        "type": "device",
-                        "id": "ENO2796f3"
-                    }
+        "type": "setOfRules",
+        "rules": [
+            {
+                "type": "when",
+                "events": {
+                    "type": "eventsOr",
+                    "events": [
+                        {
+                            "type": "event",
+                            "eventName": "switchNumber",
+                            "eventValue": "1",
+                            "source": {
+                                "type": "device",
+                                "id": "ENO2796f3"
+                            }
 
+                        }
+                    ]
+                },
+                "seqRulesThen": {
+                    "type": "instructions",
+                    "rules": [
+                        {
+                            "type": "action",
+                            "target": {
+                                "type": "device",
+                                "id": "test"
+                            },
+                            "methodName": "On"
+                        }
+                    ]
                 }
-            ]
-        },
-        "seqRulesThen": {
-            "type": "instructions",
-            "rules": [
-                {
-                    "type": "action",
-                    "target": {
-                        "type": "device",
-                        "id": "test"
-                    },
-                    "methodName": "On"
-                }
-            ]
-        }
+            }
+        ]
     }
 }

@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import java.util.logging.Level;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @since June 25, 2013
  * @version 1.0.0
  */
-public class NodeWhen extends Node {
+public class NodeWhen extends Node implements NodeRule{
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeWhen.class);
