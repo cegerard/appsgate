@@ -235,7 +235,7 @@ public class DeviceDiscoveryRequest implements Runnable {
 				}
 
 			} catch (Exception e) {
-				logger.error("[UPnP Apam Discovery] Service proxy could not instantiated  "+implementation.getName(),e);
+				logger.error("[UPnP Apam Discovery] Service proxy could not be instantiated  "+implementation.getName(),e);
 			}
 			
 		}
