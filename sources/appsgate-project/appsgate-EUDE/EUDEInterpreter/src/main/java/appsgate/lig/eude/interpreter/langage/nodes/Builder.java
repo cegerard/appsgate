@@ -28,8 +28,10 @@ public class Builder {
      */
     private static enum NODE_TYPE {
 
-        NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_EVENT, NODE_EVENTS, NODE_FUNCTION,
-        NODE_FUNCTION_DEFINITION, NODE_IF, NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
+        NODE_ACTION, NODE_BOOLEAN_EXPRESSION,
+        NODE_EVENT, NODE_EVENTS, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
+        NODE_FUNCTION,  NODE_FUNCTION_DEFINITION, NODE_IF,
+        NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_SELECT_STATE, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
         NODE_VARIABLE_ASSIGNATION, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
     }
@@ -51,8 +53,14 @@ public class Builder {
         if (type.equalsIgnoreCase("event")) {
             return NODE_TYPE.NODE_EVENT;
         }
-        if (type.equalsIgnoreCase("events")) {
+        if (type.equalsIgnoreCase("eventsOr")) {
             return NODE_TYPE.NODE_EVENTS;
+        }
+        if (type.equalsIgnoreCase("eventsSequence")) {
+            return NODE_TYPE.NODE_EVENTS_SEQUENCE;
+        }
+        if (type.equalsIgnoreCase("eventsAnd")) {
+            return NODE_TYPE.NODE_EVENTS_AND;
         }
         if (type.equalsIgnoreCase("function")) {
             return NODE_TYPE.NODE_FUNCTION;
@@ -154,7 +162,11 @@ public class Builder {
                 case NODE_EVENT:
                     return new NodeEvent(o, parent);
                 case NODE_EVENTS:
-                    return new NodeEvents(o, parent);
+                    return new NodeEventsOr(o, parent);
+                case NODE_EVENTS_SEQUENCE:
+                    return new NodeEventsSequence(o, parent);
+                case NODE_EVENTS_AND:
+                    return new NodeEventsAnd(o, parent);
                 case NODE_FUNCTION:
                     return new NodeFunction(o, parent);
                 case NODE_FUNCTION_DEFINITION:

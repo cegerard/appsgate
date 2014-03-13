@@ -32,9 +32,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.node = new NodeFunctionDefinition(ruleJSON, null);
         this.instance = this.node;
 

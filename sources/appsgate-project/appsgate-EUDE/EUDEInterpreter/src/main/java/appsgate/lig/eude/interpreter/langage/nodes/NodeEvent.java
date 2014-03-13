@@ -95,7 +95,7 @@ public class NodeEvent extends Node {
             mediator = getMediator();
         } catch (SpokExecutionException ex) {
             LOGGER.error("Unable to call this node: {}", this);
-            return null;
+            return ex.getJSONDescription();
         }
 
         // if the source of the event is a program
@@ -123,12 +123,11 @@ public class NodeEvent extends Node {
             LOGGER.trace("Node event added for {}", source.getValue());
             mediator.addNodeListening(this);
         }
-
         return null;
     }
 
     @Override
-    public void specificStop() {
+    protected void specificStop() {
         EUDEMediator mediator;
         try {
             mediator = getMediator();

@@ -21,9 +21,7 @@ public class NodeSetOfRulesTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.instance = new NodeSetOfRules(ruleJSON, null);
     }
 

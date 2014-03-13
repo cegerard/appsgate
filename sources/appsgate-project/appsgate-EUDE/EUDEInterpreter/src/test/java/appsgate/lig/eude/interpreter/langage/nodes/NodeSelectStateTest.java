@@ -40,9 +40,7 @@ public class NodeSelectStateTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.instance = new NodeSelectState(ruleJSON, programNode);
     }
 

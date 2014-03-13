@@ -41,10 +41,8 @@ public class NodeEventTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
-        this.eventTest = new NodeEvent(ruleJSON, null);
+        this.eventTest = new NodeEvent(ruleJSON, this.programNode);
         this.instance = this.eventTest;
     }
 

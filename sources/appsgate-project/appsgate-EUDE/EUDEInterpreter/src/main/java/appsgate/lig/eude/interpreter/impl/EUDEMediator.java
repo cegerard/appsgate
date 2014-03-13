@@ -348,10 +348,9 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      *
      * @param nodeEvent Node to notify when the event is received
      */
-    public synchronized void addNodeListening(NodeEvent n) {
+    public synchronized void addNodeListening(NodeEvent nodeEvent) {
         // instantiate a core listener
 
-        NodeEvent nodeEvent = (NodeEvent) n;
         CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue(), this);
 
         Set<CoreEventListener> keyset = mapCoreNodeEvent.keySet();
@@ -381,7 +380,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
 
             // fill the map with the new entry
             mapCoreNodeEvent.put(listener, nodeList);
-            LOGGER.debug("Add node event listener list.{}", n.getEventName());
+            LOGGER.debug("Add node event listener list.{}", nodeEvent.getEventName());
         }
     }
 

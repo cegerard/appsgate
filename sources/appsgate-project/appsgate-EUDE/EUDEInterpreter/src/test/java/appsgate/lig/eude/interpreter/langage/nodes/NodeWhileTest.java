@@ -54,9 +54,7 @@ public class NodeWhileTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.instance = new NodeWhile(ruleJSON, programNode);
     }
 

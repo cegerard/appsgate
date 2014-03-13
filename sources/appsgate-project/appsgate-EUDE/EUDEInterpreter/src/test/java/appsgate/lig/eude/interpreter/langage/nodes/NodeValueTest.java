@@ -30,9 +30,7 @@ public class NodeValueTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.instance = new NodeValue(ruleJSON, null);
 
     }

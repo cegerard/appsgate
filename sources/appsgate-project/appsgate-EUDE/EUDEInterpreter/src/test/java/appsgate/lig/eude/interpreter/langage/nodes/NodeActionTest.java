@@ -32,10 +32,7 @@ public class NodeActionTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
-
         this.actionTest = new NodeAction(ruleJSON, null);
         this.instance = this.actionTest;
     }

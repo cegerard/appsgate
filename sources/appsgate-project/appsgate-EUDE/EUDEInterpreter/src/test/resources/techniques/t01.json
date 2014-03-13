@@ -1,21 +1,31 @@
 {
   "name": "T1",
-  "id": "t1",
-  "header" : {
-      "author":"testMaker"
+  "id" : "t01",
+  "header": {
+    "author": "testMaker",
+    "comment": "Lorsque,  dans un intervalle de 5 secondes,  L1 s’allume puis B1 est pressé,  alors allumer L2"
   },
   "definitions": [
     {
-      "id": "l1"
-
+      "id": "l1",
+      "value": {
+        "type": "device",
+        "id": "L1"
+      }
     },
     {
-      "id": "l2"
-
+      "id": "l2",
+      "value": {
+        "type": "device",
+        "id": "L2"
+      }
     },
     {
-      "id": "b1"
-
+      "id": "b1",
+      "value": {
+        "type": "device",
+        "id": "B1"
+      }
     }
   ],
   "body": {
@@ -24,7 +34,7 @@
       {
         "type": "when",
         "events": {
-          "type": "events",
+          "type": "eventsSequence",
           "events": [
             {
               "type": "event",
@@ -41,7 +51,7 @@
                 "type": "variable",
                 "id": "b1"
               },
-              "eventName": "isPressed",
+              "eventName": "click",
               "eventValue": ""
             }
           ],

@@ -15,7 +15,7 @@ public class NodeWhenTest extends NodeTest {
 
     public NodeWhenTest() throws Exception {
         super();
-        NodeEventsTest events = new NodeEventsTest();
+        NodeEventsOrTest events = new NodeEventsOrTest();
         ruleJSON.put("events", events.getRuleJSON());
         ruleJSON.put("seqRulesThen", emptySeqRules);
         ruleJSON.put("type", "when");
@@ -23,9 +23,7 @@ public class NodeWhenTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.instance = new NodeWhen(this.ruleJSON, null);
 
     }

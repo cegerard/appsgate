@@ -10,7 +10,6 @@ import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 import org.jmock.Mockery;
 import org.jmock.lib.concurrent.Synchroniser;
@@ -42,25 +41,18 @@ public abstract class NodeTest {
 
     /**
      * Constructor
+     * @throws org.json.JSONException
      */
-    public NodeTest() {
+    public NodeTest() throws JSONException {
         this.ruleJSON = new JSONObject();
 
         this.mediator = context.mock(EUDEMediator.class);
         programNode = new NodeProgram(mediator, null);
         this.emptySeqRules = new JSONObject();
-        try {
-            emptySeqRules.put("type", "instructions");
-            emptySeqRules.put("rules", new JSONArray());
-        } catch (JSONException jSONException) {
-        }
+        emptySeqRules.put("type", "instructions");
+        emptySeqRules.put("rules", new JSONArray());
     }
 
-    @Before
-    public void setUp() throws Exception {
-        this.instance = null;
-
-    }
 
     /**
      * Getter

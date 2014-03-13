@@ -25,9 +25,7 @@ public class NodeSeqRulesTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.instance = new NodeSeqRules(this.ruleJSON, null);
     }
 

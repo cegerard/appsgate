@@ -37,9 +37,7 @@ public class NodeIfTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.ifTest = new NodeIf(ruleJSON, null);
         this.instance = this.ifTest;
     }

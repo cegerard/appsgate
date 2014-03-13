@@ -16,7 +16,7 @@
             {
                 "type": "when",
                 "events": {
-                    "type": "events",
+                    "type": "eventsOr",
                     "events": [
                         {
                             "type": "event",

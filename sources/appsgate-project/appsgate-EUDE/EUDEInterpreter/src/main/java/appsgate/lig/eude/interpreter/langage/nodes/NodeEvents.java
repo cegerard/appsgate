@@ -5,14 +5,13 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.impl.ClockProxy;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-class NodeEvents extends Node {
+public abstract class NodeEvents extends Node {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeEvents.class);
@@ -31,25 +30,19 @@ class NodeEvents extends Node {
     /**
      * the sequence of event
      */
-    private ArrayList<Node> seqEvent;
-    /**
-     * The number of events that have fired EndEvent
-     */
-    private int nbEventEnded = 0;
+    protected ArrayList<Node> listOfEvent;
 
     /**
-     *
+     * The time to wait to invalidate this sequence of event
      */
-    private Integer nbEventToOccur = null;
-
-    private Integer duration = 0;
+    protected Integer duration = 0;
 
     /**
      * Default constructor for copy
      *
      * @param p parent node
      */
-    private NodeEvents(Node p) {
+    protected NodeEvents(Node p) {
         super(p);
     }
 
@@ -58,105 +51,50 @@ class NodeEvents extends Node {
      *
      * @param o the json description
      * @param parent the parent node
+     * @throws SpokNodeException
      */
     public NodeEvents(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         JSONArray seqEventJSON = getJSONArray(o, "events");
-        seqEvent = new ArrayList<Node>();
+        listOfEvent = new ArrayList<Node>();
         for (int i = 0; i < seqEventJSON.length(); i++) {
             try {
-                seqEvent.add(Builder.buildFromJSON(seqEventJSON.getJSONObject(i), this));
+                listOfEvent.add(Builder.buildFromJSON(seqEventJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
-                throw new SpokNodeException("NodeSeqEvent", "item " + i, ex);
+                throw new SpokNodeException("NodeEvents", "item " + i, ex);
             } catch (SpokTypeException ex) {
-                throw new SpokNodeException("NodeSeqEvent", "event", ex);
+                throw new SpokNodeException("NodeEvents", "event", ex);
             }
-        }
-        nbEventToOccur = o.optInt("nbEventToOccur");
-        if (nbEventToOccur == null) {
-            nbEventToOccur = seqEvent.size();
-        }
-        // If we just want one event among the events, no need to wait for a duration
-        if (nbEventToOccur > 1) {
-            duration = o.optInt("duration");
-        }
-
-    }
-
-    @Override
-    protected void specificStop() {
-        for (Node e : seqEvent) {
-            e.removeEndEventListener(this);
-            e.stop();
         }
     }
 
     @Override
     public JSONObject call() {
         setStarted(true);
-        nbEventEnded = 0;
-        for (Node e : seqEvent) {
-            e.addEndEventListener(this);
-            e.call();
+        if (listOfEvent.isEmpty()) {
+            LOGGER.warn("No events to track, consider the events as raised");
+            fireEndEvent(new EndEvent(this));
+            return null;
         }
+        specificCall();
         return null;
     }
 
-    @Override
-    public String getExpertProgramScript() {
-        String ev = "[";
-        for (Node e : seqEvent) {
-            ev += e.getExpertProgramScript() + ",";
+    /**
+     *
+     */
+    protected void specificCall() {
+        for (Node e : listOfEvent) {
+            e.addEndEventListener(this);
+            e.call();
         }
-        ev = ev.substring(0, ev.length() - 1) + "]";
-        return ev;
     }
 
     @Override
-    protected Node copy(Node parent) {
-        NodeEvents ret = new NodeEvents(parent);
-        ret.seqEvent = new ArrayList<Node>();
-        for (Node n : seqEvent) {
-            ret.seqEvent.add((NodeEvent) n.copy(ret));
-        }
-        ret.duration = duration;
-        ret.nbEventToOccur = nbEventToOccur;
-        return ret;
-
-    }
-
-    @Override
-    public void endEventFired(EndEvent e) {
-        NodeEvent nodeEnded = (NodeEvent) e.getSource();
-        LOGGER.debug("NEvents end event: {}", nodeEnded);
-        if (!isStopping()) {
-            try {
-                EUDEMediator mediator = getMediator();
-                ClockProxy p = mediator.getClock();
-                if (p == null) {
-                    throw new SpokExecutionException("Unable to find clock");
-                }
-                if (nodeEnded.getSourceId().equals(p.getId())) {
-                    LOGGER.debug("ClockEvent detected");
-                    nbEventEnded--;
-                } else {
-                    nbEventEnded++;
-                    if (nbEventEnded >= nbEventToOccur) {
-                        LOGGER.debug("All the events have been ended");
-                        stop();
-                        fireEndEvent(new EndEvent(this));
-                    } else {
-                        LOGGER.debug("All the events have not been ended");
-                        nodeEnded.addEndEventListener(this);
-                        nodeEnded.call();
-                        startClockEvent();
-                    }
-                }
-            } catch (SpokExecutionException ex) {
-                LOGGER.error(ex.getMessage());
-            }
-        } else {
-            LOGGER.warn("endEvent has been fired while the node was stopping");
+    protected void specificStop() {
+        for (Node e : listOfEvent) {
+            e.removeEndEventListener(this);
+            e.stop();
         }
     }
 
@@ -164,10 +102,9 @@ class NodeEvents extends Node {
     public JSONObject getJSONDescription() {
         JSONObject ret = new JSONObject();
         try {
-            ret.put("type", "events");
             ret.put("events", getJSONArray());
-            ret.put("nbEventToOccur", nbEventToOccur);
             ret.put("duration", duration);
+            ret = specificDesc(ret);
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
@@ -175,9 +112,21 @@ class NodeEvents extends Node {
         return ret;
     }
 
-    @Override
-    public String toString() {
-        return "[Node Events: " + seqEvent.size() + " events]";
+    abstract JSONObject specificDesc(JSONObject ret) throws JSONException;
+
+    /**
+     * This method copy all of the data that are common to all the events node
+     *
+     * @param ret
+     * @return
+     */
+    protected NodeEvents commonCopy(NodeEvents ret) {
+        ret.listOfEvent = new ArrayList<Node>();
+        for (Node n : listOfEvent) {
+            ret.listOfEvent.add((NodeEvent) n.copy(ret));
+        }
+        ret.duration = duration;
+        return ret;
     }
 
     /**
@@ -186,7 +135,7 @@ class NodeEvents extends Node {
     private JSONArray getJSONArray() {
         JSONArray a = new JSONArray();
         int i = 0;
-        for (Node n : this.seqEvent) {
+        for (Node n : this.listOfEvent) {
             try {
                 a.put(i, n.getJSONDescription());
                 i++;
@@ -200,21 +149,36 @@ class NodeEvents extends Node {
 
     /**
      *
+     * @param nodeEnded
+     * @return
+     * @throws SpokExecutionException
      */
-    private void startClockEvent() throws SpokExecutionException {
+    protected Boolean isClockEvent(NodeEvent nodeEnded) throws SpokExecutionException {
+        EUDEMediator mediator = getMediator();
+        ClockProxy p = mediator.getClock();
+        if (p == null) {
+            throw new SpokExecutionException("Unable to find clock");
+        }
+        return nodeEnded.getSourceId().equals(p.getId());
+    }
+
+    /**
+     *
+     * @return @throws SpokExecutionException
+     */
+    protected NodeEvent startClockEvent() throws SpokExecutionException {
         if (duration > 0) {
             LOGGER.debug("Starting a clock event");
             String d = getTime(duration);
             NodeEvent ev = new NodeEvent("device", getMediator().getClock().getId(), "ClockAlarm", d, this);
-            seqEvent.add(ev);
             ev.addEndEventListener(this);
             ev.call();
+            return ev;
         }
+        return null;
     }
 
     /**
-     * TODO: implement this correctly
-     *
      * @return
      */
     private String getTime(Integer duration) throws SpokExecutionException {
@@ -222,4 +186,27 @@ class NodeEvents extends Node {
         return time.toString();
     }
 
+    @Override
+    public void endEventFired(EndEvent e) {
+        NodeEvent nodeEnded = (NodeEvent) e.getSource();
+        if (!isStopping()) {
+            try {
+                if (isClockEvent(nodeEnded)) {
+                    LOGGER.debug("ClockEvent detected");
+                    dealWithClockEvent(nodeEnded);
+                } else {
+                    LOGGER.debug("NEvents end event: {}", nodeEnded);
+                    dealWithNormalEvent(nodeEnded);
+                }
+            } catch (SpokExecutionException ex) {
+                LOGGER.error(ex.getMessage());
+            }
+        } else {
+            LOGGER.warn("endEvent {} has been fired while the node was stopping", nodeEnded);
+        }
+    }
+
+    abstract void dealWithClockEvent(NodeEvent e) throws SpokExecutionException;
+
+    abstract void dealWithNormalEvent(NodeEvent e) throws SpokExecutionException;
 }

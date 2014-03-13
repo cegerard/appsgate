@@ -55,9 +55,7 @@ public class NodeProgramTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.programTest = new NodeProgram(mediator, this.ruleJSON, null);
         this.instance = this.programTest;
     }

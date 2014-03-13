@@ -31,9 +31,7 @@ public class NodeListsTest extends NodeTest {
     }
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
         this.instance = new NodeLists(ruleJSON, programNode);
     }
 
