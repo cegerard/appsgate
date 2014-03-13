@@ -3,6 +3,8 @@ package appsgate.lig.upnp.adapter;
 import java.util.List;
 
 import org.osgi.service.upnp.UPnPDevice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.imag.adele.apam.apform.ApformInstance;
 import fr.imag.adele.apam.impl.InstanceImpl;
@@ -17,6 +19,9 @@ public class DeviceLostRequest implements Runnable {
 	 * The unbound device
 	 */
 	private final UPnPDevice device;
+	
+	private static Logger logger = LoggerFactory.getLogger(DeviceDiscoveryRequest.class);
+	
 	/**
 	 * The proxies to dispose
 	 */
@@ -33,7 +38,7 @@ public class DeviceLostRequest implements Runnable {
 		String deviceId		= (String)device.getDescriptions(null).get(UPnPDevice.ID);
 		String deviceType	= (String)device.getDescriptions(null).get(UPnPDevice.TYPE);
 		
-		System.err.println("[UPnP Apam Discovery] Device ("+deviceType+") unbound :"+deviceId);
+		logger.debug("[UPnP Apam Discovery] Device ("+deviceType+") unbound :"+deviceId);
 		
 		if (proxies == null)
 			return;

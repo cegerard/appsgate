@@ -10,12 +10,15 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.upnp.UPnPDevice;
 import org.osgi.service.upnp.UPnPEventListener;
 import org.osgi.service.upnp.UPnPService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import fr.imag.adele.apam.ApamResolver;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.apform.ApformInstance;
 import fr.imag.adele.apam.impl.InstanceImpl;
+import fr.imag.adele.apam.util.ApamFilter;
 
 /**
  * The handler of the discovery request, It look for a proxy for each service and create the
@@ -32,6 +35,7 @@ public class DeviceDiscoveryRequest implements Runnable {
 	private ApamResolver resolver;
 	private final BundleContext context;
 	
+	private static Logger logger = LoggerFactory.getLogger(DeviceDiscoveryRequest.class);
 	
 	/**
 	 * The list of created proxies for each discovered device
@@ -75,22 +79,25 @@ public class DeviceDiscoveryRequest implements Runnable {
 				return;
 		}
 
-		System.err.println("[UPnP Apam Discovery] Device ("+deviceType+") discovered :"+deviceId);
+		logger.debug("[UPnP Apam Discovery] Device ("+deviceType+") discovered :"+deviceId);
 
 		/*
 		 * Look for an implementation 
 		 */
+		Implementation implementation = null;
 		
-		Implementation implementation	= resolver.resolveSpecByName(null,CoreObjectSpec.class.getSimpleName(),
-														Collections.singleton("("+UPnPDevice.TYPE+"="+deviceType+")"),null);
+		ApamFilter deviceProxyFilter = ApamFilter.newInstance("("+UPnPDevice.TYPE+"="+deviceType+")");
+		if (deviceProxyFilter != null) {
+			implementation	= resolver.resolveSpecByName(null,CoreObjectSpec.class.getSimpleName(),Collections.singleton(deviceProxyFilter.toString()),null);
+		}
 		
 		if (implementation == null) {
-			System.err.println("[UPnP Apam Discovery] Proxy not found for device type  "+deviceType);
+			logger.error("[UPnP Apam Discovery] Device proxy not found for type  "+deviceType);
 		}
 		else {
 			try {
 				
-				System.err.println("[UPnP Apam Discovery] Proxy found for device type "+deviceType+" : "+implementation.getName());
+				logger.debug("[UPnP Apam Discovery] Device proxy found for type "+deviceType+" : "+implementation.getName());
 	
 				/*
 				 * Create an instance of the proxy, and configure it for the appropriate device id
@@ -106,7 +113,7 @@ public class DeviceDiscoveryRequest implements Runnable {
 				 * Ignore errors creating the proxy
 				 */
 				if (proxy == null) {
-					System.err.println("[UPnP Apam Discovery] Proxy could not be instantiated  "+implementation.getName());
+					logger.error("[UPnP Apam Discovery] Device proxy could not be instantiated  "+implementation.getName());
 				}
 				else {
 					/*
@@ -131,11 +138,11 @@ public class DeviceDiscoveryRequest implements Runnable {
 				}
 	
 			} catch (Exception e) {
-				System.err.println("[UPnP Apam Discovery] Proxy could not instantiated  "+implementation.getName());
-				e.printStackTrace();
+				logger.error("[UPnP Apam Discovery] Device proxy could not be instantiated  "+implementation.getName(),e);
 			}
 		
 		}
+		
 		/*
 		 * Iterate over all declared service of the device, creating the associated proxy
 		 */
@@ -164,17 +171,23 @@ public class DeviceDiscoveryRequest implements Runnable {
 			/*
 			 * Look for an implementation 
 			 */
-			implementation	= resolver.resolveSpecByName(null,CoreObjectSpec.class.getSimpleName(),
-											Collections.singleton("("+UPnPService.TYPE+"="+service.getType()+")"),null);
+			
+			implementation = null;
+			
+			ApamFilter serviceProxyFilter = ApamFilter.newInstance("("+UPnPService.TYPE+"="+service.getType()+")");
+			if (serviceProxyFilter != null) {
+				implementation	= resolver.resolveSpecByName(null,CoreObjectSpec.class.getSimpleName(),Collections.singleton(serviceProxyFilter.toString()),null);
+			}
+			
 			
 			if (implementation == null) {
-				System.err.println("[UPnP Apam Discovery] Proxy not found for service type  "+service.getType());
+				logger.error("[UPnP Apam Discovery] Proxy not found for service type  "+service.getType());
 				continue;
 			}
 			
 			try {
 				
-				System.err.println("[UPnP Apam Discovery] Proxy found for service type "+service.getType()+" : "+implementation.getName());
+				logger.debug("[UPnP Apam Discovery] Proxy found for service type "+service.getType()+" : "+implementation.getName());
 
 				final String serviceFilter =	"(&" +
 													"("+UPnPDevice.ID+"="+deviceId+")" +
@@ -197,7 +210,7 @@ public class DeviceDiscoveryRequest implements Runnable {
 				 * Ignore errors creating the proxy
 				 */
 				if (proxy == null) {
-					System.err.println("[UPnP Apam Discovery] Proxy could not be instantiated  "+implementation.getName());
+					logger.error("[UPnP Apam Discovery] Service proxy could not be instantiated  "+implementation.getName());
 					continue;
 				}
 				
@@ -222,8 +235,7 @@ public class DeviceDiscoveryRequest implements Runnable {
 				}
 
 			} catch (Exception e) {
-				System.err.println("[UPnP Apam Discovery] Proxy could not instantiated  "+implementation.getName());
-				e.printStackTrace();
+				logger.error("[UPnP Apam Discovery] Service proxy could not be instantiated  "+implementation.getName(),e);
 			}
 			
 		}

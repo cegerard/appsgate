@@ -7,17 +7,14 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-
-
-
 import org.osgi.framework.BundleContext;
 import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsGate.lig.manager.client.communication.ClientCommunicationManager;
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+	
 import fr.imag.adele.apam.ApamResolver;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.apform.ApformInstance;
@@ -34,8 +31,7 @@ import fr.imag.adele.apam.apform.ApformInstance;
  */
 public class ProxyDiscovery {
 	
-	private static Logger logger = LoggerFactory
-			.getLogger(ProxyDiscovery.class);
+	private static Logger logger = LoggerFactory.getLogger(ProxyDiscovery.class);
 
 	/**
 	 * The bundle context of the discovery
@@ -62,17 +58,16 @@ public class ProxyDiscovery {
 	 */
 	private List<UPnPDevice> pending = new ArrayList<UPnPDevice>();
 
+	@SuppressWarnings("unused")
 	private synchronized void apamBound() {
 		resolver = CST.apamResolver;
-		logger.debug("[UPnP Apam Discovery] Bound to APAM resolver "
-				+ resolver);
+		logger.debug("[UPnP Apam Discovery] Bound to APAM resolver " + resolver);
 
 		/*
 		 * Schedule pending device discovery requests
 		 */
 		for (UPnPDevice device : pending) {
-			logger.debug("[UPnP Apam Discovery] ... scheduling pending request for "
-							+ device.getDescriptions(null).get(UPnPDevice.ID));
+			logger.debug("[UPnP Apam Discovery] ... scheduling pending request for "+ device.getDescriptions(null).get(UPnPDevice.ID));
 			executor.execute(new DeviceDiscoveryRequest(device,
 					discoveredDeviceProxies, resolver, context));
 		}
@@ -86,10 +81,10 @@ public class ProxyDiscovery {
 
 	}
 
+	@SuppressWarnings("unused")
 	private synchronized void apamUnbound() {
 		resolver = null;
-		logger.debug("[UPnP Apam Discovery] Unbound to APAM resolver "
-				+ resolver);
+		logger.debug("[UPnP Apam Discovery] Unbound to APAM resolver "+ resolver);
 		if(listenerService != null && sendToClientService != null) {
 			listenerService.removeConfigListener(UPnPConfigListener.CONFIG_TARGET);
 		}		
@@ -107,6 +102,7 @@ public class ProxyDiscovery {
 	 * WARNING IMPORTANT Notice that this is an iPojo callback, and we should
 	 * not block inside, so we process the request asynchronously.
 	 */
+	@SuppressWarnings("unused")
 	private void boundDevice(UPnPDevice device) {
 
 		/*
@@ -139,6 +135,7 @@ public class ProxyDiscovery {
 	 * WARNING IMPORTANT Notice that this is an iPojo callback, and we should
 	 * not block inside, so we process the request asynchronously.
 	 */
+	@SuppressWarnings("unused")
 	private void unboundDevice(UPnPDevice device) {
 
 		/*
