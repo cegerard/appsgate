@@ -54,7 +54,7 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 		TestCoreAppsgate.testEmptyAppsgate();
 		
 		PaxedDistribution.testApAMComponent(false, resolveFrom.INSTANCE, null, null,
-				"appsgate");
+				"appsgate-instance");
 		testExistingStartedByAppsGateComposite();
 		testExistingStartedByPersistencyComposite();
 		testExistingStartedByGoogleComposite();		
@@ -69,9 +69,9 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	}
 	
 	private void testExistingStartedByAppsGateComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("appsgate"));
+		Assert.assertNotNull(CST.componentBroker.getInst("appsgate-instance"));
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsGatePersistencyInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateInst"));
+		Assert.assertNotNull(CST.componentBroker.getImpl("AppsGateImpl").getInst());
 		Assert.assertNotNull(CST.componentBroker.getInst("ConfigurableClockInst"));
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateContextProxyInst"));
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateGoogleServicesInst"));
@@ -82,18 +82,19 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	}
 	
 	private void testExistingStartedByUPnPComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("adapter"));
+		
+		Assert.assertNotNull(CST.componentBroker.getImpl("AppsgateUPnPAdapter").getInst());
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-MediaPlayerFactory"));
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-MediaBrowserFactory"));
 	}
 	
 	private void testExistingStartedByHUEComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-PhilipsHUEFactory"));
+		Assert.assertNotNull(CST.componentBroker.getImpl("PhilipsHUEImplFactory").getInst());
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsgatePhilipsHUEAdapter"));		
 	}
 	
 	private void testExistingStartedByGoogleComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("AppsgateGoogleAdapterInst"));		
+		Assert.assertNotNull(CST.componentBroker.getImpl("AppsgateGoogleAdapter").getInst());		
 	}
 
 	private void testExistingStartedByPersistencyComposite() {
@@ -103,7 +104,7 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	}
 
 	private void testExistingStartedByUbikitComposite() {
-		Assert.assertNotNull(CST.componentBroker.getInst("UbikitAdapterInst"));		
+		Assert.assertNotNull(CST.componentBroker.getImpl("UbikitAdapterImpl").getInst());		
 	}
 
 	private void testExistingStartedByWattecoComposite() {
