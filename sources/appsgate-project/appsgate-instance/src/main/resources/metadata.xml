@@ -3,6 +3,10 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
        
-	<apam-instance name="appsgate-instance" implementation="AppsGate-Application" />
+    <composite name="AppsGate-Launcher">
+        <relation implementation="AppsGate-Application" resolve="external" creation="eager"/>
+    </composite>
+    
+	<apam-instance name="appsgate-instance" implementation="AppsGate-Launcher" />
 
 </apam>

@@ -3,12 +3,10 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<composite name="AppsGate-Application"  singleton="true">
+	<composite name="AppsGate-Application"  singleton="true" main="AppsGateImpl">
 		<contentMngt>
 
-			<start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
-
- 			<start implementation="AppsGateImpl" name="AppsGateInst"></start>
+			<start  implementation="AppsGatePersistency" name="AppsGatePersistencyInst" ></start>
 
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
@@ -30,67 +28,31 @@
 				<property name="auto-refresh" value="1800000" />
 			</start>
 
-			<!-- inst Fuchsia-FakeDiscovery -->
-
-			<!-- inst ARDSwitchLinker -->
-			<!-- inst ARDSwitchImporter -->
-
-			<!-- inst MediaPlayerFactory_Appli-1 -->
-			<!-- inst AppsGateContextFollowerImpl_Appli-1 -->
-
-
-			<!-- inst Global-PropertyHistoryManager -->
-			<!-- inst AppsGateContextDeviceNameTableInst -->
-			<!-- inst MediaBrowserFactory_Appli-1 -->
-			<!-- inst AppsGateRouterImpl_Appli-1 -->
-
-			<!-- <own specification="CoreObjectSpec"></own> -->
-			<!-- <own specification="CoreClockSpec"></own> -->
-			<!-- <own specification="CoreCalendarSpec"></own> -->
-			<!-- <own specification="CoreTemperatureSensorSpec"></own> -->
-			<!-- <own specification="CoreColorLightSpec"></own> -->
-			<!-- <own specification="CoreWeatherServiceSpec"></own> -->
-			<!-- <own specification="CoreOccupancySpec"></own> -->
-			<!-- <own specification="CoreMediaBrowserSpec"></own> -->
-			<!-- <own specification="CoreCO2SensorSpec"></own> -->
-			<!-- <own specification="CoreSmartPlugSpec"></own> -->
-			<!-- <own specification="CoreOnOffActuatorSpec"></own> -->
-			<!-- <own specification="CoreContactSensorSpec"></own> -->
-			<!-- <own specification="CoreKeyCardSensorSpec"></own> -->
-			<!-- <own specification="CoreUndefinedSensorSpec"></own> -->
-			<!-- <own specification="CoreSwitchSensorSpec"></own> -->
-
-			<!-- <own specification="CoreMediaPlayerSpec"></own> -->
-			<!-- <own specification="CoreLuminositySensorSpec"></own> -->
 		</contentMngt>
 
 	</composite>
 
-	<composite name="AppsGateUPnPMediaServices" singleton="true">
+	<composite name="AppsGateUPnPMediaServices" singleton="true" main="AppsgateUPnPAdapter">
 		<contentMngt>
-			<start implementation="AppsgateUPnPAdapter" name="adapter" />
 			<start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
 			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
 		</contentMngt>
 	</composite>
 
-	<composite name="AppsGateHUEServices" singleton="true">
+	<composite name="AppsGateHUEServices" singleton="true" main="PhilipsHUEImplFactory">
 		<contentMngt>
-			<start implementation="PhilipsHUEImplFactory" name="Global-PhilipsHUEFactory" />
 			<start implementation="PhilipsHUEAdapterImpl" name="AppsgatePhilipsHUEAdapter" />
-
 		</contentMngt>
 	</composite>
 
-	<composite name="AppsGateGoogleServices" singleton="true">
+	<composite name="AppsGateGoogleServices" singleton="true" main="AppsgateGoogleAdapter">
 		<contentMngt>
-			<start implementation="AppsgateGoogleAdapter" name="AppsgateGoogleAdapterInst"></start>
 <!-- 			<start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
 <!-- 			<start implementation="GmailImpl" name="GmailInst"></start> -->
 		</contentMngt>
 	</composite>
 
-	<composite name="AppsGatePersistency" singleton="true">
+	<composite name="AppsGatePersistency" singleton="true" >
 		<contentMngt>
 			<start  implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
  			<start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager"/>
@@ -98,24 +60,21 @@
 		</contentMngt>
 	</composite>
 	
-    <composite name="AppsGateUbikitServices" singleton="true">
+    <composite name="AppsGateUbikitServices" singleton="true" main="UbikitAdapterImpl">
         <contentMngt>
-             <start name="UbikitAdapterInst" implementation="UbikitAdapterImpl"/>
         </contentMngt>
     </composite>
 	
-    <composite name="AppsGateWattecoServices" singleton="true">
+    <composite name="AppsGateWattecoServices" singleton="true" main="WattecoAdapterImpl">
         <contentMngt>
-             <start name="WattecoAdapterInst" implementation="WattecoAdapterImpl"/>
         </contentMngt>
     </composite>
         
-    <composite name="AppsGateSimulatedServices" singleton="true">
+    <composite name="AppsGateSimulatedServices" singleton="true" main="SimulatedAdapterImpl">
         <contentMngt>
-             <start name="SimulatedAdapterInst" implementation="SimulatedAdapterImpl"/>
         </contentMngt>
     </composite>    
         
-	<apam-instance name="appsgate" implementation="AppsGate-Application" />
+<!-- 	<apam-instance name="appsgate" implementation="AppsGate-Application" /> -->
 
 </apam>
