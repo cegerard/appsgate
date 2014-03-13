@@ -1,8 +1,8 @@
 package appsgate.lig.test.pax.helpers;
+
 /**
  * 
  */
-
 
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
@@ -16,9 +16,11 @@ import static org.ops4j.pax.exam.CoreOptions.when;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.CompositeOption;
 import org.ops4j.pax.exam.options.DefaultCompositeOption;
 import org.ops4j.pax.exam.util.PathUtils;
@@ -27,33 +29,29 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
-
 /**
  * @author thibaud
- *
+ * 
  */
 
+public class TestConfiguration {
 
-public class  TestConfiguration {
-	
-    public static final int CONST_DEBUG_PORT = 5007;
-    
-	static public  CompositeOption packAppForTestBundles(String groupID,
+	public static final int CONST_DEBUG_PORT = 5007;
+
+	static public CompositeOption packAppForTestBundles(String groupID,
 			String artifactID) {
 
-		System.err.println("Provisionning Bundle, groupID : "+groupID
-				+", artifactID : "+artifactID
-				+", version : "+mavenBundle(groupID, artifactID).versionAsInProject());
-		CompositeOption testAppBundle = new DefaultCompositeOption(
-				mavenBundle(groupID, artifactID).versionAsInProject());
+		System.err.println("Provisionning Bundle, groupID : " + groupID
+				+ ", artifactID : " + artifactID + ", version : "
+				+ mavenBundle(groupID, artifactID).versionAsInProject());
+		CompositeOption testAppBundle = new DefaultCompositeOption(mavenBundle(
+				groupID, artifactID).versionAsInProject());
 
 		return testAppBundle;
 
-	}    
-    
-	
+	}
 
-    static public boolean isDebugModeOn() {
+	static public boolean isDebugModeOn() {
 		RuntimeMXBean RuntimemxBean = ManagementFactory.getRuntimeMXBean();
 		List<String> arguments = RuntimemxBean.getInputArguments();
 
@@ -68,23 +66,26 @@ public class  TestConfiguration {
 
 		return debugModeOn;
 	}
-	
+
 	static public CompositeOption packOSGi() {
-		CompositeOption osgiConfig = new DefaultCompositeOption(mavenBundle()
-				.groupId("org.apache.felix")
-				.artifactId("org.apache.felix.ipojo").versionAsInProject(),
+		CompositeOption osgiConfig = new DefaultCompositeOption(
+				mavenBundle().groupId("org.apache.felix")
+						.artifactId("org.apache.felix.ipojo")
+						.versionAsInProject(),
 				mavenBundle().groupId("org.osgi")
 						.artifactId("org.osgi.compendium").versionAsInProject(),
 				mavenBundle().groupId("org.apache.felix")
 						.artifactId("org.apache.felix.bundlerepository")
-						.versionAsInProject(),
-				frameworkProperty("ipojo.processing.synchronous").value("false"),
+						.versionAsInProject(), frameworkProperty(
+						"ipojo.processing.synchronous").value("false"),
 				frameworkProperty("ipojo.internal.dispatcher").value("true"),
-				frameworkProperty("org.apache.felix.ipojo.extender.ThreadPoolSize").value("5"));
+				frameworkProperty(
+						"org.apache.felix.ipojo.extender.ThreadPoolSize")
+						.value("5"));
 
 		return osgiConfig;
 
-	}	
+	}
 
 	static public CompositeOption packApamCore() {
 
@@ -94,20 +95,26 @@ public class  TestConfiguration {
 
 		return apamCoreConfig;
 	}
-	
-	static public CompositeOption packWireAdmin() {
+
+	static public CompositeOption packExternalBundle(File bundle) {
 
 		try {
-			CompositeOption wireConfig = new DefaultCompositeOption(bundle((new File(PathUtils.getBaseDir(),
-			    "bundle/wireadmin.jar")).toURI().toURL().toExternalForm()));
-			return wireConfig;
-
+			if (bundle != null && bundle.isFile()
+					&& bundle.getName().endsWith(".jar")) {
+				return new DefaultCompositeOption(bundle(bundle.toURI().toURL()
+						.toExternalForm()));
+			}
 		} catch (Exception error) {
-		    Assert.assertTrue("Error deploying WireAdmin", false);
-		    return null;
+			Assert.assertTrue("Error deploying bundle", false);
 		}
+		return null;
+
 	}
-	
+
+	static public CompositeOption packWireAdmin() {
+		return packExternalBundle(new File(PathUtils.getBaseDir(), "bundle/wireadmin.jar"));
+	}
+
 	static public CompositeOption packApamObrMan() {
 		CompositeOption apamObrmanConfig = new DefaultCompositeOption(
 				mavenBundle().groupId("fr.imag.adele.apam")
@@ -123,13 +130,12 @@ public class  TestConfiguration {
 				mavenBundle("org.apache.felix", "org.apache.felix.gogo.command")
 						.versionAsInProject(),
 				mavenBundle("org.apache.felix", "org.apache.felix.gogo.runtime")
-						.versionAsInProject(),
-				mavenBundle("org.apache.felix",
+						.versionAsInProject(), mavenBundle("org.apache.felix",
 						"org.apache.felix.gogo.shell").versionAsInProject(),
-						mavenBundle("org.apache.felix",
-								"org.apache.felix.shell").versionAsInProject(),						
-				mavenBundle("org.apache.felix",
-						"org.apache.felix.ipojo.arch.gogo").versionAsInProject());
+				mavenBundle("org.apache.felix", "org.apache.felix.shell")
+						.versionAsInProject(), mavenBundle("org.apache.felix",
+						"org.apache.felix.ipojo.arch.gogo")
+						.versionAsInProject());
 		return logConfig;
 	}
 
@@ -151,14 +157,15 @@ public class  TestConfiguration {
 		root.setLevel(Level.WARN);
 
 		String logpath = "file:" + PathUtils.getBaseDir() + "/log/logback.xml";
-//		File log = new File(logpath);
-		
+		// File log = new File(logpath);
+
 		CompositeOption initial = new DefaultCompositeOption(
 				org.ops4j.pax.exam.CoreOptions.junitBundles(),
-				frameworkProperty("org.osgi.service.http.port").value("8280"), cleanCaches(),
-				systemProperty("logback.configurationFile").value(logpath),
-				systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level")
-						.value("WARN"));
+				frameworkProperty("org.osgi.service.http.port").value("8280"),
+				cleanCaches(), systemProperty("logback.configurationFile")
+						.value(logpath), systemProperty(
+						"org.ops4j.pax.logging.DefaultServiceLog.level").value(
+						"WARN"));
 
 		return initial;
 	}
@@ -169,7 +176,8 @@ public class  TestConfiguration {
 				mavenBundle("ch.qos.logback", "logback-classic")
 						.versionAsInProject(), mavenBundle("org.slf4j",
 						"slf4j-api").versionAsInProject(), mavenBundle(
-						"org.apache.felix", "org.apache.felix.log").versionAsInProject());
+						"org.apache.felix", "org.apache.felix.log")
+						.versionAsInProject());
 
 		return logConfig;
 	}
@@ -180,7 +188,5 @@ public class  TestConfiguration {
 				.versionAsInProject());
 		return paxConfig;
 	}
-
-
 
 }

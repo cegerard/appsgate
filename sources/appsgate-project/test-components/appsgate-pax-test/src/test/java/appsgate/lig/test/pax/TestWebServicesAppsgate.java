@@ -171,20 +171,26 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	public Option[] configuration() {
 		Map<String, String> testApps = new HashMap<String, String>();
 		TestCoreAppsgate.fillCoreBundleList(testApps);
+		fillKXMLBundleList(testApps);
 		fillWebServicesBundleList(testApps);
 
-		return super.configuration(testApps);
+		return super.configuration(testApps, null);
 	}
+	
+	public static void fillKXMLBundleList(Map<String, String> testApps) {
 
-	public static void fillWebServicesBundleList(Map<String, String> testApps) {
-
-		testApps.put("bcprov-jdk15on", "org.bouncycastle");
-		testApps.put("com.google.gdata-calendar", "org.openengsb.wrapped");
 		testApps.put("commons-logging", "commons-logging");
 		testApps.put("commons-lang3", "org.apache.commons");
 		testApps.put("org.apache.servicemix.bundles.xmlpull", "org.apache.servicemix.bundles");
 		testApps.put("org.apache.servicemix.bundles.xpp3", "org.apache.servicemix.bundles");
 		testApps.put("org.apache.servicemix.bundles.kxml2", "org.apache.servicemix.bundles");
+	}
+	
+
+	public static void fillWebServicesBundleList(Map<String, String> testApps) {
+
+		testApps.put("bcprov-jdk15on", "org.bouncycastle");
+		testApps.put("com.google.gdata-calendar", "org.openengsb.wrapped");
 		testApps.put("guava-osgi", "com.googlecode.guava-osgi");
 		testApps.put("ical4j", "org.mnode.ical4j");
 	}
