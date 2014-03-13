@@ -67,7 +67,7 @@ public class TestEmptyApAM extends PaxedDistribution {
 	public Option[] configuration() {
 		Map<String, String> testApps = new HashMap<String, String>();
 		testApps.put("json", "org.json");
-		return super.configuration(null);
+		return super.configuration(testApps,null);
 	}		
 	
 

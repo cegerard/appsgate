@@ -4,6 +4,7 @@ package appsgate.lig.test.pax.helpers;
  * 
  */
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public abstract class PaxedDistribution {
 		logger.debug("tearDown");
 	}
 
-	public Option[] configuration(Map<String, String> testApps) {
+	public Option[] configuration(Map<String, String> testApps, List<File> externalBundles) {
 		logger.debug("configuration(Map<String, String> testApps), provisioning bundles");
 
 		List<Option> config = new ArrayList<Option>();
@@ -66,6 +67,13 @@ public abstract class PaxedDistribution {
 						testApps.get(artifactID), artifactID));
 			}
 		}
+		
+		if (externalBundles != null && !externalBundles.isEmpty()) {
+			for (File bundle : externalBundles) {
+				config.add(TestConfiguration.packExternalBundle(bundle));
+			}
+		}
+		
 		return config.toArray(new Option[0]);
 	}
 

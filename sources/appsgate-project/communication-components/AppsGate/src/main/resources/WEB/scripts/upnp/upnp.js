@@ -45,11 +45,11 @@ define([], function () {
 				currentDiv.id = currentDiv.id+"-"+player.objectId;
 				
 				switch(i){
-					case 1: //id
-						currentDiv.innerHTML = "Player Id : "+player.objectId;
+					case 1: //name
+						currentDiv.innerHTML = player.friendlyName;
 						break;
-					case 3: //name
-						currentDiv.innerHTML = "Friendly Name: "+player.friendlyName;
+					case 3: //id
+						currentDiv.innerHTML = player.objectId;
 
 						break;
 					case 5: //Volume
@@ -92,10 +92,10 @@ define([], function () {
 				
 				switch(i){
 					case 1: //id
-						currentDiv.innerHTML = "Browser Id : "+browser.objectId;
+						currentDiv.innerHTML = browser.friendlyName;
 						break;
 					case 3: //name
-						currentDiv.innerHTML = "Friendly Name: "+browser.friendlyName;
+						currentDiv.innerHTML = browser.objectId;
 
 						break;
 					default:
