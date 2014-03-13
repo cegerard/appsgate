@@ -6,6 +6,6 @@ _DECL_
 
 _BODY_
 
-
+<<<
 [_select(["lamp"],[]) N _select(["lamp"],["salon"])].blink();
-
+>>>

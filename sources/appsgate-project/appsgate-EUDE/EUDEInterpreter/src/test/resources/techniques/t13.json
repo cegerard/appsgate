@@ -1,0 +1,149 @@
+{
+  "name": "T13",
+  "id" : "t13",
+  "header": {
+    "author": "testMaker",
+    "comment": ""
+  },
+  "definitions": [
+    {
+      "id": "l1",
+      "value": {
+        "type": "device",
+        "id": "L1"
+      }
+    },
+    {
+      "id": "l2",
+      "value": {
+        "type": "device",
+        "id": "L2"
+      }
+    },
+    {
+      "id": "b1",
+      "value": {
+        "type": "device",
+        "id": "B1"
+      }
+    }
+  ],
+  "body": {
+    "type": "instructions",
+    "rules": [
+      {
+        "type": "when",
+        "events": {
+          "type": "eventsOr",
+          "events": [
+            {
+              "type": "event",
+              "source": {
+                "type": "variable",
+                "id": "b1"
+              },
+              "eventName": "clicked",
+              "eventValue": ""
+            }
+          ],
+          "duration": 0,
+          "nbEventToOccur": 0
+        },
+        "seqRulesThen": {
+          "type": "setOfRules",
+          "rules": [
+            {
+              "type": "instructions",
+              "rules": [
+                {
+                  "type": "action",
+                  "target": {
+                    "type": "variable",
+                    "id": "l1"
+                  },
+                  "methodName": "switchOn",
+                  "action": [
+                    
+                  ]
+                },
+                {
+                  "type": "while",
+                  "state": {
+                    "type": "state",
+                    "object": {
+                      "type": "variable",
+                      "id": "l1"
+                    },
+                    "name": "isOn"
+                  },
+                  "rules": {
+                    "type": "keepState",
+                    "state": {
+                      "type": "state",
+                      "name": "isOn",
+                      "object": {
+                        "type": "variable",
+                        "id": "l2"
+                      }
+                    }
+                  },
+                  "rulesThen": {
+                    "type": "action",
+                    "target": {
+                      "type": "variable",
+                      "id": "l2"
+                    },
+                    "methodName": "switchOf",
+                    "action": [
+                      
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "instructions",
+              "rules": [
+                {
+                  "type": "when",
+                  "events": {
+                    "type": "eventsOr",
+                    "events": [
+                      {
+                        "type": "event",
+                        "source": {
+                          "type": "variable",
+                          "id": "b1"
+                        },
+                        "eventName": "clicked",
+                        "eventValue": ""
+                      }
+                    ],
+                    "duration": "3",
+                    "nbEventToOccur": "3"
+                  },
+                  "seqRulesThen": {
+                    "type": "instructions",
+                    "rules": [
+                      {
+                        "type": "action",
+                        "target": {
+                          "type": "variable",
+                          "id": "l1"
+                        },
+                        "methodName": "toggle",
+                        "action": [
+                          
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

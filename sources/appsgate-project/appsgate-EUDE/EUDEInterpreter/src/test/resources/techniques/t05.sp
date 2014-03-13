@@ -12,9 +12,10 @@ var b3 = /B3/;
 
 _BODY_
 
-
+<<<
 _when[l2.switchOn(""),[b1.click(""),[b2.click(""),b3.click(""),b2.click("")/THEN]/AND/0/5] /AND/0/10] 
 THEN
 {
   l1.toggle();
 }
+>>>

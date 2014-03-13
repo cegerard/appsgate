@@ -1,0 +1,156 @@
+{
+  "name": "T16",
+  "id" : "t16",
+  "header": {
+    "author": "testMaker",
+    "comment": ""
+  },
+  "definitions": [
+    {
+      "id": "l1",
+      "value": {
+        "type": "device",
+        "id": "L1"
+      }
+    },
+    {
+      "id": "b1",
+      "value": {
+        "type": "device",
+        "id": "B1"
+      }
+    },
+    {
+      "id": "b2",
+      "value": {
+        "type": "device",
+        "id": "B2"
+      }
+    },
+    {
+      "id": "b3",
+      "value": {
+        "type": "device",
+        "id": "B3"
+      }
+    }
+  ],
+  "body": {
+    "type": "instructions",
+    "rules": [
+      {
+        "type": "when",
+        "events": {
+          "type": "eventsOr",
+          "events": [
+            {
+              "type": "event",
+              "source": {
+                "type": "variable",
+                "id": "l1"
+              },
+              "eventName": "isOn",
+              "eventValue": ""
+            }
+          ],
+          "duration": 0,
+          "nbEventToOccur": 0
+        },
+        "seqRulesThen": {
+          "type": "instructions",
+          "rules": [
+            {
+              "type": "when",
+              "events": {
+                "type": "eventsAnd",
+                "events": [
+                  {
+                    "type": "event",
+                    "source": {
+                      "type": "variable",
+                      "id": "b3"
+                    },
+                    "eventName": "clicked",
+                    "eventValue": ""
+                  },
+                  {
+                    "type": "eventsSequence",
+                    "events": [
+                      {
+                        "type": "eventsOr",
+                        "events": [
+                          {
+                            "type": "event",
+                            "source": {
+                              "type": "variable",
+                              "id": "b1"
+                            },
+                            "eventName": "clicked",
+                            "eventValue": ""
+                          }
+                        ],
+                        "duration": "2",
+                        "nbEventToOccur": "2"
+                      },
+                      {
+                        "type": "eventsOr",
+                        "events": [
+                          {
+                            "type": "event",
+                            "source": {
+                              "type": "variable",
+                              "id": "b2"
+                            },
+                            "eventName": "clicked",
+                            "eventValue": ""
+                          }
+                        ],
+                        "duration": "2",
+                        "nbEventToOccur": "2"
+                      }
+                    ],
+                    "duration": 0,
+                    "nbEventToOccur": 0
+                  }
+                ],
+                "duration": "5",
+                "nbEventToOccur": "0"
+              },
+              "seqRulesThen": {
+                "type": "instructions",
+                "rules": [
+                  {
+                    "type": "action",
+                    "target": {
+                      "type": "selectState",
+                      "devices": {
+                        "type": "select",
+                        "what": [
+                          "lamp"
+                        ],
+                        "where": [
+                          {
+                            "type": "string",
+                            "value": "salon"
+                          }
+                        ]
+                      },
+                      "state": "isOn",
+                      "value": "true",
+                      "start": "0",
+                      "duration": "0"
+                    },
+                    "methodName": "blink",
+                    "action": [
+                      
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

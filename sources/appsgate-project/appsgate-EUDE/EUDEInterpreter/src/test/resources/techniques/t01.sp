@@ -10,9 +10,10 @@ var b1 = /B1/;
 
 _BODY_
 
-
+<<<
 _when[l1.switchOn(""),b1.click("") /THEN/0/5] 
 THEN
 {
   l2.switchOn();
 }
+>>>

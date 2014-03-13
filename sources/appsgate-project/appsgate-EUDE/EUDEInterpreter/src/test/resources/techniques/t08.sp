@@ -4,5 +4,6 @@ comment:"Allumer les lampes du salon qui ont été allumées entre il y a 2h et 
 _DECL_
 
 _BODY_
-
+<<<
 _selectState(_select(["lamp"],["salon"]),isOn,"true",-7200,3600).switchOn();
+>>>

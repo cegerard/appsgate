@@ -5,4 +5,6 @@ _DECL_
 
 _BODY_
 
+<<<
 _selectState(_select(["lamp"],["salon"]),isOn,"true",-3600,0).switchOn();
+>>>

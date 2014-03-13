@@ -8,7 +8,7 @@ var l1 = /L1/;
 var l2 = /L2/;
 
 _BODY_
-
+<<<
 _while(l1.isOfState(isOn)) { l2.switchOn(); } then { l2.switchOff(); }
 _while(l2.isOfState(isOn)) { l1.switchOn(); } then { l1.switchOff(); }
-
+>>>

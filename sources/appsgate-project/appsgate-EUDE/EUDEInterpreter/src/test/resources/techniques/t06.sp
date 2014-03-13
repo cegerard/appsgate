@@ -13,6 +13,7 @@ var b3 = /B3/;
 _BODY_
 
 
+<<<
 _when[
       [l1.switchOn(""),l2.switchOn("")/OR/1],
       [b1.click(""),
@@ -23,3 +24,4 @@ THEN
 {
   l1.toggle();
 }
+>>>

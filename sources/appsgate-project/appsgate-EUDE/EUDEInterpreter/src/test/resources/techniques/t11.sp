@@ -7,5 +7,6 @@ _DECL_
 var piece;
 
 _BODY_
-
+<<<
 _select(["lamp"], [piece]).setIntensity(0.3);
+>>>

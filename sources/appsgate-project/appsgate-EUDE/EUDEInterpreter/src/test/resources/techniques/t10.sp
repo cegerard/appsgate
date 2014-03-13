@@ -6,6 +6,6 @@ _DECL_
 
 _BODY_
 
-
+<<<
 [_select(["lamp"],[]) N _selectState(_select(["lamp"],["salon"]),isOn, "true", -7200,3600)].blink();
-
+>>>
