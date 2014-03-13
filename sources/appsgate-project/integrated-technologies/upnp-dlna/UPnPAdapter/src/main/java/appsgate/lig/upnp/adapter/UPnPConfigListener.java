@@ -27,8 +27,8 @@ public class UPnPConfigListener implements ConfigListener {
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory
-			.getLogger(UPnPConfigListener.class);
+	private static Logger logger = LoggerFactory.getLogger(UPnPConfigListener.class);
+	
 	public static String CONFIG_TARGET = "UPNP";
 
 	private SendWebsocketsService sendToClientService;
