@@ -1,0 +1,10 @@
+{
+    "type": "action",
+    "target": {
+        "type": "variable",
+        "id": "test"
+    },
+    "methodName": "blink",
+    "action": [
+    ]
+}

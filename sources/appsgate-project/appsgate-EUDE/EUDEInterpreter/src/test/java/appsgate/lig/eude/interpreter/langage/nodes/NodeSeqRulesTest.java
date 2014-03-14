@@ -5,8 +5,13 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -14,18 +19,31 @@ import org.junit.Before;
  */
 public class NodeSeqRulesTest extends NodeTest {
 
-    public NodeSeqRulesTest() {
+    public NodeSeqRulesTest() throws JSONException {
+        ruleJSON.put("type", "instructions");
+        ruleJSON.put("rules", new JSONArray());
     }
 
     @Before
-    @Override
-    public void setUp() {
-        try {
-            this.instance = new NodeSeqRules(null, new JSONArray(), null);
-        } catch (NodeException ex) {
-            System.out.println("JSON ex: " + ex.getMessage());
-        }
-
+    public void setUp() throws Exception {
+        this.instance = new NodeSeqRules(this.ruleJSON, null);
     }
 
+    @Test
+    public void testBuildFromJson() throws Exception {
+        NodeSeqRules seq = new NodeSeqRules(TestUtilities.loadFileJSON("src/test/resources/node/seqRules.json"), null);
+        Assert.assertNotNull(seq);
+        System.out.println(seq.getExpertProgramScript());
+        seq.call();
+    }
+
+    @Test
+    @Override
+    public void testCall() throws Exception {
+        printTestName("call");
+        JSONObject result = this.instance.call();
+        Assert.assertNotNull(result);
+        junit.framework.Assert.assertTrue("supposed to be started", this.instance.isStarted());
+
+    }
 }

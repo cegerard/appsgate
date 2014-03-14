@@ -1,11 +1,13 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.logging.Level;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,45 +25,63 @@ import org.slf4j.LoggerFactory;
 public class NodeWhen extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeWhen.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeWhen.class);
 
     /**
-     * The seq of event to catch to have run the when
+     * list of events
      */
-    private final NodeSeqEvent seqEvent;
+    private NodeEvents seqEvent;
+
     /**
      * The sequence of thing to do once the events are done
      */
-    private final NodeSeqRules seqRules;
+    private Node seqRules;
 
     /**
-     * Default constructor. Instantiate a node when
+     * Default constructor. Instantiate a node "when"
      *
-     * @param interpreter Pointer on the interpreter
-     * @param ruleWhenJSON
-     * @param parent
-     * @throws NodeException
+     * @param ruleWhenJSON the json description
+     * @param parent the parent node
+     * @throws SpokNodeException
      */
-    public NodeWhen(EUDEInterpreterImpl interpreter, JSONObject ruleWhenJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
+    public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws SpokNodeException {
+        super(parent);
 
-        // initialize the sequences of events and rules
-        seqEvent = new NodeSeqEvent(interpreter, getJSONArray(ruleWhenJSON, "events"), this);
-        seqRules = new NodeSeqRules(interpreter, getJSONArray(ruleWhenJSON, "seqRulesThen"), this);
+        try {
+            seqEvent = (NodeEvents) Builder.buildFromJSON(getJSONObject(ruleWhenJSON, "events"), this);
+        } catch (SpokTypeException ex) {
+            LOGGER.error("Unable to build events");
+            throw new SpokNodeException("NodeWhen", "events", ex);
+        }
+        try {
+            // initialize the sequences of events and rules
+            seqRules = Builder.buildFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
+        } catch (SpokTypeException ex) {
+            LOGGER.error("Unable to build seqRulesThen");
+            throw new SpokNodeException("NodeWhen", "seqRulesThen", ex);
+        }
 
     }
 
+    /**
+     * private constructor to copy node
+     *
+     * @param parent
+     */
+    private NodeWhen(Node parent) {
+        super(parent);
+    }
+
     @Override
-    public Integer call() {
+    public JSONObject call() {
         LOGGER.debug("Call {}", this);
         if (!isStarted()) {
             fireStartEvent(new StartEvent(this));
             setStarted(true);
         }
         seqEvent.addEndEventListener(this);
-        seqEvent.call();
 
-        return null;
+        return seqEvent.call();
     }
 
     @Override
@@ -70,40 +90,24 @@ public class NodeWhen extends Node {
         LOGGER.debug("NWhen end event: {}", nodeEnded);
         if (!isStopping()) {
             // if all the events are received, launch the sequence of rules
-            if (nodeEnded == seqEvent) {
+            if (nodeEnded instanceof NodeEvents) {
                 seqRules.addEndEventListener(this);
-
-                LOGGER.debug("###### all the events are received, launching the sequence of rules #######");
-                try {
-                    seqRules.call();
-                } catch (Exception ex) {
-                    LOGGER.error(ex.getMessage());
-                }
-                // if the sequence of rules is terminated, fire the event event
+                seqRules.call();
             } else {
-                LOGGER.debug("###### Rules are done");
                 setStarted(false);
                 fireEndEvent(new EndEvent(this));
             }
         } else {
-            LOGGER.debug("###### is stopping");
-
+            LOGGER.warn("endEvent has been fired while the node was stopping");
         }
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-            seqEvent.removeEndEventListener(this);
-            seqRules.removeEndEventListener(this);
-            seqEvent.stop();
-            seqRules.stop();
-
-            setStarted(false);
-            setStopping(false);
-        }
-
+    protected void specificStop() {
+        seqEvent.removeEndEventListener(this);
+        seqEvent.stop();
+        seqRules.removeEndEventListener(this);
+        seqRules.stop();
     }
 
     @Override
@@ -112,13 +116,31 @@ public class NodeWhen extends Node {
     }
 
     @Override
-    public String getExpertProgramScript() {
-        return "when("+seqEvent.getExpertProgramScript() + "," + seqRules.getExpertProgramScript() + ")";
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("type", "when");
+            o.put("seqRulesThen", seqRules.getJSONDescription());
+            o.put("events", seqEvent.getJSONDescription());
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return o;
     }
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        seqEvent.collectVariables(s);
-        seqRules.collectVariables(s);
+    public String getExpertProgramScript() {
+        return "when " + seqEvent.getExpertProgramScript() + " then \n{" + seqRules.getExpertProgramScript() + "\n}";
     }
+
+    @Override
+    protected Node copy(Node parent) {
+        NodeWhen ret = new NodeWhen(parent);
+        ret.seqEvent = (NodeEvents) seqEvent.copy(ret);
+        ret.seqRules = seqRules.copy(ret);
+        return ret;
+
+    }
+
 }

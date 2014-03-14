@@ -1,0 +1,83 @@
+{
+    "name": "T3",
+    "id": "t3",
+    "header": {
+        "author": "testMaker",
+        "comments": "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2. Tant que L2 est allumé alors L1 est allumé, et lorsque ça n’est plus la cas (L2 n’est plus allumé) alors éteindre L1. // Vérifier que les 2 lumières sont alors couplées"
+    },
+    "definitions": [
+        {
+            "id": "l1"
+        },
+        {
+            "id": "l2"
+        }
+    ],
+    "body": {
+        "type": "setOfRules",
+        "rules": [
+            {
+                "type": "while",
+                "state": {
+                    "type": "state",
+                    "object": {
+                        "type": "variable",
+                        "id": "l1"
+                    },
+                    "name": "isOn"
+                },
+                "rules": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "methodName": "switchOn",
+                    "action": [
+                    ]
+                },
+                "rulesThen": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "methodName": "switchOff",
+                    "action": [
+                    ]
+                }
+            },
+            {
+                "type": "while",
+                "state": {
+                    "type": "state",
+                    "object": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "name": "isOn"
+                },
+                "rules": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l1"
+                    },
+                    "methodName": "switchOn",
+                    "action": [
+                    ]
+                },
+                "rulesThen": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l1"
+                    },
+                    "methodName": "switchOff",
+                    "action": [
+                    ]
+                }
+            }
+        ]
+    }
+}

@@ -1,17 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>appsgate.components</groupId>
-		<artifactId>appsgate-project</artifactId>
-		<version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>appsgate.components</groupId>
+        <artifactId>appsgate-project</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
-	<artifactId>appsgate-context</artifactId>
-	<packaging>pom</packaging>
-	<name>Appsgate context project</name>
+    <artifactId>appsgate-context</artifactId>
+    <packaging>pom</packaging>
+    <name>Appsgate context project</name>
 
 	<description>This sub-project contain all components related to the context management</description>
 	
@@ -19,24 +18,24 @@
 	    <mongo-api-version>2.10.1</mongo-api-version>
 	</properties>
 
-	<!-- Dependencies Description -->
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>${ipojo.annotations.version}</version>
-		</dependency>
-	</dependencies>
+    <!-- Dependencies Description -->
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+            <version>${ipojo.annotations.version}</version>
+        </dependency>
+    </dependencies>
 
 	<modules>
 		<module>ContextManager</module>

@@ -1,0 +1,62 @@
+{
+    "name": "T4",
+    "id" : "t4",
+    "header": {
+        "author" : "testMaker",
+        "comments": "(Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2.)  PUIS  Faire clignoter L1.// Vérifier que le tant que est désactivé par le puis"
+    },
+    "definitions": [
+        {
+            "id": "l1"
+        },
+        {
+            "id": "l2"
+        }
+    ],
+    "body": {
+        "type": "instructions",
+        "rules": [
+            {
+                "type": "while",
+                "state": {
+                    "type": "state",
+                    "object": {
+                        "type": "variable",
+                        "id": "l1"
+                    },
+                    "name": "isOn"
+                },
+                "rules": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "methodName": "switchOn",
+                    "action": [
+                    ]
+                },
+                "rulesThen": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "methodName": "switchOff",
+                    "action": [
+                    ]
+                }
+            },
+            {
+                "type": "action",
+                "target": {
+                    "type": "variable",
+                    "id": "l1"
+                },
+                "methodName": "blink",
+                "action": [
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,50 @@
+{
+    "runningState": "DEPLOYED",
+    "id": "TestWhile",
+    "userSource": "",
+    "daemon": true,
+    "name": "TestWhile",
+    "parameters": [],
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
+    "definitions": [],
+    "body": {
+        "type": "while",
+        "state": {
+            "type": "state",
+            "name": "testState",
+            "object": {
+                "type": "device",
+                "id": "test"
+            }
+        },
+        "rules": {
+            "type": "instructions",
+            "rules": [
+                {
+                    "type": "action",
+                    "target": {
+                        "type": "device",
+                        "id": "flag1"
+                    },
+                    "methodName": "On"
+                }
+            ]
+        },
+        "rulesThen": {
+            "type": "instructions",
+            "rules": [
+                {
+                    "type": "action",
+                    "target": {
+                        "type": "device",
+                        "id": "flag2"
+                    },
+                    "methodName": "On"
+                }
+            ]
+        }
+    }
+}

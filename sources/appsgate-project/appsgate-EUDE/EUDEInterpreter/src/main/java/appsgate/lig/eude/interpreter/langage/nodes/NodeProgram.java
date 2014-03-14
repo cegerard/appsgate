@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,11 +9,15 @@ import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Node program for the interpreter. Contains the metadatas of the program, the
+ * Node program for the mediator. Contains the metadata of the program, the
  * parameters, the variables and the rules
  *
  * @author Rémy Dautriche
@@ -23,6 +28,13 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class NodeProgram extends Node {
+
+    public Collection<NodeProgram> getSubPrograms() {
+        if (subPrograms != null) {
+            return subPrograms.values();
+        }
+        return new HashSet<NodeProgram>();
+    }
 
     /**
      * Program running state static enumeration
@@ -63,12 +75,7 @@ public class NodeProgram extends Node {
     /**
      * User's name who wrote the program
      */
-    private String author;
-
-    /**
-     * Target user
-     */
-    private String target;
+    private JSONObject header;
 
     /**
      * Daemon attribute
@@ -78,17 +85,14 @@ public class NodeProgram extends Node {
     /**
      * Use for simplify user interface reverse compute
      */
-    private String userInputSource;
+    private String userSource;
 
     /**
      * Sequence of rules to interpret
      */
-    private NodeSeqRules seqRules;
+    private Node body;
 
-    /**
-     * JSON representation of the program
-     */
-    private JSONObject programJSON;
+    private HashMap<String, NodeProgram> subPrograms;
 
     /**
      * The current running state of this program - DEPLOYED - STARTED - STOPPED
@@ -97,59 +101,72 @@ public class NodeProgram extends Node {
     private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
 
     /**
+     * Pointer to the interpreter, could be the interpreter for the simulator
+     */
+    private EUDEMediator mediator = null;
+
+    /**
      * Default constructor
      *
+     * @param i
+     * @param p
      * @constructor
-     * @param interpreter the interpreter that execute this program
      */
-    public NodeProgram(EUDEInterpreterImpl interpreter) {
-        super(interpreter, null);
+    public NodeProgram(EUDEMediator i, Node p) {
+        super(p);
+        this.mediator = i;
+        subPrograms = new HashMap<String, NodeProgram>();
     }
 
     /**
      * Initialize the program from a JSON object
      *
-     * @param interpreter
+     * @param mediator
      * @param programJSON Abstract tree of the program in JSON
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @param p the node parent
+     * @throws SpokNodeException
      */
-    public NodeProgram(EUDEInterpreterImpl interpreter, JSONObject programJSON)
-            throws NodeException {
-        this(interpreter);
+    public NodeProgram(EUDEMediator mediator, JSONObject programJSON, Node p)
+            throws SpokException {
+        this(mediator, p);
 
         // initialize the program with the JSON
-        id = getJSONString(programJSON, "id");
-        runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
+        id = getJSONString(programJSON,"id");
+        if (programJSON.has("runningState")) {
+            runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
+        }
+
         update(programJSON);
+    }
+
+    @Override
+    public EUDEMediator getMediator() {
+        return this.mediator;
     }
 
     /**
      * Update the current program source code Program need to be stopped.
      *
-     * @param jsonProgram the new source code
+     * @param json the new source code
      *
      * @return true if the source code has been updated, false otherwise
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws SpokNodeException
      */
-    public final boolean update(JSONObject jsonProgram) throws NodeException {
+    public final boolean update(JSONObject json) throws SpokException {
 
-        this.programJSON = jsonProgram;
-        userInputSource = getJSONString(programJSON, "userInputSource");
+        //  this.programJSON = json;
+        userSource = json.optString("userSource");
 
-        JSONObject source = getJSONObject(jsonProgram, "source");
-        name = getJSONString(source, "programName");
-        author = getJSONString(source, "author");
-        target = getJSONString(source, "target");
-        if (source.has("daemon")) {
-            try {
-                daemon = source.getBoolean("daemon");
-            } catch (JSONException ex) {
-                throw new NodeException("NodeProgram", "daemon", ex);
-            }
+        name = getJSONString(json, "name");
+        header = getJSONObject(json, "header");
+
+        this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
+        if (json.has("daemon")) {
+            daemon = json.optBoolean("daemon");
         } else {
             daemon = false;
         }
-        seqRules = new NodeSeqRules(getInterpreter(), getJSONArray(source, "seqRules"), this);
+        body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
 
         return true;
 
@@ -166,14 +183,20 @@ public class NodeProgram extends Node {
      * @return integer
      */
     @Override
-    public Integer call() {
+    public JSONObject call() {
+        JSONObject ret = new JSONObject();
         if (runningState != RUNNING_STATE.PAUSED) {
             fireStartEvent(new StartEvent(this));
-            seqRules.addStartEventListener(this);
-            seqRules.addEndEventListener(this);
-            // seqRulesThread = pool.submit(seqRules);
-            seqRules.call();
-            return 1;
+            body.addStartEventListener(this);
+            body.addEndEventListener(this);
+            body.call();
+            try {
+                ret.put("status", true);
+            } catch (JSONException ex) {
+                // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+                // only if the key is null, which will never be the case
+            }
+            return ret;
         } else {
             // TODO restart from previous state
             // synchronized(pauseMutex) {
@@ -181,20 +204,26 @@ public class NodeProgram extends Node {
             // return 1;
             // }
         }
-        return -1;
+        return null;
     }
 
     @Override
     public void stop() {
-        if (runningState == RUNNING_STATE.STARTED) {
+        if (runningState == RUNNING_STATE.STARTED && !isStopping()) {
             LOGGER.debug("Stoping program {}", this);
-            seqRules.stop();
-            seqRules.removeEndEventListener(this);
+            setStopping(true);
+            body.stop();
+            body.removeEndEventListener(this);
             setRunningState(RUNNING_STATE.STOPPED);
             fireEndEvent(new EndEvent(this));
+            setStopping(false);
         } else {
             LOGGER.warn("Trying to stop {}, while being at state {}", this, this.runningState);
         }
+    }
+
+    @Override
+    protected void specificStop() {
     }
 
     /**
@@ -214,8 +243,8 @@ public class NodeProgram extends Node {
     public void endEventFired(EndEvent e) {
         if (isDaemon()) {
             LOGGER.debug("The end event ({}) has been fired on a daemon, program is still running", e.getSource());
-            seqRules.addEndEventListener(this);
-            seqRules.call();
+            body.addEndEventListener(this);
+            body.call();
             LOGGER.debug("Call rearmed");
         } else {
             setRunningState(RUNNING_STATE.STOPPED);
@@ -233,9 +262,10 @@ public class NodeProgram extends Node {
 
     /**
      *
-     * @return the name
+     * @return the program name
      */
-    public String getName() {
+    @Override
+    public String getProgramName() {
         return name;
     }
 
@@ -244,15 +274,7 @@ public class NodeProgram extends Node {
      * @return the author
      */
     public String getAuthor() {
-        return author;
-    }
-
-    /**
-     *
-     * @return the target
-     */
-    public String getTarget() {
-        return target;
+        return header.optString("author");
     }
 
     /**
@@ -265,15 +287,14 @@ public class NodeProgram extends Node {
     /**
      * @return the user input source
      */
-    public String getUserInputSource() {
-        return userInputSource;
-    }
+    public String getUserSource() {
+        if (userSource.isEmpty()) {
+            return getExpertProgramScript();
 
-    /**
-     * @return the JSONObjecto containing the program
-     */
-    public JSONObject getProgramJSON() {
-        return programJSON;
+        } else {
+            return userSource;
+
+        }
     }
 
     /**
@@ -285,14 +306,10 @@ public class NodeProgram extends Node {
 
     /**
      * @return the JSON source of the program
-     * @throws NodeException if there is no source for the program
+     * @throws SpokNodeException if there is no source for the program
      */
-    public JSONObject getJSONSource() throws NodeException {
-        try {
-            return programJSON.getJSONObject("source");
-        } catch (JSONException ex) {
-            throw new NodeException("NodeProgram", "source", ex);
-        }
+    public JSONObject getJSONSource() throws SpokNodeException {
+        return body.getJSONDescription();
     }
 
     /**
@@ -300,48 +317,144 @@ public class NodeProgram extends Node {
      * @param runningState
      */
     private void setRunningState(RUNNING_STATE runningState) {
-        try {
-            programJSON.put("runningState", runningState.toString());
-            this.runningState = runningState;
-            notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
-
-        } catch (JSONException e) {
-            LOGGER.warn("JSON Exception : {}, unable to set the running state inside the JSON program", e.getMessage());
-        }
+        this.runningState = runningState;
+        getMediator().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
     }
 
     @Override
     public String toString() {
         return "[Node Program : " + name + "]";
     }
-    
+
+    @Override
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("id", id);
+            o.put("type", "program");
+            o.put("runningState", runningState.name);
+            o.put("name", name);
+            o.put("daemon", daemon);
+            o.put("header", header);
+            o.put("package", getPath());
+
+            o.put("userSource", getUserSource());
+            o.put("body", body.getJSONDescription());
+
+            o.put("definitions", getSymbolTableDescription());
+
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return o;
+
+    }
+
     /**
      * @return the script of a program, more readable than the json structure
      */
     @Override
-   
-    public String getExpertProgramScript(){
-        SymbolTable vars = new SymbolTable();
-        seqRules.collectVariables(vars);
+
+    public String getExpertProgramScript() {
+        SymbolTable vars = new SymbolTable(this);
         this.setSymbolTable(vars);
-        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + seqRules.getExpertProgramScript();
+        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + body.getExpertProgramScript();
     }
-     
+
     /**
      * @return the header of a program
      */
     private String getHeader() {
         String ret = "";
-        ret += "Author: " + this.author + "\n";
-        ret += "Target:" + this.target + "\n";
+        if (!getAuthor().isEmpty()) {
+            ret += "Author: " + getAuthor() + "\n";
+        }
         return ret;
     }
-    
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        seqRules.collectVariables(s);
+    protected Node copy(Node parent) {
+        NodeProgram ret = new NodeProgram(getMediator(), parent);
+        ret.id = id;
+        ret.runningState = runningState;
+        ret.name = name;
+        ret.daemon = daemon;
+        ret.header = new JSONObject(header);
+
+        ret.userSource = getUserSource();
+        if (body != null) {
+            ret.body = body.copy(ret);
+        }
+        return ret;
     }
 
+    /**
+     *
+     * @return
+     */
+    private String getPath() {
+        NodeProgram p = (NodeProgram) this.getParent();
+        if (p == null) {
+            return id;
+        } else {
+            return p.getPath() + "." + id;
+        }
+    }
 
+    /**
+     * Add a sub program if no program already exists
+     *
+     * @param id
+     * @param subProgram
+     * @return
+     */
+    public boolean addSubProgram(String id, NodeProgram subProgram) {
+        if (id == null || id.isEmpty()) {
+            LOGGER.warn("Unable to add a sub program without an id");
+            return false;
+        }
+        if (subProgram == this) {
+            LOGGER.warn("trying to add the program as its own child");
+            return false;
+        }
+        if (subPrograms.containsKey(id)) {
+            LOGGER.warn("A sub program with this name [{}] already exists", id);
+            return false;
+        }
+        subPrograms.put(id, subProgram);
+        return true;
+    }
+
+    /**
+     * Retrieve a program with a given id
+     *
+     * @param id the name of the program
+     * @return the program corresponding to the name if it exists, null
+     * otherwise
+     */
+    public NodeProgram getSubProgram(String id) {
+        if (id == null || id.isEmpty()) {
+            LOGGER.warn("No id has been passed");
+            return null;
+        }
+        return subPrograms.get(id);
+    }
+
+    /**
+     * Remove a sub program from the list of sub programs
+     *
+     * @param id the id of the sub program
+     * @return true if the program has been removed, false if the program did
+     * not exist
+     */
+    public boolean removeSubProgram(String id) {
+        if (subPrograms.containsKey(id)) {
+            LOGGER.trace("A sub program [{}] has been removed.", id);
+            subPrograms.remove(id);
+            return true;
+        }
+        LOGGER.debug("The sub program [{}] has not been found", id);
+        return false;
+    }
 }

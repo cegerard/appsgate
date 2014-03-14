@@ -191,9 +191,6 @@
 								</artifactItem>
 
 
-
-
-
 								<!-- repackaged/patched dependencies (as osgi bundles, or apamcomponents) 
 									for appsgate -->
 								<dependency>
@@ -299,7 +296,6 @@
 									<artifactId>ical4j</artifactId>
 									<version>${ical-version}</version>
 								</dependency>
-
 
 
 

@@ -1,11 +1,14 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,104 +31,119 @@ public class NodeEvent extends Node {
     /**
      * Type of the source to listen. Can be "program" or "device"
      */
-    private final String sourceType;
-    /**
-     * ID of the source to listen
-     */
-    private final String sourceId;
+    private Node source;
 
     /**
      * Name of the event to listen
      */
-    private final String eventName;
+    private String eventName;
 
     /**
      * Value of the event to wait
      */
-    private final String eventValue;
+    private String eventValue;
+    
+    /**
+     * 
+     * @param parent 
+     */
+    private NodeEvent(Node parent) {
+        super(parent);
+    }
 
     /**
      *
-     * @param interpreter
      * @param s_type
      * @param s_id
      * @param name
      * @param value
      * @param parent
      */
-    public NodeEvent(EUDEInterpreterImpl interpreter, String s_type, String s_id, String name, String value, Node parent) {
-        super(interpreter, parent);
-        sourceType = s_type;
-        sourceId = s_id;
+    public NodeEvent(String s_type, String s_id, String name, String value, Node parent) {
+        super(parent);
+        Node s = new NodeValue(s_type, s_id, this);
+        source = s;
         eventName = name;
         eventValue = value;
     }
 
     /**
      *
-     * @param interpreter Pointer on the interpreter
      * @param eventJSON JSON representation of the event
      * @param parent
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @throws SpokNodeException
      */
-    public NodeEvent(EUDEInterpreterImpl interpreter, JSONObject eventJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
-
-        sourceType = getJSONString(eventJSON, "sourceType");
-        sourceId = getJSONString(eventJSON, "sourceId");
+    public NodeEvent(JSONObject eventJSON, Node parent) 
+            throws SpokNodeException {
+        super(parent);
+        try {
+            source = Builder.buildFromJSON(getJSONObject(eventJSON, "source"), this);
+        } catch (SpokTypeException ex) {
+            throw new SpokNodeException("NodeEvent", "source", ex);
+        }
         eventName = getJSONString(eventJSON, "eventName");
         eventValue = getJSONString(eventJSON, "eventValue");
 
     }
 
     @Override
-    public Integer call() {
+    public JSONObject call() {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
+        EUDEMediator mediator;
+        try {
+            mediator = getMediator();
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Unable to call this node: {}", this);
+            return ex.getJSONDescription();
+        }
+
         // if the source of the event is a program
-        if (sourceType.equals("program")) {
+        if (source.getType().equals("programCall")) {
             // get the node of the program
-            NodeProgram p = getNodeProgram(sourceId);
+            NodeProgram p;
+            p = mediator.getNodeProgram(source.getValue());
             // if it exists
             if (p != null) {
                 // listen to its start event...
                 if (eventName.equals("runningState")) {
-                    LOGGER.trace("Node event added for {}", sourceId);
-                    addNodeListening(this);
+                    LOGGER.trace("Node event added for {}", source.getValue());
+                    mediator.addNodeListening(this);
                 } else {
                     LOGGER.warn("Event ({}) not supported for programs.", eventName);
                 }
             } else {
                 // interpreter does not know the program, then the end event is automatically fired
-                LOGGER.warn("Program {} not found", sourceId);
+                LOGGER.warn("Program {} not found", source.getValue());
                 setStarted(false);
                 fireEndEvent(new EndEvent(this));
             }
-            // sourceType is "device"
+            // source.getType() is "device"
         } else {
-            LOGGER.trace("Node event added for {}", sourceId);
-            addNodeListening(this);
+            LOGGER.trace("Node event added for {}", source.getValue());
+            mediator.addNodeListening(this);
         }
-
         return null;
     }
 
     @Override
-    public void stop() {
-        if (isStarted()) {
-            setStopping(true);
-            if (sourceType.equals("program")) {
-                NodeProgram p = getNodeProgram(sourceId);
-                if (eventName.equals("start")) {
-                    p.removeStartEventListener(this);
-                } else if (eventName.equals("end")) {
-                    p.removeEndEventListener(this);
-                }
-            } else {
-                removeNodeListening(this);
+    protected void specificStop() {
+        EUDEMediator mediator;
+        try {
+            mediator = getMediator();
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Unable to stop this node cause the mediator has not been found");
+            return;
+        }
+        if (source.getType().equals("programCall")) {
+            NodeProgram p = mediator.getNodeProgram(source.getValue());
+            if (eventName.equals("start")) {
+                p.removeStartEventListener(this);
+            } else if (eventName.equals("end")) {
+                p.removeEndEventListener(this);
             }
-            setStarted(false);
-            setStopping(false);
+        } else {
+            mediator.removeNodeListening(this);
         }
     }
 
@@ -144,14 +162,30 @@ public class NodeEvent extends Node {
 
     @Override
     public String toString() {
-        return "[Node Event on " + sourceId + "]";
+        return "[Node Event on " + source.getValue() + "]";
+    }
+    
+    @Override
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("type", "event");
+            o.put("source", source.getJSONDescription());
+            o.put("eventName", eventName);
+            o.put("eventValue", eventValue);
+        } catch (JSONException e) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return o;
+
     }
 
     /**
      * @return the sourceID
      */
     public String getSourceId() {
-        return sourceId;
+        return source.getValue();
     }
 
     /**
@@ -171,14 +205,19 @@ public class NodeEvent extends Node {
     @Override
     public String getExpertProgramScript() {
         String ret;
-        ret = this.getElementKey(sourceId, sourceType) + ".";
+        ret = source.getExpertProgramScript() + ".";
         return ret + eventName + "(\"" + eventName + "\")";
 
     }
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        s.add(sourceId, sourceType);
+    protected Node copy(Node parent) {
+        NodeEvent ret = new NodeEvent(parent);
+        ret.eventName = eventName;
+        ret.eventValue = eventValue;
+        ret.source = source.copy(parent);
+        return ret;
+
     }
 
 }

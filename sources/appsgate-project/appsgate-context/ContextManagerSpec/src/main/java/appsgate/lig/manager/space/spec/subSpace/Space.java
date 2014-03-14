@@ -20,12 +20,12 @@ public class Space {
 	/**
 	 * The space unique identifier
 	 */
-	private String id;
+	private final String id;
 	
 	/**
 	 * The space type
 	 */
-	private TYPE type;
+	private final TYPE type;
 	
 	/**
 	 * tags list for this space
@@ -113,7 +113,7 @@ public class Space {
 	 * @param tags some tags for this space
 	 * @param properties some properties for this space
 	 * @param parent the parent space
-	 * @param childrens all sub-spaces
+	 * @param children all sub-spaces
 	 */
 	public Space(String id, TYPE type, ArrayList<String> tags,
 			HashMap<String, String> properties, Space parent,
@@ -169,7 +169,7 @@ public class Space {
 	 * Move the space in the hierarchy
 	 * @param parent the new parent of this space
 	 */
-	public void setParent(Space parent) {
+	public final void setParent(Space parent) {
 		Space oldParent = this.parent;
 		this.parent = parent;
 		
@@ -208,6 +208,7 @@ public class Space {
 	/**
 	 * Add a new tag to the current tag list
 	 * @param newTag the new tag to add
+         * @return 
 	 */
 	public boolean addTag(String newTag) {
 		return tags.add(newTag);
@@ -215,7 +216,8 @@ public class Space {
 	
 	/**
 	 * Remove a tag from the current tag list
-	 * @param newTag the new tag to add
+	 * @param tag the new tag to add
+         * @return 
 	 */
 	public boolean removeTag(String tag) {
 		return tags.remove(tag);
@@ -315,7 +317,7 @@ public class Space {
 	public Space getSubSpace(String spaceId) {
 		Space theSubSpace = null;
 		for(Space subSpace : children) {
-			if(subSpace.getId() == spaceId) {
+			if(subSpace.getId().equals(spaceId)) {
 				theSubSpace = subSpace;
 				break;
 			}else {
@@ -352,6 +354,7 @@ public class Space {
 	/**
 	 * Add a new child to the children list
 	 * @param child the child space
+         * @return true if the child is added, false otherwise
 	 */
 	public boolean addChild(Space child) {
 		return children.add(child);

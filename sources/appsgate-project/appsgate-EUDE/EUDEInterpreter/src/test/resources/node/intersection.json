@@ -1,0 +1,30 @@
+{
+    "type": "lists",
+    "operator": "T",
+    "left": {
+        "type": "list",
+        "value": [
+            {
+                "type": "device",
+                "id": "a"
+            },
+            {
+                "type": "device",
+                "id": "b"
+            }
+        ]
+    },
+    "right" : {
+        "type": "list",
+        "value": [
+            {
+                "type": "device",
+                "id": "a"
+            },
+            {
+                "type": "device",
+                "id": "c"
+            }
+        ]
+    }
+}

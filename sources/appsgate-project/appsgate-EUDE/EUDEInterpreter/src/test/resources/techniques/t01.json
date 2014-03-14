@@ -1,0 +1,80 @@
+{
+  "name": "T1",
+  "id" : "t01",
+  "header": {
+    "author": "testMaker",
+    "comment": "Lorsque,  dans un intervalle de 5 secondes,  L1 s’allume puis B1 est pressé,  alors allumer L2"
+  },
+  "definitions": [
+    {
+      "id": "l1",
+      "value": {
+        "type": "device",
+        "id": "L1"
+      }
+    },
+    {
+      "id": "l2",
+      "value": {
+        "type": "device",
+        "id": "L2"
+      }
+    },
+    {
+      "id": "b1",
+      "value": {
+        "type": "device",
+        "id": "B1"
+      }
+    }
+  ],
+  "body": {
+    "type": "setOfRules",
+    "rules": [
+      {
+        "type": "when",
+        "events": {
+          "type": "eventsSequence",
+          "events": [
+            {
+              "type": "event",
+              "source": {
+                "type": "variable",
+                "id": "l1"
+              },
+              "eventName": "switchOn",
+              "eventValue": ""
+            },
+            {
+              "type": "event",
+              "source": {
+                "type": "variable",
+                "id": "b1"
+              },
+              "eventName": "click",
+              "eventValue": ""
+            }
+          ],
+          "duration": "5",
+          "nbEventToOccur": "0"
+        },
+        "seqRulesThen": {
+          "type": "instructions",
+          "rules": [
+            {
+              "type": "action",
+              "target": {
+                "type": "variable",
+                "id": "l2"
+              },
+              "methodName": "switchOn",
+              "action": [
+                
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

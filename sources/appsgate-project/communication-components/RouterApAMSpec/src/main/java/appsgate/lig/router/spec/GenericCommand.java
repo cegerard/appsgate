@@ -124,7 +124,10 @@ public class GenericCommand implements Runnable {
 			}
 			
 		} catch (Exception e) {
-			logger.debug("The generic method invocation failed --> ");
+
+                    
+                    
+                    logger.debug("The generic method invocation failed --> ");
 			e.printStackTrace();
 		}
 	}

@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -21,33 +22,28 @@ public class NodeEventTest extends NodeTest {
 
     private NodeEvent eventTest;
 
-    public NodeEventTest() {
+    public NodeEventTest() throws JSONException {
+        super();
+        JSONObject o = new JSONObject();
+        o.put("type", "device");
+        o.put("id", "test");
+        ruleJSON.put("type", "event");
+        ruleJSON.put("source", o);
+        ruleJSON.put("eventName", "test");
+        ruleJSON.put("eventValue", "test");
+
         context.checking(new Expectations() {
             {
-                allowing(interpreter).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
-                allowing(interpreter).addNodeListening(with(any(NodeEvent.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
+                allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
             }
         });
     }
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-
-        try {
-
-            ruleJSON.put("sourceType", "test");
-            ruleJSON.put("sourceId", "test");
-            ruleJSON.put("eventName", "test");
-            ruleJSON.put("eventValue", "test");
-            this.eventTest = new NodeEvent(interpreter, ruleJSON, null);
-            this.instance = this.eventTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON Ex : " + ex.getMessage());
-        } catch (NodeException ex) {
-            System.out.println(ex.getMessage());
-        }
+    public void setUp() throws Exception {
+        this.eventTest = new NodeEvent(ruleJSON, this.programNode);
+        this.instance = this.eventTest;
     }
 
     /**

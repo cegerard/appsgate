@@ -1,0 +1,8 @@
+{
+    "friendlyName": "CO2 sensor",
+    "typename":"wattecoCo2Sensor",
+    "properties": [
+    ],
+    "states": [
+    ]
+}

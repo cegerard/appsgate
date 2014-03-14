@@ -5,10 +5,16 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
+import appsgate.lig.eude.interpreter.impl.TestUtilities;
+import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.Collection;
+import junit.framework.Assert;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -23,40 +29,35 @@ public class NodeProgramTest extends NodeTest {
 
     private NodeProgram programTest;
 
-    public NodeProgramTest() {
+    public NodeProgramTest() throws JSONException {
         context.checking(new Expectations() {
             {
-                allowing(interpreter).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
             }
         });
+
+        ruleJSON.put("id", "test");
+        ruleJSON.put("type", "program");
+        ruleJSON.put("runningState", "STOPPED");
+        ruleJSON.put("name", "test");
+        ruleJSON.put("daemon", false);
+        ruleJSON.put("package", "test");
+        JSONObject header = new JSONObject();
+        header.put("author", "toto");
+        ruleJSON.put("header", header);
+        JSONObject rules = new JSONObject();
+        rules.put("type", "setOfRules");
+        rules.put("rules", (Collection) null);
+        ruleJSON.put("body", rules);
+        ruleJSON.put("definitions", (Collection) null);
+        ruleJSON.put("userSource", "test");
 
     }
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-        try {
-
-            ruleJSON.put("id", "test");
-            ruleJSON.put("runningState", "STOPPED");
-            ruleJSON.put("userInputSource", "test");
-            JSONObject source = new JSONObject();
-            source.put("programName", "test");
-            source.put("author", "test");
-            source.put("target", "test");
-            source.put("daemon", false);
-            source.put("seqRules", (Collection) null);
-            ruleJSON.put("source", source);
-
-            this.programTest = new NodeProgram(interpreter, this.ruleJSON);
-
-            this.instance = this.programTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON Ex : " + ex.getMessage());
-        } catch (NodeException ex) {
-            System.out.println(ex.getMessage());
-        }
+    public void setUp() throws Exception {
+        this.programTest = new NodeProgram(mediator, this.ruleJSON, null);
+        this.instance = this.programTest;
     }
 
     /**
@@ -71,24 +72,13 @@ public class NodeProgramTest extends NodeTest {
     }
 
     /**
-     * Test of getUserInputSource method, of class NodeProgram.
+     * Test of getuserSource method, of class NodeProgram.
      */
     @Test
-    public void testGetUserInputSource() {
-        System.out.println("getUserInputSource");
+    public void testGetuserSource() {
+        System.out.println("getuserSource");
         String expResult = "test";
-        String result = this.programTest.getUserInputSource();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getProgramJSON method, of class NodeProgram.
-     */
-    @Test
-    public void testGetProgramJSON() {
-        System.out.println("getProgramJSON");
-        JSONObject expResult = this.ruleJSON;
-        JSONObject result = this.programTest.getProgramJSON();
+        String result = this.programTest.getUserSource();
         assertEquals(expResult, result);
     }
 
@@ -103,7 +93,6 @@ public class NodeProgramTest extends NodeTest {
         assertEquals(expResult, result);
     }
 
-
     /**
      * Test of update method, of class NodeProgram.
      *
@@ -112,18 +101,22 @@ public class NodeProgramTest extends NodeTest {
     @Test
     public void testUpdate() throws Exception {
         System.out.println("update");
-        JSONObject jsonProgram = new JSONObject();
-        jsonProgram.put("userInputSource", "test");
-        JSONObject src = new JSONObject();
-        src.put("programName", "test");
-        src.put("author", "test");
-        src.put("target", "test");
-        src.put("daemon", true);
-        src.put("seqRules", (Collection) null);
-        jsonProgram.put("source", src);
+        JSONObject rules = new JSONObject();
+        rules.put("userSource", "test");
+        rules.put("type", "instructions");
+        rules.put("rules", new JSONArray());
+        JSONObject header = new JSONObject();
+        header.put("author", "toto");
+
+        rules.put("header", header);
+
+        rules.put("name", "test");
+        rules.put("daemon", true);
+        rules.put("body", rules);
+        rules.put("definitions", (Collection) null);
 
         boolean expResult = true;
-        boolean result = this.programTest.update(jsonProgram);
+        boolean result = this.programTest.update(rules);
         assertEquals(expResult, result);
     }
 
@@ -150,7 +143,7 @@ public class NodeProgramTest extends NodeTest {
     }
 
     /**
-     * Test of call method, of class NodeAction.
+     * Test of call method.
      *
      * @throws java.lang.Exception
      */
@@ -158,8 +151,38 @@ public class NodeProgramTest extends NodeTest {
     @Override
     public void testCall() throws Exception {
         System.out.println("call");
-        Integer expResult = 1;
-        Integer result = this.instance.call();
-        assertEquals(expResult, result);
+
+        JSONObject result = this.instance.call();
+        assertNotNull(result);
+    }
+
+    /**
+     * Test of getSymbolTable method, of class Node.
+     */
+    @Test
+    @Override
+    public void testGetSymbolTable() {
+        System.out.println("getSymbolTable");
+        SymbolTable result = this.instance.getSymbolTable();
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testgetMediator() {
+        System.out.println("getMediator");
+        try {
+            EUDEMediator i = this.instance.getMediator();
+            Assert.assertNotNull(i);
+        } catch (SpokExecutionException ex) {
+            fail("Should not have raised an exception");
+        }
+    }
+
+    @Test
+    public void testFromJSONFile() throws Exception {
+        printTestName("FromJSONFiles");
+        NodeProgram defNode = new NodeProgram(null, TestUtilities.loadFileJSON("src/test/resources/node/newjson.json"), null);
+        assertNotNull(defNode);
+        System.out.println(defNode.getExpertProgramScript());
     }
 }

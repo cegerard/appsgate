@@ -190,6 +190,31 @@ sources/appsgate-project/android-utils/UpnpBasedriverAdapter/target/classes/META
 sources/appsgate-project/android-utils/UpnpBasedriverAdapter/target/classes/META-INF/MANIFEST.MF
 
 sources/appsgate-project/android-utils/UpnpBasedriverAdapter/target/classes/META-INF/NOTICE
+*.lst
+
+*.MF
+
+sources/appsgate-project/android-utils/CyberGarageAndroidAdapter/target/surefire-reports/TEST-org.cybergarage.http.HTTPTest.xml
+
+sources/appsgate-project/android-utils/CyberGarageAndroidAdapter/target/surefire-reports/TEST-org.cybergarage.upnp.DeviceTest.xml
+
+sources/appsgate-project/android-utils/CyberGarageAndroidAdapter/target/surefire-reports/TEST-org.cybergarage.upnp.ServiceTest.xml
+
+sources/appsgate-project/android-utils/CyberGarageAndroidAdapter/target/surefire-reports/org.cybergarage.http.HTTPTest.txt
+
+sources/appsgate-project/android-utils/CyberGarageAndroidAdapter/target/surefire-reports/org.cybergarage.upnp.DeviceTest.txt
+
+sources/appsgate-project/android-utils/CyberGarageAndroidAdapter/target/surefire-reports/org.cybergarage.upnp.ServiceTest.txt
+
+sources/appsgate-project/composite-distribution/target/classes/metadata.xml
+
+sources/appsgate-project/integrated-technologies/PhilipsHUE4Appsgate/PhilipsHUEAdapterSpec/target/classes/metadata.xml
+
+sources/appsgate-project/integrated-technologies/sensor-network/enocean/EnoceanPlugImpl/target/classes/metadata.xml
+
+sources/appsgate-project/integrated-technologies/fuchsia-ard-plugin/ard-importer-adaptor/target/classes/metadata.xml
+
+sources/appsgate-project/nb-configuration.xml
 
 sources/appsgate-project/appsgate-context/ContextHistoy/nbactions.xml
 

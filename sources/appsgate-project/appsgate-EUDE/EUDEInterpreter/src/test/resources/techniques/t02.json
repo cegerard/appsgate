@@ -1,0 +1,52 @@
+{
+    "name": "T2",
+    "id": "t2",
+    "header": {
+        "author": "testMaker",
+        "comment": "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2."
+    },
+    "definitions": [
+        {
+            "id": "l1"
+        },
+        {
+            "id": "l2"
+        }
+    ],
+    "body": {
+        "type": "setOfRules",
+        "rules": [
+            {
+                "type": "while",
+                "state": {
+                    "type": "state",
+                    "object": {
+                        "type": "variable",
+                        "id": "l1"
+                    },
+                    "name": "isOn"
+                },
+                "rules": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "methodName": "switchOn",
+                    "action": [
+                    ]
+                },
+                "rulesThen": {
+                    "type": "action",
+                    "target": {
+                        "type": "variable",
+                        "id": "l2"
+                    },
+                    "methodName": "switchOff",
+                    "action": [
+                    ]
+                }
+            }
+        ]
+    }
+}

@@ -11,7 +11,7 @@
     <artifactId>EUDEInterpreterSpec</artifactId>
     <packaging>bundle</packaging>
 
-    <name>EUDEInterpreterSpec OSGi Bundle</name>
+    <name>EUDEInterpreterSpec</name>
 
     <!-- Dependencies Description -->
     <dependencies>

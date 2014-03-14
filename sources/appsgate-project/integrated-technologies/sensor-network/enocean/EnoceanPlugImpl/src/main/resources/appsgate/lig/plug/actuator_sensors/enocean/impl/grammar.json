@@ -1,0 +1,8 @@
+{
+    "friendlyName": "Enocean plug",
+    "typename":"enoceanPlug",
+    "properties": [
+    ],
+    "states": [
+    ]
+}

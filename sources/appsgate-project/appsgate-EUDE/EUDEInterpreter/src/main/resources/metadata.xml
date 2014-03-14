@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="EUDEInterpreterImpl" classname="appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl" specification="EUDEInterpreterSpec" singleton="true" push="notifyChanges">
+	<implementation name="EUDEMediator" classname="appsgate.lig.eude.interpreter.impl.EUDEMediator" specification="EUDEInterpreterSpec" singleton="true" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<relation field="router" fail="wait" resolve="exist"/>
 		<relation field="contextProxy" fail="wait" resolve="exist"/>

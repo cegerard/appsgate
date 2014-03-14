@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
-import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.impl.EUDEMediator;
 import java.util.concurrent.Callable;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -11,8 +11,13 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable.Element;
-import appsgate.lig.router.spec.GenericCommand;
+import appsgate.lig.eude.interpreter.langage.components.SpokObject;
+import appsgate.lig.eude.interpreter.langage.components.SpokParser;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +36,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public abstract class Node implements Callable<Integer>, StartEventGenerator, StartEventListener, EndEventGenerator, EndEventListener {
+public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
+        StartEventListener, EndEventGenerator, EndEventListener, SpokObject {
 
     /**
      * Logger
@@ -49,19 +55,14 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     private final ConcurrentLinkedQueue<EndEventListener> endEventListeners = new ConcurrentLinkedQueue<EndEventListener>();
 
     /**
-     * The interpreter
-     */
-    private final EUDEInterpreterImpl interpreter; // :TODO: make this static 
-
-    /**
      * Symbol table of the node containing the local symbols
      */
-    private SymbolTable symbolTable;// :TODO: remove this unused element
+    private SymbolTable symbolTable;
 
     /**
      * Node parent in the abstract tree of a program
      */
-    private Node parent; // :TODO: remove this unused element
+    private Node parent;
 
     /**
      * Use to stop node but atomically
@@ -76,30 +77,49 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * Default constructor
      *
-     * @param interpreter interpreter pointer for the nodes
+     * @param p
      */
-    public Node(EUDEInterpreterImpl interpreter, Node p) {
-        this.interpreter = interpreter;
+    public Node(Node p) {
         this.parent = p;
     }
 
     /**
-     * Stop the interpretation of the node.
-     *
-     * This method has to be overwritten
+     * @param n the parent node
+     */
+    protected void setParent(Node n) {
+        this.parent = n;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    /**
+     * Stop the interpretation of the node. Check if the node is not started
      */
     public void stop() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (isStarted()) {
+            setStopping(true);
+
+            specificStop();
+            setStarted(false);
+            setStopping(false);
+        } else {
+            LOGGER.warn("Trying to stop a not started node {}", this);
+        }
     }
+
+    /**
+     * This method is called by the stop method
+     */
+    abstract protected void specificStop();
+
+    @Override
+    abstract public JSONObject call();
 
     @Override
     public void startEventFired(StartEvent e) {
         LOGGER.trace("The start event has been fired: " + e.toString());
-    }
-
-    @Override
-    public void endEventFired(EndEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
@@ -134,7 +154,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * Add a new listener to the start event of the node
      *
-     * @param listener Listener to add
+     * @param listener Listener to addAnonymousVariable
      */
     @Override
     public void addStartEventListener(StartEventListener listener) {
@@ -156,7 +176,7 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     /**
      * Add a new listener to the end event of the node
      *
-     * @param listener Listener to add
+     * @param listener Listener to addAnonymousVariable
      */
     @Override
     public void addEndEventListener(EndEventListener listener) {
@@ -176,113 +196,21 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
     }
 
     /**
-     * Getter for the local symbol table
-     *
-     * @return the symbol table of the node that contains the symbols defined by
-     * the node
-     */
-    public SymbolTable getSymbolTable() {
-        return symbolTable;
-    }
-
-    /**
-     * Getter for the symbol table of the parent node
-     *
-     * @return the symbol table of the parent node if the node has a parent,
-     * null otherwise
-     */
-    public SymbolTable getParentSymbolTable() {
-        if (parent != null) {
-            return parent.getSymbolTable();
-        } else {
-            return null;
-        }
-    }
-
-    /**
      *
      * @return
      */
     public abstract String getExpertProgramScript();
 
-    @Override
-    public Integer call() {
-        return null;
-    }
-
-    /**
-     * get the command from the interpreter
-     *
-     * @param targetId
-     * @param methodName
-     * @param args
-     * @return
-     */
-    protected GenericCommand executeCommand(String targetId, String methodName, JSONArray args) {
-        return interpreter.executeCommand(targetId, methodName, args);
-    }
-
-    /**
-     * get the node program from interpreter
-     *
-     * @param targetId
-     * @return
-     */
-    protected NodeProgram getNodeProgram(String targetId) {
-        return interpreter.getNodeProgram(targetId);
-    }
-
-    /**
-     * call the program from interpreter
-     *
-     * @param targetId
-     */
-    protected void callProgram(String targetId) {
-        interpreter.callProgram(targetId);
-    }
-
-    /**
-     * Stop program from the interpreter
-     *
-     * @param targetId
-     */
-    protected void stopProgram(String targetId) {
-        interpreter.stopProgram(targetId);
-    }
-
-    /**
-     * add node listening to interpreter
-     *
-     * @param aThis
-     */
-    protected void addNodeListening(NodeEvent aThis) {
-        interpreter.addNodeListening(aThis);
-    }
-
-    /**
-     * remove the node listening from interpreter
-     *
-     * @param aThis
-     */
-    protected void removeNodeListening(NodeEvent aThis) {
-        interpreter.removeNodeListening(aThis);
-    }
-
-    /**
-     * transmit the state notification message to interpreter
-     *
-     * @param programStateNotificationMsg
-     */
-    protected void notifyChanges(ProgramStateNotificationMsg programStateNotificationMsg) {
-        interpreter.notifyChanges(programStateNotificationMsg);
-    }
-
     /**
      *
-     * @return interpreter
+     * @return mediator
+     * @throws SpokExecutionException
      */
-    public EUDEInterpreterImpl getInterpreter() {
-        return interpreter;
+    public EUDEMediator getMediator() throws SpokExecutionException {
+        if (this.parent != null) {
+            return this.parent.getMediator();
+        }
+        throw new SpokExecutionException("No mediator found");
     }
 
     /**
@@ -323,13 +251,14 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param jsonObj
      * @param jsonParam
      * @return the string corresponding to the jsonParam
-     * @throws NodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON
+     * Object
      */
-    protected String getJSONString(JSONObject jsonObj, String jsonParam) throws NodeException {
+    protected String getJSONString(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
             return jsonObj.getString(jsonParam);
         } catch (JSONException ex) {
-            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
     }
 
@@ -339,13 +268,14 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param jsonObj
      * @param jsonParam
      * @return the array corresponding to the jsonParam
-     * @throws NodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON
+     * Object
      */
-    protected JSONArray getJSONArray(JSONObject jsonObj, String jsonParam) throws NodeException {
+    protected JSONArray getJSONArray(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
             return jsonObj.getJSONArray(jsonParam);
         } catch (JSONException ex) {
-            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
 
     }
@@ -356,59 +286,239 @@ public abstract class Node implements Callable<Integer>, StartEventGenerator, St
      * @param jsonObj
      * @param jsonParam
      * @return the object corresponding to the jsonParam
-     * @throws NodeException if there is no such parameter in the JSON Object
+     * @throws SpokNodeException if there is no such parameter in the JSON
+     * Object
      */
-    protected JSONObject getJSONObject(JSONObject jsonObj, String jsonParam) throws NodeException {
+    protected JSONObject getJSONObject(JSONObject jsonObj, String jsonParam) throws SpokNodeException {
         try {
             return jsonObj.getJSONObject(jsonParam);
         } catch (JSONException ex) {
-            throw new NodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
 
     }
 
+    /**
+     * Method to set the symbol table
+     *
+     * @param s the symbol table to set
+     */
     protected void setSymbolTable(SymbolTable s) {
         this.symbolTable = s;
     }
 
     /**
-     * 
-     * @param varName
-     * @return 
+     * Getter for the local symbol table
+     *
+     * @return the symbol table of the node that contains the symbols defined by
+     * the node
      */
-    protected Element getElementFromName(String varName) {
-        if (this.symbolTable != null) {
-            Element element;
-            element = this.symbolTable.getElementByKey(varName);
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
+    /**
+     * Method that return the SymbolTable description in json format
+     *
+     * @return
+     */
+    public JSONArray getSymbolTableDescription() {
+        if (symbolTable != null) {
+            return symbolTable.getJSONDescription();
+        }
+        return new JSONArray();
+    }
+
+    /**
+     * Method to find a variable by its name
+     *
+     * it recursively parse the tree to find the name
+     *
+     * @param varName the name of the variable
+     * @return The NodeVariableDefinition
+     */
+    protected NodeVariableDefinition getVariableByName(String varName) {
+        if (this.getSymbolTable() != null) {
+            NodeVariableDefinition element;
+            element = this.getSymbolTable().getVariableByKey(varName);
             if (element != null) {
                 return element;
             }
         }
         if (parent != null) {
-            return parent.getElementFromName(varName);
+            LOGGER.trace("looking for variable in the parent node");
+            return parent.getVariableByName(varName);
         }
+        LOGGER.warn("variable not found");
         return null;
     }
-    
+
     /**
-     * 
-     * @param id
-     * @param type
-     * @return 
+     * Method to find a function by its name
+     *
+     * it recursively parse the tree to find the name
+     *
+     * @param funcName
+     * @return the node of the function definition
      */
-    protected String getElementKey(String id, String type) {
+    protected NodeFunctionDefinition getFunctionByName(String funcName) {
         if (this.symbolTable != null) {
-            String key;
-            key = this.symbolTable.getElementKey(id, type);
-            if (key != null) {
-                return key;
+            NodeFunctionDefinition element;
+            element = this.symbolTable.getFunctionByKey(funcName);
+            if (element != null) {
+                return element;
             }
         }
         if (parent != null) {
-            return parent.getElementKey(id, type);
+            return parent.getFunctionByName(funcName);
         }
         return null;
     }
 
-    abstract protected void collectVariables(SymbolTable s) ;
+    /**
+     * Method to copy a node and the rules behind
+     *
+     * @param parent
+     * @return the node copied
+     */
+    abstract protected Node copy(Node parent);
+
+    /**
+     * Method that return the value associated to a node Must be overridden
+     *
+     * @return null by default
+     * @throws SpokException
+     */
+    public SpokObject getResult() throws SpokException {
+        return null;
+    }
+
+    /**
+     * Method that find a node of a given class in a tree This method is
+     * recursive
+     *
+     * @param aClass the class of the node to find
+     * @param parent the parent node to explore
+     * @return the node when it is found and null if it is not found
+     */
+    protected Node findNode(Class aClass, Node parent) {
+        if (parent == null) {
+            return null;
+        }
+        if (parent.getClass() == aClass) {
+            return parent;
+        }
+        return findNode(aClass, parent.parent);
+    }
+
+    /**
+     * Method that add a variable in the Symbol Table and creates it if it does
+     * not exist
+     *
+     * @param name the name of the variable
+     * @param v the variable to assign
+     */
+    protected void setVariable(String name, SpokObject v) {
+        if (symbolTable == null) {
+            symbolTable = new SymbolTable(this);
+        }
+        symbolTable.addVariable(name, v.getJSONDescription());
+    }
+
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String getValue() {
+        return null;
+    }
+
+    /**
+     *
+     * @param what
+     * @param where
+     * @return
+     * @throws SpokExecutionException
+     */
+    protected JSONArray getDevicesInSpaces(JSONArray what, JSONArray where)
+            throws SpokExecutionException {
+        ArrayList<String> WHAT = new ArrayList<String>();
+        for (int i = 0; i < what.length(); i++) {
+            WHAT.add(what.optString(i));
+        }
+        ArrayList<String> WHERE = new ArrayList<String>();
+        for (int i = 0; i < where.length(); i++) {
+            WHERE.add(where.optString(i));
+        }
+        ArrayList<String> devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
+        JSONArray retArray = new JSONArray();
+        for (String name : devicesInSpaces) {
+            NodeValue n = new NodeValue("device", name, this);
+            retArray.put(n.getJSONDescription());
+        }
+        return retArray;
+    }
+
+    /**
+     *
+     * @param ids
+     * @param prop
+     * @param time_start
+     * @param time_end
+     * @return
+     * @throws SpokExecutionException
+     */
+    protected JSONObject getEvents(Set<String> ids, String prop, long time_start, long time_end) throws SpokExecutionException {
+        return getMediator().getPropHistManager().getDevicesStatesHistoryAsJSON(ids, prop, time_start, time_end);
+
+    }
+
+    /**
+     *
+     * @return the elements from a list
+     */
+    public List<NodeValue> getElements() {
+        return new ArrayList<NodeValue>();
+    }
+
+    /**
+     *
+     * @param o
+     * @return
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof SpokObject)) {
+            return false;
+        }
+        return SpokParser.equals(this, (SpokObject) o);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    /**
+     *
+     * @return the programName
+     */
+    protected String getProgramName() {
+        NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
+        if (p != null) {
+            return p.getProgramName();
+        }
+        return null;
+    }
+
 }

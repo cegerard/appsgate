@@ -1,0 +1,17 @@
+{
+    "id": "test",
+    "userSource": "",
+    "name": "empty test",
+    "parameters": [],
+    "header": {
+        "author": "Bob"
+    },
+    "definitions": [
+    ],
+    "body": {
+        "type": "instructions",
+        "rules": [
+        ]
+    }
+}
+

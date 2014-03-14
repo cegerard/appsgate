@@ -603,6 +603,11 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		return new ClockAlarmNotificationMsg(this, alarmEventId);
 	}
 
+    @Override
+    public JSONObject getGrammarDescription() {
+        return null;
+    }
+
 	class AlarmFiringTask extends TimerTask {
 		@Override
 		public void run() {

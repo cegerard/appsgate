@@ -1,0 +1,151 @@
+{
+  "name": "T6",
+  "id": "t06",
+  "header": {
+    "author": "testMaker",
+    "comment": ""
+  },
+  "definitions": [
+    {
+      "id": "l1",
+      "value": {
+        "type": "device",
+        "id": "L1"
+      }
+    },
+    {
+      "id": "l2",
+      "value": {
+        "type": "device",
+        "id": "L2"
+      }
+    },
+    {
+      "id": "b1",
+      "value": {
+        "type": "device",
+        "id": "B1"
+      }
+    },
+    {
+      "id": "b2",
+      "value": {
+        "type": "device",
+        "id": "B2"
+      }
+    },
+    {
+      "id": "b3",
+      "value": {
+        "type": "device",
+        "id": "B3"
+      }
+    }
+  ],
+  "body": {
+    "type": "setOfRules",
+    "rules": [
+      {
+        "type": "when",
+        "events": {
+          "type": "eventsAnd",
+          "events": [
+            {
+              "type": "eventsOr",
+              "events": [
+                {
+                  "type": "event",
+                  "source": {
+                    "type": "variable",
+                    "id": "l1"
+                  },
+                  "eventName": "switchOn",
+                  "eventValue": ""
+                },
+                {
+                  "type": "event",
+                  "source": {
+                    "type": "variable",
+                    "id": "l2"
+                  },
+                  "eventName": "switchOn",
+                  "eventValue": ""
+                }
+              ],
+              "duration": 0,
+              "nbEventToOccur": "1"
+            },
+            {
+              "type": "eventsAnd",
+              "events": [
+                {
+                  "type": "event",
+                  "source": {
+                    "type": "variable",
+                    "id": "b1"
+                  },
+                  "eventName": "click",
+                  "eventValue": ""
+                },
+                {
+                  "type": "eventsSequence",
+                  "events": [
+                    {
+                      "type": "event",
+                      "source": {
+                        "type": "variable",
+                        "id": "b2"
+                      },
+                      "eventName": "click",
+                      "eventValue": ""
+                    },
+                    {
+                      "type": "event",
+                      "source": {
+                        "type": "variable",
+                        "id": "b3"
+                      },
+                      "eventName": "click",
+                      "eventValue": ""
+                    },
+                    {
+                      "type": "event",
+                      "source": {
+                        "type": "variable",
+                        "id": "b2"
+                      },
+                      "eventName": "click",
+                      "eventValue": ""
+                    }
+                  ],
+                  "duration": 0,
+                  "nbEventToOccur": 0
+                }
+              ],
+              "duration": "5",
+              "nbEventToOccur": "0"
+            }
+          ],
+          "duration": "10",
+          "nbEventToOccur": "0"
+        },
+        "seqRulesThen": {
+          "type": "instructions",
+          "rules": [
+            {
+              "type": "action",
+              "target": {
+                "type": "variable",
+                "id": "l1"
+              },
+              "methodName": "toggle",
+              "action": [
+                
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+    "runningState": "DEPLOYED",
+    "id": "TestKeepState",
+    "name": "keepstate",
+    "userSource": "",
+    "daemon": true,
+    "programName": "TestKeepState",
+    "parameters": [],
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
+    "definitions": [],
+    "body": {
+        "type": "keepstate",
+        "state": {
+            "type": "state",
+            "name": "testState",
+            "object": {
+                "type": "device",
+                "id": "test"
+            }
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "friendlyName": "sensor",
+    "typename":"switchSensor",
+    "properties": [
+    ],
+    "states": [
+    ]
+}

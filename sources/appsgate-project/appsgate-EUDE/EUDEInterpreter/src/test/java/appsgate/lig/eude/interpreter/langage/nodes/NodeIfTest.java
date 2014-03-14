@@ -6,12 +6,10 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 
 /**
@@ -22,29 +20,26 @@ public class NodeIfTest extends NodeTest {
 
     private NodeIf ifTest;
 
-    public NodeIfTest() {
+    public NodeIfTest() throws JSONException {
+        JSONObject v = new JSONObject();
+        v.put("type", "boolean");
+        v.put("value", "false");
+        ruleJSON.put("type", "if");
+        ruleJSON.put("expBool", v);
+        ruleJSON.put("seqRulesTrue", emptySeqRules);
+        ruleJSON.put("seqRulesFalse", emptySeqRules);
+
         context.checking(new Expectations() {
             {
-                allowing(interpreter).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
             }
         });
     }
 
     @Before
-    @Override
-    public void setUp() {
-        try {
-            super.setUp();
-            ruleJSON.put("expBool", (Collection) null);
-            ruleJSON.put("seqRulesTrue", (Collection) null);
-            ruleJSON.put("seqRulesFalse", (Collection) null);
-            this.ifTest = new NodeIf(interpreter, ruleJSON, null);
-            this.instance = this.ifTest;
-        } catch (JSONException ex) {
-            System.out.println("JSON ex : " + ex.getMessage());
-        } catch (NodeException ex) {
-            System.out.println(ex.getMessage());
-        }
+    public void setUp() throws Exception {
+        this.ifTest = new NodeIf(ruleJSON, null);
+        this.instance = this.ifTest;
     }
 
 }

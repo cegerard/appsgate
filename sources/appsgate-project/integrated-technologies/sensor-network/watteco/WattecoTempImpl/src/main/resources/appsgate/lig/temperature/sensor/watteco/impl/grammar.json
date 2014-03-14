@@ -1,0 +1,8 @@
+{
+    "friendlyName": "temperature sensor",
+    "typename":"wattecoTemperatureSensor",
+    "properties": [
+    ],
+    "states": [
+    ]
+}

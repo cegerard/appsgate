@@ -1,0 +1,87 @@
+{
+    "id": "whenImb",
+    "runningState": "DEPLOYED",
+    "userSource": "",
+    "name": "TestWhenImb",
+    "daemon": true,
+    "parameters": [],
+    "header": {
+        "target": "Alice",
+        "author": "Bob"
+    },
+    "definitions": [],
+    "body": {
+        "type": "instructions",
+        "rules": [
+            {
+                "type": "when",
+                "events": {
+                    "type": "eventsOr",
+                    "events": [
+                        {
+                            "type": "event",
+                            "source": {
+                                "type": "device",
+                                "id": "PremierAppel"
+                            },
+                            "eventName": "makeCall",
+                            "eventValue": "1"
+                        }
+                    ]
+                },
+                "seqRulesThen": {
+                    "type": "instructions",
+                    "rules": [
+                        {
+                            "type": "action",
+                            "methodName": "On",
+                            "args": [],
+                            "action": "DoJob",
+                            "target": {
+                                "type": "device",
+                                "id": "FirstWhen"
+                            }
+                        },
+                        {
+                            "type": "when",
+                            "events": {
+                                "type": "eventsOr",
+                                "events": [
+                                    {
+                                        "type": "event",
+                                        "source": {
+                                            "type": "device",
+                                            "id": "PremierAppel"
+                                        },
+                                        "eventName": "makeCall",
+                                        "eventValue": "1"
+                                    }
+                                ]
+                            },
+                            "seqRulesThen": {
+                                "type": "action",
+                                "targetId": "SecondWhen",
+                                "methodName": "On",
+                                "args": [],
+                                "action": "DoJob",
+                                "target": {
+                                    "type": "device",
+                                    "id": "FirstWhen"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "action",
+                "target": {
+                    "type": "device",
+                    "id": "test"
+                },
+                "methodName": "assert",
+                "action": []
+            }
+        ]
+    }
+}

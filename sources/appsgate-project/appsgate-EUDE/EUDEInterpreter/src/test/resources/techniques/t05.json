@@ -1,0 +1,135 @@
+{
+  "name": "T5",
+  "id": "t05",
+  "header": {
+    "author": "testMaker",
+    "comment": "Lorsque L2 est allumé et que dans un intervalle de 10 secondes (B1 est appuyé et dans un intervalle de 5 secondes (B2 est appuyé puis B3 est appuyé puis B2 est appuyé) ),  alors si L1 est allumé alors éteindre L1 sinon allumer L1."
+  },
+  "definitions": [
+    {
+      "id": "l1",
+      "value": {
+        "type": "device",
+        "id": "L1"
+      }
+    },
+    {
+      "id": "l2",
+      "value": {
+        "type": "device",
+        "id": "L2"
+      }
+    },
+    {
+      "id": "b1",
+      "value": {
+        "type": "device",
+        "id": "B1"
+      }
+    },
+    {
+      "id": "b2",
+      "value": {
+        "type": "device",
+        "id": "B2"
+      }
+    },
+    {
+      "id": "b3",
+      "value": {
+        "type": "device",
+        "id": "B3"
+      }
+    }
+  ],
+  "body": {
+    "type": "setOfRules",
+    "rules": [
+      {
+        "type": "when",
+        "events": {
+          "type": "eventsAnd",
+          "events": [
+            {
+              "type": "event",
+              "source": {
+                "type": "variable",
+                "id": "l2"
+              },
+              "eventName": "switchOn",
+              "eventValue": ""
+            },
+            {
+              "type": "eventsAnd",
+              "events": [
+                {
+                  "type": "event",
+                  "source": {
+                    "type": "variable",
+                    "id": "b1"
+                  },
+                  "eventName": "click",
+                  "eventValue": ""
+                },
+                {
+                  "type": "eventsSequence",
+                  "events": [
+                    {
+                      "type": "event",
+                      "source": {
+                        "type": "variable",
+                        "id": "b2"
+                      },
+                      "eventName": "click",
+                      "eventValue": ""
+                    },
+                    {
+                      "type": "event",
+                      "source": {
+                        "type": "variable",
+                        "id": "b3"
+                      },
+                      "eventName": "click",
+                      "eventValue": ""
+                    },
+                    {
+                      "type": "event",
+                      "source": {
+                        "type": "variable",
+                        "id": "b2"
+                      },
+                      "eventName": "click",
+                      "eventValue": ""
+                    }
+                  ],
+                  "duration": 0,
+                  "nbEventToOccur": 0
+                }
+              ],
+              "duration": "5",
+              "nbEventToOccur": "0"
+            }
+          ],
+          "duration": "10",
+          "nbEventToOccur": "0"
+        },
+        "seqRulesThen": {
+          "type": "instructions",
+          "rules": [
+            {
+              "type": "action",
+              "target": {
+                "type": "variable",
+                "id": "l1"
+              },
+              "methodName": "toggle",
+              "action": [
+                
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+    "friendlyName": "contact sensor",
+    "typename":"contactSensor",
+    "properties": [
+    ],
+    "states": [
+    ]
+}

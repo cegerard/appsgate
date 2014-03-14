@@ -348,7 +348,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 			
 			@SuppressWarnings({ "rawtypes", "finally" })
 			@Override
-			public JSONObject JSONize() throws JSONException {
+			public JSONObject JSONize() {
 				
 				JSONObject result = new JSONObject();
 				

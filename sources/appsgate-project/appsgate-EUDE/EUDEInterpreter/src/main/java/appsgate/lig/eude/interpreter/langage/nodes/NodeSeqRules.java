@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEInterpreterImpl;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -8,7 +8,11 @@ import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.Iterator;
+import java.util.List;
+import org.json.JSONObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,84 +33,78 @@ import org.slf4j.LoggerFactory;
 public class NodeSeqRules extends Node {
 
     // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class);
 
     /**
      * Contains the block of rules separated by a "THEN" operator
      */
-    private final ArrayList<NodeSeqAndRules> seqAndRules;
+    private List<Node> instructions;
+
     /**
      *
      */
-    private int idCurrentSeqAndRules;
+    private Iterator<Node> iterator;
+
+    private Node currentNode = null;
+
+    /**
+     * private Constructor to copy Nodes
+     *
+     * @param p
+     */
+    private NodeSeqRules(Node p) {
+        super(p);
+    }
 
     /**
      * Initialize the sequence of rules from a JSON tree
      *
-     * @param interpreter
-     * @param seqRulesJSON JSON array containing the rules
-     * @throws appsgate.lig.eude.interpreter.langage.nodes.NodeException
+     * @param seqInstructions JSON Object containing the rules
+     * @param parent
+     * @throws SpokNodeException
      */
-    public NodeSeqRules(EUDEInterpreterImpl interpreter, JSONArray seqRulesJSON, Node parent) throws NodeException {
-        super(interpreter, parent);
+    public NodeSeqRules(JSONObject seqInstructions, Node parent) throws SpokNodeException {
+        super(parent);
+        JSONArray seqRulesJSON = seqInstructions.optJSONArray("rules");
 
-        seqAndRules = new ArrayList<NodeSeqAndRules>();
+        instructions = new ArrayList<Node>();
+
+        if (seqRulesJSON == null) {
+            iterator = instructions.iterator();
+            LOGGER.warn("No instructions in this block");
+            return;
+        }
 
         for (int i = 0; i < seqRulesJSON.length(); i++) {
-            JSONArray seqAndRulesJSON;
             try {
-                seqAndRulesJSON = seqRulesJSON.getJSONArray(i);
+                instructions.add(Builder.buildFromJSON(seqRulesJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
-                throw new NodeException("NodeSeqRules", "item " + i, ex);
+                throw new SpokNodeException("NodeSeqRules", "item " + i, ex);
+            } catch (SpokTypeException ex) {
+                throw new SpokNodeException("NodeSeqRules", "item " + i, ex);
             }
-            if (seqAndRulesJSON.length() > 0) {
-                seqAndRules.add(new NodeSeqAndRules(interpreter, seqAndRulesJSON, this));
-            }
-        }
-
-    }
-
-    /**
-     * Method that launch the next sequence
-     */
-    private void launchNextSeqAndRules() {
-        NodeSeqAndRules seqAndRule;
-
-        synchronized (this) {
-            // get the next sequence of rules to launch
-            seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
-        }
-
-        if (!isStopping()) {
-            // launch the sequence of rules
-            seqAndRule.addEndEventListener(this);
-            seqAndRule.call();
         }
     }
 
     @Override
-    public Integer call() {
-        idCurrentSeqAndRules = 0;
+    public JSONObject call() {
+        LOGGER.debug("iterator reinited for {}", getProgramName());
+        iterator = instructions.iterator();
         setStarted(true);
         fireStartEvent(new StartEvent(this));
 
-        if (!seqAndRules.isEmpty()) {
+        if (!instructions.isEmpty()) {
             launchNextSeqAndRules();
         } else {
-            LOGGER.warn("Trying to call a seq rule on an empty sequence");
-            setStarted(false);
-            fireEndEvent(new EndEvent(this));
+            SpokExecutionException ex = new SpokExecutionException("There is no instructions to execute");
+            return ex.getJSONDescription();
         }
-
         return null;
     }
 
     @Override
     public void endEventFired(EndEvent e) {
-        //    ((Node) e.getSource()).removeEndEventListener(this);
-        idCurrentSeqAndRules++;
-
-        if (idCurrentSeqAndRules < seqAndRules.size()) {
+        if (iterator.hasNext()) {
             LOGGER.trace("###### launching the next sequence of rules...");
             try {
                 launchNextSeqAndRules();
@@ -120,51 +118,101 @@ public class NodeSeqRules extends Node {
         }
     }
 
+    /**
+     * Method that launch the next sequence
+     */
+    private void launchNextSeqAndRules() {
+
+        LOGGER.debug("CurrentNode : {}", currentNode);
+                LOGGER.debug("Iterator has next: {}", iterator.hasNext());
+
+        // get the next sequence of rules to launch
+        currentNode = iterator.next();
+        LOGGER.debug("CurrentNode After next : {}", currentNode);
+
+        if (!isStopping()) {
+            // launch the sequence of rules
+            currentNode.addEndEventListener(this);
+            currentNode.call();
+        }
+    }
+
     @Override
-    public void stop() {
-        if (isStarted()) {
-            for (Node n : seqAndRules) {
-                n.removeEndEventListener(this);
-            }
-            synchronized (this) {
-                if (seqAndRules.size() > 0) {
-                    NodeSeqAndRules seqAndRule = seqAndRules.get(idCurrentSeqAndRules);
-                    setStopping(true);
-                    seqAndRule.stop();
+    public void specificStop() {
+        for (Node n : instructions) {
+            n.removeEndEventListener(this);
+            n.stop();
+        }
+        synchronized (this) {
+            if (instructions.size() > 0) {
+                setStopping(true);
+                if (currentNode != null) {
+                    currentNode.stop();
                 }
             }
-            setStarted(false);
-            setStopping(false);
         }
     }
 
     @Override
     public String toString() {
+        return "[Node SeqRules: [" + instructions.size() + "]]";
+    }
 
-        return "[Node SeqRules: [" + seqAndRules.size() + "]]";
+    @Override
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("type", "instructions");
+            o.put("rules", getJSONArray());
+        } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return o;
     }
 
     /**
      *
      * @return
      */
+    private JSONArray getJSONArray() {
+        JSONArray a = new JSONArray();
+        int i = 0;
+        for (Node n : this.instructions) {
+            try {
+                a.put(i, n.getJSONDescription());
+                i++;
+            } catch (JSONException ex) {
+                // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+                // only if the key is null, which will never be the case
+            }
+        }
+        return a;
+    }
+
     @Override
     public String getExpertProgramScript() {
-        if (seqAndRules.size() == 1) {
-            return seqAndRules.get(0).getExpertProgramScript();
+        if (instructions.size() == 1) {
+            return instructions.get(0).getExpertProgramScript();
         }
 
-        String ret = "[";
-        for (NodeSeqAndRules s : seqAndRules) {
+        String ret = "{";
+        for (Node s : instructions) {
             ret += s.getExpertProgramScript() + ",";
         }
-        return ret.substring(0, ret.length() - 1) + "]";
+        return ret.substring(0, ret.length() - 1) + "}";
     }
 
     @Override
-    protected void collectVariables(SymbolTable s) {
-        for (NodeSeqAndRules seq : seqAndRules) {
-            seq.collectVariables(s);
+    protected Node copy(Node parent) {
+        NodeSeqRules ret = new NodeSeqRules(parent);
+        ret.instructions = new ArrayList<Node>();
+        for (Node n : instructions) {
+            ret.instructions.add(n.copy(ret));
         }
+
+        return ret;
+
     }
+
 }

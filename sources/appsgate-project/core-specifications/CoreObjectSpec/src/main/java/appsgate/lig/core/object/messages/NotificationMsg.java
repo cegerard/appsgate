@@ -1,6 +1,5 @@
 package appsgate.lig.core.object.messages;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
@@ -34,6 +33,6 @@ public interface NotificationMsg {
 	 * 
 	 * @return a JSONObject that represent the NotificationMsg java object
 	 */
-	public JSONObject JSONize() throws JSONException;
+	public JSONObject JSONize();
 
 }

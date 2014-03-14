@@ -842,6 +842,7 @@ public class Appsgate implements AppsGateSpec {
 				deviceProperties.put("deviceType", type);
 				deviceProperties.put("ref", description.getString("id"));
 				deviceProperties.put("name", objectName);
+                                
 					//Test needed to determine whether a device space in the system category already exist or not.
 				ArrayList<Space> children = deviceCat.getChildren();
 				boolean exist = false;

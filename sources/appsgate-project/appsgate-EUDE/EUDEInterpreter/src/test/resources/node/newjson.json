@@ -1,0 +1,29 @@
+{
+    "id" : "toto",
+    "name": "toto",
+    "package": "root",
+    "daemon": false,
+    "userSource": "",
+    "parameters": [],
+    "header": {},
+    "definitions": [
+        {
+            "id": "c",
+            "value": {
+                "type": "boolean",
+                "value": "true"
+            }
+        },
+        {
+            "id": "b"
+        },
+        {
+            "id": "a"
+        }
+    ],
+    "body": {
+        "type": "setOfRules",
+        "rules": ""
+
+    }
+}
