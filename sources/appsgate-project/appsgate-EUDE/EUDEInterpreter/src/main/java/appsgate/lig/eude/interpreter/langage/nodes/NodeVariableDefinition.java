@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeVariableDefinition extends Node {
+public class NodeVariableDefinition extends Node implements NodeListInterface {
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeVariableDefinition.class);
@@ -190,7 +190,7 @@ public class NodeVariableDefinition extends Node {
 
     @Override
     protected void specificStop() {
-        Node n = getNodeValue();
+        Node n = (Node) getNodeValue();
         if (n != null) {
             n.stop();
         }
@@ -199,7 +199,7 @@ public class NodeVariableDefinition extends Node {
     @Override
     public JSONObject call() {
         setStarted(true);
-        Node n = getNodeValue();
+        Node n = (Node) getNodeValue();
         if (n != null) {
             n.addEndEventListener(this);
             return n.call();
@@ -224,7 +224,7 @@ public class NodeVariableDefinition extends Node {
     protected Node copy(Node parent) {
         NodeVariableDefinition node = new NodeVariableDefinition(parent);
         node.id = this.id;
-        Node n = getNodeValue();
+        Node n = (Node) getNodeValue();
         if (n != null) {
             node.value = n.copy(parent);
         }
@@ -242,16 +242,16 @@ public class NodeVariableDefinition extends Node {
      * @return a pointer to the Node value if this is a Node object, null
      * otherwise
      */
-    public Node getNodeValue() {
-        if (value != null && value instanceof Node) {
-            return (Node) value;
+    public NodeListInterface getNodeValue() {
+        if (value != null && value instanceof NodeListInterface) {
+            return (NodeListInterface) value;
         }
         return null;
     }
-    
+
     @Override
     public List<NodeValue> getElements() {
-        Node n = getNodeValue();
+        NodeListInterface n = getNodeValue();
         if (n != null) {
             return n.getElements();
         }

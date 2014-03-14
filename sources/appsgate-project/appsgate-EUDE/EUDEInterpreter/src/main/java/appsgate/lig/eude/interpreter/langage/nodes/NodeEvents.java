@@ -6,7 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.ClockProxy;
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -154,7 +154,7 @@ public abstract class NodeEvents extends Node {
      * @throws SpokExecutionException
      */
     protected Boolean isClockEvent(NodeEvent nodeEnded) throws SpokExecutionException {
-        EUDEMediator mediator = getMediator();
+        EUDEInterpreter mediator = getMediator();
         ClockProxy p = mediator.getClock();
         if (p == null) {
             throw new SpokExecutionException("Unable to find clock");

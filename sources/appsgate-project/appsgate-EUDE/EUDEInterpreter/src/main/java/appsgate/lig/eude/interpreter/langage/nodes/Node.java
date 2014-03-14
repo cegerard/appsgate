@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import java.util.concurrent.Callable;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -206,7 +206,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @return mediator
      * @throws SpokExecutionException
      */
-    public EUDEMediator getMediator() throws SpokExecutionException {
+    public EUDEInterpreter getMediator() throws SpokExecutionException {
         if (this.parent != null) {
             return this.parent.getMediator();
         }
@@ -473,14 +473,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     protected JSONObject getEvents(Set<String> ids, String prop, long time_start, long time_end) throws SpokExecutionException {
         return getMediator().getPropHistManager().getDevicesStatesHistoryAsJSON(ids, prop, time_start, time_end);
 
-    }
-
-    /**
-     *
-     * @return the elements from a list
-     */
-    public List<NodeValue> getElements() {
-        return new ArrayList<NodeValue>();
     }
 
     /**

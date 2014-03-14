@@ -61,11 +61,11 @@ public class NodeKeepStateTest extends NodeTest {
         n.call();
         synchroniser.waitUntil(tested.is("listening"), 200);
         tested.become("no");
-        n.endEventFired(new EndEvent(n.state));
+        n.endEventFired(new EndEvent(n.getState()));
         synchroniser.waitUntil(tested.is("listening"), 200);
         tested.become("no");
-        n.endEventFired(new EndEvent(n.state));
-        n.endEventFired(new EndEvent(n.state));
+        n.endEventFired(new EndEvent(n.getState()));
+        n.endEventFired(new EndEvent(n.getState()));
         synchroniser.waitUntil(tested.is("listening"), 200);
         n.stop();
         synchroniser.waitUntil(tested.is("no"), 200);

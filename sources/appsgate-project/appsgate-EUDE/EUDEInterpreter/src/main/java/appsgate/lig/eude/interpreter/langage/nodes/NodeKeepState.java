@@ -22,7 +22,7 @@ public class NodeKeepState extends Node {
     /**
      *
      */
-    protected NodeState state;
+    private NodeState state;
 
     /**
      *
@@ -88,7 +88,7 @@ public class NodeKeepState extends Node {
             LOGGER.trace("We are still in state");
             return;
         }
-        LOGGER.debug("no more in state, trying to relaunch it");
+        LOGGER.debug("not in state anymore, trying to relaunch it");
         setter.call();
         listenEndEvents();
     }
@@ -110,8 +110,16 @@ public class NodeKeepState extends Node {
      *
      */
     private void listenEndEvents() {
-        state.call();
         state.addEndEventListener(this);
+        state.call();
+    }
+
+    /**
+     * 
+     * @return the state
+     */
+    public NodeState getState() {
+        return state;
     }
 
 }

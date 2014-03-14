@@ -14,13 +14,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author jr
  */
-public class NodeValue extends Node {
+public class NodeValue extends Node implements NodeListInterface{
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeValue.class);

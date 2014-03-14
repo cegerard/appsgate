@@ -55,7 +55,7 @@ public class TechnicalTest {
     private DataBasePullService pull_service;
     private DataBasePushService push_service;
     private RouterApAMSpec router;
-    private EUDEMediator instance;
+    private EUDEInterpreter instance;
     private ContextProxyMock contextProxy;
 
     private final File[] listFiles;
@@ -115,7 +115,7 @@ public class TechnicalTest {
 
             }
         });
-        this.instance = new EUDEMediator();
+        this.instance = new EUDEInterpreter();
         this.instance.setTestMocks(pull_service, push_service, router, contextProxy);
 
     }

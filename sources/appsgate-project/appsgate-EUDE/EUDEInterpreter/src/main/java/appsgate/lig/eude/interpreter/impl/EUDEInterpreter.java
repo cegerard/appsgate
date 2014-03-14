@@ -46,12 +46,12 @@ import java.util.List;
  * @version 1.0.0
  *
  */
-public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, EndEventListener {
+public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener, EndEventListener {
 
     /**
      * Static class member uses to log what happened in each instances
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(EUDEMediator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EUDEInterpreter.class);
 
     /**
      * Reference to the ApAM context proxy. Used to be notified when something
@@ -104,7 +104,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
      *
      * @constructor
      */
-    public EUDEMediator() {
+    public EUDEInterpreter() {
         mapPrograms = new HashMap<String, NodeProgram>();
         mapCoreNodeEvent = new HashMap<CoreEventListener, ArrayList<NodeEvent>>();
         root = initRootProgram();
@@ -634,7 +634,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
         /**
          *
          */
-        private final EUDEMediator eudeInt;
+        private final EUDEInterpreter eudeInt;
 
         /**
          *
@@ -644,7 +644,7 @@ public class EUDEMediator implements EUDE_InterpreterSpec, StartEventListener, E
          * @param eudeInt
          */
         public CoreEventListener(String objectId, String varName,
-                String varValue, EUDEMediator eudeInt) {
+                String varValue, EUDEInterpreter eudeInt) {
             this.objectId = objectId;
             this.varName = varName;
             this.varValue = varValue;

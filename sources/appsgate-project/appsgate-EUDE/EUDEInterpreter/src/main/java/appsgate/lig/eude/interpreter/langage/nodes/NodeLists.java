@@ -9,9 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.List;
-import static org.apache.commons.collections.ListUtils.intersection;
-import static org.apache.commons.collections.ListUtils.subtract;
-import static org.apache.commons.collections.ListUtils.sum;
+import org.apache.commons.collections4.ListUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeLists extends Node {
+public class NodeLists extends Node implements NodeListInterface {
 
     /**
      * The logger
@@ -59,11 +57,13 @@ public class NodeLists extends Node {
     /**
      *
      */
-    private Node leftList;
+    private Node left;
+    private NodeListInterface leftList;
     /**
      *
      */
-    private Node rightList;
+    private Node right;
+    private NodeListInterface rightList;
 
     /**
      *
@@ -100,36 +100,47 @@ public class NodeLists extends Node {
             LOGGER.error("Unkown operator {}", getJSONString(o, "operator"));
             throw new SpokNodeException("NodeLists", "operator", null);
         }
-        leftList = Builder.nodeOrNull(o.optJSONObject("left"), this);
-        if (leftList == null) {
-            LOGGER.error("");
+        left = Builder.nodeOrNull(o.optJSONObject("left"), this);
+        if (left == null) {
+            LOGGER.error("No left list");
             throw new SpokNodeException("NodeLists", "left", null);
         }
-        rightList = Builder.nodeOrNull(o.optJSONObject("right"), this);
-        if (rightList == null) {
-            LOGGER.error("");
+        if (!(left instanceof NodeListInterface)) {
+            LOGGER.error("left node is not a list");
+            throw new SpokNodeException("NodeLists", "left", null);
+        }
+        leftList = (NodeListInterface) left;
+        right = Builder.nodeOrNull(o.optJSONObject("right"), this);
+        if (right == null) {
+            LOGGER.error("no right list");
             throw new SpokNodeException("NodeLists", "right", null);
         }
+        if (!(right instanceof NodeListInterface)) {
+            LOGGER.error("right node is not a list");
+            throw new SpokNodeException("NodeLists", "right", null);
+        }
+        rightList = (NodeListInterface) right;
+
     }
 
     @Override
     protected void specificStop() {
-        leftList.stop();
-        rightList.stop();
+        left.stop();
+        right.stop();
     }
 
     @Override
     public JSONObject call() {
         setStarted(true);
         nbDone = 0;
-        leftList.addEndEventListener(this);
-        JSONObject callResult = leftList.call();
+        left.addEndEventListener(this);
+        JSONObject callResult = left.call();
         if (callResult != null) {
             LOGGER.debug("unable to get a result from left wing interrupting the call");
             return callResult;
         }
-        rightList.addEndEventListener(this);
-        return rightList.call();
+        right.addEndEventListener(this);
+        return right.call();
     }
 
     @Override
@@ -140,8 +151,8 @@ public class NodeLists extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeLists n = new NodeLists(parent);
-        n.leftList = leftList.copy(n);
-        n.rightList = rightList.copy(n);
+        n.left = left.copy(n);
+        n.right = right.copy(n);
         n.op = op;
         return n;
     }
@@ -161,8 +172,8 @@ public class NodeLists extends Node {
         JSONObject o = new JSONObject();
         try {
             o.put("type", "lists");
-            o.put("left", leftList.getJSONDescription());
-            o.put("right", rightList.getJSONDescription());
+            o.put("left", left.getJSONDescription());
+            o.put("right", right.getJSONDescription());
             o.put("operator", op.getVal());
         } catch (JSONException e) {
             // Never thrown since we now the key to put
@@ -182,13 +193,13 @@ public class NodeLists extends Node {
     private void computeResult() {
         switch (op) {
             case UNION:
-                result = sum(leftList.getElements(), rightList.getElements());
+                result = ListUtils.sum(leftList.getElements(), rightList.getElements());
                 break;
             case INTERSECTION:
-                result = intersection(leftList.getElements(), rightList.getElements());
+                result = ListUtils.intersection(leftList.getElements(), rightList.getElements());
                 break;
             case NOT_IN:
-                result = subtract(leftList.getElements(), rightList.getElements());
+                result = ListUtils.subtract(leftList.getElements(), rightList.getElements());
                 break;
             default:
                 LOGGER.warn("Unknown operator");
@@ -197,7 +208,7 @@ public class NodeLists extends Node {
 
     @Override
     public String toString() {
-        return "[Node lists (" + leftList + ") " + op + " (" + rightList + ")]";
+        return "[Node lists (" + left + ") " + op + " (" + right + ")]";
     }
 
     @Override

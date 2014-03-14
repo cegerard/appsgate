@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-class NodeState extends Node {
+public class NodeState extends Node {
 
     /**
      * Logger
@@ -41,12 +41,9 @@ class NodeState extends Node {
     private NodeEvent eventStart = null;
     private NodeEvent eventEnd = null;
 
-    private ContextProxySpec context;
     private boolean isOnRules;
 
     private StateDescription desc = null;
-
-    private String type;
 
     /**
      * Private constructor to allow copy
@@ -62,9 +59,11 @@ class NodeState extends Node {
      *
      * @param o the json description
      * @param parent the parent node
+     * @throws SpokNodeException
      */
     public NodeState(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
+        ContextProxySpec context;
         try {
             object = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
         } catch (SpokTypeException ex) {
@@ -77,7 +76,6 @@ class NodeState extends Node {
             LOGGER.error("unable to find context");
             throw new SpokNodeException("NodeState", "context unavailable", ex);
         }
-        
         desc = context.getEventsFromState(object.getValue(), stateName);
 
     }

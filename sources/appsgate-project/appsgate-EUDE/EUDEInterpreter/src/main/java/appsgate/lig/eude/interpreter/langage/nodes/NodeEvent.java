@@ -1,6 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
@@ -42,10 +42,10 @@ public class NodeEvent extends Node {
      * Value of the event to wait
      */
     private String eventValue;
-    
+
     /**
-     * 
-     * @param parent 
+     *
+     * @param parent
      */
     private NodeEvent(Node parent) {
         super(parent);
@@ -73,7 +73,7 @@ public class NodeEvent extends Node {
      * @param parent
      * @throws SpokNodeException
      */
-    public NodeEvent(JSONObject eventJSON, Node parent) 
+    public NodeEvent(JSONObject eventJSON, Node parent)
             throws SpokNodeException {
         super(parent);
         try {
@@ -90,7 +90,7 @@ public class NodeEvent extends Node {
     public JSONObject call() {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
-        EUDEMediator mediator;
+        EUDEInterpreter mediator;
         try {
             mediator = getMediator();
         } catch (SpokExecutionException ex) {
@@ -128,7 +128,7 @@ public class NodeEvent extends Node {
 
     @Override
     protected void specificStop() {
-        EUDEMediator mediator;
+        EUDEInterpreter mediator;
         try {
             mediator = getMediator();
         } catch (SpokExecutionException ex) {
@@ -164,7 +164,7 @@ public class NodeEvent extends Node {
     public String toString() {
         return "[Node Event on " + source.getValue() + "]";
     }
-    
+
     @Override
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();

@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
  *
  * @author jr
  */
-public class EUDEMediatorTest {
+public class EUDEInterpreterTest {
 
     /**
      *
@@ -66,12 +66,12 @@ public class EUDEMediatorTest {
     private DataBasePullService pull_service;
     private DataBasePushService push_service;
     private RouterApAMSpec router;
-    private EUDEMediator instance;
+    private EUDEInterpreter instance;
     private final JSONObject programJSON;
     private ContextProxyMock contextProxy;
     private final String programId = "test";
 
-    public EUDEMediatorTest() throws Exception {
+    public EUDEInterpreterTest() throws Exception {
         programJSON = TestUtilities.loadFileJSON("src/test/resources/prog/testEmpty.json");
     }
 
@@ -124,13 +124,13 @@ public class EUDEMediatorTest {
 
             }
         });
-        this.instance = new EUDEMediator();
+        this.instance = new EUDEInterpreter();
         this.instance.setTestMocks(pull_service, push_service, router, contextProxy);
 
     }
 
     /**
-     * Test of newInst method, of class EUDEMediator.
+     * Test of newInst method, of class EUDEInterpreter.
      */
     @Test
     public void testNewInst() {
@@ -139,7 +139,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of deleteInst method, of class EUDEMediator.
+     * Test of deleteInst method, of class EUDEInterpreter.
      */
     @Test
     public void testDeleteInst() {
@@ -148,7 +148,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of addProgram method, of class EUDEMediator.
+     * Test of addProgram method, of class EUDEInterpreter.
      *
      * @throws org.json.JSONException
      */
@@ -161,7 +161,8 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of removeProgram method, of class EUDEMediator.
+     * Test of removeProgram method, of class EUDEInterpreter.
+     *
      * @throws Exception
      */
     @Test
@@ -176,7 +177,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of update method, of class EUDEMediator.
+     * Test of update method, of class EUDEInterpreter.
      */
     @Test
     public void testUpdate() {
@@ -187,7 +188,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of callProgram method, of class EUDEMediator.
+     * Test of callProgram method, of class EUDEInterpreter.
      */
     @Test
     public void testCallProgram() {
@@ -200,7 +201,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of stopProgram method, of class EUDEMediator.
+     * Test of stopProgram method, of class EUDEInterpreter.
      */
     @Test
     public void testStopProgram() {
@@ -210,7 +211,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of pauseProgram method, of class EUDEMediator.
+     * Test of pauseProgram method, of class EUDEInterpreter.
      */
     @Test
     public void testPauseProgram() {
@@ -220,7 +221,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of getListPrograms method, of class EUDEMediator.
+     * Test of getListPrograms method, of class EUDEInterpreter.
      */
     @Test
     public void testGetListPrograms() {
@@ -230,7 +231,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of isProgramActive method, of class EUDEMediator.
+     * Test of isProgramActive method, of class EUDEInterpreter.
      */
     @Test
     public void testIsProgramActive() {
@@ -241,7 +242,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of getNodeProgram method, of class EUDEMediator.
+     * Test of getNodeProgram method, of class EUDEInterpreter.
      */
     @Test
     public void testGetNodeProgram() {
@@ -252,7 +253,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of addNodeListening method, of class EUDEMediator.
+     * Test of addNodeListening method, of class EUDEInterpreter.
      *
      * @throws org.json.JSONException
      * @throws SpokNodeException
@@ -267,7 +268,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of removeNodeListening method, of class EUDEMediator.
+     * Test of removeNodeListening method, of class EUDEInterpreter.
      *
      * @throws org.json.JSONException
      * @throws SpokNodeException
@@ -283,7 +284,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of notifyChanges method, of class EUDEMediator.
+     * Test of notifyChanges method, of class EUDEInterpreter.
      */
     @Test
     public void testNotifyChanges() {
@@ -294,7 +295,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of endEventFired method, of class EUDEMediator.
+     * Test of endEventFired method, of class EUDEInterpreter.
      *
      * @throws org.json.JSONException
      */
@@ -306,7 +307,7 @@ public class EUDEMediatorTest {
     }
 
     /**
-     * Test of startEventFired method, of class EUDEMediator.
+     * Test of startEventFired method, of class EUDEInterpreter.
      */
     @Test
     public void testStartEventFired() {
@@ -353,14 +354,12 @@ public class EUDEMediatorTest {
         System.out.println(instance.getNodeProgram("testPrograms").getExpertProgramScript());
         System.out.println("********************************************************");
         Assert.assertTrue(instance.callProgram("testPrograms"));
-        
-        
+
         System.out.println("********************testIf************************");
         System.out.println(instance.getNodeProgram("testIf").getExpertProgramScript());
         System.out.println("********************************************************");
         Assert.assertTrue(instance.callProgram("testIf"));
 
-        
         System.out.println("********************program-4050************************");
         System.out.println(instance.getNodeProgram("program-4050").getExpertProgramScript());
         System.out.println("********************************************************");

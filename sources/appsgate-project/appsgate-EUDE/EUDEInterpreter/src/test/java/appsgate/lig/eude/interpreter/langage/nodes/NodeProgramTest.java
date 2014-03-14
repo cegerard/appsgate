@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
@@ -171,7 +171,7 @@ public class NodeProgramTest extends NodeTest {
     public void testgetMediator() {
         System.out.println("getMediator");
         try {
-            EUDEMediator i = this.instance.getMediator();
+            EUDEInterpreter i = this.instance.getMediator();
             Assert.assertNotNull(i);
         } catch (SpokExecutionException ex) {
             fail("Should not have raised an exception");
