@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeWhile extends Node {
+public class NodeWhile extends Node implements NodeRule {
 
     /**
      * Logger
@@ -56,30 +56,25 @@ public class NodeWhile extends Node {
      */
     public NodeWhile(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
+        JSONObject stateJSON = o.optJSONObject("state");
         try {
-            this.state = (NodeState) Builder.buildFromJSON(o.getJSONObject("state"), this);
-        } catch (JSONException ex) {
-            throw new SpokNodeException("NodeWhile", "state", ex);
+            this.state = (NodeState) Builder.buildFromJSON(stateJSON, this);
         } catch (SpokTypeException ex) {
             throw new SpokNodeException("NodeWhile", "state", ex);
         }
+        JSONObject rulesJSON = o.optJSONObject("rules");
         try {
-            this.rules = Builder.buildFromJSON(o.getJSONObject("rules"), this);
-        } catch (JSONException ex) {
-            throw new SpokNodeException("NodeWhile", "rules", ex);
+            this.rules = Builder.buildFromJSON(rulesJSON, this);
         } catch (SpokTypeException ex) {
             throw new SpokNodeException("NodeWhile", "rules", ex);
         }
+        JSONObject thenJSON = o.optJSONObject("rulesThen");
         try {
-            this.rulesThen = Builder.nodeOrNull(o.getJSONObject("rulesThen"), this);
-        } catch (JSONException ex) {
-            LOGGER.trace("There is no rulesThen");
-            this.rulesThen = null;
+            this.rulesThen = Builder.nodeOrNull(thenJSON, this);
         } catch (SpokTypeException ex) {
             LOGGER.trace("There is no rulesThen");
             this.rulesThen = null;
         }
-
     }
 
     @Override

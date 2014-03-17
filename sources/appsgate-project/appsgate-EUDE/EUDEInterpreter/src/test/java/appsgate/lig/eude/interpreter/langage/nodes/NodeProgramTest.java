@@ -40,7 +40,6 @@ public class NodeProgramTest extends NodeTest {
         ruleJSON.put("type", "program");
         ruleJSON.put("runningState", "STOPPED");
         ruleJSON.put("name", "test");
-        ruleJSON.put("daemon", false);
         ruleJSON.put("package", "test");
         JSONObject header = new JSONObject();
         header.put("author", "toto");
@@ -60,16 +59,6 @@ public class NodeProgramTest extends NodeTest {
         this.instance = this.programTest;
     }
 
-    /**
-     * Test of isDeamon method, of class NodeProgram.
-     */
-    @Test
-    public void testIsDeamon() {
-        System.out.println("isDeamon");
-        boolean expResult = false;
-        boolean result = this.programTest.isDaemon();
-        assertEquals(expResult, result);
-    }
 
     /**
      * Test of getuserSource method, of class NodeProgram.
@@ -111,7 +100,6 @@ public class NodeProgramTest extends NodeTest {
         rules.put("header", header);
 
         rules.put("name", "test");
-        rules.put("daemon", true);
         rules.put("body", rules);
         rules.put("definitions", (Collection) null);
 

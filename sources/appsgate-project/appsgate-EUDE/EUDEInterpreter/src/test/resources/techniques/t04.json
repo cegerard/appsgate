@@ -1,16 +1,24 @@
 {
     "name": "T4",
-    "id" : "t4",
+    "id": "t04",
     "header": {
-        "author" : "testMaker",
-        "comments": "(Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2.)  PUIS  Faire clignoter L1.// Vérifier que le tant que est désactivé par le puis"
+        "author": "testMaker",
+        "comment": "Tant que L1 est allumé alors L2 est allumé,  et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2."
     },
     "definitions": [
         {
-            "id": "l1"
+            "id": "l1",
+            "value": {
+                "type": "device",
+                "id": "L1"
+            }
         },
         {
-            "id": "l2"
+            "id": "l2",
+            "value": {
+                "type": "device",
+                "id": "L2"
+            }
         }
     ],
     "body": {
@@ -60,3 +68,4 @@
         ]
     }
 }
+
