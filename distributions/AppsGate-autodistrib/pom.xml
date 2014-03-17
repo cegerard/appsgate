@@ -325,6 +325,11 @@
 								<!-- Appsgate modules -->
 								<artifactItem>
 									<groupId>appsgate.components</groupId>
+									<artifactId>appsgate-instance</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+                                <artifactItem>
+									<groupId>appsgate.components</groupId>
 									<artifactId>composite-distribution</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
