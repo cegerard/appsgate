@@ -10,7 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
