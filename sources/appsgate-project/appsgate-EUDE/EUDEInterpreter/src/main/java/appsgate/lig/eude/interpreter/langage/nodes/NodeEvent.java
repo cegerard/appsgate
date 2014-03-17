@@ -185,6 +185,12 @@ public class NodeEvent extends Node {
      * @return the sourceID
      */
     public String getSourceId() {
+        if (source instanceof NodeValue) {
+            String val = ((NodeValue) source).getVariableValue();
+            if (val != null) {
+                return val;
+            }
+        }
         return source.getValue();
     }
 

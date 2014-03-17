@@ -11,7 +11,7 @@
     },
     "definitions": [],
     "body": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
             {
                 "type": "if",
@@ -36,7 +36,7 @@
                 }
                 ,
                 "seqRulesTrue": {
-                    "type": "instructions",
+                    "type": "seqRules",
                     "rules": [
                         {
                             "type": "action",

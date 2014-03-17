@@ -9,7 +9,7 @@
     "definitions": [
     ],
     "body": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
         ]
     }

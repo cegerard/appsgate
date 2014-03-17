@@ -11,6 +11,7 @@
                 "methodName": "switchOn"
             },
             "endEvent": {
+                "type" : "event",
                 "name" : "value",
                 "value" : "false" 
             },

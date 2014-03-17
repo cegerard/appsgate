@@ -130,7 +130,7 @@
           "nbEventToOccur": "0"
         },
         "seqRulesThen": {
-          "type": "instructions",
+          "type": "seqRules",
           "rules": [
             {
               "type": "action",

@@ -14,7 +14,7 @@
         }
     ],
     "body": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
             {
                 "type": "while",

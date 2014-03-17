@@ -29,7 +29,7 @@ public class Builder {
     private static enum NODE_TYPE {
 
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION,
-        NODE_EVENT, NODE_EVENTS, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
+        NODE_EVENT, NODE_EVENTS_OR, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
         NODE_FUNCTION,  NODE_FUNCTION_DEFINITION, NODE_IF,
         NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_SELECT_STATE, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
@@ -54,7 +54,7 @@ public class Builder {
             return NODE_TYPE.NODE_EVENT;
         }
         if (type.equalsIgnoreCase("eventsOr")) {
-            return NODE_TYPE.NODE_EVENTS;
+            return NODE_TYPE.NODE_EVENTS_OR;
         }
         if (type.equalsIgnoreCase("eventsSequence")) {
             return NODE_TYPE.NODE_EVENTS_SEQUENCE;
@@ -125,7 +125,7 @@ public class Builder {
         if (type.equalsIgnoreCase("while")) {
             return NODE_TYPE.NODE_WHILE;
         }
-        if (type.equalsIgnoreCase("instructions")) {
+        if (type.equalsIgnoreCase("seqRules")) {
             return NODE_TYPE.NODE_SEQ_RULES;
         }
         if (type.equalsIgnoreCase("setOfRules")) {
@@ -161,7 +161,7 @@ public class Builder {
                     return new NodeBooleanExpression(o, parent);
                 case NODE_EVENT:
                     return new NodeEvent(o, parent);
-                case NODE_EVENTS:
+                case NODE_EVENTS_OR:
                     return new NodeEventsOr(o, parent);
                 case NODE_EVENTS_SEQUENCE:
                     return new NodeEventsSequence(o, parent);

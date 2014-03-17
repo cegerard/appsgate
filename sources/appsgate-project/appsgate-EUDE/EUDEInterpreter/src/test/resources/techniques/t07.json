@@ -1,40 +1,48 @@
 {
-    "name": "T7",
-    "id": "t7",
-    "header": {
-        "author": "testMaker",
-        "comment": "Allumer les lampes du salon qui étaient allumées il y a 1 heure."
-    },
-    "definitions": [
-    ],
-    "body": {
-        "type": "setOfRules",
-        "rules": [
+  "name": "T7",
+  "id": "t07",
+  "header": {
+    "author": "testMaker",
+    "comment": "Allumer les lampes du salon qui étaient allumées il y a 1 heure."
+  },
+  "definitions": [
+    {
+      "id": "lampeSalon",
+      "value": {
+        "type": "selectState",
+        "devices": {
+          "type": "select",
+          "what": [
+            "lamp"
+          ],
+          "where": [
             {
-                "type": "action",
-                "target": {
-                    "type": "selectState",
-                    "devices": {
-                        "type": "select",
-                        "what": [
-                            "lamp"
-                        ],
-                        "where": [
-                            {
-                                "type": "string",
-                                "value": "salon"
-                            }
-                        ]
-                    },
-                    "state": "isOn",
-                    "value": "true",
-                    "start": "-3600",
-                    "duration": "0"
-                },
-                "methodName": "switchOn",
-                "action": [
-                ]
+              "type": "string",
+              "value": "salon"
             }
-        ]
+          ]
+        },
+        "state": "isOn",
+        "value": "true",
+        "start": "-3600",
+        "duration": "0"
+      }
     }
+  ],
+  "body": {
+    "type": "setOfRules",
+    "rules": [
+      {
+        "type": "action",
+        "target": {
+          "type": "variable",
+          "id": "lampeSalon"
+        },
+        "methodName": "switchOn",
+        "action": [
+          
+        ]
+      }
+    ]
+  }
 }

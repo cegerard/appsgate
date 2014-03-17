@@ -13,7 +13,7 @@
             "id": "v3"}
     ],
     "seqRules": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
             {
                 "type": "assignation",

@@ -28,7 +28,7 @@
             ]
         },
         "seqRulesThen": {
-            "type": "instructions",
+            "type": "seqRules",
             "rules": [
                 {
                     "type": "action",

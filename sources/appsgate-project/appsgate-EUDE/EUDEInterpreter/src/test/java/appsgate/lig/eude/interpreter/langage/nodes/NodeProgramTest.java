@@ -103,7 +103,7 @@ public class NodeProgramTest extends NodeTest {
         System.out.println("update");
         JSONObject rules = new JSONObject();
         rules.put("userSource", "test");
-        rules.put("type", "instructions");
+        rules.put("type", "seqRules");
         rules.put("rules", new JSONArray());
         JSONObject header = new JSONObject();
         header.put("author", "toto");

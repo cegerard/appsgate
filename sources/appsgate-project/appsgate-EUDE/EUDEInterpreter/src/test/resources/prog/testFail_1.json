@@ -11,7 +11,7 @@
     "definitions": [],
     "parameters": [],
     "body": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
             {
                 "type": "when",
@@ -30,7 +30,7 @@
                     ]
                 },
                 "seqRulesThen": {
-                    "type": "instructions",
+                    "type": "seqRules",
                     "rules": [
                         {
                             "type": "action",
@@ -76,7 +76,7 @@
                                 ]
                             },
                             "seqRulesThen": {
-                                "type": "instructions",
+                                "type": "seqRules",
                                 "rules": [
                                     {
                                         "type": "action",

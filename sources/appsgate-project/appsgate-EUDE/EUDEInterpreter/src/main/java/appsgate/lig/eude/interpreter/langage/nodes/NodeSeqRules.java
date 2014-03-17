@@ -162,7 +162,7 @@ public class NodeSeqRules extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("type", "instructions");
+            o.put("type", "seqRules");
             o.put("rules", getJSONArray());
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
