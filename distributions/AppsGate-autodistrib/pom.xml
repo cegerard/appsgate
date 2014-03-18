@@ -144,6 +144,7 @@
 									<artifactId>org.apache.felix.gogo.shell</artifactId>
 									<version>${felix.gogo.shell.version}</version>
 								</artifactItem>
+
 								<!-- iPOJO -->
 								<artifactItem>
 									<groupId>org.apache.felix</groupId>
@@ -301,7 +302,11 @@
 									<artifactId>ical4j</artifactId>
 									<version>${ical-version}</version>
 								</dependency>
-
+								<dependency>
+									<groupId>org.knowhowlab.osgi.shell</groupId>
+									<artifactId>felix-gogo</artifactId>
+									<version>1.1.0</version>
+								</dependency>
 
 
 							</artifactItems>
@@ -328,7 +333,7 @@
 									<artifactId>appsgate-instance</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
-                                <artifactItem>
+								<artifactItem>
 									<groupId>appsgate.components</groupId>
 									<artifactId>composite-distribution</artifactId>
 									<version>${project.version}</version>
