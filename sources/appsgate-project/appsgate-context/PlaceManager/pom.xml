@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>appsgate.components</groupId>
 		<artifactId>appsgate-context</artifactId>
 		<version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
-				
 	</parent>
 
-    <artifactId>ContextProxy</artifactId>
-    <packaging>bundle</packaging>
-    <name>ContextProxyImpl OSGi Bundle</name>
-
+	<artifactId>PlaceManager</artifactId>
+	<packaging>bundle</packaging>
+	<name>Location manager implementation</name>
 
 	<!-- Repositories List -->
-	
+
 	<!-- Dependencies Description -->
-    <dependencies>
-     	<dependency>
+	<dependencies>
+		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>ContextProxySpec</artifactId>
+			<artifactId>PlaceManagerSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
@@ -31,17 +29,24 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>CoreClockSpec</artifactId>
+			<artifactId>ContextHistorySpec</artifactId>
 			<version>1.0.0</version>
- 		</dependency>
-<!-- 				<dependency> -->
-<!-- 			<groupId>appsgate.components</groupId> -->
-<!-- 			<artifactId>ContextManagerSpec</artifactId> -->
-<!-- 			<version>1.0.0</version> -->
-<!-- 		</dependency> -->
-    </dependencies>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit4</artifactId>
+			<version>2.6.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
- <!-- Build Description -->
+	<!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>
@@ -51,6 +56,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Export-Package>appsgate.lig.manager.location.impl</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

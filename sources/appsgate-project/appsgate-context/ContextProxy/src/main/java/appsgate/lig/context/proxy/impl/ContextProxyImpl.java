@@ -17,9 +17,9 @@ import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.context.proxy.spec.StateDescription;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.manager.context.spec.ContextManagerSpec;
-import appsgate.lig.manager.space.spec.subSpace.Space;
-import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
+//import appsgate.lig.manager.context.spec.ContextManagerSpec;
+//import appsgate.lig.manager.space.spec.subSpace.Space;
+//import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -53,10 +53,10 @@ public class ContextProxyImpl implements ContextProxySpec {
      */
     private CoreClockSpec coreClock;
 
-    /**
-     * Field to handle the space manager API
-     */
-    private ContextManagerSpec contextManager;
+//    /**
+//     * Field to handle the space manager API
+//     */
+//    private ContextManagerSpec contextManager;
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -148,37 +148,37 @@ public class ContextProxyImpl implements ContextProxySpec {
     public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
             ArrayList<String> spaces) {
 
-        ArrayList<Space> spacesList = new ArrayList<Space>();
+//        ArrayList<Space> spacesList = new ArrayList<Space>();
         ArrayList<String> coreObject = new ArrayList<String>();
-
-        //First get all Space from their space id, if the spaces array if empty
-        //we get only the root space
-        if (!spaces.isEmpty()) {
-            for (String spaceId : spaces) {
-                spacesList.add(contextManager.getSpace(spaceId));
-            }
-        } else {
-            spacesList.add(contextManager.getRootSpace());
-        }
-
-        // For each selected space we check if one of its descendant
-        // match any type in the type list
-        for (Space place : spacesList) {
-            ArrayList<Space> subSpaces = place.getSubSpaces();
-            for (Space subSpace : subSpaces) {
-                //TODO the TYPE.DEVICE check will be move latter with service integration
-                //If no type is specified we get all devices
-                if (!typeList.isEmpty()) {
-                    if (subSpace.getType().equals(TYPE.DEVICE) && typeList.contains(subSpace.getPropertyValue("deviceType"))) {
-                        coreObject.add(subSpace.getPropertyValue("ref"));
-                    }
-                } else {
-                    if (subSpace.getType().equals(TYPE.DEVICE)) {
-                        coreObject.add(subSpace.getPropertyValue("ref"));
-                    }
-                }
-            }
-        }
+//
+//        //First get all Space from their space id, if the spaces array if empty
+//        //we get only the root space
+//        if (!spaces.isEmpty()) {
+//            for (String spaceId : spaces) {
+//                spacesList.add(contextManager.getSpace(spaceId));
+//            }
+//        } else {
+//            spacesList.add(contextManager.getRootSpace());
+//        }
+//
+//        // For each selected space we check if one of its descendant
+//        // match any type in the type list
+//        for (Space place : spacesList) {
+//            ArrayList<Space> subSpaces = place.getSubSpaces();
+//            for (Space subSpace : subSpaces) {
+//                //TODO the TYPE.DEVICE check will be move latter with service integration
+//                //If no type is specified we get all devices
+//                if (!typeList.isEmpty()) {
+//                    if (subSpace.getType().equals(TYPE.DEVICE) && typeList.contains(subSpace.getPropertyValue("deviceType"))) {
+//                        coreObject.add(subSpace.getPropertyValue("ref"));
+//                    }
+//                } else {
+//                    if (subSpace.getType().equals(TYPE.DEVICE)) {
+//                        coreObject.add(subSpace.getPropertyValue("ref"));
+//                    }
+//                }
+//            }
+//        }
         return coreObject;
     }
 
@@ -239,29 +239,29 @@ public class ContextProxyImpl implements ContextProxySpec {
 
     @Override
     public StateDescription getEventsFromState(String objectId, String stateName) {
-        Space space = getSpaceTypeOf(objectId);
-
-        if (space == null) {
-            logger.error("Unable to retrieve object");
-            return null;
-        }
-        String propertyValue = space.getPropertyValue("grammar");
-        if (propertyValue == null || propertyValue.isEmpty()) {
-            logger.error("grammar not found for given object");
-            return null;
-        }
-        try {
-            JSONObject o = new JSONObject(propertyValue);
-            JSONArray array = o.getJSONArray("states");
-            for (int i = 0; i < array.length(); i++) {
-                if (array.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
-                    return new StateDescription(array.getJSONObject(i));
-                }
-            }
-        } catch (JSONException ex) {
-            logger.error("Grammar not well formattted");
-            return null;
-        }
+//        Space space = getSpaceTypeOf(objectId);
+//
+//        if (space == null) {
+//            logger.error("Unable to retrieve object");
+//            return null;
+//        }
+//        String propertyValue = space.getPropertyValue("grammar");
+//        if (propertyValue == null || propertyValue.isEmpty()) {
+//            logger.error("grammar not found for given object");
+//            return null;
+//        }
+//        try {
+//            JSONObject o = new JSONObject(propertyValue);
+//            JSONArray array = o.getJSONArray("states");
+//            for (int i = 0; i < array.length(); i++) {
+//                if (array.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
+//                    return new StateDescription(array.getJSONObject(i));
+//                }
+//            }
+//        } catch (JSONException ex) {
+//            logger.error("Grammar not well formattted");
+//            return null;
+//        }
         return null;
     }
 
@@ -270,28 +270,28 @@ public class ContextProxyImpl implements ContextProxySpec {
      * @param objectId
      * @return 
      */
-    private Space getSpaceTypeOf(String objectId) {
-        HashMap<String, String> refId = new HashMap<String, String>();
-        refId.put("ref", objectId);
-        ArrayList<Space> o = contextManager.getSpacesWithPropertiesValue(refId);
-        if (o.isEmpty()) {
-            logger.error("No such object id: {}", objectId );
-            return null;
-        }
-        Space object = o.get(0);
-        String propertyValue = object.getPropertyValue("deviceType");
-        if (propertyValue == null || propertyValue.isEmpty()){
-            logger.error("Unable to find the device type of {}", objectId);
-            return null;
-        }
-        refId.clear();
-        refId.put("deviceType", propertyValue);
-        ArrayList<Space> t = contextManager.getSpacesWithPropertiesValue(refId);
-        for (Space s : t) {
-            if (s.getType().equals(TYPE.CATEGORY)) {
-                return s;
-            }
-        }
+    private String getSpaceTypeOf(String objectId) {
+//        HashMap<String, String> refId = new HashMap<String, String>();
+//        refId.put("ref", objectId);
+//        ArrayList<Space> o = contextManager.getSpacesWithPropertiesValue(refId);
+//        if (o.isEmpty()) {
+//            logger.error("No such object id: {}", objectId );
+//            return null;
+//        }
+//        Space object = o.get(0);
+//        String propertyValue = object.getPropertyValue("deviceType");
+//        if (propertyValue == null || propertyValue.isEmpty()){
+//            logger.error("Unable to find the device type of {}", objectId);
+//            return null;
+//        }
+//        refId.clear();
+//        refId.put("deviceType", propertyValue);
+//        ArrayList<Space> t = contextManager.getSpacesWithPropertiesValue(refId);
+//        for (Space s : t) {
+//            if (s.getType().equals(TYPE.CATEGORY)) {
+//                return s;
+//            }
+//        }
         return null;
     }
 

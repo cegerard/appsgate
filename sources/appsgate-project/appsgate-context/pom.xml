@@ -41,8 +41,10 @@
 <!-- 		<module>ContextManager</module> -->
 <!-- 		<module>ContextManagerSpec</module> -->
 		<module>appsgate-enduser</module>
-		<module>SpaceManagerSpec</module>
-		<module>SpaceManager</module>
+<!-- 		<module>SpaceManagerSpec</module> -->
+<!-- 		<module>SpaceManager</module> -->
+		<module>PlaceManagerSpec</module>
+		<module>PlaceManager</module>
 		<module>DeviceNameTableSpec</module>
 		<module>DeviceNameTable</module>
 		<module>ContextProxy</module>

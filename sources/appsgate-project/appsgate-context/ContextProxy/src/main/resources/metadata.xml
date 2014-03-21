@@ -6,7 +6,7 @@
 	<implementation name="AppsGateContextProxyImpl" classname="appsgate.lig.context.proxy.impl.ContextProxyImpl" specification="AppsGateContextProxySpec" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<relation field="coreClock"/>
-		<relation field="contextManager"/>
+<!-- 		<relation field="contextManager"/> -->
 		<relation push="gotNotification" multiple="true"/>
 	</implementation>
 	
