@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author jr
+ *
  */
 public class Builder {
 
@@ -30,7 +31,7 @@ public class Builder {
 
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION,
         NODE_EVENT, NODE_EVENTS_OR, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
-        NODE_FUNCTION,  NODE_FUNCTION_DEFINITION, NODE_IF,
+        NODE_FUNCTION, NODE_FUNCTION_DEFINITION, NODE_IF,
         NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_SELECT_STATE, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
         NODE_VARIABLE_ASSIGNATION, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
@@ -42,6 +43,8 @@ public class Builder {
      * @param type
      * @return NODE_TYPE
      * @throws SpokException
+     *
+     *
      */
     private static NODE_TYPE getType(String type) throws SpokTypeException {
         if (type.equalsIgnoreCase("action")) {

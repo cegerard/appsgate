@@ -93,16 +93,16 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      *
      */
     public ClockProxy clock;
-    
+
     /**
      * The property history proxy
      */
     private PropertyHistoryManager propHistoryManager;
 
     /**
+     * Constructor.
      * Initialize the list of programs and of events
      *
-     * @constructor
      */
     public EUDEInterpreter() {
         mapPrograms = new HashMap<String, NodeProgram>();
@@ -231,9 +231,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     /**
      *
-     * @param programId
-     * @param args
-     * @return
+     * @param programId the id of the program to call
+     * @param args the args of the program
+     * @return true if the program has been called
      */
     @Override
     public boolean callProgram(String programId, JSONArray args) {
@@ -275,6 +275,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     /**
      *
+     * @param node a program node
+     * @return the list of id that contains a program
      */
     public List<String> getListProgramIds(NodeProgram node) {
         List<String> list = new ArrayList<String>();
@@ -319,11 +321,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     /**
      * Execute a method call on the router
      *
-     * @param objectId
-     * @param methodName
-     * @param args
-     * @param paramType
-     * @return
+     * @param objectId the id of the object on which applying the command
+     * @param methodName the name of the command
+     * @param args the args to pass to the command
+     * @return the command to be executed
      */
     public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
         return router.executeCommand(objectId, methodName, args);
@@ -485,7 +486,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     /**
      *
-     * @return
+     * @return the description of the programs for internal use
      */
     private ArrayList<Entry<String, Object>> getProgramsDesc() {
         ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
@@ -527,7 +528,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     /**
      *
-     * @return
+     * @return the root nodeProgram, null if it has not been inited
      */
     private NodeProgram initRootProgram() {
         try {
@@ -566,7 +567,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     /**
      *
      * @param programJSON
-     * @return
+     * @return the parent program of the program
      */
     private NodeProgram getProgramParent(JSONObject programJSON) {
         String parentId = programJSON.optString("package");
@@ -580,6 +581,12 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         return null;
     }
 
+    /**
+     *
+     * @param programJSON the JSON description of the program
+     * @return the node program corresponding to the JSON description passed as
+     * argument
+     */
     private NodeProgram putProgram(JSONObject programJSON) {
         NodeProgram p;
 
@@ -602,18 +609,20 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     /**
      * Method to get the context
+     *
      * @return the context proxy
      */
     public ContextProxySpec getContext() {
         return contextProxy;
     }
-    
+
     /**
      * @return the property history manager
      */
     public PropertyHistoryManager getPropHistManager() {
         return propHistoryManager;
     }
+
     /**
      *
      */

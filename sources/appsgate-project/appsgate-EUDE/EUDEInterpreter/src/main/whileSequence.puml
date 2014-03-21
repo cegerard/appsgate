@@ -1,0 +1,25 @@
+@startuml
+title While sequence
+NodeProgram->NodeWhile : call()
+NodeWhile->NodeState:addStartEventListener(this)
+NodeWhile->NodeState:call()
+NodeState->NodeState:buildEventsList()
+opt if the state is not true
+  NodeState->NodeEvents:listenStartEvents()
+end
+opt 
+opt startEventGenerated
+  NodeEvents->NodeState:endEventFired
+end
+opt isOfState()
+  NodeState->NodeWhile :startEventFired()
+  NodeWhile->Node: rules.call()
+  NodeWhile->NodeState: addEndEventListener()
+  NodeState->NodeEvents:listenEndEvents()
+
+end
+end
+NodeEvents-->NodeState:endEventFired
+NodeState-->NodeWhile:endEventFired
+NodeWhile->Node:rulesThen.call()
+@enduml

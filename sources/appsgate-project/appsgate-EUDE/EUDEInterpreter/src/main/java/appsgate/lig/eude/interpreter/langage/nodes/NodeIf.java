@@ -60,10 +60,14 @@ public class NodeIf extends Node {
         } catch (SpokTypeException ex) {
             throw new SpokNodeException("NodeIf", "expbool", ex);
         }
-        try {
-            this.seqRulesFalse = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
-        } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeIf", "expbool", ex);
+        if (ruleIfJSON.has("seqRulesFalse")) {
+            try {
+                this.seqRulesFalse = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
+            } catch (SpokTypeException ex) {
+                throw new SpokNodeException("NodeIf", "expbool", ex);
+            }
+        } else {
+            LOGGER.trace("No else block for this node");
         }
 
     }
@@ -88,25 +92,47 @@ public class NodeIf extends Node {
     public void endEventFired(EndEvent e) {
         Node nodeEnded = (Node) e.getSource();
 
-        // if this is the boolean expression...
-        if (nodeEnded == expBool) {
-            try {
-
-                if (SpokParser.getBooleanResult(expBool.getResult())) {// launch the "true" branch if expBool returned true...
-                    seqRulesTrue.addEndEventListener(this);
-                    seqRulesTrue.call();
-
-                } else {// ... launch the false branch otherwise
-                    seqRulesFalse.addEndEventListener(this);
-                    seqRulesFalse.call();
-                }
-            } catch (SpokException ex) {
-                LOGGER.error(ex.getMessage());
-            }
-            // the true branch or the false one has completed - nothing to do more
-        } else {
+        // the true branch or the false one has completed - nothing to do more
+        if (nodeEnded != expBool) {
             setStarted(false);
             fireEndEvent(new EndEvent(this));
+            return;
+        }
+        Boolean booleanResult;
+        try {
+            booleanResult = SpokParser.getBooleanResult(expBool.getResult());
+        } catch (SpokException ex) {
+            LOGGER.error("An exception has been raised during evaluation of node {}", this.expBool);
+            LOGGER.debug(ex.getValue());
+            setStarted(false);
+            fireEndEvent(new EndEvent(this));
+            return;
+            
+        }
+        // if this is the boolean expression...
+        if (booleanResult) {// launch the "true" branch if expBool returned true...
+            listenAndCall(seqRulesTrue);
+        } else {
+            listenAndCall(seqRulesFalse);
+        }
+
+    }
+
+    /**
+     * Method that call and listen a node checking if the node is not null
+     *
+     * @param n the a node to call
+     * @return the result of call, or null
+     */
+    protected JSONObject listenAndCall(Node n) {
+        if (n != null) {
+            n.addEndEventListener(this);
+            return n.call();
+        } else {
+            LOGGER.debug("No node to call");
+            setStarted(false);
+            fireEndEvent(new EndEvent(this));
+            return null;
         }
     }
 
@@ -159,7 +185,11 @@ public class NodeIf extends Node {
 
     @Override
     public String getExpertProgramScript() {
-        return "if " + expBool.getExpertProgramScript() + "\nthen " + seqRulesTrue.getExpertProgramScript() + "\n else " + seqRulesFalse.getExpertProgramScript() + "\n";
+        if (seqRulesFalse != null) {
+            return "if " + expBool.getExpertProgramScript() + "\nthen " + seqRulesTrue.getExpertProgramScript() + "\n else " + seqRulesFalse.getExpertProgramScript() + "\n";
+        } else {
+            return "if " + expBool.getExpertProgramScript() + "\nthen " + seqRulesTrue.getExpertProgramScript() + "\n";
+        }
     }
 
     @Override
