@@ -5,7 +5,7 @@ Git repository of the server part for the AppsGate project.
 
 This Git reposiroty is devided in three parts.
 
-The first one named sources contain all the source code for the serveur part of
+The first one named sources contain all the source code for the server part of
 the AppsGate project.
 
 The second part named distribution is the current valid distribution for the server part.
