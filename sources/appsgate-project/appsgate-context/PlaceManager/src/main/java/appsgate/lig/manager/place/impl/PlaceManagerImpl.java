@@ -625,6 +625,25 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		return placeprop;
 	}
 	
+	@Override
+	public SymbolicPlace getPlaceWithDevice(String deviceId) {
+		SymbolicPlace place = null;
+		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
+			boolean isHere = false;
+			for(String objectID : currentPlace.getCoreObjects()) {
+				if(objectID.contentEquals(deviceId)) {
+					isHere = true;
+					break;
+				}
+			}
+			if(isHere) {
+				place = currentPlace;
+				break;
+			}
+		}
+		return place;
+	}
+	
 	/*************************/
 	/** for JUnit mock test **/
 	/*************************/
@@ -632,4 +651,5 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		this.contextHistory_pull = pull;
 		this.contextHistory_push = push;
 	}
+
 }

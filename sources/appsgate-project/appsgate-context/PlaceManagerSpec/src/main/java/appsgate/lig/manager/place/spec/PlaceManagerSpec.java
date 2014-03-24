@@ -175,6 +175,13 @@ public interface PlaceManagerSpec {
 	public ArrayList<SymbolicPlace> getPlacesWithPropertiesValue(HashMap<String, String> properties);
 	
 	/**
+	 * Get the place where a device is placed
+	 * @param deviceId the device identifier
+	 * @return place where this device is located
+	 */
+	public SymbolicPlace getPlaceWithDevice(String deviceId);
+	
+	/**
 	 * Get the place identifier of a core object
 	 * @param objId the core object identifier 
 	 * @return the identifier of the place where the core object is placed.
