@@ -138,9 +138,8 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-		} else {
-			addPlace("home", null);
 		}
+		
 		logger.debug("The place manager has been initialized");
 	}
 

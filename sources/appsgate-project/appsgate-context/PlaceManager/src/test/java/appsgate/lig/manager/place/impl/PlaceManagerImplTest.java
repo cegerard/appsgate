@@ -57,7 +57,7 @@ public class PlaceManagerImplTest {
 		 placeManager = new PlaceManagerImpl();
 		 placeManager.initiateMock(pull_service, push_service);
 		 placeManager.newInst();
-		 rootId = placeManager.getRootPlace().getId();
+		 rootId = placeManager.addPlace("home", null);
 		 assertNotNull(rootId);
 	}
 

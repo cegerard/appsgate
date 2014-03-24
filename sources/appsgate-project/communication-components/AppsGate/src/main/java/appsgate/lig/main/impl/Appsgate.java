@@ -207,15 +207,16 @@ public class Appsgate implements AppsGateSpec {
 	@Override
 	public void newPlace(JSONObject place) {
 		try {
-			String placeId = place.getString("id");
-			placeManager.addPlace(placeId, place.getString("name"));
+			//TODO put the hierarchical management
+			//String placeParent = place.getString("parent");
+			String placeParent = null;
+			String placeId = placeManager.addPlace(place.getString("name"), placeParent);
 			JSONArray devices = place.getJSONArray("devices");
 			int size = devices.length();
 			int i = 0;
 			while (i < size) {
 				String objId = (String) devices.get(i);
-				placeManager.moveObject(objId,
-						placeManager.getCoreObjectPlaceId(objId), placeId);
+				placeManager.moveObject(objId, placeManager.getCoreObjectPlaceId(objId), placeId);
 				i++;
 			}
 		} catch (JSONException e) {
