@@ -512,4 +512,29 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         return null;
     }
 
+        /**
+     *
+     * @param duration
+     * @return @throws SpokExecutionException
+     */
+    protected NodeEvent startClockEvent(int duration) throws SpokExecutionException {
+        if (duration > 0) {
+            LOGGER.debug("Starting a clock event");
+            String d = getTime(duration);
+            NodeEvent ev = new NodeEvent("device", getMediator().getClock().getId(), "ClockAlarm", d, this);
+            ev.addEndEventListener(this);
+            ev.call();
+            return ev;
+        }
+        return null;
+    }
+
+    /**
+     * @return
+     */
+    private String getTime(Integer duration) throws SpokExecutionException {
+        Long time = getMediator().getTime() + duration * 1000;
+        return time.toString();
+    }
+    
 }

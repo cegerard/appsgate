@@ -96,7 +96,7 @@ public class NodeEventsSequence extends NodeEvents {
             callEvent();
         }
         if(clockEvent == null) {
-            clockEvent = startClockEvent();
+            clockEvent = startClockEvent(getDuration());
         }
     }
 

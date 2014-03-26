@@ -92,7 +92,7 @@ public class NodeEventsAnd extends NodeEvents {
             return;
         }
         if (clockEvent == null) {
-            clockEvent = startClockEvent();
+            clockEvent = startClockEvent(getDuration());
         }
     }
 

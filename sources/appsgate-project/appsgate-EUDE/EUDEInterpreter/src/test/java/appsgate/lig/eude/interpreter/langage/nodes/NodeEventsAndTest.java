@@ -21,9 +21,7 @@ import org.junit.Before;
 public class NodeEventsAndTest extends NodeTest {
 
     public NodeEventsAndTest() throws Exception {
-        JSONObject desc = new JSONObject();
-        desc.put("id", "12");
-        final ClockProxy appsGate = new ClockProxy(desc);
+        final ClockProxy appsGate = new ClockProxy(new JSONObject("{'id':12}"));
 
         context.checking(new Expectations() {
             {

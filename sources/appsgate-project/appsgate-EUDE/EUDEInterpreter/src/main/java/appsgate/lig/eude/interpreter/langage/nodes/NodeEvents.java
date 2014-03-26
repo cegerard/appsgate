@@ -167,29 +167,7 @@ public abstract class NodeEvents extends Node implements INodeEvent{
         return nodeEnded.getSourceId().equals(p.getId());
     }
 
-    /**
-     *
-     * @return @throws SpokExecutionException
-     */
-    protected NodeEvent startClockEvent() throws SpokExecutionException {
-        if (duration > 0) {
-            LOGGER.debug("Starting a clock event");
-            String d = getTime(duration);
-            NodeEvent ev = new NodeEvent("device", getMediator().getClock().getId(), "ClockAlarm", d, this);
-            ev.addEndEventListener(this);
-            ev.call();
-            return ev;
-        }
-        return null;
-    }
 
-    /**
-     * @return
-     */
-    private String getTime(Integer duration) throws SpokExecutionException {
-        Long time = getMediator().getTime() + duration * 1000;
-        return time.toString();
-    }
 
     @Override
     public void endEventFired(EndEvent e) {
@@ -211,6 +189,15 @@ public abstract class NodeEvents extends Node implements INodeEvent{
         }
     }
 
+    /**
+     * 
+     * @return the duration
+     */
+    protected int getDuration() {
+            return duration;
+        
+    }
+    
     abstract void dealWithClockEvent(NodeEvent e) throws SpokExecutionException;
 
     abstract void dealWithNormalEvent(NodeEvent e) throws SpokExecutionException;

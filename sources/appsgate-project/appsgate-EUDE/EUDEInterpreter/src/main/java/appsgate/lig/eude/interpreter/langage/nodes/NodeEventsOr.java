@@ -99,7 +99,7 @@ public class NodeEventsOr extends NodeEvents {
             LOGGER.debug("All the events have not been ended");
             e.addEndEventListener(this);
             e.call();
-            startClockEvent();
+            startClockEvent(getDuration());
         }
     }
 }
