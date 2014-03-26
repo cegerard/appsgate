@@ -1,16 +1,16 @@
 {
     "name": "T2",
-    "id": "t2",
+    "pid": "t2",
     "header": {
         "author": "testMaker",
         "comment": "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2."
     },
     "definitions": [
         {
-            "id": "l1"
+            "var_name": "l1"
         },
         {
-            "id": "l2"
+            "var_name": "l2"
         }
     ],
     "body": {
@@ -22,7 +22,7 @@
                     "type": "state",
                     "object": {
                         "type": "variable",
-                        "id": "l1"
+                        "value": "l1"
                     },
                     "name": "isOn"
                 },
@@ -30,7 +30,7 @@
                     "type": "action",
                     "target": {
                         "type": "variable",
-                        "id": "l2"
+                        "value": "l2"
                     },
                     "methodName": "switchOn",
                     "action": [
@@ -40,7 +40,7 @@
                     "type": "action",
                     "target": {
                         "type": "variable",
-                        "id": "l2"
+                        "value": "l2"
                     },
                     "methodName": "switchOff",
                     "action": [

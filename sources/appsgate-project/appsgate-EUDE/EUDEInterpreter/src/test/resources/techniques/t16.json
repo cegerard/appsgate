@@ -1,37 +1,37 @@
 {
   "name": "T16",
-  "id" : "t16",
+  "pid" : "t16",
   "header": {
     "author": "testMaker",
     "comment": ""
   },
   "definitions": [
     {
-      "id": "l1",
+      "var_name": "l1",
       "value": {
         "type": "device",
-        "id": "L1"
+        "value": "L1"
       }
     },
     {
-      "id": "b1",
+      "var_name": "b1",
       "value": {
         "type": "device",
-        "id": "B1"
+        "value": "B1"
       }
     },
     {
-      "id": "b2",
+      "var_name": "b2",
       "value": {
         "type": "device",
-        "id": "B2"
+        "value": "B2"
       }
     },
     {
-      "id": "b3",
+      "var_name": "b3",
       "value": {
         "type": "device",
-        "id": "B3"
+        "value": "B3"
       }
     }
   ],
@@ -47,7 +47,7 @@
               "type": "event",
               "source": {
                 "type": "variable",
-                "id": "l1"
+                "value": "l1"
               },
               "eventName": "isOn",
               "eventValue": ""
@@ -68,7 +68,7 @@
                     "type": "event",
                     "source": {
                       "type": "variable",
-                      "id": "b3"
+                      "value": "b3"
                     },
                     "eventName": "clicked",
                     "eventValue": ""
@@ -83,7 +83,7 @@
                             "type": "event",
                             "source": {
                               "type": "variable",
-                              "id": "b1"
+                              "value": "b1"
                             },
                             "eventName": "clicked",
                             "eventValue": ""
@@ -99,7 +99,7 @@
                             "type": "event",
                             "source": {
                               "type": "variable",
-                              "id": "b2"
+                              "value": "b2"
                             },
                             "eventName": "clicked",
                             "eventValue": ""

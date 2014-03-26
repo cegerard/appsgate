@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeWhile extends Node implements NodeRule {
+public class NodeWhile extends Node implements INodeRule {
 
     /**
      * Logger

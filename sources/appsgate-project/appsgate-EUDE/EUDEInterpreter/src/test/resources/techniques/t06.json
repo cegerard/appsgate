@@ -1,44 +1,44 @@
 {
   "name": "T6",
-  "id": "t06",
+  "pid": "t06",
   "header": {
     "author": "testMaker",
     "comment": ""
   },
   "definitions": [
     {
-      "id": "l1",
+      "var_name": "l1",
       "value": {
         "type": "device",
-        "id": "L1"
+        "value": "L1"
       }
     },
     {
-      "id": "l2",
+      "var_name": "l2",
       "value": {
         "type": "device",
-        "id": "L2"
+        "value": "L2"
       }
     },
     {
-      "id": "b1",
+      "var_name": "b1",
       "value": {
         "type": "device",
-        "id": "B1"
+        "value": "B1"
       }
     },
     {
-      "id": "b2",
+      "var_name": "b2",
       "value": {
         "type": "device",
-        "id": "B2"
+        "value": "B2"
       }
     },
     {
-      "id": "b3",
+      "var_name": "b3",
       "value": {
         "type": "device",
-        "id": "B3"
+        "value": "B3"
       }
     }
   ],
@@ -57,7 +57,7 @@
                   "type": "event",
                   "source": {
                     "type": "variable",
-                    "id": "l1"
+                    "value": "l1"
                   },
                   "eventName": "switchOn",
                   "eventValue": ""
@@ -66,7 +66,7 @@
                   "type": "event",
                   "source": {
                     "type": "variable",
-                    "id": "l2"
+                    "value": "l2"
                   },
                   "eventName": "switchOn",
                   "eventValue": ""
@@ -82,7 +82,7 @@
                   "type": "event",
                   "source": {
                     "type": "variable",
-                    "id": "b1"
+                    "value": "b1"
                   },
                   "eventName": "click",
                   "eventValue": ""
@@ -94,7 +94,7 @@
                       "type": "event",
                       "source": {
                         "type": "variable",
-                        "id": "b2"
+                        "value": "b2"
                       },
                       "eventName": "click",
                       "eventValue": ""
@@ -103,7 +103,7 @@
                       "type": "event",
                       "source": {
                         "type": "variable",
-                        "id": "b3"
+                        "value": "b3"
                       },
                       "eventName": "click",
                       "eventValue": ""
@@ -112,7 +112,7 @@
                       "type": "event",
                       "source": {
                         "type": "variable",
-                        "id": "b2"
+                        "value": "b2"
                       },
                       "eventName": "click",
                       "eventValue": ""
@@ -136,7 +136,7 @@
               "type": "action",
               "target": {
                 "type": "variable",
-                "id": "l1"
+                "value": "l1"
               },
               "methodName": "toggle",
               "action": [

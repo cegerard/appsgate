@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author jr
  */
-public class NodeValue extends Node implements NodeListInterface{
+public class NodeValue extends Node implements INodeList{
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeValue.class);
@@ -61,11 +61,6 @@ public class NodeValue extends Node implements NodeListInterface{
         super(parent);
         type = TYPE.valueOf(getJSONString(o, "type").toUpperCase());
         switch (type) {
-            case DEVICE:
-            case PROGRAMCALL:
-            case VARIABLE:
-                value = this.getJSONString(o, "id");
-                break;
             case LIST:
                 list = this.getJSONArray(o, "value");
                 value = list.toString();
@@ -143,11 +138,6 @@ public class NodeValue extends Node implements NodeListInterface{
         try {
             o.put("type", getType());
             switch (type) {
-                case DEVICE:
-                case PROGRAMCALL:
-                case VARIABLE:
-                    o.put("id", this.value);
-                    break;
                 case LIST:
                     o.put("value", this.list);
                     break;

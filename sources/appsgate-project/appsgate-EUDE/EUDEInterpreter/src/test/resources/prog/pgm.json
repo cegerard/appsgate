@@ -1,5 +1,5 @@
 {
-    "id": "pgm",
+    "pid": "pgm",
     "runningState": "DEPLOYED",
     "userSource": "",
     "name": "TestLaunchPgm",
@@ -22,7 +22,7 @@
                             "type": "event",
                             "source": {
                                 "type": "device",
-                                "id": "PremierAppel"
+                                "value": "PremierAppel"
                             },
                             "eventName": "makeCall",
                             "eventValue": "1"
@@ -33,7 +33,7 @@
                     "type": "action",
                     "target": {
                         "type": "programCall",
-                        "id": "TestWhen"
+                        "value": "TestWhen"
                     },
                     "methodName": "callProgram"
                 }

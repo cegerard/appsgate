@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeVariableDefinition extends Node implements NodeListInterface {
+public class NodeVariableDefinition extends Node implements INodeList {
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeVariableDefinition.class);
@@ -52,7 +52,7 @@ public class NodeVariableDefinition extends Node implements NodeListInterface {
      */
     public NodeVariableDefinition(JSONObject obj, Node parent) throws SpokException {
         super(parent);
-        this.id = obj.optString("id");
+        this.id = obj.optString("var_name");
         checkVariable(obj.optJSONObject("value"));
     }
 
@@ -166,7 +166,7 @@ public class NodeVariableDefinition extends Node implements NodeListInterface {
         JSONObject o = new JSONObject();
         try {
             o.put("type", "variableDefinition");
-            o.put("id", id);
+            o.put("var_name", id);
             if (!isUndefined()) {
                 o.put("value", value.getJSONDescription());
             }
@@ -242,16 +242,16 @@ public class NodeVariableDefinition extends Node implements NodeListInterface {
      * @return a pointer to the Node value if this is a Node object, null
      * otherwise
      */
-    public NodeListInterface getNodeValue() {
-        if (value != null && value instanceof NodeListInterface) {
-            return (NodeListInterface) value;
+    public INodeList getNodeValue() {
+        if (value != null && value instanceof INodeList) {
+            return (INodeList) value;
         }
         return null;
     }
 
     @Override
     public List<NodeValue> getElements() {
-        NodeListInterface n = getNodeValue();
+        INodeList n = getNodeValue();
         if (n != null) {
             return n.getElements();
         }

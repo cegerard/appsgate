@@ -66,7 +66,7 @@ public final class SymbolTable {
                     LOGGER.warn("Unable to retrieve element {} of the array.", i);
                     continue;
                 }
-                String varName = vJson.optString("id");
+                String varName = vJson.optString("var_name");
                 if (varName != null) {
                     if (variables.get(varName) != null) {
                         throw new SpokSymbolTableException("The variable name has already been used in the same scope: " + varName, null);
@@ -230,7 +230,7 @@ public final class SymbolTable {
                     LOGGER.warn("Argument {} was not available", i);
                     continue;
                 }
-                String id = arg.getString("id");
+                String id = arg.getString("var_name");
                 addVariable(id, arg);
             } catch (JSONException ex) {
                 error = true;

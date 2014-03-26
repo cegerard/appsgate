@@ -11,15 +11,14 @@ import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.Collection;
-import junit.framework.Assert;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -36,7 +35,7 @@ public class NodeProgramTest extends NodeTest {
             }
         });
 
-        ruleJSON.put("id", "test");
+        ruleJSON.put("pid", "test");
         ruleJSON.put("type", "program");
         ruleJSON.put("runningState", "STOPPED");
         ruleJSON.put("name", "test");
@@ -68,7 +67,7 @@ public class NodeProgramTest extends NodeTest {
         System.out.println("getuserSource");
         String expResult = "test";
         String result = this.programTest.getUserSource();
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
     }
 
     /**
@@ -79,7 +78,7 @@ public class NodeProgramTest extends NodeTest {
         System.out.println("getRunningState");
         NodeProgram.RUNNING_STATE expResult = NodeProgram.RUNNING_STATE.STOPPED;
         NodeProgram.RUNNING_STATE result = this.programTest.getRunningState();
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
     }
 
     /**
@@ -105,7 +104,7 @@ public class NodeProgramTest extends NodeTest {
 
         boolean expResult = true;
         boolean result = this.programTest.update(rules);
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
     }
 
     /**
@@ -116,7 +115,7 @@ public class NodeProgramTest extends NodeTest {
         System.out.println("pause");
         boolean expResult = false;
         boolean result = this.programTest.pause();
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
     }
 
     /**
@@ -141,7 +140,7 @@ public class NodeProgramTest extends NodeTest {
         System.out.println("call");
 
         JSONObject result = this.instance.call();
-        assertNotNull(result);
+        Assert.assertNotNull(result);
     }
 
     /**
@@ -152,7 +151,7 @@ public class NodeProgramTest extends NodeTest {
     public void testGetSymbolTable() {
         System.out.println("getSymbolTable");
         SymbolTable result = this.instance.getSymbolTable();
-        assertNotNull(result);
+        Assert.assertNotNull(result);
     }
 
     @Test
@@ -162,7 +161,7 @@ public class NodeProgramTest extends NodeTest {
             EUDEInterpreter i = this.instance.getMediator();
             Assert.assertNotNull(i);
         } catch (SpokExecutionException ex) {
-            fail("Should not have raised an exception");
+            Assert.fail("Should not have raised an exception");
         }
     }
 
@@ -170,7 +169,7 @@ public class NodeProgramTest extends NodeTest {
     public void testFromJSONFile() throws Exception {
         printTestName("FromJSONFiles");
         NodeProgram defNode = new NodeProgram(null, TestUtilities.loadFileJSON("src/test/resources/node/newjson.json"), null);
-        assertNotNull(defNode);
+        Assert.assertNotNull(defNode);
         System.out.println(defNode.getExpertProgramScript());
     }
 }

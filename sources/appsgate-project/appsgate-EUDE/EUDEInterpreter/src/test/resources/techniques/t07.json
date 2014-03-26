@@ -1,13 +1,13 @@
 {
   "name": "T7",
-  "id": "t07",
+  "pid": "t07",
   "header": {
     "author": "testMaker",
     "comment": "Allumer les lampes du salon qui étaient allumées il y a 1 heure."
   },
   "definitions": [
     {
-      "id": "lampeSalon",
+      "var_name": "lampeSalon",
       "value": {
         "type": "selectState",
         "devices": {
@@ -36,7 +36,7 @@
         "type": "action",
         "target": {
           "type": "variable",
-          "id": "lampeSalon"
+          "value": "lampeSalon"
         },
         "methodName": "switchOn",
         "action": [

@@ -1,5 +1,5 @@
 {
-    "id" : "select-prog",
+    "pid" : "select-prog",
     "name": "select",
     "header": {
         "author": "me"
@@ -14,7 +14,7 @@
                 "where": [
                 ]
             },
-            "id": "v1"
+            "var_name": "v1"
         }
     ],
     "body": {
@@ -24,7 +24,7 @@
                 "type": "action",
                 "target": {
                     "type": "variable",
-                    "id": "v1"
+                    "value": "v1"
                 },
                 "methodName": "blink",
                 "action": [

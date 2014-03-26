@@ -189,7 +189,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     public boolean update(JSONObject jsonProgram) {
         String prog_id;
         try {
-            prog_id = jsonProgram.getString("id");
+            prog_id = jsonProgram.getString("pid");
         } catch (JSONException e) {
             LOGGER.error("EUDE error - updating programm - NO ID in JSON DESCRIPTION");
             return false;

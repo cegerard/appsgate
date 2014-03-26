@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @since June 25, 2013
  * @version 1.0.0
  */
-public class NodeEvent extends Node {
+public class NodeEvent extends Node implements INodeEvent {
 
     /**
      * Logger
@@ -77,7 +77,11 @@ public class NodeEvent extends Node {
             throws SpokNodeException {
         super(parent);
         try {
-            source = Builder.buildFromJSON(getJSONObject(eventJSON, "source"), this);
+            if (eventJSON.has("stateTarget")) {
+                source = Builder.buildFromJSON(eventJSON.optJSONObject("stateTarget"), this);
+            } else {
+                source = Builder.buildFromJSON(getJSONObject(eventJSON, "source"), parent);
+            }
         } catch (SpokTypeException ex) {
             throw new SpokNodeException("NodeEvent", "source", ex);
         }

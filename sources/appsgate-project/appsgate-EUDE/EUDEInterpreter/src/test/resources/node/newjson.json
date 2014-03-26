@@ -1,5 +1,5 @@
 {
-    "id" : "toto",
+    "pid" : "toto",
     "name": "toto",
     "package": "root",
     "daemon": false,
@@ -8,17 +8,17 @@
     "header": {},
     "definitions": [
         {
-            "id": "c",
+            "var_name": "c",
             "value": {
                 "type": "boolean",
                 "value": "true"
             }
         },
         {
-            "id": "b"
+            "var_name": "b"
         },
         {
-            "id": "a"
+            "var_name": "a"
         }
     ],
     "body": {

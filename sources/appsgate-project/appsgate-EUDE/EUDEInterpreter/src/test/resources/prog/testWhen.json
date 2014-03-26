@@ -1,6 +1,6 @@
 {
     "runningState": "DEPLOYED",
-    "id": "TestWhen",
+    "pid": "TestWhen",
     "userSource": "",
     "daemon": true,
     "name": "TestWhen",
@@ -24,7 +24,7 @@
                             "eventValue": "1",
                             "source": {
                                 "type": "device",
-                                "id": "ENO2796f3"
+                                "value": "ENO2796f3"
                             }
 
                         }
@@ -37,7 +37,7 @@
                             "type": "action",
                             "target": {
                                 "type": "device",
-                                "id": "test"
+                                "value": "test"
                             },
                             "methodName": "On"
                         }

@@ -7,11 +7,15 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.router.spec.GenericCommand;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import static org.jmock.Expectations.returnValue;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,6 +27,8 @@ import org.junit.Before;
  */
 public class NodeStateTest extends NodeTest {
 
+    private NodeState state;
+    
     public NodeStateTest() throws Exception {
         final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONObject events = new JSONObject();
@@ -47,7 +53,7 @@ public class NodeStateTest extends NodeTest {
         });
         JSONObject o = new JSONObject();
         o.put("type", "device");
-        o.put("id", "test");
+        o.put("value", "test");
         ruleJSON.put("type", "state");
         ruleJSON.put("object", o);
         ruleJSON.put("name", "isOn");
@@ -55,7 +61,8 @@ public class NodeStateTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeState(ruleJSON, programNode);
+        state = new NodeState(ruleJSON, programNode);
+        this.instance = state;
     }
 
     @Test
@@ -63,5 +70,16 @@ public class NodeStateTest extends NodeTest {
         String expertProgramScript = this.instance.getExpertProgramScript();
         System.out.println(expertProgramScript);
         Assert.assertEquals("/test/.isOfState(isOn)", expertProgramScript);
+    }
+    @Test
+    public void testCompositeState()  throws JSONException{
+        ruleJSON.put("name", "testState");
+        try {
+            state = new NodeState(ruleJSON, programNode);
+        } catch (SpokNodeException ex) {
+            ex.printStackTrace();
+            Assert.fail("No exception should have been raised");
+        }
+        Assert.assertNull(state.call());
     }
 }

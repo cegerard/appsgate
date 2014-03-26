@@ -2,13 +2,12 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import java.util.Collection;
-import junit.framework.Assert;
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -24,7 +23,7 @@ public class NodeActionTest extends NodeTest {
         ruleJSON.put("type", "action");
         JSONObject o = new JSONObject();
         o.put("type", "device");
-        o.put("id", "test");
+        o.put("value", "test");
         ruleJSON.put("target", o);
         ruleJSON.put("methodName", "test");
         ruleJSON.put("args", (Collection) null);
@@ -46,7 +45,7 @@ public class NodeActionTest extends NodeTest {
         System.out.println("getResult");
         Object expResult = null;
         Object result = this.actionTest.getResult();
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
     }
 
     @Test
@@ -55,7 +54,7 @@ public class NodeActionTest extends NodeTest {
         printTestName("call");
         JSONObject expResult = null;
         JSONObject result = this.instance.call();
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
         Assert.assertFalse("Simple action can not be stopped, so once the action is done, it is stopped", this.instance.isStarted());
     }
 
@@ -71,7 +70,7 @@ public class NodeActionTest extends NodeTest {
         });
 
         printTestName("Call on Variable");
-        programNode.setVariable("test", new NodeValue(new JSONObject("{'type':'device', 'id':'tt'}"), programNode));
+        programNode.setVariable("test", new NodeValue(new JSONObject("{'type':'device', 'value':'tt'}"), programNode));
         NodeAction a = new NodeAction(TestUtilities.loadFileJSON("src/test/resources/node/actionVariable.json"), programNode);
         Assert.assertNotNull(a);
         JSONObject res = a.call();
@@ -79,9 +78,10 @@ public class NodeActionTest extends NodeTest {
         tested.become("no");
 
         Assert.assertNull(res);
-        programNode.setVariable("ref", new NodeValue(new JSONObject("{'type':'device', 'id':'tt'}"), programNode));
-        programNode.setVariable("test", new NodeValue(new JSONObject("{'type':'variable', 'id':'ref'}"), programNode));
+        programNode.setVariable("ref", new NodeValue(new JSONObject("{'type':'device', 'value':'tt'}"), programNode));
+        programNode.setVariable("test", new NodeValue(new JSONObject("{'type':'variable', 'value':'ref'}"), programNode));
         res = a.call();
+        Assert.assertNull(res);
         synchroniser.waitUntil(tested.is("Yes"), 500);
     }
 }

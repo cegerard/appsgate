@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,14 +139,20 @@ public class Builder {
         throw new SpokTypeException(type);
     }
 
+    public static Node buildFromJSON(JSONObject o, Node parent)
+            throws SpokTypeException {
+        return buildFromJSON(o, parent, null);
+    }
+
     /**
      *
-     * @param o
-     * @param parent
-     * @return
-     * @throws SpokTypeException
+     * @param o the object to parse
+     * @param parent the parent node to attach
+     * @param stateTarget if there is some specific values
+     * @return the object built with the specific constructor
+     * @throws SpokTypeException if something goes wrong during building
      */
-    public static Node buildFromJSON(JSONObject o, Node parent)
+    public static Node buildFromJSON(JSONObject o, Node parent, JSONObject stateTarget)
             throws SpokTypeException {
         if (o == null) {
             LOGGER.warn("No node to build");
@@ -155,6 +162,13 @@ public class Builder {
         if (!o.has("type")) {
             LOGGER.debug("No type: {}", o.toString());
             throw new SpokTypeException("no type");
+        }
+        if (stateTarget != null) {
+            try {
+                o.put("stateTarget", stateTarget);
+            } catch (JSONException ex) {
+                // Never happens
+            }
         }
         try {
             switch (getType(o.optString("type"))) {

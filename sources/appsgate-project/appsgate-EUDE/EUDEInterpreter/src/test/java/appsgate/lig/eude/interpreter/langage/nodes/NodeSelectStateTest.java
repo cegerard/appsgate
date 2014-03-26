@@ -33,7 +33,7 @@ public class NodeSelectStateTest extends NodeTest {
             }
         });
         ruleJSON.put("type", "selectState");
-        ruleJSON.put("devices", new JSONObject("{'type':'device', 'id':'test'}"));
+        ruleJSON.put("devices", new JSONObject("{'type':'device', 'value':'test'}"));
         ruleJSON.put("state", "test");
         ruleJSON.put("value", "true");
 

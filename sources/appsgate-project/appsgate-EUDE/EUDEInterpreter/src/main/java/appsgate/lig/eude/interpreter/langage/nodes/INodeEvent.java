@@ -6,12 +6,10 @@
 
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import java.util.List;
-
 /**
  *
  * @author jr
  */
-public interface NodeListInterface {
-    List<NodeValue> getElements();
+public interface INodeEvent {
+    
 }

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public abstract class NodeEvents extends Node {
+public abstract class NodeEvents extends Node implements INodeEvent{
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeEvents.class);
@@ -56,10 +56,15 @@ public abstract class NodeEvents extends Node {
     public NodeEvents(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         JSONArray seqEventJSON = getJSONArray(o, "events");
+        JSONObject stateTarget = null;
         listOfEvent = new ArrayList<Node>();
+        // Transmit the target, if the event is based on a state node.
+        if (o.has("stateTarget")) {
+            stateTarget = o.optJSONObject("stateTarget");
+        }
         for (int i = 0; i < seqEventJSON.length(); i++) {
             try {
-                listOfEvent.add(Builder.buildFromJSON(seqEventJSON.getJSONObject(i), this));
+                listOfEvent.add(Builder.buildFromJSON(seqEventJSON.getJSONObject(i), this, stateTarget));
             } catch (JSONException ex) {
                 throw new SpokNodeException("NodeEvents", "item " + i, ex);
             } catch (SpokTypeException ex) {

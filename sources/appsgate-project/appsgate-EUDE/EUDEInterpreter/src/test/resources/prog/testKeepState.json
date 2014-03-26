@@ -1,6 +1,6 @@
 {
     "runningState": "DEPLOYED",
-    "id": "TestKeepState",
+    "pid": "TestKeepState",
     "name": "keepstate",
     "userSource": "",
     "daemon": true,
@@ -18,7 +18,7 @@
             "name": "testState",
             "object": {
                 "type": "device",
-                "id": "test"
+                "value": "test"
             }
         }
     }

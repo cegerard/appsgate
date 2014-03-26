@@ -1,23 +1,23 @@
 {
     "name": "T4",
-    "id": "t04",
+    "pid": "t04",
     "header": {
         "author": "testMaker",
         "comment": "Tant que L1 est allumé alors L2 est allumé,  et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2."
     },
     "definitions": [
         {
-            "id": "l1",
+            "var_name": "l1",
             "value": {
                 "type": "device",
-                "id": "L1"
+                "value": "L1"
             }
         },
         {
-            "id": "l2",
+            "var_name": "l2",
             "value": {
                 "type": "device",
-                "id": "L2"
+                "value": "L2"
             }
         }
     ],
@@ -30,7 +30,7 @@
                     "type": "state",
                     "object": {
                         "type": "variable",
-                        "id": "l1"
+                        "value": "l1"
                     },
                     "name": "isOn"
                 },
@@ -38,7 +38,7 @@
                     "type": "action",
                     "target": {
                         "type": "variable",
-                        "id": "l2"
+                        "value": "l2"
                     },
                     "methodName": "switchOn",
                     "action": [
@@ -48,7 +48,7 @@
                     "type": "action",
                     "target": {
                         "type": "variable",
-                        "id": "l2"
+                        "value": "l2"
                     },
                     "methodName": "switchOff",
                     "action": [
@@ -59,7 +59,7 @@
                 "type": "action",
                 "target": {
                     "type": "variable",
-                    "id": "l1"
+                    "value": "l1"
                 },
                 "methodName": "blink",
                 "action": [

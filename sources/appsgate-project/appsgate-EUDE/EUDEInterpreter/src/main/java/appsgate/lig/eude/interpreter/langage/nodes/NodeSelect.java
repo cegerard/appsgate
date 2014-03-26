@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeSelect extends Node implements NodeListInterface {
+public class NodeSelect extends Node implements INodeList {
 
     /**
      * Static class member uses to log what happened in each instances

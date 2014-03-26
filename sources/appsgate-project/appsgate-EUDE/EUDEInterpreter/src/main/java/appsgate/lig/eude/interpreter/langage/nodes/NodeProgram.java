@@ -126,7 +126,7 @@ public class NodeProgram extends Node {
         this(mediator, p);
 
         // initialize the program with the JSON
-        id = getJSONString(programJSON, "id");
+        id = getJSONString(programJSON, "pid");
         if (programJSON.has("runningState")) {
             runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
         }
@@ -306,7 +306,7 @@ public class NodeProgram extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("id", id);
+            o.put("pid", id);
             o.put("type", "program");
             o.put("runningState", runningState.name);
             o.put("name", name);

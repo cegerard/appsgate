@@ -1,5 +1,5 @@
 {
-    "id": "testActions",
+    "pid": "testActions",
     "runningState": "DEPLOYED",
     "userSource": "",
     "daemon": false,
@@ -20,7 +20,7 @@
                         "args": [],
                         "target": {
                             "type": "programCall",
-                            "id": "test"
+                            "value": "test"
                         }
                     },
                     {
@@ -28,7 +28,7 @@
                         "methodName": "redAlert",
                         "target": {
                             "type": "device",
-                            "id": "test"
+                            "value": "test"
                         },
                         "args": []
                     },
@@ -38,7 +38,7 @@
                         "args": [],
                         "target": {
                             "type": "device",
-                            "id": "test"
+                            "value": "test"
                         }
                     }
                 ]

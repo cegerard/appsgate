@@ -23,7 +23,7 @@
                 "action": "Ouvrir les volets",
                 "target": {
                     "type": "device",
-                    "id": "194.199.23.136-5"
+                    "value": "194.199.23.136-5"
                 }
             }
         ]

@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeLists extends Node implements NodeListInterface {
+public class NodeLists extends Node implements INodeList {
 
     /**
      * The logger
@@ -58,12 +58,12 @@ public class NodeLists extends Node implements NodeListInterface {
      *
      */
     private Node left;
-    private NodeListInterface leftList;
+    private INodeList leftList;
     /**
      *
      */
     private Node right;
-    private NodeListInterface rightList;
+    private INodeList rightList;
 
     /**
      *
@@ -105,21 +105,21 @@ public class NodeLists extends Node implements NodeListInterface {
             LOGGER.error("No left list");
             throw new SpokNodeException("NodeLists", "left", null);
         }
-        if (!(left instanceof NodeListInterface)) {
+        if (!(left instanceof INodeList)) {
             LOGGER.error("left node is not a list");
             throw new SpokNodeException("NodeLists", "left", null);
         }
-        leftList = (NodeListInterface) left;
+        leftList = (INodeList) left;
         right = Builder.nodeOrNull(o.optJSONObject("right"), this);
         if (right == null) {
             LOGGER.error("no right list");
             throw new SpokNodeException("NodeLists", "right", null);
         }
-        if (!(right instanceof NodeListInterface)) {
+        if (!(right instanceof INodeList)) {
             LOGGER.error("right node is not a list");
             throw new SpokNodeException("NodeLists", "right", null);
         }
-        rightList = (NodeListInterface) right;
+        rightList = (INodeList) right;
 
     }
 
