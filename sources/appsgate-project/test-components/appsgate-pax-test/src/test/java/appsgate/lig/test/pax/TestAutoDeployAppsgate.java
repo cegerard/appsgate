@@ -100,7 +100,10 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	private void testExistingStartedByPersistencyComposite() {
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-PropertyHistoryManager"));		
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-ContextHistoryManager"));		
-		Assert.assertNotNull(CST.componentBroker.getInst("Global-ContextManager"));		
+//		Assert.assertNotNull(CST.componentBroker.getInst("Global-ContextManager"));
+		Assert.assertNotNull(CST.componentBroker.getInst("Global-PlaceManager"));		
+		Assert.assertNotNull(CST.componentBroker.getInst("Global-DevicePropertiesTableManager"));		
+		Assert.assertNotNull(CST.componentBroker.getInst("Global-UserBaseManager"));		
 	}
 
 	private void testExistingStartedByUbikitComposite() {

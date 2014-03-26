@@ -40,7 +40,7 @@ public interface AppsGateSpec {
 
 	
 	/***************************/
-	/** Device name management */
+	/** Device properties management */
 	/***************************/
 	
 	/**
@@ -65,7 +65,29 @@ public interface AppsGateSpec {
 	 * @param user the user who give the name to this object
 	 */
 	public void deleteUserObjectName(String objectId, String user);
+	
+	/**
+	 * Add grammar in the context properties manager for a new device type
+	 * @param deviceType the type of device
+	 * @param grammarDescription the grammar associated to the device type
+	 * @return true if the grammar is really new, false if the grammar has been replaced
+	 */
+	public boolean addGrammar(String deviceType, JSONObject grammarDescription);
+	
+	/**
+	 * Remove grammar associated to a device type
+	 * @param deviceType the device type from which to remove the grammar
+	 * @return true if the grammar has been removed, false otherwise
+	 */
+	public boolean removeGrammar(String deviceType);
 
+	/**
+	 * Get the grammar associated to a device type
+	 * @param deviceType the device type from which to get the grammar
+	 * @return the grammar as a JSONObject
+	 */
+	public JSONObject getGrammarFromType(String deviceType);
+	
 	
 	/***************************/
 	/**    Place management    */
@@ -84,13 +106,13 @@ public interface AppsGateSpec {
 	public void newPlace(JSONObject place);
 
 	/**
-	 * Update a place on the smart space
+	 * Update a place on the smart place
 	 * @param place the new place description
 	 */
 	public void updatePlace(JSONObject place);
 
 	/**
-	 * Remove a place from the smart space
+	 * Remove a place from the smart place
 	 * @param id the place identifier
 	 */
 	public void removePlace(String id);
@@ -110,147 +132,74 @@ public interface AppsGateSpec {
 	 */
 	public String getCoreObjectPlaceId(String objId);
 	
+	/**
+	 * Call AppsGate to get all the places that match a specific name
+	 * @param name the name to match
+	 * @return the places with the name <name> as a JSONArray
+	 */
+	public JSONArray getPlacesByName(String name);
 	
-//	/***************************/
-//	/**    Space management    */
-//	/***************************/
-//	
-//	/**
-//	 * Call AppsGate to get all existing space definition.
-//	 * @return a JSON array that describe each space.
-//	 */
-//	public JSONArray getJSONSpaces();
-//	
-//	/**
-//	 * Call AppsGate to get information about a specific space
-//	 * @param spaceId the space to get information about
-//	 * @return space details as a JSONObject
-//	 */
-//	public JSONObject getSpaceInfo(String spaceId);
-//	
-//	/**
-//	 * Call AppsGate to get all the spaces that match a specific name
-//	 * @param name the name to match
-//	 * @return the spaces with the name <name> as a JSONArray
-//	 */
-//	public JSONArray getSpacesByName(String name);
-//	
-//	/**
-//	 * Get spaces that have been tagged with all tags
-//	 * give in parameter.
-//	 * @param tags the tags list that spaces have to match
-//	 * @return spaces as a JSONArray
-//	 */
-//	public JSONArray getSpacesWithTags(JSONArray tags);
-//	
-//	/**
-//	 * Get spaces that contains the properties keys in parameters
-//	 * @param keys all properties that spaces have to be set
-//	 * @return spaces list as a JSONArray
-//	 */
-//	public JSONArray getSpacesWithProperties(JSONArray keys);
-//	
-//	/**
-//	 * Get spaces that contains the properties keys in parameters
-//	 * and with the corresponding values
-//	 * @param properties all properties that spaces have to be set with
-//	 * the corresponding value
-//	 * @return spaces list as a JSONArray
-//	 */
-//	public JSONArray getSpacesWithPropertiesValue(JSONArray properties);
-//	
-//	/**
-//	 * Get the tree representation of all spaces
-//	 * @return the tree representation as a JSONObject
-//	 */
-//	public JSONObject getTreeDescription();
-//	
-//	/**
-//	 * Get the sub-tree of all spaces from
-//	 * the space give in parameter
-//	 * @param rootid the root identifier of the sub tree
-//	 * @return the tree as a JSONObject
-//	 */
-//	public JSONObject getTreeDescription(String rootId);
-//	
-//	/**
-//	 * Get the root space description
-//	 * @return the root space as a JSONObject
-//	 */
-//	public JSONObject getRootSpace();
-//	
-//	/**
-//	 * Add a new space and move object in it.
-//	 * @param parentId the parent node identifier
-//	 * @param category the new node category
-//	 * @param space the new space description and the list of object to move in
-//	 * @return the new space identifier
-//	 */
-//	public String newSpace(String parentId, String category, JSONObject space);
-//	
-//	/**
-//	 * Update a space on the smart space
-//	 * @param spaceId the space identifier 
-//	 * @param space the new space description
-//	 * @param true if the space has been updated, false otherwise
-//	 */
-//	public boolean updateSpace(String spaceId, JSONObject space);
-//	
-//	/**
-//	 * Remove a space from the smart space and move up its children
-//	 * @param id the space identifier
-//	 * @return true if the space has been removed, false otherwise
-//	 */
-//	public boolean removeSpace(String id);
-//	
-//	/**
-//	 * Remove a space from the smart space and all its children if it is possible
-//	 * @param id the space identifier
-//	 * @return true if the space has been removed, false otherwise
-//	 */
-//	public boolean removeTree(String id);
-//	
-//	/**
-//	 * Remove a space from the smart space and its children that can be removed, if
-//	 * not they are moved up in the tree;
-//	 * @param id the space identifier
-//	 * @return true if the space has been removed, false otherwise
-//	 */
-//	public boolean removeSpaceAndUserChildren(String id);
-//	
-//	
-//	/**
-//	 * Add a tag to the tag of list of the specified space
-//	 * @param spaceId the space where to add the tag
-//	 * @param tag the tag to add
-//	 * @return true if the tag has been added, false otherwise
-//	 */
-//	public boolean addTag(String spaceId, String tag);
-//	
-//	/**
-//	 * Remove a tag from a space
-//	 * @param spaceId the space from where to remove the tag
-//	 * @param tag the tag to remove
-//	 * @return true if the tag has been removed, false otherwise
-//	 */
-//	public boolean removeTag(String spaceId, String tag);
-//	
-//	/**
-//	 * Add a property to a specified space
-//	 * @param spaceId the space where to add the property
-//	 * @param key the key of the property to add
-//	 * @param value the value of the property to add
-//	 * @return true f the property has been added, false otherwise
-//	 */
-//	public boolean addProperty(String spaceId, String key, String value);
-//	
-//	/**
-//	 * Remove a property from a specified space
-//	 * @param spaceId the space from where to remove the property
-//	 * @param key the key of the property that have to be removed
-//	 * @return true if the property is removed, false otherwise
-//	 */
-//	public boolean removeProperty(String spaceId, String key);
+	/**
+	 * Get places that have been tagged with all tags
+	 * give in parameter.
+	 * @param tags the tags list that places have to match
+	 * @return places as a JSONArray
+	 */
+	public JSONArray gePlacesWithTags(JSONArray tags);
+	
+	/**
+	 * Get places that contains the properties keys in parameters
+	 * @param keys all properties that places have to be set
+	 * @return places list as a JSONArray
+	 */
+	public JSONArray getPlacesWithProperties(JSONArray keys);
+	
+	/**
+	 * Get places that contains the properties keys in parameters
+	 * and with the corresponding values
+	 * @param properties all properties that places have to be set with
+	 * the corresponding value
+	 * @return places list as a JSONArray
+	 */
+	public JSONArray getPlacesWithPropertiesValue(JSONArray properties);
+	
+	/** Get the root places description
+	 * @return all root places as a JSONArray
+	 */
+	public JSONArray getRootPlaces();
+	
+	/**
+	 * Add a tag to the tag of list of the specified place
+	 * @param placeId the place where to add the tag
+	 * @param tag the tag to add
+	 * @return true if the tag has been added, false otherwise
+	 */
+	public boolean addTag(String placeId, String tag);
+	
+	/**
+	 * Remove a tag from a place
+	 * @param placeId the place from where to remove the tag
+	 * @param tag the tag to remove
+	 * @return true if the tag has been removed, false otherwise
+	 */
+	public boolean removeTag(String placeId, String tag);
+	
+	/**
+	 * Add a property to a specified place
+	 * @param placeId the place where to add the property
+	 * @param key the key of the property to add
+	 * @param value the value of the property to add
+	 * @return true f the property has been added, false otherwise
+	 */
+	public boolean addProperty(String placeId, String key, String value);
+	
+	/**	
+	 * Remove a property from a specified place
+	 * @param placeId the place from where to remove the property	 
+	 * @param key the key of the property that have to be removed
+	 * @return true if the property is removed, false otherwise
+	 */
+	public boolean removeProperty(String placeId, String key);
 	
 	
 	/***************************/
@@ -416,37 +365,5 @@ public interface AppsGateSpec {
 	 * (Restart the system bundle from OSGi)
 	 */
 	public void restart();
-	
-	
-	
-//	/************************************/
-//	/** Context auto-management command */
-//	/************************************/
-//	
-//	/**
-//	 * Add a new device space in the space manager
-//	 * @param description the device description
-//	 */
-//	public void addNewDeviceSpace(JSONObject description);
-//	
-//	/**
-//	 * Remove the device space in device root
-//	 * @param deviceId the device identifier
-//	 * @param type the device type
-//	 */
-//	public void removeDeviceSpace(String deviceId, String type);
-//	
-//	/**
-//	 * Add a new service space in the space manager
-//	 * @param description the service description
-//	 */
-//	public void addNewServiceSpace(JSONObject description);
-//	
-//	/**
-//	 * Remove the service space in service root
-//	 * @param serviceId the service identifier
-//	 * @param type the service type
-//	 */
-//	public void removeServiceSpace(String serviceId, String type);
 	
 }

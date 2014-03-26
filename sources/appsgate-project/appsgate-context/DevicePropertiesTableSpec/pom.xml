@@ -6,59 +6,21 @@
 		<groupId>appsgate.components</groupId>
 		<artifactId>appsgate-context</artifactId>
 		<version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
-				
 	</parent>
 
-    <artifactId>ContextProxy</artifactId>
+    <artifactId>DevicePropertiesTableSpec</artifactId>
     <packaging>bundle</packaging>
-    <name>ContextProxyImpl OSGi Bundle</name>
+    <name>DevicePropertiesTableSpec OSGi Bundle</name>
 
+ <!-- Repositories List -->
 
-	<!-- Repositories List -->
-	
 	<!-- Dependencies Description -->
     <dependencies>
-     	<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>ContextProxySpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CoreObjectSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>CoreClockSpec</artifactId>
-			<version>1.0.0</version>
- 		</dependency>
- 		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>PlaceManagerSpec</artifactId>
-			<version>1.0.0</version>
- 		</dependency>
- 		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>UserBaseSpec</artifactId>
-			<version>1.0.0</version>
- 		</dependency>
- 		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>DevicePropertiesTable</artifactId>
-			<version>1.0.0</version>
- 		</dependency>
- 		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>RouterApAMSpec</artifactId>
-			<version>1.0.0</version>
- 		</dependency>
-<!-- 				<dependency> -->
-<!-- 			<groupId>appsgate.components</groupId> -->
-<!-- 			<artifactId>ContextManagerSpec</artifactId> -->
-<!-- 			<version>1.0.0</version> -->
-<!-- 		</dependency> -->
     </dependencies>
 
  <!-- Build Description -->

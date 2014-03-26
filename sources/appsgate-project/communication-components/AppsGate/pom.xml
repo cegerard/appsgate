@@ -65,7 +65,7 @@
 <!-- 		</dependency> -->
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>DeviceNameTableSpec</artifactId>
+			<artifactId>DevicePropertiesTable</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

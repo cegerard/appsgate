@@ -360,16 +360,6 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
-		/**
- 		 * Get devices of specifics types in
- 		 * specifoed spaces
- 		 */
-		this.getDevicesInSpaces = function (typeList, spaces)
-		{
-			var call = eval({"method":"getDevicesInSpaces", "args":[{"type":"JSONArray", "value":typeList}, {"type":"JSONArray", "value":spaces}], "callId":"cf-getdevicesinspaces"});
-			websocket.send(JSON.stringify(call));
-		}
-		
 		/********
 		 Device name management
 		 			   ********/
@@ -407,18 +397,9 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		/**
  		 * Get all places for an habitat
  		 */
-		this.getPlaces = function (habitatId)
+		this.getPlaces = function ()
 		{
-			var call = eval({"method":"getPlaces", "args":[{"type":"String", "value":habitatId}], "callId":"cf-getplaces"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
- 		 * Get place detail
- 		 */
-		this.getPlace = function (habitatId, placeId)
-		{
-			var call = eval({"method":"getPlaceInfo", "args":[{"type":"String", "value":habitatId}, {"type":"String", "value":placeId}], "callId":"cf-getplace"});
+			var call = eval({"method":"getPlaces", "args":[], "callId":"cf-getplaces"});
 			websocket.send(JSON.stringify(call));
 		}
 		
@@ -646,14 +627,14 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
-//		/**
-// 		 * Get user complete inforamtion
-// 		 */
-//		this.getUserFullDetails = function (login)
-//		{
-//			var call = eval({"method":"getUserFullDetails", "args":[{"type":"String", "value":login}], "callId":"cf-getUserfulldetails"});
-//			websocket.send(JSON.stringify(call));
-//		}
+		/**
+ 		 * Get user complete inforamtion
+ 		 */
+		this.getUserFullDetails = function (login)
+		{
+			var call = eval({"method":"getUserFullDetails", "args":[{"type":"String", "value":login}], "callId":"cf-getUserfulldetails"});
+			websocket.send(JSON.stringify(call));
+		}
 		
 		/**
  		 * Check the unicity of a login
@@ -664,23 +645,23 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
-//		/**
-//		 * Associate a device id user
-//		 */
-//		this.associateDevice = function (login, psw, objId)
-//		{
-//			var call = eval({"method":"associateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-associatedevice"});
-//			websocket.send(JSON.stringify(call));
-//		}
-//		
-//		/**
-//		 * Associate a device id user
-//		 */
-//		this.separateDevice = function (login, psw, objId)
-//		{
-//			var call = eval({"method":"separateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-separatedevice"});
-//			websocket.send(JSON.stringify(call));
-//		}
+		/**
+		 * Associate a device id user
+		 */
+		this.associateDevice = function (login, psw, objId)
+		{
+			var call = eval({"method":"associateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-associatedevice"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+		 * Associate a device id user
+		 */
+		this.separateDevice = function (login, psw, objId)
+		{
+			var call = eval({"method":"separateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-separatedevice"});
+			websocket.send(JSON.stringify(call));
+		}
 		
 		/********
 		 Programs management

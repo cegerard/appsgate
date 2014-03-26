@@ -49,7 +49,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>DeviceNameTable</artifactId>
+			<artifactId>DevicePropertiesTable</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

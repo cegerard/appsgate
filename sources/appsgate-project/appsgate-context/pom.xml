@@ -45,8 +45,8 @@
 <!-- 		<module>SpaceManager</module> -->
 		<module>PlaceManagerSpec</module>
 		<module>PlaceManager</module>
-		<module>DeviceNameTableSpec</module>
-		<module>DeviceNameTable</module>
+		<module>DevicePropertiesTableSpec</module>
+		<module>DevicePropertiesTable</module>
 		<module>ContextProxy</module>
 		<module>ContextProxySpec</module>
 		<module>ContextHistorySpec</module>

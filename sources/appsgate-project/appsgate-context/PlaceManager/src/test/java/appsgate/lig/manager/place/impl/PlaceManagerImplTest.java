@@ -114,16 +114,16 @@ public class PlaceManagerImplTest {
 		String placeId2 = placeManager.addPlace("readingPlace", rootId);
 		
 		assertNotSame(placeManager.getSymbolicPlace(placeId), placeManager.getSymbolicPlace(placeId2).getParent());
-		assertSame(placeManager.getRootPlace(), placeManager.getSymbolicPlace(placeId2).getParent());
-		assertTrue(placeManager.getRootPlace().hasChild(placeManager.getSymbolicPlace(placeId2)));
+		assertSame(placeManager.getRootPlaces().get(0), placeManager.getSymbolicPlace(placeId2).getParent());
+		assertTrue(placeManager.getRootPlaces().get(0).hasChild(placeManager.getSymbolicPlace(placeId2)));
 		assertFalse(placeManager.getSymbolicPlace(placeId).hasChild(placeManager.getSymbolicPlace(placeId2)));
 		
 		placeManager.movePlace(placeId2, placeId);
 		
-		assertNotSame(placeManager.getRootPlace(), placeManager.getSymbolicPlace(placeId2).getParent());
+		assertNotSame(placeManager.getRootPlaces().get(0), placeManager.getSymbolicPlace(placeId2).getParent());
 		assertSame(placeManager.getSymbolicPlace(placeId), placeManager.getSymbolicPlace(placeId2).getParent());
 		assertTrue(placeManager.getSymbolicPlace(placeId).hasChild(placeManager.getSymbolicPlace(placeId2)));
-		assertFalse(placeManager.getRootPlace().hasChild(placeManager.getSymbolicPlace(placeId2)));
+		assertFalse(placeManager.getRootPlaces().get(0).hasChild(placeManager.getSymbolicPlace(placeId2)));
 	}
 
 	@Test
@@ -210,37 +210,37 @@ public class PlaceManagerImplTest {
 
 	@Test
 	public void testGetRootPlace() {
-		assertSame(placeManager.getSymbolicPlace(rootId), placeManager.getRootPlace());
+		assertSame(placeManager.getSymbolicPlace(rootId), placeManager.getRootPlaces().get(0));
 	}
 
 	@Test
 	public void testGetPlaceWithName() {
 		ArrayList<SymbolicPlace> placeList = new ArrayList<SymbolicPlace>();
-		placeList.add(placeManager.getRootPlace());
+		placeList.add(placeManager.getRootPlaces().get(0));
 		
 		assertEquals(placeList, placeManager.getPlacesWithName("home"));
 	}
 
 	@Test
 	public void testGetPlaceWithTags() {
-		placeManager.getRootPlace().addTag("TEST_TAG");
-		placeManager.getRootPlace().addTag("TEST_TAG_OTHER");
+		placeManager.getRootPlaces().get(0).addTag("TEST_TAG");
+		placeManager.getRootPlaces().get(0).addTag("TEST_TAG_OTHER");
 		ArrayList<String> tagsList = new ArrayList<String>();
 		tagsList.add("TEST_TAG");
 		tagsList.add("TEST_TAG_OTHER");
 		
 		ArrayList<SymbolicPlace> placeList = new ArrayList<SymbolicPlace>();
-		placeList.add(placeManager.getRootPlace());
+		placeList.add(placeManager.getRootPlaces().get(0));
 		
 		assertEquals(placeList, placeManager.getPlacesWithTags(tagsList));
 	}
 
 	@Test
 	public void testGetPlaceWithProperties() {
-		placeManager.getRootPlace().addProperty("k1", "val");
-		placeManager.getRootPlace().addProperty("k2", "val");
+		placeManager.getRootPlaces().get(0).addProperty("k1", "val");
+		placeManager.getRootPlaces().get(0).addProperty("k2", "val");
 		
-		String placeId = placeManager.addPlace("plop", placeManager.getRootPlace().getId());
+		String placeId = placeManager.addPlace("plop", placeManager.getRootPlaces().get(0).getId());
 		SymbolicPlace place = placeManager.getSymbolicPlace(placeId);
 		place.addProperty("k1", "val");
 		place.addProperty("k2", "val");
@@ -251,17 +251,17 @@ public class PlaceManagerImplTest {
 
 		ArrayList<SymbolicPlace> placeList = new ArrayList<SymbolicPlace>();
 		placeList.add(place);
-		placeList.add(placeManager.getRootPlace());		
+		placeList.add(placeManager.getRootPlaces().get(0));		
 
 		assertEquals(placeList.size(), placeManager.getPlacesWithProperties(propertiesKey).size());
 	}
 
 	@Test
 	public void testGetPlaceWithPropertiesValue() {
-		placeManager.getRootPlace().addProperty("k1", "val1");
-		placeManager.getRootPlace().addProperty("k2", "val2");
+		placeManager.getRootPlaces().get(0).addProperty("k1", "val1");
+		placeManager.getRootPlaces().get(0).addProperty("k2", "val2");
 		
-		String placeId = placeManager.addPlace("plop", placeManager.getRootPlace().getId());
+		String placeId = placeManager.addPlace("plop", placeManager.getRootPlaces().get(0).getId());
 		SymbolicPlace place = placeManager.getSymbolicPlace(placeId);
 		place.addProperty("k1", "val1");
 		place.addProperty("k2", "val3");
@@ -271,7 +271,7 @@ public class PlaceManagerImplTest {
 		propertiesKeyValue.put("k2", "val2");
 
 		ArrayList<SymbolicPlace> placeList = new ArrayList<SymbolicPlace>();
-		placeList.add(placeManager.getRootPlace());
+		placeList.add(placeManager.getRootPlaces().get(0));
 		
 		assertEquals(placeList, placeManager.getPlacesWithPropertiesValue(propertiesKeyValue));
 	}

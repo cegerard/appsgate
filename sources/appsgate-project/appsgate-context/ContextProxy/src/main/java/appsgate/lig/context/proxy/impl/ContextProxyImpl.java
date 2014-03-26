@@ -12,11 +12,16 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
+import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.proxy.listeners.CoreListener;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.context.proxy.spec.StateDescription;
+import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.manager.place.spec.PlaceManagerSpec;
+import appsgate.lig.manager.place.spec.SymbolicPlace;
+import appsgate.lig.router.spec.RouterApAMSpec;
 //import appsgate.lig.manager.context.spec.ContextManagerSpec;
 //import appsgate.lig.manager.space.spec.subSpace.Space;
 //import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
@@ -57,6 +62,26 @@ public class ContextProxyImpl implements ContextProxySpec {
 //     * Field to handle the space manager API
 //     */
 //    private ContextManagerSpec contextManager;
+    
+    /**
+ 	* Field to handle the place manager service
+ 	*/
+    private PlaceManagerSpec placeManager;
+    
+    /**
+ 	* Field to handle the user base service
+ 	*/
+    private UserBaseSpec userBaseManager;
+    
+    /**
+ 	* Field to handle the device name table  service
+ 	*/
+    private DevicePropertiesTableSpec devicePropertiesManager;
+    
+    /**
+ 	* Field to handle the router service interface
+ 	*/
+    private RouterApAMSpec router;
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -147,39 +172,50 @@ public class ContextProxyImpl implements ContextProxySpec {
     @Override
     public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
             ArrayList<String> spaces) {
+    	
+    
+    	ArrayList<String> coreObjectInPlace = new ArrayList<String>();
+    	ArrayList<String> coreObjectOfType = new ArrayList<String>();
+    	
+    	//First we get all objects in each place, if the list is empty we get all placed objects.
+    	if (!spaces.isEmpty()) {
+    		for (String placeId : spaces) {
+    			SymbolicPlace place = placeManager.getSymbolicPlace(placeId);
+    			coreObjectInPlace.addAll(place.getCoreObjects());
+    		}
+    	} else {
+    		for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
+    			coreObjectInPlace.addAll(symbolicPlace.getCoreObjects());
+    		}
+    	}
 
-//        ArrayList<Space> spacesList = new ArrayList<Space>();
-        ArrayList<String> coreObject = new ArrayList<String>();
-//
-//        //First get all Space from their space id, if the spaces array if empty
-//        //we get only the root space
-//        if (!spaces.isEmpty()) {
-//            for (String spaceId : spaces) {
-//                spacesList.add(contextManager.getSpace(spaceId));
-//            }
-//        } else {
-//            spacesList.add(contextManager.getRootSpace());
-//        }
-//
-//        // For each selected space we check if one of its descendant
-//        // match any type in the type list
-//        for (Space place : spacesList) {
-//            ArrayList<Space> subSpaces = place.getSubSpaces();
-//            for (Space subSpace : subSpaces) {
-//                //TODO the TYPE.DEVICE check will be move latter with service integration
-//                //If no type is specified we get all devices
-//                if (!typeList.isEmpty()) {
-//                    if (subSpace.getType().equals(TYPE.DEVICE) && typeList.contains(subSpace.getPropertyValue("deviceType"))) {
-//                        coreObject.add(subSpace.getPropertyValue("ref"));
-//                    }
-//                } else {
-//                    if (subSpace.getType().equals(TYPE.DEVICE)) {
-//                        coreObject.add(subSpace.getPropertyValue("ref"));
-//                    }
-//                }
-//            }
-//        }
-        return coreObject;
+		// Now we get all identifier of device that match one types of the type
+		// list
+		try {
+			if (!typeList.isEmpty()) {
+				for (String type : typeList) {
+					JSONArray devicesOfType = router.getDevices(type);
+					int size = devicesOfType.length();
+					for (int i = 0; i < size; i++) {
+						coreObjectOfType.add(devicesOfType.getJSONObject(i).getString("id"));
+					}
+				}
+			} else {
+				JSONArray allDevices = router.getDevices();
+				int size = allDevices.length();
+				for (int i = 0; i < size; i++) {
+					coreObjectOfType.add(allDevices.getJSONObject(i).getString("id"));
+				}
+			}
+			
+			//We get the intersection between placed object and object of specified type
+	    	coreObjectInPlace.retainAll(coreObjectOfType);
+	    	
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+        return coreObjectInPlace;
     }
 
     /**
@@ -239,60 +275,23 @@ public class ContextProxyImpl implements ContextProxySpec {
 
     @Override
     public StateDescription getEventsFromState(String objectId, String stateName) {
-//        Space space = getSpaceTypeOf(objectId);
-//
-//        if (space == null) {
-//            logger.error("Unable to retrieve object");
-//            return null;
-//        }
-//        String propertyValue = space.getPropertyValue("grammar");
-//        if (propertyValue == null || propertyValue.isEmpty()) {
-//            logger.error("grammar not found for given object");
-//            return null;
-//        }
-//        try {
-//            JSONObject o = new JSONObject(propertyValue);
-//            JSONArray array = o.getJSONArray("states");
-//            for (int i = 0; i < array.length(); i++) {
-//                if (array.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
-//                    return new StateDescription(array.getJSONObject(i));
-//                }
-//            }
-//        } catch (JSONException ex) {
-//            logger.error("Grammar not well formattted");
-//            return null;
-//        }
-        return null;
-    }
-
-    /**
-     * 
-     * @param objectId
-     * @return 
-     */
-    private String getSpaceTypeOf(String objectId) {
-//        HashMap<String, String> refId = new HashMap<String, String>();
-//        refId.put("ref", objectId);
-//        ArrayList<Space> o = contextManager.getSpacesWithPropertiesValue(refId);
-//        if (o.isEmpty()) {
-//            logger.error("No such object id: {}", objectId );
-//            return null;
-//        }
-//        Space object = o.get(0);
-//        String propertyValue = object.getPropertyValue("deviceType");
-//        if (propertyValue == null || propertyValue.isEmpty()){
-//            logger.error("Unable to find the device type of {}", objectId);
-//            return null;
-//        }
-//        refId.clear();
-//        refId.put("deviceType", propertyValue);
-//        ArrayList<Space> t = contextManager.getSpacesWithPropertiesValue(refId);
-//        for (Space s : t) {
-//            if (s.getType().equals(TYPE.CATEGORY)) {
-//                return s;
-//            }
-//        }
-        return null;
+    	JSONObject deviceDetails = router.getDevice(objectId);
+    	StateDescription stateDescription = null;
+    	try {
+    		JSONObject grammar = devicePropertiesManager.getGrammarFromType(deviceDetails.getString("type"));
+    		JSONArray grammarStates = grammar.getJSONArray("states");
+    		for (int i = 0; i < grammarStates.length(); i++) {
+    			if (grammarStates.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
+    				stateDescription = new StateDescription(grammarStates.getJSONObject(i));
+    				break;
+    			}
+    		}
+    	}catch (JSONException ex) {
+    		logger.error("Grammar not well formatted");
+    		return null;
+    	}
+    	
+    	return stateDescription;
     }
 
     /**

@@ -548,15 +548,14 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	}
 
 	@Override
-	public synchronized SymbolicPlace getRootPlace() {
-		SymbolicPlace rootPlace = null;
+	public synchronized ArrayList<SymbolicPlace> getRootPlaces() {
+		ArrayList<SymbolicPlace> rootPlaces = new ArrayList<SymbolicPlace>();
 		for(SymbolicPlace place : placeObjectsMap.values()) {
 			if(place.getParent() == null) {
-				rootPlace = place;
-				break;
+				rootPlaces.add(place);
 			}
 		}
-		return rootPlace;
+		return rootPlaces;
 	}
 
 	@Override

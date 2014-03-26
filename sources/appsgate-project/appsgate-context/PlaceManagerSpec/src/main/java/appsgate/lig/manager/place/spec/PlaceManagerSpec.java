@@ -122,10 +122,10 @@ public interface PlaceManagerSpec {
 	public boolean renamePlace(String placeId, String newName);
 	
 	/**
-	 * Get the root place of the hierarchy
+	 * Get the root places of the (multiple) hierarchy
 	 * @return the root place reference
 	 */
-	public SymbolicPlace getRootPlace();
+	public ArrayList<SymbolicPlace> getRootPlaces();
 	
 	/**
 	 * Get the symbolic place object from its identifier
