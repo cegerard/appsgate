@@ -179,29 +179,29 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		SymbolicPlace selectedPlace = placeObjectsMap.get(placeId);
 		SymbolicPlace parent = selectedPlace.getParent();
 		
-		if(parent != null) {
-			@SuppressWarnings("unchecked")
-			ArrayList<SymbolicPlace> children = (ArrayList<SymbolicPlace>)selectedPlace.getChildren().clone();
-			for(SymbolicPlace child : children) {
-				removePlace(child.getId());
-			}
-			selectedPlace.clearCoreObjects();
-			parent.removeChild(selectedPlace);
-			placeObjectsMap.remove(placeId);
-			notifyPlace(placeId, selectedPlace.getName(), "removePlace");
 		
-			// save the new devices name table 
-			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
-					
-			Set<String> keys = placeObjectsMap.keySet();
-			for(String e : keys) {
-				SymbolicPlace sl = placeObjectsMap.get(e);
-				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
-			}
-					
-			return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, selectedPlace.getName(), properties);
+		@SuppressWarnings("unchecked")
+		ArrayList<SymbolicPlace> children = (ArrayList<SymbolicPlace>)selectedPlace.getChildren().clone();
+		for(SymbolicPlace child : children) {
+			removePlace(child.getId());
 		}
-		return false;
+		selectedPlace.clearCoreObjects();
+		if(parent != null) {
+			parent.removeChild(selectedPlace);
+		}
+		placeObjectsMap.remove(placeId);
+		notifyPlace(placeId, selectedPlace.getName(), "removePlace");
+		
+		// save the new devices name table 
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+					
+		Set<String> keys = placeObjectsMap.keySet();
+		for(String e : keys) {
+			SymbolicPlace sl = placeObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+		}
+					
+		return contextHistory_push.pushData_remove(this.getClass().getSimpleName(), placeId, selectedPlace.getName(), properties);
 	}
 
 	/**

@@ -65,7 +65,7 @@
 	
     <composite name="AppsGateUbikitServices" singleton="true" main="UbikitAdapterImpl">
         <contentMngt>
-        	<start implementation="UbikitAdapterImpl" name="AppsgateUbikitAdapter" />
+<!--         	<start implementation="UbikitAdapterImpl" name="AppsgateUbikitAdapter" /> -->
         </contentMngt>
     </composite>
 	

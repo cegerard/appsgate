@@ -131,14 +131,8 @@ public class RouterImpl implements RouterApAMSpec {
         synchronized(this){
         	if (rmObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
         		sendToClientService.send("removeDevice", obj);
-        		if(getDevices(rmObj.getUserType()).length() == 0) {
-        			appsgate.removeGrammar(rmObj.getUserType());
-        		}
         	} else if (rmObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
         		sendToClientService.send("removeService", obj);
-        		if(getDevices(rmObj.getUserType()).length() == 0) {
-        			appsgate.removeGrammar(rmObj.getUserType());
-        		}
         	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
         		sendToClientService.send("removeSimulatedDevice", obj);
         		//TODO manage the simulated device
