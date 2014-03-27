@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-class NodeState extends Node {
+public class NodeState extends Node {
 
     /**
      * Logger
@@ -38,15 +38,12 @@ class NodeState extends Node {
      */
     private String stateName;
 
-    private NodeEvent eventStart = null;
-    private NodeEvent eventEnd = null;
+    private INodeEvent eventStart = null;
+    private INodeEvent eventEnd = null;
 
-    private ContextProxySpec context;
     private boolean isOnRules;
 
     private StateDescription desc = null;
-
-    private String type;
 
     /**
      * Private constructor to allow copy
@@ -62,9 +59,11 @@ class NodeState extends Node {
      *
      * @param o the json description
      * @param parent the parent node
+     * @throws SpokNodeException
      */
     public NodeState(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
+        ContextProxySpec context;
         try {
             object = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
         } catch (SpokTypeException ex) {
@@ -77,17 +76,16 @@ class NodeState extends Node {
             LOGGER.error("unable to find context");
             throw new SpokNodeException("NodeState", "context unavailable", ex);
         }
-        
         desc = context.getEventsFromState(object.getValue(), stateName);
 
     }
 
     @Override
     protected void specificStop() {
-        eventEnd.removeEndEventListener(this);
-        eventEnd.stop();
-        eventStart.removeEndEventListener(this);
-        eventStart.stop();
+        ((Node)eventEnd).removeEndEventListener(this);
+        ((Node)eventEnd).stop();
+        ((Node)eventStart).removeEndEventListener(this);
+        ((Node)eventStart).stop();
     }
 
     @Override
@@ -107,8 +105,8 @@ class NodeState extends Node {
                 listenEndStateEvent();
             } else {
                 isOnRules = false;
-                eventStart.addEndEventListener(this);
-                eventStart.call();
+                ((Node)eventStart).addEndEventListener(this);
+                ((Node)eventStart).call();
             }
         } catch (SpokExecutionException ex) {
             LOGGER.error("Unable to execute the State node, due to: " + ex);
@@ -172,10 +170,10 @@ class NodeState extends Node {
         }
         // everything is OK
         if (eventStart == null) {
-            eventStart = buildFromOntology(desc.getStartEvent());
+            eventStart = buildFromOntology2(desc.getStartEvent());
         }
         if (eventEnd == null) {
-            eventEnd = buildFromOntology(desc.getEndEvent());
+            eventEnd = buildFromOntology2(desc.getEndEvent());
         }
     }
 
@@ -203,6 +201,37 @@ class NodeState extends Node {
 
     /**
      *
+     * @param o
+     * @param type
+     * @return
+     * @throws SpokExecutionException
+     */
+    private INodeEvent buildFromOntology2(JSONObject o) throws SpokExecutionException {
+        JSONObject target = new JSONObject();
+        Node events;
+        if (o == null) {
+            throw new SpokExecutionException("No event associated with this state");
+        }
+        try {
+            target.put("type", "device");
+            target.put("value", object.getValue());
+        } catch (JSONException ex) {
+            // Never happens
+        }
+        try {
+            events = Builder.buildFromJSON(o, this, target);
+        } catch (SpokTypeException ex) {
+            LOGGER.error("Unable to build events: {}", ex.getMessage());
+            throw new SpokExecutionException("grammar is not correctly formed");
+        }
+        if (!(events instanceof INodeEvent)) {
+            throw new SpokExecutionException("The events state of the grammar is not an event (INodeEvent)");
+        }
+        return (INodeEvent) events;
+    }
+
+    /**
+     *
      * @return
      */
     boolean isOnRules() {
@@ -213,8 +242,8 @@ class NodeState extends Node {
      * do the job when the end state event has been raised
      */
     private void listenEndStateEvent() {
-        eventEnd.addEndEventListener(this);
-        eventEnd.call();
+        ((Node)eventEnd).addEndEventListener(this);
+        ((Node)eventEnd).call();
     }
 
     @Override

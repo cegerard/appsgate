@@ -6,11 +6,11 @@
         "value": [
             {
                 "type": "device",
-                "id": "a"
+                "value": "a"
             },
             {
                 "type": "device",
-                "id": "b"
+                "value": "b"
             }
         ]
     },
@@ -19,11 +19,11 @@
         "value": [
             {
                 "type": "device",
-                "id": "a"
+                "value": "a"
             },
             {
                 "type": "device",
-                "id": "c"
+                "value": "c"
             }
         ]
     }

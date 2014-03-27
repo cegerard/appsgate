@@ -1,19 +1,22 @@
 {
     "type": "function",
-    "id": "test",
+    "pid": "test",
     "seqDefinitions": [
         {
             "type": "variable",
-            "id": "v1"},
+            "value": "v1"
+        },
         {
             "type": "variable",
-            "id": "v2"},
+            "value": "v2"
+        },
         {
             "type": "variable",
-            "id": "v3"}
+            "value": "v3"
+        }
     ],
     "seqRules": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
             {
                 "type": "assignation",
@@ -28,7 +31,7 @@
                 "returnExp": "v1",
                 "returnValue": {
                     "type": "variable",
-                    "id": "v1"
+                    "value": "v1"
                 }
             }
 

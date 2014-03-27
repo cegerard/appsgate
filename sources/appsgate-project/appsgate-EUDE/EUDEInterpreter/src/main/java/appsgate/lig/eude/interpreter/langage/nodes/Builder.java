@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author jr
+ *
  */
 public class Builder {
 
@@ -29,11 +31,11 @@ public class Builder {
     private static enum NODE_TYPE {
 
         NODE_ACTION, NODE_BOOLEAN_EXPRESSION,
-        NODE_EVENT, NODE_EVENTS, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
-        NODE_FUNCTION,  NODE_FUNCTION_DEFINITION, NODE_IF,
+        NODE_EVENT, NODE_EVENTS_OR, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
+        NODE_FUNCTION, NODE_FUNCTION_DEFINITION, NODE_IF,
         NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_SELECT_STATE, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
-        NODE_VARIABLE_ASSIGNATION, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
+        NODE_VARIABLE_ASSIGNATION, NODE_WAIT, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
     }
 
     /**
@@ -42,6 +44,8 @@ public class Builder {
      * @param type
      * @return NODE_TYPE
      * @throws SpokException
+     *
+     *
      */
     private static NODE_TYPE getType(String type) throws SpokTypeException {
         if (type.equalsIgnoreCase("action")) {
@@ -54,7 +58,7 @@ public class Builder {
             return NODE_TYPE.NODE_EVENT;
         }
         if (type.equalsIgnoreCase("eventsOr")) {
-            return NODE_TYPE.NODE_EVENTS;
+            return NODE_TYPE.NODE_EVENTS_OR;
         }
         if (type.equalsIgnoreCase("eventsSequence")) {
             return NODE_TYPE.NODE_EVENTS_SEQUENCE;
@@ -125,24 +129,33 @@ public class Builder {
         if (type.equalsIgnoreCase("while")) {
             return NODE_TYPE.NODE_WHILE;
         }
-        if (type.equalsIgnoreCase("instructions")) {
+        if (type.equalsIgnoreCase("seqRules")) {
             return NODE_TYPE.NODE_SEQ_RULES;
         }
         if (type.equalsIgnoreCase("setOfRules")) {
             return NODE_TYPE.NODE_SET_OF_RULES;
         }
+        if (type.equalsIgnoreCase("wait")) {
+            return NODE_TYPE.NODE_WAIT;
+        }
         LOGGER.debug("The type [{}] does not exists", type);
         throw new SpokTypeException(type);
     }
 
+    public static Node buildFromJSON(JSONObject o, Node parent)
+            throws SpokTypeException {
+        return buildFromJSON(o, parent, null);
+    }
+
     /**
      *
-     * @param o
-     * @param parent
-     * @return
-     * @throws SpokTypeException
+     * @param o the object to parse
+     * @param parent the parent node to attach
+     * @param stateTarget if there is some specific values
+     * @return the object built with the specific constructor
+     * @throws SpokTypeException if something goes wrong during building
      */
-    public static Node buildFromJSON(JSONObject o, Node parent)
+    public static Node buildFromJSON(JSONObject o, Node parent, JSONObject stateTarget)
             throws SpokTypeException {
         if (o == null) {
             LOGGER.warn("No node to build");
@@ -153,6 +166,13 @@ public class Builder {
             LOGGER.debug("No type: {}", o.toString());
             throw new SpokTypeException("no type");
         }
+        if (stateTarget != null) {
+            try {
+                o.put("stateTarget", stateTarget);
+            } catch (JSONException ex) {
+                // Never happens
+            }
+        }
         try {
             switch (getType(o.optString("type"))) {
                 case NODE_ACTION:
@@ -161,7 +181,7 @@ public class Builder {
                     return new NodeBooleanExpression(o, parent);
                 case NODE_EVENT:
                     return new NodeEvent(o, parent);
-                case NODE_EVENTS:
+                case NODE_EVENTS_OR:
                     return new NodeEventsOr(o, parent);
                 case NODE_EVENTS_SEQUENCE:
                     return new NodeEventsSequence(o, parent);
@@ -201,6 +221,8 @@ public class Builder {
                     return new NodeSetOfRules(o, parent);
                 case NODE_VARIABLE_DEFINITION:
                     return new NodeVariableDefinition(o, parent);
+                case NODE_WAIT:
+                    return new NodeWait(o, parent);
                 default:
                     LOGGER.debug("No such type found : {}", o.toString());
                     throw new SpokNodeException("NodeBuilder", "type", null);

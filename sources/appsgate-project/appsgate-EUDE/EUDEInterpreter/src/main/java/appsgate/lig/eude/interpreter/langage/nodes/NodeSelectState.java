@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeSelectState extends Node {
+public class NodeSelectState extends Node implements INodeList {
 
     /**
      * LOGGER
@@ -70,6 +70,10 @@ public class NodeSelectState extends Node {
     public NodeSelectState(JSONObject o, Node parent) throws SpokException {
         super(parent);
         devicesToCheck = Builder.buildFromJSON(o.optJSONObject("devices"), this);
+        if (!(devicesToCheck instanceof INodeList)){
+            LOGGER.error("The devices to check must be a list");
+            throw new SpokNodeException("NodeSelectState", "devices", null);
+        }
         stateToCheck = getJSONString(o, "state");
         stateValue = getJSONString(o, "value");
         timeStart = o.optLong("start");
@@ -119,7 +123,7 @@ public class NodeSelectState extends Node {
     public void endEventFired(EndEvent e) {
         LOGGER.trace("The node has been evaluated");
         try {
-            List<NodeValue> result = devicesToCheck.getElements();
+            List<NodeValue> result = ((INodeList)devicesToCheck).getElements();
             states = getEvents(result);
             LOGGER.debug("States: {}", states.toString());
             devicesSelected = checkStates(states, result);

@@ -20,7 +20,7 @@ import org.junit.Test;
 public class NodeSeqRulesTest extends NodeTest {
 
     public NodeSeqRulesTest() throws JSONException {
-        ruleJSON.put("type", "instructions");
+        ruleJSON.put("type", "seqRules");
         ruleJSON.put("rules", new JSONArray());
     }
 

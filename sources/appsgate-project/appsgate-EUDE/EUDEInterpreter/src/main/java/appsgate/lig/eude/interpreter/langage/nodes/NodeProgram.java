@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,7 +98,7 @@ public class NodeProgram extends Node {
     /**
      * Pointer to the interpreter, could be the interpreter for the simulator
      */
-    private EUDEMediator mediator = null;
+    private EUDEInterpreter mediator = null;
 
     /**
      * Default constructor
@@ -107,7 +107,7 @@ public class NodeProgram extends Node {
      * @param p
      * @constructor
      */
-    public NodeProgram(EUDEMediator i, Node p) {
+    public NodeProgram(EUDEInterpreter i, Node p) {
         super(p);
         this.mediator = i;
         subPrograms = new HashMap<String, NodeProgram>();
@@ -121,12 +121,12 @@ public class NodeProgram extends Node {
      * @param p the node parent
      * @throws SpokNodeException
      */
-    public NodeProgram(EUDEMediator mediator, JSONObject programJSON, Node p)
+    public NodeProgram(EUDEInterpreter mediator, JSONObject programJSON, Node p)
             throws SpokException {
         this(mediator, p);
 
         // initialize the program with the JSON
-        id = getJSONString(programJSON, "id");
+        id = getJSONString(programJSON, "pid");
         if (programJSON.has("runningState")) {
             runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
         }
@@ -135,7 +135,7 @@ public class NodeProgram extends Node {
     }
 
     @Override
-    public EUDEMediator getMediator() {
+    public EUDEInterpreter getMediator() {
         return this.mediator;
     }
 
@@ -306,7 +306,7 @@ public class NodeProgram extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("id", id);
+            o.put("pid", id);
             o.put("type", "program");
             o.put("runningState", runningState.name);
             o.put("name", name);

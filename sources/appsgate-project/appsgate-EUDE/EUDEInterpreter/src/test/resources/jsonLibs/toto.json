@@ -1,6 +1,6 @@
 {
     "friendlyName": "lamp",
-    "typename":"lamp",
+    "typename": "lamp",
     "properties": [
     ],
     "states": [
@@ -11,12 +11,14 @@
                 "methodName": "switchOn"
             },
             "endEvent": {
-                "name" : "value",
-                "value" : "false" 
+                "type": "event",
+                "eventName" : "",
+                "eventValue" : ""
             },
             "startEvent": {
-                "name" : "value",
-                "value" : "true" 
+                "type": "event",
+                "eventName" : "",
+                "eventValue" : ""
             }
 
         },
@@ -27,12 +29,28 @@
                 "methodName": "switchOn"
             },
             "endEvent": {
-                "name" : "lightOff"
+                "type": "eventsOr",
+                "nbEventToOccur": "1",
+                "duration": 0,
+                "events": [
+                    {
+                        "type": "event",
+                        "eventName": "value",
+                        "eventValue": "false"
+                    },
+                    {
+                        "type": "event",
+                        "eventName": "value",
+                        "eventValue": "false"
+                    }
+                ]
             },
             "startEvent": {
-                "name" : "lightOn"
+                "type" : "event",
+                "eventName": "lightOn",
+                "eventValue": "false"
             },
-            "stateName" : "testState",
+            "stateName": "testState",
             "stateValue": "1"
         },
         {
@@ -42,10 +60,14 @@
                 "methodName": "switchOff"
             },
             "endEvent": {
-                "name" : "lightOn"
+                "type":"event",
+                "eventName": "lightOn",
+                "eventValue" : "true"
             },
             "startEvent": {
-                "name" : "lightOff"
+                "type":"event",
+                "eventName": "lightOff",
+                "eventValue" : "true"
             }
 
         }

@@ -6,7 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.ClockProxy;
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public abstract class NodeEvents extends Node {
+public abstract class NodeEvents extends Node implements INodeEvent{
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeEvents.class);
@@ -56,10 +56,15 @@ public abstract class NodeEvents extends Node {
     public NodeEvents(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
         JSONArray seqEventJSON = getJSONArray(o, "events");
+        JSONObject stateTarget = null;
         listOfEvent = new ArrayList<Node>();
+        // Transmit the target, if the event is based on a state node.
+        if (o.has("stateTarget")) {
+            stateTarget = o.optJSONObject("stateTarget");
+        }
         for (int i = 0; i < seqEventJSON.length(); i++) {
             try {
-                listOfEvent.add(Builder.buildFromJSON(seqEventJSON.getJSONObject(i), this));
+                listOfEvent.add(Builder.buildFromJSON(seqEventJSON.getJSONObject(i), this, stateTarget));
             } catch (JSONException ex) {
                 throw new SpokNodeException("NodeEvents", "item " + i, ex);
             } catch (SpokTypeException ex) {
@@ -154,7 +159,7 @@ public abstract class NodeEvents extends Node {
      * @throws SpokExecutionException
      */
     protected Boolean isClockEvent(NodeEvent nodeEnded) throws SpokExecutionException {
-        EUDEMediator mediator = getMediator();
+        EUDEInterpreter mediator = getMediator();
         ClockProxy p = mediator.getClock();
         if (p == null) {
             throw new SpokExecutionException("Unable to find clock");
@@ -162,29 +167,7 @@ public abstract class NodeEvents extends Node {
         return nodeEnded.getSourceId().equals(p.getId());
     }
 
-    /**
-     *
-     * @return @throws SpokExecutionException
-     */
-    protected NodeEvent startClockEvent() throws SpokExecutionException {
-        if (duration > 0) {
-            LOGGER.debug("Starting a clock event");
-            String d = getTime(duration);
-            NodeEvent ev = new NodeEvent("device", getMediator().getClock().getId(), "ClockAlarm", d, this);
-            ev.addEndEventListener(this);
-            ev.call();
-            return ev;
-        }
-        return null;
-    }
 
-    /**
-     * @return
-     */
-    private String getTime(Integer duration) throws SpokExecutionException {
-        Long time = getMediator().getTime() + duration * 1000;
-        return time.toString();
-    }
 
     @Override
     public void endEventFired(EndEvent e) {
@@ -206,6 +189,15 @@ public abstract class NodeEvents extends Node {
         }
     }
 
+    /**
+     * 
+     * @return the duration
+     */
+    protected int getDuration() {
+            return duration;
+        
+    }
+    
     abstract void dealWithClockEvent(NodeEvent e) throws SpokExecutionException;
 
     abstract void dealWithNormalEvent(NodeEvent e) throws SpokExecutionException;

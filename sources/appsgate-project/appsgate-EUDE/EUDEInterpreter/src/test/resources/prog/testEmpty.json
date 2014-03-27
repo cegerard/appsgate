@@ -1,5 +1,5 @@
 {
-    "id": "test",
+    "pid": "test",
     "userSource": "",
     "name": "empty test",
     "parameters": [],
@@ -9,7 +9,7 @@
     "definitions": [
     ],
     "body": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
         ]
     }

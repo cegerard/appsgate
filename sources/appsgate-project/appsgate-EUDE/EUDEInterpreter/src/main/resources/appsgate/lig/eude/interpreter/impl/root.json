@@ -1,5 +1,5 @@
 {
-    "id": "program-0",
+    "pid": "program-0",
     "runningState": "STARTED",
     "userSource": "",
     "name": "init",
@@ -11,13 +11,13 @@
     "definitions": [
     ],
     "body": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
             {
                 "type": "action",
                 "target": {
                     "type": "device",
-                    "id": "00:17:88:0a:99:c1-2"
+                    "value": "00:17:88:0a:99:c1-2"
                 },
                 "methodName": "blink",
                 "action": []

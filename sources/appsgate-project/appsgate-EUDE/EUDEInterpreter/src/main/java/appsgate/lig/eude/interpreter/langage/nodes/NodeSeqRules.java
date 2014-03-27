@@ -89,6 +89,7 @@ public class NodeSeqRules extends Node {
     @Override
     public JSONObject call() {
         LOGGER.debug("iterator reinited for {}", getProgramName());
+        currentNode = null;
         iterator = instructions.iterator();
         setStarted(true);
         fireStartEvent(new StartEvent(this));
@@ -124,7 +125,7 @@ public class NodeSeqRules extends Node {
     private void launchNextSeqAndRules() {
 
         LOGGER.debug("CurrentNode : {}", currentNode);
-                LOGGER.debug("Iterator has next: {}", iterator.hasNext());
+        LOGGER.debug("Iterator has next: {}", iterator.hasNext());
 
         // get the next sequence of rules to launch
         currentNode = iterator.next();
@@ -162,7 +163,7 @@ public class NodeSeqRules extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("type", "instructions");
+            o.put("type", "seqRules");
             o.put("rules", getJSONArray());
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception

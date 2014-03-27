@@ -1,0 +1,49 @@
+{
+    "pid": "waitTest",
+    "runningState": "DEPLOYED",
+    "userSource": "",
+    "name": "Wait_test",
+    "parameters": [],
+    "header": {
+        "author": "Bob"
+    },
+    "definitions": [
+    ],
+    "body": {
+        "type": "seqRules",
+        "rules": [
+            {
+                "type": "wait",
+                "waitFor": {
+                    "type": "number",
+                    "value": 2
+                }
+            },
+            {
+                "type": "action",
+                "target": {
+                    "type": "device",
+                    "value": "flag1"
+                },
+                "methodName": "On"
+            },
+            {
+                "type": "wait",
+                "waitFor": {
+                    "type": "number",
+                    "value": 0
+                }
+            },
+            {
+                "type": "action",
+                "target": {
+                    "type": "device",
+                    "value": "flag2"
+                },
+                "methodName": "On"
+            }
+
+        ]
+    }
+}
+

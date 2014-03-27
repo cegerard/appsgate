@@ -171,7 +171,7 @@ public class NodeAction extends Node {
      * @param target
      * @throws SpokException
      */
-    private void callListAction(Node n) throws SpokException {
+    private void callListAction(INodeList n) throws SpokException {
         LOGGER.debug("Call List action");
         // Node n =  list.getNodeValue();
         if (n != null) {
@@ -198,7 +198,7 @@ public class NodeAction extends Node {
         } else if (v.getType().equalsIgnoreCase("device")) {
             callDeviceAction(v.getValue());
         } else if (v.getType().equalsIgnoreCase("list")) {
-            callListAction((Node) v);
+            callListAction((INodeList) v);
         } else {
             LOGGER.warn("Action has not been executed: {}", this);
             LOGGER.debug("The type was: {}", v.getType());

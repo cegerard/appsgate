@@ -53,21 +53,31 @@
 			<artifactId>RouterApAMSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>appsgate.components</groupId> -->
+<!-- 			<artifactId>ContextManagerSpec</artifactId> -->
+<!-- 			<version>1.0.0</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>appsgate.components</groupId> -->
+<!-- 			<artifactId>SpaceManagerSpec</artifactId> -->
+<!-- 			<version>1.0.0</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>ContextManagerSpec</artifactId>
+			<artifactId>DevicePropertiesTable</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>DeviceNameTableSpec</artifactId> -->
-		<!-- <version>1.0.0</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>appsgate.components</groupId> -->
-		<!-- <artifactId>UserBaseSpec</artifactId> -->
-		<!-- <version>1.0.0</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>PlaceManagerSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>UserBaseSpec</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>EUDEInterpreterSpec</artifactId>
@@ -115,7 +125,7 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
-				<configuration>
+				<configuration>				    
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Private-Package>

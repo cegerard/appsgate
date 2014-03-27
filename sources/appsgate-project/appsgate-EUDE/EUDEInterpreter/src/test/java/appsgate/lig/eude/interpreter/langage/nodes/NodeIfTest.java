@@ -6,11 +6,14 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
+import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -42,4 +45,12 @@ public class NodeIfTest extends NodeTest {
         this.instance = this.ifTest;
     }
 
+    @Test
+    public void testBuildFromJson() throws Exception {
+        NodeIf seq;
+        seq = (NodeIf) Builder.buildFromJSON(TestUtilities.loadFileJSON("src/test/resources/node/if.json"), instance);
+        Assert.assertNotNull(seq);
+        System.out.println(seq.getExpertProgramScript());
+        seq.call();
+    }
 }

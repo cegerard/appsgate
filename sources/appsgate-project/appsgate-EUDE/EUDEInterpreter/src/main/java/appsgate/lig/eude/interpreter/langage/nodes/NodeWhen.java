@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @since June 25, 2013
  * @version 1.0.0
  */
-public class NodeWhen extends Node implements NodeRule{
+public class NodeWhen extends Node implements INodeRule{
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeWhen.class);

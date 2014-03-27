@@ -18,9 +18,8 @@ import org.junit.Test;
  */
 public class NodeKeepStateTest extends NodeTest {
 
-        private States tested;
+    private States tested;
 
-    
     public NodeKeepStateTest() throws Exception {
         super();
         final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
@@ -34,7 +33,6 @@ public class NodeKeepStateTest extends NodeTest {
                 allowing(cmd).run();
                 allowing(cmd).getReturn();
                 will(returnValue("test"));
-
 
                 allowing(mediator).getContext();
                 will(returnValue(c));
@@ -54,24 +52,24 @@ public class NodeKeepStateTest extends NodeTest {
     public void setUp() throws Exception {
         this.instance = new NodeKeepState(ruleJSON, programNode);
     }
-    
+
     @Test
-    public void testKeepState() throws Exception{
+    public void testKeepState() throws Exception {
         NodeKeepState n = (NodeKeepState) this.instance;
         n.call();
         synchroniser.waitUntil(tested.is("listening"), 200);
         tested.become("no");
-        n.endEventFired(new EndEvent(n.state));
+        n.endEventFired(new EndEvent(n.getState()));
         synchroniser.waitUntil(tested.is("listening"), 200);
         tested.become("no");
-        n.endEventFired(new EndEvent(n.state));
-        n.endEventFired(new EndEvent(n.state));
+        n.endEventFired(new EndEvent(n.getState()));
+        n.endEventFired(new EndEvent(n.getState()));
         synchroniser.waitUntil(tested.is("listening"), 200);
         n.stop();
         synchroniser.waitUntil(tested.is("no"), 200);
         n.call();
         synchroniser.waitUntil(tested.is("listening"), 200);
-        
+
     }
 
 }

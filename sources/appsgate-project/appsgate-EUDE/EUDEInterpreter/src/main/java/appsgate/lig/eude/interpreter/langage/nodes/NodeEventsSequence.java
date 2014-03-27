@@ -8,7 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -96,7 +96,7 @@ public class NodeEventsSequence extends NodeEvents {
             callEvent();
         }
         if(clockEvent == null) {
-            clockEvent = startClockEvent();
+            clockEvent = startClockEvent(getDuration());
         }
     }
 

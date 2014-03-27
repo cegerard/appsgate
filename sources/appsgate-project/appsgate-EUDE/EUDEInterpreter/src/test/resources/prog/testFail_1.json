@@ -1,6 +1,6 @@
 {
     "runningState": "STOPPED",
-    "id": "program-4050",
+    "pid": "program-4050",
     "userSource": "",
     "daemon": true,
     "name": "CAREGIVER_SERVICE",
@@ -11,7 +11,7 @@
     "definitions": [],
     "parameters": [],
     "body": {
-        "type": "instructions",
+        "type": "seqRules",
         "rules": [
             {
                 "type": "when",
@@ -24,20 +24,20 @@
                             "eventName": "ClockAlarm",
                             "source": {
                                 "type": "device",
-                                "id": "21106637055"
+                                "value": "21106637055"
                             }
                         }
                     ]
                 },
                 "seqRulesThen": {
-                    "type": "instructions",
+                    "type": "seqRules",
                     "rules": [
                         {
                             "type": "action",
                             "args": [],
                             "methodName": "setDefault",
                             "target": {
-                                "id": "00:17:88:0a:99:c1-4",
+                                "value": "00:17:88:0a:99:c1-4",
                                 "type": "device"
                             }
                         },
@@ -46,7 +46,7 @@
                             "args": [],
                             "methodName": "setDefault",
                             "target": {
-                                "id": "00:17:88:0a:99:c1-6",
+                                "value": "00:17:88:0a:99:c1-6",
                                 "type": "device"
                             }
                         },
@@ -55,7 +55,7 @@
                             "args": [],
                             "methodName": "setOrange",
                             "target": {
-                                "id": "00:17:88:0a:99:c1-4",
+                                "value": "00:17:88:0a:99:c1-4",
                                 "type": "device"
                             }
                         },
@@ -70,20 +70,20 @@
                                         "eventName": "ClockAlarm",
                                         "source": {
                                             "type": "device",
-                                            "id": "21106637055"
+                                            "value": "21106637055"
                                         }
                                     }
                                 ]
                             },
                             "seqRulesThen": {
-                                "type": "instructions",
+                                "type": "seqRules",
                                 "rules": [
                                     {
                                         "type": "action",
                                         "args": [],
                                         "methodName": "setRed",
                                         "target": {
-                                            "id": "00:17:88:0a:99:c1-4",
+                                            "value": "00:17:88:0a:99:c1-4",
                                             "type": "device"
                                         }
                                     },
@@ -92,7 +92,7 @@
                                         "args": [],
                                         "methodName": "blink",
                                         "target": {
-                                            "id": "00:17:88:0a:99:c1-4",
+                                            "value": "00:17:88:0a:99:c1-4",
                                             "type": "device"
                                         }
                                     }

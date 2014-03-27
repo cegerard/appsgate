@@ -1,13 +1,13 @@
 {
   "name": "T11",
-  "id" : "t11",
+  "pid" : "t11",
   "header": {
     "author": "testMaker",
     "phrase": "Mettre ambiance calme dans {piece}"
   },
   "definitions": [
     {
-      "id": "piece"
+      "var_name": "piece"
     }
   ],
   "body": {
@@ -23,7 +23,7 @@
           "where": [
             {
               "type": "variable",
-              "id": "piece"
+              "value": "piece"
             }
           ]
         },

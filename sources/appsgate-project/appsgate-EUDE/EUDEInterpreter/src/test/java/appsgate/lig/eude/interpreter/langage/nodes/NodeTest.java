@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import java.util.Iterator;
 import org.json.JSONException;
@@ -34,7 +34,7 @@ public abstract class NodeTest {
     protected Node instance;
     protected JSONObject ruleJSON;
 
-    protected EUDEMediator mediator;
+    protected EUDEInterpreter mediator;
     protected NodeProgram programNode;
 
     protected JSONObject emptySeqRules;
@@ -46,10 +46,10 @@ public abstract class NodeTest {
     public NodeTest() throws JSONException {
         this.ruleJSON = new JSONObject();
 
-        this.mediator = context.mock(EUDEMediator.class);
+        this.mediator = context.mock(EUDEInterpreter.class);
         programNode = new NodeProgram(mediator, null);
         this.emptySeqRules = new JSONObject();
-        emptySeqRules.put("type", "instructions");
+        emptySeqRules.put("type", "seqRules");
         emptySeqRules.put("rules", new JSONArray());
     }
 

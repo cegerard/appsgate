@@ -1,6 +1,6 @@
 {
   "name": "T9",
-  "id": "t9",
+  "pid": "t9",
   "header": {
     "author": "testMaker",
     "comment": "Faire clignoter toutes les lampes sauf celles du salon."

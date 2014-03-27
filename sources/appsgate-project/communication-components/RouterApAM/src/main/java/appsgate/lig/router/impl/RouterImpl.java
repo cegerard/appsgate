@@ -92,10 +92,10 @@ public class RouterImpl implements RouterApAMSpec {
             CoreObjectSpec newObj = (CoreObjectSpec) inst.getServiceObject();
             if (newObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
                 sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
-                appsgate.addNewDeviceSpace(getObjectDescription(newObj, ""));
+                appsgate.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
             } else if (newObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
                 sendToClientService.send("newService", getObjectDescription(newObj, ""));
-                appsgate.addNewServiceSpace(getObjectDescription(newObj, ""));
+                appsgate.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
             } else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
                 sendToClientService.send("newSimulatedDevice", getObjectDescription(newObj, ""));
                 //TODO manage the simulated device
@@ -128,18 +128,18 @@ public class RouterImpl implements RouterApAMSpec {
         }
         CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
 
-        if (rmObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
-            sendToClientService.send("removeDevice", obj);
-            appsgate.removeDeviceSpace(deviceId, inst.getProperty("userType"));
-        } else if (rmObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
-            sendToClientService.send("removeService", obj);
-            appsgate.removeServiceSpace(deviceId, inst.getProperty("userType"));
-        } else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
-            sendToClientService.send("removeSimulatedDevice", obj);
-            //TODO manage the simulated device
-        } else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
-            sendToClientService.send("removeSimulatedService", obj);
-            //TODO manage the simulated service
+        synchronized(this){
+        	if (rmObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
+        		sendToClientService.send("removeDevice", obj);
+        	} else if (rmObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
+        		sendToClientService.send("removeService", obj);
+        	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
+        		sendToClientService.send("removeSimulatedDevice", obj);
+        		//TODO manage the simulated device
+        	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
+        		sendToClientService.send("removeSimulatedService", obj);
+        		//TODO manage the simulated service
+        	}
         }
     }
 
@@ -299,6 +299,9 @@ public class RouterImpl implements RouterApAMSpec {
         try {
             // Get object auto description
             JSONDescription = obj.getDescription();
+            //Add context description for this abject
+			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
+			JSONDescription.put("placeId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
 
         } catch (JSONException e) {
             logger.error(e.getMessage());

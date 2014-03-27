@@ -1,6 +1,6 @@
 {
     "runningState": "DEPLOYED",
-    "id": "TestWhile",
+    "pid": "TestWhile",
     "userSource": "",
     "daemon": true,
     "name": "TestWhile",
@@ -17,30 +17,30 @@
             "name": "testState",
             "object": {
                 "type": "device",
-                "id": "test"
+                "value": "test"
             }
         },
         "rules": {
-            "type": "instructions",
+            "type": "seqRules",
             "rules": [
                 {
                     "type": "action",
                     "target": {
                         "type": "device",
-                        "id": "flag1"
+                        "value": "flag1"
                     },
                     "methodName": "On"
                 }
             ]
         },
         "rulesThen": {
-            "type": "instructions",
+            "type": "seqRules",
             "rules": [
                 {
                     "type": "action",
                     "target": {
                         "type": "device",
-                        "id": "flag2"
+                        "value": "flag2"
                     },
                     "methodName": "On"
                 }

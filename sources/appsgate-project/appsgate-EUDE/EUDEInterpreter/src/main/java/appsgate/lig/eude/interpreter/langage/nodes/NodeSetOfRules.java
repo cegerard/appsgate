@@ -98,7 +98,7 @@ public class NodeSetOfRules extends Node {
     @Override
     public void endEventFired(EndEvent e) {
         Node source = (Node) e.getSource();
-        if (source instanceof NodeRule) {
+        if (source instanceof INodeRule) {
             LOGGER.debug("A rule has ended, it will restart automatically");
             source.addEndEventListener(this);
             source.call();

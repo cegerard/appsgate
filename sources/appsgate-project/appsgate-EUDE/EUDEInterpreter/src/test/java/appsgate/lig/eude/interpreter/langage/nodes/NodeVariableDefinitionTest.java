@@ -18,7 +18,7 @@ import org.junit.Test;
 public class NodeVariableDefinitionTest extends NodeTest {
 
     public NodeVariableDefinitionTest() throws JSONException {
-        ruleJSON.put("id", "ref");
+        ruleJSON.put("var_name", "ref");
         ruleJSON.put("type", "variableDefinition");
 
     }

@@ -1,0 +1,19 @@
+@startuml
+title When sequence
+NodeProgram->NodeWhen : call()
+NodeWhen->NodeEvents : call()
+opt NodeOr
+  loop events
+    NodeEvents->NodeEvent:call()
+  end
+end
+opt NodeAnd
+  loop events
+    NodeEvents->NodeEvent:call()
+  end
+end
+opt NodeSequence
+    NodeEvents->NodeEvent:call()
+end
+
+@enduml

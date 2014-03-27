@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeWhile extends Node implements NodeRule {
+public class NodeWhile extends Node implements INodeRule {
 
     /**
      * Logger
@@ -92,8 +92,8 @@ public class NodeWhile extends Node implements NodeRule {
 
     @Override
     public JSONObject call() {
-        fireStartEvent(new StartEvent(this));
         setStarted(true);
+        fireStartEvent(new StartEvent(this));
         state.addStartEventListener(this);
         return state.call();
     }

@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.eude.interpreter.impl.EUDEMediator;
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import java.util.concurrent.Callable;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -16,7 +16,6 @@ import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
@@ -206,7 +205,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @return mediator
      * @throws SpokExecutionException
      */
-    public EUDEMediator getMediator() throws SpokExecutionException {
+    public EUDEInterpreter getMediator() throws SpokExecutionException {
         if (this.parent != null) {
             return this.parent.getMediator();
         }
@@ -477,14 +476,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     /**
      *
-     * @return the elements from a list
-     */
-    public List<NodeValue> getElements() {
-        return new ArrayList<NodeValue>();
-    }
-
-    /**
-     *
      * @param o
      * @return
      */
@@ -521,4 +512,29 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         return null;
     }
 
+        /**
+     *
+     * @param duration
+     * @return @throws SpokExecutionException
+     */
+    protected NodeEvent startClockEvent(int duration) throws SpokExecutionException {
+        if (duration > 0) {
+            LOGGER.debug("Starting a clock event");
+            String d = getTime(duration);
+            NodeEvent ev = new NodeEvent("device", getMediator().getClock().getId(), "ClockAlarm", d, this);
+            ev.addEndEventListener(this);
+            ev.call();
+            return ev;
+        }
+        return null;
+    }
+
+    /**
+     * @return
+     */
+    private String getTime(Integer duration) throws SpokExecutionException {
+        Long time = getMediator().getTime() + duration * 1000;
+        return time.toString();
+    }
+    
 }

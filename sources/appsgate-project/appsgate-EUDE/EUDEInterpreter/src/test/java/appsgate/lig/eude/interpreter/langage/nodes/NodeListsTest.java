@@ -7,10 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.collections.ListUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -25,8 +22,8 @@ public class NodeListsTest extends NodeTest {
 
     public NodeListsTest() throws JSONException {
         ruleJSON.put("type", "lists");
-        ruleJSON.put("left", new JSONObject("{'type':'device', 'id':'a'}"));
-        ruleJSON.put("right", new JSONObject("{'type':'device', 'id':'b'}"));
+        ruleJSON.put("left", new JSONObject("{'type':'device', 'value':'a'}"));
+        ruleJSON.put("right", new JSONObject("{'type':'device', 'value':'b'}"));
         ruleJSON.put("operator", "U");
     }
 

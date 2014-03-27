@@ -1,5 +1,5 @@
 {
-    "type": "instructions",
+    "type": "seqRules",
     "rules": [
         {
             "type": "boolean",

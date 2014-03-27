@@ -53,7 +53,7 @@ public class NodeValueTest extends NodeTest {
         NodeValue var = new NodeValue(new JSONObject("{'type':'number', 'value':'1'}"), null);
         programNode.setVariable("test", var);
         r.put("type", "variable");
-        r.put("id", "test");
+        r.put("value", "test");
         NodeValue v = new NodeValue(r, programNode);
         Assert.assertNotNull(v);
         Assert.assertEquals("variable", v.getType());
@@ -74,7 +74,7 @@ public class NodeValueTest extends NodeTest {
         printTestName("Variables");
         JSONObject r = new JSONObject();
         r.put("type", "device");
-        r.put("id", "test");
+        r.put("value", "test");
         NodeValue v = new NodeValue(r, null);
         Assert.assertNotNull(v);
         Assert.assertEquals("device", v.getType());
@@ -87,7 +87,7 @@ public class NodeValueTest extends NodeTest {
         printTestName("Variables");
         JSONObject r = new JSONObject();
         r.put("type", "programCall");
-        r.put("id", "test");
+        r.put("value", "test");
         NodeValue v = new NodeValue(r, null);
         Assert.assertNotNull(v);
         Assert.assertEquals("programcall", v.getType());
