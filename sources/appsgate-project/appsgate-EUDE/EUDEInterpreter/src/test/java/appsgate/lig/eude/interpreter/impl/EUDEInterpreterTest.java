@@ -94,6 +94,7 @@ public class EUDEInterpreterTest {
         final NodeActionTest a = new NodeActionTest();
 
         final GenericCommand gc = context.mock(GenericCommand.class);
+        
 
         tested = context.states("NotYet");
         context.checking(new Expectations() {
@@ -116,9 +117,12 @@ public class EUDEInterpreterTest {
 
                 allowing(gc).run();
                 allowing(gc).getReturn();
-                will(returnValue("2"));
+                will(returnValue(new Long(2)));
+
+                allowing(router).executeCommand(with("clock"), with("getCurrentTimeInMillis"), with(any(JSONArray.class)));
 
                 allowing(router).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+                will(returnValue(gc));
                 allowing(router).getDevices();
                 will(returnValue(deviceList));
 
@@ -429,7 +433,21 @@ public class EUDEInterpreterTest {
     public void testSelect() throws Exception {
         System.out.println("Select");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/select.json")));
+        boolean p = instance.callProgram("select-prog");
+        Assert.assertTrue(p);
 
+    }
+
+    @Test
+    public void testWait() throws Exception {
+        System.out.println("Wait");
+        tested.become("before");
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/wait.json")));
+        boolean p = instance.callProgram("waitTest");
+        Assert.assertTrue(p);
+        synchroniser.waitUntil(tested.is("before"), 100);
+        contextProxy.notifAll("time");
+        synchroniser.waitUntil(tested.is("flag2"), 1200);
     }
 
     /**

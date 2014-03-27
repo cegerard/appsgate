@@ -81,11 +81,14 @@ public class NodeWait extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
-        if (waitFor.getType().equalsIgnoreCase("number")){
+        if (waitFor.getType().equalsIgnoreCase("number")) {
             try {
                 Integer duration;
-                duration =  SpokParser.getNumericResult(waitFor).intValue();
+                duration = SpokParser.getNumericResult(waitFor).intValue();
                 waitFor = startClockEvent(duration);
+                if (waitFor == null) {
+                    fireEndEvent(new EndEvent(this));
+                }
             } catch (SpokTypeException ex) {
                 LOGGER.error("Unable to parse numeric result: {}", ex.getMessage());
                 fireEndEvent(new EndEvent(this));

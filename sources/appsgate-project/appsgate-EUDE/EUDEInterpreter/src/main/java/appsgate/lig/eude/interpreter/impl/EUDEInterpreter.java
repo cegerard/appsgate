@@ -335,7 +335,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public Long getTime() {
         LOGGER.trace("getTime called");
-        GenericCommand cmd = executeCommand(clock.getId(), "getCurrentTimeInMillis", new JSONArray());
+        GenericCommand cmd = executeCommand(getClock().getId(), "getCurrentTimeInMillis", new JSONArray());
         LOGGER.debug("cmd: " + cmd.toString());
         cmd.run();
         Long time = (Long) cmd.getReturn();

@@ -1,9 +1,8 @@
 {
-    "pid": "pgm",
+    "pid": "waitTest",
     "runningState": "DEPLOYED",
     "userSource": "",
-    "name": "TestLaunchPgm",
-    "daemon": true,
+    "name": "Wait_test",
     "parameters": [],
     "header": {
         "author": "Bob"
@@ -14,30 +13,36 @@
         "type": "seqRules",
         "rules": [
             {
-                "type": "when",
-                "events": {
-                    "type": "eventsOr",
-                    "events": [
-                        {
-                            "type": "event",
-                            "source": {
-                                "type": "device",
-                                "value": "PremierAppel"
-                            },
-                            "eventName": "makeCall",
-                            "eventValue": "1"
-                        }
-                    ]
-                },
-                "seqRulesThen": {
-                    "type": "action",
-                    "target": {
-                        "type": "programCall",
-                        "value": "TestWhen"
-                    },
-                    "methodName": "callProgram"
+                "type": "wait",
+                "waitFor": {
+                    "type": "number",
+                    "value": 2
                 }
+            },
+            {
+                "type": "action",
+                "target": {
+                    "type": "device",
+                    "value": "flag1"
+                },
+                "methodName": "On"
+            },
+            {
+                "type": "wait",
+                "waitFor": {
+                    "type": "number",
+                    "value": 0
+                }
+            },
+            {
+                "type": "action",
+                "target": {
+                    "type": "device",
+                    "value": "flag2"
+                },
+                "methodName": "On"
             }
+
         ]
     }
 }

@@ -35,7 +35,7 @@ public class Builder {
         NODE_FUNCTION, NODE_FUNCTION_DEFINITION, NODE_IF,
         NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
         NODE_SELECT, NODE_SELECT_STATE, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
-        NODE_VARIABLE_ASSIGNATION, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
+        NODE_VARIABLE_ASSIGNATION, NODE_WAIT, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
     }
 
     /**
@@ -135,6 +135,9 @@ public class Builder {
         if (type.equalsIgnoreCase("setOfRules")) {
             return NODE_TYPE.NODE_SET_OF_RULES;
         }
+        if (type.equalsIgnoreCase("wait")) {
+            return NODE_TYPE.NODE_WAIT;
+        }
         LOGGER.debug("The type [{}] does not exists", type);
         throw new SpokTypeException(type);
     }
@@ -218,6 +221,8 @@ public class Builder {
                     return new NodeSetOfRules(o, parent);
                 case NODE_VARIABLE_DEFINITION:
                     return new NodeVariableDefinition(o, parent);
+                case NODE_WAIT:
+                    return new NodeWait(o, parent);
                 default:
                     LOGGER.debug("No such type found : {}", o.toString());
                     throw new SpokNodeException("NodeBuilder", "type", null);

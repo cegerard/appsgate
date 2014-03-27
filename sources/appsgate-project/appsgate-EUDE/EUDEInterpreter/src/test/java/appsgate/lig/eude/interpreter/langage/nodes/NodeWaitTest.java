@@ -38,5 +38,5 @@ public class NodeWaitTest extends NodeTest {
     public void setUp() throws Exception {
         this.instance = new NodeWait(ruleJSON, programNode);
     }
-
+   
 }
