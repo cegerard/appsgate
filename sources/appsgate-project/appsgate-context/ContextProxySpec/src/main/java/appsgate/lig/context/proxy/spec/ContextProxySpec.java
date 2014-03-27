@@ -41,10 +41,10 @@ public interface ContextProxySpec {
 
 
     /**
-     *
-     * @param objectId
-     * @param stateName
-     * @return
+     * Get the state representation for a device type in the grammar
+     * @param objectId the device from which to get the state representation
+     * @param stateName the specific state to extract
+     * @return the state description
      */
     public StateDescription getEventsFromState(String objectId, String stateName);
 }

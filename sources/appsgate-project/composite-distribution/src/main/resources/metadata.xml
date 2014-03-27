@@ -56,12 +56,16 @@
 		<contentMngt>
 			<start  implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
  			<start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager"/>
-            <start implementation="ContextManagerImpl" name="Global-ContextManager"/> 			
+<!--             <start implementation="ContextManagerImpl" name="Global-ContextManager"/> 			 -->
+			<start implementation="PlaceManagerImpl" name="Global-PlaceManager"/>
+			<start implementation="AppsGateContextDevicePorpertiesTableImpl" name="Global-DevicePropertiesTableManager"/>
+			<start implementation="AppsGateContextUserBaseImpl" name="Global-UserBaseManager"/>
 		</contentMngt>
 	</composite>
 	
     <composite name="AppsGateUbikitServices" singleton="true" main="UbikitAdapterImpl">
         <contentMngt>
+<!--         	<start implementation="UbikitAdapterImpl" name="AppsgateUbikitAdapter" /> -->
         </contentMngt>
     </composite>
 	
