@@ -354,24 +354,14 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		/**
  		 * Get a device
  		 */
-		this.getDeviceByType = function (type)
+		this.getDevicesByType = function (type)
 		{
 			var call = eval({"method":"getDevices", "args":[{"type":"String", "value":type}], "callId":"cf-getdevicesbytype"});
 			websocket.send(JSON.stringify(call));
 		}
 		
-		/**
- 		 * Get devices of specifics types in
- 		 * specifoed spaces
- 		 */
-		this.getDevicesInSpaces = function (typeList, spaces)
-		{
-			var call = eval({"method":"getDevicesInSpaces", "args":[{"type":"JSONArray", "value":typeList}, {"type":"JSONArray", "value":spaces}], "callId":"cf-getdevicesinspaces"});
-			websocket.send(JSON.stringify(call));
-		}
-		
 		/********
-		 Device name management
+		 Device properties management
 		 			   ********/
 		/**
  		 * add user object name
@@ -400,6 +390,15 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
+		/**
+ 		 * get object grammar
+ 		 */
+		this.getObjectTypeGrammar = function (objectType)
+		{
+			var call = eval({"method":"getGrammarFromType", "args":[{"type":"String", "value":objectType}], "callId":"cf-getObjectTypeGrammar"});
+			websocket.send(JSON.stringify(call));
+		}
+		
 		/********
 		 Place management
 		 	     ********/
@@ -407,166 +406,100 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		/**
  		 * Get all places for an habitat
  		 */
-		this.getPlaces = function (habitatId)
+		this.getPlaces = function ()
 		{
-			var call = eval({"method":"getPlaces", "args":[{"type":"String", "value":habitatId}], "callId":"cf-getplaces"});
+			var call = eval({"method":"getPlaces", "args":[], "callId":"cf-getplaces"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get place detail
+ 		 * Add new place
  		 */
-		this.getPlace = function (habitatId, placeId)
+		this.newPlace = function (name, devices, parent)
 		{
-			var call = eval({"method":"getPlaceInfo", "args":[{"type":"String", "value":habitatId}, {"type":"String", "value":placeId}], "callId":"cf-getplace"});
+			var place = eval({"name":name, "devcies":devices,  "parent":parent });
+			var call = eval({"method":"newPlace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-newplace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
-		/********
-		 Space management
-		 	     ********/
-		
 		/**
-		 * Get json spaces
+		 * Update an existing place
 		 */
-		this.getJSONSpaces = function ()
+		this.updatePlace = function (data)
 		{
-			var call = eval({"method":"getJSONSpaces", "args":[], "callId":"cf-getspaces"});
+			var call = eval({"method":"updatePlace", "args":[{"type":"JSONObject", "value":JSON.stringify(data)}], "callId":"cf-updateplace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
-		 * Get space description
+		 * remove an existing place
 		 */
-		this.getSpaceInfo = function (spaceId)
+		this.removePlace = function (placeId)
 		{
-			var call = eval({"method":"getSpaceInfo", "args":[{"type":"String", "value":spaceId}], "callId":"cf-getspace"});
+			var call = eval({"method":"removePlace", "args":[{"type":"String", "value":placeId}], "callId":"cf-removeplace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
-		 * Get json spaces as a tree
+ 		 * Move a device in a place
+ 		 */
+		this.moveDevice = function (deviceId, srcPlaceId, destPlaceId)
+		{
+			var call = eval({"method":"moveDevice", "args":[{"type":"String", "value":deviceId}, {"type":"String", "value":srcPlaceId}, {"type":"String", "value":destPlaceId}], "callId":"cf-moveDevice"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+		 * Get core object place identifier
 		 */
-		this.getJSONTreeSpaces = function ()
+		this.getObjectPlaceId = function (objectId)
 		{
-			var call = eval({"method":"getTreeDescription", "args":[], "callId":"cf-gettreespaces"});
+			var call = eval({"method":"getCoreObjectPlaceId", "args":[{"type":"String", "value":objectId}], "callId":"cf-getcoreobjectplaceid"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
-		 * Get json spaces as a tree
-		 */
-		this.getJSONSubTreeSpaces = function (nodeId)
-		{
-			var call = eval({"method":"getTreeDescription", "args":[{"type":"String", "value":nodeId}], "callId":"cf-getsubtreespaces"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
- 		 * Get space by name
+ 		 * Get places by name
  		 */
-		this.getSpacesByName = function (name)
+		this.getPlacesByName = function (name)
 		{
-			var call = eval({"method":"getSpacesByName", "args":[{"type":"String", "value":name}], "callId":"cf-getspacesbyname"});
+			var call = eval({"method":"getPlacesByName", "args":[{"type":"String", "value":name}], "callId":"cf-getplacesbyname"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get space by tags
+ 		 * Get places by tags
  		 */
-		this.getSpacesByTags = function (tagsArray)
+		this.getPlacesByTags = function (tagsArray)
 		{
-			var call = eval({"method":"getSpacesWithTags", "args":[{"type":"JSONArray", "value":JSON.stringify(tagsArray)}], "callId":"cf-getspacesbytag"});
+			var call = eval({"method":"getPlacesWithTags", "args":[{"type":"JSONArray", "value":JSON.stringify(tagsArray)}], "callId":"cf-getplacesbytag"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get space by property keys
+ 		 * Get places by property keys
  		 */
-		this.getSpacesByPropertyKey = function (keysArray)
+		this.getPlacesByPropertyKey = function (keysArray)
 		{
-			var call = eval({"method":"getSpacesWithProperties", "args":[{"type":"JSONArray", "value":JSON.stringify(keysArray)}], "callId":"cf-getspacesbyprop"});
+			var call = eval({"method":"getPlacesWithProperties", "args":[{"type":"JSONArray", "value":JSON.stringify(keysArray)}], "callId":"cf-getplacesbyprop"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get space by property keys and associated value
+ 		 * Get place by property keys and associated value
  		 */
-		this.getSpacesWithPropertiesValue = function (propArray)
+		this.getPlacesWithPropertiesValue = function (propArray)
 		{
-			var call = eval({"method":"getSpacesWithPropertiesValue", "args":[{"type":"JSONArray", "value":JSON.stringify(propArray)}], "callId":"cf-getspacesbypropvalue"});
+			var call = eval({"method":"getPlacesWithPropertiesValue", "args":[{"type":"JSONArray", "value":JSON.stringify(propArray)}], "callId":"cf-getplacesbypropvalue"});
 			websocket.send(JSON.stringify(call));
 		}
 		
 		/**
- 		 * Get root pace
+ 		 * Get root places
  		 */
-		this.getRootSpace = function ()
+		this.getRootPlaces = function ()
 		{
-			var call = eval({"method":"getRootSpace", "args":[], "callId":"cf-getrootspace"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
- 		 * Add new space
- 		 */
-		this.newSpace = function (type, parent)
-		{
-			var place = eval({"type":category, "parent":parent });
-			var call = eval({"method":"newSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-newspace"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
-		 * Update an existing space
-		 */
-		this.updateSpace = function (data)
-		{
-			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(data)}], "callId":"cf-updatespace"});
-			websocket.send(JSON.stringify(call));
-		}
-
-		/**
- 		 * Move an existing space
- 		 */
-		this.moveSpace = function (id, parent)
-		{
-			var place = eval({"id":id, "parent":parent});
-			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-movespace"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
-		 * Set up completly an existing space
-		 * id, the id of the space
-		 * name, the new name
-		 * category, the category of this space
-		 * parent, the new parent of this space
-		 * tagList, the new tagList of an empty JSONArray to clear the existing list
-		 * propList, the new propList of an empty JSONArray to clear the existing list
-		 * objectList, the new objectList of an empty JSONArray to clear the existing list
-		 **/
-		this.setSpace =  function (id, name, parent, tagList, propList, objectList) {
-			var place = eval({"id":id, "name":name, "parent":parent, "taglist":tagList, "proplist":propList, "coreObjectlist":objectList});
-			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-setSpace"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
-		 * Free the space from its tags, porperties and object list
-		 */
-		this.clearSpace = function(id) {
-			var place = eval({"id":id, "taglist":[], "proplist":[], "coreObjectlist":[]});
-			var call = eval({"method":"updateSpace", "args":[{"type":"JSONObject", "value":JSON.stringify(place)}], "callId":"cf-clearSpaceList"});
-			websocket.send(JSON.stringify(call));
-		}
-		
-		/**
- 		 * remove a space
- 		 */
-		this.removeSpace = function (id)
-		{
-			var call = eval({"method":"removeSpace", "args":[{"type":"String", "value":id}], "callId":"cf-removespace"});
+			var call = eval({"method":"getRootPlaces", "args":[], "callId":"cf-getrootplace"});
 			websocket.send(JSON.stringify(call));
 		}
 		
@@ -646,14 +579,14 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
-//		/**
-// 		 * Get user complete inforamtion
-// 		 */
-//		this.getUserFullDetails = function (login)
-//		{
-//			var call = eval({"method":"getUserFullDetails", "args":[{"type":"String", "value":login}], "callId":"cf-getUserfulldetails"});
-//			websocket.send(JSON.stringify(call));
-//		}
+		/**
+ 		 * Get user complete inforamtion
+ 		 */
+		this.getUserFullDetails = function (login)
+		{
+			var call = eval({"method":"getUserFullDetails", "args":[{"type":"String", "value":login}], "callId":"cf-getUserfulldetails"});
+			websocket.send(JSON.stringify(call));
+		}
 		
 		/**
  		 * Check the unicity of a login
@@ -664,23 +597,45 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
-//		/**
-//		 * Associate a device id user
-//		 */
-//		this.associateDevice = function (login, psw, objId)
-//		{
-//			var call = eval({"method":"associateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-associatedevice"});
-//			websocket.send(JSON.stringify(call));
-//		}
-//		
-//		/**
-//		 * Associate a device id user
-//		 */
-//		this.separateDevice = function (login, psw, objId)
-//		{
-//			var call = eval({"method":"separateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-separatedevice"});
-//			websocket.send(JSON.stringify(call));
-//		}
+		/**
+		 * Associate a device id user
+		 */
+		this.associateDevice = function (login, psw, objId)
+		{
+			var call = eval({"method":"associateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-associatedevice"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+		 * Associate a device id user
+		 */
+		this.separateDevice = function (login, psw, objId)
+		{
+			var call = eval({"method":"separateDevice", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"String", "value":objId}], "callId":"cf-separatedevice"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/********
+		 Service account management
+		 	               ********/
+		
+		/**
+		 * Associate a service account to a user
+		 */
+		this.addServiceAccount = function (login, psw, jsonAccount)
+		{
+			var call = eval({"method":"synchronizeAccount", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"JSONObject", "value":jsonAccount}], "callId":"cf-syncserviceaccount"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
+		 * Associate a service account to a user
+		 */
+		this.removeServiceAccount = function (login, psw, jsonAccount)
+		{
+			var call = eval({"method":"desynchronizedAccount", "args":[{"type":"String", "value":login}, {"type":"String", "value":psw}, {"type":"JSONObject", "value":jsonAccount}], "callId":"cf-removeserviceaccount"});
+			websocket.send(JSON.stringify(call));
+		}
 		
 		/********
 		 Programs management
@@ -748,9 +703,14 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			websocket.send(JSON.stringify(call));
 		}
 		
-		/********
-		 Service account management
-		 	               ********/
+		/**
+		 * Pause a program
+		 */
+		this.isProgramActive = function (pgmId)
+		{
+			var call = eval({"method":"isProgramActive", "args":[{"type":"String", "value":pgmId}], "callId":"cf-ispgmactive"});
+			websocket.send(JSON.stringify(call));
+		}
 		
 	})(); //AppsGate main object definition end
 	
