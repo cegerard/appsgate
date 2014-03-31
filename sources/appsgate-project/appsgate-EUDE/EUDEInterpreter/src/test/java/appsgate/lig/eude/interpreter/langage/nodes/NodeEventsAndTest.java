@@ -50,21 +50,25 @@ public class NodeEventsAndTest extends NodeTest {
         NodeEventTest t = new NodeEventTest();
         t.setUp();
         NodeEvent nodeEvent = (NodeEvent) t.instance;
+        NodeEvent ev2 = new NodeEvent("device", "test2", "test2", "test2", instance);
 
         JSONObject json = new JSONObject();
         json.put("type", "events");
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(nodeEvent.getJSONDescription());
         json.put("events", jsonArray);
-        json.put("nbEventToOccur", 2);
         json.put("duration", 0);
-        NodeEvents n = new NodeEventsOr(json, programNode);
+        jsonArray.put(ev2.getJSONDescription());
+        NodeEvents n = new NodeEventsAnd(json, programNode);
 
         n.call();
         n.endEventFired(new EndEvent(nodeEvent));
         Assert.assertTrue("Node should be started", n.isStarted());
         n.endEventFired(new EndEvent(nodeEvent));
+        Assert.assertTrue("Node should be started", n.isStarted());
+        n.endEventFired(new EndEvent(ev2));
         Assert.assertFalse("Node should be stopped", n.isStarted());
     }
+    
 
 }

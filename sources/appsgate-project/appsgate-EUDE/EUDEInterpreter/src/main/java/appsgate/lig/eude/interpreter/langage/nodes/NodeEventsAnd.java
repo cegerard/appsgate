@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,12 +27,12 @@ public class NodeEventsAnd extends NodeEvents {
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeEventsAnd.class);
 
     /**
-     * 
+     *
      */
     private int nbEventEnded = 0;
 
-    private NodeEvent clockEvent = null;
-    
+    private HashMap<NodeEvent, NodeEvent> clockEventList;
+
     /**
      * private constructor to allow copy
      *
@@ -55,7 +56,7 @@ public class NodeEventsAnd extends NodeEvents {
     @Override
     protected void specificCall() {
         nbEventEnded = 0;
-        clockEvent = null;
+        clockEventList = new HashMap<NodeEvent, NodeEvent>();
         super.specificCall();
     }
 
@@ -78,22 +79,39 @@ public class NodeEventsAnd extends NodeEvents {
 
     @Override
     void dealWithClockEvent(NodeEvent e) throws SpokExecutionException {
-        stop();
-        call();
+        LOGGER.trace("clock event {}", e);
+        for (NodeEvent k : clockEventList.keySet()) {
+            if (clockEventList.get(k).equals(e)) {
+                LOGGER.trace("Removing key");
+                nbEventEnded--;
+                clockEventList.remove(k);
+                return;
+            }
+        }
+        LOGGER.warn("The event has not been catched : {}", e);
     }
 
     @Override
     void dealWithNormalEvent(NodeEvent e) throws SpokExecutionException {
-        nbEventEnded++;
+
+        if (clockEventList.containsKey(e)) {
+            if (clockEventList.get(e) != null) {
+                clockEventList.get(e).stop();
+            }
+        } else {
+            nbEventEnded++;
+        }
         if (nbEventEnded >= listOfEvent.size()) {
             LOGGER.debug("All the events have been ended");
-            stop();
             fireEndEvent(new EndEvent(this));
+            stop();
             return;
         }
-        if (clockEvent == null) {
-            clockEvent = startClockEvent(getDuration());
-        }
+        clockEventList.put(e, startClockEvent(duration));
     }
 
+    @Override
+    public String toString() {
+        return "[NodeEvents AND]";
+    }
 }
