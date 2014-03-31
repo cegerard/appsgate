@@ -32,6 +32,7 @@
 		<module>CoreMediaBrowserSpec</module>
 		<module>CoreOccupancySpec</module>
 		<module>CoreCO2SensorSpec</module>
+		<module>CoreMobileDeviceSpec</module>
 	</modules>
 
 </project>

@@ -1,0 +1,28 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="MobileDeviceImpl"
+		classname="appsgate.lig.mobile.device.impl.MobileDeviceImpl"
+		specification="CoreMobileDeviceSpec" push="notifyChanges">
+		<callback onInit="newInst" onRemove="deleteInst" />
+
+
+ 		<relation field="mobileDeviceAdapter" specification="MobileDeviceAdapterSpec" resolve="exist" />
+
+		<!-- device kernel meta data -->
+		<definition name="deviceName" type="string" default="Unknown" field="deviceName" />
+		<definition name="deviceId" type="string" default="000000" field="deviceId" />
+		<definition name="deviceType" type="string" default="SmartPhone" field="deviceType" />
+
+		<!-- device client meta data -->
+		<definition name="pictureId" type="string" field="pictureId" />
+		<definition name="userType" type="string" default="200" field="userType" />
+		<definition name="status" type="string" default="2" field="status" method="statusChanged" />
+
+		<!-- device meta data -->
+		
+	</implementation>
+
+</apam>

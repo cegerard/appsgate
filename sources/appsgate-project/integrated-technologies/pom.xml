@@ -27,6 +27,7 @@
 		<module>software-services</module>
 		<module>fuchsia-ard-plugin</module>
 <!-- 		<module>dfki-integration</module> -->
+		<module>devices</module>
 	</modules>
 	
 </project>
