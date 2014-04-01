@@ -1,6 +1,6 @@
 {
     "runningState": "DEPLOYED",
-    "pid": "TestWhile",
+    "id": "TestWhile",
     "userSource": "",
     "daemon": true,
     "name": "TestWhile",

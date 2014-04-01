@@ -8,7 +8,7 @@
             "name": "isOn",
             "setter": {
                 "type": "NodeAction",
-                "methodName": "switchOn"
+                "methodName": "On"
             },
             "endEvent": {
                 "type": "event",
@@ -26,7 +26,7 @@
             "name": "testState",
             "setter": {
                 "type": "NodeAction",
-                "methodName": "switchOn"
+                "methodName": "On"
             },
             "endEvent": {
                 "type": "eventsOr",

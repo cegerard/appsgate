@@ -1,6 +1,6 @@
 {
     "name": "T8",
-    "pid": "t8",
+    "id": "t8",
     "header": {
         "author": "testMaker",
         "comment": "Allumer les lampes du salon qui ont été allumées entre il y a 2h et il y a 1h."
@@ -31,7 +31,7 @@
                     "start": "-7200",
                     "duration": "3600"
                 },
-                "methodName": "switchOn",
+                "methodName": "On",
                 "action": [
                 ]
             }

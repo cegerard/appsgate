@@ -1,6 +1,6 @@
 {
-    "id": "test",
-    "userSource": "",
+    "id": "imb3",
+    "package": "imb1.imb2",
     "name": "empty test",
     "parameters": [],
     "header": {
@@ -14,4 +14,3 @@
         ]
     }
 }
-

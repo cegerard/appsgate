@@ -66,6 +66,13 @@ public class NodeProgram extends Node {
      * Program's id set by the EUDE editor
      */
     private String id;
+    
+    /**
+     * @param i the id to set
+     */
+    protected void setId(String i) {
+        id = i;
+    }
 
     /**
      * Program's name given by the user
@@ -126,7 +133,7 @@ public class NodeProgram extends Node {
         this(mediator, p);
 
         // initialize the program with the JSON
-        id = getJSONString(programJSON, "pid");
+        id = getJSONString(programJSON, "id");
         if (programJSON.has("runningState")) {
             runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
         }
@@ -306,7 +313,7 @@ public class NodeProgram extends Node {
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
         try {
-            o.put("pid", id);
+            o.put("id", id);
             o.put("type", "program");
             o.put("runningState", runningState.name);
             o.put("name", name);
@@ -367,13 +374,20 @@ public class NodeProgram extends Node {
      *
      * @return
      */
-    private String getPath() {
+    public String getPath() {
+        NodeProgram p = (NodeProgram) this.getParent();
+        if (p != null) {
+            return p.recursivePath();
+        }
+        return "";
+    }
+    
+    private String recursivePath() {
         NodeProgram p = (NodeProgram) this.getParent();
         if (p == null) {
             return id;
-        } else {
-            return p.getPath() + "." + id;
         }
+        return p.recursivePath() + "." + id;
     }
 
     /**

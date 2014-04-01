@@ -11,9 +11,9 @@ _BODY_
 
 {
 _while(l1.isOfState(isOn)) {
- l2.switchOn();
+ l2.On();
 } then {
- l2.switchOff();
+ l2.Off();
 }
 l1.blink();
 }

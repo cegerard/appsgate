@@ -1,5 +1,5 @@
 {
-    "pid" : "select-prog",
+    "id" : "select-prog",
     "name": "select",
     "header": {
         "author": "me"

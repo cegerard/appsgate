@@ -1,6 +1,6 @@
 {
   "name": "T11",
-  "pid" : "t11",
+  "id" : "t11",
   "header": {
     "author": "testMaker",
     "phrase": "Mettre ambiance calme dans {piece}"

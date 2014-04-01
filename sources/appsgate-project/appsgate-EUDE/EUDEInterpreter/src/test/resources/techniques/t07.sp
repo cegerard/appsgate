@@ -8,5 +8,5 @@ var lampeSalon = _selectState(_select(["lamp"],["salon"]),isOn,"true",-3600,0);
 _BODY_
 
 <<<
-lampeSalon.switchOn();
+lampeSalon.On();
 >>>

@@ -1,6 +1,6 @@
 {
   "name": "T16",
-  "pid" : "t16",
+  "id" : "t16",
   "header": {
     "author": "testMaker",
     "comment": ""

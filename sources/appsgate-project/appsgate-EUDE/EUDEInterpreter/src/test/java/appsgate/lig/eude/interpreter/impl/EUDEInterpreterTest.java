@@ -39,8 +39,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  *
  * @author jr
@@ -161,7 +159,7 @@ public class EUDEInterpreterTest {
         System.out.println("addProgram");
         boolean result = instance.addProgram(programJSON);
         instance.getNodeProgram(programId);
-        assertTrue("Program should be added", result);
+        Assert.assertTrue("Program should be added", result);
     }
 
     /**
@@ -173,10 +171,10 @@ public class EUDEInterpreterTest {
     public void testRemoveProgram() throws Exception {
         System.out.println("removeProgram");
         boolean result = instance.removeProgram("NoTEst");
-        assertFalse("The program does not exist so there is no removing", result);
+        Assert.assertFalse("The program does not exist so there is no removing", result);
         instance.addProgram(programJSON);
         boolean remove = instance.removeProgram(programId);
-        assertTrue("Program should be removed", remove);
+        Assert.assertTrue("Program should be removed", remove);
 
     }
 
@@ -188,7 +186,7 @@ public class EUDEInterpreterTest {
         System.out.println("update");
         instance.addProgram(this.programJSON);
         boolean result = instance.update(this.programJSON);
-        assertTrue("Update should work on a correct program", result);
+        Assert.assertTrue("Update should work on a correct program", result);
     }
 
     /**
@@ -198,10 +196,10 @@ public class EUDEInterpreterTest {
     public void testCallProgram() {
         System.out.println("callProgram");
         boolean result = instance.callProgram("noTest");
-        assertFalse("No test have no program to call", result);
+        Assert.assertFalse("No test have no program to call", result);
         instance.addProgram(programJSON);
         result = instance.callProgram(programId);
-        assertTrue("Program should be called", result);
+        Assert.assertTrue("Program should be called", result);
     }
 
     /**
@@ -211,7 +209,7 @@ public class EUDEInterpreterTest {
     public void testStopProgram() {
         System.out.println("stopProgram");
         boolean result = instance.stopProgram(programId);
-        assertFalse("The program has not been called", result);
+        Assert.assertFalse("The program has not been called", result);
     }
 
     /**
@@ -221,7 +219,7 @@ public class EUDEInterpreterTest {
     public void testPauseProgram() {
         System.out.println("pauseProgram");
         boolean result = instance.pauseProgram(programId);
-        assertFalse("This is not supposed to be implemented", result);
+        Assert.assertFalse("This is not supposed to be implemented", result);
     }
 
     /**
@@ -231,7 +229,7 @@ public class EUDEInterpreterTest {
     public void testGetListPrograms() {
         System.out.println("getListPrograms");
         HashMap<String, JSONObject> result = instance.getListPrograms();
-        assertEquals(1, result.size());
+        Assert.assertEquals(1, result.size());
     }
 
     /**
@@ -242,7 +240,7 @@ public class EUDEInterpreterTest {
         System.out.println("isProgramActive");
         boolean expResult = false;
         boolean result = instance.isProgramActive(programId);
-        assertFalse("No program has been activated now", result);
+        Assert.assertFalse("No program has been activated now", result);
     }
 
     /**
@@ -253,7 +251,7 @@ public class EUDEInterpreterTest {
         System.out.println("getNodeProgram");
         NodeProgram expResult = null;
         NodeProgram result = instance.getNodeProgram(programId);
-        assertEquals("No test has been added to the mediator", expResult, result);
+        Assert.assertEquals("No test has been added to the mediator", expResult, result);
     }
 
     /**
@@ -295,7 +293,7 @@ public class EUDEInterpreterTest {
         System.out.println("notifyChanges");
         NotificationMsg notif = new ProgramStateNotificationMsg("test", "test", null);
         NotificationMsg result = instance.notifyChanges(notif);
-        assertNotNull(result);
+        Assert.assertNotNull(result);
     }
 
     /**
@@ -509,15 +507,20 @@ public class EUDEInterpreterTest {
     }
 
     @Test
-    public void testTreeImplementation() {
-        System.out.println("Implementation");
-
-    }
-
-    @Test
     public void testIsThereARootProgram() {
         System.out.println("Test root program");
         Assert.assertNotNull("There must be a root program", instance.getNodeProgram("program-0"));
     }
 
+    @Test
+    public void testImbricatedPrograms() throws Exception {
+        System.out.println("Imbricated");
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/imbricated1.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/imbricated2.json")));
+        Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/imbricated3.json")));
+        Assert.assertFalse(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/imbricated3.json")));
+        NodeProgram nodeProgram = instance.getNodeProgram("imb3");
+        Assert.assertEquals("program-0.imb1.imb2", nodeProgram.getPath());
+    }
+    
 }

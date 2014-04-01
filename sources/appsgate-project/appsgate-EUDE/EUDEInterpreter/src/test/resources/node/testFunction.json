@@ -1,6 +1,6 @@
 {
     "type": "function",
-    "pid": "test",
+    "id": "test",
     "seqDefinitions": [
         {
             "type": "variable",

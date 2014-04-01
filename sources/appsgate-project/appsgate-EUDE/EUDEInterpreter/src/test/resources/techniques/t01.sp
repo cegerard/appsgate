@@ -14,6 +14,6 @@ _BODY_
 _when[l1.switchOn(""),b1.click("") /THEN/0/5] 
 THEN
 {
-  l2.switchOn();
+  l2.On();
 }
 >>>

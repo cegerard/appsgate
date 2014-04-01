@@ -1,6 +1,6 @@
 {
     "runningState": "DEPLOYED",
-    "pid": "TestWhen",
+    "id": "TestWhen",
     "userSource": "",
     "daemon": true,
     "name": "TestWhen",

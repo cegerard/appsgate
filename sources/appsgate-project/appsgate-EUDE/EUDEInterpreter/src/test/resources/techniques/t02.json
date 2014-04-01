@@ -1,6 +1,6 @@
 {
     "name": "T2",
-    "pid": "t2",
+    "id": "t2",
     "header": {
         "author": "testMaker",
         "comment": "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2."
@@ -32,7 +32,7 @@
                         "type": "variable",
                         "value": "l2"
                     },
-                    "methodName": "switchOn",
+                    "methodName": "On",
                     "action": [
                     ]
                 },
@@ -42,7 +42,7 @@
                         "type": "variable",
                         "value": "l2"
                     },
-                    "methodName": "switchOff",
+                    "methodName": "Off",
                     "action": [
                     ]
                 }

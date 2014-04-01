@@ -181,7 +181,11 @@ public class ContextProxyImpl implements ContextProxySpec {
     	if (!spaces.isEmpty()) {
     		for (String placeId : spaces) {
     			SymbolicPlace place = placeManager.getSymbolicPlace(placeId);
+                        if (place != null) {
     			coreObjectInPlace.addAll(place.getCoreObjects());
+                        } else {
+                            logger.warn("No such place found: {}",placeId);
+                        }
     		}
     	} else {
     		for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {

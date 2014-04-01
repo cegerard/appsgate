@@ -1,6 +1,6 @@
 {
     "name": "T10",
-    "pid": "t10",
+    "id": "t10",
     "header": {
         "author": "testMaker",
         "comment": "Faire clignoter toutes les lampes sauf celles du salon qui ont été allumées entre il y a 2h et il y a 1h."

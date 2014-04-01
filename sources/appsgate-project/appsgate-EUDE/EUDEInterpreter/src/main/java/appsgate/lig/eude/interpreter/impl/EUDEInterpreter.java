@@ -100,8 +100,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     private PropertyHistoryManager propHistoryManager;
 
     /**
-     * Constructor.
-     * Initialize the list of programs and of events
+     * Constructor. Initialize the list of programs and of events
      *
      */
     public EUDEInterpreter() {
@@ -189,7 +188,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     public boolean update(JSONObject jsonProgram) {
         String prog_id;
         try {
-            prog_id = jsonProgram.getString("pid");
+            prog_id = jsonProgram.getString("id");
         } catch (JSONException e) {
             LOGGER.error("EUDE error - updating programm - NO ID in JSON DESCRIPTION");
             return false;
@@ -570,15 +569,22 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the parent program of the program
      */
     private NodeProgram getProgramParent(JSONObject programJSON) {
-        String parentId = programJSON.optString("package");
-        if (parentId == null || parentId.isEmpty()) {
-            LOGGER.debug("By default the program is stored as a child of program-0");
+        String packageName = programJSON.optString("package");
+        if (packageName == null || packageName.isEmpty()) {
+            LOGGER.warn("By default the program is stored as a child of program-0");
             return mapPrograms.get("program-0");
+        }
+        String parentId;
+        if (packageName.contains(".")) {
+            parentId = packageName.substring(packageName.lastIndexOf(".")+1);
+        } else {
+            parentId = packageName;
         }
         if (mapPrograms.containsKey(parentId)) {
             return mapPrograms.get(parentId);
         }
-        return null;
+        LOGGER.error("the parent id has not been found: {}", parentId);
+        return mapPrograms.get("program-0");
     }
 
     /**

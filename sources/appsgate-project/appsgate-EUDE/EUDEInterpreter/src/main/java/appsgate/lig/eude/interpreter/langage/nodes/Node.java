@@ -445,11 +445,17 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             throws SpokExecutionException {
         ArrayList<String> WHAT = new ArrayList<String>();
         for (int i = 0; i < what.length(); i++) {
-            WHAT.add(what.optString(i));
+            JSONObject o = what.optJSONObject(i);
+            if (o != null) {
+                WHAT.add(o.optString("value"));
+            }
         }
         ArrayList<String> WHERE = new ArrayList<String>();
         for (int i = 0; i < where.length(); i++) {
-            WHERE.add(where.optString(i));
+            JSONObject o = where.optJSONObject(i);
+            if (o != null) {
+                WHERE.add(o.optString("value"));
+            }
         }
         ArrayList<String> devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
         JSONArray retArray = new JSONArray();
@@ -512,7 +518,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         return null;
     }
 
-        /**
+    /**
      *
      * @param duration
      * @return @throws SpokExecutionException
@@ -536,5 +542,5 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         Long time = getMediator().getTime() + duration * 1000;
         return time.toString();
     }
-    
+
 }

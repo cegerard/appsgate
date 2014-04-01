@@ -1,6 +1,6 @@
 {
   "name": "T13",
-  "pid" : "t13",
+  "id" : "t13",
   "header": {
     "author": "testMaker",
     "comment": ""
@@ -61,7 +61,7 @@
                     "type": "variable",
                     "value": "l1"
                   },
-                  "methodName": "switchOn",
+                  "methodName": "On",
                   "action": [
                     
                   ]

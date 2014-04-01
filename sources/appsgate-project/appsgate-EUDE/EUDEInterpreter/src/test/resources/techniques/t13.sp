@@ -14,12 +14,12 @@ _BODY_
 _when [b1.clicked("")/OR] then
 <<<
 {
-l1.switchOn();
+l1.On();
 _while(l1.isOfState(isOn)) {
 _keep(l2, isOn);
 } then
 {
-l2.switchOf();
+l2.Off();
 }
 }
 {_when[b1.clicked("")/OR/3/3] then {

@@ -1,5 +1,5 @@
 {
-    "pid": "pgm",
+    "id": "pgm",
     "runningState": "DEPLOYED",
     "userSource": "",
     "name": "TestLaunchPgm",

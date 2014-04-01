@@ -1,6 +1,6 @@
 {
   "name": "T7",
-  "pid": "t07",
+  "id": "t07",
   "header": {
     "author": "testMaker",
     "comment": "Allumer les lampes du salon qui étaient allumées il y a 1 heure."
@@ -38,7 +38,7 @@
           "type": "variable",
           "value": "lampeSalon"
         },
-        "methodName": "switchOn",
+        "methodName": "On",
         "action": [
           
         ]

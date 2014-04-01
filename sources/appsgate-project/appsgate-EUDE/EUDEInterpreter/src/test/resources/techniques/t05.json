@@ -1,6 +1,6 @@
 {
   "name": "T5",
-  "pid": "t05",
+  "id": "t05",
   "header": {
     "author": "testMaker",
     "comment": "Lorsque L2 est allumé et que dans un intervalle de 10 secondes (B1 est appuyé et dans un intervalle de 5 secondes (B2 est appuyé puis B3 est appuyé puis B2 est appuyé) ),  alors si L1 est allumé alors éteindre L1 sinon allumer L1."

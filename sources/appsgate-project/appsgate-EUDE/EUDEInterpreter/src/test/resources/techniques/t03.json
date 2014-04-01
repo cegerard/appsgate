@@ -1,6 +1,6 @@
 {
     "name": "T3",
-    "pid": "t3",
+    "id": "t3",
     "header": {
         "author": "testMaker",
         "comments": "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est plus la cas (L1 n’est plus allumé) alors éteindre L2. Tant que L2 est allumé alors L1 est allumé, et lorsque ça n’est plus la cas (L2 n’est plus allumé) alors éteindre L1. // Vérifier que les 2 lumières sont alors couplées"
@@ -32,7 +32,7 @@
                         "type": "variable",
                         "value": "l2"
                     },
-                    "methodName": "switchOn",
+                    "methodName": "On",
                     "action": [
                     ]
                 },
@@ -42,7 +42,7 @@
                         "type": "variable",
                         "value": "l2"
                     },
-                    "methodName": "switchOff",
+                    "methodName": "Off",
                     "action": [
                     ]
                 }
@@ -63,7 +63,7 @@
                         "type": "variable",
                         "value": "l1"
                     },
-                    "methodName": "switchOn",
+                    "methodName": "On",
                     "action": [
                     ]
                 },
@@ -73,7 +73,7 @@
                         "type": "variable",
                         "value": "l1"
                     },
-                    "methodName": "switchOff",
+                    "methodName": "Off",
                     "action": [
                     ]
                 }

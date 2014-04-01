@@ -1,6 +1,6 @@
 {
   "name": "T1",
-  "pid" : "t01",
+  "id" : "t01",
   "header": {
     "author": "testMaker",
     "comment": "Lorsque,  dans un intervalle de 5 secondes,  L1 s’allume puis B1 est pressé,  alors allumer L2"
@@ -67,7 +67,7 @@
                 "type": "variable",
                 "value": "l2"
               },
-              "methodName": "switchOn",
+              "methodName": "On",
               "action": [
                 
               ]

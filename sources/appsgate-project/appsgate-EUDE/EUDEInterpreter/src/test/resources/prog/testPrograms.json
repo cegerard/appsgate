@@ -1,5 +1,5 @@
 {
-    "pid": "testPrograms",
+    "id": "testPrograms",
     "runningState": "DEPLOYED",
     "userSource": "",
     "daemon": true,

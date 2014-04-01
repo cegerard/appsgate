@@ -35,7 +35,7 @@ public class NodeProgramTest extends NodeTest {
             }
         });
 
-        ruleJSON.put("pid", "test");
+        ruleJSON.put("id", "test");
         ruleJSON.put("type", "program");
         ruleJSON.put("runningState", "STOPPED");
         ruleJSON.put("name", "test");
@@ -57,7 +57,6 @@ public class NodeProgramTest extends NodeTest {
         this.programTest = new NodeProgram(mediator, this.ruleJSON, null);
         this.instance = this.programTest;
     }
-
 
     /**
      * Test of getuserSource method, of class NodeProgram.
@@ -171,5 +170,20 @@ public class NodeProgramTest extends NodeTest {
         NodeProgram defNode = new NodeProgram(null, TestUtilities.loadFileJSON("src/test/resources/node/newjson.json"), null);
         Assert.assertNotNull(defNode);
         System.out.println(defNode.getExpertProgramScript());
+    }
+
+    @Test
+    public void testGetPath() throws Exception {
+        printTestName("getPath");
+        NodeProgram p1 = new NodeProgram(null, null);
+        p1.setId("t");
+        Assert.assertEquals("", p1.getPath());
+        NodeProgram p2 = new NodeProgram(null, p1);
+        p2.setId("c");
+        Assert.assertEquals("t", p2.getPath());
+        NodeProgram p3 = new NodeProgram(null, p2);
+        p3.setId("l");
+        Assert.assertEquals("t.c", p3.getPath());
+
     }
 }

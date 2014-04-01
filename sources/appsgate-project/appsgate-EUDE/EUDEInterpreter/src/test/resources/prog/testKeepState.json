@@ -1,6 +1,6 @@
 {
     "runningState": "DEPLOYED",
-    "pid": "TestKeepState",
+    "id": "TestKeepState",
     "name": "keepstate",
     "userSource": "",
     "daemon": true,
