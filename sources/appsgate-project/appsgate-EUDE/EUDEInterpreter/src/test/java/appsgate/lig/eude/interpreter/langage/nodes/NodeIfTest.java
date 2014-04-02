@@ -47,6 +47,7 @@ public class NodeIfTest extends NodeTest {
 
     @Test
     public void testBuildFromJson() throws Exception {
+        printTestName("BuildFromJSON");
         NodeIf seq;
         seq = (NodeIf) Builder.buildFromJSON(TestUtilities.loadFileJSON("src/test/resources/node/if.json"), instance);
         Assert.assertNotNull(seq);

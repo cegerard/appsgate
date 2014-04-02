@@ -107,7 +107,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         mapPrograms = new HashMap<String, NodeProgram>();
         mapCoreNodeEvent = new HashMap<CoreEventListener, ArrayList<NodeEvent>>();
         root = initRootProgram();
-        mapPrograms.put(root.getId(), root);
     }
 
     /**
@@ -489,8 +488,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     private ArrayList<Entry<String, Object>> getProgramsDesc() {
         ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
-        for (String key : getListProgramIds(root)) {
-            properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getJSONDescription().toString()));
+        for (NodeProgram subProgram : root.getSubPrograms()) {
+            for (String key : getListProgramIds(subProgram)) {
+                properties.add(new AbstractMap.SimpleEntry<String, Object>(key, mapPrograms.get(key).getJSONDescription().toString()));
+            }
         }
         return properties;
     }
@@ -570,13 +571,13 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     private NodeProgram getProgramParent(JSONObject programJSON) {
         String packageName = programJSON.optString("package");
-        if (packageName == null || packageName.isEmpty()) {
-            LOGGER.warn("By default the program is stored as a child of program-0");
-            return mapPrograms.get("program-0");
+        if (packageName == null || packageName.isEmpty() || packageName.equalsIgnoreCase("root")) {
+            LOGGER.warn("By default the program is stored as a child of root");
+            return root;
         }
         String parentId;
         if (packageName.contains(".")) {
-            parentId = packageName.substring(packageName.lastIndexOf(".")+1);
+            parentId = packageName.substring(packageName.lastIndexOf(".") + 1);
         } else {
             parentId = packageName;
         }
@@ -584,7 +585,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             return mapPrograms.get(parentId);
         }
         LOGGER.error("the parent id has not been found: {}", parentId);
-        return mapPrograms.get("program-0");
+        return root;
     }
 
     /**

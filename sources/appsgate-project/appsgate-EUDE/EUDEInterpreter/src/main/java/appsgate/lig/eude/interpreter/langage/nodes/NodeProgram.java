@@ -402,7 +402,7 @@ public class NodeProgram extends Node {
             LOGGER.warn("Unable to add a sub program without an id");
             return false;
         }
-        if (subProgram == this) {
+        if (subProgram == this || this.id.equalsIgnoreCase(id)) {
             LOGGER.warn("trying to add the program as its own child");
             return false;
         }

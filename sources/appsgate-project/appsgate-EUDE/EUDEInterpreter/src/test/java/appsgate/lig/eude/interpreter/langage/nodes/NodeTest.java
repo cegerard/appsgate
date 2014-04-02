@@ -128,6 +128,7 @@ public abstract class NodeTest {
 
     @Test
     public void testIsATypeInJsonDesc() {
+        printTestName("IsAType");
         try {
             Assert.assertFalse(this.ruleJSON.getString("type").isEmpty());
         } catch (JSONException ex) {

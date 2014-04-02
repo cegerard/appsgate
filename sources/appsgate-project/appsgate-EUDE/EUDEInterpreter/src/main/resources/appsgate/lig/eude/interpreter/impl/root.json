@@ -1,9 +1,7 @@
 {
-    "id": "program-0",
+    "id": "root",
     "runningState": "STARTED",
-    "userSource": "",
     "name": "init",
-    "daemon": false,
     "parameters": [],
     "header": {
         "author": "superUser"
@@ -13,15 +11,6 @@
     "body": {
         "type": "seqRules",
         "rules": [
-            {
-                "type": "action",
-                "target": {
-                    "type": "device",
-                    "value": "00:17:88:0a:99:c1-2"
-                },
-                "methodName": "blink",
-                "action": []
-            }
         ]
     }
 }

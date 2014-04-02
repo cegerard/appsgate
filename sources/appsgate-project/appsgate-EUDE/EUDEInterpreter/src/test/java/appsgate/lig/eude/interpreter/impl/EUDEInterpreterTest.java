@@ -229,7 +229,7 @@ public class EUDEInterpreterTest {
     public void testGetListPrograms() {
         System.out.println("getListPrograms");
         HashMap<String, JSONObject> result = instance.getListPrograms();
-        Assert.assertEquals(1, result.size());
+        Assert.assertEquals(0, result.size());
     }
 
     /**
@@ -506,11 +506,6 @@ public class EUDEInterpreterTest {
 
     }
 
-    @Test
-    public void testIsThereARootProgram() {
-        System.out.println("Test root program");
-        Assert.assertNotNull("There must be a root program", instance.getNodeProgram("program-0"));
-    }
 
     @Test
     public void testImbricatedPrograms() throws Exception {
@@ -520,7 +515,7 @@ public class EUDEInterpreterTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/imbricated3.json")));
         Assert.assertFalse(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/imbricated3.json")));
         NodeProgram nodeProgram = instance.getNodeProgram("imb3");
-        Assert.assertEquals("program-0.imb1.imb2", nodeProgram.getPath());
+        Assert.assertEquals("root.imb1.imb2", nodeProgram.getPath());
     }
     
 }

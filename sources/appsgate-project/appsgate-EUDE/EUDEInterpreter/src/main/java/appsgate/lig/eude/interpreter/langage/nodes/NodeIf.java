@@ -107,7 +107,7 @@ public class NodeIf extends Node {
             setStarted(false);
             fireEndEvent(new EndEvent(this));
             return;
-            
+
         }
         // if this is the boolean expression...
         if (booleanResult) {// launch the "true" branch if expBool returned true...
@@ -164,7 +164,10 @@ public class NodeIf extends Node {
 
     @Override
     public String toString() {
-        return "[node If:" + expBool.toString() + " THEN " + seqRulesTrue.toString() + " ELSE " + seqRulesFalse.toString() + "]";
+        if (seqRulesFalse != null) {
+            return "[node If:" + expBool.toString() + " THEN " + seqRulesTrue.toString() + " ELSE " + seqRulesFalse.toString() + "]";
+        }
+        return "[node If:" + expBool.toString() + " THEN " + seqRulesTrue.toString() + "]";
     }
 
     @Override
