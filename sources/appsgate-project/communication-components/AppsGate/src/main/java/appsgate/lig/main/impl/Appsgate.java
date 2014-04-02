@@ -261,6 +261,11 @@ public class Appsgate implements AppsGateSpec {
 	public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
 		placeManager.moveObject(objId, srcPlaceId, destPlaceId);
 	}
+	
+	@Override
+	public void moveService(String serviceId, String srcPlaceId, String destPlaceId) {
+		placeManager.moveService(serviceId, srcPlaceId, destPlaceId);
+	}
 
 	@Override
 	public String getCoreObjectPlaceId(String objId) {

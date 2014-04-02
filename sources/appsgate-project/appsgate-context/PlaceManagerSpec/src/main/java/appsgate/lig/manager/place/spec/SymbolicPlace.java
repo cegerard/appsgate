@@ -57,7 +57,12 @@ public class SymbolicPlace {
 	/**
 	 * The abstract device list
 	 */
-	private ArrayList<String> abstractsObjects;
+	private ArrayList<String> devices;
+	
+	/**
+	 * The abstract services list
+	 */
+	private ArrayList<String> services;
 	
 	/**
 	 * Build a new symbolic place instance from the less information possible
@@ -73,8 +78,9 @@ public class SymbolicPlace {
 		setParent(parent);
 		tags = new ArrayList<String>();
 		properties = new HashMap<String, String>();
-		children = new ArrayList<SymbolicPlace>();
-		abstractsObjects = new ArrayList<String>();
+		this.children = new ArrayList<SymbolicPlace>();
+		this.devices = new ArrayList<String>();
+		this.services = new ArrayList<String>();
 	}
 	
 	/**
@@ -95,7 +101,8 @@ public class SymbolicPlace {
 		this.properties = properties;
 		setParent(parent);
 		this.children = new ArrayList<SymbolicPlace>();
-		this.abstractsObjects = new ArrayList<String>();
+		this.devices = new ArrayList<String>();
+		this.services = new ArrayList<String>();
 	}
 	
 	/**
@@ -106,11 +113,12 @@ public class SymbolicPlace {
 	 * @param tags some tags for this place
 	 * @param properties some properties for this place
 	 * @param parent the place parent
-	 * @param abstractsObjects devices of services associate to this places
+	 * @param devices devices associate to this places
+	 * @param services services associated to this places
 	 */
 	public SymbolicPlace(String id, String name, ArrayList<String> tags,
 			HashMap<String, String> properties, SymbolicPlace parent,
-			ArrayList<String> abstractsObjects) {
+			ArrayList<String> devices, ArrayList<String> services) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -118,7 +126,8 @@ public class SymbolicPlace {
 		this.properties = properties;
 		setParent(parent);
 		this.children = new ArrayList<SymbolicPlace>();
-		this.abstractsObjects = abstractsObjects;
+		this.devices = devices;
+		this.services = services;
 	}
 	
 	/**
@@ -130,12 +139,13 @@ public class SymbolicPlace {
 	 * @param properties some properties for this place
 	 * @param parent the place parent
 	 * @param childrens the place sub-places
-	 * @param abstractsObjects devices of services associate to this places
+	 * @param devices devices associate to this places
+	 * @param services services associated to this places
 	 */
 	public SymbolicPlace(String id, String name, ArrayList<String> tags,
 			HashMap<String, String> properties, SymbolicPlace parent,
 			ArrayList<SymbolicPlace> childrens,
-			ArrayList<String> abstractsObjects) {
+			ArrayList<String> devices, ArrayList<String> services) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -143,7 +153,8 @@ public class SymbolicPlace {
 		this.properties = properties;
 		setParent(parent);
 		this.children = childrens;
-		this.abstractsObjects = abstractsObjects;
+		this.devices = devices;
+		this.services = services;
 	}
 
 
@@ -350,34 +361,57 @@ public class SymbolicPlace {
 	}
 	
 	/**
-	 * Get associate core object identifier list
-	 * @return the core object identifier as an ArrayList<String>
+	 * Get associate devices identifier list
+	 * @return the devices identifier as an ArrayList<String>
 	 */
-	public ArrayList<String> getCoreObjects() {
-		return abstractsObjects;
+	public ArrayList<String> getDevices() {
+		return devices;
 	}
 	
 	/**
-	 * Set the core objects list
-	 * @param coreObjectsList the new core objects list
+	 * Get associate services identifier list
+	 * @return the services identifier as an ArrayList<String>
 	 */
-	public void setCoreObjects(ArrayList<String> coreObjectsList) {
-		abstractsObjects = coreObjectsList;
+	public ArrayList<String> getServices() {
+		return services;
 	}
 	
 	/**
-	 * Remove all core objects of this place
+	 * Set the devices list
+	 * @param coreDevicesList the new core devices list
 	 */
-	public void clearCoreObjects() {
-		abstractsObjects.clear();
+	public void setDevices(ArrayList<String> coreDevicesList) {
+		devices = coreDevicesList;
 	}
 	
 	/**
-	 * Add on object to this place
-	 * @param obj the new abstract object identifier
+	 * Set the service list
+	 * @param coreServicesList the new core service list
 	 */
-	public boolean addCoreObject(String objId) {
-		if(abstractsObjects.add(objId)){
+	public void setServices(ArrayList<String> coreServicesList) {
+		services = coreServicesList;
+	}
+	
+	/**
+	 * Remove all core devices of this place
+	 */
+	public void clearDevices() {
+		devices.clear();
+	}
+	
+	/**
+	 * Remove all core services of this place
+	 */
+	public void clearServices() {
+		services.clear();
+	}
+	
+	/**
+	 * Add a device to this place
+	 * @param obj the new device identifier
+	 */
+	public boolean addDevice(String objId) {
+		if(devices.add(objId)){
 			logger.debug("Core device "+objId+ " added to "+name+ "/ "+id);
 			return true;
 		} else {
@@ -388,12 +422,27 @@ public class SymbolicPlace {
 	}
 	
 	/**
-	 * Remove this object from this place
-	 * 
-	 * @param obj the object to remove
+	 * Add a service to this place
+	 * @param obj the new service identifier
 	 */
-	public boolean removeCoreObject(String objId) {
-		if(abstractsObjects.remove(objId)) {
+	public boolean addService(String objId) {
+		if(services.add(objId)){
+			logger.debug("Core service "+objId+ " added to "+name+ "/ "+id);
+			return true;
+		} else {
+			logger.error("Error adding "+objId+" to "+id);
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Remove this device from this place
+	 * 
+	 * @param obj the device to remove
+	 */
+	public boolean removeDevice(String objId) {
+		if(devices.remove(objId)) {
 			logger.debug("Core device "+objId+ " remove from "+name+ "/ "+id);
 			return true;
 		} else {
@@ -401,13 +450,38 @@ public class SymbolicPlace {
 		}
 		return false;
 	}
+	
 	/**
-	 * Check if a core object is located in this place
-	 * @param objId the core object identifier
-	 * @return true if the core object is associate to this location, false otherwise
+	 * Remove this service from this place
+	 * 
+	 * @param obj the service to remove
 	 */
-	public boolean hasCoreObject(String objId) {
-		return abstractsObjects.contains(objId);
+	public boolean removeService(String objId) {
+		if(services.remove(objId)) {
+			logger.debug("Core service "+objId+ " remove from "+name+ "/ "+id);
+			return true;
+		} else {
+			logger.error("Error removing "+objId+" to "+id);
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if a device is located in this place
+	 * @param objId the device identifier
+	 * @return true if the device is associate to this location, false otherwise
+	 */
+	public boolean hasDevice(String objId) {
+		return devices.contains(objId);
+	}
+	
+	/**
+	 * Check if a service is located in this place
+	 * @param objId the service identifier
+	 * @return true if the service is associate to this location, false otherwise
+	 */
+	public boolean hasService(String objId) {
+		return services.contains(objId);
 	}
 
 	/**
@@ -447,12 +521,19 @@ public class SymbolicPlace {
 			}
 			obj.put("properties", propertiesArray);
 			
-			JSONArray coreObjectArray = new JSONArray();
-			for(String id : abstractsObjects) {
-				coreObjectArray.put(id);
+			JSONArray coreDeviceArray = new JSONArray();
+			for(String id : devices) {
+				coreDeviceArray.put(id);
 				
 			}
-			obj.put("devices", coreObjectArray);
+			obj.put("devices", coreDeviceArray);
+			
+			JSONArray coreServiceArray = new JSONArray();
+			for(String id : services) {
+				coreServiceArray.put(id);
+				
+			}
+			obj.put("services", coreServiceArray);
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

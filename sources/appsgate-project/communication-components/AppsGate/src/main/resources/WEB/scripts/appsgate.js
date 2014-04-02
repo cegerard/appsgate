@@ -450,6 +450,15 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 		}
 		
 		/**
+ 		 * Move a service in a place
+ 		 */
+		this.moveService = function (serviceId, srcPlaceId, destPlaceId)
+		{
+			var call = eval({"method":"moveService", "args":[{"type":"String", "value":serviceId}, {"type":"String", "value":srcPlaceId}, {"type":"String", "value":destPlaceId}], "callId":"cf-moveService"});
+			websocket.send(JSON.stringify(call));
+		}
+		
+		/**
 		 * Get core object place identifier
 		 */
 		this.getObjectPlaceId = function (objectId)

@@ -81,10 +81,12 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 					JSONArray tags = jsonPlace.getJSONArray("tags");
 					JSONArray properties = jsonPlace.getJSONArray("properties");
 					JSONArray devices = jsonPlace.getJSONArray("devices");
+					JSONArray services = jsonPlace.getJSONArray("services");
 					
 					ArrayList<String> tagsList = new ArrayList<String>();
 					HashMap<String, String> propertiesList = new HashMap<String, String>();
 					ArrayList<String> coreObjectList = new ArrayList<String>();
+					ArrayList<String> coreServiceList = new ArrayList<String>();
 					
 					int iTagsArray = 0;
 					int tagsArrayLength = tags.length();
@@ -109,6 +111,13 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 						ideviceArray++;
 					}
 					
+					int iserviceArray = 0;
+					int serviceArrayLength = services.length();
+					while(iserviceArray < serviceArrayLength) {
+						coreServiceList.add(services.getString(iserviceArray));
+						iserviceArray++;
+					}
+					
 					JSONArray children = jsonPlace.getJSONArray("children");
 					ArrayList<String> childIdList = new ArrayList<String>();
 					int ichildArray = 0;
@@ -121,7 +130,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 						tempChildrenMap.put(placeId, childIdList);
 					}
 					
-					SymbolicPlace loc = new SymbolicPlace(placeId, name, tagsList, propertiesList, placeObjectsMap.get(parentId), coreObjectList);
+					SymbolicPlace loc = new SymbolicPlace(placeId, name, tagsList, propertiesList, placeObjectsMap.get(parentId), coreObjectList, coreServiceList);
 
 					placeObjectsMap.put(placeId, loc);
 					i++;
@@ -185,7 +194,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		for(SymbolicPlace child : children) {
 			removePlace(child.getId());
 		}
-		selectedPlace.clearCoreObjects();
+		selectedPlace.clearDevices();
 		if(parent != null) {
 			parent.removeChild(selectedPlace);
 		}
@@ -210,10 +219,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @param obj the object to locate
 	 * @param placeId the target place
 	 */
-	private synchronized void addObject(String objId,
-			String placeId) {
+	private synchronized void addObject(String objId, String placeId) {
 		SymbolicPlace loc = placeObjectsMap.get(placeId);
-		loc.addCoreObject(objId);
+		loc.addDevice(objId);
 		
 		// save the new devices name table 
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -225,6 +233,29 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		}
 							
 		contextHistory_push.pushData_add(this.getClass().getSimpleName(), placeId, objId, properties);
+		
+	}
+	
+	/**
+	 * Add an service to the designed place.
+	 * 
+	 * @param obj the service to locate
+	 * @param placeId the target place
+	 */
+	private synchronized void addService(String serviceId, String placeId) {
+		SymbolicPlace loc = placeObjectsMap.get(placeId);
+		loc.addService(serviceId);
+		
+		// save the new devices name table 
+		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+							
+		Set<String> keys = placeObjectsMap.keySet();
+		for(String e : keys) {
+			SymbolicPlace sl = placeObjectsMap.get(e);
+			properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+		}
+							
+		contextHistory_push.pushData_add(this.getClass().getSimpleName(), placeId, serviceId, properties);
 		
 	}
 
@@ -240,17 +271,17 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		} else if (!oldPlaceID.contentEquals("-1") && !newPlaceID.contentEquals("-1")) {
 			SymbolicPlace oldLoc = placeObjectsMap.get(oldPlaceID);
 			SymbolicPlace newLoc = placeObjectsMap.get(newPlaceID);
-			oldLoc.removeCoreObject(objId);
-			newLoc.addCoreObject(objId);
+			oldLoc.removeDevice(objId);
+			newLoc.addDevice(objId);
 			moved = true;
 		} else if (!oldPlaceID.contentEquals("-1") && newPlaceID.contentEquals("-1")) {
 			SymbolicPlace oldLoc = placeObjectsMap.get(oldPlaceID);
-			oldLoc.removeCoreObject(objId);
+			oldLoc.removeDevice(objId);
 			moved = true;
 		}
 		
 		if(moved) {
-			notifyMove(oldPlaceID, newPlaceID, objId);
+			notifyMove(oldPlaceID, newPlaceID, objId, 0);
 		
 			// save the new devices name table 
 			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -262,6 +293,44 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 			}
 									
 			return contextHistory_push.pushData_change(this.getClass().getSimpleName(), objId, oldPlaceID, newPlaceID, properties);
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean moveService(String serviceId, String oldPlaceID,
+			String newPlaceID) {
+		
+		boolean moved = false;
+		
+		if (oldPlaceID.contentEquals("-1") && !newPlaceID.contentEquals("-1")) {
+			addService(serviceId, newPlaceID);
+			moved = true;
+		} else if (!oldPlaceID.contentEquals("-1") && !newPlaceID.contentEquals("-1")) {
+			SymbolicPlace oldLoc = placeObjectsMap.get(oldPlaceID);
+			SymbolicPlace newLoc = placeObjectsMap.get(newPlaceID);
+			oldLoc.removeService(serviceId);
+			newLoc.addService(serviceId);
+			moved = true;
+		} else if (!oldPlaceID.contentEquals("-1") && newPlaceID.contentEquals("-1")) {
+			SymbolicPlace oldLoc = placeObjectsMap.get(oldPlaceID);
+			oldLoc.removeService(serviceId);
+			moved = true;
+		}
+		
+		if(moved) {
+			notifyMove(oldPlaceID, newPlaceID, serviceId, 1);
+		
+			// save the new devices name table 
+			ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
+									
+			Set<String> keys = placeObjectsMap.keySet();
+			for(String e : keys) {
+				SymbolicPlace sl = placeObjectsMap.get(e);
+				properties.add(new AbstractMap.SimpleEntry<String,Object>(e, sl.getDescription().toString()));
+			}
+									
+			return contextHistory_push.pushData_change(this.getClass().getSimpleName(), serviceId, oldPlaceID, newPlaceID, properties);
 		}
 		return false;
 	}
@@ -315,7 +384,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		while(it.hasNext() && !found) {
 			
 			loc = it.next();
-			if(loc.hasCoreObject(objId)) {
+			if(loc.hasDevice(objId) || loc.hasService(objId)) {
 				found = true;
 			}
 		}
@@ -333,9 +402,10 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @param oldPlaceId the former AbstractObject place
 	 * @param newPlaceId the new AbstractObject place
 	 * @param object the AbstractObject which has been moved.
+	 * @param moveType the type of the object that moved
 	 */
-	private void notifyMove(String oldPlaceId, String newPlaceId, String objId) {
-		notifyChanged(new MoveObjectNotification(oldPlaceId, newPlaceId, objId));
+	private void notifyMove(String oldPlaceId, String newPlaceId, String objId, int moveType) {
+		notifyChanged(new MoveObjectNotification(oldPlaceId, newPlaceId, objId, moveType));
 	}
 	
 	/**
@@ -534,7 +604,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	@Override
 	public synchronized void removeAllCoreObject(String placeId) {
 		SymbolicPlace place = placeObjectsMap.get(placeId);
-		place.clearCoreObjects();
+		place.clearDevices();
 		notifyPlace(placeId, "coreObjectListFree", "updatePlaceObject");
 		// save in data base
 		ArrayList<Map.Entry<String, Object>> properties = new ArrayList<Map.Entry<String, Object>>();
@@ -629,8 +699,27 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 		SymbolicPlace place = null;
 		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
 			boolean isHere = false;
-			for(String objectID : currentPlace.getCoreObjects()) {
+			for(String objectID : currentPlace.getDevices()) {
 				if(objectID.contentEquals(deviceId)) {
+					isHere = true;
+					break;
+				}
+			}
+			if(isHere) {
+				place = currentPlace;
+				break;
+			}
+		}
+		return place;
+	}
+	
+	@Override
+	public SymbolicPlace getPlaceWithService(String serviceId) {
+		SymbolicPlace place = null;
+		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
+			boolean isHere = false;
+			for(String serviceID : currentPlace.getServices()) {
+				if(serviceID.contentEquals(serviceId)) {
 					isHere = true;
 					break;
 				}

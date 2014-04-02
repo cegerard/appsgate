@@ -31,6 +31,11 @@ public class MoveObjectNotification implements NotificationMsg {
 	private String objId;
 	
 	/**
+	 * The type of the object that moved
+	 */
+	private int moveType;
+	
+	/**
 	 * Build a new notification message from place manager
 	 * 
 	 * @param oldLocationId
@@ -38,11 +43,12 @@ public class MoveObjectNotification implements NotificationMsg {
 	 * @param object
 	 */
 	public MoveObjectNotification(String oldLocationId, String newLocationId,
-			String objId) {
+			String objId, int moveType) {
 		super();
 		this.oldLocationId = oldLocationId;
 		this.newLocationId = newLocationId;
 		this.objId = objId;
+		this.moveType = moveType;
 	}
 
 	@Override
@@ -52,7 +58,11 @@ public class MoveObjectNotification implements NotificationMsg {
 
 	@Override
 	public String getNewValue() {
-		return "Place manager send : MoveDevice";
+		if(moveType == 0) {
+			return "Place manager send : MoveDevice";
+		}else {
+			return "Place manager send : MoveService";
+		}
 	}
 
 	@Override
@@ -63,8 +73,13 @@ public class MoveObjectNotification implements NotificationMsg {
 		try {
 			content.put("srcLocationId", oldLocationId);
 			content.put("destLocationId", newLocationId);
-			content.put("deviceId", objId);
-			notif.put("moveDevice", content);
+			if(moveType == 0) {
+				content.put("deviceId", objId);
+				notif.put("moveDevice", content);
+			}else if(moveType == 1){
+				content.put("serviceId", objId);
+				notif.put("moveService", content);
+			}
 		} catch (JSONException e) {e.printStackTrace();}
 		
 		return notif;

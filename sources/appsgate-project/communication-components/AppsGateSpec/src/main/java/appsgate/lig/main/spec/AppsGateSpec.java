@@ -123,7 +123,16 @@ public interface AppsGateSpec {
 	 * @param srcPlaceId the previous place of this object
 	 * @param destPlaceId the destination of this object
 	 */
+	
 	public void moveDevice(String objId, String srcPlaceId, String destPlaceId);
+	
+	/**
+	 * Move a service in a specified place
+	 * @param serviceId the service to move
+	 * @param srcPlaceId the previous place of this object
+	 * @param destPlaceId the destination of this object
+	 */
+	public void moveService(String serviceId, String srcPlaceId, String destPlaceId);
 
 	/**
 	 * Get the place identifier of a core object
