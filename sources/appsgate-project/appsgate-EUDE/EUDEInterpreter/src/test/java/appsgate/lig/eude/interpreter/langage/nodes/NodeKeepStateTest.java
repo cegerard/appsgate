@@ -3,7 +3,8 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.router.spec.GenericCommand;
+import appsgate.lig.main.spec.GenericCommand;
+
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import static org.jmock.Expectations.returnValue;

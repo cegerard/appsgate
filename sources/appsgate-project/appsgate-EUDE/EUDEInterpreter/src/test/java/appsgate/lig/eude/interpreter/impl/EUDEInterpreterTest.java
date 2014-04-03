@@ -16,8 +16,9 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeActionTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEventTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
-import appsgate.lig.router.spec.GenericCommand;
-import appsgate.lig.router.spec.RouterApAMSpec;
+import appsgate.lig.main.spec.CHMIProxySpec;
+import appsgate.lig.main.spec.GenericCommand;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class EUDEInterpreterTest {
     private States tested;
     private DataBasePullService pull_service;
     private DataBasePushService push_service;
-    private RouterApAMSpec router;
+    private CHMIProxySpec chmiProxy;
     private EUDEInterpreter instance;
     private final JSONObject programJSON;
     private ContextProxyMock contextProxy;
@@ -77,7 +78,7 @@ public class EUDEInterpreterTest {
     public void setUp() throws Exception {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
-        this.router = context.mock(RouterApAMSpec.class);
+        this.chmiProxy = context.mock(CHMIProxySpec.class);
         this.contextProxy = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
@@ -104,30 +105,30 @@ public class EUDEInterpreterTest {
                 will(returnValue(true));
                 allowing(push_service).pushData_remove(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 will(returnValue(true));
-                allowing(router).executeCommand(with("test"), with("testState"), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with("test"), with("testState"), with(any(JSONArray.class)));
                 will(returnValue(gc));
-                allowing(router).executeCommand(with("test"), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with("test"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("Yes"));
-                allowing(router).executeCommand(with("flag1"), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with("flag1"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("flag1"));
-                allowing(router).executeCommand(with("flag2"), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with("flag2"), with(any(String.class)), with(any(JSONArray.class)));
                 then(tested.is("flag2"));
 
                 allowing(gc).run();
                 allowing(gc).getReturn();
                 will(returnValue(new Long(2)));
 
-                allowing(router).executeCommand(with("clock"), with("getCurrentTimeInMillis"), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with("clock"), with("getCurrentTimeInMillis"), with(any(JSONArray.class)));
 
-                allowing(router).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(chmiProxy).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
                 will(returnValue(gc));
-                allowing(router).getDevices();
+                allowing(chmiProxy).getDevices();
                 will(returnValue(deviceList));
 
             }
         });
         this.instance = new EUDEInterpreter();
-        this.instance.setTestMocks(pull_service, push_service, router, contextProxy);
+        this.instance.setTestMocks(pull_service, push_service, chmiProxy, contextProxy);
 
     }
 

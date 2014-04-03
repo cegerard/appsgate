@@ -58,10 +58,10 @@ public class TestCoreAppsgate extends PaxedDistribution {
 	public void testAppsgateImpl() {
 		testEmptyAppsgate();
 		
-		logger.debug("This test just load the core Appsgate Bundles (AppsgateImpl and dependencies)");
+		logger.debug("This test just load the core Appsgate Bundles (EHMIProxyImpl and dependencies)");
 		ApAMHelper.waitForComponentByName(null,
 				"AppsGateImpl", ApAMHelper.RESOLVE_TIMEOUT);
-		Assert.assertTrue(CST.componentBroker.getImpls("AppsGateImpl")!= null);
+		Assert.assertTrue(CST.componentBroker.getImpls("EHMIProxyImpl")!= null);
 
 		
 		//ApAMHelper.waitForIt(10000);

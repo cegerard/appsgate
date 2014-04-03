@@ -1,0 +1,19 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+                          
+	<implementation name="EHMIProxyImpl" classname="appsgate.lig.main.impl.EHMIProxyImpl" specification="EHMIProxySpec" >
+		<callback onInit="newInst" onRemove="deleteInst" />
+ 		<relation field="chmiProxy" creation="eager" resolve="external"/>
+ 		<relation field="devicePropertiesTable" creation="eager" resolve="external"/>
+ 		<relation field="placeManager" creation="eager" resolve="external"/>
+<!-- 		<relation field="contextManager" creation="eager" resolve="external"/> -->
+ 		<relation field="userManager" creation="eager" resolve="external" />
+		<relation field="interpreter" creation="eager"  resolve="external"/>
+		<ipojo:requires field="httpService"  />
+	</implementation>
+
+<!-- This instance will be started by the Composite Application as its main implem -->
+<!--  <apam-instance name="AppsGateInst" implementation="AppsGateImpl"/>  -->
+</apam>

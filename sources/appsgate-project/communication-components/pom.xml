@@ -15,10 +15,10 @@
 	<description>This sub-project contain all components for communication between Appsgate components in the OSGi framework or with the remote client.</description>
 	
 	<modules>
-		<module>EHMISpec</module>
-		<module>EHMI</module>
-		<module>RouterApAMSpec</module>
-		<module>RouterApAM</module>
+		<module>EHMIProxySpec</module>
+		<module>EHMIProxyImpl</module>
+		<module>CHMIProxySpec</module>
+		<module>CHMIProxyImpl</module>
 		<module>ClientCommunicationManager</module>
 	</modules>
 	

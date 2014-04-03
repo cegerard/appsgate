@@ -9,7 +9,7 @@
 		<relation field="placeManager"/>
 		<relation field="userBaseManager"/>
 		<relation field="devicePropertiesManager"/>
-		<relation field="router"/>
+		<relation field="chmiProxy"/>
 <!-- 		<relation field="contextManager"/> -->
 		<relation push="gotNotification" multiple="true"/>
 	</implementation>

@@ -51,7 +51,7 @@
  		</dependency>
  		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>RouterApAMSpec</artifactId>
+			<artifactId>CHMIProxySpec</artifactId>
 			<version>1.0.0</version>
  		</dependency>
 <!-- 				<dependency> -->
