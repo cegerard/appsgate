@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<composite name="AppsGate-Application"  singleton="true" main="AppsGateImpl">
+	<composite name="AppsGate-Application"  singleton="true" main="EHMIImpl">
 		<contentMngt>
 
 			<start  implementation="AppsGatePersistency" name="AppsGatePersistencyInst" ></start>

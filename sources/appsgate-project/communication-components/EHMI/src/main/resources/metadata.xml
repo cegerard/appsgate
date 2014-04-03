@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<implementation name="AppsGateImpl" classname="appsgate.lig.main.impl.Appsgate" specification="AppsGateSpec" >
+	<implementation name="EHMIImpl" classname="appsgate.lig.main.impl.EHMIImpl" specification="EHMISpec" >
 		<callback onInit="newInst" onRemove="deleteInst" />
  		<relation field="router" creation="eager" resolve="external"/>
  		<relation field="devicePropertiesTable" creation="eager" resolve="external"/>

@@ -9,9 +9,9 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>AppsGateSpec</artifactId>
+	<artifactId>EHMISpec</artifactId>
 	<packaging>bundle</packaging>
-	<name>AppsGateSpec OSGi Bundle</name>
+	<name>EHMISpec OSGi Bundle</name>
 
 	<!-- Repositories List -->
 

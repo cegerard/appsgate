@@ -16,7 +16,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
-import appsgate.lig.main.spec.AppsGateSpec;
+import appsgate.lig.main.spec.EHMISpec;
 import appsgate.lig.router.impl.listeners.RouterCommandListener;
 import appsgate.lig.router.spec.GenericCommand;
 import appsgate.lig.router.spec.RouterApAMSpec;
@@ -58,7 +58,7 @@ public class RouterImpl implements RouterApAMSpec {
     /**
      * The main AppsGate component to call for every request
      */
-    private AppsGateSpec appsgate;
+    private EHMISpec ehmi;
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -92,10 +92,10 @@ public class RouterImpl implements RouterApAMSpec {
             CoreObjectSpec newObj = (CoreObjectSpec) inst.getServiceObject();
             if (newObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
                 sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
-                appsgate.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
+                ehmi.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
             } else if (newObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
                 sendToClientService.send("newService", getObjectDescription(newObj, ""));
-                appsgate.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
+                ehmi.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
             } else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
                 sendToClientService.send("newSimulatedDevice", getObjectDescription(newObj, ""));
                 //TODO manage the simulated device
@@ -185,8 +185,8 @@ public class RouterImpl implements RouterApAMSpec {
     public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
         Object obj;
         if (objectId.contentEquals("main")) {
-            logger.info("retreive AppsGate reference: " + appsgate.toString());
-            obj = appsgate;
+            logger.info("retreive AppsGate reference: " + ehmi.toString());
+            obj = ehmi;
         } else {
             obj = getObjectRefFromID(objectId);
         }
@@ -198,8 +198,8 @@ public class RouterImpl implements RouterApAMSpec {
     public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
         Object obj;
         if (objectId.contentEquals("main")) {
-            logger.info("retreive AppsGate reference: " + appsgate.toString());
-            obj = appsgate;
+            logger.info("retreive AppsGate reference: " + ehmi.toString());
+            obj = ehmi;
         } else {
             obj = getObjectRefFromID(objectId);
         }
@@ -300,8 +300,8 @@ public class RouterImpl implements RouterApAMSpec {
             // Get object auto description
             JSONDescription = obj.getDescription();
             //Add context description for this abject
-			JSONDescription.put("name", appsgate.getUserObjectName(obj.getAbstractObjectId(), user));
-			JSONDescription.put("placeId", appsgate.getCoreObjectPlaceId(obj.getAbstractObjectId()));
+			JSONDescription.put("name", ehmi.getUserObjectName(obj.getAbstractObjectId(), user));
+			JSONDescription.put("placeId", ehmi.getCoreObjectPlaceId(obj.getAbstractObjectId()));
 
         } catch (JSONException e) {
             logger.error(e.getMessage());

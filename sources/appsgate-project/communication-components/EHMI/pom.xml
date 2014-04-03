@@ -9,10 +9,10 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>AppsGate</artifactId>
+	<artifactId>EHMIImpl</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>AppsGate OSGi Bundle</name>
+	<name>EHMI OSGi Bundle</name>
 
 	<!-- Repositories List -->
 
@@ -29,7 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>AppsGateSpec</artifactId>
+			<artifactId>EHMISpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

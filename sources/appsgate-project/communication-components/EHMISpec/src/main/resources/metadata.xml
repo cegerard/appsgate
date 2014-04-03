@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<specification name="AppsGateSpec" interfaces="appsgate.lig.main.spec.AppsGateSpec">
+	<specification name="EHMISpec" interfaces="appsgate.lig.main.spec.EHMISpec">
 	</specification>
 
 </apam>

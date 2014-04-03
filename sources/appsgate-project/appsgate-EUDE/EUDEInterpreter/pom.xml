@@ -92,7 +92,7 @@
         </dependency>
         <dependency>
             <groupId>appsgate.components</groupId>
-            <artifactId>AppsGateSpec</artifactId>
+            <artifactId>EHMISpec</artifactId>
             <version>1.0.0</version>
             <type>jar</type>
         </dependency>

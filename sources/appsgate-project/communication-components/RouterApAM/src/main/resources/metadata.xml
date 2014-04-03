@@ -9,7 +9,7 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<relation field="abstractDevice" added="addAbstractObject"
 			removed="removedAbstractObject" />
-		<relation field="appsgate" fail="wait" resolve="exist" />
+		<relation field="ehmi" fail="wait" resolve="exist" />
 		<relation push="gotNotification" multiple="true" resolve="exist" />
 		<relation specification="AppsgateClientCommunicationManagerSpec"
 			creation="eager"  resolve="external" >

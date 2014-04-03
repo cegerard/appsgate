@@ -36,7 +36,7 @@ import appsgate.lig.main.impl.upnp.ServerInfoService;
 import appsgate.lig.main.impl.upnp.StateVariableServerIP;
 import appsgate.lig.main.impl.upnp.StateVariableServerURL;
 import appsgate.lig.main.impl.upnp.StateVariableServerWebsocket;
-import appsgate.lig.main.spec.AppsGateSpec;
+import appsgate.lig.main.spec.EHMISpec;
 //import appsgate.lig.manager.context.spec.ContextManagerSpec;
 //import appsgate.lig.manager.space.spec.subSpace.Space;
 //import appsgate.lig.manager.space.spec.subSpace.UserSpace;
@@ -55,13 +55,13 @@ import appsgate.lig.router.spec.RouterApAMSpec;
  * @version 1.0.0
  * 
  */
-public class Appsgate implements AppsGateSpec {
+public class EHMIImpl implements EHMISpec {
 
 	/**
 	 * 
 	 * static class logger member
 	 */
-	private static Logger logger = LoggerFactory.getLogger(Appsgate.class);
+	private static Logger logger = LoggerFactory.getLogger(EHMIImpl.class);
 
 	/**
 	 * HTTP service dependency resolve by iPojo. Allow to register HTML
@@ -90,7 +90,7 @@ public class Appsgate implements AppsGateSpec {
 	private UserBaseSpec userManager;
 
 	/**
-	 * Reference on the AppsGate Router to execute command on devices
+	 * Reference on the CHMI proxy to execute command on devices
 	 */
 	private RouterApAMSpec router;
 
@@ -112,19 +112,19 @@ public class Appsgate implements AppsGateSpec {
 	private StateVariableServerWebsocket serverWebsocket;	
 
 	/**
-	 * Default constructor for AppsGate java object. it load UPnP device and
+	 * Default constructor for EHMIImpl java object. it load UPnP device and
 	 * services profiles and subscribes the corresponding listeners.
 	 * 
 	 */
-	public Appsgate(BundleContext context) {
-		logger.debug("new AppsGate, BundleContext : " + context);
+	public EHMIImpl(BundleContext context) {
+		logger.debug("new EHMI, BundleContext : " + context);
 		this.context = context;
 		upnpDevice = new AppsGateServerDevice(context);
 		logger.debug("UPnP Device instanciated");
 		registerUpnpDevice();
 		retrieveLocalAdress();
 
-		logger.info("AppsGate instanciated");
+		logger.info("EHMI instanciated");
 	}
 	
 	
@@ -144,7 +144,7 @@ public class Appsgate implements AppsGateSpec {
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		logger.debug("AppsGate is starting");
+		logger.debug("EHMI is starting");
 
 		if (httpService != null) {
 			final HttpContext httpContext = httpService.createDefaultHttpContext();
@@ -165,7 +165,7 @@ public class Appsgate implements AppsGateSpec {
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		logger.info("AppsGate is stopping");
+		logger.info("EHMI is stopping");
 		httpService.unregister("/appsgate");
 	}
 
@@ -484,7 +484,7 @@ public class Appsgate implements AppsGateSpec {
 
 	@Override
 	public void shutdown() {
-		BundleContext ctx = FrameworkUtil.getBundle(Appsgate.class)
+		BundleContext ctx = FrameworkUtil.getBundle(EHMIImpl.class)
 				.getBundleContext();
 		Bundle systemBundle = ctx.getBundle(0);
 		try {
@@ -496,7 +496,7 @@ public class Appsgate implements AppsGateSpec {
 
 	@Override
 	public void restart() {
-		BundleContext ctx = FrameworkUtil.getBundle(Appsgate.class)
+		BundleContext ctx = FrameworkUtil.getBundle(EHMIImpl.class)
 				.getBundleContext();
 		Bundle systemBundle = ctx.getBundle(0);
 		try {

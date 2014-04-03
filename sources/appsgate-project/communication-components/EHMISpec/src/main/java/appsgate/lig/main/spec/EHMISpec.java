@@ -4,7 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * AppsGate specification that define all method that a client can remote call
+ * EHMI specification that define all method that a client can remote call
  * to interact with the AppsGate system.
  * 
  * @author Cedric Gérard
@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * @version 1.0.0
  *
  */
-public interface AppsGateSpec {
+public interface EHMISpec {
 	
 	/***************************/
 	/**   Device management    */

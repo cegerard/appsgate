@@ -71,7 +71,7 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	private void testExistingStartedByAppsGateComposite() {
 		Assert.assertNotNull(CST.componentBroker.getInst("appsgate-instance"));
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsGatePersistencyInst"));
-		Assert.assertNotNull(CST.componentBroker.getImpl("AppsGateImpl").getInst());
+		Assert.assertNotNull(CST.componentBroker.getImpl("EHMIImpl").getInst());
 		Assert.assertNotNull(CST.componentBroker.getInst("ConfigurableClockInst"));
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateContextProxyInst"));
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateGoogleServicesInst"));
