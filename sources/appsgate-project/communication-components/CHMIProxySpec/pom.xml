@@ -10,7 +10,7 @@
 
     <artifactId>CHMIProxySpec</artifactId>
     <packaging>bundle</packaging>
-    <name>CHMISpec OSGi Bundle</name>
+    <name>CHMIProxySpec OSGi Bundle</name>
 
 	<!-- Repositories List -->
 

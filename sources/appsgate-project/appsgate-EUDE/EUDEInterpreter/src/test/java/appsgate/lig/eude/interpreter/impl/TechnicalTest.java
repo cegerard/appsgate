@@ -5,12 +5,12 @@
  */
 package appsgate.lig.eude.interpreter.impl;
 
+import appsgate.lig.chmi.spec.CHMIProxySpec;
+import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
-import appsgate.lig.main.spec.CHMIProxySpec;
-import appsgate.lig.main.spec.GenericCommand;
 
 import java.io.File;
 import java.io.FilenameFilter;

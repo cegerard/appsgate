@@ -1,4 +1,4 @@
-package appsgate.lig.main.spec;
+package appsgate.lig.chmi.spec;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

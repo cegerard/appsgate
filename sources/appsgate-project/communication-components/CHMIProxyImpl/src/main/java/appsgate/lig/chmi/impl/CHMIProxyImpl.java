@@ -1,4 +1,4 @@
-package appsgate.lig.main.impl;
+package appsgate.lig.chmi.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,14 +12,14 @@ import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.chmi.impl.listeners.RouterCommandListener;
+import appsgate.lig.chmi.spec.CHMIProxySpec;
+import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
-import appsgate.lig.main.impl.listeners.RouterCommandListener;
-import appsgate.lig.main.spec.EHMIProxySpec;
-import appsgate.lig.main.spec.GenericCommand;
-import appsgate.lig.main.spec.CHMIProxySpec;
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import fr.imag.adele.apam.Instance;
 
 /**
@@ -64,7 +64,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-        logger.debug("The router ApAM component has been initialized");
+        logger.debug("The CHMI proxy component has been initialized");
         commandListener = new RouterCommandListener(this);
         if (addListenerService.addCommandListener(commandListener)) {
             logger.info("Listeners services dependency resolved.");
@@ -77,7 +77,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-        logger.debug("The router ApAM component has been stopped");
+        logger.debug("The CHMI proxy component has been stopped");
     }
 
     /**

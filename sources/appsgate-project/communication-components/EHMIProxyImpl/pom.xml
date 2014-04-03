@@ -12,7 +12,7 @@
 	<artifactId>EHMIProxyImpl</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>EHMI OSGi Bundle</name>
+	<name>EHMI proxy implementation</name>
 
 	<!-- Repositories List -->
 
@@ -123,8 +123,8 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Private-Package>
-							appsgate.lig.main.impl,
-							appsgate.lig.main.impl.upnp
+							appsgate.lig.ehmi.impl,
+							appsgate.lig.ehmi.impl.upnp
 						</Private-Package>
 						<Import-Package>
 							*

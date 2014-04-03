@@ -1,4 +1,4 @@
-package appsgate.lig.main.impl;
+package appsgate.lig.ehmi.impl;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -27,20 +27,17 @@ import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.manager.place.spec.*;
+import appsgate.lig.ehmi.impl.upnp.AppsGateServerDevice;
+import appsgate.lig.ehmi.impl.upnp.ServerInfoService;
+import appsgate.lig.ehmi.impl.upnp.StateVariableServerIP;
+import appsgate.lig.ehmi.impl.upnp.StateVariableServerURL;
+import appsgate.lig.ehmi.impl.upnp.StateVariableServerWebsocket;
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
-import appsgate.lig.main.impl.upnp.AppsGateServerDevice;
-import appsgate.lig.main.impl.upnp.ServerInfoService;
-import appsgate.lig.main.impl.upnp.StateVariableServerIP;
-import appsgate.lig.main.impl.upnp.StateVariableServerURL;
-import appsgate.lig.main.impl.upnp.StateVariableServerWebsocket;
-import appsgate.lig.main.spec.CHMIProxySpec;
-import appsgate.lig.main.spec.EHMIProxySpec;
-//import appsgate.lig.manager.context.spec.ContextManagerSpec;//import appsgate.lig.manager.space.spec.subSpace.Space;
-//import appsgate.lig.manager.space.spec.subSpace.UserSpace;
-//import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
 
 
 /**

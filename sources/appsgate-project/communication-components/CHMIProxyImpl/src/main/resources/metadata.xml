@@ -4,17 +4,20 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="CHMIProxyImpl"
-		classname="appsgate.lig.main.impl.CHMIProxyImpl" specification="CHMIProxySpec"
-		singleton="true">
+		classname="appsgate.lig.chmi.impl.CHMIProxyImpl" specification="CHMIProxySpec" singleton="true">
+		
 		<callback onInit="newInst" onRemove="deleteInst" />
-		<relation field="abstractDevice" added="addAbstractObject"
-			removed="removedAbstractObject" />
+		
+		<relation field="abstractDevice" added="addAbstractObject" removed="removedAbstractObject" />
+		
 		<relation field="ehmiProxy" fail="wait" resolve="exist" />
+		
 		<relation push="gotNotification" multiple="true" resolve="exist" />
+		
 		<relation specification="AppsgateClientCommunicationManagerSpec"
-			creation="eager"  resolve="external" >
-            <interface field="addListenerService"/>
-            <interface field="sendToClientService"/>
+			creation="eager" resolve="external">
+			<interface field="addListenerService" />
+			<interface field="sendToClientService" />
 		</relation>
 
 	</implementation>

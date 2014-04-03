@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<specification name="EHMIProxySpec" interfaces="appsgate.lig.main.spec.EHMIProxySpec">
+	<specification name="EHMIProxySpec" interfaces="appsgate.lig.ehmi.spec.EHMIProxySpec">
 	</specification>
 
 </apam>

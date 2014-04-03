@@ -1,4 +1,4 @@
-package appsgate.lig.main.impl.upnp;
+package appsgate.lig.ehmi.impl.upnp;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -6,15 +6,15 @@ import java.util.Hashtable;
 import org.osgi.service.upnp.UPnPAction;
 import org.osgi.service.upnp.UPnPStateVariable;
 
-public class ActionGetIP implements UPnPAction {
+public class ActionGetURL implements UPnPAction {
 
-	String NAME = "getIP";
-	String RESULT_STATUS = "serverIP";
+	String NAME = "getURL";
+	String RESULT_STATUS = "serverURL";
 	String[] OUT_ARG_NAMES = new String[] { RESULT_STATUS };
-	StateVariableServerIP serverIP;
+	StateVariableServerURL serverURL;
 
-	public ActionGetIP(StateVariableServerIP serverIP) {
-		this.serverIP = serverIP;
+	public ActionGetURL(StateVariableServerURL serverURL) {
+		this.serverURL = serverURL;
 	}
 
 	@Override
@@ -39,13 +39,13 @@ public class ActionGetIP implements UPnPAction {
 
 	@Override
 	public UPnPStateVariable getStateVariable(String argumentName) {
-		return serverIP;
+		return serverURL;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Dictionary invoke(Dictionary args) throws Exception {
-		String value = serverIP.getCurrentStringValue();
+		String value = serverURL.getCurrentStringValue();
 		Hashtable result = new Hashtable();
 		result.put(RESULT_STATUS, value);
 		return result;

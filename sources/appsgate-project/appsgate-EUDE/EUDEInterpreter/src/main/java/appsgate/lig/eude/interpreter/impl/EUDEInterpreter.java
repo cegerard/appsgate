@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.chmi.spec.CHMIProxySpec;
+import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.proxy.listeners.CoreListener;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.context.services.DataBasePullService;
@@ -27,8 +29,6 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
-import appsgate.lig.main.spec.CHMIProxySpec;
-import appsgate.lig.main.spec.GenericCommand;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 import java.io.BufferedReader;
 import java.io.IOException;

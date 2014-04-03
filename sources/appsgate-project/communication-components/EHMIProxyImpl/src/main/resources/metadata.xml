@@ -3,7 +3,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                           
-	<implementation name="EHMIProxyImpl" classname="appsgate.lig.main.impl.EHMIProxyImpl" specification="EHMIProxySpec" >
+	<implementation name="EHMIProxyImpl" classname="appsgate.lig.ehmi.impl.EHMIProxyImpl" specification="EHMIProxySpec" >
 		<callback onInit="newInst" onRemove="deleteInst" />
  		<relation field="chmiProxy" creation="eager" resolve="external"/>
  		<relation field="devicePropertiesTable" creation="eager" resolve="external"/>

@@ -1,4 +1,4 @@
-package appsgate.lig.main.impl.upnp;
+package appsgate.lig.ehmi.impl.upnp;
 
 import org.osgi.service.upnp.UPnPLocalStateVariable;
 

@@ -1,4 +1,4 @@
-package appsgate.lig.main.spec;
+package appsgate.lig.ehmi.spec;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

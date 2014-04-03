@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
@@ -19,7 +20,6 @@ import appsgate.lig.context.proxy.spec.StateDescription;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.main.spec.CHMIProxySpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 //import appsgate.lig.manager.context.spec.ContextManagerSpec;

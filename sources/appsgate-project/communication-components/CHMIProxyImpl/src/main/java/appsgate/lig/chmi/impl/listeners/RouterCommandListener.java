@@ -1,4 +1,4 @@
-package appsgate.lig.main.impl.listeners;
+package appsgate.lig.chmi.impl.listeners;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
-import appsgate.lig.main.impl.CHMIProxyImpl;
+import appsgate.lig.chmi.impl.CHMIProxyImpl;
 
 /**
  * Listener for all commands and events from clients.
