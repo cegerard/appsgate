@@ -37,6 +37,12 @@
 			 <artifactId>CoreObjectSpec</artifactId>
 			 <version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CoreTest</artifactId>
+			<version>1.0.0</version>
+                        <scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->

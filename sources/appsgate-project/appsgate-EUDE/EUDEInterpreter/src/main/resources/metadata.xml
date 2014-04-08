@@ -7,6 +7,7 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<relation field="router" fail="wait" resolve="exist"/>
 		<relation field="contextProxy" fail="wait" resolve="exist"/>
+                <relation field="propHistoryManager" fail="wait" resolve="exist"/>
 		<ipojo:requires field="contextHistory_pull"/>
 		<ipojo:requires field="contextHistory_push"/>
 	</implementation>

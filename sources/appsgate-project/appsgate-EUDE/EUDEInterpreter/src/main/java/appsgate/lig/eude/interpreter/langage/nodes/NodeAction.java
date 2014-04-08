@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public class NodeAction extends Node {
+public class NodeAction extends Node implements INodeFunction {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeAction.class);
@@ -58,12 +58,7 @@ public class NodeAction extends Node {
     public NodeAction(JSONObject ruleJSON, Node parent)
             throws SpokNodeException {
         super(parent);
-        try {
-            target = Builder.buildFromJSON(getJSONObject(ruleJSON, "target"), this);
-        } catch (SpokTypeException ex) {
-            LOGGER.error("Unable to build the target of the action node");
-            throw new SpokNodeException("NodeAction", "value", ex);
-        }
+        target = getDevice(ruleJSON, "target");
         methodName = ruleJSON.optString("methodName");
         args = ruleJSON.optJSONArray("args");
         if (args == null) {
@@ -109,7 +104,7 @@ public class NodeAction extends Node {
             } else if (target.getType().equalsIgnoreCase("programcall")) {
                 callProgramAction(target.getValue());
             } else if (target.getType().equalsIgnoreCase("list")) {
-                callListAction((NodeValue) target.getResult());
+                callListAction(((INodeFunction) target).getResult());
             } else if (target.getType().equalsIgnoreCase("variable")) {
                 NodeVariableDefinition var = getVariableByName(target.getValue());
                 callVariableAction(var, target.getValue());
@@ -146,7 +141,7 @@ public class NodeAction extends Node {
      * @throws SpokException
      */
     private void callProgramAction(String target) throws SpokException {
-        LOGGER.debug("Program [{}] action {} on {}", new String[] {getProgramName(), methodName, target});
+        LOGGER.debug("Program [{}] action {} on {}", new String[]{getProgramName(), methodName, target});
 
         NodeProgram p = getMediator().getNodeProgram(target);
         if (p != null) {
@@ -176,8 +171,9 @@ public class NodeAction extends Node {
         // Node n =  list.getNodeValue();
         if (n != null) {
             List<NodeValue> elements = n.getElements();
+            int i = 0;
             for (NodeValue v : elements) {
-                callVariableAction(v, "");
+                callVariableAction(v, "listElement " + i);
             }
         }
     }
@@ -212,7 +208,7 @@ public class NodeAction extends Node {
      * has been passed
      */
     @Override
-    public Node getResult() {
+    public NodeValue getResult() {
         if (command != null) {
             return new NodeValue(returnType, command.getReturn().toString(), this);
         } else {

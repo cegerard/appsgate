@@ -19,6 +19,7 @@ import org.junit.Before;
  * @author jr
  */
 public class NodeValueTest extends NodeTest {
+    private NodeValue node;
 
     public NodeValueTest() throws JSONException {
         ruleJSON.put("value", false);
@@ -31,15 +32,15 @@ public class NodeValueTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeValue(ruleJSON, null);
+        this.node = new NodeValue(ruleJSON, null);
+        this.instance = this.node;
 
     }
 
     @Test
-    @Override
     public void testGetResult() throws SpokException {
         printTestName("GetResult");
-        SpokObject result = this.instance.getResult();
+        SpokObject result = this.node.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result.getType());
         Assert.assertEquals("false", result.getValue());

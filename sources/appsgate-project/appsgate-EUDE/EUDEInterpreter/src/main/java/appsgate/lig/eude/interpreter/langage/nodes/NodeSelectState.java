@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeSelectState extends Node implements INodeList {
+public class NodeSelectState extends Node implements INodeList, INodeFunction {
 
     /**
      * LOGGER
@@ -70,7 +70,7 @@ public class NodeSelectState extends Node implements INodeList {
     public NodeSelectState(JSONObject o, Node parent) throws SpokException {
         super(parent);
         devicesToCheck = Builder.buildFromJSON(o.optJSONObject("devices"), this);
-        if (!(devicesToCheck instanceof INodeList)){
+        if (!(devicesToCheck instanceof INodeList)) {
             LOGGER.error("The devices to check must be a list");
             throw new SpokNodeException("NodeSelectState", "devices", null);
         }
@@ -123,7 +123,7 @@ public class NodeSelectState extends Node implements INodeList {
     public void endEventFired(EndEvent e) {
         LOGGER.trace("The node has been evaluated");
         try {
-            List<NodeValue> result = ((INodeList)devicesToCheck).getElements();
+            List<NodeValue> result = ((INodeList) devicesToCheck).getElements();
             states = getEvents(result);
             LOGGER.debug("States: {}", states.toString());
             devicesSelected = checkStates(states, result);
@@ -176,7 +176,7 @@ public class NodeSelectState extends Node implements INodeList {
     }
 
     @Override
-    public NodeValue getResult() throws SpokException {
+    public NodeValue getResult() throws SpokExecutionException {
         if (devicesSelected == null) {
             return null;
         }
@@ -186,7 +186,11 @@ public class NodeSelectState extends Node implements INodeList {
             o.put("value", devicesSelected);
         } catch (JSONException ex) {
         }
-        return new NodeValue(o, this);
+        try {
+            return new NodeValue(o, this);
+        } catch (SpokNodeException ex) {
+            throw new SpokExecutionException("Unable to build the node value");
+        }
     }
 
     @Override
@@ -215,7 +219,7 @@ public class NodeSelectState extends Node implements INodeList {
                 try {
                     o = deviceStates.getJSONObject(i);
                     if (o.getString("value").equalsIgnoreCase(this.stateValue)) {
-                        ret.put(n);
+                        ret.put(n.getJSONDescription());
                     }
                 } catch (JSONException ex) {
                     LOGGER.warn("the result state were not well formed");
@@ -236,7 +240,7 @@ public class NodeSelectState extends Node implements INodeList {
         // convert the list of value to a set of ids
         Set<String> l = new HashSet<String>();
         for (NodeValue v : result) {
-            if (v.getType().equalsIgnoreCase("device")) {
+            if (v.getValueType() == NodeValue.TYPE.DEVICE) {
                 l.add(v.getValue());
             }
         }
@@ -245,7 +249,7 @@ public class NodeSelectState extends Node implements INodeList {
             begin = getMediator().getTime() + timeStart * 1000;
         }
 
-        return getEvents(l, stateValue, begin, begin + duration * 1000);
+        return getEvents(l, stateToCheck, begin, begin + duration * 1000);
     }
 
     @Override

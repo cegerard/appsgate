@@ -40,7 +40,7 @@ public class NodeWait extends Node {
     public NodeWait(JSONObject o, Node parent) throws SpokTypeException {
         super(parent);
         if (o.has("waitFor")) {
-            waitFor = Builder.buildFromJSON(o.optJSONObject("waitFor"), parent);
+            waitFor = Builder.buildFromJSON(o.optJSONObject("waitFor"), this);
         }
     }
 
@@ -97,10 +97,11 @@ public class NodeWait extends Node {
                 fireEndEvent(new EndEvent(this));
             }
         } else {
+            waitFor = null;
             fireEndEvent(new EndEvent(this));
         }
     }
-
+    
     @Override
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();

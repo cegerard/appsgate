@@ -17,6 +17,8 @@ import org.junit.Test;
  * @author jr
  */
 public class NodeSelectStateTest extends NodeTest {
+    
+    private NodeSelectState node;
 
     public NodeSelectStateTest() throws JSONException {
         final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
@@ -41,14 +43,15 @@ public class NodeSelectStateTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeSelectState(ruleJSON, programNode);
+        this.node = new NodeSelectState(ruleJSON, programNode);
+        this.instance = this.node;
     }
 
     @Test
     public void testSelect() throws Exception {
         printTestName("Select");
-        instance.call();
-        SpokObject result = instance.getResult();
+        node.call();
+        NodeValue result = node.getResult();
         Assert.assertNotNull(result);
         System.out.println(result.getJSONDescription().toString());
     }

@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -18,6 +19,8 @@ import org.junit.Test;
  * @author jr
  */
 public class NodeBooleanExpressionTest extends NodeTest {
+
+    private NodeBooleanExpression node;
 
     public NodeBooleanExpressionTest() throws JSONException {
         super();
@@ -33,7 +36,8 @@ public class NodeBooleanExpressionTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeBooleanExpression(ruleJSON, null);
+        this.node = new NodeBooleanExpression(ruleJSON, null);
+        this.instance = this.node;
     }
 
     @Test
@@ -42,24 +46,23 @@ public class NodeBooleanExpressionTest extends NodeTest {
         try {
             this.instance = new NodeBooleanExpression(ruleJSON, null);
             Assert.fail("An exception should have been raised");
-        } catch (SpokException ex) {
+        } catch (SpokNodeException ex) {
             Assert.assertNotNull(ex);
         }
         ruleJSON.put("operator", 2);
         try {
             this.instance = new NodeBooleanExpression(ruleJSON, null);
             Assert.fail("An exception should have been raised");
-        } catch (SpokException ex) {
+        } catch (SpokNodeException ex) {
             Assert.assertNotNull(ex);
         }
 
     }
 
     @Test
-    @Override
     public void testGetResult() throws SpokException {
         printTestName("GetResult");
-        SpokObject result = this.instance.getResult();
+        SpokObject result = this.node.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result.getType());
         Assert.assertEquals("true", result.getValue());

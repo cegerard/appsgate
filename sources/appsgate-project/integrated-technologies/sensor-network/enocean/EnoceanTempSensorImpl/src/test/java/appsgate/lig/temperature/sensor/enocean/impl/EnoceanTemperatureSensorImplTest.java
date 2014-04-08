@@ -5,7 +5,7 @@
  */
 package appsgate.lig.temperature.sensor.enocean.impl;
 
-import appsgate.lig.core.object.spec.CoreObjectBehaviorTest;
+import appsgate.lig.core.tests.CoreObjectBehaviorTest;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class EnoceanTemperatureSensorImplTest extends CoreObjectBehaviorTest {
     }
         @Test
     public void tests() {
-        Assert.assertEquals("", this.testMethod());
+        Assert.assertEquals(0, this.testMethod());
     }
 
 

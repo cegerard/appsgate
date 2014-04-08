@@ -63,6 +63,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * Reference to the ApAM router. Used to send action to the objects
      */
     private RouterApAMSpec router;
+    /**
+     * Reference the ApAM HistoryManager.
+     */
+    private PropertyHistoryManager propHistoryManager;
 
     /**
      * Context history pull service to get past table state
@@ -94,10 +98,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public ClockProxy clock;
 
-    /**
-     * The property history proxy
-     */
-    private PropertyHistoryManager propHistoryManager;
 
     /**
      * Constructor. Initialize the list of programs and of events

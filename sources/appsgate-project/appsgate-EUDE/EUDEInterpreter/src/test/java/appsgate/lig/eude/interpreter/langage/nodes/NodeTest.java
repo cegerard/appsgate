@@ -100,12 +100,6 @@ public abstract class NodeTest {
     }
 
     @Test
-    public void testGetResult() throws Exception {
-        printTestName("GetResult");
-        Assert.assertNull("result should be null in the default case", this.instance.getResult());
-    }
-
-    @Test
     public void testGetJSONDescription() throws JSONException {
         printTestName("GetJSONDescription");
         try {

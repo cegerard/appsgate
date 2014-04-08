@@ -7,7 +7,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeBooleanExpression extends Node {
+public class NodeBooleanExpression extends Node implements INodeFunction {
 
     /**
      * Logger
@@ -57,11 +56,14 @@ public class NodeBooleanExpression extends Node {
     /**
      * The left node to evaluate
      */
-    private Node left = null;
+    private INodeFunction left = null;
+    private Node leftNode;
+
     /**
      * The right node to evaluate
      */
-    private Node right = null;
+    private INodeFunction right = null;
+    private Node rightNode;
     /**
      * the operator of the expression
      */
@@ -90,13 +92,23 @@ public class NodeBooleanExpression extends Node {
             throw new SpokNodeException("BooleanExpression", "operator", null);
         }
         try {
-            left = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
+            leftNode = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
+            if (!(leftNode instanceof INodeFunction)) {
+                LOGGER.error("Left operand does not return a value");
+                throw new SpokNodeException("BooleanExpression", "leftOperand", null);
+            }
+            left = (INodeFunction) leftNode;
         } catch (SpokTypeException ex) {
-            LOGGER.debug("Missing left operand");
+            LOGGER.error("Missing left operand");
             throw new SpokNodeException("BooleanExpression", "leftOperand", ex);
         }
         try {
-            right = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
+            rightNode = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
+            if (!(rightNode instanceof INodeFunction)) {
+                LOGGER.error("right operand does not return a value");
+                throw new SpokNodeException("BooleanExpression", "rightOperand", null);
+            }
+            right = (INodeFunction) rightNode;
         } catch (SpokTypeException ex) {
             if (needTwoOperands(operator)) {
                 LOGGER.debug("Missing right operand");
@@ -109,10 +121,10 @@ public class NodeBooleanExpression extends Node {
     @Override
     protected void specificStop() {
         if (left != null) {
-            left.stop();
+            leftNode.stop();
         }
         if (right != null) {
-            right.stop();
+            rightNode.stop();
         }
     }
 
@@ -125,13 +137,13 @@ public class NodeBooleanExpression extends Node {
             SpokExecutionException ex = new SpokExecutionException("There were no left branch to evaluate");
             return ex.getJSONDescription();
         }
-        left.addEndEventListener(this);
-        return left.call();
+        leftNode.addEndEventListener(this);
+        return leftNode.call();
     }
 
     @Override
     public String getExpertProgramScript() {
-        return "(" + left.getExpertProgramScript() + operator.getVal() + right.getExpertProgramScript() + ")";
+        return "(" + leftNode.getExpertProgramScript() + operator.getVal() + rightNode.getExpertProgramScript() + ")";
     }
 
     @Override
@@ -139,8 +151,10 @@ public class NodeBooleanExpression extends Node {
     ) {
         NodeBooleanExpression ret = new NodeBooleanExpression(parent);
         ret.operator = operator;
-        ret.left = left.copy(ret);
-        ret.right = right.copy(ret);
+        ret.leftNode = leftNode.copy(ret);
+        ret.left = (INodeFunction) ret.leftNode;
+        ret.rightNode = rightNode.copy(ret);
+        ret.right = (INodeFunction) ret.rightNode;
         return ret;
     }
 
@@ -165,8 +179,8 @@ public class NodeBooleanExpression extends Node {
         try {
             ret.put("type", "booleanExpression");
             ret.put("operator", operator);
-            ret.put("leftOperand", left.getJSONDescription());
-            ret.put("rightOperand", left.getJSONDescription());
+            ret.put("leftOperand", leftNode.getJSONDescription());
+            ret.put("rightOperand", rightNode.getJSONDescription());
 
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -176,34 +190,41 @@ public class NodeBooleanExpression extends Node {
     }
 
     @Override
-    public Node getResult() throws SpokException {
+    public NodeValue getResult() throws SpokExecutionException {
         Boolean result = false;
-        switch (operator) {
-            case EQUALS:
-                result = SpokParser.equals(left.getResult(), right.getResult());
-                break;
-            case NOT_EQUALS:
-                result = !SpokParser.equals(left.getResult(), right.getResult());
-                break;
-            case MORE_THAN:
-                result = SpokParser.getNumericResult(left.getResult()) > SpokParser.getNumericResult(right.getResult());
-                break;
-            case LESS_THAN:
-                result = SpokParser.getNumericResult(left.getResult()) < SpokParser.getNumericResult(right.getResult());
-                break;
-            case OR:
-                result = SpokParser.getBooleanResult(left.getResult()) || SpokParser.getBooleanResult(right.getResult());
-                break;
-            case AND:
-                result = SpokParser.getBooleanResult(left.getResult()) && SpokParser.getBooleanResult(right.getResult());
-                break;
-            case NOT:
-                result = !SpokParser.getBooleanResult(left.getResult());
-                break;
-            default:
-                throw new AssertionError(operator.name());
+        try {
+            switch (operator) {
+                case EQUALS:
+                    result = SpokParser.equals(left.getResult(), right.getResult());
+                    break;
+                case NOT_EQUALS:
+                    result = !SpokParser.equals(left.getResult(), right.getResult());
+                    break;
+                case MORE_THAN:
+                    result = SpokParser.getNumericResult(left.getResult()) > SpokParser.getNumericResult(right.getResult());
+                    break;
+                case LESS_THAN:
+                    result = SpokParser.getNumericResult(left.getResult()) < SpokParser.getNumericResult(right.getResult());
+                    break;
+                case OR:
+                    result = SpokParser.getBooleanResult(left.getResult()) || SpokParser.getBooleanResult(right.getResult());
+                    break;
+                case AND:
+                    result = SpokParser.getBooleanResult(left.getResult()) && SpokParser.getBooleanResult(right.getResult());
+                    break;
+                case NOT:
+                    result = !SpokParser.getBooleanResult(left.getResult());
+                    break;
+                default:
+                    throw new AssertionError(operator.name());
 
+            }
+
+        } catch (SpokTypeException ex) {
+            LOGGER.error("Unable to parse the result");
+            throw new SpokExecutionException("The type are not those excepted");
         }
+
         return new NodeValue("boolean", result.toString(), null);
     }
 
@@ -219,8 +240,8 @@ public class NodeBooleanExpression extends Node {
             case OR:
             case AND:
                 if (right != null) {
-                    right.addEndEventListener(this);
-                    right.call();
+                    rightNode.addEndEventListener(this);
+                    rightNode.call();
                 } else {
                     LOGGER.error("should evaluate the other node, but it is null");
 

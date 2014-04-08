@@ -32,13 +32,16 @@ public class NodeState extends Node {
     /**
      * The object to be observed
      */
-    private Node object;
+    private Node objectNode;
+    private INodeFunction object;
     /**
      * The state to look for
      */
     private String stateName;
 
+    private Node eventStartNode;
     private INodeEvent eventStart = null;
+    private Node eventEndNode;
     private INodeEvent eventEnd = null;
 
     private boolean isOnRules;
@@ -63,29 +66,30 @@ public class NodeState extends Node {
      */
     public NodeState(JSONObject o, Node parent) throws SpokNodeException {
         super(parent);
-        ContextProxySpec context;
         try {
-            object = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
+            objectNode = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
+            if (objectNode instanceof INodeFunction) {
+                object = (INodeFunction) objectNode;
+            } else {
+                throw new SpokNodeException("NodeState", "object", null);
+            }
         } catch (SpokTypeException ex) {
             throw new SpokNodeException("NodeState", "object", ex);
         }
         stateName = getJSONString(o, "name");
-        try {
-            context = getMediator().getContext();
-        } catch (SpokExecutionException ex) {
-            LOGGER.error("unable to find context");
-            throw new SpokNodeException("NodeState", "context unavailable", ex);
-        }
-        desc = context.getEventsFromState(object.getValue(), stateName);
 
     }
 
     @Override
     protected void specificStop() {
-        ((Node)eventEnd).removeEndEventListener(this);
-        ((Node)eventEnd).stop();
-        ((Node)eventStart).removeEndEventListener(this);
-        ((Node)eventStart).stop();
+        if (eventEndNode != null) {
+            eventEndNode.removeEndEventListener(this);
+            eventEndNode.stop();
+        }
+        if (eventStartNode != null) {
+            eventStartNode.removeEndEventListener(this);
+            eventStartNode.stop();
+        }
     }
 
     @Override
@@ -105,8 +109,8 @@ public class NodeState extends Node {
                 listenEndStateEvent();
             } else {
                 isOnRules = false;
-                ((Node)eventStart).addEndEventListener(this);
-                ((Node)eventStart).call();
+                eventStartNode.addEndEventListener(this);
+                eventStartNode.call();
             }
         } catch (SpokExecutionException ex) {
             LOGGER.error("Unable to execute the State node, due to: " + ex);
@@ -117,20 +121,20 @@ public class NodeState extends Node {
 
     @Override
     public String getExpertProgramScript() {
-        return object.getExpertProgramScript() + ".isOfState(" + stateName + ")";
+        return objectNode.getExpertProgramScript() + ".isOfState(" + stateName + ")";
     }
 
     @Override
     protected Node copy(Node parent) {
         NodeState o = new NodeState(parent);
-        o.object = object.copy(o);
+        o.objectNode = objectNode.copy(o);
         o.stateName = stateName;
         return o;
     }
 
     @Override
     public void endEventFired(EndEvent e) {
-        Node n = (Node) e.getSource();
+        INodeEvent n = (INodeEvent) e.getSource();
         if (n == eventStart) {
             LOGGER.trace("the start event of the state {} has been thrown", stateName);
             isOnRules = true;
@@ -149,7 +153,7 @@ public class NodeState extends Node {
         JSONObject o = new JSONObject();
         try {
             o.put("type", "state");
-            o.put("object", object.getJSONDescription());
+            o.put("object", objectNode.getJSONDescription());
             o.put("name", stateName);
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -165,59 +169,39 @@ public class NodeState extends Node {
      * @throws SpokExecutionException
      */
     private void buildEventsList() throws SpokExecutionException {
+        ContextProxySpec context;
+        context = getMediator().getContext();
+        desc = context.getEventsFromState(object.getResult().getValue(), stateName);
+
         if (desc == null) {
-            throw new SpokExecutionException("There is no type found for the device " + object.getValue());
+            throw new SpokExecutionException("There is no type found for the device " + objectNode.getValue());
         }
         // everything is OK
         if (eventStart == null) {
-            eventStart = buildFromOntology2(desc.getStartEvent());
+            eventStart = buildFromOntology(desc.getStartEvent());
+            eventStartNode = (Node) eventStart;
         }
         if (eventEnd == null) {
-            eventEnd = buildFromOntology2(desc.getEndEvent());
+            eventEnd = buildFromOntology(desc.getEndEvent());
+            eventEndNode = (Node) eventEnd;
         }
     }
 
     /**
      *
      * @param o
-     * @param type
      * @return
      * @throws SpokExecutionException
      */
-    private NodeEvent buildFromOntology(JSONObject o) throws SpokExecutionException {
-        String name;
-        String value;
-        if (o == null) {
-            throw new SpokExecutionException("No event associated with this state");
-        }
-        try {
-            name = o.getString("name");
-            value = o.optString("value");
-        } catch (JSONException e) {
-            throw new SpokExecutionException("events are not correctly defined for this state");
-        }
-        return new NodeEvent("device", object.getValue(), name, value, this);
-    }
-
-    /**
-     *
-     * @param o
-     * @param type
-     * @return
-     * @throws SpokExecutionException
-     */
-    private INodeEvent buildFromOntology2(JSONObject o) throws SpokExecutionException {
-        JSONObject target = new JSONObject();
+    private INodeEvent buildFromOntology(JSONObject o) throws SpokExecutionException {
         Node events;
         if (o == null) {
             throw new SpokExecutionException("No event associated with this state");
         }
-        try {
-            target.put("type", "device");
-            target.put("value", object.getValue());
-        } catch (JSONException ex) {
-            // Never happens
-        }
+
+        JSONObject target;
+        target = object.getResult().getJSONDescription();
+
         try {
             events = Builder.buildFromJSON(o, this, target);
         } catch (SpokTypeException ex) {
@@ -242,8 +226,8 @@ public class NodeState extends Node {
      * do the job when the end state event has been raised
      */
     private void listenEndStateEvent() {
-        ((Node)eventEnd).addEndEventListener(this);
-        ((Node)eventEnd).call();
+        eventEndNode.addEndEventListener(this);
+        eventEndNode.call();
     }
 
     @Override
@@ -260,7 +244,7 @@ public class NodeState extends Node {
             throw new SpokExecutionException("No setter has been found for this state: " + desc.getStateName());
         }
         try {
-            action.put("target", object.getJSONDescription());
+            action.put("target", objectNode.getJSONDescription());
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
@@ -272,7 +256,7 @@ public class NodeState extends Node {
      * @return the id of the object whose state is observed
      */
     String getObjectId() {
-        return object.getValue();
+        return objectNode.getValue();
     }
 
     /**
@@ -288,8 +272,12 @@ public class NodeState extends Node {
      * @throws SpokExecutionException
      */
     private boolean isOfState() throws SpokExecutionException {
-        LOGGER.trace("Asking for {}, {}", object.getValue(), desc.getStateName());
-        GenericCommand cmd = getMediator().executeCommand(object.getValue(), desc.getStateName(), new JSONArray());
+        if (desc.getStateName() == null) {
+            LOGGER.debug("No state name, so the result is false");
+            return false;
+        }
+        LOGGER.trace("Asking for {}, {}", object.getResult().getValue(), desc.getStateName());
+        GenericCommand cmd = getMediator().executeCommand(object.getResult().getValue(), desc.getStateName(), new JSONArray());
         if (cmd == null) {
             throw new SpokExecutionException("The command has not been created");
         }
@@ -298,7 +286,7 @@ public class NodeState extends Node {
         if (aReturn == null) {
             throw new SpokExecutionException("The command has no return");
         }
-        LOGGER.trace("Is of state: [" + aReturn.toString() + "] compared to: [" + desc.getStateValue() + "]");
+        LOGGER.debug("Is of state: [" + aReturn.toString() + "] compared to: [" + desc.getStateValue() + "]");
         return (desc.getStateValue().equalsIgnoreCase(aReturn.toString()));
     }
 

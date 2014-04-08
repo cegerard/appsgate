@@ -8,8 +8,11 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author jr
  */
-public class NodeValue extends Node implements INodeList{
+public class NodeValue extends Node implements INodeList, INodeFunction {
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeValue.class);
@@ -169,18 +172,28 @@ public class NodeValue extends Node implements INodeList{
             ArrayList<NodeValue> a = new ArrayList<NodeValue>();
             if (list != null) {
                 for (int i = 0; i < list.length(); i++) {
-                    a.add(new NodeValue(list.getJSONObject(i), this));
+                    Node e = Builder.buildFromJSON(list.optJSONObject(i), this);
+                    if (e instanceof NodeValue) {
+                        a.add((NodeValue) e);
+                    } else {
+                        e.call();
+                        if (e instanceof INodeFunction) {
+                            a.add(((INodeFunction) e).getResult());
+                        }
+                    }
                 }
             } else {
                 a.add(this);
             }
             return a;
 
-        } catch (JSONException ex) {
-            LOGGER.error("list without a list");
+        } catch (SpokTypeException ex) {
+            LOGGER.error("The value was not correct: {}", this.getExpertProgramScript());
+            LOGGER.debug(this.getJSONDescription().toString());
             return null;
-        } catch (SpokNodeException ex) {
-            LOGGER.error("The variable was not well formed");
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("Execution exception on reading value: {}", this.getExpertProgramScript());
+            LOGGER.debug(this.getJSONDescription().toString());
             return null;
         }
     }
@@ -206,7 +219,10 @@ public class NodeValue extends Node implements INodeList{
     }
 
     @Override
-    public Node getResult() {
+    public NodeValue getResult() throws SpokExecutionException {
+        if (type == TYPE.VARIABLE) {
+            return getVariableByName(value).getResult();
+        }
         return this;
     }
 

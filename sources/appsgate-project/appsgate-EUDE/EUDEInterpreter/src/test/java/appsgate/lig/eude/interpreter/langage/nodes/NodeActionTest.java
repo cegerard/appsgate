@@ -40,7 +40,6 @@ public class NodeActionTest extends NodeTest {
      * Test of getResult method, of class NodeAction.
      */
     @Test
-    @Override
     public void testGetResult() {
         System.out.println("getResult");
         Object expResult = null;

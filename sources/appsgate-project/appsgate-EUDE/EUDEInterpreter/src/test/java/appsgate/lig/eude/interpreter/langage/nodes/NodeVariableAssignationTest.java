@@ -12,6 +12,7 @@ import org.junit.Test;
  * @author jr
  */
 public class NodeVariableAssignationTest extends NodeTest {
+    private NodeVariableAssignation node;
 
     public NodeVariableAssignationTest() throws JSONException {
         JSONObject val = new JSONObject();
@@ -25,14 +26,14 @@ public class NodeVariableAssignationTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeVariableAssignation(ruleJSON, null);
+        this.node =  new NodeVariableAssignation(ruleJSON, null);
+        this.instance = node;
     }
 
     @Test
-    @Override
     public void testGetResult() throws Exception {
         printTestName("GetResult");
-        SpokObject result = this.instance.getResult();
+        SpokObject result = this.node.getResult();
         Assert.assertNotNull(result);
         Assert.assertEquals("number", result.getType());
         Assert.assertEquals("0", result.getValue());

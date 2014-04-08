@@ -1,7 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeSelect extends Node implements INodeList {
+public class NodeSelect extends Node implements INodeList, INodeFunction {
 
     /**
      * Static class member uses to log what happened in each instances
@@ -81,7 +80,7 @@ public class NodeSelect extends Node implements INodeList {
     }
 
     @Override
-    public NodeValue getResult() throws SpokException {
+    public NodeValue getResult() throws SpokExecutionException {
         if (specificDevices == null) {
             return null;
         }
@@ -91,7 +90,11 @@ public class NodeSelect extends Node implements INodeList {
             o.put("value", specificDevices);
         } catch (JSONException ex) {
         }
-        return new NodeValue(o, this);
+        try {
+            return new NodeValue(o, this);
+        } catch (SpokNodeException ex) {
+            throw new SpokExecutionException("Unable to build the node value");
+        }
     }
 
     @Override

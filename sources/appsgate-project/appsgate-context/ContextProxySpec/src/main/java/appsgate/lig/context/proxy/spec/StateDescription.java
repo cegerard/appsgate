@@ -55,8 +55,8 @@ public class StateDescription {
             setter = o.optJSONObject("setter");
             startEvent = o.optJSONObject("startEvent");
             endEvent = o.optJSONObject("endEvent");
-            stateName = o.optString("stateName");
-            stateValue = o.optString("stateValue");
+            stateName = o.optString("stateName",null);
+            stateValue = o.optString("stateValue", null);
         } catch (JSONException e) {
             LOGGER.error("Missing the name" + e);
             throw new JSONException("No name for this state");

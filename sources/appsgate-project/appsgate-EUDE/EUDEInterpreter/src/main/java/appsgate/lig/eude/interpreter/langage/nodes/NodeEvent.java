@@ -76,19 +76,13 @@ public class NodeEvent extends Node implements INodeEvent {
     public NodeEvent(JSONObject eventJSON, Node parent)
             throws SpokNodeException {
         super(parent);
-        try {
-            if (eventJSON.has("stateTarget")) {
-                source = Builder.buildFromJSON(eventJSON.optJSONObject("stateTarget"), this);
-            } else {
-                source = Builder.buildFromJSON(getJSONObject(eventJSON, "source"), parent);
-            }
-        } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeEvent", "source", ex);
-        }
+        source = getDevice(eventJSON, "source");
         eventName = getJSONString(eventJSON, "eventName");
         eventValue = getJSONString(eventJSON, "eventValue");
 
     }
+
+    
 
     @Override
     public JSONObject call() {

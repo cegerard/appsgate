@@ -7,7 +7,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeVariableAssignation extends Node {
+public class NodeVariableAssignation extends Node implements INodeFunction {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeVariableAssignation.class);
@@ -62,11 +61,11 @@ public class NodeVariableAssignation extends Node {
         }
         name = getJSONString(obj, "name");
     }
-    
+
     @Override
-    protected void specificStop()  {
+    protected void specificStop() {
     }
-    
+
     @Override
     public JSONObject getJSONDescription() {
         JSONObject o = new JSONObject();
@@ -76,15 +75,15 @@ public class NodeVariableAssignation extends Node {
                 o.put("value", value.getJSONDescription());
             }
             o.put("name", name);
-            
+
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
         }
         return o;
-        
+
     }
-    
+
     @Override
     public String getExpertProgramScript() {
         if (this.value != null) {
@@ -93,7 +92,7 @@ public class NodeVariableAssignation extends Node {
             return this.name + " = UNDEFINED ;";
         }
     }
-    
+
     @Override
     protected Node copy(Node parent) {
         NodeVariableAssignation ret = new NodeVariableAssignation(parent);
@@ -103,7 +102,7 @@ public class NodeVariableAssignation extends Node {
         }
         return ret;
     }
-    
+
     @Override
     public JSONObject call() {
         setStarted(true);
@@ -113,10 +112,10 @@ public class NodeVariableAssignation extends Node {
         }
         return null;
     }
-    
+
     @Override
     public void endEventFired(EndEvent e) {
-        Node source = (Node) e.getSource();
+        INodeFunction source = (INodeFunction) e.getSource();
         try {
             SpokObject v = source.getResult();
             if (v != null) {
@@ -124,24 +123,24 @@ public class NodeVariableAssignation extends Node {
             } else {
                 setVariable(null);
             }
-        } catch (SpokException ex) {
+        } catch (SpokExecutionException ex) {
             LOGGER.error("Exception raised during evaluation" + ex);
         }
         fireEndEvent(new EndEvent(this));
     }
-    
+
     @Override
     public String toString() {
         return "[Var " + this.name + "=" + this.value + "]";
-        
+
     }
-    
+
     @Override
-    public SpokObject getResult() throws SpokException {
+    public NodeValue getResult() throws SpokExecutionException {
         if (value == null) {
             throw new SpokExecutionException("A variable assignation should not be null");
         }
-        return value.getResult();
+        return ((INodeFunction) value).getResult();
     }
 
     /**
@@ -161,5 +160,5 @@ public class NodeVariableAssignation extends Node {
             findNode.setVariable(this.name, v);
         }
     }
-    
+
 }

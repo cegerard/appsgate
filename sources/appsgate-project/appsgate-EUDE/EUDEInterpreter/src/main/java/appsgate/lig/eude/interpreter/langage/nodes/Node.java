@@ -15,6 +15,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -104,7 +105,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             setStarted(false);
             setStopping(false);
         } else {
-            LOGGER.warn("Trying to stop a not started node {}", this);
+            LOGGER.debug("Trying to stop a not started node {}", this);
         }
     }
 
@@ -257,6 +258,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         try {
             return jsonObj.getString(jsonParam);
         } catch (JSONException ex) {
+            LOGGER.debug("Unable to get string: {}", jsonParam);
             throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
     }
@@ -274,6 +276,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         try {
             return jsonObj.getJSONArray(jsonParam);
         } catch (JSONException ex) {
+            LOGGER.debug("Unable to get array: {}", jsonParam);
             throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
 
@@ -292,9 +295,34 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         try {
             return jsonObj.getJSONObject(jsonParam);
         } catch (JSONException ex) {
+            LOGGER.debug("Unable to get object: {}", jsonParam);
             throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
         }
 
+    }
+
+    /**
+     * Method that retrieve the device even if this has been dynamically built
+     * through State
+     *
+     * @param o the json description of the node to build
+     * @param common the name of the source/target
+     * @return the corresponding node
+     * @throws SpokNodeException if the node cannot be built
+     */
+    final protected Node getDevice(JSONObject o, String common) throws SpokNodeException {
+        Node s;
+        try {
+            if (o.has("stateTarget")) {
+                s = Builder.buildFromJSON(o.optJSONObject("stateTarget"), this);
+            } else {
+                s = Builder.buildFromJSON(getJSONObject(o, common), this);
+            }
+        } catch (SpokTypeException ex) {
+            LOGGER.error("No {} found", common);
+            throw new SpokNodeException(this.getClass().getSimpleName(), common, ex);
+        }
+        return s;
     }
 
     /**
@@ -381,16 +409,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @return the node copied
      */
     abstract protected Node copy(Node parent);
-
-    /**
-     * Method that return the value associated to a node Must be overridden
-     *
-     * @return null by default
-     * @throws SpokException
-     */
-    public SpokObject getResult() throws SpokException {
-        return null;
-    }
 
     /**
      * Method that find a node of a given class in a tree This method is

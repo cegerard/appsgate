@@ -206,7 +206,11 @@ public class NodeProgram extends Node {
 
     @Override
     public void stop() {
-        if (runningState == RUNNING_STATE.STARTED && !isStopping()) {
+        if (runningState != RUNNING_STATE.STARTED) {
+            LOGGER.warn("Trying to stop {}, while being at state {}", this, this.runningState);
+            return;
+        }
+        if (!isStopping()) {
             LOGGER.debug("Stoping program {}", this);
             setStopping(true);
             body.stop();
@@ -215,7 +219,7 @@ public class NodeProgram extends Node {
             fireEndEvent(new EndEvent(this));
             setStopping(false);
         } else {
-            LOGGER.warn("Trying to stop {}, while being at state {}", this, this.runningState);
+            LOGGER.warn("Trying to stop {}, while already stopping", this);
         }
     }
 

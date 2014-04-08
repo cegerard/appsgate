@@ -4,8 +4,8 @@ comment: "Tant que L1 est allumé alors L2 est allumé, et lorsque ça n’est p
 
 _DECL_
 
-var l1 = /L1/;
-var l2 = /L2/;
+var l1 = /00:17:88:0a:99:c1-2/;
+var l2 = /00:17:88:0a:99:c1-1/;
 
 _BODY_
 

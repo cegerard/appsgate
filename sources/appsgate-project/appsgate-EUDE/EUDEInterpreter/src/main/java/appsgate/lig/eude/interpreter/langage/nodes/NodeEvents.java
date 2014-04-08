@@ -58,6 +58,7 @@ public abstract class NodeEvents extends Node implements INodeEvent{
         JSONArray seqEventJSON = getJSONArray(o, "events");
         JSONObject stateTarget = null;
         listOfEvent = new ArrayList<Node>();
+        duration = o.optInt("duration", 0);
         // Transmit the target, if the event is based on a state node.
         if (o.has("stateTarget")) {
             stateTarget = o.optJSONObject("stateTarget");

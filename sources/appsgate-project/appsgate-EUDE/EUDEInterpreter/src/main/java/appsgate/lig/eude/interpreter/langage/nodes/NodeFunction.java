@@ -2,7 +2,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
-import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author JR Courtois
  */
-public class NodeFunction extends Node {
+public class NodeFunction extends Node implements INodeFunction {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeFunction.class);
@@ -47,7 +46,7 @@ public class NodeFunction extends Node {
     /**
      * The result associated with the function
      */
-    private SpokObject result = null;
+    private NodeValue result = null;
 
     /**
      * Constructor
@@ -138,12 +137,13 @@ public class NodeFunction extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
-        Node source = (Node) e.getSource();
+        INodeFunction source = (INodeFunction) e.getSource();
         LOGGER.debug("The end event ({}) has been catched by {}", source, this);
         try {
             this.result = source.getResult();
-        } catch (SpokException ex) {
-            this.result = ex;
+        } catch (SpokExecutionException ex) {
+            LOGGER.error("An exception occurs in FUNCTION");
+            this.result = null;
         }
         fireEndEvent(new EndEvent(this));
     }
@@ -258,7 +258,7 @@ public class NodeFunction extends Node {
     }
 
     @Override
-    public SpokObject getResult() {
+    public NodeValue getResult() {
         return this.result;
     }
 }

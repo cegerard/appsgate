@@ -1,8 +1,10 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -42,11 +44,7 @@ public class NodeKeepState extends Node {
         super(parent);
         try {
             state = new NodeState(o.getJSONObject("state"), this);
-            setter = state.getSetter();
         } catch (JSONException ex) {
-            throw new SpokNodeException("NodeKeepState", "state", ex);
-        } catch (SpokExecutionException ex) {
-            LOGGER.error("Unable to get setter from state");
             throw new SpokNodeException("NodeKeepState", "state", ex);
         }
     }
@@ -55,12 +53,21 @@ public class NodeKeepState extends Node {
     protected void specificStop() {
         state.removeEndEventListener(this);
         state.stop();
-        setter.stop();
+        if (setter != null) {
+            setter.stop();
+        }
     }
 
     @Override
     public JSONObject call() {
         setStarted(true);
+        try {
+            state.call();
+            setter = state.getSetter();
+        } catch (SpokException ex) {
+            LOGGER.error("Unable to get");
+        }
+
         if (!state.isOnRules()) {
             setter.call();
         }
@@ -76,7 +83,6 @@ public class NodeKeepState extends Node {
     @Override
     protected Node copy(Node parent) {
         NodeKeepState n = new NodeKeepState(parent);
-        n.setter = (NodeAction) setter.copy(n);
         n.state = (NodeState) state.copy(n);
         return n;
     }
@@ -115,7 +121,7 @@ public class NodeKeepState extends Node {
     }
 
     /**
-     * 
+     *
      * @return the state
      */
     public NodeState getState() {

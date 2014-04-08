@@ -29,6 +29,7 @@
 <!-- 		<module>ContextFollowerTester</module> -->
 <!-- 		<module>ExperimentaConfiguration</module> -->
 <!-- 		<module>ExperimentaPrograms</module> -->
+    <module>CoreTest</module>
   </modules>
 
 </project>

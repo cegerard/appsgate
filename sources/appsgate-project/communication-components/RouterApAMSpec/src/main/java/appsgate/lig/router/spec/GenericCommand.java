@@ -99,7 +99,14 @@ public class GenericCommand implements Runnable {
 			tabTypes[i] = itc.next(); 
 			i++;
 		}
-	
+                if (obj == null) {
+                    logger.error("Null object");
+                    return null;
+                }
+                if (obj.getClass() == null) {
+                    logger.error("Unable to find the class of this object {}", obj);
+                    return null;
+                }
 		Method m = obj.getClass().getMethod(methodName, tabTypes);
 		return m.invoke(obj, args);
 	}

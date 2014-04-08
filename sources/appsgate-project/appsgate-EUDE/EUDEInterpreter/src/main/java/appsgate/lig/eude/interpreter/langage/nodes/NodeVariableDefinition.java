@@ -16,13 +16,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeVariableDefinition extends Node implements INodeList {
+public class NodeVariableDefinition extends Node implements INodeList, INodeFunction {
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeVariableDefinition.class);
 
     private String id = null;
     private SpokObject value = null;
+    private INodeFunction valueNode = null;
 
     /**
      *
@@ -156,6 +157,9 @@ public class NodeVariableDefinition extends Node implements INodeList {
             throw new SpokSymbolTableException("Trying to define a variable inside a variable", null);
         }
         this.value = Builder.buildFromJSON(obj, this);
+        if (value instanceof INodeFunction) {
+            valueNode = (INodeFunction) value;
+        }
     }
 
     /**
@@ -268,6 +272,14 @@ public class NodeVariableDefinition extends Node implements INodeList {
 
     private boolean isUndefined() {
         return value == null;
+    }
+
+    @Override
+    public NodeValue getResult() throws SpokExecutionException {
+        if (valueNode != null) {
+            return valueNode.getResult();
+        }
+        return null;
     }
 
 }

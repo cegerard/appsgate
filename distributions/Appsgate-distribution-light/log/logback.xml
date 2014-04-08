@@ -34,7 +34,9 @@
 	</encoder>
   </appender>
   
-  <root level="DEBUG">
+  <logger name="appsgate" level="INFO"/>
+  <logger name="appsgate.lig.eude" level="DEBUG"/>
+  <root level="INFO">
     <appender-ref ref="DEBUG_LOG"/>
     <appender-ref ref="STDOUT"/>
   </root>

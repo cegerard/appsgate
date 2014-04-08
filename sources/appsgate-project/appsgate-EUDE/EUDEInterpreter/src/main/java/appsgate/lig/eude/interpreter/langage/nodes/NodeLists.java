@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.List;
 import org.apache.commons.collections4.ListUtils;
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeLists extends Node implements INodeList {
+public class NodeLists extends Node implements INodeList, INodeFunction {
 
     /**
      * The logger
@@ -212,7 +213,7 @@ public class NodeLists extends Node implements INodeList {
     }
 
     @Override
-    public NodeValue getResult() throws SpokException {
+    public NodeValue getResult() throws SpokExecutionException {
         if (result == null) {
             return null;
         }
@@ -224,9 +225,15 @@ public class NodeLists extends Node implements INodeList {
                 r.put(v.getJSONDescription());
             }
             o.put("value", r);
+
         } catch (JSONException ex) {
         }
-        return new NodeValue(o, this);
+        try {
+            return new NodeValue(o, this);
+
+        } catch (SpokNodeException ex) {
+            throw new SpokExecutionException("Unable to build the NodeValue");
+        }
     }
 
     @Override

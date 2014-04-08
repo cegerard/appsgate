@@ -30,6 +30,12 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreObjectSpec</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <!-- Build Description -->
