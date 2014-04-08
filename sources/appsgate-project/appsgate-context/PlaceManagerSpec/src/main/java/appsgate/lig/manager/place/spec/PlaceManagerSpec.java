@@ -108,6 +108,16 @@ public interface PlaceManagerSpec {
 	public boolean moveObject(String objId, String oldPlaceID, String newPlaceID);
 	
 	/**
+	 * Move a core service to a specify place. If newPalceID attribute equal -1
+	 * the service is just removed from this place 
+	 * @param serviceId the core service identifier to move
+	 * @param oldPlaceID the source place of the core service
+	 * @param newPlaceID the destination place of the core service
+	 * @return true if the service has moved, false otherwise
+	 */
+	public boolean moveService(String serviceId, String oldPlaceID, String newPlaceID);
+	
+	/**
 	 * Move all object to the -1 id place
 	 * @param placeId that will by emptied of its core object
 	 */
@@ -180,6 +190,13 @@ public interface PlaceManagerSpec {
 	 * @return place where this device is located
 	 */
 	public SymbolicPlace getPlaceWithDevice(String deviceId);
+	
+	/**
+	 * Get the place where a service is placed
+	 * @param serviceId the service identifier
+	 * @return place where this service is located
+	 */
+	public SymbolicPlace getPlaceWithService(String serviceId);
 	
 	/**
 	 * Get the place identifier of a core object

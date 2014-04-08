@@ -1,0 +1,435 @@
+<div class="lead inline">
+	<% if (place.get("name") !== "") { %>
+		<%= place.get("name") %>
+	<% } else { %>
+		<em data-i18n="places-details.place-no-name"></em>
+	<% } %>
+	<% if (place.get("id") !== "-1") { %>
+		<div class="pull-right">
+			<button type="button" data-target="#edit-name-place-modal" data-toggle="modal" class="btn btn-default">
+				<i class="glyphicon glyphicon-edit"></i> <span data-i18n="form.rename-button"></span>
+			</button>
+			<button id="delete-popover" class="btn btn-default" rel="popover">
+				<i class="glyphicon glyphicon-trash"></i>
+			</button>
+		</div>
+	<% } %>
+</div>
+
+<div class="contents-list">
+<!-- place status area -->
+<div class="panel panel-default">
+	<div class="panel-body">
+		<span data-i18n="places-details.header.device-number-title"></span>
+		<span class="label label-info pull-right"><%= place.get("devices").length %></span>
+		<br>
+		<span data-i18n="places-details.header.temperature-label"></span>
+		<% if (typeof place.getAverageTemperature() !== "undefined") { %>
+			<span class="label label-info pull-right"><%= place.getAverageTemperature() %>&deg;C</span>
+		<% } else { %>
+			<span class="label label-info pull-right" data-i18n="places-details.undefined"></span>
+		<% } %>
+		<br>
+		<span data-i18n="places-details.header.illumination-label"></span>
+		<% if (typeof place.getAverageIllumination() !== "undefined") { %>
+			<span class="label label-info pull-right"><%= place.getAverageIllumination() %> Lux</span>
+		<% } else { %>
+			<span class="label label-info pull-right" data-i18n="places-details.undefined"></span>
+		<% } %>
+		<br>
+		<span data-i18n="places-details.header.consumption-label"></span>
+		<% if (typeof place.getAverageConsumption() !== "undefined") { %>
+			<span class="label label-info pull-right"><%= place.getAverageConsumption() %> W</span>
+		<% } else { %>
+			<span class="label label-info pull-right" data-i18n="places-details.undefined"></span>
+		<% } %>
+	</div>
+</div>
+
+<!-- temperature sensors -->
+<% if (place.getTemperatureSensors().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getTemperatureSensors().length === 1) { %>
+				<span data-i18n="devices.temperature.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.temperature.name.plural"></span>
+			<% } %>
+			<span class="badge pull-right">
+				<%= place.getTemperatureSensors().length %>
+			</span>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getTemperatureSensors().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-i18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<span class="label label-info"><%= s.get("value") %>&deg;C</span>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- illumination sensors -->
+<% if (place.getIlluminationSensors().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getIlluminationSensors().length === 1) { %>
+				<span data-i18n="devices.illumination.name.singular"></<span>
+			<% } else { %>
+				<span data-i18n="devices.illumination.name.plural"></span>
+			<% } %>
+			<span class="badge pull-right">
+				<%= place.getIlluminationSensors().length %>
+			</span>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getIlluminationSensors().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-i18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<span class="label label-info"><%= s.get("value") %> Lux</span>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- switches -->
+<% if (place.getSwitches().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getSwitches().length === 1) { %>
+				<span data-i18n="devices.switch.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.switch.name.plural"></span>
+			<% } %>
+			<span class="badge pull-right">
+				<%= place.getSwitches().length %>
+			</span>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getSwitches().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-i18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<% if (s.get("value") === "true") { %>
+					<span class="label label-info" data-i18n="devices.switch.value.opened"></span>
+				<% } else { %>
+					<span class="label label-info" data-i18n="devices.switch.value.closed"></span>
+				<% } %>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- contact sensors -->
+<% if (place.getContactSensors().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getContactSensors().length === 1) { %>
+				<span data-i18n="devices.contact.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.contact.name.plural"></span>
+			<% } %>
+			<span class="badge pull-right">
+				<%= place.getContactSensors().length %>
+			</span>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getContactSensors().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-i18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<% if (s.get("contact") === "true") { %>
+					<span class="label label-info" data-i18n="devices.contact.value.closed"></span>
+				<% } else { %>
+					<span class="label label-info" data-i18n="devices.contact.value.opened"></span>
+				<% } %>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- key-card readers -->
+<% if (place.getKeyCardReaders().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getKeyCardReaders().length === 1) { %>
+				<span data-i18n="devices.keycard-reader.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.keycard-reader.name.plural"></span>
+			<% } %>
+			<span class="badge pull-right">
+				<%= place.getKeyCardReaders().length %>
+			</span>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getKeyCardReaders().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-i18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<% if (s.get("inserted") === "true") { %>
+					<span class="label label-info" data-i18n="devices.keycard-reader.value.inserted"></span>
+				<% } else { %>
+					<span class="label label-info" data-i18n="devices.keycard-reader.value.not-inserted"></span>
+				<% } %>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- movement sensors -->
+<% if (place.getMovementSensors().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getMovementSensors().length === 1) { %>
+				<span data-i18n="devices.movement.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.movement.name.plural"></span>
+			<% } %>
+			<span class="badge pull-right">
+				<%= place.getMovementSensors().length %>
+			</span>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getMovementSensors().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-i18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- plugs -->
+<% if (place.getPlugs().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getPlugs().length === 1) { %>
+				<span data-i18n="devices.plug.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.plug.name.plural"></span>
+			<% } %>
+			<span class="badge pull-right">
+				<%= place.getPlugs().length %>
+			</span>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getPlugs().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+					<% if (s.get("plugState") === "true" || s.get("plugState") === true) { %>
+						<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-plug-button" data-i18n="devices.plug.action.turnOff"></button>
+					<% } else { %>
+						<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-plug-button" data-i18n="devices.plug.action.turnOn"></button>
+					<% } %>
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-i18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<span class="label label-info"><%= s.get("consumption") %> W</span>
+				<% if (s.get("plugState") === "true" || s.get("plugState") === true) { %>
+					<span class="label label-info" data-i18n="devices.plug.status.turnedOn"></span>
+				<% } else { %>
+					<span class="label label-info" data-i18n="devices.plug.status.turnedOff"></span>
+				<% } %>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- philips hue -->
+<% if (place.getPhilipsHueLamps().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getPhilipsHueLamps().length === 1) { %>
+				<span data-i18n="devices.lamp.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.lamp.name.plural"></span>
+			<% } %>
+			<div class="badge pull-right">
+				<%= place.getPhilipsHueLamps().length %>
+			</div>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getPhilipsHueLamps().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+                    <button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm blink-lamp-button" data-i18n="devices.lamp.action.blink"></button>
+
+					<% if (s.get("value") === "true" || s.get("value") === true) { %>
+						<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-lamp-button" data-i18n="devices.lamp.action.turnOff"></button>
+					<% } else { %>
+						<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-lamp-button" data-i18n="devices.lamp.action.turnOn"></button>
+					<% } %>
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<% if (s.get("value") === "true" || s.get("value") === true) { %>
+					<span class="label label-info" data-i18n="devices.lamp.status.turnedOn"></span>
+				<% } else { %>
+					<span class="label label-info" data-i18n="devices.lamp.status.turnedOff"></span>
+				<% } %>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- if the place has no device, show a message -->
+<% if (place.get("devices").length === 0) { %>
+	<div class="alert alert-info" data-i18n="places-details.body.no-device-in-place">
+	</div>
+<% } %>
+
+</div><!-- end of place contents -->
+
+<!-- modal to edit the name of a place -->
+<div id="edit-name-place-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalEditPlace" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h3 data-i18n="modal-edit-place.title"></h3>
+			</div>
+			<div class="modal-body">
+				<input type="text" class="form-control" data-i18n="[placeholder]modal-edit-place.place-name">
+				<p class="hide text-danger" data-i18n="modal-edit-place.place-already-existing"></p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+				<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+			</div>
+		</div>
+	</div>
+</div>

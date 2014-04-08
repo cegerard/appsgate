@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.context.proxy.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
@@ -12,7 +13,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import appsgate.lig.router.spec.GenericCommand;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

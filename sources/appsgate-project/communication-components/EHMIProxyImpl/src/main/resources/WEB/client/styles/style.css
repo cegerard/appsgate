@@ -1,0 +1,142 @@
+body {
+	padding-top: 70px;
+	overflow: hidden;
+}
+
+.alert {
+	clear: both;
+}
+
+.clock-font {
+	font-size: 72px;
+}
+
+.div-scrollable {
+	overflow-y: auto;
+	margin-bottom: 20px;
+	border: 1px solid #999999; 
+	border-radius: 4px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.browser-container {
+	height:250px;
+	overflow-y: auto;
+}
+
+.navbar {
+	position:absolute;
+}
+
+.slider-container {
+	height:14px;
+	width:150px;
+}	
+
+.center {
+	margin:auto !important;
+}
+
+.expected-input {
+	padding: 10px;
+    	background: #DDDDDD;
+	margin-top: 50px;
+}
+
+.list-group-item > img {
+	width: 50%;
+	height: auto;
+	margin-left: 25%;
+}
+
+.programInput > span:hover {
+	background-color: lightgrey;
+}
+
+.keyword {
+	color: #31b0d5;
+}
+
+.action-name {
+	color: red;
+}
+
+.status {
+	color: darkseagreen;
+}
+
+.prev-seqrules:after {
+	content: "\A";
+	white-space: pre;
+}
+
+.prev-seqrules + span {
+	margin-left: 10px;
+}
+
+.end-of-block:before {
+	content: "\A";
+	white-space: pre;
+}
+
+.deleted-elements {
+	font-style: italic;
+	text-decoration: line-through;
+}
+
+.programInput > .popover .popover-content {
+	max-height: 200px;
+	overflow-y: scroll;
+}
+
+.programInput > .popover button {
+	width: 100%;
+	margin: auto;
+	margin-bottom: 5px;
+}
+
+.programInput > .popover button.valid-value-popover-button {
+	margin-top: 5px;
+}
+
+.programInput > .popover button.delete-popover-button {
+	margin-top: 10px;
+}
+
+.led {
+	width: 27px; height:27px; 
+	margin-right: 10px;
+	border: 1px solid #999999; border-radius: 20px;
+}
+
+.led-default{
+    background: #999999;
+}
+
+.led-red{
+    background: #FF0000;
+}
+
+.led-green{
+    background: #00FF00;
+}
+
+::-webkit-scrollbar {
+  width: 8px; 
+  background-color: rgba(0,0,0,0);
+  -webkit-border-radius: 100px;
+}
+
+::-webkit-scrollbar:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+ 
+::-webkit-scrollbar-thumb:vertical {
+  background: rgba(0,0,0,0.05);
+  -webkit-border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:vertical:active {
+  background: rgba(0,0,0,0.61); /* Some darker color when you click it */
+  -webkit-border-radius: 100px;
+}
+

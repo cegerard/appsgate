@@ -13,7 +13,6 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;

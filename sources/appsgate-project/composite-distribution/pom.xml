@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>AppsGate</artifactId>
+			<artifactId>EHMIProxyImpl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -29,7 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>RouterApAM</artifactId>
+			<artifactId>CHMIProxyImpl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 <!-- 		<dependency> -->

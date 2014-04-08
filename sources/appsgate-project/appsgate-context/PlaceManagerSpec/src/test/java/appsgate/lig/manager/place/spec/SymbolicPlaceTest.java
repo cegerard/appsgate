@@ -178,8 +178,18 @@ public class SymbolicPlaceTest {
 		coreObject.add("0903964");
 		coreObject.add("0130638");
 		
-		rootPlace.setCoreObjects(coreObject);
-		assertSame(coreObject, rootPlace.getCoreObjects());
+		rootPlace.setDevices(coreObject);
+		assertSame(coreObject, rootPlace.getDevices());
+	}
+	
+	@Test
+	public void testSetGetCoreServices() {
+		ArrayList<String> coreService = new ArrayList<String>();
+		coreService.add("0903964");
+		coreService.add("0130638");
+		
+		rootPlace.setServices(coreService);
+		assertSame(coreService, rootPlace.getServices());
 	}
 
 	@Test
@@ -187,29 +197,59 @@ public class SymbolicPlaceTest {
 		ArrayList<String> coreObject = new ArrayList<String>();
 		coreObject.add("0903964");
 		coreObject.add("0130638");
-		rootPlace.setCoreObjects(coreObject);
-		assertNotEquals(0, rootPlace.getCoreObjects().size());
+		rootPlace.setDevices(coreObject);
+		assertNotEquals(0, rootPlace.getDevices().size());
 		
-		rootPlace.clearCoreObjects();
-		assertEquals(0, rootPlace.getCoreObjects().size());
+		rootPlace.clearDevices();
+		assertEquals(0, rootPlace.getDevices().size());
+	}
+	
+	@Test
+	public void testClearCoreServices() {
+		ArrayList<String> coreService = new ArrayList<String>();
+		coreService.add("0903964");
+		coreService.add("0130638");
+		rootPlace.setServices(coreService);
+		assertNotEquals(0, rootPlace.getServices().size());
+		
+		rootPlace.clearServices();
+		assertEquals(0, rootPlace.getServices().size());
 	}
 
 	@Test
 	public void testAddcoreObject() {
-		assertTrue(rootPlace.addCoreObject("0903964"));
-		assertTrue(rootPlace.addCoreObject("0130638"));
+		assertTrue(rootPlace.addDevice("0903964"));
+		assertTrue(rootPlace.addDevice("0130638"));
+	}
+	
+	@Test
+	public void testAddcoreService() {
+		assertTrue(rootPlace.addService("0903964"));
+		assertTrue(rootPlace.addService("0130638"));
 	}
 
 	@Test
 	public void testRemoveCoreObject() {
-		rootPlace.addCoreObject("0130638");
-		assertTrue(rootPlace.removeCoreObject("0130638"));
+		rootPlace.addDevice("0130638");
+		assertTrue(rootPlace.removeDevice("0130638"));
+	}
+	
+	@Test
+	public void testRemoveCoreService() {
+		rootPlace.addService("0130638");
+		assertTrue(rootPlace.removeService("0130638"));
 	}
 
 	@Test
 	public void testHasCoreObject() {
-		rootPlace.addCoreObject("0903964");
-		assertTrue(rootPlace.hasCoreObject("0903964"));
+		rootPlace.addDevice("0903964");
+		assertTrue(rootPlace.hasDevice("0903964"));
+	}
+	
+	@Test
+	public void testHasCoreService() {
+		rootPlace.addService("0903964");
+		assertTrue(rootPlace.hasService("0903964"));
 	}
 
 	@Test

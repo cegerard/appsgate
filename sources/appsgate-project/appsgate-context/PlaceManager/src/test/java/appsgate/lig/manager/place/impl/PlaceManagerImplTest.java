@@ -82,6 +82,12 @@ public class PlaceManagerImplTest {
 		String placeId = placeManager.addPlace("NewRoom2", rootId);
 		assertTrue(placeManager.moveObject("42", "-1", placeId));
 	}
+	
+	@Test
+	public void testMoveService() {
+		String placeId = placeManager.addPlace("NewRoom2", rootId);
+		assertTrue(placeManager.moveService("42", "-1", placeId));
+	}
 
 	@Test
 	public void testRenamePlace() {
@@ -202,10 +208,10 @@ public class PlaceManagerImplTest {
 	public void testRemoveAllCoreObject() {
 		placeManager.moveObject("00001", "-1", rootId);
 		placeManager.moveObject("00002", "-1", rootId);
-		assertEquals(2, placeManager.getSymbolicPlace(rootId).getCoreObjects().size());
+		assertEquals(2, placeManager.getSymbolicPlace(rootId).getDevices().size());
 		
 		placeManager.removeAllCoreObject(rootId);
-		assertEquals(0, placeManager.getSymbolicPlace(rootId).getCoreObjects().size());
+		assertEquals(0, placeManager.getSymbolicPlace(rootId).getDevices().size());
 	}
 
 	@Test

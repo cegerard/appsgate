@@ -15,7 +15,7 @@
 	<description>This sub-project contain all maven project use to test automatically and validate other Appsgate module.</description>
 
 	<modules>
-	    <module>appsgate-pax-test</module>
+<!-- 	    <module>appsgate-pax-test</module> -->
 	    
 <!-- 		<module>ExecuteCommandTest</module> -->
 <!-- 		<module>DeviceNameTableTester</module> -->

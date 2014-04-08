@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
@@ -21,7 +22,6 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
-import appsgate.lig.router.spec.RouterApAMSpec;
 //import appsgate.lig.manager.context.spec.ContextManagerSpec;
 //import appsgate.lig.manager.space.spec.subSpace.Space;
 //import appsgate.lig.manager.space.spec.subSpace.Space.TYPE;
@@ -81,7 +81,7 @@ public class ContextProxyImpl implements ContextProxySpec {
     /**
  	* Field to handle the router service interface
  	*/
-    private RouterApAMSpec router;
+    private CHMIProxySpec chmiProxy;
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -182,14 +182,14 @@ public class ContextProxyImpl implements ContextProxySpec {
     		for (String placeId : spaces) {
     			SymbolicPlace place = placeManager.getSymbolicPlace(placeId);
                         if (place != null) {
-    			coreObjectInPlace.addAll(place.getCoreObjects());
+    			coreObjectInPlace.addAll(place.getDevices());
                         } else {
                             logger.warn("No such place found: {}",placeId);
                         }
     		}
     	} else {
     		for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
-    			coreObjectInPlace.addAll(symbolicPlace.getCoreObjects());
+    			coreObjectInPlace.addAll(symbolicPlace.getDevices());
     		}
     	}
 
@@ -198,14 +198,14 @@ public class ContextProxyImpl implements ContextProxySpec {
 		try {
 			if (!typeList.isEmpty()) {
 				for (String type : typeList) {
-					JSONArray devicesOfType = router.getDevices(type);
+					JSONArray devicesOfType = chmiProxy.getDevices(type);
 					int size = devicesOfType.length();
 					for (int i = 0; i < size; i++) {
 						coreObjectOfType.add(devicesOfType.getJSONObject(i).getString("id"));
 					}
 				}
 			} else {
-				JSONArray allDevices = router.getDevices();
+				JSONArray allDevices = chmiProxy.getDevices();
 				int size = allDevices.length();
 				for (int i = 0; i < size; i++) {
 					coreObjectOfType.add(allDevices.getJSONObject(i).getString("id"));
@@ -279,7 +279,7 @@ public class ContextProxyImpl implements ContextProxySpec {
 
     @Override
     public StateDescription getEventsFromState(String objectId, String stateName) {
-    	JSONObject deviceDetails = router.getDevice(objectId);
+    	JSONObject deviceDetails = chmiProxy.getDevice(objectId);
     	StateDescription stateDescription = null;
     	try {
     		JSONObject grammar = devicePropertiesManager.getGrammarFromType(deviceDetails.getString("type"));

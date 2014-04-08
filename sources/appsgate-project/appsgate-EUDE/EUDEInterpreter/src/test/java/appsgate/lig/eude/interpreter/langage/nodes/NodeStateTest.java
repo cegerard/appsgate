@@ -5,10 +5,11 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import appsgate.lig.router.spec.GenericCommand;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jmock.Expectations;
