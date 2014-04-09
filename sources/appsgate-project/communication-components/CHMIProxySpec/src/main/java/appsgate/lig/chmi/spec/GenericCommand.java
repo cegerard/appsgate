@@ -35,6 +35,7 @@ public class GenericCommand implements Runnable {
 	@SuppressWarnings("rawtypes")
 	private ArrayList<Class> paramType;
 	private Object obj;
+	private String objId;
 	private String methodName;
 	private String callId;
 	private int clientId;
@@ -44,12 +45,13 @@ public class GenericCommand implements Runnable {
 
 	@SuppressWarnings("rawtypes")
 	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
-			Object obj, String methodName, String callId, int clientId,
+			Object obj, String objId, String methodName, String callId, int clientId,
 			SendWebsocketsService sendToClientService) {
 
 		this.args = args;
 		this.paramType = paramType;
 		this.obj = obj;
+		this.objId = objId;
 		this.methodName = methodName;
 		this.callId = callId;
 		this.clientId = clientId;
@@ -118,6 +120,7 @@ public class GenericCommand implements Runnable {
 				if(sendToClientService != null) {
 					JSONObject msg = new JSONObject();
 					msg.put("value", returnObject.toString());
+					msg.put("objectId", objId);
 					msg.put("callId", callId);
 					sendToClientService.send(clientId, msg.toString());
 				}

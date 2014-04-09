@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
+import appsgate.lig.chmi.exceptions.EHMIDependencyException;
+import appsgate.lig.chmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.chmi.impl.listeners.RouterCommandListener;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
@@ -90,21 +92,37 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         try {
             //notify that a new device, service or simulated instance appeared
             CoreObjectSpec newObj = (CoreObjectSpec) inst.getServiceObject();
+            String newMsg = "";
             if (newObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
-                sendToClientService.send("newDevice", getObjectDescription(newObj, ""));
-                ehmiProxy.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
+            	newMsg = "newDevice";
+            	try{
+            		ehmiProxy.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
+            	}catch(EHMIDependencyException comException) {
+            		logger.warn("Resolution failled for ehmi dependency, no grammar will be added.");
+            	}
             } else if (newObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
-                sendToClientService.send("newService", getObjectDescription(newObj, ""));
-                ehmiProxy.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
+            	newMsg = "newService";
+            	try{
+            		ehmiProxy.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
+            	}catch(EHMIDependencyException comException) {
+            		logger.warn("Resolution failled for send to client service dependency, no message will be sent.");
+            	}
             } else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
-                sendToClientService.send("newSimulatedDevice", getObjectDescription(newObj, ""));
+            	newMsg = "newSimulatedDevice";
                 //TODO manage the simulated device
                 logger.debug("Simulated device core type not supported yet for EHMI");
             } else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
-                sendToClientService.send("newSimulatedService", getObjectDescription(newObj, ""));
+            	newMsg = "newSimulatedService";
                 //TODO manage the simulated service
-                logger.error("Simulated service core type not supported yet for EHMI");
+                logger.debug("Simulated service core type not supported yet for EHMI");
             }
+            
+            try{
+            	sendToClientService.send(newMsg, getObjectDescription(newObj, ""));
+        	}catch(ExternalComDependencyException comException) {
+        		logger.warn("Resolution failled for send to client service dependency, no message will be sent.");
+        	}
+            
         } catch (Exception ex) {
             logger.error("If getCoreType method error trace appeare below it is because the service or the device doesn't implement all methode in"
                     + "the CoreObjectSpec interface but this error doesn't impact the EHMI.");
@@ -129,17 +147,25 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
 
         synchronized(this){
+        	String newMsg ="";
         	if (rmObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
-        		sendToClientService.send("removeDevice", obj);
+        		newMsg ="removeDevice";
         	} else if (rmObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
-        		sendToClientService.send("removeService", obj);
+        		newMsg ="removeService";
         	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
-        		sendToClientService.send("removeSimulatedDevice", obj);
+        		newMsg ="removeSimulatedDevice";
         		//TODO manage the simulated device
         	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
-        		sendToClientService.send("removeSimulatedService", obj);
+        		newMsg ="removeSimulatedService";
         		//TODO manage the simulated service
         	}
+        	
+            try{
+            	sendToClientService.send(newMsg, obj);
+        	}catch(ExternalComDependencyException comException) {
+        		logger.warn("Resolution failled for send to client service dependency, no message will be sent.");
+        	}
+        	
         }
     }
 
@@ -190,7 +216,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         } else {
             obj = getObjectRefFromID(objectId);
         }
-        return new GenericCommand(args, paramType, obj, methodName, callId, clientId, sendToClientService);
+        return new GenericCommand(args, paramType, obj, objectId, methodName, callId, clientId, sendToClientService);
     }
 
     @SuppressWarnings("rawtypes")
@@ -225,7 +251,12 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     public void gotNotification(NotificationMsg notif) {
         logger.debug("Notification message received, " + notif.JSONize());
-        sendToClientService.send(notif.JSONize().toString());
+        
+        try{
+        	sendToClientService.send(notif.JSONize().toString());
+    	}catch(ExternalComDependencyException comException) {
+    		logger.warn("Resolution failled for send to client service dependency, no message will be sent.");
+    	}
     }
 
     /**
