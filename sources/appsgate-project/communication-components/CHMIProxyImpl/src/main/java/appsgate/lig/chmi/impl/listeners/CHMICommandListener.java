@@ -22,13 +22,13 @@ import appsgate.lig.chmi.impl.CHMIProxyImpl;
  * @version 1.0.0
  * 
  */
-public class RouterCommandListener implements CommandListener {
+public class CHMICommandListener implements CommandListener {
 
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory
-			.getLogger(RouterCommandListener.class);
+			.getLogger(CHMICommandListener.class);
 	
 	/**
 	 * Service that launch method call in a dedicated thread pool
@@ -46,7 +46,7 @@ public class RouterCommandListener implements CommandListener {
 	 * @param router
 	 *            , the parent of this listener
 	 */
-	public RouterCommandListener(CHMIProxyImpl router) {
+	public CHMICommandListener(CHMIProxyImpl router) {
 		this.router = router;
 		executorService = Executors.newScheduledThreadPool(10);
 	}
@@ -66,7 +66,7 @@ public class RouterCommandListener implements CommandListener {
 //				targetTypeTemp = obj.getString("targetType");
 //			}catch (JSONException e1) {
 //				targetTypeTemp = "999"; //to reach the default entry in the following switch case
-//										//that correspond to call Appsgate main component
+//										//that correspond to call EHMI component
 //			}
 //
 //			int targetType = Integer.parseInt(targetTypeTemp);
@@ -100,7 +100,7 @@ public class RouterCommandListener implements CommandListener {
 				} 
 
 			} else {
-				logger.debug("AppsGate main level message");
+				logger.debug("Application domain level message");
 				try {
 					String method = obj.getString("method");
 					JSONArray args = obj.getJSONArray("args");
@@ -118,7 +118,7 @@ public class RouterCommandListener implements CommandListener {
 					} else {
 						logger.debug("no return method call");
 					}
-					executorService.execute(router.executeCommand(clientId, "main", method, arguments, types, callId));
+					executorService.execute(router.executeCommand(clientId, "ehmi", method, arguments, types, callId));
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 
