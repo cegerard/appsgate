@@ -460,20 +460,9 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     protected JSONArray getDevicesInSpaces(JSONArray what, JSONArray where)
             throws SpokExecutionException {
-        ArrayList<String> WHAT = new ArrayList<String>();
-        for (int i = 0; i < what.length(); i++) {
-            JSONObject o = what.optJSONObject(i);
-            if (o != null) {
-                WHAT.add(o.optString("value"));
-            }
-        }
-        ArrayList<String> WHERE = new ArrayList<String>();
-        for (int i = 0; i < where.length(); i++) {
-            JSONObject o = where.optJSONObject(i);
-            if (o != null) {
-                WHERE.add(o.optString("value"));
-            }
-        }
+        ArrayList<String> WHAT = getStringList(what);
+
+        ArrayList<String> WHERE = getStringList(where);
         ArrayList<String> devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
         JSONArray retArray = new JSONArray();
         for (String name : devicesInSpaces) {
@@ -481,6 +470,37 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             retArray.put(n.getJSONDescription());
         }
         return retArray;
+    }
+
+    /**
+     * return the list of string value corresponding to a list of JSON description of nodes.
+     * @param what the JSONArray containing 
+     * @return an array list of string
+     * @throws SpokExecutionException 
+     */
+    private ArrayList<String> getStringList(JSONArray what)
+            throws SpokExecutionException {
+        ArrayList<String> WHAT = new ArrayList<String>();
+
+        for (int i = 0; i < what.length(); i++) {
+            JSONObject o = what.optJSONObject(i);
+            if (o != null) {
+                try {
+                    Node n = Builder.buildFromJSON(o, this);
+                    if (n instanceof INodeFunction) {
+                        WHAT.add(((INodeFunction) n).getResult().getValue());
+                    } else {
+                        LOGGER.debug("Found an unexpected node: " + n);
+                        throw new SpokExecutionException(("Unable to parse object in selector"));
+                    }
+                } catch (SpokTypeException ex) {
+                    LOGGER.error("Unable to parse the what branch of selector");
+                    LOGGER.debug("Unable to parse: " + o.toString());
+                    throw new SpokExecutionException(("Unable to parse object in selector"));
+                }
+            }
+        }
+        return WHAT;
     }
 
     /**
