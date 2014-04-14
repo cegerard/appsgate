@@ -148,10 +148,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			final Dictionary<String, String> initParams = new Hashtable<String, String>();
 			initParams.put("from", "HttpService");
 			try {
-				httpService.registerResources("/appsgate", "/WEB", httpContext);
-				logger.debug("Registered URL : "
-						+ httpContext.getResource("/WEB"));
-				logger.info("AppsGate mains HTML pages registered.");
+				httpService.registerResources("/spok", "/WEB/client", httpContext);
+				logger.debug("Registered URL : "+ httpContext.getResource("/WEB/client"));
+				logger.info("SPOK HTML pages registered.");
 			} catch (NamespaceException ex) {
 				logger.error("NameSpace exception");
 			}
@@ -163,7 +162,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public void deleteInst() {
 		logger.info("EHMI is stopping");
-		httpService.unregister("/appsgate");
+		httpService.unregister("/spok");
 	}
 
 	@Override
