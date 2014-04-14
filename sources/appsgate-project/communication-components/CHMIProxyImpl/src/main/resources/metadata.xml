@@ -20,6 +20,8 @@
 			<interface field="sendToClientService" />
 		</relation>
 
+		<ipojo:requires field="httpService"  />
+
 	</implementation>
 
 	<!-- <apam-instance name="AppsGateRouterInst" implementation="AppsGateRouterImpl"> -->

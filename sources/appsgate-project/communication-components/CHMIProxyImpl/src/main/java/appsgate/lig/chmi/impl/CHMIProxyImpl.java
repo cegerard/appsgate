@@ -1,12 +1,17 @@
 package appsgate.lig.chmi.impl;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +23,6 @@ import appsgate.lig.chmi.impl.listeners.CHMICommandListener;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.core.object.messages.NotificationMsg;
-import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
@@ -61,13 +65,35 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * The EHMI component to call for every application domain request
      */
     private EHMIProxySpec ehmiProxy;
+    
+    /**
+	 * HTTP service dependency resolve by iPojo. Allow to register HTML
+	 * resources to the Felix HTTP server
+	 */
+	private HttpService httpService;
 
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-        logger.debug("The CHMI proxy component has been initialized");
+
         commandListener = new CHMICommandListener(this);
+        
+		if (httpService != null) {
+			final HttpContext httpContext = httpService.createDefaultHttpContext();
+			final Dictionary<String, String> initParams = new Hashtable<String, String>();
+			initParams.put("from", "HttpService");
+			try {
+				httpService.registerResources("/chmi", "/WEB", httpContext);
+				logger.debug("Registered URL : "+httpContext.getResource("/WEB"));
+				logger.info("CHMI web ressources registered.");
+			} catch (NamespaceException ex) {
+				logger.error("NameSpace exception");
+			}
+		}
+        
+        logger.debug("The CHMI proxy component has been initialized");
+        
         try{
         	if (addListenerService.addCommandListener(commandListener)) {
         		logger.info("CHMI command listener deployed.");
@@ -84,6 +110,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     public void deleteInst() {
         logger.debug("The CHMI proxy component has been stopped");
+    	httpService.unregister("/chmi");
     }
 
     /**

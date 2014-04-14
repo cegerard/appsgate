@@ -1,0 +1,76 @@
+<div class="panorama-sections" id="enocean-sections">
+	<div class="panorama-section">
+		<h2>EnOcean configuration</h2>
+		<div class="tile-column-span-6" id="enocean-conf-tile-list">
+
+            <a class="tile wide text bg-color-blueDark" href="#">
+            	<div class="text" id="enocean-total-sensors">EnOcean Sensors ------ 0</div>
+                <div class="text" id="enocean-temperature-sensors">Temperature sensors -- 0</div>
+                <div class="text" id="enocean-contact-sensors">Contact sensors -------- 0</div>
+                <div class="text" id="enocean-switch-sensors">Switch sensors --------- 0</div>
+                <div class="text" id="enocean-illumination-sensors">Illumination sensors ---- 0</div>
+            </a>
+                  
+         
+            <a class="tile wide text bg-color-blueDark" href="#">
+            	<div class="text" id="enocean-metering-sensors">Metering plug: --------- 0</div>
+                <div class="text" id="enocean-keycard-sensors">Key card sensors ----- 0</div>
+                <div class="text" id="enocean-onoff-sensors">On/Off actuators ------ 0</div>
+                <div class="text"></div>
+                <div class="text" id="enocean-undefined-sensors">Undefined sensors ---- 0</div>
+            </a>
+            
+            <a class="tile app bg-color-green" href="#" onclick="javascript:chmi.getWebSocket().getEnocean().togglePairingMode();">
+            	<div class="image-wrapper">
+                	<span class="icon icon-link"></span>
+                </div>
+                <div class="app-label">Toggle pairing</div>
+            </a>
+            
+			<a class="tile square text tilesquareblock bg-color-red" href="#" id="pairingState-tile">
+				<div class="text-big" id="pairingState-value">Off</div>
+				<div class="text">state</div>
+			</a> 
+            
+ 			<a class="tile wide text bg-color-greenDark" href="#">
+            	<div class="text-header">dongle infos</div>
+                <div class="text">TCM Id: </div>
+                <div class="text">TCM UID:</div>
+                <div class="text"></div>
+                <div class="text">Running time (sec):</div>
+            </a>
+            
+            <a class="tile wide text bg-color-greenDark" href="#">
+            	<div class="text-header">EnOcean RX</div>
+                <div class="text">Successful telegrams: </div>
+                <div class="text">Illegal telegrams:</div>
+                <div class="text">Failure ratio: </div>
+                <div class="text">Average throughput:</div>
+            </a>  
+            
+            <a class="tile wide text bg-color-greenDark" href="#">
+            	<div class="text-header">EnOcean TX</div>
+                <div class="text">Successfull: </div>
+                <div class="text">Failures:</div>
+                <div class="text">Failure ratio:</div>
+                <div class="text">Average throughput:</div>
+            </a>         
+  
+		</div> 
+	</div>
+	
+	<div class="panorama-section">
+		<h2>EnOcean devices</h2>
+		<div class="tile-column-span-2" id="devices-tile-list">
+			<h3 id="no-devices-detected-tag">no devices paired</h3>
+		</div> 
+	</div>
+	
+	<div class="panorama-section">
+		<h2>Undefined devices</h2>
+		<div class="tile-column-span-2" id="undefined-devices-tile-list">
+			<h3 id="no-undefined-devices-detected-tag">no undefined devices</h3>
+		</div> 
+	</div>
+	
+</div>
