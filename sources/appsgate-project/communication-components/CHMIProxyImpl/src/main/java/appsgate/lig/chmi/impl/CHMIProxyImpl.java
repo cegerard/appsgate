@@ -122,7 +122,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             }
             
             try{
-            	sendToClientService.send(newMsg, getObjectDescription(newObj, ""));
+            	sendToClientService.send(newMsg, getObjectDescription(newObj));
         	}catch(ExternalComDependencyException comException) {
         		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
         	}
@@ -283,7 +283,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
             while (devices.hasNext()) {
                 CoreObjectSpec adev = devices.next();
-                jsonDeviceList.put(getObjectDescription(adev, ""));
+                jsonDeviceList.put(getObjectDescription(adev));
             }
 
             return jsonDeviceList;
@@ -301,7 +301,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
         if (obj != null) {
             CoreObjectSpec objSpec = (CoreObjectSpec) obj;
-            return getObjectDescription(objSpec, "");
+            return getObjectDescription(objSpec);
         }
 
         return new JSONObject();
@@ -317,7 +317,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             while (devices.hasNext()) {
                 CoreObjectSpec adev = devices.next();
                 if (type.contentEquals(adev.getUserType())) {
-                    jsonDeviceList.put(getObjectDescription(adev, ""));
+                    jsonDeviceList.put(getObjectDescription(adev));
                 }
             }
 
@@ -334,10 +334,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * information associate to this object for a specified user
      *
      * @param obj the object from which to get the description
-     * @param user the user from who to get the context
      * @return the complete contextual description of an object
      */
-    private JSONObject getObjectDescription(CoreObjectSpec obj, String user) {
+    private JSONObject getObjectDescription(CoreObjectSpec obj) {
         JSONObject JSONDescription = null;
         try {
             // Get object auto description
@@ -345,7 +344,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             
             //Add context description for this abject
             try{
-				JSONDescription.put("name", ehmiProxy.getUserObjectName(obj.getAbstractObjectId(), user));
+				JSONDescription.put("name", ehmiProxy.getUserObjectName(obj.getAbstractObjectId(), ""));
 				JSONDescription.put("placeId", ehmiProxy.getCoreObjectPlaceId(obj.getAbstractObjectId()));
     		}catch(EHMIDependencyException ehmiException) {
     			logger.debug("No EHMI found and no contextual information added in the description");
