@@ -45,12 +45,13 @@ public abstract class NodeTest {
      */
     public NodeTest() throws JSONException {
         this.ruleJSON = new JSONObject();
-
+        this.ruleJSON.put("iid", "test");
         this.mediator = context.mock(EUDEInterpreter.class);
         programNode = new NodeProgram(mediator, null);
         this.emptySeqRules = new JSONObject();
         emptySeqRules.put("type", "seqRules");
         emptySeqRules.put("rules", new JSONArray());
+        emptySeqRules.put("iid", "empty");
     }
 
 

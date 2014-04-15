@@ -54,8 +54,8 @@ public class NodeState extends Node {
      *
      * @param p the parent node
      */
-    private NodeState(Node p) {
-        super(p);
+    private NodeState(Node p, String id) {
+        super(p, id);
     }
 
     /**
@@ -66,7 +66,7 @@ public class NodeState extends Node {
      * @throws SpokNodeException
      */
     public NodeState(JSONObject o, Node parent) throws SpokNodeException {
-        super(parent);
+        super(parent, o.optString("iid"));
         try {
             objectNode = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
             if (objectNode instanceof INodeFunction) {
@@ -127,7 +127,7 @@ public class NodeState extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeState o = new NodeState(parent);
+        NodeState o = new NodeState(parent, getIID());
         o.objectNode = objectNode.copy(o);
         o.stateName = stateName;
         return o;
@@ -151,7 +151,7 @@ public class NodeState extends Node {
 
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", "state");
             o.put("object", objectNode.getJSONDescription());

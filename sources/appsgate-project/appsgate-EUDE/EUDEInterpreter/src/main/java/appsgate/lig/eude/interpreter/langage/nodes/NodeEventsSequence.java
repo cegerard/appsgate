@@ -23,7 +23,7 @@ public class NodeEventsSequence extends NodeEvents {
     /**
      * LOGGER
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeEventsAnd.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeEventsSequence.class);
     
     /**
      * 
@@ -40,8 +40,8 @@ public class NodeEventsSequence extends NodeEvents {
      *
      * @param parent
      */
-    private NodeEventsSequence(Node parent) {
-        super(parent);
+    private NodeEventsSequence(Node parent, String iid) {
+        super(parent, iid);
     }
 
     /**
@@ -76,7 +76,7 @@ public class NodeEventsSequence extends NodeEvents {
 
     @Override
     protected Node copy(Node parent) {
-        NodeEventsSequence ret = new NodeEventsSequence(parent);
+        NodeEventsSequence ret = new NodeEventsSequence(parent, getIID());
         return commonCopy(ret);
     }
 

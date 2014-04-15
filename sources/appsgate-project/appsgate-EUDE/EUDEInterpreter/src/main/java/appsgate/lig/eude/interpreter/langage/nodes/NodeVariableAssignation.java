@@ -38,8 +38,8 @@ public class NodeVariableAssignation extends Node implements INodeFunction {
      *
      * @param p
      */
-    private NodeVariableAssignation(Node p) {
-        super(p);
+    private NodeVariableAssignation(Node p, String id) {
+        super(p, id);
     }
 
     /**
@@ -50,7 +50,7 @@ public class NodeVariableAssignation extends Node implements INodeFunction {
      * @throws SpokNodeException
      */
     public NodeVariableAssignation(JSONObject obj, Node p) throws SpokNodeException {
-        super(p);
+        super(p, obj.optString("iid"));
         if (obj.has("value")) {
             try {
                 value = Builder.buildFromJSON(obj.optJSONObject("value"), this);
@@ -68,7 +68,7 @@ public class NodeVariableAssignation extends Node implements INodeFunction {
 
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", "assignation");
             if (value != null) {
@@ -95,7 +95,7 @@ public class NodeVariableAssignation extends Node implements INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeVariableAssignation ret = new NodeVariableAssignation(parent);
+        NodeVariableAssignation ret = new NodeVariableAssignation(parent, getIID());
         ret.name = name;
         if (value != null) {
             ret.value = value.copy(ret);

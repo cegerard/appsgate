@@ -38,8 +38,8 @@ public class NodeEventsAnd extends NodeEvents {
      *
      * @param parent
      */
-    private NodeEventsAnd(Node parent) {
-        super(parent);
+    private NodeEventsAnd(Node parent, String iid) {
+        super(parent, iid);
     }
 
     /**
@@ -73,7 +73,7 @@ public class NodeEventsAnd extends NodeEvents {
 
     @Override
     protected Node copy(Node parent) {
-        NodeEventsAnd ret = new NodeEventsAnd(parent);
+        NodeEventsAnd ret = new NodeEventsAnd(parent, getIID());
         return commonCopy(ret);
     }
 

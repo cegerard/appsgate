@@ -74,12 +74,19 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     private boolean started = false;
 
     /**
+     *
+     */
+    private final String iid;
+
+    /**
      * Default constructor
      *
-     * @param p
+     * @param p the parent node
+     * @param id the iid of the node in the program
      */
-    public Node(Node p) {
+    public Node(Node p, String id) {
         this.parent = p;
+        this.iid = id;
     }
 
     /**
@@ -91,6 +98,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     public Node getParent() {
         return parent;
+    }
+
+    public final String getIID() {
+        return this.iid;
     }
 
     /**
@@ -133,6 +144,20 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             StartEventListener l = startEventListeners.poll();
             l.startEventFired(e);
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public JSONObject getJSONDescription() {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("iid", this.getIID());
+        } catch (JSONException ex) {
+        }
+        return o;
     }
 
     /**
@@ -473,10 +498,12 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     }
 
     /**
-     * return the list of string value corresponding to a list of JSON description of nodes.
-     * @param what the JSONArray containing 
+     * return the list of string value corresponding to a list of JSON
+     * description of nodes.
+     *
+     * @param what the JSONArray containing
      * @return an array list of string
-     * @throws SpokExecutionException 
+     * @throws SpokExecutionException
      */
     private ArrayList<String> getStringList(JSONArray what)
             throws SpokExecutionException {

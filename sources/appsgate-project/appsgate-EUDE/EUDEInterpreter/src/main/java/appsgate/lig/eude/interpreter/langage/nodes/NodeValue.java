@@ -11,8 +11,6 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,8 +48,8 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
      *
      * @param p
      */
-    private NodeValue(Node p) {
-        super(p);
+    private NodeValue(Node p, String id) {
+        super(p, id);
     }
 
     /**
@@ -61,7 +59,7 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
      * @throws SpokNodeException
      */
     public NodeValue(JSONObject o, Node parent) throws SpokNodeException {
-        super(parent);
+        super(parent, o.optString("iid"));
         type = TYPE.valueOf(getJSONString(o, "type").toUpperCase());
         switch (type) {
             case LIST:
@@ -81,7 +79,7 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
      * @param parent
      */
     public NodeValue(String t, String v, Node parent) {
-        super(parent);
+        super(parent, null);
         this.type = TYPE.valueOf(t.toUpperCase());
         this.value = v;
     }
@@ -118,7 +116,7 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeValue ret = new NodeValue(parent);
+        NodeValue ret = new NodeValue(parent, getIID());
         ret.type = this.type;
         ret.value = this.value;
         try {
@@ -137,7 +135,7 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
 
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", getType());
             switch (type) {

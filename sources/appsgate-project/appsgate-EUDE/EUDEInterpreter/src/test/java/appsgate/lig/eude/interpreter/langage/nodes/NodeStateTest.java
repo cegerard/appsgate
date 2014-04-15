@@ -10,8 +10,6 @@ import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
 import static org.jmock.Expectations.returnValue;
@@ -35,6 +33,7 @@ public class NodeStateTest extends NodeTest {
         final JSONObject events = new JSONObject();
         JSONObject e = new JSONObject();
         e.put("name", "event");
+        e.put("name", "event");
         events.put("endEvent", e);
         events.put("startEvent", e);
 
@@ -55,6 +54,7 @@ public class NodeStateTest extends NodeTest {
         JSONObject o = new JSONObject();
         o.put("type", "device");
         o.put("value", "test");
+        o.put("iid", "test");
         ruleJSON.put("type", "state");
         ruleJSON.put("object", o);
         ruleJSON.put("name", "isOn");

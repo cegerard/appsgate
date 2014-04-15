@@ -2,7 +2,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.proxy.spec.ContextProxySpec;
-import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManagerMock;
 import org.jmock.Expectations;
@@ -35,7 +34,7 @@ public class NodeSelectStateTest extends NodeTest {
             }
         });
         ruleJSON.put("type", "selectState");
-        ruleJSON.put("devices", new JSONObject("{'type':'device', 'value':'test'}"));
+        ruleJSON.put("devices", new JSONObject("{'type':'device', 'value':'test', 'iid' : test'}"));
         ruleJSON.put("state", "test");
         ruleJSON.put("value", "true");
 

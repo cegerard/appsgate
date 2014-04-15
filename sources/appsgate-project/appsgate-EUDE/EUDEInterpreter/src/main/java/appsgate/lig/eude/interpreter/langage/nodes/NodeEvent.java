@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +46,8 @@ public class NodeEvent extends Node implements INodeEvent {
      *
      * @param parent
      */
-    private NodeEvent(Node parent) {
-        super(parent);
+    private NodeEvent(Node parent, String iid) {
+        super(parent, iid);
     }
 
     /**
@@ -60,7 +59,7 @@ public class NodeEvent extends Node implements INodeEvent {
      * @param parent
      */
     public NodeEvent(String s_type, String s_id, String name, String value, Node parent) {
-        super(parent);
+        super(parent, null);
         Node s = new NodeValue(s_type, s_id, this);
         source = s;
         eventName = name;
@@ -75,7 +74,7 @@ public class NodeEvent extends Node implements INodeEvent {
      */
     public NodeEvent(JSONObject eventJSON, Node parent)
             throws SpokNodeException {
-        super(parent);
+        super(parent, eventJSON.optString("iid"));
         source = getDevice(eventJSON, "source");
         eventName = getJSONString(eventJSON, "eventName");
         eventValue = getJSONString(eventJSON, "eventValue");
@@ -165,7 +164,7 @@ public class NodeEvent extends Node implements INodeEvent {
 
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", "event");
             o.put("source", source.getJSONDescription());
@@ -216,7 +215,7 @@ public class NodeEvent extends Node implements INodeEvent {
 
     @Override
     protected Node copy(Node parent) {
-        NodeEvent ret = new NodeEvent(parent);
+        NodeEvent ret = new NodeEvent(parent, getIID());
         ret.eventName = eventName;
         ret.eventValue = eventValue;
         ret.source = source.copy(parent);

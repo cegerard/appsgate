@@ -31,8 +31,8 @@ public class NodeSelect extends Node implements INodeList, INodeFunction {
      *
      * @param p
      */
-    private NodeSelect(Node p) {
-        super(p);
+    private NodeSelect(Node p, String id) {
+        super(p, id);
     }
 
     /**
@@ -42,7 +42,7 @@ public class NodeSelect extends Node implements INodeList, INodeFunction {
      * @param parent
      */
     public NodeSelect(JSONObject o, Node parent) {
-        super(parent);
+        super(parent, o.optString("iid"));
         what = o.optJSONArray("what");
         if (what == null) {
             what = new JSONArray();
@@ -70,7 +70,7 @@ public class NodeSelect extends Node implements INodeList, INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeSelect ret = new NodeSelect(parent);
+        NodeSelect ret = new NodeSelect(parent, getIID());
         try {
             ret.what = new JSONArray(what.toString());
             ret.where = new JSONArray(where.toString());
@@ -111,7 +111,7 @@ public class NodeSelect extends Node implements INodeList, INodeFunction {
 
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", "select");
             o.put("what", what);

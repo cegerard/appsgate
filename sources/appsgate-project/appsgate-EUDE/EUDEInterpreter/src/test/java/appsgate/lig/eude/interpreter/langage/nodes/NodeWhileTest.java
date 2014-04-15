@@ -28,6 +28,7 @@ public class NodeWhileTest extends NodeTest {
         final JSONObject events = new JSONObject();
         JSONObject e = new JSONObject();
         e.put("name", "event");
+        e.put("iid", "event");
         events.put("endEvent", e);
         events.put("startEvent", e);
         final GenericCommand cmd = context.mock(GenericCommand.class);
@@ -51,7 +52,7 @@ public class NodeWhileTest extends NodeTest {
         ruleJSON.put("type", "while");
         ruleJSON.put("state", s.getRuleJSON());
         ruleJSON.put("rules", seq.getRuleJSON());
-        ruleJSON.put("rulesThen", "toto");
+        ruleJSON.put("rulesThen", seq.getRuleJSON());
     }
 
     @Before

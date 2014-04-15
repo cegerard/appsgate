@@ -18,7 +18,7 @@ public class NodeWaitTest extends NodeTest {
 
     public NodeWaitTest() throws Exception {
         ruleJSON.put("type", "lists");
-        ruleJSON.put("waitFor", new JSONObject("{'type':'number', 'value':'1'}"));
+        ruleJSON.put("waitFor", new JSONObject("{'type':'number', 'value':'1', 'iid': 'time'}"));
         final ClockProxy appsGate = new ClockProxy(new JSONObject("{'id':12}"));
 
         context.checking(new Expectations() {

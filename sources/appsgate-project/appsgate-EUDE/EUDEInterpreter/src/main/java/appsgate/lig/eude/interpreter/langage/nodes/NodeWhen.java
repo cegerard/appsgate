@@ -48,7 +48,7 @@ public class NodeWhen extends Node implements INodeRule{
      * @throws SpokNodeException
      */
     public NodeWhen(JSONObject ruleWhenJSON, Node parent) throws SpokNodeException {
-        super(parent);
+        super(parent, ruleWhenJSON.optString("iid"));
 
         try {
             
@@ -73,8 +73,8 @@ public class NodeWhen extends Node implements INodeRule{
      *
      * @param parent
      */
-    private NodeWhen(Node parent) {
-        super(parent);
+    private NodeWhen(Node parent, String id) {
+        super(parent, id);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class NodeWhen extends Node implements INodeRule{
 
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", "when");
             o.put("seqRulesThen", seqRules.getJSONDescription());
@@ -141,7 +141,7 @@ public class NodeWhen extends Node implements INodeRule{
 
     @Override
     protected Node copy(Node parent) {
-        NodeWhen ret = new NodeWhen(parent);
+        NodeWhen ret = new NodeWhen(parent, getIID());
         
         ret.seqEventNode =  seqEventNode.copy(ret);
         ret.seqEvent = (INodeEvent) ret.seqEventNode;

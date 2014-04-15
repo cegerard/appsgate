@@ -24,6 +24,7 @@ public class NodeActionTest extends NodeTest {
         JSONObject o = new JSONObject();
         o.put("type", "device");
         o.put("value", "test");
+        o.put("iid", "");
         ruleJSON.put("target", o);
         ruleJSON.put("methodName", "test");
         ruleJSON.put("args", (Collection) null);

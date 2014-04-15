@@ -58,7 +58,7 @@ public class NodeAction extends Node implements INodeFunction {
      */
     public NodeAction(JSONObject ruleJSON, Node parent)
             throws SpokNodeException {
-        super(parent);
+        super(parent, ruleJSON.optString("iid"));
         target = getDevice(ruleJSON, "target");
         methodName = ruleJSON.optString("methodName");
         args = ruleJSON.optJSONArray("args");
@@ -72,10 +72,11 @@ public class NodeAction extends Node implements INodeFunction {
     /**
      * Private constructor to allow copy function
      *
-     * @param parent
+     * @param parent the parent node
+     * @param id the id of the node
      */
-    private NodeAction(Node parent) {
-        super(parent);
+    private NodeAction(Node parent, String id) {
+        super(parent, id);
     }
 
     @Override
@@ -243,7 +244,7 @@ public class NodeAction extends Node implements INodeFunction {
 
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", "action");
             o.put("target", target.getJSONDescription());
@@ -272,7 +273,7 @@ public class NodeAction extends Node implements INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeAction ret = new NodeAction(parent);
+        NodeAction ret = new NodeAction(parent, getIID());
         try {
             ret.args = new JSONArray(args.toString());
         } catch (JSONException ex) {

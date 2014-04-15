@@ -29,6 +29,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
         ruleJSON.put("operator", "==");
         l.put("type", "number");
         l.put("value", 12);
+        l.put("iid", "");
         ruleJSON.put("leftOperand", l);
         ruleJSON.put("rightOperand", l);
 

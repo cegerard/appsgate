@@ -22,8 +22,8 @@ public class NodeListsTest extends NodeTest {
 
     public NodeListsTest() throws JSONException {
         ruleJSON.put("type", "lists");
-        ruleJSON.put("left", new JSONObject("{'type':'device', 'value':'a'}"));
-        ruleJSON.put("right", new JSONObject("{'type':'device', 'value':'b'}"));
+        ruleJSON.put("left", new JSONObject("{'type':'device', 'value':'a', 'iid':'test'}"));
+        ruleJSON.put("right", new JSONObject("{'type':'device', 'value':'b', 'iid':'test'}"));
         ruleJSON.put("operator", "U");
     }
 

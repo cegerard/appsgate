@@ -18,6 +18,7 @@ public class NodeVariableAssignationTest extends NodeTest {
         JSONObject val = new JSONObject();
         val.put("type", "number");
         val.put("value", "0");
+        val.put("iid", "test");
         ruleJSON.put("value", val);
         ruleJSON.put("name", "test");
         ruleJSON.put("type", "assignation");

@@ -29,8 +29,8 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      *
      * @param parent
      */
-    private NodeVariableDefinition(Node parent) {
-        super(parent);
+    private NodeVariableDefinition(Node parent, String id) {
+        super(parent, id);
     }
 
     /**
@@ -40,7 +40,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      * @param parent
      */
     public NodeVariableDefinition(String i, Node parent) {
-        super(parent);
+        super(parent, null);
         this.id = i;
         this.value = null;
     }
@@ -52,7 +52,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      * @throws SpokNodeException
      */
     public NodeVariableDefinition(JSONObject obj, Node parent) throws SpokException {
-        super(parent);
+        super(parent, obj.optString("iid"));
         this.id = obj.optString("var_name");
         checkVariable(obj.optJSONObject("value"));
     }
@@ -65,7 +65,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      * @throws SpokException
      */
     public NodeVariableDefinition(String v_name, JSONObject jsonVariable, Node parent) throws SpokException {
-        super(parent);
+        super(parent, null);
         this.id = v_name;
         checkVariable(jsonVariable);
     }
@@ -167,7 +167,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      */
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", "variableDefinition");
             o.put("var_name", id);
@@ -226,7 +226,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
 
     @Override
     protected Node copy(Node parent) {
-        NodeVariableDefinition node = new NodeVariableDefinition(parent);
+        NodeVariableDefinition node = new NodeVariableDefinition(parent, getIID());
         node.id = this.id;
         Node n = (Node) getNodeValue();
         if (n != null) {

@@ -27,6 +27,7 @@ public class NodeEventTest extends NodeTest {
         JSONObject o = new JSONObject();
         o.put("type", "device");
         o.put("value", "test");
+        o.put("iid", "test");
         ruleJSON.put("type", "event");
         ruleJSON.put("source", o);
         ruleJSON.put("eventName", "test");

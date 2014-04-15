@@ -34,7 +34,7 @@ public class NodeProgramTest extends NodeTest {
                 allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
             }
         });
-
+        ruleJSON = new JSONObject();
         ruleJSON.put("id", "test");
         ruleJSON.put("type", "program");
         ruleJSON.put("runningState", "STOPPED");
@@ -46,6 +46,7 @@ public class NodeProgramTest extends NodeTest {
         JSONObject rules = new JSONObject();
         rules.put("type", "setOfRules");
         rules.put("rules", (Collection) null);
+        rules.put("iid", "set");
         ruleJSON.put("body", rules);
         ruleJSON.put("definitions", (Collection) null);
         ruleJSON.put("userSource", "test");

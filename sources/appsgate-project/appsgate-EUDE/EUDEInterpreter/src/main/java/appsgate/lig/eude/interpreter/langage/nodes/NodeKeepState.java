@@ -2,9 +2,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
-import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -34,14 +32,14 @@ public class NodeKeepState extends Node {
     /**
      * Private constructor to allow copy
      *
-     * @param p
+     * @param p the parent node
      */
-    private NodeKeepState(Node p) {
-        super(p);
+    private NodeKeepState(Node p,String id) {
+        super(p, id);
     }
 
     public NodeKeepState(JSONObject o, Node parent) throws SpokNodeException {
-        super(parent);
+        super(parent, o.optString("iid"));
         try {
             state = new NodeState(o.getJSONObject("state"), this);
         } catch (JSONException ex) {
@@ -82,7 +80,7 @@ public class NodeKeepState extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeKeepState n = new NodeKeepState(parent);
+        NodeKeepState n = new NodeKeepState(parent, getIID());
         n.state = (NodeState) state.copy(n);
         return n;
     }
@@ -101,7 +99,7 @@ public class NodeKeepState extends Node {
 
     @Override
     public JSONObject getJSONDescription() {
-        JSONObject o = new JSONObject();
+        JSONObject o = super.getJSONDescription();
         try {
             o.put("type", "keepState");
             o.put("state", state.getJSONDescription());
