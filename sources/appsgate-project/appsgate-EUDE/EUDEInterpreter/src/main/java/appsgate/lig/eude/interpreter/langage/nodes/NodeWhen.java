@@ -29,8 +29,12 @@ public class NodeWhen extends Node implements INodeRule{
     /**
      * list of events
      */
-    private NodeEvents seqEvent;
+    private INodeEvent seqEvent;
 
+    /**
+     * 
+     */
+    private Node seqEventNode;
     /**
      * The sequence of thing to do once the events are done
      */
@@ -47,7 +51,9 @@ public class NodeWhen extends Node implements INodeRule{
         super(parent);
 
         try {
-            seqEvent = (NodeEvents) Builder.buildFromJSON(getJSONObject(ruleWhenJSON, "events"), this);
+            
+            seqEventNode =  Builder.buildFromJSON(getJSONObject(ruleWhenJSON, "events"), this);
+            seqEvent = (INodeEvent) seqEventNode;
         } catch (SpokTypeException ex) {
             LOGGER.error("Unable to build events");
             throw new SpokNodeException("NodeWhen", "events", ex);
@@ -78,9 +84,9 @@ public class NodeWhen extends Node implements INodeRule{
             fireStartEvent(new StartEvent(this));
             setStarted(true);
         }
-        seqEvent.addEndEventListener(this);
+        seqEventNode.addEndEventListener(this);
 
-        return seqEvent.call();
+        return seqEventNode.call();
     }
 
     @Override
@@ -89,7 +95,7 @@ public class NodeWhen extends Node implements INodeRule{
         LOGGER.debug("NWhen end event: {}", nodeEnded);
         if (!isStopping()) {
             // if all the events are received, launch the sequence of rules
-            if (nodeEnded instanceof NodeEvents) {
+            if (nodeEnded instanceof INodeEvent) {
                 seqRules.addEndEventListener(this);
                 seqRules.call();
             } else {
@@ -103,8 +109,8 @@ public class NodeWhen extends Node implements INodeRule{
 
     @Override
     protected void specificStop() {
-        seqEvent.removeEndEventListener(this);
-        seqEvent.stop();
+        seqEventNode.removeEndEventListener(this);
+        seqEventNode.stop();
         seqRules.removeEndEventListener(this);
         seqRules.stop();
     }
@@ -120,7 +126,7 @@ public class NodeWhen extends Node implements INodeRule{
         try {
             o.put("type", "when");
             o.put("seqRulesThen", seqRules.getJSONDescription());
-            o.put("events", seqEvent.getJSONDescription());
+            o.put("events", seqEventNode.getJSONDescription());
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
             // only if the key is null, which will never be the case
@@ -130,13 +136,15 @@ public class NodeWhen extends Node implements INodeRule{
 
     @Override
     public String getExpertProgramScript() {
-        return "when " + seqEvent.getExpertProgramScript() + " then \n{" + seqRules.getExpertProgramScript() + "\n}";
+        return "when " + seqEventNode.getExpertProgramScript() + " then \n{" + seqRules.getExpertProgramScript() + "\n}";
     }
 
     @Override
     protected Node copy(Node parent) {
         NodeWhen ret = new NodeWhen(parent);
-        ret.seqEvent = (NodeEvents) seqEvent.copy(ret);
+        
+        ret.seqEventNode =  seqEventNode.copy(ret);
+        ret.seqEvent = (INodeEvent) ret.seqEventNode;
         ret.seqRules = seqRules.copy(ret);
         return ret;
 

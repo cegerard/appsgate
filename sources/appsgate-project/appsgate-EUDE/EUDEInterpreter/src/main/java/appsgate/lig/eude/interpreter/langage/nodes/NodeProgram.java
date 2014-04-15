@@ -28,14 +28,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class NodeProgram extends Node {
-
-    public Collection<NodeProgram> getSubPrograms() {
-        if (subPrograms != null) {
-            return subPrograms.values();
-        }
-        return new HashSet<NodeProgram>();
-    }
-
     /**
      * Program running state static enumeration
      *
@@ -449,4 +441,16 @@ public class NodeProgram extends Node {
         LOGGER.debug("The sub program [{}] has not been found", id);
         return false;
     }
+    
+    /**
+     * 
+     * @return the sub programs
+     */
+    public Collection<NodeProgram> getSubPrograms() {
+        if (subPrograms != null) {
+            return subPrograms.values();
+        }
+        return new HashSet<NodeProgram>();
+    }
+
 }
