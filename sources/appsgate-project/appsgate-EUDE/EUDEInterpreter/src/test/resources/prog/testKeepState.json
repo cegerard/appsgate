@@ -2,7 +2,6 @@
     "runningState": "DEPLOYED",
     "id": "TestKeepState",
     "name": "keepstate",
-    "userSource": "",
     "daemon": true,
     "programName": "TestKeepState",
     "parameters": [],

@@ -59,16 +59,6 @@ public class NodeProgramTest extends NodeTest {
         this.instance = this.programTest;
     }
 
-    /**
-     * Test of getuserSource method, of class NodeProgram.
-     */
-    @Test
-    public void testGetuserSource() {
-        System.out.println("getuserSource");
-        String expResult = "test";
-        String result = this.programTest.getUserSource();
-        Assert.assertEquals(expResult, result);
-    }
 
     /**
      * Test of getRunningState method, of class NodeProgram.
@@ -107,16 +97,6 @@ public class NodeProgramTest extends NodeTest {
         Assert.assertEquals(expResult, result);
     }
 
-    /**
-     * Test of pause method, of class NodeProgram.
-     */
-    @Test
-    public void testPause() {
-        System.out.println("pause");
-        boolean expResult = false;
-        boolean result = this.programTest.pause();
-        Assert.assertEquals(expResult, result);
-    }
 
     /**
      * Test of setDeployed method, of class NodeProgram.
@@ -185,6 +165,16 @@ public class NodeProgramTest extends NodeTest {
         NodeProgram p3 = new NodeProgram(null, p2);
         p3.setId("l");
         Assert.assertEquals("t.c", p3.getPath());
-
+    }
+    
+    @Test
+    public void testStates() {
+        programTest.setDeployed();
+        Assert.assertEquals(NodeProgram.RUNNING_STATE.DEPLOYED, programTest.getState());
+        programTest.setProcessing();
+        Assert.assertTrue(programTest.isRunning());
+        programTest.setWaiting();
+        Assert.assertTrue(programTest.isRunning());
+        Assert.assertEquals(NodeProgram.RUNNING_STATE.WAITING, programTest.getState());
     }
 }

@@ -63,14 +63,6 @@ public interface EUDE_InterpreterSpec {
 	public boolean stopProgram(String progamId);
 	
 	/**
-	 * Stop the program execution but keep its last state
-	 * 
-	 * @param programId identifier of the program
-	 * @return true if the program has been paused, false otherwise
-	 */
-	public boolean pauseProgram(String programId);
-	
-	/**
 	 * Return a hash map containing all the programs known by the interpreter.
 	 * The keys are the programs' name and the value are the programs under their
 	 * JSON format

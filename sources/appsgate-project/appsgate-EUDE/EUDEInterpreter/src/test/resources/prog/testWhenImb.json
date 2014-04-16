@@ -1,7 +1,6 @@
 {
     "id": "whenImb",
     "runningState": "DEPLOYED",
-    "userSource": "",
     "name": "TestWhenImb",
     "daemon": true,
     "parameters": [],

@@ -1,7 +1,6 @@
 {
     "id": "testActions",
     "runningState": "DEPLOYED",
-    "userSource": "",
     "daemon": false,
     "name": "ColorLoopMode",
     "parameters": [],

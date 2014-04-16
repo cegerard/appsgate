@@ -1,7 +1,6 @@
 {
     "id": "testIf",
     "runningState": "DEPLOYED",
-    "userSource": "",
     "name": "testIf",
     "daemon": false,
     "parameters": [],

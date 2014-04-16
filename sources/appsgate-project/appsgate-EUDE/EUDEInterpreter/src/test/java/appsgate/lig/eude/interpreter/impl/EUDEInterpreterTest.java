@@ -93,7 +93,6 @@ public class EUDEInterpreterTest {
         final NodeActionTest a = new NodeActionTest();
 
         final GenericCommand gc = context.mock(GenericCommand.class);
-        
 
         tested = context.states("NotYet");
         context.checking(new Expectations() {
@@ -211,16 +210,6 @@ public class EUDEInterpreterTest {
         System.out.println("stopProgram");
         boolean result = instance.stopProgram(programId);
         Assert.assertFalse("The program has not been called", result);
-    }
-
-    /**
-     * Test of pauseProgram method, of class EUDEInterpreter.
-     */
-    @Test
-    public void testPauseProgram() {
-        System.out.println("pauseProgram");
-        boolean result = instance.pauseProgram(programId);
-        Assert.assertFalse("This is not supposed to be implemented", result);
     }
 
     /**
@@ -384,6 +373,10 @@ public class EUDEInterpreterTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhen.json")));
         boolean callProgram = instance.callProgram("TestWhen");
         Assert.assertTrue(callProgram);
+        Assert.assertTrue(instance.isProgramActive("TestWhen"));
+        NodeProgram p = instance.getNodeProgram("TestWhen");
+        Assert.assertNotNull(p);
+        Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
         contextProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
@@ -394,6 +387,9 @@ public class EUDEInterpreterTest {
         tested.become("no");
         contextProxy.notifAll("3");
         synchroniser.waitUntil(tested.is("Yes"), 500);
+        Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
+        p.stop();
+        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
 
     }
 
@@ -406,12 +402,22 @@ public class EUDEInterpreterTest {
     public void testWhile() throws Exception {
         System.out.println("While test");
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhile.json")));
-        boolean p = instance.callProgram("TestWhile");
-        Assert.assertTrue(p);
+        Assert.assertTrue(instance.callProgram("TestWhile"));
+        Assert.assertTrue(instance.isProgramActive("TestWhile"));
+        NodeProgram p = instance.getNodeProgram("TestWhile");
+        Assert.assertNotNull(p);
+        Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
+
         contextProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("flag1"), 500);
+        Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
+
         contextProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("flag2"), 500);
+        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
+        p.stop();
+        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
+
     }
 
     /**
@@ -507,7 +513,6 @@ public class EUDEInterpreterTest {
 
     }
 
-
     @Test
     public void testImbricatedPrograms() throws Exception {
         System.out.println("Imbricated");
@@ -518,5 +523,5 @@ public class EUDEInterpreterTest {
         NodeProgram nodeProgram = instance.getNodeProgram("imb3");
         Assert.assertEquals("root.imb1.imb2", nodeProgram.getPath());
     }
-    
+
 }

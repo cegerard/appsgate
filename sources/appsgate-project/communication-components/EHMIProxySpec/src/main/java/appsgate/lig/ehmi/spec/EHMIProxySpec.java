@@ -338,12 +338,6 @@ public interface EHMIProxySpec {
 	 */
 	public boolean stopProgram(String programId);
 	
-	/**
-	 * Stop the program but keep its current state
-	 * @param programId the identifier of the program
-	 * @return true if the program has been paused, false otherwise
-	 */
-	public boolean pauseProgram(String programId);
 	
 	/**
 	 * Get the list of current deployed programs

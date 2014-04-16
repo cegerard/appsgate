@@ -3,7 +3,6 @@
     "name": "toto",
     "package": "root",
     "daemon": false,
-    "userSource": "",
     "parameters": [],
     "header": {},
     "definitions": [

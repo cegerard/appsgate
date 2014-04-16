@@ -140,7 +140,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         //save program map state
         if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
             p.setDeployed();
-            notifyAddProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getUserSource());
+            notifyAddProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getExpertProgramScript());
             return true;
         } else {
             mapPrograms.remove(p.getId());
@@ -204,7 +204,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             }
 
             if (p.update(jsonProgram)) {
-                notifyUpdateProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getUserSource());
+                notifyUpdateProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getExpertProgramScript());
                 //save program map state
 
                 if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
@@ -257,16 +257,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         return false;
     }
 
-    @Override
-    public boolean pauseProgram(String programId) {
-        NodeProgram p = mapPrograms.get(programId);
-
-        if (p != null) {
-            return p.pause();
-        }
-
-        return false;
-    }
 
     /**
      *
@@ -421,10 +411,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      * @param runningState
      * @param source
-     * @param userSource
+     * @param expertProgram
      */
-    private void notifyUpdateProgram(String id, String runningState, JSONObject source, String userSource) {
-        notifyChanges(new ProgramNotification("updateProgram", id, runningState, source, userSource));
+    private void notifyUpdateProgram(String id, String runningState, JSONObject source, String expertProgram) {
+        notifyChanges(new ProgramNotification("updateProgram", id, runningState, source, expertProgram));
     }
 
     /**
@@ -432,10 +422,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      * @param runningState
      * @param source
-     * @param userSource
+     * @param expertProgram
      */
-    private void notifyAddProgram(String id, String runningState, JSONObject source, String userSource) {
-        notifyChanges(new ProgramNotification("newProgram", id, runningState, source, userSource));
+    private void notifyAddProgram(String id, String runningState, JSONObject source, String expertProgram) {
+        notifyChanges(new ProgramNotification("newProgram", id, runningState, source, expertProgram));
     }
 
     /**

@@ -1,7 +1,6 @@
 {
     "id": "pgm",
     "runningState": "DEPLOYED",
-    "userSource": "",
     "name": "TestLaunchPgm",
     "daemon": true,
     "parameters": [],

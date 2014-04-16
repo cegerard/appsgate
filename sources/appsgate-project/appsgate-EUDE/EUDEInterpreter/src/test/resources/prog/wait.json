@@ -1,7 +1,6 @@
 {
     "id": "waitTest",
     "runningState": "DEPLOYED",
-    "userSource": "",
     "name": "Wait_test",
     "parameters": [],
     "header": {

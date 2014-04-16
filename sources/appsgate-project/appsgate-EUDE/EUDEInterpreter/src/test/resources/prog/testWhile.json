@@ -1,7 +1,6 @@
 {
     "runningState": "DEPLOYED",
     "id": "TestWhile",
-    "userSource": "",
     "daemon": true,
     "name": "TestWhile",
     "parameters": [],

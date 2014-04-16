@@ -46,6 +46,7 @@ public class NodeWait extends Node {
 
     @Override
     protected void specificStop() {
+        setProgramProcessing();
         if (waitFor != null) {
             waitFor.stop();
         }
@@ -53,9 +54,10 @@ public class NodeWait extends Node {
 
     @Override
     public JSONObject call() {
+        setProgramWaiting();
         setStarted(true);
         if (waitFor == null) {
-            fireEndEvent(new EndEvent(this));
+            stopWaiting();
             return null;
         }
         waitFor.addEndEventListener(this);
@@ -87,21 +89,21 @@ public class NodeWait extends Node {
                 duration = SpokParser.getNumericResult(waitFor).intValue();
                 waitFor = startClockEvent(duration);
                 if (waitFor == null) {
-                    fireEndEvent(new EndEvent(this));
+                    stopWaiting();
                 }
             } catch (SpokTypeException ex) {
                 LOGGER.error("Unable to parse numeric result: {}", ex.getMessage());
-                fireEndEvent(new EndEvent(this));
+                stopWaiting();
             } catch (SpokExecutionException ex) {
                 LOGGER.error("Unable to start clock event: {}", ex.getMessage());
-                fireEndEvent(new EndEvent(this));
+                stopWaiting();
             }
         } else {
             waitFor = null;
-            fireEndEvent(new EndEvent(this));
+            stopWaiting();
         }
     }
-    
+
     @Override
     public JSONObject getJSONDescription() {
         JSONObject o = super.getJSONDescription();
@@ -116,4 +118,12 @@ public class NodeWait extends Node {
         return o;
     }
 
+    /**
+     * Method to process the end of waiting
+     */
+    private void stopWaiting() {
+        setStarted(false);
+        setProgramProcessing();
+        fireEndEvent(new EndEvent(this));
+    }
 }

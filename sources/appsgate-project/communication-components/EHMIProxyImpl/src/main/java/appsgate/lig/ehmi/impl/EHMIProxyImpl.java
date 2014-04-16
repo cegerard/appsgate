@@ -459,11 +459,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
 
 	@Override
-	public boolean pauseProgram(String programId) {
-		return interpreter.pauseProgram(programId);
-	}
-
-	@Override
 	public JSONArray getPrograms() {
 		HashMap<String, JSONObject> map = interpreter.getListPrograms();
 		JSONArray programList = new JSONArray();

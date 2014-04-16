@@ -1,7 +1,6 @@
 {
     "runningState": "DEPLOYED",
     "id": "TestWhen",
-    "userSource": "",
     "daemon": true,
     "name": "TestWhen",
     "header": {

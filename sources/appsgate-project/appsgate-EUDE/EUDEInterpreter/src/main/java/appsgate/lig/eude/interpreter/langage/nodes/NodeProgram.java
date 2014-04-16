@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public class NodeProgram extends Node {
+final public class NodeProgram extends Node {
 
     /**
      * Program running state static enumeration
@@ -77,9 +77,9 @@ public class NodeProgram extends Node {
     private JSONObject header;
 
     /**
-     * Use for simplify user interface reverse compute
+     * The json program
      */
-    private String userSource;
+    private JSONObject programJSON = null;
 
     /**
      * Sequence of rules to interpret
@@ -89,7 +89,8 @@ public class NodeProgram extends Node {
     private HashMap<String, NodeProgram> subPrograms;
 
     /**
-     * The current running state of this program - DEPLOYED - INVALID - PROCESSING - WAITING
+     * The current running state of this program - DEPLOYED - INVALID -
+     * PROCESSING - WAITING
      */
     private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
 
@@ -115,22 +116,25 @@ public class NodeProgram extends Node {
      * Initialize the program from a JSON object
      *
      * @param mediator
-     * @param programJSON Abstract tree of the program in JSON
+     * @param o Abstract tree of the program in JSON
      * @param p the node parent
      * @throws SpokNodeException
      */
-    public NodeProgram(EUDEInterpreter mediator, JSONObject programJSON, Node p)
+    public NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p)
             throws SpokException {
         this(mediator, p);
 
         // initialize the program with the JSON
-        id = getJSONString(programJSON, "id");
-        if (programJSON.has("runningState")) {
-            LOGGER.trace("Running state: {}", programJSON.optString("runningState"));
-            runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
+        id = getJSONString(o, "id");
+        if (o.has("runningState")) {
+            LOGGER.trace("Running state: {}", o.optString("runningState"));
+            runningState = RUNNING_STATE.valueOf(getJSONString(o, "runningState"));
         }
-
-        update(programJSON);
+        if (isValid()) {
+            update(o);
+        } else {
+            this.programJSON = o;
+        }
     }
 
     @Override
@@ -148,8 +152,7 @@ public class NodeProgram extends Node {
      */
     public final boolean update(JSONObject json) throws SpokException {
 
-        //  this.programJSON = json;
-        userSource = json.optString("userSource");
+        this.programJSON = null;
 
         name = getJSONString(json, "name");
         header = getJSONObject(json, "header");
@@ -161,11 +164,6 @@ public class NodeProgram extends Node {
 
     }
 
-    public boolean pause() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
     /**
      * Launch the interpretation of the rules
      *
@@ -175,6 +173,7 @@ public class NodeProgram extends Node {
     public JSONObject call() {
         JSONObject ret = new JSONObject();
         if (runningState == RUNNING_STATE.DEPLOYED) {
+            setProcessing();
             fireStartEvent(new StartEvent(this));
             body.addStartEventListener(this);
             body.addEndEventListener(this);
@@ -228,32 +227,64 @@ public class NodeProgram extends Node {
     /**
      * Set the current running state to deployed
      */
-    public void setDeployed() {
+    final public void setDeployed() {
         setRunningState(RUNNING_STATE.DEPLOYED);
     }
 
     /**
      * @return true if the program can be run, false otherwise
      */
-    public boolean canRun() {
+    final public boolean canRun() {
         return this.runningState == RUNNING_STATE.DEPLOYED;
     }
 
     /**
      * @return true if the program can be stopped, false otherwise
      */
-    public boolean isRunning() {
+    final public boolean isRunning() {
         return (this.runningState == RUNNING_STATE.PROCESSING || this.runningState == RUNNING_STATE.WAITING);
     }
 
-    public RUNNING_STATE getState() {
+    /**
+     * @return the current state of the program
+     */
+    final public RUNNING_STATE getState() {
         return runningState;
     }
-    
+
+    /**
+     * @return true if the program is valid
+     */
+    final public boolean isValid() {
+        return this.runningState != RUNNING_STATE.INVALID;
+    }
+
+    /**
+     * set the state of this program to waiting, if this program is already
+     * running
+     */
+    final public void setWaiting() {
+        if (isRunning()) {
+            this.runningState = RUNNING_STATE.WAITING;
+        } else {
+            LOGGER.warn("Trying to set {} waiting, while being {}", this, this.runningState);
+        }
+    }
+
+    /**
+     * set the state to processing if the program is valid
+     */
+    public void setProcessing() {
+        if (isValid()) {
+            this.runningState = RUNNING_STATE.PROCESSING;
+        } else {
+            LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
+        }
+    }
+
     @Override
     public void startEventFired(StartEvent e) {
         LOGGER.debug("The start event ({}) has been catched by {}", e.getSource(), this);
-        setRunningState(RUNNING_STATE.PROCESSING);
     }
 
     @Override
@@ -288,24 +319,14 @@ public class NodeProgram extends Node {
     }
 
     /**
-     * @return the user input source
-     */
-    public String getUserSource() {
-        if (userSource.isEmpty()) {
-            return getExpertProgramScript();
-
-        } else {
-            return userSource;
-
-        }
-    }
-
-    /**
      * @return the JSON source of the program
      * @throws SpokNodeException if there is no source for the program
      */
     public JSONObject getJSONSource() throws SpokNodeException {
-        return body.getJSONDescription();
+        if (this.programJSON == null) {
+            return body.getJSONDescription();
+        }
+        return programJSON;
     }
 
     /**
@@ -333,7 +354,6 @@ public class NodeProgram extends Node {
             o.put("header", header);
             o.put("package", getPath());
 
-            o.put("userSource", getUserSource());
             o.put("body", body.getJSONDescription());
 
             o.put("definitions", getSymbolTableDescription());
@@ -376,7 +396,6 @@ public class NodeProgram extends Node {
         ret.name = name;
         ret.header = new JSONObject(header);
 
-        ret.userSource = getUserSource();
         if (body != null) {
             ret.body = body.copy(ret);
         }
