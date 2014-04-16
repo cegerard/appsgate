@@ -83,7 +83,7 @@ public interface EUDE_InterpreterSpec {
 	 * Check if a program is active or not
 	 * 
 	 * @param programId the identifier of the program
-	 * @return true if the program is active (STARTED), false otherwise
+	 * @return true if the program is active, false otherwise
 	 */
 	public boolean isProgramActive(String programId);
 

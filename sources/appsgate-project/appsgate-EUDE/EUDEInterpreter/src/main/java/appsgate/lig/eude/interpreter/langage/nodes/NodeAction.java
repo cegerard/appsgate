@@ -147,10 +147,10 @@ public class NodeAction extends Node implements INodeFunction {
 
         NodeProgram p = getMediator().getNodeProgram(target);
         if (p != null) {
-            if (methodName.contentEquals("callProgram") && p.getRunningState() != RUNNING_STATE.STARTED) {
+            if (methodName.contentEquals("callProgram") && p.canRun()) {
                 // launch the program
                 getMediator().callProgram(target, args);
-            } else if (methodName.contentEquals("stopProgram") && p.getRunningState() == RUNNING_STATE.STARTED) {
+            } else if (methodName.contentEquals("stopProgram") && p.isRunning()) {
                 //stop the running program
                 getMediator().stopProgram(target);
             } else {

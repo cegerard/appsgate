@@ -27,7 +27,6 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 import java.io.BufferedReader;
@@ -98,7 +97,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public ClockProxy clock;
 
-
     /**
      * Constructor. Initialize the list of programs and of events
      *
@@ -142,7 +140,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         //save program map state
         if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
             p.setDeployed();
-            notifyAddProgram(p.getId(), p.getRunningState().toString(), p.getJSONDescription(), p.getUserSource());
+            notifyAddProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getUserSource());
             return true;
         } else {
             mapPrograms.remove(p.getId());
@@ -200,14 +198,13 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
 
         try {
-            if (p.getRunningState() == NodeProgram.RUNNING_STATE.STARTED
-                    || p.getRunningState() == NodeProgram.RUNNING_STATE.PAUSED) {
+            if (p.isRunning()) {
                 p.removeEndEventListener(this);
                 p.stop();
             }
 
             if (p.update(jsonProgram)) {
-                notifyUpdateProgram(p.getId(), p.getRunningState().toString(), p.getJSONDescription(), p.getUserSource());
+                notifyUpdateProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getUserSource());
                 //save program map state
 
                 if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
@@ -300,7 +297,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
-            return (p.getRunningState() == RUNNING_STATE.STARTED);
+            return (p.isRunning());
         }
 
         return false;
@@ -446,7 +443,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      */
     private void notifyRemoveProgram(String id) {
-        notifyChanges(new ProgramNotification("removeProgram", id, RUNNING_STATE.STOPPED.toString(), null, ""));
+        notifyChanges(new ProgramNotification("removeProgram", id, "", null, ""));
     }
 
     /**
@@ -514,7 +511,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
                         LOGGER.error("Unable to restore a program");
                         return;
                     }
-                    if (np.getRunningState() == RUNNING_STATE.STARTED) {
+                    if (np.isRunning()) {
                         //TODO:Restore complete interpreter and programs state
                         this.callProgram(np.getId());
                     }

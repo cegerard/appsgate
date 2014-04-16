@@ -1,6 +1,6 @@
 {
     "id": "root",
-    "runningState": "STARTED",
+    "runningState": "PROCESSING",
     "name": "init",
     "parameters": [],
     "header": {

@@ -37,7 +37,7 @@ public class NodeProgramTest extends NodeTest {
         ruleJSON = new JSONObject();
         ruleJSON.put("id", "test");
         ruleJSON.put("type", "program");
-        ruleJSON.put("runningState", "STOPPED");
+        ruleJSON.put("runningState", "DEPLOYED");
         ruleJSON.put("name", "test");
         ruleJSON.put("package", "test");
         JSONObject header = new JSONObject();
@@ -76,8 +76,8 @@ public class NodeProgramTest extends NodeTest {
     @Test
     public void testGetRunningState() {
         System.out.println("getRunningState");
-        NodeProgram.RUNNING_STATE expResult = NodeProgram.RUNNING_STATE.STOPPED;
-        NodeProgram.RUNNING_STATE result = this.programTest.getRunningState();
+        NodeProgram.RUNNING_STATE expResult = NodeProgram.RUNNING_STATE.DEPLOYED;
+        NodeProgram.RUNNING_STATE result = this.programTest.getState();
         Assert.assertEquals(expResult, result);
     }
 

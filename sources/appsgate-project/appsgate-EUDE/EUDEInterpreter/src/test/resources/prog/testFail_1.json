@@ -1,5 +1,5 @@
 {
-    "runningState": "STOPPED",
+    "runningState": "DEPLOYED",
     "id": "program-4050",
     "userSource": "",
     "daemon": true,

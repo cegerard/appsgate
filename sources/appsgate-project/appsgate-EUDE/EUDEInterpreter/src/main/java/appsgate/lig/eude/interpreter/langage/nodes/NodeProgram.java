@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class NodeProgram extends Node {
+
     /**
      * Program running state static enumeration
      *
@@ -36,8 +37,7 @@ public class NodeProgram extends Node {
      */
     public static enum RUNNING_STATE {
 
-        DEPLOYED("DEPLOYED"), STARTED("STARTED"), FAILED("FAILED"),
-        STOPPED("STOPPED"), PAUSED("PAUSED");
+        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"), WAITING("WAITING");
 
         private String name = "";
 
@@ -58,7 +58,7 @@ public class NodeProgram extends Node {
      * Program's id set by the EUDE editor
      */
     private String id;
-    
+
     /**
      * @param i the id to set
      */
@@ -89,8 +89,7 @@ public class NodeProgram extends Node {
     private HashMap<String, NodeProgram> subPrograms;
 
     /**
-     * The current running state of this program - DEPLOYED - STARTED - STOPPED
-     * - PAUSED - FAILED
+     * The current running state of this program - DEPLOYED - INVALID - PROCESSING - WAITING
      */
     private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
 
@@ -127,6 +126,7 @@ public class NodeProgram extends Node {
         // initialize the program with the JSON
         id = getJSONString(programJSON, "id");
         if (programJSON.has("runningState")) {
+            LOGGER.trace("Running state: {}", programJSON.optString("runningState"));
             runningState = RUNNING_STATE.valueOf(getJSONString(programJSON, "runningState"));
         }
 
@@ -174,7 +174,7 @@ public class NodeProgram extends Node {
     @Override
     public JSONObject call() {
         JSONObject ret = new JSONObject();
-        if (runningState != RUNNING_STATE.PAUSED) {
+        if (runningState == RUNNING_STATE.DEPLOYED) {
             fireStartEvent(new StartEvent(this));
             body.addStartEventListener(this);
             body.addEndEventListener(this);
@@ -186,20 +186,26 @@ public class NodeProgram extends Node {
                 // only if the key is null, which will never be the case
             }
             return ret;
-        } else {
-            // TODO restart from previous state
-            // synchronized(pauseMutex) {
-            // pauseMutex.notify();
-            // return 1;
-            // }
         }
-        return null;
+        try {
+            LOGGER.warn("Trying to start {} while: {}", this, runningState.toString());
+            ret.put("status", false);
+        } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return ret;
     }
 
     @Override
     public void stop() {
-        if (runningState != RUNNING_STATE.STARTED) {
-            LOGGER.warn("Trying to stop {}, while being at state {}", this, this.runningState);
+        if (runningState == RUNNING_STATE.INVALID) {
+            LOGGER.warn("Trying to stop {}, but this program is invalid", this);
+            return;
+        }
+
+        if (runningState == RUNNING_STATE.DEPLOYED) {
+            LOGGER.warn("Trying to stop {}, but this program is not currently running.", this);
             return;
         }
         if (!isStopping()) {
@@ -207,7 +213,7 @@ public class NodeProgram extends Node {
             setStopping(true);
             body.stop();
             body.removeEndEventListener(this);
-            setRunningState(RUNNING_STATE.STOPPED);
+            setDeployed();
             fireEndEvent(new EndEvent(this));
             setStopping(false);
         } else {
@@ -226,15 +232,33 @@ public class NodeProgram extends Node {
         setRunningState(RUNNING_STATE.DEPLOYED);
     }
 
+    /**
+     * @return true if the program can be run, false otherwise
+     */
+    public boolean canRun() {
+        return this.runningState == RUNNING_STATE.DEPLOYED;
+    }
+
+    /**
+     * @return true if the program can be stopped, false otherwise
+     */
+    public boolean isRunning() {
+        return (this.runningState == RUNNING_STATE.PROCESSING || this.runningState == RUNNING_STATE.WAITING);
+    }
+
+    public RUNNING_STATE getState() {
+        return runningState;
+    }
+    
     @Override
     public void startEventFired(StartEvent e) {
         LOGGER.debug("The start event ({}) has been catched by {}", e.getSource(), this);
-        setRunningState(RUNNING_STATE.STARTED);
+        setRunningState(RUNNING_STATE.PROCESSING);
     }
 
     @Override
     public void endEventFired(EndEvent e) {
-        setRunningState(RUNNING_STATE.STOPPED);
+        setDeployed();
         fireEndEvent(new EndEvent(this));
     }
 
@@ -274,13 +298,6 @@ public class NodeProgram extends Node {
             return userSource;
 
         }
-    }
-
-    /**
-     * @return the running state of the program
-     */
-    public RUNNING_STATE getRunningState() {
-        return runningState;
     }
 
     /**
@@ -377,7 +394,7 @@ public class NodeProgram extends Node {
         }
         return "";
     }
-    
+
     private String recursivePath() {
         NodeProgram p = (NodeProgram) this.getParent();
         if (p == null) {
@@ -441,9 +458,9 @@ public class NodeProgram extends Node {
         LOGGER.debug("The sub program [{}] has not been found", id);
         return false;
     }
-    
+
     /**
-     * 
+     *
      * @return the sub programs
      */
     public Collection<NodeProgram> getSubPrograms() {
