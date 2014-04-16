@@ -33,6 +33,7 @@
 		<module>CoreOccupancySpec</module>
 		<module>CoreCO2SensorSpec</module>
 		<module>CoreMobileDeviceSpec</module>
+		<module>CoreDomiCubeSpec</module>
 	</modules>
 
 </project>

@@ -1,0 +1,24 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+
+	<implementation name="DomiCubeAdapterImpl"
+		classname="appsgate.lig.proxy.MQTTAdapter.DomiCubeMQTTAdapterImpl">
+
+		<callback onInit="newInst" onRemove="delInst" />		
+		
+		<definition name="host"  type="string" field="host"  />
+		<definition name="port"  type="string" field="port"  />
+		<definition name="topic" type="string" field="topic" />
+
+	</implementation>
+	 
+	<apam-instance implementation="DomiCubeAdapterImpl" name="DomiCubeAdapter">
+		<property name="host" value="amiqual4home-data.inrialpes.fr"/>
+		<property name="port" value="1883"/>
+		<property name="topic" value="amiqual4home/hmi/cube/1/cube_face"/>
+	</apam-instance>
+ 
+</apam>

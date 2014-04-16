@@ -19,7 +19,7 @@ import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
  * @version 1.0.0
  * 
  * @see OnOffActuatorSpec
- * @see AbstractObjectSpec
+ * @see CoreObjectSpec
  */
 public class EnoceanOnOffAcuatorImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreOnOffActuatorSpec {
 	
