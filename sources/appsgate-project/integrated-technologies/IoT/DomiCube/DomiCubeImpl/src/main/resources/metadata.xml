@@ -1,0 +1,29 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<implementation name="DomiCubeImpl" classname="appsgate.lig.domicube.impl.DomiCubeImpl"
+		specification="CoreDomiCubeSpec" push="notifyChanges">
+		
+		<callback onInit="newInst" onRemove="deleteInst" />
+
+		<!-- device kernel meta data -->
+		<definition name="deviceName" type="string" default="DomiCube"   field="deviceName" />
+		<definition name="deviceId"   type="string" default="DomiCube-1" field="deviceId" />
+		<definition name="deviceType" type="string" default="domicube"   field="deviceType" />
+
+		<!-- device client meta data -->
+		<definition name="pictureId" type="string"               field="pictureId" />
+		<definition name="userType"  type="string" default="210" field="userType" />
+		<definition name="status"    type="string" default="2"   field="status" method="statusChanged" />
+
+		<!-- device meta data -->
+		<definition name="currentFace" type="string" default="-1" field="currentFace" method="faceChanged"/>
+		
+	</implementation>
+	
+	<!--  Test DomiCubeInstance  -->
+	<apam-instance implementation="DomiCubeImpl" name="DomiCubeInstance"></apam-instance>
+
+</apam>

@@ -12,6 +12,17 @@ import appsgate.lig.mobile.device.adapter.spec.MobileDeviceAdapterServices;
 import appsgate.lig.mobile.device.messages.MobileDeviceNotificationMsg;
 import appsgate.lig.mobile.device.spec.CoreMobileDeviceSpec;
 
+/**
+ * This is the class that represent Mobile device (SamrtPhone, Tablet) implementation in ApAM.
+ * 
+ * @author Cédric Gérard
+ * @since April 12, 2014
+ * @version 1.0.0
+ * 
+ * @see CoreObjectBehavior
+ * @see CoreObjectSpec
+ * @see CoreMobileDeviceSpec
+ */
 public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreMobileDeviceSpec {
 
 	
@@ -33,19 +44,19 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		logger.info("New color mobile device detected");
+		logger.info("New mobile device detected");
 	}
 
 	/**
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		logger.info("A color light device desapeared");
+		logger.info("A mobile device desapeared");
 	}
 
 	/**
 	 * This method uses the ApAM message model. Each call produce a
-	 * TemperatureNotificationMsg object and notifies ApAM that a new message has
+	 * MobileDeviceNotificationMsg object and notifies ApAM that a new message has
 	 * been released.
 	 * 
 	 * @return nothing, it just notifies ApAM that a new message has been

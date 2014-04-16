@@ -28,6 +28,7 @@
 		<module>fuchsia-ard-plugin</module>
 <!-- 		<module>dfki-integration</module> -->
 		<module>devices</module>
+		<module>IoT</module>
 	</modules>
 	
 </project>
