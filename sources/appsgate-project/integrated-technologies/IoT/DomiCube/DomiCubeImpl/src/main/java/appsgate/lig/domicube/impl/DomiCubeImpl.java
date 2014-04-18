@@ -61,6 +61,11 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	private String currentFace;
 	
 	/**
+	 * The older face of the DomiCube
+	 */
+	private String olderFace;
+	
+	/**
 	 * boolean to know if the device has received a MQTT message 
 	 * from the real DomiCube
 	 */
@@ -75,6 +80,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
+		olderFace = "-1";
 		logger.info("The DomiCube has been detected");
 	}
 
@@ -155,8 +161,24 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 * its a string the represent a integer value for the face of the DomiCube.
 	 */
 	public void faceChanged(String newFace) {
+		if(!olderFace.contentEquals("-1")){ // Usual behavior
+			faceLeaved();
+			olderFace = currentFace;
+		}else { //First notification received
+			this.olderFace = this.currentFace;
+		}
+		
 		logger.info("The DomiCube, "+ deviceId+" face changed to "+newFace);
-		notifyChanges("currentFace", newFace);
+		notifyChanges("newFace", newFace);
+
+	}
+	
+	/**
+	 * Called to notify that the cube leave its older face
+	 */
+	private void faceLeaved() {
+		logger.info("The DomiCube, "+ deviceId+" leaved the face "+olderFace);
+		notifyChanges("leaveFace", olderFace);
 	}
 
 	@Override
