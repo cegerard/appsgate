@@ -30,7 +30,7 @@ public class Builder {
      */
     private static enum NODE_TYPE {
 
-        NODE_ACTION, NODE_BOOLEAN_EXPRESSION,
+        NODE_EMPTY, NODE_ACTION, NODE_BOOLEAN_EXPRESSION,
         NODE_EVENT, NODE_EVENTS_OR, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
         NODE_FUNCTION, NODE_FUNCTION_DEFINITION, NODE_IF,
         NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
@@ -48,6 +48,9 @@ public class Builder {
      *
      */
     private static NODE_TYPE getType(String type) throws SpokTypeException {
+        if (type.equalsIgnoreCase("empty")) {
+            return NODE_TYPE.NODE_EMPTY;
+        }
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
@@ -175,6 +178,8 @@ public class Builder {
         }
         try {
             switch (getType(o.optString("type"))) {
+                case NODE_EMPTY:
+                    return new NodeEmpty(o,parent);
                 case NODE_ACTION:
                     return new NodeAction(o, parent);
                 case NODE_BOOLEAN_EXPRESSION:

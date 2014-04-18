@@ -10,6 +10,7 @@
     "body": {
         "type": "seqRules",
         "rules": [
+            { "type" : "empty" }
         ]
     }
 }
