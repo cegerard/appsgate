@@ -200,6 +200,8 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 					clockModule.setSystemClockTime(message.value);
 				} else if(message.varName == "flowRate"){
    	 				clockModule.setSystemClockFlowRate(message.value);	
+				} else if(message.varName == "newFace"){
+					$("#domiCube-face-"+message.objectId).html("Face: "+message.value);	
 				} else { //find the handler for this notification
 					var handler = handlerMap[message.objectId]
 					if(handler != null) {
@@ -226,8 +228,8 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
     			{
     				obj = jsonArray[i];
     		
-    				//System clock initialization
-       				if (obj.type == "21") 
+    				
+       				if (obj.type == "21") //System clock initialization
        				{
        					var httpRequest=new XMLHttpRequest();
 						httpRequest.open("GET","./html/clock.html",false);
@@ -242,10 +244,24 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 						clockModule.setSystemClockMilisTime(obj.clockValue);
 						//Set time flow rate
 						clockModule.setSystemClockFlowRate(obj.flowRate);
+						
+       				} 
+       				else if (obj.type == "210") //DomiCube tile initialization
+       				{
+       					var httpRequest=new XMLHttpRequest();
+						httpRequest.open("GET","./html/domicubeTile.html",false);
+						httpRequest.send();
+						var domicubeDiv = document.createElement('div');
+						domicubeDiv.innerHTML = httpRequest.responseText;
+						domicubeDiv.setAttribute("id", obj.id);
+       					$("#device-manager-list").append(domicubeDiv);
+						$("#domiCube-face").attr("id", "domiCube-face-"+obj.id);
+						$("#domiCube-motion").attr("id", "domiCube-motion-"+obj.id);
+						$("#domiCube-battery").attr("id", "domiCube-battery-"+obj.id);
        				}
        				
        				
-       				//Tile initialization
+       				//Adapter tiles counters initialization
        				if(obj.hasOwnProperty("deviceType")) {
        					if (obj.deviceType == "PHILIPS_HUE_LIGHT") {
        						PhilipsLightCount++;
@@ -253,7 +269,7 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
        					
        					} else if (obj.deviceType.indexOf("EEP") != -1 || obj.deviceType == "EnOcean_DEVICE") {
        						PhilipsLightCount++;
-       						$("#enocean-index-tile-count").html(PhilipsLightCount);
+       						$("#enocean-index-tile-count").appendChild(PhilipsLightCount);
        					}
        				}
        			}
