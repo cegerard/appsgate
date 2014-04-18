@@ -52,8 +52,8 @@ public class NodeSeqRules extends Node {
      *
      * @param p
      */
-    private NodeSeqRules(Node p, String id) {
-        super(p, id);
+    private NodeSeqRules(Node p) {
+        super(p);
     }
 
     /**
@@ -64,7 +64,7 @@ public class NodeSeqRules extends Node {
      * @throws SpokNodeException
      */
     public NodeSeqRules(JSONObject seqInstructions, Node parent) throws SpokNodeException {
-        super(parent, seqInstructions.optString("iid"));
+        super(parent, seqInstructions);
         JSONArray seqRulesJSON = seqInstructions.optJSONArray("rules");
 
         instructions = new ArrayList<Node>();
@@ -206,7 +206,7 @@ public class NodeSeqRules extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeSeqRules ret = new NodeSeqRules(parent, getIID());
+        NodeSeqRules ret = new NodeSeqRules(parent);
         ret.instructions = new ArrayList<Node>();
         for (Node n : instructions) {
             ret.instructions.add(n.copy(ret));

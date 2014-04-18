@@ -8,14 +8,13 @@ package appsgate.lig.eude.interpreter.langage.components;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeVariableDefinition;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeFunctionDefinition;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeValue;
-import junit.framework.Assert;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.Assert;
 
 /**
  *
@@ -55,7 +54,7 @@ public class SymbolTableTest {
         NodeVariableDefinition result = instance.addVariable(varName, null);
                 Assert.assertNotNull(result);
 
-        assertTrue(expResult.equals(result));
+        Assert.assertTrue(expResult.equals(result));
     }
 
     /**
@@ -67,7 +66,7 @@ public class SymbolTableTest {
         NodeVariableDefinition l = null;
         SymbolTable instance = new SymbolTable(null);
         String result = instance.getVariableKey(l);
-        assertNull(result);
+        Assert.assertNull(result);
     }
 
     /**
@@ -80,7 +79,7 @@ public class SymbolTableTest {
         SymbolTable instance = new SymbolTable(null);
         NodeVariableDefinition expResult = null;
         NodeVariableDefinition result = instance.getVariableByKey(key);
-        assertEquals(expResult, result);
+       Assert.assertEquals(expResult, result);
     }
 
     /**
@@ -96,7 +95,7 @@ public class SymbolTableTest {
         SymbolTable instance = new SymbolTable(null);
         NodeFunctionDefinition expResult = null;
         NodeFunctionDefinition result = instance.addFunction(functionName, f);
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
     }
 
     /**
@@ -108,7 +107,7 @@ public class SymbolTableTest {
         SymbolTable instance = new SymbolTable(null);
         String expResult = "";
         String result = instance.getExpertProgramDecl();
-        assertEquals(expResult, result);
+        Assert.assertEquals(expResult, result);
     }
     
        @Test
@@ -123,7 +122,7 @@ public class SymbolTableTest {
         NodeVariableDefinition result = instance.addVariable(varName, null);
                 Assert.assertNotNull(result);
 
-        assertTrue(expResult.equals(result));
+        Assert.assertTrue(expResult.equals(result));
     }
 
 

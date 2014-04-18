@@ -43,10 +43,8 @@ public class NodeProgramTest extends NodeTest {
         JSONObject header = new JSONObject();
         header.put("author", "toto");
         ruleJSON.put("header", header);
-        JSONObject rules = new JSONObject();
-        rules.put("type", "setOfRules");
-        rules.put("rules", (Collection) null);
-        rules.put("iid", "set");
+        NodeSetOfRulesTest t = new NodeSetOfRulesTest();
+        JSONObject rules = t.ruleJSON;
         ruleJSON.put("body", rules);
         ruleJSON.put("definitions", (Collection) null);
         ruleJSON.put("userSource", "test");

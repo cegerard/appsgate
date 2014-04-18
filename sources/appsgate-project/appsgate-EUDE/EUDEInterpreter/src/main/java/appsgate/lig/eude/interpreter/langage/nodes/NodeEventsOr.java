@@ -35,8 +35,8 @@ public class NodeEventsOr extends NodeEvents {
      *
      * @param p parent node
      */
-    private NodeEventsOr(Node p, String iid) {
-        super(p, iid);
+    private NodeEventsOr(Node p) {
+        super(p);
     }
 
     /**
@@ -71,7 +71,7 @@ public class NodeEventsOr extends NodeEvents {
 
     @Override
     protected Node copy(Node parent) {
-        NodeEventsOr ret = new NodeEventsOr(parent, getIID());
+        NodeEventsOr ret = new NodeEventsOr(parent);
         ret.nbEventToOccur = nbEventToOccur;
         return commonCopy(ret);
     }

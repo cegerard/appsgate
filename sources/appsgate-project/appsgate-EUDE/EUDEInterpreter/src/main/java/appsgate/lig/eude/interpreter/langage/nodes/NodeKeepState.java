@@ -34,12 +34,12 @@ public class NodeKeepState extends Node {
      *
      * @param p the parent node
      */
-    private NodeKeepState(Node p,String id) {
-        super(p, id);
+    private NodeKeepState(Node p) {
+        super(p);
     }
 
     public NodeKeepState(JSONObject o, Node parent) throws SpokNodeException {
-        super(parent, o.optString("iid"));
+        super(parent, o);
         try {
             state = new NodeState(o.getJSONObject("state"), this);
         } catch (JSONException ex) {
@@ -80,7 +80,7 @@ public class NodeKeepState extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeKeepState n = new NodeKeepState(parent, getIID());
+        NodeKeepState n = new NodeKeepState(parent);
         n.state = (NodeState) state.copy(n);
         return n;
     }

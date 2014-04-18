@@ -21,9 +21,10 @@ import org.junit.Test;
 public class NodeListsTest extends NodeTest {
 
     public NodeListsTest() throws JSONException {
+        NodeValueTest t =  new NodeValueTest();
         ruleJSON.put("type", "lists");
-        ruleJSON.put("left", new JSONObject("{'type':'device', 'value':'a', 'iid':'test'}"));
-        ruleJSON.put("right", new JSONObject("{'type':'device', 'value':'b', 'iid':'test'}"));
+        ruleJSON.put("left", t.getDesc("device", "a"));
+        ruleJSON.put("right", t.getDesc("device", "b"));
         ruleJSON.put("operator", "U");
     }
 

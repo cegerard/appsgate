@@ -33,7 +33,6 @@ public class NodeStateTest extends NodeTest {
         final JSONObject events = new JSONObject();
         JSONObject e = new JSONObject();
         e.put("name", "event");
-        e.put("name", "event");
         events.put("endEvent", e);
         events.put("startEvent", e);
 
@@ -51,10 +50,10 @@ public class NodeStateTest extends NodeTest {
                 will(returnValue("test"));
             }
         });
-        JSONObject o = new JSONObject();
+        NodeValueTest t = new NodeValueTest();
+        JSONObject o = t.ruleJSON;
         o.put("type", "device");
         o.put("value", "test");
-        o.put("iid", "test");
         ruleJSON.put("type", "state");
         ruleJSON.put("object", o);
         ruleJSON.put("name", "isOn");

@@ -74,8 +74,8 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
      *
      * @param p
      */
-    private NodeBooleanExpression(Node p, String id) {
-        super(p, id);
+    private NodeBooleanExpression(Node p) {
+        super(p);
     }
 
     /**
@@ -85,7 +85,7 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
      * @throws SpokNodeException
      */
     public NodeBooleanExpression(JSONObject o, Node parent) throws SpokNodeException {
-        super(parent, o.optString("iid"));
+        super(parent, o);
         operator = BinaryOperator.get(getJSONString(o, "operator"));
         if (operator == null) {
             LOGGER.debug("Unknown operator: {}", getJSONString(o, "operator"));
@@ -148,7 +148,7 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeBooleanExpression ret = new NodeBooleanExpression(parent, getIID());
+        NodeBooleanExpression ret = new NodeBooleanExpression(parent);
         ret.operator = operator;
         ret.leftNode = leftNode.copy(ret);
         ret.left = (INodeFunction) ret.leftNode;

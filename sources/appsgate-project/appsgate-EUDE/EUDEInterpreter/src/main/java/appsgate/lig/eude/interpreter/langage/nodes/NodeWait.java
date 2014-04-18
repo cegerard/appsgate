@@ -33,12 +33,12 @@ public class NodeWait extends Node {
      *
      * @param p
      */
-    private NodeWait(Node p, String id) {
-        super(p, id);
+    private NodeWait(Node p) {
+        super(p);
     }
 
     public NodeWait(JSONObject o, Node parent) throws SpokTypeException {
-        super(parent, o.optString("iid"));
+        super(parent, o);
         if (o.has("waitFor")) {
             waitFor = Builder.buildFromJSON(o.optJSONObject("waitFor"), this);
         }
@@ -74,7 +74,7 @@ public class NodeWait extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeWait ret = new NodeWait(parent, getIID());
+        NodeWait ret = new NodeWait(parent);
         if (waitFor != null) {
             ret.waitFor = waitFor.copy(ret);
         }

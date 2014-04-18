@@ -46,8 +46,8 @@ public class NodeEvent extends Node implements INodeEvent {
      *
      * @param parent
      */
-    private NodeEvent(Node parent, String iid) {
-        super(parent, iid);
+    private NodeEvent(Node parent) {
+        super(parent);
     }
 
     /**
@@ -59,7 +59,7 @@ public class NodeEvent extends Node implements INodeEvent {
      * @param parent
      */
     public NodeEvent(String s_type, String s_id, String name, String value, Node parent) {
-        super(parent, null);
+        super(parent);
         Node s = new NodeValue(s_type, s_id, this);
         source = s;
         eventName = name;
@@ -74,7 +74,7 @@ public class NodeEvent extends Node implements INodeEvent {
      */
     public NodeEvent(JSONObject eventJSON, Node parent)
             throws SpokNodeException {
-        super(parent, eventJSON.optString("iid"));
+        super(parent, eventJSON);
         source = getDevice(eventJSON, "source");
         eventName = getJSONString(eventJSON, "eventName");
         eventValue = getJSONString(eventJSON, "eventValue");
@@ -215,7 +215,7 @@ public class NodeEvent extends Node implements INodeEvent {
 
     @Override
     protected Node copy(Node parent) {
-        NodeEvent ret = new NodeEvent(parent, getIID());
+        NodeEvent ret = new NodeEvent(parent);
         ret.eventName = eventName;
         ret.eventValue = eventValue;
         ret.source = source.copy(parent);

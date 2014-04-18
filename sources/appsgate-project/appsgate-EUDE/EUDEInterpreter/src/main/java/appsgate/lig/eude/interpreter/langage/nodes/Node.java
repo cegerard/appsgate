@@ -74,21 +74,34 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     private boolean started = false;
 
     /**
-     *
+     * the iid available for the editor
      */
-    private final String iid;
+    private String iid = null;
+    /**
+     * the phrase available for the editor
+     */
+    private String phrase = null;
 
     /**
      * Default constructor
      *
      * @param p the parent node
-     * @param id the iid of the node in the program
      */
-    public Node(Node p, String id) {
+    public Node(Node p) {
         this.parent = p;
-        this.iid = id;
     }
 
+    /**
+     * 
+     * @param p the parent node
+     * @param o the json object
+     */
+    public Node(Node p, JSONObject o) {
+        this(p);
+        this.iid = o.optString("iid");
+        this.phrase = o.optString("phrase");
+    }
+    
     /**
      * @param n the parent node
      */
@@ -155,6 +168,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         JSONObject o = new JSONObject();
         try {
             o.put("iid", this.getIID());
+            o.put("phrase", this.phrase);
         } catch (JSONException ex) {
         }
         return o;
@@ -574,7 +588,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * 
      */
     protected void setProgramWaiting() {
-        LOGGER.debug("Program WAITING");
+        LOGGER.trace("Program WAITING");
         NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
         if (p != null) {
             p.setWaiting();
@@ -587,7 +601,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      *
      */
     protected void setProgramProcessing() {
-        LOGGER.debug("Program PROCESSING");
+        LOGGER.trace("Program PROCESSING");
         NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
         if (p != null) {
             p.setProcessing();

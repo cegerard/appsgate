@@ -21,6 +21,12 @@ import org.junit.Before;
 public class NodeValueTest extends NodeTest {
     private NodeValue node;
 
+    public JSONObject getDesc(String type, String value) throws JSONException {
+        ruleJSON.put("type", type);
+        ruleJSON.put("value", value);
+        return ruleJSON;
+    }
+    
     public NodeValueTest() throws JSONException {
         ruleJSON.put("value", false);
         ruleJSON.put("type", "boolean");
@@ -137,7 +143,6 @@ public class NodeValueTest extends NodeTest {
     
     
     @Test
-    @Override
     public void testEquals() {
         printTestName("Equals");
         Node copy = this.instance.copy(null);

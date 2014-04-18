@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.Before;
 
 /**
@@ -14,7 +15,7 @@ import org.junit.Before;
  */
 public class NodeSetOfRulesTest extends NodeTest {
 
-    public NodeSetOfRulesTest() throws Exception {
+    public NodeSetOfRulesTest() throws JSONException {
         ruleJSON.put("type", "setOfRules");
         ruleJSON.put("rules", new JSONArray());
 

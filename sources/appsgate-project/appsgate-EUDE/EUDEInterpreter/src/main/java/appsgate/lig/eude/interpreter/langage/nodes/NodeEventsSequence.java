@@ -40,8 +40,8 @@ public class NodeEventsSequence extends NodeEvents {
      *
      * @param parent
      */
-    private NodeEventsSequence(Node parent, String iid) {
-        super(parent, iid);
+    private NodeEventsSequence(Node parent) {
+        super(parent);
     }
 
     /**
@@ -76,7 +76,7 @@ public class NodeEventsSequence extends NodeEvents {
 
     @Override
     protected Node copy(Node parent) {
-        NodeEventsSequence ret = new NodeEventsSequence(parent, getIID());
+        NodeEventsSequence ret = new NodeEventsSequence(parent);
         return commonCopy(ret);
     }
 

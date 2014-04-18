@@ -37,7 +37,7 @@ public class NodeFunctionDefinition extends Node {
      */
     public NodeFunctionDefinition(JSONObject programJSON, Node parent)
             throws SpokNodeException {
-        super(parent, programJSON.optString("iid"));
+        super(parent, programJSON);
         this.name = programJSON.optString("id");
         try {
             this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions"), this));
@@ -57,8 +57,8 @@ public class NodeFunctionDefinition extends Node {
      *
      * @param parent
      */
-    private NodeFunctionDefinition(Node parent, String id) {
-        super(parent, id);
+    private NodeFunctionDefinition(Node parent) {
+        super(parent);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class NodeFunctionDefinition extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeFunctionDefinition ret = new NodeFunctionDefinition(parent, getIID());
+        NodeFunctionDefinition ret = new NodeFunctionDefinition(parent);
         ret.name = name;
         ret.seqRules = seqRules.copy(ret);
         return ret;

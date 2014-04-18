@@ -15,10 +15,8 @@ public class NodeVariableAssignationTest extends NodeTest {
     private NodeVariableAssignation node;
 
     public NodeVariableAssignationTest() throws JSONException {
-        JSONObject val = new JSONObject();
-        val.put("type", "number");
-        val.put("value", "0");
-        val.put("iid", "test");
+        NodeValueTest t = new NodeValueTest();
+        JSONObject val = t.getDesc("number", "0");
         ruleJSON.put("value", val);
         ruleJSON.put("name", "test");
         ruleJSON.put("type", "assignation");

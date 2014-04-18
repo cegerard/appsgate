@@ -107,7 +107,7 @@ final public class NodeProgram extends Node {
      * @constructor
      */
     public NodeProgram(EUDEInterpreter i, Node p) {
-        super(p, null);
+        super(p);
         this.mediator = i;
         subPrograms = new HashMap<String, NodeProgram>();
     }

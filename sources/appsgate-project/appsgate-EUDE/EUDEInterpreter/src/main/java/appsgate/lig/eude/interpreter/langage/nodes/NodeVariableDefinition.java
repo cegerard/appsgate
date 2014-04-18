@@ -29,8 +29,8 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      *
      * @param parent
      */
-    private NodeVariableDefinition(Node parent, String id) {
-        super(parent, id);
+    private NodeVariableDefinition(Node parent) {
+        super(parent);
     }
 
     /**
@@ -40,7 +40,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      * @param parent
      */
     public NodeVariableDefinition(String i, Node parent) {
-        super(parent, null);
+        super(parent);
         this.id = i;
         this.value = null;
     }
@@ -52,7 +52,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      * @throws SpokNodeException
      */
     public NodeVariableDefinition(JSONObject obj, Node parent) throws SpokException {
-        super(parent, obj.optString("iid"));
+        super(parent, obj);
         this.id = obj.optString("var_name");
         checkVariable(obj.optJSONObject("value"));
     }
@@ -65,7 +65,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
      * @throws SpokException
      */
     public NodeVariableDefinition(String v_name, JSONObject jsonVariable, Node parent) throws SpokException {
-        super(parent, null);
+        super(parent);
         this.id = v_name;
         checkVariable(jsonVariable);
     }
@@ -226,7 +226,7 @@ public class NodeVariableDefinition extends Node implements INodeList, INodeFunc
 
     @Override
     protected Node copy(Node parent) {
-        NodeVariableDefinition node = new NodeVariableDefinition(parent, getIID());
+        NodeVariableDefinition node = new NodeVariableDefinition(parent);
         node.id = this.id;
         Node n = (Node) getNodeValue();
         if (n != null) {

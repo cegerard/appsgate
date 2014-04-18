@@ -44,8 +44,8 @@ public class NodeWhile extends Node implements INodeRule {
      *
      * @param p
      */
-    private NodeWhile(Node p, String id) {
-        super(p, id);
+    private NodeWhile(Node p) {
+        super(p);
     }
 
     /**
@@ -55,7 +55,7 @@ public class NodeWhile extends Node implements INodeRule {
      * @throws SpokNodeException
      */
     public NodeWhile(JSONObject o, Node parent) throws SpokNodeException {
-        super(parent, o.optString("iid"));
+        super(parent, o);
         JSONObject stateJSON = o.optJSONObject("state");
         try {
             this.state = (NodeState) Builder.buildFromJSON(stateJSON, this);
@@ -107,7 +107,7 @@ public class NodeWhile extends Node implements INodeRule {
 
     @Override
     protected Node copy(Node parent) {
-        NodeWhile n = new NodeWhile(parent, getIID());
+        NodeWhile n = new NodeWhile(parent);
         if (rulesThen != null) {
             n.rulesThen = (NodeSeqRules) rulesThen.copy(n);
         }

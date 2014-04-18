@@ -41,10 +41,9 @@ public abstract class NodeEvents extends Node implements INodeEvent{
      * Default constructor for copy
      *
      * @param p parent node
-     * @param id the id of the node
      */
-    protected NodeEvents(Node p, String id) {
-        super(p, id);
+    protected NodeEvents(Node p) {
+        super(p);
     }
 
     /**
@@ -55,7 +54,7 @@ public abstract class NodeEvents extends Node implements INodeEvent{
      * @throws SpokNodeException
      */
     public NodeEvents(JSONObject o, Node parent) throws SpokNodeException {
-        super(parent, o.optString("iid"));
+        super(parent, o);
         JSONArray seqEventJSON = getJSONArray(o, "events");
         JSONObject stateTarget = null;
         listOfEvent = new ArrayList<Node>();

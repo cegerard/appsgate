@@ -57,7 +57,7 @@ public class NodeFunction extends Node implements INodeFunction {
      * @param par
      */
     private NodeFunction(Node parent, String n, NodeFunctionDefinition def, JSONArray par) {
-        super(parent, n);
+        super(parent);
         name = n;
         functionDef = def;
         params = par;
@@ -74,7 +74,7 @@ public class NodeFunction extends Node implements INodeFunction {
      */
     public NodeFunction(JSONObject programJSON, Node parent)
             throws SpokNodeException {
-        super(parent, programJSON.optString("iid"));
+        super(parent, programJSON);
         name = getJSONString(programJSON, "id");
         functionDef = this.getFunctionByName(name);
         params = programJSON.optJSONArray("params");

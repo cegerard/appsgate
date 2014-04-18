@@ -30,6 +30,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
         l.put("type", "number");
         l.put("value", 12);
         l.put("iid", "");
+        l.put("phrase", "");
         ruleJSON.put("leftOperand", l);
         ruleJSON.put("rightOperand", l);
 

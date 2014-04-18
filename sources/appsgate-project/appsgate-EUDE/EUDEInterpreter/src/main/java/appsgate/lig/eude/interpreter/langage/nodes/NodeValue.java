@@ -48,8 +48,8 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
      *
      * @param p
      */
-    private NodeValue(Node p, String id) {
-        super(p, id);
+    private NodeValue(Node p) {
+        super(p);
     }
 
     /**
@@ -59,7 +59,7 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
      * @throws SpokNodeException
      */
     public NodeValue(JSONObject o, Node parent) throws SpokNodeException {
-        super(parent, o.optString("iid"));
+        super(parent, o);
         type = TYPE.valueOf(getJSONString(o, "type").toUpperCase());
         switch (type) {
             case LIST:
@@ -79,7 +79,7 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
      * @param parent
      */
     public NodeValue(String t, String v, Node parent) {
-        super(parent, null);
+        super(parent);
         this.type = TYPE.valueOf(t.toUpperCase());
         this.value = v;
     }
@@ -116,7 +116,7 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeValue ret = new NodeValue(parent, getIID());
+        NodeValue ret = new NodeValue(parent);
         ret.type = this.type;
         ret.value = this.value;
         try {

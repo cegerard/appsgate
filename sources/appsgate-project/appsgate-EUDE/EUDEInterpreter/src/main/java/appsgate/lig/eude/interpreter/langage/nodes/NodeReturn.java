@@ -42,8 +42,8 @@ public class NodeReturn extends Node implements INodeFunction {
      * @param p parent node
      * @param id the id of the node
      */
-    public NodeReturn(Node p, String id) {
-        super(p, id);
+    public NodeReturn(Node p) {
+        super(p);
     }
 
     /**
@@ -54,7 +54,7 @@ public class NodeReturn extends Node implements INodeFunction {
      * @throws SpokNodeException if something is not correctly written
      */
     public NodeReturn(JSONObject obj, Node parent) throws SpokNodeException {
-        super(parent, obj.optString("iid"));
+        super(parent, obj);
         try {
             returnValueNode = Builder.buildFromJSON(obj.optJSONObject("returnValue"), this);
             if (returnValueNode instanceof INodeFunction) {
@@ -83,7 +83,7 @@ public class NodeReturn extends Node implements INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeReturn ret = new NodeReturn(parent, getIID());
+        NodeReturn ret = new NodeReturn(parent);
         if (returnValue != null) {
             ret.returnValueNode = returnValueNode.copy(ret);
             ret.returnValue = (INodeFunction) ret.returnValueNode;

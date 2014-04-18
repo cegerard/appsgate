@@ -21,10 +21,8 @@ public class NodeActionTest extends NodeTest {
     public NodeActionTest() throws Exception {
         super();
         ruleJSON.put("type", "action");
-        JSONObject o = new JSONObject();
-        o.put("type", "device");
-        o.put("value", "test");
-        o.put("iid", "");
+        NodeValueTest t = new NodeValueTest();
+        JSONObject o = t.ruleJSON;
         ruleJSON.put("target", o);
         ruleJSON.put("methodName", "test");
         ruleJSON.put("args", (Collection) null);

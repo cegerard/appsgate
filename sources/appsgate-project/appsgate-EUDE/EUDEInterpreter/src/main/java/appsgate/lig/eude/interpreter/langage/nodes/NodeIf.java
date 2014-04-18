@@ -49,7 +49,7 @@ public class NodeIf extends Node {
      * @throws SpokNodeException
      */
     public NodeIf(JSONObject ruleIfJSON, Node parent) throws SpokNodeException {
-        super(parent, ruleIfJSON.optString("iid"));
+        super(parent, ruleIfJSON);
         try {
             this.expBool = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
         } catch (SpokTypeException ex) {
@@ -77,8 +77,8 @@ public class NodeIf extends Node {
      *
      * @param parent the parent node
      */
-    private NodeIf(Node parent, String id) {
-        super(parent, id);
+    private NodeIf(Node parent) {
+        super(parent);
     }
 
     /**
@@ -197,7 +197,7 @@ public class NodeIf extends Node {
 
     @Override
     protected Node copy(Node parent) {
-        NodeIf ret = new NodeIf(parent, getIID());
+        NodeIf ret = new NodeIf(parent);
         ret.expBool = expBool.copy(ret);
         ret.seqRulesFalse = seqRulesFalse.copy(ret);
         ret.seqRulesTrue = seqRulesTrue.copy(ret);

@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram.RUNNING_STATE;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -58,7 +57,7 @@ public class NodeAction extends Node implements INodeFunction {
      */
     public NodeAction(JSONObject ruleJSON, Node parent)
             throws SpokNodeException {
-        super(parent, ruleJSON.optString("iid"));
+        super(parent, ruleJSON);
         target = getDevice(ruleJSON, "target");
         methodName = ruleJSON.optString("methodName");
         args = ruleJSON.optJSONArray("args");
@@ -75,8 +74,8 @@ public class NodeAction extends Node implements INodeFunction {
      * @param parent the parent node
      * @param id the id of the node
      */
-    private NodeAction(Node parent, String id) {
-        super(parent, id);
+    private NodeAction(Node parent) {
+        super(parent);
     }
 
     @Override
@@ -273,7 +272,7 @@ public class NodeAction extends Node implements INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeAction ret = new NodeAction(parent, getIID());
+        NodeAction ret = new NodeAction(parent);
         try {
             ret.args = new JSONArray(args.toString());
         } catch (JSONException ex) {

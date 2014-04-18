@@ -84,8 +84,8 @@ public class NodeLists extends Node implements INodeList, INodeFunction {
      * @param p the parent node
      * @param id the id of the node
      */
-    private NodeLists(Node p, String id) {
-        super(p, id);
+    private NodeLists(Node p) {
+        super(p);
     }
 
     /**
@@ -96,7 +96,7 @@ public class NodeLists extends Node implements INodeList, INodeFunction {
      * @throws SpokException
      */
     public NodeLists(JSONObject o, Node parent) throws SpokException {
-        super(parent, o.optString("iid"));
+        super(parent, o);
         op = Operator.get(getJSONString(o, "operator"));
         if (op == null) {
             LOGGER.error("Unkown operator {}", getJSONString(o, "operator"));
@@ -152,7 +152,7 @@ public class NodeLists extends Node implements INodeList, INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeLists n = new NodeLists(parent, getIID());
+        NodeLists n = new NodeLists(parent);
         n.left = left.copy(n);
         n.right = right.copy(n);
         n.op = op;

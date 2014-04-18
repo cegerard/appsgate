@@ -56,8 +56,8 @@ public class NodeSelectState extends Node implements INodeList, INodeFunction {
      *
      * @param p
      */
-    private NodeSelectState(Node p, String id) {
-        super(p, id);
+    private NodeSelectState(Node p) {
+        super(p);
     }
 
     /**
@@ -68,7 +68,7 @@ public class NodeSelectState extends Node implements INodeList, INodeFunction {
      * @throws SpokTypeException
      */
     public NodeSelectState(JSONObject o, Node parent) throws SpokException {
-        super(parent, o.optString("iid"));
+        super(parent, o);
         devicesToCheck = Builder.buildFromJSON(o.optJSONObject("devices"), this);
         if (!(devicesToCheck instanceof INodeList)) {
             LOGGER.error("The devices to check must be a list");
@@ -110,7 +110,7 @@ public class NodeSelectState extends Node implements INodeList, INodeFunction {
 
     @Override
     protected Node copy(Node parent) {
-        NodeSelectState s = new NodeSelectState(parent, getIID());
+        NodeSelectState s = new NodeSelectState(parent);
         s.devicesToCheck = devicesToCheck.copy(s);
         s.stateToCheck = stateToCheck;
         s.stateValue = stateValue;
