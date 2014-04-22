@@ -100,7 +100,7 @@ public class NodeIf extends Node {
         }
         Boolean booleanResult;
         try {
-            booleanResult = SpokParser.getBooleanResult(((INodeFunction) expBool).getResult());
+            booleanResult = SpokParser.getBooleanResult(((ICanBeEvaluated) expBool).getResult());
         } catch (SpokException ex) {
             LOGGER.error("An exception has been raised during evaluation of node {}", this.expBool);
             LOGGER.debug(ex.getValue());

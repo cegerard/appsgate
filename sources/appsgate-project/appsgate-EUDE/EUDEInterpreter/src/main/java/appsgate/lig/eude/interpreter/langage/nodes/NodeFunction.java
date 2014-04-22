@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author JR Courtois
  */
-public class NodeFunction extends Node implements INodeFunction {
+public class NodeFunction extends Node implements ICanBeEvaluated {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeFunction.class);
@@ -137,7 +137,7 @@ public class NodeFunction extends Node implements INodeFunction {
 
     @Override
     public void endEventFired(EndEvent e) {
-        INodeFunction source = (INodeFunction) e.getSource();
+        ICanBeEvaluated source = (ICanBeEvaluated) e.getSource();
         LOGGER.debug("The end event ({}) has been catched by {}", source, this);
         try {
             this.result = source.getResult();

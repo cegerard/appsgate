@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeReturn extends Node implements INodeFunction {
+public class NodeReturn extends Node implements ICanBeEvaluated {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeReturn.class);
@@ -30,7 +30,7 @@ public class NodeReturn extends Node implements INodeFunction {
     /**
      * the value to return
      */
-    private INodeFunction returnValue = null;
+    private ICanBeEvaluated returnValue = null;
     /**
      * the parent function of this return node
      */
@@ -57,8 +57,8 @@ public class NodeReturn extends Node implements INodeFunction {
         super(parent, obj);
         try {
             returnValueNode = Builder.buildFromJSON(obj.optJSONObject("returnValue"), this);
-            if (returnValueNode instanceof INodeFunction) {
-                returnValue = (INodeFunction) returnValueNode;
+            if (returnValueNode instanceof ICanBeEvaluated) {
+                returnValue = (ICanBeEvaluated) returnValueNode;
             } else {
                 LOGGER.error("The return value is not a function and has no result");
                 throw new SpokNodeException("NodeReturn", "returnValue", null);
@@ -86,7 +86,7 @@ public class NodeReturn extends Node implements INodeFunction {
         NodeReturn ret = new NodeReturn(parent);
         if (returnValue != null) {
             ret.returnValueNode = returnValueNode.copy(ret);
-            ret.returnValue = (INodeFunction) ret.returnValueNode;
+            ret.returnValue = (ICanBeEvaluated) ret.returnValueNode;
         }
         return ret;
     }

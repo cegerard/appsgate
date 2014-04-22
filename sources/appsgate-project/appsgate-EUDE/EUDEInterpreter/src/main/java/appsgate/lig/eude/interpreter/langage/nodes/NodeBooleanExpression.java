@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeBooleanExpression extends Node implements INodeFunction {
+public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
 
     /**
      * Logger
@@ -56,13 +56,13 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
     /**
      * The left node to evaluate
      */
-    private INodeFunction left = null;
+    private ICanBeEvaluated left = null;
     private Node leftNode;
 
     /**
      * The right node to evaluate
      */
-    private INodeFunction right = null;
+    private ICanBeEvaluated right = null;
     private Node rightNode;
     /**
      * the operator of the expression
@@ -93,22 +93,22 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
         }
         try {
             leftNode = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
-            if (!(leftNode instanceof INodeFunction)) {
+            if (!(leftNode instanceof ICanBeEvaluated)) {
                 LOGGER.error("Left operand does not return a value");
                 throw new SpokNodeException("BooleanExpression", "leftOperand", null);
             }
-            left = (INodeFunction) leftNode;
+            left = (ICanBeEvaluated) leftNode;
         } catch (SpokTypeException ex) {
             LOGGER.error("Missing left operand");
             throw new SpokNodeException("BooleanExpression", "leftOperand", ex);
         }
         try {
             rightNode = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
-            if (!(rightNode instanceof INodeFunction)) {
+            if (!(rightNode instanceof ICanBeEvaluated)) {
                 LOGGER.error("right operand does not return a value");
                 throw new SpokNodeException("BooleanExpression", "rightOperand", null);
             }
-            right = (INodeFunction) rightNode;
+            right = (ICanBeEvaluated) rightNode;
         } catch (SpokTypeException ex) {
             if (needTwoOperands(operator)) {
                 LOGGER.debug("Missing right operand");
@@ -151,9 +151,9 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
         NodeBooleanExpression ret = new NodeBooleanExpression(parent);
         ret.operator = operator;
         ret.leftNode = leftNode.copy(ret);
-        ret.left = (INodeFunction) ret.leftNode;
+        ret.left = (ICanBeEvaluated) ret.leftNode;
         ret.rightNode = rightNode.copy(ret);
-        ret.right = (INodeFunction) ret.rightNode;
+        ret.right = (ICanBeEvaluated) ret.rightNode;
         return ret;
     }
 

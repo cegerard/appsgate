@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public class NodeAction extends Node implements INodeFunction {
+public class NodeAction extends Node implements ICanBeEvaluated {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeAction.class);
@@ -105,7 +105,7 @@ public class NodeAction extends Node implements INodeFunction {
             } else if (target.getType().equalsIgnoreCase("programcall")) {
                 callProgramAction(target.getValue());
             } else if (target.getType().equalsIgnoreCase("list")) {
-                callListAction(((INodeFunction) target).getResult());
+                callListAction(((ICanBeEvaluated) target).getResult());
             } else if (target.getType().equalsIgnoreCase("variable")) {
                 NodeVariableDefinition var = getVariableByName(target.getValue());
                 callVariableAction(var, target.getValue());

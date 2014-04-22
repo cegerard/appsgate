@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author jr
  */
-public class NodeValue extends Node implements INodeList, INodeFunction {
+public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
 
     // Logger
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NodeValue.class);
@@ -175,8 +175,8 @@ public class NodeValue extends Node implements INodeList, INodeFunction {
                         a.add((NodeValue) e);
                     } else {
                         e.call();
-                        if (e instanceof INodeFunction) {
-                            a.add(((INodeFunction) e).getResult());
+                        if (e instanceof ICanBeEvaluated) {
+                            a.add(((ICanBeEvaluated) e).getResult());
                         }
                     }
                 }

@@ -528,8 +528,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             if (o != null) {
                 try {
                     Node n = Builder.buildFromJSON(o, this);
-                    if (n instanceof INodeFunction) {
-                        WHAT.add(((INodeFunction) n).getResult().getValue());
+                    if (n instanceof ICanBeEvaluated) {
+                        WHAT.add(((ICanBeEvaluated) n).getResult().getValue());
                     } else {
                         LOGGER.debug("Found an unexpected node: " + n);
                         throw new SpokExecutionException(("Unable to parse object in selector"));

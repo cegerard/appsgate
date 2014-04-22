@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeSelectState extends Node implements INodeList, INodeFunction {
+public class NodeSelectState extends Node implements INodeList, ICanBeEvaluated {
 
     /**
      * LOGGER

@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeVariableAssignation extends Node implements INodeFunction {
+public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeVariableAssignation.class);
@@ -115,7 +115,7 @@ public class NodeVariableAssignation extends Node implements INodeFunction {
 
     @Override
     public void endEventFired(EndEvent e) {
-        INodeFunction source = (INodeFunction) e.getSource();
+        ICanBeEvaluated source = (ICanBeEvaluated) e.getSource();
         try {
             SpokObject v = source.getResult();
             if (v != null) {
@@ -140,7 +140,7 @@ public class NodeVariableAssignation extends Node implements INodeFunction {
         if (value == null) {
             throw new SpokExecutionException("A variable assignation should not be null");
         }
-        return ((INodeFunction) value).getResult();
+        return ((ICanBeEvaluated) value).getResult();
     }
 
     /**
