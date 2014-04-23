@@ -1,4 +1,4 @@
-package appsgate.lig.chmi.impl.listeners;
+package appsgate.lig.ehmi.impl.listeners;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -12,22 +12,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
-import appsgate.lig.chmi.impl.CHMIProxyImpl;
+import appsgate.lig.ehmi.impl.EHMIProxyImpl;
 
 /**
- * Listener for all commands and events from clients.
+ * Listener for EHMI commands and events from clients.
  * 
  * @author Cédric Gérard
- * @since February 15, 2013
+ * @since April 22, 2014
  * @version 1.0.0
  * 
  */
-public class CHMICommandListener implements CommandListener {
+public class EHMICommandListener implements CommandListener {
 
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory.getLogger(CHMICommandListener.class);
+	private static Logger logger = LoggerFactory.getLogger(EHMICommandListener.class);
 	
 	/**
 	 * Service that launch method call in a dedicated thread pool
@@ -37,85 +37,54 @@ public class CHMICommandListener implements CommandListener {
 	/**
 	 * The parent proxy of this listener
 	 */
-	private CHMIProxyImpl router;
+	private EHMIProxyImpl ehmiProxy;
 
 	/**
 	 * Constructor to initialize the listener with its parent
 	 * 
-	 * @param router
-	 *            , the parent of this listener
+	 * @param router the parent of this listener
 	 */
-	public CHMICommandListener(CHMIProxyImpl router) {
-		this.router = router;
+	public EHMICommandListener(EHMIProxyImpl ehmiProxy) {
+		this.ehmiProxy = ehmiProxy;
 		executorService = Executors.newScheduledThreadPool(10);
 	}
 
 	/**
 	 * This is the handler for command events from client.
 	 * 
-	 * @param obj
-	 *            , The JSON object description for the cmd parameter
+	 * @param obj The JSON object description for the cmd parameter
 	 */
 	@Override
 	public void onReceivedCommand(JSONObject obj) {
+		logger.debug("Application domain level message (EHMI)");
 		logger.debug("Client send : " + obj.toString());
 		try {
 			int clientId = obj.getInt("clientId");
-			
-			if(obj.has("objectId")) {//TODO 000002 Remove this test
+			try {
+				String method = obj.getString("method");
+				JSONArray args = obj.getJSONArray("args");
+				
+				ArrayList<Object> arguments = new ArrayList<Object>();
+				@SuppressWarnings("rawtypes")
+				ArrayList<Class> types = new ArrayList<Class>();
 
-				logger.debug("Abstract object level message");
-				try {
-					String method = obj.getString("method");
-					String id = obj.getString("objectId");
-					JSONArray args = obj.getJSONArray("args");
-					
-					ArrayList<Object> arguments = new ArrayList<Object>();
-					@SuppressWarnings("rawtypes")
-					ArrayList<Class> types = new ArrayList<Class>();
-
-					loadArguments(args, arguments, types);
-
-					String callId = null;
-					if(obj.has("callId")) {
-						callId = obj.getString("callId");
-						logger.debug("method with return, call");
-					} else {
-						logger.debug("no return method call");
-					}
-					
-					executorService.execute(router.executeCommand(clientId, id, method, arguments, types, callId));
+				loadArguments(args, arguments, types);
+				
+				String callId = null;
+				if(obj.has("callId")) {
+					callId = obj.getString("callId");
+					logger.debug("method with return, call");
+				} else {
+					logger.debug("no return method call");
+				}
+				//TODO 000002 implements threading call in EHMI
+				//executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 
-
-			} else {//TODO 000002 Remove this case treated in the EHMI command listener
-				try {
-					String method = obj.getString("method");
-					JSONArray args = obj.getJSONArray("args");
-				
-					ArrayList<Object> arguments = new ArrayList<Object>();
-					@SuppressWarnings("rawtypes")
-					ArrayList<Class> types = new ArrayList<Class>();
-
-					loadArguments(args, arguments, types);
-				
-					String callId = null;
-					if(obj.has("callId")) {
-						callId = obj.getString("callId");
-						logger.debug("method with return, call");
-					} else {
-						logger.debug("no return method call");
-					}
-					executorService.execute(router.executeCommand(clientId, "ehmi", method, arguments, types, callId));
-				} catch (IllegalArgumentException e) {
-					logger.debug("Inappropriate argument: " + e.getMessage());
-				} 
-
-			}
 
 		} catch (JSONException e1) {
-			e1.printStackTrace();
+			logger.error(e1.getMessage());
 		}
 		
 	}
@@ -128,8 +97,7 @@ public class CHMICommandListener implements CommandListener {
 	 * @param types the java types ArrayList
 	 */
 	@SuppressWarnings("rawtypes")
-	public void loadArguments(JSONArray args, ArrayList<Object> arguments,
-			ArrayList<Class> types) {
+	public void loadArguments(JSONArray args, ArrayList<Object> arguments, ArrayList<Class> types) {
 		//TODO
 		try {
 			// Get all arguments types and values
@@ -236,10 +204,12 @@ public class CHMICommandListener implements CommandListener {
 						+ e.getMessage());
 			}
 		} else {
+			//TODO Warning for call with reference in EHMI
+			logger.debug("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ reference use in EHMICommandListener");
 			// Type is a reference to a complex java object
 			// and value correspond to the id of the java AbstractObjectSpec
-			Object paramRef = router.getObjectRefFromID(value);
-			arguments.add(paramRef);
+			//Object paramRef = ehmiProxy.getObjectRefFromID(value);
+			//arguments.add(paramRef);
 		}
 	}
 

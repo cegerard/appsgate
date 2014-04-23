@@ -14,7 +14,7 @@
 		
 		<relation push="gotNotification" multiple="true" resolve="exist" />
 		
-		<relation specification="AppsgateClientCommunicationManagerSpec" creation="eager" resolve="external"
+		<relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"
 			fail="exception" exception="appsgate.lig.chmi.exceptions.ExternalComDependencyException">
 			<interface field="addListenerService" />
 			<interface field="sendToClientService" />
@@ -23,8 +23,5 @@
 		<ipojo:requires field="httpService"  />
 
 	</implementation>
-
-	<!-- <apam-instance name="AppsGateRouterInst" implementation="AppsGateRouterImpl"> -->
-	<!-- </apam-instance> -->
 
 </apam>

@@ -61,6 +61,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     private SendWebsocketsService sendToClientService;
 
+    //TODO 000001 delete ehmiProxy
     /**
      * The EHMI component to call for every application domain request
      */
@@ -95,13 +96,13 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         logger.debug("The CHMI proxy component has been initialized");
         
         try{
-        	if (addListenerService.addCommandListener(commandListener)) {
+        	if (addListenerService.addCommandListener(commandListener, "CHMI")) {
         		logger.info("CHMI command listener deployed.");
         	} else {
         		logger.error("CHMI command listener subscription failed.");
         	}
         }catch(ExternalComDependencyException comException) {
-    		logger.debug("Resolution failled for listener service dependency, the CHMICommandListener will be deployed");
+    		logger.debug("Resolution failed for listener service dependency, the CHMICommandListener will not be registered.");
     	}
     }
 
@@ -109,8 +110,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-        logger.debug("The CHMI proxy component has been stopped");
     	httpService.unregister("/chmi");
+    	addListenerService.removeCommandListener("CHMI");
+        logger.debug("The CHMI proxy component has been stopped");
     }
 
     /**
@@ -126,6 +128,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             String newMsg = "";
             if (newObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
             	newMsg = "newDevice";
+            	//TODO 000001 delete ehmiProxy
             	try{
             		ehmiProxy.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
             	}catch(EHMIDependencyException ehmiException) {
@@ -133,6 +136,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             	}
             } else if (newObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
             	newMsg = "newService";
+            	//TODO 000001 delete ehmiProxy
             	try{
             		ehmiProxy.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
             	}catch(EHMIDependencyException ehmiException) {
@@ -241,6 +245,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     @SuppressWarnings("rawtypes")
     public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
         Object obj;
+        //TODO 000001 delete ehmiProxy
         if (objectId.contentEquals("ehmi")) {
             try{	
             	logger.info("retreive EHMI reference: " + ehmiProxy.toString());
@@ -258,6 +263,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     @Override
     public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
         Object obj;
+        //TODO 000001 delete ehmiProxy
         if (objectId.contentEquals("ehmi")) {
         	try{
             	logger.info("retreive EHMI reference: " + ehmiProxy.toString());
@@ -370,6 +376,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             JSONDescription = obj.getDescription();
             
             //Add context description for this abject
+            //TODO 000001 delete ehmiProxy references
             try{
 				JSONDescription.put("name", ehmiProxy.getUserObjectName(obj.getAbstractObjectId(), ""));
 				JSONDescription.put("placeId", ehmiProxy.getCoreObjectPlaceId(obj.getAbstractObjectId()));

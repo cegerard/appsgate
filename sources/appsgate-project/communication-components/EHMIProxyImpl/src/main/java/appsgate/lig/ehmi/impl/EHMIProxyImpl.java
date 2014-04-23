@@ -27,10 +27,15 @@ import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.manager.place.spec.*;
+import appsgate.lig.ehmi.exceptions.CoreDependencyException;
+import appsgate.lig.ehmi.exceptions.ExternalComDependencyException;
+import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
 import appsgate.lig.ehmi.impl.upnp.AppsGateServerDevice;
 import appsgate.lig.ehmi.impl.upnp.ServerInfoService;
 import appsgate.lig.ehmi.impl.upnp.StateVariableServerIP;
@@ -65,11 +70,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * resources to the Felix HTTP server
 	 */
 	private HttpService httpService;
-
-//	/**
-//	 * The place manager ApAM component to handle the space manager service reference
-//	 */
-//	private ContextManagerSpec contextManager;
 	
 	/**
 	 * Table for deviceId, user and device properties association
@@ -89,12 +89,22 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	/**
 	 * Reference on the CHMI proxy to execute command on devices
 	 */
-	private CHMIProxySpec chmiProxy;
+	private CHMIProxySpec coreProxy;
 
 	/**
 	 * Reference to the EUDE interpreter to manage end user programs
 	 */
 	private EUDE_InterpreterSpec interpreter;
+	
+    /**
+     * Service to be notified when clients send commands
+     */
+    private ListenerService addListenerService;
+
+    /**
+     * Service to communicate with clients
+     */
+    private SendWebsocketsService sendToClientService;
 	
 	
 	private String wsPort="8087";
@@ -106,7 +116,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	private ServerInfoService upnpService;
 	private StateVariableServerIP serverIP;
 	private StateVariableServerURL serverURL;
-	private StateVariableServerWebsocket serverWebsocket;	
+	private StateVariableServerWebsocket serverWebsocket;
+
+	/**
+	 * Listener for EHMI command from clients
+	 */
+	private EHMICommandListener commandListener;	
 
 	/**
 	 * Default constructor for EHMIImpl java object. it load UPnP device and
@@ -116,11 +131,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	public EHMIProxyImpl(BundleContext context) {
 		logger.debug("new EHMI, BundleContext : " + context);
 		this.context = context;
+		commandListener = new EHMICommandListener(this);
 		upnpDevice = new AppsGateServerDevice(context);
 		logger.debug("UPnP Device instanciated");
 		registerUpnpDevice();
 		retrieveLocalAdress();
-
 		logger.info("EHMI instanciated");
 	}
 	
@@ -155,29 +170,56 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				logger.error("NameSpace exception");
 			}
 		}
+		
+        try{
+        	if (addListenerService.addCommandListener(commandListener, "EHMI")) {
+        		logger.info("EHMI command listener deployed.");
+        	} else {
+        		logger.error("EHMI command listener subscription failed.");
+        	}
+        }catch(ExternalComDependencyException comException) {
+    		logger.debug("Resolution failed for listener service dependency, the EHMICommandListener will not be registered");
+    	}
+		
 	}
 
 	/**
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		logger.info("EHMI is stopping");
 		httpService.unregister("/spok");
+    	addListenerService.removeCommandListener("EHMI");
+    	logger.info("EHMI has been stopped.");
 	}
 
 	@Override
 	public JSONArray getDevices() {
-		return chmiProxy.getDevices();
+		try {
+			return coreProxy.getDevices();
+		}catch(CoreDependencyException coreException) {
+    		logger.debug("Resolution failled for core dependency, no device can be found.");
+    	}
+		return new JSONArray();
 	}
 	
 	@Override
 	public JSONObject getDevice(String deviceId) {
-		return chmiProxy.getDevice(deviceId);
+		try {
+			return coreProxy.getDevice(deviceId);
+		}catch(CoreDependencyException coreException) {
+    		logger.debug("Resolution failled for core dependency, no device can be found.");
+    	}
+		return new JSONObject();
 	}
 	
 	@Override
 	public JSONArray getDevices(String type) {
-		return chmiProxy.getDevices(type);
+		try {
+			return coreProxy.getDevices(type);
+		}catch(CoreDependencyException coreException) {
+    		logger.debug("Resolution failled for core dependency, no device can be found.");
+    	}
+		return new JSONArray();
 	}
 
 	@Override

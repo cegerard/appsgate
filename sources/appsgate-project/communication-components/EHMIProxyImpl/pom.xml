@@ -50,21 +50,6 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>CHMIProxySpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>appsgate.components</groupId> -->
-<!-- 			<artifactId>ContextManagerSpec</artifactId> -->
-<!-- 			<version>1.0.0</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>appsgate.components</groupId> -->
-<!-- 			<artifactId>SpaceManagerSpec</artifactId> -->
-<!-- 			<version>1.0.0</version> -->
-<!-- 		</dependency> -->
-		<dependency>
-			<groupId>appsgate.components</groupId>
 			<artifactId>DevicePropertiesTable</artifactId>
 			<version>1.0.0</version>
 		</dependency>
@@ -88,6 +73,11 @@
 			<artifactId>org.osgi.core</artifactId>
 			<version>4.3.0</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CHMIProxySpec</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
@@ -124,7 +114,8 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Private-Package>
 							appsgate.lig.ehmi.impl,
-							appsgate.lig.ehmi.impl.upnp
+							appsgate.lig.ehmi.impl.upnp,
+							appsgate.lig.ehmi.impl.listeners
 						</Private-Package>
 						<Import-Package>
 							*

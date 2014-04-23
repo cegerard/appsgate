@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -242,9 +241,14 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	/*****************************************/
 	
 	@Override
-	public boolean addCommandListener(CommandListener cmdListener) {
-		logger.debug("New all command listener: "+cmdListener.toString());
-		return commandListeners.add(cmdListener);
+	public boolean addCommandListener(CommandListener cmdListener, String target) {
+		logger.debug("New "+target+" command listener: "+cmdListener.toString());
+		return commandListeners.put(target, cmdListener) == null;
+	}
+	
+	@Override
+	public boolean removeCommandListener(String target) {
+		return commandListeners.remove(target) != null;
 	}
 
 
@@ -261,7 +265,7 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	}
 	
 	/**
-	 * notify all command listeners that new command or event is received
+	 * notify command listeners that new command or event is received
 	 * @param socket the client connection
 	 * @param cmd the command.
 	 * @throws ParseException 
@@ -272,14 +276,17 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 		try {
 			cmd.put("clientId", socket.hashCode());
 			
-			Iterator<CommandListener> it = commandListeners.iterator();
-			CommandListener allcmdListener;
-		
-			while(it.hasNext()){
-				allcmdListener = it.next();
-				allcmdListener.onReceivedCommand(cmd);
+			CommandListener cmdListener;
+			if(cmd.has("TARGET")) {
+				cmdListener = commandListeners.get(cmd.getString("TARGET"));
+				cmdListener.onReceivedCommand(cmd);
+			}else {
+				Iterator<CommandListener> it = commandListeners.values().iterator();
+				while(it.hasNext()){
+					cmdListener = it.next();
+					cmdListener.onReceivedCommand(cmd);
+				}
 			}
-		
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -311,13 +318,12 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	/**
 	 * The lister list for components who subscribe for all client commands.
 	 */
-	ArrayList<CommandListener> commandListeners = new ArrayList<CommandListener>();
+	HashMap<String, CommandListener> commandListeners = new HashMap<String, CommandListener>();
 	
 	/**
 	 * The lister list for components who subscribe for configuration commands.
 	 */
 	HashMap<String, ConfigListener> configListeners = new HashMap<String, ConfigListener>();
-
 	
 }
 
