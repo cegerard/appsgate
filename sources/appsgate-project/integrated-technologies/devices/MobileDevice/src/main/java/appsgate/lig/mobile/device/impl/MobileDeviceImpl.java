@@ -144,12 +144,6 @@ public class MobileDeviceImpl extends CoreObjectBehavior implements CoreObjectSp
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public JSONObject getGrammarDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	/**
 	 * Called by ApAM when the status value changed

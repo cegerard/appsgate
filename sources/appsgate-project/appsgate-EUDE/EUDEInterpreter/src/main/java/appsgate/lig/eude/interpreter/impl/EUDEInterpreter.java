@@ -737,7 +737,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public void startEventFired(StartEvent e) {
-        // TODO Auto-generated method stub
 
     }
 

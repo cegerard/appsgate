@@ -97,6 +97,7 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 			JSONTokener jsonParser = new JSONTokener(message);
 			JSONObject jsObj = (JSONObject)jsonParser.nextValue();
 			
+			//TODO 000006 delete configuration message and use directly the target to be register
 			if(isConfiguration(jsObj)) {
 				notifyConfigListeners(conn, jsObj);
 			}else {

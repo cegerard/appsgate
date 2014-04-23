@@ -32,11 +32,6 @@
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>${ipojo.annotations.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>EHMIProxySpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->

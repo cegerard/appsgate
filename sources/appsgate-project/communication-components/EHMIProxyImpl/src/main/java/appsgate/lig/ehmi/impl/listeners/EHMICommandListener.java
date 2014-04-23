@@ -56,8 +56,8 @@ public class EHMICommandListener implements CommandListener {
 	 */
 	@Override
 	public void onReceivedCommand(JSONObject obj) {
-		logger.debug("Application domain level message (EHMI)");
 		logger.debug("Client send : " + obj.toString());
+		logger.debug("Application domain level message (EHMI)");
 		try {
 			int clientId = obj.getInt("clientId");
 			try {
@@ -73,12 +73,11 @@ public class EHMICommandListener implements CommandListener {
 				String callId = null;
 				if(obj.has("callId")) {
 					callId = obj.getString("callId");
-					logger.debug("method with return, call");
+					logger.debug("method with return call");
 				} else {
-					logger.debug("no return method call");
+					logger.debug("method without return");
 				}
-				//TODO 000002 implements threading call in EHMI
-				//executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
+				executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 
@@ -123,93 +122,79 @@ public class EHMICommandListener implements CommandListener {
 	}
 
 	/**
-	 * Load the Class java object from the String type, instanciate it and add
+	 * Load the Class java object from the String type, instantiate it and add
 	 * the generate java object to the parameters list.
 	 * 
-	 * @param type
-	 *            , the parameter java type (ex: java.lang.String)
-	 * @param value
-	 *            , the value of the parameter
-	 * @param arguments
-	 *            , the arguments list
+	 * @param type the parameter java type (e.g.: java.lang.String)
+	 * @param value the value of the parameter
+	 * @param arguments the arguments list
 	 * 
-	 * @throws ClassNotFoundException
-	 *             , throw if no java Class corresponding to type parameter is
-	 *             found.
-	 * @throws IllegalArgumentException
-	 *             , throw if the argument does not corresponding to the
-	 *             constructor type.
+	 * @throws ClassNotFoundException throw if no java Class corresponding to type parameter is  found.
+	 * @throws IllegalArgumentException throw if the argument does not corresponding to the constructor type.
 	 */
 	@SuppressWarnings("unchecked")
 	private void addArguments(String type, String value,
 			ArrayList<Object> arguments, @SuppressWarnings("rawtypes")ArrayList<Class> types) throws ClassNotFoundException,
 			IllegalArgumentException {
-		if (!type.equalsIgnoreCase("ref")) {
-			// Type referred to a basic java type
-			try {
-				if(type.matches("\\p{javaUpperCase}.*")){
-					// Java wrapper for basic type
-					logger.debug("Wrapper type detected");
-					@SuppressWarnings("rawtypes")
-					Class argClass;
-					if(type.contains("JSON")) {
-						argClass = Class.forName("org.json." + type);
-					} else {
-						argClass = Class.forName("java.lang." + type);
-					}
-					Object param = argClass.getConstructor(String.class).newInstance(value);
-					arguments.add(param);
-					types.add(param.getClass());
-					
-				}else {
-					//Java primitive type
-					logger.debug("Full primitive type detected");
-					if(type.contentEquals("int")){
-						int intParam = new Integer(value).intValue();
-						arguments.add(intParam);
-						types.add(int.class);
-					} else if (type.contentEquals("float")) {
-						float floatParam = new Float(value).floatValue();
-						arguments.add(floatParam);
-						types.add(float.class);
-					} else if (type.contentEquals("long")) {
-						long longParam = new Long(value).longValue();
-						arguments.add(longParam);
-						types.add(long.class);
-					} else if (type.contentEquals("double")) {
-						double doubleParam = new Double(value).doubleValue();
-						arguments.add(doubleParam);
-						types.add(double.class);
-					} else if (type.contentEquals("boolean")) {
-						boolean boolParam = new Boolean(value).booleanValue();
-						arguments.add(boolParam);
-						types.add(boolean.class);
-					} else {
-						throw new ClassNotFoundException("Primitive type ("+ type +") not defined");
-					}
+
+		// Type referred to a basic java type
+		try {
+			if (type.matches("\\p{javaUpperCase}.*")) {
+				// Java wrapper for basic type
+				logger.debug("Wrapper type detected");
+				@SuppressWarnings("rawtypes")
+				Class argClass;
+				if (type.contains("JSON")) {
+					argClass = Class.forName("org.json." + type);
+				} else {
+					argClass = Class.forName("java.lang." + type);
 				}
-				
-			} catch (SecurityException e) {
-				logger.debug("Security violation: " + e.getMessage());
-			} catch (InstantiationException e) {
-				logger.debug("Instanciation error, wrong type description: "
-						+ e.getMessage());
-			} catch (IllegalAccessException e) {
-				logger.debug("illegal access detected:  " + e.getMessage());
-			} catch (InvocationTargetException e) {
-				logger.debug("Probleme with the targeted object : "
-						+ e.getMessage());
-			} catch (NoSuchMethodException e) {
-				logger.debug("No constructor with \"String\" parameter : "
-						+ e.getMessage());
+				Object param = argClass.getConstructor(String.class)
+						.newInstance(value);
+				arguments.add(param);
+				types.add(param.getClass());
+
+			} else {
+				// Java primitive type
+				logger.debug("Full primitive type detected");
+				if (type.contentEquals("int")) {
+					int intParam = new Integer(value).intValue();
+					arguments.add(intParam);
+					types.add(int.class);
+				} else if (type.contentEquals("float")) {
+					float floatParam = new Float(value).floatValue();
+					arguments.add(floatParam);
+					types.add(float.class);
+				} else if (type.contentEquals("long")) {
+					long longParam = new Long(value).longValue();
+					arguments.add(longParam);
+					types.add(long.class);
+				} else if (type.contentEquals("double")) {
+					double doubleParam = new Double(value).doubleValue();
+					arguments.add(doubleParam);
+					types.add(double.class);
+				} else if (type.contentEquals("boolean")) {
+					boolean boolParam = new Boolean(value).booleanValue();
+					arguments.add(boolParam);
+					types.add(boolean.class);
+				} else {
+					throw new ClassNotFoundException("Primitive type (" + type+ ") not defined");
+				}
 			}
-		} else {
-			//TODO Warning for call with reference in EHMI
-			logger.debug("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ reference use in EHMICommandListener");
-			// Type is a reference to a complex java object
-			// and value correspond to the id of the java AbstractObjectSpec
-			//Object paramRef = ehmiProxy.getObjectRefFromID(value);
-			//arguments.add(paramRef);
+
+		} catch (SecurityException e) {
+			logger.debug("Security violation: " + e.getMessage());
+		} catch (InstantiationException e) {
+			logger.debug("Instanciation error, wrong type description: "
+					+ e.getMessage());
+		} catch (IllegalAccessException e) {
+			logger.debug("illegal access detected:  " + e.getMessage());
+		} catch (InvocationTargetException e) {
+			logger.debug("Probleme with the targeted object : "
+					+ e.getMessage());
+		} catch (NoSuchMethodException e) {
+			logger.debug("No constructor with \"String\" parameter : "
+					+ e.getMessage());
 		}
 	}
 

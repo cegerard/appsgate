@@ -1,4 +1,4 @@
-package appsgate.lig.chmi.spec;
+package appsgate.lig.ehmi.impl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import appsGate.lig.manager.client.communication.service.send.SendWebsocketsServ
  * the response to the client who made the call.
  * 
  * @author Cédric Gérard
+ * @since April 23, 2014
  * @version 1.0.0
  *
  */
@@ -33,8 +34,7 @@ public class GenericCommand implements Runnable {
 	private ArrayList<Object> args;
 	@SuppressWarnings("rawtypes")
 	private ArrayList<Class> paramType;
-	private Object obj;
-	private String objId;
+	private EHMIProxyImpl ehmiProxy;
 	private String methodName;
 	private String callId;
 	private int clientId;
@@ -43,33 +43,16 @@ public class GenericCommand implements Runnable {
 	private Object returnObject;
 
 	@SuppressWarnings("rawtypes")
-	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
-			Object obj, String objId, String methodName, String callId, int clientId,
-			SendWebsocketsService sendToClientService) {
+	public GenericCommand(EHMIProxyImpl ehmiProxy, String methodName, ArrayList<Object> args, ArrayList<Class> paramType,
+			String callId, int clientId, SendWebsocketsService sendToClientService) {
 
+		this.ehmiProxy = ehmiProxy;
+		this.methodName = methodName;
 		this.args = args;
 		this.paramType = paramType;
-		this.obj = obj;
-		this.objId = objId;
-		this.methodName = methodName;
 		this.callId = callId;
 		this.clientId = clientId;
 		this.sendToClientService = sendToClientService;
-		
-		this.returnObject = null;
-	}
-
-	@SuppressWarnings("rawtypes")
-	public GenericCommand(ArrayList<Object> args, ArrayList<Class> paramType,
-			Object obj, String methodName) {
-		
-		this.args = args;
-		this.paramType = paramType;
-		this.obj = obj;
-		this.methodName = methodName;
-		this.callId = null;
-		this.clientId = -1;
-		this.sendToClientService = null;
 		
 		this.returnObject = null;
 	}
@@ -78,14 +61,11 @@ public class GenericCommand implements Runnable {
 	 * This method allow the router to invoke methods on an abstract java
 	 * object.
 	 * 
-	 * @param obj
-	 *            , the abstract object on which the method will be invoke
-	 * @param args
-	 *            , all arguments for the method call
-	 * @param methodName
-	 *            , the method to invoke
-	 * @return the result of dispatching the method represented by this object
-	 *         on obj with parameters args
+	 * @param obj the abstract object on which the method will be invoke
+	 * @param args all arguments for the method call
+	 * @param methodName the method to invoke
+	 * @return the result of dispatching the method represented by this object on obj with parameters args
+	 * 
 	 * @throws Exception
 	 */
 	@SuppressWarnings("rawtypes")
@@ -115,7 +95,7 @@ public class GenericCommand implements Runnable {
 	@Override
 	public void run() {
 		try {
-			Object ret = abstractInvoke(obj, args.toArray(), paramType, methodName);
+			Object ret = abstractInvoke(ehmiProxy, args.toArray(), paramType, methodName);
 			
 			if (ret != null) {
 				logger.debug("remote call, " + methodName + " returns "
@@ -126,7 +106,7 @@ public class GenericCommand implements Runnable {
 				if(sendToClientService != null) {
 					JSONObject msg = new JSONObject();
 					msg.put("value", returnObject.toString());
-					msg.put("objectId", objId);
+					msg.put("objectId", "EHMI");
 					msg.put("callId", callId);
 					sendToClientService.send(clientId, msg.toString());
 				}

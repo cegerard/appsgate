@@ -37,24 +37,22 @@ public class CHMICommandListener implements CommandListener {
 	/**
 	 * The parent proxy of this listener
 	 */
-	private CHMIProxyImpl router;
+	private CHMIProxyImpl chmiProxy;
 
 	/**
 	 * Constructor to initialize the listener with its parent
 	 * 
-	 * @param router
-	 *            , the parent of this listener
+	 * @param router the parent of this listener
 	 */
-	public CHMICommandListener(CHMIProxyImpl router) {
-		this.router = router;
+	public CHMICommandListener(CHMIProxyImpl chmiProxy) {
+		this.chmiProxy = chmiProxy;
 		executorService = Executors.newScheduledThreadPool(10);
 	}
 
 	/**
 	 * This is the handler for command events from client.
 	 * 
-	 * @param obj
-	 *            , The JSON object description for the cmd parameter
+	 * @param obj The JSON object description for the cmd parameter
 	 */
 	@Override
 	public void onReceivedCommand(JSONObject obj) {
@@ -62,7 +60,7 @@ public class CHMICommandListener implements CommandListener {
 		try {
 			int clientId = obj.getInt("clientId");
 			
-			if(obj.has("objectId")) {//TODO 000002 Remove this test
+			if(obj.has("objectId")) {
 
 				logger.debug("Abstract object level message");
 				try {
@@ -79,17 +77,18 @@ public class CHMICommandListener implements CommandListener {
 					String callId = null;
 					if(obj.has("callId")) {
 						callId = obj.getString("callId");
-						logger.debug("method with return, call");
+						logger.debug("method with return call");
 					} else {
-						logger.debug("no return method call");
+						logger.debug("method without return");
 					}
 					
-					executorService.execute(router.executeCommand(clientId, id, method, arguments, types, callId));
+					executorService.execute(chmiProxy.executeCommand(clientId, id, method, arguments, types, callId));
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 
 
-			} else {//TODO 000002 Remove this case treated in the EHMI command listener
+			} else {
+				logger.debug("CHMI proxy level message");
 				try {
 					String method = obj.getString("method");
 					JSONArray args = obj.getJSONArray("args");
@@ -103,21 +102,18 @@ public class CHMICommandListener implements CommandListener {
 					String callId = null;
 					if(obj.has("callId")) {
 						callId = obj.getString("callId");
-						logger.debug("method with return, call");
+						logger.debug("method with return call");
 					} else {
-						logger.debug("no return method call");
+						logger.debug("method without return");
 					}
-					executorService.execute(router.executeCommand(clientId, "ehmi", method, arguments, types, callId));
+					executorService.execute(chmiProxy.executeCommand(clientId, "proxy", method, arguments, types, callId));
 				} catch (IllegalArgumentException e) {
 					logger.debug("Inappropriate argument: " + e.getMessage());
 				} 
-
 			}
-
 		} catch (JSONException e1) {
-			e1.printStackTrace();
+			logger.error(e1.getMessage());
 		}
-		
 	}
 
 	/**
@@ -238,7 +234,7 @@ public class CHMICommandListener implements CommandListener {
 		} else {
 			// Type is a reference to a complex java object
 			// and value correspond to the id of the java AbstractObjectSpec
-			Object paramRef = router.getObjectRefFromID(value);
+			Object paramRef = chmiProxy.getObjectRefFromID(value);
 			arguments.add(paramRef);
 		}
 	}

@@ -30,12 +30,16 @@ import org.slf4j.LoggerFactory;
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
+import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
+import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.manager.place.spec.*;
 import appsgate.lig.ehmi.exceptions.CoreDependencyException;
 import appsgate.lig.ehmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
+import appsgate.lig.ehmi.impl.listeners.ObjectEventListener;
+import appsgate.lig.ehmi.impl.listeners.ObjectUpdateListener;
 import appsgate.lig.ehmi.impl.upnp.AppsGateServerDevice;
 import appsgate.lig.ehmi.impl.upnp.ServerInfoService;
 import appsgate.lig.ehmi.impl.upnp.StateVariableServerIP;
@@ -121,7 +125,17 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	/**
 	 * Listener for EHMI command from clients
 	 */
-	private EHMICommandListener commandListener;	
+	private EHMICommandListener commandListener;
+
+	/**
+	 * Object update state event listener
+	 */
+	private CoreEventsListener objectEventsListener;
+
+	/**
+	 * object discovery listener
+	 */
+	private CoreUpdatesListener objectUpdatesListener;	
 
 	/**
 	 * Default constructor for EHMIImpl java object. it load UPnP device and
@@ -131,8 +145,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	public EHMIProxyImpl(BundleContext context) {
 		logger.debug("new EHMI, BundleContext : " + context);
 		this.context = context;
-		commandListener = new EHMICommandListener(this);
-		upnpDevice = new AppsGateServerDevice(context);
+		this.commandListener = new EHMICommandListener(this);
+		this.objectEventsListener = new ObjectEventListener(this);
+		this.objectUpdatesListener = new ObjectUpdateListener(this);
+		this.upnpDevice = new AppsGateServerDevice(context);
 		logger.debug("UPnP Device instanciated");
 		registerUpnpDevice();
 		retrieveLocalAdress();
@@ -142,8 +158,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	
 	private void registerUpnpDevice() {
 		Dictionary<String, Object> dict = upnpDevice.getDescriptions(null);
-		serviceRegistration = context.registerService(
-				UPnPDevice.class.getName(), upnpDevice, dict);
+		serviceRegistration = context.registerService(UPnPDevice.class.getName(), upnpDevice, dict);
 		logger.debug("UPnP Device registered");
 		
 		upnpService = (ServerInfoService) upnpDevice.getService(ServerInfoService.SERVICE_ID);
@@ -180,6 +195,21 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         }catch(ExternalComDependencyException comException) {
     		logger.debug("Resolution failed for listener service dependency, the EHMICommandListener will not be registered");
     	}
+        
+        try {
+        	if(coreProxy.CoreEventsSubscribe(objectEventsListener)){
+        		logger.info("Core event listener deployed.");
+        	}else {
+        		logger.error("Core event deployement failed.");
+        	}
+        	if(coreProxy.CoreUpdatesSubscribe(objectUpdatesListener)) {
+        		logger.info("Core updates listener deployed.");
+        	}else {
+        		logger.error("Core updates listener deployement failed.");
+        	}
+		}catch(CoreDependencyException coreException) {
+    		logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
+    	}
 		
 	}
 
@@ -188,7 +218,19 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public void deleteInst() {
 		httpService.unregister("/spok");
-    	addListenerService.removeCommandListener("EHMI");
+		try{
+			addListenerService.removeCommandListener("EHMI");
+		}catch(ExternalComDependencyException comException) {
+    		logger.warn("Resolution failed for listener service dependency, the EHMICommandListener will not be unregistered");
+    	}
+		
+    	try {
+        	coreProxy.CoreEventsUnsubscribe(objectEventsListener);
+        	coreProxy.CoreUpdatesUnsubscribe(objectUpdatesListener);
+		}catch(CoreDependencyException coreException) {
+    		logger.warn("Resolution failled for core dependency, no notification subscription can be delete.");
+    	}
+    	
     	logger.info("EHMI has been stopped.");
 	}
 
@@ -262,9 +304,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public void newPlace(JSONObject place) {
 		try {
-			//TODO put the hierarchical management
-			//String placeParent = place.getString("parent");
+			
 			String placeParent = null;
+			if(place.has("parent")){
+				placeParent = place.getString("parent");
+			}
 			String placeId = placeManager.addPlace(place.getString("name"), placeParent);
 			JSONArray devices = place.getJSONArray("devices");
 			int size = devices.length();
@@ -580,154 +624,28 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Send notification to all connected clients.
+	 * @param notif the notification to transmit
+	 */
+	public void sendToClients(JSONObject notif){
+		sendToClientService.send(notif.toString());
+	}
 
-//	/**
-//	 * File String with the object name and category name for EHMI GUI
-//	 * @param objectName the name of the object
-//	 * @param categoryName the name of the category to create for this object
-//	 * @param description the object JSON description
-//	 * @throws NumberFormatException
-//	 * @throws JSONException
-//	 */
-//	private String[] fillCategoryAndObjectNames(JSONObject description) throws NumberFormatException, JSONException {
-//		String objectName = null;
-//		String categoryName = null;
-//		
-//		// Get the user type of the device and put 
-//		// a string that allow internationalization
-//		// of the type string 
-//		int userType = Integer.valueOf(description.getString("type"));
-//		switch(userType) {
-//		
-//			/** Devices  **/
-//			case 0: //Temperature
-//				objectName = "devices.temperature.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 1: //Illumination
-//				objectName = "devices.illumination.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 2: //Switch
-//				objectName = "devices.switch.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 3: //Contact
-//				objectName = "devices.contact.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 4: //Key card Switch
-//				objectName = "devices.keycard-reader.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			case 5: //Occupancy
-//				objectName = "devices.occupancy.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 6: //Smart plug
-//				objectName = "devices.plug.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 7: //PhilipsHUE
-//				objectName = "devices.lamp.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			case 8: //On/Off actuator
-//				objectName = "devices.actuator.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 9: //CO2
-//				objectName = "devices.co2.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			/** AppsGate System services **/
-//			case 21: //System clock
-//				objectName = "devices.clock.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			/** UPnP aggregate services **/
-//			case 31: //Media player
-//				categoryName = "services.mediaplayer.name.plural";
-//				try{
-//					objectName = description.getString("friendlyName");
-//					if(!objectName.isEmpty()) {
-//						break;
-//					}
-//				}catch(JSONException ex) {}
-//				objectName = "services.mediaplayer.name.singular";
-//				break;
-//				
-//			case 36: //Media browser
-//				categoryName = "services.mediabrowser.name.plural";
-//				try{
-//					objectName = description.getString("friendlyName");
-//					if(!objectName.isEmpty()) {
-//						break;
-//					}
-//				}catch(JSONException ex) {}
-//				objectName = "services.mediabrowser.name.singular";
-//				break;
-//				
-//			/** UPnP services **/
-//			case 415992004: //AV Transport
-//				objectName = "services.avtransport.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case 794225618: //Content directory
-//				objectName = "services.contentdirectory.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case 2052964255: //Connection manager
-//				objectName = "services.connectionManager.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case -164696113: //Rendering control
-//				objectName = "services.renderingControl.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case -532540516: //???
-//				objectName = "services.unknown";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case -1943939940: //???
-//				objectName = "services.unknown";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			/** Web services **/
-//			case 101: //Google calendar
-//				objectName = "webservices.googlecalendar.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case 102: //Mail
-//				objectName = "webservices.mail.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case 103: //Weather
-//				objectName = "webservices.weather.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			/** Default **/
-//			default:
-//				objectName = "devices.device-no-name";
-//				categoryName = objectName.replace("singular", "plural");
-//		}
-//		String [] retValue = new String[2];
-//		retValue[0] =  objectName;
-//		retValue[1] = categoryName;
-//		return retValue;		
-//	}
+	 /**
+     * Get a command description, resolve the target reference and return a runnable
+     * command object.
+     *
+     * @param clientId client identifier
+     * @param method method name to call on objectId
+     * @param arguments arguments list form method methodName
+     * @param types arguments types list
+	 * @param callId the remote call identifier
+     */
+	@SuppressWarnings("rawtypes")
+	public Runnable executeCommand(int clientId, String method, ArrayList<Object> arguments, ArrayList<Class> types, String callId) {
+		return new GenericCommand(this, method, arguments, types, callId, clientId, sendToClientService);
+	}
 
 }

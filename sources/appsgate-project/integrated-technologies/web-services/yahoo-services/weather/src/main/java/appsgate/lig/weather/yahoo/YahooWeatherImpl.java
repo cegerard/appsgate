@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
@@ -38,7 +39,7 @@ import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
  * @author thibaud
  * 
  */
-public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec {
+public class YahooWeatherImpl extends CoreObjectBehavior implements CoreWeatherServiceSpec, CoreObjectSpec {
 
 	private final Logger logger = Logger.getLogger(YahooWeatherImpl.class.getSimpleName());
 
@@ -548,10 +549,5 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.SERVICE;
 	}
-
-    @Override
-    public JSONObject getGrammarDescription() {
-        return null;
-    }
 
 }

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
+import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
+
 /**
  * Specification of the CHMI proxy that offer services about
  * core objects
@@ -14,6 +17,34 @@ import org.json.JSONObject;
  *
  */
 public interface CHMIProxySpec {
+	
+	/**
+	 * Subscribe to core updates (add/remove object)
+	 * @param coreUpdatesListener the listener for subscription
+	 * @return true if the listener is registered, false otherwise
+	 */
+	public boolean CoreUpdatesSubscribe(CoreUpdatesListener coreUpdatesListener);
+	
+	/**
+	 * Disable subscription for core updates notification
+	 * @param coreUpdatesListener the listener to unregister
+	 * @return true if the listener is unregistered, false otherwise
+	 */
+	public boolean CoreUpdatesUnsubscribe(CoreUpdatesListener coreUpdatesListener);
+	
+	/**
+	 * Subscribe to core events notification
+	 * @param coreEventListener the listener for event subscription
+	 * @return true if the listener is registered, false otherwise
+	 */
+	public boolean CoreEventsSubscribe(CoreEventsListener coreEventsListener);
+	
+	/**
+	 * Disable subscription for core events notification
+	 * @param coreEventsListener the listener to unregister
+	 * @return true if the listener is unregistered, false otherwise
+	 */
+	public boolean CoreEventsUnsubscribe(CoreEventsListener coreEventsListener);
 	
 	/**
 	 * Execute a command from the outside to a specific device

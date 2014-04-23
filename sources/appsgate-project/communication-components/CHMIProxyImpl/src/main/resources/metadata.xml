@@ -9,9 +9,7 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
 		<relation field="abstractDevice" added="addAbstractObject" removed="removedAbstractObject" />
-		
-		<relation field="ehmiProxy" fail="exception" exception="appsgate.lig.chmi.exceptions.EHMIDependencyException" resolve="exist" />
-		
+				
 		<relation push="gotNotification" multiple="true" resolve="exist" />
 		
 		<relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"

@@ -26,7 +26,7 @@ public abstract class CoreObjectBehavior implements CoreObjectSpec {
      * @return the grammar description of an object
      */
     @Override
-    public JSONObject getGrammarDescription() {
+    public JSONObject getBehaviorDescription() {
         InputStream stream = this.getClass().getResourceAsStream("grammar.json");
         JSONObject o;
         try {
