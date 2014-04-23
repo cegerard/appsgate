@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -51,4 +52,15 @@ public class NodeEmpty extends Node {
     public void endEventFired(EndEvent e) {
     }
 
+    @Override
+    public JSONObject getJSONDescription() {
+        JSONObject o = super.getJSONDescription();
+        try {
+            o.put("type", "empty");
+        } catch (JSONException ex) {
+            // will never happen
+        }
+        return o;
+        
+    }
 }

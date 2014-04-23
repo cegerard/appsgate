@@ -197,23 +197,18 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             return false;
         }
 
-        try {
-            if (p.isRunning()) {
-                p.removeEndEventListener(this);
-                p.stop();
+        if (p.isRunning()) {
+            p.removeEndEventListener(this);
+            p.stop();
+        }
+
+        if (p.update(jsonProgram)) {
+            notifyUpdateProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getExpertProgramScript());
+            //save program map state
+
+            if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
+                return true;
             }
-
-            if (p.update(jsonProgram)) {
-                notifyUpdateProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getExpertProgramScript());
-                //save program map state
-
-                if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
-                    return true;
-                }
-            }
-
-        } catch (SpokException ex) {
-            LOGGER.error("Unable to update the program with new properties. NodeException catched: {}", ex.getMessage());
         }
 
         return false;
@@ -256,7 +251,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         return false;
     }
-
 
     /**
      *
@@ -539,9 +533,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             JSONObject o = new JSONObject(sb.toString());
             return new NodeProgram(this, o, null);
 
-        } catch (SpokException ex) {
-            LOGGER.error("unable to build root program from file.");
-            LOGGER.debug(ex.getMessage());
         } catch (IOException ex) {
             LOGGER.error("An error occured during reading file");
         } catch (JSONException ex) {
@@ -587,12 +578,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         NodeProgram parent = getProgramParent(programJSON);
 
         // initialize a program node from the JSON
-        try {
-            p = new NodeProgram(this, programJSON, parent);
-        } catch (SpokException e) {
-            LOGGER.error("Node error detected while loading a program: {}", e.getMessage());
-            return null;
-        }
+        p = new NodeProgram(this, programJSON, parent);
         if (parent != null && !parent.addSubProgram(p.getId(), p)) {
             LOGGER.error("The program already has a subprogram of this id");
             return null;

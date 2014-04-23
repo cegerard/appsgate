@@ -58,7 +58,14 @@ public class NodeWhile extends Node implements INodeRule {
         super(parent, o);
         JSONObject stateJSON = o.optJSONObject("state");
         try {
-            this.state = (NodeState) Builder.buildFromJSON(stateJSON, this);
+            Node n = Builder.buildFromJSON(stateJSON, this);
+            if (n instanceof NodeState) {
+            this.state = (NodeState)n ;
+            }
+            else {
+                LOGGER.error("The node state is not a State node.");
+                throw new SpokNodeException("NodeWhile", "state", null);
+            }
         } catch (SpokTypeException ex) {
             throw new SpokNodeException("NodeWhile", "state", ex);
         }
@@ -102,7 +109,12 @@ public class NodeWhile extends Node implements INodeRule {
 
     @Override
     public String getExpertProgramScript() {
-        return "while(" + state.getExpertProgramScript() + ") {\n" + rules.getExpertProgramScript() + "\n}\n {\n" + rulesThen.getExpertProgramScript() + "}";
+        if (rulesThen == null) {
+            return "while(" + state.getExpertProgramScript() + ") {\n" + rules.getExpertProgramScript() + "\n}";
+
+        } else {
+            return "while(" + state.getExpertProgramScript() + ") {\n" + rules.getExpertProgramScript() + "\n}\n {\n" + rulesThen.getExpertProgramScript() + "}";
+        }
     }
 
     @Override
@@ -137,6 +149,8 @@ public class NodeWhile extends Node implements INodeRule {
                 rulesThen.call();
             } else {
                 stop();
+                setStarted(false);
+                fireEndEvent(new EndEvent(this));
             }
         }
 
@@ -162,8 +176,8 @@ public class NodeWhile extends Node implements INodeRule {
             o.put("rules", rules.getJSONDescription());
             if (rulesThen != null) {
                 o.put("rulesThen", rulesThen.getJSONDescription());
-            } else {
-                o.put("rulesThen", new JSONObject());
+//            } else {
+//                o.put("rulesThen", new JSONObject());
             }
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
