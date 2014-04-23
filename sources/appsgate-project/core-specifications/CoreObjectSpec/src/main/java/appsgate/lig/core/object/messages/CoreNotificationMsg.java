@@ -49,6 +49,11 @@ public class CoreNotificationMsg implements NotificationMsg{
     public CoreObjectSpec getSource() {
         return source;
     }
+    
+    @Override
+	public String getVarName() {
+		return varName;
+	}
 
     @Override
     public String getNewValue() {

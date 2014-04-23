@@ -55,6 +55,11 @@ public class MoveObjectNotification implements NotificationMsg {
 	public CoreObjectSpec getSource() {
 		return null;
 	}
+	
+	@Override
+	public String getVarName() {
+		return String.valueOf(moveType);
+	}
 
 	@Override
 	public String getNewValue() {

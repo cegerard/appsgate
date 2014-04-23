@@ -45,6 +45,11 @@ public class ProgramStateNotificationMsg implements NotificationMsg {
     public CoreObjectSpec getSource() {
         return null;
     }
+    
+    @Override
+    public String getVarName() {
+    	return varName;
+    }
 
     @Override
     public String getNewValue() {

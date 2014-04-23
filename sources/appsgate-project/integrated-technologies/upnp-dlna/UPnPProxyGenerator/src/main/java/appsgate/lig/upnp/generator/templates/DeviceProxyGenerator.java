@@ -113,6 +113,10 @@ public class DeviceProxyGenerator {
 		output.write("			return "+device.getMapping().getClassName()+".this;\n");
 		output.write("		}\n");
 		output.write("\n");
+		output.write("		public String getVarName() {\n");
+		output.write("			return variable;\n");
+		output.write("		}\n");
+		output.write("\n");
 		output.write("		public String getNewValue() {\n");
 		output.write("			return value;\n");
 		output.write("		}\n");

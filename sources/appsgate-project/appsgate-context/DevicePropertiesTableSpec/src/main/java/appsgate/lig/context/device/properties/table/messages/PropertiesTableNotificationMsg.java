@@ -53,6 +53,11 @@ public class PropertiesTableNotificationMsg implements NotificationMsg {
     public CoreObjectSpec getSource() {
         return null;
     }
+    
+    @Override
+    public String getVarName() {
+    	return objectPropertyName;
+    }
 
     @Override
     public String getNewValue() {

@@ -48,6 +48,11 @@ public class PlaceManagerNotification implements NotificationMsg {
 	public CoreObjectSpec getSource() {
 		return null;
 	}
+	
+	@Override
+	public String getVarName() {
+		return name;
+	}
 
 	@Override
 	public String getNewValue() {
