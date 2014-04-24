@@ -26,20 +26,5 @@ public interface ListenerService {
 	 * @return true if the command listener has been removed, false otherwise
 	 */
 	public boolean removeCommandListener(String target);
-	
-	/**
-	 * This method allow the caller to subscribe for all configuration command.
-	 * @param target the target identifier
-	 * @param configListener the listener for subscription
-	 * @return true if the configuration listener is new, false if it has been replaced
-	 */
-	public boolean addConfigListener(String target, ConfigListener configListener);
-	
-	/**
-	 * This method allow the caller to unsubscribe the specify target for all configuration command.
-	 * @param target the target identifier
-	 * @return true if the listener is unregistered, false otherwise
-	 */
-	public boolean removeConfigListener(String target);
 
 }

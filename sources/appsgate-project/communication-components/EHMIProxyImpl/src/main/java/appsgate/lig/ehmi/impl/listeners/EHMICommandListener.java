@@ -97,7 +97,6 @@ public class EHMICommandListener implements CommandListener {
 	 */
 	@SuppressWarnings("rawtypes")
 	public void loadArguments(JSONArray args, ArrayList<Object> arguments, ArrayList<Class> types) {
-		//TODO
 		try {
 			// Get all arguments types and values
 			int l = args.length();

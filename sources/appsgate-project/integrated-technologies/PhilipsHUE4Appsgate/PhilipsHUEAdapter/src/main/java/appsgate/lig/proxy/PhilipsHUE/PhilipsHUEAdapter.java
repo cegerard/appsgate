@@ -29,7 +29,7 @@ import com.philips.lighting.model.PHLightState;
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 //import appsgate.lig.light.actuator.philips.HUE.impl.PhilipsHUEFactory;
-import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeConfigListener;
+import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeCommandListener;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
@@ -82,7 +82,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		logger.debug("Philips finder started");
 		
 		logger.info("Getting the listeners services...");
-		if(listenerService.addConfigListener(CONFIG_TARGET, new PhilipsHUEBridgeConfigListener(this))){
+		if(listenerService.addCommandListener(new PhilipsHUEBridgeCommandListener(this), CONFIG_TARGET)){
 			logger.info("Listeners services dependency resolved.");
 		}else{
 			logger.warn("Listeners services dependency resolution updated.");
@@ -98,7 +98,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		bridgeFinder.stop();
 		phHueSDK.destroySDK();
 		
-		if(listenerService.removeConfigListener(CONFIG_TARGET)){
+		if(listenerService.removeCommandListener(CONFIG_TARGET)){
 			logger.info("HUE configuration listener removed.");
 		}else{
 			logger.warn("HUE configuration listener remove failed.");

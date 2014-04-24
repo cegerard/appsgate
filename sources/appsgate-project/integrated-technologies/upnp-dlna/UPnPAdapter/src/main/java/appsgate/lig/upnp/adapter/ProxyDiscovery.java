@@ -75,7 +75,7 @@ public class ProxyDiscovery {
 		pending.clear();	
 		if(listenerService != null && sendToClientService != null) {
 			UPnPConfigListener listener = new UPnPConfigListener(sendToClientService);
-			listenerService.addConfigListener(UPnPConfigListener.CONFIG_TARGET, listener);
+			listenerService.addCommandListener(listener, UPnPConfigListener.CONFIG_TARGET);
 		}
 			
 
@@ -86,7 +86,7 @@ public class ProxyDiscovery {
 		resolver = null;
 		logger.debug("[UPnP Apam Discovery] Unbound to APAM resolver "+ resolver);
 		if(listenerService != null && sendToClientService != null) {
-			listenerService.removeConfigListener(UPnPConfigListener.CONFIG_TARGET);
+			listenerService.removeCommandListener(UPnPConfigListener.CONFIG_TARGET);
 		}		
 	}
 
