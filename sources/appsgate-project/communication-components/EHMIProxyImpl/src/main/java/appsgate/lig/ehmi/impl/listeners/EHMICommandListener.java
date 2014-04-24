@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
+import appsgate.lig.ehmi.exceptions.CoreDependencyException;
 import appsgate.lig.ehmi.impl.EHMIProxyImpl;
 
 /**
@@ -77,11 +78,17 @@ public class EHMICommandListener implements CommandListener {
 				} else {
 					logger.debug("method without return");
 				}
-				executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
-				} catch (IllegalArgumentException e) {
-					logger.debug("Inappropriate argument: " + e.getMessage());
-				} 
-
+				
+				if(!obj.has("objectId")){
+					executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
+				}else{
+					executorService.execute(ehmiProxy.executeRemoteCommand(obj.getString("objectId"), method, arguments, types, clientId, callId));
+				}
+			} catch (IllegalArgumentException e) {
+				logger.debug("Inappropriate argument: " + e.getMessage());
+			} catch(CoreDependencyException coreException) {
+				logger.warn("Resolution failled for core dependency, no remote call can be triggered.");
+			}
 		} catch (JSONException e1) {
 			logger.error(e1.getMessage());
 		}

@@ -278,6 +278,7 @@ public class NodeState extends Node {
             return false;
         }
         LOGGER.trace("Asking for {}, {}", object.getResult().getValue(), desc.getStateName());
+        //TODO 000004
         GenericCommand cmd = getMediator().executeCommand(object.getResult().getValue(), desc.getStateName(), new JSONArray());
         if (cmd == null) {
             throw new SpokExecutionException("The command has not been created");

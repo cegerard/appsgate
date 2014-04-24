@@ -231,19 +231,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         }
     }
 
-    /**
-     * Get a command description, resolve the target reference and make the
-     * call.
-     *
-     * @param clientId client identifier
-     * @param objectId abstract object identifier
-     * @param methodName method to call on objectId
-     * @param args arguments list form method methodName
-     * @param paramType argument type list
-     * @param callId the remote call identifier
-     */
     @SuppressWarnings("rawtypes")
-    public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
+    @Override
+    public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
         Object obj = getObjectRefFromID(objectId);
         return new GenericCommand(args, paramType, obj, objectId, methodName, callId, clientId, sendToClientService);
     }
@@ -254,7 +244,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         Object obj = getObjectRefFromID(objectId);
         return new GenericCommand(args, paramType, obj, methodName);
     }
-
+    
     @Override
     public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
         ArrayList<Object> arguments = new ArrayList<Object>();
@@ -352,10 +342,6 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         try {
             // Get object auto description
             JSONDescription = obj.getDescription();
-            
-            //TODO: retro-compatibility --> To be compliant with older AppqGate version
-            	JSONDescription.put("name", "");
-            	JSONDescription.put("placeId", "-1");
 
         } catch (JSONException e) {
             logger.error(e.getMessage());

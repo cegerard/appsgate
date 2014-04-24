@@ -127,6 +127,7 @@ public class NodeAction extends Node implements INodeFunction {
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
         LOGGER.debug("Device action {} on {}", methodName, target);
+        //TODO 000004
         command = getMediator().executeCommand(target, methodName, args);
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, target);

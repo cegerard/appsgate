@@ -91,7 +91,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	private UserBaseSpec userManager;
 
 	/**
-	 * Reference on the CHMI proxy to execute command on devices
+	 * Reference on the remote proxy service to execute command on devices/services
 	 */
 	private CHMIProxySpec coreProxy;
 
@@ -237,7 +237,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public JSONArray getDevices() {
 		try {
-			return coreProxy.getDevices();
+			return addContextData(coreProxy.getDevices());
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
     	}
@@ -247,17 +247,18 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public JSONObject getDevice(String deviceId) {
 		try {
-			return coreProxy.getDevice(deviceId);
+			JSONObject coreObject = coreProxy.getDevice(deviceId);
+			return addContextData(coreObject, deviceId);
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
-    	}
+		}
 		return new JSONObject();
 	}
 	
 	@Override
 	public JSONArray getDevices(String type) {
 		try {
-			return coreProxy.getDevices(type);
+			return addContextData(getDevices(type));
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
     	}
@@ -582,6 +583,44 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Add contextual data to a object
+	 * @param object the object to enrich
+	 * @param objectId the identifier of this object
+	 * @return the new contextual enrich JSONObject
+	 */
+	private JSONObject addContextData(JSONObject object, String objectId) {
+		try {
+			object.put("placeId", getCoreObjectPlaceId(objectId));
+			object.put("name", getUserObjectName(objectId, ""));
+		} catch (JSONException e) {
+			logger.error(e.getMessage());
+		}
+		return object;
+	}
+	
+	/**
+	 * Add contextual data to all object in an JSONArray
+	 * @param objects the objects JSONArray
+	 * @return a enrich from contextual data JSONArray 
+	 */
+	private JSONArray addContextData(JSONArray objects) {
+		JSONArray contextArray = new JSONArray();
+		try{
+			int nbObjects = objects.length();
+			int i = 0;
+			JSONObject coreObject;
+			while(i < nbObjects) {
+				coreObject = objects.getJSONObject(i);
+				contextArray.put(addContextData(coreObject, coreObject.getString("id")));
+				i++;
+			}
+		}catch (JSONException e) {
+    		logger.error(e.getMessage());
+		}
+		return contextArray;
+	}
 
 	private void retrieveLocalAdress() {
 		// initiate UPnP state variables
@@ -634,18 +673,48 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
 
 	 /**
-     * Get a command description, resolve the target reference and return a runnable
-     * command object.
+     * Get a command description, resolve the local target reference and return a runnable
+     * command object
      *
      * @param clientId client identifier
      * @param method method name to call on objectId
      * @param arguments arguments list form method methodName
      * @param types arguments types list
 	 * @param callId the remote call identifier
+	 * @return runnable object that can be execute and manage.
      */
 	@SuppressWarnings("rawtypes")
 	public Runnable executeCommand(int clientId, String method, ArrayList<Object> arguments, ArrayList<Class> types, String callId) {
 		return new GenericCommand(this, method, arguments, types, callId, clientId, sendToClientService);
+	}
+	
+	/**
+	 * Get a runnable object that can execute command from a remote device manager asynchronously with
+	 * a return response
+	 * 
+	 * @param objIdentifier the identifier of the object on the remote system
+	 * @param method the method name to call
+	 * @param arguments the arguments values corresponding to the method to invoke
+	 * @param types the arguments JAVA types
+	 * @param clientId the client connection identifier
+	 * @param callId the remote call identifier
+	 * @return a runnable object that can be execute and manage.
+	 */
+	@SuppressWarnings("rawtypes")
+	public Runnable executeRemoteCommand(String objIdentifier, String method, ArrayList<Object> arguments, ArrayList<Class> types, int clientId, String callId) {
+		return coreProxy.executeCommand(clientId, objIdentifier, method, arguments, types, callId);
+	}
+	
+	/**
+	 * Get a runnable object that can execute command from a remote device manager asynchronously
+	 * 
+	 * @param objIdentifier the identifier of the object on the remote system
+	 * @param method the method name to call
+	 * @param args the arguments list with their types
+	 * @return a runnable object that can be execute and manage.
+	 */
+	public Runnable executeRemoteCommand(String objIdentifier, String method, JSONArray args) {
+		return coreProxy.executeCommand(objIdentifier, method, args);
 	}
 
 }

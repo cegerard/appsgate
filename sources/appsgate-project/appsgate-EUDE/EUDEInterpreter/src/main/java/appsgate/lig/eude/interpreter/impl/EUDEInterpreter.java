@@ -320,6 +320,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public Long getTime() {
         LOGGER.trace("getTime called");
+        //TODO 000004 delete this call from chmiProxy and use an execution though the EHMI to manage the clock.
         GenericCommand cmd = executeCommand(getClock().getId(), "getCurrentTimeInMillis", new JSONArray());
         LOGGER.debug("cmd: " + cmd.toString());
         cmd.run();

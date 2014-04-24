@@ -55,8 +55,23 @@ public interface CHMIProxySpec {
 	 * @return a Runnable object that can be execute everywhere.
 	 */
 	@SuppressWarnings("rawtypes")
-	public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType);
+	public Runnable executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType);
 
+    /**
+     * Get a command description, resolve the target reference and make the
+     * call.
+     *
+     * @param clientId client identifier
+     * @param objectId abstract object identifier
+     * @param methodName method to call on objectId
+     * @param args arguments list form method methodName
+     * @param paramType argument type list
+     * @param callId the remote call identifier
+     * @return a Runnable object that can be execute everywhere.
+     */
+	 @SuppressWarnings("rawtypes")
+	public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId);
+	
 	/**
 	 * Execute command from outside to a specific device
 	 * @param objectId the targeted object
@@ -65,7 +80,7 @@ public interface CHMIProxySpec {
 	 * @return a Runnable object that can be execute everywhere.
 	 */
 	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args);
-	
+	 
 	/**
 	 * Get all the devices description as JSONArray
 	 */
