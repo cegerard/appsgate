@@ -85,4 +85,20 @@ public interface CHMIProxySpec {
 	 * @return the device list of the same "type"
 	 */
 	public JSONArray getDevices(String type);
+	
+	/************************************/
+	/**      General core commands     **/
+	/************************************/
+	
+	/**
+	 * Shutdown the system
+	 * (Shutdown the OSGi distribution)
+	 */
+	public void shutdown();
+	
+	/**
+	 * restart the system
+	 * (Restart the system bundle from OSGi)
+	 */
+	public void restart();
 }

@@ -279,6 +279,7 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 			
 			CommandListener cmdListener;
 			if(cmd.has("TARGET")) {
+				logger.debug("retreiving command listener for "+cmd.getString("TARGET")+" target.");
 				cmdListener = commandListeners.get(cmd.getString("TARGET"));
 				cmdListener.onReceivedCommand(cmd);
 			}else {

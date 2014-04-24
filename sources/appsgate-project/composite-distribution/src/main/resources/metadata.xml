@@ -5,6 +5,8 @@
 
 	<composite name="AppsGate-Application"  singleton="true" main="EHMIProxyImpl">
 		<contentMngt>
+		
+			<start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
 
 			<start  implementation="AppsGatePersistency" name="AppsGatePersistencyInst" ></start>
 
@@ -22,9 +24,9 @@
 			
 			<start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
 			
-<!--             <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start> -->
+			<start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start>
             
-<!--             <start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start> -->
+			<start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start>
 
 			<start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />

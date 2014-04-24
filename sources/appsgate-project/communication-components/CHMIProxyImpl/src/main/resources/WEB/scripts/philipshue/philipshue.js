@@ -171,7 +171,7 @@ define([], function () {
 				
 				//Set action methods
 				element = document.getElementById("lightstate-on");
-				var call = eval({"method":"toggle", "args":[], "objectId":lightInfo.lightId, "callId":"HUE-cf-light"});
+				var call = eval({"method":"toggle", "args":[], "objectId":lightInfo.lightId, "callId":"HUE-cf-light" , "TARGET":"CHMI"});
 				element.setAttribute("onclick", "javascript:chmi.sendJSONCmd("+JSON.stringify(call)+");");
 				
 				element = document.getElementById("lightstate-hue");
@@ -483,15 +483,15 @@ define([], function () {
 			
 			if(type == "hue"){
 				var color = document.getElementById("lightstate-hue-value");
-				call = eval({"method":"setColor", "args":[{"type":"long", "value":color.value}], "objectId":id, "callId":"HUE-cf-light"});
+				call = eval({"method":"setColor", "args":[{"type":"long", "value":color.value}], "objectId":id, "callId":"HUE-cf-light", "TARGET":"CHMI"});
 				
 			} else if (type == "sat") {
 				var sat = document.getElementById("lightstate-sat-value");
-				call = eval({"method":"setSaturation", "args":[{"type":"int", "value":sat.value}], "objectId":id, "callId":"HUE-cf-light"});
+				call = eval({"method":"setSaturation", "args":[{"type":"int", "value":sat.value}], "objectId":id, "callId":"HUE-cf-light", "TARGET":"CHMI"});
 				
 			} else if (type == "bri") {
 				var bri = document.getElementById("lightstate-bri-value");
-				call = eval({"method":"setBrightness", "args":[{"type":"long", "value":bri.value}], "objectId":id, "callId":"HUE-cf-light"});
+				call = eval({"method":"setBrightness", "args":[{"type":"long", "value":bri.value}], "objectId":id, "callId":"HUE-cf-light", "TARGET":"CHMI"});
 				
 			} else if (type == "xy") {
 				var x = document.getElementById("lightstate-x-value");
@@ -504,11 +504,11 @@ define([], function () {
 				
 			} else if (type == "tt") {
 				var tt = document.getElementById("lightstate-tt-value");
-				call = eval({"method":"setTransitionTime", "args":[{"type":"long", "value":tt.value}], "objectId":id, "callId":"HUE-cf-light"});
+				call = eval({"method":"setTransitionTime", "args":[{"type":"long", "value":tt.value}], "objectId":id, "callId":"HUE-cf-light", "TARGET":"CHMI"});
 				
 			} else if (type == "alert") {
 				var alert = document.getElementById("lightstate-alert-value");
-				call = eval({"method":"setAlert", "args":[{"type":"String", "value":alert.value}], "objectId":id, "callId":"HUE-cf-light"});
+				call = eval({"method":"setAlert", "args":[{"type":"String", "value":alert.value}], "objectId":id, "callId":"HUE-cf-light", "TARGET":"CHMI"});
 				
 			} else if (type == "mode") {
 				var mode = document.getElementById("lightstate-mode-value");
@@ -516,7 +516,7 @@ define([], function () {
 				
 			} else if (type == "effect") {
 				var effect = document.getElementById("lightstate-effect-value");
-				call = eval({"method":"setEffect", "args":[{"type":"String", "value":effect.value}], "objectId":id, "callId":"HUE-cf-light"});
+				call = eval({"method":"setEffect", "args":[{"type":"String", "value":effect.value}], "objectId":id, "callId":"HUE-cf-light", "TARGET":"CHMI"});
 			}
 			
 			chmi.sendJSONCmd(call);

@@ -32,6 +32,18 @@
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>${ipojo.annotations.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>${osgi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.3.0</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- Build Description -->

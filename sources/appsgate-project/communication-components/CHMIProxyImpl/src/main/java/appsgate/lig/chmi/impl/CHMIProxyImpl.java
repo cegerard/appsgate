@@ -9,6 +9,10 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -99,8 +103,6 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 			}
 		}
         
-        logger.debug("The CHMI proxy component has been initialized");
-        
         try{
         	if (addListenerService.addCommandListener(commandListener, "CHMI")) {
         		logger.info("CHMI command listener deployed.");
@@ -110,6 +112,8 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         }catch(ExternalComDependencyException comException) {
     		logger.debug("Resolution failed for listener service dependency, the CHMICommandListener will not be registered.");
     	}
+        
+        logger.debug("The CHMI proxy component has been initialized");
     }
 
     /**
@@ -405,6 +409,28 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 	private void notifyAllEventsListeners(String srcId, String varName, String value) {
 		for(CoreEventsListener listener : eventsListenerList) {
 			listener.notifyEvent(srcId, varName, value);
+		}
+	}
+	
+	@Override
+	public void shutdown() {
+		BundleContext ctx = FrameworkUtil.getBundle(CHMIProxyImpl.class).getBundleContext();
+		Bundle systemBundle = ctx.getBundle(0);
+		try {
+			systemBundle.stop();
+		} catch (BundleException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void restart() {
+		BundleContext ctx = FrameworkUtil.getBundle(CHMIProxyImpl.class).getBundleContext();
+		Bundle systemBundle = ctx.getBundle(0);
+		try {
+			systemBundle.update();
+		} catch (BundleException e) {
+			e.printStackTrace();
 		}
 	}
 }
