@@ -140,7 +140,6 @@ final public class NodeProgram extends Node {
             }
 
         } catch (SpokNodeException ex) {
-            this.programJSON = o;
             setInvalid();
         }
     }
@@ -159,8 +158,6 @@ final public class NodeProgram extends Node {
      */
     public final boolean update(JSONObject json) {
 
-        this.programJSON = null;
-
         try {
             name = getJSONString(json, "name");
             header = getJSONObject(json, "header");
@@ -172,8 +169,7 @@ final public class NodeProgram extends Node {
         } catch (SpokException ex) {
             LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
         }
-        this.programJSON = json;
-        this.runningState = RUNNING_STATE.INVALID;
+        setInvalid();
         return false;
 
     }
@@ -343,9 +339,6 @@ final public class NodeProgram extends Node {
      * @return the JSON source of the program
      */
     public JSONObject getJSONSource() {
-        if (this.programJSON == null) {
-            return body.getJSONDescription();
-        }
         return programJSON;
     }
 

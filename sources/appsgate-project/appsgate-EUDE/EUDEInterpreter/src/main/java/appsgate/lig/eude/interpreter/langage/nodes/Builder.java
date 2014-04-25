@@ -51,6 +51,9 @@ public class Builder {
         if (type.equalsIgnoreCase("empty")) {
             return NODE_TYPE.NODE_EMPTY;
         }
+        if (type.equalsIgnoreCase("deviceState")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
