@@ -157,14 +157,14 @@ final public class NodeProgram extends Node {
      * @return true if the source code has been updated, false otherwise
      */
     public final boolean update(JSONObject json) {
-
+        
         try {
             name = getJSONString(json, "name");
             header = getJSONObject(json, "header");
 
             this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
             body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
-
+            this.programJSON = getJSONObject(json, "body");
             return true;
         } catch (SpokException ex) {
             LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
