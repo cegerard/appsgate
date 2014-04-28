@@ -153,5 +153,9 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
     public String getType() {
         return "list";
     }
+    @Override
+    public String getResultType() {
+        return this.getType();
+    }
 
 }

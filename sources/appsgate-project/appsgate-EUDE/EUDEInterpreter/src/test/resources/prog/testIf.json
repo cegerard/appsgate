@@ -15,8 +15,8 @@
             {
                 "type": "if",
                 "expBool": {
-                    "type": "booleanExpression",
-                    "operator": "==",
+                    "type": "comparator",
+                    "comparator": "==",
                     "leftOperand": {
                         "type": "action",
                         "methodName": "getCurrentState",

@@ -21,4 +21,9 @@ public interface ICanBeEvaluated {
      */
     public NodeValue getResult() throws SpokExecutionException;
 
+    /**
+     * 
+     * @return the type of the result
+     */
+    public String getResultType();
 }

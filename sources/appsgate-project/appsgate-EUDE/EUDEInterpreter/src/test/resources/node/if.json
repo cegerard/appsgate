@@ -1,8 +1,8 @@
 {
     "type": "if",
     "expBool": {
-        "type": "booleanExpression",
-        "operator": "==",
+        "type": "comparator",
+        "comparator": "==",
         "leftOperand": {
             "type": "boolean",
             "value": false

@@ -188,6 +188,11 @@ public class NodeLists extends Node implements INodeList, ICanBeEvaluated {
         return "list";
     }
 
+    @Override
+    public String getResultType() {
+        return this.getType();
+    }
+
     /**
      * Method that compute the combination of the two lists depending on the
      * operator

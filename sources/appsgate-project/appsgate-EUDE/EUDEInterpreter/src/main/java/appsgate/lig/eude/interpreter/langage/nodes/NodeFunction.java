@@ -261,4 +261,9 @@ public class NodeFunction extends Node implements ICanBeEvaluated {
     public NodeValue getResult() {
         return this.result;
     }
+        @Override
+    public String getResultType() {
+        return this.result.getResultType();
+    }
+
 }

@@ -143,6 +143,15 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
         return ((ICanBeEvaluated) value).getResult();
     }
 
+    @Override
+    public String getResultType() {
+        if (value == null) {
+            LOGGER.debug("this variable is null so the type is null");
+            return null;
+        }
+        return ((ICanBeEvaluated) value).getResultType();
+    }
+
     /**
      * Method that set the variable to its value
      *

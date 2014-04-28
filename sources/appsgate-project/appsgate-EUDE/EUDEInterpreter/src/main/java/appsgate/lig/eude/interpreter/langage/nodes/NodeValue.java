@@ -212,6 +212,11 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
         return type.toString().toLowerCase();
     }
 
+    @Override
+    public String getResultType() {
+        return this.getType();
+    }
+
     public TYPE getValueType() {
         return type;
     }

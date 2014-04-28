@@ -285,4 +285,12 @@ public class NodeAction extends Node implements ICanBeEvaluated {
 
     }
 
+    @Override
+    public String getResultType() {
+        if (this.returnType == null) {
+            LOGGER.debug("this action has no return type");
+        }
+        return this.returnType;
+    }
+
 }

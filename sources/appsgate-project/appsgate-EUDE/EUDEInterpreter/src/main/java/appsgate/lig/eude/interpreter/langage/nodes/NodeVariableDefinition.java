@@ -104,6 +104,10 @@ public class NodeVariableDefinition extends Node implements INodeList, ICanBeEva
         return value.getType();
     }
 
+    @Override
+    public String getResultType() {
+        return this.getType();
+    }
     /**
      * @return
      */
