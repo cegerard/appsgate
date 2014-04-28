@@ -18,14 +18,14 @@ public class NodeEmpty extends Node {
     private NodeEmpty(Node p) {
         super(p);
     }
-    
+
     /**
      *
      * @param p
      * @param o
      */
     public NodeEmpty(JSONObject o, Node p) {
-        super(p,o);
+        super(p, o);
     }
 
     @Override
@@ -34,6 +34,7 @@ public class NodeEmpty extends Node {
 
     @Override
     public JSONObject call() {
+        fireEndEvent(new EndEvent(this));
         return null;
     }
 
@@ -61,6 +62,6 @@ public class NodeEmpty extends Node {
             // will never happen
         }
         return o;
-        
+
     }
 }
