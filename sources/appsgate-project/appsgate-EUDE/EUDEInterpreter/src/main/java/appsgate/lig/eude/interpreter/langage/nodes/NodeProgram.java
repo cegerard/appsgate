@@ -157,7 +157,7 @@ final public class NodeProgram extends Node {
      * @return true if the source code has been updated, false otherwise
      */
     public final boolean update(JSONObject json) {
-        
+
         try {
             name = getJSONString(json, "name");
             header = getJSONObject(json, "header");
@@ -165,6 +165,7 @@ final public class NodeProgram extends Node {
             this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
             body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
             this.programJSON = getJSONObject(json, "body");
+            this.runningState = RUNNING_STATE.DEPLOYED;
             return true;
         } catch (SpokException ex) {
             LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
@@ -242,6 +243,13 @@ final public class NodeProgram extends Node {
     }
 
     /**
+     * set the state of the program to invalid
+     */
+    private void setInvalid() {
+        setRunningState(RUNNING_STATE.INVALID);
+    }
+
+    /**
      * @return true if the program can be run, false otherwise
      */
     final public boolean canRun() {
@@ -270,19 +278,12 @@ final public class NodeProgram extends Node {
     }
 
     /**
-     * set the state of the program to invalid
-     */
-    private void setInvalid() {
-        this.runningState = RUNNING_STATE.INVALID;
-    }
-
-    /**
      * set the state of this program to waiting, if this program is already
      * running
      */
     final public void setWaiting() {
         if (isRunning()) {
-            this.runningState = RUNNING_STATE.WAITING;
+            setRunningState(RUNNING_STATE.WAITING);
         } else {
             LOGGER.warn("Trying to set {} waiting, while being {}", this, this.runningState);
         }
@@ -293,7 +294,7 @@ final public class NodeProgram extends Node {
      */
     public void setProcessing() {
         if (isValid()) {
-            this.runningState = RUNNING_STATE.PROCESSING;
+            setRunningState(RUNNING_STATE.PROCESSING);
         } else {
             LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
         }
