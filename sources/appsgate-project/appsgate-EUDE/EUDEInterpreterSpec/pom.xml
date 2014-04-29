@@ -20,11 +20,11 @@
 			<artifactId>json</artifactId>
 			<version>20090211</version>
         </dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
+         <dependency>
+            <groupId>appsgate.components</groupId>
 			<artifactId>CoreObjectSpec</artifactId>
 			<version>1.0.0</version>
-		</dependency>
+        </dependency>
     </dependencies>
 
     <!-- Build Description -->

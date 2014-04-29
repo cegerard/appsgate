@@ -13,8 +13,6 @@
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 			
 			<start implementation="CHMIProxyImpl" name="AppsGateCHMIProxyInst"></start>
-
-			<start implementation="AppsGateContextProxyImpl" name="AppsGateContextProxyInst"></start>
                         
 			<start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 

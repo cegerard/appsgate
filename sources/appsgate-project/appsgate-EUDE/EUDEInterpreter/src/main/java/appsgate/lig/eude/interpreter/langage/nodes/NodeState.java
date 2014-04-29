@@ -6,8 +6,8 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.chmi.spec.GenericCommand;
-import appsgate.lig.context.proxy.spec.ContextProxySpec;
-import appsgate.lig.context.proxy.spec.StateDescription;
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
@@ -170,7 +170,7 @@ public class NodeState extends Node {
      * @throws SpokExecutionException
      */
     private void buildEventsList() throws SpokExecutionException {
-        ContextProxySpec context;
+        EHMIProxySpec context;
         context = getMediator().getContext();
         desc = context.getEventsFromState(object.getResult().getValue(), stateName);
 

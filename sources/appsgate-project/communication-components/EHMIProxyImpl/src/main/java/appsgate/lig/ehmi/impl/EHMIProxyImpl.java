@@ -6,11 +6,14 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,12 +43,15 @@ import appsgate.lig.ehmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
 import appsgate.lig.ehmi.impl.listeners.ObjectEventListener;
 import appsgate.lig.ehmi.impl.listeners.ObjectUpdateListener;
+import appsgate.lig.ehmi.impl.listeners.TimeObserver;
 import appsgate.lig.ehmi.impl.upnp.AppsGateServerDevice;
 import appsgate.lig.ehmi.impl.upnp.ServerInfoService;
 import appsgate.lig.ehmi.impl.upnp.StateVariableServerIP;
 import appsgate.lig.ehmi.impl.upnp.StateVariableServerURL;
 import appsgate.lig.ehmi.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.ehmi.spec.StateDescription;
+import appsgate.lig.ehmi.spec.listeners.CoreListener;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 
 
@@ -136,6 +142,21 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * object discovery listener
 	 */
 	private CoreUpdatesListener objectUpdatesListener;	
+	
+	 /**
+     * Events subscribers list
+     */
+    private final HashMap<Entry, ArrayList<CoreListener>> eventsListeners = new HashMap<Entry, ArrayList<CoreListener>>();
+
+    /**
+     * Hash map use to conserve alarm identifier.
+     */
+    private final HashMap<Entry, Integer> alarmListenerList = new HashMap<Entry, Integer>();
+    
+    /**
+     * This is the system clock to deal with time in AppsGate EHMI
+     */
+    private SystemClock systemClock;
 
 	/**
 	 * Default constructor for EHMIImpl java object. it load UPnP device and
@@ -172,7 +193,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public void newInst() {
 		logger.debug("EHMI is starting");
-
+		systemClock = new SystemClock();
+		
 		if (httpService != null) {
 			final HttpContext httpContext = httpService.createDefaultHttpContext();
 			final Dictionary<String, String> initParams = new Hashtable<String, String>();
@@ -199,6 +221,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         try {
         	if(coreProxy.CoreEventsSubscribe(objectEventsListener)){
         		logger.info("Core event listener deployed.");
+        		systemClock.startRemoteSync(coreProxy);
         	}else {
         		logger.error("Core event deployement failed.");
         	}
@@ -209,7 +232,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         	}
 		}catch(CoreDependencyException coreException) {
     		logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
-    	}
+    		systemClock.stopRemoteSync(coreProxy);
+		}
 		
 	}
 
@@ -227,9 +251,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     	try {
         	coreProxy.CoreEventsUnsubscribe(objectEventsListener);
         	coreProxy.CoreUpdatesUnsubscribe(objectUpdatesListener);
+        	systemClock.stopRemoteSync(coreProxy);
 		}catch(CoreDependencyException coreException) {
     		logger.warn("Resolution failled for core dependency, no notification subscription can be delete.");
-    	}
+		}
     	
     	logger.info("EHMI has been stopped.");
 	}
@@ -240,6 +265,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			return addContextData(coreProxy.getDevices());
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
+    		systemClock.stopRemoteSync(coreProxy);
     	}
 		return new JSONArray();
 	}
@@ -251,6 +277,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			return addContextData(coreObject, deviceId);
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
+    		systemClock.stopRemoteSync(coreProxy);
 		}
 		return new JSONObject();
 	}
@@ -261,8 +288,30 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			return addContextData(getDevices(type));
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
+    		systemClock.stopRemoteSync(coreProxy);
     	}
 		return new JSONArray();
+	}
+	
+	@Override
+	public StateDescription getEventsFromState(String objectId, String stateName) {
+		JSONObject deviceDetails = coreProxy.getDevice(objectId);
+    	StateDescription stateDescription = null;
+    	try {
+    		JSONObject grammar = devicePropertiesTable.getGrammarFromType(deviceDetails.getString("type"));
+    		JSONArray grammarStates = grammar.getJSONArray("states");
+    		for (int i = 0; i < grammarStates.length(); i++) {
+    			if (grammarStates.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
+    				stateDescription = new StateDescription(grammarStates.getJSONObject(i));
+    				break;
+    			}
+    		}
+    	}catch (JSONException ex) {
+    		logger.error("Grammar not well formatted");
+    		return null;
+    	}
+    	
+    	return stateDescription;
 	}
 
 	@Override
@@ -353,6 +402,61 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public String getCoreObjectPlaceId(String objId) {
 		return placeManager.getCoreObjectPlaceId(objId);
+	}
+	
+	@Override
+	public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
+			ArrayList<String> spaces) {
+
+		ArrayList<String> coreObjectInPlace = new ArrayList<String>();
+		ArrayList<String> coreObjectOfType = new ArrayList<String>();
+
+		// First we get all objects in each place, if the list is empty we get
+		// all placed objects.
+		if (!spaces.isEmpty()) {
+			for (String placeId : spaces) {
+				SymbolicPlace place = placeManager.getSymbolicPlace(placeId);
+				if (place != null) {
+					coreObjectInPlace.addAll(place.getDevices());
+				} else {
+					logger.warn("No such place found: {}", placeId);
+				}
+			}
+		} else {
+			for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
+				coreObjectInPlace.addAll(symbolicPlace.getDevices());
+			}
+		}
+
+		// Now we get all identifier of device that match one types of the type
+		// list
+		try {
+			if (!typeList.isEmpty()) {
+				for (String type : typeList) {
+					JSONArray devicesOfType = coreProxy.getDevices(type);
+					int size = devicesOfType.length();
+					for (int i = 0; i < size; i++) {
+						coreObjectOfType.add(devicesOfType.getJSONObject(i)
+								.getString("id"));
+					}
+				}
+			} else {
+				JSONArray allDevices = coreProxy.getDevices();
+				int size = allDevices.length();
+				for (int i = 0; i < size; i++) {
+					coreObjectOfType.add(allDevices.getJSONObject(i).getString("id"));
+				}
+			}
+
+			// We get the intersection between placed object and object of
+			// specified type
+			coreObjectInPlace.retainAll(coreObjectOfType);
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return coreObjectInPlace;
 	}
 	
 	@Override
@@ -715,6 +819,95 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public Runnable executeRemoteCommand(String objIdentifier, String method, JSONArray args) {
 		return coreProxy.executeCommand(objIdentifier, method, args);
+	}
+
+	@Override
+	public synchronized void addCoreListener(CoreListener coreListener) {
+		logger.debug("Adding a core listener...");
+        Entry eventKey = new Entry(coreListener);
+
+        //Check if the need to by register in the core clock implementation
+        if (systemClock.getAbstractObjectId().contentEquals(coreListener.getObjectId()) && eventKey.getVarName().contentEquals("ClockAlarm") && !eventKey.isEventOnly()) {
+            logger.debug("Adding an alarm listener...");
+            //Generate calendar java object for core clock
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.valueOf(coreListener.getValue()));
+            //register the alarm
+            int alarmId = systemClock.registerAlarm(calendar, new TimeObserver("EHMI listener for clock event"));
+            //change the event entry with the alarmId value
+            eventKey.setValue(String.valueOf(alarmId));
+            //save the alarm identifier
+            alarmListenerList.put(eventKey, alarmId);
+            logger.debug("Alarm listener added.");
+        }
+
+        Set<Entry> keys = eventsListeners.keySet();
+        Iterator<Entry> keysIt = keys.iterator();
+        boolean added = false;
+
+        while (keysIt.hasNext() && !added) {
+            Entry key = keysIt.next();
+            if (eventKey.equals(key)) {
+                eventsListeners.get(key).add(coreListener);
+                logger.debug("Add follower to existing core listener list");
+                added = true;
+            }
+        }
+
+        if (!added) {
+            ArrayList<CoreListener> coreListenerList = new ArrayList<CoreListener>();
+            coreListenerList.add(coreListener);
+            eventsListeners.put(eventKey, coreListenerList);
+            logger.debug("Add new event follower list");
+        }
+
+	}
+
+
+	@Override
+	public synchronized void deleteCoreListener(CoreListener coreListener) {
+		logger.debug("Deleting a core listener...");
+        Entry eventKey = new Entry(coreListener);
+
+        Set<Entry> keys = eventsListeners.keySet();
+        Iterator<Entry> keysIt = keys.iterator();
+
+        while (keysIt.hasNext()) {
+            Entry key = keysIt.next();
+            if (key.equals(eventKey)) {
+                ArrayList<CoreListener> coreListenerList = eventsListeners.get(key);
+                coreListenerList.remove(coreListener);
+                if (coreListenerList.isEmpty()) {
+                    eventsListeners.remove(key);
+                }
+                Integer alarmId = alarmListenerList.get(key);
+                if (alarmId != null) {
+                    logger.debug("Deleting an alarm listener with id: " + alarmId);
+                    systemClock.unregisterAlarm(alarmId);
+                    alarmListenerList.remove(key);
+                }
+                break;
+            }
+        }
+        logger.debug("Core listener deleted");
+	}
+
+	/**
+	 * Return a copy of the key array for core event listeners
+	 * @return Entry keys as an array list
+	 */
+	public synchronized ArrayList<Entry> getCoreEventListenerCopy() {
+			ArrayList<Entry> keys = new ArrayList<Entry>();
+            Iterator<Entry> tempKeys = eventsListeners.keySet().iterator();
+            while (tempKeys.hasNext()) {
+                keys.add(tempKeys.next());
+            }
+            return keys;
+	}
+
+
+	public HashMap<Entry, ArrayList<CoreListener>> getEventsListeners() {
+		return eventsListeners;
 	}
 
 }

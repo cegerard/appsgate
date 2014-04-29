@@ -7,10 +7,10 @@ package appsgate.lig.eude.interpreter.impl;
 
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
-import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
@@ -67,7 +67,7 @@ public class EUDEInterpreterTest {
     private CHMIProxySpec chmiProxy;
     private EUDEInterpreter instance;
     private final JSONObject programJSON;
-    private ContextProxyMock contextProxy;
+    private EHMIProxyMock ehmiProxy;
     private final String programId = "test";
 
     public EUDEInterpreterTest() throws Exception {
@@ -79,7 +79,7 @@ public class EUDEInterpreterTest {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
         this.chmiProxy = context.mock(CHMIProxySpec.class);
-        this.contextProxy = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
+        this.ehmiProxy = new EHMIProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
         clock.put("id", "1");
@@ -127,7 +127,7 @@ public class EUDEInterpreterTest {
             }
         });
         this.instance = new EUDEInterpreter();
-        this.instance.setTestMocks(pull_service, push_service, chmiProxy, contextProxy);
+        this.instance.setTestMocks(pull_service, push_service, chmiProxy, ehmiProxy);
 
     }
 
@@ -377,15 +377,15 @@ public class EUDEInterpreterTest {
         NodeProgram p = instance.getNodeProgram("TestWhen");
         Assert.assertNotNull(p);
         Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
-        contextProxy.notifAll("1");
+        ehmiProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         System.out.println("become no");
         tested.become("no");
-        contextProxy.notifAll("2");
+        ehmiProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         tested.become("no");
-        contextProxy.notifAll("3");
+        ehmiProxy.notifAll("3");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
         p.stop();
@@ -408,11 +408,11 @@ public class EUDEInterpreterTest {
         Assert.assertNotNull(p);
         Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
 
-        contextProxy.notifAll("1");
+        ehmiProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("flag1"), 500);
         Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
 
-        contextProxy.notifAll("2");
+        ehmiProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("flag2"), 500);
         Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
         p.stop();
@@ -431,7 +431,7 @@ public class EUDEInterpreterTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testKeepState.json")));
         boolean p = instance.callProgram("TestKeepState");
         Assert.assertTrue(p);
-        contextProxy.notifAll("1");
+        ehmiProxy.notifAll("1");
     }
 
     @Test
@@ -451,7 +451,7 @@ public class EUDEInterpreterTest {
         boolean p = instance.callProgram("waitTest");
         Assert.assertTrue(p);
         synchroniser.waitUntil(tested.is("before"), 100);
-        contextProxy.notifAll("time");
+        ehmiProxy.notifAll("time");
         synchroniser.waitUntil(tested.is("flag2"), 1200);
     }
 
@@ -468,11 +468,11 @@ public class EUDEInterpreterTest {
         Assert.assertTrue(instance.callProgram("pgm"));
         Assert.assertFalse(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
-        contextProxy.notifAll("1");
+        ehmiProxy.notifAll("1");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
         Assert.assertTrue(tested.isNot("yes").isActive());
-        contextProxy.notifAll("2");
+        ehmiProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("pgm"));
@@ -493,9 +493,9 @@ public class EUDEInterpreterTest {
         System.out.println("Start 2");
         Assert.assertTrue(instance.callProgram("TestWhen"));
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
-        contextProxy.notifAll("1");
+        ehmiProxy.notifAll("1");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
-        contextProxy.notifAll("2");
+        ehmiProxy.notifAll("2");
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
 //        Assert.fail("Fin");
 
@@ -507,8 +507,8 @@ public class EUDEInterpreterTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/testWhenImb.json")));
         System.out.println("Start");
         Assert.assertTrue(instance.callProgram("whenImb"));
-        contextProxy.notifAll("1");
-        contextProxy.notifAll("2");
+        ehmiProxy.notifAll("1");
+        ehmiProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("Yes"), 200);
 
     }

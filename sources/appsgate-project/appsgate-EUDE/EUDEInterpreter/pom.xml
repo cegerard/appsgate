@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>appsgate.components</groupId>
-            <artifactId>ContextProxySpec</artifactId>
+            <artifactId>EHMIProxySpec</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

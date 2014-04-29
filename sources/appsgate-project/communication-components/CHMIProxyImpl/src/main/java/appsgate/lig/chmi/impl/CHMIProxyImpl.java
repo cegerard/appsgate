@@ -1,6 +1,7 @@
 package appsgate.lig.chmi.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -23,10 +24,12 @@ import appsGate.lig.manager.client.communication.service.send.SendWebsocketsServ
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.chmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.chmi.impl.listeners.CHMICommandListener;
+import appsgate.lig.chmi.impl.listeners.TimeObserver;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
+import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
@@ -307,6 +310,19 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
         return new JSONObject();
     }
+    
+    /**
+     * Get the core object from its identifier
+     * @param objectId the object identifier
+     * @return the core object instance
+     */
+    private CoreObjectSpec getCoreDevice(String objectId) {
+    	Object obj = getObjectRefFromID(objectId);
+    	if (obj != null) {
+            return (CoreObjectSpec) obj;
+        }
+    	return null;
+    }
 
     @Override
     public JSONArray getDevices(String type) {
@@ -328,6 +344,26 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             logger.debug("No smart object detected.");
             return new JSONArray();
         }
+    }
+    
+    @Override
+    public String getCoreClockObjectId() {
+    	JSONArray clocks = getDevices("21");
+    	JSONObject clock = null;
+    	int nbClocks = clocks.length();
+    	int i = 0;
+    	try {
+    		while(i < nbClocks) {
+				clock = clocks.getJSONObject(i);
+				i++;
+    		}
+    		if(clock != null) {
+    			return clock.getString("id");
+    		}
+    	} catch (JSONException e) {
+    		logger.debug(e.getMessage());
+		}
+    	return null;
     }
 
     /**
@@ -396,6 +432,45 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 		for(CoreEventsListener listener : eventsListenerList) {
 			listener.notifyEvent(srcId, varName, value);
 		}
+	}
+	
+	@Override
+	public int registerTimeAlarm(Calendar calendar, String message) {
+		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
+		if(obj != null) {
+			CoreClockSpec clock = (CoreClockSpec)obj;
+			return clock.registerAlarm(calendar, new TimeObserver(message));
+		}
+		return -1;
+	}
+
+	@Override
+	public void unregisterTimeAlarm(Integer alarmId) {
+		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
+		if(obj != null) {
+			CoreClockSpec clock = (CoreClockSpec)obj;
+			clock.unregisterAlarm(alarmId);
+		}
+	}
+
+	@Override
+	public long getCurrentTimeInMillis() {
+		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
+		if(obj != null) {
+			CoreClockSpec clock = (CoreClockSpec)obj;
+			return clock.getCurrentTimeInMillis();
+		}
+		return 0;
+	}
+
+	@Override
+	public double getTimeFlowRate() {
+		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
+		if(obj != null) {
+			CoreClockSpec clock = (CoreClockSpec)obj;
+			return clock.getTimeFlowRate();
+		}
+		return 1.0;
 	}
 	
 	@Override

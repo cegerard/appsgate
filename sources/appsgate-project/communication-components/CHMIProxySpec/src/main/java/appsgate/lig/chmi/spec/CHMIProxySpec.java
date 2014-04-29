@@ -1,8 +1,10 @@
 package appsgate.lig.chmi.spec;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
@@ -95,11 +97,46 @@ public interface CHMIProxySpec {
 	
 	/**
 	 * Get all the device that fit the type parameter
-	 * @param type
-	 * 			the type parameter
+	 * @param type the type parameter
 	 * @return the device list of the same "type"
 	 */
 	public JSONArray getDevices(String type);
+	
+	/**
+	 * Get the identifier of the core clock
+	 * @return the core clock identifier as a string or null if there is no core clock
+	 */
+	public String getCoreClockObjectId();
+	
+	/************************************/
+	/**       Core clock commands      **/
+	/************************************/
+	
+	/**
+	 * Register a time alarm
+	 * @param calendar the date when the alarm will ring
+	 * @param message a message from the requester
+	 * @return the alarm identifier
+	 */
+	public int registerTimeAlarm(Calendar calendar, String message);
+
+	/**
+	 * Unregister a alarm from its identifier
+	 * @param alarmId the alarm identifier
+	 */
+	public void unregisterTimeAlarm(Integer alarmId);
+	
+	/**
+	 * Get the current system time in milliseconds
+	 * @return the time in milliseconds as a long
+	 */
+	public long getCurrentTimeInMillis();
+	
+	/**
+	 * Get the current time flow rate
+	 * @return the current time flow
+	 */
+	public double getTimeFlowRate();
 	
 	/************************************/
 	/**      General core commands     **/
@@ -116,4 +153,5 @@ public interface CHMIProxySpec {
 	 * (Restart the system bundle from OSGi)
 	 */
 	public void restart();
+
 }

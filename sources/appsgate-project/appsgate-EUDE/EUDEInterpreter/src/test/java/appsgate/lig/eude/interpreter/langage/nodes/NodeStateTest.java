@@ -6,8 +6,8 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.chmi.spec.GenericCommand;
-import appsgate.lig.context.proxy.spec.ContextProxyMock;
-import appsgate.lig.context.proxy.spec.ContextProxySpec;
+import appsgate.lig.ehmi.spec.EHMIProxyMock;
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 
 import org.jmock.Expectations;
@@ -29,7 +29,7 @@ public class NodeStateTest extends NodeTest {
     private NodeState state;
     
     public NodeStateTest() throws Exception {
-        final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
+        final EHMIProxySpec c = new EHMIProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONObject events = new JSONObject();
         JSONObject e = new JSONObject();
         e.put("name", "event");
