@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>appsgate.components</groupId>
 		<artifactId>appsgate-EUDE</artifactId>
 		<version>1.0.0</version>
 	</parent>
 
-    <artifactId>EUDEInterpreterSpec</artifactId>
-    <packaging>bundle</packaging>
+	<artifactId>EUDEInterpreterSpec</artifactId>
+	<packaging>bundle</packaging>
 
-    <name>EUDEInterpreterSpec</name>
+	<name>EUDEInterpreterSpec</name>
 
-    <!-- Dependencies Description -->
-    <dependencies>
-        <dependency>
-            <groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-        </dependency>
-         <dependency>
-            <groupId>appsgate.components</groupId>
-			<artifactId>CoreObjectSpec</artifactId>
+	<!-- Dependencies Description -->
+	<dependencies>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>EHMIProxySpec</artifactId>
 			<version>1.0.0</version>
-        </dependency>
-    </dependencies>
+		</dependency>
+	</dependencies>
 
-    <!-- Build Description -->
+	<!-- Build Description -->
 	<build>
 		<plugins>
 			<plugin>
@@ -54,5 +50,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

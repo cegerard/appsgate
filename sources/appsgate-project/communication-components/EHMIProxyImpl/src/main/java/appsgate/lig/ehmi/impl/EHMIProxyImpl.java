@@ -52,6 +52,7 @@ import appsgate.lig.ehmi.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 
 
@@ -775,6 +776,21 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	public void sendToClients(JSONObject notif){
 		sendToClientService.send(notif.toString());
 	}
+	
+    /**
+     * Called by ApAM when Notification message comes and forward it to client
+     * part by calling the sendService
+     *
+     * @param notif the notification message from ApAM
+     */
+    public void gotNotification(NotificationMsg notif) {
+        logger.debug("Notification message received, " + notif.JSONize());
+        try{
+        	sendToClientService.send(notif.JSONize().toString());
+    	}catch(ExternalComDependencyException comException) {
+    		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
+    	}
+    }
 
 	 /**
      * Get a command description, resolve the local target reference and return a runnable
@@ -805,7 +821,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * @return a runnable object that can be execute and manage.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Runnable executeRemoteCommand(String objIdentifier, String method, ArrayList<Object> arguments, ArrayList<Class> types, int clientId, String callId) {
+	public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, ArrayList<Object> arguments, ArrayList<Class> types, int clientId, String callId) {
 		return coreProxy.executeCommand(clientId, objIdentifier, method, arguments, types, callId);
 	}
 	
@@ -817,7 +833,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * @param args the arguments list with their types
 	 * @return a runnable object that can be execute and manage.
 	 */
-	public Runnable executeRemoteCommand(String objIdentifier, String method, JSONArray args) {
+	public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, JSONArray args) {
 		return coreProxy.executeCommand(objIdentifier, method, args);
 	}
 

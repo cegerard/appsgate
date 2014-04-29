@@ -13,13 +13,12 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
-import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
@@ -29,6 +28,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,11 +57,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * happen.
      */
     private EHMIProxySpec ehmiProxy;
-
-    /**
-     * Reference to the ApAM router. Used to send action to the objects
-     */
-    private CHMIProxySpec chmiProxy;
+    
     /**
      * Reference the ApAM HistoryManager.
      */
@@ -312,7 +308,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the command to be executed
      */
     public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
-        return chmiProxy.executeCommand(objectId, methodName, args);
+        return ehmiProxy.executeRemoteCommand(objectId, methodName, args);
     }
 
     /**
@@ -320,7 +316,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public Long getTime() {
         LOGGER.trace("getTime called");
-        //TODO 000004 delete this call from chmiProxy and use an execution though the EHMI to manage the clock.
         GenericCommand cmd = executeCommand(getClock().getId(), "getCurrentTimeInMillis", new JSONArray());
         LOGGER.debug("cmd: " + cmd.toString());
         cmd.run();
@@ -455,7 +450,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public ClockProxy getClock() {
         if (clock == null) {
-            JSONArray devices = chmiProxy.getDevices();
+            JSONArray devices = ehmiProxy.getDevices();
             for (int i = 0; i < devices.length(); i++) {
                 try {
                     if (devices.getJSONObject(i).optInt("type") == 21) {
@@ -747,11 +742,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param pull
      * @param push
      */
-    public void setTestMocks(DataBasePullService pull, DataBasePushService push, CHMIProxySpec chmiProxy, EHMIProxySpec c) {
+    public void setTestMocks(DataBasePullService pull, DataBasePushService push, EHMIProxySpec ehmiProxy) {
         this.contextHistory_pull = pull;
         this.contextHistory_push = push;
-        this.chmiProxy = chmiProxy;
-        this.ehmiProxy = c;
+        this.ehmiProxy = ehmiProxy;
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 
 public class EHMIProxyMock implements EHMIProxySpec {
@@ -206,7 +207,7 @@ public class EHMIProxyMock implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices() {
-		return null;
+		return new JSONArray();
 	}
 
 
@@ -464,6 +465,13 @@ public class EHMIProxyMock implements EHMIProxySpec {
 	@Override
 	public void restart() {
 		
+	}
+
+
+	@Override
+	public GenericCommand executeRemoteCommand(String objIdentifier,
+			String method, JSONArray args) {
+		return null;
 	}
 
 }

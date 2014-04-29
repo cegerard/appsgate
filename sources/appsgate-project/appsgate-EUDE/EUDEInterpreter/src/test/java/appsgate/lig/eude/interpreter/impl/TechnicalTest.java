@@ -117,7 +117,7 @@ public class TechnicalTest {
             }
         });
         this.instance = new EUDEInterpreter();
-        this.instance.setTestMocks(pull_service, push_service, chmiProxy, ehmiProxy);
+        this.instance.setTestMocks(pull_service, push_service, ehmiProxy);
 
     }
 

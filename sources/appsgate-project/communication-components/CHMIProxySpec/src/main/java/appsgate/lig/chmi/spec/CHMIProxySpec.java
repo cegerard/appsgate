@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
@@ -57,7 +56,7 @@ public interface CHMIProxySpec {
 	 * @return a Runnable object that can be execute everywhere.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Runnable executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType);
+	public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType);
 
     /**
      * Get a command description, resolve the target reference and make the
@@ -72,7 +71,7 @@ public interface CHMIProxySpec {
      * @return a Runnable object that can be execute everywhere.
      */
 	 @SuppressWarnings("rawtypes")
-	public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId);
+	public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId);
 	
 	/**
 	 * Execute command from outside to a specific device

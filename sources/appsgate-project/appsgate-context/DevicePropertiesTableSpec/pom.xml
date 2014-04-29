@@ -14,14 +14,14 @@
 
  <!-- Repositories List -->
 
-	<!-- Dependencies Description -->
-    <dependencies>
+<!-- Dependencies Description -->
+	<dependencies>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>CoreObjectSpec</artifactId>
+			<artifactId>EHMIProxySpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-    </dependencies>
+	</dependencies>
 
  <!-- Build Description -->
 	<build>

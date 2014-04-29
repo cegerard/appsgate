@@ -74,11 +74,6 @@
 			<version>4.3.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
-			<artifactId>CHMIProxySpec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 
 

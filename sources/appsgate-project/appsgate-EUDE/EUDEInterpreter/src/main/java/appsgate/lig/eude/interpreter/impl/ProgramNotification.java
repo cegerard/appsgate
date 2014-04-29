@@ -3,8 +3,7 @@ package appsgate.lig.eude.interpreter.impl;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.core.object.messages.NotificationMsg;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 
 public class ProgramNotification implements NotificationMsg {
 
@@ -53,8 +52,8 @@ public class ProgramNotification implements NotificationMsg {
     }
 
     @Override
-    public CoreObjectSpec getSource() {
-        return null;
+    public String getSource() {
+        return "";
     }
     
     @Override

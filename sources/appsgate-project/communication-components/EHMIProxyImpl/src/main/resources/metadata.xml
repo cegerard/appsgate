@@ -22,6 +22,9 @@
 		</relation>
 		
 		<ipojo:requires field="httpService" />
+		
+		<relation push="gotNotification" multiple="true" resolve="exist" />
+		
 	</implementation>
 	
 </apam>

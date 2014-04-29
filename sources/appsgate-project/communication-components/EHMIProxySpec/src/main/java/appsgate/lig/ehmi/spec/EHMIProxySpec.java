@@ -396,8 +396,8 @@ public interface EHMIProxySpec {
      * @param coreListener
      */
     public void deleteCoreListener(CoreListener coreListener);
-	
-	
+    
+    
 	/************************************/
 	/**    General AppsGate commands    */
 	/************************************/
@@ -413,5 +413,21 @@ public interface EHMIProxySpec {
 	 * (Restart the system bundle from OSGi)
 	 */
 	public void restart();
+	
+	/************************************/
+	/**    Generic AppsGate commands    */
+	/************************************/
+    
+    /**
+	 * Get a runnable object that can execute command from a remote device manager asynchronously
+	 * 
+	 * @param objIdentifier the identifier of the object on the remote system
+	 * @param method the method name to call
+	 * @param args the arguments list with their types
+	 * @return a runnable object that can be execute and manage.
+	 */
+	public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, JSONArray args);
+	
+	
 	
 }

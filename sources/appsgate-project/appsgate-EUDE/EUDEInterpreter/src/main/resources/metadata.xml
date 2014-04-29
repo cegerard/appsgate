@@ -5,7 +5,6 @@
 
 	<implementation name="EUDEInterpreter" classname="appsgate.lig.eude.interpreter.impl.EUDEInterpreter" specification="EUDEInterpreterSpec" singleton="true" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		<relation field="chmiProxy" fail="wait" resolve="exist"/>
 		<relation field="ehmiProxy" fail="wait" resolve="exist"/>
                 <relation field="propHistoryManager" fail="wait" resolve="exist"/>
 		<ipojo:requires field="contextHistory_pull"/>

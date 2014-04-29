@@ -17,7 +17,7 @@ import appsgate.lig.context.device.properties.table.messages.PropertiesTableNoti
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
-import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 
 /**
  * The device properties table implementation is an ApAM component to map

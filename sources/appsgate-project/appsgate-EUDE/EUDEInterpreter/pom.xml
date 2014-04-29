@@ -28,16 +28,6 @@
         </dependency>
         <dependency>
             <groupId>appsgate.components</groupId>
-            <artifactId>EHMIProxySpec</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>CHMIProxySpec</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
             <artifactId>ContextHistorySpec</artifactId>
             <version>1.0.0</version>
         </dependency>    
@@ -91,12 +81,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>EHMIProxySpec</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.ipojo</artifactId>
             <version>1.11.0</version>
@@ -107,7 +91,6 @@
             <groupId>appsgate.components</groupId>
             <artifactId>PropertyHistoryManagerSpec</artifactId>
             <version>1.0.0</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
