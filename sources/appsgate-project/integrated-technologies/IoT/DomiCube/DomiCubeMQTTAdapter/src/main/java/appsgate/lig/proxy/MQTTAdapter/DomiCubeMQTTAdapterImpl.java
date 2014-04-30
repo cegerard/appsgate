@@ -43,6 +43,16 @@ public class DomiCubeMQTTAdapterImpl {
 	private String topic;
 	
 	/**
+	 * MQTT DomiCube old topic
+	 */
+	private String oldTopic;
+	
+	/**
+	 * MQTT attribute to initiate the connexction
+	 */
+	private MQTT mqtt;
+	
+	/**
 	 * Executor scheduler for MQTT message reception
 	 */
 	private ScheduledExecutorService listenningService;
@@ -73,7 +83,7 @@ public class DomiCubeMQTTAdapterImpl {
 	public void newInst() {
 		logger.debug("initializing MQTT DomiCube adapter.");
 		try {
-			MQTT mqtt = new MQTT();
+			mqtt = new MQTT();
 			logger.debug("Trying to connect MQTT broker: "+host+":"+port);
 			mqtt.setHost(host, Integer.valueOf(port));
 			connection = mqtt.blockingConnection();
@@ -82,6 +92,7 @@ public class DomiCubeMQTTAdapterImpl {
 			logger.debug("MQTT brocker connection success.");
 			
 			localTopic = new Topic(topic, QoS.AT_LEAST_ONCE);
+			oldTopic = topic;
 			Topic[] topics = { localTopic };
 			qoses = connection.subscribe(topics);
 			logger.debug("Topics subscription success.");
@@ -126,6 +137,87 @@ public class DomiCubeMQTTAdapterImpl {
 			logger.debug("MQTT brocker connection closed.");
 		}catch (Exception e) {
 			logger.error("MQTT brocker disconnection failed.");
+			logger.error(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Called by ApAM when the host value changed
+	 * @param newHost the new host value.
+	 */
+	public void onHostChanged(String newHost) {
+		try {
+			delInst();
+			newConnection();
+		}catch (Exception e) {
+			logger.error("MQTT brocker disconnection failed.");
+			logger.error(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Called by ApAM when the host value changed
+	 * @param newHost the new host value.
+	 */
+	public void onPortChanged(String newHost) {
+		try {
+			delInst();
+			newConnection();
+		}catch (Exception e) {
+			logger.error("MQTT brocker disconnection failed.");
+			logger.error(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Called by ApAM when the host value changed
+	 * @param newHost the new host value.
+	 */
+	public void onTopicChanged(String newHost) {
+		try {
+			String[] oldTopics = { oldTopic };
+			connection.unsubscribe(oldTopics);
+			
+			localTopic = new Topic(topic, QoS.AT_LEAST_ONCE);
+			oldTopic = topic;
+			Topic[] topics = { localTopic };			
+			connection.subscribe(topics);
+			
+		}catch (Exception e) {
+			logger.error("MQTT brocker disconnection failed.");
+			logger.error(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Restart the connection with the newly set parameters
+	 */
+	private void newConnection(){
+		logger.debug("Trying to connect MQTT broker: "+host+":"+port);
+		
+		try{
+			mqtt.setHost(host, Integer.valueOf(port));
+			connection = mqtt.blockingConnection();
+			logger.debug("connecting...");
+			connection.connect();
+			logger.debug("MQTT brocker connection success.");
+		
+			Topic[] topics = { localTopic };
+			qoses = connection.subscribe(topics);
+			logger.debug("Topics subscription success.");
+		
+			logger.debug("Reception thread intializing...");
+			listenningService.schedule(new MQTTListeningThread(), 3, TimeUnit.SECONDS);
+			logger.debug("Thread initialized.");
+			
+		} catch (NumberFormatException e) {
+			logger.error("MQTT brocker connection failed.");
+			logger.error("Number format exception: "+e.getMessage());
+		} catch (URISyntaxException e) {
+			logger.error("MQTT brocker connection failed.");
+			logger.error("URI syntaxe error: "+e.getMessage());
+		} catch (Exception e) {
+			logger.error("MQTT brocker connection failed.");
 			logger.error(e.getMessage());
 		}
 	}

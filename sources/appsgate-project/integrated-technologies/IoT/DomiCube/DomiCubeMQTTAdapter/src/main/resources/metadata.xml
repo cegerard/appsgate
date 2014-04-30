@@ -9,9 +9,9 @@
 
 		<callback onInit="newInst" onRemove="delInst" />		
 		
-		<definition name="host"  type="string" field="host"  />
-		<definition name="port"  type="string" field="port"  />
-		<definition name="topic" type="string" field="topic" />
+		<definition name="host"  type="string" field="host"  method="onHostChanged" />
+		<definition name="port"  type="string" field="port"  method="onPortChanged"/>
+		<definition name="topic" type="string" field="topic" method="onTopicChanged"/>
 
 	</implementation>
 	 
