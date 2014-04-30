@@ -4,6 +4,9 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.SortedMap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.ehmi.impl.listeners.TimeObserver;
 
@@ -64,6 +67,14 @@ public class SystemClock {
 	 */
 	public String getAbstractObjectId() {
 		return objectID;
+	}
+	
+	/**
+	 * Get the user type for the system clock
+	 * @return the user type as a String
+	 */
+	public String getSystemClockType() {
+		return systemClockType;
 	}
 	
 	/**
@@ -163,6 +174,24 @@ public class SystemClock {
 	 */
 	public boolean isRemote() {
 		return remote;
+	}
+	
+	
+	public JSONObject getDescription() throws JSONException {
+		JSONObject descr = new JSONObject();
+		descr.put("id", objectID);
+		descr.put("type", systemClockType); // 21 for clock
+		descr.put("status", 2);
+		descr.put("sysName", appsgateServiceName);
+
+		Calendar cal = Calendar.getInstance();
+		long time = getCurrentTimeInMillis();
+		cal.setTimeInMillis(time);
+		descr.put("ClockSet", cal.getTime().toString());
+		descr.put("clockValue", String.valueOf(time));
+		descr.put("flowRate", String.valueOf(getTimeFlowRate()));
+
+		return descr;
 	}
 	
 }

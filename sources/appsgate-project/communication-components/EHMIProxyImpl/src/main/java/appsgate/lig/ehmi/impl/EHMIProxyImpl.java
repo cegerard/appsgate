@@ -233,7 +233,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         	}
 		}catch(CoreDependencyException coreException) {
     		logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
-    		systemClock.stopRemoteSync(coreProxy);
+    		if(systemClock.isRemote())
+    			systemClock.stopRemoteSync(coreProxy);
 		}
 		
 	}
@@ -252,7 +253,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     	try {
         	coreProxy.CoreEventsUnsubscribe(objectEventsListener);
         	coreProxy.CoreUpdatesUnsubscribe(objectUpdatesListener);
-        	systemClock.stopRemoteSync(coreProxy);
+        	if(systemClock.isRemote())
+        		systemClock.stopRemoteSync(coreProxy);
 		}catch(CoreDependencyException coreException) {
     		logger.warn("Resolution failled for core dependency, no notification subscription can be delete.");
 		}
@@ -262,36 +264,64 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices() {
+		JSONArray devices = new JSONArray();
 		try {
 			return addContextData(coreProxy.getDevices());
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
-    		systemClock.stopRemoteSync(coreProxy);
+    		if(systemClock.isRemote()){
+    			systemClock.stopRemoteSync(coreProxy);
+    		}
+    		try {
+				devices.put(addContextData(systemClock.getDescription(), systemClock.getAbstractObjectId()));
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
     	}
-		return new JSONArray();
+		return devices;
 	}
 	
 	@Override
 	public JSONObject getDevice(String deviceId) {
+		JSONObject devices = new JSONObject();
 		try {
 			JSONObject coreObject = coreProxy.getDevice(deviceId);
 			return addContextData(coreObject, deviceId);
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
-    		systemClock.stopRemoteSync(coreProxy);
+    		if(systemClock.isRemote()) {
+    			systemClock.stopRemoteSync(coreProxy);
+    		}
+    		if(deviceId.contentEquals(systemClock.getAbstractObjectId())) {
+    			try {
+					devices = addContextData(systemClock.getDescription(), systemClock.getAbstractObjectId());
+				} catch (JSONException e) {
+					logger.error(e.getMessage());
+				}
+    		}
 		}
-		return new JSONObject();
+		return devices;
 	}
 	
 	@Override
 	public JSONArray getDevices(String type) {
+		JSONArray devices = new JSONArray();
 		try {
 			return addContextData(getDevices(type));
 		}catch(CoreDependencyException coreException) {
     		logger.debug("Resolution failled for core dependency, no device can be found.");
-    		systemClock.stopRemoteSync(coreProxy);
+    		if(systemClock.isRemote()) {
+    			systemClock.stopRemoteSync(coreProxy);
+    		}
+    		try {
+    			if(type.contentEquals(systemClock.getSystemClockType())) {
+    				devices.put(addContextData(systemClock.getDescription(), systemClock.getAbstractObjectId()));
+    			}
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
     	}
-		return new JSONArray();
+		return devices;
 	}
 	
 	@Override
@@ -727,11 +757,13 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		return contextArray;
 	}
 
+	/**
+	 * Find the IP address from system configuration to exposed
+	 * it through UPnP
+	 */
 	private void retrieveLocalAdress() {
 		// initiate UPnP state variables
 		try {
-
-
 			Inet4Address localAddress = (Inet4Address) InetAddress.getLocalHost();
 			Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
 			for (NetworkInterface netint : Collections.list(nets)) {
@@ -791,6 +823,14 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
     	}
     }
+    
+    /**
+	 * Get the EHMI system clock abstraction
+	 * @return the  abstract system clock instance
+	 */
+	public SystemClock getSystemClock() {
+		return systemClock;
+	}
 
 	 /**
      * Get a command description, resolve the local target reference and return a runnable
@@ -921,9 +961,28 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             return keys;
 	}
 
-
+	/**
+	 * Get the event listener map
+	 * @return the HashMap of events listeners
+	 */
 	public HashMap<Entry, ArrayList<CoreListener>> getEventsListeners() {
 		return eventsListeners;
+	}
+	
+	/**
+	 * Get the current system time from the local EHMI clock
+	 * @return the current time in milliseconds as a long
+	 */
+	public long getCurrentTimeInMillis() {
+		return systemClock.getCurrentTimeInMillis();
+	}
+	
+	/**
+	 * Get the current time flow rate from the local EHMI clock
+	 * @return the current time flow rate as a double
+	 */
+	public double getTimeFlowRate() {
+		return systemClock.getTimeFlowRate();
 	}
 
 }

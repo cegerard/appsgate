@@ -61,17 +61,15 @@ public class EHMICommandListener implements CommandListener {
 		logger.debug("Application domain level message (EHMI)");
 		try {
 			int clientId = obj.getInt("clientId");
+			String method = obj.getString("method");
+			JSONArray args = obj.getJSONArray("args");
+			String callId = null;
+			ArrayList<Object> arguments = new ArrayList<Object>();
+			@SuppressWarnings("rawtypes")
+			ArrayList<Class> types = new ArrayList<Class>();
+			
 			try {
-				String method = obj.getString("method");
-				JSONArray args = obj.getJSONArray("args");
-				
-				ArrayList<Object> arguments = new ArrayList<Object>();
-				@SuppressWarnings("rawtypes")
-				ArrayList<Class> types = new ArrayList<Class>();
-
 				loadArguments(args, arguments, types);
-				
-				String callId = null;
 				if(obj.has("callId")) {
 					callId = obj.getString("callId");
 					logger.debug("method with return call");
@@ -87,7 +85,13 @@ public class EHMICommandListener implements CommandListener {
 			} catch (IllegalArgumentException e) {
 				logger.debug("Inappropriate argument: " + e.getMessage());
 			} catch(CoreDependencyException coreException) {
-				logger.warn("Resolution failled for core dependency, no remote call can be triggered.");
+				String objId = obj.getString("objectId");
+				if(objId.contentEquals(ehmiProxy.getSystemClock().getAbstractObjectId())) {
+					logger.trace("Use the local clock instead of the provided core clock;");
+					executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
+				}else {
+					logger.warn("Resolution failled for core dependency, no remote call can be triggered.");
+				}
 			}
 		} catch (JSONException e1) {
 			logger.error(e1.getMessage());
