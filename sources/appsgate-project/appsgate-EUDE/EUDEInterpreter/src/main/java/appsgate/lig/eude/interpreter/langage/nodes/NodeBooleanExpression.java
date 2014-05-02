@@ -31,7 +31,7 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
      */
     public static enum BinaryOperator {
 
-       OR("||"), AND("&&"), NOT("!");
+        OR("||"), AND("&&"), NOT("!"), TRUE("");
 
         private final String val;
 
@@ -137,13 +137,17 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
             SpokExecutionException ex = new SpokExecutionException("There were no left branch to evaluate");
             return ex.getJSONDescription();
         }
-        leftNode.addEndEventListener(this);
-        return leftNode.call();
+        evaluateNode(leftNode);
+        return null;
     }
 
     @Override
     public String getExpertProgramScript() {
-        return "(" + leftNode.getExpertProgramScript() + operator.getVal() + rightNode.getExpertProgramScript() + ")";
+        if (rightNode != null) {
+            return "(" + leftNode.getExpertProgramScript() + operator.getVal() + rightNode.getExpertProgramScript() + ")";
+        } else {
+            return "(" + operator.getVal() + leftNode.getExpertProgramScript() + ")";
+        }
     }
 
     @Override
@@ -152,52 +156,45 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
         ret.operator = operator;
         ret.leftNode = leftNode.copy(ret);
         ret.left = (ICanBeEvaluated) ret.leftNode;
-        ret.rightNode = rightNode.copy(ret);
-        ret.right = (ICanBeEvaluated) ret.rightNode;
+        if (rightNode != null) {
+            ret.rightNode = rightNode.copy(ret);
+            ret.right = (ICanBeEvaluated) ret.rightNode;
+        } else {
+            ret.rightNode = null;
+        }
         return ret;
     }
 
     @Override
     public void endEventFired(EndEvent e) {
-        Node n = (Node) e.getSource();
-        if (n == left) {
-            leftNodeEvaluated();
-            return;
-        }
-        if (n == right) {
-            rightNodeEvaluated();
-            return;
-        }
-        LOGGER.warn("An end event has been fired: " + e);
+        nodeEvaluated((Node) e.getSource());
+
     }
 
     /**
      *
      */
-    private void leftNodeEvaluated() {
+    private void nodeEvaluated(Node n) {
+        if (n == right) {
+            fireEndEvent(new EndEvent(this));
+            return;
+        }
         switch (operator) {
+            case NOT:
+            case TRUE:
+                fireEndEvent(new EndEvent(this));
+                break;
             case OR:
             case AND:
                 if (right != null) {
-                    rightNode.addEndEventListener(this);
-                    rightNode.call();
+                    evaluateNode(rightNode);
                 } else {
                     LOGGER.error("should evaluate the other node, but it is null");
-
                 }
-                break;
-            case NOT:
-                LOGGER.debug("Not node evaluated.");
-                fireEndEvent(new EndEvent(this));
                 break;
             default:
                 throw new AssertionError(operator.name());
         }
-    }
-
-    private void rightNodeEvaluated() {
-        LOGGER.debug("Everything has been evaluated");
-        fireEndEvent(new EndEvent(this));
     }
 
     @Override
@@ -207,7 +204,9 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
             ret.put("type", "booleanExpression");
             ret.put("operator", operator);
             ret.put("leftOperand", leftNode.getJSONDescription());
-            ret.put("rightOperand", rightNode.getJSONDescription());
+            if (rightNode != null) {
+                ret.put("rightOperand", rightNode.getJSONDescription());
+            }
 
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -230,6 +229,9 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
                 case NOT:
                     result = !SpokParser.getBooleanResult(left.getResult());
                     break;
+                case TRUE:
+                    result = SpokParser.getBooleanResult(left.getResult());
+                    break;
                 default:
                     throw new AssertionError(operator.name());
 
@@ -244,6 +246,20 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
     }
 
     /**
+     *
+     * @param node
+     */
+    private void evaluateNode(Node node) {
+        if (node instanceof NodeState) {
+            node.call();
+            nodeEvaluated(node);
+        } else {
+            node.call();
+            node.addEndEventListener(this);
+        }
+    }
+
+    /**
      * Method to check whether the node is well formed
      *
      * @param operator
@@ -255,6 +271,7 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
             case AND:
                 return true;
             case NOT:
+            case TRUE:
                 return false;
             default:
                 throw new AssertionError(operator.name());

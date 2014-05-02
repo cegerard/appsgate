@@ -44,7 +44,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
 
     @Test
     public void testOperators() throws Exception {
-        ruleJSON.put("operator", "");
+        ruleJSON.put("operator", "X");
         try {
             this.instance = new NodeBooleanExpression(ruleJSON, null);
             Assert.fail("An exception should have been raised");
@@ -228,5 +228,41 @@ public class NodeBooleanExpressionTest extends NodeTest {
         Assert.assertNotNull(result2);
         Assert.assertEquals("boolean", result2.getType());
         Assert.assertEquals("true", result2.getValue());
+    }
+    @Test
+    public void testTrueOperation() throws Exception {
+        printTestName("TrueOperation");
+        JSONObject o = new JSONObject();
+        JSONObject l = new JSONObject();
+        o.put("operator", "");
+        // Test with numbers
+        l.put("type", "number");
+        l.put("value", 12);
+        o.put("leftOperand", l);
+        try {
+            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
+            e0.getResult();
+            Assert.fail("An exception should have been raised");
+        } catch (SpokException ex) {
+            Assert.assertNotNull(ex);
+        }
+        // Test with true
+        l.put("type", "boolean");
+        l.put("value", "true");
+        o.put("leftOperand", l);
+        NodeBooleanExpression e1 = new NodeBooleanExpression(o, null);
+        SpokObject result1 = e1.getResult();
+        Assert.assertNotNull(result1);
+        Assert.assertEquals("boolean", result1.getType());
+        Assert.assertEquals("true", result1.getValue());
+        // Test with false
+        l.put("type", "boolean");
+        l.put("value", "false");
+        o.put("leftOperand", l);
+        NodeBooleanExpression e2 = new NodeBooleanExpression(o, null);
+        SpokObject result2 = e2.getResult();
+        Assert.assertNotNull(result2);
+        Assert.assertEquals("boolean", result2.getType());
+        Assert.assertEquals("false", result2.getValue());
     }
 }

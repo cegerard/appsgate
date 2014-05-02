@@ -93,27 +93,11 @@ public class NodeIf extends Node {
         Node nodeEnded = (Node) e.getSource();
 
         // the true branch or the false one has completed - nothing to do more
-        if (nodeEnded != expBool) {
-            setStarted(false);
-            fireEndEvent(new EndEvent(this));
-            return;
-        }
-        Boolean booleanResult;
-        try {
-            booleanResult = SpokParser.getBooleanResult(((ICanBeEvaluated) expBool).getResult());
-        } catch (SpokException ex) {
-            LOGGER.error("An exception has been raised during evaluation of node {}", this.expBool);
-            LOGGER.debug(ex.getValue());
-            setStarted(false);
-            fireEndEvent(new EndEvent(this));
-            return;
-
-        }
-        // if this is the boolean expression...
-        if (booleanResult) {// launch the "true" branch if expBool returned true...
-            listenAndCall(seqRulesTrue);
+        if (nodeEnded == expBool) {
+            evaluateResult();
         } else {
-            listenAndCall(seqRulesFalse);
+            setStarted(false);
+            fireEndEvent(new EndEvent(this));
         }
 
     }
@@ -146,6 +130,11 @@ public class NodeIf extends Node {
     public JSONObject call() {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
+        if (expBool instanceof NodeState) {
+            expBool.call();
+            evaluateResult();
+            return null;
+        }
         expBool.addEndEventListener(this);
         expBool.call();
 
@@ -203,6 +192,36 @@ public class NodeIf extends Node {
         ret.seqRulesTrue = seqRulesTrue.copy(ret);
         return ret;
 
+    }
+
+    /**
+     * Method being called once the boolean expression is evaluated
+     */
+    private void evaluateResult() {
+        Boolean booleanResult;
+        try {
+            if (expBool instanceof ICanBeEvaluated) {
+                booleanResult = SpokParser.getBooleanResult(((ICanBeEvaluated) expBool).getResult());
+            } else {
+                LOGGER.error("Boolean expression can not be evaluated: {}", this.expBool);
+                setStarted(false);
+                fireEndEvent(new EndEvent(this));
+                return;
+            }
+        } catch (SpokException ex) {
+            LOGGER.error("An exception has been raised during evaluation of node {}", this.expBool);
+            LOGGER.debug(ex.getValue());
+            setStarted(false);
+            fireEndEvent(new EndEvent(this));
+            return;
+
+        }
+        // if this is the boolean expression...
+        if (booleanResult) {// launch the "true" branch if expBool returned true...
+            listenAndCall(seqRulesTrue);
+        } else {
+            listenAndCall(seqRulesFalse);
+        }
     }
 
 }
