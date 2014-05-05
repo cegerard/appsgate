@@ -47,6 +47,8 @@ public class ObjectEventListener implements CoreEventsListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void notifyEvent(String srcId, String varName, String value) {
+		logger.debug("Event notification received for:  {"+srcId+", "+varName+", "+value+"}");
+		
 		this.sourceId = srcId;
 		this.varName = varName;
 		this.value = value;
@@ -59,7 +61,7 @@ public class ObjectEventListener implements CoreEventsListener {
 		
         for (Entry key : keys) {
             if (eventKey.match(key)) {
-                logger.trace("Event is followed, retreiving listeners...");
+                logger.debug("Event is followed, retreiving listeners...");
 
                 ArrayList<CoreListener> coreListenerList;
                 synchronized (this) {
@@ -68,7 +70,7 @@ public class ObjectEventListener implements CoreEventsListener {
                     coreListenerList = (ArrayList<CoreListener>) EHMIProxy.getEventsListeners().get(key).clone();
                 }
                 for (CoreListener listener : coreListenerList) {
-                    logger.trace("Notify listener.");
+                    logger.debug("Notify listener.");
                     listener.notifyEvent();
                 }
             }
