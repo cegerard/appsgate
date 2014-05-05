@@ -100,7 +100,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
      */
     private void callAction() {
         try {
-            if (target.getType().equalsIgnoreCase("device")) {
+            if (target.getType().equalsIgnoreCase("device") || target.getType().equalsIgnoreCase("service")) {
                 callDeviceAction(target.getValue());
             } else if (target.getType().equalsIgnoreCase("programcall")) {
                 callProgramAction(target.getValue());

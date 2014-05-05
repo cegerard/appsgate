@@ -117,6 +117,9 @@ public class Builder {
         if (type.equalsIgnoreCase("device")) {
             return NODE_TYPE.NODE_VALUE;
         }
+        if (type.equalsIgnoreCase("service")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
         if (type.equalsIgnoreCase("string")) {
             return NODE_TYPE.NODE_VALUE;
         }

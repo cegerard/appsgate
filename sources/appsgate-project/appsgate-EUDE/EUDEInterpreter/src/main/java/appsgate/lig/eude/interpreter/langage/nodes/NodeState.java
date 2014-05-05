@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeState extends Node {
+public class NodeState extends Node implements ICanBeEvaluated {
 
     /**
      * Logger
@@ -289,6 +289,20 @@ public class NodeState extends Node {
         }
         LOGGER.debug("Is of state: [" + aReturn.toString() + "] compared to: [" + desc.getStateValue() + "]");
         return (desc.getStateValue().equalsIgnoreCase(aReturn.toString()));
+    }
+
+    @Override
+    public NodeValue getResult() throws SpokExecutionException {
+        if (isOfState()) {
+            return new NodeValue("boolean", "true", this);
+        } else {
+            return new NodeValue("boolean", "false", this);
+        }
+    }
+
+    @Override
+    public String getResultType() {
+        return "boolean";
     }
 
 }
