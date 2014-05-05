@@ -23,6 +23,7 @@ public class NodeActionTest extends NodeTest {
         ruleJSON.put("type", "action");
         NodeValueTest t = new NodeValueTest();
         JSONObject o = t.ruleJSON;
+        o.put("type", "device");
         ruleJSON.put("target", o);
         ruleJSON.put("methodName", "test");
         ruleJSON.put("args", (Collection) null);
@@ -31,7 +32,7 @@ public class NodeActionTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.actionTest = new NodeAction(ruleJSON, null);
+        this.actionTest = new NodeAction(ruleJSON, programNode);
         this.instance = this.actionTest;
     }
 
@@ -49,10 +50,16 @@ public class NodeActionTest extends NodeTest {
     @Test
     @Override
     public void testCall() throws Exception {
+        context.checking(new Expectations() {
+            {
+                exactly(1).of(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+            }
+        });
         printTestName("call");
         JSONObject expResult = null;
         JSONObject result = this.instance.call();
         Assert.assertEquals(expResult, result);
+        context.assertIsSatisfied();
         Assert.assertFalse("Simple action can not be stopped, so once the action is done, it is stopped", this.instance.isStarted());
     }
 
