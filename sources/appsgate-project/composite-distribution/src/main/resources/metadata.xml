@@ -3,26 +3,27 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<composite name="AppsGate-Application"  singleton="true" main="EHMIProxyImpl">
+	<composite name="AppsGate-Application" singleton="true"
+		main="EHMIProxyImpl">
 		<contentMngt>
 
-			<start  implementation="AppsGatePersistency" name="AppsGatePersistencyInst" ></start>
+			<start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
 
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
 			<start implementation="AppsGateContextProxyImpl" name="AppsGateContextProxyInst"></start>
-                        
+
 			<start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 
 			<start implementation="AppsGateHUEServices" name="AppsGateHUEServicesInst"></start>
 
 			<start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
-			
+
 			<start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
-			
-<!--             <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start> -->
-            
-<!--             <start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start> -->
+
+			<!-- <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start> -->
+
+			<!-- <start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start> -->
 
 			<start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />
@@ -32,53 +33,66 @@
 
 	</composite>
 
-	<composite name="AppsGateUPnPMediaServices" singleton="true" main="AppsgateUPnPAdapter">
+	<composite name="AppsGateUPnPMediaServices" singleton="true"
+		main="AppsgateUPnPAdapter">
 		<contentMngt>
 			<start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
 			<start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
 		</contentMngt>
 	</composite>
 
-	<composite name="AppsGateHUEServices" singleton="true" main="PhilipsHUEImplFactory">
+	<composite name="AppsGateHUEServices" singleton="true"
+		main="PhilipsHUEImplFactory">
 		<contentMngt>
 			<start implementation="PhilipsHUEAdapterImpl" name="AppsgatePhilipsHUEAdapter" />
 		</contentMngt>
 	</composite>
 
-	<composite name="AppsGateGoogleServices" singleton="true" main="AppsgateGoogleAdapter">
+	<composite name="AppsGateGoogleServices" singleton="true"
+		main="AppsgateGoogleAdapter">
 		<contentMngt>
-<!-- 			<start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
-<!-- 			<start implementation="GmailImpl" name="GmailInst"></start> -->
+			<!-- <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
+			<start implementation="GmailImpl" name="GmailInst">
+				<property name="user" value="smarthome.inria@gmail.com" />
+				<property name="password" value="smarthome2012" />
+				<property name="auto-refresh" value="120000" />
+			</start>
 		</contentMngt>
 	</composite>
 
-	<composite name="AppsGatePersistency" singleton="true" >
+	<composite name="AppsGatePersistency" singleton="true">
 		<contentMngt>
-			<start  implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
- 			<start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager"/>
-<!--             <start implementation="ContextManagerImpl" name="Global-ContextManager"/> 			 -->
-			<start implementation="PlaceManagerImpl" name="Global-PlaceManager"/>
-			<start implementation="AppsGateContextDevicePorpertiesTableImpl" name="Global-DevicePropertiesTableManager"/>
-			<start implementation="AppsGateContextUserBaseImpl" name="Global-UserBaseManager"/>
+			<start implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
+			<start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager" />
+			<!-- <start implementation="ContextManagerImpl" name="Global-ContextManager"/> -->
+			<start implementation="PlaceManagerImpl" name="Global-PlaceManager" />
+			<start implementation="AppsGateContextDevicePorpertiesTableImpl"
+				name="Global-DevicePropertiesTableManager" />
+			<start implementation="AppsGateContextUserBaseImpl" name="Global-UserBaseManager" />
 		</contentMngt>
 	</composite>
-	
-    <composite name="AppsGateUbikitServices" singleton="true" main="UbikitAdapterImpl">
-        <contentMngt>
-<!--         	<start implementation="UbikitAdapterImpl" name="AppsgateUbikitAdapter" /> -->
-        </contentMngt>
-    </composite>
-	
-    <composite name="AppsGateWattecoServices" singleton="true" main="WattecoAdapterImpl">
-        <contentMngt>
-        </contentMngt>
-    </composite>
-        
-    <composite name="AppsGateSimulatedServices" singleton="true" main="SimulatedAdapterImpl">
-        <contentMngt>
-        </contentMngt>
-    </composite>    
-        
-<!-- 	<apam-instance name="appsgate" implementation="AppsGate-Application" /> -->
+
+	<composite name="AppsGateUbikitServices" singleton="true"
+		main="UbikitAdapterImpl">
+		<contentMngt>
+			<!-- <start implementation="UbikitAdapterImpl" name="AppsgateUbikitAdapter" 
+				/> -->
+		</contentMngt>
+	</composite>
+
+	<composite name="AppsGateWattecoServices" singleton="true"
+		main="WattecoAdapterImpl">
+		<contentMngt>
+		</contentMngt>
+	</composite>
+
+	<composite name="AppsGateSimulatedServices" singleton="true"
+		main="SimulatedAdapterImpl">
+		<contentMngt>
+		</contentMngt>
+	</composite>
+
+	<!-- <apam-instance name="appsgate" implementation="AppsGate-Application" 
+		/> -->
 
 </apam>
