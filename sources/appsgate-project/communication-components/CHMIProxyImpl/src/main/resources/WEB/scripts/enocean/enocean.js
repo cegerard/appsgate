@@ -40,7 +40,7 @@ define([], function () {
 	       		
 	       		var enoceanDevList = confDeviceJSON.enoceanDevices;
 	       		for(dev in enoceanDevList){
-	       			call = eval({"method":"getDevice", "args":[{"type":"String", "value":enoceanDevList[dev]}], "callId":"enocean-conf-target-get-device"});
+	       			call = eval({"method":"getDevice", "args":[{"type":"String", "value":enoceanDevList[dev]}], "callId":"enocean-conf-target-get-device", "TARGET":"CHMI"});
 	       			chmi.sendCmd(JSON.stringify(call));
 	       		}
 	       	} else {
