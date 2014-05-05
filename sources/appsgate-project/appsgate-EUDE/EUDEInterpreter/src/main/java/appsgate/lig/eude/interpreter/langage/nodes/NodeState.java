@@ -34,7 +34,7 @@ public class NodeState extends Node {
      * The object to be observed
      */
     private Node objectNode;
-    private INodeFunction object;
+    private ICanBeEvaluated object;
     /**
      * The state to look for
      */
@@ -69,8 +69,8 @@ public class NodeState extends Node {
         super(parent, o);
         try {
             objectNode = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
-            if (objectNode instanceof INodeFunction) {
-                object = (INodeFunction) objectNode;
+            if (objectNode instanceof ICanBeEvaluated) {
+                object = (ICanBeEvaluated) objectNode;
             } else {
                 throw new SpokNodeException("NodeState", "object", null);
             }

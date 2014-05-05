@@ -6,8 +6,8 @@
 	    
 		<callback onInit="start" onRemove="stop" />
 		
-		<definition name="user" type="string" field="USER" injected="internal"/>
-		<definition name="password" type="string" field="PASSWORD" injected="internal"/>
+		<definition name="user" type="string" field="USER" injected="both"/>
+		<definition name="password" type="string" field="PASSWORD" injected="both"/>
 		<definition name="auto-refresh" type="int" field="refreshRate" injected="internal" method="autoRefreshValueChanged"/>
 		
 		<definition name="deviceId" 	type="string" default="666666666" field="serviceId"/>

@@ -11,7 +11,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
  *
  * @author jr
  */
-public interface INodeFunction {
+public interface ICanBeEvaluated {
 
     /**
      * Method that return the value associated to a node Must be overridden
@@ -21,4 +21,9 @@ public interface INodeFunction {
      */
     public NodeValue getResult() throws SpokExecutionException;
 
+    /**
+     * 
+     * @return the type of the result
+     */
+    public String getResultType();
 }

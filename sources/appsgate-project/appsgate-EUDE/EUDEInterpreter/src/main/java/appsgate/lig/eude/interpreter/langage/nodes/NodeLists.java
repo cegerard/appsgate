@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeLists extends Node implements INodeList, INodeFunction {
+public class NodeLists extends Node implements INodeList, ICanBeEvaluated {
 
     /**
      * The logger
@@ -186,6 +186,11 @@ public class NodeLists extends Node implements INodeList, INodeFunction {
     @Override
     public String getType() {
         return "list";
+    }
+
+    @Override
+    public String getResultType() {
+        return this.getType();
     }
 
     /**

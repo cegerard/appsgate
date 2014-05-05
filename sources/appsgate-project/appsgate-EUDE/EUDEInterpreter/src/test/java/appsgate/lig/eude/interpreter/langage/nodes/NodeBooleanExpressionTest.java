@@ -26,9 +26,9 @@ public class NodeBooleanExpressionTest extends NodeTest {
         super();
         JSONObject l = new JSONObject();
         ruleJSON.put("type", "booleanExpression");
-        ruleJSON.put("operator", "==");
-        l.put("type", "number");
-        l.put("value", 12);
+        ruleJSON.put("operator", "&&");
+        l.put("type", "boolean");
+        l.put("value", "true");
         l.put("iid", "");
         l.put("phrase", "");
         ruleJSON.put("leftOperand", l);
@@ -129,46 +129,6 @@ public class NodeBooleanExpressionTest extends NodeTest {
         Assert.assertNotNull(result);
         Assert.assertEquals("boolean", result4.getType());
         Assert.assertEquals("false", result4.getValue());
-    }
-
-    @Test
-    public void testNumericOperation() throws Exception {
-        printTestName("NumericOperation");
-        JSONObject o = new JSONObject();
-        JSONObject l = new JSONObject();
-        JSONObject r = new JSONObject();
-        o.put("operator", ">");
-        // Test with numbers
-        l.put("type", "boolean");
-        l.put("value", true);
-        o.put("leftOperand", l);
-        o.put("rightOperand", l);
-        try {
-            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
-            e0.getResult();
-
-            Assert.fail("An exception should have been raised");
-        } catch (SpokException ex) {
-            Assert.assertNotNull(ex);
-        }
-        l.put("type", "number");
-        l.put("value", "12");
-        o.put("leftOperand", l);
-        o.put("rightOperand", l);
-        NodeBooleanExpression e1 = new NodeBooleanExpression(o, null);
-        SpokObject result = e1.getResult();
-        Assert.assertNotNull(result);
-        Assert.assertEquals("boolean", result.getType());
-        Assert.assertEquals("false", result.getValue());
-        r.put("type", "number");
-        r.put("value", "11");
-        o.put("leftOperand", l);
-        o.put("rightOperand", r);
-        NodeBooleanExpression e2 = new NodeBooleanExpression(o, null);
-        SpokObject result2 = e2.getResult();
-        Assert.assertNotNull(result);
-        Assert.assertEquals("boolean", result2.getType());
-        Assert.assertEquals("true", result2.getValue());
     }
 
     @Test

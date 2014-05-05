@@ -28,6 +28,8 @@ public class NodeWait extends Node {
      */
     private Node waitFor = null;
 
+    private NodeEvent event;
+
     /**
      * private constructor to allow copy
      *
@@ -83,12 +85,17 @@ public class NodeWait extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
+        if ((Node) e.getSource() == event) {
+            event = null;
+            stopWaiting();
+            return;
+        }
         if (waitFor.getType().equalsIgnoreCase("number")) {
             try {
                 Integer duration;
                 duration = SpokParser.getNumericResult(waitFor).intValue();
-                waitFor = startClockEvent(duration);
-                if (waitFor == null) {
+                event = startClockEvent(duration);
+                if (event == null) {
                     stopWaiting();
                 }
             } catch (SpokTypeException ex) {
@@ -99,7 +106,7 @@ public class NodeWait extends Node {
                 stopWaiting();
             }
         } else {
-            waitFor = null;
+            event = null;
             stopWaiting();
         }
     }

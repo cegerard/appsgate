@@ -118,22 +118,29 @@ final public class NodeProgram extends Node {
      * @param mediator
      * @param o Abstract tree of the program in JSON
      * @param p the node parent
-     * @throws SpokNodeException
      */
-    public NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p)
-            throws SpokException {
+    public NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p) {
         this(mediator, p);
-
-        // initialize the program with the JSON
-        id = getJSONString(o, "id");
-        if (o.has("runningState")) {
-            LOGGER.trace("Running state: {}", o.optString("runningState"));
-            runningState = RUNNING_STATE.valueOf(getJSONString(o, "runningState"));
+        if (!o.has("body")) {
+            LOGGER.error("this program has no body");
+            setInvalid();
+            return;
         }
-        if (isValid()) {
-            update(o);
-        } else {
-            this.programJSON = o;
+        this.programJSON = o.optJSONObject("body");
+        // initialize the program with the JSON
+        try {
+
+            id = getJSONString(o, "id");
+            if (o.has("runningState")) {
+                LOGGER.trace("Running state: {}", o.optString("runningState"));
+                runningState = RUNNING_STATE.valueOf(getJSONString(o, "runningState"));
+            }
+            if (isValid()) {
+                update(o);
+            }
+
+        } catch (SpokNodeException ex) {
+            setInvalid();
         }
     }
 
@@ -148,19 +155,23 @@ final public class NodeProgram extends Node {
      * @param json the new source code
      *
      * @return true if the source code has been updated, false otherwise
-     * @throws SpokNodeException
      */
-    public final boolean update(JSONObject json) throws SpokException {
+    public final boolean update(JSONObject json) {
 
-        this.programJSON = null;
+        try {
+            name = getJSONString(json, "name");
+            header = getJSONObject(json, "header");
 
-        name = getJSONString(json, "name");
-        header = getJSONObject(json, "header");
-
-        this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
-        body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
-
-        return true;
+            this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
+            body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
+            this.programJSON = getJSONObject(json, "body");
+            this.runningState = RUNNING_STATE.DEPLOYED;
+            return true;
+        } catch (SpokException ex) {
+            LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
+        }
+        setInvalid();
+        return false;
 
     }
 
@@ -232,6 +243,13 @@ final public class NodeProgram extends Node {
     }
 
     /**
+     * set the state of the program to invalid
+     */
+    private void setInvalid() {
+        setRunningState(RUNNING_STATE.INVALID);
+    }
+
+    /**
      * @return true if the program can be run, false otherwise
      */
     final public boolean canRun() {
@@ -265,7 +283,7 @@ final public class NodeProgram extends Node {
      */
     final public void setWaiting() {
         if (isRunning()) {
-            this.runningState = RUNNING_STATE.WAITING;
+            setRunningState(RUNNING_STATE.WAITING);
         } else {
             LOGGER.warn("Trying to set {} waiting, while being {}", this, this.runningState);
         }
@@ -276,7 +294,7 @@ final public class NodeProgram extends Node {
      */
     public void setProcessing() {
         if (isValid()) {
-            this.runningState = RUNNING_STATE.PROCESSING;
+            setRunningState(RUNNING_STATE.PROCESSING);
         } else {
             LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
         }
@@ -320,12 +338,8 @@ final public class NodeProgram extends Node {
 
     /**
      * @return the JSON source of the program
-     * @throws SpokNodeException if there is no source for the program
      */
-    public JSONObject getJSONSource() throws SpokNodeException {
-        if (this.programJSON == null) {
-            return body.getJSONDescription();
-        }
+    public JSONObject getJSONSource() {
         return programJSON;
     }
 
@@ -354,7 +368,7 @@ final public class NodeProgram extends Node {
             o.put("header", header);
             o.put("package", getPath());
 
-            o.put("body", body.getJSONDescription());
+            o.put("body", getJSONSource());
 
             o.put("definitions", getSymbolTableDescription());
 

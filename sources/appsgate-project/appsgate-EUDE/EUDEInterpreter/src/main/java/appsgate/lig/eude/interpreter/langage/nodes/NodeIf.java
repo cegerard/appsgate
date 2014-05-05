@@ -53,18 +53,18 @@ public class NodeIf extends Node {
         try {
             this.expBool = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeIf", "expbool", ex);
+            throw new SpokNodeException("NodeIf", "expBool", ex);
         }
         try {
             this.seqRulesTrue = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeIf", "expbool", ex);
+            throw new SpokNodeException("NodeIf", "seqRulesTrue", ex);
         }
         if (ruleIfJSON.has("seqRulesFalse")) {
             try {
                 this.seqRulesFalse = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
             } catch (SpokTypeException ex) {
-                throw new SpokNodeException("NodeIf", "expbool", ex);
+                throw new SpokNodeException("NodeIf", "seqRulesFalse", ex);
             }
         } else {
             LOGGER.trace("No else block for this node");
@@ -100,7 +100,7 @@ public class NodeIf extends Node {
         }
         Boolean booleanResult;
         try {
-            booleanResult = SpokParser.getBooleanResult(((INodeFunction) expBool).getResult());
+            booleanResult = SpokParser.getBooleanResult(((ICanBeEvaluated) expBool).getResult());
         } catch (SpokException ex) {
             LOGGER.error("An exception has been raised during evaluation of node {}", this.expBool);
             LOGGER.debug(ex.getValue());

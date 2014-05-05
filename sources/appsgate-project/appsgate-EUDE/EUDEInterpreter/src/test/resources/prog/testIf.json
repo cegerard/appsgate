@@ -10,13 +10,13 @@
     },
     "definitions": [],
     "body": {
-        "type": "seqRules",
+        "type": "setOfRules",
         "rules": [
             {
                 "type": "if",
                 "expBool": {
-                    "type": "booleanExpression",
-                    "operator": "==",
+                    "type": "comparator",
+                    "comparator": "==",
                     "leftOperand": {
                         "type": "action",
                         "methodName": "getCurrentState",
@@ -46,18 +46,29 @@
                                 "type": "device",
                                 "value": "194.199.23.136-5"
                             }
+                        },
+                        {
+                            "type": "empty"
                         }
                     ]
                 },
                 "seqRulesFalse": {
-                    "type": "action",
-                    "target": {
-                        "type": "device",
-                        "value": "194.199.23.136-1"
-                    },
-                    "methodName": "On",
-                    "args": [],
-                    "action": "fermer les volets"
+                    "type": "seqRules",
+                    "rules": [
+                        {
+                            "type": "action",
+                            "target": {
+                                "type": "device",
+                                "value": "194.199.23.136-1"
+                            },
+                            "methodName": "On",
+                            "args": [],
+                            "action": "fermer les volets"
+                        },
+                        {
+                            "type": "empty"
+                        }
+                    ]
                 }
             }
         ]

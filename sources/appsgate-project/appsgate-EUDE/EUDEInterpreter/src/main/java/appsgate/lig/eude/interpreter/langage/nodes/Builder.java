@@ -30,7 +30,7 @@ public class Builder {
      */
     private static enum NODE_TYPE {
 
-        NODE_EMPTY, NODE_ACTION, NODE_BOOLEAN_EXPRESSION,
+        NODE_EMPTY, NODE_ACTION, NODE_BOOLEAN_EXPRESSION, NODE_COMPARATOR,
         NODE_EVENT, NODE_EVENTS_OR, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
         NODE_FUNCTION, NODE_FUNCTION_DEFINITION, NODE_IF,
         NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
@@ -51,11 +51,17 @@ public class Builder {
         if (type.equalsIgnoreCase("empty")) {
             return NODE_TYPE.NODE_EMPTY;
         }
+        if (type.equalsIgnoreCase("deviceState")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
         if (type.equalsIgnoreCase("booleanExpression")) {
             return NODE_TYPE.NODE_BOOLEAN_EXPRESSION;
+        }
+        if (type.equalsIgnoreCase("comparator")) {
+            return NODE_TYPE.NODE_COMPARATOR;
         }
         if (type.equalsIgnoreCase("event")) {
             return NODE_TYPE.NODE_EVENT;
@@ -228,6 +234,8 @@ public class Builder {
                     return new NodeVariableDefinition(o, parent);
                 case NODE_WAIT:
                     return new NodeWait(o, parent);
+                case NODE_COMPARATOR:
+                    return new NodeComparator(o, parent);
                 default:
                     LOGGER.debug("No such type found : {}", o.toString());
                     throw new SpokNodeException("NodeBuilder", "type", null);

@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jr
  */
-public class NodeBooleanExpression extends Node implements INodeFunction {
+public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
 
     /**
      * Logger
@@ -31,7 +31,7 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
      */
     public static enum BinaryOperator {
 
-        EQUALS("=="), NOT_EQUALS("!="), MORE_THAN(">"), LESS_THAN("<"), OR("||"), AND("&&"), NOT("!");
+       OR("||"), AND("&&"), NOT("!");
 
         private final String val;
 
@@ -56,13 +56,13 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
     /**
      * The left node to evaluate
      */
-    private INodeFunction left = null;
+    private ICanBeEvaluated left = null;
     private Node leftNode;
 
     /**
      * The right node to evaluate
      */
-    private INodeFunction right = null;
+    private ICanBeEvaluated right = null;
     private Node rightNode;
     /**
      * the operator of the expression
@@ -93,22 +93,22 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
         }
         try {
             leftNode = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
-            if (!(leftNode instanceof INodeFunction)) {
+            if (!(leftNode instanceof ICanBeEvaluated)) {
                 LOGGER.error("Left operand does not return a value");
                 throw new SpokNodeException("BooleanExpression", "leftOperand", null);
             }
-            left = (INodeFunction) leftNode;
+            left = (ICanBeEvaluated) leftNode;
         } catch (SpokTypeException ex) {
             LOGGER.error("Missing left operand");
             throw new SpokNodeException("BooleanExpression", "leftOperand", ex);
         }
         try {
             rightNode = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
-            if (!(rightNode instanceof INodeFunction)) {
+            if (!(rightNode instanceof ICanBeEvaluated)) {
                 LOGGER.error("right operand does not return a value");
                 throw new SpokNodeException("BooleanExpression", "rightOperand", null);
             }
-            right = (INodeFunction) rightNode;
+            right = (ICanBeEvaluated) rightNode;
         } catch (SpokTypeException ex) {
             if (needTwoOperands(operator)) {
                 LOGGER.debug("Missing right operand");
@@ -151,15 +151,14 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
         NodeBooleanExpression ret = new NodeBooleanExpression(parent);
         ret.operator = operator;
         ret.leftNode = leftNode.copy(ret);
-        ret.left = (INodeFunction) ret.leftNode;
+        ret.left = (ICanBeEvaluated) ret.leftNode;
         ret.rightNode = rightNode.copy(ret);
-        ret.right = (INodeFunction) ret.rightNode;
+        ret.right = (ICanBeEvaluated) ret.rightNode;
         return ret;
     }
 
     @Override
-    public void endEventFired(EndEvent e
-    ) {
+    public void endEventFired(EndEvent e) {
         Node n = (Node) e.getSource();
         if (n == left) {
             leftNodeEvaluated();
@@ -172,70 +171,11 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
         LOGGER.warn("An end event has been fired: " + e);
     }
 
-    @Override
-    public JSONObject getJSONDescription() {
-        JSONObject ret = super.getJSONDescription();
-        try {
-            ret.put("type", "booleanExpression");
-            ret.put("operator", operator);
-            ret.put("leftOperand", leftNode.getJSONDescription());
-            ret.put("rightOperand", rightNode.getJSONDescription());
-
-        } catch (JSONException ex) {
-            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
-            // only if the key is null, which will never be the case
-        }
-        return ret;
-    }
-
-    @Override
-    public NodeValue getResult() throws SpokExecutionException {
-        Boolean result = false;
-        try {
-            switch (operator) {
-                case EQUALS:
-                    result = SpokParser.equals(left.getResult(), right.getResult());
-                    break;
-                case NOT_EQUALS:
-                    result = !SpokParser.equals(left.getResult(), right.getResult());
-                    break;
-                case MORE_THAN:
-                    result = SpokParser.getNumericResult(left.getResult()) > SpokParser.getNumericResult(right.getResult());
-                    break;
-                case LESS_THAN:
-                    result = SpokParser.getNumericResult(left.getResult()) < SpokParser.getNumericResult(right.getResult());
-                    break;
-                case OR:
-                    result = SpokParser.getBooleanResult(left.getResult()) || SpokParser.getBooleanResult(right.getResult());
-                    break;
-                case AND:
-                    result = SpokParser.getBooleanResult(left.getResult()) && SpokParser.getBooleanResult(right.getResult());
-                    break;
-                case NOT:
-                    result = !SpokParser.getBooleanResult(left.getResult());
-                    break;
-                default:
-                    throw new AssertionError(operator.name());
-
-            }
-
-        } catch (SpokTypeException ex) {
-            LOGGER.error("Unable to parse the result");
-            throw new SpokExecutionException("The type are not those excepted");
-        }
-
-        return new NodeValue("boolean", result.toString(), null);
-    }
-
     /**
      *
      */
     private void leftNodeEvaluated() {
         switch (operator) {
-            case EQUALS:
-            case NOT_EQUALS:
-            case MORE_THAN:
-            case LESS_THAN:
             case OR:
             case AND:
                 if (right != null) {
@@ -260,6 +200,49 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
         fireEndEvent(new EndEvent(this));
     }
 
+    @Override
+    public JSONObject getJSONDescription() {
+        JSONObject ret = super.getJSONDescription();
+        try {
+            ret.put("type", "booleanExpression");
+            ret.put("operator", operator);
+            ret.put("leftOperand", leftNode.getJSONDescription());
+            ret.put("rightOperand", rightNode.getJSONDescription());
+
+        } catch (JSONException ex) {
+            // Do nothing since 'JSONObject.put(key,val)' would raise an exception
+            // only if the key is null, which will never be the case
+        }
+        return ret;
+    }
+
+    @Override
+    public NodeValue getResult() throws SpokExecutionException {
+        Boolean result = false;
+        try {
+            switch (operator) {
+                case OR:
+                    result = SpokParser.getBooleanResult(left.getResult()) || SpokParser.getBooleanResult(right.getResult());
+                    break;
+                case AND:
+                    result = SpokParser.getBooleanResult(left.getResult()) && SpokParser.getBooleanResult(right.getResult());
+                    break;
+                case NOT:
+                    result = !SpokParser.getBooleanResult(left.getResult());
+                    break;
+                default:
+                    throw new AssertionError(operator.name());
+
+            }
+
+        } catch (SpokTypeException ex) {
+            LOGGER.error("Unable to parse the result");
+            throw new SpokExecutionException("The type are not those excepted");
+        }
+
+        return new NodeValue("boolean", result.toString(), null);
+    }
+
     /**
      * Method to check whether the node is well formed
      *
@@ -268,10 +251,6 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
      */
     private boolean needTwoOperands(BinaryOperator operator) {
         switch (operator) {
-            case EQUALS:
-            case NOT_EQUALS:
-            case MORE_THAN:
-            case LESS_THAN:
             case OR:
             case AND:
                 return true;
@@ -281,6 +260,11 @@ public class NodeBooleanExpression extends Node implements INodeFunction {
                 throw new AssertionError(operator.name());
 
         }
+    }
+
+    @Override
+    public String getResultType() {
+        return "boolean";
     }
 
 }
