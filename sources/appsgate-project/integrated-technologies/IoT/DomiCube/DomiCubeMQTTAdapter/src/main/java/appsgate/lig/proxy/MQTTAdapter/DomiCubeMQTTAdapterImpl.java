@@ -1,8 +1,11 @@
 package appsgate.lig.proxy.MQTTAdapter;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -38,17 +41,40 @@ public class DomiCubeMQTTAdapterImpl {
 	private String port;
 	
 	/**
-	 * MQTT DomiCube topic
+	 * MQTT DomiCube face topic
 	 */
-	private String topic;
+	private String faceTopic;
 	
 	/**
-	 * MQTT DomiCube old topic
+	 * MQTT DomiCube battery topic
 	 */
-	private String oldTopic;
+	private String batteryTopic;
 	
 	/**
-	 * MQTT attribute to initiate the connexction
+	 * MQTT DomiCube dim topic
+	 */
+	private String dimTopic;
+	
+	/**
+	 * MQTT DomiCube old face topic 
+	 * use to unsubscribe when ApAM update the face topic property
+	 */
+	private String oldFaceTopic;
+	
+	/**
+	 * MQTT DomiCube old battery topic
+	 * use to unsubscribe when ApAM update the battery topic property 
+	 */
+	private String oldBatteryTopic;
+	
+	/**
+	 * MQTT DomiCube old dim topic 
+	 * use to unsubscribe when ApAM update the dim topic property
+	 */
+	private String oldDimTopic;
+	
+	/**
+	 * MQTT attribute to initiate the connection
 	 */
 	private MQTT mqtt;
 	
@@ -58,6 +84,11 @@ public class DomiCubeMQTTAdapterImpl {
 	private ScheduledExecutorService listenningService;
 	
 	/**
+	 * All schedule task for MQTT broker reception
+	 */
+	private Future<?> scheduledTasks;
+	
+	/**
 	 * Connection member for MQTT broker
 	 */
 	BlockingConnection connection;
@@ -65,7 +96,7 @@ public class DomiCubeMQTTAdapterImpl {
 	/**
 	 * subscribed topic
 	 */
-	private Topic localTopic;
+	private ArrayList<Topic> localTopic =  new ArrayList<Topic>();
 	
 	/**
 	 * All QoS
@@ -91,15 +122,21 @@ public class DomiCubeMQTTAdapterImpl {
 			connection.connect();
 			logger.debug("MQTT brocker connection success.");
 			
-			localTopic = new Topic(topic, QoS.AT_LEAST_ONCE);
-			oldTopic = topic;
-			Topic[] topics = { localTopic };
-			qoses = connection.subscribe(topics);
+			localTopic.add(new Topic(faceTopic, QoS.AT_LEAST_ONCE));
+			localTopic.add(new Topic(batteryTopic, QoS.AT_LEAST_ONCE));
+			localTopic.add(new Topic(dimTopic, QoS.AT_LEAST_ONCE));
+			oldFaceTopic = faceTopic;
+			oldDimTopic = dimTopic;
+			oldBatteryTopic = batteryTopic;
+			
+			Object[] objectArray = localTopic.toArray();
+			qoses = connection.subscribe(Arrays.copyOf(objectArray, objectArray.length, Topic[].class));
+
 			logger.debug("Topics subscription success.");
 			
 			logger.debug("Reception thread intializing...");
 			listenningService = Executors.newScheduledThreadPool(1);
-			listenningService.schedule(new MQTTListeningThread(), 3, TimeUnit.SECONDS);
+			scheduledTasks = listenningService.schedule(new MQTTListeningThread(), 3, TimeUnit.SECONDS);
 			logger.debug("Thread initialized.");
 			
 		} catch (NumberFormatException e) {
@@ -122,7 +159,7 @@ public class DomiCubeMQTTAdapterImpl {
 		try {
 			logger.debug("Stopping MQTT reception thread...");
 			if(listenningService != null) {
-				listenningService.shutdown();
+				scheduledTasks.cancel(true);
 				listenningService.awaitTermination(5, TimeUnit.SECONDS);
 			}
 			logger.debug("MQTT reception thread stopped.");
@@ -170,22 +207,59 @@ public class DomiCubeMQTTAdapterImpl {
 	}
 	
 	/**
-	 * Called by ApAM when the host value changed
-	 * @param newHost the new host value.
+	 * Called by ApAM when the face topic value changed
+	 * @param faceTopic the new face topic value.
 	 */
-	public void onTopicChanged(String newHost) {
+	public void onFaceTopicChanged(String faceTopic) {
 		try {
-			String[] oldTopics = { oldTopic };
+			String[] oldTopics = { oldFaceTopic };
 			connection.unsubscribe(oldTopics);
 			
-			localTopic = new Topic(topic, QoS.AT_LEAST_ONCE);
-			oldTopic = topic;
-			Topic[] topics = { localTopic };			
+			oldFaceTopic = faceTopic;
+			Topic[] topics = { new Topic(faceTopic, QoS.AT_LEAST_ONCE) };			
 			connection.subscribe(topics);
 			
 		}catch (Exception e) {
 			logger.error("MQTT brocker disconnection failed.");
-			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Called by ApAM when the battery topic value changed
+	 * @param batteryTopic the battery topic value.
+	 */
+	public void onBatteryTopicChanged(String batteryTopic) {
+		try {
+			String[] oldTopics = { oldBatteryTopic };
+			connection.unsubscribe(oldTopics);
+			
+			oldBatteryTopic = batteryTopic;
+			Topic[] topics = { new Topic(batteryTopic, QoS.AT_LEAST_ONCE) };			
+			connection.subscribe(topics);
+			
+		}catch (Exception e) {
+			logger.error("MQTT brocker disconnection failed.");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Called by ApAM when the dim topic value changed
+	 * @param dimTopic the new dim topic value.
+	 */
+	public void onDimTopicChanged(String dimTopic) {
+		try {
+			String[] oldTopics = { oldDimTopic };
+			connection.unsubscribe(oldTopics);
+			
+			oldDimTopic = dimTopic;
+			Topic[] topics = { new Topic(dimTopic, QoS.AT_LEAST_ONCE) };			
+			connection.subscribe(topics);
+			
+		}catch (Exception e) {
+			logger.error("MQTT brocker disconnection failed.");
+			e.printStackTrace();
 		}
 	}
 	
@@ -202,8 +276,8 @@ public class DomiCubeMQTTAdapterImpl {
 			connection.connect();
 			logger.debug("MQTT brocker connection success.");
 		
-			Topic[] topics = { localTopic };
-			qoses = connection.subscribe(topics);
+			Object[] objectArray = localTopic.toArray();
+			qoses = connection.subscribe(Arrays.copyOf(objectArray, objectArray.length, Topic[].class));
 			logger.debug("Topics subscription success.");
 		
 			logger.debug("Reception thread intializing...");
@@ -211,14 +285,14 @@ public class DomiCubeMQTTAdapterImpl {
 			logger.debug("Thread initialized.");
 			
 		} catch (NumberFormatException e) {
-			logger.error("MQTT brocker connection failed.");
+			logger.error("MQTT brocker connection failed: NumberFormatException ");
 			logger.error("Number format exception: "+e.getMessage());
 		} catch (URISyntaxException e) {
-			logger.error("MQTT brocker connection failed.");
+			logger.error("MQTT brocker connection failed: URISyntaxException");
 			logger.error("URI syntaxe error: "+e.getMessage());
 		} catch (Exception e) {
-			logger.error("MQTT brocker connection failed.");
-			logger.error(e.getMessage());
+			logger.error("MQTT brocker connection failed: Exception");
+			e.printStackTrace();
 		}
 	}
 	
@@ -256,7 +330,16 @@ public class DomiCubeMQTTAdapterImpl {
 					Implementation impl = CST.apamResolver.findImplByName(null, "DomiCubeImpl");
 					Set<Instance> instances =  impl.getInsts();
 					for(Instance inst : instances ) {
-						inst.setProperty("currentFace", new String(payload));
+						String topic = message.getTopic();
+						if(topic.contentEquals(faceTopic)) {
+							inst.setProperty("activeFace", new String(payload));
+						}else if(topic.contentEquals(batteryTopic)) {
+							inst.setProperty("batteryLevel", new String(payload));
+						}else if(topic.contentEquals(dimTopic)) {
+							inst.setProperty("dimValue", new String(payload));
+						}else{
+							logger.error("Error between topic name and topic property matching.");
+						}
 					}
 					message.ack();
 				}
