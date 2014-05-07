@@ -118,6 +118,53 @@ public interface CoreWeatherServiceSpec {
     NotificationMsg fireWeatherUpdateMessage(String property, String value, String eventType);
     
     /**
+     * Get Weather 
+     * forecast for a particular place, and a particular day 
+     * @param placeName the place to monitor (should exists according to GeoPlanet ID)
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @return the weather code as an int, @see appsgate.lig.weather.spec.utils.WeatherCodesHelper,
+     * for today, we use the current weather code (not a forecast)
+     * @throws WeatherForecastException if the place was not found, the forecast day is not supported,
+     * the remote weather service not working ...
+     */
+    int getWeatherCodeForecast(String placeName, int dayForecast) throws WeatherForecastException;
+    
+    /**
+     * Get temperature 
+     * forecast for a particular place, and a particular day 
+     * @param placeName the place to monitor (should exists according to GeoPlanet ID)
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @return the maximum temperature as an int
+     * @throws WeatherForecastException if the place was not found, the forecast day is not supported,
+     * the remote weather service not working ...
+     */
+    int getMaxTemperatureForecast(String placeName, int dayForecast) throws WeatherForecastException;
+    
+    /**
+     * Get temperature 
+     * forecast for a particular place, and a particular day 
+     * @param placeName the place to monitor (should exists according to GeoPlanet ID)
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @return the minimum temperature as an int
+     * @throws WeatherForecastException if the place was not found, the forecast day is not supported,
+     * the remote weather service not working ...
+     */
+    int getMinTemperatureForecast(String placeName, int dayForecast) throws WeatherForecastException;
+    
+    /**
+     * Get temperature 
+     * forecast for a particular place, and a particular day 
+     * @param placeName the place to monitor (should exists according to GeoPlanet ID)
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @return a temperature forecast as an int (average value between maximum and minimum),
+     * for today, we use the current temperature (not a forecast)
+     * @throws WeatherForecastException if the place was not found, the forecast day is not supported,
+     * the remote weather service not working ...
+     */
+    int getAverageTemperatureForecast(String placeName, int dayForecast) throws WeatherForecastException;    
+    
+    
+    /**
      * Method GUI uses
      */
     public JSONArray getCurrentWeather() throws JSONException;
