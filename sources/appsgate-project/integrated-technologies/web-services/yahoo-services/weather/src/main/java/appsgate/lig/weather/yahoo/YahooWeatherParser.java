@@ -75,8 +75,8 @@ public class YahooWeatherParser {
 		xmlDocument, XPathConstants.NODESET);
 	logger.info(listForecast.getLength() + " days of forecast");
 	Date date = null;
-	float min;
-	float max;
+	int min;
+	int max;
 	int code;
 	for (int i = 0; i < listForecast.getLength(); i++) {
 	    NamedNodeMap map = listForecast.item(i).getAttributes();
@@ -87,8 +87,8 @@ public class YahooWeatherParser {
 
 	    date = yahooForecastDateAttributeParser.parse(dateString);
 
-	    min = Float.parseFloat(map.getNamedItem("low").getNodeValue());
-	    max = Float.parseFloat(map.getNamedItem("high").getNodeValue());
+	    min = Integer.parseInt(map.getNamedItem("low").getNodeValue());
+	    max = Integer.parseInt(map.getNamedItem("high").getNodeValue());
 	    code = Integer.parseInt(map.getNamedItem("code").getNodeValue());
 
 	    logger.info("Forecast, day : " + map.getNamedItem("day")

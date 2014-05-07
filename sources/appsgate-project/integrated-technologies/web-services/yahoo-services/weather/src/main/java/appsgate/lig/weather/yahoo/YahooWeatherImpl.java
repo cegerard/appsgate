@@ -165,8 +165,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 					"Already monitoring this location");
 
 		String okPlaceName = placeName.replace(" ", "%20");
-		System.out.println("addLocation(String placeName: " + okPlaceName
-				+ " )");
+		logger.info("addLocation(String placeName: " + okPlaceName	+ " )");
 
 		String newWOEID = geoPlanet.getWOEIDFromPlaceName(okPlaceName);
 		if (newWOEID != null) {
@@ -553,5 +552,61 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
     public JSONObject getGrammarDescription() {
         return null;
     }
+    
+    private void fetchAtLocation(String placeName) throws WeatherForecastException {
+		if (!woeidFromePlaceName.containsKey(placeName))
+			addLocation(placeName);
+		fetch();
+    }
+    
+    private DayForecast getDayForecast(String placeName, int dayForecast) throws WeatherForecastException {
+		fetchAtLocation(placeName);
+
+		List<DayForecast> frcsts = forecasts.get(getWOEID(placeName));
+		try {
+		return frcsts.get(dayForecast);
+		} catch(IndexOutOfBoundsException exc) {
+			throw new WeatherForecastException("dayForecast "+dayForecast+" wrong, "+exc.getMessage());
+		}
+    }
+    
+
+	@Override
+	public int getWeatherCodeForecast(String placeName, int dayForecast)
+			throws WeatherForecastException {
+		if(dayForecast == 0) {
+			fetchAtLocation(placeName);
+			CurrentWeather weather = currentWeathers.get(getWOEID(placeName));
+			return weather.getWeatherCode();
+		} else {
+			return getDayForecast(placeName,dayForecast).getCode();
+		}
+	}
+
+	@Override
+	public int getMaxTemperatureForecast(String placeName, int dayForecast)
+			throws WeatherForecastException {
+		return getDayForecast(placeName,dayForecast).getMax();
+	}
+
+	@Override
+	public int getMinTemperatureForecast(String placeName, int dayForecast)
+			throws WeatherForecastException {
+		return getDayForecast(placeName,dayForecast).getMin();
+	}
+	
+	@Override
+	public int getAverageTemperatureForecast(String placeName, int dayForecast)
+			throws WeatherForecastException {
+		if(dayForecast == 0) {
+			fetchAtLocation(placeName);
+			CurrentWeather weather = currentWeathers.get(getWOEID(placeName));
+			return weather.getTemperature();
+		} else {
+			DayForecast frct = getDayForecast(placeName,dayForecast);
+			return (frct.getMin()+frct.getMax())/2;
+		}
+	}
+
 
 }

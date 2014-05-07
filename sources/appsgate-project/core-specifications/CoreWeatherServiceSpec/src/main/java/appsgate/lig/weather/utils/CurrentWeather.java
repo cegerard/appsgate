@@ -47,7 +47,7 @@ public class CurrentWeather {
     
         
     /**
-     * @return The current temperature (accordingly to current temperature unit °C or °F)
+     * @return The current temperature (accordingly to current temperature unit °C or °F)s
      */
     public int getTemperature() {
 	return currentTemperature;

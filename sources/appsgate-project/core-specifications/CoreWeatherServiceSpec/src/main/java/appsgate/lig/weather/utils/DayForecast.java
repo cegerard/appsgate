@@ -10,11 +10,11 @@ import java.util.Date;
 public class DayForecast {
 
 	private Date date;
-	private Float min;
-	private Float max;
+	private int min;
+	private int max;
 	private int code;
 	
-	public DayForecast(Date date,Float min,Float max, int code){
+	public DayForecast(Date date,int min,int max, int code){
 		this.date=date;
 		this.min=min;
 		this.max=max;
@@ -26,11 +26,11 @@ public class DayForecast {
 	}
 
 
-	public Float getMin() {
+	public int getMin() {
 		return min;
 	}
 
-	public Float getMax() {
+	public int getMax() {
 		return max;
 	}
 	
