@@ -16,6 +16,16 @@ public class DomiCubeNotificationMsg extends CoreNotificationMsg {
 	 * The current DomiCube status
 	 */
 	private final int currentFaceNumber;
+	
+	/**
+	 * The current battery level
+	 */
+	private final int batteryLevel;
+	
+	/**
+	 * The current angle of the DomiCube
+	 */
+	private final float currentDimValue;
 
 	/**
 	 * Constructor of an DomiCube notification
@@ -24,9 +34,11 @@ public class DomiCubeNotificationMsg extends CoreNotificationMsg {
 	 * @param value the new value of the state variable
 	 * @param source the core object reference
 	 */
-	public DomiCubeNotificationMsg(int newFace, String varName, String value, CoreObjectSpec source) {
+	public DomiCubeNotificationMsg(int newFace, int batteryLevel, float dimValue, String varName, String value, CoreObjectSpec source) {
 		super(varName, value, source);
-		currentFaceNumber = newFace;
+		this.currentFaceNumber = newFace;
+		this.batteryLevel = batteryLevel;
+		this.currentDimValue = dimValue;
 	}
 	
 	/**
@@ -36,10 +48,34 @@ public class DomiCubeNotificationMsg extends CoreNotificationMsg {
 	public int getCurrentFaceNumber() {
 		return currentFaceNumber;
 	}
+	
+	/**
+	 * Get the battery level
+	 * @return the battery level as an integer
+	 */
+	public int getBatteryLevel() {
+		return batteryLevel;
+	}
+
+	/**
+	 * Get the current angle of the DomiCube
+	 * @return the angle as a float
+	 */
+	public float getCurrentDimValue() {
+		return currentDimValue;
+	}
 
 	@Override
     public String getNewValue() {
-        return String.valueOf(currentFaceNumber);
+		if(getVarName().contentEquals("newFace")) {
+			return String.valueOf(currentFaceNumber);
+		}else if(getVarName().contentEquals("newBatteryLevel")) {
+			return String.valueOf(batteryLevel);
+		}else if(getVarName().contentEquals("newDimValue")) {
+			return String.valueOf(currentDimValue);
+		}
+        
+		return null;
     }
 
 }

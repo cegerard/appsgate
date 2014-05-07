@@ -201,7 +201,11 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 				} else if(message.varName == "flowRate"){
    	 				clockModule.setSystemClockFlowRate(message.value);	
 				} else if(message.varName == "newFace"){
-					$("#domiCube-face-"+message.objectId).html("Face: "+message.value);	
+					$("#domiCube-face-"+message.objectId).html("Face: "+message.value);
+				} else if(message.varName == "newDimValue"){
+					$("#domiCube-angle-"+message.objectId).html("Angle: "+message.value);
+				} else if(message.varName == "newBatteryLevel"){
+					$("#domiCube-battery-"+message.objectId).html("Battery: "+message.value+" %");	
 				} else { //find the handler for this notification
 					var handler = handlerMap[message.objectId]
 					if(handler != null) {
@@ -256,7 +260,7 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 						domicubeDiv.setAttribute("id", obj.id);
        					$("#device-manager-list").append(domicubeDiv);
 						$("#domiCube-face").attr("id", "domiCube-face-"+obj.id);
-						$("#domiCube-motion").attr("id", "domiCube-motion-"+obj.id);
+						$("#domiCube-angle").attr("id", "domiCube-angle-"+obj.id);
 						$("#domiCube-battery").attr("id", "domiCube-battery-"+obj.id);
        				}
        				

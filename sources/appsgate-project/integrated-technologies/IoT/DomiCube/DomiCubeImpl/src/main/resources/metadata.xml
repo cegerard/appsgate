@@ -19,11 +19,17 @@
 		<definition name="status"    type="string" default="2"   field="status" method="statusChanged" />
 
 		<!-- device meta data -->
-		<definition name="currentFace" type="string" default="-1" field="currentFace" method="faceChanged"/>
+		<definition name="activeFace"   type="string" field="activeFace" method="faceChanged"/>
+		<definition name="batteryLevel" type="string" field="batteryLevel" method="batteryChanged"/>
+		<definition name="dimValue"     type="string" field="dimValue" method="dimValueChanged"/>
 		
 	</implementation>
 	
 	<!--  Test DomiCubeInstance  -->
-	<apam-instance implementation="DomiCubeImpl" name="DomiCubeInstance"></apam-instance>
+	<apam-instance implementation="DomiCubeImpl" name="DomiCubeInstance">	
+		<property name="activeFace" value="-1" />
+		<property name="batteryLevel" value="100" />
+		<property name="dimValue" value="90.0" />
+	</apam-instance>
 
 </apam>

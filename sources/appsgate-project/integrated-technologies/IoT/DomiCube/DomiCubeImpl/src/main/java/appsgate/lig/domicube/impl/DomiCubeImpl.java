@@ -58,12 +58,22 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	/**
 	 * The current face of the DomiCube
 	 */
-	private String currentFace;
+	private String activeFace;
 	
 	/**
 	 * The older face of the DomiCube
 	 */
 	private String olderFace;
+	
+	/**
+	 * The current face of the DomiCube
+	 */
+	private String batteryLevel;
+	
+	/**
+	 * The current face of the DomiCube
+	 */
+	private String dimValue;
 	
 	/**
 	 * boolean to know if the device has received a MQTT message 
@@ -100,7 +110,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {
-		return new DomiCubeNotificationMsg(Integer.valueOf(currentFace), varName, value, this);
+		return new DomiCubeNotificationMsg(getCurrentFaceNumber(), getBatteryLevel(), getDimValue(), varName, value, this);
 	}
 	
 
@@ -132,7 +142,9 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 		descr.put("id", deviceId);
 		descr.put("type", userType); //210 for DomiCube
 		descr.put("status", status);
-		descr.put("currentFace", currentFace);
+		descr.put("activeFace", activeFace);
+		descr.put("batteryLevel", batteryLevel);
+		descr.put("dimValue", dimValue);
 		descr.put("deviceType", deviceType);
 		descr.put("systemName", deviceName);
 		
@@ -163,13 +175,35 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	public void faceChanged(String newFace) {
 		if(!olderFace.contentEquals("-1")){ // Usual behavior
 			faceLeaved();
-			olderFace = currentFace;
+			olderFace = activeFace;
 		}else { //First notification received
-			this.olderFace = this.currentFace;
+			this.olderFace = this.activeFace;
 		}
 		
 		logger.info("The DomiCube, "+ deviceId+" face changed to "+newFace);
 		notifyChanges("newFace", newFace);
+
+	}
+	
+	/**
+	 * Called by ApAM when the battery value changed
+	 * @param newLevel the new battery level value.
+	 * its a string the represent a integer value for the battery level of the DomiCube.
+	 */
+	public void batteryChanged(String newLevel) {
+		logger.info("The DomiCube, "+ deviceId+" battery level changed to "+newLevel+" %");
+		notifyChanges("newBatteryLevel", newLevel);
+
+	}
+	
+	/**
+	 * Called by ApAM when the dim value changed
+	 * @param newDim the new angular value.
+	 * its a string the represent a float value for the angular value of the DomiCube.
+	 */
+	public void dimValueChanged(String newDim) {
+		logger.info("The DomiCube, "+ deviceId+" angle changed to "+newDim);
+		notifyChanges("newDimValue", newDim);
 
 	}
 	
@@ -193,16 +227,32 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 
 	@Override
 	public int getCurrentFaceNumber() {
-		return Integer.valueOf(currentFace);
+		return Integer.valueOf(activeFace);
 	}
 	
 	/**
-	 * Set the current face of this DomiCube
-	 * @param currentFace the new face
+	 * Get the level of the DomiCube battery
+	 * @return the battery level in % as an integer
 	 */
-	public void setCurrentFace(String currentFace) {
-		this.currentFace = currentFace;
-		faceChanged(currentFace);
+	public int getBatteryLevel() {
+		return Integer.valueOf(batteryLevel);
 	}
+	
+	/**
+	 * Get the angular value of the cube
+	 * @return the angular value as a float
+	 */
+	public float getDimValue() {
+		return Float.valueOf(dimValue);
+	}
+	
+//	/**
+//	 * Set the current face of this DomiCube
+//	 * @param currentFace the new face
+//	 */
+//	public void setCurrentFace(String currentFace) {
+//		this.activeFace = currentFace;
+//		faceChanged(currentFace);
+//	}
 
 }
