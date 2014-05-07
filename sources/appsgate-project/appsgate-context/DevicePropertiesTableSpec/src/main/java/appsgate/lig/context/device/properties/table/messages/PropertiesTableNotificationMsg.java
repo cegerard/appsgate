@@ -46,6 +46,7 @@ public class PropertiesTableNotificationMsg implements NotificationMsg {
         super();
         this.objectID = objectID;
         this.userId = userId;
+        this.objectPropertyName = objectPropertyName;
         this.objectPropertyValue = objectPropertyValue;
     }
 
