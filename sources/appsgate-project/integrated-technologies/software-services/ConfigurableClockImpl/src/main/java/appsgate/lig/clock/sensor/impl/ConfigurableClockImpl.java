@@ -31,7 +31,7 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClockSpec, CoreObjectSpec {
 
 	/**
-	 * Lag between the real current Date and the one setted
+	 * Lag between the real current Date and the one set
 	 */
 	long currentLag;
 
@@ -269,6 +269,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		descr.put("type", appsgateUserType); // 21 for clock
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
+		descr.put("remote", true);
 
 		Calendar cal = Calendar.getInstance();
 		long time = cal.getTimeInMillis() + currentLag;

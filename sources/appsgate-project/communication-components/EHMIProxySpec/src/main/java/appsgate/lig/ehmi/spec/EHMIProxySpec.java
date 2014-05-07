@@ -428,6 +428,12 @@ public interface EHMIProxySpec {
 	 */
 	public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, JSONArray args);
 	
+	/**
+	 * Get the current system time from the local EHMI clock
+	 * @return the current time in milliseconds as a long
+	 */
+	public long getCurrentTimeInMillis() ;
+	
 	
 	
 }

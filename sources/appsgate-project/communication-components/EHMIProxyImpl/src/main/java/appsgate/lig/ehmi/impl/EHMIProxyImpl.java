@@ -52,6 +52,7 @@ import appsgate.lig.ehmi.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
+import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 
@@ -194,7 +195,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public void newInst() {
 		logger.debug("EHMI is starting");
-		systemClock = new SystemClock();
+		systemClock = new SystemClock(this);
 		
 		if (httpService != null) {
 			final HttpContext httpContext = httpService.createDefaultHttpContext();
@@ -969,10 +970,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		return eventsListeners;
 	}
 	
-	/**
-	 * Get the current system time from the local EHMI clock
-	 * @return the current time in milliseconds as a long
-	 */
+	@Override
 	public long getCurrentTimeInMillis() {
 		return systemClock.getCurrentTimeInMillis();
 	}
@@ -983,6 +981,14 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public double getTimeFlowRate() {
 		return systemClock.getTimeFlowRate();
+	}
+	
+	/**
+	 * Send a clock alarm notification to connected client 
+	 * @param msg
+	 */
+	public void sendClockAlarmNotifcation(ClockAlarmNotificationMsg msg) {
+		sendToClients(msg.JSONize());
 	}
 
 }

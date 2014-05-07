@@ -309,10 +309,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public Long getTime() {
         LOGGER.trace("getTime called");
-        GenericCommand cmd = executeCommand(getClock().getId(), "getCurrentTimeInMillis", new JSONArray());
-        LOGGER.debug("cmd: " + cmd.toString());
-        cmd.run();
-        Long time = (Long) cmd.getReturn();
+        Long time =  ehmiProxy.getCurrentTimeInMillis();
         LOGGER.info("Time is: " + time);
         return time;
     }

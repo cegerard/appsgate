@@ -474,4 +474,10 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		return null;
 	}
 
+
+	@Override
+	public long getCurrentTimeInMillis() {
+		return 0;
+	}
+
 }

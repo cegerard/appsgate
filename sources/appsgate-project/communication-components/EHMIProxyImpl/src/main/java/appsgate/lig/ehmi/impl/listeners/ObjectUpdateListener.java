@@ -70,8 +70,13 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 		    sendObjectPlace(coreType, objectId, placeId);
 		    sendObjectName(objectId, name);
 		    
+		    //TODO check if it is the core clock service and restart the synchronisation.
+		    
 		}else if (coreType.contains("remove")) { //A device has been removed
-			//Notify EUDE that something disappeared and stop concerning program
+			//TODO check if it is the core clock service and stop the synchronisation.
+			
+			
+			//TODO Notify EUDE that something disappeared and stop concerning program
 			//for instance.
 			;
 		}
