@@ -991,4 +991,18 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		sendToClients(msg.JSONize());
 	}
 
+	/**
+	 * Start the remote clock synchronization
+	 */
+	public void startRemoteClockSync() {
+		systemClock.startRemoteSync(coreProxy);
+	}
+
+	/**
+	 * Stop the remote clock synchronization
+	 */
+	public void stopRemoteClockSync() {
+		systemClock.stopRemoteSync(coreProxy);
+	}
+
 }

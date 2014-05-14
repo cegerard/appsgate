@@ -70,11 +70,17 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 		    sendObjectPlace(coreType, objectId, placeId);
 		    sendObjectName(objectId, name);
 		    
-		    //TODO check if it is the core clock service and restart the synchronisation.
+		    if(userType.contentEquals("21") && !EHMIProxy.getSystemClock().isRemote()){ //The new device is a clock and no remote clock
+		    	EHMIProxy.startRemoteClockSync();										//Is already used.
+		    }
+		    
 		    
 		}else if (coreType.contains("remove")) { //A device has been removed
-			//TODO check if it is the core clock service and stop the synchronisation.
 			
+			if(userType.contentEquals("21") && EHMIProxy.getSystemClock().isRemote()			  //The removed device is a clock, the system is remotely synchronized
+					&& objectId.contentEquals(EHMIProxy.getSystemClock().getAbstractObjectId())){ //and it is the clock what we are synchronized with
+				EHMIProxy.stopRemoteClockSync();
+			}
 			
 			//TODO Notify EUDE that something disappeared and stop concerning program
 			//for instance.

@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.ehmi.impl.listeners.TimeObserver;
 import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
-import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 
 /**
  * This class hold the system clock.
@@ -89,10 +88,21 @@ public class SystemClock {
 	 */
 	public void startRemoteSync(CHMIProxySpec coreProxy) {
 		this.coreProxy = coreProxy;
-		objectID = coreProxy.getCoreClockObjectId();
-		if (timer != null)
-			timer.cancel();
-		timer = null;
+		if(isRemote()){
+			objectID = coreProxy.getCoreClockObjectId();
+			if (timer != null)
+				timer.cancel();
+			timer = null;
+//			Set<Long> times = alarms.keySet();
+//			TODO transfer alarm and their id to the remote alarm clock
+//			for(long time : times){
+//				Calendar cal  =  Calendar.getInstance();
+//				cal.setTimeInMillis(time);
+//				coreProxy.registerTimeAlarm(cal, "");
+//			}
+		} else {
+			coreProxy = null;
+		}
 	}
 
 	/**
@@ -223,7 +233,10 @@ public class SystemClock {
 	 * @return true if the clock is remotely synchronized, false otherwise
 	 */
 	public boolean isRemote() {
-		return coreProxy != null;
+		if(coreProxy != null) {
+			return coreProxy.getDevices("21") != null;
+		}
+		return false;
 	}
 	
 	/**
