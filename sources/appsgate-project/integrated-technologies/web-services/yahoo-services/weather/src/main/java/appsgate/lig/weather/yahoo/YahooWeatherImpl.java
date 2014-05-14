@@ -22,6 +22,7 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
+import appsgate.lig.weather.utils.SimplifiedWeatherCodesHelper;
 import appsgate.lig.weather.utils.WeatherCodesHelper;
 import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
@@ -38,33 +39,27 @@ import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
  * @author thibaud
  * 
  */
-public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec {
+public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObjectSpec, CoreWeatherServiceSpec {
 
 	private final Logger logger = Logger.getLogger(YahooWeatherImpl.class.getSimpleName());
 
 
+	// *******
+	// Overriding  appsgate properties  to allow injection:
+
+	private String appsgatePictureId=super.appsgatePictureId;
+	private String appsgateUserType=super.appsgateUserType;
+	private String appsgateDeviceStatus=super.appsgateDeviceStatus;
+	private String appsgateObjectId=super.appsgateObjectId;
+	private String appsgateServiceName=super.appsgateServiceName;	
+	
 
 	URL url;
 
-	/**
-	 * Feed URL that returns an XML with the forecast (e.g.
-	 * http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
-	 */
-	private String feedUrlTemplate = "http://weather.yahooapis.com/forecastrss?w=%s&u=%c";
-
-	private String feedUrl;
-
 	boolean noFetch;
-	private char currentUnit;
 	private Timer refreshTimer = new Timer();
-	private Calendar lastFetchDate;
 	private YahooGeoPlanet geoPlanet;
 
-	/*
-	 * For each human place Name, as the user entered it (the key), associate a
-	 * WOEID (the value)
-	 */
-	private Map<String, String> woeidFromePlaceName;
 
 	// Set of map defining combination between a WOEID (Where on Earth
 	// IDentifier)
@@ -79,7 +74,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 	TimerTask refreshtask;
 
 	public YahooWeatherImpl() {
-		initAppsgateFields();
+		super.initAppsgateFields();
 
 		woeidFromePlaceName = new HashMap<String, String>();
 		lastPublicationDates = new HashMap<String, Calendar>();
@@ -377,111 +372,6 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 				eventType);
 	}
 
-	// *******
-	// Specific fields for appsgate properties :
-
-	private String appsgatePictureId;
-	private String appsgateUserType;
-	private String appsgateDeviceStatus;
-	private String appsgateObjectId;
-	private String appsgateServiceName;
-
-	private void initAppsgateFields() {
-		appsgatePictureId = null;
-		appsgateUserType = "103"; // 103 stands for weather forecast service
-		appsgateDeviceStatus = "2"; // 2 means device paired (for a device, not
-									// relevant for service)
-		appsgateObjectId = appsgateUserType
-				+ String.valueOf(feedUrlTemplate.hashCode()); // Object id
-																// prefixed by
-																// the user type
-		appsgateServiceName = "Yahoo Weather Forecast";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getDescription()
-	 */
-	@Override
-	public JSONObject getDescription() throws JSONException {
-		JSONObject descr = new JSONObject();
-
-		// mandatory appsgate properties
-		descr.put("id", appsgateObjectId);
-		descr.put("type", appsgateUserType); // 20 for weather service
-		descr.put("status", appsgateDeviceStatus); // always 2 (because this is
-													// not a service)
-		descr.put("pictureId", appsgatePictureId);
-		descr.put("name", appsgateServiceName);
-
-		// specific weather service properties
-		descr.put("unit", currentUnit);
-		if (getLastFetchDate() != null)
-			descr.put("lastFetchDate", String.format(
-					"$te/%1$tm/%1$tY %1$tH:%1$tM:%1$tS", this
-							.getLastFetchDate().getTime()));
-		else
-			descr.put("lastFetchDate", "null");
-
-		descr.put("locations", woeidFromePlaceName.keySet());
-
-		return descr;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getAbstractObjectId()
-	 */
-	@Override
-	public String getAbstractObjectId() {
-		return appsgateObjectId;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getPictureId()
-	 */
-	@Override
-	public String getPictureId() {
-
-		return appsgatePictureId;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * appsgate.lig.core.object.spec.CoreObjectSpec#setPictureId(java.lang.String
-	 * )
-	 */
-	@Override
-	public void setPictureId(String pictureId) {
-		this.appsgatePictureId = pictureId;
-		fireWeatherUpdateMessage("picturedId", pictureId, "setPictureId");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getUserType()
-	 */
-	@Override
-	public String getUserType() {
-		return appsgateUserType;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.core.object.spec.CoreObjectSpec#getObjectStatus()
-	 */
-	@Override
-	public int getObjectStatus() {
-		return Integer.parseInt(appsgateDeviceStatus);
-	}
 
 	@Override
 	public JSONArray getCurrentWeather() throws JSONException {
@@ -542,16 +432,6 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 
 		return nameLoc;
 	}
-
-	@Override
-	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.SERVICE;
-	}
-
-    @Override
-    public JSONObject getGrammarDescription() {
-        return null;
-    }
     
     private void fetchAtLocation(String placeName) throws WeatherForecastException {
 		if (!woeidFromePlaceName.containsKey(placeName))
@@ -606,6 +486,14 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec, CoreObjectSpec 
 			DayForecast frct = getDayForecast(placeName,dayForecast);
 			return (frct.getMin()+frct.getMax())/2;
 		}
+	}
+
+	@Override
+	public boolean isWeatherSimplifiedCodeForecast(String placeName, int dayForecast, int simpleWeatherCode)
+			throws WeatherForecastException {
+		int currentYahooForecast = getWeatherCodeForecast(placeName, dayForecast);
+		
+		return SimplifiedWeatherCodesHelper.contains(simpleWeatherCode, currentYahooForecast);
 	}
 
 
