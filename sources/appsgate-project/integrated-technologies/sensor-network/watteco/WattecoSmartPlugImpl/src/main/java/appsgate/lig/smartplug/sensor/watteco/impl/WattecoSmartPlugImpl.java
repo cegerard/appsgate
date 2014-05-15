@@ -36,6 +36,7 @@ public class WattecoSmartPlugImpl extends CoreObjectBehavior implements CoreObje
 	private String plugState;
 	
 	private String consumption;
+	private String activeEnergy;
 	
 	private SmartPlugValue spv;
 	
@@ -141,6 +142,7 @@ public class WattecoSmartPlugImpl extends CoreObjectBehavior implements CoreObje
 		b = wattecoAdapter.sendCommand(route, WattecoIOService.SIMPLE_METERING_READ_ATTRIBUTE, true);
 		spv = extractValues(b);
 		consumption = String.valueOf(spv.activePower);
+		activeEnergy = String.valueOf(spv.activeEnergy);
 		return spv;
 	}
 	
@@ -212,6 +214,7 @@ public class WattecoSmartPlugImpl extends CoreObjectBehavior implements CoreObje
 		descr.put("status", status);
 		descr.put("plugState", plugState);
 		descr.put("consumption", consumption);
+		descr.put("activeEnergy", activeEnergy);
 		
 		return descr;
 	}
