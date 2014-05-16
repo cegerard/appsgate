@@ -24,12 +24,5 @@
 		<definition name="dimValue"     type="string" field="dimValue" method="dimValueChanged"/>
 		
 	</implementation>
-	
-	<!--  Test DomiCubeInstance  -->
-	<apam-instance implementation="DomiCubeImpl" name="DomiCubeInstance">	
-		<property name="activeFace" value="-1" />
-		<property name="batteryLevel" value="100" />
-		<property name="dimValue" value="90.0" />
-	</apam-instance>
 
 </apam>
