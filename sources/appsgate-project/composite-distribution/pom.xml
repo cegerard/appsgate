@@ -128,8 +128,16 @@
             <artifactId>PropertyHistoryManagerMongoImpl</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-
+	 	<dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>DomiCubeMQTTAdapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+		 <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>DomiCubeImpl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 
 		<dependency>
