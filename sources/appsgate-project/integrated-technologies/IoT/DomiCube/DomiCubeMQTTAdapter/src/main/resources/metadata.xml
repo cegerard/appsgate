@@ -15,14 +15,7 @@
 		<definition name="batteryTopic" type="string" field="batteryTopic" method="onBatteryTopicChanged"/>
 		<definition name="dimTopic" 	type="string" field="dimTopic" method="onDimTopicChanged"/>
 
+
 	</implementation>
-	 
-	<apam-instance implementation="DomiCubeAdapterImpl" name="DomiCubeAdapter">
-		<property name="host" value="amiqual4home-data.inrialpes.fr"/>
-		<property name="port" value="1883"/>
-		<property name="faceTopic" 	  value="amiqual4home/hmi/cube/office/1/active_face"/>
-		<property name="batteryTopic" value="amiqual4home/hmi/cube/office/1/battery_level"/>
-		<property name="dimTopic" 	  value="amiqual4home/hmi/cube/office/1/dim_value"/>
-	</apam-instance>
  
 </apam>
