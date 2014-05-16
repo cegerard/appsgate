@@ -133,11 +133,8 @@ public class GenericCommand implements Runnable {
 			}
 			
 		} catch (Exception e) {
-
-                    
-                    
-                    logger.debug("The generic method invocation failed --> ");
-			e.printStackTrace();
+                    logger.error("The method is not found: {}", methodName);
+                    logger.debug(e.getMessage());
 		}
 	}
 	

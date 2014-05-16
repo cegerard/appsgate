@@ -118,6 +118,18 @@ public interface CoreWeatherServiceSpec {
     NotificationMsg fireWeatherUpdateMessage(String property, String value, String eventType);
     
     /**
+     * Check if weather forecast match a simplified  weather code 
+     *  for a particular place, and a particular day 
+     * @param placeName the place to monitor (should exists according to GeoPlanet ID)
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @param simpleWeatherCodeis the expected weather forecast (not all yahoo weather codes, only the simplified ones)
+     * @return true if expected weather is the code forecast, @see appsgate.lig.weather.spec.utils.SimplifiedWeatherCodesHelper,
+     * @throws WeatherForecastException if the place was not found, the forecast day is not supported,
+     * the remote weather service not working ...
+     */
+    boolean isWeatherSimplifiedCodeForecast(String placeName, int dayForecast, int simpleWeatherCode) throws WeatherForecastException;    
+    
+    /**
      * Get Weather 
      * forecast for a particular place, and a particular day 
      * @param placeName the place to monitor (should exists according to GeoPlanet ID)

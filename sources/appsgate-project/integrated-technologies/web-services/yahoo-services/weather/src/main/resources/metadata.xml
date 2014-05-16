@@ -10,7 +10,7 @@
 		<callback onInit="start" onRemove="stop"/>
 
         <!-- Appsgate mandatory property -->
-        <definition name="deviceName"    type="string" field="appsgateServiceName"/> 
+        <definition name="deviceName"    type="string"  field="appsgateServiceName"/> 
 <!--         <definition name="deviceId"      type="string" field="appsgateObjectId" /> -->
 
         <!-- device client meta data -->

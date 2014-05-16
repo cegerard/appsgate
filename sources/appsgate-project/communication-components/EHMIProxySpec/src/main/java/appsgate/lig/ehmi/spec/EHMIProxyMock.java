@@ -12,10 +12,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 
+/*
+ * This is a mock used by test in the test methods
+ */
 public class EHMIProxyMock implements EHMIProxySpec {
 
     /**
