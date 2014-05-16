@@ -211,8 +211,17 @@ public class NodeAction extends Node implements ICanBeEvaluated {
     @Override
     public NodeValue getResult() {
         if (command != null) {
-            return new NodeValue(returnType, command.getReturn().toString(), this);
+            Object ret = command.getReturn();
+            if (ret != null) {
+                LOGGER.trace("Return value: " + ret.toString());
+                return new NodeValue(returnType, ret.toString(), this);
+            } else {
+                LOGGER.debug("No return value");
+                return null;
+            }
+
         } else {
+            LOGGER.warn("There is no command to get a result.");
             return null;
         }
     }

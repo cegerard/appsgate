@@ -6,12 +6,19 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jr
  */
 public class SpokParser {
+
+    /**
+     * Logger
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpokParser.class);
 
     /**
      *
@@ -50,7 +57,8 @@ public class SpokParser {
      * @return
      */
     public static Boolean equals(SpokObject l, SpokObject r) {
-        if (l.getValue() == null) {
+        if (l == null || r == null || l.getValue() == null || l.getType() == null) {
+            LOGGER.debug("A null value has been passed to the comparator");
             return false;
         }
         return l.getType().equalsIgnoreCase(r.getType())

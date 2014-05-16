@@ -14,6 +14,10 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/*
+ * This is a mock used by test in the test methods
+ */
 public class ContextProxyMock implements ContextProxySpec {
 
     /**
