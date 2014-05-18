@@ -14,7 +14,6 @@
 	<name>Appsgate sub project (sources directory)</name>
 
 	<modules>
-		<module>appsgate-client</module>
 		<module>appsgate-project</module>
 	</modules>
 
