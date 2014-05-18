@@ -1,0 +1,16 @@
+(
+<%=engine.buildInputFromNode(node.leftOperand) %>
+<button class="btn btn-prog btn-primary" id="<%= node.iid %>">
+<% switch(node.operator) {
+	case '&&' : %> et <%
+	break;
+	case '||' : %> ou <%
+	break;
+	case '!' : %> n'est pas vrai<%
+	break;
+	} %> 
+</button>
+<% if (node.operator != '!'){%>
+<%=engine.buildInputFromNode(node.rightOperand) %>
+<%}%>
+)	

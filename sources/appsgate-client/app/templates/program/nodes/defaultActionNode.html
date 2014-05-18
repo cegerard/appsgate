@@ -1,0 +1,12 @@
+<div class="btn btn-default btn-prog btn-prog-action " id="<%= node.iid %>">
+        <% if (typeof node.phrase !== 'undefined') { %>
+            <span data-i18n='<%=node.phrase%>'></span>
+        <% } else { %>
+        Uknown
+        <% } %>
+
+    <% if (typeof node.target !== 'undefined') { %>
+    <%=engine.buildInputFromNode(node.target) %>
+    <% } %>
+
+</div>

@@ -1,0 +1,20 @@
+
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
+        <% if (typeof node.phrase !== 'undefined') { %>
+            <span data-i18n='<%=node.phrase%>'></span>
+        <% } else { %>
+        UNKNOWN CLOCK EVENT
+        <% } %>
+    </span>
+    <select id="clock-hour-<%= node.iid %>" class="hour-picker"  target-id="<%= node.iid %>">
+        <% _.each(hours, function(h) { %>
+        <option <% if (selectedHour === h) { %>selected<% } %> value="<%= h %>"><%= h %></option>
+        <% }); %>
+    </select>
+    :
+    <select id="clock-minute-<%= node.iid %>" class="minute-picker"  target-id="<%= node.iid %>">
+        <% _.each(minutes, function(m) { %>
+        <option <% if (selectedMinute === m) { %>selected<% } %> value="<%= m %>"><%= m %></option>
+        <% }); %>
+    </select>
+</div>

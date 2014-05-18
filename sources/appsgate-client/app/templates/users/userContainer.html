@@ -1,0 +1,13 @@
+<a class="user-avatar-item" id="<%
+ if (typeof user !== 'undefined' && user.get('id') !== '') { 
+	%><%=user.get('id') %><%
+ } else { 
+	%>newuser<%
+ } %>">
+	<img class="user-avatar-img" src="<% 
+		if (typeof user !== 'undefined' && user.get('avatar') !== '') { %><%= 
+			user.get('avatar') %><% } 
+		else {
+			%>app/img/picto-compte-bleu.png<%
+		} %>"/>
+</a>

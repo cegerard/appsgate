@@ -1,0 +1,54 @@
+<div id="brick-edit-palette" class="brick-edit-palette">
+	<div class="brick-edit-palette-header">
+				<input id="brick-name-input" type="text" class="form-control" value="<%= brick.getProperty('name') %>">
+	</div>
+	<h4 data-i18n="form.background-editor"></h4>
+	<div class="brick-edit-palette-background">
+		<img class="background-editor-img" src="app/img/roue-chromatique.png"/>
+	</div>
+	<h4 data-i18n="form.size-editor"><h4>
+	<div class="brick-edit-palette-size">
+		
+	<% if (brick.get('type') != 'DEVICE' && brick.get('type') != 'SERVICE') { %>
+		<h5 data-i18n="form.size-width"></h5>
+		<div>
+		<button id="decrease-brick-width-btn" type="button" class="btn btn-default">
+			<span class="glyphicon glyphicon-minus"></span>
+		</button>
+		<input id="brick-width-input" type="number" class="form-control size-edit-input" value="<%if (brick.w > 1){ %><%= brick.w %><% } else { %>1<% } %>">
+		<button id="increase-brick-width-btn" type="button" class="btn btn-default">
+			<span class="glyphicon glyphicon-plus"></span>
+		</button>
+		</div>
+		<h5 data-i18n="form.size-height"></h5>
+		<button id="decrease-brick-height-btn" type="button" class="btn btn-default">
+			<span class="glyphicon glyphicon-minus"></span>
+		</button>
+		<input id="brick-height-input" type="number" class="form-control size-edit-input" value="<%if (brick.h > 1){ %><%= brick.h %><% } else { %>1<% } %>">
+		<button id="increase-brick-height-btn" type="button" class="btn btn-default">
+			<span class="glyphicon glyphicon-plus"></span>
+		</button>
+	<% } else { %>
+			<div id="size-choice-buttons" class="btn-group">
+				<button id="btn-size-1" class="btn btn-default">
+					<span>x1</span>
+				</button>
+				<button id="btn-size-2" class="btn btn-default">
+					<span>x2</span>
+				</button>
+				<button id="btn-size-3" class="btn btn-default">
+					<span>x3</span>
+				</button>
+				<button id="btn-size-4" class="btn btn-default">
+					<span>x4</span>
+				</button>
+			</div>
+	<% } %>
+	</div>
+
+	<h4 data-i18n="form.save-button"><h4>
+		<div class="btn-group ">
+			<button id="brick-edit-validbtn" class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+			<button id="brick-edit-cancelbtn" class="btn btn-default cancel-button" data-i18n="form.cancel-button"></button>
+		</div>
+</div>

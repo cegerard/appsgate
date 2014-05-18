@@ -1,0 +1,31 @@
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
+    <% if (typeof node.phrase !== 'undefined') { %>
+    <span data-i18n='<%=node.phrase%>'></span>
+    <% } else { %>
+    Unknown
+    <% } %>
+
+    <% if (node.methodName == "play" ) { %>
+    <button class="btn btn-default btn-media-choice" data-target="#media-browser-modal" data-toggle="modal" target-iid="<%= node.iid %>">
+        <% if(typeof node.fileName !== 'undefined') { %>
+        <span class="default-media-choice" target-iid="<%= node.iid %>"><%= node.fileName %></span>
+        <% } else { %>
+        <span class="default-media-choice" data-i18n='language.browse-media-button' target-iid="<%= node.iid %>"/>
+        <% } %>
+    </button>
+    <% } %>
+
+    <% if (node.methodName == "play" ) { %>
+    <span data-i18n='language.complement-media-action' />
+    <% } %>
+
+    <% if (typeof node.target !== 'undefined') { %>
+    <%=engine.buildInputFromNode(node.target) %>
+    <% } %>
+
+    <% if (node.methodName == "setVolume" ) { %>
+    <span data-i18n='language.complement-media-action' />
+    <input type="number" class="volume-input" id="media-volume-<%=node.iid%>" value="<%=node.args[0].value%>" target-id="<%=node.iid%>"/>
+    <% } %>
+
+</div>

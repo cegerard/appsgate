@@ -1,0 +1,16 @@
+<form class="form-horizontal">
+        <legend>Modifier le capteur</legend>
+        <input type="hidden" id="id" value="<%= service.get('id') %>" />
+        <div class="control-group">
+            <label class="control-label" for="serviceName">Nom du capteur</label>
+            <div class="controls">
+                <input type="text" id="serviceName" class="serviceName" value="<%= service.get('name') %>">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <span class="btn cancelEditService">Annuler</span>
+                <span class="btn btn-primary save">Valider</span>
+            </div>
+        </div>
+</form>

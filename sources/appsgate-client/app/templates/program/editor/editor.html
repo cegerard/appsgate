@@ -1,0 +1,63 @@
+<div class="container editor">
+    <% if (typeof program === "undefined") { %>
+    <div class="lead" data-i18n="editor.title"></div>
+    <div class="alert alert-info" data-i18n="editor.no-program-alert"></div>
+    <% } else { %>
+
+    <div class="row lead">
+        <div class="pull-left">
+        <% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "PROCESSING") { %>
+        <div class="led led-green pull-left"></div>
+        <% } else if (program.get("runningState") === "DEPLOYED") { %>
+        <div class="led led-default pull-left"></div>
+        <% } else if (program.get("runningState") === "INVALID") { %>
+        <div class="led led-red pull-left"></div>
+        <% } %>
+        <% if (program.get("name") !== "") { %>
+        <input class="programNameInput" type="text" value="<%= program.get('name') %>"/>
+        <span class="hide text-danger" data-i18n="modal-edit-program.program-already-existing"></span>
+        <% } else { %>
+        <em>Programme sans nom</em>
+        <% } %>
+        </div>
+        <div class="pull-right">
+            <a href="#programs/<%= program.get('id') %>" class="btn btn-default">
+                <span data-i18n="editor.undo-last-action"></span>
+            </a>
+            <button id="end-edit-button" type="button" class="btn btn-default">
+                <span data-i18n="programs.end-edit-program"></span>
+            </button>
+
+        </div>
+    </div>
+
+    <div class="editorWorkspace container">
+        <div class="programInput row container">
+
+        </div>
+
+        <div class="expected-elements expected-input row">
+        </div>
+
+    </div>
+    <% } %>
+</div>
+
+
+<div id="media-browser-modal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>Media Server</h3>
+			</div>
+			<div class="modal-body browser-container" style="height:250px">
+				<span>[placeholder]Filebrowser area</span>
+			</div>
+			<div class="modal-footer">
+				<button class="btn cancel-media-browser" data-dismiss="modal" data-i18n="form.cancel-button">Annuler</button>
+				<button class="btn btn-primary media-button valid-media disabled" data-i18n="form.valid-button">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>

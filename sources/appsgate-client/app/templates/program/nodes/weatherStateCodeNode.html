@@ -1,0 +1,49 @@
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
+
+    <% switch(node.methodName) { 
+    	case "isWeatherSimplifiedCodeForecast": %>
+    		<span data-i18n="language.weather-at"></span>
+		<%	break;
+    	case "getMinTemperatureForecast": %>
+    		<span data-i18n="language.weather-min-at"></span>
+		<%	break;		
+    	case "getMaxTemperatureForecast": %>
+    		<span data-i18n="language.weather-max-at"></span>
+		<%	break;		
+    	case "getAvgTemperatureForecast": %>
+    		<span data-i18n="language.weather-avg-at"></span>
+		<%	break;		
+     } %>   	
+    	
+    <select id="weather-town-<%= node.iid %>" class="weather-town-picker" target-id="<%= node.iid %>">
+        <option <% if (node.args[0].value === $.i18n.t("language.weather-town-grenoble")) { %>selected<% } %> value="<%=$.i18n.t("language.weather-town-grenoble")%>" data-i18n="language.weather-town-grenoble"></option>
+        <option <% if (node.args[0].value === $.i18n.t("language.weather-town-paris")) { %>selected<% } %> value="<%=$.i18n.t("language.weather-town-paris")%>" data-i18n="language.weather-town-paris"></option>
+        <option <% if (node.args[0].value === $.i18n.t("language.weather-town-lyon")) { %>selected<% } %> value="<%=$.i18n.t("language.weather-town-lyon")%>" data-i18n="language.weather-town-lyon"></option>
+        <option <% if (node.args[0].value === $.i18n.t("language.weather-town-france")) { %>selected<% } %> value="<%=$.i18n.t("language.weather-town-france")%>" data-i18n="language.weather-town-france"></option>
+        <option <% if (node.args[0].value === $.i18n.t("language.weather-town-stfrancois")) { %>selected<% } %> value="<%=$.i18n.t("language.weather-town-stfrancois")%>" data-i18n="language.weather-town-stfrancois"></option>
+    </select>
+    <select id="day-forecast-<%= node.iid %>" class="day-forecast-picker" target-id="<%= node.iid %>">
+        <option <% if (node.args[1].value === "0") { %>selected<% } %> value="0" data-i18n="language.weather-for-0"></option>
+        <option <% if (node.args[1].value === "1") { %>selected<% } %> value="1" data-i18n="language.weather-for-1"></option>
+        <option <% if (node.args[1].value === "2") { %>selected<% } %> value="2" data-i18n="language.weather-for-2"></option>
+    </select>
+    
+    <% if (node.methodName === "isWeatherSimplifiedCodeForecast" ) { %>
+    	<span data-i18n="language.weather-code-verb"></span>
+    <select id="code-forecast-<%= node.iid %>" class="code-forecast-picker" target-id="<%= node.iid %>">
+        <option <% if (node.args[2].value === "0") { %>selected<% } %> value="0" data-i18n="language.weather-code-0"></option>
+        <option <% if (node.args[2].value === "1") { %>selected<% } %> value="1" data-i18n="language.weather-code-1"></option>
+        <option <% if (node.args[2].value === "2") { %>selected<% } %> value="2" data-i18n="language.weather-code-2"></option>
+        <option <% if (node.args[2].value === "3") { %>selected<% } %> value="3" data-i18n="language.weather-code-3"></option>
+        <option <% if (node.args[2].value === "4") { %>selected<% } %> value="4" data-i18n="language.weather-code-4"></option>
+        <option <% if (node.args[2].value === "5") { %>selected<% } %> value="5" data-i18n="language.weather-code-5"></option>
+        <option <% if (node.args[2].value === "6") { %>selected<% } %> value="6" data-i18n="language.weather-code-6"></option>
+        <option <% if (node.args[2].value === "7") { %>selected<% } %> value="7" data-i18n="language.weather-code-7"></option>
+    </select>
+    <% } %>    	
+    
+</div>
+
+
+
+

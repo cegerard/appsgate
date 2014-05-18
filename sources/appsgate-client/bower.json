@@ -1,0 +1,40 @@
+{
+  "name": "AppsgateClient",
+  "dependencies": {
+    "almond": "~0.2.6",
+    "backbone": "~1.1.0",
+    "bootstrap": "~3.1.0",
+    "chai": "~1.8.0",
+    "i18next": null,
+    "jasmine": "~2.0.0",
+    "jquery": "~2.0.3",
+    "jqueryui": null,
+    "jqueryui-touch-punch": null,
+    "html5-boilerplate": null,
+    "lodash": "~2.4.1",
+    "mocha": "~1.17.0",
+    "momentjs":null,
+    "qunit": "~1.13.0",
+    "requirejs": "~2.1.8",
+    "requirejs-domready": "2.0.1",
+    "requirejs-i18n": null,
+    "requirejs-text": "2.0.10",
+    "sinon": "~1.7.3",
+    "Snap.svg": null,
+    "raphael": "latest"
+  },
+  "version": "1",
+  "homepage": "https://github.com/kpetouk/appsgate-client",
+  "authors": [
+    "kpetouk"
+  ],
+  "description": "Appsgate client",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

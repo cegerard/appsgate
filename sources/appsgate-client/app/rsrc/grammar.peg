@@ -1,0 +1,568 @@
+/*
+ * Init of the vars and function symbol table
+ */
+{
+  var variables = [];
+  var targetType;
+  var id;
+
+  function addVariable(vName,obj) {
+    if (typeof variables[vName] !== 'undefined') {
+      error = { message : "Variable already defined : " + vName }
+      throw error;
+    }
+    else {
+      variables[vName] = obj;
+    }
+  }
+  var functions = [];
+}
+/*
+ * Program
+ */
+pg = h:header _"_DECL_" _ d:declarations _ "_BODY_" _ r:rules _
+{
+  p={};
+  if (h['name']) {
+    p.name = h['name'];
+  }
+  if (h['daemon']) {
+    p.daemon = h['daemon'];
+  }
+  p.package = h['package'];
+
+  p.header = {author:h['author'], phrase:h['phrase'], comment:h['comment']}
+
+  p.definitions=d;
+  p.body = r;
+  return p;
+}
+
+/*
+ * Header
+ */
+header  = h:headerInst* 
+{
+  header=[];
+  h.forEach(function(e) {
+     header[e.key.toLowerCase()] = e.value;
+  });
+
+  return header;
+}
+
+headerInst = hInst 
+
+hInst = t:pname _ ":" _ s:string _
+{
+  return {key:t, value:s};
+}
+/ t:pname _ ":" _ v:pname _
+{
+  return {key:t, value:v};
+}
+
+/*
+ * Declarations
+ */
+
+declarations "declarations" = v:vardecl* f:functionDecl*
+{
+  return v.concat(f);
+}
+
+/*
+ * Variables
+ */
+
+vardecl = "var" _ v:varassignation _ ";"  _
+{
+  addVariable(v.var_name, v);
+  return v;
+}
+ / "var" _ v:pname _ ";" _
+{
+  var v2 = {var_name:v};
+  addVariable(v,v2);
+  return v2;
+}
+
+varassignation =  v:pname _ "=" _ a:argument _
+{
+  return {var_name:v,value:a};
+}
+ /  v:pname _ "=" _ l:list _
+{
+  return { var_name:v, value:l};
+}
+ / v:pname _ "=" _ o:object _
+{
+  return {var_name:v,value:o};
+}
+
+var_list = v:pname _","_ o:var_list 
+{
+  return [{type:'variable',value: v}].concat(o);
+}
+ / v:pname 
+{
+  return {type:'variable',value: v};
+} 
+
+pname = f:[a-zA-Z] v:[a-zA-Z_0-9]*
+{
+  return [f].concat(v).join("");
+}
+
+device = "/" c:[^\/]+ "/" 
+{
+  return {type:"device",value:c.join("")};
+}
+
+program = "|" c:[^\|]+ "|" 
+{
+  return {type:"programCall",value:c.join("")};
+}
+/*
+ * Fonctions
+ */
+
+functionDecl = "function" _ f:pname _ "(" p:parameterDef ")" _ "{" _ i:insts _ "}" _
+{
+  functions[f] = f;
+  return {type:'function', id:f, seqDefinitions:p, seqRules:i};
+}
+
+parameterDef = v:parList 
+{
+  return v;
+}/ _
+
+parList = v:pname _","_ o:parList 
+{
+  l = {type:'PROUT',id:v};
+  addVariable(v,l);
+  return [l].concat(o);
+}
+ / v:pname 
+{
+  o = {type:'PROUT',id:v};
+  addVariable(v,o);
+  return o;
+} 
+
+
+/*
+ * Instructions
+ */
+insts = i:inst _ is:insts _
+{
+  return [i].concat(is);
+} 
+  / i:inst
+{
+  return [i];
+}
+
+
+inst = b:block _
+{
+return b;
+}
+/ d:instDef _ ";"
+{
+  return d;
+}
+ 
+block = when / if / while / rules
+
+instDef = ret 
+ / keep_state
+ / action 
+ / functionCall
+ / wait
+ / v:varassignation 
+{
+  return {type:"assignation", name:v.value, value:v}
+}
+
+
+ret = "return" _ a:argument
+{
+  return {type:"return", value:a};
+}
+ / "return"
+{
+ return {type:"return"}
+}
+
+functionCall = f:pname"("param:arguments")"
+{
+  if (typeof functions[f] !== 'undefined') {
+    return {type:'functionNode', id:f, params:param}
+  } else {
+    throw { message: "Function undefined: " + f };
+  }
+}
+
+arguments =  a:argument _ "," _ l:arguments
+{
+  return [a].concat(l);
+} 
+ / a:argument
+{
+  return [a];
+}
+ / _
+
+argument = device / var / stringValue / numValue / boolean / select / object
+
+spokObject = program / device / var / select / list
+
+var = v:pname 
+{
+  if (typeof variables[v] !== 'undefined') {
+    return {type:'variable', value:v}
+  } else {
+    throw { message: "Variable undefined: " + v };
+  }
+}
+
+rules =  setOfRules / sequenceOfRules
+
+sequenceOfRules = "{" _ i:insts _ "}"
+{
+  return {type:"seqRules", rules:i}
+}
+
+setOfRules = "<<<" _ i:insts _ ">>>"
+{
+  return {type:"setOfRules", rules:i}
+}
+
+/**
+ * Node Select
+ */
+select = "_select(" _ "["_ what:strings _"]"_"," _ "["where:arguments"]"_ ")"
+{
+  return {type:'select', what:what, where:where};
+}
+ / "_selectState(" _ w:argument _ "," _ s:pname _ "," _ v:string _ "," _ start:int _ "," _ duration:int")"
+{
+  return {type:'selectState', devices:w, state:s, value:v, start:start, duration:duration};
+}
+
+strings =  s:string _ "," _ ss:strings
+{
+  return ss.concat(s);
+}
+ / s:string 
+{
+ return [s];
+}
+ / _
+
+/*
+ * Node Action
+ */
+action = v:spokObject "." method:pname "(" action:arguments ")"
+{
+   return {type:'action',target:v,methodName:method,args:action};
+   
+}
+
+/*
+ * Node Wait
+ */
+
+wait = "_wait(" _ n:numValue _ ")"
+{
+  return {type:"wait", waitFor:n };
+}
+
+/**
+ * Node When
+ */
+when = "_when" _  e:events _ sepTHEN _ r:rules 
+{
+  return {type:'when',events:e,seqRulesThen:r};
+}
+
+/**
+ * Node events
+ */
+
+events = "[" _ e:eventList _"/"_ t:opEvent _ "/" _ times:int _ "/" _ duration:int _"]"
+{
+  return {type:t, events:e, duration:duration, nbEventToOccur:times};
+}
+ / "[" _ e:eventList _"/"_ t:opEvent _"/"_ times:int _ "]"
+{
+  return {type:t, events:e, duration:0, nbEventToOccur:times};
+}
+ / "[" _ e:eventList _"/"_ t:opEvent _ "]"
+{
+  return {type:t, events:e, duration:0, nbEventToOccur:0};
+}
+
+eventList = e:evtNode _ "," _ es:eventList 
+{
+  return [e].concat(es);
+}
+ / evt:evtNode
+{
+ return [evt];
+}
+
+evtNode = evt/events
+
+opEvent = "AND" 
+{
+  return "eventsAnd";
+}
+/ "OR"
+{
+  return "eventsOr";
+}
+ / "THEN"
+{
+  return "eventsSequence";
+}
+
+/**
+ * Node event
+ */
+evt  = v:spokObject "."  e:pname "(" _ event:string _ ")"
+{
+  return {type:'event',source:v,eventName:e,eventValue:event};
+}
+
+
+
+/*
+ * Node If
+ */
+if = "_if"i b:relBool sepTHEN t:rules sepELSE f:rules 
+{
+  return { type:'if', expBool:  b,
+           seqRulesTrue: t,
+           seqRulesFalse:f
+         };
+}
+
+relBool = _ "(" left:operand _ o:operator _ right:operand ")"
+{
+  return {type:'booleanExpression', operator:o, leftOperand:left, rightOperand:right};
+}
+
+/*
+ * Node Function
+*/
+function =  d:spokObject "." method:pname "(" _ action:arguments _ ")"
+{
+   return {target:d, methodName:method, action:action, type:"action"};
+}
+
+/*
+ * Node While
+ */
+
+while = "_while" _ "(" _ s:state _ ")" _ "{" _ i1:inst _ "}" _ sepTHEN _ "{" _ i2:inst _ "}"
+{
+  return {type:"while",state:s,rules:i1,rulesThen:i2};
+}
+ / "_while" _ "(" _ s:state _ ")" _ "{" _ i1:inst _ "}"
+{
+  return {type:"while", state:s, rules:i1, rulesThen:{}};
+}
+
+state = o:spokObject ".isOfState(" _ v:pname _ ")" 
+{
+  return {type:"state", object:o, name:v};
+}
+
+/*
+ * Node KeepState
+ */
+
+keep_state =   "_keep(" _ o:spokObject _ "," _ state:pname _ ")"
+{
+return {type:"keepState", state:{type:"state",name:state, object:o} };
+}
+
+/*
+ * Node Lists
+ */
+list = "[" _ a:argument _ "]"
+{
+  return a;
+}
+/ "[" _ o:arguments _ "]"
+{
+  return { type:'list', value:o};
+}
+ / lists / select
+
+lists = "[" _ l:list _ o:listOperator _ r:list _ "]"
+{
+ return {type:'lists', left:l, right:r, operator:o};
+}
+
+listOperator = [UTN]
+
+/*
+ * Basic elements
+ */
+
+operator = "==" / ">=" / "<="
+
+operand= relBool / boolean / stringValue / numValue / function
+
+/* Nodes Value */
+
+stringValue= c:string
+{
+obj = {};
+  obj.type="string";
+  obj.value=c;
+  return obj;
+}
+numValue= n:number
+{
+  return {type:'number', value:n.toString()};
+}
+boolean = v:bool
+{
+  return {type:'boolean',value: v};
+}
+bool = "true"i/"false"i
+
+/*
+ * Separators
+ */
+
+sepTHEN = _ "then"i _
+sepELSE = _ "else"i _
+
+/* JSON parser based on the grammar described at http://json.org/. */
+
+/* ===== Syntactical Elements ===== */
+
+start
+  = _ object:object { return object; }
+
+object
+  = "{" _ "}" _                 { return {};      }
+  / "{" _ members:members "}" _ { return members; }
+
+members
+  = head:pair tail:("," _ pair)* {
+      var result = {};
+      result[head[0]] = head[1];
+      for (var i = 0; i < tail.length; i++) {
+        result[tail[i][2][0]] = tail[i][2][1];
+      }
+      return result;
+    }
+
+pair
+  = name:string ":" _ value:value { return [name, value]; }
+
+array
+  = "[" _ "]" _                   { return [];       }
+  / "[" _ elements:elements "]" _ { return elements; }
+
+elements
+  = head:value tail:("," _ value)* {
+      var result = [head];
+      for (var i = 0; i < tail.length; i++) {
+        result.push(tail[i][2]);
+      }
+      return result;
+    }
+
+value
+  = string
+  / number
+  / object
+  / array
+  / "true" _  { return true;   }
+  / "false" _ { return false;  }
+  // FIXME: We can't return null here because that would mean parse failure.
+  / "null" _  { return "null"; }
+
+/* ===== Lexical Elements ===== */
+
+string "string"
+  = '"' '"' _             { return "";    }
+  / '"' chars:chars '"' _ { return chars; }
+
+
+
+chars
+  = chars:char+ { return chars.join(""); }
+
+char
+  // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
+  = [^"\\\0-\x1F\x7f]
+  / '\\"'  { return '"';  }
+  / "\\\\" { return "\\"; }
+  / "\\/"  { return "/";  }
+  / "\\b"  { return "\b"; }
+  / "\\f"  { return "\f"; }
+  / "\\n"  { return "\n"; }
+  / "\\r"  { return "\r"; }
+  / "\\t"  { return "\t"; }
+  / "\\u" h1:hexDigit h2:hexDigit h3:hexDigit h4:hexDigit {
+      return String.fromCharCode(parseInt("0x" + h1 + h2 + h3 + h4));
+    }
+
+number "number"
+  = int_:int frac:frac exp:exp _ { return parseFloat(int_ + frac + exp); }
+  / int_:int frac:frac _         { return parseFloat(int_ + frac);       }
+  / int_:int exp:exp _           { return parseFloat(int_ + exp);        }
+  / int_:int _                   { return parseFloat(int_);              }
+
+int
+  = digit19:digit19 digits:digits     { return digit19 + digits;       }
+  / digit:digit
+  / "-" digit19:digit19 digits:digits { return "-" + digit19 + digits; }
+  / "-" digit:digit                   { return "-" + digit;            }
+
+frac
+  = "." digits:digits { return "." + digits; }
+
+exp
+  = e:e digits:digits { return e + digits; }
+
+digits
+  = digits:digit+ { return digits.join(""); }
+
+e
+  = e:[eE] sign:[+-]? { return e + sign; }
+
+/*
+ * The following rules are not present in the original JSON gramar, but they are
+ * assumed to exist implicitly.
+ *
+ * FIXME: Define them according to ECMA-262, 5th ed.
+ */
+
+digit
+  = [0-9]
+
+digit19
+  = [1-9]
+
+hexDigit
+  = [0-9a-fA-F]
+
+/* ===== Whitespace ===== */
+
+_ "whitespace"
+  = whitespace*
+
+// Whitespace is undefined in the original JSON grammar, so I assume a simple
+// conventional definition consistent with ECMA-262, 5th ed.
+whitespace
+  = [ \t\n\r]

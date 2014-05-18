@@ -1,0 +1,23 @@
+<a data-toggle="modal" href="#add-place-modal" class="col-md-12 btn btn-primary">
+	<i class="glyphicon glyphicon-plus-sign"></i> <span data-i18n="places-menu.add-button"></span>
+</a>
+
+<!-- modal to add a new place -->
+<div id="add-place-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddPlace" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title" data-i18n="modal-add-place.title"></h4>
+			</div>
+			<div class="modal-body">
+				<input type="text" class="form-control" data-i18n="[placeholder]modal-add-place.place-name">
+				<span class="hide text-danger" data-i18n="modal-add-place.place-already-existing"></span>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+				<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+			</div>
+		</div>
+	</div>
+</div>

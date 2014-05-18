@@ -1,0 +1,96 @@
+<a href="#devices/types/<%= type %>" class="list-group-item <% if (active) { %> active <% } %>" id="side-<%= type %>">
+	<!-- header -->
+	<p class="list-group-item-heading lead">
+		<% if (type === "0") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.temperature.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.temperature.name.plural"></span>
+			<% } %>
+		<% } else if (type === "1") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.illumination.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.illumination.name.plural"></span>
+			<% } %>
+		<% } else if (type === "2") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.switch.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.switch.name.plural"></span>
+			<% } %>
+		<% } else if (type === "3") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.contact.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.contact.name.plural"></span>
+			<% } %>
+		<% } else if (type === "4") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.keycard-reader.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.keycard-reader.name.plural"></span>
+			<% } %>
+		<% } else if (type === "5") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.ard.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.ard.name.plural"></span>
+			<% } %>
+		<% } else if (type === "6") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.plug.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.plug.name.plural"></span>
+			<% } %>
+		<% } else if (type === "7") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.lamp.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.lamp.name.plural"></span>
+			<% } %>
+		<% } else if (type === "8") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.actuator.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.actuator.name.plural"></span>
+			<% } %>
+		<% } else if (type === "31") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.mediaplayer.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.mediaplayer.name.plural"></span>
+			<% } %>
+		<% } %>
+		<span class="pull-right badge">
+			<%= devices.length %>
+		</span>
+	</p>
+
+	<!-- body -->
+	<p class="list-group-item-text">
+		<ul class="list-unstyled">
+			<% places.forEach(function(place) { %>
+				<% if (place.getTypeSensors(type).length > 0) { %>
+					<li>
+						<% if (place.get("name") !== "") { %>
+							<%= place.get("name") %>
+						<% } else { %>
+							<em data-i18n="places-details.place-no-name"></em>
+						<% } %>
+						<% if (type === "0") { %>
+							<span class="label label-info"><%= place.getAverageTemperature() %>&deg;C</span>
+						<% } else if (type === "1") { %>
+							<span class="label label-info"><%= place.getAverageIllumination() %> Lux</span>
+						<% } else if (type === "6") { %>
+							<span class="label label-info"><%= place.getAverageConsumption() %> W</span>
+						<% } %>
+						<span class="pull-right badge">
+							<%= place.getTypeSensors(type).length %>
+						</span>
+					</li>
+				<% } %>
+			<% }) %>
+		</ul>
+	</p>
+</a>

@@ -1,0 +1,121 @@
+PG = SET
+{
+  return "ok";
+}
+
+SET = ID "setOfRules" _ "[" _ INSTS _ "]"
+
+SEQ = ID "seqRules" _ "[" _ INSTS _ "]"
+
+BLOC = SEQ
+
+INSTS  = _ (INST _)+ / "(" INSTS ")"
+
+INST  = IF / WHEN / WHILE / ACTION / EMPTY / WAIT
+
+IF  = ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")" _ "(" _ BLOC _ ")"
+    / ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")"
+
+WHEN  = ID "when" _ "(" _ EVT _ ")" _ "(" _ BLOC _")"
+
+WHILE  = ID "while" _ "(" _ STATE _ ")" _ "(" _ KEEP _ ")" _ "(" _ BLOC _ ")"
+
+BLOC_KEEP = ID "seqRules" _ "[" _ (KEEP _)+ "]"
+
+EVENTS  = ID "eventsSequence" _ "[" _ EVENTLIST _ "]"
+        / ID "eventsAnd" _ "[" _ EVENTLIST _ "]"
+        / ID "eventsOr" _ "[" _ EVENTLIST _ "]"
+        / EVT
+
+EVENTLIST = (EVENTS _)+
+
+EVT  = ID "event" _ "(" _ TARGET _ ")"
+
+WAIT = ID "wait" _ "(" _ NUMERIC_VALUE _ ")"
+
+/**
+ * BOOLEAN expression can manipulate number also, which is not "logical".
+ * HACK
+ */
+BOOLEAN  = ID "booleanExpression" _"(" _ BOOLEAN _ ")" _ "(" _ BOOLEAN _ ")"
+         / ID "comparator" _"(" _ NUMERIC_VALUE _ ")" _ "(" _ NUMERIC_VALUE _ ")"
+         / ID "booleanExpression" _"(" _ BOOLEAN _ ")"
+         / STATE
+
+NUMERIC_VALUE = ID "number"
+			/ ID "boolean"
+              / DEVICE_STATE
+
+ACTION = ID "action" _ "(" _ TARGET _ ")" 
+
+DEVICE_STATE = ID "deviceState" _ "(" _ TARGET _ ")"
+
+KEEP  = ID "keepState" _ "(" _ STATE _ ")"
+
+STATE = ID "state" _ "(" _ TARGET _")"
+
+TARGET = ID "variable" / ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY
+
+EMPTY = ID "empty"
+
+VALUE = ID "string" / ID "number" / ID "boolean"
+
+ID "ID" = d:[0-9]+":"
+{
+ return d.join("");
+}
+
+MANDATORY = i:ID DEVICE_SEP l:NUMBERS DEVICE_SEP
+{
+ex = {'message' : l.join(":"), 'expected':l, 'id' : i, 'type':'device'};
+throw ex;
+}
+         / i:ID "programs"
+{
+ex = {'message' : "missing programs", 'expected':["programs"], 'id' : i};
+throw ex;
+}
+         / i:ID SERVICE_SEP l:NUMBERS SERVICE_SEP
+{
+ex = {'message' : "services", 'expected':l, 'id' : i, 'type':'service'};
+throw ex;
+}
+
+NUMBERS = d:(number)+
+{
+return d;
+}
+
+DEVICE_SEP "separator" = "/"
+SERVICE_SEP "separator" = "|"
+
+/* ===== Whitespace ===== */
+
+_ "whitespace"
+  = whitespace*
+
+// Whitespace is undefined in the original JSON grammar, so I assume a simple
+// conventional definition consistent with ECMA-262, 5th ed.
+whitespace
+  = [ \t\n\r]
+
+number = int_:int _
+{
+  return parseInt(int_);
+}
+
+int
+  = digit19:digit19 digits:digits     { return digit19 + digits;       }
+  / digit:digit
+
+
+
+digits
+  = digits:digit+ { return digits.join(""); }
+
+
+digit
+  = [0-9]
+
+digit19
+  = [1-9]

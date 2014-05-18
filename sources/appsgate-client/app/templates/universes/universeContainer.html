@@ -1,0 +1,13 @@
+<div id="<%= universe.get('type').toLowerCase() %>" class="<%= universe.get('universe-type') %>-universe <%
+	if(universe.get('configured')){ 
+		%>configured<%}%>">
+	<div class="universe-name">
+		<input class="universe-name-input" type="text" readonly value="<%= $.i18n.t(universe.get('name')) %>"></span>
+	</div>
+	
+	<%if(!universe.get('configured')){%>
+	<div class="state-stamp" >
+		<span>A configurer</span>
+	</div>
+	<%}%>
+</div>

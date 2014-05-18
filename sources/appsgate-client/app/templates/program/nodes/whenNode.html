@@ -1,0 +1,12 @@
+<div class="main-block-node">
+    <div class="row">
+        <button class="btn btn-prog btn-primary btn-then" id="<%= node.iid %>">
+            <span data-i18n="language.when-keyword"></span>
+        </button>
+        <%=engine.buildInputFromNode(node.events)%>
+    </div>
+    <div class="row indent-level-1">
+        <%=engine.buildInputFromNode(node.seqRulesThen) %>
+    </div>
+</div>
+

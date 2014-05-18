@@ -1,0 +1,53 @@
+<a href="#services/types/<%= type %>" class="list-group-item <% if (active) { %> active <% } %>" id="side-<%= type %>">
+    <!-- header -->
+    <p class="list-group-item-heading lead">
+        <% if (type === "31") { %>
+            <% if (services.length === 1) { %>
+                <span data-i18n="services.mediaplayer.name.singular"></span>
+                <% } else { %>
+                <span data-i18n="services.mediaplayer.name.plural"></span>
+            <% } %>
+        <% } else if (type === "36") { %>
+            <% if (services.length === 1) { %>
+                <span data-i18n="services.mediabrowser.name.singular"></span>
+                <% } else { %>
+                <span data-i18n="services.mediabrowser.name.plural"></span>
+            <% } %>
+        <% } else if (type === "102") { %>
+            <% if (services.length === 1) { %>
+                <span data-i18n="services.mail.name.singular"></span>
+                <% } else { %>
+                <span data-i18n="services.mail.name.plural"></span>
+            <% } %>
+        <% } else if (type === "103") { %>
+            <% if (services.length === 1) { %>
+                <span data-i18n="services.weather.name.singular"></span>
+                <% } else { %>
+                <span data-i18n="services.weather.name.plural"></span>
+            <% } %>
+        <% } %>        
+        <span class="pull-right badge">
+            <%= services.length %>
+        </span>
+    </p>
+
+    <!-- body -->
+    <p class="list-group-item-text">
+        <ul class="list-unstyled">
+            <% places.forEach(function(place) { %>
+                <% if (place.getTypeSensors(type).length > 0) { %>
+                    <li>
+                        <% if (place.get("name") !== "") { %>
+                            <%= place.get("name") %>
+                        <% } else { %>
+                            <em data-i18n="places-details.place-no-name"></em>
+                        <% } %>
+                        <span class="pull-right badge">
+                            <%= place.getTypeSensors(type).length %>
+                        </span>
+                    </li>
+                <% } %>
+            <% }) %>
+        </ul>
+    </p>
+</a>

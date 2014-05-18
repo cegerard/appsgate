@@ -1,0 +1,26 @@
+<div class="main-block-node">
+    <div>
+        <button class="btn btn-prog btn-primary" id="<%= node.iid %>">
+            <span data-i18n="language.if-keyword"/>
+        </button>
+        <%=engine.buildInputFromNode(node.expBool) %>
+        <div class="row indent-level-1">
+
+            <button class="btn btn-prog btn-primary" id="<%= node.iid %>">
+                <span data-i18n="language.then-keyword"/>
+            </button>
+            <%=engine.buildInputFromNode(node.seqRulesTrue) %>
+        </div>
+    </div>
+    <div class="secondary-block-node">
+        <div class="row">
+            <button class="btn btn-prog btn-primary btn-then" id="<%= node.iid %>">
+                <span data-i18n="language.else-keyword"/>
+            </button>
+            <div class="fix-row">
+            <%=engine.buildInputFromNode(node.seqRulesFalse) %>
+          </div>
+        </div>
+    </div>
+
+</div>

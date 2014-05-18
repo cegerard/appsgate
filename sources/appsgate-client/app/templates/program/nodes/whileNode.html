@@ -1,0 +1,34 @@
+<div class="main-block-node">
+    <div>
+        <div class="row">
+            <button class="btn btn-prog btn-primary btn-then" id="<%= node.iid %>">
+                <span data-i18n="language.while-keyword"></span>
+            </button>
+            <%=engine.buildInputFromNode(node.state)%>
+        </div>
+        <div class="row indent-level-1">
+            <div class="btn btn-prog btn-primary">
+                <span name="keep" data-i18n="language.keep-keyword"></span>
+            </div>
+
+            <%=engine.buildInputFromNode(node.rules) %>
+        </div>
+    </div>
+    <div class="secondary-block-node">
+        <% if ( node.rulesThen != undefined) { %>
+        <div class="row">
+            <button class="btn btn-prog btn-primary btn-then">
+                <span data-i18n="language.and-when"></span>
+            </button>
+            <span data-i18n="language.it-is-not-the-case"></span>
+        </div>
+        <div class="row indent-level-1">
+            <div class="btn btn-prog btn-primary">
+                <span data-i18n="language.then-keyword"></span>
+            </div>
+            <%=engine.buildInputFromNode(node.rulesThen) %>
+        </div>
+
+        <%}%>
+    </div>
+</div>

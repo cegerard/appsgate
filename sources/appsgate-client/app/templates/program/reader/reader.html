@@ -1,0 +1,41 @@
+<% if (typeof program === "undefined") { %>
+	<div class="lead" data-i18n="editor.title"></div>
+	<div class="alert alert-info" data-i18n="editor.no-program-alert"></div>
+<% } else { %>
+
+	<div class="lead">
+        <% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "PROCESSING") { %>
+        <div id="led-<%= program.get('id') %>" class="led led-green pull-left"></div>
+        <% } else if (program.get("runningState") === "DEPLOYED") { %>
+        <div id="led-<%= program.get('id') %>" class="led led-default pull-left"></div>
+        <% } else if (program.get("runningState") === "INVALID") { %>
+        <div id="led-<%= program.get('id') %>" class="led led-red pull-left"></div>
+        <% } %>
+		<% if (program.get("name") !== "") { %>
+			<%= program.get("name") %>
+		<% } else { %>
+			<em>Programme sans nom</em>
+		<% } %>
+
+		<div class="pull-right">
+        <button type="button" id="<%= program.get('id') %>" class="btn btn-default stop-program-button" data-i18n="programs.action.stop"></button>
+        <button type="button" id="<%= program.get('id') %>" class="btn btn-default start-program-button" data-i18n="programs.action.start"></button>
+
+
+			<button id="delete-popover" class="btn btn-default" rel="popover">
+				<i class="glyphicon glyphicon-trash"></i><span data-i18n="programs.delete-program"></span>
+			</button>
+                        <a href="#programs/editor/<%= program.get('id') %>" class="btn btn-default">
+                            <span data-i18n="programs.edit-program"></span>
+                        </a>
+                </div>
+	</div>
+
+	<div class="alert alert-success hide" data-i18n="editor.valid-program-alert"></div>
+
+	<div class="alert alert-danger hide" data-i18n="editor.invalid-program-alert"></div>
+
+	<div class="editorWorkspace">
+		<div class="programInput container"><%= program.get("userInputSource") %></div>
+	</div>
+<% } %>

@@ -1,0 +1,21 @@
+
+<!--
+<button class="btn btn-prog btn-primary" id="<%= node.iid %>">
+    <span data-i18n="language.keep-state"></span>
+</button>
+-->
+<% if (typeof node.state.object !== 'undefined') { %>
+<%=engine.buildInputFromNode(node.state.object) %>
+<% } else if (typeof node.state.target !== 'undefined') { %>
+<%=engine.buildInputFromNode(node.state.target) %>
+<% } %>
+        <% if (typeof node.state.phrase !== 'undefined') { %>
+
+<button class="btn btn-prog btn-prog-action" id="<%= node.state.iid %>">
+            <span data-i18n='<%=node.state.phrase%>'></span>
+</button>
+    <% } else { %>
+<div class='btn btn-default btn-prog input-spot mandatory-spot' id="<%= node.state.iid %>">
+    <span data-i18n='language.mandatory-keyword'/>
+</div>
+<% } %>

@@ -1,0 +1,9 @@
+<button class="btn btn-prog btn-prog-action" id="<%= node.iid %>">
+        <% if (typeof node.icon !== 'undefined') { %>
+            <img src='<%=node.icon%>' width='36px'>
+    <% } else if (typeof node.phrase !== "undefined"){ %>
+            <span data-i18n='<%=node.phrase%>'></span>
+    <% } else { %>
+        Uknown
+    <% } %>
+</button>

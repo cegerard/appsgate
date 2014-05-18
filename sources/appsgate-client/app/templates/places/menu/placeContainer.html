@@ -1,0 +1,136 @@
+<a href="#places/<%= place.get('id') %>" class="list-group-item <% if (active) { %> active <% } %>">
+	<!-- header -->
+	<p class="list-group-item-heading lead">
+		<% if (place.get("name") !== "") { %>
+			<%= place.get("name") %>
+		<% } else { %>
+			<em data-i18n="places-menu.place-no-name"></em>
+		<% } %>
+	</p>
+	
+	<!-- body -->
+	<p class="list-group-item-text">
+		<ul class="list-unstyled">
+			<!-- temperature sensors -->
+			<% if (place.getTemperatureSensors().length > 0) { %>
+			<li>
+				<% if (place.getTemperatureSensors().length === 1) { %>
+					<span data-i18n="devices.temperature.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.temperature.name.plural"></span>
+				<% } %>
+				<span class="label label-info">
+					<%= place.getAverageTemperature() %>&degC
+				</span>
+				<span class="pull-right badge">
+					<%= place.getTemperatureSensors().length %>
+				</span>
+			</li>
+			<% } %>
+			
+			<!-- illumination sensors -->
+			<% if (place.getIlluminationSensors().length > 0) { %>
+			<li>
+				<% if (place.getIlluminationSensors().length === 1) { %>
+					<span data-i18n="devices.illumination.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.illumination.name.plural"></span>
+				<% } %>
+				<div class="label label-info">
+					<%= place.getAverageIllumination() %> Lux
+				</div>
+				<span class="pull-right badge">
+					<%= place.getIlluminationSensors().length %>
+				</span>
+			</li>
+			<% } %>
+			
+			<!-- switches -->
+			<% if (place.getSwitches().length > 0) { %>
+			<li>
+				<% if (place.getSwitches().length === 1) { %>
+					<span data-i18n="devices.switch.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.switch.name.plural"></span>
+				<% } %>
+				<span class="pull-right badge">
+					<%= place.getSwitches().length %>
+				</span>
+			</li>
+			<% } %>
+			
+			<!-- contact sensors -->
+			<% if (place.getContactSensors().length > 0) { %>
+			<li>
+				<% if (place.getContactSensors().length === 1) { %>
+					<span data-i18n="devices.contact.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.contact.name.plural"></span>
+				<% } %>
+				<span class="pull-right badge">
+					<%= place.getContactSensors().length %>
+				</span>
+			</li>
+			<% } %>
+			
+			<!-- key-card readers -->
+			<% if (place.getKeyCardReaders().length > 0) { %>
+			<li>
+				<% if (place.getKeyCardReaders().length === 1) { %>
+					<span data-i18n="devices.keycard-reader.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.keycard-reader.name.plural"></span>
+				<% } %>
+				<span class="pull-right badge">
+					<%= place.getKeyCardReaders().length %>
+				</span>
+			</li>
+			<% } %>
+			
+			<!-- ard sensors -->
+			<% if (place.getARDLock().length > 0) { %>
+			<li>
+				<% if (place.getARDLock().length === 1) { %>
+					<span data-i18n="devices.ard.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.ard.name.plural"></span>
+				<% } %>
+				<span class="pull-right badge">
+					<%= place.getARDLock().length %>
+				</span>
+			</li>
+			<% } %>
+			
+			<!-- plugs -->
+			<% if (place.getPlugs().length > 0) { %>
+			<li>
+				<% if (place.getPlugs().length === 1) { %>
+					<span data-i18n="devices.plug.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.plug.name.plural"></span>
+				<% } %>
+				<span class="label label-info">
+					<%= place.getAverageConsumption() %> Watt
+				</span>
+				<span class="pull-right badge">
+					<%= place.getPlugs().length %>
+				</span>
+			</li>
+			<% } %>
+			
+			<!-- philips hue lamps -->
+			<% if (place.getPhilipsHueLamps().length > 0) { %>
+			<li>
+				<% if (place.getPhilipsHueLamps().length === 1) { %>
+					<span data-i18n="devices.lamp.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.lamp.name.plural"></span>
+				<% } %>
+				<span class="pull-right badge">
+					<%= place.getPhilipsHueLamps().length %>
+				</span>
+			</li>
+			<% } %>
+		</ul>
+	</p>
+</a>
