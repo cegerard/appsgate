@@ -61,6 +61,12 @@
 			<% } else { %>
 				<span data-i18n="devices.mediaplayer.name.plural"></span>
 			<% } %>
+		<% } else if (type === "210") { %>
+			<% if (devices.length === 1) { %>
+				<span data-i18n="devices.domicube.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.domicube.name.plural"></span>
+			<% } %>
 		<% } %>
 		<span class="pull-right badge">
 			<%= devices.length %>
