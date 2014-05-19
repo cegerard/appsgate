@@ -264,6 +264,16 @@
 				"volume"	: "Volume",
 				"browse"	: "Parcourir"
 			}
+		},
+		"domicube": {
+			"name"	: {
+				"singular"	: "DomiCube",
+				"plural"	: "DomiCubes"
+			},
+			"status": {
+				"inactive" : "Inactif",
+				"unknown" : "Inconnu"
+			}
 		}
 	},
 	"services": {
@@ -416,7 +426,7 @@
 
 		"pushed-switch-event"						: "on appuie sur",
 		"released-switch-event"						: "on relache",
-        
+
 		"pushed-switch-B1"      					: "on appuie sur B1 de",
 		"pushed-switch-B2"      					: "on appuie sur B2 de",
 
@@ -528,7 +538,7 @@
 		"weather-code-6"							: "d'autres conditions",
 		"weather-code-7"							: "des conditions rares",
 		"domicube-inactivated"						: "le domicube est désactivé",
-		"getTemperature"							: "la température"
+		"getTemperature"							: "la température de"
 	},
 	"keyboard": {
 		"true"										: "Vrai",
