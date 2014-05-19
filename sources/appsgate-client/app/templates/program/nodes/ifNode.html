@@ -3,13 +3,13 @@
         <button class="btn btn-prog btn-primary" id="<%= node.iid %>">
             <span data-i18n="language.if-keyword"/>
         </button>
-        <%=engine.buildInputFromNode(node.expBool) %>
+        <%=engine.buildInputFromNode(node.expBool, currentNode) %>
         <div class="row indent-level-1">
 
             <button class="btn btn-prog btn-primary" id="<%= node.iid %>">
                 <span data-i18n="language.then-keyword"/>
             </button>
-            <%=engine.buildInputFromNode(node.seqRulesTrue) %>
+            <%=engine.buildInputFromNode(node.seqRulesTrue, currentNode) %>
         </div>
     </div>
     <div class="secondary-block-node">
@@ -18,7 +18,7 @@
                 <span data-i18n="language.else-keyword"/>
             </button>
             <div class="fix-row">
-            <%=engine.buildInputFromNode(node.seqRulesFalse) %>
+            <%=engine.buildInputFromNode(node.seqRulesFalse, currentNode) %>
           </div>
         </div>
     </div>

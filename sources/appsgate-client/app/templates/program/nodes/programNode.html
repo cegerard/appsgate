@@ -5,7 +5,7 @@
         Uknown
         <% } %>
 <% if (typeof node.target.value !== 'undefined') { %>
-    <%=engine.buildInputFromNode(node.target) %>
+    <%=engine.buildInputFromNode(node.target, currentNode) %>
 <%} else { %>
 <div class='btn btn-default btn-prog input-spot mandatory-spot' id="<%= node.target.iid %>">
     <span data-i18n='language.mandatory-keyword'/>
