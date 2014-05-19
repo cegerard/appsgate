@@ -4,8 +4,7 @@ import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import appsgate.lig.core.object.messages.NotificationMsg;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 
 /**
  * This class is an ApAM message for place notification
@@ -45,8 +44,13 @@ public class PlaceManagerNotification implements NotificationMsg {
 	}
 
 	@Override
-	public CoreObjectSpec getSource() {
-		return null;
+	public String getSource() {
+		return "";
+	}
+	
+	@Override
+	public String getVarName() {
+		return name;
 	}
 
 	@Override

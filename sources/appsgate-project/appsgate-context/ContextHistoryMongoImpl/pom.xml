@@ -24,11 +24,6 @@
 			<artifactId>mongo-java-driver</artifactId>
 			<version>${mongo-api-version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-		</dependency>
         <dependency>
             <groupId>fr.imag.adele.apam</groupId>
             <artifactId>apam-core</artifactId>
@@ -40,8 +35,6 @@
             <artifactId>ContextHistorySpec</artifactId>
             <version>${project.version}</version>
         </dependency>
-				
-
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>MongoDBConfigurationImpl</artifactId>

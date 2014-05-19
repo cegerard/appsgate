@@ -84,7 +84,7 @@ public interface CoreObjectSpec {
          * 
          * @return 
          */
-        public JSONObject getGrammarDescription();
+        public JSONObject getBehaviorDescription();
         
         public enum CORE_TYPE{
 		SERVICE,

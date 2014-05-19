@@ -131,6 +131,7 @@ public class DomiCubeMQTTAdapterImpl {
 			
 			Object[] objectArray = localTopic.toArray();
 			qoses = connection.subscribe(Arrays.copyOf(objectArray, objectArray.length, Topic[].class));
+
 			logger.debug("Topics subscription success.");
 			
 			logger.debug("Reception thread intializing...");

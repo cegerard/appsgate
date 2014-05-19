@@ -11,7 +11,7 @@
 
 	<artifactId>PlaceManager</artifactId>
 	<packaging>bundle</packaging>
-	<name>Location manager implementation</name>
+	<name>Place manager implementation</name>
 
 	<!-- Repositories List -->
 
@@ -24,12 +24,12 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>CoreObjectSpec</artifactId>
+			<artifactId>ContextHistorySpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>ContextHistorySpec</artifactId>
+			<artifactId>EHMIProxySpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

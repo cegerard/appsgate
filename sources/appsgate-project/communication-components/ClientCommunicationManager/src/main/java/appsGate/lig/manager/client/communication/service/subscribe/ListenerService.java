@@ -15,24 +15,16 @@ public interface ListenerService {
 	 * This method allow all the caller to subscribe for all commands and events except configuration
 	 * command.
 	 * @param cmdListener the listener for subscription
-	 * @return true if the listener is registered, false otherwise
+	 * @param the target corresponding to the listener
+	 * @return  true if the command listener is new, false if it has been replaced
 	 */
-	public boolean addCommandListener(CommandListener cmdListener);
-	
-	
-	/**
-	 * This method allow the caller to subscribe for all configuration command.
-	 * @param target the target identifier
-	 * @param configListener the listener for subscription
-	 * @return true if the listener is registered, false otherwise
-	 */
-	public boolean addConfigListener(String target, ConfigListener configListener);
+	public boolean addCommandListener(CommandListener cmdListener, String target);
 	
 	/**
-	 * This method allow the caller to unsubscribe the specify target for all configuration command.
-	 * @param target the target identifier
-	 * @return true if the listener is unregistered, false otherwise
+	 * Remove the command listener associated to a target
+	 * @param target the target from witch remove the command listener
+	 * @return true if the command listener has been removed, false otherwise
 	 */
-	public boolean removeConfigListener(String target);
+	public boolean removeCommandListener(String target);
 
 }

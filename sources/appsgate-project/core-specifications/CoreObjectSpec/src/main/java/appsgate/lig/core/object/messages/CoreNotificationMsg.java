@@ -50,6 +50,7 @@ public class CoreNotificationMsg implements NotificationMsg{
         return source;
     }
     
+    @Override
 	public String getVarName() {
 		return varName;
 	}

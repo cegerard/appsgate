@@ -28,7 +28,7 @@ define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp'], function (hueR
      			ws = new WebSocket("ws://"+server[0]+":"+DEFAULT_SERVER_PORT+"/");
      			ws.onopen = function()
      			{ 
-     				ws.send("{\"method\":\"getDevices\", \"args\":[], \"callId\":\"cf-get-devices\"}");
+     				ws.send("{\"method\":\"getDevices\", \"args\":[], \"callId\":\"cf-get-devices\", \"TARGET\":\"CHMI\"}");
      			};
      
      			ws.onmessage = function (evt) 
@@ -36,7 +36,6 @@ define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp'], function (hueR
 					var received_msg = evt.data;
 					console.log(received_msg);
 		
-					//var callId = false;
 					var jsonMess = JSON.parse(received_msg);
 					
 					if(jsonMess.hasOwnProperty("TARGET")){//Call the target handler

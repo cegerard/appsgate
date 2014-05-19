@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
-import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.manager.place.messages.MoveObjectNotification;
 import appsgate.lig.manager.place.messages.PlaceManagerNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;

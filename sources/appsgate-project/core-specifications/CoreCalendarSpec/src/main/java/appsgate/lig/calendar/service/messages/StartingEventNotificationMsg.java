@@ -35,6 +35,11 @@ public class StartingEventNotificationMsg implements NotificationMsg {
     public CoreObjectSpec getSource() {
         return null;
     }
+    
+    @Override
+    public String getVarName() {
+    	return "eventStarting";
+    }
 
     @Override
     public String getNewValue() {

@@ -36,7 +36,7 @@ import org.ubikit.service.PhysicalEnvironmentModelService;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
-import appsgate.lig.enocean.ubikit.adapter.listeners.EnOceanConfigListener;
+import appsgate.lig.enocean.ubikit.adapter.listeners.EnOceanCommandListener;
 import appsgate.lig.enocean.ubikit.adapter.source.event.ContactEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.KeyCardEvent;
 import appsgate.lig.enocean.ubikit.adapter.source.event.LumEvent;
@@ -164,8 +164,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 
 		logger.info("EnOcean proxy deployed and instanciated.");
 
-		if (listenerService.addConfigListener(CONFIG_TARGET,
-				new EnOceanConfigListener(this))) {
+		if (listenerService.addCommandListener(new EnOceanCommandListener(this), CONFIG_TARGET)) {
 			logger.info("Configuration listeners deployed.");
 			if (httpService != null) {
 				logger.debug("HTTP service dependency resolved");
@@ -220,7 +219,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			logger.debug("Event gate thread crash at termination");
 		}
 
-		if (listenerService.removeConfigListener(CONFIG_TARGET)) {
+		if (listenerService.removeCommandListener(CONFIG_TARGET)) {
 			logger.info("EnOcean configuration listener removed.");
 		} else {
 			logger.warn("EnOcean configuration listener remove failed.");

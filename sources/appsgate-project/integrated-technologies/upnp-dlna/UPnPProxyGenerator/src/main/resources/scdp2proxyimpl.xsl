@@ -165,6 +165,11 @@ public class <xsl:value-of select="$classname"/> extends CoreObjectBehavior impl
 		public CoreObjectSpec getSource() {
 			return <xsl:value-of select="$classname"/>.this;
 		}
+		
+		@Override
+		public String getVarName() {
+			return variable;
+		}
 
 		@Override
 		public String getNewValue() {

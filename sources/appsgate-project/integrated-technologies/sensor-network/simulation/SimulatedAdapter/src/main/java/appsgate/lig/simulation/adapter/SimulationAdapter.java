@@ -110,7 +110,5 @@ public class SimulationAdapter implements SimulatedObjectManagementService {
 		else
 			logger.error("No client communication service found.");
 	}
-	
-	//TODO add simulate object persistence management
 
 }

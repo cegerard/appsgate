@@ -1,6 +1,5 @@
 package appsgate.lig.upnp.adapter;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +11,7 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
-import appsGate.lig.manager.client.communication.service.subscribe.ConfigListener;
+import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.upnp.media.player.MediaPlayer;
 
@@ -22,7 +21,7 @@ import appsgate.lig.upnp.media.player.MediaPlayer;
  * @author Thibaud
  * 
  */
-public class UPnPConfigListener implements ConfigListener {
+public class UPnPConfigListener implements CommandListener {
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -40,7 +39,14 @@ public class UPnPConfigListener implements ConfigListener {
 
 	@Override
 	public void onReceivedCommand(JSONObject obj) {
-		logger.error("Command received in the UPnP adapter configuration listener !");
+		try {
+			String command = obj.getString("CONFIGURATION");
+			JSONObject value = obj.getJSONObject(command);
+			value.put("clientId", obj.getInt("clientId"));
+			onReceivedConfig(command, value);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private JSONArray getBrowsers() throws JSONException {
@@ -87,7 +93,6 @@ public class UPnPConfigListener implements ConfigListener {
 		return playersList;
 	}
 
-	@Override
 	public void onReceivedConfig(String cmd, JSONObject obj) {
 		logger.debug("Config or event received: " + cmd);
 		logger.debug("with core: " + obj.toString());

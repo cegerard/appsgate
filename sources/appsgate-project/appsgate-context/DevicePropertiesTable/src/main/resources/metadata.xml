@@ -8,8 +8,5 @@
 		<ipojo:requires field="contextHistory_pull"/>
 		<ipojo:requires field="contextHistory_push"/>
 	</implementation>
-	
-<!-- 	<apam-instance name="AppsGateContextDevicePropertiesTableInst" implementation="AppsGateContextDevicePorpertiesTableImpl"> -->
-<!-- 	</apam-instance> -->
 
 </apam>

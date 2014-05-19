@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
-import appsgate.lig.watteco.adapter.listeners.WattecoConfigListener;
+import appsgate.lig.watteco.adapter.listeners.WattecoCommandListener;
 import appsgate.lig.watteco.adapter.spec.WattecoDiscoveryService;
 import appsgate.lig.watteco.adapter.spec.WattecoIOService;
 import appsgate.lig.watteco.adapter.spec.WattecoTunSlipManagement;
@@ -169,7 +169,7 @@ public class WattecoAdapter implements WattecoIOService,
 			}
 			
 			
-			if(listenerService.addConfigListener(CONFIG_TARGET, new WattecoConfigListener(this))){
+			if(listenerService.addCommandListener(new WattecoCommandListener(this), CONFIG_TARGET)){
 				logger.info("Listeners services dependency resolved and configuration listener had been deployed.");
 				if (httpService != null) {
 					logger.debug("HTTP service dependency resolved");
@@ -191,6 +191,18 @@ public class WattecoAdapter implements WattecoIOService,
 		} else {
 			logger.error("This bundle embbeded native C lib executing code and only Linux system are supported.");
 			logger.error("Your are currently runing on "+osName);
+			if (httpService != null) {
+				logger.debug("HTTP service dependency resolved");
+				final HttpContext httpContext = httpService.createDefaultHttpContext();
+				final Dictionary<String, String> initParams = new Hashtable<String, String>();
+				initParams.put("from", "HttpService");
+				try {
+					httpService.registerResources("/configuration/sensors/watteco", "/WEB/error", httpContext);
+					logger.info("Sensors configuration HTML GUI sources registered.");
+				} catch (NamespaceException ex) {
+					logger.error("NameSpace exception");
+				}
+			}
 		}  
 		
 		logger.info("Appsgate Watteco adapter initiated.");
@@ -209,7 +221,7 @@ public class WattecoAdapter implements WattecoIOService,
 			logger.debug("Watteco Adapter instanciation service thread crash at termination");
 		}
 		
-		if(listenerService.removeConfigListener(CONFIG_TARGET)){
+		if(listenerService.removeCommandListener(CONFIG_TARGET)){
 			logger.info("Watteco configuration listener removed.");
 		}else{
 			logger.warn("Watteco configuration listener remove failed.");

@@ -3,8 +3,7 @@ package appsgate.lig.context.device.properties.table.messages;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.core.object.messages.NotificationMsg;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 
 /**
  * This class is an ApAM message for object properties notification
@@ -17,7 +16,7 @@ public class PropertiesTableNotificationMsg implements NotificationMsg {
     /**
      * The objectId
      */
-    private String objectID;
+    private String objectId;
 
     /**
      * The user concern for the object property
@@ -41,18 +40,23 @@ public class PropertiesTableNotificationMsg implements NotificationMsg {
      * @param userId the user identifier
      * @param objectPropertyValue the property of this object for this user
      */
-    public PropertiesTableNotificationMsg(String objectID, String userId,
+    public PropertiesTableNotificationMsg(String source, String userId,
             String objectPropertyName, String objectPropertyValue) {
         super();
-        this.objectID = objectID;
+        this.objectId = source;
         this.userId = userId;
         this.objectPropertyName = objectPropertyName;
         this.objectPropertyValue = objectPropertyValue;
     }
 
     @Override
-    public CoreObjectSpec getSource() {
-        return null;
+    public String getSource() {
+        return objectId;
+    }
+    
+    @Override
+    public String getVarName() {
+    	return objectPropertyName;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class PropertiesTableNotificationMsg implements NotificationMsg {
     public JSONObject JSONize() {
         JSONObject notif = new JSONObject();
         try {
-            notif.put("objectId", objectID);
+            notif.put("objectId", objectId);
             notif.put("userId", userId);
             notif.put("varName", objectPropertyName);
             notif.put("value", objectPropertyValue);

@@ -29,6 +29,12 @@ public interface NotificationMsg {
 	public String getNewValue();
 	
 	/**
+	 * Get the variable that changed
+	 * @return a string that contains the variable name.
+	 */
+	public String getVarName();
+	
+	/**
 	 * transform the NotifcationMsg object to JSONSObject.
 	 * 
 	 * @return a JSONObject that represent the NotificationMsg java object

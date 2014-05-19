@@ -35,6 +35,11 @@ public class EndingEventNotificationMsg implements NotificationMsg {
     public CoreObjectSpec getSource() {
         return null;
     }
+    
+    @Override
+    public String getVarName() {
+    	return "eventEnding";
+    }
 
     @Override
     public String getNewValue() {
