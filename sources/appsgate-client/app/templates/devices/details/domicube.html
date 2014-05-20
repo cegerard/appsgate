@@ -1,0 +1,20 @@
+<li class="list-group-item">
+	<strong data-i18n="devices.value-label"></strong>
+	<div class="pull-right">
+		<% if(device.get("activeFace") === "1") { %>
+			<img src='/app/img/lan.svg' width='18px' class="img-responsive">
+		<% } else if(device.get("activeFace") === "2") { %>
+			<span data-i18n='devices.domicube.status.unknown'></span>
+		<% } else if(device.get("activeFace") === "3") { %>
+			<img src='/app/img/music.png' width='18px' class="img-responsive">
+		<% } else if(device.get("activeFace") === "4") { %>
+			<img src='/app/img/question.svg' width='18px' class="img-responsive">
+		<% } else if(device.get("activeFace") === "5") { %>
+			<img src='/app/img/night.png' width='18px' class="img-responsive">
+		<% } else if(device.get("activeFace") === "6") { %>
+			<img src='/app/img/meal.png' width='18px' class="img-responsive">
+		<% } else { %>
+			<span data-i18n='devices.domicube.status.unknown'></span>
+		<% } %>
+	</div>
+</li>

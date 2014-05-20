@@ -15,14 +15,6 @@ define([
         initialize: function() {
             var self = this;
 
-            // when a name is updated, update the grammar
-            /*this.on("change:name", function() {
-                if (typeof window.grammar !== "undefined") {
-                    delete window.grammar;
-                }
-                window.grammar = new Grammar();
-            });*/
-
             // remove potential duplicated entries and trigger a refresh of the list of places event
             this.on("change:devices", function() {
                 self.set({devices: _.uniq(self.get("devices"))});
@@ -30,7 +22,7 @@ define([
         },
         /**
          * Compute the average value of given sensors
-         * 
+         *
          * @param sensors Array of sensors
          * @return Average value of the sensors if any, undefined otherwise
          */
@@ -54,7 +46,7 @@ define([
         },
         /**
          * Compute the average temperature of the place from the temperature sensors in the place
-         * 
+         *
          * @return Average temperature of the place if any temperature sensor, undefined otherwise
          */
         getAverageTemperature: function() {
@@ -62,7 +54,7 @@ define([
         },
         /**
          * Compute the average illumination of the place from the illumination sensors in the place
-         * 
+         *
          * @return Average illumination of the place if any illumination sensor, undefined otherwise
          */
         getAverageIllumination: function() {
@@ -70,7 +62,7 @@ define([
         },
         /**
          * Compute the average consumption of the place from the plugs in the place
-         * 
+         *
          * @return Average consumption of the place if any consumption sensor, undefined otherwise
          */
         getAverageConsumption: function() {
@@ -78,7 +70,7 @@ define([
         },
         /**
          * Return all the devices of the place that matches a given type
-         * 
+         *
          * @param type Type of the devices to retrieve
          * @return Array of devices w/ good type
          */
@@ -104,7 +96,7 @@ define([
         },
         /**
          * Return all the services of the place that matches a given type
-         * 
+         *
          * @param type Type of the services to retrieve
          * @return Array of services w/ good type
          */
@@ -118,7 +110,7 @@ define([
 
             // get all the services that match the type
             var sensorsId = this.get("devices").filter(function(id) {
-                return (services.get(id) !== undefined && services.get(id).get("type") === type);                
+                return (services.get(id) !== undefined && services.get(id).get("type") === type);
             });
 
             // get all the services that match the type and the place
@@ -181,7 +173,7 @@ define([
         },
         /**
          * Send a message to the server to perform a remote call
-         * 
+         *
          * @param method Remote method name to call
          * @param args Array containing the argument taken by the method. Each entry of the array has to be { type : "", value "" }
          */
@@ -202,11 +194,10 @@ define([
                     do {
                         id = "place-" + Math.round(Math.random() * 10000).toString();
                     } while (places.where({id: id}).length > 0);
-                    model.set("id", id);
+                    model.set("id", id, {silent: true});
 
                     this.remoteCall("newPlace", [{type: "JSONObject", value: model.toJSON()}]);
-                    
-                    model.destroy();
+                    model = null;
                     break;
                 case "delete":
                     this.remoteCall("removePlace", [{type: "String", value: model.get("id")}]);

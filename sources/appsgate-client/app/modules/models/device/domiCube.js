@@ -23,7 +23,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["Face1", "Face2", "Face3", "Face4", "Face5", "inactivate"];
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
     },
     /**
      * return the keyboard code for a given event
@@ -35,45 +35,45 @@ define([
       v.source.deviceType = "210";
       v.source.value = this.get("id");
       switch(evt) {
-        case "Face1":
-          $(btn).append("<img src='/app/img/night.png' width='36px'>");
-          v.eventName = "newFace";
-          v.eventValue = "1";
-          v.icon = "/app/img/night.png";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Face2":
-          $(btn).append("<img src='/app/img/meal.png' width='36px'>");
-          v.eventName = "newFace";
-          v.eventValue = "2";
-          v.icon = "/app/img/meal.png";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Face3":
+        case "Music":
           $(btn).append("<img src='/app/img/music.png' width='36px'>");
           v.eventName = "newFace";
           v.eventValue = "3";
           v.icon = "/app/img/music.png";
           $(btn).attr("json", JSON.stringify(v));
           break;
-        case "Face4":
-          $(btn).append("<img src='/app/img/lan.svg' width='36px'>");
+        case "Meal":
+          $(btn).append("<img src='/app/img/meal.png' width='36px'>");
+          v.eventName = "newFace";
+          v.eventValue = "6";
+          v.icon = "/app/img/meal.png";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "Question":
+          $(btn).append("<img src='/app/img/question.svg' width='36px'>");
           v.eventName = "newFace";
           v.eventValue = "4";
+          v.icon = "/app/img/question.svg";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "Lan":
+          $(btn).append("<img src='/app/img/lan.svg' width='36px'>");
+          v.eventName = "newFace";
+          v.eventValue = "1";
           v.icon = "/app/img/lan.svg";
           $(btn).attr("json", JSON.stringify(v));
           break;
-        case "Face5":
-          $(btn).append("<img src='/app/img/question.svg' width='36px'>");
+        case "Night":
+          $(btn).append("<img src='/app/img/night.png' width='36px'>");
           v.eventName = "newFace";
           v.eventValue = "5";
-          v.icon = "/app/img/question.svg";
+          v.icon = "/app/img/night.png";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "inactivate":
           $(btn).append("<span data-i18n='language.domicube-inactivated'></span>");
           v.eventName = "newFace";
-          v.eventValue = "5";
+          v.eventValue = "2";
           //v.icon = "/app/img/music.png";
           v.phrase = "language.domicube-inactivated";
           $(btn).attr("json", JSON.stringify(v));

@@ -105,7 +105,7 @@
 		
 			<start implementation="DomiCubeAdapterImpl" name="MyDomiCubeAdapter">
 				
-				<property name="host" value="iot.eclipse.org"/>
+				<property name="host" value="192.168.1.18"/>
 				<property name="port" value="1883"/>
 				<property name="faceTopic" 	  value="amiqual4home/hmi/cube/office/1/active_face"/>
 				<property name="batteryTopic" value="amiqual4home/hmi/cube/office/1/battery_level"/>

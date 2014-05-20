@@ -264,6 +264,16 @@
 				"volume"	: "Volume",
 				"browse"	: "Parcourir"
 			}
+		},
+		"domicube": {
+			"name"	: {
+				"singular"	: "DomiCube",
+				"plural"	: "DomiCubes"
+			},
+			"status": {
+				"inactive" : "Inactif",
+				"unknown" : "Inconnu"
+			}
 		}
 	},
 	"services": {
@@ -416,7 +426,7 @@
 
 		"pushed-switch-event"						: "on appuie sur",
 		"released-switch-event"						: "on relache",
-        
+
 		"pushed-switch-B1"      					: "on appuie sur B1 de",
 		"pushed-switch-B2"      					: "on appuie sur B2 de",
 
@@ -526,8 +536,9 @@
 		"weather-code-4"							: "des oragess",
 		"weather-code-5"							: "du brouillard",
 		"weather-code-6"							: "d'autres conditions",
-		"weather-code-7"							: "des conditions rares"		
-
+		"weather-code-7"							: "des conditions rares",
+		"domicube-inactivated"						: "le domicube est désactivé",
+		"getTemperature"							: "la température de"
 	},
 	"keyboard": {
 		"true"										: "Vrai",
@@ -538,8 +549,8 @@
 		"is-turned-off-lamp-event"					: "on éteint la lampe",
 		"turn-on-lamp-action"						: "Allumer la lampe",
 		"turn-off-lamp-action"						: "Eteindre la lampe",
-		"turn-on-plug-action"						: "Allumer l'interrupteur",
-		"turn-off-plug-action"						: "Eteindre l'interrupteur",
+		"turn-on-plug-action"						: "Allumer la prise",
+		"turn-off-plug-action"						: "Eteindre la prise",
 		"blink-lamp-action"							: "Faire clignoter",
 		"when-keyword"								: "Lorsque",
 		"if-keyword"								: "Si",
@@ -563,7 +574,8 @@
 		"get-weather-code-state"					: "la météo prévue",
 		"weather-min"								: "la temperature minimale prevue",
 		"weather-max"								: "la temperature maximale prevue",
-		"weather-avg"								: "la temperature moyenne prevue"
+		"weather-avg"								: "la temperature moyenne prevue",
+		"getTemperature"							: "la température"
 
 
 	}

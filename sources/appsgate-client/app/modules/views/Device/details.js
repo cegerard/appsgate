@@ -11,12 +11,13 @@ define([
     "text!templates/devices/details/temperature.html",
     "text!templates/devices/details/plug.html",
     "text!templates/devices/details/phillipsHue.html",
+    "text!templates/devices/details/domicube.html",
     "text!templates/devices/details/coreClock.html",
     "colorwheel"
 
 ], function(App, Raphael, deviceDetailsTemplate, contactDetailTemplate, illuminationDetailTemplate, keyCardDetailTemplate,
         ARDDetailTemplate, switchDetailTemplate, actuatorDetailTemplate, temperatureDetailTemplate,
-        plugDetailTemplate, phillipsHueDetailTemplate, coreClockDetailTemplate) {
+        plugDetailTemplate, phillipsHueDetailTemplate, domicubeDetailTemplate, coreClockDetailTemplate) {
 
     var DeviceDetailsView = {};
     // detailled view of a device
@@ -31,6 +32,7 @@ define([
         tplTemperature: _.template(temperatureDetailTemplate),
         tplPlug: _.template(plugDetailTemplate),
         tplPhillipsHue: _.template(phillipsHueDetailTemplate),
+        tplDomiCube: _.template(domicubeDetailTemplate),
         tplCoreClock: _.template(coreClockDetailTemplate),
         // map the events and their callback
         events: {
@@ -53,7 +55,7 @@ define([
         },
         /**
          * Listen to the device update and refresh if any
-         * 
+         *
          * @constructor
          */
         initialize: function() {
@@ -228,7 +230,7 @@ define([
         },
         /**
          * Check the current value given by the user - show an error message if needed
-         * 
+         *
          * @return false if the information are not correct, true otherwise
          */
         checkDevice: function() {
@@ -321,7 +323,7 @@ define([
         },
         /**
          * Set the new color to the lamp
-         * 
+         *
          * @param e JS mouse event
          */
         onChangeColor: function(e) {
@@ -421,13 +423,13 @@ define([
                             deviceDetails: this.tplPhillipsHue
                         }));
 
-                        // get the current color						
+                        // get the current color
                         var color = Raphael.hsl((lamp.get("color") / 65535), (lamp.get("saturation") / 255), (lamp.get("brightness") / 255));
 
                         // get the current state
                         var enabled = lamp.get("value");
 
-                        // if the lamp is on, we allow the user to pick a color				
+                        // if the lamp is on, we allow the user to pick a color
                         this.renderColorWheel(enabled, color);
 
                         // update the size of the color picker container
@@ -462,30 +464,15 @@ define([
                             deviceDetails: this.tplCoreClock
                         }));
                         break;
-                        /*case 31: // media player
-                         this.$el.html(this.template({
-                         device: this.model,
-                         sensorType: $.i18n.t("devices.mediaplayer.name.singular"),
-                         places: places,
-                         deviceDetails: this.tplMediaPlayer
-                         }));
-                         
-                         // initialize the volume slider
-                         _.defer(function() {
-                         $(".volume-slider").slider({
-                         range: "min",
-                         min: 0,
-                         max: 100,
-                         value: 100,
-                         stop: function(event, ui) {
-                         self.model.sendVolume($(".volume-slider").slider("value"));
-                         }
-                         });
-                         });
-                         
-                         // requesting current volume level
-                         this.model.remoteCall("getVolume", [], this.model.get("id") + ":volume");
-                         */
+                    case 210: // domicube
+                      this.$el.html(this.template({
+                          device: this.model,
+                          sensorImg: "app/img/sensors/domicube.jpg",
+                          sensorType: $.i18n.t("devices.domicube.name.singular"),
+                          places:places,
+                          deviceDetails: this.tplDomiCube
+                      }));
+                      break;
 
                 }
                 // resize the panel

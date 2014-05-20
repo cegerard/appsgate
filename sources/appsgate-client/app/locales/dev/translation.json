@@ -437,8 +437,8 @@
 		"turned-off-plug-event"						: "on eteint",
 		"is-turned-on-plug-status"					: "est allumee",
 		"is-turned-off-plug-status"					: "est eteinte",
-		"turn-on-plug-action"						: "Allumer",
-		"turn-off-plug-action"						: "Eteindre",
+		"turn-on-plug-action"						: "Allumer la prise",
+		"turn-off-plug-action"						: "Eteindre la prise",
 
 		"turned-on-actuator-event"					: "on allume",
 		"turned-off-actuator-event"					: "on eteint",
@@ -498,7 +498,8 @@
         "nothing-keyword"							: "Rien",
         "is-turned-on-lamp-state"					: "allumée",
 		"state-verb"								: "est",
-		
+		"getTemperature"							: "la temperature de",
+
 		"domicube-inactivated"						: "le domicube est désactivé"
 
 
@@ -518,8 +519,8 @@
         "if-and"									: "Si ... et ...",
         "if-or"										: "Si ... ou ...",
         "if-equals"									: "... indique ...",
-        "if-sup"									: "... est superieur a ...",
-        "if-inf"									: "... est inferieur a ...",
+        "if-sup"									: "... est supérieur à ...",
+        "if-inf"									: "... est inferieur à ...",
         "if-dif" 									: "... est different de ...",
         "if-not"									: "Si ... n'est pas vrai ...",
         "light-brightness"							: "l'intensité de la lampe",
@@ -535,6 +536,7 @@
         "weather-min"								: "la temperature minimale prevue",
         "weather-max"								: "la temperature maximale prevue",
         "weather-avg"								: "la temperature moyenne prevue",
-		"weather-code"								: "la météo prévue"
+		"weather-code"								: "la météo prévue",
+		"getTemperature"							: "la temperature",
 	}
 }
