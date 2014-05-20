@@ -1,3 +1,4 @@
+
 *.DS_Store
 
 deployToAppsGateDistribution.sh
@@ -245,4 +246,4 @@ platforms/ios/AppsGate.xcodeproj/project.pbxproj
 platforms/ios/AppsGate.xcodeproj/xcuserdata/jr.xcuserdatad/xcschemes/xcschememanagement.plist
 
 platforms/ios/CordovaLib/CordovaLib.xcodeproj/xcuserdata/jr.xcuserdatad/xcschemes/xcschememanagement.plist
-*.lck
+
