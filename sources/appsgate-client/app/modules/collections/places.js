@@ -27,9 +27,6 @@ define([
             // a place has been removed - put its devices as unlocated
             this.on("remove", function(place) {
                 self.updateDevicesRemovedPlace(place);
-                // update the grammar
-                /*delete window.grammar;
-                window.grammar = new Grammar();*/
             });
             // listen to the event when the list of places is received
             dispatcher.on("listPlaces", function(places) {
@@ -41,16 +38,10 @@ define([
             // listen to the event when a place appears and add it
             dispatcher.on("newPlace", function(place) {
                 self.add(place);
-                // update the grammar
-                /*delete window.grammar;
-                window.grammar = new Grammar();-*/
             });
             // listen to the event when a place has been updated
             dispatcher.on("updatePlace", function(place) {
                 places.get(place.id).set("name", place.name);
-                // update the grammar
-                /*delete window.grammar;
-                window.grammar = new Grammar();*/
             });
             // listen to the event when a place has been removed
             dispatcher.on("removePlace", function(placeId) {
