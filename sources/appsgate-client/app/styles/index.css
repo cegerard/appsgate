@@ -640,7 +640,7 @@ div {
 }
 
 .selected-node {
-  border:4px solid black;
+  border:4px solid black !important;
 }
 
 .expected-actions {
@@ -700,7 +700,7 @@ div {
 }
 
 .expected-programs > button{
-  background:9999FF;
+  background:#9999FF;
 }
 
 .btn-current {
