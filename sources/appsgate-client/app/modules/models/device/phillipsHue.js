@@ -115,7 +115,7 @@ define([
         case "isOff":
           $(btn).append("<span data-i18n='keyboard.is-turned-off-lamp-state'><span>");
           v.name = "isOff";
-          v.phrase = "language.is-turned-off-lamp-status";
+          v.phrase = "language.is-turned-off-lamp-state";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

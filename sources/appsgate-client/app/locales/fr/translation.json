@@ -1,10 +1,10 @@
 {
 	"app" : {
-        "name"		: "AppsGate",
-        "signin"	: "Identification"
+		"name"		: "AppsGate",
+		"signin"	: "Identification"
 	},
 	"form" : {
-        "enter-button"		: "Entrer",
+		"enter-button"		: "Entrer",
 		"cancel-button"		: "Annuler",
 		"valid-button"		: "Valider",
 		"close-button"		: "Fermer",
@@ -13,34 +13,33 @@
 		"edit-button"		: "Editer",
 		"save-button"		: "Sauvegarder",
 		"saving-button" 	: "En cours...",
-        "browse-button"		: "Parcourir",
-        "background-editor"	: "Fond",
-        "size-editor"		: "Taille",
-        "size-width"		: "Largeur",
-        "size-height"		: "Hauteur"
+		"browse-button"		: "Parcourir",
+		"background-editor"	: "Fond",
+		"size-editor"		: "Taille",
+		"size-width"		: "Largeur",
+		"size-height"		: "Hauteur"
 	},
 	"navbar" : {
-        "edit"				: "Editer",
-        "stop-edit"			: "Fin edition",
-				"home"	: "Chez nous",
-        "users"				: "Utilisateurs",
+		"edit"				: "Editer",
+		"stop-edit"			: "Fin edition",
+		"users"				: "Utilisateurs",
 		"places"			: "Pièces",
 		"devices"			: "Dispositifs",
-        "services"			: "Services",
+		"services"			: "Services",
 		"programs"			: "Programmes",
 		"button-settings"	: "Préférences"
 	},
-    "editbar": {
-        "undo"				: "Annuler",
-        "redo"				: "Refaire",
-        "add"				: "Ajouter",
-        "trashbin"			: "Corbeille"
-    },
-    "login": {
-        "username"			: "Nom d'identification",
-        "password"			: "Mot de passe",
-        "confirm-password"	: "Mot de passe de confirmation"
-    },
+	"editbar": {
+		"undo"				: "Annuler",
+		"redo"				: "Refaire",
+		"add"				: "Ajouter",
+		"trashbin"			: "Corbeille"
+	},
+	"login": {
+		"username"			: "Nom d'identification",
+		"password"			: "Mot de passe",
+		"confirm-password"	: "Mot de passe de confirmation"
+	},
 	"modal-lost-connection" : {
 		"title"						: "Problème de connexion",
 		"interrupted-connection"	: "La connexion a été interrompue.",
@@ -58,11 +57,11 @@
 		"connection"			: "Connexion..."
 	},
 	"edit-name-modal": {
-        "title"					: "Renommer",
-        "name"					: "Nom",
-        "name-empty"			: "Le nom doit être renseigné.",
-        "already-existing"		: "Nom déjà existant."
-    },
+		"title"					: "Renommer",
+		"name"					: "Nom",
+		"name-empty"			: "Le nom doit être renseigné.",
+		"already-existing"		: "Nom déjà existant."
+	},
 
 	"places-menu" : {
 		"add-button"		: "Ajouter pièce",
@@ -103,12 +102,12 @@
 		"time-label"			: "Heure",
 		"time-speed-label"		: "Vitesse"
 	},
-    "modal-edit-service": {
-        "name-label": "Nom",
-        "name-placeholder": "Nom du service",
-        "name-already-existing": "Nom de service déjà existant",
-        "place-label": "Pièce"
-    },
+	"modal-edit-service": {
+		"name-label": "Nom",
+		"name-placeholder": "Nom du service",
+		"name-already-existing": "Nom de service déjà existant",
+		"place-label": "Pièce"
+	},
 	"programs-menu": {
 		"add-button"			: "Ajouter programme"
 	},
@@ -118,7 +117,7 @@
 		"name-placeholder"		: "Nom du programme",
 		"name-empty"			: "Le nom du programme doit être renseigné.",
 		"name-already-existing"	: "Nom de programme déjà existant",
-        "load-from-file"		: "Charger depuis un fichier",
+		"load-from-file"		: "Charger depuis un fichier",
 		"unable-to-parse"		: "Impossible de lire ce fichier"
 	},
 	"modal-edit-program"	: {
@@ -185,10 +184,14 @@
 			"value"	: {
 				"opened"	: "Ouvert",
 				"closed"	: "Fermé"
-            },
-            "event": {
-                "opened": "on ouvre",
-                "closed": "on ferme"
+			},
+			"event": {
+				"opened": "on ouvre",
+				"closed": "on ferme"
+			},
+			"state": {
+				"opened": "ouverte",
+				"closed": "fermée"
 			}
 		},
 		"keycard-reader": {
@@ -233,7 +236,7 @@
 			"action"	: {
 				"turnOn"	: "Allumer",
 				"turnOff"	: "Eteindre",
-                "blink"     : "Faire clignoter"
+				"blink"     : "Faire clignoter"
 			}
 		},
 		"clock"	: {
@@ -261,84 +264,100 @@
 				"volume"	: "Volume",
 				"browse"	: "Parcourir"
 			}
+		},
+		"domicube": {
+			"name"	: {
+				"singular"	: "DomiCube",
+				"plural"	: "DomiCubes"
+			},
+			"status": {
+				"inactive" : "Inactif",
+				"unknown" : "Inconnu"
+			}
 		}
 	},
-    "services": {
-        "unknown"			: "Inconnu",
-        "device-no-name"	: "Dispositif sans nom",
-        "device-unlocated"	: "Non localisé",
-        "type-label"		: "Type",
-        "place-label"		: "Emplacement",
-        "state-label"		: "Etat",
-        "value-label"		: "Valeur",
-        "consumption-label"	: "Consommation",
-        "status-label"		: "Statut",
-        "status": {
-            "connected"		: "Connecté",
-            "waiting"		: "En attente",
-            "disconnected"	: "Déconnecté"
-        },
-        "mediaplayer": {
-            "name": {
-                "singular"	: "Lecteur multimédia",
-                "plural"	: "Lecteurs multimédia"
-            },
-            "status": {
-                "playing"	: "Lecture en cours",
-                "stopped"	: "Arrêté",
-                "selected"	: "Veuillez choisir un média"
-            },
-            "action": {
-                "play"		: "Lancer",
-                "resume"	: "Reprendre",
-                "pause"		: "Pause",
-                "stop"		: "Arrêter",
-                "volume"	: "Volume",
-                "browse"	: "Parcourir"
-            }
-        },
-        "mediabrowser": {
-            "name": {
-                "singular"	: "Serveur multimédia",
-                "plural"	: "Serveurs multimédia"
-            }
-        },
-        "mail": {
-            "name": {
-                "singular"	: "Serveur mail",
-                "plural"	: "Serveurs mail"
-            }
-        },
-        "connectionManager": {
-            "name": {
-                "singular"	: "Connection Manager",
-                "plural"	: "Connection Managers"
-            }
-        },
-        "renderingControl": {
-            "name": {
-                "singular"	: "Rendering control",
-                "plural"	: "Rendering controls"
-            }
-        },
-        "avtransport": {
-            "name": {
-                "singular"	: "AV Transport",
-                "plural"	: "AV Transports"
-            }
-        },
-        "contentdirectory": {
-            "name": {
-                "singular"	: "Content Directory",
-                "plural"	: "Content Directories"
-            }
-        }
-    },
+	"services": {
+		"unknown"			: "Inconnu",
+		"device-no-name"	: "Dispositif sans nom",
+		"device-unlocated"	: "Non localisé",
+		"type-label"		: "Type",
+		"place-label"		: "Emplacement",
+		"state-label"		: "Etat",
+		"value-label"		: "Valeur",
+		"consumption-label"	: "Consommation",
+		"status-label"		: "Statut",
+		"status": {
+			"connected"		: "Connecté",
+			"waiting"		: "En attente",
+			"disconnected"	: "Déconnecté"
+		},
+		"mediaplayer": {
+			"name": {
+				"singular"	: "Lecteur multimédia",
+				"plural"	: "Lecteurs multimédia"
+			},
+			"status": {
+				"playing"	: "Lecture en cours",
+				"stopped"	: "Arrêté",
+				"selected"	: "Veuillez choisir un média"
+			},
+			"action": {
+				"play"		: "Lancer",
+				"resume"	: "Reprendre",
+				"pause"		: "Pause",
+				"stop"		: "Arrêter",
+				"volume"	: "Volume",
+				"browse"	: "Parcourir"
+			}
+		},
+		"mediabrowser": {
+			"name": {
+				"singular"	: "Serveur multimédia",
+				"plural"	: "Serveurs multimédia"
+			}
+		},
+		"mail": {
+			"name": {
+				"singular"	: "Serveur mail",
+				"plural"	: "Serveurs mail"
+			}
+		},
+		"connectionManager": {
+			"name": {
+				"singular"	: "Connection Manager",
+				"plural"	: "Connection Managers"
+			}
+		},
+		"renderingControl": {
+			"name": {
+				"singular"	: "Rendering control",
+				"plural"	: "Rendering controls"
+			}
+		},
+		"avtransport": {
+			"name": {
+				"singular"	: "AV Transport",
+				"plural"	: "AV Transports"
+			}
+		},
+		"contentdirectory": {
+			"name": {
+				"singular"	: "Content Directory",
+				"plural"	: "Content Directories"
+			}
+		},
+		"weather": {
+			"name": {
+				"singular": "Service Meteo",
+				"plural": "Services Meteo"
+			}
+		}
+	},
 	"programs" : {
 		"program-no-name"	: "Programme sans nom",
-        "edit-program"		: "Modifier",
-        "end-edit-program"	: "Fin modifier",
-        "delete-program"	: "Supprimer",
+		"edit-program"		: "Modifier",
+		"end-edit-program"	: "Fin modifier",
+		"delete-program"	: "Supprimer",
 		"state"	: {
 			"deployed"		: "Déployé",
 			"started"		: "Démarré",
@@ -346,7 +365,7 @@
 			"failed"		: "Erreur"
 		},
 		"action" : {
-            "start"			: "Activer",
+			"start"			: "Activer",
 			"stop"			: "Désactiver"
 		}
 	},
@@ -354,36 +373,36 @@
 		"title"					: "Editeur de programme",
 		"no-program-alert"		: "Aucun programme",
 		"valid-program-alert"	: "Programme valide",
-        "invalid-program-alert"	: "Programme invalide",
-        "undo-last-action"		: "Annuler"
+		"invalid-program-alert"	: "Programme invalide",
+		"undo-last-action"		: "Annuler"
 	},
 	"language" : {
 		"written-by"								: "ecrit par",
 		"when-keyword"								: "lorsque",
 		"end-when-block"							: ".",
-        "if-keyword"								: "Si",
-        "if-and"									: "Si ... et ...",
-        "if-or"										: "Si ... ou ...",
-        "if-equals"									: "... indique ...",
-        "if-sup"									: "... est superieur a ...",
-        "if-inf"									: "... est inferieur a ...",
-        "if-dif" 									: "... est different de ...",
-        "if-not"									: "Si ... n'est pas vrai ...",
+		"if-keyword"								: "Si",
+		"if-and"									: "Si ... et ...",
+		"if-or"										: "Si ... ou ...",
+		"if-equals"									: "... indique ...",
+		"if-sup"									: "... est superieur a ...",
+		"if-inf"									: "... est inferieur a ...",
+		"if-dif" 									: "... est different de ...",
+		"if-not"									: "Si ... n'est pas vrai ...",
 		"else-keyword"								: "sinon",
 		"end-if-block"								: ".",
-        "then-keyword"								: "Alors",
-        "while-keyword"								: "Tant que",
-        "while-keep"								: "Tant que ... maintenir ...",
-        "keep-state"								: " l'état ",
-        "keep-keyword"								: "Maintenir",
-        "and-when"									: "Et lorsque",
-        "it-is-not-the-case"						: "ce n'est plus le cas",
-        "activate-program-action"					: "Activer le programme",
-        "disactivate-program-action"				: "Désactiver le programme",
-        "activate"									: "Activer",
-        "disactivate"								: "Désactiver",
-        "is-activated-program-event"				: "est activé",
-        "is-disactivated-program-event"				: "est desactivé",
+		"then-keyword"								: "Alors",
+		"while-keyword"								: "Tant que",
+		"while-keep"								: "Tant que ... maintenir ...",
+		"keep-state"								: " l'état ",
+		"keep-keyword"								: "Maintenir",
+		"and-when"									: "Et lorsque",
+		"it-is-not-the-case"						: "ce n'est plus le cas",
+		"activate-program-action"					: "Activer le programme",
+		"disactivate-program-action"				: "Désactiver le programme",
+		"activate"									: "Activer",
+		"disactivate"								: "Désactiver",
+		"is-activated-program-event"				: "est activé",
+		"is-disactivated-program-event"				: "est desactivé",
 		"is-running-program-status"					: "est actif",
 		"is-stopped-program-status"					: "est inactif",
 		"op-event"									: "et",
@@ -408,6 +427,9 @@
 		"pushed-switch-event"						: "on appuie sur",
 		"released-switch-event"						: "on relache",
 
+		"pushed-switch-B1"      					: "on appuie sur B1 de",
+		"pushed-switch-B2"      					: "on appuie sur B2 de",
+
 		"pushed-telec-event-up"						: "on appuie sur le bouton haut de",
 		"pushed-telec-event-bottom"					: "on appuie sur le bouton bas de",
 		"pushed-telec-event-left"					: "on appuie a gauche de",
@@ -429,17 +451,17 @@
 		"no-card-inserted-keycard-reader-status"	: "aucune carte n est inseree dans",
 
 		"turned-on-plug-event"						: "on allume",
-		"turned-off-plug-event"						: "on eteint",
-		"is-turned-on-plug-status"					: "est allumee",
-		"is-turned-off-plug-status"					: "est eteinte",
+		"turned-off-plug-event"						: "on éteint",
+		"is-turned-on-plug-status"					: "est allumée",
+		"is-turned-off-plug-status"					: "est éteinte",
 		"turn-on-plug-action"						: "Allumer",
 		"turn-off-plug-action"						: "Eteindre",
 
 		"turned-on-actuator-event"					: "on allume",
 		"turned-off-actuator-event"					: "on eteint",
 
-		"is-turned-on-actuator-status"				: "est allume",
-		"is-turned-off-actuator-status"				: "est eteint",
+		"is-turned-on-actuator-status"				: "est allumé",
+		"is-turned-off-actuator-status"				: "est éteint",
 
 		"turn-on-actuator-action"					: "Allumer",
 		"turn-off-actuator-action"					: "Eteindre",
@@ -448,12 +470,12 @@
 		"seconds"									: "secondes",
 
 		"turned-on-lamp-event"						: "on allume",
-		"turned-off-lamp-event"						: "on eteint",
-		"is-turned-on-lamp-status"					: "est allumee",
-		"is-turned-off-lamp-status"					: "est eteinte",
+		"turned-off-lamp-event"						: "on éteint",
+		"is-turned-on-lamp-status"					: "est allumée",
+		"is-turned-off-lamp-status"					: "est éteinte",
 		"turn-on-lamp-action"						: "Allumer",
 		"turn-off-lamp-action"						: "Eteindre",
-        "blink-lamp-action"                         : "Faire clignoter",
+		"blink-lamp-action"                         : "Faire clignoter",
 		"change-color-lamp-action"					: "Changer la couleur de",
 		"complement-change-color-lamp-action"		: "en",
 		"white-color"								: "blanc",
@@ -469,7 +491,7 @@
 		"clock-status"								: "il est",
 
 		"play-media-action"							: "Jouer",
-        "browse-media-button": "Parcourir",
+		"browse-media-button": "Parcourir",
 		"pause-media-action"						: "Mettre en pause le media",
 		"stop-media-action"							: "Stopper",
 		"set-volume-media-action"					: "Mettre le volume de",
@@ -485,44 +507,77 @@
 
 		"received-mail-event"						: "un mail arrive",
 		"send-mail-action"							: "Envoyer un mail",
-        "mail-dest"									: "à",
-        "mail-subject" 								: "dont le sujet est",
-        "mail-body" 								: "objet",
-		"well-arrived-subject"						: "Bien arrive!",
-        "mandatory-keyword"							:"Obligatoire",
-        "nothing-keyword"							:"Rien",
-        "is-turned-on-lamp-state"					: "allumée",
-		"state-verb"								: "est"
+		"mail-dest"									: "à",
+		"mail-subject" 								: "dont le sujet est",
+		"mail-body" 								: "objet",
+		"well-arrived-subject"						: "Bien arrivé!",
+		"mandatory-keyword"							: "Obligatoire",
+		"nothing-keyword"							: "Rien",
+		"is-turned-on-lamp-state"					: "allumée",
+		"is-turned-off-lamp-state"					: "éteinte",
+		"state-verb"								: "est",
+
+		"weather-at"								: "la météo prévue à",
+		"weather-min-at"							: "la température minimale prévue à",
+		"weather-max-at"							: "la température maximale prévue à",
+		"weather-avg-at"							: "la température moyenne prévue à",
+		"weather-code-verb"							: "annonce",
+		"weather-town-grenoble"						: "Grenoble",
+		"weather-town-paris"						: "Paris",
+		"weather-town-lyon"							: "Lyon",
+		"weather-town-france"						: "France",
+		"weather-town-stfrancois"					: "St Francois Longchamp",
+		"weather-for-0"								: "aujourd'hui",
+		"weather-for-1"								: "demain",
+		"weather-for-2"								: "après demain",
+		"weather-code-0"							: "du soleil",
+		"weather-code-1"							: "des nuages",
+		"weather-code-2"							: "de la pluie",
+		"weather-code-3"							: "de la neige",
+		"weather-code-4"							: "des orages",
+		"weather-code-5"							: "du brouillard",
+		"weather-code-6"							: "d'autres conditions",
+		"weather-code-7"							: "des conditions rares",
+		"domicube-inactivated"						: "le domicube est désactivé",
+		"getTemperature"							: "la température de"
+	},
+	"keyboard": {
+		"true"										: "Vrai",
+		"false"										: "Faux",
+		"is-turned-on-lamp-state"					: "l'ampoule est allumée",
+		"is-turned-off-lamp-state"					: "l'ampoule est éteinte",
+		"is-turned-on-lamp-event"					: "on allume l'ampoule",
+		"is-turned-off-lamp-event"					: "on éteint l'ampoule",
+		"turn-on-lamp-action"						: "Allumer l'ampoule",
+		"turn-off-lamp-action"						: "Eteindre l'ampoule",
+		"turn-on-plug-action"						: "Allumer la prise",
+		"turn-off-plug-action"						: "Eteindre la prise",
+		"blink-lamp-action"							: "Faire clignoter",
+		"when-keyword"								: "Lorsque",
+		"if-keyword"								: "Si",
+		"if-and"									: "Si ... et ...",
+		"if-or"										: "Si ... ou ...",
+		"if-equals"									: "... indique ...",
+		"if-sup"									: "... est superieur a ...",
+		"if-inf"									: "... est inferieur a ...",
+		"if-dif" 									: "... est different de ...",
+		"if-not"									: "Si ... n'est pas vrai ...",
+		"light-brightness"							: "l'intensité de l'ampoule",
+		"while-keyword"								: "Tant que",
+		"while-keep"								: "Tant que ... maintenir ...",
+		"keep-state"								: "Maintenir l'état ...",
+		"clock-event"								: "il est ",
+		"play-media-action"							: "Jouer un media",
+		"pause-media-action"						: "Mettre en pause le media",
+		"stop-media-action"							: "Stopper",
+		"set-volume-media-action"					: "Mettre le volume",
+		"is-weather-code-state"						: "la météo prévue",
+		"get-weather-code-state"					: "la météo prévue",
+		"weather-min"								: "la température minimale prévue",
+		"weather-max"								: "la température maximale prévue",
+		"weather-avg"								: "la température moyenne prévue",
+		"getTemperature"							: "la température"
 
 
-    },
-    "keyboard": {
-        "true"										: "Vrai",
-        "false"										: "Faux",
-        "is-turned-on-lamp-state"					: "l'ampoule est allumée",
-        "is-turned-off-lamp-state"					: "l'ampoule est éteinte",
-        "is-turned-on-lamp-event"					: "on allume l'ampoule",
-        "is-turned-off-lamp-event"					: "on éteint l'ampoule",
-        "turn-on-lamp-action"						: "Allumer l'ampoule",
-        "turn-off-lamp-action"						: "Eteindre l'ampoule",
-        "blink-lamp-action"							: "Faire clignoter",
-        "when-keyword"								: "Lorsque",
-        "if-keyword"								: "Si",
-        "if-and"									: "Si ... et ...",
-        "if-or"										: "Si ... ou ...",
-        "if-equals"									: "... indique ...",
-        "if-sup"									: "... est superieur a ...",
-        "if-inf"									: "... est inferieur a ...",
-        "if-dif" 									: "... est different de ...",
-        "if-not"									: "Si ... n'est pas vrai ...",
-        "light-brightness"							: "l'intensité de l'ampoule",
-        "while-keyword"								: "Tant que",
-        "while-keep"								: "Tant que ... maintenir ...",
-        "keep-state"								: "Maintenir l'état ...",
-        "clock-event"								: "il est ",
-        "play-media-action"							: "Jouer un media",
-        "pause-media-action"						: "Mettre en pause le media",
-        "stop-media-action"							: "Stopper",
-        "set-volume-media-action"					: "Mettre le volume"
 	}
 }
