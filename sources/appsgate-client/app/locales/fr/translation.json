@@ -223,8 +223,8 @@
 		},
 		"lamp": {
 			"name"	: {
-				"singular"	: "Lampe Philips Hue",
-				"plural"	: "Lampes Philips Hue"
+				"singular"	: "Ampoule Philips Hue",
+				"plural"	: "Ampoules Philips Hue"
 			},
 			"status"	: {
 				"turnedOn"	: "Allumée",
@@ -347,7 +347,7 @@
 		},
 		"action" : {
             "start"			: "Activer",
-			"stop"			: "Arrêter"
+			"stop"			: "Désactiver"
 		}
 	},
 	"editor" : {
@@ -499,12 +499,12 @@
     "keyboard": {
         "true"										: "Vrai",
         "false"										: "Faux",
-        "is-turned-on-lamp-state"					: "la lampe est allumée",
-        "is-turned-off-lamp-state"					: "la lampe est éteinte",
-        "is-turned-on-lamp-event"					: "on allume la lampe",
-        "is-turned-off-lamp-event"					: "on éteint la lampe",
-        "turn-on-lamp-action"						: "Allumer la lampe",
-        "turn-off-lamp-action"						: "Eteindre la lampe",
+        "is-turned-on-lamp-state"					: "l'ampoule est allumée",
+        "is-turned-off-lamp-state"					: "l'ampoule est éteinte",
+        "is-turned-on-lamp-event"					: "on allume l'ampoule",
+        "is-turned-off-lamp-event"					: "on éteint l'ampoule",
+        "turn-on-lamp-action"						: "Allumer l'ampoule",
+        "turn-off-lamp-action"						: "Eteindre l'ampoule",
         "blink-lamp-action"							: "Faire clignoter",
         "when-keyword"								: "Lorsque",
         "if-keyword"								: "Si",
@@ -515,7 +515,7 @@
         "if-inf"									: "... est inferieur a ...",
         "if-dif" 									: "... est different de ...",
         "if-not"									: "Si ... n'est pas vrai ...",
-        "light-brightness"							: "l'intensité de la lampe",
+        "light-brightness"							: "l'intensité de l'ampoule",
         "while-keyword"								: "Tant que",
         "while-keep"								: "Tant que ... maintenir ...",
         "keep-state"								: "Maintenir l'état ...",
