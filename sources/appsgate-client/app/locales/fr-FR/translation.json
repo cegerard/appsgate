@@ -236,7 +236,7 @@
 			"action"	: {
 				"turnOn"	: "Allumer",
 				"turnOff"	: "Eteindre",
-				"blink"     : "Clignoter"
+				"blink"     : "Faire clignoter"
 			}
 		},
 		"clock"	: {
