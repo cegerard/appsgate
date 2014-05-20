@@ -31,6 +31,7 @@ define([
     getKeyboardForProperty: function(property) {
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONProperty("mandatory");
+      v.targetType.deviceType = "0";
       switch(property) {
         case "value":
           $(btn).append("<span data-i18n='keyboard.getTemperature'><span>");
