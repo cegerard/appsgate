@@ -532,11 +532,12 @@ div {
 }
 
 .btn-prog-action {
-  background:#FFCC66 !important;
+  color:black;
+  background:transparent !important;
 }
 
 .read-only .btn-prog-action {
-  color:#FFCC66 !important;
+  color:black !important;
   background: transparent !important;
   border: none !important;
 }
@@ -554,33 +555,22 @@ div {
 
 .btn-prog-service {
   color:white;
-  background: #CC66FF !important;
+  background: #9999FF !important;
 }
 
 .read-only .btn-prog-service {
-  color: #CC66FF !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-.btn-prog-service {
-  color:white;
-  background: #CC66FF !important;
-}
-
-.read-only .btn-prog-service {
-  color: #CC66FF !important;
+  color: #9999FF !important;
   background: transparent !important;
   border: none !important;
 }
 
 .btn-prog-prog {
   color:white;
-  background: black !important;
+  background: #9999FF !important;
 }
 
 .read-only .btn-prog-prog {
-  color: black !important;
+  color: #9999FF !important;
   background: transparent !important;
   border: none !important;
 }
@@ -643,13 +633,13 @@ div {
 }
 
 .expected-actions {
-  border:1px solid #FFCC66;
-  background:#FFDB94;
+  border:1px solid #black;
+  background:white;
   padding:5px;
 }
 
 .expected-actions > button{
-  background:#FFCC66;
+  background:white;
 }
 
 .expected-events {
@@ -683,24 +673,23 @@ div {
 }
 
 .expected-services {
-  border:1px solid #CC66FF;
-  background:#E6B2FF;
+  border:1px solid #9999FF;
+  background:#E9E9FF;
   padding:5px;
 }
 
 .expected-services > button{
-  background:#CC66FF;
+  background:#9999FF;
 }
 
 .expected-programs {
-  border:1px solid black;
-  background:#DDDDDD;
+  border:1px solid 9999FF;
+  background:#E9E9FF;
   padding:5px;
 }
 
 .expected-programs > button{
-  background:black;
-  color:white
+  background:9999FF;
 }
 
 .btn-current {

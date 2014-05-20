@@ -1,10 +1,11 @@
 define([
     "app",
+    "models/place",
     "text!templates/places/menu/menu.html",
     "text!templates/places/menu/placeContainer.html",
     "text!templates/devices/menu/coreClockContainer.html",
     "text!templates/places/menu/addButton.html"
-], function(App, placeMenuTemplate, placeContainerMenuTemplate, coreClockContainerMenuTemplate, addPlaceButtonTemplate) {
+], function(App, Place, placeMenuTemplate, placeContainerMenuTemplate, coreClockContainerMenuTemplate, addPlaceButtonTemplate) {
 
     var PlaceMenuView = {};
     /**
@@ -27,7 +28,7 @@ define([
         },
         /**
          * Listen to the places collection update and refresh if any
-         * 
+         *
          * @constructor
          */
         initialize: function() {
@@ -71,7 +72,7 @@ define([
         },
         /**
          * Update the side menu to set the correct active element
-         * 
+         *
          * @param e JS click event
          */
         updateSideMenu: function(e) {
@@ -100,7 +101,7 @@ define([
         },
         /**
          * Check the current value of the input text and show an error message if needed
-         * 
+         *
          * @return false if the typed name already exists, true otherwise
          */
         checkPlace: function() {
@@ -133,7 +134,7 @@ define([
         /**
          * Check if the name of the place does not already exist. If not, update the place
          * Hide the modal when done
-         * 
+         *
          * @param e JS event
          */
         validEditName: function(e) {
@@ -144,16 +145,10 @@ define([
                     // instantiate the place and add it to the collection after the modal has been hidden
                     $("#add-place-modal").on("hidden.bs.modal", function() {
                         // instantiate a model for the new place
-                        var place = places.create({
-                            name: $("#add-place-modal input").val(),
-                            devices: []
-                        });
+                        var place = new Place({name	: $("#add-place-modal input").val(), devices	: []});
 
                         // send the place to the backend
                         place.save();
-
-                        // add it to the collection
-                        //places.add(place);
 
                         // tell the router that there is no modal any more
                         appRouter.isModalShown = false;
