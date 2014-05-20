@@ -30,7 +30,7 @@ import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
 public class SystemClock {
 
 	private static int currentAlarmId;
-	private final static int defaultTimeFlowRate = 1;
+	public final static int defaultTimeFlowRate = 1;
 	
 	/**
 	 * Act as primary key for single alarm event (removed after being fired)

@@ -976,11 +976,29 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
 	
 	/**
+	 * Set the current time in milliseconds
+	 * @param millis the new time to set
+	 */
+	public void setCurrentTimeInMillis(long millis) {
+		logger.warn("Set current time method is not supported yet for local system clock.");
+	}
+	
+	/**
 	 * Get the current time flow rate from the local EHMI clock
 	 * @return the current time flow rate as a double
 	 */
 	public double getTimeFlowRate() {
 		return systemClock.getTimeFlowRate();
+	}
+	
+	/**
+	 * Set the time flow rate 
+	 * @return the new time flow rate
+	 */
+	public double setTimeFlowRate(double rate) {
+		logger.warn("Set time flow rate method is not supported yet for local system clock.");
+		logger.warn("requested value: "+rate);
+		return SystemClock.defaultTimeFlowRate;
 	}
 	
 	/**
