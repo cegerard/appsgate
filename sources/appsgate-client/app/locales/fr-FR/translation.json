@@ -20,6 +20,7 @@
 		"size-height"		: "Hauteur"
 	},
 	"navbar" : {
+		"home"				: "Chez nous",
 		"edit"				: "Editer",
 		"stop-edit"			: "Fin edition",
 		"users"				: "Utilisateurs",
@@ -511,8 +512,8 @@
 		"mail-subject" 								: "dont le sujet est",
 		"mail-body" 								: "objet",
 		"well-arrived-subject"						: "Bien arrivé!",
-		"mandatory-keyword"							:"Obligatoire",
-		"nothing-keyword"							:"Rien",
+		"mandatory-keyword"							: "Obligatoire",
+		"nothing-keyword"							: "Rien",
 		"is-turned-on-lamp-state"					: "allumée",
 		"is-turned-off-lamp-state"					: "éteinte",
 		"state-verb"								: "est",

@@ -20,6 +20,7 @@
 		"size-height"		: "Hauteur"
 	},
 	"navbar" : {
+		"home"				: "Chez nous",
 		"edit"				: "Editer",
 		"stop-edit"			: "Fin edition",
 		"users"				: "Utilisateurs",
