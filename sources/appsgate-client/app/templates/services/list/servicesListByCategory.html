@@ -1,24 +1,24 @@
 <div class="lead">
     <% if (type === "31") { %>
-        <% if (services.length === 1) { %>
+        <% if (services.where({type:31}).length === 1) { %>
             <span data-i18n="services.mediaplayer.name.singular"></span>
         <% } else { %>
             <span data-i18n="services.mediaplayer.name.plural"></span>
         <% } %>
     <% } else if (type === "36") { %>
-        <% if (services.length === 1) { %>
+        <% if (services.where({type:36}).length === 1) { %>
             <span data-i18n="services.mediabrowser.name.singular"></span>
         <% } else { %>
             <span data-i18n="services.mediabrowser.name.plural"></span>
     <% } %>
     <% } else if (type === "102") { %>
-        <% if (services.length === 1) { %>
+        <% if (services.where({type:102}).length === 1) { %>
             <span data-i18n="services.mail.name.singular"></span>
         <% } else { %>
             <span data-i18n="services.mail.name.plural"></span>
         <% } %>
     <% } else if (type === "103") { %>
-        <% if (services.length === 1) { %>
+        <% if (services.where({type:103}).length === 1) { %>
             <span data-i18n="services.weather.name.singular"></span>
         <% } else { %>
             <span data-i18n="services.weather.name.plural"></span>
