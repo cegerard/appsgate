@@ -329,6 +329,9 @@ define([
           this.Mediator.setCursorAndBuildKeyboard(parseInt(lastInputPoint.attr("id")));
           console.log("lastInputPoint : "+lastInputPoint);
         }
+
+        $(".programInput").find(".selected-node").removeClass("selected-node");
+        $("#" + parseInt(this.Mediator.currentNode)).addClass("selected-node");
       },
       /**
       * Render the editor view

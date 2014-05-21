@@ -82,10 +82,6 @@ define([
         if (id) {
             console.log("Setting current_pos to: " + id);
             this.currentNode = id;
-            if (!this.readonly) {
-              $(".programInput").find(".selected-node").removeClass("selected-node");
-              $("#" + parseInt(id)).addClass("selected-node");
-            }
         } else {
             this.currentNode = -1;
             console.error("A non valid pos has been passed to setCurrent pos: " + id);
@@ -352,14 +348,14 @@ define([
           if (types[type].length > 0) {
             o = types[type][0];
             states = o.getStates();
-            
+
             var nodeParent="";
-            
+
             // This recovers the html exerpt that will indicate that the parent node is a "Keep"
             if(typeof $("#"+this.currentNode).parent().children().children()[0] != "undefined"){
-            	nodeParent=$("#"+this.currentNode).parent().children().children()[0].getAttribute("name");	
+            	nodeParent=$("#"+this.currentNode).parent().children().children()[0].getAttribute("name");
             }
-            
+
             // Only if the parent is not a Keep and the device are not type 3,4,5 (ContactSensor,KeycardSensor,ArdLocker), meaning that we cant keep state on those devices
             if(nodeParent != "keep" || (type != "3" && type != "4" && type != "5")){
             	for (a in states) {
@@ -943,7 +939,7 @@ define([
         var input = $.parseHTML(this.buildInputFromNode(this.programJSON));
 
         $(input).find(".btn").css("padding", "3px 6px");
-
+        
         $(input).i18n();
 
         var keyBands = $(".expected-elements").children();

@@ -20,6 +20,7 @@
 		"size-height"		: "Hauteur"
 	},
 	"navbar" : {
+		"home"				: "Chez nous",
 		"edit"				: "Editer",
 		"stop-edit"			: "Fin edition",
 		"users"				: "Utilisateurs",
@@ -451,17 +452,17 @@
 		"no-card-inserted-keycard-reader-status"	: "aucune carte n est inseree dans",
 
 		"turned-on-plug-event"						: "on allume",
-		"turned-off-plug-event"						: "on eteint",
-		"is-turned-on-plug-status"					: "est allumee",
-		"is-turned-off-plug-status"					: "est eteinte",
+		"turned-off-plug-event"						: "on éteint",
+		"is-turned-on-plug-status"					: "est allumée",
+		"is-turned-off-plug-status"					: "est éteinte",
 		"turn-on-plug-action"						: "Allumer",
 		"turn-off-plug-action"						: "Eteindre",
 
 		"turned-on-actuator-event"					: "on allume",
 		"turned-off-actuator-event"					: "on eteint",
 
-		"is-turned-on-actuator-status"				: "est allume",
-		"is-turned-off-actuator-status"				: "est eteint",
+		"is-turned-on-actuator-status"				: "est allumé",
+		"is-turned-off-actuator-status"				: "est éteint",
 
 		"turn-on-actuator-action"					: "Allumer",
 		"turn-off-actuator-action"					: "Eteindre",
@@ -470,9 +471,9 @@
 		"seconds"									: "secondes",
 
 		"turned-on-lamp-event"						: "on allume",
-		"turned-off-lamp-event"						: "on eteint",
-		"is-turned-on-lamp-status"					: "est allumee",
-		"is-turned-off-lamp-status"					: "est eteinte",
+		"turned-off-lamp-event"						: "on éteint",
+		"is-turned-on-lamp-status"					: "est allumée",
+		"is-turned-off-lamp-status"					: "est éteinte",
 		"turn-on-lamp-action"						: "Allumer",
 		"turn-off-lamp-action"						: "Eteindre",
 		"blink-lamp-action"                         : "Faire clignoter",
@@ -510,10 +511,11 @@
 		"mail-dest"									: "à",
 		"mail-subject" 								: "dont le sujet est",
 		"mail-body" 								: "objet",
-		"well-arrived-subject"						: "Bien arrive!",
-		"mandatory-keyword"							:"Obligatoire",
-		"nothing-keyword"							:"Rien",
+		"well-arrived-subject"						: "Bien arrivé!",
+		"mandatory-keyword"							: "Obligatoire",
+		"nothing-keyword"							: "Rien",
 		"is-turned-on-lamp-state"					: "allumée",
+		"is-turned-off-lamp-state"					: "éteinte",
 		"state-verb"								: "est",
 
 		"weather-at"								: "la météo prévue à",
@@ -533,7 +535,7 @@
 		"weather-code-1"							: "des nuages",
 		"weather-code-2"							: "de la pluie",
 		"weather-code-3"							: "de la neige",
-		"weather-code-4"							: "des oragess",
+		"weather-code-4"							: "des orages",
 		"weather-code-5"							: "du brouillard",
 		"weather-code-6"							: "d'autres conditions",
 		"weather-code-7"							: "des conditions rares",
@@ -572,9 +574,9 @@
 		"set-volume-media-action"					: "Mettre le volume",
 		"is-weather-code-state"						: "la météo prévue",
 		"get-weather-code-state"					: "la météo prévue",
-		"weather-min"								: "la temperature minimale prevue",
-		"weather-max"								: "la temperature maximale prevue",
-		"weather-avg"								: "la temperature moyenne prevue",
+		"weather-min"								: "la température minimale prévue",
+		"weather-max"								: "la température maximale prévue",
+		"weather-avg"								: "la température moyenne prévue",
 		"getTemperature"							: "la température"
 
 

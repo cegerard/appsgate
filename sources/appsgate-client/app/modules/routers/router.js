@@ -76,7 +76,7 @@ define(function(require, exports, module) {
       $(".controlmenu").circleMenu({
         trigger: "click",
         item_diameter: 50,
-        circle_radius: 150,
+        circle_radius: 75,
         direction: 'top-right'
       });
 
