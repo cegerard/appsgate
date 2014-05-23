@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
+import java.net.URI;
+import org.fusesource.mqtt.client.FutureConnection;
 
 /**
  * Temporary MQTT client for DomiCube message receiving
@@ -91,7 +93,7 @@ public class DomiCubeMQTTAdapterImpl {
 	/**
 	 * Connection member for MQTT broker
 	 */
-	BlockingConnection connection;
+	FutureConnection connection;
 	
 	/**
 	 * subscribed topic
@@ -101,7 +103,7 @@ public class DomiCubeMQTTAdapterImpl {
 	/**
 	 * All QoS
 	 */
-	private byte[] qoses;
+	private org.fusesource.mqtt.client.Future<byte[]> qoses;
 	
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -117,7 +119,7 @@ public class DomiCubeMQTTAdapterImpl {
 			mqtt = new MQTT();
 			logger.debug("Trying to connect MQTT broker: "+host+":"+port);
 			mqtt.setHost(host, Integer.valueOf(port));
-			connection = mqtt.blockingConnection();
+			connection = mqtt.futureConnection();
 			logger.debug("connecting...");
 			connection.connect();
 			logger.debug("MQTT brocker connection success.");
@@ -270,7 +272,7 @@ public class DomiCubeMQTTAdapterImpl {
 		
 		try{
 			mqtt.setHost(host, Integer.valueOf(port));
-			connection = mqtt.blockingConnection();
+			connection = mqtt.futureConnection();
 			logger.debug("connecting...");
 			connection.connect();
 			logger.debug("MQTT brocker connection success.");
@@ -322,7 +324,7 @@ public class DomiCubeMQTTAdapterImpl {
 			Message message;
 			try {
 				while(listening) {
-					message = connection.receive();
+					message = (Message) connection.receive();
 					logger.debug("MQTT update received from "+message.getTopic());
 					byte[] payload = message.getPayload();
 					//ApAM DomiCube resolution
