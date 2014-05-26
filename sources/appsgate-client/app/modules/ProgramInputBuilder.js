@@ -41,6 +41,14 @@ define([
         initialize: function() {
         },
 
+        /**
+         * buildInputFromNode is the only 'public' method, it takes as input
+         * the json representation of a SPOK program and build the corresponding representation in HTML
+         *
+         * @param jsonNode
+         * @param currentNode
+         * @returns {string}
+         */
         buildInputFromNode: function(jsonNode, currentNode) {
             var self = this;
 

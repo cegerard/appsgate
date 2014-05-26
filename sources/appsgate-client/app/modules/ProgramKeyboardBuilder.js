@@ -14,9 +14,11 @@ define([
         },
 
 
-
-
-
+        /**
+         * buildKeyboard should be the only 'public' function
+         * it takes as input the currently selectedNode and it build the corresponding html keyBoard in HTML
+         * @param ex
+         */
         buildKeyboard: function(ex) {
             $(".expected-elements").html(this.tplExpectedInput());
 
