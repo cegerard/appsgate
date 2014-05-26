@@ -20,13 +20,13 @@
 			<start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
 			<start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
-			
+
 			<start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />
 			</start>
 
 			<start implementation="AppsGateDomiCubeServices" name="DomiCubeCompo"></start>
-			
+
 		</contentMngt>
 
 	</composite>
@@ -88,26 +88,25 @@
 		<contentMngt>
 		</contentMngt>
 	</composite>
-	
+
 	<composite name="AppsGateDomiCubeServices" singleton="true">
 		<contentMngt>
 
-			<!--  Test DomiCubeInstance  -->
-			<!--<start implementation="DomiCubeImpl" name="DomiCubeInstance">	
+			<start implementation="DomiCubeImpl" name="DomiCubeInstance">
 				<property name="activeFace" value="-1" />
 				<property name="batteryLevel" value="100" />
 				<property name="dimValue" value="90.0" />
 			</start>
-		
+
 			<start implementation="DomiCubeAdapterImpl" name="MyDomiCubeAdapter">
-				
-				<property name="host" value="192.168.1.19"/>
+
+				<property name="host" value="192.168.1.250"/>
 				<property name="port" value="1883"/>
 				<property name="faceTopic" 	  value="amiqual4home/hmi/cube/office/1/active_face"/>
 				<property name="batteryTopic" value="amiqual4home/hmi/cube/office/1/battery_level"/>
 				<property name="dimTopic" 	  value="amiqual4home/hmi/cube/office/1/dim_value"/>
-			</start>-->
-			
+			</start>
+
 		</contentMngt>
 	</composite>
 

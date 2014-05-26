@@ -109,6 +109,9 @@ define([
         $(input).find("input").replaceWith(function() {
           return '<span>' + this.value + '</span>';
         });
+        $(input).find("textarea").replaceWith(function() {
+            return '<span>' + this.value.replace(/(\n)/gm,"<br/>") + '</span>';
+        });
 
         return input;
       },
