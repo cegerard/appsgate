@@ -13,4 +13,4 @@
 @REM   limitations under the License.
 @REM
 
-java -Dlogback.configurationFile=log/logback.xml -jar %cd%/bin/felix.jar
+java -Dlogback.configurationFile=conf/logback.xml -jar %cd%/bin/felix.jar
