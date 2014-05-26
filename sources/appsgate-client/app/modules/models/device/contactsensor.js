@@ -52,7 +52,7 @@ define([
       return btn;
     },
 
-        /**
+    /**
      * return the list of available states
      */
     getStates: function() {
@@ -66,13 +66,13 @@ define([
       var v = this.getJSONState("mandatory");
       switch(state) {
         case "isOpen":
-          $(btn).append("<span>la porte est ouverte<span>");
+          $(btn).append("<span data-i18n='devices.contact.event.opened'/>");
           v.phrase = "devices.contact.state.opened";
           v.name = "isOpen";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "isClose":
-          $(btn).append("<span>la porte est fermée<span>");
+          $(btn).append("<span data-i18n='devices.contact.event.closed'/>");
           v.name = "isClose";
           v.phrase = "devices.contact.state.closed";
           $(btn).attr("json", JSON.stringify(v));

@@ -175,6 +175,7 @@ public class NodeState extends Node implements ICanBeEvaluated {
         desc = context.getEventsFromState(object.getResult().getValue(), stateName);
 
         if (desc == null) {
+            LOGGER.error("State {} not found for {}", stateName, object.getResult().getValue());
             throw new SpokExecutionException("There is no type found for the device " + objectNode.getValue());
         }
         // everything is OK

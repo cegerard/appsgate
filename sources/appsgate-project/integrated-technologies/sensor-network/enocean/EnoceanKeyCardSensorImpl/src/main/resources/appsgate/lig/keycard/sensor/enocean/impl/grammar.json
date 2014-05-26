@@ -1,8 +1,39 @@
 {
-    "friendlyName": "illumination sensor",
-    "typename":"illumination",
+    "friendlyName": "keycard sensor",
+    "typename": "keycardSensor",
     "properties": [
     ],
     "states": [
+        {
+            "name": "inserted",
+            "stateName": "getCardState",
+            "stateValue": "true",
+            "endEvent": {
+                "type": "event",
+                "eventName": "inserted",
+                "eventValue": "false"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "inserted",
+                "eventValue": "true"
+            }
+        },
+        {
+            "name": "empty",
+            "stateName": "getCardState",
+            "stateValue": "false",
+            "endEvent": {
+                "type": "event",
+                "eventName": "inserted",
+                "eventValue": "true"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "inserted",
+                "eventValue": "false"
+            }
+
+        }
     ]
 }

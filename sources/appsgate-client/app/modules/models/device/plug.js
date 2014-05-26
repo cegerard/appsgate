@@ -46,6 +46,39 @@ define([
       }
       return btn;
     },
+    /**
+     * Return the list of states
+     */
+    getStates: function() {
+      return ["isOn", "isOff"];
+    },
+    /**
+     * return the keyboard code for a given state
+     */
+    getKeyboardForState: function(state){
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var v = this.getJSONState("mandatory");
+      switch(state) {
+        case "isOn":
+          $(btn).append("<span data-i18n='keyboard.turned-on-plug-state'></span>");
+          v.phrase = "language.turned-on-plug-state";
+          v.name = "isOn";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "isOff":
+          $(btn).append("<span data-i18n='keyboard.turned-off-plug-state'></span>");
+          v.name = "isOff";
+          v.phrase = "language.turned-off-plug-state";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected state found for Contact Sensor: " + state);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
+
     
 
     /**

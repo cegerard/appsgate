@@ -445,6 +445,8 @@
       "turned-off-plug-event":"is off",
       "is-turned-on-plug-status":"is on",
       "is-turned-off-plug-status":"is off",
+      "turned-on-plug-state":"on",
+      "turned-off-plug-state":"off",
       "turn-on-plug-action":"Turn on",
       "turn-off-plug-action":"Turn off",
       "turned-on-actuator-event":"is on",
@@ -529,6 +531,9 @@
       "is-turned-off-lamp-state":"light is off",
       "is-turned-on-lamp-event":"light is on",
       "is-turned-off-event-lamp":"light is turned off",
+      "turned-on-plug-state" : "plug is on",
+      "turned-off-plug-state":"plug is off",
+
       "turn-on-lamp-action":"Turn on light",
       "turn-off-lamp-Action":"Turn off light",
       "turn-on-plug-action":"Turn on",

@@ -1,0 +1,100 @@
+{
+    "friendlyName": "DomiCube",
+    "typename": "domicube",
+    "properties": [
+    ],
+    "states": [
+        {
+            "name": "Music",
+            "stateName": "getCurrentFaceNumber",
+            "stateValue": "3",
+            "endEvent": {
+                "type": "event",
+                "eventName": "faceLeaved",
+                "eventValue": "3"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "faceChanged",
+                "eventValue": "3"
+            }
+        },
+        {
+            "name": "Meal",
+            "stateName": "getCurrentFaceNumber",
+            "stateValue": "6",
+            "endEvent": {
+                "type": "event",
+                "eventName": "faceLeaved",
+                "eventValue": "6"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "faceChanged",
+                "eventValue": "6"
+            }
+        },
+        {
+            "name": "Question",
+            "stateName": "getCurrentFaceNumber",
+            "stateValue": "4",
+            "endEvent": {
+                "type": "event",
+                "eventName": "faceLeaved",
+                "eventValue": "4"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "faceChanged",
+                "eventValue": "4"
+            }
+        },
+        {
+            "name": "Lan",
+            "stateName": "getCurrentFaceNumber",
+            "stateValue": "1",
+            "endEvent": {
+                "type": "event",
+                "eventName": "faceLeaved",
+                "eventValue": "1"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "faceChanged",
+                "eventValue": "1"
+            }
+        },
+        {
+            "name": "Night",
+            "stateName": "getCurrentFaceNumber",
+            "stateValue": "5",
+            "endEvent": {
+                "type": "event",
+                "eventName": "faceLeaved",
+                "eventValue": "5"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "faceChanged",
+                "eventValue": "5"
+            }
+        },
+        {
+            "name": "inactivate",
+            "stateName": "getCurrentFaceNumber",
+            "stateValue": "2",
+            "endEvent": {
+                "type": "event",
+                "eventName": "faceLeaved",
+                "eventValue": "2"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "faceChanged",
+                "eventValue": "2"
+            }
+        }
+        
+        
+    ]
+}

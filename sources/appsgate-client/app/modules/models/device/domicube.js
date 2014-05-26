@@ -85,6 +85,62 @@ define([
       }
       return btn;
     },
+    /**
+     * return the list of available states
+     */
+    getStates: function() {
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
+    },
+    /**
+     * return the keyboard code for a given state
+    */
+    getKeyboardForState: function(state){
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var v = this.getJSONState("mandatory");
+      switch(state) {
+        case "Music":
+          $(btn).append("<img src='/app/img/music.png' width='36px'>");
+          v.icon = "/app/img/music.png";
+          v.name = "Music";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "Meal":
+          $(btn).append("<img src='/app/img/meal.png' width='36px'>");
+          v.icon = "/app/img/meal.png";
+          v.name = "Meal";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "Question":
+          $(btn).append("<img src='/app/img/question.svg' width='36px'>");
+          v.icon = "/app/img/question.svg";
+          v.name = "Question";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "Lan":
+          $(btn).append("<img src='/app/img/lan.svg' width='36px'>");
+          v.icon = "/app/img/lan.svg";
+          v.name = "Lan";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "Night":
+          $(btn).append("<img src='/app/img/night.png' width='36px'>");
+          v.icon = "/app/img/night.png";
+          v.name = "Night";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "inactivate":
+          $(btn).append("<span data-i18n='language.domicube-inactivated'></span>");
+          v.name = "inactivate";
+          v.phrase = "language.domicube-inactivated";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected state found for Domicube: " + state);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
 
     /**
      * @returns the action template specific for lamps

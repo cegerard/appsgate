@@ -1,8 +1,47 @@
 {
     "friendlyName": "Enocean plug",
-    "typename":"enoceanPlug",
+    "typename": "enoceanPlug",
     "properties": [
     ],
     "states": [
+        {
+            "name": "isOn",
+            "stateName": "getRelayState",
+            "stateValue": "true",
+            "setter": {
+                "type": "action",
+                "methodName": "on"
+            },
+            "endEvent": {
+                "type": "event",
+                "eventName": "plugState",
+                "eventValue": "false"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "plugState",
+                "eventValue": "true"
+            }
+        },
+        {
+            "name": "isOff",
+            "stateName": "getRelayState",
+            "stateValue": "false",
+            "setter": {
+                "type": "action",
+                "methodName": "off"
+            },
+            "endEvent": {
+                "type": "event",
+                "eventName": "plugState",
+                "eventValue": "true"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "plugState",
+                "eventValue": "false"
+            }
+
+        }
     ]
 }

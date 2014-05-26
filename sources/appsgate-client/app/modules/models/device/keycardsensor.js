@@ -79,6 +79,38 @@ define([
       }
       return btn;
     },
+    /**
+     * return the list of available states
+     */
+    getStates: function() {
+      return ["inserted","empty"];
+    },
+    /**
+     * return the keyboard code for a given state
+    */
+    getKeyboardForState: function(state){
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var v = this.getJSONState("mandatory");
+      switch(state) {
+        case "inserted":
+          $(btn).append("<span data-i18n='language.card-inserted-keycard-reader-status'></span>");
+          v.phrase = "language.card-inserted-keycard-reader-status";
+          v.name = "inserted";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "empty":
+          $(btn).append("<span data-i18n='language.no-card-inserted-keycard-reader-status'/>");
+          v.name = "empty";
+          v.phrase = "language.no-card-inserted-keycard-reader-status";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected state found for keycard sensor: " + state);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
 
   });
   return KeyCardSensor;
