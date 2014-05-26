@@ -1,14 +1,40 @@
 <div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
-    <% if (typeof node.phrase !== 'undefined') { %>
-    <span data-i18n='<%=node.phrase%>'></span>
-    <% } else { %>
-    Unknown
-    <% } %>
-
     <% if (node.methodName == "sendMailSimple" ) { %>
-        <span data-i18n='language.mail-dest'/> <input type="email" target-id="<%= node.iid %>" value="<%= node.args[0].value %>" class="arg-input" target-index="0"/>
-        <span data-i18n='language.mail-subject'/> <input type="email" target-id="<%= node.iid %>" value="<%= node.args[1].value %>" class="arg-input" target-index="1"/><br>
-        <span data-i18n='language.mail-body'/>: <textarea target-id="<%= node.iid %>" class="arg-input" target-index="2" cols="60" rows="3"><%= node.args[2].value %></textarea>
+        <table cellspacing="20" style="margin-left: 20px;" border="0">
+            <tr>
+                <td align="left" colspan="2">
+                    <% if (typeof node.phrase !== 'undefined') { %>
+                    <span data-i18n='<%=node.phrase%>'></span>
+                    <% } else { %>
+                    Unknown
+                    <% } %>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <span data-i18n='language.mail-dest'/>:&nbsp;
+                </td>
+                <td align="left">
+                    <input type="email" target-id="<%= node.iid %>" value="<%= node.args[0].value %>" size="40" class="arg-input" target-index="0"/>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <span data-i18n='language.mail-subject'/>:&nbsp;
+                </td>
+                <td align="left">
+                    <input type="email" target-id="<%= node.iid %>" value="<%= node.args[1].value %>" size="40" class="arg-input" target-index="1"/>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td align="right">
+                    <span data-i18n='language.mail-body'/>:&nbsp;
+                </td>
+                <td align="left">
+                    <textarea target-id="<%= node.iid %>" class="arg-input" target-index="2" cols="40" rows="3"><%= node.args[2].value %></textarea>
+                </td>
+            </tr>
+        </table>
     <% } %>
 
 </div>
