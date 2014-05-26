@@ -8,28 +8,12 @@
 		
 		<definition name="user" type="string" field="USER" injected="both"/>
 		<definition name="password" type="string" field="PASSWORD" injected="both"/>
-		<definition name="auto-refresh" type="int" field="refreshRate" injected="internal" method="autoRefreshValueChanged"/>
+		<definition name="auto-refresh" type="int" field="refreshRate" injected="both" method="autoRefreshValueChanged"/>
 		
 		<definition name="deviceId" 	type="string" default="666666666" field="serviceId"/>
 		<definition name="userType" 	type="string" default="102"	field="userType"/>
 		<definition name="status" 		type="string" default="2" 	field="status"/>
 		
 	</implementation>
-	
-<!-- 	<apam-instance name="GmailImpl-0" implementation="GmailImpl"> -->
-<!--        <property name="user" value="smarthome.inria@gmail.com"/> -->
-<!--        <property name="password" value="smarthome2012"/> -->
-<!--        <property name="auto-refresh" value="120000"/> -->
-<!--    </apam-instance> -->
-   
-<!--    	<implementation name="MailReceivedConsoleNotification" classname="appsgate.lig.mail.gmail.main.MailReceivedConsoleNotification"> -->
-<!--    	    <dependency field="apam"/> -->
-<!-- 		<callback onInit="start" onRemove="stop" /> -->
-<!-- 		<dependency field="mailService" specification="mail-service-specification"> -->
-<!-- 		    	<message push="messageReceived" /> -->
-<!-- 		</dependency> -->
-<!-- 	</implementation> -->
-   	
-<!--    <apam-instance implementation="MailReceivedConsoleNotification" name="MailReceivedConsoleNotification-0"/> -->
    
 </apam>
