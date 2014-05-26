@@ -20,11 +20,11 @@
       "size-height":"Height"
    },
    "navbar":{
-      "home":"At home",
+      "home":"Home",
       "edit":"Edit",
-      "stop-edit":"End edition",
+      "stop-edit":"Finish modification",
       "users":"Users",
-      "places":"Parts",
+      "places":"Place",
       "devices":"Features",
       "services":"Services",
       "programs":"Programs",
@@ -52,7 +52,7 @@
       "title":"Preferences",
       "addr-server":"Server Address",
       "language-label":"Language",
-      "language-en":"French",
+      "language-fr":"French",
       "language-en":"English",
       "server-unreachable":"Server unavailable ...",
       "connection":"Connecting ..."
@@ -66,18 +66,18 @@
    "places-menu":{
       "add-button":"Add item",
       "place-no-name":"Item unnamed",
-      "unlocated-devices":"unlocated Devices"
+      "unlocated-devices":"Location not assigned"
    },
    "modal-add-place":{
       "title":"Add item",
-      "place-name":"Part Name",
-      "place-name-empty":"The name of the piece must be filled.",
+      "place-name":"Place Name",
+      "place-name-empty":"The name of the place must be filled.",
       "place-already-existing":"Name of the existing room."
    },
    "modal-edit-place":{
       "title":"Rename item",
       "place-name":"Part Name",
-      "place-name-empty":"The name of the piece must be filled.",
+      "place-name-empty":"The name of the place must be filled.",
       "place-already-existing":"Name of the existing room."
    },
    "places-details":{
@@ -98,7 +98,7 @@
       "name-label":"Name",
       "name-placeholder":"Device Name",
       "name-already-existing":"Name of existing device",
-      "place-label":"Piece",
+      "place-label":"Place",
       "time-label":"Time",
       "time-speed-label":"Speed"
    },
@@ -122,7 +122,7 @@
    },
    "modal-edit-program":{
       "title":"Rename program",
-      "program-name":"Name of program",
+      "program-name":"Program name",
       "program-name-empty":"The program name must be entered.",
       "program-already-existing":"Name already existing program."
    },
@@ -172,8 +172,8 @@
             "turnedOff":"Off"
          },
          "action":{
-            "turnOn":"Switch",
-            "turnOff":"Shut down"
+            "turnOn":"Turn on",
+            "turnOff":"Turn off"
          }
       },
       "contact":{
@@ -187,7 +187,7 @@
          },
          "event":{
             "opened":"is opened",
-            "closed":"on farm"
+            "closed":"is closed"
          },
          "state":{
             "opened":"open",
@@ -197,11 +197,11 @@
       "keycard-reader":{
          "name":{
             "singular":"card reader",
-            "plural":"plotters"
+            "plural":"card readers"
          },
          "value":{
             "inserted":"card inserted",
-            "not-inserted":"No Map"
+            "not-inserted":"no card inserted"
          }
       },
       "movement":{
@@ -212,30 +212,30 @@
       },
       "plug":{
          "name":{
-            "singular":"pull plug",
-            "plural":"Taking Nesting"
+            "singular":"Power socket",
+            "plural":"Power sockets"
          },
          "status":{
-            "turnedOn":"Lit",
+            "turnedOn":"On",
             "turnedOff":"Off"
          },
          "action":{
-            "turnOn":"Switch",
-            "turnOff":"Shut down"
+            "turnOn":"Turn on",
+            "turnOff":"Turn off"
          }
       },
       "lamp":{
          "name":{
-            "singular":"Bulb Philips Hue",
-            "plural":"Bulbs Philips Hue"
+            "singular":"Philips Hue lamp",
+            "plural":"Philips Hue lamps"
          },
          "status":{
-            "turnedOn":"Lit",
+            "turnedOn":"On",
             "turnedOff":"Off"
          },
          "action":{
-            "turnOn":"Switch",
-            "turnOff":"Shut down",
+            "turnOn":"Turn on",
+            "turnOff":"Turn off",
             "blink":"Blink"
          }
       },
@@ -252,7 +252,7 @@
             "plural":"Media Players"
          },
          "status":{
-            "playing":"Now Playing",
+            "playing":"Playing",
             "stopped":"Stopped",
             "selected":"Please select a media"
          },
@@ -318,7 +318,7 @@
       },
       "mail":{
          "name":{
-            "singular":"mail server",
+            "singular":"Mail server",
             "plural":"Email Servers"
          }
       },
@@ -356,7 +356,7 @@
    "programs":{
       "program-no-name":"unnamed Programme",
       "edit-program":"Edit",
-      "end-edit-program":"End edit",
+      "end-edit-program":"Finish modification",
       "delete-program":"Delete",
       "state":{
          "deployed":"Deployed",
@@ -365,8 +365,8 @@
          "failed":"Error"
       },
       "action":{
-         "start":"Enable",
-         "stop":"Disable"
+         "start":"Start",
+         "stop":"Stop"
       }
    },
    "editor":{
@@ -390,7 +390,7 @@
       "if-not":"If ... is not true ...",
       "else-keyword":"otherwise",
       "end-if-block":".",
-      "then-keyword":"Then,",
+      "then-keyword":"Then",
       "while-keyword":"Until",
       "while-keep":"While ... keep ...",
       "keep-state":"state",
@@ -429,38 +429,38 @@
       "pushed-telec-event-left":"left of is pressed",
       "pushed-telec-event-right":"right of is pressed",
       "opened-contact-event":"is opened",
-      "closed-contact-event":"on farm",
+      "closed-contact-event":"is closed",
       "contact-sensor-keyword":"sensor contact",
-      "contact-assembled-event":"s assembles",
+      "contact-assembled-event":"together",
       "contact-disassembled-event":"is disassembles",
-      "is-closed-contact-status":"farm",
+      "is-closed-contact-status":"close",
       "is-opened-contact-status":"open",
       "is-assembled-contact-status":"together",
       "is-disassembled-contact-status":"disassembles",
       "inserted keycard-reader-event":"is inserted in a card",
       "removed-keycard-reader-event":"card is removed",
       "card-inserted-keycard-reader-status":"a card is inserted in",
-      "no-card-inserted-keycard-reader-status":"no card is inserted in n",
-      "turned-on-plug-event":"is switched",
-      "turned-off-plug-event":"one off",
-      "is-turned-on-plug-status":"lights",
+      "no-card-inserted-keycard-reader-status":"no card is inserted in ",
+      "turned-on-plug-event":"is on",
+      "turned-off-plug-event":"is off",
+      "is-turned-on-plug-status":"is on",
       "is-turned-off-plug-status":"is off",
-      "turn-on-plug-action":"Switch",
-      "turn-off-plug-action":"Shut down",
-      "turned-on-actuator-event":"is switched",
-      "turned-off-actuator-event":"we put out",
+      "turn-on-plug-action":"Turn on",
+      "turn-off-plug-action":"Turn off",
+      "turned-on-actuator-event":"is on",
+      "turned-off-actuator-event":"is off",
       "is-turned-on-actuator-status":"lights",
       "is-turned-off-actuator-status":"is off",
-      "turn-on-actuator-action":"Switch",
-      "turn-off-actuator action":"Shut down",
+      "turn-on-actuator-action":"Turn on",
+      "turn-off-actuator action":"Turn off",
       "wait":"wait",
       "second":"seconds",
-      "turned-on-lamp-event":"is switched",
-      "turned-off-lamp-event":"on off",
-      "is-turned-on-lamp-status":"lights",
+      "turned-on-lamp-event":"is on",
+      "turned-off-lamp-event":"is off",
+      "is-turned-on-lamp-status":"is on",
       "is-turned-off-lamp-status":"is off",
-      "turn-on-lamp-Action":"Switch",
-      "turn-off-lamp-action":"Shut down",
+      "turn-on-lamp-Action":"Turn on",
+      "turn-off-lamp-action":"Turn off",
       "blink-lamp-Action":"Blink",
       "change-color-lamp-Action":"Change color",
       "complement-change-color-lamp-Action":"en",
@@ -481,17 +481,17 @@
       "set-volume-media action":"Set the volume",
       "complement-media action":"on",
       "alarm-music":"sweet music",
-      "music":"uplifting music",
-      "ring-bell-mail arrived-":"ringtone new mail arrives",
+      "music":"music",
+      "ring-bell-mail-arrived":"new mail arrived sound",
       "radio":"radio",
       "movie":"film",
       "selectedMusic":"music",
       "img-table":"table image",
-      "received-email-event":"a mail arrives",
+      "received-email-event":"a mail arrived",
       "send-mail action":"Send an email",
       "mail-dest":"to",
       "mail-subject":"whose subject is",
-      "mail-body":"object",
+      "mail-body":"Content",
       "well-arrived-subject":"Just arrived!",
       "mandatory-keyword":"Required",
       "nothing-keyword":"Nothing",
@@ -525,22 +525,22 @@
    "keyboard":{
       "true":"True",
       "false":"False",
-      "is-turned-on-lamp-state":"bulb lights",
-      "is-turned-off-lamp-state":"The bulb is off",
-      "is-turned-on-lamp-event":"we light bulb",
-      "is-turned-off-event-lamp":"light bulb is turned off",
-      "turn-on-lamp-action":"Turn the bulb",
-      "turn-off-lamp-Action":"Turn off the light bulb",
-      "turn-on-plug-action":"Turn taking",
-      "turn-off-plug-action":"Shut decision",
+      "is-turned-on-lamp-state":"lights",
+      "is-turned-off-lamp-state":"light is off",
+      "is-turned-on-lamp-event":"light is on",
+      "is-turned-off-event-lamp":"light is turned off",
+      "turn-on-lamp-action":"Turn on light",
+      "turn-off-lamp-Action":"Turn off light",
+      "turn-on-plug-action":"Turn on",
+      "turn-off-plug-action":"Turn off",
       "blink-lamp-Action":"Blink",
       "when-keyword":"When",
       "if-keyword":"If",
       "if-and":"if ... and ...",
       "if-or":"If ... or ...",
       "if-equals":"... says ...",
-      "if-sup":"... is greater than a ...",
-      "if-inf":"... is less than a ...",
+      "if-sup":"... is greater than ...",
+      "if-inf":"... is less than ...",
       "if-dif":"... is different from ...",
       "if-not":"If ... is not true ...",
       "light-brightness":"the intensity of the bulb",
