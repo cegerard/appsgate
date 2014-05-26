@@ -171,9 +171,9 @@ define([
           }
           else {
             $("#media-browser-modal .media-button").removeClass("disabled");
-            selectedMedia.text(event.currentTarget.parentNode.attributes.title.textContent);
+            /*selectedMedia.text(event.currentTarget.parentNode.attributes.title.textContent);
             selectedMedia.attr("title", event.currentTarget.parentNode.attributes.title.textContent);
-            selectedMedia.attr("url", event.currentTarget.parentNode.attributes.res.textContent);
+            selectedMedia.attr("url", event.currentTarget.parentNode.attributes.res.textContent);*/
             self.Mediator.setNodeAttribute(selectedMedia.attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.textContent}]);
             self.Mediator.setNodeAttribute(selectedMedia.attr("target-iid"), "fileName", event.currentTarget.parentNode.attributes.title.textContent);
           }
@@ -212,6 +212,7 @@ define([
       },
       onValidMediaButton: function() {
         $("#media-browser-modal").modal("hide");
+        this.refreshDisplay();
       },
       onChangeMediaVolume: function(e) {
         e.stopPropagation();

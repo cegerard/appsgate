@@ -46,6 +46,12 @@ define([
                 args: [],
                 callId: "listPrograms"
             });
+        },
+        stopAllPrograms:function() {
+          _.each(programs.models, function(program) {
+            program.set("runningState", "DEPLOYED");
+            program.remoteCall("stopProgram", [{type: "String", value: program.get("id")}]);
+          });
         }
     });
 

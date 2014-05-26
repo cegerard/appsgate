@@ -244,6 +244,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 		try {
 			Transport.send(message);
 		} catch (MessagingException e) {
+            e.printStackTrace();
 			return false;
 		}
 
@@ -389,12 +390,9 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 		return lastFetchDateTime;
 	}
 	
-	public void autoRefreshValueChanged(String newValue) {
-		
+	public void autoRefreshValueChanged(Object newValue) {
 		refreshtask.cancel();
-		
-		System.out.println("Auto-refresh changed to:"+refreshRate);
-		
+        logger.log(Level.FINE,"Auto-refresh changed to:"+refreshRate);
 		configureAutoRefreshTask();
 		
 	}
