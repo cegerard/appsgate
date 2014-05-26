@@ -25,10 +25,11 @@
 			<button id="delete-popover" class="btn btn-default" rel="popover">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="programs.delete-program"></span>
 			</button>
-                        <a href="#programs/editor/<%= program.get('id') %>" class="btn btn-default">
-                            <span data-i18n="programs.edit-program"></span>
-                        </a>
-                </div>
+			<a href="#programs/editor/<%= program.get('id') %>" class="btn btn-default">
+				<i class="glyphicon glyphicon-edit"></i>
+        <span data-i18n="programs.edit-program"></span>
+    	</a>
+  	</div>
 	</div>
 
 	<div class="alert alert-success hide" data-i18n="editor.valid-program-alert"></div>
