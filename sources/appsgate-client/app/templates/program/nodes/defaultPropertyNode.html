@@ -6,7 +6,7 @@
         <% } %>
 
     <% if (typeof node.target !== 'undefined') { %>
-    <%=engine.buildInputFromNode(node.target) %>
+    <%=engine.buildInputFromNode(node.target, currentNode) %>
     <% } %>
 
 </div>

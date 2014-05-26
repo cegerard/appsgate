@@ -5,9 +5,9 @@
 </button>
 -->
 <% if (typeof node.state.object !== 'undefined') { %>
-<%=engine.buildInputFromNode(node.state.object) %>
+<%=engine.buildInputFromNode(node.state.object, currentNode) %>
 <% } else if (typeof node.state.target !== 'undefined') { %>
-<%=engine.buildInputFromNode(node.state.target) %>
+<%=engine.buildInputFromNode(node.state.targe, currentNodet) %>
 <% } %>
         <% if (typeof node.state.phrase !== 'undefined') { %>
 

@@ -23,12 +23,14 @@ define([
         // each device listens to the event whose id corresponds to its own id. This ensures to
         // receive only relevant events
         dispatcher.on(this.get("id"), function(updatedVariableJSON) {
-          if(typeof updatedVariableJSON.varName === "undefined" && updatedVariableJSON.value.indexOf("DIDL-Lite") !== -1){
-            dispatcher.trigger("mediaBrowserResults", updatedVariableJSON.value);
-          }
-          else{
-            self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
-          }
+            if(typeof updatedVariableJSON.value !== "undefined") {
+                if (typeof updatedVariableJSON.varName === "undefined" && updatedVariableJSON.value.indexOf("DIDL-Lite") !== -1) {
+                    dispatcher.trigger("mediaBrowserResults", updatedVariableJSON.value);
+                }
+                else {
+                    self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
+                }
+            }
         });
       },
       /**

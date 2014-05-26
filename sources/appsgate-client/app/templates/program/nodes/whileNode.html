@@ -4,14 +4,14 @@
             <button class="btn btn-prog btn-primary btn-then" id="<%= node.iid %>">
                 <span data-i18n="language.while-keyword"></span>
             </button>
-            <%=engine.buildInputFromNode(node.state)%>
+            <%=engine.buildInputFromNode(node.state, currentNode)%>
         </div>
         <div class="row indent-level-1">
             <div class="btn btn-prog btn-primary">
                 <span name="keep" data-i18n="language.keep-keyword"></span>
             </div>
 
-            <%=engine.buildInputFromNode(node.rules) %>
+            <%=engine.buildInputFromNode(node.rules, currentNode) %>
         </div>
     </div>
     <div class="secondary-block-node">
@@ -26,7 +26,7 @@
             <div class="btn btn-prog btn-primary">
                 <span data-i18n="language.then-keyword"></span>
             </div>
-            <%=engine.buildInputFromNode(node.rulesThen) %>
+            <%=engine.buildInputFromNode(node.rulesThen, currentNode) %>
         </div>
 
         <%}%>
