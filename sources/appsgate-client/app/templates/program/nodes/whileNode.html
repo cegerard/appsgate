@@ -14,21 +14,20 @@
             <%=engine.buildInputFromNode(node.rules, currentNode) %>
         </div>
     </div>
-    <div class="secondary-block-node">
-        <% if ( node.rulesThen != undefined) { %>
-        <div class="row">
-            <button class="btn btn-prog btn-primary btn-then">
-                <span data-i18n="language.and-when"></span>
-            </button>
-            <span data-i18n="language.it-is-not-the-case"></span>
-        </div>
-        <div class="row indent-level-1">
+    <% if ( node.rulesThen != undefined) { %>
+    <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node"<% } %>>
+      <div class="row">
+        <button class="btn btn-prog btn-primary btn-then">
+          <span data-i18n="language.and-when"></span>
+        </button>
+        <span data-i18n="language.it-is-not-the-case"></span>
+      </div>
+      <div class="row indent-level-1">
             <div class="btn btn-prog btn-primary">
                 <span data-i18n="language.then-keyword"></span>
             </div>
             <%=engine.buildInputFromNode(node.rulesThen, currentNode) %>
-        </div>
-
-        <%}%>
+      </div>
     </div>
+    <%}%>
 </div>
