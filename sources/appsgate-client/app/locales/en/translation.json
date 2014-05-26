@@ -1,362 +1,562 @@
 {
-	"app" : {
-		"name"	: "AppsGate"
-	},
-	"form" : {
-		"cancel-button"	: "Cancel",
-		"valid-button"	: "Valid",
-		"close-button"	: "Close",
-		"rename-button"	: "Rename",
-		"delete-button"	: "Delete",
-		"edit-button"	: "Edit",
-		"save-button"	: "Save",
-		"saving-button" : "Saving...",
-		"browse-button"	: "Browse"
-	},
-	"navbar" : {
-		"places"			: "Places",
-		"devices"			: "Devices",
-		"programs"			: "Programs",
-		"button-settings"	: "Preferences"
-	},
-	"modal-lost-connection" : {
-		"title"						: "Connection error",
-		"interrupted-connection"	: "The connection has been interrupted.",
-		"connection"				: "Connection...",
-		"change-server-button"		: "Change server",
-		"reconnection-button"		: "Reconnect"
-	},
-	"modal-settings" : {
-		"title"					: "Preferences",
-		"addr-server"			: "Address server",
-		"language-label"		: "Language",
-		"language-fr"			: "French",
-		"language-en"			: "English",
-		"server-unreachable"	: "Server unavailable",
-		"connection"			: "Connection"
-	},
-	"places-menu" : {
-		"add-button"		: "Add place",
-		"place-no-name"		: "Place with no name",
-		"unlocated-devices"	: "Unlocated devices"
-	},
-	"modal-add-place" : {
-		"title"						: "Add place",
-		"place-name"				: "Place's name",
-		"place-name-empty"			: "The place must have a name.",
-		"place-already-existing"	: "Place name already existing."
-	},
-	"modal-edit-place"	: {
-		"title"						: "Rename place",
-		"place-name"				: "Place's name",
-		"place-name-empty"			: "The place's name cannot be empty.",
-		"place-already-existing"	: "Place name already existing."
-	},
-	"places-details" : {
-		"place-no-name"	: "Place with no name",
-		"undefined"		: "Not defined",
-		"header"		: {
-			"device-number-title"	: "Number of devices",
-			"temperature-label"		: "Temperature",
-			"illumination-label"	: "Illumination",
-			"consumption-label"		: "Consumption"
-		},
-		"body"			: {
-			"device-no-name"		: "Device with no name",
-			"no-device-in-place"	: "No device is located in this place."
-		}
-	},
-	"modal-edit-device" : {
-		"name-label"			: "Name",
-		"name-placeholder"		: "Device's name",
-		"name-already-existing"	: "Device's already existing",
-		"place-label"			: "Place",
-		"time-label"			: "Time",
-		"time-speed-label"		: "Speed"
-	},
-	"programs-menu": {
-		"add-button"		: "Add program"
-	},
-	"modal-add-program"	: {
-		"title"					: "Add program",
-		"name-label"			: "Name",
-		"name-placeholder"		: "Program's name",
-		"name-empty"			: "The program must have a name.",
-		"name-already-existing"	: "The program's name is already existing",
-        "load-from-file"        : "Upload from a file",
-		"unable-to-parse"		: "Can't read that file"
-	},
-	"modal-edit-program"	: {
-		"title"				: "Rename program",
-		"program-name"			: "Program's name",
-		"program-name-empty"		: "The program must have a name.",
-		"program-already-existing"	: "The program's name is already existing"
-	},
-	"devices" : {
-		"device-no-name"	: "Device with no name",
-		"device-unlocated"	: "Unlocated",
-		"type-label"		: "Type",
-		"place-label"		: "Place",
-		"state-label"		: "State",
-		"value-label"		: "Value",
-		"consumption-label"	: "Consumption",
-		"status-label"		: "Status",
-		"status"			: {
-			"connected"		: "Connected",
-			"waiting"		: "Waiting",
-			"disconnected"	: "Disconnected"
-		},
-		"temperature"		: {
-			"name"	: {
-				"singular"	: "Temperature sensor",
-				"plural"	: "Temperature sensors"
-			}
-		},
-		"illumination"		: {
-			"name"	: {
-				"singular"	: "Illumination sensor",
-				"plural"	: "Illumination sensors"
-			}
-		},
-		"switch"			: {
-			"name"	: {
-				"singular"	: "Switch",
-				"plural"	: "Switches"
-			},
-			"value"	: {
-				"opened"	: "Opened",
-				"closed"	: "Closed"
-			}
-		},
-		"actuator"			: {
-			"name"	: {
-				"singular"	: "Actuator",
-				"plural"	: "Actuators"
-			},
-			"status"	: {
-				"turnedOn"	: "On",
-				"turnedOff"	: "Off"
-			},
-			"action"	: {
-				"turnOn"	: "Turn on",
-				"turnOff"	: "Turn off"
-			}
-		},
-		"contact"			: {
-			"name"	: {
-				"singular"	: "Contact sensor",
-				"plural"	: "Contact sensors"
-			},
-			"value"	: {
-				"opened"	: "Opened",
-				"closed"	: "Closed"
-			}
-		},
-		"keycard-reader"	: {
-			"name"	: {
-				"singular"	: "Key-card reader",
-				"plural"	: "Key-card readers"
-			},
-			"value"	: {
-				"inserted"		: "Card inserted",
-				"not-inserted"	: "No card"
-			}
-		},
-		"movement"			: {
-			"name"	: {
-				"singular"	: "Movement sensor",
-				"plural"	: "Movement sensors"
-			}
-		},
-		"plug"				: {
-			"name"	: {
-				"singular"	: "Smart plug",
-				"plural"	: "Smart plugs"
-			},
-			"status"	: {
-				"turnedOn"	: "Turned on",
-				"turnedOff"	: "Turned off"
-			},
-			"action"	: {
-				"turnOn"	: "Turn on",
-				"turnOff"	: "Turn off"
-			}
-		},
-		"lamp"				: {
-			"name"	: {
-				"singular"	: "Philips Hue Lamp",
-				"plural"	: "Philips Hue Lamp"
-			},
-			"status"	: {
-				"turnedOn"	: "Turned on",
-				"turnedOff"	: "Turned off"
-			},
-			"action"	: {
-				"turnOn"	: "Turn on",
-				"turnOff"	: "Turn off",
-                "blink"     : "Blink"
-			}
-		},
-		"clock"				: {
-			"name"	: {
-				"singular"	: "System clock",
-				"no-name"	: "Unnamed system clock"
-			},
-			"time-speed-label"	: "Time speed"
-		},
-		"mediaplayer"		: {
-			"name"		: {
-				"singular"	: "Media player",
-				"plural"	: "Media players"
-			},
-			"status"	: {
-				"playing"	: "Playing",
-				"stopped"	: "Stopped",
-				"selected"	: "Please select a media"
-			},
-			"action"	: {
-				"play"		: "Play",
-				"resume"	: "Resume",
-				"pause"		: "Pause",
-				"stop"		: "Stop",
-				"volume"	: "Volume",
-				"browse"	: "Browse"
-			}
-		}
-	},
-	"programs" : {
-		"program-no-name"	: "Unammed program",
-		"state"	: {
-			"deployed"	: "Déployed",
-			"started"	: "Started",
-			"stopped"	: "Stopped",
-			"failed"	: "Failed"
-		},
-		"action" : {
-			"start"	: "Start",
-			"stop"	: "Stop"
-		}
-	},
-	"editor" : {
-		"title"					: "Program editor",
-		"no-program-alert"		: "No program",
-		"valid-program-alert"	: "Program is valid",
-		"invalid-program-alert"	: "Program is not valid"
-	},
-	"language" : {
-		"written-by"								: "written by",
-		"when-keyword"								: "when",
-		"end-when-block"							: ".",
-		"if-keyword"								: "if",
-		"else-keyword"								: "else",
-		"end-if-block"								: ".",
-		"then-keyword"								: "then",
-		"activate-program-action"					: "start the program",
-		"disactivate-program-action"				: "stop the program",
-		"is-activated-program-event"				: "is activated",
-		"is-disactivated-program-event"				: "is disactivated",
-		"is-running-program-status"					: "is started",
-		"is-stopped-program-status"					: "is stopped",
-		"op-event"									: "and",
-		"op-event-bool"								: "and",
-		"op-and-rule"								: "and",
-		"op-then-rule"								: "then",
-		"op-or-bool"								: "or",
-		"op-and-bool"								: "and",
-		"space"										: "space",
-		"true"										: "true",
-		"false"										: "false",
-		
-		"op-more-than"								: "more than",
-		"op-less-than"								: "less than",
-		
-		"change-temperature"						: "changes",
-		"indicate-temperature"						: "indicates",
-		
-		"change-illumination"						: "changes",
-		"indicate-illumination"						: "indicates",
-		
-		"pushed-switch-event"						: "we press on",
-		"released-switch-event"						: "we release",
-		
-		"pushed-telec-event-up"						: "on appuie sur le bouton haut de",
-		"pushed-telec-event-bottom"					: "on appuie sur le bouton bas de",
-		"pushed-telec-event-left"					: "on appuie a gauche de",
-		"pushed-telec-event-right"					: "on appuie a droite de",
-		
-		"opened-contact-event"						: "we open",
-		"closed-contact-event"						: "we close",
-		"contact-sensor-keyword"					: "the contact sensor of",
-		"contact-assembled-event"					: "closes",
-		"contact-disassembled-event"				: "opens",
-		"is-closed-contact-status"					: "is closed",
-		"is-opened-contact-status"					: "is opened",
-		"is-assembled-contact-status"				: "is assembled",
-		"is-disassembled-contact-status"			: "is disassembled",
-		
-		"inserted-keycard-reader-event"				: "we insert a card in",
-		"removed-keycard-reader-event"				: "we remove a card from",
-		"card-inserted-keycard-reader-status"		: "a card is inserted in",
-		"no-card-inserted-keycard-reader-status"	: "no card is inserted in",
-		
-		"turned-on-plug-event"						: "we turn on",
-		"turned-off-plug-event"						: "we turn off",
-		"is-turned-on-plug-status"					: "is turned on",
-		"is-turned-off-plug-status"					: "is turned off",
-		"turn-on-plug-action"						: "turn on",
-		"turn-off-plug-action"						: "turn off",
-
-		"turned-on-actuator-event"					: "we turn on",
-		"turned-off-actuator-event"					: "we turn off",
-		
-		"is-turned-on-actuator-status"					: "is turned on",
-		"is-turned-off-actuator-status"					: "is turned off",
-		
-		"turn-on-actuator-action"					: "turn on",
-		"turn-off-actuator-action"					: "turn off",
-
-		"wait"										: "Wait",
-		"seconds"									: "seconds",
-		
-		"turned-on-lamp-event"						: "we turn on",
-		"turned-off-lamp-event"						: "we turn off",
-		"is-turned-on-lamp-status"					: "is turned on",
-		"is-turned-off-lamp-status"					: "is turned off",
-		"turn-on-lamp-action"						: "turn on",
-		"turn-off-lamp-action"						: "turn off",
-        "blink-lamp-action"                         : "blink",
-		"change-color-lamp-action"					: "change the color of",
-		"complement-change-color-lamp-action"		: "in",
-		"white-color"								: "white",
-		"red-color"									: "red",
-		"blue-color"								: "blue",
-		"green-color"								: "green",
-		"yellow-color"								: "yellow",
-		"orange-color"								: "orange",
-		"purple-color"								: "purple",
-		"pink-color"								: "pink",
-		
-		"clock-event"								: "it is",
-		"clock-status"								: "it is",
-		
-		"play-media-player-action"					: "play",
-		"pause-media-player-action"					: "pause the media",
-		"stop-media-player-action"					: "stop",
-		"set-volume-media-player-action"			: "set the volume of",
-		"complement-media-player-action"			: "on",
-		
-		"alarm-music"								: "quite music",
-		"music"										: "tonic music",
-		"ring-bell-mail-arrived"					: "ringbell new mail arrived",
-		"radio"										: "radio",
-		"movie"										: "movie",
-		"selectedMusic"								: "music",
-		"img-table"									: "image 'dinner's ready!'",
-		
-		"received-mail-event"						: "a mail arrives",
-		"send-mail-action"							: "send the mail 'Well arrived!' to",
-		"well-arrived-subject"						: "Well arrived!",
-		"state-verb"								: "is"
-
-	}
+   "app":{
+      "name":"AppsGate",
+      "signin":"Identification"
+   },
+   "form":{
+      "enter-button":"Enter",
+      "cancel-button":"Cancel",
+      "valid-button":"Submit",
+      "close-button":"Close",
+      "rename-button":"Rename",
+      "delete-button":"Delete",
+      "edit-button":"Edit",
+      "save-button":"Save",
+      "saving-button":"Loading ...",
+      "browse-button":"Browse",
+      "background-editor":"Background",
+      "size-editor":"Size",
+      "size-width":"Width",
+      "size-height":"Height"
+   },
+   "navbar":{
+      "home":"At home",
+      "edit":"Edit",
+      "stop-edit":"End edition",
+      "users":"Users",
+      "places":"Parts",
+      "devices":"Features",
+      "services":"Services",
+      "programs":"Programs",
+      "button-settings":"Preferences"
+   },
+   "editbar":{
+      "undo":"Undo",
+      "redo":"Redo",
+      "add":"Add",
+      "trashbin":"Trash"
+   },
+   "login":{
+      "username":"ID Name",
+      "password":"Password",
+      "confirm-password":"Password confirmation"
+   },
+   "modal-lost-connection":{
+      "title":"Connection problem",
+      "interrupted-connection":"The connection has been interrupted.",
+      "connection":"Connecting ...",
+      "change-server-button":"Change Server",
+      "reconnection-button":"Reconnect"
+   },
+   "modal-settings":{
+      "title":"Preferences",
+      "addr-server":"Server Address",
+      "language-label":"Language",
+      "language-en":"French",
+      "language-en":"English",
+      "server-unreachable":"Server unavailable ...",
+      "connection":"Connecting ..."
+   },
+   "edit-name-modal":{
+      "title":"Rename",
+      "name":"Name",
+      "name-empty":"The name must be specified.",
+      "already-existing":"Name already exists."
+   },
+   "places-menu":{
+      "add-button":"Add item",
+      "place-no-name":"Item unnamed",
+      "unlocated-devices":"unlocated Devices"
+   },
+   "modal-add-place":{
+      "title":"Add item",
+      "place-name":"Part Name",
+      "place-name-empty":"The name of the piece must be filled.",
+      "place-already-existing":"Name of the existing room."
+   },
+   "modal-edit-place":{
+      "title":"Rename item",
+      "place-name":"Part Name",
+      "place-name-empty":"The name of the piece must be filled.",
+      "place-already-existing":"Name of the existing room."
+   },
+   "places-details":{
+      "place-no-name":"Item unnamed",
+      "undefined":"Undefined",
+      "header":{
+         "device-number-title":"Number of devices",
+         "temperature-label":"Temperature",
+         "illumination-label":"Brightness",
+         "consumption-label":"Consumption"
+      },
+      "body":{
+         "device-no-name":"Device unnamed",
+         "no-device-in-place":"No device is assigned in this room."
+      }
+   },
+   "modal-edit-device":{
+      "name-label":"Name",
+      "name-placeholder":"Device Name",
+      "name-already-existing":"Name of existing device",
+      "place-label":"Piece",
+      "time-label":"Time",
+      "time-speed-label":"Speed"
+   },
+   "modal-edit-service":{
+      "name-label":"Name",
+      "name-placeholder":"Service Name",
+      "name-already-existing":"Name of existing service",
+      "place-label":"Room"
+   },
+   "programs-menu":{
+      "add-button":"Add Program"
+   },
+   "modal-add-program":{
+      "title":"Add Program",
+      "name-label":"Name",
+      "name-placeholder":"Program Name",
+      "name-empty":"The program name must be entered.",
+      "name-already-existing":"Name of existing program",
+      "load-from-file":"Load from file",
+      "unable-to-parse":"Unable to read file"
+   },
+   "modal-edit-program":{
+      "title":"Rename program",
+      "program-name":"Name of program",
+      "program-name-empty":"The program name must be entered.",
+      "program-already-existing":"Name already existing program."
+   },
+   "devices":{
+      "device-no-name":"Device unnamed",
+      "device-unlocated":"Not located",
+      "type-label":"Type",
+      "place-label":"Location",
+      "state-label":"State",
+      "value-label":"Value",
+      "consumption-label":"Consumption",
+      "status-label":"Status",
+      "status":{
+         "connected":"Connected",
+         "waiting":"Waiting",
+         "disconnected":"Disconnected"
+      },
+      "temperature":{
+         "name":{
+            "singular":"Temperature sensor",
+            "plural":"Temperature Sensors"
+         }
+      },
+      "illumination":{
+         "name":{
+            "singular":"Light Sensor",
+            "plural":"Brightness sensors"
+         }
+      },
+      "switch":{
+         "name":{
+            "singular":"Switch",
+            "plural":"Switches"
+         },
+         "value":{
+            "opened":"Open",
+            "closed":"Closed"
+         }
+      },
+      "actuator":{
+         "name":{
+            "singular":"actuator",
+            "plural":"Actuators"
+         },
+         "status":{
+            "turnedOn":"On",
+            "turnedOff":"Off"
+         },
+         "action":{
+            "turnOn":"Switch",
+            "turnOff":"Shut down"
+         }
+      },
+      "contact":{
+         "name":{
+            "singular":"Contact Sensor",
+            "plural":"contact sensors"
+         },
+         "value":{
+            "opened":"Open",
+            "closed":"Closed"
+         },
+         "event":{
+            "opened":"is opened",
+            "closed":"on farm"
+         },
+         "state":{
+            "opened":"open",
+            "closed":"closed"
+         }
+      },
+      "keycard-reader":{
+         "name":{
+            "singular":"card reader",
+            "plural":"plotters"
+         },
+         "value":{
+            "inserted":"card inserted",
+            "not-inserted":"No Map"
+         }
+      },
+      "movement":{
+         "name":{
+            "singular":"Motion Sensor",
+            "plural":"Motion Sensors"
+         }
+      },
+      "plug":{
+         "name":{
+            "singular":"pull plug",
+            "plural":"Taking Nesting"
+         },
+         "status":{
+            "turnedOn":"Lit",
+            "turnedOff":"Off"
+         },
+         "action":{
+            "turnOn":"Switch",
+            "turnOff":"Shut down"
+         }
+      },
+      "lamp":{
+         "name":{
+            "singular":"Bulb Philips Hue",
+            "plural":"Bulbs Philips Hue"
+         },
+         "status":{
+            "turnedOn":"Lit",
+            "turnedOff":"Off"
+         },
+         "action":{
+            "turnOn":"Switch",
+            "turnOff":"Shut down",
+            "blink":"Blink"
+         }
+      },
+      "clock":{
+         "name":{
+            "singular":"System Clock",
+            "no-name":"System clock unnamed"
+         },
+         "time-speed-label":"Speed ​​of flow of time"
+      },
+      "mediaplayer":{
+         "name":{
+            "singular":"Media Player",
+            "plural":"Media Players"
+         },
+         "status":{
+            "playing":"Now Playing",
+            "stopped":"Stopped",
+            "selected":"Please select a media"
+         },
+         "action":{
+            "play":"Start",
+            "resume":"Resume",
+            "pause":"Pause",
+            "stop":"Stop",
+            "volume":"Volume",
+            "browse":"Browse"
+         }
+      },
+      "domicube":{
+         "name":{
+            "singular":"DomiCube",
+            "plural":"DomiCubes"
+         },
+         "status":{
+            "inactive":"Inactive",
+            "unknown":"Unknown"
+         }
+      }
+   },
+   "services":{
+      "unknown":"Unknown",
+      "device-no-name":"Device unnamed",
+      "device-unlocated":"Not located",
+      "type-label":"Type",
+      "place-label":"Location",
+      "state-label":"State",
+      "value-label":"Value",
+      "consumption-label":"Consumption",
+      "status-label":"Status",
+      "status":{
+         "connected":"Connected",
+         "waiting":"Waiting",
+         "disconnected":"Disconnected"
+      },
+      "mediaplayer":{
+         "name":{
+            "singular":"Media Player",
+            "plural":"Media Players"
+         },
+         "status":{
+            "playing":"Now Playing",
+            "stopped":"Stopped",
+            "selected":"Please select a media"
+         },
+         "action":{
+            "play":"Start",
+            "resume":"Resume",
+            "pause":"Pause",
+            "stop":"Stop",
+            "volume":"Volume",
+            "browse":"Browse"
+         }
+      },
+      "mediabrowser":{
+         "name":{
+            "singular":"Media Server",
+            "plural":"Media Servers"
+         }
+      },
+      "mail":{
+         "name":{
+            "singular":"mail server",
+            "plural":"Email Servers"
+         }
+      },
+      "connectionManager":{
+         "name":{
+            "singular":"Connection Manager",
+            "plural":"Connection Managers"
+         }
+      },
+      "renderingControl":{
+         "name":{
+            "singular":"Rendering Control",
+            "plural":"Rendering controls"
+         }
+      },
+      "avtransport":{
+         "name":{
+            "singular":"AV Transport",
+            "plural":"AV Transport"
+         }
+      },
+      "contentdirectory":{
+         "name":{
+            "singular":"Content Directory",
+            "plural":"Content Directories"
+         }
+      },
+      "weather":{
+         "name":{
+            "singular":"Weather Service",
+            "plural":"Weather Services"
+         }
+      }
+   },
+   "programs":{
+      "program-no-name":"unnamed Programme",
+      "edit-program":"Edit",
+      "end-edit-program":"End edit",
+      "delete-program":"Delete",
+      "state":{
+         "deployed":"Deployed",
+         "started":"Started",
+         "stopped":"Stopped",
+         "failed":"Error"
+      },
+      "action":{
+         "start":"Enable",
+         "stop":"Disable"
+      }
+   },
+   "editor":{
+      "title":"Program Editor",
+      "no-programming alert":"No program",
+      "valid-program-alert":"invalid program",
+      "invalid-program-alert":"invalid program",
+      "undo-last action":"Cancel"
+   },
+   "language":{
+      "written-by":"written by",
+      "when-keyword":"when",
+      "end-when-block":".",
+      "if-keyword":"If",
+      "if-and":"if ... and ...",
+      "if-or":"If ... or ...",
+      "if-equals":"... says ...",
+      "if-sup":"... is greater than a ...",
+      "if-inf":"... is less than a ...",
+      "if-dif":"... is different from ...",
+      "if-not":"If ... is not true ...",
+      "else-keyword":"otherwise",
+      "end-if-block":".",
+      "then-keyword":"Then,",
+      "while-keyword":"Until",
+      "while-keep":"While ... keep ...",
+      "keep-state":"state",
+      "keep-keyword":"Maintain",
+      "and-when":"And when",
+      "it-is-not-the-box":"this is no longer the case,",
+      "activate-program action":"Enable program",
+      "disactivate-program action":"Turn the program",
+      "activate":"Enable",
+      "disactivate":"Disable",
+      "is-activated-program-event":"enabled",
+      "is-disactivated-program-event":"is disabled",
+      "is-running-program-status":"is active",
+      "is-stopped-program-status":"inactive",
+      "op-event":"and",
+      "op-event-bool":"and",
+      "op-and-rule":"and",
+      "op-then-rule":"and",
+      "op-or-bool":"or",
+      "op-and-bool":"and",
+      "space":"space",
+      "true":"true",
+      "false":"false",
+      "op-more-than":"more",
+      "op-less-than":"less",
+      "change-temperature":"change",
+      "indicate-temperature":"indicates",
+      "change-illumination":"change",
+      "indicate-illumination":"indicates",
+      "pushed-switch-event":"pressing",
+      "released-switch-event":"releasing it",
+      "pushed-switch-B1":"pressing B1",
+      "pushed-switch-B2":"Pressing B2",
+      "pushed-telec-event-up":"pressing the top button",
+      "pushed-telec-event-bottom":"pressing the bottom button",
+      "pushed-telec-event-left":"left of is pressed",
+      "pushed-telec-event-right":"right of is pressed",
+      "opened-contact-event":"is opened",
+      "closed-contact-event":"on farm",
+      "contact-sensor-keyword":"sensor contact",
+      "contact-assembled-event":"s assembles",
+      "contact-disassembled-event":"is disassembles",
+      "is-closed-contact-status":"farm",
+      "is-opened-contact-status":"open",
+      "is-assembled-contact-status":"together",
+      "is-disassembled-contact-status":"disassembles",
+      "inserted keycard-reader-event":"is inserted in a card",
+      "removed-keycard-reader-event":"card is removed",
+      "card-inserted-keycard-reader-status":"a card is inserted in",
+      "no-card-inserted-keycard-reader-status":"no card is inserted in n",
+      "turned-on-plug-event":"is switched",
+      "turned-off-plug-event":"one off",
+      "is-turned-on-plug-status":"lights",
+      "is-turned-off-plug-status":"is off",
+      "turn-on-plug-action":"Switch",
+      "turn-off-plug-action":"Shut down",
+      "turned-on-actuator-event":"is switched",
+      "turned-off-actuator-event":"we put out",
+      "is-turned-on-actuator-status":"lights",
+      "is-turned-off-actuator-status":"is off",
+      "turn-on-actuator-action":"Switch",
+      "turn-off-actuator action":"Shut down",
+      "wait":"wait",
+      "second":"seconds",
+      "turned-on-lamp-event":"is switched",
+      "turned-off-lamp-event":"on off",
+      "is-turned-on-lamp-status":"lights",
+      "is-turned-off-lamp-status":"is off",
+      "turn-on-lamp-Action":"Switch",
+      "turn-off-lamp-action":"Shut down",
+      "blink-lamp-Action":"Blink",
+      "change-color-lamp-Action":"Change color",
+      "complement-change-color-lamp-Action":"en",
+      "white-color":"white",
+      "red-color":"red",
+      "blue-color":"blue",
+      "green-color":"green",
+      "yellow-color":"yellow",
+      "orange-color":"orange",
+      "purple-color":"purple",
+      "pink-color":"Pink",
+      "clock-event":"it is",
+      "clock-status":"it is",
+      "play-media action":"Play",
+      "browse-media-button":"Browse",
+      "pause-media action":"Pause the media",
+      "stop-media-action":"Stop",
+      "set-volume-media action":"Set the volume",
+      "complement-media action":"on",
+      "alarm-music":"sweet music",
+      "music":"uplifting music",
+      "ring-bell-mail arrived-":"ringtone new mail arrives",
+      "radio":"radio",
+      "movie":"film",
+      "selectedMusic":"music",
+      "img-table":"table image",
+      "received-email-event":"a mail arrives",
+      "send-mail action":"Send an email",
+      "mail-dest":"to",
+      "mail-subject":"whose subject is",
+      "mail-body":"object",
+      "well-arrived-subject":"Just arrived!",
+      "mandatory-keyword":"Required",
+      "nothing-keyword":"Nothing",
+      "is-turned-on-lamp-state":"on",
+      "is-turned-off-lamp-state":"off",
+      "state-verb":"is",
+      "weather-at":"under the weather",
+      "weather-min-at":"the minimum temperature expected for",
+      "weather-max-at":"the maximum temperature expected for",
+      "weather-avg-at":"the average temperature expected for",
+      "weather-code-verb":"announcement",
+      "weather-town-grenoble":"Grenoble",
+      "weather-town-paris":"Paris",
+      "weather-town-lyon":"Lyon",
+      "weather-town-France":"France",
+      "weather-town-stfrancois":"St Francois Longchamp",
+      "weather-for-0":"today",
+      "weather-for-1":"tomorrow",
+      "weather-for-2":"after tomorrow",
+      "weather-code-0":"sun",
+      "weather-code-1":"clouds",
+      "weather-code-2":"rain",
+      "weather-code-3":"snow",
+      "weather-code-4":"storms",
+      "weather-code-5":"fog",
+      "weather-code-6":"other conditions",
+      "weather-code-7":"rare conditions",
+      "domicube-inactivated":"the disabled domicube",
+      "getTemperature":"temperature"
+   },
+   "keyboard":{
+      "true":"True",
+      "false":"False",
+      "is-turned-on-lamp-state":"bulb lights",
+      "is-turned-off-lamp-state":"The bulb is off",
+      "is-turned-on-lamp-event":"we light bulb",
+      "is-turned-off-event-lamp":"light bulb is turned off",
+      "turn-on-lamp-action":"Turn the bulb",
+      "turn-off-lamp-Action":"Turn off the light bulb",
+      "turn-on-plug-action":"Turn taking",
+      "turn-off-plug-action":"Shut decision",
+      "blink-lamp-Action":"Blink",
+      "when-keyword":"When",
+      "if-keyword":"If",
+      "if-and":"if ... and ...",
+      "if-or":"If ... or ...",
+      "if-equals":"... says ...",
+      "if-sup":"... is greater than a ...",
+      "if-inf":"... is less than a ...",
+      "if-dif":"... is different from ...",
+      "if-not":"If ... is not true ...",
+      "light-brightness":"the intensity of the bulb",
+      "while-keyword":"Until",
+      "while-keep":"While ... keep ...",
+      "keep-state":"Maintain condition ...",
+      "clock-event":"it is",
+      "play-media-action":"Play a media",
+      "pause-media-action":"Pause the media",
+      "stop-media-action":"Stop",
+      "set-volume-media action":"Set the volume",
+      "is-weather-code-state":"weather expected",
+      "get-weather-code-state":"weather expected",
+      "weather-min":"the minimum temperature expected",
+      "weather-max":"the maximum temperature specified",
+      "weather-avg":"the average temperature expected",
+      "getTemperature":"temperature"
+   }
 }
