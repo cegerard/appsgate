@@ -59,19 +59,21 @@
           <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
       </encoder>
   </appender>
+  
+  <root level="WARN" >
+      <appender-ref ref="LONGTERM_LOG"/>
+      <appender-ref ref="STDOUT"/>
+  </root>
 
-  <logger name="appsgate-debug" level="DEBUG" additivity="false">
+  <logger name="fr.imag.adele.apam" level="DEBUG" additivity="false">
       <appender-ref ref="MIDTERM_LOG"/>
   </logger>
 
-  <logger name="appsgate-trace" level="TRACE" additivity="false">
+  <logger name="appsgate" level="TRACE" additivity="false" >
     <appender-ref ref="SHORTTERM_LOG"/>
   </logger>
 
-  <root level="WARN">
-    <appender-ref ref="LONGTERM_LOG"/>
-    <appender-ref ref="STDOUT"/>
-  </root>
 
-  
+
+
 </configuration>
