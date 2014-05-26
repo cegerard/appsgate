@@ -46,7 +46,7 @@ define([
           break;
         case "blink":
           $(btn).append("<span data-i18n='devices.lamp.action.blink'/>");
-          v.methodName = "blink";
+          v.methodName = "blink30";
           v.phrase = "devices.lamp.action.blink";
           $(btn).attr("json", JSON.stringify(v));
           break;          
