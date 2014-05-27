@@ -6,7 +6,7 @@
    "form":{
       "enter-button":"Enter",
       "cancel-button":"Cancel",
-      "valid-button":"Submit",
+      "valid-button":"Done",
       "close-button":"Close",
       "rename-button":"Rename",
       "delete-button":"Delete",
@@ -356,7 +356,7 @@
    "programs":{
       "program-no-name":"unnamed Programme",
       "edit-program":"Edit",
-      "end-edit-program":"Finish modification",
+      "end-edit-program":"Done",
       "delete-program":"Delete",
       "state":{
          "deployed":"Deployed",

@@ -355,8 +355,8 @@
    },
    "programs":{
       "program-no-name":"Programme sans nom",
-      "edit-program":"Modifier",
-      "end-edit-program":"Fin modifier",
+      "edit-program":"Editer",
+      "end-edit-program":"Valider",
       "delete-program":"Supprimer",
       "state":{
          "deployed":"Déployé",
