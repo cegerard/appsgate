@@ -1,0 +1,13 @@
+<button class="btn btn-prog btn-prog-action" id="<%= node.iid %>">
+        <% if (typeof node.phrase !== 'undefined') { %>
+            <span data-i18n='<%=node.phrase%>'></span>
+    <% } else { %>
+        UNKNOWN STATE
+    <% } %>
+</button>
+<% if (typeof node.object !== 'undefined') { %>
+<%=engine.buildInputFromNode(node.object, currentNode) %>
+<% } else if (typeof node.target !== 'undefined') { %>
+<%=engine.buildInputFromNode(node.target, currentNode) %>
+<% } %>
+

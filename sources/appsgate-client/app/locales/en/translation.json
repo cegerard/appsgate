@@ -521,7 +521,8 @@
       "weather-code-5":"fog",
       "weather-code-6":"other conditions",
       "weather-code-7":"rare conditions",
-      "domicube-inactivated":"the disabled domicube",
+      "domicube-inactivated":"domicube is disactivated",
+      "domicube-activated":"domicube is activated",
       "getTemperature":"temperature"
    },
    "keyboard":{

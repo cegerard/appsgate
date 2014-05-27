@@ -16,28 +16,26 @@ define([
     "text!templates/program/nodes/numberNode.html",
     "text!templates/program/nodes/waitNode.html",
     "text!templates/program/nodes/programNode.html",
-    "text!templates/program/nodes/defaultPropertyNode.html",
-    "text!templates/program/nodes/clockEventNode.html"
-], function(defaultActionTemplate, deviceNodeTemplate, serviceNodeTemplate, ifNodeTemplate, whenNodeTemplate, defaultEventNodeTemplate, stateNodeTemplate, keepStateNodeTemplate, whileNodeTemplate, booleanExpressionNodeTemplate, comparatorNodeTemplate, numberNodeTemplate, waitNodeTemplate, programNodeTemplate, defaultPropertyNodeTemplate, clockEventNodeTemplate) {
+    "text!templates/program/nodes/defaultPropertyNode.html"
+], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl) {
     var ProgramInputBuilder = {};
     // router
     ProgramInputBuilder = Backbone.Model.extend({
-        tplDefaultActionNode: _.template(defaultActionTemplate),
-        tplDeviceNode: _.template(deviceNodeTemplate),
-        tplServiceNode: _.template(serviceNodeTemplate),
-        tplIfNode: _.template(ifNodeTemplate),
-        tplWhenNode: _.template(whenNodeTemplate),
-        tplEventNode: _.template(defaultEventNodeTemplate),
-        tplStateNode: _.template(stateNodeTemplate),
-        tplKeepStateNode: _.template(keepStateNodeTemplate),
-        tplWhileNode: _.template(whileNodeTemplate),
-        tplBooleanExpressionNode: _.template(booleanExpressionNodeTemplate),
-        tplComparatorNode: _.template(comparatorNodeTemplate),
-        tplNumberNode: _.template(numberNodeTemplate),
-        tplWaitNode: _.template(waitNodeTemplate),
-        tplProgramNode: _.template(programNodeTemplate),
-        tplDefaultPropertyNode: _.template(defaultPropertyNodeTemplate),
-        tplClockEventNode: _.template(clockEventNodeTemplate),
+        tplDefaultActionNode: _.template(dfltActionTpl),
+        tplDeviceNode: _.template(deviceTpl),
+        tplServiceNode: _.template(serviceTpl),
+        tplIfNode: _.template(ifTpl),
+        tplWhenNode: _.template(whenTpl),
+        tplEventNode: _.template(dfltEventTpl),
+        tplStateNode: _.template(stateTpl),
+        tplKeepStateNode: _.template(keepStateTpl),
+        tplWhileNode: _.template(whileTpl),
+        tplBooleanExpressionNode: _.template(booleanExpressionTpl),
+        tplComparatorNode: _.template(comparatorTpl),
+        tplNumberNode: _.template(numberTpl),
+        tplWaitNode: _.template(waitTpl),
+        tplProgramNode: _.template(programTpl),
+        tplDefaultPropertyNode: _.template(dfltPropertyTpl),
         initialize: function() {
         },
 
@@ -93,7 +91,8 @@ define([
                     break;
                 case "state":
                     deletable = true;
-                    input += this.tplStateNode(param);
+//                    input += this.tplStateNode(param);
+                    input = this.buildStateNode(param);
                     break;
                 case "deviceState":
                     deletable = true;
@@ -174,7 +173,6 @@ define([
             return this.tplDefaultActionNode(param);
         },
         buildPropertyNode: function(param) {
-            var result = "";
             if (param.node.target.deviceType) {
                 return devices.getTemplateByType('property',param.node.target.deviceType, param);
             }
@@ -182,6 +180,15 @@ define([
                 return services.getTemplateByType('property',param.node.target.serviceType, param);
             }
             return this.tplDefaultPropertyNode(param);
+        },
+        buildStateNode: function(param) {
+            if (param.node.object.deviceType) {
+                return devices.getTemplateByType('state',param.node.object.deviceType, param);
+            }
+            if (param.node.object.serviceType) {
+                return services.getTemplateByType('state',param.node.object.serviceType, param);
+            }
+            return this.tplStateNode(param);
         },
         buildEventNode: function(param) {
             var result = "";
