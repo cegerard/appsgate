@@ -6,8 +6,12 @@
 		<% } else { %>
 			<em data-i18n="devices.clock.name.no-name"></em>
 		<% } %>
+
 		<span class="label label-info pull-right">
 			<%= device.get("hour") %>:<%= device.get("minute") %>
+            <span class="clock-seconds">
+                <%= device.get("second") %>
+            </span>
 		</span>
 	</p>
 </a>
