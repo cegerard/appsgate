@@ -53,7 +53,10 @@ define([
                             $(".expected-links").append("<button class='btn btn-default btn-keyboard while-node'><span data-i18n='keyboard.while-keyword'><span></button>");
                             break;
                         case '"state"':
-                            this.buildStateKeys();
+                            this.buildStateKeys("state");
+                            break;
+                        case '"maintanableState"':
+                            this.buildStateKeys("maintanableState");
                             break;
                         case '"seqRules"':
                             break;
@@ -219,25 +222,14 @@ define([
             $(".expected-links").append(btnAnd);
 
         },
-        buildStateKeys: function() {
+        buildStateKeys: function(which) {
             var types = devices.getDevicesByType();
             for (type in types) {
                 if (types[type].length > 0) {
                     o = types[type][0];
-                    states = o.getStates();
-
-                    var nodeParent="";
-
-                    // This recovers the html exerpt that will indicate that the parent node is a "Keep"
-                    if(typeof $("#"+this.currentNode).parent().children().children()[0] != "undefined"){
-                        nodeParent=$("#"+this.currentNode).parent().children().children()[0].getAttribute("name");
-                    }
-
-                    // Only if the parent is not a Keep and the device are not type 3,4,5 (ContactSensor,KeycardSensor,ArdLocker), meaning that we cant keep state on those devices
-                    if(nodeParent != "keep" || (type != "3" && type != "4" && type != "5")){
-                        for (a in states) {
-                            $(".expected-links").append(o.getKeyboardForState(states[a]));
-                        }
+                    states = o.getStates(which);
+                    for (a in states) {
+                        $(".expected-links").append(o.getKeyboardForState(states[a], which));
                     }
                 }
             }
@@ -245,9 +237,9 @@ define([
             for (type in serviceTypes) {
                 if (serviceTypes[type].length > 0) {
                     o = serviceTypes[type][0];
-                    states = o.getStates();
+                    states = o.getStates(which);
                     for (a in states) {
-                        $(".expected-links").append(o.getKeyboardForState(states[a]));
+                        $(".expected-links").append(o.getKeyboardForState(states[a], which));
                     }
                 }
             }

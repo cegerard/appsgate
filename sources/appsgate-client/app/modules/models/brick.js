@@ -70,13 +70,13 @@ define([
 		/**
 		* return the list of available states
 		*/
-		getStates: function() {
+		getStates: function(which) {
 		  return [];
 		},
 		/**
 		* return the keyboard code for a given state
 		*/
-		getKeyboardForState: function(state){
+		getKeyboardForState: function(state, which){
 		  console.error("No state has been defined for this brick.");
 		  return "";
 		},

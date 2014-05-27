@@ -105,6 +105,9 @@ public class Builder {
         if (type.equalsIgnoreCase("selectState")) {
             return NODE_TYPE.NODE_SELECT_STATE;
         }
+        if (type.equalsIgnoreCase("maintainableState")) {
+            return NODE_TYPE.NODE_STATE;
+        }
         if (type.equalsIgnoreCase("state")) {
             return NODE_TYPE.NODE_STATE;
         }

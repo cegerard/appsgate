@@ -50,9 +50,11 @@ ACTION = ID "action" _ "(" _ TARGET _ ")"
 
 PROPERTY = ID "property" _ "(" _ TARGET _ ")"
 
-KEEP  = ID "keepState" _ "(" _ STATE _ ")"
+KEEP  = ID "keepState" _ "(" _ MAINTANABLE_STATE _ ")"
 
 STATE = ID "state" _ "(" _ TARGET _")"
+
+MAINTANABLE_STATE = ID "maintanableState" "(" _ TARGET _ ")"
 
 TARGET = ID "variable" / ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY
 
