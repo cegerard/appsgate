@@ -68,7 +68,7 @@ define([
         return {"type": "state", "object": {"iid": "X", "type": 'mandatory', "serviceType":this.get("type")}, "iid": "X"};
       },
       getJSONProperty: function (type) {
-        return {"type": "deviceState", "iid": "X", "target": {"iid": "X", "type": 'mandatory', "serviceType":this.get("type")}, "args":[]};
+        return {"type": "property", "iid": "X", "target": {"iid": "X", "type": 'mandatory', "serviceType":this.get("type")}, "args":[]};
       },
       /**
       * Send a message to the server to perform a remote call

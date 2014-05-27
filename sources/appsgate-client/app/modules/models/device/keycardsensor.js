@@ -1,7 +1,8 @@
 define([
   "app",
-  "models/device/device"
-], function(App, Device) {
+  "models/device/device",
+  "text!templates/program/nodes/keycardNode.html"
+], function(App, Device, StateTemplate) {
 
   var KeyCardSensor = {};
 
@@ -111,6 +112,12 @@ define([
       }
       return btn;
     },
+	/**
+	 * @returns state template for keycard sensor
+	 */
+	getTemplateState: function() {
+	  return _.template(StateTemplate); 
+	},
 
   });
   return KeyCardSensor;

@@ -23,7 +23,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate"];
     },
     /**
      * return the keyboard code for a given event
@@ -78,6 +78,13 @@ define([
           v.phrase = "language.domicube-inactivated";
           $(btn).attr("json", JSON.stringify(v));
           break;
+        case "activate":
+          $(btn).append("<span data-i18n='language.domicube-activated'></span>");
+          v.eventName = "faceLeaved";
+          v.eventValue = "2";
+          v.phrase = "language.domicube-activated";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
         default:
           console.error("unexpected event found for DomiCube: " + evt);
           btn = null;
@@ -97,6 +104,9 @@ define([
     getKeyboardForState: function(state){
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONState("mandatory");
+      v.object.type = "device";
+      v.object.deviceType = "210";
+      v.object.value = this.get("id");
       switch(state) {
         case "Music":
           $(btn).append("<img src='/app/img/music.png' width='36px'>");
@@ -143,9 +153,16 @@ define([
     },
 
     /**
-     * @returns the action template specific for lamps
+     * @returns the event template specific for domicube
      */
     getTemplateEvent: function() {
+      return _.template(EventTemplate);  
+    },
+    /**
+     * @returns the state template specific for domicube
+     * @note this is the same template as the event template
+     */
+    getTemplateState: function() {
       return _.template(EventTemplate);  
     }
       

@@ -44,11 +44,11 @@ BOOLEAN  = ID "booleanExpression" _"(" _ BOOLEAN _ ")" _ "(" _ BOOLEAN _ ")"
 
 NUMERIC_VALUE = ID "number"
 			/ ID "boolean"
-              / DEVICE_STATE
+              / PROPERTY
 
 ACTION = ID "action" _ "(" _ TARGET _ ")" 
 
-DEVICE_STATE = ID "deviceState" _ "(" _ TARGET _ ")"
+PROPERTY = ID "property" _ "(" _ TARGET _ ")"
 
 KEEP  = ID "keepState" _ "(" _ STATE _ ")"
 

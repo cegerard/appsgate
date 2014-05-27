@@ -522,6 +522,7 @@
       "weather-code-6":"d'autres conditions",
       "weather-code-7":"des conditions rares",
       "domicube-inactivated":"le domicube est désactivé",
+      "domicube-activated":"le domicube est activé",
       "getTemperature":"la température de"
    },
    "keyboard":{
