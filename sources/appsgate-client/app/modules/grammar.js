@@ -29,7 +29,7 @@ define([
             try {
                 if (jsonObj) {
                     var s = this.parseNode(jsonObj, currentNode);
-                    console.log(s);
+                    //console.log(s);
                     this.parser.parse(s);
                 } else {
                     console.warn("undefined json");

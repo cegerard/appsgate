@@ -313,13 +313,13 @@ define([
         this.programJSON = programJSON;
         var n = this.Grammar.parse(this.programJSON, this.currentNode);
         if (n == null) {
-          console.log("Program is correct");
+          //console.log("Program is correct");
           return true;
         } else if (n.expected[0] === "ID") {
           this.resetProgramJSON();
           this.checkProgramAndBuildKeyboard();
         } else {
-          console.log("Invalid at " + n.id);
+          //console.log("Invalid at " + n.id);
           if (typeof n.id !== "undefined") {
             this.setCurrentPos(n.id);
           }

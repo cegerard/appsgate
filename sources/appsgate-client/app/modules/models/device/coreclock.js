@@ -40,6 +40,11 @@ define([
         self.synchronizeCoreClock();
       });
 
+      dispatcher.on("updateClockClientSide",function(timePassed){
+          self.set("moment",self.get("moment").add('milliseconds',timePassed*self.get("flowRate")));
+          self.updateClockDisplay();
+      });
+
       // synchronize the core clock with the server every 10 minutes
       dispatcher.on("systemCurrentTime", function(timeInMillis) {
         self.set("moment", moment(parseInt(timeInMillis)));
@@ -58,9 +63,13 @@ define([
       // bind the method to this model to avoid this keyword pointing to the window object for the callback on setInterval
       this.synchronizeCoreClock = _.bind(this.synchronizeCoreClock, this);
       this.intervalClockValue = setInterval(this.synchronizeCoreClock, 600000);
+      this.intervalClockValueLocal = setInterval(this.updateClockClientSide, 1000);
 
       // update the local time every minute
       this.updateClockValue = _.bind(this.updateClockValue, this);
+    },
+    updateClockClientSide:function(){
+        dispatcher.trigger("updateClockClientSide",1000);
     },
 
     /**
@@ -113,6 +122,7 @@ define([
     unsynchronize:function() {
       clearInterval(this.intervalClockValue);
       clearInterval(this.intervalLocalClockValue);
+      clearInterval(this.intervalClockValueLocal);
     },
     /**
      * return the list of available events
