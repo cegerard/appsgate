@@ -176,50 +176,23 @@ define([
         buildPropertyNode: function(param) {
             var result = "";
             if (param.node.target.deviceType) {
-                // TODO : FIXME
-                // I use the same template function for event and for action... to check it is possible
                 return devices.getTemplateByType('property',param.node.target.deviceType, param);
             }
             if (param.node.target.serviceType) {
-                // TODO : FIXME
-                // I use the same template function for event and for action... to check it is possible
                 return services.getTemplateByType('property',param.node.target.serviceType, param);
             }
             return this.tplDefaultPropertyNode(param);
         },
         buildEventNode: function(param) {
             var result = "";
-            if (param.node.eventName === "newFace") {
-                // TODO : FIXME
-                // I use the same template function for event and for action... to check it is possible
+            if (param.node.source.deviceType) {
                 return devices.getTemplateByType('event',param.node.source.deviceType, param);
             }
-            if (param.node.eventName === "ClockAlarm") {
-                var hours = [];
-                for (var i = 0; i < 24; i++) {
-                    hours.push(i);
-                }
-
-                var minutes = [];
-                for (i = 0; i < 60; i++) {
-                    minutes.push(i);
-                }
-
-                var time = moment(parseInt(param.node.eventValue));
-
-                var selectedHour = time.hour();
-                var selectedMinute = time.minute();
-                result = this.tplClockEventNode({
-                    "node": param.node,
-                    "hours": hours,
-                    "minutes": minutes,
-                    "selectedHour": selectedHour,
-                    "selectedMinute": selectedMinute
-                });
-            } else {
-                result = this.tplEventNode(param);
-            }
-            return result;
+            if (param.node.source.serviceType) {
+                return services.getTemplateByType('event',param.node.source.serviceType, param);
+            
+            } 
+            return this.tplEventNode(param);
         },
         // Hack for a simple prestenation when X == true, we only show X
         buildComparatorNode: function(param, currentNode) {

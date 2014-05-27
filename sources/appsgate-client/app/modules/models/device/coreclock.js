@@ -1,7 +1,8 @@
 define([
   "app",
-  "models/device/device"
-], function(App, Device) {
+  "models/device/device",
+    "text!templates/program/nodes/clockEventNode.html"
+], function(App, Device, EventTemplate) {
 
   var CoreClock = {};
 
@@ -145,6 +146,13 @@ define([
         time.set("second", 0);
         return time.valueOf().toString();
     },
+
+	/**
+	 * @returns event template for clock
+	 */
+	getTemplateEvent: function() {
+	  return _.template(EventTemplate); 
+	},
 
     /**
      * Send a message to the backend the core clock time

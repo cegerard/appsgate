@@ -1,4 +1,20 @@
+<% if (param.node.eventName === "ClockAlarm") {
+                hours = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"];
+                for (var i = 10; i < 24; i++) {
+                    hours.push(i);
+                }
 
+                minutes = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"];
+                for (i = 10; i < 60; i++) {
+                    minutes.push(i);
+                }
+
+                var time = moment(parseInt(param.node.eventValue));
+
+                selectedHour = time.hour();
+                selectedMinute = time.minute();
+                }
+%>
 <div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
         <% if (typeof node.phrase !== 'undefined') { %>
             <span data-i18n='<%=node.phrase%>'></span>
@@ -7,14 +23,14 @@
         <% } %>
     </span>
     <select id="clock-hour-<%= node.iid %>" class="hour-picker"  target-id="<%= node.iid %>">
-        <% _.each(hours, function(h) { %>
-        <option <% if (selectedHour === h) { %>selected<% } %> value="<%= h %>"><%= h %></option>
+        <% _.each(hours, function(h) { v=parseInt(h);%>
+        <option <% if (selectedHour === v) { %>selected<% } %> value="<%= v %>"><%= h %></option>
         <% }); %>
     </select>
     :
     <select id="clock-minute-<%= node.iid %>" class="minute-picker"  target-id="<%= node.iid %>">
-        <% _.each(minutes, function(m) { %>
-        <option <% if (selectedMinute === m) { %>selected<% } %> value="<%= m %>"><%= m %></option>
+        <% _.each(minutes, function(m) { v=parseInt(m);%>
+        <option <% if (selectedMinute === v) { %>selected<% } %> value="<%= v %>"><%= m %></option>
         <% }); %>
     </select>
 </div>
