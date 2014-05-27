@@ -67,6 +67,10 @@ div {
   font-size: 72px;
 }
 
+.clock-seconds {
+  font-size: 10px;
+}
+
 .div-scrollable {
   overflow-y: auto;
   margin-bottom: 20px;
