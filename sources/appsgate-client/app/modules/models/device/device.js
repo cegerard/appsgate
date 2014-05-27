@@ -87,7 +87,7 @@ define([
             return {"type": "state", "object": {"iid": "X", "type": 'mandatory', "deviceType":this.get("type")}, "iid": "X"};
         },
         getJSONProperty: function (type) {
-            return {"type": "deviceState", "iid": "X", "target": {"iid": "X", "type": 'mandatory', "deviceType":this.get("type")}, "args":[]};
+            return {"type": "property", "iid": "X", "target": {"iid": "X", "type": 'mandatory', "deviceType":this.get("type")}, "args":[]};
         },
 
         /**

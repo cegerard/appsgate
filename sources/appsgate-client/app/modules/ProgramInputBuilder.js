@@ -94,7 +94,7 @@ define([
 //                    input += this.tplStateNode(param);
                     input = this.buildStateNode(param);
                     break;
-                case "deviceState":
+                case "property":
                     deletable = true;
                     input += this.buildPropertyNode(param);
                     break;

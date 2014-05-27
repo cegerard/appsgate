@@ -77,7 +77,7 @@ define([
                         case '"event"':
                             this.buildEventKeys();
                             break;
-                        case '"deviceState"':
+                        case '"property"':
                             this.buildGetPropertyKeys();
                             break;
                         case '"boolean"':
