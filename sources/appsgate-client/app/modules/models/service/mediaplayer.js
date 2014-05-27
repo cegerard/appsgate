@@ -70,7 +70,7 @@ define([
                     v.methodName = "setVolume";
                     v.phrase = "language.set-volume-media-action";
           			v.args = [ {"type":"int", "value": "0"}];
- 
+
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 default:
@@ -152,7 +152,7 @@ define([
                         "media": {
                             "valid_children": "none",
                             "icon": {
-                                "image": "styles/img/drive.png"
+                                "image": "app/img/drive.png"
                             }
                         },
                     },
@@ -212,7 +212,7 @@ define([
      * @returns the action template specific for media player
      */
     getTemplateAction: function() {
-      return _.template(ActionTemplate);  
+      return _.template(ActionTemplate);
     },
     });
     return MediaPlayer;

@@ -132,7 +132,7 @@ define([
 
         // make sure the tree is empty
         $(".browser-container").jstree('destroy');
-
+        $("#media-browser-modal").attr("target-iid", selectedMedia.attr("target-iid"));
         var xml_data = "";
         for (var i = 0; i < browsers.length; i++) {
           var name = browsers[i].get("friendlyName") !== "" ? browsers[i].get("friendlyName") : browsers[i].get("id");
@@ -156,7 +156,7 @@ define([
               "media": {
                 "valid_children": "none",
                 "icon": {
-                  "image": "styles/img/drive.png"
+                  "image": "app/img/drive.png"
                 }
               },
             },
@@ -175,8 +175,8 @@ define([
           }
           else {
             $("#media-browser-modal .media-button").removeClass("disabled");
-            self.Mediator.setNodeAttribute(selectedMedia.attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.textContent}]);
-            self.Mediator.setNodeAttribute(selectedMedia.attr("target-iid"), "fileName", event.currentTarget.parentNode.attributes.title.textContent);
+            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.textContent}]);
+            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "fileName", event.currentTarget.parentNode.attributes.title.textContent);
           }
         });
 
