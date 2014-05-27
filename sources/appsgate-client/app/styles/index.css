@@ -176,6 +176,10 @@ div {
   background: #00FF00;
 }
 
+.valid-program{
+  background: palegreen;
+}
+
 .row {
   margin-right:0px;
 }

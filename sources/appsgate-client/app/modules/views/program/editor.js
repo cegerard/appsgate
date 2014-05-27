@@ -82,9 +82,11 @@ define([
         if (this.Mediator.isValid) {
           this.model.set("runningState", "DEPLOYED");
           $(".led").addClass("led-default").removeClass("led-red");
+          $(".programNameInput").addClass("valid-program");
         } else {
           this.model.set("runningState", "INVALID");
           $(".led").addClass("led-red").removeClass("led-default");
+          $(".programNameInput").removeClass("valid-program");
         }
         this.model.save();
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
@@ -97,8 +99,10 @@ define([
         this.Mediator.buttonPressed(button);
         if (this.Mediator.isValid) {
           $(".led").addClass("led-default").removeClass("led-red");
+          $(".programNameInput").addClass("valid-program");
         } else {
           $(".led").addClass("led-red").removeClass("led-default");
+          $(".programNameInput").removeClass("valid-program");
         }
       },
       onClickProg: function(e) {
@@ -171,9 +175,6 @@ define([
           }
           else {
             $("#media-browser-modal .media-button").removeClass("disabled");
-            /*selectedMedia.text(event.currentTarget.parentNode.attributes.title.textContent);
-            selectedMedia.attr("title", event.currentTarget.parentNode.attributes.title.textContent);
-            selectedMedia.attr("url", event.currentTarget.parentNode.attributes.res.textContent);*/
             self.Mediator.setNodeAttribute(selectedMedia.attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.textContent}]);
             self.Mediator.setNodeAttribute(selectedMedia.attr("target-iid"), "fileName", event.currentTarget.parentNode.attributes.title.textContent);
           }
@@ -308,12 +309,12 @@ define([
           this.applyEditMode();
           // translate the view
           this.$el.i18n();
-          if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "WAITING") {
-            $(".led").addClass("led-green").removeClass("led-red").removeClass("led-default");
-          } else if (this.model.get("runningState") === "INVALID"){
+          if (this.model.get("runningState") === "INVALID"){
+            $(".programNameInput").removeClass("valid-program");
             $(".led").addClass("led-red").removeClass("led-green").removeClass("led-default");
           } else{
             $(".led").addClass("led-default").removeClass("led-green").removeClass("led-red");
+            $(".programNameInput").addClass("valid-program");
           }
         }
       },
@@ -347,14 +348,11 @@ define([
         }));
 
         if (this.model) {
-          this.Mediator.buildInputFromJSON();
-          this.applyEditMode();
+          this.refreshDisplay();
 
           // fix the programs list size to be able to scroll through it
           this.resizeDiv($(self.$el.find(".editorWorkspace")[0]), true);
         }
-        // translate the view
-        this.$el.i18n();
 
         return this;
       }
