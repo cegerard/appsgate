@@ -301,6 +301,7 @@ define([
       		}
       		selected = selected.parent();
       	}
+		return selected;
 
       },
       buildInputFromJSON: function() {

@@ -145,7 +145,7 @@ define([
     /**
      * @returns the action template specific for lamps
      */
-    getTemplateAction: function() {
+    getTemplateEvent: function() {
       return _.template(EventTemplate);  
     }
       

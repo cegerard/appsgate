@@ -163,10 +163,10 @@ define([
 
         buildActionNode: function(param) {
             if (param.node.target.deviceType) {
-                return devices.getTemplateActionByType(param.node.target.deviceType, param);
+                return devices.getTemplateByType('action',param.node.target.deviceType, param);
             }
             if (param.node.target.serviceType) {
-                return services.getTemplateActionByType(param.node.target.serviceType, param);
+                return services.getTemplateByType('action',param.node.target.serviceType, param);
             }
             if (param.node.target.type === "programCall" || param.node.target.type === "programs") {
                 return this.tplProgramNode(param);
@@ -178,12 +178,12 @@ define([
             if (param.node.target.deviceType) {
                 // TODO : FIXME
                 // I use the same template function for event and for action... to check it is possible
-                return devices.getTemplateActionByType(param.node.target.deviceType, param);
+                return devices.getTemplateByType('property',param.node.target.deviceType, param);
             }
             if (param.node.target.serviceType) {
                 // TODO : FIXME
                 // I use the same template function for event and for action... to check it is possible
-                return services.getTemplateActionByType(param.node.target.serviceType, param);
+                return services.getTemplateByType('property',param.node.target.serviceType, param);
             }
             return this.tplDefaultPropertyNode(param);
         },
@@ -192,7 +192,7 @@ define([
             if (param.node.eventName === "newFace") {
                 // TODO : FIXME
                 // I use the same template function for event and for action... to check it is possible
-                return devices.getTemplateActionByType(param.node.source.deviceType, param);
+                return devices.getTemplateByType('event',param.node.source.deviceType, param);
             }
             if (param.node.eventName === "ClockAlarm") {
                 var hours = [];

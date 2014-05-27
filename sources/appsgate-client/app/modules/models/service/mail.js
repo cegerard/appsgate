@@ -48,7 +48,7 @@ define([
       return btn;
     },
     /**
-     * @returns the action template specific for lamps
+     * @returns the action template specific for mail
      */
     getTemplateAction: function() {
       return _.template(ActionTemplate);  

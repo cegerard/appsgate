@@ -2,7 +2,7 @@ define([
   "app",
   "models/service/service",
   "text!templates/program/nodes/weatherStateCodeNode.html"
-], function(App, Service, ActionTemplate) {
+], function(App, Service, PropertyTemplate) {
 
   var Weather = {};
 
@@ -108,8 +108,8 @@ define([
 	    /**
      * @returns the action template specific for weather
      */
-    getTemplateAction: function() {
-      return _.template(ActionTemplate); 
+    getTemplateProperty: function() {
+      return _.template(PropertyTemplate); 
     },
 
   });

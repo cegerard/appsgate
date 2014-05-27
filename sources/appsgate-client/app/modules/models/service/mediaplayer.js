@@ -209,7 +209,7 @@ define([
             });
         },
     /**
-     * @returns the action template specific for lamps
+     * @returns the action template specific for media player
      */
     getTemplateAction: function() {
       return _.template(ActionTemplate);  

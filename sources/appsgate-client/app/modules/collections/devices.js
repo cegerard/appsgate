@@ -20,7 +20,7 @@ define([
     // collection
     Devices = Backbone.Collection.extend({
         model: Device,
-        templates: {},
+        templates: {'action' : {}, 'event' : {}, 'state': {}, 'property' : {}},
         /**
          * Fetch the devices from the server
          *
@@ -104,7 +104,10 @@ define([
                     break;
             }
             if (device != null) {
-                self.templates[brick.type] = device.getTemplateAction();
+                self.templates['action'][brick.type] = device.getTemplateAction();
+                self.templates['event'][brick.type] = device.getTemplateEvent();
+                self.templates['state'][brick.type] = device.getTemplateState();
+                self.templates['property'][brick.type] = device.getTemplateProperty();
                 self.add(device);
                 //code
             }
@@ -189,9 +192,9 @@ define([
         /**
          * @returns the template corresponding to the device
          */ 
-        getTemplateActionByType: function(type,param) {
-            if (this.templates[type]) {
-                return this.templates[type](param);
+        getTemplateByType: function(word,type,param) {
+            if (this.templates[word][type]) {
+                return this.templates[word][type](param);
             } else {
                 console.warn("No template is defined for type: " + type);
             }

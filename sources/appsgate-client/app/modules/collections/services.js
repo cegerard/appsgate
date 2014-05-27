@@ -13,7 +13,7 @@ define([
     // collection
     Services = Backbone.Collection.extend({
         model: Service,
-        templates: {},
+        templates: {'action' : {}, 'event' : {}, 'state': {}, 'property' : {}},
         /**
          * Fetch the devices from the server
          *
@@ -72,7 +72,10 @@ define([
             }
             if (service != null) {
                 self.add(service);
-                self.templates[brick.type] = service.getTemplateAction();
+                self.templates['action'][brick.type] = service.getTemplateAction();
+                self.templates['event'][brick.type] = service.getTemplateEvent();
+                self.templates['state'][brick.type] = service.getTemplateState();
+                self.templates['property'][brick.type] = service.getTemplateProperty();
             }
             places.get(brick.placeId).get("devices").push(brick.id);
         },
@@ -111,9 +114,9 @@ define([
         /**
          * @returns the template corresponding to the device
          */ 
-        getTemplateActionByType: function(type,param) {
-            if (this.templates[type]) {
-                return this.templates[type](param);  
+        getTemplateByType: function(word,type,param) {
+            if (this.templates[word][type]) {
+                return this.templates[word][type](param);  
             } else {
                 console.warn("No template is defined for type: " + type);
             }
