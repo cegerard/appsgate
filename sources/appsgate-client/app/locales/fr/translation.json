@@ -190,8 +190,8 @@
             "closed":"on ferme"
          },
          "state":{
-            "opened":"ouverte",
-            "closed":"fermée"
+            "opened":"ouvert",
+            "closed":"fermé"
          }
       },
       "keycard-reader":{
@@ -437,10 +437,10 @@
       "is-opened-contact-status":"ouvert",
       "is-assembled-contact-status":"assemble",
       "is-disassembled-contact-status":"desassemble",
-      "inserted-keycard-reader-event":"on insere une carte dans",
+      "inserted-keycard-reader-event":"on insère une carte dans",
       "removed-keycard-reader-event":"on retire une carte de",
-      "card-inserted-keycard-reader-status":"une carte est inseree dans",
-      "no-card-inserted-keycard-reader-status":"aucune carte n est inseree dans",
+      "card-inserted-keycard-reader-status":"une carte est insérée dans",
+      "no-card-inserted-keycard-reader-status":"aucune carte n'est insérée dans",
       "turned-on-plug-event":"on allume",
       "turned-off-plug-event":"on éteint",
       "is-turned-on-plug-status":"est allumée",
@@ -528,8 +528,10 @@
    "keyboard":{
       "true":"Vrai",
       "false":"Faux",
-      "is-turned-on-lamp-state":"l'ampoule est allumée",
+      "is-open-contactSensor-state":"le capteur est ouvert",
+      "is-closed-contactSensor-state":"le capteur est fermé",
       "is-turned-off-lamp-state":"l'ampoule est éteinte",
+      "is-turned-on-lamp-state":"l'ampoule est allumée",
       "is-turned-on-lamp-event":"on allume l'ampoule",
       "is-turned-off-lamp-event":"on éteint l'ampoule",
 	  "turned-on-plug-state" : "la prise est allumée",

@@ -528,7 +528,9 @@
    "keyboard":{
       "true":"True",
       "false":"False",
-      "is-turned-on-lamp-state":"lights",
+      "is-open-contactSensor-state":"sensor is open",
+      "is-closed-contactSensor-state":"sensor is closed",
+      "is-turned-on-lamp-state":"light is on",
       "is-turned-off-lamp-state":"light is off",
       "is-turned-on-lamp-event":"light is on",
       "is-turned-off-event-lamp":"light is turned off",
