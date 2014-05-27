@@ -9,7 +9,7 @@
     <%=engine.buildInputFromNode(node.target, currentNode) %>
     <% } %>
 
-    <% if (node.methodName !== "Off") { %>
+    <% if (node.methodName === "On") { %>
     <span data-i18n="language.complement-change-color-lamp-action"></span>
     <select id="lamp-color-<%= node.idd %>" class="lamp-color-picker" target-id="<%= node.iid %>">
         <option <% if (node.methodName === "setRed") { %>selected<% } %> value="setRed" data-i18n="language.red-color"></option>
