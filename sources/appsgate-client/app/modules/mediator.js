@@ -281,7 +281,7 @@ define([
         var input = $.parseHTML(this.ProgramInputBuilder.buildInputFromNode(this.programJSON, this.currentNode));
 
         $(input).find(".btn").css("padding", "3px 6px");
-        
+
         $(input).i18n();
 
         var keyBands = $(".expected-elements").children();
@@ -312,15 +312,14 @@ define([
         if (typeof programJSON !== "undefined")
         this.programJSON = programJSON;
         var n = this.Grammar.parse(this.programJSON, this.currentNode);
-        if (n == null) {
+        if (n == null && !this.isProgramEmpty()) {
           //console.log("Program is correct");
           return true;
-        } else if (n.expected[0] === "ID") {
+        } else if (n !== null && n.expected[0] === "ID") {
           this.resetProgramJSON();
           this.checkProgramAndBuildKeyboard();
-        } else {
-          //console.log("Invalid at " + n.id);
-          if (typeof n.id !== "undefined") {
+        } else if (n !== null) {
+          if(typeof n.id !== "undefined") {
             this.setCurrentPos(n.id);
           }
           this.ProgramKeyboardBuilder.buildKeyboard(n);
@@ -332,6 +331,10 @@ define([
         });
 
         return false;
+      },
+
+      isProgramEmpty:function(){
+        return (this.programJSON.rules.length === 1 && this.programJSON.rules[0].type === "empty");
       }
     });
     return ProgramMediator;

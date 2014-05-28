@@ -199,6 +199,9 @@ define([
                 this.checkProgramName();
             }
         },
+        isProgramEmpty:function(program){
+          return (program.get("body").rules.length === 1 && program.get("body").rules[0].type === "empty");
+        },
         /**
          * Render the side menu
          */
@@ -225,6 +228,11 @@ define([
                 // we build a temporary container with each model
                 var container = document.createDocumentFragment();
                 programs.forEach(function(program) {
+                    // hack to make empty programs to appear as invalid
+                    if(self.isProgramEmpty(program)){
+                      program.set("runningState", "INVALID");
+                    }
+
                     $(container).append(self.tplProgramContainer({
                         program: program,
                         active: Backbone.history.fragment.split("/programs")[1] === program.get("name") ? true : false
