@@ -80,7 +80,7 @@ define([
           break;
         case "activate":
           $(btn).append("<span data-i18n='language.domicube-activated'></span>");
-          v.eventName = "faceLeaved";
+          v.eventName = "leaveFace";
           v.eventValue = "2";
           v.phrase = "language.domicube-activated";
           $(btn).attr("json", JSON.stringify(v));
