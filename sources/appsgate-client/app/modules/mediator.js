@@ -126,11 +126,9 @@ define([
               "rules": [this.getEmptyJSON("empty")]
             }
           };
-        } else if ($(button).hasClass("clock-node")) {
-          n = this.getEventJSON("ClockAlarm", "il est 7h00", "7h00");
-        } else if ($(button).hasClass("TODO-node")) {
-          console.warn("Node has to be implemented");
-        }
+        } else {
+		  console.debug("This event is not catched: "+ button);
+		}
 
         this.lastAddedNode = this.setIidOfJson(n);
         this.appendNode(this.lastAddedNode, this.currentNode);
