@@ -306,6 +306,9 @@ define([
         //if (e == undefined || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
         if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
           this.Mediator.buildInputFromJSON();
+          if (!this.Mediator.isValid) {
+            this.model.set("runningState", "INVALID");
+          }
           this.applyEditMode();
           // translate the view
           this.$el.i18n();

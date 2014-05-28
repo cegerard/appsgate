@@ -7,19 +7,19 @@ define([
     var ProgramMediator = {};
     // router
     ProgramMediator = Backbone.Model.extend({
-        initialize: function() {
-          this.ProgramKeyboardBuilder = new ProgramKeyboardBuilder();
-          this.ProgramInputBuilder = new ProgramInputBuilder();
+      initialize: function() {
+        this.ProgramKeyboardBuilder = new ProgramKeyboardBuilder();
+        this.ProgramInputBuilder = new ProgramInputBuilder();
 
-          this.resetProgramJSON();
+        this.resetProgramJSON();
         this.currentNode = 1;
         this.maxNodeId = 1;
         this.lastAddedNode = null;
         this.Grammar = new Grammar();
       },
-	  /**
-	   * Method to start a brand new program
-	   */
+      /**
+      * Method to start a brand new program
+      */
       resetProgramJSON: function() {
         this.programJSON = {
           iid: 0,
@@ -30,17 +30,17 @@ define([
           }]
         };
       },
-	  /**
-	   * method that loads a program and set the max id
-	   */
+      /**
+      * method that loads a program and set the max id
+      */
       loadProgramJSON: function(programJSON) {
         this.programJSON = programJSON;
         this.maxNodeId = this.findMaxId(programJSON);
         this.currentNode = -1;
       },
-	  /**
-	   * Method that recursively retrieve the max node id of the program
-	   */
+      /**
+      * Method that recursively retrieve the max node id of the program
+      */
       findMaxId: function(curNode) {
         for (var o in curNode) {
           if (typeof curNode[o] === 'object') {
@@ -52,29 +52,29 @@ define([
         }
         return this.maxNodeId;
       },
-	  /**
-	   * Method to set the id of the node pointed by the cursor in the current program
-	   */
+      /**
+      * Method to set the id of the node pointed by the cursor in the current program
+      */
       setCurrentPos: function(id) {
         if (id) {
-            console.log("Setting current_pos to: " + id);
-            this.currentNode = id;
+          console.log("Setting current_pos to: " + id);
+          this.currentNode = id;
         } else {
-            this.currentNode = -1;
-            console.error("A non valid pos has been passed to setCurrent pos: " + id);
+          this.currentNode = -1;
+          console.error("A non valid pos has been passed to setCurrent pos: " + id);
         }
       },
-	  /**
-	   * method that set the cursor and build keyboard
-	   */
+      /**
+      * method that set the cursor and build keyboard
+      */
       setCursorAndBuildKeyboard: function(id) {
-		console.debug("call to setCursorAndBuildKeyboard method");
+        console.debug("call to setCursorAndBuildKeyboard method");
         this.setCurrentPos(id);
         //this.checkProgramAndBuildKeyboard(this.programJSON);
       },
-	  /**
-	   * Method that catch the event button pressed and do what is needed
-	   */
+      /**
+      * Method that catch the event button pressed and do what is needed
+      */
       buttonPressed: function(button) {
         n = {};
         if ($(button).hasClass("specific-node")) {
@@ -137,15 +137,15 @@ define([
         this.setCurrentPos(-1);
         dispatcher.trigger("refreshDisplay");
       },
-	  /**
-	   * Method to append a node to the program
-	   */
+      /**
+      * Method to append a node to the program
+      */
       appendNode: function(node, pos) {
         this.programJSON = this.recursivelyAppend(node, pos, this.programJSON);
       },
-	  /**
-	   * Method that recursively append a node to a program 
-	   */
+      /**
+      * Method that recursively append a node to a program
+      */
       recursivelyAppend: function(nodeToAppend, pos, curNode) {
         if (parseInt(curNode.iid) === parseInt(pos)) {
           curNode = nodeToAppend;
@@ -165,17 +165,17 @@ define([
         }
         return curNode;
       },
-	  /**
-	   * Method that remove the selected node
-	   */
+      /**
+      * Method that remove the selected node
+      */
       removeSelectedNode: function() {
-		console.debug("removing node: " + this.currentNode);
+        console.debug("removing node: " + this.currentNode);
         this.programJSON = this.recursivelyRemove(this.currentNode, this.programJSON);
         this.buildInputFromJSON();
       },
-	  /**
-	   * method that recursively remove a node (by putting empty instead of what was present before)
-	   */
+      /**
+      * method that recursively remove a node (by putting empty instead of what was present before)
+      */
       recursivelyRemove: function(pos, curNode, parentNode) {
         if (parseInt(curNode.iid) === parseInt(pos)) {
           curNode = {
@@ -195,10 +195,10 @@ define([
         }
         return curNode;
       },
-	  /**
-	   * Method that is called to remove a node in an array.
-	   * it cleans up the array by removing extra empty nodes
-	   */
+      /**
+      * Method that is called to remove a node in an array.
+      * it cleans up the array by removing extra empty nodes
+      */
       recRemoveArray: function(pos, curNode, parentNode) {
         var prevIsEmpty = false;
         var retNode = [];
@@ -232,9 +232,9 @@ define([
       setNodeArg: function(iid, index, value) {
         this.recursivelySetNodeArg(iid, index, value, this.programJSON);
       },
-	  /**
-	   * Method that set the args in a node
-	   */
+      /**
+      * Method that set the args in a node
+      */
       recursivelySetNodeArg: function(iid, index, value, curNode) {
         if (parseInt(curNode.iid) === parseInt(iid)) {
           curNode.args[index] = value;
@@ -252,9 +252,9 @@ define([
       setNodeAttribute: function(iid, attribute, value) {
         this.recursivelySetNodeAttribute(iid, attribute, value, this.programJSON);
       },
-	  /**
-	   * Method that set an attribute to a node
-	   */
+      /**
+      * Method that set an attribute to a node
+      */
       recursivelySetNodeAttribute: function(iid, attribute, value, curNode) {
         if (parseInt(curNode.iid) === parseInt(iid)) {
           curNode[attribute] = value;
@@ -266,9 +266,9 @@ define([
           }
         }
       },
-	  /**
-	   * Method to replace the X in the iid attribute of nodes
-	   */
+      /**
+      * Method to replace the X in the iid attribute of nodes
+      */
       setIidOfJson: function(obj) {
         if (obj.iid === "X") {
           obj.iid = ++this.maxNodeId;
@@ -280,26 +280,26 @@ define([
         }
         return obj;
       },
-	  /**
-	   * return a JSON object corresponding to a device given its id
-	   */
+      /**
+      * return a JSON object corresponding to a device given its id
+      */
       getDeviceJSON: function(deviceId) {
         var d = devices.get(deviceId);
         var deviceName = d.get("name");
         return {"type": "device", "value": deviceId, "name": deviceName, "iid": "X", "deviceType": d.get("type")};
 
       },
-	  /**
-	   * return a JSON object corresponding to a service given its id
-	   */
+      /**
+      * return a JSON object corresponding to a service given its id
+      */
       getServiceJSON: function(serviceId) {
         var s = services.get(serviceId);
         var serviceName = s.get("name");
         return {"type": "service", "value": serviceId, "name": serviceName, "iid": "X", "serviceType": s.get("type")};
       },
-	  /**
-	   * Return the JSON structure of an if
-	   */
+      /**
+      * Return the JSON structure of an if
+      */
       getIfJSON: function() {
         return {
           "type": "if",
@@ -317,28 +317,28 @@ define([
           }
         };
       },
-	  /**
-	   * return the JSON object corresponding to an empty node
-	   */
+      /**
+      * return the JSON object corresponding to an empty node
+      */
       getEmptyJSON: function(type) {
         return {
           "type": type,
           "iid": "X"
         };
       },
-	  
-	  /**
-	   * Method that build the input and put it in the programInput div
-	   */
-	  buildInputFromJSON: function() {
+
+      /**
+      * Method that build the input and put it in the programInput div
+      */
+      buildInputFromJSON: function() {
         $(".programInput").html(this.getInputFromJSON());
       },
 
-	  /**
-  	   * Method to get the JSON representation of the program.
-	   */
+      /**
+      * Method to get the JSON representation of the program.
+      */
       getInputFromJSON: function() {
-		console.debug("Getting Input FROM JSON");
+        console.debug("Getting Input FROM JSON");
         if (this.checkProgramAndBuildKeyboard()) {
           this.isValid = true;
         } else {
@@ -347,7 +347,7 @@ define([
         var input = $.parseHTML(this.ProgramInputBuilder.buildInputFromNode(this.programJSON, this.currentNode));
 
         $(input).find(".btn").css("padding", "3px 6px");
-        
+
         $(input).i18n();
 
         var keyBands = $(".expected-elements").children();
@@ -358,42 +358,41 @@ define([
 
         return input;
       },
-	  
-	  /**
-	   * 
-	   */
+
+      /**
+      *
+      */
       findNextInput: function(selected) {
-      	//
-      	while(typeof selected != "undefined") {
-      		console.log("selected(inside) : "+selected.nextAll(".input-spot").attr("id"));
-      		if(selected.nextAll(".input-spot").length != 0) {
-      			return selected;
-      		}
-      		selected = selected.parent();
-      	}
-		return selected;
+        //
+        while(typeof selected != "undefined") {
+          console.log("selected(inside) : "+selected.nextAll(".input-spot").attr("id"));
+          if(selected.nextAll(".input-spot").length != 0) {
+            return selected;
+          }
+          selected = selected.parent();
+        }
+        return selected;
 
       },
 
-	  /**
-	   * 
-	   */
+      /**
+      *
+      */
       checkProgramAndBuildKeyboard: function(programJSON) {
-		console.debug("CheckProgramAndBuildKeyboard")
+        console.debug("CheckProgramAndBuildKeyboard")
         if (typeof programJSON !== "undefined") {
-		  this.programJSON = programJSON;
+          this.programJSON = programJSON;
         }
         var n = this.Grammar.parse(this.programJSON, this.currentNode);
-        if (n == null) {
+        if (n == null && !this.isProgramEmpty()) {
           //console.log("Program is correct");
           return true;
-        } else if (n.expected[0] === "ID") {
-		  console.warn('Something unexpected happened');
+        } else if (n !== null && n.expected[0] === "ID") {
+          console.warn('Something unexpected happened');
           this.resetProgramJSON();
           this.checkProgramAndBuildKeyboard();
-        } else {
-          //console.log("Invalid at " + n.id);
-          if (typeof n.id !== "undefined") {
+        } else if (n !== null) {
+          if(typeof n.id !== "undefined") {
             this.setCurrentPos(n.id);
           }
           this.ProgramKeyboardBuilder.buildKeyboard(n);
@@ -404,6 +403,10 @@ define([
           self.sortKeyband(this);
         });
         return false;
+      },
+
+      isProgramEmpty:function(){
+        return (this.programJSON.rules.length === 1 && this.programJSON.rules[0].type === "empty");
       }
     });
     return ProgramMediator;
