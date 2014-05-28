@@ -223,7 +223,7 @@ final public class NodeProgram extends Node {
             setStopping(true);
             body.stop();
             body.removeEndEventListener(this);
-            setDeployed();
+            //setDeployed();
             fireEndEvent(new EndEvent(this));
             setStopping(false);
         } else {

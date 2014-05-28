@@ -92,7 +92,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     }
 
     /**
-     * 
+     *
      * @param p the parent node
      * @param o the json object
      */
@@ -101,7 +101,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         this.iid = o.optString("iid");
         this.phrase = o.optString("phrase");
     }
-    
+
     /**
      * @param n the parent node
      */
@@ -127,6 +127,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             specificStop();
             setStarted(false);
             setStopping(false);
+            fireEndEvent(new EndEvent(this));
         } else {
             LOGGER.debug("Trying to stop a not started node {}", this);
         }
@@ -208,7 +209,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     @Override
     public void removeStartEventListener(StartEventListener listener) {
         LOGGER.trace("REM: {} stop listening startEvent FROM {}", listener, this);
-        startEventListeners.remove(listener);
+        boolean goon = true;
+        while (goon) {
+            goon = startEventListeners.remove(listener);
+        }
     }
 
     /**
@@ -220,6 +224,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     public void addEndEventListener(EndEventListener listener) {
         LOGGER.trace("ADD:  {} listen EndEvent FROM {}", listener, this);
         endEventListeners.add(listener);
+        LOGGER.debug("There is {} listeners to this node", endEventListeners.size());
     }
 
     /**
@@ -230,7 +235,11 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     @Override
     public void removeEndEventListener(EndEventListener listener) {
         LOGGER.trace("REM: {} stop listening endEvent FROM {}", listener, this);
-        endEventListeners.remove(listener);
+        boolean goon = true;
+        while (goon) {
+            goon = endEventListeners.remove(listener);
+        }
+
     }
 
     /**
@@ -585,7 +594,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     }
 
     /**
-     * 
+     *
      */
     protected void setProgramWaiting() {
         LOGGER.trace("Program WAITING");

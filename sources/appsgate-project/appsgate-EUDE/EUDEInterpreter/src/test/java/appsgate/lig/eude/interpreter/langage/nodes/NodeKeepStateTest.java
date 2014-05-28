@@ -57,17 +57,23 @@ public class NodeKeepStateTest extends NodeTest {
     @Test
     public void testKeepState() throws Exception {
         NodeKeepState n = (NodeKeepState) this.instance;
+        System.out.println("=========== First call to keepState test");
         n.call();
         synchroniser.waitUntil(tested.is("listening"), 200);
         tested.become("no");
+        System.out.println("============ End event fired");
         n.endEventFired(new EndEvent(n.getState()));
         synchroniser.waitUntil(tested.is("listening"), 200);
         tested.become("no");
+        System.out.println("============ End event fired");
         n.endEventFired(new EndEvent(n.getState()));
+        System.out.println("============ End event fired");
         n.endEventFired(new EndEvent(n.getState()));
         synchroniser.waitUntil(tested.is("listening"), 200);
+        System.out.println("============ Stop");
         n.stop();
         synchroniser.waitUntil(tested.is("no"), 200);
+        System.out.println("============ Call");
         n.call();
         synchroniser.waitUntil(tested.is("listening"), 200);
 
