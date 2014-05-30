@@ -12,7 +12,7 @@ import appsgate.lig.domicube.messages.DomiCubeNotificationMsg;
 import appsgate.lig.domicube.spec.CoreDomiCubeSpec;
 
 /**
- * This is a class thaht represent the DomiCube ApAM implementation.
+ * This class represents the DomiCube ApAM implementation.
  * 
  * @author Cédric Gérard
  * @since April 16, 2014

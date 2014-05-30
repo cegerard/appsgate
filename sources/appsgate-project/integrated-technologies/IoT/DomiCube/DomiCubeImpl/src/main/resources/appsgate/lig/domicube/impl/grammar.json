@@ -10,12 +10,12 @@
             "stateValue": "3",
             "endEvent": {
                 "type": "event",
-                "eventName": "faceLeaved",
+                "eventName": "leaveFace",
                 "eventValue": "3"
             },
             "startEvent": {
                 "type": "event",
-                "eventName": "faceChanged",
+                "eventName": "newFace",
                 "eventValue": "3"
             }
         },
@@ -25,12 +25,12 @@
             "stateValue": "6",
             "endEvent": {
                 "type": "event",
-                "eventName": "faceLeaved",
+                "eventName": "leaveFace",
                 "eventValue": "6"
             },
             "startEvent": {
                 "type": "event",
-                "eventName": "faceChanged",
+                "eventName": "newFace",
                 "eventValue": "6"
             }
         },
@@ -40,12 +40,12 @@
             "stateValue": "4",
             "endEvent": {
                 "type": "event",
-                "eventName": "faceLeaved",
+                "eventName": "leaveFace",
                 "eventValue": "4"
             },
             "startEvent": {
                 "type": "event",
-                "eventName": "faceChanged",
+                "eventName": "newFace",
                 "eventValue": "4"
             }
         },
@@ -55,12 +55,12 @@
             "stateValue": "1",
             "endEvent": {
                 "type": "event",
-                "eventName": "faceLeaved",
+                "eventName": "leaveFace",
                 "eventValue": "1"
             },
             "startEvent": {
                 "type": "event",
-                "eventName": "faceChanged",
+                "eventName": "newFace",
                 "eventValue": "1"
             }
         },
@@ -70,12 +70,12 @@
             "stateValue": "5",
             "endEvent": {
                 "type": "event",
-                "eventName": "faceLeaved",
+                "eventName": "leaveFace",
                 "eventValue": "5"
             },
             "startEvent": {
                 "type": "event",
-                "eventName": "faceChanged",
+                "eventName": "newFace",
                 "eventValue": "5"
             }
         },
@@ -85,12 +85,12 @@
             "stateValue": "2",
             "endEvent": {
                 "type": "event",
-                "eventName": "faceLeaved",
+                "eventName": "leaveFace",
                 "eventValue": "2"
             },
             "startEvent": {
                 "type": "event",
-                "eventName": "faceChanged",
+                "eventName": "newFace",
                 "eventValue": "2"
             }
         }

@@ -55,24 +55,33 @@ define([
     /**
      * return the list of available states
      */
-    getStates: function() {
-      return ["isOpen","isClose"];
+    getStates: function(which) {
+      switch (which) {
+        case "state":
+          return ["isOpen","isClose"];
+        default:
+          return [];
+      }
     },
     /**
      * return the keyboard code for a given state
     */
-    getKeyboardForState: function(state){
+    getKeyboardForState: function(state, which){
+      if (which !== "state") {
+        console.error('Unsupported type of state: ' + which);
+        return null;
+      }
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONState("mandatory");
       switch(state) {
         case "isOpen":
-          $(btn).append("<span data-i18n='devices.contact.event.opened'/>");
-          v.phrase = "devices.contact.state.opened";
+          $(btn).append("<span data-i18n='keyboard.is-open-contactSensor-state'/>");
+          v.phrase = "devices.contact.state.open";
           v.name = "isOpen";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "isClose":
-          $(btn).append("<span data-i18n='devices.contact.event.closed'/>");
+          $(btn).append("<span data-i18n='keyboard.is-closed-contactSensor-state'/>");
           v.name = "isClose";
           v.phrase = "devices.contact.state.closed";
           $(btn).attr("json", JSON.stringify(v));

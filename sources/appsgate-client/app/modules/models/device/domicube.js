@@ -80,7 +80,7 @@ define([
           break;
         case "activate":
           $(btn).append("<span data-i18n='language.domicube-activated'></span>");
-          v.eventName = "faceLeaved";
+          v.eventName = "leaveFace";
           v.eventValue = "2";
           v.phrase = "language.domicube-activated";
           $(btn).attr("json", JSON.stringify(v));
@@ -95,13 +95,24 @@ define([
     /**
      * return the list of available states
      */
-    getStates: function() {
+    getStates: function(which) {
+      switch (which) {
+        //case
+        case "state":
       return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
+        default:
+          return [];
+      }
     },
+
     /**
      * return the keyboard code for a given state
     */
-    getKeyboardForState: function(state){
+    getKeyboardForState: function(state, which){
+      if (which !== "state") {
+        console.error('Unsupported type of state: ' + which);
+        return null;
+      }
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONState("mandatory");
       v.object.type = "device";

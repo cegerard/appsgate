@@ -79,10 +79,16 @@ define([
       },
       refreshDisplay: function(e) {
         var input = this.Mediator.getInputFromJSON();
+        if (!this.Mediator.isValid) {
+          this.model.set("runningState", "INVALID");
+        }
         var self = this;
         _.defer(function() {
           input = self.applyReadMode(input);
           $(".programInput").html(input).addClass("read-only");
+          $(".secondary-block-node").addClass("hidden");
+          $(".input-spot").prev().addClass("hidden");
+          $(".input-spot").addClass("hidden");
         });
         if(typeof this.model !== "undefined"){
           if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "WAITING") {

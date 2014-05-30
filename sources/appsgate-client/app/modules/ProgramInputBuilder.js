@@ -90,6 +90,7 @@ define([
                     input += this.buildEventNode(param);
                     break;
                 case "state":
+                case "maintanableState":
                     deletable = true;
 //                    input += this.tplStateNode(param);
                     input = this.buildStateNode(param);

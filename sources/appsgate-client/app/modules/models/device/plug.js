@@ -49,15 +49,16 @@ define([
     /**
      * Return the list of states
      */
-    getStates: function() {
+    getStates: function(which) {
       return ["isOn", "isOff"];
     },
     /**
      * return the keyboard code for a given state
      */
-    getKeyboardForState: function(state){
+    getKeyboardForState: function(state, which){
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONState("mandatory");
+      v.type = which;
       switch(state) {
         case "isOn":
           $(btn).append("<span data-i18n='keyboard.turned-on-plug-state'></span>");

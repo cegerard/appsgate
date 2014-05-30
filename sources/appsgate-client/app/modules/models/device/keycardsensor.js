@@ -83,13 +83,22 @@ define([
     /**
      * return the list of available states
      */
-    getStates: function() {
-      return ["inserted","empty"];
+    getStates: function(which) {
+      switch(which) {
+        case 'state':
+          return ["inserted","empty"];
+        default:
+          return [];
+      }
     },
     /**
      * return the keyboard code for a given state
     */
-    getKeyboardForState: function(state){
+    getKeyboardForState: function(state, which){
+      if (which !== "state") {
+        console.error('Unsupported type of state: ' + which);
+        return null;
+      }
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONState("mandatory");
       switch(state) {
