@@ -100,7 +100,8 @@
       "name-already-existing":"Nom de dispositif déjà existant",
       "place-label":"Pièce",
       "time-label":"Heure",
-      "time-speed-label":"Vitesse"
+      "time-speed-label":"Vitesse",
+      "reset-clock":"Reinitialisé horloge"
    },
    "modal-edit-service":{
       "name-label":"Nom",

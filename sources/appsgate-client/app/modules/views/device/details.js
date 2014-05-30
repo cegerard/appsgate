@@ -51,7 +51,20 @@ define([
             "hidden.bs.modal #edit-device-modal": "toggleModalValue",
             "click #edit-device-modal button.valid-button": "validEditDevice",
             "keyup #edit-device-modal input": "validEditDevice",
-            "change #edit-device-modal select": "checkDevice"
+            "change #edit-device-modal select": "checkDevice",
+            //"click .clockReset": "clockReset",
+            "change .clockReset": "checkDevice"
+        },
+        clockReset: function(e) {
+
+            console.log("clicked");
+
+            if($("#clock-server-sync").prop("checked")===true){
+                console.log("changed");
+                this.model.trigger("change:resetClock");
+            }
+
+            return true;
         },
         /**
          * Listen to the device update and refresh if any
@@ -300,6 +313,11 @@ define([
 
                             // update the attribute time flow rate
                             self.model.set("flowRate", timeFlowRate);
+
+                            if($("#clock-server-sync").prop("checked")===true){
+                                self.model.trigger("change:resetClock");
+                                self.model.set("flowRate", "1");
+                            }
 
                             //send the update to the server
                             self.model.save();

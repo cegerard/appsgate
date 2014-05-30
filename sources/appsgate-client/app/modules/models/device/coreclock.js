@@ -40,6 +40,10 @@ define([
         self.synchronizeCoreClock();
       });
 
+      this.on("change:resetClock", function() {
+            self.resetClock();
+      });
+
       dispatcher.on("updateClockClientSide",function(timePassed){
           self.set("moment",self.get("moment").add('milliseconds',timePassed*self.get("flowRate")));
           self.updateClockDisplay();
@@ -169,6 +173,9 @@ define([
      */
     sendTimeInMillis:function() {
       this.remoteControl("setCurrentTimeInMillis", [{ type : "long", value : this.get("moment").valueOf() }]);
+    },
+    resetClock:function() {
+          this.remoteControl("resetClock", []);
     },
 
     /**

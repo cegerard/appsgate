@@ -100,7 +100,8 @@
       "name-already-existing":"Name of existing device",
       "place-label":"Place",
       "time-label":"Time",
-      "time-speed-label":"Speed"
+      "time-speed-label":"Speed",
+      "reset-clock":"Reset Clock"
    },
    "modal-edit-service":{
       "name-label":"Name",
