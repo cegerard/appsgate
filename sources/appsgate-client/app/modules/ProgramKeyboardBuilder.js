@@ -23,94 +23,91 @@ define([
             $(".expected-elements").html(this.tplExpectedInput());
 
             nodes = ex.expected;
-            // First we treat the devices and services
-            switch (ex.type) {
-                case "device":
-                    this.buildDevicesOfType(nodes[0]);
-                    return;
-                    break;
-                case "service":
-                    this.buildServicesOfType(nodes[0]);
-                    return;
-                    break;
-            }
-            if (nodes != null) {
-                for (t in nodes) {
-                    switch (nodes[t]) {
-                        case '"if"':
-                            $(".expected-links").append("<button class='btn btn-default btn-keyboard if-node'><span data-i18n='keyboard.if-keyword'><span></button>");
-                            break;
-                        case '"comparator"':
-                            this.buildComparatorKeys();
-                            break;
-                        case '"booleanExpression"':
-                            //this.buildBooleanExpressionKeys();
-                            break;
-                        case '"when"':
-                            $(".expected-links").append("<button class='btn btn-default btn-keyboard when-node'><span data-i18n='keyboard.when-keyword'><span></button>");
-                            break;
-                        case '"while"':
-                            $(".expected-links").append("<button class='btn btn-default btn-keyboard while-node'><span data-i18n='keyboard.while-keyword'><span></button>");
-                            break;
-                        case '"state"':
-                            this.buildStateKeys("state");
-                            break;
-                        case '"maintanableState"':
-                            this.buildStateKeys("maintanableState");
-                            break;
-                        case '"seqRules"':
-                            break;
-                        case '"setOfRules"':
-                            break;
-                        case '"keepState"':
-                            $(".expected-links").append("<button class='btn btn-default btn-keyboard keepState-node'><span data-i18n='keyboard.keep-state'><span></button>");
-                            break;
-                        case '"device"':
-                            this.buildDevices();
-                            break;
-                        case 'programs':
-                            this.buildProgramsKeys();
-                            break;
-                        case '"variable"':
-                            console.log("variables not supported in the language right now");
-                            break;
-                        case '"action"':
-                            this.buildActionKeys();
-                            break;
-                        case '"event"':
-                            this.buildEventKeys();
-                            break;
-                        case '"property"':
-                            this.buildGetPropertyKeys();
-                            break;
-                        case '"boolean"':
-                            this.buildBooleanKeys();
-                            break;
-                        case "ID":
-                            console.log("empty program");
-                            break;
-                        case '"number"':
-                            $(".expected-events").append("<button class='btn btn-default btn-keyboard number-node'><span>valeur<span></button>");
-                            break;
-                        case '"wait"':
-                            this.buildWaitKey();
-                            break;
-                        case '"empty"':
-                        case '"programs"':
-                        case 'separator':
-                            // silently escaping
-                            break;
-                        default:
-                            console.warn("Unsupported type: " + nodes[t]);
-                            break;
-                    }
+            if (nodes != null) {            // First we treat the devices and services
+                switch (ex.type) {
+                    case "device":
+                        this.buildDevicesOfType(nodes[0]);
+                        break;
+                    case "service":
+                        this.buildServicesOfType(nodes[0]);
+                        break;
+                    default:
+                        for (t in nodes) {
+                            switch (nodes[t]) {
+                                case '"if"':
+                                    $(".expected-links").append("<button class='btn btn-default btn-keyboard if-node'><span data-i18n='keyboard.if-keyword'><span></button>");
+                                    break;
+                                case '"comparator"':
+                                    this.buildComparatorKeys();
+                                    break;
+                                case '"booleanExpression"':
+                                    //this.buildBooleanExpressionKeys();
+                                    break;
+                                case '"when"':
+                                    $(".expected-links").append("<button class='btn btn-default btn-keyboard when-node'><span data-i18n='keyboard.when-keyword'><span></button>");
+                                    break;
+                                case '"while"':
+                                    $(".expected-links").append("<button class='btn btn-default btn-keyboard while-node'><span data-i18n='keyboard.while-keyword'><span></button>");
+                                    break;
+                                case '"state"':
+                                    this.buildStateKeys("state");
+                                    break;
+                                case '"maintanableState"':
+                                    this.buildStateKeys("maintanableState");
+                                    break;
+                                case '"seqRules"':
+                                    break;
+                                case '"setOfRules"':
+                                    break;
+                                case '"keepState"':
+                                    $(".expected-links").append("<button class='btn btn-default btn-keyboard keepState-node'><span data-i18n='keyboard.keep-state'><span></button>");
+                                    break;
+                                case '"device"':
+                                    this.buildDevices();
+                                    break;
+                                case 'programs':
+                                    this.buildProgramsKeys();
+                                    break;
+                                case '"variable"':
+                                    console.log("variables not supported in the language right now");
+                                    break;
+                                case '"action"':
+                                    this.buildActionKeys();
+                                    break;
+                                case '"event"':
+                                    this.buildEventKeys();
+                                    break;
+                                case '"property"':
+                                    this.buildGetPropertyKeys();
+                                    break;
+                                case '"boolean"':
+                                    this.buildBooleanKeys();
+                                    break;
+                                case "ID":
+                                    console.log("empty program");
+                                    break;
+                                case '"number"':
+                                    $(".expected-events").append("<button class='btn btn-default btn-keyboard number-node'><span>valeur<span></button>");
+                                    break;
+                                case '"wait"':
+                                    this.buildWaitKey();
+                                    break;
+                                case '"empty"':
+                                case '"programs"':
+                                case 'separator':
+                                    // silently escaping
+                                    break;
+                                default:
+                                    console.warn("Unsupported type: " + nodes[t]);
+                                    break;
+                            }
+                        }
                 }
             } else {
                 console.warn("For now, it is not supported to have multiple instruction in one program.");
             }
 
             $(".expected-elements").i18n();
-
             var keyBands = $(".expected-elements").children();
             var self = this;
             keyBands.each(function(index) {
@@ -118,6 +115,9 @@ define([
             });
         },
 
+        /**
+         * Add all the devices from a given type
+         */
         buildDevicesOfType: function(type) {
             devices.forEach(function(device) {
                 if (device.get("type") == type) {
@@ -126,6 +126,9 @@ define([
             });
         },
 
+        /**
+         * Add all the services from a given type
+         */
         buildServicesOfType: function(type) {
             services.forEach(function(service) {
                 if (service.get("type") == type) {
@@ -451,6 +454,9 @@ define([
             $(".expected-links").append(btn_f);
 
         },
+        /**
+         * method to sort a keyband alphabetically
+         */
         sortKeyband: function(keyband) {
             keyband = $(keyband);
             if (keyband.children().length < 1) {

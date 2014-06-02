@@ -18,7 +18,6 @@ define([
                     cache: false,
                     trackLineAndColumn: true
                 });
-                console.log("ok");
             } catch (e) {
                 console.error("unable to build the parser");
                 console.error(e);
@@ -29,14 +28,14 @@ define([
             try {
                 if (jsonObj) {
                     var s = this.parseNode(jsonObj, currentNode);
-                    //console.log(s);
+                    console.debug(s);
                     this.parser.parse(s);
                 } else {
                     console.warn("undefined json");
                 }
                 return null;
             } catch (e) {
-                console.log(e);
+                console.debug(e.message + " on " + e.id);
                 return this.tryParse(s, e);
             }
         },
@@ -85,9 +84,9 @@ define([
                 if (obj.serviceType) {
                     return type + "|" + obj.serviceType + "|";
                 }
-                if (obj.iid == currentNode && obj.type == "empty") {
+//                if (obj.iid == currentNode && obj.type == "empty") {
                     return type + "selected";
-                }
+//                }
             }
             if (obj.type) {
                 type += obj.type;

@@ -70,12 +70,13 @@ define([
       setCursorAndBuildKeyboard: function(id) {
         console.debug("call to setCursorAndBuildKeyboard method");
         this.setCurrentPos(id);
-        //this.checkProgramAndBuildKeyboard(this.programJSON);
+        var n = this.Grammar.parse(this.programJSON, this.currentNode);
+        this.ProgramKeyboardBuilder.buildKeyboard(n);
       },
       /**
-      * Method that catch the event button pressed and do what is needed
+      * Method that add a node from the keyboard to the jsonProgram
       */
-      buttonPressed: function(button) {
+      addNodeFromButton: function(button) {
         n = {};
         if ($(button).hasClass("specific-node")) {
           n = JSON.parse($(button).attr('json'));
@@ -350,12 +351,6 @@ define([
 
         $(input).i18n();
 
-        var keyBands = $(".expected-elements").children();
-        var self = this.ProgramKeyboardBuilder;
-        keyBands.each(function(index) {
-          self.sortKeyband(this);
-        });
-
         return input;
       },
 
@@ -397,14 +392,28 @@ define([
           }
           this.ProgramKeyboardBuilder.buildKeyboard(n);
         }
-        var keyBands = $(".expected-elements").children();
-        var self = this.ProgramKeyboardBuilder;
-        keyBands.each(function(index) {
-          self.sortKeyband(this);
-        });
         return false;
       },
+	  
+	  /**
+	   * Method to check whether the program is correct or not
+	   */
+	  checkProgram: function(programJSON) {
+        console.debug("CheckProgram")
+        var n = this.Grammar.parse(this.programJSON, -1);
+        if (n == null && !this.isProgramEmpty()) {
+          return true;
+        } else if (n !== null && n.expected[0] === "ID") {
+          console.warn('Something unexpected happened');
+		  return false;
+        } else {
+		  return false;
+        }
+      },
 
+	  /**
+	   * Return whether the program is empty
+	   */
       isProgramEmpty:function(){
         return (this.programJSON.rules.length === 1 && this.programJSON.rules[0].type === "empty");
       }
