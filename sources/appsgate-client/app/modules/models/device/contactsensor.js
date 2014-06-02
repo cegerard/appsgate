@@ -76,7 +76,7 @@ define([
       switch(state) {
         case "isOpen":
           $(btn).append("<span data-i18n='keyboard.is-open-contactSensor-state'/>");
-          v.phrase = "devices.contact.state.open";
+          v.phrase = "devices.contact.state.opened";
           v.name = "isOpen";
           $(btn).attr("json", JSON.stringify(v));
           break;
