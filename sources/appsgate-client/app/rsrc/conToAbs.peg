@@ -69,17 +69,17 @@ ID "ID" = d:[0-9]+":"
 
 MANDATORY = i:ID DEVICE_SEP l:NUMBERS DEVICE_SEP
 {
-ex = {'message' : l.join(":"), 'expected':l, 'id' : i, 'type':'device'};
+ex = {'message' : 'expected device of type: ' + l.join(","), 'expected':l, 'id' : i, 'type':'device'};
 throw ex;
 }
          / i:ID "programs"
 {
-ex = {'message' : "missing programs", 'expected':["programs"], 'id' : i};
+ex = {'message' : "missing a program", 'expected':["programs"], 'id' : i};
 throw ex;
 }
          / i:ID SERVICE_SEP l:NUMBERS SERVICE_SEP
 {
-ex = {'message' : "services", 'expected':l, 'id' : i, 'type':'service'};
+ex = {'message' : 'expected device of type: ' + l.join(","), 'expected':l, 'id' : i, 'type':'service'};
 throw ex;
 }
 

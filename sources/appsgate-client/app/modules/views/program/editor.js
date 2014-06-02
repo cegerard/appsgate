@@ -91,12 +91,16 @@ define([
         this.model.save();
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
       },
+      /**
+       * Method to handle event on a button on the keyboard
+       */
       onClickKeyboard: function(e) {
         button = e.target;
+        // the event may be catched by a span or a div contained by the button
         while (button !== null && typeof button.classList === 'undefined' || !button.classList.contains('btn-keyboard')) {
           button = button.parentNode;
         }
-        this.Mediator.buttonPressed(button);
+        this.Mediator.addNodeFromButton(button);
         if (this.Mediator.isValid) {
           $(".led").addClass("led-default").removeClass("led-red");
           $(".programNameInput").addClass("valid-program");
@@ -105,8 +109,10 @@ define([
           $(".programNameInput").removeClass("valid-program");
         }
       },
+      /**
+       *
+       */
       onClickProg: function(e) {
-
         button = e.target;
         if (button !== null && typeof button.classList !== 'undefined' && (button.classList.contains('btn-media-choice') || button.classList.contains('default-media-choice'))) {
           e.stopPropagation();
