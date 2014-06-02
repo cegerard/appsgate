@@ -119,15 +119,15 @@ define([
           this.onBrowseMedia($(button));
         }
         else if (button.tagName.toUpperCase() !== "SELECT" && button.tagName !== "INPUT"  && button.tagName !== "TEXTAREA"){
-          while (button !== null && typeof button.classList === 'undefined' || !button.classList.contains('btn-prog')) {
+          while (button !== null && button.id  === '') {
             button = button.parentNode;
           }
           if ($(button).hasClass("glyphicon-trash")) {
+            this.Mediator.removeNode(button.id);
+          } else {
             this.Mediator.setCurrentPos(button.id);
-            this.Mediator.removeSelectedNode();
+            this.refreshDisplay();
           }
-          this.Mediator.setCursorAndBuildKeyboard(button.id);
-          this.refreshDisplay();
         }
       },
       // Displays a tree of items the player can read
@@ -306,12 +306,14 @@ define([
       resetSelection: function() {
         $(".expected-elements").html("");
         this.Mediator.setCurrentPos(-1);
-        this.Mediator.buildInputFromJSON();
+        //this.Mediator.buildInputFromJSON();
+        this.refreshDisplay();
       },
       refreshDisplay: function(e) {
         //if (e == undefined || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
         if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
           this.Mediator.buildInputFromJSON();
+          this.Mediator.buildKeyboard();
           if (!this.Mediator.isValid) {
             this.model.set("runningState", "INVALID");
           }

@@ -1,7 +1,7 @@
-<div class="main-block-node">
+<div class="main-block-node" id="<%= node.iid %>">
     <div>
         <div class="row">
-            <button class="btn btn-prog btn-primary btn-then" id="<%= node.iid %>">
+            <button class="btn btn-prog btn-primary btn-then">
                 <span data-i18n="language.while-keyword"></span>
             </button>
             <%=engine.buildInputFromNode(node.state, currentNode)%>
