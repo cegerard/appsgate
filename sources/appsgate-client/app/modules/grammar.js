@@ -28,14 +28,14 @@ define([
             try {
                 if (jsonObj) {
                     var s = this.parseNode(jsonObj, currentNode);
-                    console.debug(s);
+                    //console.debug(s);
                     this.parser.parse(s);
                 } else {
                     console.warn("undefined json");
                 }
                 return null;
             } catch (e) {
-                console.debug(e.message + " on " + e.id);
+                //console.debug(e.message + " on " + e.id);
                 return this.tryParse(s, e);
             }
         },
