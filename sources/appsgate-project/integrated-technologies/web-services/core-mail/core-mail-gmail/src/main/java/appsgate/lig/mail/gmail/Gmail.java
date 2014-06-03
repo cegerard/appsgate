@@ -249,6 +249,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
             Transport.send(message);
         } catch (MessagingException e) {
             logger.error("Impossible to send mail from account {} due to '{}'", USER, e.getMessage());
+            
             return false;
         }
 
@@ -269,7 +270,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
             message.setText(body);
-
+            logger.info("Sending mail to: {}", to);
             return sendMail(message);
 
         } catch (MessagingException e) {
