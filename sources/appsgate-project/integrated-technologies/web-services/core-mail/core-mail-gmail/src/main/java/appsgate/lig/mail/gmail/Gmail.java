@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -32,410 +30,421 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.mail.Mail;
 
 import com.sun.mail.imap.IMAPFolder;
+import org.slf4j.LoggerFactory;
 
 /**
  * Gmail implementation for mail service
+ *
  * @author jnascimento
  * @author Cédric Gérard
  *
  */
 public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
-	
-	private Logger logger = Logger.getLogger(Gmail.class.getSimpleName());
-	private Timer refreshTimer;
-	
-	/*
-	 * Connection information variables
-	 */
-	private String USER;
-	private String PASSWORD;
-	
-	/*
-	 * Object information
-	 */
-	private String serviceId;
-	private String userType;
-	private String status;
-	
-	/*
-	 * State variables
-	 */
-	private Calendar lastFetchDateTime = null;
-	private Integer refreshRate = -1;
-	private Properties properties;
-	private HashMap<String, Message> messagesCached = new HashMap<String, Message>();
-	
-	/*
-	 * IMAP variables
-	 */
-	private Store store;
-	private Session session;
-	private IMAPFolder lastIMAPFolder=null;
 
-	private TimerTask refreshtask;
+    /**
+     * Static class member uses to log what happened in each instances
+     */
+    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(Gmail.class);
+    private Timer refreshTimer;
 
-	public Gmail() {
-		properties = System.getProperties();
-		properties.putAll(GMailConstants.defaultGoogleProperties);
+    /*
+     * Connection information variables
+     */
+    private String USER;
+    private String PASSWORD;
 
-	}
+    /*
+     * Object information
+     */
+    private String serviceId;
+    private String userType;
+    private String status;
 
-	public void start() {
+    /*
+     * State variables
+     */
+    private Calendar lastFetchDateTime = null;
+    private final Integer refreshRate = -1;
+    private final Properties properties;
+    private final HashMap<String, Message> messagesCached = new HashMap<String, Message>();
 
-		try {
-			String target = USER+PASSWORD;
-			serviceId = String.valueOf(target.hashCode());
-			fetch();
-		} catch (MessagingException e) {
-			throw new RuntimeException("unable to start component. Message "+e.getMessage());
-		}
+    /*
+     * IMAP variables
+     */
+    private Store store;
+    private Session session;
+    private IMAPFolder lastIMAPFolder = null;
 
-		configureAutoRefreshTask();
-		
-	}
+    private TimerTask refreshtask;
 
-	public void stop() {
-		
-		refreshtask.cancel();
-		
-		release();
-		
-		if(lastIMAPFolder!=null)
-			try {
-				lastIMAPFolder.close(false);
-			} catch (MessagingException e) {
-				// Error closing the mail, nothing you can do about it, sorry
-			}
-	}
-	
-	public void release() {
+    public Gmail() {
+        properties = System.getProperties();
+        properties.putAll(GMailConstants.defaultGoogleProperties);
 
-		try {
-			getStore().close();
-		} catch (MessagingException e) {
-			logger.log(Level.WARNING,"failed to release store with the message:"+e.getMessage());
-		}
+    }
 
-		session = null;
-		store = null;
+    public void start() {
 
-	}
-	
-	/*
-	 * Established the mail connection with the provider
-	 */
-	private Store getStore() throws MessagingException {
+        try {
+            String target = USER + PASSWORD;
+            serviceId = String.valueOf(target.hashCode());
+            fetch();
+        } catch (MessagingException e) {
+            throw new RuntimeException("unable to start component. Message " + e.getMessage());
+        }
 
-		if (store == null || !store.isConnected()) {
-			
-				store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
+        configureAutoRefreshTask();
 
-				store.connect(GMailConstants.IMAP_SERVER, USER, PASSWORD);
-		}
+    }
 
-		return store;
-	}
+    public void stop() {
 
-	private void configureAutoRefreshTask(){
-		
-		refreshTimer = new Timer();
-		
-		refreshtask = new TimerTask() {
-			
-			@Override
-			public void run() {
-				
-				try {
-					logger.log(Level.FINE,"Refreshing mail data");
-					Gmail.this.fetch();
-				} catch (MessagingException e) {
-					logger.log(Level.WARNING,"Refreshing mail data FAILED with the message "+e.getMessage());
-				}
-			}
-			
-		};
-		
-		if (refreshRate != null && refreshRate != -1) {
-			logger.fine("Configuring auto-refresh to:" + refreshRate + "ms");
-			refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate.longValue());
-		}
-		
-	}
-	
-	public Session getSession() {
+        refreshtask.cancel();
 
-		if (session == null ) {
-			
-			//This method will openup a browser (pc/mobile) to verify the user auth in case of auth3
-			//session=Session.getDefaultInstance(properties, null);
-			
-			session = Session.getInstance(properties,
-					new javax.mail.Authenticator() {
-						protected PasswordAuthentication getPasswordAuthentication() {
-							return new PasswordAuthentication(Gmail.this.USER, Gmail.this.PASSWORD);
-						}
-					});
-		}
+        release();
 
-		return session;
-	}
+        if (lastIMAPFolder != null) {
+            try {
+                lastIMAPFolder.close(false);
+            } catch (MessagingException e) {
+                // Error closing the mail, nothing you can do about it, sorry
+            }
+        }
+    }
 
-	/*
-	 * Check for possible updates in the assigned mail box
-	 * @see appsgate.lig.mail.Mail#fetch()
-	 */
-	public void fetch() throws MessagingException {
+    public void release() {
 
-		boolean firstTime = messagesCached.size() == 0 ? true : false;
-		
-		try {
+        try {
+            getStore().close();
+        } catch (MessagingException e) {
+            logger.warn("failed to release store with the message: {}", e.getMessage());
+        }
 
-			IMAPFolder box=getMailBox(GMailConstants.DEFAULT_INBOX);
-			
-			for (Message message : box.getMessages()) {
+        session = null;
+        store = null;
 
-				String messageId = message.getHeader("message-id")[0];
+    }
 
-				boolean isPresent = messagesCached.keySet().contains(messageId);
+    /*
+     * Established the mail connection with the provider
+     */
+    private Store getStore() throws MessagingException {
 
-				if (!isPresent || firstTime ) {
-					messagesCached.put(messageId, message);
+        if (store == null || !store.isConnected()) {
 
-				}
+            store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
 
-				if (!isPresent && !firstTime) {
-					mailReceivedNotification(message);
-					//fireListeners(message);
-				}
+            store.connect(GMailConstants.IMAP_SERVER, USER, PASSWORD);
+        }
 
-			}
+        return store;
+    }
 
-			lastFetchDateTime=Calendar.getInstance();
-			
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} finally {
-			//release();
-		}
+    private void configureAutoRefreshTask() {
 
-	}
+        refreshTimer = new Timer();
 
-	/*
-	 * Sends an email with a Message type, which allows to add specialized modification in the mailcontent, like add an attachment. Example of usage:
-	 * 
-	 *	Message message = new MimeMessage(mailService.getSession());
-	 *	message.setFrom(new InternetAddress("from-email@gmail.com"));
-	 *	message.setRecipients(Message.RecipientType.TO,
-	 *	InternetAddress.parse("jbotnascimento@gmail.com"));
-	 *	message.setSubject("Testing sender");
-	 *	message.setText("Message body!");
-	 *	mailService.sendMail(message);
-	 *	mailService.sendMailSimple("jbotnascimento@gmail.com", "ping","ping body");
-	 *	mailService.addFolderListener(listener);
-	 *	
-	 * @see appsgate.lig.mail.Mail#sendMail(javax.mail.Message)
-	 */
-	public boolean sendMail(Message message) {
+        refreshtask = new TimerTask() {
 
-		/*
-		 * Example
-		 */
-		
-		try {
-			Transport.send(message);
-		} catch (MessagingException e) {
+            @Override
+            public void run() {
+
+                try {
+                    logger.trace("Refreshing mail data");
+                    Gmail.this.fetch();
+                } catch (MessagingException e) {
+                    logger.warn("Refreshing mail data FAILED with the message: {}", e.getMessage());
+                }
+            }
+
+        };
+
+        if (refreshRate != null && refreshRate != -1) {
+            logger.trace("Configuring auto-refresh to: {} ms", refreshRate);
+            refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate.longValue());
+        }
+
+    }
+
+    @Override
+    public Session getSession() {
+
+        if (session == null) {
+
+            //This method will openup a browser (pc/mobile) to verify the user auth in case of auth3
+            //session=Session.getDefaultInstance(properties, null);
+            session = Session.getInstance(properties,
+                    new javax.mail.Authenticator() {
+                        @Override
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(Gmail.this.USER, Gmail.this.PASSWORD);
+                        }
+                    });
+        }
+
+        return session;
+    }
+
+    /*
+     * Check for possible updates in the assigned mail box
+     * @see appsgate.lig.mail.Mail#fetch()
+     */
+    @Override
+    public void fetch() throws MessagingException {
+
+        boolean firstTime = messagesCached.isEmpty();
+
+        try {
+
+            IMAPFolder box = getMailBox(GMailConstants.DEFAULT_INBOX);
+
+            for (Message message : box.getMessages()) {
+
+                String messageId = message.getHeader("message-id")[0];
+
+                boolean isPresent = messagesCached.keySet().contains(messageId);
+
+                if (!isPresent || firstTime) {
+                    messagesCached.put(messageId, message);
+
+                }
+
+                if (!isPresent && !firstTime) {
+                    mailReceivedNotification(message);
+                    //fireListeners(message);
+                }
+            }
+            lastFetchDateTime = Calendar.getInstance();
+
+        } catch (MessagingException e) {
             e.printStackTrace();
-			return false;
-		}
+        } finally {
+            //release();
+        }
 
-		return true;
-	}
+    }
 
-	/*
-	 * Send an email with a recipient, subject and body 
-	 * @see appsgate.lig.mail.Mail#sendMailSimple(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public boolean sendMailSimple(String to, String subject, String body) {
+    /*
+     * Sends an email with a Message type, which allows to add specialized modification in the mailcontent, like add an attachment. Example of usage:
+     * 
+     *	Message message = new MimeMessage(mailService.getSession());
+     *	message.setFrom(new InternetAddress("from-email@gmail.com"));
+     *	message.setRecipients(Message.RecipientType.TO,
+     *	InternetAddress.parse("jbotnascimento@gmail.com"));
+     *	message.setSubject("Testing sender");
+     *	message.setText("Message body!");
+     *	mailService.sendMail(message);
+     *	mailService.sendMailSimple("jbotnascimento@gmail.com", "ping","ping body");
+     *	mailService.addFolderListener(listener);
+     *	
+     * @see appsgate.lig.mail.Mail#sendMail(javax.mail.Message)
+     */
+    @Override
+    public boolean sendMail(Message message) {
 
-		try {
+        /*
+         * Example
+         */
+        try {
+            Transport.send(message);
+        } catch (MessagingException e) {
+            logger.error("Impossible to send mail from account {} due to '{}'", USER, e.getMessage());
+            return false;
+        }
 
-			Message message = new MimeMessage(getSession());
-			message.setFrom(new InternetAddress(USER));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-			message.setSubject(subject);
-			message.setText(body);
+        return true;
+    }
 
-			sendMail(message);
+    /*
+     * Send an email with a recipient, subject and body 
+     * @see appsgate.lig.mail.Mail#sendMailSimple(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean sendMailSimple(String to, String subject, String body) {
 
-		} catch (MessagingException e) {
-			logger.log(Level.SEVERE, String.format(
-					"Impossible to send mail from account %s due to '%s'",
-					USER, e.getMessage()));
-			return false;
-		}
+        try {
 
-		return true;
-	}
+            Message message = new MimeMessage(getSession());
+            message.setFrom(new InternetAddress(USER));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+            message.setText(body);
 
-	public Message getMail(String messageId) {
+            return sendMail(message);
 
-		if (messagesCached != null) {
-			return messagesCached.get(messageId);
-		}
+        } catch (MessagingException e) {
+            logger.error("Impossible to send mail from account {} due to '{}'", USER, e.getMessage());
+            return false;
+        }
 
-		return null;
-	}
+    }
 
-	public List<Message> getMails(int size){
-		try {
+    @Override
+    public Message getMail(String messageId) {
 
-			IMAPFolder folder = getMailBox(GMailConstants.DEFAULT_INBOX);
+        if (messagesCached != null) {
+            return messagesCached.get(messageId);
+        }
 
-			Message[] messages;
-			
-			if(size==0)
-				messages = folder.getMessages();
-			else
-				messages = folder.getMessages(folder.getMessageCount()-size+1,folder.getMessageCount());
+        return null;
+    }
 
-			List<Message> imapMessages=Arrays.asList(messages);
-			
-			Collections.reverse(imapMessages);
-			
-			return imapMessages;
+    @Override
+    public List<Message> getMails(int size) {
+        try {
 
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
+            IMAPFolder folder = getMailBox(GMailConstants.DEFAULT_INBOX);
 
-		return new ArrayList<Message>();
-	}
-	
-	public List<Message> getMails() {
+            Message[] messages;
 
-		return getMails(0);
+            if (size == 0) {
+                messages = folder.getMessages();
+            } else {
+                messages = folder.getMessages(folder.getMessageCount() - size + 1, folder.getMessageCount());
+            }
 
-	}
+            List<Message> imapMessages = Arrays.asList(messages);
 
-	public IMAPFolder getMailBox(String storeString) throws MessagingException {
+            Collections.reverse(imapMessages);
 
-		if(lastIMAPFolder!=null && lastIMAPFolder.getName().equals(storeString)){
-			return lastIMAPFolder;
-		}else if (lastIMAPFolder!=null){
-			lastIMAPFolder.close(false);
-		}
-			
-		lastIMAPFolder = (IMAPFolder) getStore().getFolder(storeString);
+            return imapMessages;
 
-		if (!lastIMAPFolder.isOpen())
-			lastIMAPFolder.open(Folder.READ_ONLY);//READ_WRITE
+        } catch (MessagingException e) {
+            logger.warn("Impossible to get Mails");
+        }
 
-		return lastIMAPFolder;
+        return new ArrayList<Message>();
+    }
 
-	}
+    @Override
+    public List<Message> getMails() {
 
-	private NotificationMsg mailReceivedNotification(final Message msg){
-		return new NotificationMsg() {
-			
-			@Override
-			public CoreObjectSpec getSource() {
-				return null;
-			}
-			
-			@Override
-			public String getNewValue() {
-				return null;
-			}
-			
-			@SuppressWarnings({ "rawtypes", "finally" })
-			@Override
-			public JSONObject JSONize() {
-				
-				JSONObject result = new JSONObject();
-				
-				try {
+        return getMails(0);
 
-					result.put("objectId", serviceId);
-					result.put("varName", "newMail");
-					result.put("value", USER);
+    }
 
-					result.put("subject", msg.getSubject());
-					result.put("from", msg.getFrom());
+    @Override
+    public IMAPFolder getMailBox(String storeString) throws MessagingException {
 
-					result.put("message-id", msg.getHeader("message-id")[0]);
-					
-					List<String> list=new ArrayList<String>();
-					
-					Enumeration enume = msg.getAllHeaders();
-					
-					while (enume.hasMoreElements()) {
-						String param = (String) enume.nextElement();
-						System.out.println(param);
-						list.add(param);
-					}
-					
-					result.put("headers", list);
+        if (lastIMAPFolder != null && lastIMAPFolder.getName().equals(storeString)) {
+            return lastIMAPFolder;
+        } else if (lastIMAPFolder != null) {
+            lastIMAPFolder.close(false);
+        }
 
-				} catch (MessagingException e) {
-					e.printStackTrace();
-				} finally {
-					return result;
-				}
-				
-			}
-		};
-	}
-	
-	public Calendar getLastFetchDateTime() {
-		return lastFetchDateTime;
-	}
-	
-	public void autoRefreshValueChanged(Object newValue) {
-		refreshtask.cancel();
-        logger.log(Level.FINE,"Auto-refresh changed to:"+refreshRate);
-		configureAutoRefreshTask();
-		
-	}
+        lastIMAPFolder = (IMAPFolder) getStore().getFolder(storeString);
 
-	@Override
-	public String getAbstractObjectId() {
-		return serviceId;
-	}
+        if (!lastIMAPFolder.isOpen()) {
+            lastIMAPFolder.open(Folder.READ_ONLY);//READ_WRITE
+        }
+        return lastIMAPFolder;
 
-	@Override
-	public String getUserType() {
-		return userType;
-	}
+    }
 
-	@Override
-	public int getObjectStatus() {
-		return Integer.parseInt(status);
-	}
+    private NotificationMsg mailReceivedNotification(final Message msg) {
+        return new NotificationMsg() {
 
-	@Override
-	public String getPictureId() {
-		return "";
-	}
+            @Override
+            public CoreObjectSpec getSource() {
+                return null;
+            }
 
-	@Override
-	public JSONObject getDescription() throws JSONException {
-		JSONObject descr = new JSONObject();
-		
-		descr.put("id", serviceId);
-		descr.put("type", userType); //102 for mail
-		descr.put("status", status);
-		descr.put("user", USER);
-		descr.put("refreshRate", refreshRate);
-		
-		return descr;
-	}
+            @Override
+            public String getNewValue() {
+                return null;
+            }
 
-	@Override
-	public void setPictureId(String pictureId) {}
+            @SuppressWarnings({"rawtypes", "finally"})
+            @Override
+            public JSONObject JSONize() {
 
-	@Override
-	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.SERVICE;
-	}
-	
+                JSONObject result = new JSONObject();
+
+                try {
+
+                    result.put("objectId", serviceId);
+                    result.put("varName", "newMail");
+                    result.put("value", USER);
+
+                    result.put("subject", msg.getSubject());
+                    result.put("from", msg.getFrom());
+
+                    result.put("message-id", msg.getHeader("message-id")[0]);
+
+                    List<String> list = new ArrayList<String>();
+
+                    Enumeration enume = msg.getAllHeaders();
+
+                    while (enume.hasMoreElements()) {
+                        String param = (String) enume.nextElement();
+                        System.out.println(param);
+                        list.add(param);
+                    }
+
+                    result.put("headers", list);
+
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                } finally {
+                    return result;
+                }
+
+            }
+        };
+    }
+
+    @Override
+    public Calendar getLastFetchDateTime() {
+        return lastFetchDateTime;
+    }
+
+    public void autoRefreshValueChanged(Object newValue) {
+        refreshtask.cancel();
+        logger.trace("Auto-refresh changed to: {}", refreshRate);
+        configureAutoRefreshTask();
+
+    }
+
+    @Override
+    public String getAbstractObjectId() {
+        return serviceId;
+    }
+
+    @Override
+    public String getUserType() {
+        return userType;
+    }
+
+    @Override
+    public int getObjectStatus() {
+        return Integer.parseInt(status);
+    }
+
+    @Override
+    public String getPictureId() {
+        return "";
+    }
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+
+        descr.put("id", serviceId);
+        descr.put("type", userType); //102 for mail
+        descr.put("status", status);
+        descr.put("user", USER);
+        descr.put("refreshRate", refreshRate);
+
+        return descr;
+    }
+
+    @Override
+    public void setPictureId(String pictureId) {
+    }
+
+    @Override
+    public CORE_TYPE getCoreType() {
+        return CORE_TYPE.SERVICE;
+    }
+
 }
