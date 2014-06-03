@@ -34,7 +34,7 @@ define([
       * method that loads a program and set the max id
       */
       loadProgramJSON: function(programJSON) {
-		if (programJSON === undefined) {
+		if (programJSON === undefined || programJSON.rules === undefined) {
 		  this.resetProgramJSON();
 		} else {
 		  this.programJSON = programJSON;

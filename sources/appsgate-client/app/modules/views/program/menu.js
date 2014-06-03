@@ -200,6 +200,9 @@ define([
             }
         },
         isProgramEmpty:function(program){
+            if (program.get("body").rules === undefined) {
+                return true;
+            }
           return (program.get("body").rules.length === 1 && program.get("body").rules[0].type === "empty");
         },
         /**

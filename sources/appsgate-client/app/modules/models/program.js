@@ -17,7 +17,8 @@ define([
             name: "",
             parameters: [],
             header: {},
-            definitions: []
+            definitions: [],
+			body : {}
 		},
         /**
          * Extract the name and the daemon attributes from the source to simplify their usage w/ backbone and in the templates
