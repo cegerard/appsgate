@@ -28,14 +28,14 @@ define([
             try {
                 if (jsonObj) {
                     var s = this.parseNode(jsonObj, currentNode);
-                    //console.debug(s);
+                    console.debug(s);
                     this.parser.parse(s);
                 } else {
                     console.warn("undefined json");
                 }
                 return null;
             } catch (e) {
-                //console.debug(e.message + " on " + e.id);
+                console.debug(e.message + " on " + e.id);
                 return this.tryParse(s, e);
             }
         },
@@ -84,9 +84,10 @@ define([
                 if (obj.serviceType) {
                     return type + "|" + obj.serviceType + "|";
                 }
-//                if (obj.iid == currentNode && obj.type == "empty") {
-                    return type + "selected";
-//                }
+                if (obj.type == "programs" || obj.type == "programCall") {
+                    return type + "programs";
+				}
+                return type + "selected";
             }
             if (obj.type) {
                 type += obj.type;
