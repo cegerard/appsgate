@@ -34,8 +34,12 @@ define([
       * method that loads a program and set the max id
       */
       loadProgramJSON: function(programJSON) {
-        this.programJSON = programJSON;
-        this.maxNodeId = this.findMaxId(programJSON);
+		if (programJSON === undefined) {
+		  this.resetProgramJSON();
+		} else {
+		  this.programJSON = programJSON;
+		}
+        this.maxNodeId = this.findMaxId(this.programJSON);
         this.currentNode = -1;
       },
       /**

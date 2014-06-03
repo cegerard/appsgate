@@ -17,16 +17,8 @@ define([
             name: "",
             parameters: [],
             header: {},
-            definitions: [],
-            body : {
-          iid: 0,
-          type: "setOfRules",
-          rules: [{
-            iid: 1,
-            type: "empty"
-          }]
-        }
-	},
+            definitions: []
+		},
         /**
          * Extract the name and the daemon attributes from the source to simplify their usage w/ backbone and in the templates
          * 
@@ -44,6 +36,7 @@ define([
             this.on("change:source", function() {
                 this.set("body", this.get("source").body);
             });
+
 
             // each program listens to the event whose id corresponds to its own id
             dispatcher.on(this.get("id"), function(updatedVariableJSON) {
