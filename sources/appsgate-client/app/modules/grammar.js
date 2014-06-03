@@ -84,9 +84,10 @@ define([
                 if (obj.serviceType) {
                     return type + "|" + obj.serviceType + "|";
                 }
-//                if (obj.iid == currentNode && obj.type == "empty") {
-                    return type + "selected";
-//                }
+                if (obj.type == "programs" || obj.type == "programCall") {
+                    return type + "programs";
+				}
+                return type + "selected";
             }
             if (obj.type) {
                 type += obj.type;

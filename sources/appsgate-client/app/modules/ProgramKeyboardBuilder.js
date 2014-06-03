@@ -95,6 +95,8 @@ define([
                                 case '"empty"':
                                 case '"programs"':
                                 case 'separator':
+                                case '"programCall"':
+                                case '"service"':
                                     // silently escaping
                                     break;
                                 default:

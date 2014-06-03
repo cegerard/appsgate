@@ -57,12 +57,19 @@ define([
       */
       setCurrentPos: function(id) {
         if (id) {
-          console.log("Setting current_pos to: " + id);
-          this.currentNode = id;
+		  var n = this.Grammar.parse(this.programJSON, id);
+          if (n != null) {
+            console.debug("Setting current_pos to: " + n.id);
+           this.currentNode = n.id;
+          } else {
+            console.debug("Setting current_pos to: " + id);
+			this.currentNode = id;
+		  }
         } else {
           this.currentNode = -1;
           console.error("A non valid pos has been passed to setCurrent pos: " + id);
         }
+
       },
       /**
       * method that set the cursor and build keyboard
@@ -70,8 +77,10 @@ define([
       setCursorAndBuildKeyboard: function(id) {
         console.debug("call to setCursorAndBuildKeyboard method");
         this.setCurrentPos(id);
-        var n = this.Grammar.parse(this.programJSON, this.currentNode);
+		var n = this.Grammar.parse(this.programJSON, this.currentNode);
         this.ProgramKeyboardBuilder.buildKeyboard(n);
+		this.setCurrentPos(n.id);
+
       },
       /**
       * Method that add a node from the keyboard to the jsonProgram
@@ -131,7 +140,7 @@ define([
 		  console.debug("This event is not catched: "+ button);
 		}
 
-        this.lastAddedNode = this.setIidOfJson(n);
+        this.lastAddedNode = this.recursivelySetIidOfJson(n);
         this.appendNode(this.lastAddedNode, this.currentNode);
 
         // reset the selection because a node was added
@@ -158,7 +167,7 @@ define([
               curNode[o] = this.recursivelyAppend(nodeToAppend, pos, curNode[o]);
               if (parseInt(prevIid) === parseInt(pos) && $.isArray(curNode)) {
                 if(curNode.length-1 == o){
-                  curNode.push(this.setIidOfJson(this.getEmptyJSON("empty")));
+                  curNode.push(this.recursivelySetIidOfJson(this.getEmptyJSON("empty")));
                 }
               }
             }
@@ -169,10 +178,10 @@ define([
       /**
       * Method that remove the selected node
       */
-      removeSelectedNode: function() {
-        console.debug("removing node: " + this.currentNode);
-        this.programJSON = this.recursivelyRemove(this.currentNode, this.programJSON);
-        this.buildInputFromJSON();
+      removeNode: function(id) {
+        console.debug("removing node: " + id);
+        this.programJSON = this.recursivelyRemove(id, this.programJSON);
+		dispatcher.trigger("refreshDisplay");
       },
       /**
       * method that recursively remove a node (by putting empty instead of what was present before)
@@ -270,13 +279,13 @@ define([
       /**
       * Method to replace the X in the iid attribute of nodes
       */
-      setIidOfJson: function(obj) {
+      recursivelySetIidOfJson: function(obj) {
         if (obj.iid === "X") {
           obj.iid = ++this.maxNodeId;
         }
         for (var k in obj) {
           if (typeof obj[k] === "object") {
-            this.setIidOfJson(obj[k]);
+            this.recursivelySetIidOfJson(obj[k]);
           }
         }
         return obj;
@@ -339,8 +348,7 @@ define([
       * Method to get the JSON representation of the program.
       */
       getInputFromJSON: function() {
-        console.debug("Getting Input FROM JSON");
-        if (this.checkProgramAndBuildKeyboard()) {
+        if (this.checkProgram(this.programJSON)) {
           this.isValid = true;
         } else {
           this.isValid = false;
@@ -369,31 +377,21 @@ define([
         return selected;
 
       },
-
-      /**
-      *
-      */
-      checkProgramAndBuildKeyboard: function(programJSON) {
-        console.debug("CheckProgramAndBuildKeyboard")
-        if (typeof programJSON !== "undefined") {
-          this.programJSON = programJSON;
-        }
+	  
+	  /**
+       *
+       */
+      buildKeyboard: function() {
+        console.debug("buildKeyboard")
         var n = this.Grammar.parse(this.programJSON, this.currentNode);
-        if (n == null && !this.isProgramEmpty()) {
-          //console.log("Program is correct");
-          return true;
-        } else if (n !== null && n.expected[0] === "ID") {
-          console.warn('Something unexpected happened');
-          this.resetProgramJSON();
-          this.checkProgramAndBuildKeyboard();
-        } else if (n !== null) {
-          if(typeof n.id !== "undefined") {
-            this.setCurrentPos(n.id);
-          }
+		if (n === null) {
+		  console.error("Unable to parse the program");
+		  return false;
+		}
           this.ProgramKeyboardBuilder.buildKeyboard(n);
-        }
-        return false;
+		return true;
       },
+
 	  
 	  /**
 	   * Method to check whether the program is correct or not
@@ -404,6 +402,7 @@ define([
         if (n == null && !this.isProgramEmpty()) {
           return true;
         } else if (n !== null && n.expected[0] === "ID") {
+		  console.log(this.programJSON)
           console.warn('Something unexpected happened');
 		  return false;
         } else {

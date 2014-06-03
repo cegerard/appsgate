@@ -81,12 +81,8 @@ define([
         this.model.set("modified", false);
         if (this.Mediator.isValid) {
           this.model.set("runningState", "DEPLOYED");
-          $(".led").addClass("led-default").removeClass("led-red");
-          $(".programNameInput").addClass("valid-program");
         } else {
           this.model.set("runningState", "INVALID");
-          $(".led").addClass("led-red").removeClass("led-default");
-          $(".programNameInput").removeClass("valid-program");
         }
         this.model.save();
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
@@ -101,13 +97,6 @@ define([
           button = button.parentNode;
         }
         this.Mediator.addNodeFromButton(button);
-        if (this.Mediator.isValid) {
-          $(".led").addClass("led-default").removeClass("led-red");
-          $(".programNameInput").addClass("valid-program");
-        } else {
-          $(".led").addClass("led-red").removeClass("led-default");
-          $(".programNameInput").removeClass("valid-program");
-        }
       },
       /**
        *
@@ -119,15 +108,20 @@ define([
           this.onBrowseMedia($(button));
         }
         else if (button.tagName.toUpperCase() !== "SELECT" && button.tagName !== "INPUT"  && button.tagName !== "TEXTAREA"){
-          while (button !== null && typeof button.classList === 'undefined' || !button.classList.contains('btn-prog')) {
+          while (button !== null && button.id  === '') {
             button = button.parentNode;
           }
-          if ($(button).hasClass("glyphicon-trash")) {
-            this.Mediator.setCurrentPos(button.id);
-            this.Mediator.removeSelectedNode();
+          if (button.id ==="") {
+            // clicking on a "et" button
+            // do nothing
+            return;
           }
-          this.Mediator.setCursorAndBuildKeyboard(button.id);
-          this.refreshDisplay();
+          if ($(button).hasClass("glyphicon-trash")) {
+            this.Mediator.removeNode(button.id);
+          } else {
+            this.Mediator.setCurrentPos(button.id);
+            this.refreshDisplay();
+          }
         }
       },
       // Displays a tree of items the player can read
@@ -306,25 +300,29 @@ define([
       resetSelection: function() {
         $(".expected-elements").html("");
         this.Mediator.setCurrentPos(-1);
-        this.Mediator.buildInputFromJSON();
+        //this.Mediator.buildInputFromJSON();
+        this.refreshDisplay();
       },
       refreshDisplay: function(e) {
         //if (e == undefined || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
         if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
           this.Mediator.buildInputFromJSON();
+          this.Mediator.buildKeyboard();
           if (!this.Mediator.isValid) {
             this.model.set("runningState", "INVALID");
           }
           this.applyEditMode();
           // translate the view
           this.$el.i18n();
-          if (this.model.get("runningState") === "INVALID"){
-            $(".programNameInput").removeClass("valid-program");
-            $(".led").addClass("led-red").removeClass("led-green").removeClass("led-default");
-          } else{
-            $(".led").addClass("led-default").removeClass("led-green").removeClass("led-red");
-            $(".programNameInput").addClass("valid-program");
-          }
+        if (this.Mediator.isValid) {
+          this.model.set("runningState", "DEPLOYED");
+          $(".led").addClass("led-default").removeClass("led-red");
+          $(".programNameInput").addClass("valid-program");
+        } else {
+          this.model.set("runningState", "INVALID");
+          $(".led").addClass("led-red").removeClass("led-default");
+          $(".programNameInput").removeClass("valid-program");
+        }
         }
       },
       applyEditMode: function() {

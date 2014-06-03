@@ -18,7 +18,14 @@ define([
             parameters: [],
             header: {},
             definitions: [],
-            body : { "type" : "setOfRules", "rules": []}
+            body : {
+          iid: 0,
+          type: "setOfRules",
+          rules: [{
+            iid: 1,
+            type: "empty"
+          }]
+        }
 	},
         /**
          * Extract the name and the daemon attributes from the source to simplify their usage w/ backbone and in the templates
