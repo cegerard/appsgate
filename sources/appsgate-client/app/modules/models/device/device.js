@@ -41,7 +41,8 @@ define([
                     {type: "String", value: this.get("id")},
                     {type: "String", value: ""},
                     {type: "String", value: this.get("name")}
-                ]
+                ],
+                TARGET: "EHMI"
             };
 
             // send the message
@@ -59,7 +60,8 @@ define([
                 targetType: "1",
                 objectId: this.get("id"),
                 method: method,
-                args: args
+                args: args,
+                TARGET: "CHMI"
             };
 
             if (typeof callId !== "undefined") {

@@ -53,7 +53,8 @@ define([
             communicator.sendMessage({
                 method: "getDevices",
                 args: [],
-                callId: "listDevices"
+                callId: "listDevices",
+                TARGET: "EHMI"
             });
         },
         /**

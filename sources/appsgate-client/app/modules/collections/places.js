@@ -67,7 +67,8 @@ define([
             communicator.sendMessage({
                 method: "getPlaces",
                 args: [],
-                callId: "listPlaces"
+                callId: "listPlaces",
+                TARGET: "EHMI"
             });
         },
         /**
@@ -134,7 +135,8 @@ define([
                         {type: "String", value: deviceId},
                         {type: "String", value: srcPlaceId},
                         {type: "String", value: destPlaceId}
-                    ]
+                    ],
+                    TARGET: "EHMI"
                 };
                 // send the message
                 communicator.sendMessage(messageJSON);

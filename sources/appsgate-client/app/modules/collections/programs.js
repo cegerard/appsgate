@@ -44,7 +44,8 @@ define([
             communicator.sendMessage({
                 method: "getPrograms",
                 args: [],
-                callId: "listPrograms"
+                callId: "listPrograms",
+                TARGET: "EHMI"
             });
         },
         stopAllPrograms:function() {

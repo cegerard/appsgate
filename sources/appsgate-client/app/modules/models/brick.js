@@ -31,7 +31,8 @@ define([
             // build the message
             var messageJSON = {
                 method: method,
-                args: args
+                args: args,
+                TARGET: "EHMI"
             };
 
             if (typeof callId !== "undefined") {

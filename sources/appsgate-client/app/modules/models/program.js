@@ -53,7 +53,8 @@ define([
         remoteCall: function(method, args) {
             communicator.sendMessage({
                 method: method,
-                args: args
+                args: args,
+                TARGET: "EHMI"
             });
         },
         // override its synchronization method to send a notification on the network

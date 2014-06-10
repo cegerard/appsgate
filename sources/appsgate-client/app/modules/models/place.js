@@ -180,7 +180,8 @@ define([
         remoteCall: function(method, args) {
             communicator.sendMessage({
                 method: method,
-                args: args
+                args: args,
+                TARGET: "EHMI"
             });
         },
         /**
