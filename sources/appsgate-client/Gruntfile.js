@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     // Wipe out previous builds and test reporting.
-    clean: ["www/*"],
+    clean: ["phonegap-client/www/*"],
 
     // Run your source code through JSHint's defaults.
     jshint: ["app/**/*.js"],
@@ -16,7 +16,7 @@ module.exports = function(grunt) {
           mainConfigFile: "app/config.js",
           generateSourceMaps: true,
           include: ["main"],
-          out: "www/source.min.js",
+          out: "phonegap-client/www/source.min.js",
           optimize: "uglify2",
 
           // Since we bootstrap with nested `require` calls this option allows
@@ -29,7 +29,7 @@ module.exports = function(grunt) {
           // Setting the base url to the distribution directory allows the
           // Uglify minification process to correctly map paths for Source
           // Maps.
-          baseUrl: "www/app",
+          baseUrl: "phonegap-client/www/app",
 
           // Wrap everything in an IIFE.
           wrap: true,
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
     styles: {
       // Out the concatenated contents of the following styles into the below
       // development file path.
-      "www/styles.css": {
+      "phonegap-client/www/styles.css": {
         // Point this to where your `index.css` file is location.
         src: "app/styles/index.css",
 
@@ -65,7 +65,7 @@ module.exports = function(grunt) {
     cssmin: {
       release: {
         files: {
-          "www/styles.min.css": ["www/styles.css"]
+          "phonegap-client/www/styles.min.css": ["www/styles.css"]
         }
       }
     },
@@ -80,7 +80,7 @@ module.exports = function(grunt) {
 
       release: {
         options: {
-          prefix: "www/"
+          prefix: "phonegap-client/www/"
         }
       },
 
@@ -95,7 +95,7 @@ module.exports = function(grunt) {
     processhtml: {
       release: {
         files: {
-          "www/index.html": ["index.html"]
+          "phonegap-client/www/index.html": ["index.html"]
         }
       }
     },
@@ -104,8 +104,9 @@ module.exports = function(grunt) {
     copy: {
       release: {
         files: [
-          { src: ["app/**"], dest: "www/" },
-          { src: "vendor/**", dest: "www/" }
+          { src: ["app/**"], dest: "phonegap-client/www/" },
+          { src: "vendor/**", dest: "phonegap-client/www/" },
+          { src: "config.xml", dest: "phonegap-client/www/" }
         ]
       }
     },
@@ -113,10 +114,10 @@ module.exports = function(grunt) {
     compress: {
       release: {
         options: {
-          archive: "www/source.min.js.gz"
+          archive: "phonegap-client/www/source.min.js.gz"
         },
 
-        files: ["www/source.min.js"]
+        files: ["phonegap-client/www/source.min.js"]
       }
     },
 
@@ -212,10 +213,10 @@ module.exports = function(grunt) {
   // When running the default Grunt command, just lint the code.
   grunt.registerTask("default", [
     "clean",
-    "jshint",
+    //"jshint",
     "processhtml",
     "copy",
-    //"requirejs",
+    "requirejs",
     //"styles",
     //"cssmin",
   ]);

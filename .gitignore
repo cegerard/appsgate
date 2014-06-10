@@ -230,21 +230,12 @@ distributions/AppsGate-autodistrib/load/*
 
 /** Ignore from the appsgate-client **/
 
-.DS_Store
-node_modules/*
-platforms/*
-plugins/*
-test/*
-nbproject/
-bower_components/
-www/
+sources/appsgate-client/.DS_Store
+sources/appsgate-client/node_modules/*
+sources/appsgate-client/phonegap-client/*
+sources/appsgate-client/bower_components/
 *.pbxproj
 */xcuserdata/*
-platforms/ios/AppsGate.xcodeproj/project.pbxproj
-.project
 *.xcscheme
 
-platforms/ios/AppsGate.xcodeproj/xcuserdata/jr.xcuserdatad/xcschemes/xcschememanagement.plist
-
-platforms/ios/CordovaLib/CordovaLib.xcodeproj/xcuserdata/jr.xcuserdatad/xcschemes/xcschememanagement.plist
 *.lck

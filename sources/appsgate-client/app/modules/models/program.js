@@ -22,7 +22,7 @@ define([
 		},
         /**
          * Extract the name and the daemon attributes from the source to simplify their usage w/ backbone and in the templates
-         * 
+         *
          * @constructor
          */
         initialize: function() {
@@ -46,7 +46,7 @@ define([
         },
         /**
          * Send a message to the server to perform a remote call
-         * 
+         *
          * @param method Remote method name to call
          * @param args Array containing the argument taken by the method. Each entry of the array has to be { type : "", value "" }
          */
@@ -59,6 +59,7 @@ define([
         },
         // override its synchronization method to send a notification on the network
         sync: function(method, model) {
+            var self = this;
             console.log(model.toJSON());
             switch (method) {
                 case "create":
@@ -68,6 +69,11 @@ define([
                         id = "program-" + Math.round(Math.random() * 10000).toString();
                     } while (programs.where({id: id}).length > 0);
                     model.set("id", id);
+
+                    // each program listens to the event whose id corresponds to its own id
+                    dispatcher.on(this.get("id"), function(updatedVariableJSON) {
+                        self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
+                    });
 
                     this.remoteCall("addProgram", [{type: "JSONObject", value: model.toJSON()}]);
                     break;
