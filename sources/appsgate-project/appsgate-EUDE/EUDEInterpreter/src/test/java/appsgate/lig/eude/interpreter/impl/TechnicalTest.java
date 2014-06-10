@@ -7,9 +7,9 @@ package appsgate.lig.eude.interpreter.impl;
 
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
-import appsgate.lig.context.proxy.spec.ContextProxyMock;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
+import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 
 import java.io.File;
@@ -57,7 +57,7 @@ public class TechnicalTest {
     private DataBasePushService push_service;
     private CHMIProxySpec chmiProxy;
     private EUDEInterpreter instance;
-    private ContextProxyMock contextProxy;
+    private EHMIProxyMock ehmiProxy;
 
     private final File[] listFiles;
 
@@ -78,7 +78,7 @@ public class TechnicalTest {
         this.pull_service = context.mock(DataBasePullService.class);
         this.push_service = context.mock(DataBasePushService.class);
         this.chmiProxy = context.mock(CHMIProxySpec.class);
-        this.contextProxy = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
+        this.ehmiProxy = new EHMIProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONArray deviceList = new JSONArray();
         JSONObject clock = new JSONObject();
         clock.put("id", "1");
@@ -117,7 +117,7 @@ public class TechnicalTest {
             }
         });
         this.instance = new EUDEInterpreter();
-        this.instance.setTestMocks(pull_service, push_service, chmiProxy, contextProxy);
+        this.instance.setTestMocks(pull_service, push_service, ehmiProxy);
 
     }
 

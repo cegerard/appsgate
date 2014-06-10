@@ -18,9 +18,14 @@
 	<!-- Dependencies Description -->
 	<dependencies>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
+			<groupId>appsgate.components</groupId>
+			<artifactId>ClientCommunicationManager</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>CHMIProxySpec</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 

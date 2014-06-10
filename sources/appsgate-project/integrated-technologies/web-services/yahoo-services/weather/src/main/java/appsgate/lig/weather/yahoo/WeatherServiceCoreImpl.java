@@ -145,9 +145,10 @@ public class WeatherServiceCoreImpl implements CoreObjectSpec {
 		return CORE_TYPE.SERVICE;
 	}
 
-    @Override
-    public JSONObject getGrammarDescription() {
-        return null;
-    }	
+	@Override
+	public JSONObject getBehaviorDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 
 }

@@ -1,7 +1,8 @@
 package appsgate.lig.context.agregator.spec;
 
-import appsgate.lig.core.object.spec.StateDescription;
 import org.json.JSONArray;
+
+import appsgate.lig.ehmi.spec.StateDescription;
 
 /**
  *

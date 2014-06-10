@@ -30,7 +30,7 @@ public class CoreObjectBehaviorTest {
     }
 
     public int testMethod() {
-        JSONObject desc = instance.getGrammarDescription();
+        JSONObject desc = instance.getBehaviorDescription();
         if (desc == null) {
             Assert.fail("Unable to load description");
         }

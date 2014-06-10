@@ -6,12 +6,14 @@
 	<composite name="AppsGate-Application" singleton="true"
 		main="EHMIProxyImpl">
 		<contentMngt>
+		
+			<start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
 
 			<start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
 
 			<start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
-			<start implementation="AppsGateContextProxyImpl" name="AppsGateContextProxyInst"></start>
+			<start implementation="CHMIProxyImpl" name="AppsGateCHMIProxyInst"></start>
 
 			<start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 
@@ -21,7 +23,11 @@
 
 			<start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
 
-			<start implementation="YahooWeatherImpl" name="YahooWeather">
+<!-- Unused
+			<start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start>
+			<start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start>
+-->
+            <start implementation="YahooWeatherImpl" name="YahooWeather">
 				<property name="auto-refresh" value="1800000" />
 			</start>
 
@@ -62,10 +68,8 @@
 		<contentMngt>
 			<start implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
 			<start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager" />
-			<!-- <start implementation="ContextManagerImpl" name="Global-ContextManager"/> -->
 			<start implementation="PlaceManagerImpl" name="Global-PlaceManager" />
-			<start implementation="AppsGateContextDevicePorpertiesTableImpl"
-				name="Global-DevicePropertiesTableManager" />
+			<start implementation="AppsGateContextDevicePorpertiesTableImpl" name="Global-DevicePropertiesTableManager" />
 			<start implementation="AppsGateContextUserBaseImpl" name="Global-UserBaseManager" />
 		</contentMngt>
 	</composite>

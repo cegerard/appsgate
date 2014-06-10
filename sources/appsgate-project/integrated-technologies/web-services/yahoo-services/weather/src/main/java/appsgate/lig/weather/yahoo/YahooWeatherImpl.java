@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
@@ -432,6 +433,11 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 
 		return nameLoc;
 	}
+
+	@Override
+	public CORE_TYPE getCoreType() {
+		return CORE_TYPE.SERVICE;
+	}
     
     private void fetchAtLocation(String placeName) throws WeatherForecastException {
 		if (!woeidFromePlaceName.containsKey(placeName))
@@ -495,6 +501,5 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 		
 		return SimplifiedWeatherCodesHelper.contains(simpleWeatherCode, currentYahooForecast);
 	}
-
 
 }

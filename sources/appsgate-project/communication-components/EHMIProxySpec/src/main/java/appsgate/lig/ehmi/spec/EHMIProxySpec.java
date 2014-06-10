@@ -1,7 +1,11 @@
 package appsgate.lig.ehmi.spec;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import appsgate.lig.ehmi.spec.listeners.CoreListener;
 
 /**
  * EHMI specification that define all method that a client can remote call
@@ -37,6 +41,14 @@ public interface EHMIProxySpec {
 	 * @return the device list as a JSONArray
 	 */
 	public JSONArray getDevices(String type);
+	
+    /**
+     * Get the state representation for a device type in the grammar
+     * @param objectId the device from which to get the state representation
+     * @param stateName the specific state to extract
+     * @return the state description
+     */
+    public StateDescription getEventsFromState(String objectId, String stateName);
 
 	
 	/***************************/
@@ -140,6 +152,17 @@ public interface EHMIProxySpec {
 	 * @return the identifier of the place where the core object is placed.
 	 */
 	public String getCoreObjectPlaceId(String objId);
+	
+	/**
+     * Return the devices of a list of type presents in the places
+     *
+     * @param typeList the list of types to look for (if empty, return all
+     * objects)
+     * @param spaces the spaces where to find the objects (if empty return all
+     * places)
+     * @return a list of objects contained in these spaces
+     */
+    public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList, ArrayList<String> spaces);
 	
 	/**
 	 * Call AppsGate to get all the places that match a specific name
@@ -353,6 +376,28 @@ public interface EHMIProxySpec {
 	 */
 	public boolean isProgramActive(String programId);
 	
+	
+	/************************************/
+	/**    Core update Subscription     */
+	/************************************/
+	
+	/**
+     * This method allow the caller to add a specific coreListener to follow
+     * core components state change.
+     *
+     * @param coreListener the listener for subscription
+     */
+	public void addCoreListener(CoreListener coreListener);
+
+    /**
+     * This method allow the caller to unsubscribe itself from core components
+     * state change.
+     *
+     * @param coreListener
+     */
+    public void deleteCoreListener(CoreListener coreListener);
+    
+    
 	/************************************/
 	/**    General AppsGate commands    */
 	/************************************/
@@ -368,5 +413,27 @@ public interface EHMIProxySpec {
 	 * (Restart the system bundle from OSGi)
 	 */
 	public void restart();
+	
+	/************************************/
+	/**    Generic AppsGate commands    */
+	/************************************/
+    
+    /**
+	 * Get a runnable object that can execute command from a remote device manager asynchronously
+	 * 
+	 * @param objIdentifier the identifier of the object on the remote system
+	 * @param method the method name to call
+	 * @param args the arguments list with their types
+	 * @return a runnable object that can be execute and manage.
+	 */
+	public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, JSONArray args);
+	
+	/**
+	 * Get the current system time from the local EHMI clock
+	 * @return the current time in milliseconds as a long
+	 */
+	public long getCurrentTimeInMillis() ;
+	
+	
 	
 }

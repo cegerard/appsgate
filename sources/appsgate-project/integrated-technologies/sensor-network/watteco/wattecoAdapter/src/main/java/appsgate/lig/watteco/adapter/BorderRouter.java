@@ -202,7 +202,6 @@ public class BorderRouter {
 	}
 	
 	private void setInstanceProperties(Instance inst, byte[] result) {
-		// TODO and set the corresponding properties or send notifications
 		try{
 			
 			String implName = inst.getImpl().getName(); 
@@ -232,7 +231,6 @@ public class BorderRouter {
 					activePower += b;
 					inst.setProperty("consumption", String.valueOf(activePower));
 				}
-				
 			}
 			
 		}catch(Exception e) {

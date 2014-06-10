@@ -1,9 +1,13 @@
 package appsgate.lig.chmi.spec;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
+import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 
 /**
  * Specification of the CHMI proxy that offer services about
@@ -16,6 +20,34 @@ import org.json.JSONObject;
 public interface CHMIProxySpec {
 	
 	/**
+	 * Subscribe to core updates (add/remove object)
+	 * @param coreUpdatesListener the listener for subscription
+	 * @return true if the listener is registered, false otherwise
+	 */
+	public boolean CoreUpdatesSubscribe(CoreUpdatesListener coreUpdatesListener);
+	
+	/**
+	 * Disable subscription for core updates notification
+	 * @param coreUpdatesListener the listener to unregister
+	 * @return true if the listener is unregistered, false otherwise
+	 */
+	public boolean CoreUpdatesUnsubscribe(CoreUpdatesListener coreUpdatesListener);
+	
+	/**
+	 * Subscribe to core events notification
+	 * @param coreEventListener the listener for event subscription
+	 * @return true if the listener is registered, false otherwise
+	 */
+	public boolean CoreEventsSubscribe(CoreEventsListener coreEventsListener);
+	
+	/**
+	 * Disable subscription for core events notification
+	 * @param coreEventsListener the listener to unregister
+	 * @return true if the listener is unregistered, false otherwise
+	 */
+	public boolean CoreEventsUnsubscribe(CoreEventsListener coreEventsListener);
+	
+	/**
 	 * Execute a command from the outside to a specific device
 	 * @param objectId the target object
 	 * @param methodName the method to call
@@ -26,6 +58,21 @@ public interface CHMIProxySpec {
 	@SuppressWarnings("rawtypes")
 	public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType);
 
+    /**
+     * Get a command description, resolve the target reference and make the
+     * call.
+     *
+     * @param clientId client identifier
+     * @param objectId abstract object identifier
+     * @param methodName method to call on objectId
+     * @param args arguments list form method methodName
+     * @param paramType argument type list
+     * @param callId the remote call identifier
+     * @return a Runnable object that can be execute everywhere.
+     */
+	 @SuppressWarnings("rawtypes")
+	public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId);
+	
 	/**
 	 * Execute command from outside to a specific device
 	 * @param objectId the targeted object
@@ -34,7 +81,7 @@ public interface CHMIProxySpec {
 	 * @return a Runnable object that can be execute everywhere.
 	 */
 	public GenericCommand executeCommand(String objectId, String methodName, JSONArray args);
-	
+	 
 	/**
 	 * Get all the devices description as JSONArray
 	 */
@@ -49,9 +96,61 @@ public interface CHMIProxySpec {
 	
 	/**
 	 * Get all the device that fit the type parameter
-	 * @param type
-	 * 			the type parameter
+	 * @param type the type parameter
 	 * @return the device list of the same "type"
 	 */
 	public JSONArray getDevices(String type);
+	
+	/**
+	 * Get the identifier of the core clock
+	 * @return the core clock identifier as a string or null if there is no core clock
+	 */
+	public String getCoreClockObjectId();
+	
+	/************************************/
+	/**       Core clock commands      **/
+	/************************************/
+	
+	/**
+	 * Register a time alarm
+	 * @param calendar the date when the alarm will ring
+	 * @param message a message from the requester
+	 * @return the alarm identifier
+	 */
+	public int registerTimeAlarm(Calendar calendar, String message);
+
+	/**
+	 * Unregister a alarm from its identifier
+	 * @param alarmId the alarm identifier
+	 */
+	public void unregisterTimeAlarm(Integer alarmId);
+	
+	/**
+	 * Get the current system time in milliseconds
+	 * @return the time in milliseconds as a long
+	 */
+	public long getCurrentTimeInMillis();
+	
+	/**
+	 * Get the current time flow rate
+	 * @return the current time flow
+	 */
+	public double getTimeFlowRate();
+	
+	/************************************/
+	/**      General core commands     **/
+	/************************************/
+	
+	/**
+	 * Shutdown the system
+	 * (Shutdown the OSGi distribution)
+	 */
+	public void shutdown();
+	
+	/**
+	 * restart the system
+	 * (Restart the system bundle from OSGi)
+	 */
+	public void restart();
+
 }

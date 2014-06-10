@@ -1,7 +1,8 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.proxy.spec.ContextProxyMock;
-import appsgate.lig.context.proxy.spec.ContextProxySpec;
+import appsgate.lig.ehmi.spec.EHMIProxyMock;
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
+
 import org.jmock.Expectations;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,7 +15,7 @@ import org.junit.Before;
 public class NodeSelectTest extends NodeTest {
 
     public NodeSelectTest() throws JSONException {
-        final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
+        final EHMIProxySpec c = new EHMIProxyMock("src/test/resources/jsonLibs/toto.json");
 
         context.checking(new Expectations() {
             {

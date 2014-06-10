@@ -355,6 +355,11 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
                 return null;
             }
 
+            @Override
+            public String getVarName() {
+                return null;
+            }
+
             @SuppressWarnings({"rawtypes", "finally"})
             @Override
             public JSONObject JSONize() {
@@ -448,4 +453,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
         return CORE_TYPE.SERVICE;
     }
 
+
+
+			
 }

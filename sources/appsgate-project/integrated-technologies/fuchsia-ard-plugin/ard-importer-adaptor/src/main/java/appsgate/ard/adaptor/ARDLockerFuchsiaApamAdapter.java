@@ -64,6 +64,10 @@ public class ARDLockerFuchsiaApamAdapter implements EventHandler {
             public CoreObjectSpec getSource() {
                 return null;
             }
+            
+            public String getVarName() {
+            	return null;
+            }
 
             public String getNewValue() {
                 return null;

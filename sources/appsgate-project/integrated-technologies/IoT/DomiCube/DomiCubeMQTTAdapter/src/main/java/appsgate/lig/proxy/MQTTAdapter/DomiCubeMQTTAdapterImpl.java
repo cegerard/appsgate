@@ -362,5 +362,4 @@ public class DomiCubeMQTTAdapterImpl {
             listening = state;
         }
     }
-
 }

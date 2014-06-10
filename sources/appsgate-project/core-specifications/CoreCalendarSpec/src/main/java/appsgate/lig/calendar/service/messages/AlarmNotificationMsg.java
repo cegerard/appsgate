@@ -43,6 +43,11 @@ public class AlarmNotificationMsg implements NotificationMsg {
     public CoreObjectSpec getSource() {
         return null;
     }
+    
+    @Override
+    public String getVarName() {
+    	return "alarm";
+    }
 
     @Override
     public String getNewValue() {

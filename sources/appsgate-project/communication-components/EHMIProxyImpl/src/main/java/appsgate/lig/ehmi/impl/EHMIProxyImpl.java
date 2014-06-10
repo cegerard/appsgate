@@ -6,11 +6,14 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,16 +30,30 @@ import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
+import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
+import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
 import appsgate.lig.manager.place.spec.*;
+import appsgate.lig.ehmi.exceptions.CoreDependencyException;
+import appsgate.lig.ehmi.exceptions.ExternalComDependencyException;
+import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
+import appsgate.lig.ehmi.impl.listeners.ObjectEventListener;
+import appsgate.lig.ehmi.impl.listeners.ObjectUpdateListener;
+import appsgate.lig.ehmi.impl.listeners.TimeObserver;
 import appsgate.lig.ehmi.impl.upnp.AppsGateServerDevice;
 import appsgate.lig.ehmi.impl.upnp.ServerInfoService;
 import appsgate.lig.ehmi.impl.upnp.StateVariableServerIP;
 import appsgate.lig.ehmi.impl.upnp.StateVariableServerURL;
 import appsgate.lig.ehmi.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.ehmi.spec.StateDescription;
+import appsgate.lig.ehmi.spec.listeners.CoreListener;
+import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 
 
@@ -65,11 +82,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * resources to the Felix HTTP server
 	 */
 	private HttpService httpService;
-
-//	/**
-//	 * The place manager ApAM component to handle the space manager service reference
-//	 */
-//	private ContextManagerSpec contextManager;
 	
 	/**
 	 * Table for deviceId, user and device properties association
@@ -87,14 +99,24 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	private UserBaseSpec userManager;
 
 	/**
-	 * Reference on the CHMI proxy to execute command on devices
+	 * Reference on the remote proxy service to execute command on devices/services
 	 */
-	private CHMIProxySpec chmiProxy;
+	private CHMIProxySpec coreProxy;
 
 	/**
 	 * Reference to the EUDE interpreter to manage end user programs
 	 */
 	private EUDE_InterpreterSpec interpreter;
+	
+    /**
+     * Service to be notified when clients send commands
+     */
+    private ListenerService addListenerService;
+
+    /**
+     * Service to communicate with clients
+     */
+    private SendWebsocketsService sendToClientService;
 	
 	
 	private String wsPort="8087";
@@ -106,7 +128,37 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	private ServerInfoService upnpService;
 	private StateVariableServerIP serverIP;
 	private StateVariableServerURL serverURL;
-	private StateVariableServerWebsocket serverWebsocket;	
+	private StateVariableServerWebsocket serverWebsocket;
+
+	/**
+	 * Listener for EHMI command from clients
+	 */
+	private EHMICommandListener commandListener;
+
+	/**
+	 * Object update state event listener
+	 */
+	private CoreEventsListener objectEventsListener;
+
+	/**
+	 * object discovery listener
+	 */
+	private CoreUpdatesListener objectUpdatesListener;	
+	
+	 /**
+     * Events subscribers list
+     */
+    private final HashMap<Entry, ArrayList<CoreListener>> eventsListeners = new HashMap<Entry, ArrayList<CoreListener>>();
+
+    /**
+     * Hash map use to conserve alarm identifier.
+     */
+    private final HashMap<Entry, Integer> alarmListenerList = new HashMap<Entry, Integer>();
+    
+    /**
+     * This is the system clock to deal with time in AppsGate EHMI
+     */
+    private SystemClock systemClock;
 
 	/**
 	 * Default constructor for EHMIImpl java object. it load UPnP device and
@@ -116,19 +168,20 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	public EHMIProxyImpl(BundleContext context) {
 		logger.debug("new EHMI, BundleContext : " + context);
 		this.context = context;
-		upnpDevice = new AppsGateServerDevice(context);
+		this.commandListener = new EHMICommandListener(this);
+		this.objectEventsListener = new ObjectEventListener(this);
+		this.objectUpdatesListener = new ObjectUpdateListener(this);
+		this.upnpDevice = new AppsGateServerDevice(context);
 		logger.debug("UPnP Device instanciated");
 		registerUpnpDevice();
 		retrieveLocalAdress();
-
 		logger.info("EHMI instanciated");
 	}
 	
 	
 	private void registerUpnpDevice() {
 		Dictionary<String, Object> dict = upnpDevice.getDescriptions(null);
-		serviceRegistration = context.registerService(
-				UPnPDevice.class.getName(), upnpDevice, dict);
+		serviceRegistration = context.registerService(UPnPDevice.class.getName(), upnpDevice, dict);
 		logger.debug("UPnP Device registered");
 		
 		upnpService = (ServerInfoService) upnpDevice.getService(ServerInfoService.SERVICE_ID);
@@ -142,7 +195,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 */
 	public void newInst() {
 		logger.debug("EHMI is starting");
-
+		systemClock = new SystemClock(this);
+		
 		if (httpService != null) {
 			final HttpContext httpContext = httpService.createDefaultHttpContext();
 			final Dictionary<String, String> initParams = new Hashtable<String, String>();
@@ -155,29 +209,141 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				logger.error("NameSpace exception");
 			}
 		}
+		
+        try{
+        	if (addListenerService.addCommandListener(commandListener, "EHMI")) {
+        		logger.info("EHMI command listener deployed.");
+        	} else {
+        		logger.error("EHMI command listener subscription failed.");
+        	}
+        }catch(ExternalComDependencyException comException) {
+    		logger.debug("Resolution failed for listener service dependency, the EHMICommandListener will not be registered");
+    	}
+        
+        try {
+        	if(coreProxy.CoreEventsSubscribe(objectEventsListener)){
+        		logger.info("Core event listener deployed.");
+        		systemClock.startRemoteSync(coreProxy);
+        	}else {
+        		logger.error("Core event deployement failed.");
+        	}
+        	if(coreProxy.CoreUpdatesSubscribe(objectUpdatesListener)) {
+        		logger.info("Core updates listener deployed.");
+        	}else {
+        		logger.error("Core updates listener deployement failed.");
+        	}
+		}catch(CoreDependencyException coreException) {
+    		logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
+    		if(systemClock.isRemote())
+    			systemClock.stopRemoteSync(coreProxy);
+		}
+		
 	}
 
 	/**
 	 * Called by APAM when an instance of this implementation is removed
 	 */
 	public void deleteInst() {
-		logger.info("EHMI is stopping");
 		httpService.unregister("/spok");
+		try{
+			addListenerService.removeCommandListener("EHMI");
+		}catch(ExternalComDependencyException comException) {
+    		logger.warn("Resolution failed for listener service dependency, the EHMICommandListener will not be unregistered");
+    	}
+		
+    	try {
+        	coreProxy.CoreEventsUnsubscribe(objectEventsListener);
+        	coreProxy.CoreUpdatesUnsubscribe(objectUpdatesListener);
+        	if(systemClock.isRemote())
+        		systemClock.stopRemoteSync(coreProxy);
+		}catch(CoreDependencyException coreException) {
+    		logger.warn("Resolution failled for core dependency, no notification subscription can be delete.");
+		}
+    	
+    	logger.info("EHMI has been stopped.");
 	}
 
 	@Override
 	public JSONArray getDevices() {
-		return chmiProxy.getDevices();
+		JSONArray devices = new JSONArray();
+		try {
+			return addContextData(coreProxy.getDevices());
+		}catch(CoreDependencyException coreException) {
+    		logger.debug("Resolution failled for core dependency, no device can be found.");
+    		if(systemClock.isRemote()){
+    			systemClock.stopRemoteSync(coreProxy);
+    		}
+    		try {
+				devices.put(addContextData(systemClock.getDescription(), systemClock.getAbstractObjectId()));
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
+    	}
+		return devices;
 	}
 	
 	@Override
 	public JSONObject getDevice(String deviceId) {
-		return chmiProxy.getDevice(deviceId);
+		JSONObject devices = new JSONObject();
+		try {
+			JSONObject coreObject = coreProxy.getDevice(deviceId);
+			return addContextData(coreObject, deviceId);
+		}catch(CoreDependencyException coreException) {
+    		logger.debug("Resolution failled for core dependency, no device can be found.");
+    		if(systemClock.isRemote()) {
+    			systemClock.stopRemoteSync(coreProxy);
+    		}
+    		if(deviceId.contentEquals(systemClock.getAbstractObjectId())) {
+    			try {
+					devices = addContextData(systemClock.getDescription(), systemClock.getAbstractObjectId());
+				} catch (JSONException e) {
+					logger.error(e.getMessage());
+				}
+    		}
+		}
+		return devices;
 	}
 	
 	@Override
 	public JSONArray getDevices(String type) {
-		return chmiProxy.getDevices(type);
+		JSONArray devices = new JSONArray();
+		try {
+			return addContextData(getDevices(type));
+		}catch(CoreDependencyException coreException) {
+    		logger.debug("Resolution failled for core dependency, no device can be found.");
+    		if(systemClock.isRemote()) {
+    			systemClock.stopRemoteSync(coreProxy);
+    		}
+    		try {
+    			if(type.contentEquals(systemClock.getSystemClockType())) {
+    				devices.put(addContextData(systemClock.getDescription(), systemClock.getAbstractObjectId()));
+    			}
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
+    	}
+		return devices;
+	}
+	
+	@Override
+	public StateDescription getEventsFromState(String objectId, String stateName) {
+		JSONObject deviceDetails = coreProxy.getDevice(objectId);
+    	StateDescription stateDescription = null;
+    	try {
+    		JSONObject grammar = devicePropertiesTable.getGrammarFromType(deviceDetails.getString("type"));
+    		JSONArray grammarStates = grammar.getJSONArray("states");
+    		for (int i = 0; i < grammarStates.length(); i++) {
+    			if (grammarStates.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
+    				stateDescription = new StateDescription(grammarStates.getJSONObject(i));
+    				break;
+    			}
+    		}
+    	}catch (JSONException ex) {
+    		logger.error("Grammar not well formatted");
+    		return null;
+    	}
+    	
+    	return stateDescription;
 	}
 
 	@Override
@@ -220,9 +386,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public void newPlace(JSONObject place) {
 		try {
-			//TODO put the hierarchical management
-			//String placeParent = place.getString("parent");
+			
 			String placeParent = null;
+			if(place.has("parent")){
+				placeParent = place.getString("parent");
+			}
 			String placeId = placeManager.addPlace(place.getString("name"), placeParent);
 			JSONArray devices = place.getJSONArray("devices");
 			int size = devices.length();
@@ -266,6 +434,61 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public String getCoreObjectPlaceId(String objId) {
 		return placeManager.getCoreObjectPlaceId(objId);
+	}
+	
+	@Override
+	public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
+			ArrayList<String> spaces) {
+
+		ArrayList<String> coreObjectInPlace = new ArrayList<String>();
+		ArrayList<String> coreObjectOfType = new ArrayList<String>();
+
+		// First we get all objects in each place, if the list is empty we get
+		// all placed objects.
+		if (!spaces.isEmpty()) {
+			for (String placeId : spaces) {
+				SymbolicPlace place = placeManager.getSymbolicPlace(placeId);
+				if (place != null) {
+					coreObjectInPlace.addAll(place.getDevices());
+				} else {
+					logger.warn("No such place found: {}", placeId);
+				}
+			}
+		} else {
+			for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
+				coreObjectInPlace.addAll(symbolicPlace.getDevices());
+			}
+		}
+
+		// Now we get all identifier of device that match one types of the type
+		// list
+		try {
+			if (!typeList.isEmpty()) {
+				for (String type : typeList) {
+					JSONArray devicesOfType = coreProxy.getDevices(type);
+					int size = devicesOfType.length();
+					for (int i = 0; i < size; i++) {
+						coreObjectOfType.add(devicesOfType.getJSONObject(i)
+								.getString("id"));
+					}
+				}
+			} else {
+				JSONArray allDevices = coreProxy.getDevices();
+				int size = allDevices.length();
+				for (int i = 0; i < size; i++) {
+					coreObjectOfType.add(allDevices.getJSONObject(i).getString("id"));
+				}
+			}
+
+			// We get the intersection between placed object and object of
+			// specified type
+			coreObjectInPlace.retainAll(coreObjectOfType);
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return coreObjectInPlace;
 	}
 	
 	@Override
@@ -496,12 +719,52 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Add contextual data to a object
+	 * @param object the object to enrich
+	 * @param objectId the identifier of this object
+	 * @return the new contextual enrich JSONObject
+	 */
+	private JSONObject addContextData(JSONObject object, String objectId) {
+		try {
+			object.put("placeId", getCoreObjectPlaceId(objectId));
+			object.put("name", getUserObjectName(objectId, ""));
+		} catch (JSONException e) {
+			logger.error(e.getMessage());
+		}
+		return object;
+	}
+	
+	/**
+	 * Add contextual data to all object in an JSONArray
+	 * @param objects the objects JSONArray
+	 * @return a enrich from contextual data JSONArray 
+	 */
+	private JSONArray addContextData(JSONArray objects) {
+		JSONArray contextArray = new JSONArray();
+		try{
+			int nbObjects = objects.length();
+			int i = 0;
+			JSONObject coreObject;
+			while(i < nbObjects) {
+				coreObject = objects.getJSONObject(i);
+				contextArray.put(addContextData(coreObject, coreObject.getString("id")));
+				i++;
+			}
+		}catch (JSONException e) {
+    		logger.error(e.getMessage());
+		}
+		return contextArray;
+	}
 
+	/**
+	 * Find the IP address from system configuration to exposed
+	 * it through UPnP
+	 */
 	private void retrieveLocalAdress() {
 		// initiate UPnP state variables
 		try {
-
-
 			Inet4Address localAddress = (Inet4Address) InetAddress.getLocalHost();
 			Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
 			for (NetworkInterface netint : Collections.list(nets)) {
@@ -538,154 +801,226 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Send notification to all connected clients.
+	 * @param notif the notification to transmit
+	 */
+	public void sendToClients(JSONObject notif){
+		sendToClientService.send(notif.toString());
+	}
+	
+    /**
+     * Called by ApAM when Notification message comes and forward it to client
+     * part by calling the sendService
+     *
+     * @param notif the notification message from ApAM
+     */
+    public void gotNotification(NotificationMsg notif) {
+        logger.debug("Notification message received, " + notif.JSONize());
+        try{
+        	sendToClientService.send(notif.JSONize().toString());
+    	}catch(ExternalComDependencyException comException) {
+    		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
+    	}
+    }
+    
+    /**
+	 * Get the EHMI system clock abstraction
+	 * @return the  abstract system clock instance
+	 */
+	public SystemClock getSystemClock() {
+		return systemClock;
+	}
 
-//	/**
-//	 * File String with the object name and category name for EHMI GUI
-//	 * @param objectName the name of the object
-//	 * @param categoryName the name of the category to create for this object
-//	 * @param description the object JSON description
-//	 * @throws NumberFormatException
-//	 * @throws JSONException
-//	 */
-//	private String[] fillCategoryAndObjectNames(JSONObject description) throws NumberFormatException, JSONException {
-//		String objectName = null;
-//		String categoryName = null;
-//		
-//		// Get the user type of the device and put 
-//		// a string that allow internationalization
-//		// of the type string 
-//		int userType = Integer.valueOf(description.getString("type"));
-//		switch(userType) {
-//		
-//			/** Devices  **/
-//			case 0: //Temperature
-//				objectName = "devices.temperature.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 1: //Illumination
-//				objectName = "devices.illumination.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 2: //Switch
-//				objectName = "devices.switch.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 3: //Contact
-//				objectName = "devices.contact.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 4: //Key card Switch
-//				objectName = "devices.keycard-reader.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			case 5: //Occupancy
-//				objectName = "devices.occupancy.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 6: //Smart plug
-//				objectName = "devices.plug.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 7: //PhilipsHUE
-//				objectName = "devices.lamp.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			case 8: //On/Off actuator
-//				objectName = "devices.actuator.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			case 9: //CO2
-//				objectName = "devices.co2.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			/** AppsGate System services **/
-//			case 21: //System clock
-//				objectName = "devices.clock.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			/** UPnP aggregate services **/
-//			case 31: //Media player
-//				categoryName = "services.mediaplayer.name.plural";
-//				try{
-//					objectName = description.getString("friendlyName");
-//					if(!objectName.isEmpty()) {
-//						break;
-//					}
-//				}catch(JSONException ex) {}
-//				objectName = "services.mediaplayer.name.singular";
-//				break;
-//				
-//			case 36: //Media browser
-//				categoryName = "services.mediabrowser.name.plural";
-//				try{
-//					objectName = description.getString("friendlyName");
-//					if(!objectName.isEmpty()) {
-//						break;
-//					}
-//				}catch(JSONException ex) {}
-//				objectName = "services.mediabrowser.name.singular";
-//				break;
-//				
-//			/** UPnP services **/
-//			case 415992004: //AV Transport
-//				objectName = "services.avtransport.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case 794225618: //Content directory
-//				objectName = "services.contentdirectory.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case 2052964255: //Connection manager
-//				objectName = "services.connectionManager.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case -164696113: //Rendering control
-//				objectName = "services.renderingControl.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case -532540516: //???
-//				objectName = "services.unknown";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case -1943939940: //???
-//				objectName = "services.unknown";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			
-//			/** Web services **/
-//			case 101: //Google calendar
-//				objectName = "webservices.googlecalendar.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case 102: //Mail
-//				objectName = "webservices.mail.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//			case 103: //Weather
-//				objectName = "webservices.weather.name.singular";
-//				categoryName = objectName.replace("singular", "plural");
-//				break;
-//				
-//			/** Default **/
-//			default:
-//				objectName = "devices.device-no-name";
-//				categoryName = objectName.replace("singular", "plural");
-//		}
-//		String [] retValue = new String[2];
-//		retValue[0] =  objectName;
-//		retValue[1] = categoryName;
-//		return retValue;		
-//	}
+	 /**
+     * Get a command description, resolve the local target reference and return a runnable
+     * command object
+     *
+     * @param clientId client identifier
+     * @param method method name to call on objectId
+     * @param arguments arguments list form method methodName
+     * @param types arguments types list
+	 * @param callId the remote call identifier
+	 * @return runnable object that can be execute and manage.
+     */
+	@SuppressWarnings("rawtypes")
+	public Runnable executeCommand(int clientId, String method, ArrayList<Object> arguments, ArrayList<Class> types, String callId) {
+		return new GenericCommand(this, method, arguments, types, callId, clientId, sendToClientService);
+	}
+	
+	/**
+	 * Get a runnable object that can execute command from a remote device manager asynchronously with
+	 * a return response
+	 * 
+	 * @param objIdentifier the identifier of the object on the remote system
+	 * @param method the method name to call
+	 * @param arguments the arguments values corresponding to the method to invoke
+	 * @param types the arguments JAVA types
+	 * @param clientId the client connection identifier
+	 * @param callId the remote call identifier
+	 * @return a runnable object that can be execute and manage.
+	 */
+	@SuppressWarnings("rawtypes")
+	public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, ArrayList<Object> arguments, ArrayList<Class> types, int clientId, String callId) {
+		return coreProxy.executeCommand(clientId, objIdentifier, method, arguments, types, callId);
+	}
+	
+	/**
+	 * Get a runnable object that can execute command from a remote device manager asynchronously
+	 * 
+	 * @param objIdentifier the identifier of the object on the remote system
+	 * @param method the method name to call
+	 * @param args the arguments list with their types
+	 * @return a runnable object that can be execute and manage.
+	 */
+	public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, JSONArray args) {
+		return coreProxy.executeCommand(objIdentifier, method, args);
+	}
+
+	@Override
+	public synchronized void addCoreListener(CoreListener coreListener) {
+		logger.debug("Adding a core listener...");
+        Entry eventKey = new Entry(coreListener);
+
+        //Check if the need to by register in the core clock implementation
+        if (systemClock.getAbstractObjectId().contentEquals(coreListener.getObjectId()) && eventKey.getVarName().contentEquals("ClockAlarm") && !eventKey.isEventOnly()) {
+            logger.debug("Adding an alarm listener...");
+            //Generate calendar java object for core clock
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.valueOf(coreListener.getValue()));
+            //register the alarm
+            int alarmId = systemClock.registerAlarm(calendar, new TimeObserver("EHMI listener for clock event"));
+            //change the event entry with the alarmId value
+            eventKey.setValue(String.valueOf(alarmId));
+            //save the alarm identifier
+            alarmListenerList.put(eventKey, alarmId);
+            logger.debug("Alarm listener added.");
+        }
+
+        Set<Entry> keys = eventsListeners.keySet();
+        Iterator<Entry> keysIt = keys.iterator();
+        boolean added = false;
+
+        while (keysIt.hasNext() && !added) {
+            Entry key = keysIt.next();
+            if (eventKey.equals(key)) {
+                eventsListeners.get(key).add(coreListener);
+                logger.debug("Add follower to existing core listener list");
+                added = true;
+            }
+        }
+
+        if (!added) {
+            ArrayList<CoreListener> coreListenerList = new ArrayList<CoreListener>();
+            coreListenerList.add(coreListener);
+            eventsListeners.put(eventKey, coreListenerList);
+            logger.debug("Add new event follower list");
+        }
+
+	}
+
+
+	@Override
+	public synchronized void deleteCoreListener(CoreListener coreListener) {
+		logger.debug("Deleting a core listener...");
+        Entry eventKey = new Entry(coreListener);
+
+        Set<Entry> keys = eventsListeners.keySet();
+        Iterator<Entry> keysIt = keys.iterator();
+
+        while (keysIt.hasNext()) {
+            Entry key = keysIt.next();
+            if (key.equals(eventKey)) {
+                ArrayList<CoreListener> coreListenerList = eventsListeners.get(key);
+                coreListenerList.remove(coreListener);
+                if (coreListenerList.isEmpty()) {
+                    eventsListeners.remove(key);
+                }
+                Integer alarmId = alarmListenerList.get(key);
+                if (alarmId != null) {
+                    logger.debug("Deleting an alarm listener with id: " + alarmId);
+                    systemClock.unregisterAlarm(alarmId);
+                    alarmListenerList.remove(key);
+                }
+                break;
+            }
+        }
+        logger.debug("Core listener deleted");
+	}
+
+	/**
+	 * Return a copy of the key array for core event listeners
+	 * @return Entry keys as an array list
+	 */
+	public synchronized ArrayList<Entry> getCoreEventListenerCopy() {
+			ArrayList<Entry> keys = new ArrayList<Entry>();
+            Iterator<Entry> tempKeys = eventsListeners.keySet().iterator();
+            while (tempKeys.hasNext()) {
+                keys.add(tempKeys.next());
+            }
+            return keys;
+	}
+
+	/**
+	 * Get the event listener map
+	 * @return the HashMap of events listeners
+	 */
+	public HashMap<Entry, ArrayList<CoreListener>> getEventsListeners() {
+		return eventsListeners;
+	}
+	
+	@Override
+	public long getCurrentTimeInMillis() {
+		return systemClock.getCurrentTimeInMillis();
+	}
+	
+	/**
+	 * Set the current time in milliseconds
+	 * @param millis the new time to set
+	 */
+	public void setCurrentTimeInMillis(long millis) {
+		logger.warn("Set current time method is not supported yet for local system clock.");
+	}
+	
+	/**
+	 * Get the current time flow rate from the local EHMI clock
+	 * @return the current time flow rate as a double
+	 */
+	public double getTimeFlowRate() {
+		return systemClock.getTimeFlowRate();
+	}
+	
+	/**
+	 * Set the time flow rate 
+	 * @return the new time flow rate
+	 */
+	public double setTimeFlowRate(double rate) {
+		logger.warn("Set time flow rate method is not supported yet for local system clock.");
+		logger.warn("requested value: "+rate);
+		return SystemClock.defaultTimeFlowRate;
+	}
+	
+	/**
+	 * Send a clock alarm notification to connected client 
+	 * @param msg
+	 */
+	public void sendClockAlarmNotifcation(ClockAlarmNotificationMsg msg) {
+		sendToClients(msg.JSONize());
+	}
+
+	/**
+	 * Start the remote clock synchronization
+	 */
+	public void startRemoteClockSync() {
+		systemClock.startRemoteSync(coreProxy);
+	}
+
+	/**
+	 * Stop the remote clock synchronization
+	 */
+	public void stopRemoteClockSync() {
+		systemClock.stopRemoteSync(coreProxy);
+	}
 
 }

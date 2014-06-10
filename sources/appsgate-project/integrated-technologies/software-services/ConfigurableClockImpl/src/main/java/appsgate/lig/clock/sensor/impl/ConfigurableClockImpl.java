@@ -21,16 +21,17 @@ import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 /**
  * This java interface is an ApAM specification shared by all ApAM AppsGate
  * application to provide current Time and Date information
  */
-public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
+public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClockSpec, CoreObjectSpec {
 
 	/**
-	 * Lag between the real current Date and the one setted
+	 * Lag between the real current Date and the one set
 	 */
 	long currentLag;
 
@@ -268,6 +269,7 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 		descr.put("type", appsgateUserType); // 21 for clock
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
+		descr.put("remote", true);
 
 		Calendar cal = Calendar.getInstance();
 		long time = cal.getTimeInMillis() + currentLag;
@@ -602,11 +604,6 @@ public class ConfigurableClockImpl implements CoreClockSpec, CoreObjectSpec {
 	public NotificationMsg fireClockAlarmNotificationMsg(int alarmEventId) {
 		return new ClockAlarmNotificationMsg(this, alarmEventId);
 	}
-
-    @Override
-    public JSONObject getGrammarDescription() {
-        return null;
-    }
 
 	class AlarmFiringTask extends TimerTask {
 		@Override

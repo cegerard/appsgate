@@ -1,7 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.context.proxy.spec.ContextProxyMock;
-import appsgate.lig.context.proxy.spec.ContextProxySpec;
+import appsgate.lig.ehmi.spec.EHMIProxyMock;
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManagerMock;
 import org.jmock.Expectations;
@@ -20,7 +20,7 @@ public class NodeSelectStateTest extends NodeTest {
     private NodeSelectState node;
 
     public NodeSelectStateTest() throws JSONException {
-        final ContextProxySpec c = new ContextProxyMock("src/test/resources/jsonLibs/toto.json");
+        final EHMIProxySpec c = new EHMIProxyMock("src/test/resources/jsonLibs/toto.json");
         final PropertyHistoryManager prop = new PropertyHistoryManagerMock();
 
         context.checking(new Expectations() {

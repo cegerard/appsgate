@@ -1,6 +1,7 @@
 package appsgate.lig.chmi.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -9,6 +10,10 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -17,15 +22,17 @@ import org.slf4j.LoggerFactory;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
-import appsgate.lig.chmi.exceptions.EHMIDependencyException;
 import appsgate.lig.chmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.chmi.impl.listeners.CHMICommandListener;
+import appsgate.lig.chmi.impl.listeners.TimeObserver;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.GenericCommand;
+import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
+import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
+import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
-import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import fr.imag.adele.apam.Instance;
 
 /**
@@ -60,11 +67,16 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * Service to communicate with clients
      */
     private SendWebsocketsService sendToClientService;
-
+    
     /**
-     * The EHMI component to call for every application domain request
+     * Array list for updates listener
      */
-    private EHMIProxySpec ehmiProxy;
+    private ArrayList<CoreUpdatesListener> updatesListenerList;
+    
+    /**
+     * Array list for events listener
+     */
+    private ArrayList<CoreEventsListener> eventsListenerList;
     
     /**
 	 * HTTP service dependency resolve by iPojo. Allow to register HTML
@@ -78,6 +90,8 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     public void newInst() {
 
         commandListener = new CHMICommandListener(this);
+        updatesListenerList = new ArrayList<CoreUpdatesListener>();
+        eventsListenerList = new ArrayList<CoreEventsListener>();
         
 		if (httpService != null) {
 			final HttpContext httpContext = httpService.createDefaultHttpContext();
@@ -92,25 +106,26 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 			}
 		}
         
-        logger.debug("The CHMI proxy component has been initialized");
-        
         try{
-        	if (addListenerService.addCommandListener(commandListener)) {
+        	if (addListenerService.addCommandListener(commandListener, "CHMI")) {
         		logger.info("CHMI command listener deployed.");
         	} else {
         		logger.error("CHMI command listener subscription failed.");
         	}
         }catch(ExternalComDependencyException comException) {
-    		logger.debug("Resolution failled for listener service dependency, the CHMICommandListener will be deployed");
+    		logger.debug("Resolution failed for listener service dependency, the CHMICommandListener will not be registered.");
     	}
+        
+        logger.debug("The CHMI proxy component has been initialized");
     }
 
     /**
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-        logger.debug("The CHMI proxy component has been stopped");
     	httpService.unregister("/chmi");
+    	addListenerService.removeCommandListener("CHMI");
+        logger.debug("The CHMI proxy component has been stopped");
     }
 
     /**
@@ -126,37 +141,24 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             String newMsg = "";
             if (newObj.getCoreType().equals(CORE_TYPE.DEVICE)) {
             	newMsg = "newDevice";
-            	try{
-            		ehmiProxy.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
-            	}catch(EHMIDependencyException ehmiException) {
-            		logger.debug("Resolution failled for ehmi dependency, no behavior will be added.");
-            	}
             } else if (newObj.getCoreType().equals(CORE_TYPE.SERVICE)) {
             	newMsg = "newService";
-            	try{
-            		ehmiProxy.addGrammar(newObj.getUserType(), newObj.getGrammarDescription());
-            	}catch(EHMIDependencyException ehmiException) {
-            		logger.debug("Resolution failled for ehmi dependency, no behavior will be added.");
-            	}
             } else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
             	newMsg = "newSimulatedDevice";
-                //TODO manage the simulated device
-                logger.debug("Simulated device core type not supported yet for EHMI");
             } else if (newObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
             	newMsg = "newSimulatedService";
-                //TODO manage the simulated service
-                logger.debug("Simulated service core type not supported yet for EHMI");
             }
             
             try{
             	sendToClientService.send(newMsg, getObjectDescription(newObj));
+                notifyAllUpdatesListeners(newMsg, newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
         	}catch(ExternalComDependencyException comException) {
         		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
         	}
             
         } catch (Exception ex) {
             logger.error("If getCoreType method error trace appeare below it is because the service or the device doesn't implement all methode in"
-                    + "the CoreObjectSpec interface but this error doesn't impact the EHMI.");
+                    + "the CoreObjectSpec interface.");
             ex.printStackTrace();
         }
     }
@@ -173,7 +175,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         try {
             obj.put("objectId", deviceId);
         } catch (JSONException e) {
-            // No exception is thrown
+            logger.error(e.getMessage());
         }
         CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
 
@@ -185,18 +187,16 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         		newMsg ="removeService";
         	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_DEVICE)) {
         		newMsg ="removeSimulatedDevice";
-        		//TODO manage the simulated device
         	} else if (rmObj.getCoreType().equals(CORE_TYPE.SIMULATED_SERVICE)) {
         		newMsg ="removeSimulatedService";
-        		//TODO manage the simulated service
         	}
         	
             try{
+            	notifyAllUpdatesListeners(newMsg, deviceId, rmObj.getUserType(), null, null);
             	sendToClientService.send(newMsg, obj);
         	}catch(ExternalComDependencyException comException) {
         		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
         	}
-        	
         }
     }
 
@@ -207,70 +207,47 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * @return an AbstractObjectSpec object that have objectID as identifier
      */
     public Object getObjectRefFromID(String objectID) {
+    	
+    	//Call on CHMIProxy instance
+    	if(objectID.contentEquals("proxy")) {
+    		return this;
+    	}
+    	
+    	//Call on any core objects
         Iterator<CoreObjectSpec> it = abstractDevice.iterator();
-        CoreObjectSpec tempAbstarctObjet = null;
+        CoreObjectSpec tempAbstractObject = null;
         String id;
         boolean notFound = true;
 
         while (it.hasNext() && notFound) {
-            tempAbstarctObjet = it.next();
-            id = tempAbstarctObjet.getAbstractObjectId();
+            tempAbstractObject = it.next();
+            id = tempAbstractObject.getAbstractObjectId();
             if (objectID.equalsIgnoreCase(id)) {
                 notFound = false;
             }
         }
 
         if (!notFound) {
-            return tempAbstarctObjet;
+            return tempAbstractObject;
         } else {
             return null;
         }
     }
 
-    /**
-     * Get a command description, resolve the target reference and make the
-     * call.
-     *
-     * @param clientId client identifier
-     * @param objectId abstract object identifier
-     * @param methodName method to call on objectId
-     * @param args arguments list form method methodName
-     * @param paramType argument type list
-     * @param callId the remote call identifier
-     */
     @SuppressWarnings("rawtypes")
-    public Runnable executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
-        Object obj;
-        if (objectId.contentEquals("ehmi")) {
-            try{	
-            	logger.info("retreive EHMI reference: " + ehmiProxy.toString());
-            	obj = ehmiProxy;
-        	}catch(EHMIDependencyException comException) {
-    			throw new EHMIDependencyException("EHMI resolution failed from executeCommand call.");
-    		}
-        } else {
-            obj = getObjectRefFromID(objectId);
-        }
+    @Override
+    public GenericCommand executeCommand(int clientId, String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType, String callId) {
+        Object obj = getObjectRefFromID(objectId);
         return new GenericCommand(args, paramType, obj, objectId, methodName, callId, clientId, sendToClientService);
     }
 
     @SuppressWarnings("rawtypes")
     @Override
     public GenericCommand executeCommand(String objectId, String methodName, ArrayList<Object> args, ArrayList<Class> paramType) {
-        Object obj;
-        if (objectId.contentEquals("ehmi")) {
-        	try{
-            	logger.info("retreive EHMI reference: " + ehmiProxy.toString());
-            	obj = ehmiProxy;
-    		}catch(EHMIDependencyException comException) {
-    			throw new EHMIDependencyException("EHMI resolution failed from executeCommand call.");
-    		}
-        } else {
-            obj = getObjectRefFromID(objectId);
-        }
+        Object obj = getObjectRefFromID(objectId);
         return new GenericCommand(args, paramType, obj, methodName);
     }
-
+    
     @Override
     public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
         ArrayList<Object> arguments = new ArrayList<Object>();
@@ -290,7 +267,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     public void gotNotification(NotificationMsg notif) {
         logger.debug("Notification message received, " + notif.JSONize());
-        
+        notifyAllEventsListeners(notif.getSource().getAbstractObjectId(), notif.getVarName(), notif.getNewValue());
         try{
         	sendToClientService.send(notif.JSONize().toString());
     	}catch(ExternalComDependencyException comException) {
@@ -333,6 +310,19 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
         return new JSONObject();
     }
+    
+    /**
+     * Get the core object from its identifier
+     * @param objectId the object identifier
+     * @return the core object instance
+     */
+    private CoreObjectSpec getCoreDevice(String objectId) {
+    	Object obj = getObjectRefFromID(objectId);
+    	if (obj != null) {
+            return (CoreObjectSpec) obj;
+        }
+    	return null;
+    }
 
     @Override
     public JSONArray getDevices(String type) {
@@ -355,6 +345,26 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             return new JSONArray();
         }
     }
+    
+    @Override
+    public String getCoreClockObjectId() {
+    	JSONArray clocks = getDevices("21");
+    	JSONObject clock = null;
+    	int nbClocks = clocks.length();
+    	int i = 0;
+    	try {
+    		while(i < nbClocks) {
+				clock = clocks.getJSONObject(i);
+				i++;
+    		}
+    		if(clock != null) {
+    			return clock.getString("id");
+    		}
+    	} catch (JSONException e) {
+    		logger.debug(e.getMessage());
+		}
+    	return null;
+    }
 
     /**
      * This method get the auto description of an object and add the contextual
@@ -368,14 +378,6 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         try {
             // Get object auto description
             JSONDescription = obj.getDescription();
-            
-            //Add context description for this abject
-            try{
-				JSONDescription.put("name", ehmiProxy.getUserObjectName(obj.getAbstractObjectId(), ""));
-				JSONDescription.put("placeId", ehmiProxy.getCoreObjectPlaceId(obj.getAbstractObjectId()));
-    		}catch(EHMIDependencyException ehmiException) {
-    			logger.debug("No EHMI found and no contextual information added in the description");
-    		}
 
         } catch (JSONException e) {
             logger.error(e.getMessage());
@@ -386,4 +388,110 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         return JSONDescription;
     }
 
+	@Override
+	public boolean CoreUpdatesSubscribe(CoreUpdatesListener coreUpdatesListener) {
+		return updatesListenerList.add(coreUpdatesListener);
+	}
+
+	@Override
+	public boolean CoreUpdatesUnsubscribe(CoreUpdatesListener coreUpdatesListener) {
+		return updatesListenerList.remove(coreUpdatesListener);
+	}
+
+	@Override
+	public boolean CoreEventsSubscribe(CoreEventsListener coreEventsListener) {
+		return eventsListenerList.add(coreEventsListener);
+	}
+
+	@Override
+	public boolean CoreEventsUnsubscribe(CoreEventsListener coreEventsListener) {
+		return eventsListenerList.add(coreEventsListener);
+	}
+	
+	/**
+	 * Notify all updates listeners that something happens
+	 * @param coreType the type of object (device, service, etc.)
+	 * @param objectId the object identifier
+	 * @param userType the user type of the object (Light, switch, etc.)
+	 * @param desc the object description (state, id etc.)
+	 * @param behavior the object behavior, can be empty JSONObject
+	 */
+	private void notifyAllUpdatesListeners(String coreType, String objectId, String userType, JSONObject descr, JSONObject behavior) {
+		for(CoreUpdatesListener listener : updatesListenerList) {
+			listener.notifyUpdate(coreType, objectId, userType, descr, behavior);
+		}
+	}
+
+	/**
+	 * Notify all events listeners that something happens
+	 * @param srcId the core identifier of the source
+	 * @param varName the name of the variable that changed
+	 * @param value the new value of the variable
+	 */
+	private void notifyAllEventsListeners(String srcId, String varName, String value) {
+		for(CoreEventsListener listener : eventsListenerList) {
+			listener.notifyEvent(srcId, varName, value);
+		}
+	}
+	
+	@Override
+	public int registerTimeAlarm(Calendar calendar, String message) {
+		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
+		if(obj != null) {
+			CoreClockSpec clock = (CoreClockSpec)obj;
+			return clock.registerAlarm(calendar, new TimeObserver(message));
+		}
+		return -1;
+	}
+
+	@Override
+	public void unregisterTimeAlarm(Integer alarmId) {
+		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
+		if(obj != null) {
+			CoreClockSpec clock = (CoreClockSpec)obj;
+			clock.unregisterAlarm(alarmId);
+		}
+	}
+
+	@Override
+	public long getCurrentTimeInMillis() {
+		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
+		if(obj != null) {
+			CoreClockSpec clock = (CoreClockSpec)obj;
+			return clock.getCurrentTimeInMillis();
+		}
+		return 0;
+	}
+
+	@Override
+	public double getTimeFlowRate() {
+		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
+		if(obj != null) {
+			CoreClockSpec clock = (CoreClockSpec)obj;
+			return clock.getTimeFlowRate();
+		}
+		return 1.0;
+	}
+	
+	@Override
+	public void shutdown() {
+		BundleContext ctx = FrameworkUtil.getBundle(CHMIProxyImpl.class).getBundleContext();
+		Bundle systemBundle = ctx.getBundle(0);
+		try {
+			systemBundle.stop();
+		} catch (BundleException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void restart() {
+		BundleContext ctx = FrameworkUtil.getBundle(CHMIProxyImpl.class).getBundleContext();
+		Bundle systemBundle = ctx.getBundle(0);
+		try {
+			systemBundle.update();
+		} catch (BundleException e) {
+			e.printStackTrace();
+		}
+	}
 }

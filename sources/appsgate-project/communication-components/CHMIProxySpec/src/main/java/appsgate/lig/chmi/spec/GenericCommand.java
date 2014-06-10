@@ -28,8 +28,7 @@ public class GenericCommand implements Runnable {
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory
-			.getLogger(GenericCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(GenericCommand.class);
 
 	private ArrayList<Object> args;
 	@SuppressWarnings("rawtypes")

@@ -3,8 +3,8 @@ package appsgate.lig.manager.place.messages;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.core.object.messages.NotificationMsg;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
+
 
 /**
  * This class is an ApAM message for move object notification
@@ -52,8 +52,13 @@ public class MoveObjectNotification implements NotificationMsg {
 	}
 
 	@Override
-	public CoreObjectSpec getSource() {
-		return null;
+	public String getSource() {
+		return "";
+	}
+	
+	@Override
+	public String getVarName() {
+		return String.valueOf(moveType);
 	}
 
 	@Override

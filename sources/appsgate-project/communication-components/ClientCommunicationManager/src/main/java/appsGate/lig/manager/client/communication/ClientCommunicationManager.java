@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
-import appsGate.lig.manager.client.communication.service.subscribe.ConfigListener;
-
 
 /**
  * This class is the manager for all web sockets connections. All external
@@ -97,13 +94,7 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 		try {
 			JSONTokener jsonParser = new JSONTokener(message);
 			JSONObject jsObj = (JSONObject)jsonParser.nextValue();
-			
-			if(isConfiguration(jsObj)) {
-				notifyConfigListeners(conn, jsObj);
-			}else {
-				notifyCommandListeners(conn, jsObj);
-			}
-
+			notifyCommandListeners(conn, jsObj);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -112,15 +103,6 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
 		logger.error( "An error occured on connection " + conn + ":" + ex );
-	}
-	
-	/**
-	 * Test if the JSON message is a configuration message
-	 * @param msg the message a a JSON object
-	 * @return true if the message is a configuration message, false otherwise
-	 */
-	private boolean isConfiguration(JSONObject msg) {
-		return msg.has("CONFIGURATION");
 	}
 	
 	/*****************************************/
@@ -242,67 +224,29 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	/*****************************************/
 	
 	@Override
-	public boolean addCommandListener(CommandListener cmdListener) {
-		logger.debug("New all command listener: "+cmdListener.toString());
-		return commandListeners.add(cmdListener);
-	}
-
-
-	@Override
-	public boolean addConfigListener(String target, ConfigListener configCmdList) {
-		logger.debug("New config listener: "+configCmdList.toString()+" for target: "+target);
-		return configListeners.put(target, configCmdList) == null;
+	public boolean addCommandListener(CommandListener cmdListener, String target) {
+		logger.debug("New "+target+" command listener: "+cmdListener.toString());
+		return commandListeners.put(target, cmdListener) == null;
 	}
 	
 	@Override
-	public boolean removeConfigListener(String target) {
-		logger.debug("removing config listener: "+target);
-		return configListeners.remove(target) != null;
+	public boolean removeCommandListener(String target) {
+		return commandListeners.remove(target) != null;
 	}
-	
+
 	/**
-	 * notify all command listeners that new command or event is received
+	 * notify command listeners that new command or event is received
 	 * @param socket the client connection
 	 * @param cmd the command.
 	 * @throws ParseException 
 	 */
 	private void notifyCommandListeners(WebSocket socket, JSONObject cmd) {
 		logger.debug("notify listeners for new command event");
-		
 		try {
+			logger.debug("retreiving command listener for "+cmd.getString("TARGET")+" target.");
 			cmd.put("clientId", socket.hashCode());
-			
-			Iterator<CommandListener> it = commandListeners.iterator();
-			CommandListener allcmdListener;
-		
-			while(it.hasNext()){
-				allcmdListener = it.next();
-				allcmdListener.onReceivedCommand(cmd);
-			}
-		
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * notify all configuration listener that new event is received
-	 * @param socket the client connection
-	 * @param cmd the command.
-	 * @throws ParseException 
-	 */
-	private void notifyConfigListeners(WebSocket socket, JSONObject cmd) {
-		logger.debug("notify listeners for new configuration event");
-		try {
-			String target = cmd.getString("TARGET");
-			String command = cmd.getString("CONFIGURATION");
-			JSONObject value = cmd.getJSONObject(command);
-			
-			value.put("clientId", socket.hashCode());
-			
-			ConfigListener listener = configListeners.get(target);
-			listener.onReceivedConfig(command, value);
-			
+			CommandListener cmdListener = commandListeners.get(cmd.getString("TARGET"));
+			cmdListener.onReceivedCommand(cmd);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -311,13 +255,6 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	/**
 	 * The lister list for components who subscribe for all client commands.
 	 */
-	ArrayList<CommandListener> commandListeners = new ArrayList<CommandListener>();
-	
-	/**
-	 * The lister list for components who subscribe for configuration commands.
-	 */
-	HashMap<String, ConfigListener> configListeners = new HashMap<String, ConfigListener>();
-
-	
+	HashMap<String, CommandListener> commandListeners = new HashMap<String, CommandListener>();
 }
 
