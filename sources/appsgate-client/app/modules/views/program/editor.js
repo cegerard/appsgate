@@ -18,6 +18,7 @@ define([
         "change .weather-town-picker": "onChangeTownNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
         "change .code-forecast-picker": "onChangeCodeForecastNode",
+        "change .comparator-select": "onChangeComparatorNode",
         "change .number-input": "onChangeNumberValue",
         "change .arg-input": "onChangeArgValue",
         "change .volume-input": "onChangeMediaVolume",
@@ -264,6 +265,15 @@ define([
 
         // // clearing selection
         // this.resetSelection();
+      },
+      onChangeComparatorNode: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var newOp = e.currentTarget.selectedOptions[0].value;
+        this.Mediator.setNodeAttribute(iid, "comparator", newOp);
+
+        // // clearing selection
+        this.resetSelection();
       },
       onChangeNumberValue: function(e) {
         e.stopPropagation();
