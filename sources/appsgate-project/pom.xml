@@ -25,10 +25,10 @@
 			<id>apam-plugin-repository-release</id>
 			<url>https://repository-apam.forge.cloudbees.com/release/repository</url>
 		</pluginRepository>
-		<!-- <pluginRepository> -->
-		<!-- <id>apam-plugin-repository-snapshot</id> -->
-		<!-- <url>https://repository-apam.forge.cloudbees.com/snapshot/repository/</url> -->
-		<!-- </pluginRepository> -->
+		<pluginRepository>
+			<id>apam-plugin-repository-snapshot</id>
+			<url>https://repository-apam.forge.cloudbees.com/snapshot/repository/</url>
+		</pluginRepository>
 	</pluginRepositories>
 
 	<!-- Maven Repo -->
