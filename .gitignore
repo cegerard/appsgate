@@ -16,6 +16,8 @@ deployToAppsGateDistribution.sh
 
 *.*~*
 
+.idea
+
 *obr.xml
 
 target
