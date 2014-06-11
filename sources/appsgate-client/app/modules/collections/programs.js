@@ -37,7 +37,12 @@ define([
 
             // listen to the event when a program has been updated
             dispatcher.on("updateProgram", function(program) {
-                programs.get(program.id).set(program);
+                var p = programs.get(program.id);
+                if (p) {
+                    p.set(program.source);
+                } else {
+                    self.add(program.source);
+                }
             });
 
             // send the request to fetch the programs
