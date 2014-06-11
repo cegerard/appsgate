@@ -99,13 +99,13 @@
             <id>Maven Central repository</id>
             <url>http://repo.maven.apache.org/maven2</url>
         </repository>
-        <!-- <repository> -->
-        <!-- <id>apam-repo</id> -->
-        <!-- <url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> -->
-        <!-- <snapshots> -->
-        <!-- <enabled>true</enabled> -->
-        <!-- </snapshots> -->
-        <!-- </repository> -->
+        <repository>
+            <id>apam-repo-snapshot</id> 
+            <url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> 
+            <snapshots> 
+                <enabled>true</enabled> 
+            </snapshots> 
+        </repository> 
         <repository>
             <id>apam-repo</id>
             <url>http://repository-apam.forge.cloudbees.com/release/repository/</url>
