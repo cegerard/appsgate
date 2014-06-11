@@ -115,7 +115,7 @@ public class AppsGateServerDevice implements UPnPDevice, UPnPEventListener,
 			break;
 
 		case ServiceEvent.UNREGISTERING:
-			ServiceReference<?> sr = event.getServiceReference();
+			ServiceReference sr = event.getServiceReference();
 			String UDN = (String) sr.getProperty(UPnPDevice.ID);
 			if (UDN != null) {
 				if (LinkedDevices.contains(UDN)) {

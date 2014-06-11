@@ -31,11 +31,13 @@
 			<artifactId>apam-core</artifactId>
 			<version>${apam.current.version}</version>
 		</dependency>
+        <!--
 		<dependency>
 			<groupId>appsgate.libs</groupId>
 			<artifactId>PhilipsHUESdKAdapter</artifactId>
 			<version>1.1.1beta</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>ClientCommunicationManager</artifactId>
@@ -50,9 +52,34 @@
             <groupId>appsgate.components</groupId>
             <artifactId>PhilipsHUEAdapterSpec</artifactId>
             <version>${project.version}</version>
-        </dependency>       
-        		
-		
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+        <!-- fuchsia -->
+        <dependency>
+            <groupId>org.ow2.chameleon.fuchsia</groupId>
+            <artifactId>org.ow2.chameleon.fuchsia.core</artifactId>
+            <version>${fuchsia.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>org.ow2.chameleon.fuchsia.discovery.philips-hue</artifactId>
+            <groupId>org.ow2.chameleon.fuchsia.discovery</groupId>
+            <version>${fuchsia.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>org.ow2.chameleon.fuchsia.importer.philips-hue</artifactId>
+            <groupId>org.ow2.chameleon.fuchsia.importer</groupId>
+            <version>${fuchsia.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>org.ow2.chameleon.fuchsia.base.philips-hue.huedsk-bundle</artifactId>
+            <groupId>org.ow2.chameleon.fuchsia.base.philips-hue</groupId>
+            <version>${fuchsia.version}</version>
+        </dependency>
+
 
 	</dependencies>
 
@@ -66,6 +93,15 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Import-Package>
+                            org.json;version="${apam.current.version}",
+                            org.json.zip;version="${apam.current.version}",
+                            org.ow2.chameleon.fuchsia.importer.philipshue,
+
+                            *</Import-Package>
+                        <!--
+                        <Private-Package>org.json</Private-Package>
+                        -->
 					</instructions>
 				</configuration>
 			</plugin>

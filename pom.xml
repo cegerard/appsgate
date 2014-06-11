@@ -29,13 +29,13 @@
 
 
 		<!-- apam version -->
-		<apam.current.version>0.0.6</apam.current.version>
+		<apam.current.version>0.0.7-SNAPSHOT</apam.current.version>
 		<!-- Dependencies version -->
 		<osgi.version>4.2.0</osgi.version>
 		<org.apache.felix.log.version>1.0.1</org.apache.felix.log.version>
-
-		<ipojo.version>1.11.0</ipojo.version>
-		<ipojo.annotations.version>1.11.0</ipojo.annotations.version>
+		<fuchsia.version>0.0.3-SNAPSHOT</fuchsia.version>
+		<ipojo.version>1.11.2</ipojo.version>
+		<ipojo.annotations.version>1.11.2</ipojo.annotations.version>
 		<org.apache.felix.ipojo.arch.gogo.version>1.1.0</org.apache.felix.ipojo.arch.gogo.version>
 		<logback.version>1.0.7</logback.version>
 		<slf4j.version>1.7.5</slf4j.version>
@@ -57,7 +57,7 @@
 		<!-- Encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- plugins -->
-		<ipojo.plugin.version>1.11.0</ipojo.plugin.version>
+		<ipojo.plugin.version>1.11.2</ipojo.plugin.version>
 		<bundle.plugin.version>2.3.7</bundle.plugin.version>
 		<compiler.plugin.version>2.5.1</compiler.plugin.version>
 		<!-- Sonar -->
@@ -164,7 +164,7 @@
         <repository>
             <id>ow2-public</id>
             <name>OW2 Maven Repository</name>
-            <url>http://repository.ow2.org/nexus/content/repositories/public</url>
+            <url>http://repository.ow2.org/nexus/content/repositories/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

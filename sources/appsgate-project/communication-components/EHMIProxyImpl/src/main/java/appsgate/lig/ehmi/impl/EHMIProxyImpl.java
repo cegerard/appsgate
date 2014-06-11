@@ -1,25 +1,17 @@
 package appsgate.lig.ehmi.impl;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-
+import appsgate.lig.chmi.spec.CHMIProxySpec;
+import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
+import appsgate.lig.context.userbase.spec.UserBaseSpec;
+import appsgate.lig.ehmi.impl.upnp.*;
+import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.manager.place.spec.PlaceManagerSpec;
+import appsgate.lig.manager.place.spec.SymbolicPlace;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -27,17 +19,8 @@ import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import appsgate.lig.chmi.spec.CHMIProxySpec;
-import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
-import appsgate.lig.context.userbase.spec.UserBaseSpec;
-import appsgate.lig.manager.place.spec.*;
-import appsgate.lig.ehmi.impl.upnp.AppsGateServerDevice;
-import appsgate.lig.ehmi.impl.upnp.ServerInfoService;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerIP;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerURL;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerWebsocket;
-import appsgate.lig.ehmi.spec.EHMIProxySpec;
-import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import java.net.*;
+import java.util.*;
 
 
 /**
@@ -100,7 +83,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	private String wsPort="8087";
 
 	private BundleContext context;
-	private ServiceRegistration<?> serviceRegistration;
+	private ServiceRegistration serviceRegistration;
 
 	private AppsGateServerDevice upnpDevice;
 	private ServerInfoService upnpService;

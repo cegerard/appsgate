@@ -103,7 +103,6 @@
 			<artifactId>core-mail-gmail</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>PhilipsHUEAdapter</artifactId>
