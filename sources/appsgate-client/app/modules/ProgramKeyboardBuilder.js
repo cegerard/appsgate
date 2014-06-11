@@ -140,70 +140,6 @@ define([
         },
 
         buildComparatorKeys: function() {
-            var btnEq = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='language.if-equals'/></button>");
-            var v = {
-                "type": "comparator",
-                "iid": "X",
-                "comparator": "==",
-                "leftOperand": {
-                    "iid": "X",
-                    "type": "mandatory"
-                },
-                "rightOperand": {
-                    "iid": "X",
-                    "type": "mandatory"
-                }
-            };
-            $(btnEq).attr("json", JSON.stringify(v));
-            $(".expected-links").append(btnEq);
-            var btnSup = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='language.if-sup'/></button>");
-            var v = {
-                "type": "comparator",
-                "iid": "X",
-                "comparator": ">",
-                "leftOperand": {
-                    "iid": "X",
-                    "type": "mandatory"
-                },
-                "rightOperand": {
-                    "iid": "X",
-                    "type": "mandatory"
-                }
-            };
-            $(btnSup).attr("json", JSON.stringify(v));
-            $(".expected-links").append(btnSup);
-            var btnInf = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='language.if-inf'/></button>");
-            var v = {
-                "type": "comparator",
-                "iid": "X",
-                "comparator": "<",
-                "leftOperand": {
-                    "iid": "X",
-                    "type": "mandatory"
-                },
-                "rightOperand": {
-                    "iid": "X",
-                    "type": "mandatory"
-                }
-            };
-            $(btnInf).attr("json", JSON.stringify(v));
-            $(".expected-links").append(btnInf);
-            var btnDiff = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='language.if-dif'/></button>");
-            var v = {
-                "type": "comparator",
-                "iid": "X",
-                "comparator": "!=",
-                "leftOperand": {
-                    "iid": "X",
-                    "type": "mandatory"
-                },
-                "rightOperand": {
-                    "iid": "X",
-                    "type": "mandatory"
-                }
-            };
-            $(btnDiff).attr("json", JSON.stringify(v));
-            $(".expected-links").append(btnDiff);
 
             this.buildHackedBooleanComparatorKeys();
         },
@@ -312,9 +248,10 @@ define([
             for (type in devicesTypes) {
                 if (devicesTypes[type].length > 0) {
                     o = devicesTypes[type][0];
-                    var boolProps = o.getBooleanProperties();
+                    var boolProps = o.getProperties();
                     for (a in boolProps) {
                         var btn = o.getKeyboardForProperty(boolProps[a]);
+                        console.log("coucou");
                         json = {};
                         json = JSON.parse($(btn).attr('json'));
 
@@ -323,9 +260,8 @@ define([
                             "iid": "X",
                             "comparator": "==",
                             "rightOperand": {
-                                "iid": "X",
-                                "value": "true",
-                                "type": "boolean"
+                                "value" : "0",
+                                "type": "number"
                             }
                         };
                         v.leftOperand = json;
@@ -338,8 +274,10 @@ define([
             for (type in serviceTypes) {
                 if (serviceTypes[type].length > 0) {
                     o = serviceTypes[type][0];
-                    var boolProps = o.getBooleanProperties();
+                    var boolProps = o.getProperties();
                     for (a in boolProps) {
+                        console.log("coucou");
+
                         var btn = o.getKeyboardForProperty(boolProps[a]);
                         json = {};
                         json = JSON.parse($(btn).attr('json'));
@@ -350,8 +288,8 @@ define([
                             "comparator": "==",
                             "rightOperand": {
                                 "iid": "X",
-                                "value": "true",
-                                "type": "boolean"
+                                "value" : "0",
+                                "type": "number"
                             }
                         };
                         v.leftOperand = json;
@@ -452,8 +390,8 @@ define([
             var btn_f = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='keyboard.false'/></button>");
             $(btn_v).attr("json", JSON.stringify(v));
             $(btn_f).attr("json", JSON.stringify(f));
-            $(".expected-links").append(btn_v);
-            $(".expected-links").append(btn_f);
+            $(".expected-events").append(btn_v);
+            $(".expected-events").append(btn_f);
 
         },
         /**

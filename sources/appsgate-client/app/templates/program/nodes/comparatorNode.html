@@ -1,17 +1,11 @@
 (
 <%=engine.buildInputFromNode(node.leftOperand, currentNode) %>
-<button class="btn btn-prog" id="<%= node.iid %>">
-<% switch(node.comparator) {
-case '==' : %> <span data-i18n="language.if-equals"></span> <%
-	break;
-	case '>' : %> <span data-i18n="language.if-sup"></span> <%
-	break;
-	case '<' : %> <span data-i18n="language.if-inf"></span> <%
-	break;
-	case '!=' : %> <span data-i18n="language.if-dif"></span> <%
-	break;
-	} %>
-</button>
+<select id="comparator-<%= node.iid %>" class="comparator-select" target-id="<%= node.iid %>">
+    <option <% if (node.comparator === '==') { %>selected<% } %> value="==" data-i18n="language.if-equals"></option>
+    <option <% if (node.comparator === '>') { %>selected<% } %> value=">" data-i18n="language.if-sup"></option>
+    <option <% if (node.comparator === '<') { %>selected<% } %> value="<" data-i18n="language.if-inf"></option>
+    <option <% if (node.comparator === '!=') { %>selected<% } %> value="!=" data-i18n="language.if-dif"></option>
+</select>
 <%=engine.buildInputFromNode(node.rightOperand, currentNode) %>
 
 )	
