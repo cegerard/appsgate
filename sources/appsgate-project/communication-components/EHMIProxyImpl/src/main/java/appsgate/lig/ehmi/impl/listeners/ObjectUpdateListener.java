@@ -63,7 +63,7 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 		this.description = description;
 		
 		if (coreType.contains("new")) { //New device added
-			EHMIProxy.addGrammar(userType, description);
+			EHMIProxy.addGrammar(userType, behavior);
 			
 		    String name = EHMIProxy.getUserObjectName(objectId, "");
 		    String placeId = EHMIProxy.getCoreObjectPlaceId(objectId);

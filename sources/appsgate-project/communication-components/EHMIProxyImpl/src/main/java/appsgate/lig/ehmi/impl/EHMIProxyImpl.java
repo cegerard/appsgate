@@ -257,7 +257,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         	if(systemClock.isRemote())
         		systemClock.stopRemoteSync(coreProxy);
 		}catch(CoreDependencyException coreException) {
-    		logger.warn("Resolution failled for core dependency, no notification subscription can be delete.");
+    		logger.warn("Resolution failed for core dependency, no notification subscription can be delete.");
 		}
     	
     	logger.info("EHMI has been stopped.");
