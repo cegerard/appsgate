@@ -22,77 +22,8 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-		<dependencies>
-		<!--fuchsia --> 
-		<dependency>
-		    <groupId>org.ow2.chameleon.fuchsia</groupId>
-		    <artifactId>org.ow2.chameleon.fuchsia.core</artifactId>
-		    <version>0.0.3-SNAPSHOT</version>
-		    <exclusions>
-			<exclusion>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>org.apache.felix.ipojo</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.core</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.core</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.compendium</artifactId>
-			</exclusion>
-	       	    </exclusions>
-		</dependency>
-		<dependency>
-		    <groupId>org.ow2.chameleon.fuchsia.tools</groupId>
-		    <artifactId>fuchsia-gogo-shell</artifactId>
-		    <version>0.0.3-SNAPSHOT</version>
-		</dependency> 
-		<dependency>
-		    <artifactId>org.ow2.chameleon.fuchsia.base.philips-hue.huedsk-bundle</artifactId>
-		    <groupId>org.ow2.chameleon.fuchsia.base.philips-hue</groupId>
-		    <version>${fuchsia.version}</version>
-		</dependency>
-		<dependency>
-		    <artifactId>org.ow2.chameleon.fuchsia.discovery.philips-hue</artifactId>
-		    <groupId>org.ow2.chameleon.fuchsia.discovery</groupId>
-		    <version>${fuchsia.version}</version>
-		</dependency>
-		<dependency>
-		    <artifactId>org.ow2.chameleon.fuchsia.importer.philips-hue</artifactId>
-		    <groupId>org.ow2.chameleon.fuchsia.importer</groupId>
-		    <version>${fuchsia.version}</version>
-		</dependency>
-		</dependencies>
+
 		</profile>
 	</profiles>
-
-    <build>
-
-	    <plugins>
-
-		    <plugin>
-			    <artifactId>maven-dependency-plugin</artifactId>
-			    <version>2.8</version>
-			    <executions>
-				    <execution>
-					    <id>copy-dependencies-chameleon</id>
-					    <phase>package</phase>
-					    <goals>
-						    <goal>copy-dependencies</goal>
-					    </goals>
-					    <configuration>
-						    <outputDirectory>../Appsgate-distribution-light/bundle/</outputDirectory>
-						    <excludeTransitive>false</excludeTransitive> 								<excludeArtifactIds>org.apache.felix.gogo.runtime, org.apache.felix.gogo.shell, org.eclipse.osgi, org.apache.felix.ipojo,grizzly-httpservice</excludeArtifactIds>
-					    </configuration>
-				    </execution>
-			    </executions>
-		    </plugin>
-	    </plugins>
-    </build>
 
 </project>
