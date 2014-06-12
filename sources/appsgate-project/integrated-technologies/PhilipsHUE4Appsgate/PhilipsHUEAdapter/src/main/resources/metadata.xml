@@ -1,22 +1,38 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
-	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ev="org.apache.felix.ipojo.handlers.event"
+      xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd
+org.apache.felix.ipojo.handlers.event ">
 
 
-	<implementation name="PhilipsHUEAdapterImpl"
-		classname="appsgate.lig.proxy.PhilipsHUE.PhilipsHUEAdapter" 
-		specification="AppsgatePhilipsHUEAdapterSpec">
+    <implementation name="PhilipsHUEAdapterImpl"
+                    classname="appsgate.lig.proxy.PhilipsHUE.PhilipsHUEAdapter"
+                    specification="AppsgatePhilipsHUEAdapterSpec">
 
-		<callback onInit="newInst" onRemove="delInst" />
-        
+        <callback onInit="newInst" onRemove="delInst"/>
+
         <relation specification="AppsgateClientCommunicationManagerSpec"
-			creation="eager"  resolve="external" >
+                  creation="eager" resolve="external">
             <interface field="listenerService"/>
             <interface field="sendToClientService"/>
-		</relation>						
+        </relation>
 
-	</implementation>
+        <ipojo:requires field="bridges" specification="com.philips.lighting.hue.sdk.bridge.impl.PHBridgeImpl"/>
+
+
+        <ev:subscriber
+                name="onupdate"
+                callback="bridgeOnUpdate"
+                topics="philips/hue/bridge/cache_updated"/>
+
+        <ev:subscriber
+                name="onerror"
+                callback="bridgeOnError"
+                topics="philips/hue/bridge/error"/>
+
+
+
+    </implementation>
 
 
 </apam>

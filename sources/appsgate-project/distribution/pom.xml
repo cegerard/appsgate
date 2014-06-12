@@ -24,24 +24,38 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<dependencies>
-		<!--fuchsia components to be included in the distribution
+		<!--fuchsia -->
 		<dependency>
 		    <groupId>org.ow2.chameleon.fuchsia</groupId>
 		    <artifactId>fuchsia-core</artifactId>
-		    <version>0.0.1-SNAPSHOT</version> 
+		    <version>${fuchsia.version}</version>
 		    <exclusions>
-			<exclusion>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.ipojo</artifactId>
-			</exclusion>
-	            </exclusions> 
-		</dependency> 
+		        <exclusion>
+		            <groupId>org.apache.felix</groupId>
+		            <artifactId>org.apache.felix.ipojo</artifactId>
+		        </exclusion>
+	             </exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>org.ow2.chameleon.fuchsia.tools</groupId>
+		    <artifactId>fuchsia-gogo-shell</artifactId>
+		    <version>${fuchsia.version}</version>
+		</dependency>
+		<dependency>
+		    <artifactId>org.ow2.chameleon.fuchsia.base.philips-hue.huedsk-bundle</artifactId>
+		    <groupId>org.ow2.chameleon.fuchsia.base.philips-hue</groupId>
+		    <version>${fuchsia.version}</version>
+		</dependency>
+		<dependency>
+		    <artifactId>org.ow2.chameleon.fuchsia.discovery.philips-hue</artifactId>
+		    <groupId>org.ow2.chameleon.fuchsia.discovery</groupId>
+		    <version>${fuchsia.version}</version>
+		</dependency>
 		<dependency>
 		    <groupId>org.ow2.chameleon.fuchsia.extra.ard</groupId>
 		    <artifactId>ard-importer</artifactId>
 		    <version>${project.version}</version>
 		</dependency> 
-		-->
 		<!--felix -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>

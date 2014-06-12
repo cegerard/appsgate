@@ -46,7 +46,6 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>${osgi.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
@@ -71,8 +70,7 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>4.3.0</version>
-			<scope>provided</scope>
+			<version>${osgi.version}</version>
 		</dependency>
 	</dependencies>
 
