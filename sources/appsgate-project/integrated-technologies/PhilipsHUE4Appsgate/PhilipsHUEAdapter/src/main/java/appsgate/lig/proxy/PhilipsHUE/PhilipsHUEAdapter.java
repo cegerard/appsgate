@@ -3,7 +3,7 @@ package appsgate.lig.proxy.PhilipsHUE;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
-import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeConfigListener;
+import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeCommandListener;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
@@ -65,7 +65,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 */
 	public void newInst() {
 
-       if(listenerService.addConfigListener(CONFIG_TARGET, new PhilipsHUEBridgeConfigListener(this))){
+       if(listenerService.addCommandListener(new PhilipsHUEBridgeCommandListener(this),CONFIG_TARGET)){
                logger.info("Listeners services dependency resolved.");
        }else{
                logger.warn("Listeners services dependency resolution updated.");
