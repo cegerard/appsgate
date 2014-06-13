@@ -21,8 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ubikit.PhysicalEnvironmentItem;
 import org.ubikit.PhysicalEnvironmentItem.Type;
-import org.ubikit.PhysicalEnvironmentModelInformations;
-import org.ubikit.PhysicalEnvironmentModelObserver;
 import org.ubikit.event.impl.EventGateImpl;
 import org.ubikit.pem.event.AddItemEvent;
 import org.ubikit.pem.event.EnterPairingModeEvent;
@@ -79,7 +77,7 @@ import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
  * 
  */
 
-public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
+public class UbikitAdapter implements
 		UbikitAdapterService, EnOceanPairingService {
 
 	/**
@@ -141,7 +139,6 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	// @Validate
 	public void newInst() {
 		logger.debug("PEM service = " + enoceanBridge.toString());
-		enoceanBridge.setObserver(this);
 		logger.debug("Set as EnOcean observer");
 
 		enoceanBridge.linkTo(eventGate);
@@ -233,8 +230,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 	 * 
 	 * @see PhysicalEnvironmentModelObserver
 	 */
-	@Override
-	public void log(String arg0) {
+    public void log(String arg0) {
 		logger.info("!EnOcean event! " + arg0);
 
 		/****************************
@@ -697,6 +693,7 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 		JSONObject pairingState = new JSONObject();
 		JSONObject enoceanMsg = new JSONObject();
 		try {
+            logger.debug("pairingModeChanged(boolean mode : "+mode+" )");
 			pairingState.put("pairingMode", mode);
 			enoceanMsg.put("pairingModeChanged", pairingState);
 			enoceanMsg.put("TARGET", UbikitAdapter.CONFIG_TARGET);
@@ -750,7 +747,6 @@ public class UbikitAdapter implements PhysicalEnvironmentModelObserver,
 			//TODO Get the real EnOcean PEM pairing state
 			setPairingMode(false);
 			enoceanConfJSON.put("pairingMode", false);
-			PhysicalEnvironmentModelInformations pemi = enoceanBridge.getInformations();
 			//TODO Get serial information from pemi string
 			
 			resp.put("TARGET", UbikitAdapter.CONFIG_TARGET);
