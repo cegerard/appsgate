@@ -17,7 +17,7 @@
 	<modules>
 		<module>devicegen</module>
 		<module>ubikit</module>
-		<module>immotronic</module>
+<!--		<module>immotronic</module>-->
 		<module>cybergarage</module>
 		<module>PhilipsHUE4Appsgate</module>
 		<module>sensor-network</module>
