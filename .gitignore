@@ -25,7 +25,7 @@ target
 felix-cache
 
 nbaction.xml
-
+distributions/Appsgate-distribution-light/enocean.db.json
 sources/appsgate-project/communication-components/AppsGate/src/main/resources/WEB/index-TER.html
 sources/appsgate-project/communication-components/AppsGate/src/main/resources/readme.txt
 sources/PhilipsHUE4Appsgate/PhilipsHUEAdapter/.classpath
