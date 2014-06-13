@@ -95,6 +95,8 @@ define([
           n = JSON.parse($(button).attr('json'));
         } else if ($(button).hasClass("device-node")) {
           n = this.getDeviceJSON(button.id);
+        } else if ($(button).hasClass("select-node")) {
+          n = this.getSelectorJSON($(button).attr('selector-type'));
         } else if ($(button).hasClass("service-node")) {
           n = this.getServiceJSON(button.id);
         } else if ($(button).hasClass("program-node")) {
@@ -304,6 +306,17 @@ define([
 
       },
       /**
+      * return a JSON object corresponding to a selector given its type
+      */
+      getSelectorJSON: function(type) {
+        return {"type": "select", "deviceType": type, "iid": "X",
+          "what": [
+            "" + type
+          ],
+          "where": []
+        };
+      },
+      /**
       * return a JSON object corresponding to a service given its id
       */
       getServiceJSON: function(serviceId) {
@@ -381,7 +394,7 @@ define([
         return selected;
 
       },
-	  
+
 	  /**
        *
        */
@@ -396,7 +409,7 @@ define([
 		return true;
       },
 
-	  
+
 	  /**
 	   * Method to check whether the program is correct or not
 	   */

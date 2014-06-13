@@ -1,0 +1,8 @@
+<button class='btn btn-default btn-keyboard select-node' id="<%= node.iid %>" >
+<% if ( node.deviceType == "6" || node.deviceType == "7" || node.deviceType == "21") { %>
+  <span data-i18n='language.selector.prefix-f'/>
+<% } else { %>
+  <span data-i18n='language.selector.prefix-m'/>
+<% } %>
+  <span data-i18n='language.selector.type.<%= node.deviceType %>'/>
+</button>

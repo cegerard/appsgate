@@ -524,7 +524,23 @@
       "weather-code-7":"des conditions rares",
       "domicube-inactivated":"le domicube est désactivé",
       "domicube-activated":"le domicube est activé",
-      "getTemperature":"la température de"
+      "getTemperature":"la température de",
+      "selector":{
+        "prefix-m":"tous les ",
+        "prefix-f":"toutes les ",
+        "type":{
+          "1":"capteurs de temperature",
+          "2":"capteurs de luminosité",
+          "3":"interrupteurs",
+          "4":"capteurs de contact",
+          "5":"lecteurs de carte",
+          "6":"prises",
+          "7":"lampes",
+          "8":"actionneurs",
+          "21":"horloges",
+          "210":"domicubes"
+        }
+      }
    },
    "keyboard":{
       "true":"Vrai",
@@ -535,7 +551,7 @@
       "is-turned-on-lamp-state":"l'ampoule est allumée",
       "is-turned-on-lamp-event":"on allume l'ampoule",
       "is-turned-off-lamp-event":"on éteint l'ampoule",
-	  "turned-on-plug-state" : "la prise est allumée",
+	    "turned-on-plug-state" : "la prise est allumée",
       "turned-off-plug-state":"la prise est éteinte",
       "turn-on-lamp-action":"Allumer l'ampoule",
       "turn-off-lamp-action":"Eteindre l'ampoule",
@@ -565,6 +581,22 @@
       "weather-min":"la température minimale prévue",
       "weather-max":"la température maximale prévue",
       "weather-avg":"la température moyenne prévue",
-      "getTemperature":"la température"
+      "getTemperature":"la température",
+      "selector":{
+        "prefix-m":"Tous les ",
+        "prefix-f":"Toutes les ",
+        "type":{
+          "1":"capteurs de temperature",
+          "2":"capteurs de luminosité",
+          "3":"interrupteurs",
+          "4":"capteurs de contact",
+          "5":"lecteurs de carte",
+          "6":"prises",
+          "7":"lampes",
+          "8":"actionneurs",
+          "21":"horloges",
+          "210":"domicubes"
+        }
+      }
    }
 }

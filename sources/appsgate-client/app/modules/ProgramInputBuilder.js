@@ -16,8 +16,9 @@ define([
     "text!templates/program/nodes/numberNode.html",
     "text!templates/program/nodes/waitNode.html",
     "text!templates/program/nodes/programNode.html",
-    "text!templates/program/nodes/defaultPropertyNode.html"
-], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl) {
+    "text!templates/program/nodes/defaultPropertyNode.html",
+    "text!templates/program/nodes/selectNode.html"
+], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl) {
     var ProgramInputBuilder = {};
     // router
     ProgramInputBuilder = Backbone.Model.extend({
@@ -36,6 +37,9 @@ define([
         tplWaitNode: _.template(waitTpl),
         tplProgramNode: _.template(programTpl),
         tplDefaultPropertyNode: _.template(dfltPropertyTpl),
+        tplSelectNode: _.template(selectNodeTpl),
+
+
         initialize: function() {
         },
 
@@ -80,6 +84,9 @@ define([
                 case "device":
                     param.node.name = this.getDeviceName(param.node.value);
                     input += this.tplDeviceNode(param);
+                    break;
+                case "select":
+                    input += this.tplSelectNode(param);
                     break;
                 case "service":
                     param.node.name = this.getServiceName(param.node.value);
@@ -162,7 +169,7 @@ define([
         },
 
         buildActionNode: function(param) {
-            if (param.node.target.deviceType) {
+            if (param.node.target.deviceType || param.node.target.type === "select") {
                 return devices.getTemplateByType('action',param.node.target.deviceType, param);
             }
             if (param.node.target.serviceType) {
@@ -198,8 +205,8 @@ define([
             }
             if (param.node.source.serviceType) {
                 return services.getTemplateByType('event',param.node.source.serviceType, param);
-            
-            } 
+
+            }
             return this.tplEventNode(param);
         },
         // Hack for a simple prestenation when X == true, we only show X

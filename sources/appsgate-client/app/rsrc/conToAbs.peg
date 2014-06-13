@@ -46,7 +46,7 @@ NUMERIC_VALUE = ID "number"
 			/ ID "boolean"
               / PROPERTY
 
-ACTION = ID "action" _ "(" _ TARGET _ ")" 
+ACTION = ID "action" _ "(" _ TARGET _ ")"
 
 PROPERTY = ID "property" _ "(" _ TARGET _ ")"
 
@@ -56,7 +56,7 @@ STATE = ID "state" _ "(" _ TARGET _")"
 
 MAINTANABLE_STATE = ID "maintanableState" "(" _ TARGET _ ")"
 
-TARGET = ID "variable" / ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY
+TARGET = ID "variable" / ID "select" / ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY
 
 EMPTY = ID "empty"
 

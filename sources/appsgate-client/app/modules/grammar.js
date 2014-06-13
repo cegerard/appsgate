@@ -6,7 +6,7 @@ define([
     require(["peg"]);
 
     var ProgramGrammar = {};
-	var orderedArgs = [ "state", "stateTarget", "expBool", "target", "source", "object", "rules", "events","leftOperand", "rightOperand","seqRulesTrue", "seqRulesFalse", "seqRulesThen", "rulesThen", "left", "right", "what", "where", "devices", "value", "waitFor"];
+	var orderedArgs = [ "state", "stateTarget", "expBool", "target", "source", "object", "rules", "events","leftOperand", "rightOperand","seqRulesTrue", "seqRulesFalse", "seqRulesThen", "rulesThen", "left", "right", "devices", "value", "waitFor"];
     ProgramGrammar = Backbone.Model.extend({
         initialize: function() {
             this.grammar = this.build(grammar);
@@ -55,7 +55,7 @@ define([
 		parseNode: function(obj, currentNode) {
             if (typeof obj == "string") {
                 console.log("String found");
-                console.warn("Select nodes not supported yet.")
+                //console.warn("Select nodes not supported yet.")
                 return "";
             }
             var args = "";
@@ -86,7 +86,7 @@ define([
                 }
                 if (obj.type == "programs" || obj.type == "programCall") {
                     return type + "programs";
-				}
+				        }
                 return type + "selected";
             }
             if (obj.type) {
@@ -94,14 +94,14 @@ define([
             }
 
             for (var i in orderedArgs) {
-				k = orderedArgs[i];
-                if (typeof obj[k] === "object") {
-                    if (obj[k].length != undefined) {
-                        args += "[" + this.parseNode(obj[k], currentNode) + "]";
-                    } else {
-                        args += "(" + this.parseNode(obj[k], currentNode) + ")";
-                    }
-                }
+				          k = orderedArgs[i];
+                  if (typeof obj[k] === "object") {
+                      if (obj[k].length != undefined) {
+                          args += "[" + this.parseNode(obj[k], currentNode) + "]";
+                      } else {
+                          args += "(" + this.parseNode(obj[k], currentNode) + ")";
+                      }
+                  }
             }
             return type + args;
         }
