@@ -130,7 +130,7 @@ define([
      * return the list of available properties
      */
     getProperties: function() {
-      return ["isOn", "getBrightness"];
+      return ["getBrightness"];
     },
     /**
      * return the keyboard code for a property
@@ -139,13 +139,6 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONProperty("mandatory");
       switch(property) {
-        case "isOn":
-          $(btn).append("<span data-i18n='keyboard.is-turned-on-lamp-status'><span>");
-          v.methodName = "getCurrentState";
-          v.returnType = "boolean";
-          v.phrase = "language.is-turned-on-lamp-status";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
         case "getBrightness":
           $(btn).append("<span data-i18n='keyboard.light-brightness'><span>");
           v.methodName = "getLightBrightness";

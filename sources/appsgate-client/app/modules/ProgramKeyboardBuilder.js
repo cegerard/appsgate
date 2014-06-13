@@ -262,6 +262,7 @@ define([
                             "iid": "X",
                             "comparator": "==",
                             "rightOperand": {
+                                "iid" : "X",
                                 "value" : "0",
                                 "type": "number"
                             }

@@ -70,7 +70,7 @@ define([
             }
             var type = obj.iid + ":";
             if (currentNode == -1) {
-                if (obj.type == "mandatory" && obj.deviceType) {
+                if (obj.type == "mandatory" && obj.deviceType !== undefined) {
                     return type + "/" + obj.deviceType + "/";
                 }
                 if (obj.type == "mandatory" && obj.serviceType) {
@@ -78,7 +78,7 @@ define([
                 }
             }
             if (obj.iid == currentNode) {
-                if (obj.deviceType) {
+                if (obj.deviceType !== undefined) {
                     return type + "/" + obj.deviceType + "/";
                 }
                 if (obj.serviceType) {
@@ -87,7 +87,7 @@ define([
                 if (obj.type == "programs" || obj.type == "programCall") {
                     return type + "programs";
 				        }
-                return type + "selected";
+                return type + "SELECTED";
             }
             if (obj.type) {
                 type += obj.type;
