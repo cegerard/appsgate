@@ -75,47 +75,76 @@
 		    <groupId>org.ow2.chameleon.fuchsia.importer</groupId>
 		    <version>${fuchsia.version}</version>
 		</dependency>
+		<!-- apam -->
+		<dependency>
+		    <groupId>fr.imag.adele.apam</groupId>
+                    <artifactId>apam-bundle</artifactId>
+		    <version>${apam.current.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>fr.imag.adele.apam</groupId>
+                    <artifactId>apam-gogo-shell</artifactId>
+		    <version>${apam.current.version}</version>
+		</dependency>   
+		<dependency>
+		    <groupId>fr.imag.adele.apam</groupId>
+                    <artifactId>apam-universal-shell</artifactId>
+		    <version>${apam.current.version}</version>
+		</dependency> 
+		<dependency>
+		    <groupId>fr.imag.adele.apam</groupId>
+                    <artifactId>obrman</artifactId>
+		    <version>${apam.current.version}</version>
+		</dependency>        
 		</dependencies>
   
   <build>
+
     <plugins>
-    
-	  <!-- generate distribution zip -->
-	  <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-		<executions>
-          <execution>
-             <phase>package</phase>
-             <goals>
-                <goal>single</goal>
-             </goals>
-             <configuration>
-			    <appendAssemblyId>false</appendAssemblyId>
-				<descriptors>
-					<descriptor>assembly.xml</descriptor>
-				</descriptors>
-             </configuration>
-          </execution>
-        </executions>
-      </plugin>
 		    <plugin>
 			    <artifactId>maven-dependency-plugin</artifactId>
 			    <version>2.8</version>
 			    <executions>
 				    <execution>
-					    <id>copy-dependencies-chameleon</id>
+					    <id>copy-dependencies</id>
 					    <phase>package</phase>
 					    <goals>
 						    <goal>copy-dependencies</goal>
 					    </goals>
 					    <configuration>
 						    <outputDirectory>${basedir}/../Appsgate-distribution-light/bundle/</outputDirectory>
-						    <excludeTransitive>false</excludeTransitive> 								<excludeArtifactIds>org.apache.felix.gogo.runtime, org.apache.felix.gogo.shell, org.eclipse.osgi, org.apache.felix.ipojo,grizzly-httpservice</excludeArtifactIds>
+						    <excludeTransitive>false</excludeTransitive> 								<!--<excludeArtifactIds>org.apache.felix.gogo.runtime, org.apache.felix.gogo.shell, org.eclipse.osgi, org.apache.felix.ipojo,grizzly-httpservice</excludeArtifactIds>-->
+						      <excludeArtifactIds>org.apache.felix.ipojo.annotations,easymock</excludeArtifactIds>
+						      <overWriteReleases>false</overWriteReleases>
+						      <overWriteSnapshots>false</overWriteSnapshots>
+						      <overWriteIfNewer>true</overWriteIfNewer>
 					    </configuration>
 				    </execution>
 			    </executions>
 		    </plugin>
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/../Appsgate-distribution-light/bundle/</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>${basedir}/src/main/resources/neededBundles</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>              
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   

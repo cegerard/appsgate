@@ -16,14 +16,4 @@
         <module>felix.config.base</module>
     </modules>
 
-	<profiles>
-		<profile>
-			<id>basic</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-
-		</profile>
-	</profiles>
-
 </project>
