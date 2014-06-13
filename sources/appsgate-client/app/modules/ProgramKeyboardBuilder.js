@@ -250,9 +250,9 @@ define([
             for (type in devicesTypes) {
                 if (devicesTypes[type].length > 0) {
                     o = devicesTypes[type][0];
-                    var boolProps = o.getProperties();
-                    for (a in boolProps) {
-                        var btn = o.getKeyboardForProperty(boolProps[a]);
+                    var properties = o.getProperties();
+                    for (a in properties) {
+                        var btn = o.getKeyboardForProperty(properties[a]);
                         console.log("coucou");
                         json = {};
                         json = JSON.parse($(btn).attr('json'));
@@ -277,11 +277,11 @@ define([
             for (type in serviceTypes) {
                 if (serviceTypes[type].length > 0) {
                     o = serviceTypes[type][0];
-                    var boolProps = o.getProperties();
-                    for (a in boolProps) {
+                    var properties = o.getProperties();
+                    for (a in properties) {
                         console.log("coucou");
 
-                        var btn = o.getKeyboardForProperty(boolProps[a]);
+                        var btn = o.getKeyboardForProperty(properties[a]);
                         json = {};
                         json = JSON.parse($(btn).attr('json'));
 
