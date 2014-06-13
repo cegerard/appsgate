@@ -60,7 +60,10 @@
 		<module>CyberGarageAdapter</module>
 		<module>JavamailAndroidAdapter</module>
 		<module>JavaWebSocketAdapter</module>
+        <!--
+         Fuchsia already provides a "bundlelized" philips sdk
 		<module>HUESdKAdapter</module>
+		-->
 		<module>mongo-java-driver</module>
 		<module>StaxAndroidAdapter</module>
 		<module>UpnpBasedriverAdapter</module>
