@@ -89,7 +89,7 @@
 						<% } else if (type === "1") { %>
 							<span class="label label-info"><%= place.getAverageIllumination() %> Lux</span>
 						<% } else if (type === "6") { %>
-							<span class="label label-info"><%= place.getAverageConsumption() %> W</span>
+							<span class="label label-info"><%= place.getTotalConsumption() %> W</span>
 						<% } %>
 						<span class="pull-right badge">
 							<%= place.getTypeSensors(type).length %>

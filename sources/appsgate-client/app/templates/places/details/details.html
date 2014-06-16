@@ -38,8 +38,8 @@
 		<% } %>
 		<br>
 		<span data-i18n="places-details.header.consumption-label"></span>
-		<% if (typeof place.getAverageConsumption() !== "undefined") { %>
-			<span class="label label-info pull-right"><%= place.getAverageConsumption() %> W</span>
+		<% if (typeof place.getTotalConsumption() !== "undefined") { %>
+			<span class="label label-info pull-right"><%= place.getTotalConsumption() %> W</span>
 		<% } else { %>
 			<span class="label label-info pull-right" data-i18n="places-details.undefined"></span>
 		<% } %>
@@ -80,7 +80,7 @@
 				<% } else { %>
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
-				<span class="label label-info"><%= s.get("value") %>&deg;C</span>
+				<span class="label label-info"><%= Math.round(s.get("value")) %>&deg;C</span>
 			</a>
 		<% }) %>
 	</div>

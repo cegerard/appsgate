@@ -33,17 +33,42 @@ define([
             }
 
             // compute the average value of the sensors
-            var average = 0;
+            var total = 0;
             sensors.forEach(function(s) {
                 if (typeof s.get("value") !== "undefined") {
-                    average += parseInt(s.get("value"));
+                    total += parseInt(s.get("value"));
                 } else {
-                    average += parseInt(s.get("consumption"));
+                    total += parseInt(s.get("consumption"));
                 }
             });
 
-            return average / sensors.length;
+            return total / sensors.length;
         },
+        /**
+         * Compute the average value of given sensors
+         *
+         * @param sensors Array of sensors
+         * @return Average value of the sensors if any, undefined otherwise
+         */
+        getTotalValue: function(sensors) {
+            // return null if there is no temperature sensors in the room
+            if (sensors.length === 0) {
+                return undefined;
+            }
+
+            // compute the average value of the sensors
+            var total = 0;
+            sensors.forEach(function(s) {
+                if (typeof s.get("value") !== "undefined") {
+                    total += parseInt(s.get("value"));
+                } else {
+                    total += parseInt(s.get("consumption"));
+                }
+            });
+
+            return total;
+        },
+
         /**
          * Compute the average temperature of the place from the temperature sensors in the place
          *
@@ -66,6 +91,14 @@ define([
          * @return Average consumption of the place if any consumption sensor, undefined otherwise
          */
         getAverageConsumption: function() {
+            return this.getAverageValue(this.getPlugs());
+        },
+        /**
+         * Compute the total consumption of the place from the plugs in the place
+         *
+         * @return total consumption of the place if any consumption sensor, undefined otherwise
+         */
+        getTotalConsumption: function() {
             return this.getAverageValue(this.getPlugs());
         },
         /**

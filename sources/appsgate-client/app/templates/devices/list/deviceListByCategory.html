@@ -127,7 +127,7 @@
                 <span class="label label-success" data-i18n="devices.status.connected"></span>
                 <% } %>
                 <% if (type === "0") { %>
-                <span class="label label-info"><%= s.get("value") %>&deg;C</span>
+                <span class="label label-info"><%= Math.round(s.get("value")) %>&deg;C</span>
                 <% } else if (type === "1") { %>
                 <span class="label label-info"><%= s.get("value") %> Lux</span>
                 <% } else if (type === "2") { %>
