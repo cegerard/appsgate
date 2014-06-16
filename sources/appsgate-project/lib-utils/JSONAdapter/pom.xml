@@ -45,7 +45,7 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;scope=runtime;inline=true</Embed-Dependency>
 						<Export-Package>
-							org.json;version="${apam.current.version}",org.json.zip;uses:="org.json";version="${apam.current.version}"
+							org.json;version="${project.version}",org.json.zip;uses:="org.json";version="${project.version}"
 						</Export-Package>
 					</instructions>
 				</configuration>
