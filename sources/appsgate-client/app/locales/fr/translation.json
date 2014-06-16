@@ -24,8 +24,8 @@
       "edit":"Editer",
       "stop-edit":"Fin edition",
       "users":"Utilisateurs",
-      "places":"Pièces",
-      "devices":"Dispositifs",
+      "places":"Lieux de vie",
+      "devices":"Equipements",
       "services":"Services",
       "programs":"Programmes",
       "button-settings":"Préférences"
@@ -65,40 +65,40 @@
    },
    "places-menu":{
       "add-button":"Ajouter pièce",
-      "place-no-name":"Pièce sans nom",
-      "unlocated-devices":"Dispositifs non localisés"
+      "place-no-name":"Lieu de vie sans nom",
+      "unlocated-devices":"Equipements non localisés"
    },
    "modal-add-place":{
       "title":"Ajouter pièce",
-      "place-name":"Nom de la pièce",
-      "place-name-empty":"Le nom de la pièce doit être renseigné.",
-      "place-already-existing":"Nom de la pièce déjà existant."
+      "place-name":"Nom du lieu de vie",
+      "place-name-empty":"Le nom du lieu de vie doit être renseigné.",
+      "place-already-existing":"Nom de la lieu de vie déjà existant."
    },
    "modal-edit-place":{
       "title":"Renommer pièce",
-      "place-name":"Nom de la pièce",
-      "place-name-empty":"Le nom de la pièce doit être renseigné.",
-      "place-already-existing":"Nom de la pièce déjà existant."
+      "place-name":"Nom du lieu de vie",
+      "place-name-empty":"Le nom du lieu de vie doit être renseigné.",
+      "place-already-existing":"Nom du lieu de vie déjà existant."
    },
    "places-details":{
-      "place-no-name":"Pièce sans nom",
+      "place-no-name":"Lieu de vie sans nom",
       "undefined":"Non défini",
       "header":{
-         "device-number-title":"Nombre de dispositifs",
+         "device-number-title":"Nombre de équipements",
          "temperature-label":"Température",
          "illumination-label":"Luminosité",
          "consumption-label":"Consommation"
       },
       "body":{
-         "device-no-name":"Dispositif sans nom",
-         "no-device-in-place":"Aucun dispositif n'est assigné dans cette pièce."
+         "device-no-name":"Equipement sans nom",
+         "no-device-in-place":"Aucun equipement n'est assigné dans ce lieu de vie."
       }
    },
    "modal-edit-device":{
       "name-label":"Nom",
-      "name-placeholder":"Nom du dispositif",
-      "name-already-existing":"Nom de dispositif déjà existant",
-      "place-label":"Pièce",
+      "name-placeholder":"Nom du lieu de vie",
+      "name-already-existing":"Nom de l'équipement déjà existant",
+      "place-label":"Lieu de vie",
       "time-label":"Heure",
       "time-speed-label":"Vitesse",
       "reset-clock":"Reinitialisé horloge"
@@ -107,7 +107,7 @@
       "name-label":"Nom",
       "name-placeholder":"Nom du service",
       "name-already-existing":"Nom de service déjà existant",
-      "place-label":"Pièce"
+      "place-label":"Lieu de vie"
    },
    "programs-menu":{
       "add-button":"Ajouter programme"
@@ -128,7 +128,7 @@
       "program-already-existing":"Nom du programme déjà existant."
    },
    "devices":{
-      "device-no-name":"Dispositif sans nom",
+      "device-no-name":"Equipement sans nom",
       "device-unlocated":"Non localisé",
       "type-label":"Type",
       "place-label":"Emplacement",
@@ -279,7 +279,7 @@
    },
    "services":{
       "unknown":"Inconnu",
-      "device-no-name":"Dispositif sans nom",
+      "device-no-name":"Equipement sans nom",
       "device-unlocated":"Non localisé",
       "type-label":"Type",
       "place-label":"Emplacement",
