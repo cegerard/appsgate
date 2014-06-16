@@ -635,16 +635,21 @@ div {
 }
 
 .secondary-block-node {
-  border: 1px dotted #428bca;
+  border: 1px dashed #428bca;
   padding:2px;
+  margin-top: 15px;
 }
 
 .secondary-block-node button {
-  border: 1px dotted;
+  border: 1px dashed;
 }
 
 .secondary-block-node .btn {
-  border: 1px dotted;
+  border: 1px dashed;
+}
+
+.secondary-block-node .btn-primary {
+  background-color:#85BAE7;
 }
 
 .selected-node {
