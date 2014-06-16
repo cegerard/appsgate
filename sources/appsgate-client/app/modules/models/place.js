@@ -99,7 +99,7 @@ define([
          * @return total consumption of the place if any consumption sensor, undefined otherwise
          */
         getTotalConsumption: function() {
-            return this.getAverageValue(this.getPlugs());
+            return this.getTotalValue(this.getPlugs());
         },
         /**
          * Return all the devices of the place that matches a given type
