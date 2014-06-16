@@ -528,6 +528,7 @@
       "selector":{
         "prefix-m":"tous les ",
         "prefix-f":"toutes les ",
+        "all-places":"tous les lieux",
         "type":{
           "1":"capteurs de temperature",
           "2":"capteurs de luminosité",

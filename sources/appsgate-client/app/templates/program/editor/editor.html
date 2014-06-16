@@ -11,7 +11,7 @@
         <% } else if (program.get("runningState") === "DEPLOYED") { %>
         <div class="led led-default pull-left"></div>
         <% } else if (program.get("runningState") === "INVALID") { %>
-        <div class="led led-red pull-left"></div>
+        <div class="led led-orange pull-left"></div>
         <% } %>
         <% if (program.get("name") !== "") { %>
         <input class="programNameInput" type="text" value="<%= program.get('name') %>"/>

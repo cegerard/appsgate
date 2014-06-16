@@ -9,7 +9,7 @@
         <% } else if (program.get("runningState") === "DEPLOYED") { %>
         <div id="led-<%= program.get('id') %>" class="led led-default pull-left"></div>
         <% } else if (program.get("runningState") === "INVALID") { %>
-        <div id="led-<%= program.get('id') %>" class="led led-red pull-left"></div>
+        <div id="led-<%= program.get('id') %>" class="led led-orange pull-left"></div>
         <% } %>
 		<% if (program.get("name") !== "") { %>
 			<%= program.get("name") %>

@@ -15,6 +15,7 @@ define([
         "mouseup .btn-prog": "onClickProg",
         "click #end-edit-button": "onClickEndEdit",
         "change .lamp-color-picker": "onChangeLampColorNode",
+        "change .selector-place-picker": "onChangeSeletorPlaceNode",
         "change .weather-town-picker": "onChangeTownNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
         "change .code-forecast-picker": "onChangeCodeForecastNode",
@@ -236,6 +237,15 @@ define([
         // clearing selection
         this.resetSelection();
       },
+      onChangeSeletorPlaceNode: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var value = e.currentTarget.selectedOptions[0].value;
+        this.Mediator.setNodeAttribute(iid, "where", {"type":"string", "value":value});
+
+        // clearing selection
+        this.resetSelection();
+      },
       onChangeTownNode: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
@@ -326,11 +336,11 @@ define([
           this.$el.i18n();
         if (this.Mediator.isValid) {
           this.model.set("runningState", "DEPLOYED");
-          $(".led").addClass("led-default").removeClass("led-red");
+          $(".led").addClass("led-default").removeClass("led-orange");
           $(".programNameInput").addClass("valid-program");
         } else {
           this.model.set("runningState", "INVALID");
-          $(".led").addClass("led-red").removeClass("led-default");
+          $(".led").addClass("led-orange").removeClass("led-default");
           $(".programNameInput").removeClass("valid-program");
         }
         }

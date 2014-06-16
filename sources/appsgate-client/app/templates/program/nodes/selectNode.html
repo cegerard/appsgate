@@ -1,8 +1,16 @@
-<button class='btn btn-default btn-keyboard select-node' id="<%= node.iid %>" >
+<button class='btn btn-default btn-prog btn-prog-select' id="<%= node.iid %>" >
 <% if ( node.deviceType == "6" || node.deviceType == "7" || node.deviceType == "21") { %>
   <span data-i18n='language.selector.prefix-f'/>
 <% } else { %>
   <span data-i18n='language.selector.prefix-m'/>
 <% } %>
   <span data-i18n='language.selector.type.<%= node.deviceType %>'/>
+
+  <span data-i18n="language.complement-change-color-lamp-action"></span>
+  <select id="place-selector-<%= node.idd %>" class="selector-place-picker" target-id="<%= node.iid %>">
+    <option <% if (node.where.value === "") { %>selected<% } %> value="" data-i18n='language.selector.all-places'></option>
+    <% _.each(places.models, function(place) { %>
+      <option <% if (node.where.value === place.get('id')) { %>selected<% } %> value="<%= place.get('id') %>"><%= place.get('name') %></option>
+    <% }) %>
+  </select>
 </button>
