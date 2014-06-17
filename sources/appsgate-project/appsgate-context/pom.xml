@@ -44,7 +44,6 @@
 		<module>DevicePropertiesTableSpec</module>
 		<module>DevicePropertiesTable</module>
 		<module>ContextHistorySpec</module>
-		<module>ContextAgregatorSpec</module>
 		<module>PropertyHistoryManagerSpec</module>
 		<module>MongoDBConfigurationImpl</module>
 		<module>ContextHistoryMongoImpl</module>
