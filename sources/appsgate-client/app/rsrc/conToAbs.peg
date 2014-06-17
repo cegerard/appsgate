@@ -29,7 +29,7 @@ EVENTS  = ID "eventsSequence" _ "[" _ EVENTLIST _ "]"
 
 EVENTLIST = (EVENTS _)+
 
-EVT  = ID "event" _ "(" _ TARGET _ ")"
+EVT  = ID "event" _ "(" _ SOURCE _ ")"
 
 WAIT = ID "wait" _ "(" _ NUMERIC_VALUE _ ")"
 
@@ -48,15 +48,17 @@ NUMERIC_VALUE = ID "number"
 
 ACTION = ID "action" _ "(" _ TARGET _ ")"
 
-PROPERTY = ID "property" _ "(" _ TARGET _ ")"
+PROPERTY = ID "property" _ "(" _ SOURCE _ ")"
 
 KEEP  = ID "keepState" _ "(" _ MAINTANABLE_STATE _ ")"
 
-STATE = ID "state" _ "(" _ TARGET _")"
+STATE = ID "state" _ "(" _ SOURCE _")"
 
 MAINTANABLE_STATE = ID "maintanableState" "(" _ TARGET _ ")"
 
-TARGET = ID "variable" / ID "select" / ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY
+TARGET = ID "variable" / ID "select" / ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY_SEL
+
+SOURCE = ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY
 
 EMPTY = ID "empty"
 
@@ -66,6 +68,13 @@ ID "ID" = d:[0-9]+":"
 {
  return d.join("");
 }
+
+MANDATORY_SEL =  i:ID DEVICE_SEP l:NUMBERS DEVICE_SEP
+{
+ex = {'message' : 'expected device of type: ' + l.join(","), 'expected':l, 'id' : i, 'type':'select'};
+throw ex;
+}
+		/ MANDATORY
 
 MANDATORY = i:ID DEVICE_SEP l:NUMBERS DEVICE_SEP
 {

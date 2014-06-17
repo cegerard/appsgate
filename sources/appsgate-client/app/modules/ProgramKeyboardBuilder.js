@@ -25,6 +25,10 @@ define([
             nodes = ex.expected;
             if (nodes != null) {            // First we treat the devices and services
                 switch (ex.type) {
+                    case "select":
+                        this.buildDevicesOfType(nodes[0]);
+                        this.buildSelectKey(nodes[0]);
+                        break;
                     case "device":
                         this.buildDevicesOfType(nodes[0]);
                         break;
@@ -127,7 +131,6 @@ define([
                 }
             });
 
-            this.buildSelectKey(type);
         },
 
         /**
@@ -253,7 +256,6 @@ define([
                     var properties = o.getProperties();
                     for (a in properties) {
                         var btn = o.getKeyboardForProperty(properties[a]);
-                        console.log("coucou");
                         json = {};
                         json = JSON.parse($(btn).attr('json'));
 
@@ -279,8 +281,6 @@ define([
                     o = serviceTypes[type][0];
                     var properties = o.getProperties();
                     for (a in properties) {
-                        console.log("coucou");
-
                         var btn = o.getKeyboardForProperty(properties[a]);
                         json = {};
                         json = JSON.parse($(btn).attr('json'));
