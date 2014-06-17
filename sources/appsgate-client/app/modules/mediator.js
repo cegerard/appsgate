@@ -311,9 +311,9 @@ define([
       getSelectorJSON: function(type) {
         return {"type": "select", "deviceType": type, "iid": "X",
           "what": [
-            "" + type
+            {"type":"string","value":""+type}
           ],
-          "where": []
+          "where": [{"type":"string","value":""}]
         };
       },
       /**
@@ -414,7 +414,6 @@ define([
 	   * Method to check whether the program is correct or not
 	   */
 	  checkProgram: function(programJSON) {
-        console.debug("CheckProgram")
         var n = this.Grammar.parse(this.programJSON, -1);
         if (n == null && !this.isProgramEmpty()) {
           return true;
