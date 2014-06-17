@@ -441,7 +441,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                 coreObjectInPlace.addAll(symbolicPlace.getDevices());
             }
         }
-
+        logger.debug("There is {} devices  in places", coreObjectInPlace.size());
 		// Now we get all identifier of device that match one types of the type
         // list
         try {
@@ -461,10 +461,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                     coreObjectOfType.add(allDevices.getJSONObject(i).getString("id"));
                 }
             }
-
-			// We get the intersection between placed object and object of
+            logger.debug("There is {} devices in total list", coreObjectOfType.size());
+	    // We get the intersection between placed object and object of
             // specified type
             coreObjectInPlace.retainAll(coreObjectOfType);
+            logger.debug("There is {} devices in total list", coreObjectInPlace.size());
 
         } catch (JSONException e) {
             e.printStackTrace();
