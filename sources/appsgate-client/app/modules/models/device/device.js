@@ -13,16 +13,10 @@ define([
      */
     Device = Brick.extend({
         /**
-         * @constructor 
+         * @constructor
          */
         initialize: function() {
             var self = this;
-
-            // when a name is updated, update the grammar
-            /*this.on("change:name", function() {
-                delete window.grammar;
-                window.grammar = new Grammar();
-            });*/
 
             // each device listens to the event whose id corresponds to its own id. This ensures to
             // receive only relevant events
@@ -50,7 +44,7 @@ define([
         },
         /**
          * Send a message to the server to perform a remote call
-         * 
+         *
          * @param method Remote method name to call
          * @param args Array containing the argument taken by the method. Each entry of the array has to be { type : "", value "" }
          */
@@ -81,7 +75,7 @@ define([
         getJSONAction: function (type) {
             return {"type": "action", "target": {"iid": "X", "type": 'mandatory', "deviceType":this.get("type")}, "args": [], "iid": "X"};
         },
-        
+
         getJSONEvent: function (type) {
             return {"type": "event",  "source": {"iid": "X", "type": 'mandatory', "deviceType":this.get("type")}, "iid": "X"};
         },
@@ -125,6 +119,9 @@ define([
                         break;
                 }
             }
+        },
+        emergencyStop:function(method,model) {
+          this.remoteControl("Off", []);
         }
 
     });
