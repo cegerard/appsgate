@@ -28,7 +28,8 @@
       "devices":"Equipements",
       "services":"Services",
       "programs":"Programmes",
-      "button-settings":"Préférences"
+      "button-settings":"Préférences",
+      "emergency-stop":"Tout stopper"
    },
    "editbar":{
       "undo":"Annuler",

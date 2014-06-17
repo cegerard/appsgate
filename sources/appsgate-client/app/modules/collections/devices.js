@@ -1,7 +1,7 @@
 define([
     "app",
     "models/device/device",
-    "text!templates/program/nodes/defaultActionNode.html",    
+    "text!templates/program/nodes/defaultActionNode.html",
     "models/device/temperaturesensor",
     "models/device/illuminationsensor",
     "models/device/switchsensor",
@@ -192,7 +192,7 @@ define([
         },
         /**
          * @returns the template corresponding to the device
-         */ 
+         */
         getTemplateByType: function(word,type,param) {
             if (this.templates[word][type]) {
                 return this.templates[word][type](param);
@@ -208,6 +208,13 @@ define([
             return _.groupBy(this.getUnlocatedDevices(), function(device) {
                 return device.get("type");
             });
+        },
+        emergencyStop:function() {
+          _.each(devices.models, function(device) {
+            if($.inArray(device.get("type"), [6,7,8])){
+                device.emergencyStop();
+            }
+          });
         }
     });
 
