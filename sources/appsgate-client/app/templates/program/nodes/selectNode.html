@@ -8,9 +8,9 @@
 
   <span data-i18n="language.complement-change-color-lamp-action"></span>
   <select id="place-selector-<%= node.idd %>" class="selector-place-picker" target-id="<%= node.iid %>">
-    <option <% if (node.where.value === "") { %>selected<% } %> value="" data-i18n='language.selector.all-places'></option>
+    <option <% if (node.where[0].value === "") { %>selected<% } %> value="" data-i18n='language.selector.all-places'></option>
     <% _.each(places.models, function(place) { %>
-      <option <% if (node.where.value === place.get('id')) { %>selected<% } %> value="<%= place.get('id') %>"><%= place.get('name') %></option>
+      <option <% if (node.where[0].value === place.get('id')) { %>selected<% } %> value="<%= place.get('id') %>"><%= place.get('name') %></option>
     <% }) %>
   </select>
 </button>

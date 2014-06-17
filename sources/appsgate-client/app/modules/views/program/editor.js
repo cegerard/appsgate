@@ -241,7 +241,7 @@ define([
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
         var value = e.currentTarget.selectedOptions[0].value;
-        this.Mediator.setNodeAttribute(iid, "where", {"type":"string", "value":value});
+        this.Mediator.setNodeAttribute(iid, "where", [{"type":"string","value":""+value}]);
 
         // clearing selection
         this.resetSelection();
