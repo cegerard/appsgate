@@ -132,40 +132,56 @@
                 <span class="label label-info"><%= s.get("value") %> Lux</span>
                 <% } else if (type === "2") { %>
                 <% if (s.get("value") === "true") { %>
-                <span class="label label-info" data-i18n="devices.switch.value.opened"></span>
+                <span class="label label-yellow" data-i18n="devices.switch.value.opened"></span>
                 <% } else { %>
-                <span class="label label-info" data-i18n="devices.switch.value.closed"></span>
+                <span class="label label-default" data-i18n="devices.switch.value.closed"></span>
                 <% } %>
                 <% } else if (type === "3") { %>
                 <% if (s.get("contact") === "true") { %>
-                <span class="label label-info" data-i18n="devices.contact.value.closed"></span>
+                <span class="label label-default" data-i18n="devices.contact.value.closed"></span>
                 <% } else { %>
-                <span class="label label-info" data-i18n="devices.contact.value.opened"></span>
+                <span class="label label-yellow" data-i18n="devices.contact.value.opened"></span>
                 <% } %>
                 <% } else if (type === "4") { %>
                 <% if (s.get("inserted") === "true") { %>
-                <span class="label label-info" data-i18n="devices.keycard-reader.value.inserted"></span>
+                <span class="label label-yellow" data-i18n="devices.keycard-reader.value.inserted"></span>
                 <% } else { %>
-                <span class="label label-info" data-i18n="devices.keycard-reader.value.not-inserted"></span>
+                <span class="label label-default" data-i18n="devices.keycard-reader.value.not-inserted"></span>
                 <% } %>
                 <% } else if (type === "6") { %>
                 <span class="label label-info"><%= s.get("consumption") %> W</span>
                 <% if (s.get("plugState") === "true" || s.get("plugState") === true) { %>
-                <span class="label label-info" data-i18n="devices.plug.status.turnedOn"></span>
+                <span class="label label-yellow" data-i18n="devices.plug.status.turnedOn"></span>
                 <% } else { %>
-                <span class="label label-info" data-i18n="devices.plug.status.turnedOff"></span>
+                <span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                 <% } %>
                 <% } else if (type === "7") { %>
                 <% if (s.get("value") === "true" || s.get("value") === true) { %>
-                <span class="label label-info" data-i18n="devices.lamp.status.turnedOn"></span>
+                <span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
                 <% } else { %>
-                <span class="label label-info" data-i18n="devices.lamp.status.turnedOff"></span>
+                <span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
                 <% } %>
                 <% } else if (type === "8") { %>
                 <% if (s.get("value") === "true" || s.get("value") === true) { %>
-                <span class="label label-info" data-i18n="devices.actuator.status.turnedOn"></span>
+                <span class="label label-yellow" data-i18n="devices.actuator.status.turnedOn"></span>
                 <% } else { %>
-                <span class="label label-info" data-i18n="devices.actuator.status.turnedOff"></span>
+                <span class="label label-default" data-i18n="devices.actuator.status.turnedOff"></span>
+                <% } %>
+                <% } else if (type === "210") { %>
+                <% if(s.get("activeFace") === "1") { %>
+                  <img src='/app/img/lan.svg' width='18px' class="img-responsive">
+                <% } else if(s.get("activeFace") === "2") { %>
+                  <span data-i18n='devices.domicube.status.unknown'></span>
+                <% } else if(s.get("activeFace") === "3") { %>
+                  <img src='/app/img/music.png' width='18px' class="img-responsive">
+                <% } else if(s.get("activeFace") === "4") { %>
+                  <img src='/app/img/question.svg' width='18px' class="img-responsive">
+                <% } else if(s.get("activeFace") === "5") { %>
+                  <img src='/app/img/night.png' width='18px' class="img-responsive">
+                <% } else if(s.get("activeFace") === "6") { %>
+                  <img src='/app/img/meal.png' width='18px' class="img-responsive">
+                <% } else { %>
+                  <span data-i18n='devices.domicube.status.unknown'></span>
                 <% } %>
                 <% } %>
             </a>
