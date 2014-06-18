@@ -6,11 +6,11 @@
 	<% } %>
 	<% if (place.get("id") !== "-1") { %>
 		<div class="pull-right">
+			<button id="delete-popover" class="btn btn-default" rel="popover">
+				<i class="glyphicon glyphicon-trash"></i><span data-i18n="form.delete-button"></span>
+			</button>
 			<button type="button" data-target="#edit-name-place-modal" data-toggle="modal" class="btn btn-default">
 				<i class="glyphicon glyphicon-edit"></i> <span data-i18n="form.rename-button"></span>
-			</button>
-			<button id="delete-popover" class="btn btn-default" rel="popover">
-				<i class="glyphicon glyphicon-trash"></i>
 			</button>
 		</div>
 	<% } %>
@@ -23,25 +23,11 @@
 		<span data-i18n="places-details.header.device-number-title"></span>
 		<span class="label label-info pull-right"><%= place.get("devices").length %></span>
 		<br>
-		<span data-i18n="places-details.header.temperature-label"></span>
-		<% if (typeof place.getAverageTemperature() !== "undefined") { %>
-			<span class="label label-info pull-right"><%= place.getAverageTemperature() %>&deg;C</span>
-		<% } else { %>
-			<span class="label label-info pull-right" data-i18n="places-details.undefined"></span>
-		<% } %>
-		<br>
-		<span data-i18n="places-details.header.illumination-label"></span>
-		<% if (typeof place.getAverageIllumination() !== "undefined") { %>
-			<span class="label label-info pull-right"><%= place.getAverageIllumination() %> Lux</span>
-		<% } else { %>
-			<span class="label label-info pull-right" data-i18n="places-details.undefined"></span>
-		<% } %>
-		<br>
 		<span data-i18n="places-details.header.consumption-label"></span>
 		<% if (typeof place.getTotalConsumption() !== "undefined") { %>
-			<span class="label label-info pull-right"><%= place.getTotalConsumption() %> W</span>
+			<span class="label label-default pull-right"><%= place.getTotalConsumption() %> W</span>
 		<% } else { %>
-			<span class="label label-info pull-right" data-i18n="places-details.undefined"></span>
+			<span class="label label-info pull-right" data-i18n="places-details.no-plugs"></span>
 		<% } %>
 	</div>
 </div>
@@ -80,7 +66,7 @@
 				<% } else { %>
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
-				<span class="label label-info"><%= Math.round(s.get("value")) %>&deg;C</span>
+				<span class="label label-default"><%= Math.round(s.get("value")) %>&deg;C</span>
 			</a>
 		<% }) %>
 	</div>
@@ -121,7 +107,7 @@
 				<% } else { %>
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
-				<span class="label label-info"><%= s.get("value") %> Lux</span>
+				<span class="label label-default"><%= s.get("value") %> Lux</span>
 			</a>
 		<% }) %>
 	</div>
@@ -163,9 +149,9 @@
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
 				<% if (s.get("value") === "true") { %>
-					<span class="label label-info" data-i18n="devices.switch.value.opened"></span>
+					<span class="label label-yellow" data-i18n="devices.switch.value.opened"></span>
 				<% } else { %>
-					<span class="label label-info" data-i18n="devices.switch.value.closed"></span>
+					<span class="label label-default" data-i18n="devices.switch.value.closed"></span>
 				<% } %>
 			</a>
 		<% }) %>
@@ -208,9 +194,9 @@
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
 				<% if (s.get("contact") === "true") { %>
-					<span class="label label-info" data-i18n="devices.contact.value.closed"></span>
+					<span class="label label-default" data-i18n="devices.contact.value.closed"></span>
 				<% } else { %>
-					<span class="label label-info" data-i18n="devices.contact.value.opened"></span>
+					<span class="label label-yellow" data-i18n="devices.contact.value.opened"></span>
 				<% } %>
 			</a>
 		<% }) %>
@@ -253,9 +239,9 @@
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
 				<% if (s.get("inserted") === "true") { %>
-					<span class="label label-info" data-i18n="devices.keycard-reader.value.inserted"></span>
+					<span class="label label-yellow" data-i18n="devices.keycard-reader.value.inserted"></span>
 				<% } else { %>
-					<span class="label label-info" data-i18n="devices.keycard-reader.value.not-inserted"></span>
+					<span class="label label-default" data-i18n="devices.keycard-reader.value.not-inserted"></span>
 				<% } %>
 			</a>
 		<% }) %>
@@ -344,9 +330,9 @@
 				<% } %>
 				<span class="label label-info"><%= s.get("consumption") %> W</span>
 				<% if (s.get("plugState") === "true" || s.get("plugState") === true) { %>
-					<span class="label label-info" data-i18n="devices.plug.status.turnedOn"></span>
+					<span class="label label-yellow" data-i18n="devices.plug.status.turnedOn"></span>
 				<% } else { %>
-					<span class="label label-info" data-i18n="devices.plug.status.turnedOff"></span>
+					<span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
 				<% } %>
 			</a>
 		<% }) %>
@@ -396,9 +382,9 @@
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
 				<% if (s.get("value") === "true" || s.get("value") === true) { %>
-					<span class="label label-info" data-i18n="devices.lamp.status.turnedOn"></span>
+					<span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
 				<% } else { %>
-					<span class="label label-info" data-i18n="devices.lamp.status.turnedOff"></span>
+					<span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
 				<% } %>
 			</a>
 		<% }) %>
