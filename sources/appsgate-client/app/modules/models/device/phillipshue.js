@@ -1,14 +1,15 @@
 define([
   "app",
   "models/device/device",
+  "raphael",
   "text!templates/program/nodes/lampActionNode.html"
-], function(App, Device, ActionTemplate) {
+], function(App, Device, Raphael, ActionTemplate) {
 
   var PhillipsHue = {};
 
   /**
    * Implementation of the Phillips Hue lamp
-   * 
+   *
    * @class Device.PhillipsHue
    */
   PhillipsHue = Device.extend({
@@ -49,7 +50,7 @@ define([
           v.methodName = "blink30";
           v.phrase = "devices.lamp.action.blink";
           $(btn).attr("json", JSON.stringify(v));
-          break;          
+          break;
         default:
           console.error("unexpected action found for PhilipsHue: " + act);
           btn = null;
@@ -153,12 +154,19 @@ define([
       }
       return btn;
     },
-    
+
     /**
      * @returns the action template specific for lamps
      */
     getTemplateAction: function() {
-      return _.template(ActionTemplate);  
+      return _.template(ActionTemplate);
+    },
+
+    /**
+     * @returns the current lamp color as a hex value
+     */
+    getCurrentColor: function() {
+      return Raphael.hsb((this.get("color") / 65535), (this.get("saturation") / 255), (this.get("brightness") / 255));
     },
 
 
@@ -186,7 +194,7 @@ define([
     sendSaturation:function() {
       this.remoteControl("setSaturation", [{ type : "int", value : this.get("saturation") }], this.id);
     },
-    
+
     /**
      * Send a message to the backend to update the attribute brightness
      */

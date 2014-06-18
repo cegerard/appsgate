@@ -184,6 +184,10 @@ div {
   background: #ffd53e;
 }
 
+.lamp-color-led{
+  color:transparent;
+}
+
 .valid-program{
   background: palegreen;
 }
