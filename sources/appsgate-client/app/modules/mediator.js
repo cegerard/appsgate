@@ -395,6 +395,20 @@ define([
 
       },
 
+	  /**
+       *
+       */
+      buildKeyboard: function() {
+        console.debug("buildKeyboard")
+        var n = this.Grammar.parse(this.programJSON, this.currentNode);
+		if (n === null) {
+		  console.error("Unable to parse the program");
+		  return false;
+		}
+          this.ProgramKeyboardBuilder.buildKeyboard(n);
+		return true;
+      },
+
 
 	  /**
 	   * Method to check whether the program is correct or not
