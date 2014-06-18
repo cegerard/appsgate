@@ -65,18 +65,18 @@
       "already-existing":"Nom déjà existant."
    },
    "places-menu":{
-      "add-button":"Ajouter pièce",
+      "add-button":"Ajouter lieu de vie",
       "place-no-name":"Lieu de vie sans nom",
       "unlocated-devices":"Equipements non localisés"
    },
    "modal-add-place":{
-      "title":"Ajouter pièce",
+      "title":"Ajouter lieu de vie",
       "place-name":"Nom du lieu de vie",
       "place-name-empty":"Le nom du lieu de vie doit être renseigné.",
       "place-already-existing":"Nom de la lieu de vie déjà existant."
    },
    "modal-edit-place":{
-      "title":"Renommer pièce",
+      "title":"Renommer lieu de vie",
       "place-name":"Nom du lieu de vie",
       "place-name-empty":"Le nom du lieu de vie doit être renseigné.",
       "place-already-existing":"Nom du lieu de vie déjà existant."
@@ -84,6 +84,7 @@
    "places-details":{
       "place-no-name":"Lieu de vie sans nom",
       "undefined":"Non défini",
+      "no-plugs":"Pas de prise",
       "header":{
          "device-number-title":"Nombre de équipements",
          "temperature-label":"Température",
@@ -137,6 +138,7 @@
       "value-label":"Valeur",
       "consumption-label":"Consommation",
       "status-label":"Statut",
+      "controls-label":"Commandes",
       "status":{
          "connected":"Connecté",
          "waiting":"En attente",

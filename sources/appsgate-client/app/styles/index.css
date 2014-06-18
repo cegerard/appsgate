@@ -180,6 +180,10 @@ div {
   background: #00FF00;
 }
 
+.label-yellow{
+  background: #ffd53e;
+}
+
 .valid-program{
   background: palegreen;
 }

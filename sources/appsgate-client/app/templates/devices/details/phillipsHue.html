@@ -1,6 +1,16 @@
 <li class="list-group-item">
 	<strong data-i18n="devices.state-label"></strong>
 	<div class="pull-right">
+	<% if (device.get("value") === "true" || device.get("value") === true) { %>
+	<span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
+	<% } else { %>
+	<span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
+	<% } %>
+	</div>
+</li>
+<li class="list-group-item">
+	<strong data-i18n="devices.controls-label"></strong>
+	<div class="pull-right">
         <button type="button" id="<%= device.get('id') %>" class="btn btn-info btn-sm blink-lamp-button" data-i18n="devices.lamp.action.blink"></button>
 
 		<button type="button" class="btn btn-info btn-sm toggle-lamp-button">
@@ -11,6 +21,5 @@
 			<% } %>
 		</button>
 	</div>
-
     <div class="color-picker center"></div>
 </li>
