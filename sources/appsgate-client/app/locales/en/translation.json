@@ -12,7 +12,7 @@
       "delete-button":"Delete",
       "edit-button":"Edit",
       "save-button":"Save",
-      "saving-button":"Loading ...",
+      "saving-button":"Saving ...",
       "browse-button":"Browse",
       "background-editor":"Background",
       "size-editor":"Size",
@@ -22,13 +22,14 @@
    "navbar":{
       "home":"Home",
       "edit":"Edit",
-      "stop-edit":"Finish modification",
+      "stop-edit":"Done",
       "users":"Users",
       "places":"Place",
       "devices":"Devices",
       "services":"Services",
       "programs":"Programs",
-      "button-settings":"Preferences"
+      "button-settings":"Preferences",
+      "emergency-stop":"Emergency stop"
    },
    "editbar":{
       "undo":"Undo",
@@ -43,7 +44,7 @@
    },
    "modal-lost-connection":{
       "title":"Connection problem",
-      "interrupted-connection":"The connection has been interrupted.",
+      "interrupted-connection":"The connection has been lost.",
       "connection":"Connecting ...",
       "change-server-button":"Change Server",
       "reconnection-button":"Reconnect"
@@ -83,6 +84,7 @@
    "places-details":{
       "place-no-name":"Item unnamed",
       "undefined":"Undefined",
+      "no-plugs":"No plugs",
       "header":{
          "device-number-title":"Number of devices",
          "temperature-label":"Temperature",
@@ -136,6 +138,7 @@
       "value-label":"Value",
       "consumption-label":"Consumption",
       "status-label":"Status",
+      "controls-label":"Controls",
       "status":{
          "connected":"Connected",
          "waiting":"Waiting",
@@ -165,7 +168,7 @@
       },
       "actuator":{
          "name":{
-            "singular":"actuator",
+            "singular":"Actuator",
             "plural":"Actuators"
          },
          "status":{
@@ -180,7 +183,7 @@
       "contact":{
          "name":{
             "singular":"Contact Sensor",
-            "plural":"contact sensors"
+            "plural":"Contact sensors"
          },
          "value":{
             "opened":"Open",
@@ -197,8 +200,8 @@
       },
       "keycard-reader":{
          "name":{
-            "singular":"card reader",
-            "plural":"card readers"
+            "singular":"Card reader",
+            "plural":"Card readers"
          },
          "value":{
             "inserted":"card inserted",
@@ -438,7 +441,7 @@
       "is-opened-contact-status":"open",
       "is-assembled-contact-status":"closed",
       "is-disassembled-contact-status":"opened",
-      "inserted keycard-reader-event":"is inserted in a card",
+      "inserted-keycard-reader-event":"is inserted in a card",
       "removed-keycard-reader-event":"card is removed",
       "card-inserted-keycard-reader-status":"a card is inserted in",
       "no-card-inserted-keycard-reader-status":"no card is inserted in ",
@@ -524,7 +527,25 @@
       "weather-code-7":"rare conditions",
       "domicube-inactivated":"domicube is disactivated",
       "domicube-activated":"domicube is activated",
-      "getTemperature":"temperature"
+      "getTemperature":"temperature",
+      "selector":{
+        "prefix-m":"all the ",
+        "prefix-f":"all the ",
+        "all-places":"all places",
+        "complement-selection-target":"of",
+        "type":{
+          "1":"temperature sensors",
+          "2":"luminosity sensors",
+          "3":"switches",
+          "4":"contact sensors",
+          "5":"card readers",
+          "6":"plugs",
+          "7":"lamps",
+          "8":"actuators",
+          "21":"clocks",
+          "210":"domicubes"
+        }
+      }
    },
    "keyboard":{
       "true":"True",
@@ -537,7 +558,6 @@
       "is-turned-off-event-lamp":"light is turned off",
       "turned-on-plug-state" : "plug is on",
       "turned-off-plug-state":"plug is off",
-
       "turn-on-lamp-action":"Turn on light",
       "turn-off-lamp-action":"Turn off light",
       "turn-on-plug-action":"Turn on",
@@ -566,6 +586,22 @@
       "weather-min":"the minimum temperature expected",
       "weather-max":"the maximum temperature specified",
       "weather-avg":"the average temperature expected",
-      "getTemperature":"temperature"
+      "getTemperature":"temperature",
+      "selector":{
+        "prefix-m":"All the ",
+        "prefix-f":"All the ",
+        "type":{
+          "1":"temperature sensors",
+          "2":"luminosity sensors",
+          "3":"switches",
+          "4":"contact sensors",
+          "5":"card readers",
+          "6":"plugs",
+          "7":"lamps",
+          "8":"actuators",
+          "21":"clocks",
+          "210":"domicubes"
+        }
+      }
    }
 }
