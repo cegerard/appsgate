@@ -79,7 +79,7 @@ define([
       },
       refreshDisplay: function(e) {
         // To avoid to refresh the whole page at each second
-        if (e.updateClockValue !== undefined) {
+        if (e!== undefined && e.updateClockValue !== undefined) {
           return;
         }
         var input = this.Mediator.getInputFromJSON();
