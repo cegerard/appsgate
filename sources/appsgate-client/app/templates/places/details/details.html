@@ -25,9 +25,9 @@
 		<br>
 		<span data-i18n="places-details.header.consumption-label"></span>
 		<% if (typeof place.getTotalConsumption() !== "undefined") { %>
-			<span class="label label-default pull-right"><%= place.getTotalConsumption() %> W</span>
+			<span class="label label-info pull-right"><%= place.getTotalConsumption() %> W</span>
 		<% } else { %>
-			<span class="label label-info pull-right" data-i18n="places-details.no-plugs"></span>
+			<span class="label label-default pull-right" data-i18n="places-details.no-plugs"></span>
 		<% } %>
 	</div>
 </div>
@@ -66,7 +66,7 @@
 				<% } else { %>
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
-				<span class="label label-default"><%= Math.round(s.get("value")) %>&deg;C</span>
+				<span class="label label-info"><%= Math.round(s.get("value")) %>&deg;C</span>
 			</a>
 		<% }) %>
 	</div>
