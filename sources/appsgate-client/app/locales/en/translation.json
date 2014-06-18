@@ -500,6 +500,7 @@
       "nothing-keyword":"Nothing",
       "is-turned-on-lamp-state":"on",
       "is-turned-off-lamp-state":"off",
+      "light-brightness":"the intensity of",
       "state-verb":"is",
       "weather-at":"under the weather",
       "weather-min-at":"the minimum temperature expected for",

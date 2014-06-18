@@ -143,7 +143,7 @@ define([
           $(btn).append("<span data-i18n='keyboard.light-brightness'><span>");
           v.methodName = "getLightBrightness";
           v.returnType = "number";
-          v.phrase = " brille";
+          v.phrase = "language.light-brightness";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

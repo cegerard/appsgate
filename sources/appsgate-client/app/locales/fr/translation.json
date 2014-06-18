@@ -501,6 +501,7 @@
       "nothing-keyword":"Rien",
       "is-turned-on-lamp-state":"allumée",
       "is-turned-off-lamp-state":"éteinte",
+      "light-brightness":"l'intensité de ",
       "state-verb":"est",
       "weather-at":"la météo prévue à",
       "weather-min-at":"la température minimale prévue à",
