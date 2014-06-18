@@ -672,56 +672,56 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 //		/**
 // 		 * Get the program list
 // 		 */
-		this.getPrograms = function ()
-		{
-			var call = eval({"method":"getPrograms", "args":[], "callId":"cf-getprograms", "TARGET":"EHMI"});
-			websocket.send(JSON.stringify(call));
-		},
-		
+//		this.getPrograms = function ()
+//		{
+//			var call = eval({"method":"getPrograms", "args":[], "callId":"cf-getprograms"});
+//			websocket.send(JSON.stringify(call));
+//		}
+//		
 //		/**
 //		 * Add a program
 //		 */
-		this.addProgram = function (pgmJson)
-		{
-			var call = eval({"method":"addProgram", "args":[{"type":"JSONObject", "value":pgmJson}], "callId":"cf-addprogram", "TARGET":"EHMI"});
-			websocket.send(JSON.stringify(call));
-		},
+//		this.addProgram = function (pgmJson)
+//		{
+//			var call = eval({"method":"addProgram", "args":[{"type":"JSONObject", "value":pgmJson}], "callId":"cf-addprogram"});
+//			websocket.send(JSON.stringify(call));
+//		}
 //		
 //		/**
 //		 * remove a program
 //		 */
-		this.removeProgram = function (pgmId)
-		{
-			var call = eval({"method":"removeProgram", "args":[{"type":"String", "value":pgmId}], "callId":"cf-removeprogram", "TARGET":"EHMI"});
-			websocket.send(JSON.stringify(call));
-		},
+//		this.removeProgram = function (pgmId)
+//		{
+//			var call = eval({"method":"removeProgram", "args":[{"type":"String", "value":pgmId}], "callId":"cf-removeprogram"});
+//			websocket.send(JSON.stringify(call));
+//		}
 //		
 //		/**
 //		 * Update a program
 //		 */
-		this.updateProgram = function (pgmJson)
-		{
-			var call = eval({"method":"updateProgram", "args":[{"type":"JSONObject", "value":pgmJson}], "callId":"cf-updateprogram", "TARGET":"EHMI"});
-			websocket.send(JSON.stringify(call));
-		},
+//		this.updateProgram = function (pgmJson)
+//		{
+//			var call = eval({"method":"updateProgram", "args":[{"type":"JSONObject", "value":pgmJson}], "callId":"cf-updateprogram"});
+//			websocket.send(JSON.stringify(call));
+//		}
 //		
 //		/**
 //		 * Start a program
 //		 */
-		this.startProgram = function (pgmId)
-		{
-			var call = eval({"method":"callProgram", "args":[{"type":"String", "value":pgmId}], "callId":"cf-startprogram", "TARGET":"EHMI"});
-			websocket.send(JSON.stringify(call));
-		},
+//		this.startProgram = function (pgmId)
+//		{
+//			var call = eval({"method":"callProgram", "args":[{"type":"String", "value":pgmId}], "callId":"cf-startprogram"});
+//			websocket.send(JSON.stringify(call));
+//		}
 //		
 //		/**
 //		 * Stop a program
 //		 */
-		this.stopProgram = function (pgmId)
-		{
-			var call = eval({"method":"stopProgram", "args":[{"type":"String", "value":pgmId}], "callId":"cf-stopprogram", "TARGET":"EHMI"});
-			websocket.send(JSON.stringify(call));
-		}
+//		this.stopProgram = function (pgmId)
+//		{
+//			var call = eval({"method":"stopProgram", "args":[{"type":"String", "value":pgmId}], "callId":"cf-stopprogram"});
+//			websocket.send(JSON.stringify(call));
+//		}
 //		
 //		/**
 //		 * Pause a program
