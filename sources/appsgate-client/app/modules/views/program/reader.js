@@ -78,6 +78,10 @@ define([
         appRouter.navigate("#programs", {trigger: true});
       },
       refreshDisplay: function(e) {
+        // To avoid to refresh the whole page at each second
+        if (e.updateClockValue !== undefined) {
+          return;
+        }
         var input = this.Mediator.getInputFromJSON();
         if (!this.Mediator.isValid) {
           this.model.set("runningState", "INVALID");
