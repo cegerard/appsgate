@@ -28,7 +28,8 @@
       "devices":"Devices",
       "services":"Services",
       "programs":"Programs",
-      "button-settings":"Preferences"
+      "button-settings":"Preferences",
+      "emergency-stop":"Stop all"
    },
    "editbar":{
       "undo":"Undo",
@@ -83,6 +84,7 @@
    "places-details":{
       "place-no-name":"Item unnamed",
       "undefined":"Undefined",
+      "no-plugs":"No plugs",
       "header":{
          "device-number-title":"Number of devices",
          "temperature-label":"Temperature",
@@ -136,6 +138,7 @@
       "value-label":"Value",
       "consumption-label":"Consumption",
       "status-label":"Status",
+      "controls-label":"Controls",
       "status":{
          "connected":"Connected",
          "waiting":"Waiting",
@@ -438,7 +441,7 @@
       "is-opened-contact-status":"open",
       "is-assembled-contact-status":"closed",
       "is-disassembled-contact-status":"opened",
-      "inserted keycard-reader-event":"is inserted in a card",
+      "inserted-keycard-reader-event":"is inserted in a card",
       "removed-keycard-reader-event":"card is removed",
       "card-inserted-keycard-reader-status":"a card is inserted in",
       "no-card-inserted-keycard-reader-status":"no card is inserted in ",
@@ -466,7 +469,7 @@
       "turn-off-lamp-action":"Turn off",
       "blink-lamp-action":"Blink",
       "change-color-lamp-Action":"Change color",
-      "complement-change-color-lamp-action":"en",
+      "complement-change-color-lamp-action":"to",
       "white-color":"white",
       "red-color":"red",
       "blue-color":"blue",
@@ -525,7 +528,25 @@
       "weather-code-7":"rare conditions",
       "domicube-inactivated":"domicube is disactivated",
       "domicube-activated":"domicube is activated",
-      "getTemperature":"temperature"
+      "getTemperature":"temperature",
+      "selector":{
+        "prefix-m":"every ",
+        "prefix-f":"every ",
+        "all-places":"everywhere",
+        "complement-selection-target":"of",
+        "type":{
+          "1":"temperature sensors",
+          "2":"light sensors",
+          "3":"switches",
+          "4":"contact sensors",
+          "5":"key card readers",
+          "6":"plugs",
+          "7":"lamps",
+          "8":"effectors",
+          "21":"clocks",
+          "210":"domicubes"
+        }
+      }
    },
    "keyboard":{
       "true":"True",
@@ -535,7 +556,7 @@
       "is-turned-on-lamp-state":"light is on",
       "is-turned-off-lamp-state":"light is off",
       "is-turned-on-lamp-event":"light is on",
-      "is-turned-off-event-lamp":"light is turned off",
+      "is-turned-off-lamp-event":"light is turned off",
       "turned-on-plug-state" : "plug is on",
       "turned-off-plug-state":"plug is off",
 
@@ -567,6 +588,24 @@
       "weather-min":"the minimum temperature expected",
       "weather-max":"the maximum temperature specified",
       "weather-avg":"the average temperature expected",
-      "getTemperature":"temperature"
+      "getTemperature":"temperature",
+      "selector":{
+        "prefix-m":"every ",
+        "prefix-f":"every ",
+        "all-places":"everywhere",
+        "complement-selection-target":"of",
+        "type":{
+          "1":"temperature sensors",
+          "2":"light sensors",
+          "3":"switches",
+          "4":"contact sensors",
+          "5":"key card readers",
+          "6":"plugs",
+          "7":"lamps",
+          "8":"effectors",
+          "21":"clocks",
+          "210":"domicubes"
+        }
+      }
    }
 }
