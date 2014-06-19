@@ -7,13 +7,16 @@
         <relativePath>../pom.xml</relativePath>
 
     </parent>
-
+    
+    <groupId>appsgate.distributions</groupId>
     <artifactId>distributions</artifactId>
     <packaging>pom</packaging>
     <name>Appsgate sub project (distributions directory)</name>
 
     <modules>
         <module>felix.config.base</module>
+        <module>light</module>
+        <module>complete</module>
     </modules>
 
 </project>
