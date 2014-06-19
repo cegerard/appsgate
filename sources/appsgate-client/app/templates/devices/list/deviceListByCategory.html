@@ -161,6 +161,7 @@
                 <% } else { %>
                 <span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
                 <% } %>
+                <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                 <% } else if (type === "8") { %>
                 <% if (s.get("value") === "true" || s.get("value") === true) { %>
                 <span class="label label-yellow" data-i18n="devices.actuator.status.turnedOn"></span>
