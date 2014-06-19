@@ -12,7 +12,7 @@
       "delete-button":"Delete",
       "edit-button":"Edit",
       "save-button":"Save",
-      "saving-button":"Loading ...",
+      "saving-button":"Saving ...",
       "browse-button":"Browse",
       "background-editor":"Background",
       "size-editor":"Size",
@@ -22,14 +22,14 @@
    "navbar":{
       "home":"Home",
       "edit":"Edit",
-      "stop-edit":"Finish modification",
+      "stop-edit":"Done",
       "users":"Users",
       "places":"Places",
       "devices":"Devices",
       "services":"Services",
       "programs":"Programs",
       "button-settings":"Preferences",
-      "emergency-stop":"Stop all"
+      "emergency-stop":"Emergency stop"
    },
    "editbar":{
       "undo":"Undo",
@@ -44,7 +44,7 @@
    },
    "modal-lost-connection":{
       "title":"Connection problem",
-      "interrupted-connection":"The connection has been interrupted.",
+      "interrupted-connection":"The connection has been lost.",
       "connection":"Connecting ...",
       "change-server-button":"Change Server",
       "reconnection-button":"Reconnect"
@@ -168,7 +168,7 @@
       },
       "actuator":{
          "name":{
-            "singular":"actuator",
+            "singular":"Actuator",
             "plural":"Actuators"
          },
          "status":{
@@ -183,7 +183,7 @@
       "contact":{
          "name":{
             "singular":"Contact Sensor",
-            "plural":"contact sensors"
+            "plural":"Contact sensors"
          },
          "value":{
             "opened":"Open",
@@ -542,7 +542,7 @@
           "5":"key card readers",
           "6":"plugs",
           "7":"lamps",
-          "8":"effectors",
+          "8":"actuators",
           "21":"clocks",
           "210":"domicubes"
         }
@@ -559,7 +559,6 @@
       "is-turned-off-lamp-event":"light is turned off",
       "turned-on-plug-state" : "plug is on",
       "turned-off-plug-state":"plug is off",
-
       "turn-on-lamp-action":"Turn on light",
       "turn-off-lamp-action":"Turn off light",
       "turn-on-plug-action":"Turn on",
@@ -602,7 +601,7 @@
           "5":"key card readers",
           "6":"plugs",
           "7":"lamps",
-          "8":"effectors",
+          "8":"actuators",
           "21":"clocks",
           "210":"domicubes"
         }
