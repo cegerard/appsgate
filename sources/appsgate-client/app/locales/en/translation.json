@@ -24,7 +24,7 @@
       "edit":"Edit",
       "stop-edit":"Finish modification",
       "users":"Users",
-      "places":"Place",
+      "places":"Places",
       "devices":"Devices",
       "services":"Services",
       "programs":"Programs",
@@ -67,7 +67,7 @@
    "places-menu":{
       "add-button":"Add item",
       "place-no-name":"Item unnamed",
-      "unlocated-devices":"Location not assigned"
+      "unlocated-devices":"Devices not assigned to places"
    },
    "modal-add-place":{
       "title":"Add item",
@@ -93,7 +93,7 @@
       },
       "body":{
          "device-no-name":"Device unnamed",
-         "no-device-in-place":"No device is assigned in this room."
+         "no-device-in-place":"No device assigned to this room."
       }
    },
    "modal-edit-device":{
@@ -200,8 +200,8 @@
       },
       "keycard-reader":{
          "name":{
-            "singular":"card reader",
-            "plural":"card readers"
+            "singular":"Card reader",
+            "plural":"Card readers"
          },
          "value":{
             "inserted":"card inserted",
@@ -322,8 +322,8 @@
       },
       "mail":{
          "name":{
-            "singular":"Mail server",
-            "plural":"Email Servers"
+            "singular":"Mail",
+            "plural":"Mail"
          }
       },
       "connectionManager":{
@@ -352,8 +352,8 @@
       },
       "weather":{
          "name":{
-            "singular":"Weather Service",
-            "plural":"Weather Services"
+            "singular":"Weather",
+            "plural":"Weather"
          }
       }
    },
@@ -400,11 +400,11 @@
       "keep-state":"state",
       "keep-keyword":"Keep",
       "and-when":"And when",
-      "it-is-not-the-box":"this is no longer the case,",
-      "activate-program-action":"Enable program",
-      "disactivate-program-action":"Turn the program",
-      "activate":"Enable",
-      "disactivate":"Disable",
+      "it-is-not-the-case":"it is not true anymore",
+      "activate-program-action":"Start program",
+      "disactivate-program-action":"Stop program",
+      "activate":"Start",
+      "disactivate":"Stop",
       "is-activated-program-event":"enabled",
       "is-disactivated-program-event":"is disabled",
       "is-running-program-status":"is active",
@@ -441,8 +441,8 @@
       "is-opened-contact-status":"open",
       "is-assembled-contact-status":"closed",
       "is-disassembled-contact-status":"opened",
-      "inserted-keycard-reader-event":"is inserted in a card",
-      "removed-keycard-reader-event":"card is removed",
+      "inserted-keycard-reader-event":"a card is inserted in",
+      "removed-keycard-reader-event":"a card is removed",
       "card-inserted-keycard-reader-status":"a card is inserted in",
       "no-card-inserted-keycard-reader-status":"no card is inserted in ",
       "turned-on-plug-event":"is on",
@@ -451,8 +451,8 @@
       "is-turned-off-plug-status":"is off",
       "turned-on-plug-state":"on",
       "turned-off-plug-state":"off",
-      "turn-on-plug-action":"Turn on",
-      "turn-off-plug-action":"Turn off",
+      "turn-on-plug-action":"Turn on plug",
+      "turn-off-plug-action":"Turn off plug",
       "turned-on-actuator-event":"is on",
       "turned-off-actuator-event":"is off",
       "is-turned-on-actuator-status":"lights",
@@ -494,7 +494,7 @@
       "selectedMusic":"music",
       "img-table":"table image",
       "received-email-event":"a mail arrived",
-      "send-mail-action":"Send an email",
+      "send-mail-action":"Send email",
       "mail-dest":"to",
       "mail-subject":"whose subject is",
       "mail-body":"Content",
