@@ -20,10 +20,10 @@ define([
             $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
 
             // display the first place
-            appRouter.showDetailsView(new PlaceDetailsView({model: places.at(0)}));
+            appRouter.showDetailsView(new PlaceDetailsView({model: places.get("-1")}));
 
             // update the url
-            appRouter.navigate("#places/" + places.at(0).get("id"));
+            appRouter.navigate("#places/-1");
 
             $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
             $(".breadcrumb").append("<li class='active'><span data-i18n='navbar.places'/></li>");
