@@ -328,8 +328,12 @@
                                             <groupId>org.apache.felix</groupId>
                                             <artifactId>org.apache.felix.eventadmin</artifactId>
                                             <version>${org.apache.felix.eventadmin.version}</version>
-                                        </artifactItem>
-                                        
+                                        </artifactItem> 
+					<dependency>
+						<groupId>org.apache.felix</groupId>
+						<artifactId>org.apache.felix.ipojo.handler.eventadmin</artifactId>
+						<version>${org.apache.felix.eventadmin.handler.version}</version>
+					</dependency>
                                     </artifactItems>
                                     <outputDirectory>${basedir}/bundle</outputDirectory>
                                     <overWriteSnapshots>true</overWriteSnapshots>
