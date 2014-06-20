@@ -34,7 +34,7 @@ define([
             appRouter.showDetailsView(new PlaceDetailsView({model: places.get(id)}));
             $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
             $(".breadcrumb").append("<li><a href='#places'><span data-i18n='navbar.places'/></a></li>");
-            $(".breadcrumb").append("<li class='active'><span>" + places.get(id).get("name") + "</span></li>");
+            $(".breadcrumb").append("<li class='active'><span>" + places.get(id).getName() + "</span></li>");
             appRouter.translateNavbar();
         }
     });

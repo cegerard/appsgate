@@ -60,7 +60,7 @@ define([
          * Clear the input text, hide the error message and disable the valid button by default
          */
         initializeModal: function() {
-            $("#edit-name-place-modal input").val(this.model.get("name"));
+            $("#edit-name-place-modal input").val(this.model.getName());
             $("#edit-name-place-modal .text-danger").addClass("hide");
             $("#edit-name-place-modal .valid-button").addClass("disabled");
         },
@@ -220,7 +220,7 @@ define([
                 }));
 
                 // put the name of the place by default in the modal to edit
-                $("#edit-name-place-modal .place-name").val(this.model.get("name"));
+                $("#edit-name-place-modal .place-name").val(this.model.getName());
 
                 // hide the error message
                 $("#edit-name-place-modal .text-error").hide();

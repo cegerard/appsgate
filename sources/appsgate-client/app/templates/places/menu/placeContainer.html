@@ -1,8 +1,8 @@
 <a href="#places/<%= place.get('id') %>" class="list-group-item <% if (active) { %> active <% } %>">
 	<!-- header -->
 	<p class="list-group-item-heading lead">
-		<% if (place.get("name") !== "") { %>
-			<%= place.get("name") %>
+		<% if (place.getName() !== "") { %>
+			<%= place.getName() %>
 		<% } else { %>
 			<em data-i18n="places-menu.place-no-name"></em>
 		<% } %>
