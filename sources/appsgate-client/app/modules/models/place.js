@@ -21,6 +21,15 @@ define([
             });
         },
         /**
+         * As we cannot change the name of unlocated devices, this must change depending on which language we've chosen
+         */
+        getName: function() {
+            if (this.get("id") == "-1") {
+                return $.i18n.t("places-menu.unlocated-devices");
+            }
+            return this.get("name");
+        },
+        /**
          * Compute the average value of given sensors
          *
          * @param sensors Array of sensors
@@ -249,7 +258,7 @@ define([
         toJSON: function() {
             return {
                 id: this.get("id").toString(),
-                name: this.get("name"),
+                name: this.getName(),
                 devices: this.get("devices")
             };
         }

@@ -27,6 +27,7 @@
 				<include>bin/**/*</include>
 				<include>bundle/**/*</include>
 				<include>conf/**/*</include>
+				<include>natives/**/*</include>
 				<include>neededBundles/**/*</include>
 				<include>load/**/*</include>
 				<include>apam*</include>

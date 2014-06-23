@@ -11,8 +11,8 @@ define([
             var self = this;
 
             // sort the programs alphabetically
-            this.comparator = function(place) {
-                return place.get("name");
+            this.comparator = function(program) {
+                return program.get("name");
             };
 
             // listen to the event when the list of programs is received

@@ -16,7 +16,7 @@ define([
             var self = this;
             // sort the places alphabetically
             this.comparator = function(place) {
-                return place.get("name");
+                return place.getName();
             };
             // add the place w/ id -1 for the unlocated devices
             this.add({
@@ -79,7 +79,7 @@ define([
          */
         getNameByDevice: function(device) {
             try {
-                return this.get(device.get("placeId")).get("name");
+                return this.get(device.get("placeId")).getName();
             } catch (e) {
                 return "Non d&eacute;fini";
             }
