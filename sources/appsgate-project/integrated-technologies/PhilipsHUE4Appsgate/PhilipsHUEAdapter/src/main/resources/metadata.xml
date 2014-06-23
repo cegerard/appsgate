@@ -12,7 +12,7 @@ org.apache.felix.ipojo.handlers.event ">
         <callback onInit="newInst" onRemove="delInst"/>
 
         <relation specification="AppsgateClientCommunicationManagerSpec"
-                  creation="eager" resolve="external">
+                  creation="eager" resolve="external" fail="wait">
             <interface field="listenerService"/>
             <interface field="sendToClientService"/>
         </relation>

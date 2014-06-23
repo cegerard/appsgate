@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static org.apache.felix.ipojo.Factory.INSTANCE_NAME_PROPERTY;
+
 @Component
 @Provides(specifications = {ImporterService.class, ImporterIntrospection.class})
 public class PhilipsHueImporter extends AbstractImporterComponent {
@@ -38,6 +40,9 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
     @ServiceProperty(name = "target", value = "(discovery.philips.device.name=*)")
     private String filter;
+
+    @ServiceProperty(name = INSTANCE_NAME_PROPERTY)
+    private String name;
 
     public PhilipsHueImporter(BundleContext context) {
         this.context = context;
@@ -70,7 +75,7 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
     }
 
-    @Requires(specification = PHBridgeImpl.class)
+    @Requires(specification = PHBridgeImpl.class,optional = true)
     List<PHBridgeImpl> bridges;
 
     @Override
@@ -88,13 +93,14 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
             ServiceRegistration lampService=context.registerService(pojo.getType(),pojo.getObject(),props);
 
-            //importDeclaration.handle(serviceReference);
-
             lamps.put(pojo.getId(),lampService);
 
-            instanciateHUELight(bridges.get(0), (PHLight) pojo.getObject());
-
-            super.handleImportDeclaration(importDeclaration);
+            try {
+                instanciateHUELight(bridges.get(0), (PHLight) pojo.getObject());
+                super.handleImportDeclaration(importDeclaration);
+            } catch (Exception e) {
+                LOG.error("Failed to create appsgate instance for the light.",e);
+            }
 
         } catch (ClassNotFoundException e) {
             LOG.error("Failed to load type {}, importing process aborted.", pojo.getType(), e);
@@ -105,7 +111,7 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
     public static String ApAMIMPL = "PhilipsHUEImpl";
 
-    public void instanciateHUELight(PHBridge bridge, PHLight light) {
+    public void instanciateHUELight(PHBridge bridge, PHLight light) throws Exception {
         PHBridgeConfiguration bc  = bridge.getResourceCache().getBridgeConfiguration();
         String deviceID = bc.getMacAddress()+"-"+light.getIdentifier();
         Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
@@ -115,12 +121,16 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
         properties.put("deviceId", 		deviceID);
         properties.put("lightBridgeId", light.getIdentifier());
         properties.put("lightBridgeIP", bc.getIpAddress());
-        properties.put("reachable", "true");
+        properties.put("reachable", Boolean.toString(light.isReachable()));
         initiateLightStateProperties(properties, light.getLastKnownLightState());
 
         if(impl != null) {
-            Instance inst = impl.createInstance(null, properties);
-            //sidToInstanceName.put(deviceID, inst);
+            try {
+                Instance inst = impl.createInstance(null, properties);
+            }catch(Exception e){
+                LOG.error("Failed to instantiate apam implementation {} (lamp proxy for appsgate)",ApAMIMPL,e);
+                throw new Exception(e);
+            }
         }else {
             System.out.println("No "+ApAMIMPL+" found !");
         }
@@ -184,14 +194,12 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
             LOG.error("failed unregistering lamp", e);
         }
 
-        //importDeclaration.unhandle(serviceReference);
-
         unhandleImportDeclaration(importDeclaration);
 
     }
 
 
     public String getName() {
-        return this.getClass().getSimpleName();
+        return name;
     }
 }
