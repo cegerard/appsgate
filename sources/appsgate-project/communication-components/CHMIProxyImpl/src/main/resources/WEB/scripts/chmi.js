@@ -273,7 +273,7 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
        					
        					} else if (obj.deviceType.indexOf("EEP") != -1 || obj.deviceType == "EnOcean_DEVICE") {
        						PhilipsLightCount++;
-       						$("#enocean-index-tile-count").append(PhilipsLightCount);
+       						$("#enocean-index-tile-count").appendChild(PhilipsLightCount);
        					}
        				}
        			}
