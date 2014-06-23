@@ -41,7 +41,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>*;scope=runtime;inline=true</Embed-Dependency>
-                        <Export-Package>*</Export-Package>
+                        <Export-Package>org.java_websocket.*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
