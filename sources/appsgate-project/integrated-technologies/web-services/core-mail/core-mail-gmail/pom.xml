@@ -19,11 +19,6 @@
 			<groupId>appsgate.components</groupId>
 			<artifactId>core-mail-service-specification</artifactId>
 			<version>${project.version}</version>
-		</dependency>	    
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-                        <version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>
