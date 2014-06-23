@@ -1,11 +1,9 @@
 package appsgate.lig.manager.propertyhistory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
+import fr.imag.adele.apam.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,18 +20,9 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 
-import fr.imag.adele.apam.ApamManagers;
-import fr.imag.adele.apam.CST;
-import fr.imag.adele.apam.Component;
-import fr.imag.adele.apam.CompositeType;
-import fr.imag.adele.apam.DynamicManager;
-import fr.imag.adele.apam.Instance;
-import fr.imag.adele.apam.Link;
-import fr.imag.adele.apam.ManagerModel;
-import fr.imag.adele.apam.PropertyManager;
-
 public class PropertyHistoryManagerMongoImpl implements PropertyManager,
-		DynamicManager, PropertyHistoryManager {
+		DynamicManager, PropertyHistoryManager, ContextualManager {
+
 
 	private final Logger logger = LoggerFactory
 			.getLogger(PropertyHistoryManagerMongoImpl.class);
@@ -143,6 +132,8 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 		return MANAGER_NAME;
 	}
 
+
+
 	public void newComposite(ManagerModel model, CompositeType compositeType) {
 		logger.debug("PropertyHistoryManager, newComposite(ManagerModel model = "
 				+ (model == null ? "null" : model.getManagerName())
@@ -188,7 +179,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 			myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
 			ApamManagers.addPropertyManager(this);
 			ApamManagers.addDynamicManager(this);
-			newComposite(null, null);
 		} else {
 			logger.error("Configuration Factory not bound");
 			stop();
@@ -234,7 +224,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 				insertDBEntry(lostComponent, propertyName, "removed");
 			}
 		}
-
 	}
 
 	@Override
@@ -398,4 +387,34 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 
 		return null;
 	}
+
+    @Override
+    public void initializeContext(CompositeType compositeType) {
+        logger.debug("initializeContext(CompositeType compositeType = "+compositeType);
+
+		/*
+		 * Get the model, if specified
+		 */
+        ManagerModel model = compositeType.getModel(this);
+        if (model != null && model.getURL() != null) {
+		/*
+		 * Try to load the model from the specified location, as a map of properties
+		 */
+            Properties configuration = null;
+            try {
+                configuration = new Properties();
+                configuration.load(model.getURL().openStream());
+
+                newComposite(model, compositeType);
+
+            } catch (IOException e) {
+                logger.warn("Invalid ManagerModel. Cannot read stream " + model.getURL(), e.getCause());
+            }
+        } else {
+            logger.warn("no ManagerModel specified for composite");
+        }
+
+
+
+    }
 }
