@@ -20,27 +20,14 @@ public class FuchsiaForPhilipsSetup {
             .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(discovery.philips.bridge.type=*)")
             .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=philipsBridgeImporter)");
 
-    /*
-
-    Instance philipsImporter = instance()
-            .of("org.ow2.chameleon.fuchsia.importer.philipshue.PhilipsHueImporter")
-            .with("target").setto("(discovery.philips.device.name=*)");
-
-    Instance philipsLinker = instance()
-            .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
-            .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(discovery.philips.device.name=*)")
-            .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=philipsImporter)");
-
-    */
-
-    Instance appsgatephilipsImporter = instance()
+    Instance philipsLampImporter = instance()
             .of("appsgate.lig.proxy.PhilipsHUE.importer.PhilipsHueImporter")
             .with("target").setto("(discovery.philips.device.name=*)");
 
-    Instance appsgatephilipsLinker = instance()
+    Instance philipsLinkerLamp = instance()
             .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
             .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(discovery.philips.device.name=*)")
-            .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=appsgatephilipsImporter)");
+            .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=philipsLampImporter)");
 
 
 }
