@@ -15,11 +15,6 @@
 	<description>This sub-project contain all component for EnOcean Appsgate integration.</description>
 	
 	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-                        <version>${slf4j.version}</version>
-		</dependency>
 	</dependencies>
 	
 	<modules>

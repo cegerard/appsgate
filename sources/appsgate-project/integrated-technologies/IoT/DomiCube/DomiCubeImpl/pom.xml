@@ -29,11 +29,6 @@
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>${ipojo.annotations.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
 	</dependencies>
 
 	<!-- Build Description -->

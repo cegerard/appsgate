@@ -14,11 +14,7 @@
 	<description>Sub project for integrated devices components</description>
 	
 	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-                        <version>${slf4j.version}</version>
-		</dependency>
+
 	</dependencies>
 	
 	<modules>
