@@ -17,4 +17,4 @@ natives=-Djava.library.path=natives/jni/MacOSX/
 
 
 
-java -Dlogback.configurationFile=log/logback.xml ${natives} -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 -jar bin/felix.jar
+java -Dlogback.configurationFile=conf/logback.xml ${natives} -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 -jar bin/felix.jar
