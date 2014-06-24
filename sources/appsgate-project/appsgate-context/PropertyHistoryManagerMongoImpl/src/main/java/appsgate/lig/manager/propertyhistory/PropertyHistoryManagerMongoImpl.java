@@ -119,7 +119,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 				}
 
 			} catch (MongoException e) {
-				stop();
 				logger.error("Cannot insert DBEntry " + e.getMessage());
 			}
 		} else {
@@ -133,12 +132,27 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 	}
 
 
+    private void loadProperties(ManagerModel model) {
+        try {
+            Properties prop = new Properties();
+            prop.load(model.getURL().openStream());
+            myConfigFactory.setFactoryParameters(prop);
+            logger.debug("Loaded configuration from" + model.getURL());
+        } catch (Exception e) {
+            logger.info("Cannot load configuration from properties" + e.getMessage());
+        }
+
+
+    }
 
 	public void newComposite(ManagerModel model, CompositeType compositeType) {
 		logger.debug("PropertyHistoryManager, newComposite(ManagerModel model = "
 				+ (model == null ? "null" : model.getManagerName())
 				+ ", CompositeType compositeType = "
 				+ (compositeType == null ? "null" : compositeType.getName()));
+
+        loadProperties(model);
+        myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
 
 		if (myConfiguration != null && myConfiguration.getDB() != null)
 			try {
@@ -156,7 +170,6 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 
 			} catch (MongoException e) {
 				logger.error("Error connecting to mongo DB" + e.getMessage());
-				stop();
 			}
 	}
 
@@ -176,7 +189,7 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 
 		logger.debug("starting...");
 		if (myConfigFactory != null) {
-			myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
+			//myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
 			ApamManagers.addPropertyManager(this);
 			ApamManagers.addDynamicManager(this);
 		} else {
@@ -409,9 +422,11 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 
             } catch (IOException e) {
                 logger.warn("Invalid ManagerModel. Cannot read stream " + model.getURL(), e.getCause());
+                newComposite(null, compositeType);
             }
         } else {
             logger.warn("no ManagerModel specified for composite");
+            newComposite(null, compositeType);
         }
 
 

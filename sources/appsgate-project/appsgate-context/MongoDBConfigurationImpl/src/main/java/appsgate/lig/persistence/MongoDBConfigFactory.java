@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,23 +59,34 @@ public class MongoDBConfigFactory {
 	 */
 	public MongoDBConfigFactory(String dbHost, int dbPort, int dbTimeOut) {
 
-		// 2- Using parameterized values
-		this.dbHost = dbHost;
-		this.dbPort = dbPort;
-		this.dbTimeOut = dbTimeOut;
+        // 2- Using parameterized values
+        this.dbHost = dbHost;
+        this.dbPort = dbPort;
+        this.dbTimeOut = dbTimeOut;
+    }
+
+    public void setFactoryParameters(Properties props) {
 
 		// 3- Getting System properties
-		String tmp_host = System.getProperty(DBHOST_KEY);
-		if (tmp_host != null)
-			this.dbHost = tmp_host;
+		String tmp_host = props.getProperty(DBHOST_KEY);
+		if (tmp_host != null && !tmp_host.equals(this.dbHost)) {
+            this.dbHost = tmp_host;
+            configValueChanged(this.dbHost);
+        }
 
-		Integer tmp_port = Integer.getInteger(DBPORT_KEY);
-		if (tmp_port != null)
-			this.dbPort = tmp_port;
+		Integer tmp_port = Integer.parseInt(props.getProperty(DBPORT_KEY));
+		if (tmp_port != null && !tmp_port.equals(this.dbPort)) {
+            this.dbPort = tmp_port;
+            configValueChanged(this.dbPort);
+        }
 
-		Integer tmp_timeout = Integer.getInteger(DBTIMEOUT_KEY);
-		if (tmp_timeout != null)
-			this.dbTimeOut = tmp_timeout;
+		Integer tmp_timeout = Integer.parseInt(props.getProperty(DBTIMEOUT_KEY));
+		if (tmp_timeout != null && !tmp_timeout.equals(this.dbTimeOut)) {
+            this.dbTimeOut = tmp_timeout;
+            configValueChanged(this.dbTimeOut);
+
+        }
+
 	}
 
 	public MongoDBConfiguration newConfiguration(String dbName) {
