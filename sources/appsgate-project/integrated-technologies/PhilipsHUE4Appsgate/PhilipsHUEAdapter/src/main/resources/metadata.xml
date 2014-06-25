@@ -1,8 +1,7 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ev="org.apache.felix.ipojo.handlers.event"
       xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
-	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd
-org.apache.felix.ipojo.handlers.event ">
+	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd org.apache.felix.ipojo.handlers.event http://felix.apache.org/ipojo/schemas/CURRENT/event-admin.xsd">
 
 
     <implementation name="PhilipsHUEAdapterImpl"
@@ -12,7 +11,7 @@ org.apache.felix.ipojo.handlers.event ">
         <callback onInit="newInst" onRemove="delInst"/>
 
         <relation specification="AppsgateClientCommunicationManagerSpec"
-                  creation="eager" resolve="external" fail="wait">
+                  creation="eager" resolve="external">
             <interface field="listenerService"/>
             <interface field="sendToClientService"/>
         </relation>
