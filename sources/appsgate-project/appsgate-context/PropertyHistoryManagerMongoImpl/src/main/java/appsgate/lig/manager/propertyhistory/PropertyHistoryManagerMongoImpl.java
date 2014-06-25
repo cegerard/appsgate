@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 import fr.imag.adele.apam.*;
+import fr.imag.adele.apam.impl.CompositeTypeImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +22,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 
 public class PropertyHistoryManagerMongoImpl implements PropertyManager,
-		DynamicManager, PropertyHistoryManager, ContextualManager {
+		DynamicManager, PropertyHistoryManager {
 
 
 	private final Logger logger = LoggerFactory
@@ -145,11 +146,10 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 
     }
 
-	public void newComposite(ManagerModel model, CompositeType compositeType) {
+	public void newComposite(ManagerModel model) {
 		logger.debug("PropertyHistoryManager, newComposite(ManagerModel model = "
 				+ (model == null ? "null" : model.getManagerName())
-				+ ", CompositeType compositeType = "
-				+ (compositeType == null ? "null" : compositeType.getName()));
+				+ " )");
 
         loadProperties(model);
         myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
@@ -192,6 +192,7 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 			//myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
 			ApamManagers.addPropertyManager(this);
 			ApamManagers.addDynamicManager(this);
+            initializeContext();
 		} else {
 			logger.error("Configuration Factory not bound");
 			stop();
@@ -401,14 +402,13 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 		return null;
 	}
 
-    @Override
-    public void initializeContext(CompositeType compositeType) {
-        logger.debug("initializeContext(CompositeType compositeType = "+compositeType);
+    public void initializeContext() {
+        logger.debug("initializeContext()");
 
 		/*
 		 * Get the model, if specified
 		 */
-        ManagerModel model = compositeType.getModel(this);
+        ManagerModel model = CompositeTypeImpl.getRootCompositeType().getModel(this.getName());
         if (model != null && model.getURL() != null) {
 		/*
 		 * Try to load the model from the specified location, as a map of properties
@@ -418,15 +418,15 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
                 configuration = new Properties();
                 configuration.load(model.getURL().openStream());
 
-                newComposite(model, compositeType);
+                newComposite(model);
 
             } catch (IOException e) {
                 logger.warn("Invalid ManagerModel. Cannot read stream " + model.getURL(), e.getCause());
-                newComposite(null, compositeType);
+                newComposite(null);
             }
         } else {
             logger.warn("no ManagerModel specified for composite");
-            newComposite(null, compositeType);
+            newComposite(null);
         }
 
 

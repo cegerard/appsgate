@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>${osgi.version}</version>
+            <version>5.0.0</version>
         </dependency>
         <!-- fuchsia -->
         <dependency>

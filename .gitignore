@@ -241,6 +241,8 @@ sources/appsgate-client/bower_components/
 *.xcscheme
 
 *.lck
+distributions/light/*.diff
+distributions/complete/*.diff
 distributions/light/*.jar
 distributions/complete/bin/*
 distributions/complete/bundle/*

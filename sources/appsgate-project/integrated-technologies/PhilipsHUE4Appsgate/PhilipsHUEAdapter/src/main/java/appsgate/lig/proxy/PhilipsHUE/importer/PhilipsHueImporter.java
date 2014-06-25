@@ -50,7 +50,7 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
     @PostRegistration
     public void registration(ServiceReference serviceReference) {
-        this.serviceReference = serviceReference;
+        super.setServiceReference(serviceReference);
     }
 
     @Validate
@@ -71,6 +71,10 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
         for(Map.Entry<String,ServiceRegistration> lampEntry:lamps.entrySet()){
             lamps.remove(lampEntry.getKey()).unregister();
+        }
+
+        for(ImportDeclaration id:super.getImportDeclarations()){
+            super.unhandleImportDeclaration(id);
         }
 
     }
