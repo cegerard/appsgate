@@ -31,6 +31,7 @@
 				<include>neededBundles/**/*</include>
 				<include>load/**/*</include>
 				<include>apam*</include>
+                <include>patch*</include>
 				<include>assembly.xml</include>
 			</includes>
 			<excludes>
