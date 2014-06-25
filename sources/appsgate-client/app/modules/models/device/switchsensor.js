@@ -24,7 +24,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["switchB1", "switchB2"];
+      return ["switchB1-on", "switchB2-on","switchB1-off", "switchB2-off"];
     },
     /**
      * return the keyboard code for a given event
@@ -33,18 +33,32 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONEvent("mandatory");
       switch(evt) {
-        case "switchB1":
-          $(btn).append("<span data-i18n='language.pushed-switch-B1'></span>");
+        case "switchB1-on":
+          $(btn).append("<span data-i18n='language.pushed-switch-B1-on'></span>");
           v.eventName = "switchNumber";
-          v.eventValue = "1";
-          v.phrase = "language.pushed-switch-B1";
+          v.eventValue = "1/true";
+          v.phrase = "language.pushed-switch-B1-on";
           $(btn).attr("json", JSON.stringify(v));
           break;
-        case "switchB2":
-          $(btn).append("<span data-i18n='language.pushed-switch-B2'></span>");
+        case "switchB2-on":
+          $(btn).append("<span data-i18n='language.pushed-switch-B2-on'></span>");
           v.eventName = "switchNumber";
-          v.eventValue = "0";
-          v.phrase = "language.pushed-switch-B2";
+          v.eventValue = "0/true";
+          v.phrase = "language.pushed-switch-B2-on";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "switchB1-off":
+          $(btn).append("<span data-i18n='language.pushed-switch-B1-off'></span>");
+          v.eventName = "switchNumber";
+          v.eventValue = "1/false";
+          v.phrase = "language.pushed-switch-B1-off";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "switchB2-off":
+          $(btn).append("<span data-i18n='language.pushed-switch-B2-off'></span>");
+          v.eventName = "switchNumber";
+          v.eventValue = "0/false";
+          v.phrase = "language.pushed-switch-B2-off";
           $(btn).attr("json", JSON.stringify(v));
           break;
         /*
