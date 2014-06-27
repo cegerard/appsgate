@@ -127,7 +127,7 @@
       "title":"Rename program",
       "program-name":"Program name",
       "program-name-empty":"The program name must be entered.",
-      "program-already-existing":"Name already existing program."
+      "program-already-existing":"Program name already existing."
    },
    "devices":{
       "device-no-name":"Device unnamed",
@@ -147,12 +147,12 @@
       "temperature":{
          "name":{
             "singular":"Temperature sensor",
-            "plural":"Temperature Sensors"
+            "plural":"Temperature sensors"
          }
       },
       "illumination":{
          "name":{
-            "singular":"Light Sensor",
+            "singular":"Light sensor",
             "plural":"Brightness sensors"
          }
       },
@@ -182,7 +182,7 @@
       },
       "contact":{
          "name":{
-            "singular":"Contact Sensor",
+            "singular":"Contact sensor",
             "plural":"Contact sensors"
          },
          "value":{
@@ -210,8 +210,8 @@
       },
       "movement":{
          "name":{
-            "singular":"Motion Sensor",
-            "plural":"Motion Sensors"
+            "singular":"Motion sensor",
+            "plural":"Motion sensors"
          }
       },
       "plug":{
