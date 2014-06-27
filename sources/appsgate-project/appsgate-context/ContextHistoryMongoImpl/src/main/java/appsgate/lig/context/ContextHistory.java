@@ -43,7 +43,6 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	 * The collection containing the links (wires) created, and deleted
 	 */
 
-	private MongoDBConfigFactory myConfigFactory = null;
 	private MongoDBConfiguration myConfiguration = null;
 
 	/**
@@ -52,13 +51,6 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	private static final String CONTEXT_COLLECTION = "context";
 
 	public void start() throws Exception {
-		if (myConfigFactory != null) {
-			myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
-		} else {
-			logger.error("Configuration Factory not bound");
-			stop();
-		}
-
 	}
 
 	public void stop() {
@@ -67,9 +59,9 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	@Override
 	public boolean pushData_add(String name, String userID, String objectID,
 			String addedValue, ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.getDB() != null)
+		if (myConfiguration != null && myConfiguration.isValid())
 			try {
-				DBCollection context = myConfiguration.getDB().getCollection(
+				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
 						CONTEXT_COLLECTION);
 
 				BasicDBObject newVal = new BasicDBObject("name", name)
@@ -98,10 +90,10 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	@Override
 	public boolean pushData_remove(String name, String userID, String objectID,
 			String removedValue, ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.getDB() != null)
+		if (myConfiguration != null && myConfiguration.isValid())
 
 			try {
-				DBCollection context = myConfiguration.getDB().getCollection(
+				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
 						CONTEXT_COLLECTION);
 
 				BasicDBObject newVal = new BasicDBObject("name", name)
@@ -130,10 +122,10 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	public boolean pushData_change(String name, String userID, String objectID,
 			String oldValue, String newValue,
 			ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.getDB() != null)
+		if (myConfiguration != null && myConfiguration.isValid())
 			try {
 
-				DBCollection context = myConfiguration.getDB().getCollection(
+				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
 						CONTEXT_COLLECTION);
 
 				BasicDBObject newVal = new BasicDBObject("name", name)
@@ -163,9 +155,9 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	public JSONObject pullLastObjectVersion(String ObjectName) {
 		// force connection to be established
 
-		if (myConfiguration != null && myConfiguration.getDB() != null) {
+		if (myConfiguration != null && myConfiguration.isValid()) {
 
-			DBCollection context = myConfiguration.getDB().getCollection(
+			DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
 					CONTEXT_COLLECTION);
 			DBCursor cursor = context
 					.find(new BasicDBObject("name", ObjectName));
@@ -193,10 +185,10 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	@Override
 	public boolean pushData_add(String name, String objectID,
 			String addedValue, ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.getDB() != null)
+		if (myConfiguration != null && myConfiguration.isValid())
 			try {
 
-				DBCollection context = myConfiguration.getDB().getCollection(
+				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
 						CONTEXT_COLLECTION);
 
 				BasicDBObject newVal = new BasicDBObject("name", name)
@@ -224,9 +216,9 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	@Override
 	public boolean pushData_remove(String name, String objectID,
 			String removedValue, ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.getDB() != null)
+		if (myConfiguration != null && myConfiguration.isValid())
 			try {
-				DBCollection context = myConfiguration.getDB().getCollection(
+				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
 						CONTEXT_COLLECTION);
 
 				BasicDBObject newVal = new BasicDBObject("name", name)
@@ -255,10 +247,10 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	public boolean pushData_change(String name, String objectID,
 			String oldValue, String newValue,
 			ArrayList<Entry<String, Object>> properties) {
-		if (myConfiguration != null && myConfiguration.getDB() != null)
+		if (myConfiguration != null && myConfiguration.isValid())
 			try {
 
-				DBCollection context = myConfiguration.getDB().getCollection(
+				DBCollection context = myConfiguration.getDB(DBNAME_DEFAULT).getCollection(
 						CONTEXT_COLLECTION);
 
 				BasicDBObject newVal = new BasicDBObject("name", name)
@@ -283,5 +275,16 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			}
 		return false;
 	}
+
+    public void unbindConfiguration() {
+        // TODO
+    }
+
+    public boolean bindConfiguration() {
+        logger.debug("bindConfiguration() ");
+        return true;
+
+    }
+
 
 }

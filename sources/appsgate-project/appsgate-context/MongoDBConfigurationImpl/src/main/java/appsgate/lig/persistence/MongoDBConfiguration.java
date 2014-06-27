@@ -10,26 +10,28 @@ import com.mongodb.MongoException;
 public class MongoDBConfiguration {
 	
 	private final Logger logger = LoggerFactory.getLogger(MongoDBConfiguration.class);
+
+    public static final String IMPL_NAME = "MongoDBConfiguration";
+
+    private String dbHost;
+    private Integer dbPort;
+    private Integer dbTimeOut;
+
+    private MongoClient mongoClient;
 	
-	public MongoDBConfiguration(String dbName,
-			MongoDBConfigFactory factory) {
-		super();
-		this.dbName = dbName;
-		this.factory = factory;
+	public MongoDBConfiguration() {
 	}
 
-	private String dbName;
-	private MongoDBConfigFactory factory;
-	
-	public DB getDB() throws MongoException {
-		if(factory == null) {
-			logger.error("Configuration factory is null (???), aborting");
-			return null;
-		}
-			
-		MongoClient mongoClient = factory.getMongoClient();
+    public void setConfiguration(String dbHost, int dbPort, int dbTimeOut, MongoClient mongoClient) {
+        this.dbHost = dbHost;
+        this.dbPort = dbPort;
+        this.dbTimeOut = dbTimeOut;
+        this.mongoClient = mongoClient;
+    }
 
-		if (mongoClient != null)
+	public DB getDB(String dbName) throws MongoException {
+
+		if (mongoClient != null && isValid())
 			return mongoClient.getDB(dbName);
 		
 		else {
@@ -37,5 +39,24 @@ public class MongoDBConfiguration {
 			return null;
 		}
 	}
+
+    public boolean isValid() {
+        return checkMongoClient( mongoClient);
+    }
+
+    static public boolean checkMongoClient(MongoClient mongoClient) {
+        if (mongoClient != null) {
+            try {
+                // Forces the connection to check valid
+                mongoClient.getDatabaseNames();
+                return true;
+            } catch (MongoException exception) {
+                return false;
+            }
+        }
+        return false;
+
+    }
+
 
 }

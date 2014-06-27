@@ -66,6 +66,7 @@
 
 	<composite name="AppsGatePersistency" singleton="true">
 		<contentMngt>
+            <start implementation="MongoDBConfigFactory" name="Global-MongoDBConfigFactory" />
 			<start implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
 			<start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager" />
 			<start implementation="PlaceManagerImpl" name="Global-PlaceManager" />
