@@ -78,6 +78,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * Called by ApAM when the bundle become not available
 	 */
 	public void delInst() {
+        listenerService.removeCommandListener(CONFIG_TARGET);
+        phHueSDK.destroySDK();
 		logger.debug("PhilipsHUEAdapter stopped");
 	}
 
