@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mongodb.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -15,10 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.mockito.Mockito.*;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 
 import fr.imag.adele.apam.Component;
 import fr.imag.adele.apam.PropertyManager;
@@ -67,8 +64,15 @@ public class TestMongoLocally {
 	@Before
 	public void setUp() throws Exception {
 		// Factory to default host
-		myFactory = new MongoDBConfigFactory(DBHOST, DBPORT, DBTIMEOUT);
-		myConfig = new MongoDBConfiguration(DBNAME, myFactory);
+        MongoClient mongoClient = null;
+
+        MongoClientOptions.Builder options = new MongoClientOptions.Builder();
+        options.connectTimeout(DBTIMEOUT);
+        mongoClient = new MongoClient(new ServerAddress(DBHOST, DBPORT),
+                options.build());
+
+		myConfig = new MongoDBConfiguration();
+        myConfig.setConfiguration(DBHOST, DBPORT, DBTIMEOUT, mongoClient );
 
 		dbImpl = new PropertyHistoryManagerMongoImpl();
 		dbImpl.setMyConfiguration(myConfig);
@@ -86,8 +90,8 @@ public class TestMongoLocally {
 	@After
 	public void tearDown() throws Exception {
 		// Clearing the created DB for tests
-		if (myConfig != null && myConfig.getDB() != null) {
-			myConfig.getDB().dropDatabase();
+		if (myConfig != null && myConfig.getDB(DBNAME) != null) {
+			myConfig.getDB(DBNAME).dropDatabase();
 		}
 	}
 
@@ -135,10 +139,10 @@ public class TestMongoLocally {
 
 	@Test
 	public void testAddingEntries() {
-		if (myConfig != null && myConfig.getDB() != null
+		if (myConfig != null && myConfig.getDB(DBNAME) != null
 				&& dbPropertyChanges != null) {
 			// Test 0 assert that the DB is empty
-			DBCollection changedAttr = myConfig.getDB().getCollection(
+			DBCollection changedAttr = myConfig.getDB(DBNAME).getCollection(
 					PropertyHistoryManagerMongoImpl.ChangedAttributes);
 			assertTrue("DB should be empty before the test",
 					assertDBEmpty(changedAttr));
@@ -262,10 +266,10 @@ public class TestMongoLocally {
 
 	@Test
 	public void testQuery() {
-		if (myConfig != null && myConfig.getDB() != null && dbQuery != null) {
+		if (myConfig != null && myConfig.isValid() && dbQuery != null) {
 			
 			// Test 0 assert that the DB is empty
-			DBCollection changedAttr = myConfig.getDB().getCollection(
+			DBCollection changedAttr = myConfig.getDB(DBNAME).getCollection(
 					PropertyHistoryManagerMongoImpl.ChangedAttributes);
 			assertTrue("DB should be empty before the test",
 					assertDBEmpty(changedAttr));

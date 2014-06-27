@@ -11,13 +11,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd">
 
-	<implementation name="MongoDBConfigurationImpl"
-		classname="appsgate.lig.persistence.MongoDBConfigFactory">
+	<implementation name="MongoDBConfiguration"
+		classname="appsgate.lig.persistence.MongoDBConfiguration">
 
-		<definition name="DBHost" type="string" field="dbHost" method="configValueChanged"/>
-		<definition name="DBPort" type="int" field="dbPort" method="configValueChanged" />
-		<definition name="DBTimeout" type="int" field="dbTimeOut" method="configValueChanged" />
-		
+        <definition name="DBHost" type="string" field="dbHost" injected="internal"/>
+        <definition name="DBPort" type="int" field="dbPort" injected="internal" />
+        <definition name="DBTimeout" type="int" field="dbTimeOut" injected="internal" />
+
 	</implementation>
+
+    <implementation name="MongoDBConfigFactory"
+                    classname="appsgate.lig.persistence.MongoDBConfigFactory">
+    </implementation>
+
 
 </apam>

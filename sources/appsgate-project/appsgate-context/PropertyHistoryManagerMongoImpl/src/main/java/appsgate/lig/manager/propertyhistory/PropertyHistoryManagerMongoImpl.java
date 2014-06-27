@@ -36,12 +36,14 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 	public final static String PROP_VALUE = "value";
 	public final static String PROP_STATUS = "status";
 
+    private boolean configOK=false;
+
 	/*
 	 * The collection containing the attributes created, changed and removed.
 	 */
 	public static final String ChangedAttributes = "Properties";
 
-	public static final String DBNAME_DEFAULT = "AppsGatePropertyHistory-";
+	public static final String DBNAME_DEFAULT = "AppsGatePropertyHistory";
 
 //	private int dbNameCounter = 0;
 
@@ -51,18 +53,14 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 	 * The collection containing the links (wires) created, and deleted
 	 */
 
-	private MongoDBConfigFactory myConfigFactory = null;
 	private MongoDBConfiguration myConfiguration = null;
 
 	public MongoDBConfiguration getMyConfiguration() {
 		return myConfiguration;
 	}
 
-	public void setMyConfiguration(MongoDBConfiguration myConfiguration) {
-		this.myConfiguration = myConfiguration;
-	}
-
 	public PropertyHistoryManagerMongoImpl() {
+
 	}
 
 	@Override
@@ -86,7 +84,7 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 	private void insertDBEntry(Component comp, String attr, String status) {
 		logger.debug("insertDBEntry(Component comp : " + comp
 				+ ", String attr : " + attr + ", String status : " + status);
-		if (myConfiguration != null && myConfiguration.getDB() != null) {
+		if (myConfiguration != null && myConfiguration.isValid()) {
 			try {
 
 				if (comp != null
@@ -95,7 +93,7 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 						&& !Arrays.asList(CST.buildAttributes).contains(attr)
 						&& !Arrays.asList(CST.finalAttributes).contains(attr)) {
 
-					DBCollection ChangedAttr = myConfiguration.getDB()
+					DBCollection ChangedAttr = myConfiguration.getDB(DBNAME_DEFAULT)
 							.getCollection(ChangedAttributes);
 
 					DBObject entry = new BasicDBObject("source", comp.getName())
@@ -132,45 +130,35 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 		return MANAGER_NAME;
 	}
 
-
-    private void loadProperties(ManagerModel model) {
-        try {
-            Properties prop = new Properties();
-            prop.load(model.getURL().openStream());
-            myConfigFactory.setFactoryParameters(prop);
-            logger.debug("Loaded configuration from" + model.getURL());
-        } catch (Exception e) {
-            logger.info("Cannot load configuration from properties" + e.getMessage());
-        }
-
-
+    public void unbindConfiguration() {
+        // TODO
     }
 
-	public void newComposite(ManagerModel model) {
-		logger.debug("PropertyHistoryManager, newComposite(ManagerModel model = "
-				+ (model == null ? "null" : model.getManagerName())
-				+ " )");
+	public boolean bindConfiguration() {
+		logger.debug("bindConfiguration() ");
 
-        loadProperties(model);
-        myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
-
-		if (myConfiguration != null && myConfiguration.getDB() != null)
+		if (myConfiguration != null && myConfiguration.isValid())
 			try {
-
 				/*
 				 * if attribute dropComection is true, drop all collections
 				 */
 				if (dropCollections) {
-					myConfiguration.getDB().getCollection(ChangedAttributes)
+					myConfiguration.getDB(DBNAME_DEFAULT).getCollection(ChangedAttributes)
 							.drop();
 				}
 				logger.info("First connection with DB OK");
 
 				initialPropertiesPolling();
+                ApamManagers.addPropertyManager(this);
+                ApamManagers.addDynamicManager(this);
+
+                return true;
 
 			} catch (MongoException e) {
 				logger.error("Error connecting to mongo DB" + e.getMessage());
+                return false;
 			}
+        return false;
 	}
 
 	private void initialPropertiesPolling() {
@@ -188,16 +176,11 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 	public void start() throws Exception {
 
 		logger.debug("starting...");
-		if (myConfigFactory != null) {
-			//myConfiguration = myConfigFactory.newConfiguration(DBNAME_DEFAULT);
-			ApamManagers.addPropertyManager(this);
-			ApamManagers.addDynamicManager(this);
-            initializeContext();
-		} else {
-			logger.error("Configuration Factory not bound");
-			stop();
-		}
 	}
+
+    public void setMyConfiguration(MongoDBConfiguration config) {
+        myConfiguration = config;
+    }
 
 	public void stop() {
 		logger.debug("stopping...");
@@ -207,7 +190,7 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 
 	@Override
 	public void addedComponent(Component newComponent) {
-		if (newComponent != null && newComponent instanceof Instance) {
+		if ( newComponent != null && newComponent instanceof Instance) {
 			for (String propertyName : newComponent.getAllPropertiesString()
 					.keySet()) {
 				logger.debug("For instance : " + newComponent.getName()
@@ -291,13 +274,13 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 				+ ", long time_start : " + time_start + ", long time_end : "
 				+ time_end);
 
-		if (myConfiguration != null && myConfiguration.getDB() != null) {
+		if (myConfiguration != null && myConfiguration.isValid()) {
 			try {
 
 				// JSONArray result = new JSONArray();
 				Map<String, JSONArray> results = new HashMap<String, JSONArray>();
 
-				DBCollection changedAttr = myConfiguration.getDB()
+				DBCollection changedAttr = myConfiguration.getDB(DBNAME_DEFAULT)
 						.getCollection(ChangedAttributes);
 
 				BasicDBObject filter = new BasicDBObject();
@@ -401,35 +384,4 @@ public class PropertyHistoryManagerMongoImpl implements PropertyManager,
 
 		return null;
 	}
-
-    public void initializeContext() {
-        logger.debug("initializeContext()");
-
-		/*
-		 * Get the model, if specified
-		 */
-        ManagerModel model = CompositeTypeImpl.getRootCompositeType().getModel(this.getName());
-        if (model != null && model.getURL() != null) {
-		/*
-		 * Try to load the model from the specified location, as a map of properties
-		 */
-            Properties configuration = null;
-            try {
-                configuration = new Properties();
-                configuration.load(model.getURL().openStream());
-
-                newComposite(model);
-
-            } catch (IOException e) {
-                logger.warn("Invalid ManagerModel. Cannot read stream " + model.getURL(), e.getCause());
-                newComposite(null);
-            }
-        } else {
-            logger.warn("no ManagerModel specified for composite");
-            newComposite(null);
-        }
-
-
-
-    }
 }
