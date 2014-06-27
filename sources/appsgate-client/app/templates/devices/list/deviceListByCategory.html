@@ -76,8 +76,8 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <% if (place.get("name") !== "") { %>
-                <%= place.get("name") %>
+                <% if (place.getName() !== "") { %>
+                <%= place.getName() %>
                 <% } else { %>
                 <em data-i18n="places-details.place-no-name"></em>
                 <% } %>

@@ -67,7 +67,7 @@
 								<select id="service-place" class="form-control">
 									<% _.each(places.models, function(place) { %>
 										<option value="<%= place.get('id') %>" <% if (place.get("id") === service.get("placeId")) { %>selected<% } %>>
-											<%= place.get("name") %>
+											<%= place.getName() %>
 										</option>
 									<% }) %>
 								</select>

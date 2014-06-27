@@ -16,7 +16,7 @@
                             <% if (place.get("id") === device.get("placeId")) { %>
                             selected="selected"
                             <% } %>>
-                            <%= place.get("name") %>
+                            <%= place.getName() %>
                         </option>
                     <% }); %>
                     <option value="-1" <% if (device.get("placeId") == -1) { %>
