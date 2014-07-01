@@ -25,12 +25,37 @@ define([
     
 
     /**
-    * return the list of available properties (only those returning a boolean)
+    * return the list of available states (only those returning a boolean)
     */
-    getBooleanProperties: function() {
+    getStates: function() {
             return ["isWeatherSimplifiedCodeForecast"];
     },        
 
+    getKeyboardForState: function(state,which){
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var v = {"type": "property", "target": {"iid": "X", "type": "service", "serviceType":this.get("type"), "value":this.get("id")}, "iid": "X"};
+      switch(state) {
+	          case "isWeatherSimplifiedCodeForecast":
+          $(btn).append("<span data-i18n='keyboard.is-weather-code-state'><span>");
+          
+          v.methodName = "isWeatherSimplifiedCodeForecast";
+          v.returnType = "boolean";          
+                              
+          v.args = [ {"type":"String", "value": "Grenoble"},
+                    {"type":"int", "value": "0"},
+                    {"type":"int", "value": "0"}];          
+                    
+          v.phrase = "keyboard.is-weather-code-state";
+          $(btn).attr("json", JSON.stringify(v));
+          break;      	
+        default:
+          console.error("unexpected state found for Weather: " + state);
+          btn = null;
+          break;
+      }
+      return btn;
+
+	},
     /**
      * return the list of available properties
      */
@@ -44,19 +69,6 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = {"type": "property", "target": {"iid": "X", "type": "service", "serviceType":this.get("type"), "value":this.get("id")}, "iid": "X"};
       switch(property) {
-        case "isWeatherSimplifiedCodeForecast":
-          $(btn).append("<span data-i18n='keyboard.is-weather-code-state'><span>");
-          
-          v.methodName = "isWeatherSimplifiedCodeForecast";
-          v.returnType = "boolean";          
-                              
-          v.args = [ {"type":"String", "value": "Grenoble"},
-                    {"type":"int", "value": "0"},
-                    {"type":"int", "value": "0"}];          
-                    
-          v.phrase = "keyboard.is-weather-code-state";
-          $(btn).attr("json", JSON.stringify(v));
-          break;      	
         // case "getWeatherCodeForecast":
           // $(btn).append("<span data-i18n='keyboard.get-weather-code-state'><span>");
 //           
