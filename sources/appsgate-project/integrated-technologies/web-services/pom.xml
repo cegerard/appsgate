@@ -18,5 +18,6 @@
 		<module>google-services</module>
 		<module>core-mail</module>
 		<module>yahoo-services</module>
-	</modules>
+        <module>WeatherObserverImpl</module>
+    </modules>
 </project>

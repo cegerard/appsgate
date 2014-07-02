@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,7 +44,8 @@ import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
  */
 public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObjectSpec, CoreWeatherServiceSpec {
 
-	private final Logger logger = Logger.getLogger(YahooWeatherImpl.class.getSimpleName());
+    private static Logger logger = LoggerFactory
+            .getLogger(WeatherServiceCoreImpl.class);
 
 
 	// *******
@@ -89,7 +92,7 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 		geoPlanet = new YahooGeoPlanetImpl();
 		refreshRate=-1;
 		refreshtask = new WeatherRefreshTask(this, refreshRate);
-		
+		logger.debug("YahooWeatherImpl() is OK");
 	}
 
 	public Calendar getLastFetchDate() {
@@ -225,7 +228,7 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 		 * Configure auto-refresh meteo data
 		 */
 		if (refreshRate > 0) {
-			logger.fine("Configuring auto-refresh for :" + refreshRate);
+			logger.debug("Configuring auto-refresh for :" + refreshRate);
 			refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
 		}
 
@@ -298,7 +301,7 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 
 			for (String placeName : woeidFromePlaceName.keySet()) {
 				String woeid = woeidFromePlaceName.get(placeName);
-				logger.fine("Fetching Weather for " + placeName);
+				logger.debug("Fetching Weather for " + placeName);
 
 				feedUrl = String.format(feedUrlTemplate, woeid, currentUnit);
 
