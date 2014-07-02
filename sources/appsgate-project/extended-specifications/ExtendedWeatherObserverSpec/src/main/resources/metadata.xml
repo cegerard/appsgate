@@ -1,0 +1,22 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+	<specification name="ExtendedWeatherObserverSpec"
+		interfaces="appsgate.lig.weather.extended.spec.ExtendedWeatherObserver" messages="appsgate.lig.weather.extended.spec.messages.DaylightNotificationMsg">
+
+        <definition name="currentLocation" type="string"/>
+
+        <definition name="currentlyDaylight" type="boolean"/>
+
+        <definition name="currentWeatherCode" type="int"/>
+        <definition name="currentTemperature" type="int"/>
+
+        <definition name="tomorrowWeatherCode" type="int"/>
+        <definition name="tomorrowMinTemperature" type="int"/>
+        <definition name="tomorrowMaxTemperature" type="int"/>
+
+	</specification>
+
+</apam>
