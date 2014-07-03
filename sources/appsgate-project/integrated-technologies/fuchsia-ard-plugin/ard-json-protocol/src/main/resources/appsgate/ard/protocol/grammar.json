@@ -1,0 +1,45 @@
+{
+    "friendlyName": "ard contact sensor",
+    "typename":"contactSensor",
+    "properties": [
+    ],
+    "states": [
+        {
+            "name": "isOpen",
+            "stateName" : "getContactStatus",
+            "stateValue" : "false",
+            "setter": {
+                "type": "empty"
+            },
+            "endEvent": {
+                "type": "event",
+                "eventName": "contact",
+                "eventValue": "true"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "contact",
+                "eventValue": "false"
+            }
+        },
+        {
+            "name": "isClose",
+            "stateName" : "getContactStatus",
+            "stateValue" : "true",
+            "setter": {
+                "type": "empty"
+            },
+            "endEvent": {
+                "type": "event",
+                "eventName": "contact",
+                "eventValue": "false"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "contact",
+                "eventValue": "true"
+            }
+
+        }
+    ]
+}
