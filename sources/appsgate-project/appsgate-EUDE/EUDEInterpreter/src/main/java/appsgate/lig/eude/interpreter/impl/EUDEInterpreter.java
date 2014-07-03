@@ -3,9 +3,7 @@ package appsgate.lig.eude.interpreter.impl;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +15,6 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
-import appsgate.lig.ehmi.spec.listeners.CoreListener;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
@@ -56,7 +53,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * happen.
      */
     private EHMIProxySpec ehmiProxy;
-    
+
     /**
      * Reference the ApAM HistoryManager.
      */
@@ -75,7 +72,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     /**
      * Hash map containing the nodes and the events they are listening
      */
-    private final HashMap<CoreEventListener, ArrayList<NodeEvent>> mapCoreNodeEvent;
+    private final List<CoreEventListener> mapCoreNodeEvent;
 
     /**
      * HashMap that contains all the existing programs under a JSON format
@@ -88,7 +85,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     private final NodeProgram root;
 
     /**
-     *
+     * The proxy to the clock
      */
     public ClockProxy clock;
 
@@ -98,7 +95,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public EUDEInterpreter() {
         mapPrograms = new HashMap<String, NodeProgram>();
-        mapCoreNodeEvent = new HashMap<CoreEventListener, ArrayList<NodeEvent>>();
+        mapCoreNodeEvent = new ArrayList<CoreEventListener>();
         root = initRootProgram();
     }
 
@@ -117,7 +114,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     public void deleteInst() {
         LOGGER.debug("The router interpreter components has been stopped");
         // delete the event listeners from the context
-        for (CoreEventListener listener : mapCoreNodeEvent.keySet()) {
+        for (CoreEventListener listener : mapCoreNodeEvent) {
             ehmiProxy.deleteCoreListener(listener);
         }
 
@@ -309,7 +306,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public Long getTime() {
         LOGGER.trace("getTime called");
-        Long time =  ehmiProxy.getCurrentTimeInMillis();
+        Long time = ehmiProxy.getCurrentTimeInMillis();
         LOGGER.info("Time is: " + time);
         return time;
     }
@@ -323,37 +320,21 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     public synchronized void addNodeListening(NodeEvent nodeEvent) {
         // instantiate a core listener
 
-        CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue(), this);
+        CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
 
-        Set<CoreEventListener> keyset = mapCoreNodeEvent.keySet();
-        Iterator<CoreEventListener> it = keyset.iterator();
-        boolean contains = false;
-        CoreEventListener cel = null;
-
-        while (it.hasNext() && !contains) {
-            cel = it.next();
-            if (cel.equals(listener)) {
-                contains = true;
-            }
-        }
-
-        // if the event is already listened by other nodes
-        if (contains) {
-            mapCoreNodeEvent.get(cel).add(nodeEvent);
+        for (CoreEventListener l : mapCoreNodeEvent) {
+            if (l.equals(listener)) {
             LOGGER.debug("Add node event to listener list.");
-            // if the event is not listened yet
-        } else {
-            // create the list of nodes to notify
-            ArrayList<NodeEvent> nodeList = new ArrayList<NodeEvent>();
-            nodeList.add(nodeEvent);
+                l.addNodeEvent(nodeEvent);
+                return;
+            }
 
-            // add the listener to the context
-            ehmiProxy.addCoreListener(listener);
-
-            // fill the map with the new entry
-            mapCoreNodeEvent.put(listener, nodeList);
-            LOGGER.debug("Add node event listener list.{}", nodeEvent.getEventName());
         }
+        listener.addNodeEvent(nodeEvent);
+        mapCoreNodeEvent.add(listener);
+        ehmiProxy.addCoreListener(listener);
+        LOGGER.debug("Add node event listener list.{}", nodeEvent.getEventName());
+
     }
 
     /**
@@ -365,30 +346,15 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         CoreEventListener listener;
 
-        listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue(), this);
+        listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
 
-        Set<CoreEventListener> keyset = mapCoreNodeEvent.keySet();
-        Iterator<CoreEventListener> it = keyset.iterator();
-        boolean contains = false;
-        CoreEventListener cel = null;
-
-        while (it.hasNext() && !contains) {
-            cel = it.next();
-            if (cel.equals(listener)) {
-                contains = true;
+        for (CoreEventListener l : mapCoreNodeEvent) {
+            if (l.equals(listener)) {
+            LOGGER.debug("Add node event to listener list.");
+                l.removeNodeEvent(nodeEvent);
+                return;
             }
-        }
 
-        if (contains) {
-            ArrayList<NodeEvent> nodeEventList = mapCoreNodeEvent.get(cel);
-            nodeEventList.remove(nodeEvent);
-            LOGGER.debug("Remove nodeEvent from listener list.");
-            // remove the listener if there is no node any more to notify
-            if (nodeEventList.isEmpty()) {
-                ehmiProxy.deleteCoreListener(cel);
-                mapCoreNodeEvent.remove(cel);
-                LOGGER.debug("Remove node event listener list.");
-            }
         }
     }
 
@@ -598,115 +564,6 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     /**
      *
      */
-    public class CoreEventListener implements CoreListener {
-
-        /**
-         *
-         */
-        private String objectId;
-        /**
-         *
-         */
-        private String varName;
-        /**
-         *
-         */
-        private String varValue;
-        /**
-         *
-         */
-        private final EUDEInterpreter eudeInt;
-
-        /**
-         *
-         * @param objectId
-         * @param varName
-         * @param varValue
-         * @param eudeInt
-         */
-        public CoreEventListener(String objectId, String varName,
-                String varValue, EUDEInterpreter eudeInt) {
-            this.objectId = objectId;
-            this.varName = varName;
-            this.varValue = varValue;
-            this.eudeInt = eudeInt;
-        }
-
-        @Override
-        public void setObjectId(String objectId) {
-            this.objectId = objectId;
-        }
-
-        @Override
-        public void setEvent(String eventVarName) {
-            this.varName = eventVarName;
-        }
-
-        @Override
-        public void setValue(String eventVarValue) {
-            this.varValue = eventVarValue;
-        }
-
-        @Override
-        public String getObjectId() {
-            return objectId;
-        }
-
-        @Override
-        public String getEvent() {
-            return varName;
-        }
-
-        @Override
-        public String getValue() {
-            return varValue;
-        }
-
-        @Override
-        public void notifyEvent() {
-            LOGGER.debug("Event notified");
-            // transmit the core event to the concerned nodes
-            synchronized (eudeInt) {
-                ArrayList<NodeEvent> nodeEventList = mapCoreNodeEvent.get(this);
-
-                mapCoreNodeEvent.remove(this);
-                if (nodeEventList == null) {
-                    LOGGER.warn("No CoreEvent found");
-                    return;
-                }
-                for (NodeEvent n : nodeEventList) {
-                    LOGGER.debug("Notifying node: {}", n);
-                    n.coreEventFired();
-                }
-                ehmiProxy.deleteCoreListener(this);
-            }
-        }
-
-        @Override
-        public void notifyEvent(CoreListener listener) {
-            LOGGER.debug("The event is catch by the EUDE " + listener);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (!(o instanceof CoreEventListener)) {
-                return false;
-            }
-
-            CoreEventListener c = (CoreEventListener) o;
-            return (objectId.contentEquals(c.objectId) && varName.contentEquals(c.varName) && varValue.contentEquals(c.varValue));
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 17 * hash + (this.objectId != null ? this.objectId.hashCode() : 0);
-            hash = 17 * hash + (this.varName != null ? this.varName.hashCode() : 0);
-            hash = 17 * hash + (this.varValue != null ? this.varValue.hashCode() : 0);
-            return hash;
-        }
-    }
-
     @Override
     public void endEventFired(EndEvent e) {
         NodeProgram p = (NodeProgram) e.getSource();
@@ -719,10 +576,12 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     }
 
     /**
-     * Method to make some mocked tests
+     * Method to make some mocked tests it allows to init the proxy that are
+     * normally automatically managed with APAM
      *
-     * @param pull
-     * @param push
+     * @param pull the pull service
+     * @param push the push service
+     * @param ehmiProxy the proxy to ehmi
      */
     public void setTestMocks(DataBasePullService pull, DataBasePushService push, EHMIProxySpec ehmiProxy) {
         this.contextHistory_pull = pull;
