@@ -101,6 +101,7 @@
 	<modules>
 		<module>lib-utils</module>
 		<module>core-specifications</module>
+        <module>extended-specifications</module>
 		<module>appsgate-context</module>
 		<module>appsgate-EUDE</module>
 		<module>integrated-technologies</module>
@@ -108,8 +109,8 @@
 		<module>composite-distribution</module>
         <module>appsgate-instance</module>
 		<module>test-components</module>
-		
-	</modules>
+
+    </modules>
 
 	<profiles>
 

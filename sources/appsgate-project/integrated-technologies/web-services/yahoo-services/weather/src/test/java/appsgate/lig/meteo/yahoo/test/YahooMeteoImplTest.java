@@ -23,6 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import appsgate.lig.weather.yahoo.YahooWeatherImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -32,6 +34,8 @@ import appsgate.lig.weather.yahoo.YahooWeatherImpl;
 public class YahooMeteoImplTest {
     
     YahooWeatherImpl testedMeteo;
+    private static Logger logger = LoggerFactory
+            .getLogger(YahooMeteoImplTest.class);
 
     /**
      * @throws java.lang.Exception
@@ -55,7 +59,8 @@ public class YahooMeteoImplTest {
     @Test
     public void testFetch() {
 	try {
-	testedMeteo.fetch();
+        testedMeteo.addLocation("Grenoble");
+	    testedMeteo.fetch();
 	assertNotNull(testedMeteo);
 	} catch(Exception exc) {
 	    fail(exc.getMessage());

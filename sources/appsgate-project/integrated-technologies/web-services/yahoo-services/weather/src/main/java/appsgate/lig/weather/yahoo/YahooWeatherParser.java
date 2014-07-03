@@ -27,104 +27,126 @@ import appsgate.lig.weather.utils.WeatherCodesHelper;
  * which indicates the location for the forecast. This class parses the
  * information obtained in from weather yahoo service: e.g.
  * http://weather.yahooapis.com/forecastrss?w=12724717&u=c
- * 
+ *
  * @author thibaud
- * 
+ *
  */
 public class YahooWeatherParser {
 
     static private Logger logger = Logger.getLogger(YahooWeatherParser.class
-	    .getSimpleName());
+            .getSimpleName());
 
     static final String xPathCondition = "//condition";
     static final String xPathWind = "//wind";
+    static final String xPathAstronomy = "//astronomy";
     static final String xPathForecast = "/rss/channel/item/forecast";
     static final String xPathPubDate = "//pubDate";
     static final String xPathTitle = "/rss/channel/item/title";
 
     static public CurrentWeather parseCurrentConditions(Document xmlDocument)
-	    throws Exception {
-	XPath xPath = XPathFactory.newInstance().newXPath();
+            throws Exception {
+        XPath xPath = XPathFactory.newInstance().newXPath();
 
-	int temperature = Integer.valueOf(xPath.evaluate(xPathCondition
-		+ "/@temp", xmlDocument));
-	logger.info("Current temperature : " + temperature);
+        int temperature = Integer.valueOf(xPath.evaluate(xPathCondition
+                + "/@temp", xmlDocument));
+        logger.info("Current temperature : " + temperature);
 
-	int code = Integer.valueOf(xPath.evaluate(xPathCondition + "/@code",
-		xmlDocument));
-	logger.info("Current code : " + code + ", "
-		+ WeatherCodesHelper.getDescription(code));
+        int code = Integer.valueOf(xPath.evaluate(xPathCondition + "/@code",
+                xmlDocument));
+        logger.info("Current code : " + code + ", "
+                + WeatherCodesHelper.getDescription(code));
 
-	int windDirection = Integer.valueOf(xPath.evaluate(xPathWind
-		+ "/@direction", xmlDocument));
-	logger.info("Current wind direction : " + windDirection);
+        int windDirection = Integer.valueOf(xPath.evaluate(xPathWind
+                + "/@direction", xmlDocument));
+        logger.info("Current wind direction : " + windDirection);
 
-	float windSpeed = Float.valueOf(xPath.evaluate(xPathWind + "/@speed",
-		xmlDocument));
-	logger.info("Current wind speed : " + windSpeed);
+        float windSpeed = Float.valueOf(xPath.evaluate(xPathWind + "/@speed",
+                xmlDocument));
+        logger.info("Current wind speed : " + windSpeed);
 
-	return new CurrentWeather(temperature, code, windDirection, windSpeed);
+        DateFormat sdf = new SimpleDateFormat("h:mm a");
+        Calendar sunrise = parsePublicationDate(xmlDocument);
+        sunrise.set(Calendar.HOUR_OF_DAY, 0);
+        sunrise.set(Calendar.MINUTE, 0);
+
+        Calendar sunset = (Calendar)sunrise.clone();
+
+
+        Calendar tmp = Calendar.getInstance();
+        tmp.setTime(sdf.parse(xPath.evaluate(xPathAstronomy + "/@sunrise",
+                xmlDocument)));
+        sunrise.set(Calendar.HOUR_OF_DAY, tmp.get(Calendar.HOUR_OF_DAY));
+        sunrise.set(Calendar.MINUTE, tmp.get(Calendar.MINUTE));
+        logger.info("Sunrise : " + sunrise.getTime());
+
+
+        tmp.setTime(sdf.parse(xPath.evaluate(xPathAstronomy + "/@sunset",
+                xmlDocument)));
+        sunset.set(Calendar.HOUR_OF_DAY, tmp.get(Calendar.HOUR_OF_DAY));
+        sunset.set(Calendar.MINUTE, tmp.get(Calendar.MINUTE));
+        logger.info("Sunset : " + sunset.getTime());
+        return new CurrentWeather(temperature, code, windDirection, windSpeed, sunrise.getTime(), sunset.getTime());
     }
 
     static public List<DayForecast> parseForecast(Document xmlDocument)
-	    throws Exception {
-	List<DayForecast> forecasts = new ArrayList<DayForecast>();
+            throws Exception {
+        List<DayForecast> forecasts = new ArrayList<DayForecast>();
 
-	XPath xPath = XPathFactory.newInstance().newXPath();
-	NodeList listForecast = (NodeList) xPath.evaluate(xPathForecast,
-		xmlDocument, XPathConstants.NODESET);
-	logger.info(listForecast.getLength() + " days of forecast");
-	Date date = null;
-	int min;
-	int max;
-	int code;
-	for (int i = 0; i < listForecast.getLength(); i++) {
-	    NamedNodeMap map = listForecast.item(i).getAttributes();
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        NodeList listForecast = (NodeList) xPath.evaluate(xPathForecast,
+                xmlDocument, XPathConstants.NODESET);
+        logger.info(listForecast.getLength() + " days of forecast");
+        Date date = null;
+        int min;
+        int max;
+        int code;
+        for (int i = 0; i < listForecast.getLength(); i++) {
+            NamedNodeMap map = listForecast.item(i).getAttributes();
 
-	    DateFormat yahooForecastDateAttributeParser = new SimpleDateFormat(
-		    "dd MMM yyyy", Locale.ENGLISH);
-	    String dateString = map.getNamedItem("date").getNodeValue();
+            DateFormat yahooForecastDateAttributeParser = new SimpleDateFormat(
+                    "dd MMM yyyy", Locale.ENGLISH);
+            String dateString = map.getNamedItem("date").getNodeValue();
 
-	    date = yahooForecastDateAttributeParser.parse(dateString);
+            date = yahooForecastDateAttributeParser.parse(dateString);
 
-	    min = Integer.parseInt(map.getNamedItem("low").getNodeValue());
-	    max = Integer.parseInt(map.getNamedItem("high").getNodeValue());
-	    code = Integer.parseInt(map.getNamedItem("code").getNodeValue());
+            min = Integer.parseInt(map.getNamedItem("low").getNodeValue());
+            max = Integer.parseInt(map.getNamedItem("high").getNodeValue());
+            code = Integer.parseInt(map.getNamedItem("code").getNodeValue());
 
-	    logger.info("Forecast, day : " + map.getNamedItem("day")
-		    + ", date : " + date + ", min : " + min + ", max : " + max
-		    + ", code :" + code);
+            logger.info("Forecast, day : " + map.getNamedItem("day")
+                    + ", date : " + date + ", min : " + min + ", max : " + max
+                    + ", code :" + code);
 
-	    DayForecast df = new DayForecast(date, min, max, code);
-	    forecasts.add(df);
-	}
-	return forecasts;
+            DayForecast df = new DayForecast(date, min, max, code);
+            forecasts.add(df);
+        }
+        return forecasts;
     }
 
     static public String parseLocation(Document xmlDocument) throws Exception {
-	XPath xPath = XPathFactory.newInstance().newXPath();
+        XPath xPath = XPathFactory.newInstance().newXPath();
 
-	String location = xPath.evaluate(xPathTitle, xmlDocument);
-	logger.info("Current location : " + location);
+        String location = xPath.evaluate(xPathTitle, xmlDocument);
+        logger.info("Current location : " + location);
 
-	return location;
+        return location;
     }
 
     static public Calendar parsePublicationDate(Document xmlDocument)
-	    throws Exception {
-	XPath xPath = XPathFactory.newInstance().newXPath();
+            throws Exception {
+        XPath xPath = XPathFactory.newInstance().newXPath();
 
-	String date = xPath.evaluate(xPathPubDate, xmlDocument);
-	logger.info("Current publication date : " + date);
+        String date = xPath.evaluate(xPathPubDate, xmlDocument);
+        logger.info("Current publication date : " + date);
 
-	DateFormat yahooForecastDateAttributeParser = new SimpleDateFormat(
-		"EEE, d MMM yyyy h:m a zzz", Locale.ENGLISH);
+        DateFormat yahooForecastDateAttributeParser = new SimpleDateFormat(
+                "EEE, d MMM yyyy h:m a zzz", Locale.ENGLISH);
 
-	Date pubdate = yahooForecastDateAttributeParser.parse(date);
-	Calendar cal=Calendar.getInstance();
-	cal.setTime(pubdate);
+        Date pubdate = yahooForecastDateAttributeParser.parse(date);
+        Calendar cal=Calendar.getInstance();
+        cal.setTime(pubdate);
 
-	return cal;
+        return cal;
     }
 
 }
