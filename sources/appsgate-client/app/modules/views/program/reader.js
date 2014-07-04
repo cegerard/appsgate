@@ -91,11 +91,11 @@ define([
           input = self.applyReadMode(input);
           $(".programInput").html(input).addClass("read-only");
           $(".secondary-block-node").addClass("hidden");
-          $(".input-spot").prev().addClass("hidden");
-          $(".input-spot").addClass("hidden");
           if($(".input-spot").next().find(".btn-and").length > 0 || $(".input-spot").next().find(".btn-then").length > 0){
-            $(".input-spot").next().addClass("hidden");
+            $(".input-spot").next()[0].remove();
           }
+          $(".input-spot").prev().remove();
+          $(".input-spot").remove();
         });
         if(typeof this.model !== "undefined"){
           if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "WAITING") {

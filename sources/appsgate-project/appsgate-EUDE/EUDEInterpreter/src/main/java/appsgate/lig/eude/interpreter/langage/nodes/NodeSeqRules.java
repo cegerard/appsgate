@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public class NodeSeqRules extends Node {
+public class NodeSeqRules extends Node implements INodeSet {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeSeqRules.class);

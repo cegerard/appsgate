@@ -294,6 +294,9 @@ define([
                         // send the updates to the server
                         self.model.save();
 
+                        // tell the router that there is no modal any more
+                        appRouter.isModalShown = false;
+
                         // move the device if this is not the core clock
                         if (self.model.get("type") !== "21" && self.model.get("type") !== 21) {
                             places.moveDevice(self.model.get("placeId"), destPlaceId, self.model.get("id"), true);
@@ -322,9 +325,6 @@ define([
                             //send the update to the server
                             self.model.save();
                         }
-
-                        // tell the router that there is no modal any more
-                        appRouter.isModalShown = false;
 
                         // rerender the view
                         self.render();

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-public class NodeSetOfRules extends Node {
+public class NodeSetOfRules extends Node implements INodeSet {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeSetOfRules.class);

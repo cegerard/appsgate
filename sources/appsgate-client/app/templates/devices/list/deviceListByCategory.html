@@ -131,7 +131,7 @@
                 <% } else if (type === "1") { %>
                 <span class="label label-info"><%= s.get("value") %> Lux</span>
                 <% } else if (type === "2") { %>
-                <% if (s.get("value") === "true") { %>
+                <% if (s.get("buttonStatus") === "true") { %>
                 <span class="label label-yellow" data-i18n="devices.switch.value.opened"></span>
                 <% } else { %>
                 <span class="label label-default" data-i18n="devices.switch.value.closed"></span>

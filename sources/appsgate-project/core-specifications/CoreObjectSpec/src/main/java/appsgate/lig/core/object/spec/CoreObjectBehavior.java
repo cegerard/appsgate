@@ -44,7 +44,7 @@ public abstract class CoreObjectBehavior implements CoreObjectSpec {
 
     private JSONObject loadJSONStream(InputStream in) throws IOException, JSONException {
         if (in == null) {
-            LOGGER.error("No grammar file found");
+            LOGGER.debug("No grammar file found for {}", this.getClass().toString());
             return null;
         }
         InputStreamReader is = new InputStreamReader(in);

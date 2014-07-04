@@ -4,11 +4,12 @@
             <span data-i18n="language.if-keyword"/>
         </button>
         <%=engine.buildInputFromNode(node.expBool, currentNode) %>
-        <div class="row indent-level-1">
+        <button class="btn btn-prog btn-primary"
+            <span data-i18n="language.then-keyword"/>
+        </button>
 
-            <button class="btn btn-prog btn-primary"
-                <span data-i18n="language.then-keyword"/>
-            </button>
+
+        <div class="row indent-level-1">
             <%=engine.buildInputFromNode(node.seqRulesTrue, currentNode) %>
         </div>
     </div>
@@ -18,7 +19,7 @@
             <button class="btn btn-prog btn-primary btn-then"
                 <span data-i18n="language.else-keyword"/>
             </button>
-            <div class="fix-row">
+            <div class="indent-level-1 fix-row">
             <%=engine.buildInputFromNode(node.seqRulesFalse, currentNode) %>
           </div>
         </div>
