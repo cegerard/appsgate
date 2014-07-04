@@ -508,7 +508,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     private NodeProgram getProgramParent(JSONObject programJSON) {
         String packageName = programJSON.optString("package");
         if (packageName == null || packageName.isEmpty() || packageName.equalsIgnoreCase("root")) {
-            LOGGER.warn("By default the program is stored as a child of root");
+            LOGGER.debug("By default the program is stored as a child of root");
             return root;
         }
         String parentId;
