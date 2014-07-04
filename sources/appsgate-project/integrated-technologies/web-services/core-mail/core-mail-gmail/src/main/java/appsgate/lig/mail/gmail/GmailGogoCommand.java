@@ -1,6 +1,6 @@
 package appsgate.lig.mail.gmail;
 
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -19,35 +19,42 @@ import appsgate.lig.mail.Mail;
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Instance;
+import org.apache.felix.service.command.Descriptor;
 
-@Instantiate
-@org.apache.felix.ipojo.annotations.Component(public_factory = false, immediate = true, name = "appsgate.universal.shell")
-@Provides(specifications = GmailGogoCommand.class)
 /**
  * Gogo command that helps show retrieve information from the service without having to implement a client
  * @author jnascimento
  */
+@Instantiate
+@org.apache.felix.ipojo.annotations.Component(public_factory = false, immediate = true)
+@Provides(specifications = GmailGogoCommand.class)
 public class GmailGogoCommand {
 
 	@Requires
 	Apam apam;
 
-	@ServiceProperty(name = "org.knowhowlab.osgi.shell.group.id", value = "mail")
-	String universalShell_groupID;
-
-	@ServiceProperty(name = "org.knowhowlab.osgi.shell.group.name", value = "mail commands")
+	@ServiceProperty(name = "osgi.command.scope", value = "mail commands")
 	String universalShell_groupName;
 
-	@ServiceProperty(name = "org.knowhowlab.osgi.shell.commands", value = "{}")
+	@ServiceProperty(name = "osgi.command.function", value = "{}")
 	String[] universalShell_groupCommands = new String[] {
-			"mailShow#show last 5 mails", 
-			"mailSend#send mail", 
-			"mailFetch#fetch mail from the mail server",
-			"mailInfo#shows information about mail service"};
+            "mailShow",
+            "mailSend",
+            "mailFetch",
+            "mailInfo"
+    };
 
-	@SuppressWarnings("rawtypes")
-	public void mailShow(PrintWriter out, String... args)
-			throws MessagingException {
+    PrintStream out = System.out;
+
+
+
+//			"mailShow#show last 5 mails",
+//			"mailSend#send mail",
+//			"mailFetch#fetch mail from the mail server",
+//			"mailInfo#shows information about mail service"};
+
+    @Descriptor("show last 5 mails")
+    public void mailShow(@Descriptor("none") String... args) throws  MessagingException{
 
 		Set<Instance> instances = new HashSet<Instance>();
 
@@ -88,7 +95,8 @@ public class GmailGogoCommand {
 
 	}
 
-	public void mailSend(PrintWriter out, String... args)
+    @Descriptor("send mail")
+    public void mailSend(@Descriptor("none") String... args)
 			throws AddressException, MessagingException {
 
 		Set<Instance> instances = new HashSet<Instance>();
@@ -129,8 +137,9 @@ public class GmailGogoCommand {
 		}
 
 	}
-	
-	public void mailFetch(PrintWriter out, String... args)
+
+    @Descriptor("fetch mail from the mail server")
+    public void mailFetch(@Descriptor("none") String... args)
 			throws AddressException, MessagingException {
 
 		Set<Instance> instances = new HashSet<Instance>();
@@ -161,8 +170,9 @@ public class GmailGogoCommand {
 
 	}
 
-	public void mailInfo(PrintWriter out, String... args){
-		
+    @Descriptor("shows information about mail service")
+    public void mailInfo(@Descriptor("none") String... args) {
+
 		Set<Instance> instances = new HashSet<Instance>();
 
 		String instanceParam = getArgumentValue("-instance", args);

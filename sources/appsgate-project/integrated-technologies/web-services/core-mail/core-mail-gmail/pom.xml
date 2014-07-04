@@ -21,8 +21,8 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
+			<groupId>appsgate.libs</groupId>
+			<artifactId>JavamailAndroidAdapter</artifactId>
 			<version>1.4.7</version>
 		</dependency>
 		<dependency>
@@ -35,16 +35,6 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 			<version>${ipojo.annotations.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.knowhowlab.osgi.shell</groupId>
-			<artifactId>felix-gogo</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.knowhowlab.osgi.shell</groupId>
-			<artifactId>felix</artifactId>
-			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -61,7 +51,27 @@
 			<groupId>appsgate.components</groupId>
 			<version>1.0.0</version>	        
 	    </dependency>
-	</dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.runtime</artifactId>
+            <version>${felix.gogo.runtime.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.command</artifactId>
+            <version>${felix.gogo.command.version}</version>
+        </dependency>
+    </dependencies>
 
 	<!-- Build Description -->
 	<build>
