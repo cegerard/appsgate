@@ -99,15 +99,15 @@ define([
         });
         if(typeof this.model !== "undefined"){
           if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "WAITING") {
-            $("#led-" + this.model.get("id")).addClass("led-green").removeClass("led-orange").removeClass("led-default");
+            $("#led-" + this.model.get("id")).addClass("led-yellow").removeClass("led-orange").removeClass("led-default");
             $(".start-program-button").hide();
             $(".stop-program-button").show();
           } else if (this.model.get("runningState") === "INVALID"){
-            $("#led-" + this.model.get("id")).addClass("led-orange").removeClass("led-green").removeClass("led-default");
+            $("#led-" + this.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
             $(".start-program-button").hide();
             $(".stop-program-button").hide();
           } else{
-            $("#led-" + this.model.get("id")).addClass("led-default").removeClass("led-green").removeClass("led-orange");
+            $("#led-" + this.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");
             $(".start-program-button").show();
             $(".stop-program-button").hide();
           }
