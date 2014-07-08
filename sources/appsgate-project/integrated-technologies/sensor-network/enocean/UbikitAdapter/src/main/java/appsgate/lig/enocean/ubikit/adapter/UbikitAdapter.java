@@ -22,15 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.ubikit.PhysicalEnvironmentItem;
 import org.ubikit.PhysicalEnvironmentItem.Type;
 import org.ubikit.event.impl.EventGateImpl;
-import org.ubikit.pem.event.AddItemEvent;
-import org.ubikit.pem.event.EnterPairingModeEvent;
-import org.ubikit.pem.event.ExitPairingModeEvent;
-import org.ubikit.pem.event.ItemAddedEvent;
-import org.ubikit.pem.event.ItemAddingFailedEvent;
-import org.ubikit.pem.event.NewItemEvent;
+import org.ubikit.pem.event.*;
 import org.ubikit.pem.event.NewItemEvent.CapabilitySelection;
-import org.ubikit.pem.event.UnsupportedNewItemEvent;
-import org.ubikit.service.PhysicalEnvironmentModelService;
+import org.ubikit.service.RootPhysicalEnvironmentModelService;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
@@ -92,7 +86,7 @@ public class UbikitAdapter implements
 	/**
 	 * iPOJO EnOcean PEM resolution
 	 */
-	private PhysicalEnvironmentModelService enoceanBridge;
+	private RootPhysicalEnvironmentModelService enoceanBridge;
 
 	/**
 	 * Service to be notified when clients send commands
@@ -115,22 +109,12 @@ public class UbikitAdapter implements
 	 */
 	private static Logger logger = LoggerFactory.getLogger(UbikitAdapter.class);
 
-	private static String CONFIG_TARGET = "ENOCEAN";
+	public static String CONFIG_TARGET = "ENOCEAN";
 
 	/**
 	 * constructor to initiate event members
 	 */
 	public UbikitAdapter() {
-		eventGate = new EventGateImpl();
-		logger.debug("EventGate instanciated.");
-		executorService = Executors.newScheduledThreadPool(1); // only one
-																// thread for
-																// the events
-																// gate
-		instanciationService = Executors.newScheduledThreadPool(1);
-		logger.debug("ExecutorService instanciated.");
-		sidToInstanceName = new HashMap<String, Instance>();
-		tempEventCapabilitiesMap = new HashMap<String, ArrayList<EnOceanProfiles>>();
 	}
 
 	/**
@@ -138,6 +122,18 @@ public class UbikitAdapter implements
 	 */
 	// @Validate
 	public void newInst() {
+        eventGate = new EventGateImpl();
+        logger.debug("EventGate instanciated.");
+        executorService = Executors.newScheduledThreadPool(5); // only one
+        // thread for
+        // the events
+        // gate
+        instanciationService = Executors.newScheduledThreadPool(1);
+        logger.debug("ExecutorService instanciated.");
+        sidToInstanceName = new HashMap<String, Instance>();
+        tempEventCapabilitiesMap = new HashMap<String, ArrayList<EnOceanProfiles>>();
+
+
 		logger.debug("PEM service = " + enoceanBridge.toString());
 		logger.debug("Set as EnOcean observer");
 
@@ -148,7 +144,10 @@ public class UbikitAdapter implements
 
 		// The events gate is listening for all event coming
 		// from paired sensors
-		eventGate.addListener(new enoceanPemListener());
+//		eventGate.addListener(new enoceanPemListener());
+        eventGate.addListener(new PEMSimpleListener(sendToClientService, this));
+        logger.info("Simple listener registered");
+
 		eventGate.addListener(new TempEvent(this));
 		eventGate.addListener(new SwitchEvent(this));
 		eventGate.addListener(new LumEvent(this));
@@ -228,7 +227,6 @@ public class UbikitAdapter implements
 	/**
 	 * Log all the EnOcean event from the EnOcean dongle.
 	 * 
-	 * @see PhysicalEnvironmentModelObserver
 	 */
     public void log(String arg0) {
 		logger.info("!EnOcean event! " + arg0);
@@ -384,192 +382,6 @@ public class UbikitAdapter implements
 
 		// TODO removed this call when PairingModeEvent work
 		pairingModeChanged(pair);
-	}
-
-	/**
-	 * Ubikit PEM EnOcean listener
-	 * @author Cédric Gérard
-	 * @since January 24, 2014
-	 */
-	private class enoceanPemListener implements NewItemEvent.Listener,
-			ItemAddedEvent.Listener, UnsupportedNewItemEvent.Listener,
-			ItemAddingFailedEvent.Listener {
-
-		/**
-		 * This method is a listener method call when Ubikit is in paring mode
-		 * and detect a new sensor.
-		 * 
-		 * @see NewItemEvent
-		 */
-		@Override
-		public void onEvent(NewItemEvent newItEvent) {
-			logger.debug("!NewItemEvent! from " + newItEvent.getSourceItemUID()
-					+ " to " + newItEvent.getPemUID() + ", type="
-					+ newItEvent.getItemType());
-
-			if (!sidToInstanceName.containsKey(newItEvent.getSourceItemUID())) {
-
-				sidToInstanceName.put(newItEvent.getSourceItemUID(), null);
-
-				CapabilitySelection cs = newItEvent
-						.doesCapabilitiesHaveToBeSelected();
-
-				if (cs == CapabilitySelection.NO) {
-					validateItem(newItEvent.getSourceItemUID(), null, false);
-
-				} else if (cs == CapabilitySelection.SINGLE) {
-
-					String[] capabilities = newItEvent.getCapabilities();
-					int capListLength = capabilities.length;
-					int i = 0;
-					ArrayList<EnOceanProfiles> tempCapList = new ArrayList<EnOceanProfiles>();
-					while (i < capListLength) {
-						tempCapList.add(EnOceanProfiles
-								.getEnOceanProfile(capabilities[i]));
-						i++;
-					}
-					tempEventCapabilitiesMap.put(newItEvent.getSourceItemUID(),
-							tempCapList);
-					JSONObject onEventMSG = new JSONObject();
-					JSONObject newUndefinedJSON = new JSONObject();
-					try {
-						newUndefinedJSON.put("id", newItEvent.getSourceItemUID());
-						newUndefinedJSON.put("capabilities",getItemCapabilities(newItEvent.getSourceItemUID()));
-						onEventMSG.put("newUndefinedSensor", newUndefinedJSON);
-						onEventMSG.put("TARGET", UbikitAdapter.CONFIG_TARGET);
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					sendToClientService.send(onEventMSG.toString());
-
-				} else if (cs == CapabilitySelection.MULTIPLE) {
-					logger.error("Multiple capabality not supported yet for "
-							+ newItEvent.getSourceItemUID() + " to "
-							+ newItEvent.getPemUID() + ", type="
-							+ newItEvent.getItemType());
-				}
-			}
-		}
-
-		/**
-		 * This method is a listener method call when Ubikit is in paring mode
-		 * and notify that it detect a undefined sensor.
-		 * 
-		 * @see UnsupportedNewItemEvent
-		 */
-		@Override
-		public void onEvent(UnsupportedNewItemEvent unsupportedItEvent) {
-			logger.debug("!UnsupportedNewItemEvent! from "
-					+ unsupportedItEvent.getSourceItemUID() + " to "
-					+ unsupportedItEvent.getPemUID() + ", type"
-					+ unsupportedItEvent.getItemType());
-
-			JSONObject onEventMSG = new JSONObject();
-			JSONObject newUnsupportedMsg = new JSONObject();
-			try {
-				newUnsupportedMsg.put("id", unsupportedItEvent.getSourceItemUID());
-				newUnsupportedMsg.put("capabilities", getItemCapabilities(unsupportedItEvent.getSourceItemUID()));
-				onEventMSG.put("newUnsupportedSensor", newUnsupportedMsg);
-				onEventMSG.put("TARGET", UbikitAdapter.CONFIG_TARGET);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			sendToClientService.send(onEventMSG.toString());
-
-		}
-
-		/**
-		 * This method is a listener method call when Ubikit is in paring mode
-		 * and notify that a new sensor is paired.
-		 * 
-		 * @see ItemAddedEvent
-		 */
-		@Override
-		public void onEvent(ItemAddedEvent addItEvent) {
-			logger.debug("!ItemAddedEvent! from "
-					+ addItEvent.getSourceItemUID() + " to "
-					+ addItEvent.getPemUID() + ", type "
-					+ addItEvent.getItemType());
-
-			EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
-			Implementation impl = null;
-			Map<String, String> properties = new HashMap<String, String>();
-
-			if (addItEvent.getItemType().equals(Type.SENSOR)
-					|| addItEvent.getItemType()
-							.equals(Type.SENSOR_AND_ACTUATOR)) {
-				if (addItEvent.getCapabilities().length == 1) {
-					String capabilitie = addItEvent.getCapabilities()[0];
-					ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
-				} else {
-					ArrayList<EnOceanProfiles> profilesList = tempEventCapabilitiesMap
-							.get(addItEvent.getSourceItemUID());
-					// TODO manage for multiple profiles sensors.
-					ep = profilesList.iterator().next();
-					tempEventCapabilitiesMap.remove(addItEvent
-							.getSourceItemUID());
-				}
-				properties.put("isPaired", "true");
-
-			} else if (addItEvent.getItemType().equals(Type.ACTUATOR)) {
-				String capabilitie = addItEvent.getCapabilities()[0];
-				ep = EnOceanProfiles.getEnOceanProfile(capabilitie);
-				properties.put("isPaired", "false");
-			}
-
-			impl = CST.apamResolver.findImplByName(null,
-					ep.getApAMImplementation());
-
-			properties.put("deviceName", ep.getUserFriendlyName());
-			properties.put("deviceId", addItEvent.getSourceItemUID());
-			properties.put("deviceType", ep.name());
-
-			Instance createInstance = impl.createInstance(null, properties);
-			sidToInstanceName.put(addItEvent.getSourceItemUID(), createInstance);
-
-			// Notify configuration UI
-			JSONObject onEventMSG = new JSONObject();
-			JSONObject jsonObj = new JSONObject();
-			try {
-				jsonObj.put("id", addItEvent.getSourceItemUID());
-				jsonObj.put("type", addItEvent.getItemType().name());
-				jsonObj.put("deviceType", ep.name());
-				jsonObj.put("paired", properties.get("isPaired"));
-				onEventMSG.put("newObject", jsonObj);
-				onEventMSG.put("TARGET", UbikitAdapter.CONFIG_TARGET);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			sendToClientService.send(onEventMSG.toString());
-		}
-
-		/**
-		 * This method is a listener method call when Ubikit is in paring mode
-		 * and notify that the pairing sequence failed for this sensor.
-		 * 
-		 * @see ItemAddingFailedEvent
-		 */
-		@Override
-		public void onEvent(ItemAddingFailedEvent addFailedEvent) {
-			logger.debug("!ItemAddingFailedEvent! from "
-					+ addFailedEvent.getSourceItemUID() + " Error Code = "
-					+ addFailedEvent.getErrorCode() + ", Reason = "
-					+ addFailedEvent.getReason());
-			JSONObject onEventMSG = new JSONObject();
-			JSONObject pairingFailedMsg = new JSONObject();
-			try {
-				pairingFailedMsg.put("id", addFailedEvent.getSourceItemUID());
-				pairingFailedMsg.put("capabilities",
-						getItemCapabilities(addFailedEvent.getSourceItemUID()));
-				pairingFailedMsg.put("code", addFailedEvent.getErrorCode());
-				pairingFailedMsg.put("reason", addFailedEvent.getReason());
-				onEventMSG.put("pairingFailed", pairingFailedMsg);
-				onEventMSG.put("TARGET", UbikitAdapter.CONFIG_TARGET);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			sendToClientService.send(onEventMSG.toString());
-		}
 	}
 
 	/**
@@ -781,5 +593,26 @@ public class UbikitAdapter implements
 		}
 
 	}
+
+    public void addSidToInstance(String sid, Instance instance) {
+        sidToInstanceName.put(sid, instance);
+    }
+
+    public boolean containSid(String sid) {
+        return sidToInstanceName.containsKey(sid);
+    }
+
+    public void addTempEventCapability(String sid,ArrayList<EnOceanProfiles> tempCapList ) {
+        tempEventCapabilitiesMap.put(sid,
+                tempCapList);
+    }
+
+    public ArrayList<EnOceanProfiles> getTempEventCapability(String sid ) {
+        return tempEventCapabilitiesMap.get(sid);
+    }
+
+    public void removeTempEventCapability(String sid ) {
+        tempEventCapabilitiesMap.remove(sid);
+    }
 
 }

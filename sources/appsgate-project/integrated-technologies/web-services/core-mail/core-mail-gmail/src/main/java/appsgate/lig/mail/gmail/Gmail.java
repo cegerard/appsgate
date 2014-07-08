@@ -79,8 +79,15 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
     public Gmail() {
         properties = System.getProperties();
+        logger.debug("System props before : "+System.getProperties());
         properties.putAll(GMailConstants.defaultGoogleProperties);
+        logger.debug("System props after : "+System.getProperties());
 
+    }
+
+    public void setAccount(String user, String password) {
+        USER=user;
+        PASSWORD=password;
     }
 
     public void start() {
@@ -132,9 +139,26 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
         if (store == null || !store.isConnected()) {
 
-            store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
 
-            store.connect(GMailConstants.IMAP_SERVER, USER, PASSWORD);
+            try {
+                // Set the socket factory to trust all hosts
+
+
+// Get the store
+                store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
+                logger.debug("Establishing connection with IMAP server.");
+
+                store.connect(GMailConstants.IMAP_SERVER,  USER, PASSWORD);
+                logger.debug("Connection established with IMAP server, "+"store : "+store);
+
+            }catch(Exception exc) {
+                    exc.printStackTrace();
+                }
+
+
+//            store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
+
+//            store.connect(GMailConstants.IMAP_SERVER,GMailConstants.IMAP_PORT, USER, PASSWORD);
         }
 
         return store;
@@ -173,6 +197,9 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
             //This method will openup a browser (pc/mobile) to verify the user auth in case of auth3
             //session=Session.getDefaultInstance(properties, null);
+            // create the properties for the Session
+            properties.setProperty( "mail.imaps.socketFactory.class", "appsgate.lig.mail.gmail.utils.AppsGateSSLSocketFactory" );
+
             session = Session.getInstance(properties,
                     new javax.mail.Authenticator() {
                         @Override
@@ -333,6 +360,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
             lastIMAPFolder.close(false);
         }
 
+        logger.debug("storeString : "+storeString);
         lastIMAPFolder = (IMAPFolder) getStore().getFolder(storeString);
 
         if (!lastIMAPFolder.isOpen()) {

@@ -83,7 +83,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;scope=runtime;inline=true</Embed-Dependency>
-						<Export-Package>javax.activation;javax.mail;javax.mail.internet;javax.mail.event;javax.mail.search;javax.mail.util;com.sun.mail.imap</Export-Package>
+						<Export-Package>javax.activation;javax.mail.*;com.sun.mail.*</Export-Package>
 						<Import-Package>!javax.security.sasl,*</Import-Package>
 					</instructions>
 				</configuration>

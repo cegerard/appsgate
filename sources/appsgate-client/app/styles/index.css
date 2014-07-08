@@ -180,12 +180,14 @@ div {
   background: #f0ad4e;
 }
 
-.led-green{
-  background: #00FF00;
+.led-yellow{
+  background: #ffff00;
 }
 
 .label-yellow{
-  background: #ffd53e;
+  background: #ffff00;
+  color:black;
+  border: 1px solid #999999;
 }
 
 .lamp-color-led{
