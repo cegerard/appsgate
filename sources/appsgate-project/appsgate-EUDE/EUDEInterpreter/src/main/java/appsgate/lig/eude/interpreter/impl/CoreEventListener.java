@@ -111,10 +111,6 @@ public class CoreEventListener implements CoreListener {
             l.coreEventFired();
         }
 
-        for (NodeEvent n : nodeEventList) {
-            LOGGER.debug("Notifying node: {}", n);
-            n.coreEventFired();
-        }
     }
 
     @Override
