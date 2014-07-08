@@ -78,9 +78,15 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * Called by ApAM when the bundle become not available
 	 */
 	public void delInst() {
+
+        logger.info("Uninstantiating {} ...",this.getClass().getSimpleName());
+        logger.info("Removing command listener TARGET {} ...",CONFIG_TARGET);
         listenerService.removeCommandListener(CONFIG_TARGET);
+        logger.info("Removing command listener {} removed",CONFIG_TARGET);
+        logger.info("Destroying philips SDK ...");
         phHueSDK.destroySDK();
-		logger.debug("PhilipsHUEAdapter stopped");
+        logger.info("Philips SDK destroyed");
+        logger.debug("{} uninstantiated.",this.getClass().getSimpleName());
 	}
 
 	@Override
