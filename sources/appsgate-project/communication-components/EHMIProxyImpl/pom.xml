@@ -68,6 +68,11 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>Tracker</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>${osgi.version}</version>
