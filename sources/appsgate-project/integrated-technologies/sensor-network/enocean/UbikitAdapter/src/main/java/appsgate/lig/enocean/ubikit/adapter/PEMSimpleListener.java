@@ -80,7 +80,7 @@ public class PEMSimpleListener implements NewItemEvent.Listener, ItemAddedEvent.
                 sendToClientService.send(onEventMSG.toString());
 
             } else if (cs == NewItemEvent.CapabilitySelection.MULTIPLE) {
-                logger.error("Multiple capabality not supported yet for "
+                logger.error("Multiple capability not supported yet for "
                         + newItEvent.getSourceItemUID() + " to "
                         + newItEvent.getPemUID() + ", type="
                         + newItEvent.getItemType());

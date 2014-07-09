@@ -83,10 +83,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Import-Package>
-                            org.json;version="${project.version}",
-                            org.json.zip;version="${project.version}",
                             org.ow2.chameleon.fuchsia.importer.philipshue,
-
                             *</Import-Package>
                         <!--
                         <Private-Package>org.json</Private-Package>

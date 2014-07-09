@@ -238,11 +238,6 @@
 								<!-- legacy dependencies (already osgi bundles, or apamcomponents) 
 									for appsgate -->
 								<artifactItem>
-									<groupId>org.bouncycastle</groupId>
-									<artifactId>bcprov-jdk15on</artifactId>
-									<version>1.50</version>
-								</artifactItem>
-								<artifactItem>
 									<groupId>org.openengsb.wrapped</groupId>
 									<artifactId>com.google.gdata-calendar</artifactId>
 									<version>1.41.5.w1</version>
@@ -432,7 +427,7 @@
                                         </copy>
                                         <copy failonerror="true" overwrite="true" todir="${basedir}/bundle/">
                                             <fileset dir="${project.build.directory}/distrib-temp/neededBundles/">
-                                                <include name="*.jar" />
+                                                <include name="*" />
                                             </fileset>
                                         </copy>
                                     </target>

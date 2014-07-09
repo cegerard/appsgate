@@ -23,7 +23,6 @@ import org.ubikit.PhysicalEnvironmentItem;
 import org.ubikit.PhysicalEnvironmentItem.Type;
 import org.ubikit.event.impl.EventGateImpl;
 import org.ubikit.pem.event.*;
-import org.ubikit.pem.event.NewItemEvent.CapabilitySelection;
 import org.ubikit.service.RootPhysicalEnvironmentModelService;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
@@ -44,8 +43,6 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import fr.immotronic.ubikit.pems.enocean.event.in.ActuatorUpdateEvent;
-//import fr.immotronic.ubikit.pems.enocean.ActuatorProfile;
-//import fr.immotronic.ubikit.pems.enocean.event.in.CreateNewActuatorEvent;
 import fr.immotronic.ubikit.pems.enocean.event.in.TurnOffActuatorEvent;
 import fr.immotronic.ubikit.pems.enocean.event.in.TurnOnActuatorEvent;
 
@@ -400,7 +397,10 @@ public class UbikitAdapter implements
 	public void validateItem(String sensorID, ArrayList<String> capList,
 			boolean doesCapabilitiesHaveToBeSelected) {
 
-		logger.debug("validateItem call received for " + sensorID);
+		logger.debug("validateItem(String sensorID = " + sensorID
+        +", ArrayList<String> capList = "+(capList==null?null:capList.toArray())
+        + ", boolean doesCapabilitiesHaveToBeSelected = "+doesCapabilitiesHaveToBeSelected
+        + ")");
 		AddItemEvent addItEvent = new AddItemEvent(sensorID);
 
 		if (doesCapabilitiesHaveToBeSelected) {
@@ -420,7 +420,8 @@ public class UbikitAdapter implements
 			logger.debug("Capability selected");
 		}
 
-		eventGate.postEvent(addItEvent);
+
+        eventGate.postEvent(addItEvent);
 		logger.debug("item validated " + sensorID);
 	}
 

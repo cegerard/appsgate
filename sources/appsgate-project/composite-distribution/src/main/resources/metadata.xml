@@ -31,7 +31,7 @@
 				<property name="auto-refresh" value="1800000" />
 			</start>
 
-			<start implementation="AppsGateDomiCubeServices" name="DomiCubeCompo"></start>
+			<start implementation="AppsGateDomiCubeServices" name="DomiCubeCompo"></start> 
 
 		</contentMngt>
 

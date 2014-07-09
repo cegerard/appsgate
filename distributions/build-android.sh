@@ -18,7 +18,7 @@
 ANDROIDPATH=/Users/thibaud/Development/android-sdk-macosx
 ANDROIDVERSION=19.0.0
 
-ANDROIDFELIXPATH=/data/felix
+ANDROIDFELIXPATH=/data/ehmi-middleware
 
 ANDROIDADBDEVICE=xxxxxx
 
@@ -93,6 +93,8 @@ rm felix-gogo-*
 rm apam-universal-shell-*
 rm mail*
 rm kxml*
+rm json*
+rm rxtx*.jar
 find *.android -type f -exec mv {} {}.jar \; 
 
 
@@ -149,6 +151,7 @@ echo "obr.repository.url=http://felix.apache.org/obr/releases.xml" >>   $TARGET/
 
 # extra package used for apam
 echo " org.osgi.framework.system.packages.extra= \\" >>   $TARGET/conf/config.properties
+echo " org.json; \\" >>   $TARGET/conf/config.properties
 echo " javax.xml.parsers; \\" >>   $TARGET/conf/config.properties
 echo " org.xml.sax; \\" >>   $TARGET/conf/config.properties
 echo " org.xml.sax.ext; \\" >>   $TARGET/conf/config.properties
