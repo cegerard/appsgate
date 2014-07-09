@@ -43,6 +43,7 @@ import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
+import appsgate.lig.ehmi.tracker.Tracker;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import java.net.*;
 import java.util.*;
@@ -66,7 +67,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      *
      * static class logger member
      */
-    private static Logger logger = LoggerFactory.getLogger(EHMIProxyImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(EHMIProxyImpl.class);
 
     /**
      * HTTP service dependency resolve by iPojo. Allow to register HTML
@@ -88,6 +89,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      * The user manager ApAM component to handle the user base
      */
     private UserBaseSpec userManager;
+    /**
+     * The user manager ApAM component to handle the user base
+     */
+    private Tracker tracker;
 
     /**
      * Reference on the remote proxy service to execute command on devices/services
@@ -392,7 +397,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                 i++;
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.warn("JSON exception: {}, missing devices or name", place);
         }
     }
 
@@ -405,10 +410,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     public void updatePlace(JSONObject place) {
         // for now we could just rename a place
         try {
-            placeManager.renamePlace(place.getString("id"),
-                    place.getString("name"));
+            placeManager.renamePlace(place.getString("id"), place.getString("name"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.warn("JSON exception: {}, missing id or name", place);
         }
     }
 
@@ -512,7 +516,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             obj.put("devices", userManager.getAssociatedDevices(id));
             obj.put("accounts", userManager.getAccountsDetails(id));
         } catch (JSONException e) {
-            e.printStackTrace();
+            // Exception never happens, exception on put
         }
 
         return obj;
@@ -785,11 +789,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             logger.debug("State Variable name : "+serverWebsocket.getName()+", value : "+serverWebsocket.getCurrentStringValue());
 
         } catch (UnknownHostException e) {
-            logger.debug("Unknown host: ");
-            e.printStackTrace();
+            logger.debug("Unknown host: {}",e.getMessage());
         } catch (SocketException e) {
-            logger.debug("Socket exception for UPnP: ");
-            e.printStackTrace();
+            logger.debug("Socket exception for UPnP: {}", e.getMessage());
         }
     }
 
@@ -1012,6 +1014,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     public void stopRemoteClockSync() {
         systemClock.stopRemoteSync(coreProxy);
+    }
+    
+    public void getLog(long timeStart, long timeEnd) {
+        
     }
 
 }

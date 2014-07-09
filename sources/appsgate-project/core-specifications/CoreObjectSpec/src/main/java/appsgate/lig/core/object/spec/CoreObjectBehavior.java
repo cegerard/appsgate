@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -22,23 +23,26 @@ public abstract class CoreObjectBehavior implements CoreObjectSpec {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CoreObjectBehavior.class);
 
+    private JSONObject grammar = null;
+
     /**
      * @return the grammar description of an object
      */
     @Override
     public JSONObject getBehaviorDescription() {
-        InputStream stream = this.getClass().getResourceAsStream("grammar.json");
-        JSONObject o;
-        try {
-            o = loadJSONStream(stream);
-        } catch (IOException ex) {
-            LOGGER.error("Unable to read the file");
-            return null;
-        } catch (JSONException ex) {
-            LOGGER.error("Unable to parse the file");
-            return null;
+        if (this.grammar == null) {
+            InputStream stream = this.getClass().getResourceAsStream("grammar.json");
+            try {
+                this.grammar = loadJSONStream(stream);
+            } catch (IOException ex) {
+                LOGGER.error("Unable to read the file");
+                this.grammar = null;
+            } catch (JSONException ex) {
+                LOGGER.error("Unable to parse the file");
+                this.grammar = null;
+            }
         }
-        return o;
+        return this.grammar;
 
     }
 
@@ -61,6 +65,25 @@ public abstract class CoreObjectBehavior implements CoreObjectSpec {
 
         return new JSONObject(sb.toString());
 
+    }
+
+    /**
+     * @return
+     */
+    public String getTypeFromGrammar() {
+        this.grammar = this.getBehaviorDescription();
+        if (this.grammar != null) {
+            try {
+                if (this.grammar.has("friendlyName")) {
+                    return this.grammar.getString("friendlyName");
+                }
+                if (this.grammar.has("typename")) {
+                    return this.grammar.getString("typename");
+                }
+            } catch (JSONException ex) {
+           }
+        }
+        return "UNKNOWN DEVICE TYPE";
     }
 
 }

@@ -30,7 +30,7 @@ public interface CoreObjectSpec {
 	 * @return the user friendly type
 	 */
 	public String getUserType(); 
-	
+        
 	/**
 	 * This method allow the caller to get the current
 	 * object status.
