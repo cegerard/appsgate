@@ -139,7 +139,7 @@
         </dependency>
 		 <dependency>
             <groupId>appsgate.components</groupId>
-            <artifactId>Tracker</artifactId>
+            <artifactId>tracker</artifactId>
             <version>${project.version}</version>
         </dependency>
 
