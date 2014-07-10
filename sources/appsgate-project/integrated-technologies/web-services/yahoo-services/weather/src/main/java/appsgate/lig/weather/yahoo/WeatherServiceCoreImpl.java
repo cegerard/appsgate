@@ -82,7 +82,7 @@ public class WeatherServiceCoreImpl implements CoreObjectSpec {
 		else
 			descr.put("lastFetchDate", "null");
 
-		descr.put("locations", woeidFromePlaceName.keySet());
+		descr.put("locations", JSONObject.wrap(woeidFromePlaceName.keySet()));
 
 		return descr;
 	}

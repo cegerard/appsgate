@@ -1,21 +1,29 @@
 package appsgate.lig.weather.extended.impl;
 
+import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
 import appsgate.lig.weather.extended.spec.messages.DaylightNotificationMsg;
 import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
+import appsgate.lig.weather.utils.CurrentWeather;
+import appsgate.lig.weather.utils.DayForecast;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Created by thibaud on 01/07/2014.
  */
-public class WeatherObserverImpl implements ExtendedWeatherObserver{
+public class WeatherObserverImpl implements ExtendedWeatherObserver, AlarmEventObserver{
 
     private String currentLocation;
     private boolean currentlyDaylight;
+    private Calendar sunrise = Calendar.getInstance();
+    private Calendar sunset = Calendar.getInstance();
     private int currentWeatherCode;
     private int currentTemperature;
     private int tomorrowWeatherCode;
@@ -25,11 +33,17 @@ public class WeatherObserverImpl implements ExtendedWeatherObserver{
     private CoreWeatherServiceSpec weatherService;
     private CoreClockSpec clock;
 
+    private int alarmSunset=-1;
+    private int alarmSunrise=-1;
+
     public static final String IMPL_NAME = "WeatherObserverImpl";
 
+    private static Logger logger = LoggerFactory
+            .getLogger(WeatherObserverImpl.class);
 
-    private DaylightNotificationMsg fireDaylightNotificationMsg() {
-        return new DaylightNotificationMsg(false,null,null,null);
+    private DaylightNotificationMsg fireDaylightNotificationMsg(boolean dayLight) {
+
+        return new DaylightNotificationMsg(dayLight,null,null,null);
     }
 
     @Override
@@ -39,44 +53,97 @@ public class WeatherObserverImpl implements ExtendedWeatherObserver{
 
     @Override
     public boolean isCurrentlyDaylight()throws WeatherForecastException  {
-        Date current = clock.getCurrentDate().getTime();
+        Calendar current = clock.getCurrentDate();
+        refresh();
 
-        if(current.compareTo(weatherService.getCurrentWeather(currentLocation).getSunrise())>=0
-                && current.compareTo(weatherService.getCurrentWeather(currentLocation).getSunset())<0) {
+        if(current.compareTo(sunrise)>=0
+                && current.compareTo(sunset)<0) {
+            logger.debug("isCurrentlyDaylight() return true, clock indicates a time" +
+                    " between sunrise and sunset time");
             return true;
         } else {
+            logger.debug("isCurrentlyDaylight() return false, clock indicates a time" +
+                    " before sunrise or after sunset (or error during date comparison)");
+
             return false;
         }
     }
 
     @Override
     public int getCurrentWeatherCode() throws WeatherForecastException{
-        currentWeatherCode = weatherService.getWeatherCodeForecast(currentLocation,0);
+        refresh();
         return currentWeatherCode;
     }
 
     @Override
     public int getCurrentTemperature()throws WeatherForecastException {
-        currentTemperature = weatherService.getAverageTemperatureForecast(currentLocation,0);
+        refresh();
         return currentTemperature;
     }
 
     @Override
     public int getTomorrowWeatherCode() throws WeatherForecastException{
-        tomorrowWeatherCode = weatherService.getWeatherCodeForecast(currentLocation,1);
+        refresh();
         return tomorrowWeatherCode;
     }
 
     @Override
     public int getTomorrowMinTemperature() throws WeatherForecastException{
-        tomorrowMinTemperature = weatherService.getMinTemperatureForecast(currentLocation,1);
+        refresh();
         return tomorrowMinTemperature;
     }
 
     @Override
     public int getTomorrowMaxTemperature() throws WeatherForecastException{
-        tomorrowMaxTemperature = weatherService.getMaxTemperatureForecast(currentLocation,1);
+        refresh();
         return tomorrowMaxTemperature;
     }
 
+    private void refresh() throws WeatherForecastException {
+        logger.debug("refreshing weather data for "+currentLocation);
+
+        CurrentWeather weather = weatherService.getCurrentWeather(currentLocation);
+        DayForecast forecast = weatherService.getForecast(currentLocation).get(1);
+
+        currentWeatherCode = weather.getWeatherCode();
+        currentTemperature = weather.getTemperature();
+        sunrise.setTime(weather.getSunrise());
+        sunset.setTime(weather.getSunset());
+
+        tomorrowWeatherCode = forecast.getCode();
+        tomorrowMinTemperature = forecast.getMin();
+        tomorrowMaxTemperature = forecast.getMax();
+
+        if(alarmSunrise>=0) {
+            clock.unregisterAlarm(alarmSunrise);
+        }
+
+        if(alarmSunset>=0) {
+            clock.unregisterAlarm(alarmSunset);
+        }
+
+        alarmSunrise = clock.registerAlarm(sunrise,this);
+        alarmSunset = clock.registerAlarm(sunset,this);
+
+    }
+
+    @Override
+    public void alarmEventFired(int alarmEventId) {
+        if(alarmEventId == alarmSunrise) {
+            logger.debug("Alarm (clock) event : sunrise, eventId = "+alarmEventId);
+            alarmSunrise = -1;
+            fireDaylightNotificationMsg(true);
+        } else if(alarmEventId == alarmSunset) {
+            logger.debug("Alarm (clock) event : sunset, eventId = "+alarmEventId);
+            alarmSunset = -1;
+            fireDaylightNotificationMsg(false);
+        } else {
+            logger.warn("Unknown clock event (not sunrise nor sunset) : "+alarmEventId);
+        }
+        try {
+            refresh();
+        } catch (WeatherForecastException exc) {
+            logger.warn("Exception occured following alarm event "+exc.getStackTrace());
+        }
+    }
 }

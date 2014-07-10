@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import appsgate.lig.weather.yahoo.YahooWeatherImpl;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author thibaud
  *
  */
+@Ignore
 public class YahooMeteoImplTest {
     
     YahooWeatherImpl testedMeteo;
@@ -61,10 +63,10 @@ public class YahooMeteoImplTest {
 	try {
         testedMeteo.addLocation("Grenoble");
 	    testedMeteo.fetch();
-	assertNotNull(testedMeteo);
+	    assertNotNull(testedMeteo);
 	} catch(Exception exc) {
 	    fail(exc.getMessage());
 	}
-	//fail("Not yet implemented");
+	    //fail("Not yet implemented");
     }
 }

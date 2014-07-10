@@ -38,7 +38,6 @@ public class CurrentWeather {
      * @param currentCode
      * @param currentWindDirection
      * @param currentWindSpeed
-     * @param currentUnit
      */
     public CurrentWeather(int currentTemperature, int currentCode,
                           int currentWindDirection, float currentWindSpeed, Date sunrise, Date sunset) {

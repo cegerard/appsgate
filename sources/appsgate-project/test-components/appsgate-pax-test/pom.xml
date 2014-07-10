@@ -126,11 +126,6 @@
 			<version>2.2.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.50</version>
-		</dependency>
-		<dependency>
 			<groupId>org.openengsb.wrapped</groupId>
 			<artifactId>com.google.gdata-calendar</artifactId>
 			<version>1.41.5.w1</version>

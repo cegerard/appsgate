@@ -189,7 +189,6 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 
 	public static void fillWebServicesBundleList(Map<String, String> testApps) {
 
-		testApps.put("bcprov-jdk15on", "org.bouncycastle");
 		testApps.put("com.google.gdata-calendar", "org.openengsb.wrapped");
 		testApps.put("guava-osgi", "com.googlecode.guava-osgi");
 		testApps.put("ical4j", "org.mnode.ical4j");
