@@ -249,8 +249,9 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
             logger.debug("Command listener {} found, invoking onReceivedCommand",cmdListener);
 
             if(cmdListener!=null){
-                logger.debug("skipping command listener invocation");
                 cmdListener.onReceivedCommand(cmd);
+            }else {
+                logger.debug("skipping command listener invocation duo to null listener");
             }
 
 
