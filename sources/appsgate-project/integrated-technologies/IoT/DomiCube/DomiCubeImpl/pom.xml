@@ -17,12 +17,12 @@
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CoreDomiCubeSpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CoreObjectSpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

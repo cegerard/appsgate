@@ -47,6 +47,9 @@
         <org.knowhowlab.osgi.shell.felix-gogo.version>1.1.0</org.knowhowlab.osgi.shell.felix-gogo.version>
 
         <json.version>20131018</json.version>
+        <mqtt-client.version>1.10</mqtt-client.version>
+        <hawtbuf.version>1.10</hawtbuf.version>
+        <hawtdispatch.version>1.21</hawtdispatch.version>
 
 
 		<!-- Felix related versions -->
