@@ -243,10 +243,12 @@ public class ClientCommunicationManager extends WebSocketServer implements Liste
 	private void notifyCommandListeners(WebSocket socket, JSONObject cmd) {
 		logger.debug("notify listeners for new command event");
 		try {
-			logger.debug("retreiving command listener for "+cmd.getString("TARGET")+" target.");
+			logger.debug("retrieving command listener for "+cmd.getString("TARGET")+" target.");
 			cmd.put("clientId", socket.hashCode());
 			CommandListener cmdListener = commandListeners.get(cmd.getString("TARGET"));
+            logger.debug("Command listener {} found, invoking onReceivedCommand",cmdListener);
 			cmdListener.onReceivedCommand(cmd);
+            logger.debug("Finished invoking listener {} for command {}.",cmdListener,cmd.toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
