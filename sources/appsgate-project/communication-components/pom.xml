@@ -15,12 +15,12 @@
 	<description>This sub-project contain all components for communication between Appsgate components in the OSGi framework or with the remote client.</description>
 	
 	<modules>
+        <module>tracker</module>
 		<module>EHMIProxySpec</module>
 		<module>EHMIProxyImpl</module>
 		<module>CHMIProxySpec</module>
 		<module>CHMIProxyImpl</module>
 		<module>ClientCommunicationManager</module>
-    <module>tracker</module>
   </modules>
 	
 </project>
