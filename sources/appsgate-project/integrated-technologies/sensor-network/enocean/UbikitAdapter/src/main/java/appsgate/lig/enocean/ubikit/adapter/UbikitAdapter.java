@@ -182,10 +182,11 @@ public class UbikitAdapter implements
 		// Retrieve existing paired sensors from Ubikit and instanciate them.
 		Collection<PhysicalEnvironmentItem> itemList = enoceanBridge
 				.getAllItems();
+        logger.debug("already paired sensors"+ enoceanBridge.getAllItems());
 		if (itemList != null && !itemList.isEmpty()) {
 			// Create thread that take the list in parameter and instanciate all
 			// Ubikit items
-			instanciationService.schedule(new ItemInstanciation(itemList), 15,
+			instanciationService.schedule(new ItemInstanciation(this,itemList), 15,
 					TimeUnit.SECONDS);
 		}
 
@@ -294,8 +295,10 @@ public class UbikitAdapter implements
 			// logger.debug(apamInst.getAllProperties().keySet().toString());
 			allJSONItem.put(pei.getUID());
 		}
+        logger.debug("getAllItem(), returning"+allJSONItem.toString());
 
-		return allJSONItem;
+
+        return allJSONItem;
 	}
 
 	/**
@@ -433,7 +436,9 @@ public class UbikitAdapter implements
 	 * @param item
 	 *            the device to instantiate
 	 */
-	private void instanciateItem(PhysicalEnvironmentItem item) {
+	public void instanciateItem(PhysicalEnvironmentItem item) {
+        logger.debug("instanciateItem(PhysicalEnvironmentItem item, UID = "+(item==null?null:item.getUID())
+                +", capabilities = "+(item==null?null:item.getCapabilities())   );
 		EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
 		Implementation impl = null;
 		Map<String, String> properties = new HashMap<String, String>();
@@ -571,29 +576,7 @@ public class UbikitAdapter implements
 		sendToClientService.send(clientId, resp.toString());
 	}
 
-	/**
-	 * Inner class for Ubikit items instanciation thread
-	 * 
-	 * @author Cédric Gérard
-	 * @since June 25, 2013
-	 * @version 1.0.0
-	 */
-	private class ItemInstanciation implements Runnable {
 
-		Collection<PhysicalEnvironmentItem> itemList;
-
-		public ItemInstanciation(Collection<PhysicalEnvironmentItem> itemList) {
-			super();
-			this.itemList = itemList;
-		}
-
-		public void run() {
-			for (PhysicalEnvironmentItem item : itemList) {
-				instanciateItem(item);
-			}
-		}
-
-	}
 
     public void addSidToInstance(String sid, Instance instance) {
         sidToInstanceName.put(sid, instance);
