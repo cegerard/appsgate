@@ -69,6 +69,12 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
+                                    <artifactId>tracker</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
                                     <artifactId>EHMIProxyImpl</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
@@ -233,7 +239,6 @@
                                     <artifactId>appsgate-app-weather</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-                                <!--
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>CoreDomiCubeSpec</artifactId>
@@ -249,7 +254,6 @@
                                     <artifactId>DomiCubeMQTTAdapter</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-                                -->
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>EUDEInterpreter</artifactId>

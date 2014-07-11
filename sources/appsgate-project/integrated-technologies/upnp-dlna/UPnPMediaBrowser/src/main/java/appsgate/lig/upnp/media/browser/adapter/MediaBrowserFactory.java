@@ -36,8 +36,8 @@ public class MediaBrowserFactory {
 
 	public void mediaServerUnbound(Instance device) {
 
-		Implementation adapterImplementtation = CST.apamResolver.findImplByName(null,"MediaBrowser");
-		for (Instance player : adapterImplementtation.getInsts()) {
+		Implementation adapterImplementation = CST.componentBroker.getImpl("MediaBrowser");
+		for (Instance player : adapterImplementation.getInsts()) {
 			if (player.getProperty(UPnPDevice.ID).equals(device.getPropertyObject(UPnPDevice.ID)))
 				((InstanceImpl)player).unregister();
 		}
