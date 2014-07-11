@@ -67,6 +67,7 @@
             <artifactId>org.ow2.chameleon.fuchsia.base.philips-hue.huedsk-bundle</artifactId>
             <groupId>org.ow2.chameleon.fuchsia.base.philips-hue</groupId>
             <version>${fuchsia.version}</version>
+            <optional>false</optional>
         </dependency>
 
 
