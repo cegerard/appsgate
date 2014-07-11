@@ -16,7 +16,7 @@
  		specification="PropertyHistoryManagerSpec">
 
         <relation implementation="MongoDBConfiguration" field="myConfiguration" creation="eager"
-            resolve="exist" fail="exception" added="bindConfiguration" removed="unbindConfiguration"/>
+            resolve="exist" fail="wait" added="bindConfiguration" removed="unbindConfiguration"/>
         
         <callback onInit="start" onRemove="stop" />
 	</implementation>

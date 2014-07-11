@@ -18,7 +18,7 @@
 		singleton="true">
 
         <relation implementation="MongoDBConfiguration" field="myConfiguration" creation="eager"
-                  resolve="exist" fail="exception" added="bindConfiguration" removed="unbindConfiguration"/>
+                  resolve="exist" fail="wait" added="bindConfiguration" removed="unbindConfiguration"/>
 
 	    <ipojo:provides specifications="{appsgate.lig.context.services.DataBasePullService,
 	        appsgate.lig.context.services.DataBasePushService}"/>
