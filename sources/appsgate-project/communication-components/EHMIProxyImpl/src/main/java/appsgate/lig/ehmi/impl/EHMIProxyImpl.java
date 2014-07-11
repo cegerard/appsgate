@@ -1,12 +1,6 @@
 package appsgate.lig.ehmi.impl;
 
 
-import appsgate.lig.chmi.spec.CHMIProxySpec;
-import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
-import appsgate.lig.context.userbase.spec.UserBaseSpec;
-import appsgate.lig.ehmi.impl.upnp.*;
-import appsgate.lig.ehmi.spec.EHMIProxySpec;
-import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import org.json.JSONArray;
@@ -26,7 +20,6 @@ import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
-import appsgate.lig.manager.place.spec.*;
 import appsgate.lig.ehmi.exceptions.CoreDependencyException;
 import appsgate.lig.ehmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
@@ -115,12 +108,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     private SendWebsocketsService sendToClientService;
 
 
-    private String wsPort="8087";
+    private final String wsPort="8087";
 
-    private BundleContext context;
-    private ServiceRegistration serviceRegistration;
+    private final BundleContext context;
 
-    private AppsGateServerDevice upnpDevice;
+    private final AppsGateServerDevice upnpDevice;
     private ServerInfoService upnpService;
     private StateVariableServerIP serverIP;
     private StateVariableServerURL serverURL;
@@ -129,17 +121,17 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     /**
      * Listener for EHMI command from clients
      */
-    private EHMICommandListener commandListener;
+    private final EHMICommandListener commandListener;
 
     /**
      * Object update state event listener
      */
-    private CoreEventsListener objectEventsListener;
+    private final CoreEventsListener objectEventsListener;
 
     /**
      * object discovery listener
      */
-    private CoreUpdatesListener objectUpdatesListener;
+    private final CoreUpdatesListener objectUpdatesListener;
 
     /**
      * Events subscribers list
@@ -175,9 +167,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
 
+    /**
+     * Method that register the Upnp service.
+     */
     private void registerUpnpDevice() {
         Dictionary<String, Object> dict = upnpDevice.getDescriptions(null);
-        serviceRegistration = context.registerService(UPnPDevice.class.getName(), upnpDevice, dict);
+        ServiceRegistration serviceRegistration = context.registerService(UPnPDevice.class.getName(), upnpDevice, dict);
         logger.debug("UPnP Device registered");
 
         upnpService = (ServerInfoService) upnpDevice.getService(ServerInfoService.SERVICE_ID);
@@ -867,6 +862,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      * @param args the arguments list with their types
      * @return a runnable object that can be execute and manage.
      */
+    @Override
     public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, JSONArray args) {
         return coreProxy.executeCommand(objIdentifier, method, args);
     }

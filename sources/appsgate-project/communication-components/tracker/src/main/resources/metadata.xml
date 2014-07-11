@@ -10,6 +10,7 @@
         <relation specification="CoreClockSpec" field="clock"
                   resolve="exist" fail="wait"/>
         <relation push="gotNotification" multiple="true" resolve="exist" />
+        <relation push="gotEHMINotification" multiple="true" resolve="exist" />
         
         <relation specification="AppsgateClientCommunicationManagerSpec"
                           creation="eager"  resolve="external" >

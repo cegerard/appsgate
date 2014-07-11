@@ -7,7 +7,6 @@ package appsgate.lig.ehmi.tracker;
 
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
-import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import java.io.FileNotFoundException;
@@ -42,33 +41,43 @@ public class Tracker {
     private SendWebsocketsService sendToClientService;
 
     /**
-     *
-     * @param t
-     * @return
+     * @param t a tracker entry
      */
-    private long getSecond(long t) {
-        return t / (long) 1000 * 1000;
+    private void addEntry(TrackerEntry t) {
+        long time = t.getTimestamp();
+        JSONArray devices = new JSONArray();
+        JSONArray programs = new JSONArray();
+        if (t.getClass().equals(DeviceEntry.class)) {
+            devices.put(t.getJSON());
+        }
+        if (t.getClass().equals(ProgramEntry.class)) {
+            programs.put(t.getJSON());
+        }
+        
+        entries.put(time, t);
+        JSONObject o = formatAnswer(time, devices, programs);
+        if (fileJSON != null) {
+            fileJSON.println(o.toString() + ",");
+        }
+        sendToClientService.send("Tracker", o);
     }
 
     /**
-     * @param t a tracker entry
+     *
+     * @param time
+     * @param devices
+     * @param programs
+     * @return
      */
-    public void addEntry(TrackerEntry t) {
-        long time = t.getTimestamp();
-        //
+    private JSONObject formatAnswer(long time, JSONArray devices, JSONArray programs) {
         JSONObject o = new JSONObject();
-        entries.put(time, t);
         try {
-            JSONArray a = new JSONArray();
-            a.put(t.getJSON());
-            o.put("devices", a);
-            o.put("programs", new JSONArray());
+            o.put("devices", devices);
+            o.put("programs", programs);
             o.put("timestamp", time);
-            String s = o.toString();
-            fileJSON.println(o.toString() + ",");
         } catch (JSONException ex) {
         }
-        sendToClientService.send("Tracker", o);
+        return o;
 
     }
 
@@ -96,12 +105,21 @@ public class Tracker {
      *
      * @param notif
      */
-    public void gotNotification(NotificationMsg notif) {
+    public void gotNotification(appsgate.lig.core.object.messages.NotificationMsg notif) {
         // Adding the devices
         if (notif.getSource().getCoreType() == CoreObjectSpec.CORE_TYPE.DEVICE) {
             String type = ((CoreObjectBehavior) notif.getSource()).getTypeFromGrammar();
-            addEntry(new TrackerEntry(clock.getCurrentTimeInMillis(), type, notif.getSource().getAbstractObjectId(), true, notif.getNewValue(), ""));
+            addEntry(new DeviceEntry(clock.getCurrentTimeInMillis(), type, notif.getSource().getAbstractObjectId(), notif.getNewValue()));
         }
+    }
+
+    /**
+     *
+     * @param notif
+     */
+    public void gotEHMINotification(appsgate.lig.ehmi.spec.messages.NotificationMsg notif) {
+        // Adding the devices
+        addEntry(new ProgramEntry(clock.getCurrentTimeInMillis(), notif.getSource(), notif.getVarName(), notif.getNewValue()));
     }
 
     /**
@@ -121,6 +139,9 @@ public class Tracker {
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-        this.fileJSON.close();
+        if (this.fileJSON != null) {
+            this.fileJSON.close();
+            this.fileJSON = null;
+        }
     }
 }

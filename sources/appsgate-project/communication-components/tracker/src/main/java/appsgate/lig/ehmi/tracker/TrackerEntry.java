@@ -12,40 +12,21 @@ import org.json.JSONObject;
  *
  * @author jr
  */
-public class TrackerEntry {
+public abstract class TrackerEntry {
 
     private final Long timestamp;
-    private final String classId;
     private final String objectId;
-    private final String value;
-    private String cause;
+    private final String cause = "";
+    private final String eventType = "update";
+    private final String causeType = "technical";
 
-
-    /**
-     * Constructor
-     *
-     * @param t the timestamp
-     * @param cid the class id of the equipment
-     * @param oid the object id of the equipment
-     * @param pre the presence or absence of the equipment
-     * @param val the value of the event
-     * @param c the cause
-     */
-    public TrackerEntry(long t, String cid, String oid, boolean pre, String val, String c) {
-        this.timestamp = t;
-        this.classId = cid;
-        this.objectId = oid;
-        this.cause = c;
-        
-        this.value = val;
+    public TrackerEntry(long time, String id) {
+        this.timestamp = time;
+        this.objectId = id;
     }
 
     public long getTimestamp() {
         return timestamp;
-    }
-
-    public String getClassId() {
-        return classId;
     }
 
     public String getObjectId() {
@@ -56,33 +37,25 @@ public class TrackerEntry {
         return cause;
     }
 
-    public String getId() {
-        return classId + ":" + objectId;
-    }
-
+    public abstract JSONObject getJSON();
 
     /**
      *
      * @return
      */
-    public JSONObject getJSON() {
-        JSONObject o = new JSONObject();
+    protected JSONObject getEvent() {
+        JSONObject event = new JSONObject();
         try {
-            o.put("id", this.objectId);
-            o.put("name", "toto");
-            o.put("type", this.classId);
-            o.put("state", this.value);
-            JSONObject event = new JSONObject();
             JSONObject causality = new JSONObject();
-            causality.put("type", "technical");
-            causality.put("description", this.cause);
-            event.put("eventType", "value");
+            causality.put("type", causeType);
+            causality.put("description", cause);
+            event.put("type", eventType);
             event.put("causality", causality);
-            o.put("event", event);
-
         } catch (JSONException ex) {
+
         }
-        return o;
+        return event;
+
     }
 
 }

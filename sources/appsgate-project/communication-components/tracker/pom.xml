@@ -28,7 +28,12 @@
             <artifactId>ClientCommunicationManager</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>EHMIProxySpec</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
