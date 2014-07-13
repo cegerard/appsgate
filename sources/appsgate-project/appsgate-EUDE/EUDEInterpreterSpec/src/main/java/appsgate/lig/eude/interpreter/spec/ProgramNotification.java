@@ -1,4 +1,4 @@
-package appsgate.lig.eude.interpreter.impl;
+package appsgate.lig.eude.interpreter.spec;
 
 import org.json.JSONException;
 import org.json.JSONObject;

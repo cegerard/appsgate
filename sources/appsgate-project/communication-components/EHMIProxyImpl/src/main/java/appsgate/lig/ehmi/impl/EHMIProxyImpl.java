@@ -36,7 +36,7 @@ import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
-import appsgate.lig.ehmi.tracker.Tracker;
+import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import java.net.*;
 import java.util.*;
@@ -85,7 +85,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     /**
      * The user manager ApAM component to handle the user base
      */
-    private Tracker tracker;
+    private TraceManSpec traceManager;
 
     /**
      * Reference on the remote proxy service to execute command on devices/services
@@ -228,7 +228,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             if(systemClock.isRemote())
                 systemClock.stopRemoteSync(coreProxy);
         }
-
+        
+        ((ObjectEventListener)this.objectEventsListener).setTraceManager(traceManager);
+        ((ObjectUpdateListener)this.objectUpdatesListener).setTraceManager(traceManager);
     }
 
     /**

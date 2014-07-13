@@ -9,6 +9,7 @@ import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.ehmi.impl.EHMIProxyImpl;
 import appsgate.lig.ehmi.impl.Entry;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
+import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 
 public class ObjectEventListener implements CoreEventsListener {
 	
@@ -23,6 +24,7 @@ public class ObjectEventListener implements CoreEventsListener {
 	private String value ="";
 	
 	private EHMIProxyImpl EHMIProxy;
+	private TraceManSpec traceManager;
 
 	public ObjectEventListener(EHMIProxyImpl eHMIProxy) {
 		super();
@@ -75,7 +77,13 @@ public class ObjectEventListener implements CoreEventsListener {
                 }
             }
         }
-		
+        
+        //trace the last event received
+        traceManager.coreEventNotify(EHMIProxy.getCurrentTimeInMillis(), srcId, varName, value);
+	}
+
+	public void setTraceManager(TraceManSpec traceManager) {
+		this.traceManager = traceManager;
 	}
 
 }

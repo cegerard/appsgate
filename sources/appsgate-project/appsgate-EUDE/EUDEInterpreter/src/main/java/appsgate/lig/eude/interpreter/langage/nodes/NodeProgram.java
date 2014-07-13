@@ -5,11 +5,12 @@ import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;

@@ -6,10 +6,11 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
-import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
+
 import java.util.Collection;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;

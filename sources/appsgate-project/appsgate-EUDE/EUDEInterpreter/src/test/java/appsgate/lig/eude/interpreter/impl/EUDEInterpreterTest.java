@@ -18,6 +18,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeActionTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEventTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
