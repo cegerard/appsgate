@@ -60,7 +60,7 @@
 			<!-- <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
 			<start implementation="GmailImpl" name="GmailInst">
 				<property name="user" value="smarthome.inria@gmail.com" />
-				<property name="password" value="smarthome2012" />
+				<property name="password" value="smarthome2014" />
 				<property name="auto-refresh" value="120000" />
 			</start>
 		</contentMngt>

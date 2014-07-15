@@ -5,11 +5,7 @@ package appsgate.lig.mail.gmail;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.Message;
@@ -53,10 +49,11 @@ public class GmailTest {
 	}
 
 	@Test
+    @Ignore //Disabled because with too much testing on the same account, gmail suspect hacking
 	public void test() throws Exception {
         logger.debug("Begin test");
         Gmail mailer = new Gmail();
-        mailer.setAccount("smarthome.inria@gmail.com","smarthome2012");
+        mailer.setAccount("smarthome.inria@gmail.com","smarthome2014");
 
         logger.debug("Mailer creation OK");
 
