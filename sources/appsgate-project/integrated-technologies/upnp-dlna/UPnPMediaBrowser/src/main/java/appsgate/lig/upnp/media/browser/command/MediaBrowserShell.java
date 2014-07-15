@@ -1,11 +1,12 @@
 package appsgate.lig.upnp.media.browser.command;
 
-import java.io.PrintWriter;
+import java.io.PrintStream;
 
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
+import org.apache.felix.service.command.Descriptor;
 import org.osgi.service.upnp.UPnPDevice;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
@@ -22,24 +23,24 @@ import fr.imag.adele.apam.Instance;
  *
  */
 @Instantiate
-@org.apache.felix.ipojo.annotations.Component(publicFactory = false, immediate = true, name = "appsgate.universal.shell")
+@org.apache.felix.ipojo.annotations.Component(publicFactory = false, immediate = true, name = "mediabrowser.gogoshell")
 @Provides(specifications = MediaBrowserShell.class)
 public class MediaBrowserShell {
 
     @Requires
     Apam apam;
 
-    @ServiceProperty(name = "org.knowhowlab.osgi.shell.group.id", value = "media")
-    String universalShell_groupID;
+    @ServiceProperty(name = "osgi.command.scope", value = "media")
+    String gogoShell_groupID;
 
-    @ServiceProperty(name = "org.knowhowlab.osgi.shell.group.name", value = "Media player commands")
-    String universalShell_groupName;
+    @ServiceProperty(name = "osgi.command.function", value = "{}")
+    String[] gogoShell_groupCommands = new String[]{
+            "browsers",
+            "browse",};
 
-    @ServiceProperty(name = "org.knowhowlab.osgi.shell.commands", value = "{}")
-    String[] universalShell_groupCommands = new String[]{
-        "listMedias#list the media available on this network",
-        "browsers#list the available browsers",
-        "browse#browse the server",};
+    PrintStream out = System.out;
+
+
 
     private MediaBrowser retrieveMediaBrowserInstance(String player) {
         Implementation implementation = CST.apamResolver.findImplByName(null,
@@ -48,7 +49,9 @@ public class MediaBrowserShell {
 
     }
 
-    public void browsers(PrintWriter out, String... args) {
+
+    @Descriptor("list the available browsers")
+    public void browsers(@Descriptor("none") String... args) {
 
         Implementation implementation = CST.apamResolver.findImplByName(null, "MediaBrowser");
 
@@ -56,10 +59,10 @@ public class MediaBrowserShell {
 
         for (Instance browserInstance : implementation.getInsts()) {
             CoreObjectSpec browser = (CoreObjectSpec) browserInstance.getServiceObject();
-			browsers.append(browserInstance.getName())
-			.append(" appsgate id = ").append(browser.getAbstractObjectId())
-			.append(" friendly name = ").append(browserInstance.getProperty(UPnPDevice.FRIENDLY_NAME))
-			.append(" \n");
+            browsers.append(browserInstance.getName())
+                    .append(" appsgate id = ").append(browser.getAbstractObjectId())
+                    .append(" friendly name = ").append(browserInstance.getProperty(UPnPDevice.FRIENDLY_NAME))
+                    .append(" \n");
         }
 
         System.out.println("Currently discovered browsers:");
@@ -67,7 +70,8 @@ public class MediaBrowserShell {
 
     }
 
-    public void browse(PrintWriter out, String... args) {
+    @Descriptor("browse the server")
+    public void browse(@Descriptor("none") String... args) {
         MediaBrowser myBrowser = retrieveMediaBrowserInstance(args[0]);
         if (myBrowser != null && args != null) {
             String objectId = args.length > 1 ? args[1] : "0";

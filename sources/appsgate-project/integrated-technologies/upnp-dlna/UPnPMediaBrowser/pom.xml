@@ -42,33 +42,27 @@
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CoreObjectSpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>UPnPMediaServices</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
             <groupId>appsgate.components</groupId>
             <artifactId>UPnPAdapter</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>       		
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CoreMediaBrowserSpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        
         <dependency>
-            <groupId>org.knowhowlab.osgi.shell</groupId>
-            <artifactId>felix-gogo</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.knowhowlab.osgi.shell</groupId>
-            <artifactId>felix</artifactId>
-            <version>1.1.0</version>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.command</artifactId>
+            <version>${felix.gogo.command.version}</version>
         </dependency>
 	 <dependency>
 	  <groupId>junit</groupId>
