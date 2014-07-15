@@ -56,7 +56,7 @@ public class GmailTest {
 	public void test() throws Exception {
         logger.debug("Begin test");
         Gmail mailer = new Gmail();
-        mailer.setAccount("smarthome.inria@gmail.com","smarthome2012");
+        mailer.setAccount("smarthome.inria@gmail.com","smarthome2014");
 
         logger.debug("Mailer creation OK");
 

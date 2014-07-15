@@ -29,6 +29,11 @@
 			<artifactId>EUDEInterpreterSpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>appsgate.components</groupId>
+			<artifactId>DevicePropertiesTableSpec</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- <dependency> -->
 		<!-- <groupId>appsgate.components</groupId> -->
 		<!-- <artifactId>ClientCommunicationManager</artifactId> -->

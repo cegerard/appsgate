@@ -13,6 +13,10 @@
 			<interface field="EHMIProxy"/>
 		</relation>
 
+		<relation specification="AppsGateContextDevicePropertiesTableSpec" resolve="exist" >
+			<interface field="devicePropTable"/>
+		</relation>
+		
 		<!-- <relation specification="AppsgateClientCommunicationManagerSpec" -->
 		<!-- resolve="exist" > -->
 		<!-- <interface field="sendToClientService"/> -->
