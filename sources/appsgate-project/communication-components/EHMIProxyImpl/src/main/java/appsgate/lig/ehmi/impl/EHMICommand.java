@@ -24,17 +24,17 @@ import appsGate.lig.manager.client.communication.service.send.SendWebsocketsServ
  * @version 1.0.0
  *
  */
-public class GenericCommand implements Runnable {
+public class EHMICommand implements Runnable {
 
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
-	private static Logger logger = LoggerFactory.getLogger(GenericCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(EHMICommand.class);
 
 	private ArrayList<Object> args;
 	@SuppressWarnings("rawtypes")
 	private ArrayList<Class> paramType;
-	private EHMIProxyImpl ehmiProxy;
+	private Object serviceObject;
 	private String methodName;
 	private String callId;
 	private int clientId;
@@ -43,10 +43,10 @@ public class GenericCommand implements Runnable {
 	private Object returnObject;
 
 	@SuppressWarnings("rawtypes")
-	public GenericCommand(EHMIProxyImpl ehmiProxy, String methodName, ArrayList<Object> args, ArrayList<Class> paramType,
-			String callId, int clientId, SendWebsocketsService sendToClientService) {
+	public EHMICommand(Object serviceObject, String methodName, ArrayList<Object> args, ArrayList<Class> paramType,
+                       String callId, int clientId, SendWebsocketsService sendToClientService) {
 
-		this.ehmiProxy = ehmiProxy;
+		this.serviceObject = serviceObject;
 		this.methodName = methodName;
 		this.args = args;
 		this.paramType = paramType;
@@ -95,7 +95,7 @@ public class GenericCommand implements Runnable {
 	@Override
 	public void run() {
 		try {
-			Object ret = abstractInvoke(ehmiProxy, args.toArray(), paramType, methodName);
+			Object ret = abstractInvoke(serviceObject, args.toArray(), paramType, methodName);
 			
 			if (ret != null) {
 				logger.debug("remote call, " + methodName + " returns "

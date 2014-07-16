@@ -834,7 +834,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     @SuppressWarnings("rawtypes")
     public Runnable executeCommand(int clientId, String method, ArrayList<Object> arguments, ArrayList<Class> types, String callId) {
-        return new GenericCommand(this, method, arguments, types, callId, clientId, sendToClientService);
+        return new EHMICommand(this, method, arguments, types, callId, clientId, sendToClientService);
     }
 
     /**
