@@ -24,7 +24,7 @@
 		<definition name="signal"		 type="string" default="0" 		  	  field="signal" 		method="signalChanged"/>
 		
 		<!-- device specific meta data -->
-		<definition name="currentStatus" type="string" 						  field="currentStatus" method="currentStatusChanged"/>
+		<definition name="currentStatus" type="string" default="false"		  field="currentStatus" method="currentStatusChanged"/>
 		
 	</implementation>
 
