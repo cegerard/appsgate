@@ -47,9 +47,15 @@ public class EndingEventNotificationMsg implements NotificationMsg {
     }
 
     @Override
+    public String getOldValue() {
+        return "";
+    }
+
+    @Override
     public JSONObject JSONize() {
         JSONObject obj = new JSONObject();
         try {
+            //TODO: This one is weird because all event should have one parameter name and one parameter value
             obj.put("event", eventName);
         } catch (JSONException ex) {
             // Will never been raised

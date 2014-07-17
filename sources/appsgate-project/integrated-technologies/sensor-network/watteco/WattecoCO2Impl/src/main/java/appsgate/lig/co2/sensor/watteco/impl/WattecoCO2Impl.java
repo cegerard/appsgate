@@ -68,18 +68,19 @@ public class WattecoCO2Impl extends CoreObjectBehavior implements CoreObjectSpec
 	 */
 	public void statusChanged(String newStatus) {
 		logger.info("The sensor, "+ sensorId+" status changed to "+newStatus);
-		notifyChanges("status", newStatus);
+		notifyChanges("status", status, newStatus);
+        status = newStatus;
 	}
 	
 	/**
 	 * Called by ApAM when the CO2 concentration value changed
-	 * @param CO2 the new CO2 concentration
 	 */
 	public void CO2Changed(String co2) {
-		String newC02Concentration = String.valueOf(getCO2Concentration());
-		logger.info("The CO2 concentration reported by, "+ sensorId+" changed to "+newC02Concentration);
-		notifyChanges("value", newC02Concentration);
-	}
+		logger.info("The CO2 concentration reported by, "+ sensorId+" changed to "+co2);
+		notifyChanges("value", currentCO2Concentration, co2);
+        currentCO2Concentration = String.valueOf(getCO2Concentration());
+
+    }
 	
 	/**
 	 * This method uses the ApAM message model. Each call produce a
@@ -89,8 +90,8 @@ public class WattecoCO2Impl extends CoreObjectBehavior implements CoreObjectSpec
 	 * @return nothing, it just notifies ApAM that a new message has been
 	 *         posted.
 	 */
-	public NotificationMsg notifyChanges(String varName, String value) {
-		return new Co2NotificationMsg(Integer.valueOf(currentCO2Concentration), varName, value, this);
+	public NotificationMsg notifyChanges( String varName, String oldValue,String newValue) {
+		return new Co2NotificationMsg(varName, oldValue, newValue, this);
 	}
 
 	@Override

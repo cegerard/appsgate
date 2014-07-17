@@ -135,6 +135,9 @@ public class ARDWatchDog extends CoreObjectBehavior implements ARDMessage, CoreO
             public CoreObjectSpec getSource() {
                 return ARDWatchDog.this;
             }
+            public String getOldValue() {
+                return "";
+            }
 
             public String getNewValue() {
                 return json.toString();

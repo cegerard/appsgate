@@ -15,7 +15,7 @@ public class ClockAlarmNotificationMsg extends CoreNotificationMsg {
      * @param alarmEventId the Id that has been generated on alarm registration
      */
     public ClockAlarmNotificationMsg(CoreObjectSpec source, int alarmEventId) {
-        super("ClockAlarm", String.valueOf(alarmEventId), source);
+        super("ClockAlarm", "", String.valueOf(alarmEventId), source);
     }
 
 }

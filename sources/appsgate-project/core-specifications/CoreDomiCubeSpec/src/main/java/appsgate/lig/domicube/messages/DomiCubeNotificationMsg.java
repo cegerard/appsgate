@@ -31,11 +31,10 @@ public class DomiCubeNotificationMsg extends CoreNotificationMsg {
 	 * Constructor of an DomiCube notification
 	 * @param newFace the new face number
 	 * @param varName the state variable that change
-	 * @param value the new value of the state variable
 	 * @param source the core object reference
 	 */
-	public DomiCubeNotificationMsg(int newFace, int batteryLevel, float dimValue, String varName, String value, CoreObjectSpec source) {
-		super(varName, value, source);
+	public DomiCubeNotificationMsg(int newFace, int batteryLevel, float dimValue, String varName, String oldValue, String newValue, CoreObjectSpec source) {
+		super(varName, oldValue, newValue , source);
 		this.currentFaceNumber = newFace;
 		this.batteryLevel = batteryLevel;
 		this.currentDimValue = dimValue;

@@ -12,38 +12,13 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
  */
 public class Co2NotificationMsg extends CoreNotificationMsg {
 
-
-    /**
-     * The new CO2 value
-     */
-    private final float newCO2Concentration;
-
-
     /**
      * Constructor for this ApAM message
      *
-     * @param newCo2Concentration
      * @param varName
-     * @param value
      * @param source
      */
-    public Co2NotificationMsg(float newCo2Concentration, String varName, String value, CoreObjectSpec source) {
-        super(varName, value, source);
-        this.newCO2Concentration = newCo2Concentration;
-    }
-
-    /**
-     * Method that returns the value corresponding to this notification
-     *
-     * @return the new Co2 concentration as a float
-     */
-    public float getNotificationValue() {
-        return newCO2Concentration;
-    }
-
-
-    @Override
-    public String getNewValue() {
-        return String.valueOf(newCO2Concentration);
+    public Co2NotificationMsg(String varName, String oldValue, String newValue, CoreObjectSpec source) {
+        super(varName, oldValue, newValue, source);
     }
 }

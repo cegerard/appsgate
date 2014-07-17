@@ -27,7 +27,14 @@ public interface NotificationMsg {
 	 * @return a string that represent the new value.
 	 */
 	public String getNewValue();
-	
+
+    /**
+     * Get the old value if the device is stateful and if it make sense
+     *
+     * @return a string that represent the old value or an empty string.
+     */
+    public String getOldValue();
+
 	/**
 	 * Get the variable that changed
 	 * @return a string that contains the variable name.

@@ -55,9 +55,15 @@ public class AlarmNotificationMsg implements NotificationMsg {
     }
 
     @Override
+    public String getOldValue() {
+        return "";
+    }
+
+    @Override
     public JSONObject JSONize() {
         JSONObject obj = new JSONObject();
         try {
+            //TODO: This one is weird because all event should have one parameter name and one parameter value
             obj.put("source", eventName);
             obj.put("alarm", alarmRingDate);
         } catch (JSONException ex) {

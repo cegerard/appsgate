@@ -16,10 +16,11 @@ public class ColorLightNotificationMsg extends CoreNotificationMsg {
      *
      * @param source the abstract object source of this message
      * @param varName the variable that changed
-     * @param value the new variable value
+     * @param oldValue the old variable value
+     * @param newValue the new variable value
      */
-    public ColorLightNotificationMsg(CoreObjectSpec source, String varName, String value) {
-        super(varName, value, source);
+    public ColorLightNotificationMsg(String varName, String oldValue, String newValue, CoreObjectSpec source) {
+        super(varName, oldValue, newValue, source);
 
     }
 }
