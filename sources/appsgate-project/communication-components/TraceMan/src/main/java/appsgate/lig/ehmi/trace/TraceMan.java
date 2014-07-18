@@ -17,6 +17,8 @@ import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -51,7 +53,11 @@ public class TraceMan implements TraceManSpec {
     /**
      * Map for device id to their user friendly name
      */
-    private HashMap<String, String> deviceTypeName = new HashMap<String, String>();
+    private final HashMap<String, String> deviceTypeName = new HashMap<String, String>();
+    /**
+     * Map for device id to their user friendly name
+     */
+    private final HashMap<String, Queue<String>> causalities = new HashMap<String, Queue<String>>();
 
     /**
      * number of trace counter
@@ -85,6 +91,15 @@ public class TraceMan implements TraceManSpec {
     }
 
     @Override
+    public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
+        LOGGER.trace("A command has been passed {} on {} by {}", command, objectID, caller);
+        if (!causalities.containsKey(objectID)) {
+            causalities.put(objectID, new LinkedList<String>());
+        }
+        causalities.get(objectID).add(caller + " -> " + command);
+    }
+
+    @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
         try {
             if (deviceTypeName.get(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
@@ -110,12 +125,7 @@ public class TraceMan implements TraceManSpec {
                                 event.put("type", "update");
 
                                 //Create causality event entry
-                                JSONObject causality = new JSONObject();
-                                {
-                                    causality.put("type", "environmental");
-                                    causality.put("description", "something happened");
-                                    event.put("causality", causality);
-                                }
+                                event.put("causality", getDeviceCausality(srcId));
 
                                 objectNotif.put("event", event);
                             }
@@ -176,17 +186,13 @@ public class TraceMan implements TraceManSpec {
                             }
 
                             //Create causality event entry
-                            JSONObject causality = new JSONObject();
-                            {
-                                causality.put("type", "technical");
-                                if (eventType.contains("new")) {
-                                    causality.put("description", "equipement appear");
-                                    addDeviceState(objectNotif, srcId, "", "");
+                            if (eventType.contains("new")) {
+                                event.put("causality", getCausalityJSON("technical", "equipement appear"));
+                                addDeviceState(objectNotif, srcId, "", "");
 
-                                } else if (eventType.contentEquals("remove")) {
-                                    causality.put("description", "equipement disappear");
-                                }
-                                event.put("causality", causality);
+                            } else if (eventType.contentEquals("remove")) {
+                                event.put("causality", getCausalityJSON("technical", "equipement disappear"));
+
                             }
                             objectNotif.put("event", event);
                         }
@@ -255,19 +261,13 @@ public class TraceMan implements TraceManSpec {
                                 } else { //change == "updateProgram"
                                     event.put("type", "update");
                                 }
-
                                 //Create causality event entry
-                                JSONObject causality = new JSONObject();
-                                {
-                                    causality.put("type", "user");
-                                    if (change.contentEquals("newProgram")) {
-                                        causality.put("description", "Program has been added");
-                                    } else if (change.contentEquals("removeProgram")) {
-                                        causality.put("description", "Program has been deleted");
-                                    } else { //change == "updateProgram"
-                                        causality.put("description", "Program has been updated");
-                                    }
-                                    event.put("causality", causality);
+                                if (change.contentEquals("newProgram")) {
+                                    event.put("causality", getCausalityJSON("user", "Program has been added"));
+                                } else if (change.contentEquals("removeProgram")) {
+                                    event.put("causality", getCausalityJSON("user", "Program has been deleted"));
+                                } else { //change == "updateProgram"
+                                    event.put("causality", getCausalityJSON("user", "Program has been updated"));
                                 }
 
                                 progNotif.put("event", event);
@@ -311,14 +311,8 @@ public class TraceMan implements TraceManSpec {
                             JSONObject event = new JSONObject();
                             {
                                 event.put("type", "update");
-                                //Create causality event entry
-                                JSONObject causality = new JSONObject();
-                                {
-                                    causality.put("type", "user or program"); //TODO causality must be retrieved from the notification
-                                    causality.put("description", "Program running state changed");
-                                    event.put("causality", causality);
-                                }
-                                progNotif.put("event", event);
+                                //TODO causality must be retrieved from the notification
+                                progNotif.put("event", this.getCausalityJSON("user/program", "Program running state changed"));
                             }
                             progNotif.put("state", notif.getNewValue());
                             pgmTab.put(progNotif);
@@ -512,25 +506,25 @@ public class TraceMan implements TraceManSpec {
                     deviceState.put("status", descr.getString("status"));
                 }
             } else if (deviceFriendlyType.contentEquals("SystemClock")) {
-				//TODO Add state profile in next version
+                //TODO Add state profile in next version
 
             } else if (deviceFriendlyType.contentEquals("MediaPlayer")) {
-				//TODO Add state profile in next version
+                //TODO Add state profile in next version
 
             } else if (deviceFriendlyType.contentEquals("MediaBrowser")) {
-				//TODO Add state profile in next version
+                //TODO Add state profile in next version
 
             } else if (deviceFriendlyType.contentEquals("GoogleCalendar")) {
-				//TODO Add state profile in next version
+                //TODO Add state profile in next version
 
             } else if (deviceFriendlyType.contentEquals("Mail")) {
-				//TODO Add state profile in next version
+                //TODO Add state profile in next version
 
             } else if (deviceFriendlyType.contentEquals("Weather")) {
-				//TODO Add state profile in next version
+                //TODO Add state profile in next version
 
             } else if (deviceFriendlyType.contentEquals("MobileDevice")) {
-				//TODO Add state profile in next version
+                //TODO Add state profile in next version
 
             } else if (deviceFriendlyType.contentEquals("DomiCube")) {
 
@@ -662,5 +656,36 @@ public class TraceMan implements TraceManSpec {
         }
 
         deviceTypeName.put(srcId, typeFriendlyName);
+    }
+
+    /**
+     *
+     * @param srcId
+     * @return
+     */
+    private synchronized JSONObject getDeviceCausality(String srcId) {
+        Queue<String> c = causalities.get(srcId);
+        String reason = null;
+        if (c != null) {
+            reason = c.poll();
+        }
+        if (reason == null) {
+            return getCausalityJSON("environmental", "something happened");
+        } else {
+            return getCausalityJSON("User/Program", reason);
+        }
+    }
+
+    private JSONObject getCausalityJSON(String type, String description) {
+        JSONObject causality = new JSONObject();
+        try {
+            causality.put("type", type);
+            causality.put("description", description);
+
+        } catch (JSONException ex) {
+            // Never happens
+        }
+        return causality;
+
     }
 }

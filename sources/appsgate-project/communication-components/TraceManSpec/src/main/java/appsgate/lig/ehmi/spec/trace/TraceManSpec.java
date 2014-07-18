@@ -38,5 +38,13 @@ public interface TraceManSpec {
 	 */
 	public void coreUpdateNotify(long timeStamp, String srcId, String coreType,
 			String userType, String name, JSONObject description, String eventType);
+        
+        /**
+         * 
+         * @param objectID
+         * @param command
+         * @param caller 
+         */
+        public void commandHasBeenPassed(String objectID, String command, String caller);
 
 }
