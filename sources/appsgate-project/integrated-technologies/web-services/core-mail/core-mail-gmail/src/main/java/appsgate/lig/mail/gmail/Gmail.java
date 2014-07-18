@@ -384,6 +384,11 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
             }
 
             @Override
+            public String getOldValue() {
+                return null;
+            }
+
+            @Override
             public String getVarName() {
                 return null;
             }

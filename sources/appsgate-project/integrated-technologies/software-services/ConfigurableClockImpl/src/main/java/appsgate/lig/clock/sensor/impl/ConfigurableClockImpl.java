@@ -122,8 +122,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 	}
 
-	public NotificationMsg fireClockSetNotificationMsg(Calendar currentTime) {
-		return new ClockSetNotificationMsg(this, currentTime.getTime()
+	public NotificationMsg fireClockSetNotificationMsg(Calendar oldTime, Calendar newTime) {
+		return new ClockSetNotificationMsg(this, oldTime.getTime().toString(), newTime.getTime()
 				.toString());
 	}
 
@@ -134,7 +134,11 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void resetClock() {
+        Calendar oldCalendar;
+        double oldRate;
 		synchronized (lock) {
+            oldCalendar = getCurrentDate();
+            oldRate = flowRate;
 			currentLag = 0;
 			flowRate = 1;
 			currentAlarmId = 0;
@@ -154,8 +158,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 			timeFlowBreakPoint = -1;
 		}
-		fireClockSetNotificationMsg(Calendar.getInstance());
-		fireFlowRateSetNotificationMsg(flowRate);
+		fireClockSetNotificationMsg(oldCalendar, Calendar.getInstance());
+		fireFlowRateSetNotificationMsg(oldRate, flowRate);
 	}
 
 	/*
@@ -223,12 +227,14 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	public void setCurrentTimeInMillis(long millis) {
 		logger.debug("setCurrentTimeInMillis(long millis : " + millis + ")");
 
+        Calendar oldCalendar = getCurrentDate();
+
 		currentLag = millis - Calendar.getInstance().getTimeInMillis();
 		setTimeFlowRate(flowRate);
 		calculateNextTimer();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(millis);
-		fireClockSetNotificationMsg(calendar);
+		fireClockSetNotificationMsg(oldCalendar, calendar);
 	}
 
 	private String appsgatePictureId;
@@ -451,6 +457,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public double setTimeFlowRate(double rate) {
+        double oldRate = flowRate;
 		if (rate > 0 && rate != 1) {
 			// avoid value that could lead to strange behavior
 			timeFlowBreakPoint = System.currentTimeMillis();
@@ -466,7 +473,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		}
 		logger.debug("setTimeFlowRate(double rate), new time flow rate : "
 				+ flowRate);
-		fireFlowRateSetNotificationMsg(rate);
+		fireFlowRateSetNotificationMsg(oldRate, flowRate);
 		calculateNextTimer();
 		return flowRate;
 
@@ -637,8 +644,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		}
 	}
 
-	public NotificationMsg fireFlowRateSetNotificationMsg(double newFlowRate) {
-		return new FlowRateSetNotification(this, String.valueOf(newFlowRate));
+	public NotificationMsg fireFlowRateSetNotificationMsg(double oldFlowRate, double newFlowRate) {
+		return new FlowRateSetNotification(this, String.valueOf(oldFlowRate), String.valueOf(newFlowRate));
 	}
 
 	class RearmingPeriodicAlarmTask extends TimerTask {

@@ -117,6 +117,10 @@ public class DeviceProxyGenerator {
 		output.write("			return variable;\n");
 		output.write("		}\n");
 		output.write("\n");
+        output.write("		public String getOldValue() {\n");
+        output.write("			return new String();\n");//TODO : retrieve the old value
+        output.write("		}\n");
+        output.write("\n");
 		output.write("		public String getNewValue() {\n");
 		output.write("			return value;\n");
 		output.write("		}\n");

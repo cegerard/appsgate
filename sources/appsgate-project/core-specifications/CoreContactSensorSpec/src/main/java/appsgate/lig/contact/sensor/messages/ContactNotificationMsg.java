@@ -12,35 +12,12 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 public class ContactNotificationMsg extends CoreNotificationMsg {
 
     /**
-     * The new sensor status
-     */
-    private final boolean isContact;
-
-    /**
      * Constructor for this ApAM message
      *
-     * @param isContact the new contact sensor status
-     * @param varName
-     * @param value
-     * @param source
-     */
-    public ContactNotificationMsg(boolean isContact, String varName, String value, CoreObjectSpec source) {
-        super(varName, value, source);
-        this.isContact = isContact;
-    }
 
-    /**
-     * Method that returns the value corresponding to this notification
-     *
-     * @return the new contact sensor status
      */
-    public boolean getNotificationValue() {
-        return isContact;
-    }
-
-    @Override
-    public String getNewValue() {
-        return String.valueOf(isContact);
+    public ContactNotificationMsg(String varName, String oldValue, String newValue,  CoreObjectSpec source) {
+        super(varName, oldValue, newValue, source);
     }
 
 }

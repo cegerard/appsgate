@@ -72,6 +72,9 @@ public class ARDLockerFuchsiaApamAdapter implements EventHandler {
             public String getNewValue() {
                 return null;
             }
+            public String getOldValue() {
+                return null;
+            }
 
             public JSONObject JSONize() {
 

@@ -53,17 +53,19 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	private String lightBridgeIP;
 	private String reachable;
 	
-	private String state;
-	private String hue;
-	private String sat;
-	private String bri;
-	private String x;
-	private String y;
-	private String ct;
-	private String speed;
-	private String alert;
-	private String mode;
-	private String effect;
+	private String on="";
+	private String hue="";
+	private String sat="";
+	private String bri="";
+	private String x="";
+	private String y="";
+	private String ct="";
+	private String speed="";
+	private String alert="";
+	private String mode="";
+	private String effect="";
+    private String trans="";
+    private JSONObject state;
 	
 	/**
 	 * The current sensor status.
@@ -84,7 +86,6 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 		Long colorCode = Long.valueOf(-1);
 		JSONObject jsonResponse = getLightStatus();
 		if(jsonResponse != null) {
-			JSONObject state;
 			try {
 				state = jsonResponse.getJSONObject("state");
 				colorCode = state.getLong("hue");
@@ -100,10 +101,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 		int brightnessCode = -1;
 		JSONObject jsonResponse = getLightStatus();
 		if(jsonResponse != null) {
-			JSONObject state;
 			try {
 				state = jsonResponse.getJSONObject("state");
 				brightnessCode = state.getInt("bri");
+                bri = String.valueOf(brightnessCode);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -116,10 +117,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 		int saturationCode = -1;
 		JSONObject jsonResponse = getLightStatus();
 		if(jsonResponse != null) {
-			JSONObject state;
 			try {
 				state = jsonResponse.getJSONObject("state");
 				saturationCode = state.getInt("sat");
+                sat = String.valueOf(saturationCode);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -128,10 +129,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	}
 	
 	public String getLightEffect() {
-		String effect = "";
+
 		JSONObject jsonResponse = getLightStatus();
 		if(jsonResponse != null) {
-			JSONObject state;
 			try {
 				state = jsonResponse.getJSONObject("state");
 				effect = state.getString("effect");
@@ -143,10 +143,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	}
 	
 	public String getLightAlert() {
-		String alert = "";
 		JSONObject jsonResponse = getLightStatus();
 		if(jsonResponse != null) {
-			JSONObject state;
 			try {
 				state = jsonResponse.getJSONObject("state");
 				alert = state.getString("alert");
@@ -158,18 +156,19 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	}
 	
 	public long getTransitionTime() {
-		long transistion = -1;
+		long transition = -1;
 		JSONObject jsonResponse = getLightStatus();
 		if(jsonResponse != null) {
-			JSONObject state;
 			try {
 				state = jsonResponse.getJSONObject("state");
-				transistion = state.getLong("transitiontime");
-			} catch (JSONException e) {
+                transition = state.getLong("transitiontime");
+                trans = String.valueOf(transition);
+
+            } catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
-		return transistion;
+		return transition;
 	}
 
 	@Override
@@ -177,10 +176,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 		boolean lightState = false;
 		JSONObject jsonResponse = getLightStatus();
 		if(jsonResponse != null) {
-			JSONObject state;
 			try {
 				state = jsonResponse.getJSONObject("state");
 				lightState = state.getBoolean("on");
+                status = String.valueOf(lightState);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -207,9 +206,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
 	@Override
 	public boolean setStatus(JSONObject newStatus) {
-		
+
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, newStatus)) {
-			notifyChanges("status", newStatus.toString());
+			notifyChanges("status", state.toString(), newStatus.toString());
+            state = newStatus;
 			return true;
 		}
 		
@@ -220,7 +220,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean On() {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", true)) {
-			notifyChanges("value", "true");
+
+			notifyChanges("value", on, "true");
+            on = String.valueOf(true);
 			return true;
 		}
 		
@@ -230,8 +232,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	@Override
 	public boolean Off() {		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", false)) {
-			notifyChanges("value", "false");
-			return true;
+			notifyChanges("value", on, "false");
+            on = String.valueOf(false);
+            return true;
 		}
 		
 		return false;
@@ -250,7 +253,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean setColor(long color) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", color)) {
-			notifyChanges("color", String.valueOf(color));
+			notifyChanges("color", hue, String.valueOf(color));
+            hue = String.valueOf(color);
 			return true;
 		}
 		
@@ -279,10 +283,17 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	
 	
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, JSONAttribute)) {
-			notifyChanges("value", "true");
-			notifyChanges("color", String.valueOf(color));
-			notifyChanges("brightness", String.valueOf(BRI_DEFAULT));
-			notifyChanges("saturation", String.valueOf(SAT_DEFAULT));
+			notifyChanges("value", on, "true");
+            on = String.valueOf(true);
+
+            notifyChanges("color", hue, String.valueOf(color));
+            hue= String.valueOf(color);
+
+			notifyChanges("brightness", bri, String.valueOf(BRI_DEFAULT));
+            bri = String.valueOf(BRI_DEFAULT);
+
+			notifyChanges("saturation", sat, String.valueOf(SAT_DEFAULT));
+            sat = String.valueOf(SAT_DEFAULT);
 			return true;
 		}
 		
@@ -293,7 +304,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean setBrightness(long brightness) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", brightness)) {
-			notifyChanges("brightness", String.valueOf(brightness));
+			notifyChanges("brightness", bri, String.valueOf(brightness));
+            bri = String.valueOf(brightness);
 			return true;
 		}
 		
@@ -312,7 +324,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean setSaturation(int saturation) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "sat", saturation)) {
-			notifyChanges("saturation", String.valueOf(saturation));
+			notifyChanges("saturation", sat, String.valueOf(saturation));
+            sat = String.valueOf(saturation);
 			return true;
 		}
 		
@@ -324,7 +337,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 * @return true if the default saturation is correctly set, false otherwise
 	 */
 	public boolean setDefaultSaturation() {
-		return setSaturation(SAT_DEFAULT);
+        return setSaturation(SAT_DEFAULT);
 	}
 	
 	/**
@@ -335,7 +348,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean setEffect(String effect) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "effect", effect)) {
-			notifyChanges("effect", String.valueOf(effect));
+			notifyChanges("effect", effect, String.valueOf(effect));
+            effect = String.valueOf(effect);
 			return true;
 		}
 		
@@ -350,7 +364,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean setAlert(String alert) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "alert", alert)) {
-			notifyChanges("alert", String.valueOf(alert));
+			notifyChanges("alert", alert, String.valueOf(alert));
+            alert = String.valueOf(alert);
 			return true;
 		}
 		
@@ -364,7 +379,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean setTransitionTime(long transition) {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "transitiontime", transition)) {
-			notifyChanges("transitiontime", String.valueOf(transition));
+			notifyChanges("transitiontime", trans, String.valueOf(transition));
+            trans = String.valueOf(transition);
+
 			return true;
 		}
 		
@@ -448,9 +465,12 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	
 	
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, JSONAttribute)) {
-			notifyChanges("value", "true");
-			notifyChanges("saturation", String.valueOf(0));
-			notifyChanges("brightness", String.valueOf(220));
+			notifyChanges("value",on, "true");
+            on = String.valueOf(true);
+			notifyChanges("saturation", sat, String.valueOf(0));
+            sat = String.valueOf(0);
+			notifyChanges("brightness", bri,  String.valueOf(220));
+            bri = String.valueOf(220);
 			return true;
 		}
 		
@@ -467,7 +487,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean increaseBrightness(int step) {
 		int newBri = getLightBrightness()+step;
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", newBri)) {
-			notifyChanges("brightness", String.valueOf((newBri)));
+			notifyChanges("brightness", bri, String.valueOf((newBri)));
+            bri = String.valueOf(newBri);
 			return true;
 		}
 		return false;
@@ -477,8 +498,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	public boolean decreaseBrightness(int step) {
 		int newBri = getLightBrightness()-step;
 		if( PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", newBri)) {
-			notifyChanges("brightness", String.valueOf((newBri)));
-			return true;
+            notifyChanges("brightness", bri, String.valueOf((newBri)));
+            bri = String.valueOf(newBri);
+            return true;
 		}
 		return false;
 	}
@@ -545,9 +567,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
 	@Override
 	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
-	}
+		notifyChanges("pictureId", this.pictureId, pictureId);
+        this.pictureId = pictureId;
+
+    }
 	
 	public String getActuatorType() {
 		return actuatorType;
@@ -568,7 +591,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void statusChanged(String newStatus) {
 		logger.info("The actuator, "+ actuatorId+" status changed to "+newStatus);
-		notifyChanges("status", newStatus);
+		notifyChanges("status", status, newStatus);
+        status = newStatus;
 	}
 	
 	/**
@@ -578,7 +602,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void reachableChanged(String newReachable) {
 		logger.info("The actuator, "+ actuatorId+" reachable changed to "+newReachable);
-		notifyChanges("reachable", newReachable);
+		notifyChanges("reachable", reachable, newReachable);
+        reachable = newReachable;
 	}
 	
 	/**
@@ -588,7 +613,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void stateChanged(String newState) {
 		logger.info("The actuator, "+ actuatorId+" state changed to "+newState);
-		notifyChanges("state", newState);
+		notifyChanges("state", on, newState);
+        on = newState;
 	}
 	
 	/**
@@ -598,7 +624,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void hueChanged(String newHue) {
 		logger.info("The actuator, "+ actuatorId+" hue changed to "+newHue);
-		notifyChanges("hue", newHue);
+		notifyChanges("hue", hue, newHue);
+        hue = newHue;
 	}
 	
 	/**
@@ -608,7 +635,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void satChanged(String newSat) {
 		logger.info("The actuator, "+ actuatorId+" sat changed to "+newSat);
-		notifyChanges("sat", newSat);
+		notifyChanges("sat", sat, newSat);
+        sat = newSat;
 	}
 	
 	/**
@@ -618,7 +646,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void briChanged(String newBri) {
 		logger.info("The actuator, "+ actuatorId+" bri changed to "+newBri);
-		notifyChanges("bri", newBri);
+		notifyChanges("bri", bri, newBri);
+        bri = newBri;
 	}
 	
 	/**
@@ -628,7 +657,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void xChanged(String newX) {
 		logger.info("The actuator, "+ actuatorId+" x changed to "+newX);
-		notifyChanges("x", newX);
+		notifyChanges("x", x,newX);
+        x= newX;
 	}
 	
 	/**
@@ -638,7 +668,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void yChanged(String newY) {
 		logger.info("The actuator, "+ actuatorId+" y changed to "+newY);
-		notifyChanges("y", newY);
+		notifyChanges("y", y, newY);
+        y= newY;
 	}
 	
 	/**
@@ -648,7 +679,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void ctChanged(String newCT) {
 		logger.info("The actuator, "+ actuatorId+" ct changed to "+newCT);
-		notifyChanges("ct", newCT);
+		notifyChanges("ct", ct, newCT);
+        ct = newCT;
 	}
 	
 	/**
@@ -658,7 +690,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void speedChanged(String newSpeed) {
 		logger.info("The actuator, "+ actuatorId+" speed changed to "+newSpeed);
-		notifyChanges("speed", newSpeed);
+		notifyChanges("speed", speed, newSpeed);
+        speed = newSpeed;
 	}
 	
 	/**
@@ -667,7 +700,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void alertChanged(String newAlert) {
 		logger.info("The actuator, "+ actuatorId+" alert changed to "+newAlert);
-		notifyChanges("alert", newAlert);
+		notifyChanges("alert", alert, newAlert);
+        alert = newAlert;
 	}
 	
 	/**
@@ -676,7 +710,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void modeChanged(String newMode) {
 		logger.info("The actuator, "+ actuatorId+" mode changed to "+newMode);
-		notifyChanges("mode", newMode);
+		notifyChanges("mode", mode, newMode);
+        mode = newMode;
 	}
 	
 	/**
@@ -685,7 +720,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void effectChanged(String newEffect) {
 		logger.info("The actuator, "+ actuatorId+" effect changed to "+newEffect);
-		notifyChanges("effect", newEffect);
+		notifyChanges("effect", effect, newEffect);
+        effect = newEffect;
 	}
 	
 	/**
@@ -710,8 +746,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 * @return nothing, it just notifies ApAM that a new message has been
 	 *         posted.
 	 */
-	public NotificationMsg notifyChanges(String varName, String value) {
-		return new ColorLightNotificationMsg(this, varName, value);
+	public NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
+		return new ColorLightNotificationMsg(varName, oldValue, newValue, this);
 	}
 	
 	/**************************************/
@@ -723,7 +759,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	}
 
 	public boolean getState() {
-		return Boolean.valueOf(state);
+		return Boolean.valueOf(on);
 	}
 
 	public int getHue() {

@@ -176,6 +176,11 @@ public class <xsl:value-of select="$classname"/> extends CoreObjectBehavior impl
 			return value;
 		}
 
+        @Override
+        public String getOldValue() {
+            return ""; //TODO: Change this
+        }
+
 		@Override
 		public JSONObject JSONize()  {
 			

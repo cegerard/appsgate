@@ -12,7 +12,7 @@
 		<!-- device kernel meta data -->
 		<definition name="deviceName"	 type="string" default="Unknown" 		  field="sensorName"/>
 		<definition name="deviceId" 	 type="string" default="000000" 		  field="sensorId"/>
-		<definition name="deviceType" 	 type="string" default="EnOcean_DEVICE" field="sensoreType"/>
+		<definition name="deviceType" 	 type="string" default="EnOcean_DEVICE" field="sensorType"/>
 		
 		<!-- device client meta data -->
 		<definition name="pictureId" 	 type="string" 			 			  field="pictureId"/>

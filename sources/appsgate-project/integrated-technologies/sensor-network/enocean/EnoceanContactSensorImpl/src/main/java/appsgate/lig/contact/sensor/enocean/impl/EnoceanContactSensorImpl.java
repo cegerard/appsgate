@@ -20,7 +20,7 @@ import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
  * @since December 1, 2012
  * @version 1.0.0
  * 
- * @see ContactSensorSpec
+ * @see CoreContactSensorSpec
  * @see CoreObjectSpec
  */
 public class EnoceanContactSensorImpl extends CoreObjectBehavior implements CoreContactSensorSpec, CoreObjectSpec {
@@ -38,32 +38,32 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	/**
 	 * The network sensor id
 	 */
-	private String sensorId;
+	private String sensorId ="";
 
 	/**
 	 * The sensor type (Actuator or Sensor)
 	 */
-	private String sensoreType;
+	private String sensorType = "";
 
 	/**
 	 * True if the device is paired with EnOcean proxy false otherwise
 	 */
-	private String isPaired;
+	private String isPaired = "";
 	
 	/**
 	 * Hold the last signal strength in DBM
 	 */
-	private String signal;
+	private String signal = "";
 	
 	/**
 	 * The current status = the last value received from this sensor
 	 */
-	private String currentStatus;
+	private String currentStatus = "";
 
 	/**
 	 * The type for user of this sensor
 	 */
-	private String userType;
+	private String userType = "";
 
 	/**
 	 * The current sensor status.
@@ -72,12 +72,12 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	 * 1 = In validation mode (test range for sensor for instance)
 	 * 2 = In line or connected
 	 */
-	private String status;
+	private String status = "";
 
 	/**
 	 * The current picture identifier
 	 */
-	private String pictureId;
+	private String pictureId = "";
 
 	/**
 	 * EnOcean proxy service uses to validate the sensor configuration with the
@@ -119,8 +119,8 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 		return getSensorId();
 	}
 
-	public String getSensoreType() {
-		return sensoreType;
+	public String getSensorType() {
+		return sensorType;
 	}
 
 	@Override
@@ -140,8 +140,8 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 
 	@Override
 	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId",  pictureId);
+		notifyChanges("pictureId",  this.pictureId, pictureId);
+        this.pictureId = pictureId;
 
 	}
 	
@@ -152,7 +152,7 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 		descr.put("type", userType); //3 for contact sensor
 		descr.put("status", status);
 		descr.put("contact", currentStatus);
-		descr.put("deviceType", sensoreType);
+		descr.put("deviceType", sensorType);
 		
 		return descr;
 	}
@@ -177,11 +177,12 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	
 	/**
 	 * Called by ApAM when the signal strength changed
-	 * @param newSignalValue the new singal value
+	 * @param newSignalValue the new signal value
 	 */
 	public void signalChanged(String newSignalValue) {
 		logger.info(newSignalValue+" dbm signal strength for "+sensorId);
-		notifyChanges("signal", newSignalValue);
+		notifyChanges("signal", signal, newSignalValue);
+        signal = newSignalValue;
 	}
 	
 	/**
@@ -190,7 +191,8 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	 */
 	public void currentStatusChanged(String newContactStatus) {
 		logger.info("New contact status from "+sensorId+"/"+sensorName+", "+newContactStatus);
-		notifyChanges("contact", newContactStatus);
+		notifyChanges("contact", currentStatus, newContactStatus);
+        currentStatus = newContactStatus;
 	}
 	
 	/**
@@ -200,7 +202,9 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	 */
 	public void statusChanged(String newStatus) {
 		logger.info("The sensor, "+ sensorId+" status changed to "+newStatus);
-		notifyChanges("status", newStatus);
+
+		notifyChanges("status", status, newStatus);
+        status = currentStatus;
 	}
 
 	/**
@@ -211,8 +215,8 @@ public class EnoceanContactSensorImpl extends CoreObjectBehavior implements Core
 	 * @return nothing, it just notifies ApAM that a new message has been
 	 *         posted.
 	 */
-	public NotificationMsg notifyChanges(String varName, String value) {
-		return new ContactNotificationMsg(Boolean.valueOf(currentStatus), varName, value, this);
+	public NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
+		return new ContactNotificationMsg(varName, oldValue, newValue, this);
 	}
 
 	@Override

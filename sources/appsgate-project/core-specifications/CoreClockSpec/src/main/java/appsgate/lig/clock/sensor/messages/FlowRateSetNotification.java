@@ -19,8 +19,8 @@ public class FlowRateSetNotification extends CoreNotificationMsg {
      * @param source the core object source of this notification
      * @param flowRate the new time flow rate
      */
-    public FlowRateSetNotification(CoreObjectSpec source, String flowRate) {
-        super("flowRate", flowRate, source);
+    public FlowRateSetNotification(CoreObjectSpec source, String oldRate, String flowRate) {
+        super("flowRate", oldRate, flowRate, source);
     }
 
 }

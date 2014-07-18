@@ -15,7 +15,7 @@ import org.json.JSONObject;
  * @author jr
  */
 public class CoreNotificationMsg implements NotificationMsg{
-        /**
+    /**
      * The source sensor of this notification
      */
     private final CoreObjectSpec source;
@@ -27,21 +27,39 @@ public class CoreNotificationMsg implements NotificationMsg{
     private final String varName;
 
     /**
-     * The value corresponding to the varName variable
+     * The newValue corresponding to the varName variable
      */
-    private final String value;
+    private final String newValue;
+
+    /**
+     * The old value to the varName variable if existing
+     */
+    private final String oldValue;
 
     /**
      * Constructor for this ApAM message
      *
      * @param varName the property name that change
-     * @param value the new property value
+     * @param newValue the new property newValue
      * @param source the source instance of this notification
      */
-    public CoreNotificationMsg(String varName, String value, CoreObjectSpec source) {
+    public CoreNotificationMsg(String varName, String oldValue, String newValue, CoreObjectSpec source) {
         this.source = source;
         this.varName = varName;
-        this.value = value;
+        this.newValue = newValue;
+        this.oldValue = oldValue;
+
+    }
+
+    /**
+     * Constructor for this ApAM message
+     *
+     * @param varName the property name that change
+     * @param newValue the new property newValue
+     * @param source the source instance of this notification
+     */
+    public CoreNotificationMsg(String varName, String newValue, CoreObjectSpec source) {
+        this(varName, "", newValue, source);
     }
 
 
@@ -49,19 +67,20 @@ public class CoreNotificationMsg implements NotificationMsg{
     public CoreObjectSpec getSource() {
         return source;
     }
-    
-    @Override
-	public String getVarName() {
-		return varName;
-	}
 
-	public String getValue() {
-		return value;
-	}
+    @Override
+    public String getVarName() {
+        return varName;
+    }
 
     @Override
     public String getNewValue() {
-        return value;
+        return newValue;
+    }
+
+    @Override
+    public String getOldValue() {
+        return oldValue;
     }
 
     @Override
@@ -70,12 +89,14 @@ public class CoreNotificationMsg implements NotificationMsg{
         try {
             notif.put("objectId", source.getAbstractObjectId());
             notif.put("varName", varName);
-            notif.put("value", value);
+            notif.put("value", newValue);
+            notif.put("oldValue", oldValue);
+
         } catch (JSONException ex) {
-                    // Will never be thrown
+            // Will never be thrown
         }
 
         return notif;
     }
-    
+
 }

@@ -109,8 +109,8 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 * @return nothing, it just notifies ApAM that a new message has been
 	 *         posted.
 	 */
-	public NotificationMsg notifyChanges(String varName, String value) {
-		return new DomiCubeNotificationMsg(getCurrentFaceNumber(), getBatteryLevel(), getDimValue(), varName, value, this);
+	public NotificationMsg notifyChanges(String varName, String value) {//TODO: add the old value (and probably refactor all this stuff)
+		return new DomiCubeNotificationMsg(getCurrentFaceNumber(), getBatteryLevel(), getDimValue(), varName, "", value, this);
 	}
 	
 
