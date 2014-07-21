@@ -45,6 +45,13 @@ public abstract class CoreObjectBehavior implements CoreObjectSpec {
 
     }
 
+    /**
+     *
+     * @param in
+     * @return
+     * @throws IOException
+     * @throws JSONException
+     */
     private JSONObject loadJSONStream(InputStream in) throws IOException, JSONException {
         if (in == null) {
             LOGGER.debug("No grammar file found for {}", this.getClass().toString());
@@ -65,21 +72,4 @@ public abstract class CoreObjectBehavior implements CoreObjectSpec {
         return new JSONObject(sb.toString());
 
     }
-
-    /**
-     * @return
-     */
-    public String getTypeFromGrammar() {
-        this.grammar = this.getBehaviorDescription();
-        if (this.grammar != null) {
-            try {
-                if (this.grammar.has("typename")) {
-                    return this.grammar.getString("typename");
-                }
-            } catch (JSONException ex) {
-            }
-        }
-        return "unknown";
-    }
-
 }
