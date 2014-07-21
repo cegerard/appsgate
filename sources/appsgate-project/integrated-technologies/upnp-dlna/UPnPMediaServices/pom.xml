@@ -21,7 +21,6 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>${osgi.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -42,8 +41,13 @@
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>CoreObjectSpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <version>${osgi.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>

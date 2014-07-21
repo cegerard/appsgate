@@ -50,7 +50,7 @@ import appsgate.lig.core.object.spec.CoreObjectBehavior;
 
 <xsl:template match="scpd">
 
-public class <xsl:value-of select="$classname"/> extends CoreObjectBehavior implements CoreObjectSpec, <xsl:value-of select="$interfaceName"/>, UPnPEventListener {		
+public class <xsl:value-of select="$classname"/> extends CoreObjectBehavior implements  <xsl:value-of select="$interfaceName"/>, UPnPEventListener {
 
 	private String 		userObjectName;
 	private int			locationId;

@@ -50,7 +50,8 @@ public class DeviceProxyGenerator {
 		output.write("\n");
 		output.write("import org.apache.felix.upnp.devicegen.holder.*;\n");
 		output.write("\n");
-		output.write("import org.osgi.service.upnp.UPnPDevice;\n");
+        output.write("import org.osgi.service.upnp.UPnPEventListener;\n");
+        output.write("import org.osgi.service.upnp.UPnPDevice;\n");
 		output.write("import org.osgi.service.upnp.UPnPException;\n");
 		output.write("\n");
 		output.write("import org.json.JSONException;\n");
@@ -62,6 +63,8 @@ public class DeviceProxyGenerator {
 		output.write("import appsgate.lig.core.object.spec.CoreObjectBehavior;\n");
 		output.write("import appsgate.lig.core.object.messages.NotificationMsg;\n");
 		output.write("\n");
+        output.write("import java.util.Dictionary;\n");
+
 		output.flush();
 		
 		for (Service service : device.getServices()) {
@@ -83,7 +86,7 @@ public class DeviceProxyGenerator {
 		output.flush();
 		
 		output.write("\n");
-		output.write("public class "+device.getMapping().getClassName()+" extends CoreObjectBehavior implements CoreObjectSpec {\n");
+		output.write("public class "+device.getMapping().getClassName()+" extends CoreObjectBehavior implements UPnPEventListener {\n");
 		output.write("\n");
 		output.write("	private String 		deviceType;\n");
 		output.write("	private String 		deviceId;\n");
@@ -141,12 +144,10 @@ public class DeviceProxyGenerator {
 		output.write("		return new Notification(variable, value.toString());\n");
 		output.write("	}\n");
 		output.write("\n");
-		output.write("	@Override\n");
 		output.write("	public String getAbstractObjectId() {\n");
 		output.write("		return deviceId;\n");
 		output.write("	}\n");
 		output.write("\n");
-		output.write("	@Override\n");
 		output.write("	public String getUserType() {\n");
 		output.write("		return Integer.toString(deviceType.hashCode());\n");
 		output.write("	}\n");
@@ -175,17 +176,14 @@ public class DeviceProxyGenerator {
 		output.write("		this.locationId = locationId;\n");
 		output.write("	}\n");
 		output.write("\n");
-		output.write("	@Override\n");
 		output.write("	public String getPictureId() {\n");
 		output.write("		return pictureId;\n");
 		output.write("	}\n");
 		output.write("\n");
-		output.write("	@Override\n");
 		output.write("	public void setPictureId(String pictureId) {\n");
 		output.write("		this.pictureId = pictureId;\n");
 		output.write("	}\n");
 		output.write("\n");
-		output.write("	@Override\n");
 		output.write("	public JSONObject getDescription() throws JSONException {\n");
 		output.write("		JSONObject description = new JSONObject();\n");
 		output.write("\n");
@@ -200,10 +198,14 @@ public class DeviceProxyGenerator {
 		output.write("		return description;\n");
 		output.write("	}\n");
 		output.write("\n");
-		output.write("	@Override\n");
 		output.write("	public CORE_TYPE getCoreType() {\n");
 		output.write("		return CORE_TYPE.SERVICE;\n");
 		output.write("	}\n");
+        output.write("	@Override\n");
+        output.write("	@SuppressWarnings(\"unchecked\")\n");
+        output.write("	public void notifyUPnPEvent(String deviceId, String serviceId,\t@SuppressWarnings(\"rawtypes\") Dictionary events) {\n");
+        output.write("	}\n");
+
 		output.write("\n");
 		output.flush();
 		

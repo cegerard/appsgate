@@ -24,8 +24,11 @@ public class MetadataGenerator  {
 		metadata.write("	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		metadata.write("	xsi:schemaLocation=\"fr.imag.adele.apam https://raw.github.com/AdeleResearchGroup/ApAM/master/runtime/core/src/main/resources/xsd/ApamCore.xsd\">\n");
 		metadata.write("\n");
-		
-		metadata.flush();
+
+        metadata.write("<specification name=\"UPnPService\" />  \n");
+        metadata.write("\n");
+
+        metadata.flush();
 		
 	}
 
@@ -34,8 +37,7 @@ public class MetadataGenerator  {
 		metadata.write("<implementation \n");
 		metadata.write("	name="+quote(device.getMapping().getClassName())+"\n");
 		metadata.write("	classname="+quote(device.getMapping().getPackageName(),".",device.getMapping().getClassName())+"\n");
-		metadata.write("	specification=\"CoreObjectSpec\"\n");
-		metadata.write("	instantiable=\"false\"\n");
+		metadata.write("	specification=\"UPnPService\"\n");
 		metadata.write("	push=\"stateChanged\" >\n");
 		metadata.write("\n");
 		metadata.write("	<callback onInit=\"initialize\" />\n");
@@ -50,7 +52,7 @@ public class MetadataGenerator  {
 		}
 
 		metadata.write("\n");
-		metadata.write("	<definition name=\"UPnP.device.type\" type=\"string\" />\n");
+        metadata.write("	<definition name=\"UPnP.device.type\" type=\"string\" />\n");
 		metadata.write("	<property name=\"UPnP.device.type\" value="+quote(device.getDeviceType())+" />\n");
 		metadata.write("	<definition name=\"UPnP.device.UDN\" type=\"string\"/>\n");
 		metadata.write("	<definition name=\"UPnP.device.friendlyName\" type=\"string\"/>\n");
@@ -68,8 +70,7 @@ public class MetadataGenerator  {
 		metadata.write("<implementation \n");
 		metadata.write("	name="+quote(service.getMapping().getClassName())+"\n");
 		metadata.write("	classname="+quote(service.getMapping().getPackageName(),".",service.getMapping().getClassName())+"\n");
-		metadata.write("	specification=\"CoreObjectSpec\"\n");
-		metadata.write("	instantiable=\"false\"\n");
+		metadata.write("	specification=\"UPnPService\"\n");
 		metadata.write("	push=\"stateChanged\" >\n");
 		metadata.write("\n");
 		metadata.write("	<callback onInit=\"initialize\" />\n");
@@ -79,6 +80,8 @@ public class MetadataGenerator  {
 		metadata.write("	<property name=\"UPnP.service.type\" value="+quote(service.getType())+" />\n");
 		metadata.write("	<definition name=\"UPnP.device.UDN\" type=\"string\"/>\n");
 		metadata.write("	<definition name=\"UPnP.service.id\" type=\"string\"/>\n");
+        metadata.write("	<definition name=\"UPnP.device.friendlyName\" type=\"string\"/>\n");
+
 		metadata.write("\n");
 		metadata.write("	<ipojo:provides specifications=\"org.osgi.service.upnp.UPnPEventListener\">\n");
 		metadata.write("		<ipojo:property name=\"upnp.filter\" field=\"upnpEventFilter\" type=\"org.osgi.framework.Filter\" mandatory=\"true\"/>\n");

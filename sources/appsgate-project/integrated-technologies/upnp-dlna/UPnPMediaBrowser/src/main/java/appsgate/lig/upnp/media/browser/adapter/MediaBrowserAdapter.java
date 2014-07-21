@@ -1,19 +1,23 @@
 package appsgate.lig.upnp.media.browser.adapter;
 
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.upnp.adapter.event.UPnPEvent;
+import appsgate.lig.upnp.media.AVTransport;
+import appsgate.lig.upnp.media.ConnectionManager;
+import appsgate.lig.upnp.media.ContentDirectory;
 import org.apache.felix.upnp.devicegen.holder.LongHolder;
 import org.apache.felix.upnp.devicegen.holder.StringHolder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.service.upnp.UPnPDevice;
 import org.osgi.service.upnp.UPnPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,14 +31,19 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Set;
+
 public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrowser, CoreObjectSpec {
 
-    private MediaServerProxyImpl mediaServer;
+    private final static Logger logger = LoggerFactory.getLogger(MediaBrowserAdapter.class);
 
     /**
      * The associated UPnP device
      */
     private String deviceId;
+    private String deviceName;
 
     /**
      * Core Object Spec properties
@@ -45,16 +54,25 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
     private String appsgateServiceName;
     private Set<Instance> proxies;
 
+    private AVTransport aVTransport;
+    private ConnectionManager connectionManager;
+    private ContentDirectory contentDirectory;
+
+
+
     private DocumentBuilderFactory factory;
 
     @SuppressWarnings("unused")
     private void initialize(Instance instance) {
         Implementation implementation = CST.apamResolver.findImplByName(null, "MediaBrowser");
 
+        deviceId 	= instance.getProperty(UPnPDevice.ID);
+
+
         deviceId = instance.getProperty(UPnPDevice.ID);
         proxies = implementation.getInsts();
 
-        Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.INFO, "proxies instanciated: {}", proxies);
+        logger.info("proxies instanciated: "+proxies);
 
         appsgatePictureId = null;
         appsgateServiceName = "Appsgate UPnP Media browser";
@@ -88,7 +106,7 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
         descr.put("type", getUserType());
         descr.put("status", appsgateStatus);
         descr.put("sysName", appsgateServiceName);
-		descr.put("friendlyName", mediaServer.getFriendlyName());
+		descr.put("friendlyName", deviceName);
 
         return descr;
     }
@@ -143,7 +161,7 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
             //Get the DOM Builder
             builder = factory.newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("ParserConfigurationException "+ex.getMessage());
             return "<empty/>";
         }
 
@@ -154,31 +172,12 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
             LongHolder totalMatches = new LongHolder();
             LongHolder updateId = new LongHolder();
 
-            mediaServer.getContentDirectory().browse(objectID, browseFlag, filter, startingIndex, requestedCount, sortCriteria,
+            contentDirectory.browse(objectID, browseFlag, filter, startingIndex, requestedCount, sortCriteria,
                     result, number, totalMatches, updateId);
             return result.getObject();
-//
-//            try {
-//                InputSource is = new InputSource();
-//                is.setCharacterStream(new StringReader(result.getObject()));
-//
-//                Document document = builder.parse(is);
-//
-//                ret += parseXml(document, objectID);
-//
-//            } catch (SAXException ex) {
-//                Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
-//                return "<XMLError/>";
-//            } catch (IOException ex) {
-//                Logger.getLogger(MediaBrowserAdapter.class.getName()).log(Level.SEVERE, null, ex);
-//                return "<IOError/>";
-//            }
-
-          //  return ret;
 
         } catch (UPnPException ignored) {
-            System.err.print("UPNP Exception");
-            ignored.printStackTrace(System.err);
+            logger.error("UPNP Exception  "+ignored.getStackTrace());
             return "<empty/>";
         }
     }
@@ -212,12 +211,39 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
                 return children.item(i).getTextContent();
             }
         }
-        return "toto";
+        return "";
+    }
+
+    private void onUpnPEvent( UPnPEvent event) {
+        logger.debug("onUpnPEvent( UPnPEvent event)" +
+                ", deviceId = "+event.getDeviceId() +
+                ", serviceId = "+event.getServiceId() +
+                ", events = "+event.getEvents());
+
+        if(event != null) {
+            Dictionary events = event.getEvents();
+            Enumeration<String> variables = events.keys();
+            while( variables.hasMoreElements()) {
+
+                String variable = variables.nextElement();
+                Object value = events.get(variable);
+
+                stateChanged(variable, "", value.toString());
+            }
+        } else {
+            logger.debug("No events to send");
+        }
+
+    }
+
+    private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
+        return new CoreNotificationMsg(varName, oldValue, newValue, this);
     }
 
 	@Override
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.SERVICE;
 	}
+
 
 }

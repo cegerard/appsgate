@@ -2,6 +2,13 @@
 
 package appsgate.lig.upnp.media.player.adapter;
 
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
+import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.upnp.adapter.event.UPnPEvent;
+import appsgate.lig.upnp.media.AVTransport;
+import appsgate.lig.upnp.media.ConnectionManager;
+import appsgate.lig.upnp.media.ContentDirectory;
+import appsgate.lig.upnp.media.RenderingControl;
 import appsgate.lig.upnp.media.player.MediaPlayer;
 import appsgate.lig.upnp.media.proxy.MediaRendererProxyImpl;
 
@@ -16,15 +23,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.imag.adele.apam.Instance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Dictionary;
+import java.util.Enumeration;
 
 public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlayer, CoreObjectSpec {	
-
-	private MediaRendererProxyImpl mediaRenderer;
 
 	/**
 	 * The associated UPnP device
 	 */
 	private String 		deviceId;
+
+    private String deviceName;
 	
 	/**
 	 * Core Object Spec properties
@@ -33,6 +45,12 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	private String appsgateUserType;
 	private String appsgateStatus;
 	private String appsgateServiceName;
+
+    private final static Logger logger = LoggerFactory.getLogger(MediaPlayerAdapter.class);
+
+    private AVTransport aVTransport;
+    private ConnectionManager connectionManager;
+    private RenderingControl renderingControl;
 
 	/**
 	 * The currently playing media
@@ -74,7 +92,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		descr.put("type", getUserType());
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
-		descr.put("friendlyName", mediaRenderer.getFriendlyName());
+		descr.put("friendlyName", deviceName);
 		
 		return descr;
 	}
@@ -125,8 +143,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	@Override
 	public void play(String media) {
 		try {
-			mediaRenderer.getAVTransport().setAVTransportURI(0,media,"");
-			mediaRenderer.getAVTransport().play(0,"1");
+            aVTransport.setAVTransportURI(0,media,"");
+            aVTransport.play(0,"1");
 			currentMedia = media;
 		} catch (UPnPException ignored) {
 			ignored.printStackTrace(System.err);
@@ -136,7 +154,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	@Override
 	public void play() {
 			try {
-				mediaRenderer.getAVTransport().play(0,"1");
+                aVTransport.play(0,"1");
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
@@ -145,7 +163,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	@Override
 	public void pause() {
 			try {
-				mediaRenderer.getAVTransport().pause(0);
+                aVTransport.pause(0);
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
@@ -154,7 +172,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	@Override
 	public void stop() {
 			try {
-				mediaRenderer.getAVTransport().stop(0);
+				aVTransport.stop(0);
 				currentMedia = null;
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
@@ -166,7 +184,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		
 			try {
 				IntegerHolder result = new IntegerHolder();
-				mediaRenderer.getRenderingControl().getVolume(0,"Master",result);
+				renderingControl.getVolume(0,"Master",result);
 				return result.getValue();
 				
 			} catch (UPnPException ignored) {
@@ -179,7 +197,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	@Override
 	public void setVolume(int level) {
 			try {
-				mediaRenderer.getRenderingControl().setVolume(0, "Master", level);
+                renderingControl.setVolume(0, "Master", level);
 			} catch (UPnPException ignored) {
 				ignored.printStackTrace(System.err);
 			}
@@ -189,6 +207,34 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.SERVICE;
 	}
+
+
+
+    private void onUpnPEvent( UPnPEvent event) {
+        logger.debug("onUpnPEvent( UPnPEvent event)" +
+                ", deviceId = "+event.getDeviceId() +
+                ", serviceId = "+event.getServiceId() +
+                ", events = "+event.getEvents());
+
+        if(event != null) {
+            Dictionary events = event.getEvents();
+            Enumeration<String> variables = events.keys();
+            while( variables.hasMoreElements()) {
+
+                String variable = variables.nextElement();
+                Object value = events.get(variable);
+
+                stateChanged(variable, "", value.toString());
+            }
+        } else {
+            logger.debug("No events to send");
+        }
+
+    }
+
+    private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
+        return new CoreNotificationMsg(varName, oldValue, newValue, this);
+    }
 
 
 }
