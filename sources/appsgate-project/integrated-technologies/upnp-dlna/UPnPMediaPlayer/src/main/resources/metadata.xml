@@ -11,17 +11,20 @@
 
 	<callback onInit="initialize" />
 
-    <relation resolve="exist" fail="wait" push="onUPnPEvent" field="renderingControl">
+    <relation implementation="RenderingControlProxyImpl" resolve="exist" fail="wait" field="renderingControl">
+        <message push="onUPnPEvent"/>
         <constraints>
             <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
         </constraints>
     </relation>
-    <relation resolve="exist" fail="wait" push="onUPnPEvent" field="connectionManager">
+    <relation implementation="ConnectionManagerProxyImpl" resolve="exist" fail="wait"  field="connectionManager">
+        <message push="onUPnPEvent"/>
         <constraints>
             <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
         </constraints>
     </relation>
-    <relation resolve="exist" fail="wait" push="onUPnPEvent" field="aVTransport">
+    <relation implementation="AVTransportProxyImpl" resolve="exist" fail="wait" field="aVTransport">
+        <message push="onUPnPEvent"/>
         <constraints>
             <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
         </constraints>

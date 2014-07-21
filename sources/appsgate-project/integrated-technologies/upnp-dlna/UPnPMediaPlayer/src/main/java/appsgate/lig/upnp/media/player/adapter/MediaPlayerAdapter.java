@@ -10,7 +10,6 @@ import appsgate.lig.upnp.media.ConnectionManager;
 import appsgate.lig.upnp.media.ContentDirectory;
 import appsgate.lig.upnp.media.RenderingControl;
 import appsgate.lig.upnp.media.player.MediaPlayer;
-import appsgate.lig.upnp.media.proxy.MediaRendererProxyImpl;
 
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;

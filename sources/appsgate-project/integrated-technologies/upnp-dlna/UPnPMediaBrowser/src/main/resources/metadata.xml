@@ -11,17 +11,20 @@
 		<callback onInit="initialize" />
 
 
-        <relation resolve="exist"  push="onUPnPEvent"  fail="wait" field="contentDirectory">
+        <relation implementation="ContentDirectoryProxyImpl" resolve="exist"  fail="wait" field="contentDirectory">
+            <message push="onUPnPEvent"/>
             <constraints>
                 <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
             </constraints>
         </relation>
-        <relation resolve="exist" push="onUPnPEvent" fail="wait" field="connectionManager">
+        <relation implementation="ConnectionManagerProxyImpl" name="connectionManager" resolve="exist" fail="wait" field="connectionManager">
+            <message push="onUPnPEvent"/>
             <constraints>
                 <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
             </constraints>
         </relation>
-        <relation resolve="exist" push="onUPnPEvent" fail="wait" field="aVTransport">
+        <relation implementation="AVTransportProxyImpl" resolve="exist" fail="wait" field="aVTransport">
+            <message push="onUPnPEvent"/>
             <constraints>
                 <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
             </constraints>

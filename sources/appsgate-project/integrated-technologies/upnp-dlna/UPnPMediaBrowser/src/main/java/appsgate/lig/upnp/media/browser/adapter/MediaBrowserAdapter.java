@@ -26,7 +26,6 @@ import org.w3c.dom.NodeList;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.upnp.media.browser.MediaBrowser;
-import appsgate.lig.upnp.media.proxy.MediaServerProxyImpl;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
