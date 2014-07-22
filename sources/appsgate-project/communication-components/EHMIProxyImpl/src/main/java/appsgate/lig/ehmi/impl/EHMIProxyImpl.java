@@ -19,6 +19,7 @@ import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
+import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.exceptions.CoreDependencyException;
 import appsgate.lig.ehmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
@@ -320,22 +321,14 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     @Override
     public StateDescription getEventsFromState(String objectId, String stateName) {
         JSONObject deviceDetails = coreProxy.getDevice(objectId);
-        StateDescription stateDescription = null;
         try {
-            JSONObject grammar = devicePropertiesTable.getGrammarFromType(deviceDetails.getString("type"));
-            JSONArray grammarStates = grammar.getJSONArray("states");
-            for (int i = 0; i < grammarStates.length(); i++) {
-                if (grammarStates.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
-                    stateDescription = new StateDescription(grammarStates.getJSONObject(i));
-                    break;
-                }
-            }
+            GrammarDescription grammar = devicePropertiesTable.getGrammarFromType(deviceDetails.getString("type"));
+            return new StateDescription(grammar.getStateDescription(stateName));
         } catch (JSONException ex) {
             logger.error("Grammar not well formatted");
             return null;
         }
 
-        return stateDescription;
     }
 
     @Override
@@ -355,7 +348,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
     @Override
-    public boolean addGrammar(String deviceType, JSONObject grammarDescription) {
+    public boolean addGrammar(String deviceType, GrammarDescription grammarDescription) {
         return devicePropertiesTable.addGrammarForDeviceType(deviceType, grammarDescription);
     }
 
@@ -365,7 +358,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
     @Override
-    public JSONObject getGrammarFromType(String deviceType) {
+    public GrammarDescription getGrammarFromType(String deviceType) {
         return devicePropertiesTable.getGrammarFromType(deviceType);
     }
 

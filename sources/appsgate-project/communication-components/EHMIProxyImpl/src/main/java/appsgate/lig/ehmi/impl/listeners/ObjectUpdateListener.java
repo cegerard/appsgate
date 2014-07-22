@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.ehmi.impl.EHMIProxyImpl;
+import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 
 /**
@@ -21,9 +22,9 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 	private String coreType ="";
 	private String userType ="";
 	private JSONObject description = new JSONObject();
-	private JSONObject behavior = new JSONObject();
+	private JSONObject behavior;
 	
-	private EHMIProxyImpl EHMIProxy;
+	private final EHMIProxyImpl EHMIProxy;
 	private TraceManSpec traceManager;
 	
 	/**
@@ -68,7 +69,7 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 		String placeId = EHMIProxy.getCoreObjectPlaceId(objectId);
 		
 		if (coreType.contains("new")) { //New device added
-			EHMIProxy.addGrammar(userType, behavior);
+			EHMIProxy.addGrammar(userType, new GrammarDescription(behavior));
 			
 		    sendObjectPlace(coreType, objectId, placeId);
 		    sendObjectName(objectId, name);

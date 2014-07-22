@@ -12,13 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
+import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -57,7 +56,7 @@ public class TraceMan implements TraceManSpec {
     /**
      * Map for device id to their user friendly name
      */
-    private final HashMap<String, Queue<String>> causalities = new HashMap<String, Queue<String>>();
+    private final HashMap<String, GrammarDescription> deviceGrammar = new HashMap<String, GrammarDescription>();
 
     /**
      * number of trace counter
@@ -93,10 +92,6 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
         LOGGER.trace("A command has been passed {} on {} by {}", command, objectID, caller);
-        if (!causalities.containsKey(objectID)) {
-            causalities.put(objectID, new LinkedList<String>());
-        }
-        causalities.get(objectID).add(caller + " -> " + command);
     }
 
     @Override
@@ -125,7 +120,7 @@ public class TraceMan implements TraceManSpec {
                                 event.put("type", "update");
 
                                 //Create causality event entry
-                                event.put("causality", getDeviceCausality(srcId));
+                                event.put("causality", getCausalityJSON(srcId, varName));
 
                                 objectNotif.put("event", event);
                             }
@@ -159,7 +154,10 @@ public class TraceMan implements TraceManSpec {
         try {
 
             //Put the user friendly core type in the map
+            GrammarDescription grammar = EHMIProxy.getGrammarFromType(userType);
+
             addUserType(srcId, userType);
+            deviceGrammar.put(srcId, grammar);
 
             //Create the notification JSON object
             JSONObject coreNotif = new JSONObject();
@@ -658,24 +656,14 @@ public class TraceMan implements TraceManSpec {
         deviceTypeName.put(srcId, typeFriendlyName);
     }
 
-    /**
-     *
-     * @param srcId
-     * @return
-     */
-    private synchronized JSONObject getDeviceCausality(String srcId) {
-        Queue<String> c = causalities.get(srcId);
-        String reason = null;
-        if (c != null) {
-            reason = c.poll();
-        }
-        if (reason == null) {
-            return getCausalityJSON("environmental", "something happened");
-        } else {
-            return getCausalityJSON("User/Program", reason);
-        }
-    }
 
+    /**
+     * Method to format a causality JSON object.
+     *
+     * @param type
+     * @param description
+     * @return the json object
+     */
     private JSONObject getCausalityJSON(String type, String description) {
         JSONObject causality = new JSONObject();
         try {
@@ -688,4 +676,5 @@ public class TraceMan implements TraceManSpec {
         return causality;
 
     }
+
 }

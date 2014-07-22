@@ -84,7 +84,7 @@ public interface EHMIProxySpec {
 	 * @param grammarDescription the grammar associated to the device type
 	 * @return true if the grammar is really new, false if the grammar has been replaced
 	 */
-	public boolean addGrammar(String deviceType, JSONObject grammarDescription);
+	public boolean addGrammar(String deviceType, GrammarDescription grammarDescription);
 	
 	/**
 	 * Remove grammar associated to a device type
@@ -98,7 +98,7 @@ public interface EHMIProxySpec {
 	 * @param deviceType the device type from which to get the grammar
 	 * @return the grammar as a JSONObject
 	 */
-	public JSONObject getGrammarFromType(String deviceType);
+	public GrammarDescription getGrammarFromType(String deviceType);
 	
 	
 	/***************************/
