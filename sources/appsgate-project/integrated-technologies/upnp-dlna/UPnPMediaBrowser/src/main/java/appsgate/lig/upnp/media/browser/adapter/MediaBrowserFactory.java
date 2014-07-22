@@ -29,7 +29,7 @@ public class MediaBrowserFactory {
 			configuration.put(UPnPDevice.FRIENDLY_NAME,deviceName);
 			adapterImplementtation.getApformImpl().addDiscoveredInstance(configuration);
 
-		} catch (InvalidConfiguration e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

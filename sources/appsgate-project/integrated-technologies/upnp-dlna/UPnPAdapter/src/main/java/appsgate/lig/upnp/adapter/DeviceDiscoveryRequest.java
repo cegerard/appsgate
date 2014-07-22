@@ -81,67 +81,69 @@ public class DeviceDiscoveryRequest implements Runnable {
 
 		logger.debug("[UPnP Apam Discovery] Device ("+deviceType+") discovered :"+deviceId);
 
+        Implementation implementation = null;
+
 		/*
-		 * Look for an implementation 
+		 * Look for an implementation of upnp devices, disabled since 2014/07/18
 		 */
-		Implementation implementation = null;
-		
-		ApamFilter deviceProxyFilter = ApamFilter.newInstance("("+UPnPDevice.TYPE+"="+deviceType+")");
-		if (deviceProxyFilter != null) {
-			implementation	= resolver.resolveSpecByName(null,CoreObjectSpec.class.getSimpleName(),Collections.singleton(deviceProxyFilter.toString()),null);
-		}
-		
-		if (implementation == null) {
-			logger.error("[UPnP Apam Discovery] Device proxy not found for type  "+deviceType);
-		}
-		else {
-			try {
-				
-				logger.debug("[UPnP Apam Discovery] Device proxy found for type "+deviceType+" : "+implementation.getName());
-	
-				/*
-				 * Create an instance of the proxy, and configure it for the appropriate device id
-				 */
-	
-				Map<String,Object> configuration = new Hashtable<String,Object>();
-				configuration.put(UPnPDevice.ID,deviceId);
-				configuration.put(UPnPDevice.FRIENDLY_NAME,deviceName);
-	
-				ApformInstance proxy = implementation.getApformImpl().addDiscoveredInstance(configuration);
-				
-				/*
-				 * Ignore errors creating the proxy
-				 */
-				if (proxy == null) {
-					logger.error("[UPnP Apam Discovery] Device proxy could not be instantiated  "+implementation.getName());
-				}
-				else {
-					/*
-					 * Update the service map
-					 */
-					synchronized (discoveredDeviceProxies) {
-						
-						/*
-						 * If the device is no longer available, just dispose the created proxy and abort processing 
-						 */
-						if (! discoveredDeviceProxies.containsKey(device)) {
-							if (proxy.getApamComponent() != null)
-								((InstanceImpl)proxy.getApamComponent()).unregister();
-							return;
-						}
-		
-						/*
-						 * otherwise add it to the map
-						 */
-						discoveredDeviceProxies.get(device).add(proxy);
-					}
-				}
-	
-			} catch (Exception e) {
-				logger.error("[UPnP Apam Discovery] Device proxy could not be instantiated  "+implementation.getName(),e);
-			}
-		
-		}
+//		implementation = null;
+//
+//		ApamFilter deviceProxyFilter = ApamFilter.newInstance("("+UPnPDevice.TYPE+"="+deviceType+")");
+//		if (deviceProxyFilter != null) {
+//			implementation	= resolver.resolveSpecByInterface(null,UPnPEventListener.class.getName(),Collections.singleton(deviceProxyFilter.toString()),null);
+//		}
+//
+//		if (implementation == null) {
+//			logger.error("[UPnP Apam Discovery] Device proxy not found for type  "+deviceType);
+//		}
+//		else {
+//			try {
+//
+//				logger.debug("[UPnP Apam Discovery] Device proxy found for type "+deviceType+" : "+implementation.getName());
+//
+//				/*
+//				 * Create an instance of the proxy, and configure it for the appropriate device id
+//				 */
+//
+//				Map<String,Object> configuration = new Hashtable<String,Object>();
+//				configuration.put(UPnPDevice.ID,deviceId);
+//				configuration.put(UPnPDevice.FRIENDLY_NAME,deviceName);
+//
+//				ApformInstance proxy = implementation.getApformImpl().addDiscoveredInstance(configuration);
+//
+//				/*
+//				 * Ignore errors creating the proxy
+//				 */
+//				if (proxy == null) {
+//					logger.error("[UPnP Apam Discovery] Device proxy could not be instantiated  "+implementation.getName());
+//				}
+//				else {
+//					/*
+//					 * Update the service map
+//					 */
+//					synchronized (discoveredDeviceProxies) {
+//
+//						/*
+//						 * If the device is no longer available, just dispose the created proxy and abort processing
+//						 */
+//						if (! discoveredDeviceProxies.containsKey(device)) {
+//							if (proxy.getApamComponent() != null)
+//								((InstanceImpl)proxy.getApamComponent()).unregister();
+//							return;
+//						}
+//
+//						/*
+//						 * otherwise add it to the map
+//						 */
+//						discoveredDeviceProxies.get(device).add(proxy);
+//					}
+//				}
+//
+//			} catch (Exception e) {
+//				logger.error("[UPnP Apam Discovery] Device proxy could not be instantiated  "+implementation.getName(),e);
+//			}
+//
+//		}
 		
 		/*
 		 * Iterate over all declared service of the device, creating the associated proxy
@@ -176,7 +178,7 @@ public class DeviceDiscoveryRequest implements Runnable {
 			
 			ApamFilter serviceProxyFilter = ApamFilter.newInstance("("+UPnPService.TYPE+"="+service.getType()+")");
 			if (serviceProxyFilter != null) {
-				implementation	= resolver.resolveSpecByName(null,CoreObjectSpec.class.getSimpleName(),Collections.singleton(serviceProxyFilter.toString()),null);
+				implementation	= resolver.resolveSpecByName(null,"UPnPService",Collections.singleton(serviceProxyFilter.toString()),null);
 			}
 			
 			
@@ -200,6 +202,7 @@ public class DeviceDiscoveryRequest implements Runnable {
 
 				Map<String,Object> configuration = new Hashtable<String,Object>();
 				configuration.put(UPnPDevice.ID,deviceId);
+                configuration.put(UPnPDevice.FRIENDLY_NAME,deviceName);
 				configuration.put(UPnPService.ID,service.getId());
 				configuration.put(UPnPEventListener.UPNP_FILTER, context.createFilter(serviceFilter));
 				configuration.put("requires.filters", new Hashtable<String,String>(Collections.singletonMap(UPnPDevice.ID,serviceFilter)) );

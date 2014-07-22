@@ -6,25 +6,39 @@
 	name="MediaPlayer"
 	classname="appsgate.lig.upnp.media.player.adapter.MediaPlayerAdapter"
 	instantiable="false"
-    specification="CoreMediaPlayerSpec">
+    specification="CoreMediaPlayerSpec"
+    push="stateChanged">
 
 	<callback onInit="initialize" />
 
-	<relation implementation= "MediaRendererProxyImpl" field="mediaRenderer" resolve="exist" fail="wait">
-       <constraints>
-          <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)" />
-      </constraints>
-	</relation>
+    <relation implementation="RenderingControlProxyImpl" resolve="exist" fail="wait" field="renderingControl">
+        <message push="onUPnPEvent"/>
+        <constraints>
+            <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
+        </constraints>
+    </relation>
+    <relation implementation="ConnectionManagerProxyImpl" resolve="exist" fail="wait"  field="connectionManager">
+        <message push="onUPnPEvent"/>
+        <constraints>
+            <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
+        </constraints>
+    </relation>
+    <relation implementation="AVTransportProxyImpl" resolve="exist" fail="wait" field="aVTransport">
+        <message push="onUPnPEvent"/>
+        <constraints>
+            <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
+        </constraints>
+    </relation>
 
 	<definition name="UPnP.device.UDN" type="string"/>
-	<definition name="UPnP.device.friendlyName" type="string"/>
+	<definition name="UPnP.device.friendlyName" type="string" field="deviceName"/>
 	
 </implementation>
 
 <implementation 
 	name="MediaPlayerFactory"
 	classname="appsgate.lig.upnp.media.player.adapter.MediaPlayerFactory">
-	<relation implementation= "MediaRendererProxyImpl" multiple="true" creation="eager" resolve="exist" added="mediaRendererBound" removed="mediaRendererUnbound"  />	
+	<relation implementation= "RenderingControlProxyImpl" multiple="true" creation="eager" resolve="exist" added="mediaRendererBound" removed="mediaRendererUnbound"  />
 </implementation>
 
 <!-- <apam-instance name="Global-MediaPlayerFactory" implementation="MediaPlayerFactory"> -->
