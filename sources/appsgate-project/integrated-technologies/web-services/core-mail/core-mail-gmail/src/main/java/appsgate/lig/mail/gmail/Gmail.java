@@ -1,5 +1,6 @@
 package appsgate.lig.mail.gmail;
 
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -21,6 +22,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import appsgate.lig.mail.gmail.utils.JSSEProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +55,8 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
     private String USER;
     private String PASSWORD;
 
+    private MailSender mailSender = null;
+
     /*
      * Object information
      */
@@ -71,8 +75,8 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
     /*
      * IMAP variables
      */
-    private Store store;
-    private Session session;
+    private Store store = null;
+    private Session session = null;
     private IMAPFolder lastIMAPFolder = null;
 
     private TimerTask refreshtask;
@@ -196,12 +200,14 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
         if (session == null) {
 
             //This method will openup a browser (pc/mobile) to verify the user auth in case of auth3
-            //session=Session.getDefaultInstance(properties, null);
+//            session=Session.getDefaultInstance(properties, null);
             // create the properties for the Session
             properties.setProperty( "mail.imaps.socketFactory.class", "appsgate.lig.mail.gmail.utils.AppsGateSSLSocketFactory" );
 
             session = Session.getInstance(properties,
                     new javax.mail.Authenticator() {
+
+
                         @Override
                         protected PasswordAuthentication getPasswordAuthentication() {
                             return new PasswordAuthentication(Gmail.this.USER, Gmail.this.PASSWORD);
@@ -273,9 +279,9 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
          * Example
          */
         try {
-            Transport.send(message);
-        } catch (MessagingException e) {
-            logger.error("Impossible to send mail from account {} due to '{}'", USER, e.getMessage());
+            sendMailSimple(message.getAllRecipients()[0].toString(), message.getSubject(), message.getContent().toString());
+        } catch (Exception exc) {
+            logger.error("Impossible to send mail from account {} due to '{}'", USER, exc.getStackTrace());
             
             return false;
         }
@@ -291,17 +297,21 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
     public boolean sendMailSimple(String to, String subject, String body) {
 
         try {
+            if(mailSender == null ) {
+                mailSender = new MailSender("smtp.gmail.com","465",USER, PASSWORD);
+            }
 
-            Message message = new MimeMessage(getSession());
-            message.setFrom(new InternetAddress(USER));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            message.setSubject(subject);
-            message.setText(body);
             logger.info("Sending mail to: {}", to);
-            return sendMail(message);
 
-        } catch (MessagingException e) {
-            logger.error("Impossible to send mail from account {} due to '{}'", USER, e.getMessage());
+            mailSender.sendMail(subject,
+                    body,
+                    USER,
+                    to);
+
+            return true;
+
+        } catch (Exception e) {
+            logger.error("Impossible to send mail from account {} due to '{}'", USER, e.getStackTrace());
             return false;
         }
 

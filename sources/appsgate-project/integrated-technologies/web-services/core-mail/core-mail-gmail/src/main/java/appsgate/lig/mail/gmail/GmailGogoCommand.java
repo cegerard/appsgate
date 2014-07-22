@@ -133,6 +133,7 @@ public class GmailGogoCommand {
 			}
 
 			mailService.sendMailSimple(to, subject, body);
+            out.println("Message successfully sent");
 
 		}
 
