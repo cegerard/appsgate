@@ -350,7 +350,7 @@ final public class NodeProgram extends Node {
      */
     private void setRunningState(RUNNING_STATE runningState) {
         this.runningState = runningState;
-        getMediator().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
+        getMediator().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString(), name));
     }
 
     @Override
@@ -389,9 +389,15 @@ final public class NodeProgram extends Node {
     public String getExpertProgramScript() {
         SymbolTable vars = new SymbolTable(this);
         this.setSymbolTable(vars);
-        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + body.getExpertProgramScript();
+        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + this.getBodyScript();
     }
 
+    private String getBodyScript() {
+        if (body != null) {
+            return body.getExpertProgramScript();
+        }
+        return "";
+    }
     /**
      * @return the header of a program
      */

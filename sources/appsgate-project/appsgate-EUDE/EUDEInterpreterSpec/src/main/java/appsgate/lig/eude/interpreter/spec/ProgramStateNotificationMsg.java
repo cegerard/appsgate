@@ -3,28 +3,13 @@ package appsgate.lig.eude.interpreter.spec;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.ehmi.spec.messages.NotificationMsg;
-
 /**
  * ApAm Program state notification class
  *
  * @author Cédric Gérard
  *
  */
-public class ProgramStateNotificationMsg implements NotificationMsg {
-
-    /**
-     * the id of the program associated to the notification message
-     */
-    private final String programId;
-    /**
-     * the var that has changed in the program
-     */
-    private final String varName;
-    /**
-     * the new value of the var
-     */
-    private final String value;
+public class ProgramStateNotificationMsg extends ProgramNotification {
 
     /**
      * Constructor
@@ -32,36 +17,19 @@ public class ProgramStateNotificationMsg implements NotificationMsg {
      * @param programId
      * @param varName
      * @param value
+     * @param programName
      */
-    public ProgramStateNotificationMsg(String programId, String varName, String value) {
-        super();
-        this.programId = programId;
-        this.varName = varName;
-        this.value = value;
-    }
-
-    @Override
-    public String getSource() {
-        return "";
+    public ProgramStateNotificationMsg(String programId, String varName, String value, String programName) {
+        super("runningState", programId, value, programName, null);
     }
     
-    @Override
-    public String getVarName() {
-    	return varName;
-    }
-
-    @Override
-    public String getNewValue() {
-        return value;
-    }
-
     @Override
     public JSONObject JSONize() {
         JSONObject obj = new JSONObject();
         try {
-            obj.put("objectId", programId);
-            obj.put("varName", varName);
-            obj.put("value", value);
+            obj.put("objectId", getProgramId());
+            obj.put("varName", "runningState");
+            obj.put("value", getRunningState());
         } catch (JSONException e) {
             // No exception will be raised since put value is always set
         }

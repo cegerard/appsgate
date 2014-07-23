@@ -30,7 +30,7 @@ public class ProgramNotification implements NotificationMsg {
     /**
      * Field for user
      */
-    private final String userSource;
+    private final String name;
 
     /**
      * Constructor
@@ -38,27 +38,68 @@ public class ProgramNotification implements NotificationMsg {
      * @param changes
      * @param programId
      * @param runningState
+     * @param name
      * @param source
-     * @param userSource
      */
     public ProgramNotification(String changes, String programId, String runningState,
-            JSONObject source, String userSource) {
+            String name, JSONObject source) {
         super();
         this.changes = changes;
         this.programId = programId;
         this.runningState = runningState;
         this.source = source;
-        this.userSource = userSource;
+        if (name != null && !name.isEmpty()) {
+            this.name = name;
+        } else {
+            this.name = getProgramNameFromSource();
+        }
+
+    }
+
+    /**
+     * @return the program id
+     */
+    public String getProgramId() {
+        return this.programId;
+    }
+
+    /**
+     * @return the program id
+     */
+    public String getRunningState() {
+        return this.runningState;
+    }
+
+    /**
+     * @return the program name
+     */
+    public String getProgramName() {
+        return this.name;
+    }
+
+    /**
+     *
+     * @return the program name if it exists
+     */
+    public final String getProgramNameFromSource() {
+        try {
+            if (source != null) {
+                return source.getString("name");
+            }
+        } catch (JSONException ex) {
+        }
+        return "";
+
     }
 
     @Override
     public String getSource() {
-        return "";
+        return getProgramId();
     }
-    
+
     @Override
     public String getVarName() {
-    	return changes;
+        return changes;
     }
 
     @Override
@@ -75,7 +116,6 @@ public class ProgramNotification implements NotificationMsg {
             content.put("id", programId);
             content.put("runningState", runningState);
             content.put("source", source);
-            content.put("userSource", userSource);
 
             if (changes.isEmpty()) {
                 notif.put("", content);

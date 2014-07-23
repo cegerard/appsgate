@@ -18,6 +18,7 @@ import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
+import java.text.SimpleDateFormat;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -68,8 +69,8 @@ public class TraceMan implements TraceManSpec {
      */
     public void newInst() {
         try {
-            Calendar date = Calendar.getInstance();
-            this.traceFileWriter = new PrintWriter("traceMan-" + date.getTimeInMillis() + ".json");
+            String date = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(Calendar.getInstance().getTime());
+            this.traceFileWriter = new PrintWriter("traceMan-" + date + ".json");
             traceFileWriter.println("[");
         } catch (FileNotFoundException ex) {
             this.traceFileWriter = null;
@@ -218,115 +219,63 @@ public class TraceMan implements TraceManSpec {
 
     /**
      *
-     * @param notif
+     * @param n
      */
-    public synchronized void gotNotification(NotificationMsg notif) {
+    public synchronized void gotNotification(NotificationMsg n) {
         try {
-            JSONObject jsonNotif = notif.JSONize();
-            // Add trace for programs notification only
-            if (notif instanceof ProgramNotification) {
+            if (!(n instanceof ProgramNotification)) {
+                return;
+            }
+            ProgramNotification notif = (ProgramNotification) n;
+            //Create the notification JSON object
+            JSONObject pgmNotif = new JSONObject();
+            pgmNotif.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
 
-                //Create the notification JSON object
-                JSONObject pgmNotif = new JSONObject();
+            //Create the device tab JSON entry
+            JSONArray deviceTab = new JSONArray();
+            //Nothing here cause it is program notification
+            pgmNotif.put("devices", deviceTab);
+
+            //Create the device tab JSON entry
+            JSONArray pgmTab = new JSONArray();
+            {
+
+                //Create a device trace entry
+                JSONObject progNotif = new JSONObject();
                 {
-                    pgmNotif.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
+                    progNotif.put("id", notif.getProgramId());
+                    progNotif.put("name", notif.getProgramName());
 
-                    //Create the device tab JSON entry
-                    JSONArray deviceTab = new JSONArray();
+                    //Create the event description device entry
+                    JSONObject event = new JSONObject();
                     {
-                        //Nothing here cause it is program notification
-                        pgmNotif.put("devices", deviceTab);
-                    }
-
-                    //Create the device tab JSON entry
-                    JSONArray pgmTab = new JSONArray();
-                    {
-
-                        //Create a device trace entry
-                        JSONObject progNotif = new JSONObject();
-                        {
-                            progNotif.put("id", jsonNotif.getString("id"));
-                            progNotif.put("name", jsonNotif.getJSONObject("source").getString("name"));
-
-                            //Create the event description device entry
-                            JSONObject event = new JSONObject();
-                            {
-                                String change = notif.getVarName();
-                                if (change.contentEquals("newProgram")) {
-                                    event.put("type", "appear");
-                                } else if (change.contentEquals("removeProgram")) {
-                                    event.put("type", "disappaear");
-                                } else { //change == "updateProgram"
-                                    event.put("type", "update");
-                                }
-                                //Create causality event entry
-                                if (change.contentEquals("newProgram")) {
-                                    event.put("causality", getCausalityJSON("user", "Program has been added"));
-                                } else if (change.contentEquals("removeProgram")) {
-                                    event.put("causality", getCausalityJSON("user", "Program has been deleted"));
-                                } else { //change == "updateProgram"
-                                    event.put("causality", getCausalityJSON("user", "Program has been updated"));
-                                }
-
-                                progNotif.put("event", event);
-                            }
-
-                            progNotif.put("state", jsonNotif.getString("runningState"));
-                            pgmTab.put(progNotif);
+                        String change = notif.getVarName();
+                        if (change.contentEquals("newProgram")) {
+                            event.put("type", "appear");
+                            event.put("causality", getCausalityJSON("user", "Program has been added"));
+                        } else if (change.contentEquals("removeProgram")) {
+                            event.put("type", "disappaear");
+                            event.put("causality", getCausalityJSON("user", "Program has been deleted"));
+                        } else { //change == "updateProgram"
+                            event.put("type", "update");
+                        }
+                        //Create causality event entry
+                        if (change.contentEquals("updateProgram")) {
+                            event.put("causality", getCausalityJSON("user", "Program has been updated"));
                         }
 
-                        pgmNotif.put("programs", pgmTab);
+                        progNotif.put("event", event);
                     }
+
+                    progNotif.put("state", notif.getRunningState());
+                    pgmTab.put(progNotif);
                 }
+
+                pgmNotif.put("programs", pgmTab);
 
                 //Trace the notification JSON object in the trace file
                 trace(pgmNotif);
-
-            } else if (notif instanceof ProgramStateNotificationMsg) {
-
-                //Create the notification JSON object
-                JSONObject pgmStateNotif = new JSONObject();
-                {
-                    pgmStateNotif.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
-
-                    //Create the device tab JSON entry
-                    JSONArray deviceTab = new JSONArray();
-                    {
-                        //Nothing here cause it is program notification
-                        pgmStateNotif.put("devices", deviceTab);
-                    }
-
-                    //Create the device tab JSON entry
-                    JSONArray pgmTab = new JSONArray();
-                    {
-                        //Create a device trace entry
-                        JSONObject progNotif = new JSONObject();
-                        {
-                            progNotif.put("id", jsonNotif.getString("objectId"));
-                            progNotif.put("name", jsonNotif.getString("objectId")); //TODO get the name of this program
-
-                            //Create the event description device entry
-                            JSONObject event = new JSONObject();
-                            {
-                                event.put("type", "update");
-                                //TODO causality must be retrieved from the notification
-                                progNotif.put("event", this.getCausalityJSON("user/program", "Program running state changed"));
-                            }
-                            progNotif.put("state", notif.getNewValue());
-                            pgmTab.put(progNotif);
-                        }
-
-                        pgmStateNotif.put("programs", pgmTab);
-                    }
-                }
-
-                //Trace the notification JSON object in the trace file
-                trace(pgmStateNotif);
-
-            } else {
-                LOGGER.debug("EHMI Notification message not traced.");
             }
-
         } catch (JSONException jsonEx) {
             LOGGER.error("JSONException thrown: " + jsonEx.getMessage());
         }
@@ -337,7 +286,7 @@ public class TraceMan implements TraceManSpec {
      *
      * @param traceObj the trace to add into the trace file
      */
-    private void trace(JSONObject traceObj) {
+    private synchronized void trace(JSONObject traceObj) {
 
         if (cptTrace > 0) { //For all trace after the first 
             traceFileWriter.println(",");
@@ -345,6 +294,8 @@ public class TraceMan implements TraceManSpec {
         } else { //For the first trace
             traceFileWriter.print(traceObj.toString());
         }
+        this.traceFileWriter.flush();
+
         cptTrace++;
     }
 
@@ -655,7 +606,6 @@ public class TraceMan implements TraceManSpec {
 
         deviceTypeName.put(srcId, typeFriendlyName);
     }
-
 
     /**
      * Method to format a causality JSON object.

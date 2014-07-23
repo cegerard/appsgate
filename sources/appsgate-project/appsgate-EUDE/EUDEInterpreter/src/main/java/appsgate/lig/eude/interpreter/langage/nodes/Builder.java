@@ -263,7 +263,7 @@ public class Builder {
      */
     public static Node nodeOrNull(JSONObject o, Node parent)
             throws SpokTypeException {
-        if (o == null) {
+        if (o == null || o.isNull("type")) {
             return null;
         }
         return buildFromJSON(o, parent);
