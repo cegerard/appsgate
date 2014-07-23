@@ -16,7 +16,8 @@
             <interface field="sendToClientService"/>
         </relation>
 
-        <ipojo:requires field="bridges" specification="com.philips.lighting.hue.sdk.bridge.impl.PHBridgeImpl"/>
+        <ipojo:requires field="lights" specification="appsgate.lig.proxy.PhilipsHUE.dao.LightWrapper"/>
+        <ipojo:requires field="bridges" specification="com.philips.lighting.model.PHBridge"/>
 
 
         <ev:subscriber
