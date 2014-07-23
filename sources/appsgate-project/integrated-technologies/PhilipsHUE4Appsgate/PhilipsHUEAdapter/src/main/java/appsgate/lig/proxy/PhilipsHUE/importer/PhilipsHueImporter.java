@@ -1,9 +1,7 @@
 package appsgate.lig.proxy.PhilipsHUE.importer;
 
-import appsgate.lig.proxy.PhilipsHUE.dao.LightWrapper;
 import com.philips.lighting.hue.sdk.bridge.impl.PHBridgeImpl;
-import fr.imag.adele.apam.CST;
-import fr.imag.adele.apam.impl.ComponentBrokerImpl;
+import com.philips.lighting.model.PHLight;
 import org.apache.felix.ipojo.annotations.*;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -14,7 +12,7 @@ import org.ow2.chameleon.fuchsia.core.component.ImporterIntrospection;
 import org.ow2.chameleon.fuchsia.core.component.ImporterService;
 import org.ow2.chameleon.fuchsia.core.declaration.ImportDeclaration;
 import org.ow2.chameleon.fuchsia.core.exceptions.BinderException;
-import org.ow2.chameleon.fuchsia.importer.philipshue.util.PhilipsHueLightDeclarationWrapper;
+import org.ow2.chameleon.fuchsia.importer.philipshue.util.PhilipsHueImportDeclarationWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +31,6 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
     private ServiceReference serviceReference;
 
     private Map<String,ServiceRegistration> lamps=new HashMap<String, ServiceRegistration>();
-    private Map<String,String> lampsApamInstance=new HashMap<String, String>();
 
     @ServiceProperty(name = "target", value = "(discovery.philips.device.name=*)")
     private String filter;
@@ -84,7 +81,7 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
         LOG.info("Appsgate philips hue importer was invoked");
 
-        PhilipsHueLightDeclarationWrapper pojo= PhilipsHueLightDeclarationWrapper.create(importDeclaration);
+        PhilipsHueImportDeclarationWrapper pojo= PhilipsHueImportDeclarationWrapper.create(importDeclaration);
 
         try {
 
@@ -92,16 +89,12 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
             Dictionary<String, Object> props = new Hashtable<String, Object>();
 
-            LightWrapper wrap=new LightWrapper(pojo.getLight(),pojo.getBridge());
-
-            ServiceRegistration lampService=context.registerService(LightWrapper.class,wrap,props);
+            ServiceRegistration lampService=context.registerService(pojo.getType(),pojo.getObject(),props);
 
             lamps.put(pojo.getId(),lampService);
 
             //This is done in a different thread duo to an Apam blockage
-            PhilipsHueFactoryExecutor pfe=new PhilipsHueFactoryExecutor(bridges.get(0), pojo.getLight(),this,importDeclaration);
-            lampsApamInstance.put(pojo.getId(),pfe.getDeviceID());
-            new Thread(pfe).start();
+            new Thread(new PhilipsHueFactoryExecutor(bridges.get(0), (PHLight) pojo.getObject(),this,importDeclaration)).start();
 
 
         } catch (ClassNotFoundException e) {
@@ -110,10 +103,14 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
     }
 
+
+
+
+
     @Override
     protected void denyImportDeclaration(final ImportDeclaration importDeclaration) throws BinderException {
 
-        PhilipsHueLightDeclarationWrapper pojo= PhilipsHueLightDeclarationWrapper.create(importDeclaration);
+        PhilipsHueImportDeclarationWrapper pojo= PhilipsHueImportDeclarationWrapper.create(importDeclaration);
 
         try {
             lamps.remove(pojo.getId()).unregister();
@@ -121,14 +118,8 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
             LOG.error("failed unregistering lamp", e);
         }
 
-        try {
-            String apamInstanceName=lampsApamInstance.remove(pojo.getId());
-            ((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(apamInstanceName);
-        }catch(IllegalStateException e){
-            LOG.error("failed unregistering lamp", e);
-        }
-
         unhandleImportDeclaration(importDeclaration);
+
     }
 
 

@@ -4,12 +4,12 @@ package appsgate.lig.proxy.PhilipsHUE;
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeCommandListener;
-import appsgate.lig.proxy.PhilipsHUE.dao.LightWrapper;
-import appsgate.lig.proxy.PhilipsHUE.importer.PhilipsHueFactoryExecutor;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
+import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHMessageType;
+import com.philips.lighting.hue.sdk.bridge.impl.PHBridgeImpl;
 import com.philips.lighting.model.*;
 import com.philips.lighting.model.PHLight.PHLightAlertMode;
 import com.philips.lighting.model.PHLight.PHLightColorMode;
@@ -41,10 +41,11 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 	public static String ApAMIMPL = "PhilipsHUEImpl";
 	public static String CONFIG_TARGET = "PHILIPSHUE";
+	public static String APP_NAME = "AppsGateUJF";
 
-    private Set<PHBridge> bridges;
+    private PHHueSDK phHueSDK;
 
-    private Set<LightWrapper> lights;
+    private Set<PHBridgeImpl> bridges;
 
 	private SendWebsocketsService sendToClientService;
 
@@ -54,6 +55,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * Static class member uses to log what happened in each instances
 	 */
 	private static Logger logger = LoggerFactory.getLogger(PhilipsHUEAdapter.class);
+
+    private HashMap<String, Instance> sidToInstanceName = new HashMap<String, Instance>();
 
     private NewLightListener newlightListener;
 
@@ -80,6 +83,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
         logger.info("Removing command listener TARGET {} ...",CONFIG_TARGET);
         listenerService.removeCommandListener(CONFIG_TARGET);
         logger.info("Removing command listener {} removed",CONFIG_TARGET);
+        logger.info("Destroying philips SDK ...");
+        phHueSDK.destroySDK();
+        logger.info("Philips SDK destroyed");
         logger.debug("{} uninstantiated.",this.getClass().getSimpleName());
 	}
 
@@ -88,11 +94,16 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 		JSONArray jsonResponse = new JSONArray();
 		try {
-
-				for(LightWrapper light : lights) {
+			
+			for(PHBridge bridge : bridges) {
+				
+				PHBridgeConfiguration bc = bridge.getResourceCache().getBridgeConfiguration();
+				List<PHLight> lightsList = bridge.getResourceCache().getAllLights();
+				
+				for(PHLight light : lightsList) {
 					JSONObject lightObj = new JSONObject();
 
-                    PHLightState lightState = light.getLight().getLastKnownLightState();
+                    PHLightState lightState = light.getLastKnownLightState();
 
 					JSONObject JSONLightState = new JSONObject();
 
@@ -107,20 +118,22 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 					JSONLightState.put("effect", lightState.getEffectMode().name());
 					JSONLightState.put("colorMode", lightState.getColorMode().name());
 					JSONLightState.put("transitionTime", String.valueOf(lightState.getTransitionTime()));
-					JSONLightState.put("reachable", String.valueOf(light.getLight().isReachable()));
+					JSONLightState.put("reachable", String.valueOf(light.isReachable()));
 
 					lightObj.put("state", JSONLightState);
-					lightObj.put("type", light.getLight().getLightType().name());
-					lightObj.put("name", light.getLight().getName());
-					lightObj.put("modelid", light.getLight().getModelNumber());
-					lightObj.put("swversion", light.getLight().getVersionNumber());
-					lightObj.put("lightId", light.getBridge().getResourceCache().getBridgeConfiguration().getMacAddress()+"-"+light.getLight().getIdentifier());
-					lightObj.put("bridgeLightId", light.getLight().getIdentifier());
-					lightObj.put("bridgeIp", light.getBridge().getResourceCache().getBridgeConfiguration().getIpAddress());
+					lightObj.put("type", light.getLightType().name());
+					lightObj.put("name", light.getName());
+					lightObj.put("modelid", light.getModelNumber());
+					lightObj.put("swversion", light.getVersionNumber());
+					lightObj.put("lightId", bc.getMacAddress()+"-"+light.getIdentifier());
+					lightObj.put("bridgeLightId", light.getIdentifier());
+					lightObj.put("bridgeIp", bc.getIpAddress());
 
 
 					jsonResponse.put(lightObj);
 				}
+			}
+			logger.debug("getLightList : "+jsonResponse.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -180,11 +193,10 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
 	@Override
 	public boolean searchForNewLights() {
-
+		
 		for (PHBridge bridge : bridges) {
 			bridge.findNewLights(newlightListener);
 		}
-
 		return true;
 	}
 	
@@ -200,11 +212,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param serials the list of serial id as a list of String
 	 */
 	public void searchForNewLightsWithSerials(List<String> serials) {
-
-        for (LightWrapper light: lights) {
-            light.getBridge().findNewLightsWithSerials(serials, newlightListener);
+		for (PHBridge bridge : bridges) {
+			bridge.findNewLightsWithSerials(serials, newlightListener);
 		}
-
 	}
 	
 	/**
@@ -465,10 +475,9 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	@Override
 	public JSONArray getBridgeList() {
 		JSONArray jsonResponse = new JSONArray();
-
 		try {
 			JSONObject jsonBridge;
-
+			
 			for(PHBridge bridge : bridges){
 				jsonBridge = new JSONObject();
 				PHBridgeConfiguration bc = bridge.getResourceCache().getBridgeConfiguration();
@@ -480,12 +489,22 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				jsonResponse.put(jsonBridge);
 			}
 
+            /*
+			for(PHAccessPoint accessPoint : bridgeFinder.getUnauthorizedAccessPoints()) {
+				jsonBridge = new JSONObject();
+				jsonBridge.put("ip", accessPoint.getIpAddress());
+				jsonBridge.put("MAC", accessPoint.getMacAddress());
+				jsonBridge.put("status", "not associated");
+				jsonBridge.put("lights", "N.A");
+	
+				jsonResponse.put(jsonBridge);
+			}
+			*/
+			
 			logger.debug("getBridgeList : "+jsonResponse.toString());
 
-		} catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+		} catch (JSONException e) {e.printStackTrace();}
+		
 		return jsonResponse;
 	}
 	
@@ -504,7 +523,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param ap Philips hue access point
 	 */
 	public void notifyOldBridge(PHAccessPoint ap) {
-        System.out.println("*************** old main creating instance **********");
 		Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
 		Set<Instance> insts = impl.getInsts();
 		for(Instance inst : insts) {
@@ -538,14 +556,12 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 */
 	private PHBridge getBridgeFromIp(String brIp) {
 		PHBridge bridge= null;
-
-        for(PHBridge bridgeToken : bridges ) {
-            if(bridgeToken.getResourceCache().getBridgeConfiguration().getIpAddress().contentEquals(brIp)) {
-                bridge = bridgeToken;
-                break;
-            }
+		for(PHBridge br : bridges) {
+			if(br.getResourceCache().getBridgeConfiguration().getIpAddress().contentEquals(brIp)) {
+				bridge = br;
+				break;
+			}
 		}
-
 		return bridge;
 	}
 	
@@ -577,6 +593,14 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 				returnedConf.put("localtime", conf.getLocalTime());
 				
 			}
+            /*
+            else { //bridge not associated
+				PHAccessPoint ap = bridgeFinder.getUnauthorizedAccessPoint(ip);
+				returnedConf.put("ip", ap.getIpAddress());
+				returnedConf.put("mac", ap.getMacAddress());
+				returnedConf.put("error", "has to be associated");
+			}
+			*/
 			
 		} catch (JSONException e) {e.printStackTrace();}
 	
@@ -616,12 +640,104 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 *            , the id of the hue light
 	 * @return an ApAM instance
 	 */
-	private Instance getSensorInstance(String uid) {
-
-        return CST.componentBroker.getInst(uid);
-
+	public Instance getSensorInstance(String uid) {
+		return sidToInstanceName.get(uid);
 	}
-
+	
+	/**
+	 * Put the instance inst in the adapter HashMap.
+	 * @param uid the AppsGate instance identifier
+	 * @param inst the ApAM instance reference
+	 */
+	public void putInSensorInstance(String uid, Instance inst) {
+		sidToInstanceName.put(uid, inst);
+	}
+	
+	/**
+	 * remove an ApAM instance from the HashMap
+	 * @param uid the hue light identifier
+	 */
+	public void removeInSensorInstance(String uid) {
+		sidToInstanceName.remove(uid);
+	}
+	
+	/**
+	 * Initiate ApAm instance light state properties structure from PHLightState sdk structure
+	 * @param properties the HashMap for ApAM
+	 * @param lightState the PHLightState structure
+	 */
+	public void initiateLightStateProperties(Map<String, String> properties, PHLightState lightState) {
+		properties.put("state", String.valueOf(lightState.isOn()));
+		properties.put("hue", String.valueOf(lightState.getHue()));
+		properties.put("sat", String.valueOf(lightState.getSaturation()));
+		properties.put("bri", String.valueOf(lightState.getBrightness()));
+		properties.put("x", String.valueOf(lightState.getX()));
+		properties.put("y", String.valueOf(lightState.getY()));
+		properties.put("ct", String.valueOf(lightState.getCt()));
+		properties.put("speed", String.valueOf(lightState.getTransitionTime()));
+		
+		if(lightState.getAlertMode().name().contentEquals(PHLightAlertMode.ALERT_SELECT.name())) {
+			properties.put("alert", "select");
+		}else if(lightState.getAlertMode().name().contentEquals(PHLightAlertMode.ALERT_LSELECT.name())){ 
+			properties.put("alert", "lselect");
+		}else if(lightState.getAlertMode().name().contentEquals(PHLightAlertMode.ALERT_NONE.name())){ 
+			properties.put("alert", "none");
+		}else if(lightState.getAlertMode().name().contentEquals(PHLightAlertMode.ALERT_UNKNOWN.name())){ 
+			properties.put("alert", "unknown");
+		}else {
+			logger.error("Error when initiating the HUE light alert value!");
+		}
+		
+		if(lightState.getEffectMode().name().contentEquals(PHLightEffectMode.EFFECT_COLORLOOP.name())) {
+			properties.put("effect",  "colorloop");
+		}else if(lightState.getEffectMode().name().contentEquals(PHLightEffectMode.EFFECT_NONE.name())){ 
+			properties.put("effect",  "none");
+		}else if(lightState.getEffectMode().name().contentEquals(PHLightEffectMode.EFFECT_UNKNOWN.name())){ 
+			properties.put("effect",  "unknown");
+		}else {
+			logger.error("Error when initiating the HUE light effect value!");
+		}
+		
+		if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_HUE_SATURATION.name())) {
+			properties.put("mode",  "hs");
+		}else if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_CT.name())){ 
+			properties.put("mode",  "ct");
+		}else if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_XY.name())){ 
+			properties.put("mode",  "xy");
+		}else if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_NONE.name())){ 
+			properties.put("mode",  "none");
+		}else if(lightState.getColorMode().name().contentEquals(PHLightColorMode.COLORMODE_UNKNOWN.name())){ 
+			properties.put("mode",  "unknown");
+		}else {
+			logger.error("Error when initiating the HUE light color mode value!");
+		}
+	}
+	
+	/**
+	 * Instantiate a new HUE light with properties get from hte HUE bridge
+	 * @param bridge the hue bridge that handle the light
+	 * @param light the hue light on the bridge
+	 */
+	public void instanciateHUELight(PHBridge bridge, PHLight light) {
+		PHBridgeConfiguration bc  = bridge.getResourceCache().getBridgeConfiguration();
+		String deviceID = bc.getMacAddress()+"-"+light.getIdentifier();
+		Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
+		Map<String, String> properties = new HashMap<String, String>();
+		
+		properties.put("deviceName", 	light.getName());
+		properties.put("deviceId", 		deviceID);
+		properties.put("lightBridgeId", light.getIdentifier());
+		properties.put("lightBridgeIP", bc.getIpAddress());
+		properties.put("reachable", "true");
+		initiateLightStateProperties(properties, light.getLastKnownLightState());
+		
+		if(impl != null) {
+			Instance inst = impl.createInstance(null, properties);
+			sidToInstanceName.put(deviceID, inst);
+		}else {
+			logger.error("No "+ApAMIMPL+" found !");
+		}
+	}
 
     public void bridgeOnError(Event event){
 
@@ -666,25 +782,39 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
         PHBridgeConfiguration bc = bridge.getResourceCache()
                 .getBridgeConfiguration();
-
         logger.debug("Cache updated: " + flag + " for " + bc.getIpAddress());
 
         for (PHLight light : bridge.getResourceCache().getAllLights()) {
-
+            Instance inst = getSensorInstance(bc.getMacAddress() + "-"
+                    + light.getIdentifier());
+            PHLightState lightState = light.getLastKnownLightState();
             Map<String, String> properties = new HashMap<String, String>();
             String deviceID = bc.getMacAddress() + "-" + light.getIdentifier();
-            Instance inst = getSensorInstance(deviceID);
-            PHLightState lightState = light.getLastKnownLightState();
 
             if (inst != null) {
-                if (light.isReachable()) {
-                    PhilipsHueFactoryExecutor.initiateLightStateProperties(properties,lightState);;
+                if (!light.isReachable()) {
+                    inst.setProperty("reachable", "false");
+                    ((ComponentBrokerImpl) CST.componentBroker)
+                            .disappearedComponent(inst.getName());
+                    removeInSensorInstance(deviceID);
+                } else {
+                    initiateLightStateProperties(properties, lightState);
                     inst.setAllProperties(properties);
+                }
+            } else { // no ApAM instance
+                if (light.isReachable()) {
+                    // Instantiate the light
+                    instanciateHUELight(bridge, light);
                 }
             }
         }
 
     }
+
+	/***********************************************/
+	/** 		    INNER CLASS					  **/
+	/***********************************************/
+
 
 	private class NewLightListener extends PHLightListener {
 
@@ -710,7 +840,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 		public void onSuccess() {
 			logger.debug("light action success");
 		}
-
+		
 	}
 
 

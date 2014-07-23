@@ -20,10 +20,8 @@ public class PhilipsHueFactoryExecutor implements Runnable {
     public static String ApAMIMPL = "PhilipsHUEImpl";
     final ImportDeclaration importDeclaration;
     private final PHBridge bridge;
-    private final PHBridgeConfiguration bc;
     private final PHLight light;
     private final PhilipsHueImporter importer;
-    private String deviceID;
     private Logger LOG= LoggerFactory.getLogger(PhilipsHueFactoryExecutor.class);
 
     public PhilipsHueFactoryExecutor(PHBridge bridge, PHLight light, PhilipsHueImporter importer, ImportDeclaration importDeclaration){
@@ -31,19 +29,17 @@ public class PhilipsHueFactoryExecutor implements Runnable {
         this.light=light;
         this.importer=importer;
         this.importDeclaration=importDeclaration;
-        bc  = bridge.getResourceCache().getBridgeConfiguration();
-        deviceID = bc.getMacAddress()+"-"+light.getIdentifier();
     }
 
     @Override
     public void run()  {
 
         try {
-
+            PHBridgeConfiguration bc  = bridge.getResourceCache().getBridgeConfiguration();
+            String deviceID = bc.getMacAddress()+"-"+light.getIdentifier();
             Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
             Map<String, String> properties = new HashMap<String, String>();
 
-            properties.put("instance.name", deviceID);
             properties.put("deviceName", 	light.getName());
             properties.put("deviceId", 		deviceID);
             properties.put("lightBridgeId", light.getIdentifier());
@@ -68,7 +64,7 @@ public class PhilipsHueFactoryExecutor implements Runnable {
         }
     }
 
-    public static void initiateLightStateProperties(Map<String, String> properties, PHLightState lightState) {
+    public void initiateLightStateProperties(Map<String, String> properties, PHLightState lightState) {
         properties.put("state", String.valueOf(lightState.isOn()));
         properties.put("hue", String.valueOf(lightState.getHue()));
         properties.put("sat", String.valueOf(lightState.getSaturation()));
@@ -113,9 +109,5 @@ public class PhilipsHueFactoryExecutor implements Runnable {
         }else {
             System.out.println("Error when initiating the HUE light alert value!");
         }
-    }
-
-    public String getDeviceID() {
-        return deviceID;
     }
 }
