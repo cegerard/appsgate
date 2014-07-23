@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
-import appsgate.lig.core.object.spec.GrammarDescription;
 
 /**
  * This one implements all the appsgate CoreObject behavior
@@ -147,7 +146,7 @@ public class WeatherServiceCoreImpl implements CoreObjectSpec {
 	}
 
 	@Override
-	public GrammarDescription getBehaviorDescription() {
+	public JSONObject getBehaviorDescription() {
 		// TODO Auto-generated method stub
 		return null;
 	}	
