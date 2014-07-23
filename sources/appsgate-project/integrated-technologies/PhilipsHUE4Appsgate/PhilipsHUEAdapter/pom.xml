@@ -83,12 +83,8 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Import-Package>
-                            org.ow2.chameleon.fuchsia.importer.philipshue,
-                            *</Import-Package>
-                        <!--
-                        <Private-Package>org.json</Private-Package>
-                        -->
+                        <Import-Package>*</Import-Package>
+                        <Private-Package>appsgate.lig.proxy.PhilipsHUE.dao</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>
