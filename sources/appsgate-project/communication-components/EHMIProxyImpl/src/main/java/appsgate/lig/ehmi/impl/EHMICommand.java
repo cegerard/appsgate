@@ -98,7 +98,7 @@ public class EHMICommand implements Runnable {
 			Object ret = abstractInvoke(serviceObject, args.toArray(), paramType, methodName);
 			
 			if (ret != null) {
-				logger.debug("remote call, " + methodName + " returns "
+				logger.debug("remote call (EHMI Command), " + methodName + " returns "
 						+ ret.toString() + " / return type: "
 						+ ret.getClass().getName());
 				returnObject = ret;
