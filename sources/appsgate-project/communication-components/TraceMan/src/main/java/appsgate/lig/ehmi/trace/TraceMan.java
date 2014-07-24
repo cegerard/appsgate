@@ -17,7 +17,7 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
-import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
+import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import java.text.SimpleDateFormat;
 
 /**
@@ -45,6 +45,10 @@ public class TraceMan implements TraceManSpec {
      */
     private DevicePropertiesTableSpec devicePropTable;
 
+    /**
+     * Dependencies to the place manager
+     */
+    private PlaceManagerSpec placeManager;
     /**
      * The printWriter for the trace file on the hard drive
      */
@@ -97,124 +101,100 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
-        try {
-            if (deviceTypeName.get(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
-
-                //Create the notification JSON object
-                JSONObject coreNotif = new JSONObject();
-                {
-                    coreNotif.put("timestamp", timeStamp);
-
-                    //Create the device tab JSON entry
-                    JSONArray deviceTab = new JSONArray();
-                    {
-                        //Create a device trace entry
-                        JSONObject objectNotif = new JSONObject();
-                        {
-                            objectNotif.put("id", srcId);
-                            objectNotif.put("name", devicePropTable.getName(srcId, ""));
-                            objectNotif.put("type", deviceTypeName.get(srcId));
-
-                            //Create the event description device entry
-                            JSONObject event = new JSONObject();
-                            {
-                                event.put("type", "update");
-
-                                //Create causality event entry
-                                event.put("causality", getCausalityJSON(srcId, varName));
-
-                                objectNotif.put("event", event);
-                            }
-
-                            addDeviceState(objectNotif, srcId, varName, value);
-                            deviceTab.put(objectNotif);
-                        }
-                        coreNotif.put("devices", deviceTab);
-                    }
-
-                    //Create the device tab JSON entry
-                    JSONArray pgmTab = new JSONArray();
-                    {
-                        //Nothing here cause it is device notification
-                        coreNotif.put("programs", pgmTab);
-                    }
-                }
-
-                //Trace the notification JSON object in the trace file
-                trace(coreNotif);
+        if (deviceTypeName.get(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
+            //Create the event description device entry
+            JSONObject event = new JSONObject();
+            try {
+                event.put("type", "update");
+                event.put("state", getDeviceState(srcId, varName, value));
+            } catch (JSONException e) {
             }
-
-        } catch (JSONException jsonEx) {
-            LOGGER.error("JSONException thrown: " + jsonEx.getMessage());
+            JSONObject deviceJson = getJSONDevice(srcId, event, null);
+            //Create the notification JSON object
+            JSONObject coreNotif = getCoreNotif(timeStamp, deviceJson, null);
+            //Trace the notification JSON object in the trace file
+            trace(coreNotif);
         }
+    }
+
+    private JSONObject getCoreNotif(long timeStamp, JSONObject device, JSONObject program) {
+        JSONObject coreNotif = new JSONObject();
+        try {
+            coreNotif.put("timestamp", timeStamp);
+            //Create the device tab JSON entry
+            JSONArray deviceTab = new JSONArray();
+            {
+                if (device != null) {
+                    deviceTab.put(device);
+                }
+                coreNotif.put("devices", deviceTab);
+            }
+            //Create the device tab JSON entry
+            JSONArray pgmTab = new JSONArray();
+            {
+                if (program != null) {
+                    pgmTab.put(program);
+                }
+                coreNotif.put("programs", pgmTab);
+            }
+        } catch (JSONException e) {
+
+        }
+        return coreNotif;
+    }
+
+    private JSONObject getJSONDevice(String srcId, JSONObject event, JSONObject cause) {
+        JSONObject objectNotif = new JSONObject();
+        try {
+            objectNotif.put("id", srcId);
+            objectNotif.put("name", devicePropTable.getName(srcId, ""));
+            objectNotif.put("type", deviceTypeName.get(srcId));
+            JSONObject location = new JSONObject();
+            location.put("id", placeManager.getCoreObjectPlaceId(srcId));
+            location.put("name", placeManager.getPlaceWithDevice(srcId).getName());
+            objectNotif.put("location", location);
+            objectNotif.put("decoration", cause);
+            objectNotif.put("event", event);
+
+        } catch (JSONException e) {
+
+        }
+        return objectNotif;
+
     }
 
     @Override
     public synchronized void coreUpdateNotify(long timeStamp, String srcId, String coreType,
             String userType, String name, JSONObject description, String eventType) {
+
+        //Put the user friendly core type in the map
+        GrammarDescription grammar = EHMIProxy.getGrammarFromType(userType);
+
+        addUserType(srcId, userType);
+        deviceGrammar.put(srcId, grammar);
+
+        JSONObject event = new JSONObject();
+        JSONObject cause = new JSONObject();
         try {
+            if (eventType.contentEquals("new")) {
+                event.put("type", "appear");
+                cause = getJSONDecoration("", "technical", null, null, "Equipment appear");
+                event.put("state", getDeviceState(srcId, "", ""));
 
-            //Put the user friendly core type in the map
-            GrammarDescription grammar = EHMIProxy.getGrammarFromType(userType);
-
-            addUserType(srcId, userType);
-            deviceGrammar.put(srcId, grammar);
-
-            //Create the notification JSON object
-            JSONObject coreNotif = new JSONObject();
-            {
-                coreNotif.put("timestamp", timeStamp);
-
-                //Create the device tab JSON entry
-                JSONArray deviceTab = new JSONArray();
-                {
-                    //Create a device trace entry
-                    JSONObject objectNotif = new JSONObject();
-                    {
-                        objectNotif.put("id", srcId);
-                        objectNotif.put("name", name);
-                        objectNotif.put("type", deviceTypeName.get(srcId));
-
-                        //Create the event description device entry
-                        JSONObject event = new JSONObject();
-                        {
-                            if (eventType.contentEquals("new ")) {
-                                event.put("type", "appear");
-                            } else if (eventType.contentEquals("remove")) {
-                                event.put("type", "disappear");
-                            }
-
-                            //Create causality event entry
-                            if (eventType.contains("new")) {
-                                event.put("causality", getCausalityJSON("technical", "equipement appear"));
-                                addDeviceState(objectNotif, srcId, "", "");
-
-                            } else if (eventType.contentEquals("remove")) {
-                                event.put("causality", getCausalityJSON("technical", "equipement disappear"));
-
-                            }
-                            objectNotif.put("event", event);
-                        }
-
-                        deviceTab.put(objectNotif);
-                    }
-                    coreNotif.put("devices", deviceTab);
-                }
-
-                //Create the device tab JSON entry
-                JSONArray pgmTab = new JSONArray();
-                {
-                    //Nothing here cause it is device notification
-                    coreNotif.put("programs", pgmTab);
-                }
+            } else if (eventType.contentEquals("remove")) {
+                event.put("type", "disappear");
+                cause = getJSONDecoration("", "technical", null, null, "Equipment disappear");
             }
 
-            //Trace the notification JSON object in the trace file
-            trace(coreNotif);
+        } catch (JSONException e) {
 
-        } catch (JSONException jsonEx) {
-            LOGGER.error("JSONException thrown: " + jsonEx.getMessage());
         }
+
+        JSONObject jsonDevice = getJSONDevice(srcId, event, cause);
+        JSONObject coreNotif = getCoreNotif(timeStamp, jsonDevice, null);
+        //Trace the notification JSON object in the trace file
+        trace(coreNotif);
+
     }
 
     /**
@@ -222,63 +202,54 @@ public class TraceMan implements TraceManSpec {
      * @param n
      */
     public synchronized void gotNotification(NotificationMsg n) {
+        if (!(n instanceof ProgramNotification)) {
+            return;
+        }
+        ProgramNotification notif = (ProgramNotification) n;
+        //Create the notification JSON object
+        //Create a device trace entry
+        //Trace the notification JSON object in the trace file
+        JSONObject jsonProgram = getJSONProgram(notif.getProgramId(), notif.getProgramName(), notif.getVarName(), notif.getRunningState());
+
+        trace(getCoreNotif(EHMIProxy.getCurrentTimeInMillis(), null, jsonProgram));
+    }
+
+    private JSONObject getJSONProgram(String id, String name, String change, String state) {
+        JSONObject progNotif = new JSONObject();
         try {
-            if (!(n instanceof ProgramNotification)) {
-                return;
-            }
-            ProgramNotification notif = (ProgramNotification) n;
-            //Create the notification JSON object
-            JSONObject pgmNotif = new JSONObject();
-            pgmNotif.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
+            progNotif.put("id", id);
+            progNotif.put("name", name);
 
-            //Create the device tab JSON entry
-            JSONArray deviceTab = new JSONArray();
-            //Nothing here cause it is program notification
-            pgmNotif.put("devices", deviceTab);
-
-            //Create the device tab JSON entry
-            JSONArray pgmTab = new JSONArray();
+            //Create the event description device entry
+            JSONObject event = new JSONObject();
+            JSONObject cause = new JSONObject();
             {
+                JSONObject s = new JSONObject();
+                s.put("name", state);
+                s.put("instruction_id", "0");
+                event.put("state", s);
+                if (change.contentEquals("newProgram")) {
+                    event.put("type", "appear");
+                    cause = getJSONDecoration("", "user", null, null, "Program has been added");
+                } else if (change.contentEquals("removeProgram")) {
+                    event.put("type", "disappaear");
+                    cause = getJSONDecoration("", "user", null, null, "Program has been deleted");
 
-                //Create a device trace entry
-                JSONObject progNotif = new JSONObject();
-                {
-                    progNotif.put("id", notif.getProgramId());
-                    progNotif.put("name", notif.getProgramName());
-
-                    //Create the event description device entry
-                    JSONObject event = new JSONObject();
-                    {
-                        String change = notif.getVarName();
-                        if (change.contentEquals("newProgram")) {
-                            event.put("type", "appear");
-                            event.put("causality", getCausalityJSON("user", "Program has been added"));
-                        } else if (change.contentEquals("removeProgram")) {
-                            event.put("type", "disappaear");
-                            event.put("causality", getCausalityJSON("user", "Program has been deleted"));
-                        } else { //change == "updateProgram"
-                            event.put("type", "update");
-                        }
-                        //Create causality event entry
-                        if (change.contentEquals("updateProgram")) {
-                            event.put("causality", getCausalityJSON("user", "Program has been updated"));
-                        }
-
-                        progNotif.put("event", event);
-                    }
-
-                    progNotif.put("state", notif.getRunningState());
-                    pgmTab.put(progNotif);
+                } else { //change == "updateProgram"
+                    event.put("type", "update");
+                }
+                //Create causality event entry
+                if (change.contentEquals("updateProgram")) {
+                    cause = getJSONDecoration("", "user", null, null, "Program has been updated");
                 }
 
-                pgmNotif.put("programs", pgmTab);
-
-                //Trace the notification JSON object in the trace file
-                trace(pgmNotif);
             }
-        } catch (JSONException jsonEx) {
-            LOGGER.error("JSONException thrown: " + jsonEx.getMessage());
+            progNotif.put("event", event);
+            progNotif.put("decoration", cause);
+        } catch (JSONException e) {
+
         }
+        return progNotif;
     }
 
     /**
@@ -299,7 +270,7 @@ public class TraceMan implements TraceManSpec {
         cptTrace++;
     }
 
-    private void addDeviceState(JSONObject objectNotif, String srcId, String varName, String value) {
+    private JSONObject getDeviceState(String srcId, String varName, String value) {
         try {
             JSONObject deviceState = new JSONObject();
 
@@ -514,11 +485,12 @@ public class TraceMan implements TraceManSpec {
                 }
             }
 
-            objectNotif.put("state", deviceState);
+            return deviceState;
 
         } catch (JSONException ex) {
             LOGGER.error("JSONException thrown: " + ex.getMessage());
         }
+        return null;
     }
 
     private void addUserType(String srcId, String userType) {
@@ -614,10 +586,13 @@ public class TraceMan implements TraceManSpec {
      * @param description
      * @return the json object
      */
-    private JSONObject getCausalityJSON(String type, String description) {
+    private JSONObject getJSONDecoration(String type, String cause, String source, String target, String description) {
         JSONObject causality = new JSONObject();
         try {
             causality.put("type", type);
+            causality.put("causality", cause);
+            causality.put("source", source);
+            causality.put("target", target);
             causality.put("description", description);
 
         } catch (JSONException ex) {

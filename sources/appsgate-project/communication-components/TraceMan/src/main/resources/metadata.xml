@@ -16,6 +16,10 @@
 		<relation specification="AppsGateContextDevicePropertiesTableSpec" resolve="exist" >
 			<interface field="devicePropTable"/>
 		</relation>
+		<relation specification="PlaceManagerSpec" resolve="exist" >
+			<interface field="placeManager"/>
+		</relation>
+
 		
 		<!-- <relation specification="AppsgateClientCommunicationManagerSpec" -->
 		<!-- resolve="exist" > -->
