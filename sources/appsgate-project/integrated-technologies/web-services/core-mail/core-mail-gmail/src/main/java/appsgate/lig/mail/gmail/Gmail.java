@@ -156,8 +156,8 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
                 logger.debug("Connection established with IMAP server, "+"store : "+store);
 
             }catch(Exception exc) {
-                    exc.printStackTrace();
-                }
+                logger.error("Exception when connecting to IMAP Server " + exc.getStackTrace());
+            }
 
 
 //            store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
@@ -249,8 +249,8 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
             }
             lastFetchDateTime = Calendar.getInstance();
 
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Exception during fetch, " + e.getStackTrace());
         } finally {
             //release();
         }
