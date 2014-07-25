@@ -18,6 +18,7 @@ import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
+import appsgate.lig.manager.place.spec.SymbolicPlace;
 import java.text.SimpleDateFormat;
 
 /**
@@ -151,7 +152,10 @@ public class TraceMan implements TraceManSpec {
             objectNotif.put("type", deviceTypeName.get(srcId));
             JSONObject location = new JSONObject();
             location.put("id", placeManager.getCoreObjectPlaceId(srcId));
-            location.put("name", placeManager.getPlaceWithDevice(srcId).getName());
+            SymbolicPlace place = placeManager.getPlaceWithDevice(srcId);
+            if (place != null) {
+                location.put("name", place.getName());
+            }
             objectNotif.put("location", location);
             objectNotif.put("decoration", cause);
             objectNotif.put("event", event);
@@ -304,12 +308,12 @@ public class TraceMan implements TraceManSpec {
             } else if (deviceFriendlyType.contentEquals("Switch")) {
                 if (varName.contains("switchNumber")) {
                     deviceState.put("switchNumber", value);
-                    deviceState.put("buttonStatus", EHMIProxy.getDevice(srcId).getInt("buttonStatus"));
+                    deviceState.put("buttonStatus", "true");
                     deviceState.put("status", "2");
                 } else if (varName.contentEquals("buttonStatus")) {
                     deviceState.put("status", "2");
-                    deviceState.put("switchNumber", EHMIProxy.getDevice(srcId).getString("switchNumber"));
-                    deviceState.put("buttonStatus", value);
+                    deviceState.put("switchNumber", value);
+                    deviceState.put("buttonStatus", "false");
                 } else if (varName.contentEquals("status")) {
                     deviceState.put("status", value);
                     JSONObject descr = EHMIProxy.getDevice(srcId);
