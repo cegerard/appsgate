@@ -504,7 +504,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	 * @param ap Philips hue access point
 	 */
 	public void notifyOldBridge(PHAccessPoint ap) {
-        System.out.println("*************** old main creating instance **********");
 		Implementation impl = CST.apamResolver.findImplByName(null, ApAMIMPL);
 		Set<Instance> insts = impl.getInsts();
 		for(Instance inst : insts) {
