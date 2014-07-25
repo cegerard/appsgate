@@ -9,8 +9,11 @@
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
 		<relation field="coreProxy" fail="exception" exception="appsgate.lig.ehmi.exceptions.CoreDependencyException" resolve="exist" />
-		
-		<relation field="devicePropertiesTable" creation="eager" resolve="external" />
+
+        <relation field="abstractDevice" added="addAbstractObject" removed="removedAbstractObject" />
+
+
+        <relation field="devicePropertiesTable" creation="eager" resolve="external" />
 		<relation field="placeManager" creation="eager" resolve="external" />
 		<relation field="userManager" creation="eager" resolve="external" />
 		<relation field="interpreter" creation="eager" resolve="external" />

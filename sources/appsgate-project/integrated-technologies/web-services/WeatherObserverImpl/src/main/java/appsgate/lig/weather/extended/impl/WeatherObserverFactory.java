@@ -19,4 +19,9 @@ public class WeatherObserverFactory {
         WeatherObserverImpl impl = (WeatherObserverImpl)observerImpl.createInstance(null, new HashMap<String,String>(){{put("currentLocation", location);}} ).getServiceObject();
         return impl;
     }
+
+    public void start() {
+        createObserver("Grenoble");
+        System.out.println("################# CREATED WEATHER OBSERVER ####################");
+    }
 }

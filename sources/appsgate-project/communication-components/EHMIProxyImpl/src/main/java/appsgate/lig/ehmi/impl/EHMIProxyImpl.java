@@ -1,8 +1,11 @@
 package appsgate.lig.ehmi.impl;
 
 
+import appsgate.lig.core.object.spec.CoreObjectSpec;
+import appsgate.lig.extended.spec.ExtendedObjectSpec;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
+import fr.imag.adele.apam.Instance;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1011,9 +1014,84 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     public void stopRemoteClockSync() {
         systemClock.stopRemoteSync(coreProxy);
     }
-    
-    public void getLog(long timeStart, long timeEnd) {
-        
+
+
+
+    /**
+     * Extended devices and services, resolved by ApAM
+     */
+    Set<ExtendedObjectSpec> abstractDevice;
+
+    /**
+     * Called by ApAM when an undefined instance is added to the set.
+     *
+     * @param inst , the new undefined instance
+     */
+    public void addAbstractObject(Instance inst) {
+        logger.debug("New abstract device (extended) added: " + inst.getName());
+        try {
+            //notify that a new device, service or simulated instance appeared
+            ExtendedObjectSpec newObj = (ExtendedObjectSpec) inst.getServiceObject();
+            String newMsg = "";
+            if (newObj.getCoreType().equals(CoreObjectSpec.CORE_TYPE.DEVICE)) {
+                newMsg = "newDevice";
+            } else if (newObj.getCoreType().equals(CoreObjectSpec.CORE_TYPE.SERVICE)) {
+                newMsg = "newService";
+            } else if (newObj.getCoreType().equals(CoreObjectSpec.CORE_TYPE.SIMULATED_DEVICE)) {
+                newMsg = "newSimulatedDevice";
+            } else if (newObj.getCoreType().equals(CoreObjectSpec.CORE_TYPE.SIMULATED_SERVICE)) {
+                newMsg = "newSimulatedService";
+            }
+
+            try{
+                sendToClientService.send(newMsg, newObj.getDescription());
+                //notifyAllUpdatesListeners(newMsg, newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
+            }catch(ExternalComDependencyException comException) {
+                logger.debug("Resolution failed for send to client service dependency, no message will be sent.");
+            }
+
+        } catch (Exception ex) {
+            logger.error("If getCoreType method error trace appear below it is because the service or the device doesn't implement all methods"
+                    + "the CoreObjectSpec interface.");
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Called by ApAM when an undefined instance is removed from the set
+     *
+     * @param inst , the removed undefined instance
+     */
+    public void removedAbstractObject(Instance inst) {
+        logger.debug("Abstract device (extended) removed: " + inst.getName());
+        String deviceId = inst.getProperty("deviceId");
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("objectId", deviceId);
+        } catch (JSONException e) {
+            logger.error(e.getMessage());
+        }
+        ExtendedObjectSpec rmObj = (ExtendedObjectSpec) inst.getServiceObject();
+
+        synchronized(this){
+            String newMsg ="";
+            if (rmObj.getCoreType().equals(CoreObjectSpec.CORE_TYPE.DEVICE)) {
+                newMsg ="removeDevice";
+            } else if (rmObj.getCoreType().equals(CoreObjectSpec.CORE_TYPE.SERVICE)) {
+                newMsg ="removeService";
+            } else if (rmObj.getCoreType().equals(CoreObjectSpec.CORE_TYPE.SIMULATED_DEVICE)) {
+                newMsg ="removeSimulatedDevice";
+            } else if (rmObj.getCoreType().equals(CoreObjectSpec.CORE_TYPE.SIMULATED_SERVICE)) {
+                newMsg ="removeSimulatedService";
+            }
+
+            try{
+                //notifyAllUpdatesListeners(newMsg, deviceId, rmObj.getUserType(), null, null);
+                sendToClientService.send(newMsg, obj);
+            }catch(ExternalComDependencyException comException) {
+                logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
+            }
+        }
     }
 
 }

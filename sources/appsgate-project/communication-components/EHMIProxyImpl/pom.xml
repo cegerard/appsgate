@@ -30,8 +30,13 @@
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>EHMIProxySpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>fr.imag.adele.apam</groupId>
+            <artifactId>apam-core</artifactId>
+            <version>${apam.current.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
@@ -50,27 +55,32 @@
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>DevicePropertiesTable</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>PlaceManagerSpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>UserBaseSpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>EUDEInterpreterSpec</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ExtendedObjectSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
 			<groupId>appsgate.components</groupId>
 			<artifactId>tracker</artifactId>
-			<version>1.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>

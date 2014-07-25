@@ -24,6 +24,9 @@
 			<start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
 
                         <start implementation="Tracker" name="TrackerInst"></start>
+            <start implementation="WeatherObserverFactory" name="WeatherObserverFactoryInst"></start>
+
+
 
 <!-- Unused
 			<start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start>

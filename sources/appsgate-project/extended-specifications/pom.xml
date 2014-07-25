@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>ExtendedWeatherObserverSpec</module>
+        <module>ExtendedObjectSpec</module>
     </modules>
 
 
