@@ -20,6 +20,7 @@
 <!--		<module>immotronic</module>-->
 		<module>cybergarage</module>
 		<module>PhilipsHUE4Appsgate</module>
+		<module>KNX4Appsgate</module>
 		<module>sensor-network</module>
 		<module>upnp-dlna</module>
 		<module>web-services</module>

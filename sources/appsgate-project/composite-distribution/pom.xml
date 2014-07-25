@@ -142,7 +142,11 @@
             <artifactId>TraceMan</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>WeatherObserverImpl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 		<dependency>
 			<groupId>junit</groupId>

@@ -1,0 +1,89 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ev="org.apache.felix.ipojo.handlers.event"
+      xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd org.apache.felix.ipojo.handlers.event http://felix.apache.org/ipojo/schemas/CURRENT/event-admin.xsd">
+
+
+    <implementation name="KNXAdapterImpl"
+                    classname="appsgate.lig.proxy.knx.KNXAdapterImpl">
+
+        <ipojo:requires field="lights"  aggregate="true" optional="true" specification="org.ow2.chameleon.fuchsia.importer.knx.device.iface.Switch">
+            <ipojo:callback type="bind" method="switchAdd"/>
+            <ipojo:callback type="unbind" method="switchRemove"/>
+        </ipojo:requires>
+
+        <relation specification="AppsgateClientCommunicationManagerSpec"
+                  creation="eager" resolve="external">
+            <interface field="listenerService"/>
+            <interface field="sendToClientService"/>
+        </relation>
+
+
+    </implementation>
+
+
+    <implementation name="KNXSwitchImpl"
+                    classname="appsgate.lig.proxy.knx.device.AppsgateSwitchKNXDevice"
+                    specification="CoreColorLightSpec" push="notifyChanges">
+
+        <!-- device kernel meta data
+        <definition name="deviceName" 		  type="string" />
+        <definition name="deviceId" 		  type="string" />
+        <definition name="deviceType" 		  type="string" />
+
+        <definition name="pictureId" 		  type="string"	/>
+        <definition name="userType" 		  type="string" />    <apam-instance implementation="KNXAdapterImpl" name="knx-adapter"/>
+        <definition name="status" 			  type="string" />
+
+        <definition name="lightBridgeId" 	   type="string"  />
+        <definition name="lightBridgeIP" 	   type="string"  />
+        <definition name="reachable" 	   	   type="string"  />
+        -->
+
+        <callback onInit="start" onRemove="stop" />
+
+
+        <relation field="adapter" implementation="KNXAdapterImpl" />
+
+
+        <!-- device kernel meta data -->
+        <definition name="deviceName" type="string"
+                    field="deviceName" />
+        <definition name="deviceId" type="string"
+                    field="deviceId" />
+        <definition name="deviceType" type="string"
+                    field="deviceType" />
+
+        <!-- device client meta data -->
+        <definition name="pictureId" type="string" field="pictureId" />
+        <definition name="userType" type="string" default="7"
+                    field="userType" />
+        <definition name="status" type="string" default="2" field="status"
+                    method="statusChanged" />
+
+        <!-- device meta data
+        <definition name="lightBridgeId" type="string" field="lightBridgeId" />
+        <definition name="lightBridgeIP" type="string" field="lightBridgeIP" />
+        <definition name="reachable" 	 type="string" field="reachable"     method="reachableChanged"/>
+        -->
+
+        <!--
+        <definition name="state"  type="string" method="stateChanged"/>
+        <definition name="hue"    type="string" method="hueChanged"/>
+        <definition name="sat"    type="string" method="satChanged"/>
+        <definition name="bri"    type="string" method="briChanged"/>
+        <definition name="x"  	  type="string" method="xChanged"/>
+        <definition name="y" 	  type="string" method="yChanged"/>
+        <definition name="ct"	  type="string" method="ctChanged"/>
+        <definition name="speed"  type="string" method="speedChanged"/>
+        <definition name="alert"  type="string" method="alertChanged"/>
+        <definition name="mode"   type="string" method="modeChanged"/>
+        <definition name="effect" type="string" method="effectChanged"/>
+        -->
+
+    </implementation>
+
+    <apam-instance implementation="KNXAdapterImpl" name="knx-adapter"/>
+
+
+</apam>

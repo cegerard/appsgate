@@ -8,23 +8,9 @@
     specification="CoreWeatherServiceSpec"
     push="fireWeatherUpdateMessage" singleton="true">
 		<callback onInit="start" onRemove="stop"/>
-
-        <!-- Appsgate mandatory property -->
-        <definition name="deviceName"    type="string"  field="appsgateServiceName"/> 
-<!--         <definition name="deviceId"      type="string" field="appsgateObjectId" /> -->
-
-        <!-- device client meta data -->
-        <definition name="pictureId"     type="string" field="appsgatePictureId"/>
-        <definition name="userType"      type="string" field="appsgateUserType"/>
-        <definition name="status"        type="string" field="appsgateDeviceStatus" />
         
         <!-- Service specific meta data -->
         <definition name="auto-refresh" type="int" default="100000" field="refreshRate" />
 	</implementation>
-   
-   <!-- Old Instance to check if still working -->
-<!--    <apam-instance name="YahooWeather" implementation="YahooWeatherImpl"> -->
-<!--        <property name="auto-refresh" value="1800000"/> -->
-<!--    </apam-instance> -->
-   
+
 </apam>
