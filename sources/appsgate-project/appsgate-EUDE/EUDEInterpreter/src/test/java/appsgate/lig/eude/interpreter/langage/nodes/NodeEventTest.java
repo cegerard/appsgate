@@ -5,7 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
+import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -35,7 +35,7 @@ public class NodeEventTest extends NodeTest {
 
         context.checking(new Expectations() {
             {
-                allowing(mediator).notifyChanges(with(any(ProgramStateNotificationMsg.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotification.class)));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
             }
         });

@@ -13,6 +13,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -220,7 +221,7 @@ public class NodeState extends Node implements ICanBeEvaluated {
      *
      * @return
      */
-    boolean isOnRules() {
+    public boolean isOnRules() {
         return isOnRules;
     }
 
@@ -240,7 +241,7 @@ public class NodeState extends Node implements ICanBeEvaluated {
     /**
      * @return the method that set the state in the correct shape
      */
-    NodeAction getSetter() throws SpokExecutionException, SpokNodeException {
+    public NodeAction getSetter() throws SpokExecutionException, SpokNodeException {
         JSONObject action = desc.getSetter();
         if (action == null) {
             throw new SpokExecutionException("No setter has been found for this state: " + desc.getStateName());
@@ -257,14 +258,14 @@ public class NodeState extends Node implements ICanBeEvaluated {
     /**
      * @return the id of the object whose state is observed
      */
-    String getObjectId() {
+    public String getObjectId() {
         return objectNode.getValue();
     }
 
     /**
      * @return the name of the state that is observed
      */
-    String getName() {
+    public String getName() {
         return stateName;
 
     }
@@ -278,8 +279,11 @@ public class NodeState extends Node implements ICanBeEvaluated {
             LOGGER.debug("No state name, so the result is false");
             return false;
         }
+        String targetId = object.getResult().getValue();
         LOGGER.trace("Asking for {}, {}", object.getResult().getValue(), desc.getStateName());
-        GenericCommand cmd = getMediator().executeCommand(object.getResult().getValue(), desc.getStateName(), new JSONArray());
+        ProgramLineNotification notif = getProgramLineNotification(null, targetId, "Reading from", ProgramLineNotification.Type.READ);
+
+        GenericCommand cmd = getMediator().executeCommand(targetId, desc.getStateName(), new JSONArray(), notif);
         if (cmd == null) {
             throw new SpokExecutionException("The command has not been created");
         }

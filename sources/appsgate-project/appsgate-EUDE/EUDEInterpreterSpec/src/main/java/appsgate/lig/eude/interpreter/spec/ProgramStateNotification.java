@@ -9,7 +9,7 @@ import org.json.JSONObject;
  * @author Cédric Gérard
  *
  */
-public class ProgramStateNotificationMsg extends ProgramNotification {
+public class ProgramStateNotification extends ProgramNotification {
 
     /**
      * Constructor
@@ -19,7 +19,7 @@ public class ProgramStateNotificationMsg extends ProgramNotification {
      * @param value
      * @param programName
      */
-    public ProgramStateNotificationMsg(String programId, String varName, String value, String programName) {
+    public ProgramStateNotification(String programId, String varName, String value, String programName) {
         super("runningState", programId, value, programName, null);
     }
     

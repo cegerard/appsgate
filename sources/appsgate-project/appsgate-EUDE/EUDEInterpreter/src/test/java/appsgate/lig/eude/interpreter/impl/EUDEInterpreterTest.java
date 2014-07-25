@@ -18,7 +18,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeActionTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEventTest;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
-import appsgate.lig.eude.interpreter.spec.ProgramStateNotificationMsg;
+import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -282,7 +282,7 @@ public class EUDEInterpreterTest {
     @Test
     public void testNotifyChanges() {
         System.out.println("notifyChanges");
-        NotificationMsg notif = new ProgramStateNotificationMsg("test", "test", null, "test");
+        NotificationMsg notif = new ProgramStateNotification("test", "test", null, "test");
         NotificationMsg result = instance.notifyChanges(notif);
         Assert.assertNotNull(result);
     }

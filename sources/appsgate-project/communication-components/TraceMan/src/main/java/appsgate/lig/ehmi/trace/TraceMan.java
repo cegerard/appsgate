@@ -16,10 +16,12 @@ import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -112,16 +114,16 @@ public class TraceMan implements TraceManSpec {
             }
             JSONObject deviceJson = getJSONDevice(srcId, event, null);
             //Create the notification JSON object
-            JSONObject coreNotif = getCoreNotif(timeStamp, deviceJson, null);
+            JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
             trace(coreNotif);
         }
     }
 
-    private JSONObject getCoreNotif(long timeStamp, JSONObject device, JSONObject program) {
+    private JSONObject getCoreNotif(JSONObject device, JSONObject program) {
         JSONObject coreNotif = new JSONObject();
         try {
-            coreNotif.put("timestamp", timeStamp);
+            coreNotif.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
             //Create the device tab JSON entry
             JSONArray deviceTab = new JSONArray();
             {
@@ -195,7 +197,7 @@ public class TraceMan implements TraceManSpec {
         }
 
         JSONObject jsonDevice = getJSONDevice(srcId, event, cause);
-        JSONObject coreNotif = getCoreNotif(timeStamp, jsonDevice, null);
+        JSONObject coreNotif = getCoreNotif(jsonDevice, null);
         //Trace the notification JSON object in the trace file
         trace(coreNotif);
 
@@ -209,13 +211,18 @@ public class TraceMan implements TraceManSpec {
         if (!(n instanceof ProgramNotification)) {
             return;
         }
+        if (n instanceof ProgramLineNotification) {
+            JSONObject o = getDecorationNotification((ProgramLineNotification) n);
+            trace(o);
+            return;
+        }
         ProgramNotification notif = (ProgramNotification) n;
         //Create the notification JSON object
         //Create a device trace entry
         //Trace the notification JSON object in the trace file
         JSONObject jsonProgram = getJSONProgram(notif.getProgramId(), notif.getProgramName(), notif.getVarName(), notif.getRunningState());
 
-        trace(getCoreNotif(EHMIProxy.getCurrentTimeInMillis(), null, jsonProgram));
+        trace(getCoreNotif(null, jsonProgram));
     }
 
     private JSONObject getJSONProgram(String id, String name, String change, String state) {
@@ -232,19 +239,21 @@ public class TraceMan implements TraceManSpec {
                 s.put("name", state);
                 s.put("instruction_id", "0");
                 event.put("state", s);
-                if (change.contentEquals("newProgram")) {
-                    event.put("type", "appear");
-                    cause = getJSONDecoration("", "user", null, null, "Program has been added");
-                } else if (change.contentEquals("removeProgram")) {
-                    event.put("type", "disappaear");
-                    cause = getJSONDecoration("", "user", null, null, "Program has been deleted");
+                if (change != null) {
+                    if (change.contentEquals("newProgram")) {
+                        event.put("type", "appear");
+                        cause = getJSONDecoration("", "user", null, null, "Program has been added");
+                    } else if (change.contentEquals("removeProgram")) {
+                        event.put("type", "disappaear");
+                        cause = getJSONDecoration("", "user", null, null, "Program has been deleted");
 
-                } else { //change == "updateProgram"
-                    event.put("type", "update");
-                }
-                //Create causality event entry
-                if (change.contentEquals("updateProgram")) {
-                    cause = getJSONDecoration("", "user", null, null, "Program has been updated");
+                    } else { //change == "updateProgram"
+                        event.put("type", "update");
+                    }
+                    //Create causality event entry
+                    if (change.contentEquals("updateProgram")) {
+                        cause = getJSONDecoration("", "user", null, null, "Program has been updated");
+                    }
                 }
 
             }
@@ -604,6 +613,16 @@ public class TraceMan implements TraceManSpec {
         }
         return causality;
 
+    }
+
+    private JSONObject getDecorationNotification(ProgramLineNotification n) {
+        JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState());
+        JSONObject d = getJSONDevice(n.getTargetId(), null, getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, n.getDescription()));
+        try {
+            p.put("cause", getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription()));
+        } catch (JSONException ex) {
+        }
+        return getCoreNotif(d, p);
     }
 
 }

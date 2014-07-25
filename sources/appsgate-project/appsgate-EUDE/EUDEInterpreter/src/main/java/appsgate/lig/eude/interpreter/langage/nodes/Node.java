@@ -15,6 +15,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -538,8 +539,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
                 try {
                     Node n = Builder.buildFromJSON(o, this);
                     if (n instanceof ICanBeEvaluated) {
-                        String s =((ICanBeEvaluated) n).getResult().getValue();
-                        if (!s.isEmpty()){
+                        String s = ((ICanBeEvaluated) n).getResult().getValue();
+                        if (!s.isEmpty()) {
                             WHAT.add(s);
                         }
                     } else {
@@ -623,11 +624,19 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     }
 
     /**
+     * @return the program node
+     */
+    protected NodeProgram getProgramNode() {
+        return (NodeProgram) findNode(NodeProgram.class, this);
+
+    }
+
+    /**
      *
      * @return the programName
      */
     protected String getProgramName() {
-        NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
+        NodeProgram p = getProgramNode();
         if (p != null) {
             return p.getProgramName();
         }
@@ -652,11 +661,29 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     }
 
     /**
-     * @return
+     * @return the time in string
      */
     private String getTime(Integer duration) throws SpokExecutionException {
         Long time = getMediator().getTime() + duration * 1000;
         return time.toString();
     }
 
+    /**
+     * 
+     * @param sourceId
+     * @param targetId
+     * @param description
+     * @param type
+     * @return 
+     */
+    protected ProgramLineNotification getProgramLineNotification(String sourceId, String targetId, String description, ProgramLineNotification.Type type) {
+        NodeProgram p = this.getProgramNode();
+        if (sourceId == null) {
+            sourceId = p.getId();
+        }
+        if (targetId == null) {
+            targetId = p.getId();
+        }
+        return new ProgramLineNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type);
+    }
 }
