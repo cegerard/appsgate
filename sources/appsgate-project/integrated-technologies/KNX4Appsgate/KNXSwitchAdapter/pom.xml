@@ -9,10 +9,10 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>KNXAdapter</artifactId>
+	<artifactId>KNXSwitchAdapter</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>KNXEAdapter OSGi Bundle</name>
+	<name>KNXSwitchAdapter OSGi Bundle</name>
 
 	<!-- Dependencies Description -->
 	<dependencies>
@@ -31,16 +31,6 @@
 			<groupId>appsgate.components</groupId>
 			<artifactId>ClientCommunicationManager</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>appsgate.components</groupId>
-		    <artifactId>PhilipsHUEImpl</artifactId>
-		    <version>${project.version}</version>
-		</dependency>		
-		<dependency>
-		    <groupId>appsgate.components</groupId>
-		    <artifactId>PhilipsHUEAdapterSpec</artifactId>
-		    <version>${project.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.osgi</groupId>
@@ -70,11 +60,6 @@
 		    <optional>false</optional>
 		</dependency>
         <dependency>
-            <artifactId>PhilipsHUEAdapterSpec</artifactId>
-            <groupId>appsgate.components</groupId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>appsgate.components</groupId>
             <artifactId>CoreColorLightBulbSpec</artifactId>
             <version>${project.version}</version>
@@ -82,7 +67,7 @@
         <dependency>
             <groupId>appsgate.components</groupId>
             <artifactId>CoreObjectSpec</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.chameleon.fuchsia.importer</groupId>
@@ -101,6 +86,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Import-Package>appsgate.lig.core.object.spec,*</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
