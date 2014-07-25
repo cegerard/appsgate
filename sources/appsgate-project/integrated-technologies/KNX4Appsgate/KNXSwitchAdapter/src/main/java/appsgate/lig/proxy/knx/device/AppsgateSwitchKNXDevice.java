@@ -52,8 +52,8 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
 
     }
 
-    public boolean getState() {
-        return adapter.isOn(deviceId);
+    private NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
+        return new ColorLightNotificationMsg(varName, oldValue, newValue, this);
     }
 
     @Override
@@ -61,13 +61,9 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
 
         JSONObject jsonResponse = null;
         try {
-
             jsonResponse = new JSONObject();
-
-            JSONObject JSONLightState = new JSONObject();
-
-
-            JSONLightState.put("on", adapter.isOn(deviceId));
+            JSONObject lightState = new JSONObject();
+            lightState.put("on", adapter.isOn(deviceId));
             /**
             JSONLightState.put("bri", false);
             JSONLightState.put("hue", false);
@@ -82,8 +78,7 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
             JSONLightState.put("reachable", true);
              **/
 
-            jsonResponse.put("state", JSONLightState);
-
+            jsonResponse.put("state", lightState);
             jsonResponse.put("type", getUserType());
             jsonResponse.put("name", deviceName);
 
@@ -92,6 +87,65 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
         }
         return jsonResponse;
 
+    }
+
+    @Override
+    public boolean On() {
+        adapter.on(deviceId);
+        return true;
+    }
+
+    @Override
+    public boolean Off() {
+        adapter.off(deviceId);
+        return true;
+    }
+
+    @Override
+    public boolean setWhite() {
+
+        return On();
+
+    }
+
+    @Override
+    public boolean toggle() {
+        if(getCurrentState()) {
+            return Off();
+        } else {
+            return On();
+        }
+    }
+
+    @Override
+    public boolean getCurrentState() {
+        return adapter.isOn(deviceId);
+    }
+
+    @Override
+    public String getTypeFromGrammar() {
+        return super.getTypeFromGrammar();
+    }
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+        descr.put("id", deviceId);
+        descr.put("type", userType); // 7 for color light
+        descr.put("status", status);
+        descr.put("value", getCurrentState());
+        descr.put("color", getLightColor());
+        descr.put("saturation", getLightColorSaturation());
+        descr.put("brightness", getLightBrightness());
+        //Entry added for configuration GUI
+        descr.put("deviceType", "KNX_LIGHT");
+
+        return descr;
+    }
+
+    @Override
+    public CORE_TYPE getCoreType() {
+        return CORE_TYPE.DEVICE;
     }
 
     @Override
@@ -110,11 +164,6 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
     }
 
     @Override
-    public boolean getCurrentState() {
-        return getState();
-    }
-
-    @Override
     public JSONObject getManufacturerDetails() {
         return null;
     }
@@ -122,18 +171,6 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
     @Override
     public boolean setStatus(JSONObject newStatus) {
         return false;
-    }
-
-    @Override
-    public boolean On() {
-        adapter.on(deviceId);
-        return true;
-    }
-
-    @Override
-    public boolean Off() {
-        adapter.off(deviceId);
-        return true;
     }
 
     @Override
@@ -187,13 +224,6 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
     }
 
     @Override
-    public boolean setWhite() {
-
-        return On();
-
-    }
-
-    @Override
     public boolean setDefault() {
         return false;
     }
@@ -209,15 +239,6 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
     }
 
     @Override
-    public boolean toggle() {
-        if(getCurrentState()) {
-            return Off();
-        } else {
-            return On();
-        }
-    }
-
-    @Override
     public boolean blink() {
         return false;
     }
@@ -230,10 +251,6 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
     @Override
     public boolean colorLoop() {
         return false;
-    }
-
-    public NotificationMsg notifyChanges(String varName, String oldValue, String newValue) {
-        return new ColorLightNotificationMsg(varName, oldValue, newValue, this);
     }
 
     @Override
@@ -261,29 +278,4 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
 
     }
 
-    @Override
-    public String getTypeFromGrammar() {
-        return super.getTypeFromGrammar();
-    }
-
-    @Override
-    public JSONObject getDescription() throws JSONException {
-        JSONObject descr = new JSONObject();
-        descr.put("id", deviceId);
-        descr.put("type", userType); // 7 for color light
-        descr.put("status", status);
-        descr.put("value", getCurrentState());
-        descr.put("color", getLightColor());
-        descr.put("saturation", getLightColorSaturation());
-        descr.put("brightness", getLightBrightness());
-        //Entry added for configuration GUI
-        descr.put("deviceType", "KNX_LIGHT");
-
-        return descr;
-    }
-
-    @Override
-    public CORE_TYPE getCoreType() {
-        return CORE_TYPE.DEVICE;
-    }
 }
