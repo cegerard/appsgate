@@ -118,7 +118,7 @@ public class GenericCommand implements Runnable {
 			Object ret = abstractInvoke(obj, args.toArray(), paramType, methodName);
 			
 			if (ret != null) {
-				logger.debug("remote call, " + methodName + " returns "
+				logger.debug("remote call (CHMI Command), " + methodName + " returns "
 						+ ret.toString() + " / return type: "
 						+ ret.getClass().getName());
 				returnObject = ret;
