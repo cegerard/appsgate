@@ -21,7 +21,6 @@ import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -619,7 +618,7 @@ public class TraceMan implements TraceManSpec {
         JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState());
         JSONObject d = getJSONDevice(n.getTargetId(), null, getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, n.getDescription()));
         try {
-            p.put("cause", getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription()));
+            p.put("decoration", getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription()));
         } catch (JSONException ex) {
         }
         return getCoreNotif(d, p);

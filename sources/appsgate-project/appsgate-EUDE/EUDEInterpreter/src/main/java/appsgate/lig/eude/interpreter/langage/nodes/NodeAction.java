@@ -128,7 +128,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
         // get the runnable from the interpreter
         LOGGER.debug("Device action {} on {}", methodName, target);
         ProgramLineNotification notif;
-        if (returnType == null) {
+        if (returnType.isEmpty()) {
             notif = getProgramLineNotification(null, target, "Acting on a device", ProgramLineNotification.Type.WRITE);
         } else {
             notif = getProgramLineNotification(null, target, "Reading from", ProgramLineNotification.Type.READ);
