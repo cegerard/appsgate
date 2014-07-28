@@ -42,23 +42,32 @@ import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
  * @author thibaud
  * 
  */
-public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObjectSpec, CoreWeatherServiceSpec {
+public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 
     private static Logger logger = LoggerFactory
-            .getLogger(WeatherServiceCoreImpl.class);
-
-
-	// *******
-	// Overriding  appsgate properties  to allow injection:
-
-	private String appsgatePictureId=super.appsgatePictureId;
-	private String appsgateUserType=super.appsgateUserType;
-	private String appsgateDeviceStatus=super.appsgateDeviceStatus;
-	private String appsgateObjectId=super.appsgateObjectId;
-	private String appsgateServiceName=super.appsgateServiceName;	
-	
+            .getLogger(YahooWeatherImpl.class);
 
 	URL url;
+
+    protected String feedUrl;
+    protected char currentUnit;
+
+
+    /*
+     * For each human place Name, as the user entered it (the key), associate a
+     * WOEID (the value)
+     */
+    protected Map<String, String> woeidFromePlaceName;
+
+    protected Calendar lastFetchDate;
+
+
+    /**
+     * Feed URL that returns an XML with the forecast (e.g.
+     * http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
+     */
+    protected String feedUrlTemplate = "http://weather.yahooapis.com/forecastrss?w=%s&u=%c";
+
 
 	boolean noFetch;
 	private Timer refreshTimer = new Timer();
@@ -78,7 +87,6 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 	TimerTask refreshtask;
 
 	public YahooWeatherImpl() {
-		super.initAppsgateFields();
 
 		woeidFromePlaceName = new HashMap<String, String>();
 		lastPublicationDates = new HashMap<String, Calendar>();
@@ -114,7 +122,9 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 	@Override
 	public List<DayForecast> getForecast(String placeName)
 			throws WeatherForecastException {
-		return forecasts.get(getWOEID(placeName));
+        fetchAtLocation(placeName);
+
+        return forecasts.get(getWOEID(placeName));
 	}
 
 	/*
@@ -139,7 +149,9 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 	@Override
 	public CurrentWeather getCurrentWeather(String placeName)
 			throws WeatherForecastException {
-		return currentWeathers.get(getWOEID(placeName));
+        fetchAtLocation(placeName);
+
+        return currentWeathers.get(getWOEID(placeName));
 	}
 
 	/*
@@ -216,7 +228,6 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 	}
 
 	public void start() {
-		initAppsgateFields();
 
 		try {
 			fetch();
@@ -344,7 +355,7 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see appsgate.lig.weather.WeatherForecast#setUnit(appsgate.lig.weather.
 	 * WeatherForecast.Unit)
 	 */
@@ -363,7 +374,7 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * appsgate.lig.weather.spec.CoreWeatherServiceSpec#fireWeatherUpdateMessage
 	 * (java.lang.String)
@@ -371,9 +382,10 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 	@Override
 	public NotificationMsg fireWeatherUpdateMessage(String property,
 			String value, String eventType) {
+        return null;
 		// TODO this one is very basic
-		return new WeatherUpdateNotificationMsg(this, property, value,
-				eventType);
+//		return new WeatherUpdateNotificationMsg(this, property, value,
+//				eventType);
 	}
 
 
@@ -437,10 +449,6 @@ public class YahooWeatherImpl extends WeatherServiceCoreImpl implements CoreObje
 		return nameLoc;
 	}
 
-	@Override
-	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.SERVICE;
-	}
     
     private void fetchAtLocation(String placeName) throws WeatherForecastException {
 		if (!woeidFromePlaceName.containsKey(placeName))

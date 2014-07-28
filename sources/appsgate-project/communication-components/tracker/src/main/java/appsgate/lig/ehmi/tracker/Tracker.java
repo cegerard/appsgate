@@ -108,7 +108,9 @@ public class Tracker {
     public void gotNotification(appsgate.lig.core.object.messages.NotificationMsg notif) {
         // Adding the devices
         if (notif.getSource().getCoreType() == CoreObjectSpec.CORE_TYPE.DEVICE) {
-            String type = ((CoreObjectBehavior) notif.getSource()).getTypeFromGrammar();
+            //String type = ((CoreObjectBehavior) notif.getSource()).getTypeFromGrammar();
+            String type = "undefined";
+//            String type = ((CoreObjectBehavior) notif.getSource()).getTypeFromGrammar();
             addEntry(new DeviceEntry(clock.getCurrentTimeInMillis(), type, notif.getSource().getAbstractObjectId(), notif.getNewValue()));
         }
     }

@@ -14,7 +14,7 @@
 		<relation field="placeManager" creation="eager" resolve="external" />
 		<relation field="userManager" creation="eager" resolve="external" />
 		<relation field="interpreter" creation="eager" resolve="external" />
-		<relation field="tracker" creation="eager" resolve="external" />
+		<relation field="traceManager" creation="eager" resolve="external" />
 		
 		<relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"
 			fail="exception" exception="appsgate.lig.ehmi.exceptions.ExternalComDependencyException">

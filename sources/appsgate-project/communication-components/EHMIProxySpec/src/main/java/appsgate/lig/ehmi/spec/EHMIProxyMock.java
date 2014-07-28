@@ -242,7 +242,7 @@ public class EHMIProxyMock implements EHMIProxySpec {
 
 
 	@Override
-	public boolean addGrammar(String deviceType, JSONObject grammarDescription) {
+	public boolean addGrammar(String deviceType, GrammarDescription grammarDescription) {
 		return false;
 	}
 
@@ -254,7 +254,7 @@ public class EHMIProxyMock implements EHMIProxySpec {
 
 
 	@Override
-	public JSONObject getGrammarFromType(String deviceType) {
+	public GrammarDescription getGrammarFromType(String deviceType) {
 		return null;
 	}
 

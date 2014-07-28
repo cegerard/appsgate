@@ -21,6 +21,8 @@
 		<module>CHMIProxySpec</module>
 		<module>CHMIProxyImpl</module>
 		<module>ClientCommunicationManager</module>
-  </modules>
+		<module>TraceMan</module>
+		<module>TraceManSpec</module>
+	</modules>
 	
 </project>

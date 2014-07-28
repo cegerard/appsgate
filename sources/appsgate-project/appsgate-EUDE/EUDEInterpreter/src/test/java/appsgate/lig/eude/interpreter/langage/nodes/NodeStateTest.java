@@ -9,6 +9,7 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -43,7 +44,8 @@ public class NodeStateTest extends NodeTest {
                 allowing(mediator).getContext();
                 will(returnValue(c));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
-                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramLineNotification.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
                 will(returnValue(cmd));
                 allowing(cmd).run();
                 allowing(cmd).getReturn();

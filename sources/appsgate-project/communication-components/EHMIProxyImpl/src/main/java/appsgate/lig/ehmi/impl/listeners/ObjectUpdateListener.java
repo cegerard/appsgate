@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.ehmi.impl.EHMIProxyImpl;
+import appsgate.lig.ehmi.spec.GrammarDescription;
+import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 
 /**
  * 
@@ -20,9 +22,10 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 	private String coreType ="";
 	private String userType ="";
 	private JSONObject description = new JSONObject();
-	private JSONObject behavior = new JSONObject();
+	private JSONObject behavior;
 	
-	private EHMIProxyImpl EHMIProxy;
+	private final EHMIProxyImpl EHMIProxy;
+	private TraceManSpec traceManager;
 	
 	/**
      * Static class member uses to log what happened in each instances
@@ -62,18 +65,19 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 		this.behavior =  behavior;
 		this.description = description;
 		
+		String name = EHMIProxy.getUserObjectName(objectId, "");
+		String placeId = EHMIProxy.getCoreObjectPlaceId(objectId);
+		
 		if (coreType.contains("new")) { //New device added
-			EHMIProxy.addGrammar(userType, behavior);
+			EHMIProxy.addGrammar(userType, new GrammarDescription(behavior));
 			
-		    String name = EHMIProxy.getUserObjectName(objectId, "");
-		    String placeId = EHMIProxy.getCoreObjectPlaceId(objectId);
 		    sendObjectPlace(coreType, objectId, placeId);
 		    sendObjectName(objectId, name);
 		    
 		    if(userType.contentEquals("21") && !EHMIProxy.getSystemClock().isRemote()){ //The new device is a clock and no remote clock
 		    	EHMIProxy.startRemoteClockSync();										//Is already used.
 		    }
-		    
+		    traceManager.coreUpdateNotify(EHMIProxy.getCurrentTimeInMillis(), objectId, coreType, userType, name, description, "new");
 		    
 		}else if (coreType.contains("remove")) { //A device has been removed
 			
@@ -81,6 +85,7 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 					&& objectId.contentEquals(EHMIProxy.getSystemClock().getAbstractObjectId())){ //and it is the clock what we are synchronized with
 				EHMIProxy.stopRemoteClockSync();
 			}
+			traceManager.coreUpdateNotify(EHMIProxy.getCurrentTimeInMillis(), objectId, coreType, userType, name, description,"remove");
 			
 			//TODO Notify EUDE that something disappeared and stop concerning program
 			//for instance.
@@ -134,6 +139,9 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 		EHMIProxy.sendToClients(notif);
 	}
 	
+	public void setTraceManager(TraceManSpec traceManager) {
+		this.traceManager = traceManager;
+	}
 	
 
 }

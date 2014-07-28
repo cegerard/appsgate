@@ -3,6 +3,8 @@ package appsgate.lig.weather.extended.impl;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
+import appsgate.lig.core.object.spec.AbstractObjectSpec;
+import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
 import appsgate.lig.weather.extended.spec.messages.DaylightNotificationMsg;
@@ -18,7 +20,7 @@ import java.util.Date;
 /**
  * Created by thibaud on 01/07/2014.
  */
-public class WeatherObserverImpl implements ExtendedWeatherObserver, AlarmEventObserver{
+public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedWeatherObserver, AlarmEventObserver, CoreObjectSpec{
 
     private String currentLocation;
     private boolean currentlyDaylight;
@@ -37,6 +39,18 @@ public class WeatherObserverImpl implements ExtendedWeatherObserver, AlarmEventO
     private int alarmSunrise=-1;
 
     public static final String IMPL_NAME = "WeatherObserverImpl";
+
+    public WeatherObserverImpl() {
+        appsgatePictureId = null;
+        appsgateUserType = "103"; // 103 stands for weather forecast service
+        appsgateDeviceStatus = "2"; // 2 means device paired (for a device, not
+        // relevant for service)
+        appsgateObjectId = String.valueOf( this.hashCode()); // Object id
+        // prefixed by
+        // the user type
+        appsgateServiceName = "Yahoo Weather Forecast";
+        appsgateCoreType = CORE_TYPE.SERVICE;
+    }
 
     private static Logger logger = LoggerFactory
             .getLogger(WeatherObserverImpl.class);

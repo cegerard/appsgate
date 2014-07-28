@@ -25,6 +25,7 @@
     </implementation>
     
     <implementation name="WeatherObserverFactory" classname="appsgate.lig.weather.extended.impl.WeatherObserverFactory">
+        <callback onInit="start" />
 
     </implementation>
 

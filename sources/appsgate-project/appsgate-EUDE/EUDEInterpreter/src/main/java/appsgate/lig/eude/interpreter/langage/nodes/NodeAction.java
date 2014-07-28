@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -65,7 +66,6 @@ public class NodeAction extends Node implements ICanBeEvaluated {
             args = new JSONArray();
         }
         returnType = ruleJSON.optString("returnType");
-
     }
 
     /**
@@ -127,12 +127,14 @@ public class NodeAction extends Node implements ICanBeEvaluated {
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
         LOGGER.debug("Device action {} on {}", methodName, target);
-        command = getMediator().executeCommand(target, methodName, args);
-        if (command == null) {
-            LOGGER.error("Command not found {}, for {}", methodName, target);
+        ProgramLineNotification notif;
+        if (returnType == null) {
+            notif = getProgramLineNotification(null, target, "Acting on a device", ProgramLineNotification.Type.WRITE);
         } else {
-            command.run();
+            notif = getProgramLineNotification(null, target, "Reading from", ProgramLineNotification.Type.READ);
         }
+
+        command = getMediator().executeCommand(target, methodName, args, notif);
     }
 
     /**
@@ -142,7 +144,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
      * @throws SpokException
      */
     private void callProgramAction(String target) throws SpokException {
-        LOGGER.debug("Program [{}] action {} on {}", new String[]{getProgramName(), methodName, target});
+        LOGGER.debug("Program [{}] action {} on {}", new Object[]{getProgramName(), methodName, target});
 
         NodeProgram p = getMediator().getNodeProgram(target);
         if (p != null) {

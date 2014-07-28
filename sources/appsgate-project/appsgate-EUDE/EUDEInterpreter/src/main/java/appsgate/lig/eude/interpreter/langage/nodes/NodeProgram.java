@@ -5,11 +5,12 @@ import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import appsgate.lig.eude.interpreter.impl.ProgramStateNotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -344,12 +345,13 @@ final public class NodeProgram extends Node {
     }
 
     /**
-     *
      * @param runningState
      */
     private void setRunningState(RUNNING_STATE runningState) {
-        this.runningState = runningState;
-        getMediator().notifyChanges(new ProgramStateNotificationMsg(id, "runningState", this.runningState.toString()));
+        if (runningState != this.runningState) {
+            this.runningState = runningState;
+            getMediator().notifyChanges(new ProgramStateNotification(id, "runningState", this.runningState.toString(), name));
+        }
     }
 
     @Override
@@ -388,7 +390,14 @@ final public class NodeProgram extends Node {
     public String getExpertProgramScript() {
         SymbolTable vars = new SymbolTable(this);
         this.setSymbolTable(vars);
-        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + body.getExpertProgramScript();
+        return this.getHeader() + vars.getExpertProgramDecl() + "\n" + this.getBodyScript();
+    }
+
+    private String getBodyScript() {
+        if (body != null) {
+            return body.getExpertProgramScript();
+        }
+        return "";
     }
 
     /**
@@ -502,5 +511,4 @@ final public class NodeProgram extends Node {
         }
         return new HashSet<NodeProgram>();
     }
-
 }

@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import java.util.Collection;
 import org.jmock.Expectations;
 import org.jmock.States;
@@ -52,7 +53,8 @@ public class NodeActionTest extends NodeTest {
     public void testCall() throws Exception {
         context.checking(new Expectations() {
             {
-                exactly(1).of(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+                exactly(1).of(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramLineNotification.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
             }
         });
         printTestName("call");
@@ -68,8 +70,9 @@ public class NodeActionTest extends NodeTest {
         final States tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
-                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)));
+                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramLineNotification.class)));
                 then(tested.is("Yes"));
+                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
 
             }
         });
