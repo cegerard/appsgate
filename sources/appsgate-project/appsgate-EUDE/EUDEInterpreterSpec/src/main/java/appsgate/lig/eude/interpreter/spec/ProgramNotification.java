@@ -31,6 +31,10 @@ public class ProgramNotification implements NotificationMsg {
      * Field for user
      */
     private final String name;
+    /**
+     *
+     */
+    private final String iid;
 
     /**
      * Constructor
@@ -40,9 +44,10 @@ public class ProgramNotification implements NotificationMsg {
      * @param runningState
      * @param name
      * @param source
+     * @param nodeId
      */
     public ProgramNotification(String changes, String programId, String runningState,
-            String name, JSONObject source) {
+            String name, JSONObject source, String nodeId) {
         super();
         this.changes = changes;
         this.programId = programId;
@@ -53,7 +58,7 @@ public class ProgramNotification implements NotificationMsg {
         } else {
             this.name = getProgramNameFromSource();
         }
-
+        this.iid = nodeId;
     }
 
     /**
@@ -105,6 +110,13 @@ public class ProgramNotification implements NotificationMsg {
     @Override
     public String getNewValue() {
         return changes + " " + programId;
+    }
+
+    /**
+     * @return the instruction id
+     */
+    public String getInstructionId() {
+        return this.iid;
     }
 
     @Override

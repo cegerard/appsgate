@@ -604,7 +604,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         LOGGER.trace("Program WAITING");
         NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
         if (p != null) {
-            p.setWaiting();
+            p.setWaiting(this.getIID());
         } else {
             LOGGER.error("A node without a program has been found");
         }
@@ -617,7 +617,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         LOGGER.trace("Program PROCESSING");
         NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
         if (p != null) {
-            p.setProcessing();
+            p.setProcessing(this.getIID());
         } else {
             LOGGER.error("A node without a program has been found");
         }

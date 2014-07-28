@@ -185,7 +185,7 @@ final public class NodeProgram extends Node {
     public JSONObject call() {
         JSONObject ret = new JSONObject();
         if (runningState == RUNNING_STATE.DEPLOYED) {
-            setProcessing();
+            setProcessing(this.body.getIID());
             fireStartEvent(new StartEvent(this));
             body.addStartEventListener(this);
             body.addEndEventListener(this);
@@ -240,14 +240,14 @@ final public class NodeProgram extends Node {
      * Set the current running state to deployed
      */
     final public void setDeployed() {
-        setRunningState(RUNNING_STATE.DEPLOYED);
+        setRunningState(RUNNING_STATE.DEPLOYED, null);
     }
 
     /**
      * set the state of the program to invalid
      */
     private void setInvalid() {
-        setRunningState(RUNNING_STATE.INVALID);
+        setRunningState(RUNNING_STATE.INVALID, null);
     }
 
     /**
@@ -281,10 +281,11 @@ final public class NodeProgram extends Node {
     /**
      * set the state of this program to waiting, if this program is already
      * running
+     * @param iid
      */
-    final public void setWaiting() {
+    final public void setWaiting(String iid) {
         if (isRunning()) {
-            setRunningState(RUNNING_STATE.WAITING);
+            setRunningState(RUNNING_STATE.WAITING, iid);
         } else {
             LOGGER.warn("Trying to set {} waiting, while being {}", this, this.runningState);
         }
@@ -292,10 +293,11 @@ final public class NodeProgram extends Node {
 
     /**
      * set the state to processing if the program is valid
+     * @param iid
      */
-    public void setProcessing() {
+    public void setProcessing(String iid) {
         if (isValid()) {
-            setRunningState(RUNNING_STATE.PROCESSING);
+            setRunningState(RUNNING_STATE.PROCESSING, iid);
         } else {
             LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
         }
@@ -347,10 +349,10 @@ final public class NodeProgram extends Node {
     /**
      * @param runningState
      */
-    private void setRunningState(RUNNING_STATE runningState) {
+    private void setRunningState(RUNNING_STATE runningState, String iid) {
         if (runningState != this.runningState) {
             this.runningState = runningState;
-            getMediator().notifyChanges(new ProgramStateNotification(id, "runningState", this.runningState.toString(), name));
+            getMediator().notifyChanges(new ProgramStateNotification(id, "runningState", this.runningState.toString(), name, iid));
         }
     }
 

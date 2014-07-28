@@ -219,12 +219,12 @@ public class TraceMan implements TraceManSpec {
         //Create the notification JSON object
         //Create a device trace entry
         //Trace the notification JSON object in the trace file
-        JSONObject jsonProgram = getJSONProgram(notif.getProgramId(), notif.getProgramName(), notif.getVarName(), notif.getRunningState());
+        JSONObject jsonProgram = getJSONProgram(notif.getProgramId(), notif.getProgramName(), notif.getVarName(), notif.getRunningState(), null);
 
         trace(getCoreNotif(null, jsonProgram));
     }
 
-    private JSONObject getJSONProgram(String id, String name, String change, String state) {
+    private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
         JSONObject progNotif = new JSONObject();
         try {
             progNotif.put("id", id);
@@ -236,7 +236,7 @@ public class TraceMan implements TraceManSpec {
             {
                 JSONObject s = new JSONObject();
                 s.put("name", state);
-                s.put("instruction_id", "0");
+                s.put("instruction_id", iid);
                 event.put("state", s);
                 if (change != null) {
                     if (change.contentEquals("newProgram")) {
@@ -615,7 +615,7 @@ public class TraceMan implements TraceManSpec {
     }
 
     private JSONObject getDecorationNotification(ProgramLineNotification n) {
-        JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState());
+        JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId());
         JSONObject d = getJSONDevice(n.getTargetId(), null, getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, n.getDescription()));
         try {
             p.put("decoration", getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription()));
