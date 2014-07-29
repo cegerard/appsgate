@@ -212,6 +212,22 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         }
 
         try {
+            //before subscribing to new Core Device, synchronize the existing ones
+            JSONArray devicesArray = coreProxy.getDevices();
+            for (int i = 0; i < devicesArray.length(); i++) {
+                try{
+                    String type = devicesArray.getJSONObject(i).getString("type");
+
+                    if(getGrammarFromType(type)==null) {
+                        addGrammar(type,coreProxy.getDeviceBehavior(type));
+                    }
+                }catch (JSONException e) {
+                    logger.error(e.getMessage());
+                }
+
+            }
+
+
             if(coreProxy.CoreEventsSubscribe(objectEventsListener)){
                 logger.info("Core event listener deployed.");
                 systemClock.startRemoteSync(coreProxy);
@@ -1011,9 +1027,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     public void stopRemoteClockSync() {
         systemClock.stopRemoteSync(coreProxy);
     }
-    
+
     public void getLog(long timeStart, long timeEnd) {
-        
+
     }
 
 }

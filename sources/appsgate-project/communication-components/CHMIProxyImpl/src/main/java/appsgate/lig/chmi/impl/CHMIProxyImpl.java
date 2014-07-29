@@ -289,6 +289,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
                 CoreObjectSpec adev = devices.next();
                 jsonDeviceList.put(getObjectDescription(adev));
             }
+            logger.debug("getDevices(), returning "+jsonDeviceList);
 
             return jsonDeviceList;
 
@@ -345,7 +346,26 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             return new JSONArray();
         }
     }
-    
+
+    @Override
+    public JSONObject getDeviceBehavior(String type) {
+        Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
+
+        if (devices != null) {
+            // Find the first device of the corresponding type (they all share the same description)
+
+            while (devices.hasNext()) {
+                CoreObjectSpec adev = devices.next();
+                if (type.contentEquals(adev.getUserType())) {
+                    return adev.getBehaviorDescription();
+                }
+            }
+        }
+
+        logger.warn("No device behavior for type "+type);
+        return null;
+    }
+
     @Override
     public String getCoreClockObjectId() {
     	JSONArray clocks = getDevices("21");

@@ -100,6 +100,13 @@ public interface CHMIProxySpec {
 	 * @return the device list of the same "type"
 	 */
 	public JSONArray getDevices(String type);
+
+    /**
+     * Get the grammar behavior of a particular device type
+     * @param type the type parameter
+     * @return the JSON representation of the Grammar
+     */
+    public JSONObject getDeviceBehavior(String type);
 	
 	/**
 	 * Get the identifier of the core clock
