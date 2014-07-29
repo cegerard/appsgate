@@ -17,6 +17,7 @@ import appsgate.lig.context.device.properties.table.messages.PropertiesTableNoti
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
+import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 
 /**
@@ -46,7 +47,7 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
 	/**
 	 * Map of grammar associated to a device type
 	 */
-	HashMap<String, JSONObject> typesGrammarMap = new HashMap<String, JSONObject>();
+	HashMap<String, GrammarDescription> typesGrammarMap = new HashMap<String, GrammarDescription>();
 	
 	/**
 	 * Context history pull service to get past table state
@@ -125,9 +126,9 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
 	}
 	
 	@Override
-	public boolean addGrammarForDeviceType(String deviceType, JSONObject grammar) {
+	public boolean addGrammarForDeviceType(String deviceType, GrammarDescription grammar) {
         logger.debug("addGrammarForDeviceType(String deviceType = "+deviceType
-                +"JSONObject grammar = "+grammar);
+                    +"JSONObject grammar = "+grammar.getJSON());
 		return typesGrammarMap.put(deviceType, grammar) != null;
 	}
 
@@ -139,9 +140,9 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
 	}
 	
 	@Override
-	public JSONObject getGrammarFromType(String deviceType) {
+	public GrammarDescription getGrammarFromType(String deviceType) {
         logger.debug("getGrammarFromType(String deviceType = "+deviceType
-                +"), returning "+typesGrammarMap.get(deviceType));
+                    +"), returning "+typesGrammarMap.get(deviceType));
 		return typesGrammarMap.get(deviceType);
 
 	}

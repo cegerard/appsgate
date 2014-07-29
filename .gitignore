@@ -258,3 +258,4 @@ distributions/complete/apam*
 distributions/light/apam*
 distributions/complete/assembly.xml
 distributions/light/assembly.xml
+distributions/light/traceMan-*.json

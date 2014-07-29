@@ -123,11 +123,6 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
     }
 
     @Override
-    public String getTypeFromGrammar() {
-        return super.getTypeFromGrammar();
-    }
-
-    @Override
     public JSONObject getDescription() throws JSONException {
         JSONObject descr = new JSONObject();
         descr.put("id", deviceId);

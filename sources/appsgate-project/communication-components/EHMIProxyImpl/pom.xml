@@ -69,7 +69,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>tracker</artifactId>
+			<artifactId>TraceManSpec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

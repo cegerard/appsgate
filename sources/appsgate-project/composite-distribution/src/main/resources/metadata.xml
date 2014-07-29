@@ -21,9 +21,9 @@
 
             <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
+            <start implementation="TraceMan" name="TraceManInst"></start>
             <start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
 
-            <start implementation="Tracker" name="TrackerInst"></start>
 
             <!-- Unused
                         <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start>

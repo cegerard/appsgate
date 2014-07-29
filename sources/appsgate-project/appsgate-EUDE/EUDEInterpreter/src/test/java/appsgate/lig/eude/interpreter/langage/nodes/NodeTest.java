@@ -7,7 +7,10 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import java.util.Iterator;
+import org.jmock.Expectations;
+import static org.jmock.Expectations.any;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -84,6 +87,11 @@ public abstract class NodeTest {
      */
     @Test
     public void testCall() throws Exception {
+        context.checking(new Expectations() {
+            {
+                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
+            }
+        });
         printTestName("call");
         JSONObject expResult = null;
         JSONObject result = this.instance.call();

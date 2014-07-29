@@ -1,6 +1,5 @@
 package appsgate.lig.ehmi.impl;
 
-
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import org.json.JSONArray;
@@ -20,6 +19,7 @@ import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
 import appsgate.lig.context.userbase.spec.UserBaseSpec;
+import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.exceptions.CoreDependencyException;
 import appsgate.lig.ehmi.exceptions.ExternalComDependencyException;
 import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
@@ -36,11 +36,10 @@ import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
-import appsgate.lig.ehmi.tracker.Tracker;
+import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import java.net.*;
 import java.util.*;
-
 
 /**
  * This class is the central component for AppsGate server. It allow client part
@@ -85,10 +84,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     /**
      * The user manager ApAM component to handle the user base
      */
-    private Tracker tracker;
+    private TraceManSpec traceManager;
 
     /**
-     * Reference on the remote proxy service to execute command on devices/services
+     * Reference on the remote proxy service to execute command on
+     * devices/services
      */
     private CHMIProxySpec coreProxy;
 
@@ -107,8 +107,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     private SendWebsocketsService sendToClientService;
 
-
-    private final String wsPort="8087";
+    private final String wsPort = "8087";
 
     private final BundleContext context;
 
@@ -166,7 +165,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         logger.info("EHMI instanciated");
     }
 
-
     /**
      * Method that register the Upnp service.
      */
@@ -182,7 +180,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
     /**
-     * Called by APAM when an instance of this implementation is created
+     * Called by APAM when an instance of this implementation is created.
      */
     public void newInst() {
         logger.debug("EHMI is starting");
@@ -194,20 +192,20 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             initParams.put("from", "HttpService");
             try {
                 httpService.registerResources("/spok", "/WEB/client", httpContext);
-                logger.debug("Registered URL : "+ httpContext.getResource("/WEB/client"));
+                logger.debug("Registered URL : " + httpContext.getResource("/WEB/client"));
                 logger.info("SPOK HTML pages registered.");
             } catch (NamespaceException ex) {
                 logger.error("NameSpace exception");
             }
         }
 
-        try{
+        try {
             if (addListenerService.addCommandListener(commandListener, "EHMI")) {
                 logger.info("EHMI command listener deployed.");
             } else {
                 logger.error("EHMI command listener subscription failed.");
             }
-        }catch(ExternalComDependencyException comException) {
+        } catch (ExternalComDependencyException comException) {
             logger.debug("Resolution failed for listener service dependency, the EHMICommandListener will not be registered");
         }
 
@@ -219,7 +217,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                     String type = devicesArray.getJSONObject(i).getString("type");
 
                     if(getGrammarFromType(type)==null) {
-                        addGrammar(type,coreProxy.getDeviceBehavior(type));
+                        addGrammar(type,new GrammarDescription(coreProxy.getDeviceBehavior(type)));
                     }
                 }catch (JSONException e) {
                     logger.error(e.getMessage());
@@ -228,23 +226,26 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             }
 
 
-            if(coreProxy.CoreEventsSubscribe(objectEventsListener)){
+            if (coreProxy.CoreEventsSubscribe(objectEventsListener)) {
                 logger.info("Core event listener deployed.");
                 systemClock.startRemoteSync(coreProxy);
-            }else {
+            } else {
                 logger.error("Core event deployement failed.");
             }
-            if(coreProxy.CoreUpdatesSubscribe(objectUpdatesListener)) {
+            if (coreProxy.CoreUpdatesSubscribe(objectUpdatesListener)) {
                 logger.info("Core updates listener deployed.");
-            }else {
+            } else {
                 logger.error("Core updates listener deployement failed.");
             }
-        }catch(CoreDependencyException coreException) {
+        } catch (CoreDependencyException coreException) {
             logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
-            if(systemClock.isRemote())
+            if (systemClock.isRemote()) {
                 systemClock.stopRemoteSync(coreProxy);
+            }
         }
 
+        ((ObjectEventListener) this.objectEventsListener).setTraceManager(traceManager);
+        ((ObjectUpdateListener) this.objectUpdatesListener).setTraceManager(traceManager);
     }
 
     /**
@@ -252,18 +253,19 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     public void deleteInst() {
         httpService.unregister("/spok");
-        try{
+        try {
             addListenerService.removeCommandListener("EHMI");
-        }catch(ExternalComDependencyException comException) {
+        } catch (ExternalComDependencyException comException) {
             logger.warn("Resolution failed for listener service dependency, the EHMICommandListener will not be unregistered");
         }
 
         try {
             coreProxy.CoreEventsUnsubscribe(objectEventsListener);
             coreProxy.CoreUpdatesUnsubscribe(objectUpdatesListener);
-            if(systemClock.isRemote())
+            if (systemClock.isRemote()) {
                 systemClock.stopRemoteSync(coreProxy);
-        }catch(CoreDependencyException coreException) {
+            }
+        } catch (CoreDependencyException coreException) {
             logger.warn("Resolution failed for core dependency, no notification subscription can be delete.");
         }
 
@@ -275,9 +277,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         JSONArray devices = new JSONArray();
         try {
             return addContextData(coreProxy.getDevices());
-        }catch(CoreDependencyException coreException) {
+        } catch (CoreDependencyException coreException) {
             logger.debug("Resolution failled for core dependency, no device can be found.");
-            if(systemClock.isRemote()){
+            if (systemClock.isRemote()) {
                 systemClock.stopRemoteSync(coreProxy);
             }
             try {
@@ -295,12 +297,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         try {
             JSONObject coreObject = coreProxy.getDevice(deviceId);
             return addContextData(coreObject, deviceId);
-        }catch(CoreDependencyException coreException) {
+        } catch (CoreDependencyException coreException) {
             logger.debug("Resolution failled for core dependency, no device can be found.");
-            if(systemClock.isRemote()) {
+            if (systemClock.isRemote()) {
                 systemClock.stopRemoteSync(coreProxy);
             }
-            if(deviceId.contentEquals(systemClock.getAbstractObjectId())) {
+            if (deviceId.contentEquals(systemClock.getAbstractObjectId())) {
                 try {
                     devices = addContextData(systemClock.getDescription(), systemClock.getAbstractObjectId());
                 } catch (JSONException e) {
@@ -316,13 +318,13 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         JSONArray devices = new JSONArray();
         try {
             return addContextData(coreProxy.getDevices(type));
-        }catch(CoreDependencyException coreException) {
+        } catch (CoreDependencyException coreException) {
             logger.debug("Resolution failled for core dependency, no device can be found.");
-            if(systemClock.isRemote()) {
+            if (systemClock.isRemote()) {
                 systemClock.stopRemoteSync(coreProxy);
             }
             try {
-                if(type.contentEquals(systemClock.getSystemClockType())) {
+                if (type.contentEquals(systemClock.getSystemClockType())) {
                     devices.put(addContextData(systemClock.getDescription(), systemClock.getAbstractObjectId()));
                 }
             } catch (JSONException e) {
@@ -335,22 +337,14 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     @Override
     public StateDescription getEventsFromState(String objectId, String stateName) {
         JSONObject deviceDetails = coreProxy.getDevice(objectId);
-        StateDescription stateDescription = null;
         try {
-            JSONObject grammar = devicePropertiesTable.getGrammarFromType(deviceDetails.getString("type"));
-            JSONArray grammarStates = grammar.getJSONArray("states");
-            for (int i = 0; i < grammarStates.length(); i++) {
-                if (grammarStates.getJSONObject(i).getString("name").equalsIgnoreCase(stateName)) {
-                    stateDescription = new StateDescription(grammarStates.getJSONObject(i));
-                    break;
-                }
-            }
-        }catch (JSONException ex) {
+            GrammarDescription grammar = devicePropertiesTable.getGrammarFromType(deviceDetails.getString("type"));
+            return new StateDescription(grammar.getStateDescription(stateName));
+        } catch (JSONException ex) {
             logger.error("Grammar not well formatted");
             return null;
         }
 
-        return stateDescription;
     }
 
     @Override
@@ -370,10 +364,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
     @Override
-    public boolean addGrammar(String deviceType, JSONObject grammarDescription) {
+    public boolean addGrammar(String deviceType, GrammarDescription grammarDescription) {
         return devicePropertiesTable.addGrammarForDeviceType(deviceType, grammarDescription);
     }
-
 
     @Override
     public boolean removeGrammar(String deviceType) {
@@ -381,7 +374,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
     @Override
-    public JSONObject getGrammarFromType(String deviceType) {
+    public GrammarDescription getGrammarFromType(String deviceType) {
         return devicePropertiesTable.getGrammarFromType(deviceType);
     }
 
@@ -395,7 +388,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         try {
 
             String placeParent = null;
-            if(place.has("parent")){
+            if (place.has("parent")) {
                 placeParent = place.getString("parent");
             }
             String placeId = placeManager.addPlace(place.getString("name"), placeParent);
@@ -444,7 +437,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
-                                                ArrayList<String> spaces) {
+            ArrayList<String> spaces) {
 
         ArrayList<String> coreObjectInPlace = new ArrayList<String>();
         ArrayList<String> coreObjectOfType = new ArrayList<String>();
@@ -504,7 +497,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public boolean createUser(String id, String password, String lastName,
-                              String firstName, String role) {
+            String firstName, String role) {
         return userManager.adduser(id, password, lastName, lastName, role);
     }
 
@@ -540,13 +533,13 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public boolean synchronizeAccount(String id, String password,
-                                      JSONObject accountDetails) {
+            JSONObject accountDetails) {
         return userManager.addAccount(id, password, accountDetails);
     }
 
     @Override
     public boolean desynchronizedAccount(String id, String password,
-                                         JSONObject accountDetails) {
+            JSONObject accountDetails) {
         return userManager.removeAccount(id, password, accountDetails);
     }
 
@@ -560,12 +553,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         return userManager.removeDevice(id, password, deviceId);
     }
 
-
     @Override
     public JSONArray getPlacesByName(String name) {
         JSONArray placeByName = new JSONArray();
         ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithName(name);
-        for(SymbolicPlace place : placesList){
+        for (SymbolicPlace place : placesList) {
             placeByName.put(place.getDescription());
         }
         return placeByName;
@@ -573,9 +565,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public JSONArray gePlacesWithTags(JSONArray tags) {
-        int tagNb  = tags.length();
+        int tagNb = tags.length();
         ArrayList<String> tagsList = new ArrayList<String>();
-        for(int i=0; i<tagNb; i++) {
+        for (int i = 0; i < tagNb; i++) {
             try {
                 tagsList.add(tags.getString(i));
             } catch (JSONException e) {
@@ -585,18 +577,17 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
         JSONArray placeByTag = new JSONArray();
         ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithTags(tagsList);
-        for(SymbolicPlace place : placesList){
+        for (SymbolicPlace place : placesList) {
             placeByTag.put(place.getDescription());
         }
         return placeByTag;
     }
 
-
     @Override
     public JSONArray getPlacesWithProperties(JSONArray keys) {
-        int keysNb  = keys.length();
+        int keysNb = keys.length();
         ArrayList<String> keysList = new ArrayList<String>();
-        for(int i=0; i<keysNb; i++) {
+        for (int i = 0; i < keysNb; i++) {
             try {
                 keysList.add(keys.getString(i));
             } catch (JSONException e) {
@@ -606,7 +597,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
         JSONArray placeByProp = new JSONArray();
         ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithProperties(keysList);
-        for(SymbolicPlace place : placesList){
+        for (SymbolicPlace place : placesList) {
             placeByProp.put(place.getDescription());
         }
         return placeByProp;
@@ -614,9 +605,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public JSONArray getPlacesWithPropertiesValue(JSONArray properties) {
-        int propertiesNb  = properties.length();
+        int propertiesNb = properties.length();
         HashMap<String, String> propertiesList = new HashMap<String, String>();
-        for(int i=0; i<propertiesNb; i++) {
+        for (int i = 0; i < propertiesNb; i++) {
             try {
                 JSONObject prop = properties.getJSONObject(i);
                 propertiesList.put(prop.getString("key"), prop.getString("value"));
@@ -627,7 +618,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
         JSONArray placeByPropValue = new JSONArray();
         ArrayList<SymbolicPlace> placesList = placeManager.getPlacesWithPropertiesValue(propertiesList);
-        for(SymbolicPlace place : placesList){
+        for (SymbolicPlace place : placesList) {
             placeByPropValue.put(place.getDescription());
         }
         return placeByPropValue;
@@ -636,7 +627,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     @Override
     public JSONArray getRootPlaces() {
         JSONArray rootPlaces = new JSONArray();
-        for(SymbolicPlace place : placeManager.getRootPlaces()) {
+        for (SymbolicPlace place : placeManager.getRootPlaces()) {
             rootPlaces.put(place.getDescription());
         }
         return rootPlaces;
@@ -728,6 +719,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     /**
      * Add contextual data to a object
+     *
      * @param object the object to enrich
      * @param objectId the identifier of this object
      * @return the new contextual enrich JSONObject
@@ -744,29 +736,29 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     /**
      * Add contextual data to all object in an JSONArray
+     *
      * @param objects the objects JSONArray
      * @return a enrich from contextual data JSONArray
      */
     private JSONArray addContextData(JSONArray objects) {
         JSONArray contextArray = new JSONArray();
-        try{
+        try {
             int nbObjects = objects.length();
             int i = 0;
             JSONObject coreObject;
-            while(i < nbObjects) {
+            while (i < nbObjects) {
                 coreObject = objects.getJSONObject(i);
                 contextArray.put(addContextData(coreObject, coreObject.getString("id")));
                 i++;
             }
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             logger.error(e.getMessage());
         }
         return contextArray;
     }
 
     /**
-     * Find the IP address from system configuration to exposed
-     * it through UPnP
+     * Find the IP address from system configuration to exposed it through UPnP.
      */
     private void retrieveLocalAdress() {
         // initiate UPnP state variables
@@ -779,8 +771,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                     // network. but It will difficult to
                     // find automatically the right
                     // network interface
-                    if(!netint.getDisplayName().contentEquals("tun0")) {
-                        logger.debug("The newtwork interface {} will be inspected.",netint.getDisplayName());
+                    if (!netint.getDisplayName().contentEquals("tun0")) {
+                        logger.debug("The newtwork interface {} will be inspected.", netint.getDisplayName());
                         Enumeration<InetAddress> addresses = netint.getInetAddresses();
                         for (InetAddress address : Collections.list(addresses)) {
                             if (address instanceof Inet4Address) {
@@ -793,14 +785,14 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             }
 
             serverIP.setStringValue(localAddress.getHostAddress());
-            logger.debug("State Variable name : "+serverIP.getName()+", value : "+serverIP.getCurrentStringValue());
-            serverURL.setStringValue("http://"+serverIP.getCurrentStringValue()+ "/index.html");
-            logger.debug("State Variable name : "+serverURL.getName()+", value : "+serverURL.getCurrentStringValue());
-            serverWebsocket.setStringValue("http://"+serverIP.getCurrentStringValue()+ ":"+wsPort+"/");
-            logger.debug("State Variable name : "+serverWebsocket.getName()+", value : "+serverWebsocket.getCurrentStringValue());
+            logger.debug("State Variable name : " + serverIP.getName() + ", value : " + serverIP.getCurrentStringValue());
+            serverURL.setStringValue("http://" + serverIP.getCurrentStringValue() + "/index.html");
+            logger.debug("State Variable name : " + serverURL.getName() + ", value : " + serverURL.getCurrentStringValue());
+            serverWebsocket.setStringValue("http://" + serverIP.getCurrentStringValue() + ":" + wsPort + "/");
+            logger.debug("State Variable name : " + serverWebsocket.getName() + ", value : " + serverWebsocket.getCurrentStringValue());
 
         } catch (UnknownHostException e) {
-            logger.debug("Unknown host: {}",e.getMessage());
+            logger.debug("Unknown host: {}", e.getMessage());
         } catch (SocketException e) {
             logger.debug("Socket exception for UPnP: {}", e.getMessage());
         }
@@ -808,9 +800,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     /**
      * Send notification to all connected clients.
+     *
      * @param notif the notification to transmit
      */
-    public void sendToClients(JSONObject notif){
+    public void sendToClients(JSONObject notif) {
         sendToClientService.send(notif.toString());
     }
 
@@ -822,24 +815,25 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     public void gotNotification(NotificationMsg notif) {
         logger.debug("Notification message received, " + notif.JSONize());
-        try{
+        try {
             sendToClientService.send(notif.JSONize().toString());
-        }catch(ExternalComDependencyException comException) {
+        } catch (ExternalComDependencyException comException) {
             logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
         }
     }
 
     /**
      * Get the EHMI system clock abstraction
-     * @return the  abstract system clock instance
+     *
+     * @return the abstract system clock instance
      */
     public SystemClock getSystemClock() {
         return systemClock;
     }
 
     /**
-     * Get a command description, resolve the local target reference and return a runnable
-     * command object
+     * Get a command description, resolve the local target reference and return
+     * a runnable command object
      *
      * @param clientId client identifier
      * @param method method name to call on objectId
@@ -854,8 +848,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
     /**
-     * Get a runnable object that can execute command from a remote device manager asynchronously with
-     * a return response
+     * Get a runnable object that can execute command from a remote device
+     * manager asynchronously with a return response
      *
      * @param objIdentifier the identifier of the object on the remote system
      * @param method the method name to call
@@ -867,11 +861,13 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     @SuppressWarnings("rawtypes")
     public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, ArrayList<Object> arguments, ArrayList<Class> types, int clientId, String callId) {
+        traceManager.commandHasBeenPassed(objIdentifier, method, "EHMI");
         return coreProxy.executeCommand(clientId, objIdentifier, method, arguments, types, callId);
     }
 
     /**
-     * Get a runnable object that can execute command from a remote device manager asynchronously
+     * Get a runnable object that can execute command from a remote device
+     * manager asynchronously
      *
      * @param objIdentifier the identifier of the object on the remote system
      * @param method the method name to call
@@ -880,6 +876,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     @Override
     public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, JSONArray args) {
+        traceManager.commandHasBeenPassed(objIdentifier, method, "PROGRAM");
         return coreProxy.executeCommand(objIdentifier, method, args);
     }
 
@@ -925,7 +922,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     }
 
-
     @Override
     public synchronized void deleteCoreListener(CoreListener coreListener) {
         logger.debug("Deleting a core listener...");
@@ -956,6 +952,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     /**
      * Return a copy of the key array for core event listeners
+     *
      * @return Entry keys as an array list
      */
     public synchronized ArrayList<Entry> getCoreEventListenerCopy() {
@@ -969,6 +966,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     /**
      * Get the event listener map
+     *
      * @return the HashMap of events listeners
      */
     public HashMap<Entry, ArrayList<CoreListener>> getEventsListeners() {
@@ -982,6 +980,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     /**
      * Set the current time in milliseconds
+     *
      * @param millis the new time to set
      */
     public void setCurrentTimeInMillis(long millis) {
@@ -990,6 +989,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     /**
      * Get the current time flow rate from the local EHMI clock
+     *
      * @return the current time flow rate as a double
      */
     public double getTimeFlowRate() {
@@ -998,16 +998,18 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     /**
      * Set the time flow rate
+     *
      * @return the new time flow rate
      */
     public double setTimeFlowRate(double rate) {
         logger.warn("Set time flow rate method is not supported yet for local system clock.");
-        logger.warn("requested value: "+rate);
+        logger.warn("requested value: " + rate);
         return SystemClock.defaultTimeFlowRate;
     }
 
     /**
      * Send a clock alarm notification to connected client
+     *
      * @param msg
      */
     public void sendClockAlarmNotifcation(ClockAlarmNotificationMsg msg) {

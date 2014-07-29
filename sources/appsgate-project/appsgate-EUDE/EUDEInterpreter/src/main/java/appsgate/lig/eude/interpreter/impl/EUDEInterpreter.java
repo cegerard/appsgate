@@ -23,6 +23,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 
 import java.io.BufferedReader;
@@ -132,7 +134,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         //save program map state
         if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
             p.setDeployed();
-            notifyAddProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getExpertProgramScript());
+            notifyAddProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
             return true;
         } else {
             mapPrograms.remove(p.getId());
@@ -165,7 +167,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         //save program map state
         if (contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
-            notifyRemoveProgram(p.getId());
+            notifyRemoveProgram(p.getId(), p.getProgramName());
             return true;
         }
         LOGGER.debug("Unable to warn save the state");
@@ -195,7 +197,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
 
         if (p.update(jsonProgram)) {
-            notifyUpdateProgram(p.getId(), p.getState().toString(), p.getJSONDescription(), p.getExpertProgramScript());
+            notifyUpdateProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
             //save program map state
 
             if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
@@ -297,10 +299,17 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param args the args to pass to the command
      * @return the command to be executed
      */
-    public GenericCommand executeCommand(String objectId, String methodName, JSONArray args) {
-        return ehmiProxy.executeRemoteCommand(objectId, methodName, args);
-    }
+    public GenericCommand executeCommand(String objectId, String methodName, JSONArray args, ProgramLineNotification notif) {
+        GenericCommand command = ehmiProxy.executeRemoteCommand(objectId, methodName, args);
+        if (command == null) {
+            LOGGER.error("Command not found {}, for {}", methodName, objectId);
+        } else {
+            notifyChanges(notif);
+            command.run();
+        }
+        return command;
 
+    }    
     /**
      * @return the current time in milliseconds
      */
@@ -324,7 +333,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         for (CoreEventListener l : mapCoreNodeEvent) {
             if (l.equals(listener)) {
-            LOGGER.debug("Add node event to listener list.");
+                LOGGER.debug("Add node event to listener list.");
                 l.addNodeEvent(nodeEvent);
                 return;
             }
@@ -350,7 +359,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         for (CoreEventListener l : mapCoreNodeEvent) {
             if (l.equals(listener)) {
-            LOGGER.debug("Add node event to listener list.");
+                LOGGER.debug("Add node event to listener list.");
                 l.removeNodeEvent(nodeEvent);
                 return;
             }
@@ -363,10 +372,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      * @param runningState
      * @param source
-     * @param expertProgram
      */
-    private void notifyUpdateProgram(String id, String runningState, JSONObject source, String expertProgram) {
-        notifyChanges(new ProgramNotification("updateProgram", id, runningState, source, expertProgram));
+    private void notifyUpdateProgram(String id, String runningState, String name, JSONObject source) {
+        notifyChanges(new ProgramNotification("updateProgram", id, runningState, name, source));
     }
 
     /**
@@ -374,18 +382,17 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      * @param runningState
      * @param source
-     * @param expertProgram
      */
-    private void notifyAddProgram(String id, String runningState, JSONObject source, String expertProgram) {
-        notifyChanges(new ProgramNotification("newProgram", id, runningState, source, expertProgram));
+    private void notifyAddProgram(String id, String runningState, String name, JSONObject source) {
+        notifyChanges(new ProgramNotification("newProgram", id, runningState, name, source));
     }
 
     /**
      *
      * @param id
      */
-    private void notifyRemoveProgram(String id) {
-        notifyChanges(new ProgramNotification("removeProgram", id, "", null, ""));
+    private void notifyRemoveProgram(String id, String name) {
+        notifyChanges(new ProgramNotification("removeProgram", id, "", name, null));
     }
 
     /**
