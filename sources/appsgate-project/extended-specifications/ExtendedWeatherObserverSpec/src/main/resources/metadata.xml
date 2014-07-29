@@ -4,7 +4,18 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<specification name="ExtendedWeatherObserverSpec"
-		interfaces="appsgate.lig.weather.extended.spec.ExtendedWeatherObserver, appsgate.lig.core.object.spec.CoreObjectSpec" messages="appsgate.lig.weather.extended.spec.messages.DaylightNotificationMsg">
+		interfaces="appsgate.lig.weather.extended.spec.ExtendedWeatherObserver, appsgate.lig.core.object.spec.CoreObjectSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
+
+        <!-- device kernel meta data -->
+        <definition name="deviceName" 	type="string"  />
+        <definition name="deviceId" 	type="string"  />
+
+        <!-- device client meta data -->
+        <definition name="pictureId" 	type="string"  />
+        <definition name="userType" 	type="string"  />
+        <definition name="status" 		type="string"  />
+        <definition name="deviceType" type="string" />
+
 
         <definition name="currentLocation" type="string"/>
 

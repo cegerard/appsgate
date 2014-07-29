@@ -1,0 +1,13 @@
+<% if (node.phrase === 'keyboard.currently-daylight') { %>
+<button class="btn btn-prog btn-prog-action" id="<%= node.iid %>">
+
+    <span data-i18n='keyboard.currently-daylight'/>
+
+</button>
+<% if (typeof node.object !== 'undefined') { %>
+<%=engine.buildInputFromNode(node.object, currentNode) %>
+<% } else if (typeof node.target !== 'undefined') { %>
+<%=engine.buildInputFromNode(node.target, currentNode) %>
+<% } %>
+
+<% } %>

@@ -2,15 +2,17 @@ package appsgate.lig.weather.extended.impl;
 
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.AbstractObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
-import appsgate.lig.weather.extended.spec.messages.DaylightNotificationMsg;
 import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,17 @@ import java.util.Date;
  */
 public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedWeatherObserver, AlarmEventObserver, CoreObjectSpec{
 
+    protected String appsgatePictureId;
+
+    protected String appsgateUserType;
+    protected String appsgateDeviceStatus;
+    protected String appsgateObjectId;
+    protected String appsgateServiceName;
+
+    protected CORE_TYPE appsgateCoreType;
+
+
+
     private String currentLocation;
     private boolean currentlyDaylight;
     private Calendar sunrise = Calendar.getInstance();
@@ -32,6 +45,9 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     private int tomorrowMinTemperature;
     private int tomorrowMaxTemperature;
 
+
+    private long lastFetch = -1;
+
     private CoreWeatherServiceSpec weatherService;
     private CoreClockSpec clock;
 
@@ -41,23 +57,53 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     public static final String IMPL_NAME = "WeatherObserverImpl";
 
     public WeatherObserverImpl() {
-        appsgatePictureId = null;
-        appsgateUserType = "103"; // 103 stands for weather forecast service
-        appsgateDeviceStatus = "2"; // 2 means device paired (for a device, not
+        super.appsgateUserType = "103"; // 103 stands for weather forecast service
+        super.appsgateDeviceStatus = "2"; // 2 means device paired (for a device, not
         // relevant for service)
-        appsgateObjectId = String.valueOf( this.hashCode()); // Object id
-        // prefixed by
-        // the user type
-        appsgateServiceName = "Yahoo Weather Forecast";
-        appsgateCoreType = CORE_TYPE.SERVICE;
+
+        super.appsgateServiceName = "Yahoo Weather Forecast";
+        super.appsgateCoreType = CORE_TYPE.SERVICE;
+    }
+
+    @Override
+    public String getAbstractObjectId() {
+        return appsgateObjectId;
+    }
+
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
+        JSONObject descr = super.getDescription();
+
+        // mandatory appsgate properties
+        descr.put("id", appsgateObjectId);
+
+        try {
+
+            descr.put("location", getCurrentLocation());
+            descr.put("temperature", getCurrentTemperature());
+            descr.put("trend", getCurrentWeatherCode());
+            descr.put("max", getTomorrowMaxTemperature());
+            descr.put("min", getTomorrowMinTemperature());
+
+        } catch(WeatherForecastException exc ) {
+            logger.warn("Error during get description" + exc.getMessage());
+            return descr;
+        }
+
+
+        return descr;
     }
 
     private static Logger logger = LoggerFactory
             .getLogger(WeatherObserverImpl.class);
 
-    private DaylightNotificationMsg fireDaylightNotificationMsg(boolean dayLight) {
-
-        return new DaylightNotificationMsg(dayLight,null,null,null);
+    private NotificationMsg fireDaylightNotificationMsg(boolean isDayLight) {
+        if(isDayLight) {
+            return new CoreNotificationMsg("daylightEvent", "sunset", "sunrise", this);
+        } else {
+            return new CoreNotificationMsg("daylightEvent", "sunrise", "sunset", this);
+        }
     }
 
     @Override
@@ -116,28 +162,34 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     private void refresh() throws WeatherForecastException {
         logger.debug("refreshing weather data for "+currentLocation);
 
-        CurrentWeather weather = weatherService.getCurrentWeather(currentLocation);
-        DayForecast forecast = weatherService.getForecast(currentLocation).get(1);
+        if(weatherService != null &&
+                (lastFetch < 0 || System.currentTimeMillis()-lastFetch > 1000)) {
 
-        currentWeatherCode = weather.getWeatherCode();
-        currentTemperature = weather.getTemperature();
-        sunrise.setTime(weather.getSunrise());
-        sunset.setTime(weather.getSunset());
+            CurrentWeather weather = weatherService.getCurrentWeather(currentLocation);
+            DayForecast forecast = weatherService.getForecast(currentLocation).get(1);
 
-        tomorrowWeatherCode = forecast.getCode();
-        tomorrowMinTemperature = forecast.getMin();
-        tomorrowMaxTemperature = forecast.getMax();
+            currentWeatherCode = weather.getWeatherCode();
+            currentTemperature = weather.getTemperature();
+            sunrise.setTime(weather.getSunrise());
+            sunset.setTime(weather.getSunset());
 
-        if(alarmSunrise>=0) {
-            clock.unregisterAlarm(alarmSunrise);
+            tomorrowWeatherCode = forecast.getCode();
+            tomorrowMinTemperature = forecast.getMin();
+            tomorrowMaxTemperature = forecast.getMax();
+
+            if (alarmSunrise >= 0) {
+                clock.unregisterAlarm(alarmSunrise);
+            }
+
+            if (alarmSunset >= 0) {
+                clock.unregisterAlarm(alarmSunset);
+            }
+
+            alarmSunrise = clock.registerAlarm(sunrise, this);
+            alarmSunset = clock.registerAlarm(sunset, this);
+
+            lastFetch= System.currentTimeMillis();
         }
-
-        if(alarmSunset>=0) {
-            clock.unregisterAlarm(alarmSunset);
-        }
-
-        alarmSunrise = clock.registerAlarm(sunrise,this);
-        alarmSunset = clock.registerAlarm(sunset,this);
 
     }
 

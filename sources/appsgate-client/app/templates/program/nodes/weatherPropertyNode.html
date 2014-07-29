@@ -1,0 +1,47 @@
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
+
+    <% switch(node.methodName) { 
+    	case "getCurrentWeatherCode": %>
+    		<span data-i18n="language.current-weather-code-state"/>
+		<%	break;
+    	case "getTomorrowMinTemperature": %>
+    		<span data-i18n="language.tomorrow-temperature-min"/>
+		<%	break;		
+    	case "getTomorrowMaxTemperature": %>
+    		<span data-i18n="language.tomorrow-temperature-max"/>
+		<%	break;		
+    	case "getCurrentTemperature": %>
+    		<span data-i18n="language.current-temperature"/>
+		<%	break;
+        case "getTomorrowWeatherCode": %>
+            <span data-i18n="language.tomorrow-weather-code-state"/>
+        <%	break;
+        case "isCurrentlyDaylight": %>
+            <span data-i18n="language.currently-daylight"/>
+        <%	break;
+    } %>
+    
+    <% if (node.methodName === "isWeatherSimplifiedCodeForecast" ) { %>
+    	<span data-i18n="language.weather-code-verb"></span>
+    <select id="code-forecast-<%= node.iid %>" class="code-forecast-picker" target-id="<%= node.iid %>">
+        <option <% if (node.args[2].value === "0") { %>selected<% } %> value="0" data-i18n="language.weather-code-0"></option>
+        <option <% if (node.args[2].value === "1") { %>selected<% } %> value="1" data-i18n="language.weather-code-1"></option>
+        <option <% if (node.args[2].value === "2") { %>selected<% } %> value="2" data-i18n="language.weather-code-2"></option>
+        <option <% if (node.args[2].value === "3") { %>selected<% } %> value="3" data-i18n="language.weather-code-3"></option>
+        <option <% if (node.args[2].value === "4") { %>selected<% } %> value="4" data-i18n="language.weather-code-4"></option>
+        <option <% if (node.args[2].value === "5") { %>selected<% } %> value="5" data-i18n="language.weather-code-5"></option>
+        <option <% if (node.args[2].value === "6") { %>selected<% } %> value="6" data-i18n="language.weather-code-6"></option>
+        <option <% if (node.args[2].value === "7") { %>selected<% } %> value="7" data-i18n="language.weather-code-7"></option>
+    </select>
+
+    <div class='btn btn-default btn-prog input-spot mandatory-spot' id="<%= node.target.iid %>">
+        <span data-i18n='language.mandatory-keyword'/>
+    </div>
+    <% } %>
+
+    
+</div>
+
+
+
+

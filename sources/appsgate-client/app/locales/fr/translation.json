@@ -586,13 +586,14 @@
       "pause-media-action":"Mettre en pause le media",
       "stop-media-action":"Stopper",
       "set-volume-media-action":"Mettre le volume",
-      "is-weather-code-state":"la météo prévue",
-      "get-weather-code-state":"la météo prévue",
-      "weather-min":"la température minimale prévue",
-      "weather-max":"la température maximale prévue",
-      "weather-avg":"la température moyenne prévue",
-      "getTemperature":"la température",
-      "selector":{
+      "current-weather-code-state":"la météo actuelle à",
+      "current-temperature":"la température moyenne à",
+      "tomorrow-weather-code-state":"la météo prévue demain à",
+      "tomorrow-temperature-min":"la température minimale prévue demain à",
+      "tomorrow-temperature-max":"la température maximale prévue à",
+      "currently-daylight":"il fait jour à",
+
+       "selector":{
         "prefix-m":"Tous les ",
         "prefix-f":"Toutes les ",
         "type":{

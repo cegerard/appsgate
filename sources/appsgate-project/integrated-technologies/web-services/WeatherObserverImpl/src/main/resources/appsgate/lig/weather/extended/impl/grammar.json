@@ -1,0 +1,23 @@
+{
+    "friendlyName": "WeatherObserver",
+    "typename": "WeatherObserver",
+    "properties": [
+    ],
+    "states": [
+        {
+            "name": "daylightState",
+            "stateName": "isCurrentlyDaylight",
+            "stateValue": "true",
+            "endEvent": {
+                "type": "event",
+                "eventName": "daylightEvent",
+                "eventValue": "sunset"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "daylightEvent",
+                "eventValue": "sunrise"
+            }
+        }
+    ]
+}
