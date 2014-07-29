@@ -42,34 +42,36 @@ public class SwitchEvent implements SwitchOnEvent.Listener,
 
 	@Override
 	public void onEvent(SwitchOnEvent arg0) {
-		logger.info("Switch on event received for " + arg0.getSourceItemUID());
+		logger.info("The switch " + arg0.getSourceItemUID()
+				+ ", state changed to on with button  "
+				+ arg0.getSwitchNumber());
 		Instance instRef = enocean.getSensorInstance(arg0.getSourceItemUID());
 		String implName = instRef.getImpl().getName();
-//		
-//		if(implName.contentEquals("EnoceanSwitchSensorImpl")) {
-//			instRef.setProperty("buttonStatus", "true");
-//			instRef.setProperty("switchNumber",String.valueOf(arg0.getSwitchNumber()));
-//			instRef.setProperty("switchState", "true");
-//			
-//		}else 
-		if(implName.contentEquals("EnoceanPlugActuatorSensorImpl")){
+
+		if(implName.contentEquals("EnoceanSwitchSensorImpl")) {
+			instRef.setProperty("buttonStatus", "true");
+			instRef.setProperty("switchNumber",String.valueOf(arg0.getSwitchNumber()));
+			instRef.setProperty("switchState", "true");
+
+		}else if(implName.contentEquals("EnoceanPlugActuatorSensorImpl")){
 			instRef.setProperty("plugState", "true");
 		}
 	}
 
 	@Override
 	public void onEvent(SwitchOffEvent arg0) {
-		logger.info("Switch off event received for " + arg0.getSourceItemUID());
+		logger.info("The switch " + arg0.getSourceItemUID()
+				+ ", state changed to off with button "
+				+ arg0.getSwitchNumber());
 		Instance instRef = enocean.getSensorInstance(arg0.getSourceItemUID());
 		String implName = instRef.getImpl().getName();
-		
-//		if(implName.contentEquals("EnoceanSwitchSensorImpl")) {
-//			instRef.setProperty("buttonStatus", "false");
-//			instRef.setProperty("switchNumber", String.valueOf(arg0.getSwitchNumber()));
-//			instRef.setProperty("switchState", "true");
-//			
-//		}else 
-		if(implName.contentEquals("EnoceanPlugActuatorSensorImpl")){
+
+		if(implName.contentEquals("EnoceanSwitchSensorImpl")) {
+			instRef.setProperty("buttonStatus", "false");
+			instRef.setProperty("switchNumber", String.valueOf(arg0.getSwitchNumber()));
+			instRef.setProperty("switchState", "true");
+
+		}else if(implName.contentEquals("EnoceanPlugActuatorSensorImpl")){
 			instRef.setProperty("plugState", "false");
 		}
 	}
