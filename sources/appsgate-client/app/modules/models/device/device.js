@@ -55,7 +55,7 @@ define([
                 objectId: this.get("id"),
                 method: method,
                 args: args,
-                TARGET: "CHMI"
+                TARGET: "EHMI"
             };
 
             if (typeof callId !== "undefined") {
