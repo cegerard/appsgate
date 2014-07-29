@@ -216,7 +216,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                 try{
                     String type = devicesArray.getJSONObject(i).getString("type");
 
-                    if(getGrammarFromType(type)==null) {
+                    if(type != "21" && getGrammarFromType(type)==null) {
                         addGrammar(type,new GrammarDescription(coreProxy.getDeviceBehavior(type)));
                     }
                 }catch (JSONException e) {
