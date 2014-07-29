@@ -222,57 +222,58 @@ public class UbikitAdapter implements
 		logger.info("EnOcean PEM connector removed");
 	}
 
-	/**
-	 * Log all the EnOcean event from the EnOcean dongle.
-	 * 
-	 */
-    public void log(String arg0) {
-		logger.info("!EnOcean event! " + arg0);
-
-		/****************************
-		 * EnOcean telegram parsing * for not supported event *
-		 ****************************/
-		// RECV < 55 | 0 7 7 1 | 7a | f6 70 0 27 b3 ed 30 1 ff ff ff ff 2d 0 |
-		// 76 > FROM 27b3ed (-45 dBm)
-		String[] splited = arg0.split("FROM");
-		if (splited.length > 1) { // if arg0 is a received message FROM xxxx
-			String split1 = splited[1];
-			String id = "";
-			for (int i = 1; i < 7; i++) {
-				id += split1.charAt(i);
-			}
-			id = "ENO" + id;
-			Instance inst = getSensorInstance(id);
-			if (inst != null) {
-				logger.info("Paired sensor found " + id);
-				// TODO replace the use of userType by something directly on
-				// EnOceanProfile
-				String userType = inst.getProperty("userType");
-				if (userType.contentEquals("2")) { // Switch sensor
-					// Check the event
-					String split0 = splited[0];
-					String[] splited1 = split0.split("<");
-					String enoceanTg = splited1[1].trim();
-
-					if (enoceanTg.charAt(23) == '0') {
-						// The switch is set to neutral position
-						String switchNumber = inst.getProperty("switchNumber");
-						logger.info("The switch " + id
-								+ ", state changed to neutral with button  "
-								+ switchNumber);
-						inst.setProperty("buttonStatus", "none");
-						inst.setProperty("switchNumber", switchNumber);
-						inst.setProperty("switchState", "true");
-					}
-				}
-
-				splited = split1.split("\\(");
-				String signalDBM = splited[1];
-				signalDBM = signalDBM.substring(0, 3);
-				inst.setProperty("signal", signalDBM);
-			}
-		}
-	}
+	//TODO To delete, log method is death code
+//	/**
+//	 * Log all the EnOcean event from the EnOcean dongle.
+//	 * 
+//	 */
+//    public void log(String arg0) {
+//		logger.info("!EnOcean event! " + arg0);
+//
+//		/****************************
+//		 * EnOcean telegram parsing * for not supported event *
+//		 ****************************/
+//		// RECV < 55 | 0 7 7 1 | 7a | f6 70 0 27 b3 ed 30 1 ff ff ff ff 2d 0 |
+//		// 76 > FROM 27b3ed (-45 dBm)
+//		String[] splited = arg0.split("FROM");
+//		if (splited.length > 1) { // if arg0 is a received message FROM xxxx
+//			String split1 = splited[1];
+//			String id = "";
+//			for (int i = 1; i < 7; i++) {
+//				id += split1.charAt(i);
+//			}
+//			id = "ENO" + id;
+//			Instance inst = getSensorInstance(id);
+//			if (inst != null) {
+//				logger.info("Paired sensor found " + id);
+//				// TODO replace the use of userType by something directly on
+//				// EnOceanProfile
+//				String userType = inst.getProperty("userType");
+//				if (userType.contentEquals("2")) { // Switch sensor
+//					// Check the event
+//					String split0 = splited[0];
+//					String[] splited1 = split0.split("<");
+//					String enoceanTg = splited1[1].trim();
+//
+//					if (enoceanTg.charAt(23) == '0') {
+//						// The switch is set to neutral position
+//						String switchNumber = inst.getProperty("switchNumber");
+//						logger.info("The switch " + id
+//								+ ", state changed to neutral with button  "
+//								+ switchNumber);
+//						inst.setProperty("buttonStatus", "none");
+//						inst.setProperty("switchNumber", switchNumber);
+//						inst.setProperty("switchState", "true");
+//					}
+//				}
+//
+//				splited = split1.split("\\(");
+//				String signalDBM = splited[1];
+//				signalDBM = signalDBM.substring(0, 3);
+//				inst.setProperty("signal", signalDBM);
+//			}
+//		}
+//	}
 
 	/**
 	 * Get all the EnOcean paired item from Ubikit use when the bundle restart.
