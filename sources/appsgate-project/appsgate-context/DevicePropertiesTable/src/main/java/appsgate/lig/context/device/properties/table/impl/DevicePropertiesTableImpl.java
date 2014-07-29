@@ -127,17 +127,24 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
 	
 	@Override
 	public boolean addGrammarForDeviceType(String deviceType, GrammarDescription grammar) {
+        logger.debug("addGrammarForDeviceType(String deviceType = "+deviceType
+                    +"JSONObject grammar = "+grammar.getJSON());
 		return typesGrammarMap.put(deviceType, grammar) != null;
 	}
 
 	@Override
 	public boolean removeGrammarForDeviceType(String deviceType) {
-		return typesGrammarMap.remove(deviceType) != null;
+        logger.debug("removeGrammarForDeviceType(String deviceType = "+deviceType
+                +"), get result : "+typesGrammarMap.get(deviceType));
+        return typesGrammarMap.remove(deviceType) != null;
 	}
 	
 	@Override
 	public GrammarDescription getGrammarFromType(String deviceType) {
+        logger.debug("getGrammarFromType(String deviceType = "+deviceType
+                    +"), returning "+typesGrammarMap.get(deviceType));
 		return typesGrammarMap.get(deviceType);
+
 	}
 
 	/**
