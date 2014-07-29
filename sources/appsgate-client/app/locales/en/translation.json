@@ -354,7 +354,11 @@
          "name":{
             "singular":"Weather",
             "plural":"Weather"
-         }
+         },
+          "event":{
+              "sunrise":"the sun rise in",
+              "sunset":"the sun set in"
+          }
       }
    },
    "programs":{

@@ -354,7 +354,11 @@
          "name":{
             "singular":"Service Meteo",
             "plural":"Services Meteo"
-         }
+         },
+          "event":{
+              "sunrise":"le jour se lève à",
+              "sunset":"le jour se couche à"
+          }
       }
    },
    "programs":{

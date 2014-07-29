@@ -27,8 +27,39 @@ define([
         },
 
         /**
-         * Weather Events (TODO) should only be to notify of a weather change ( ???)
+         * return the list of available events
          */
+        getEvents: function() {
+            return ["sunrise","sunset"];
+        },
+        /**
+         * return the keyboard code for a given event
+         */
+        getKeyboardForEvent: function(evt){
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var v = this.getJSONEvent("mandatory");
+            switch(evt) {
+                case "sunrise":
+                    $(btn).append("<span data-i18n='services.weather.event.sunrise'/>");
+                    v.eventName = "daylightEvent";
+                    v.eventValue = "sunrise";
+                    v.phrase = "services.weather.event.sunrise";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;
+                case "sunset":
+                    $(btn).append("<span data-i18n='services.weather.event.sunset'/>");
+                    v.eventName = "daylightEvent";
+                    v.eventValue = "sunset";
+                    v.phrase = "services.weather.event.sunset";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;
+                default:
+                    console.error("unexpected event found for Weather : " + evt);
+                    btn = null;
+                    break;
+            }
+            return btn;
+        },
 
 
         /**
