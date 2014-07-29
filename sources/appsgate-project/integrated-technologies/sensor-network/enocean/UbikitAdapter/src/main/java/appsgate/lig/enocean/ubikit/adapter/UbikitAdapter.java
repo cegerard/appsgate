@@ -253,17 +253,65 @@ public class UbikitAdapter implements
 					String split0 = splited[0];
 					String[] splited1 = split0.split("<");
 					String enoceanTg = splited1[1].trim();
-
-					if (enoceanTg.charAt(23) == '0') {
+					
+					char buttonCode = enoceanTg.charAt(13);
+					char doubleButtonCode = enoceanTg.charAt(14);
+					//The 13th character code the button number and the 14th for
+					//the second button pressed.
+					//value are = {0 = released, 1=bottom-left, 3=top-left,
+					//5=bottom-right, 7=top-right, 15=double-bottom, 17=bottom-left + top-right
+					//35=top-left + bottom-right, 37=double-top}
+					
+					if ( buttonCode == '0') {
 						// The switch is set to neutral position
 						String switchNumber = inst.getProperty("switchNumber");
-						logger.info("The switch " + id
-								+ ", state changed to neutral with button  "
-								+ switchNumber);
-						inst.setProperty("buttonStatus", "none");
-						inst.setProperty("switchNumber", switchNumber);
+						logger.info("Switch " +id+ ", button(s) number "+ switchNumber+" released");
+						inst.setProperty("buttonStatus", "false");
 						inst.setProperty("switchState", "true");
-					}
+						
+					} else if (buttonCode == '1') {
+						inst.setProperty("buttonStatus", "true");
+						if (doubleButtonCode == '0') {
+							inst.setProperty("switchNumber", "1");
+							logger.info("Bottom left button pressed on swith "+id);
+						} else if (doubleButtonCode == '5') {
+							inst.setProperty("switchNumber", "15");
+							logger.info("Double bottom buttons pressed on swith "+id);
+						} else if (doubleButtonCode == '7') {
+							inst.setProperty("switchNumber", "17");
+							logger.info("Bottom-left and top-right buttons pressed on swith "+id);
+						} else {
+							logger.error("BUTTON NUMBER ERROR on switch "+id);
+							inst.setProperty("switchNumber", "-1");
+						}
+						inst.setProperty("switchState", "true");
+					} else if (buttonCode == '3') {
+						inst.setProperty("buttonStatus", "true");
+						if (doubleButtonCode == '0') {
+							inst.setProperty("switchNumber", "3");
+							logger.info("Top left button pressed on swith "+id);
+						} else if (doubleButtonCode == '5') {
+							inst.setProperty("switchNumber", "35");
+							logger.info("Top-left and bottom-right buttons pressed on swith "+id);
+						} else if (doubleButtonCode == '7') {
+							inst.setProperty("switchNumber", "37");
+							logger.info("Double top buttons pressed on swith "+id);
+						} else {
+							logger.error("BUTTON NUMBER ERROR on switch "+id);
+							inst.setProperty("switchNumber", "-1");
+						}
+						inst.setProperty("switchState", "true");
+					} else if (enoceanTg.charAt(13) == '5') {
+						logger.info("Bottom right button pressed on swith "+id);
+						inst.setProperty("buttonStatus", "true");
+						inst.setProperty("switchNumber", "5");
+						inst.setProperty("switchState", "true");
+					} else if (enoceanTg.charAt(13) == '7') {
+						logger.info("Top right button pressed on swith "+id);
+						inst.setProperty("buttonStatus", "true");
+						inst.setProperty("switchNumber", "7");
+						inst.setProperty("switchState", "true");
+					}						
 				}
 				
 				splited = split1.split("\\(");
