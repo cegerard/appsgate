@@ -374,7 +374,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param source
      */
     private void notifyUpdateProgram(String id, String runningState, String name, JSONObject source) {
-        notifyChanges(new ProgramNotification("updateProgram", id, runningState, name, source));
+        notifyChanges(new ProgramNotification("updateProgram", id, runningState, name, source, null));
     }
 
     /**
@@ -384,7 +384,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param source
      */
     private void notifyAddProgram(String id, String runningState, String name, JSONObject source) {
-        notifyChanges(new ProgramNotification("newProgram", id, runningState, name, source));
+        notifyChanges(new ProgramNotification("newProgram", id, runningState, name, source, null));
     }
 
     /**
@@ -392,7 +392,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      */
     private void notifyRemoveProgram(String id, String name) {
-        notifyChanges(new ProgramNotification("removeProgram", id, "", name, null));
+        notifyChanges(new ProgramNotification("removeProgram", id, "", name, null, null));
     }
 
     /**

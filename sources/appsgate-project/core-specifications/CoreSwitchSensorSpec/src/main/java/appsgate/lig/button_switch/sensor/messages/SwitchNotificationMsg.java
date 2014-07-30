@@ -15,7 +15,7 @@ public class SwitchNotificationMsg extends CoreNotificationMsg {
     /**
      * The number of the pressed switch
      */
-    private final int switchNumber;
+    private final Integer switchNumber;
 
     /**
      * The button state On/Off = Up/Down
@@ -76,7 +76,7 @@ public class SwitchNotificationMsg extends CoreNotificationMsg {
 
     @Override
     public String getNewValue() {
-        return new Integer(switchNumber) + "/" + String.valueOf(state);
+        return switchNumber.toString();
     }
 
 }

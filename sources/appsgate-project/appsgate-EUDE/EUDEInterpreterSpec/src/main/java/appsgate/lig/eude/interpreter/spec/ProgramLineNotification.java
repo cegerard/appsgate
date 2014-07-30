@@ -16,10 +16,6 @@ public class ProgramLineNotification extends ProgramNotification {
     /**
      *
      */
-    private final String iid;
-    /**
-     *
-     */
     private final String sid;
     /**
      *
@@ -48,19 +44,11 @@ public class ProgramLineNotification extends ProgramNotification {
      */
     public ProgramLineNotification(JSONObject source, String programId, String programName,
             String runningState, String instructionId, String sourceId, String targetId, String description, Type type) {
-        super("", programId, runningState, programName, source);
-        this.iid = instructionId;
+        super("", programId, runningState, programName, source, instructionId);
         this.sid = sourceId;
         this.tid = targetId;
         this.desc = description;
         this.t = type;
-    }
-
-    /**
-     * @return the instruction id
-     */
-    public String getInstructionId() {
-        return this.iid;
     }
 
     /**

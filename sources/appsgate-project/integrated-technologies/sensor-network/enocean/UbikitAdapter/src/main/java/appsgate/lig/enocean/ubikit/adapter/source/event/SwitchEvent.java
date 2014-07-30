@@ -47,12 +47,12 @@ public class SwitchEvent implements SwitchOnEvent.Listener,
 				+ arg0.getSwitchNumber());
 		Instance instRef = enocean.getSensorInstance(arg0.getSourceItemUID());
 		String implName = instRef.getImpl().getName();
-		
+
 		if(implName.contentEquals("EnoceanSwitchSensorImpl")) {
 			instRef.setProperty("buttonStatus", "true");
 			instRef.setProperty("switchNumber",String.valueOf(arg0.getSwitchNumber()));
 			instRef.setProperty("switchState", "true");
-			
+
 		}else if(implName.contentEquals("EnoceanPlugActuatorSensorImpl")){
 			instRef.setProperty("plugState", "true");
 		}
@@ -65,12 +65,12 @@ public class SwitchEvent implements SwitchOnEvent.Listener,
 				+ arg0.getSwitchNumber());
 		Instance instRef = enocean.getSensorInstance(arg0.getSourceItemUID());
 		String implName = instRef.getImpl().getName();
-		
+
 		if(implName.contentEquals("EnoceanSwitchSensorImpl")) {
 			instRef.setProperty("buttonStatus", "false");
 			instRef.setProperty("switchNumber", String.valueOf(arg0.getSwitchNumber()));
 			instRef.setProperty("switchState", "true");
-			
+
 		}else if(implName.contentEquals("EnoceanPlugActuatorSensorImpl")){
 			instRef.setProperty("plugState", "false");
 		}

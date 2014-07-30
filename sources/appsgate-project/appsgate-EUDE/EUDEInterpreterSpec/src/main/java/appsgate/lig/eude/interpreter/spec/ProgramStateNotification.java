@@ -18,9 +18,10 @@ public class ProgramStateNotification extends ProgramNotification {
      * @param varName
      * @param value
      * @param programName
+     * @param iid
      */
-    public ProgramStateNotification(String programId, String varName, String value, String programName) {
-        super("runningState", programId, value, programName, null);
+    public ProgramStateNotification(String programId, String varName, String value, String programName, String iid) {
+        super("runningState", programId, value, programName, null, iid);
     }
     
     @Override

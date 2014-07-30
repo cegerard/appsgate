@@ -170,9 +170,9 @@ public class NodeProgramTest extends NodeTest {
     public void testStates() {
         programTest.setDeployed();
         Assert.assertEquals(NodeProgram.RUNNING_STATE.DEPLOYED, programTest.getState());
-        programTest.setProcessing();
+        programTest.setProcessing("1");
         Assert.assertTrue(programTest.isRunning());
-        programTest.setWaiting();
+        programTest.setWaiting("2");
         Assert.assertTrue(programTest.isRunning());
         Assert.assertEquals(NodeProgram.RUNNING_STATE.WAITING, programTest.getState());
     }
