@@ -5,12 +5,10 @@
                                   
 	<implementation name="YahooWeatherImpl"
     classname="appsgate.lig.weather.yahoo.YahooWeatherImpl"
-    specification="CoreWeatherServiceSpec"
-    push="fireWeatherUpdateMessage" singleton="true">
+    specification="WeatherAdapterSpec"
+    singleton="true">
 		<callback onInit="start" onRemove="stop"/>
-        
-        <!-- Service specific meta data -->
-        <definition name="auto-refresh" type="int" default="100000" field="refreshRate" />
+
 	</implementation>
 
 </apam>

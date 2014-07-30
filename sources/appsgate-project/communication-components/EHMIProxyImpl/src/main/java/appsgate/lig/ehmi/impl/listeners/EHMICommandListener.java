@@ -79,9 +79,9 @@ public class EHMICommandListener implements CommandListener {
 				
 				if(!obj.has("objectId")){
 					executorService.execute(ehmiProxy.executeCommand(clientId, method, arguments, types, callId));
-				}//else{
-				//	executorService.execute(ehmiProxy.executeRemoteCommand(obj.getString("objectId"), method, arguments, types, clientId, callId));
-				//}
+				}else{
+					executorService.execute(ehmiProxy.executeRemoteCommand(obj.getString("objectId"), method, arguments, types, clientId, callId));
+				}
 			} catch (IllegalArgumentException e) {
 				logger.debug("Inappropriate argument: " + e.getMessage());
 			} catch(CoreDependencyException coreException) {

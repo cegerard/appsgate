@@ -2,35 +2,55 @@ package appsgate.lig.weather.extended.impl;
 
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.AbstractObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
-import appsgate.lig.weather.extended.spec.messages.DaylightNotificationMsg;
 import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
+import appsgate.lig.weather.utils.SimplifiedWeatherCodesHelper;
+import appsgate.lig.weather.utils.WeatherCodesHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
+import java.util.Timer;
 
 /**
  * Created by thibaud on 01/07/2014.
  */
 public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedWeatherObserver, AlarmEventObserver, CoreObjectSpec{
 
+    protected String appsgatePictureId;
+
+    protected String appsgateUserType;
+    protected String appsgateDeviceStatus;
+    protected String appsgateObjectId;
+    protected String appsgateServiceName;
+
+    protected CORE_TYPE appsgateCoreType;
+
+
+
     private String currentLocation;
     private boolean currentlyDaylight;
     private Calendar sunrise = Calendar.getInstance();
     private Calendar sunset = Calendar.getInstance();
-    private int currentWeatherCode;
-    private int currentTemperature;
-    private int tomorrowWeatherCode;
-    private int tomorrowMinTemperature;
-    private int tomorrowMaxTemperature;
+
+    private CurrentWeather currentWeather;
+    private List<DayForecast> forecasts;
+
+    private Calendar lastPublicationdate;
+
+
+    private long lastFetch = -1;
+    private Timer timer;
 
     private CoreWeatherServiceSpec weatherService;
     private CoreClockSpec clock;
@@ -40,26 +60,85 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
 
     public static final String IMPL_NAME = "WeatherObserverImpl";
 
+    private Object lock;
+
     public WeatherObserverImpl() {
-        appsgatePictureId = null;
-        appsgateUserType = "103"; // 103 stands for weather forecast service
-        appsgateDeviceStatus = "2"; // 2 means device paired (for a device, not
+        lock = new Object();
+        super.appsgateUserType = "103"; // 103 stands for weather forecast service
+        super.appsgateDeviceStatus = "2"; // 2 means device paired (for a device, not
         // relevant for service)
-        appsgateObjectId = String.valueOf( this.hashCode()); // Object id
-        // prefixed by
-        // the user type
-        appsgateServiceName = "Yahoo Weather Forecast";
-        appsgateCoreType = CORE_TYPE.SERVICE;
+
+        super.appsgateServiceName = "Yahoo Weather Forecast";
+        super.appsgateCoreType = CORE_TYPE.SERVICE;
+        // TODO register TimerTask
+    }
+
+    @Override
+    public String getAbstractObjectId() {
+        return appsgateObjectId;
+    }
+
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
+        JSONObject descr = super.getDescription();
+
+        // mandatory appsgate properties
+        descr.put("id", appsgateObjectId);
+
+        try {
+
+            descr.put("location", getCurrentLocation());
+            descr.put("temperature", getCurrentTemperature());
+            descr.put("trend", getCurrentWeatherCode());
+
+
+        } catch(WeatherForecastException exc ) {
+            logger.warn("Error during get description" + exc.getMessage());
+            return descr;
+        }
+
+
+        return descr;
     }
 
     private static Logger logger = LoggerFactory
             .getLogger(WeatherObserverImpl.class);
 
-    private DaylightNotificationMsg fireDaylightNotificationMsg(boolean dayLight) {
-
-        return new DaylightNotificationMsg(dayLight,null,null,null);
+    private NotificationMsg fireDaylightNotificationMsg(boolean isDayLight) {
+        if(isDayLight) {
+            return fireWeatherNotificationMsg("daylightEvent", "sunset", "sunrise");
+        } else {
+            return fireWeatherNotificationMsg("daylightEvent", "sunrise", "sunset");
+        }
     }
 
+    /**
+     * Check associated Simplified code and if they are different fire the NotificationMsg
+     * @param varName
+     * @param oldCode
+     * @param newCode
+     * @return
+     */
+    private NotificationMsg fireWeatherCodeNotificationMsgIfNew(String varName, int oldCode, int newCode) {
+        if(SimplifiedWeatherCodesHelper.getSimplified(oldCode) != SimplifiedWeatherCodesHelper.getSimplified(newCode)) {
+            return fireWeatherNotificationMsg(varName, String.valueOf(SimplifiedWeatherCodesHelper.getSimplified(oldCode)),
+                    String.valueOf(SimplifiedWeatherCodesHelper.getSimplified(newCode)));
+        }
+        return null;
+    }
+
+    private NotificationMsg fireWeatherTempNotificationMsgIfNew(String varName, int oldTemp, int newTemp) {
+        if(oldTemp != newTemp) {
+            return fireWeatherNotificationMsg(varName, String.valueOf(oldTemp),
+                    String.valueOf(newTemp));
+        }
+        return null;
+    }
+
+    private NotificationMsg fireWeatherNotificationMsg(String varName, String oldValue, String newValue) {
+        return new CoreNotificationMsg(varName, oldValue, newValue, this);
+    }
     @Override
     public String getCurrentLocation() {
         return currentLocation;
@@ -84,61 +163,138 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     }
 
     @Override
+    public boolean isCurrentWeatherCode(int simpleWeatherCode) throws WeatherForecastException {
+        refresh();
+        return (SimplifiedWeatherCodesHelper.getSimplified(currentWeather.getWeatherCode()) == simpleWeatherCode);
+
+    }
+
+    @Override
     public int getCurrentWeatherCode() throws WeatherForecastException{
         refresh();
-        return currentWeatherCode;
+        return SimplifiedWeatherCodesHelper.getSimplified(currentWeather.getWeatherCode());
     }
 
     @Override
     public int getCurrentTemperature()throws WeatherForecastException {
         refresh();
-        return currentTemperature;
+        return currentWeather.getTemperature();
     }
 
     @Override
-    public int getTomorrowWeatherCode() throws WeatherForecastException{
-        refresh();
-        return tomorrowWeatherCode;
+    public boolean isForecastWeatherCode(int dayForecast, int simpleWeatherCode) throws WeatherForecastException {
+        return (getForecastWeatherCode(dayForecast)==simpleWeatherCode);
+    }
+
+    private void testDayForecast(int dayForecast) throws WeatherForecastException {
+        if(dayForecast< 0 || forecasts == null || dayForecast >= forecasts.size()) {
+            throw new WeatherForecastException("dayForecast not available : " + dayForecast);
+        }
     }
 
     @Override
-    public int getTomorrowMinTemperature() throws WeatherForecastException{
+    public int getForecastWeatherCode(int dayForecast) throws WeatherForecastException {
         refresh();
-        return tomorrowMinTemperature;
+        testDayForecast(dayForecast); // might throw exception
+        return forecasts.get(dayForecast).getCode();
     }
 
     @Override
-    public int getTomorrowMaxTemperature() throws WeatherForecastException{
+    public int getForecastMinTemperature(int dayForecast) throws WeatherForecastException {
         refresh();
-        return tomorrowMaxTemperature;
+        testDayForecast(dayForecast); // might throw exception
+        return forecasts.get(dayForecast).getMin();
     }
 
-    private void refresh() throws WeatherForecastException {
+    @Override
+    public int getForecastMaxTemperature(int dayForecast) throws WeatherForecastException {
+        refresh();
+        testDayForecast(dayForecast); // might throw exception
+        return forecasts.get(dayForecast).getMax();
+    }
+
+    public void refresh() throws WeatherForecastException {
         logger.debug("refreshing weather data for "+currentLocation);
 
-        CurrentWeather weather = weatherService.getCurrentWeather(currentLocation);
-        DayForecast forecast = weatherService.getForecast(currentLocation).get(1);
+        synchronized (lock) {
 
-        currentWeatherCode = weather.getWeatherCode();
-        currentTemperature = weather.getTemperature();
-        sunrise.setTime(weather.getSunrise());
-        sunset.setTime(weather.getSunset());
+            if (weatherService != null
+                    && (lastFetch < 0 || System.currentTimeMillis() - lastFetch > 10000)
+                    && (lastPublicationdate == null || !lastPublicationdate.equals(weatherService.getPublicationDate(currentLocation))
+            )) {
 
-        tomorrowWeatherCode = forecast.getCode();
-        tomorrowMinTemperature = forecast.getMin();
-        tomorrowMaxTemperature = forecast.getMax();
+                checkAndUpdateCurrentWeather(weatherService.getCurrentWeather(currentLocation));
+                checkAndUpdateForecasts(weatherService.getForecast(currentLocation));
 
-        if(alarmSunrise>=0) {
-            clock.unregisterAlarm(alarmSunrise);
+                sunrise.setTime(currentWeather.getSunrise());
+                sunset.setTime(currentWeather.getSunset());
+
+
+                if (alarmSunrise >= 0) {
+                    clock.unregisterAlarm(alarmSunrise);
+                }
+
+                if (alarmSunset >= 0) {
+                    clock.unregisterAlarm(alarmSunset);
+                }
+
+                alarmSunrise = clock.registerAlarm(sunrise, this);
+                alarmSunset = clock.registerAlarm(sunset, this);
+
+                lastFetch = System.currentTimeMillis();
+
+                lastPublicationdate = weatherService.getPublicationDate(currentLocation);
+            } else {
+                logger.debug("no need to refresh weather data");
+            }
+
+            WeatherRefreshTask nextRefresh = new WeatherRefreshTask(this);
+            if (timer != null)
+                timer.cancel();
+            timer = new Timer();
+            timer.schedule(nextRefresh, 10 * 60 * 1000); // One auto refresh each 10 minutes
         }
+    }
 
-        if(alarmSunset>=0) {
-            clock.unregisterAlarm(alarmSunset);
+    private void checkAndUpdateCurrentWeather(CurrentWeather newWeather) {
+        if (newWeather != null) {
+            fireWeatherCodeNotificationMsgIfNew(CurrentWeather.CODE,
+                        (currentWeather == null ? -1 : currentWeather.getWeatherCode()),
+                        newWeather.getWeatherCode());
+
+            fireWeatherTempNotificationMsgIfNew(CurrentWeather.TEMPERATURE,
+                        (currentWeather == null ? -999 : currentWeather.getTemperature()),
+                        newWeather.getTemperature());
+            currentWeather = newWeather;
         }
+    }
 
-        alarmSunrise = clock.registerAlarm(sunrise,this);
-        alarmSunset = clock.registerAlarm(sunset,this);
+    private void checkAndUpdateForecasts(List<DayForecast> newForecasts) {
+        if (newForecasts != null && newForecasts.size()>0) {
+            int i = 0;
+            DayForecast oldForecast;
+            for(DayForecast newForecast: newForecasts) {
+                if(forecasts !=null && i<forecasts.size()) {
+                    oldForecast = forecasts.get(i);
+                } else {
+                    oldForecast = null;
+                }
 
+                fireWeatherCodeNotificationMsgIfNew(DayForecast.FORECAST+CurrentWeather.CODE+i,
+                            (oldForecast == null ? -1 : oldForecast.getCode()),
+                            newForecast.getCode());
+
+                fireWeatherTempNotificationMsgIfNew(DayForecast.FORECAST+DayForecast.MIN+i,
+                        (oldForecast == null ? -1 : oldForecast.getMin()),
+                        newForecast.getMin());
+
+                fireWeatherTempNotificationMsgIfNew(DayForecast.FORECAST+DayForecast.MAX+i,
+                        (oldForecast == null ? -1 : oldForecast.getMax()),
+                        newForecast.getMax());
+                i++;
+            }
+            forecasts=newForecasts;
+        }
     }
 
     @Override

@@ -3,9 +3,8 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<specification name="CoreWeatherServiceSpec"
-		interfaces="appsgate.lig.weather.spec.CoreWeatherServiceSpec"
-		messages="appsgate.lig.core.object.messages.NotificationMsg">
+	<specification name="WeatherAdapterSpec"
+		interfaces="appsgate.lig.weather.spec.WeatherAdapterSpec">
 
 		<!-- Service specific meta data -->
 		<definition name="auto-refresh" type="int"/>

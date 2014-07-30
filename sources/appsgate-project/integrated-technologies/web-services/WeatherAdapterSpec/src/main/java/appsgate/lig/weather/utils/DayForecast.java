@@ -13,6 +13,12 @@ public class DayForecast {
 	private int min;
 	private int max;
 	private int code;
+
+    public static final String FORECAST = " Forecast";
+    public static final String MIN = " MinTemperature";
+    public static final String MAX = " MaxTemperature";
+
+
 	
 	public DayForecast(Date date,int min,int max, int code){
 		this.date=date;

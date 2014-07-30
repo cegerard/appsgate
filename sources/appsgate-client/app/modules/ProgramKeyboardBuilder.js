@@ -366,6 +366,17 @@ define([
                     }
                 }
             }
+
+            types = services.getServicesByType();
+            for (type in types) {
+                if (types[type].length > 0) {
+                    o = types[type][0];
+                    events = o.getEvents();
+                    for (a in events) {
+                        $(".expected-events").append(o.getKeyboardForEvent(events[a]));
+                    }
+                }
+            }
         },
 
         buildGetPropertyKeys: function() {

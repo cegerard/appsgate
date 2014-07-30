@@ -5,22 +5,29 @@
 
     <implementation name="WeatherObserverImpl" specification="ExtendedWeatherObserverSpec"
                     classname="appsgate.lig.weather.extended.impl.WeatherObserverImpl"
-            push="fireDaylightNotificationMsg">
+            push="fireDaylightNotificationMsg"
+            instantiable="false">
+
+        <!-- device kernel meta data -->
+        <definition name="deviceName" type="string" field="appsgateServiceName" />
+        <definition name="deviceId" type="string"
+                    field="appsgateObjectId" />
+        <property name="deviceId" value="$WeatherObserver-+.$currentLocation"/>
+
+        <!-- device client meta data -->
+        <definition name="pictureId" type="string" field="appsgatePictureId" />
+        <definition name="userType" type="string" default="103"
+                    field="appsgateUserType" />
+        <definition name="status" type="string" default="2" field="appsgateDeviceStatus"/>
+
+
 
         <relation specification="CoreWeatherServiceSpec" field="weatherService" resolve="exist" fail="wait"/>
         <relation specification="CoreClockSpec" field="clock" resolve="exist" fail="wait"/>
 
 
-        <definition name="currentLocation" type="string" field="currentLocation"  injected="internal" />
+        <definition name="currentLocation" type="string" field="currentLocation"  />
 
-        <definition name="currentlyDaylight" type="boolean" field="currentlyDaylight" injected="internal"/>
-
-        <definition name="currentWeatherCode" type="int" field="currentWeatherCode" injected="internal"/>
-        <definition name="currentTemperature" type="int" field="currentTemperature" injected="internal"/>
-
-        <definition name="tomorrowWeatherCode" type="int" field="tomorrowWeatherCode" injected="internal"/>
-        <definition name="tomorrowMinTemperature" type="int" field="tomorrowMinTemperature" injected="internal"/>
-        <definition name="tomorrowMaxTemperature" type="int" field="tomorrowMaxTemperature" injected="internal"/>
 
     </implementation>
     

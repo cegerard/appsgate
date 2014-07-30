@@ -33,6 +33,12 @@ public class CurrentWeather {
     Date sunrise;
     Date sunset;
 
+    public static final String CODE = "CurrentWeatherCode";
+    public static final String TEMPERATURE = "CurrentWeatherTemperature";
+    public static final String WINDDIRECTION = "CurrentWeatherWindDirection";
+    public static final String WINDSPEED = "CurrentWeatherWindSpeed";
+
+
     /**
      * @param currentTemperature
      * @param currentCode

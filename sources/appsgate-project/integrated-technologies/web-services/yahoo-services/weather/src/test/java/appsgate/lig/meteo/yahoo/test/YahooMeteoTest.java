@@ -1,11 +1,11 @@
 package appsgate.lig.meteo.yahoo.test;
 
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import appsgate.lig.weather.yahoo.YahooWeatherImpl;
 
 public class YahooMeteoTest {
 
-    CoreWeatherServiceSpec meteo;
+    WeatherAdapterSpec meteo;
 	
 	    public void start() {
 //		try {

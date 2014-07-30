@@ -1,4 +1,4 @@
-package appsgate.lig.proxy.knx.device;
+package appsgate.lig.proxy.knx.device.lamp;
 
 import appsgate.lig.colorLight.actuator.messages.ColorLightNotificationMsg;
 import appsgate.lig.colorLight.actuator.spec.CoreColorLightSpec;
@@ -6,31 +6,28 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.proxy.knx.KNXAdapterImpl;
-import com.philips.lighting.model.PHLight;
-import com.philips.lighting.model.PHLightState;
+import fr.imag.adele.apam.CST;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ow2.chameleon.fuchsia.importer.knx.device.iface.Switch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreColorLightSpec, CoreObjectSpec{
+public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreColorLightSpec, CoreObjectSpec{
 
     private static final Logger logger = LoggerFactory.getLogger(KNXAdapterImpl.class);
 
-    private String deviceName;
-    private String deviceId;
-    private String deviceType;
+    protected String deviceName;
+    protected String deviceId;
+    protected String deviceType;
 
-    private String pictureId;
-    private String userType;
-    private String status;
+    protected String pictureId;
+    protected String userType;
+    protected String status;
 
-    private String lightBridgeId;
-    private String lightBridgeIP;
-    private String reachable;
-
-    private KNXAdapterImpl adapter;
+    protected String lightBridgeId;
+    protected String lightBridgeIP;
+    protected String reachable;
 
     private void start(){
         logger.info("Appsgate Device {} created",deviceId);
@@ -63,21 +60,7 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
         try {
             jsonResponse = new JSONObject();
             JSONObject lightState = new JSONObject();
-            lightState.put("on", adapter.isOn(deviceId));
-            /**
-            JSONLightState.put("bri", false);
-            JSONLightState.put("hue", false);
-            JSONLightState.put("sat", false);
-            JSONLightState.put("x", false);
-            JSONLightState.put("y", false);
-            JSONLightState.put("ct", false);
-            JSONLightState.put("alert", false);
-            JSONLightState.put("effect", false);
-            JSONLightState.put("colorMode", false);
-            JSONLightState.put("transitionTime", false);
-            JSONLightState.put("reachable", true);
-             **/
-
+            lightState.put("on", getDevice().isOn());
             jsonResponse.put("state", lightState);
             jsonResponse.put("type", getUserType());
             jsonResponse.put("name", deviceName);
@@ -91,13 +74,21 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
 
     @Override
     public boolean On() {
-        adapter.on(deviceId);
+
+        getDevice().on();
+
         return true;
+    }
+
+    private Switch getDevice(){
+        return (Switch)CST.apamResolver.findInstByName(null,deviceName).getServiceObject();
     }
 
     @Override
     public boolean Off() {
-        adapter.off(deviceId);
+
+        getDevice().off();
+
         return true;
     }
 
@@ -119,7 +110,7 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
 
     @Override
     public boolean getCurrentState() {
-        return adapter.isOn(deviceId);
+        return getDevice().isOn();
     }
 
     @Override
@@ -128,10 +119,10 @@ public class AppsgateSwitchKNXDevice extends CoreObjectBehavior implements CoreC
         descr.put("id", deviceId);
         descr.put("type", userType); // 7 for color light
         descr.put("status", status);
-        descr.put("value", getCurrentState());
-        descr.put("color", getLightColor());
-        descr.put("saturation", getLightColorSaturation());
-        descr.put("brightness", getLightBrightness());
+        descr.put("value", false);//getCurrentState()
+        //descr.put("color", getLightColor());
+        //descr.put("saturation", getLightColorSaturation());
+        //descr.put("brightness", getLightBrightness());
         //Entry added for configuration GUI
         descr.put("deviceType", "KNX_LIGHT");
 
