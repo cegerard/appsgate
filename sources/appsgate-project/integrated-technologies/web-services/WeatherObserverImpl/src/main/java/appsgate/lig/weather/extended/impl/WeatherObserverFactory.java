@@ -1,12 +1,9 @@
 package appsgate.lig.weather.extended.impl;
 
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
-import fr.imag.adele.apam.Specification;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 

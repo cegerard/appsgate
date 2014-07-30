@@ -28,14 +28,6 @@
 
         <definition name="currentLocation" type="string" field="currentLocation"  />
 
-        <definition name="currentlyDaylight" type="boolean" field="currentlyDaylight" injected="internal"/>
-
-        <definition name="currentWeatherCode" type="int" field="currentWeatherCode" injected="internal"/>
-        <definition name="currentTemperature" type="int" field="currentTemperature" injected="internal"/>
-
-        <definition name="tomorrowWeatherCode" type="int" field="tomorrowWeatherCode" injected="internal"/>
-        <definition name="tomorrowMinTemperature" type="int" field="tomorrowMinTemperature" injected="internal"/>
-        <definition name="tomorrowMaxTemperature" type="int" field="tomorrowMaxTemperature" injected="internal"/>
 
     </implementation>
     

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,16 +21,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
-import appsgate.lig.core.object.messages.NotificationMsg;
-import appsgate.lig.core.object.spec.CoreObjectBehavior;
-import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
 import appsgate.lig.weather.utils.SimplifiedWeatherCodesHelper;
 import appsgate.lig.weather.utils.WeatherCodesHelper;
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
-import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
 
 /**
  * Implementation of Yahoo forecast, allows to change unit (Celsius,Fahrenheit)
@@ -42,7 +38,7 @@ import appsgate.lig.weather.messages.WeatherUpdateNotificationMsg;
  * @author thibaud
  * 
  */
-public class YahooWeatherImpl implements CoreWeatherServiceSpec {
+public class YahooWeatherImpl  implements WeatherAdapterSpec {
 
     private static Logger logger = LoggerFactory
             .getLogger(YahooWeatherImpl.class);
@@ -81,10 +77,6 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 	private Map<String, Calendar> lastPublicationDates;
 	private Map<String, CurrentWeather> currentWeathers;
 	private Map<String, List<DayForecast>> forecasts;
-	
-	int refreshRate;
-
-	TimerTask refreshtask;
 
 	public YahooWeatherImpl() {
 
@@ -98,8 +90,6 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 		noFetch = true;
 
 		geoPlanet = new YahooGeoPlanetImpl();
-		refreshRate=-1;
-		refreshtask = new WeatherRefreshTask(this, refreshRate);
 		logger.debug("YahooWeatherImpl() is OK");
 	}
 
@@ -184,8 +174,6 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 			lastPublicationDates.put(newWOEID, null);
 			currentWeathers.put(newWOEID, null);
 			forecasts.put(newWOEID, null);
-			fireWeatherUpdateMessage("location", placeName,
-					WeatherUpdateNotificationMsg.EVENTTYPE_ADDLOCATION);
 			fetch();
 		} else
 			throw new WeatherForecastException("Place was not found");
@@ -209,8 +197,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 			lastPublicationDates.remove(woeid);
 			currentWeathers.remove(woeid);
 			forecasts.remove(woeid);
-			fireWeatherUpdateMessage("location", placeName,
-					WeatherUpdateNotificationMsg.EVENTTYPE_REMOVELOCATION);
+
 			return true;
 		}
 	}
@@ -234,21 +221,11 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 		} catch (WeatherForecastException exc) {
 			exc.printStackTrace();
 		}
-
-		/**
-		 * Configure auto-refresh meteo data
-		 */
-		if (refreshRate > 0) {
-			logger.debug("Configuring auto-refresh for :" + refreshRate);
-			refreshTimer.scheduleAtFixedRate(refreshtask, 0, refreshRate);
-		}
-
 	}
 
 	public void stop() {
 		logger.info("WeatherForecast stopped:"
 				+ this.getClass().getSimpleName());
-		refreshtask.cancel();
 	}
 
 	public Unit getUnit() {
@@ -259,7 +236,7 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 			return Unit.US;
 		default:
 			currentUnit = 'c';
-			return CoreWeatherServiceSpec.Unit.EU;
+			return WeatherAdapterSpec.Unit.EU;
 		}
 	}
 
@@ -333,11 +310,6 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 							YahooWeatherParser.parseCurrentConditions(doc));
 					forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
 					lastPublicationDates.put(woeid, newPubDate);
-					fireWeatherUpdateMessage(
-							"location",
-							placeName,
-							WeatherUpdateNotificationMsg.EVENTTYPE_FETCHLOCATION);
-
 				} else
 					logger.info("Publication date for " + placeName
 							+ " is NOT newer, does nothing");
@@ -368,71 +340,6 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 			currentUnit = 'f';
 			break;
 		}
-		fireWeatherUpdateMessage("unit", String.valueOf(currentUnit),
-				WeatherUpdateNotificationMsg.EVENTTYPE_SETUNIT);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * appsgate.lig.weather.spec.CoreWeatherServiceSpec#fireWeatherUpdateMessage
-	 * (java.lang.String)
-	 */
-	@Override
-	public NotificationMsg fireWeatherUpdateMessage(String property,
-			String value, String eventType) {
-        return null;
-		// TODO this one is very basic
-//		return new WeatherUpdateNotificationMsg(this, property, value,
-//				eventType);
-	}
-
-
-	@Override
-	public JSONArray getCurrentWeather() throws JSONException {
-		Set<String> keys = currentWeathers.keySet();
-		JSONArray weather = new JSONArray();
-		for (String key : keys) {
-			CurrentWeather cw = currentWeathers.get(key);
-
-			JSONObject obj = new JSONObject();
-			obj.put("location", getNameFromWOEID(key));
-			obj.put("temperature", String.valueOf(cw.getTemperature()));
-			obj.put("trend",
-					WeatherCodesHelper.getDescription(cw.getWeatherCode()));
-
-			weather.put(obj);
-		}
-		return weather;
-	}
-
-	@Override
-	public JSONArray getForecast() throws JSONException {
-		Set<String> keys = forecasts.keySet();
-		JSONArray allForecasts = new JSONArray();
-
-		for (String key : keys) {
-
-			List<DayForecast> dfc = forecasts.get(key);
-			JSONObject place = new JSONObject();
-			JSONArray locDFC = new JSONArray();
-
-			for (DayForecast d : dfc) {
-				JSONObject obj = new JSONObject();
-				obj.put("date", d.getDate().toString());
-				obj.put("trend", WeatherCodesHelper.getDescription(d.getCode()));
-				obj.put("max", d.getMax());
-				obj.put("min", d.getMin());
-				locDFC.put(obj);
-			}
-
-			place.put("location", getNameFromWOEID(key));
-			place.put("forecast", locDFC);
-			allForecasts.put(place);
-		}
-
-		return allForecasts;
 	}
 
 	private String getNameFromWOEID(String WOEID) {
@@ -455,62 +362,9 @@ public class YahooWeatherImpl implements CoreWeatherServiceSpec {
 			addLocation(placeName);
 		fetch();
     }
-    
-    private DayForecast getDayForecast(String placeName, int dayForecast) throws WeatherForecastException {
-		fetchAtLocation(placeName);
 
-		List<DayForecast> frcsts = forecasts.get(getWOEID(placeName));
-		try {
-		return frcsts.get(dayForecast);
-		} catch(IndexOutOfBoundsException exc) {
-			throw new WeatherForecastException("dayForecast "+dayForecast+" wrong, "+exc.getMessage());
-		}
-    }
-    
 
-	@Override
-	public int getWeatherCodeForecast(String placeName, int dayForecast)
-			throws WeatherForecastException {
-		if(dayForecast == 0) {
-			fetchAtLocation(placeName);
-			CurrentWeather weather = currentWeathers.get(getWOEID(placeName));
-			return weather.getWeatherCode();
-		} else {
-			return getDayForecast(placeName,dayForecast).getCode();
-		}
-	}
 
-	@Override
-	public int getMaxTemperatureForecast(String placeName, int dayForecast)
-			throws WeatherForecastException {
-		return getDayForecast(placeName,dayForecast).getMax();
-	}
 
-	@Override
-	public int getMinTemperatureForecast(String placeName, int dayForecast)
-			throws WeatherForecastException {
-		return getDayForecast(placeName,dayForecast).getMin();
-	}
-	
-	@Override
-	public int getAverageTemperatureForecast(String placeName, int dayForecast)
-			throws WeatherForecastException {
-		if(dayForecast == 0) {
-			fetchAtLocation(placeName);
-			CurrentWeather weather = currentWeathers.get(getWOEID(placeName));
-			return weather.getTemperature();
-		} else {
-			DayForecast frct = getDayForecast(placeName,dayForecast);
-			return (frct.getMin()+frct.getMax())/2;
-		}
-	}
-
-	@Override
-	public boolean isWeatherSimplifiedCodeForecast(String placeName, int dayForecast, int simpleWeatherCode)
-			throws WeatherForecastException {
-		int currentYahooForecast = getWeatherCodeForecast(placeName, dayForecast);
-		
-		return SimplifiedWeatherCodesHelper.contains(simpleWeatherCode, currentYahooForecast);
-	}
 
 }

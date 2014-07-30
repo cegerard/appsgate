@@ -9,7 +9,7 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>appsgate-app-weather</artifactId>
+    <artifactId>YahooWeatherAdapter</artifactId>
     <packaging>bundle</packaging>
     <name>Weather OSGi Bundle</name>
 
@@ -20,13 +20,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>CoreObjectSpec</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <artifactId>CoreWeatherServiceSpec</artifactId>
+            <artifactId>WeatherAdapterSpec</artifactId>
             <groupId>appsgate.components</groupId>
             <version>${project.version}</version>
         </dependency>

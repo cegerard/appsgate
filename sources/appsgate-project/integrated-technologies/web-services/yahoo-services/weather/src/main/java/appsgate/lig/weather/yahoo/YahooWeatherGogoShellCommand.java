@@ -2,13 +2,13 @@ package appsgate.lig.weather.yahoo;
 
 import java.io.PrintStream;
 
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 import org.apache.felix.service.command.Descriptor;
 
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import appsgate.lig.weather.utils.WeatherCodesHelper;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import fr.imag.adele.apam.Apam;
@@ -48,7 +48,7 @@ public class YahooWeatherGogoShellCommand {
 
 			out.print(String.format("Apam-Instance: %s\n", instance.getName()));
 
-			CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+            WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 					.getServiceObject();
 
 			out.println(meteo);
@@ -68,7 +68,7 @@ public class YahooWeatherGogoShellCommand {
 			if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
 				continue;
 
-			CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+            WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 					.getServiceObject();
 			try {
 				meteo.fetch();
@@ -89,7 +89,7 @@ public class YahooWeatherGogoShellCommand {
 			if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
 				continue;
 
-			CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+            WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 					.getServiceObject();
 			try {
 				switch (args.length) {
@@ -128,7 +128,7 @@ public class YahooWeatherGogoShellCommand {
 			if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
 				continue;
 
-			CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+            WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 					.getServiceObject();
 			try {
 				switch (args.length) {
@@ -137,12 +137,12 @@ public class YahooWeatherGogoShellCommand {
 						out.println("syntax: weatherCode location (for today forecast)"
 								+ "\nsyntax: weatherCode location number of day forecast");
 					else {
-						int code = meteo.getWeatherCodeForecast(args[0], 0);
+						int code = meteo.getCurrentWeather(args[0]).getWeatherCode();
 						out.println(" Code : "+code+", "+WeatherCodesHelper.getDescription(code));
 					}
 					break;
 				case 2: 
-					int code = meteo.getWeatherCodeForecast(args[0], Integer.valueOf(args[1]));
+					int code = meteo.getForecast(args[0]).get(Integer.parseInt(args[1])).getCode();
 					out.println(" Code : "+code+", "+WeatherCodesHelper.getDescription(code));
 					break;
 				
@@ -165,7 +165,7 @@ public class YahooWeatherGogoShellCommand {
 			if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
 				continue;
 
-			CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+            WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 					.getServiceObject();
 			try {
 				switch (args.length) {
@@ -174,12 +174,12 @@ public class YahooWeatherGogoShellCommand {
 						out.println("syntax: weatherMin location (for today forecast)"
 								+ "\nsyntax: weatherMin location number of day forecast");
 					else {
-						int temp = meteo.getMinTemperatureForecast(args[0], 0);
+                        int temp = meteo.getForecast(args[0]).get(0).getMin();
 						out.println(" Temperature : "+temp);
 					}
 					break;
 				case 2: 
-					int temp = meteo.getMinTemperatureForecast(args[0], Integer.valueOf(args[1]));
+					int temp = meteo.getForecast(args[0]).get(Integer.parseInt(args[1])).getMin();
 					out.println(" Temperature : "+temp);
 					break;				
 				default:
@@ -201,7 +201,7 @@ public class YahooWeatherGogoShellCommand {
 			if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
 				continue;
 
-			CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+            WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 					.getServiceObject();
 			try {
 				switch (args.length) {
@@ -210,12 +210,12 @@ public class YahooWeatherGogoShellCommand {
 						out.println("syntax: weatherMax location (for today forecast)"
 								+ "\nsyntax: weatherMax location number of day forecast");
 					else {
-						int temp = meteo.getMaxTemperatureForecast(args[0], 0);
+						int temp = meteo.getForecast(args[0]).get(0).getMax();
 						out.println(" Temperature : "+temp);
 					}
 					break;
 				case 2: 
-					int temp = meteo.getMaxTemperatureForecast(args[0], Integer.valueOf(args[1]));
+					int temp = meteo.getForecast(args[0]).get(Integer.parseInt(args[1])).getMax();
 					out.println(" Temperature : "+temp);
 					break;				
 				default:
@@ -228,7 +228,7 @@ public class YahooWeatherGogoShellCommand {
 		}
 	}	
 	
-	@Descriptor("show weather average temperature forecast for given location in x days")
+	@Descriptor("show weather average temperature forecast for given location ")
 	public void weatherAvg(@Descriptor("location dayForecast") String... args) {
 
 		for (Instance instance : CST.componentBroker.getInsts()) {
@@ -237,23 +237,18 @@ public class YahooWeatherGogoShellCommand {
 			if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
 				continue;
 
-			CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+            WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 					.getServiceObject();
 			try {
 				switch (args.length) {
 				case 1:
 					if (args[0].equals("--help"))
-						out.println("syntax: weatherAvg location (for today forecast)"
-								+ "\nsyntax: weatherAvg location number of day forecast");
+						out.println("syntax: weatherAvg location (for today forecast)");
 					else {
-						int temp = meteo.getAverageTemperatureForecast(args[0], 0);
+						int temp = meteo.getCurrentWeather(args[0]).getTemperature();
 						out.println(" Temperature : "+temp);
 					}
 					break;
-				case 2: 
-					int temp = meteo.getAverageTemperatureForecast(args[0], Integer.valueOf(args[1]));
-					out.println(" Temperature : "+temp);
-					break;				
 				default:
 					out.println("invalid number of arguments, type --help to obtain more information about the syntax");
 				}

@@ -20,38 +20,75 @@ public interface ExtendedWeatherObserver {
      *
      * @return true is current Time is day for the location, false if night
      */
-    public boolean isCurrentlyDaylight() throws WeatherForecastException;
+    boolean isCurrentlyDaylight() throws WeatherForecastException;
 
+
+    /**
+     * Check if weather forecast match a simplified  weather code
+     *  for a a particular day
+     * Note that the forecast for today may be different of the current weather condition
+     * @param simpleWeatherCode is the expected weather forecast (not all yahoo weather codes, only the simplified ones)
+     * @return true if expected weather is the code forecast, @see appsgate.lig.weather.spec.utils.SimplifiedWeatherCodesHelper,
+     * @throws WeatherForecastException if the place was not found, the forecast day is not supported,
+     * the remote weather service not working ...
+     */
+    boolean isCurrentWeatherCode(int simpleWeatherCode) throws WeatherForecastException;
 
     /**
      *
      * @return the simplified code of current weather @see CoreWeatherServiceSpec
      */
-    public int getCurrentWeatherCode() throws WeatherForecastException;
+    int getCurrentWeatherCode() throws WeatherForecastException;
 
 
     /**
      *
      * @return the current temperature @see CoreWeatherServiceSpec
      */
-    public int getCurrentTemperature() throws WeatherForecastException;
+    int getCurrentTemperature() throws WeatherForecastException;
 
     /**
-     *
-     * @return the simplified weather code forecast for tomorrow @see CoreWeatherServiceSpec
+     * Check if weather forecast match a simplified  weather code
+     *  for a a particular day
+     * Note that the forecast for today may be different of the current weather condition
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @param simpleWeatherCode is the expected weather forecast (not all yahoo weather codes, only the simplified ones)
+     * @return true if expected weather is the code forecast, @see appsgate.lig.weather.spec.utils.SimplifiedWeatherCodesHelper,
+     * @throws WeatherForecastException if the place was not found, the forecast day is not supported,
+     * the remote weather service not working ...
      */
-    public int getTomorrowWeatherCode() throws WeatherForecastException;
+    boolean isForecastWeatherCode(int dayForecast, int simpleWeatherCode) throws WeatherForecastException;
 
     /**
+     /**
+     * Get Weather forecast for a particular place, and a particular day
+     * Note that the forecast for today may be different of the current weather condition
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @throws WeatherForecastException if the place was not found, the forecast day is not supported,
+     * the remote weather service not working ...
      *
-     * @return the min temperature forecast for tomorrow @see CoreWeatherServiceSpec
+     * @return the simplified weather code forecast
      */
-    public int getTomorrowMinTemperature() throws WeatherForecastException;
+    int getForecastWeatherCode(int dayForecast) throws WeatherForecastException;
 
     /**
-     *
-     * @return the max temperature forecast for tomorrow @see CoreWeatherServiceSpec
+     * Get temperature minimum
+     * forecast for a particular day
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @return the minimum temperature as an int
+     * @throws WeatherForecastException the forecast day is not supported,
+     * the remote weather service not working ...
      */
-    public int getTomorrowMaxTemperature() throws WeatherForecastException;
+    int getForecastMinTemperature(int dayForecast) throws WeatherForecastException;
+
+    /**
+     * Get temperature maximum
+     * forecast for a particular day
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @return the maximum temperature as an int
+     * @throws WeatherForecastException the forecast day is not supported,
+     * the remote weather service not working ...
+     */
+    int getForecastMaxTemperature(int dayForecast) throws WeatherForecastException;
 
 }

@@ -2,12 +2,12 @@ package appsgate.lig.weather.yahoo;
 
 import java.io.PrintWriter;
 
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
@@ -47,7 +47,7 @@ public class YahooWeatherUniversalShellCommand {
 
 	    out.print(String.format("Apam-Instance: %s\n", instance.getName()));
 
-	    CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+	    WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 		    .getServiceObject();
 
 	    out.println(meteo);
@@ -66,7 +66,7 @@ public class YahooWeatherUniversalShellCommand {
 	    if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
 		continue;
 
-	    CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+        WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 		    .getServiceObject();
 	    try {
 		meteo.fetch();
@@ -86,7 +86,7 @@ public class YahooWeatherUniversalShellCommand {
 	    if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
 		continue;
 
-	    CoreWeatherServiceSpec meteo = (CoreWeatherServiceSpec) instance
+        WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
 		    .getServiceObject();
 	    try {
 		switch (args.length) {
