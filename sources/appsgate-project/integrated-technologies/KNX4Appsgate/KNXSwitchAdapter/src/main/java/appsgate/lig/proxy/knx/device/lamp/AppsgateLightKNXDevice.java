@@ -5,7 +5,6 @@ import appsgate.lig.colorLight.actuator.spec.CoreColorLightSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
-import appsgate.lig.proxy.knx.KNXAdapterImpl;
 import fr.imag.adele.apam.CST;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreColorLightSpec, CoreObjectSpec{
 
-    private static final Logger logger = LoggerFactory.getLogger(KNXAdapterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AppsgateLightKNXDevice.class);
 
     protected String deviceName;
     protected String deviceId;
@@ -120,9 +119,9 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
         descr.put("type", userType); // 7 for color light
         descr.put("status", status);
         descr.put("value", false);//getCurrentState()
-        //descr.put("color", getLightColor());
-        //descr.put("saturation", getLightColorSaturation());
-        //descr.put("brightness", getLightBrightness());
+        descr.put("color", getLightColor());
+        descr.put("saturation", getLightColorSaturation());
+        descr.put("brightness", getLightBrightness());
         //Entry added for configuration GUI
         descr.put("deviceType", "KNX_LIGHT");
 
