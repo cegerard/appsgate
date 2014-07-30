@@ -36,28 +36,28 @@ define([
         case "switchB1-on":
           $(btn).append("<span data-i18n='language.pushed-switch-B1-on'></span>");
           v.eventName = "switchNumber";
-          v.eventValue = "1/true";
+          v.eventValue = "7";
           v.phrase = "language.pushed-switch-B1-on";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchB2-on":
           $(btn).append("<span data-i18n='language.pushed-switch-B2-on'></span>");
           v.eventName = "switchNumber";
-          v.eventValue = "0/true";
+          v.eventValue = "3";
           v.phrase = "language.pushed-switch-B2-on";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchB1-off":
           $(btn).append("<span data-i18n='language.pushed-switch-B1-off'></span>");
           v.eventName = "switchNumber";
-          v.eventValue = "1/false";
+          v.eventValue = "5";
           v.phrase = "language.pushed-switch-B1-off";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchB2-off":
           $(btn).append("<span data-i18n='language.pushed-switch-B2-off'></span>");
           v.eventName = "switchNumber";
-          v.eventValue = "0/false";
+          v.eventValue = "1";
           v.phrase = "language.pushed-switch-B2-off";
           $(btn).attr("json", JSON.stringify(v));
           break;

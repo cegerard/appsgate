@@ -318,10 +318,6 @@ public class TraceMan implements TraceManSpec {
                     deviceState.put("switchNumber", value);
                     deviceState.put("buttonStatus", "true");
                     deviceState.put("status", "2");
-                } else if (varName.contentEquals("buttonStatus")) {
-                    deviceState.put("status", "2");
-                    deviceState.put("switchNumber", value);
-                    deviceState.put("buttonStatus", "false");
                 } else if (varName.contentEquals("status")) {
                     deviceState.put("status", value);
                     JSONObject descr = EHMIProxy.getDevice(srcId);
