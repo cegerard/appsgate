@@ -20,6 +20,7 @@ import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
+import appsgate.lig.persistence.MongoDBConfiguration;
 import java.text.SimpleDateFormat;
 
 /**
@@ -55,6 +56,11 @@ public class TraceMan implements TraceManSpec {
      * The printWriter for the trace file on the hard drive
      */
     private PrintWriter traceFileWriter;
+
+    /*
+     * The collection containing the links (wires) created, and deleted
+     */
+    private MongoDBConfiguration myConfiguration;
 
     /**
      * Map for device id to their user friendly name
@@ -271,6 +277,7 @@ public class TraceMan implements TraceManSpec {
      */
     private synchronized void trace(JSONObject traceObj) {
 
+        TraceManHistory.add(myConfiguration, EHMIProxy.getCurrentTimeInMillis(), traceObj);
         if (cptTrace > 0) { //For all trace after the first 
             traceFileWriter.println(",");
             traceFileWriter.print(traceObj.toString());
