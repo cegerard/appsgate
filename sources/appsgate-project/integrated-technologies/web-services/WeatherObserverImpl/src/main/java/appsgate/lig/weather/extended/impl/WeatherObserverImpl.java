@@ -9,6 +9,7 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
 import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
 import appsgate.lig.weather.utils.SimplifiedWeatherCodesHelper;
@@ -52,7 +53,7 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     private long lastFetch = -1;
     private Timer timer;
 
-    private CoreWeatherServiceSpec weatherService;
+    private WeatherAdapterSpec weatherService;
     private CoreClockSpec clock;
 
     private int alarmSunset=-1;
