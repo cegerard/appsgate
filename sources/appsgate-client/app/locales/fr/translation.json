@@ -519,6 +519,7 @@
           "is-forecast-weather-code-state": "la météo prévue pour",
 
           "current-temperature": "la température actuelle",
+          "getTemperature": "la température mesurée",
 
           "current-weather-code-state": "la météo actuelle",
           "forecast-weather-code-state": "la météo prévue pour",

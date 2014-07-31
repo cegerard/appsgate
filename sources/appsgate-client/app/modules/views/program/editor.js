@@ -16,7 +16,6 @@ define([
         "click #end-edit-button": "onClickEndEdit",
         "change .lamp-color-picker": "onChangeLampColorNode",
         "change .selector-place-picker": "onChangeSeletorPlaceNode",
-        "change .weather-town-picker": "onChangeTownNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
         "change .code-forecast-picker": "onChangeCodeForecastNode",
         "change .comparator-select": "onChangeComparatorNode",
@@ -246,22 +245,13 @@ define([
         // clearing selection
         this.resetSelection();
       },
-      onChangeTownNode: function(e) {
-        e.stopPropagation();
-        var iid = $(e.currentTarget).attr("target-id");
-        var newTown = e.currentTarget.selectedOptions[0].value;
-        var value = {"type": "String", "value": newTown};
-        this.Mediator.setNodeArg(iid, 0, value);
 
-        // clearing selection
-        // this.resetSelection();
-      },
       onChangeDayForecastNode: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
         var newDay = e.currentTarget.selectedOptions[0].value;
         var value = {"type": "int", "value": newDay};
-        this.Mediator.setNodeArg(iid, 1, value);
+        this.Mediator.setNodeArg(iid, 0, value);
 
         // // clearing selection
         // this.resetSelection();
@@ -271,7 +261,13 @@ define([
         var iid = $(e.currentTarget).attr("target-id");
         var newCode = e.currentTarget.selectedOptions[0].value;
         var value = {"type": "int", "value": newCode};
-        this.Mediator.setNodeArg(iid, 2, value);
+        var i = 0;
+        for(var elt in $(".day-forecast-picker")) {
+           if(elt.attr() === iid) {
+              i = 1;
+           }
+        }
+        this.Mediator.setNodeArg(iid, i, value);
 
         // // clearing selection
         // this.resetSelection();

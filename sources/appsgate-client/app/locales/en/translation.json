@@ -517,6 +517,7 @@
            "is-forecast-weather-code-state": "current weather for",
 
            "current-temperature": "the temperature for",
+           "getTemperature": "the temperature from sensor",
 
            "current-weather-code-state": "current weather",
            "forecast-weather-code-state": "current weather for",
