@@ -67,6 +67,14 @@
                                     <artifactId>CHMIProxySpec</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>TraceManSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+
+
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>TraceMan</artifactId>
@@ -389,7 +397,17 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
-                                    <artifactId>CoreWeatherServiceSpec</artifactId>
+                                    <artifactId>WeatherAdapterSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>WeatherObserverImpl</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>ExtendedWeatherObserverSpec</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
                                 <artifactItem>
