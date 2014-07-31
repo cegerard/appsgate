@@ -511,27 +511,40 @@
       "is-turned-off-lamp-state":"off",
       "light-brightness":"the intensity of",
       "state-verb":"is",
-      "weather-at":"under the weather",
-      "weather-min-at":"the minimum temperature expected for",
-      "weather-max-at":"the maximum temperature expected for",
-      "weather-avg-at":"the average temperature expected for",
-      "weather-code-verb":"announcement",
-      "weather-town-grenoble":"Grenoble",
-      "weather-town-paris":"Paris",
-      "weather-town-lyon":"Lyon",
-      "weather-town-france":"France",
-      "weather-town-stfrancois":"St Francois Longchamp",
-      "weather-for-0":"today",
-      "weather-for-1":"tomorrow",
-      "weather-for-2":"after tomorrow",
-      "weather-code-0":"sun",
-      "weather-code-1":"clouds",
-      "weather-code-2":"rain",
-      "weather-code-3":"snow",
-      "weather-code-4":"storms",
-      "weather-code-5":"fog",
-      "weather-code-6":"other conditions",
-      "weather-code-7":"rare conditions",
+
+       "weather" : {
+           "is-current-weather-code-state": "current weather",
+           "is-forecast-weather-code-state": "current weather for",
+
+           "current-temperature": "the temperature for",
+
+           "current-weather-code-state": "current weather",
+           "forecast-weather-code-state": "current weather for",
+
+           "forecast-temperature-min": "the minimum temperature expected for",
+           "forecast-temperature-max": "the maximum temperature expected for",
+           "currently-daylight": "il fait jour",
+           "at":"at",
+
+
+           "weather-at": "current weather",
+           "weather-min-at": "the minimum temperature expected for",
+           "weather-max-at": "the maximum temperature expected for",
+           "weather-avg-at": "the average temperature expected for",
+           "weather-code-verb": "announcement",
+           "weather-for-0": "today",
+           "weather-for-1": "tomorrow",
+           "weather-for-2": "after tomorrow",
+           "weather-code-0": "sun",
+           "weather-code-1": "clouds",
+           "weather-code-2": "rain",
+           "weather-code-3": "snow",
+           "weather-code-4": "storms",
+           "weather-code-5": "fog",
+           "weather-code-6": "other conditions",
+           "weather-code-7": "unusual conditions"
+       },
+
       "domicube-inactivated":"domicube is idle",
       "domicube-activated":"domicube is activated",
       "getTemperature":"temperature of",
@@ -588,12 +601,23 @@
       "pause-media-action":"Pause the media",
       "stop-media-action":"Stop",
       "set-volume-media-action":"Set the volume",
-      "current-weather-code-state":"the current weather in",
-      "current-temperature":"the current temperature in",
-      "tomorrow-weather-code-state":"the weather expected tomorrow in",
-      "tomorrow-temperature-min":"the min temperature expected tomorrow in",
-      "tomorrow-temperature-max":"the max temperature expected tomorrow in",
-      "currently-daylight":"it is daylight in",
+       "weather" : {
+
+           "is-current-weather-code-state": "current weather",
+           "is-forecast-weather-code-state": "current weather for",
+
+           "current-temperature": "the temperature for",
+
+           "current-weather-code-state": "current weather",
+           "forecast-weather-code-state": "current weather for",
+
+           "forecast-temperature-min": "the minimum temperature expected for",
+           "forecast-temperature-max": "the maximum temperature expected for",
+           "currently-daylight": "il fait jour",
+           "at":"at",
+
+           "weather-at": "at"
+       },
 
       "selector":{
         "prefix-m":"every ",

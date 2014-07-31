@@ -97,8 +97,6 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
             logger.warn("Error during get description" + exc.getMessage());
             return descr;
         }
-
-
         return descr;
     }
 

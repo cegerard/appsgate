@@ -18,6 +18,17 @@
                 "eventName": "daylightEvent",
                 "eventValue": "sunrise"
             }
+        },
+        {
+            "name": "currentWeatherCodeState",
+            "stateName": "isCurrentWeatherCode",
+            "stateValue": "true"
+        },
+        {
+            "name": "forecastWeatherCodeState",
+            "stateName": "isForecastWeatherCode",
+            "stateValue": "true"
         }
+
     ]
 }
