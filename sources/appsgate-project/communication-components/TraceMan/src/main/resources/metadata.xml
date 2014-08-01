@@ -1,31 +1,25 @@
 <apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="TraceMan" classname="appsgate.lig.ehmi.trace.TraceMan"
-		specification="TraceManSpec" singleton="true">
+    <implementation name="TraceMan" classname="appsgate.lig.ehmi.trace.TraceMan"
+                    specification="TraceManSpec" singleton="true">
 		
-		<callback onInit="newInst" onRemove="deleteInst" />
-		<relation push="gotNotification" multiple="true" resolve="exist" />
+        <callback onInit="newInst" onRemove="deleteInst" />
+        <relation push="gotNotification" multiple="true" resolve="exist" />
 		
-		<relation specification="EHMIProxySpec" resolve="exist" >
-			<interface field="EHMIProxy"/>
-		</relation>
+        <relation specification="EHMIProxySpec" resolve="exist" >
+            <interface field="EHMIProxy"/>
+        </relation>
 
-		<relation specification="AppsGateContextDevicePropertiesTableSpec" resolve="exist" >
-			<interface field="devicePropTable"/>
-		</relation>
-		<relation specification="PlaceManagerSpec" resolve="exist" >
-			<interface field="placeManager"/>
-		</relation>
-
-		
-		<!-- <relation specification="AppsgateClientCommunicationManagerSpec" -->
-		<!-- resolve="exist" > -->
-		<!-- <interface field="sendToClientService"/> -->
-		<!-- </relation> -->
-		
-	</implementation>
-
+        <relation specification="AppsGateContextDevicePropertiesTableSpec" resolve="exist" >
+            <interface field="devicePropTable"/>
+        </relation>
+        <relation specification="PlaceManagerSpec" resolve="exist" >
+            <interface field="placeManager"/>
+        </relation>
+        <relation implementation="MongoDBConfiguration" field="myConfiguration" creation="eager"
+                  resolve="exist" fail="wait" />
+    </implementation>
 </apam>

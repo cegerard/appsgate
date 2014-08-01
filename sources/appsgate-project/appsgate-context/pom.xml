@@ -14,9 +14,6 @@
 
 	<description>This sub-project contain all components related to the context management</description>
 	
-	<properties>
-	    <mongo-api-version>2.10.1</mongo-api-version>
-	</properties>
 
     <!-- Dependencies Description -->
     <dependencies>
