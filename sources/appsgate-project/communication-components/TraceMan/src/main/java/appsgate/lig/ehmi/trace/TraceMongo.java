@@ -7,6 +7,7 @@ package appsgate.lig.ehmi.trace;
 
 import appsgate.lig.persistence.MongoDBConfiguration;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -23,21 +24,22 @@ import org.slf4j.LoggerFactory;
  * @author jr
  */
 public class TraceMongo implements TraceHistory {
+
     /**
      * The logger
      */
     private final static Logger LOGGER = LoggerFactory.getLogger(TraceMongo.class);
 
-    private static final String DBNAME_DEFAULT = "TraceHistory";
+    private static final String DBNAME = "TraceHistory";
     /**
      * The collection containing symbol table
      */
-    private static final String CONTEXT_COLLECTION = "traces";
+    private static final String TRACES = "traces";
 
     /**
-     * 
+     *
      */
-     private final MongoDBConfiguration conf;
+    private final MongoDBConfiguration conf;
 
     public TraceMongo(MongoDBConfiguration c) {
         this.conf = c;
@@ -52,7 +54,7 @@ public class TraceMongo implements TraceHistory {
     private boolean add(Long timestamp, JSONObject o) {
         if (conf != null && conf.isValid()) {
             try {
-                DBCollection context = conf.getDB(DBNAME_DEFAULT).getCollection(CONTEXT_COLLECTION);
+                DBCollection context = conf.getDB(DBNAME).getCollection(TRACES);
 
                 BasicDBObject newVal = new BasicDBObject("name", "")
                         .append("time", timestamp)
@@ -62,7 +64,7 @@ public class TraceMongo implements TraceHistory {
                 return true;
 
             } catch (MongoException e) {
-
+                LOGGER.error("A Database Excepion has been raised: " + e);
             }
         }
         return false;
@@ -72,27 +74,32 @@ public class TraceMongo implements TraceHistory {
     public JSONArray get(Long timestamp, Integer count) {
         if (conf != null && conf.isValid()) {
 
-            DBCollection context = conf.getDB(DBNAME_DEFAULT).getCollection(CONTEXT_COLLECTION);
+            DBCollection context = conf.getDB(DBNAME).getCollection(TRACES);
             DBCursor cursor = context
                     .find(new BasicDBObject("time", new BasicDBObject("$lte", timestamp)))
                     //.find()
                     .limit(count)
                     .sort(new BasicDBObject("time", 1));
 
-            JSONArray a = new JSONArray();
-            for (DBObject cur : cursor) {
-                String o = cur.get("trace").toString();
-                try {
-                    a.put(new JSONObject(o));
-                } catch (JSONException ex) {
-
-                }
-            }
-            return a;
+            return formatData(cursor);
         }
 
         return null;
 
+    }
+
+    @Override
+    public JSONArray getInterval(Long start, Long end) {
+        if (conf != null && conf.isValid()) {
+
+            DBCollection context = conf.getDB(DBNAME).getCollection(TRACES);
+            DBCursor cursor = context
+                    .find(new BasicDBObject("time", BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get()))
+                    .sort(new BasicDBObject("time", 1));
+
+            return formatData(cursor);
+        }
+        return null;
     }
 
     @Override
@@ -115,6 +122,20 @@ public class TraceMongo implements TraceHistory {
         }
         LOGGER.error("Unable to init the MongoDB connection");
         return false;
+    }
+
+    private JSONArray formatData(DBCursor cursor) {
+        JSONArray a = new JSONArray();
+        for (DBObject cur : cursor) {
+            String o = cur.get("trace").toString();
+            try {
+                a.put(new JSONObject(o));
+            } catch (JSONException ex) {
+
+            }
+        }
+        return a;
+
     }
 
 }

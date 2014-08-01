@@ -20,6 +20,9 @@ public class Trace {
      * Method to format a causality JSON object.
      *
      * @param type
+     * @param cause
+     * @param source
+     * @param target
      * @param description
      * @return the json object
      */

@@ -58,6 +58,10 @@ public class TraceFile implements TraceHistory {
     public JSONArray get(Long timestamp, Integer count) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    @Override
+    public JSONArray getInterval(Long start, Long end) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
     public Boolean init() {
@@ -72,5 +76,6 @@ public class TraceFile implements TraceHistory {
         }
         return false;
     }
+
     
 }

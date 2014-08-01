@@ -64,17 +64,24 @@ public class TraceMan implements TraceManSpec {
     private final HashMap<String, GrammarDescription> deviceGrammar = new HashMap<String, GrammarDescription>();
 
     /**
-     * 
+     *
      */
-    private TraceHistory tracer;
+    private TraceHistory fileTracer;
+    /**
+     *
+     */
+    private TraceHistory dbTracer;
 
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-//        tracer = new TraceFile(); // If you want to trace in a file, you just have to uncomment this line and comment the following
-        tracer = new TraceMongo(myConfiguration);
-        if (!tracer.init()) {
+        fileTracer = new TraceFile();
+        if (!fileTracer.init()) {
+            LOGGER.warn("Unable to start the tracer");
+        }
+        dbTracer = new TraceMongo(myConfiguration);
+        if (!dbTracer.init()) {
             LOGGER.warn("Unable to start the tracer");
         }
     }
@@ -83,7 +90,14 @@ public class TraceMan implements TraceManSpec {
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-        tracer.close();
+        fileTracer.close();
+        dbTracer.close();
+    }
+
+    private void trace(JSONObject o) {
+        dbTracer.trace(o);
+        fileTracer.trace(o);
+        //liveTracer.trace(o);
     }
 
     @Override
@@ -95,7 +109,7 @@ public class TraceMan implements TraceManSpec {
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
-            tracer.trace(coreNotif);
+            trace(coreNotif);
         }
     }
 
@@ -113,7 +127,7 @@ public class TraceMan implements TraceManSpec {
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
-            tracer.trace(coreNotif);
+            trace(coreNotif);
         }
     }
 
@@ -196,7 +210,7 @@ public class TraceMan implements TraceManSpec {
         JSONObject jsonDevice = getJSONDevice(srcId, event, cause);
         JSONObject coreNotif = getCoreNotif(jsonDevice, null);
         //Trace the notification JSON object in the trace file
-        tracer.trace(coreNotif);
+        trace(coreNotif);
 
     }
 
@@ -210,7 +224,7 @@ public class TraceMan implements TraceManSpec {
         }
         if (n instanceof ProgramLineNotification) {
             JSONObject o = getDecorationNotification((ProgramLineNotification) n);
-            tracer.trace(o);
+            trace(o);
             return;
         }
         ProgramNotification notif = (ProgramNotification) n;
@@ -219,11 +233,17 @@ public class TraceMan implements TraceManSpec {
         //Trace the notification JSON object in the trace file
         JSONObject jsonProgram = getJSONProgram(notif.getProgramId(), notif.getProgramName(), notif.getVarName(), notif.getRunningState(), null);
 
-        tracer.trace(getCoreNotif(null, jsonProgram));
+        trace(getCoreNotif(null, jsonProgram));
     }
+
     @Override
     public JSONArray getTraces(Long timestamp, Integer number) {
-        return tracer.get(timestamp, number);
+        return dbTracer.get(timestamp, number);
+    }
+
+    @Override
+    public JSONArray getTracesBetweenInterval(Long start, Long end) {
+        return dbTracer.getInterval(start, end);
     }
 
     private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
@@ -265,7 +285,6 @@ public class TraceMan implements TraceManSpec {
         }
         return progNotif;
     }
-
 
     private JSONObject getDeviceState(String srcId, String varName, String value) {
         try {
@@ -581,6 +600,5 @@ public class TraceMan implements TraceManSpec {
         }
         return getCoreNotif(d, p);
     }
-
 
 }
