@@ -1,5 +1,6 @@
 package appsgate.lig.ehmi.spec.trace;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -41,10 +42,20 @@ public interface TraceManSpec {
         
         /**
          * 
+         * 
          * @param objectID
          * @param command
          * @param caller 
          */
         public void commandHasBeenPassed(String objectID, String command, String caller);
+        
+        /**
+         * 
+         * 
+         * @param timestamp the time till the last information
+         * @param number the max number of elements to return (0 for all)
+         * @return a JSONArray containing the traces
+         */
+        public JSONArray getTraces(Long timestamp, Integer number);
 
 }

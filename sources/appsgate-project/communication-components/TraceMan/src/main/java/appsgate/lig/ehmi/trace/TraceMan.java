@@ -1,8 +1,5 @@
 package appsgate.lig.ehmi.trace;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -21,8 +18,6 @@ import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.persistence.MongoDBConfiguration;
-import java.text.SimpleDateFormat;
-import java.util.logging.Level;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -53,10 +48,6 @@ public class TraceMan implements TraceManSpec {
      * Dependencies to the place manager
      */
     private PlaceManagerSpec placeManager;
-    /**
-     * The printWriter for the trace file on the hard drive
-     */
-    private PrintWriter traceFileWriter;
 
     /*
      * The collection containing the links (wires) created, and deleted
@@ -73,21 +64,18 @@ public class TraceMan implements TraceManSpec {
     private final HashMap<String, GrammarDescription> deviceGrammar = new HashMap<String, GrammarDescription>();
 
     /**
-     * number of trace counter
+     * 
      */
-    private int cptTrace = 0;
+    private TraceHistory tracer;
 
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-        try {
-            String date = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(Calendar.getInstance().getTime());
-            this.traceFileWriter = new PrintWriter("traceMan-" + date + ".json");
-            traceFileWriter.println("[");
-        } catch (FileNotFoundException ex) {
-            this.traceFileWriter = null;
-            LOGGER.error("Unable to open trace file");
+//        tracer = new TraceFile(); // If you want to trace in a file, you just have to uncomment this line and comment the following
+        tracer = new TraceMongo(myConfiguration);
+        if (!tracer.init()) {
+            LOGGER.warn("Unable to start the tracer");
         }
     }
 
@@ -95,17 +83,20 @@ public class TraceMan implements TraceManSpec {
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-        if (this.traceFileWriter != null) {
-            this.traceFileWriter.println();
-            this.traceFileWriter.print("]");
-            this.traceFileWriter.flush();
-            this.traceFileWriter.close();
-        }
+        tracer.close();
     }
 
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
-        LOGGER.trace("A command has been passed {} on {} by {}", command, objectID, caller);
+        if (deviceTypeName.get(objectID) != null) { //if the equipment has been instantiated from ApAM spec before
+            //Create the event description device entry
+            JSONObject event = new JSONObject();
+            JSONObject deviceJson = getJSONDevice(objectID, event, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action using HMI"));
+            //Create the notification JSON object
+            JSONObject coreNotif = getCoreNotif(deviceJson, null);
+            //Trace the notification JSON object in the trace file
+            tracer.trace(coreNotif);
+        }
     }
 
     @Override
@@ -122,7 +113,7 @@ public class TraceMan implements TraceManSpec {
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
-            trace(coreNotif);
+            tracer.trace(coreNotif);
         }
     }
 
@@ -190,12 +181,12 @@ public class TraceMan implements TraceManSpec {
         try {
             if (eventType.contentEquals("new")) {
                 event.put("type", "appear");
-                cause = getJSONDecoration("", "technical", null, null, "Equipment appear");
+                cause = Trace.getJSONDecoration("", "technical", null, null, "Equipment appear");
                 event.put("state", getDeviceState(srcId, "", ""));
 
             } else if (eventType.contentEquals("remove")) {
                 event.put("type", "disappear");
-                cause = getJSONDecoration("", "technical", null, null, "Equipment disappear");
+                cause = Trace.getJSONDecoration("", "technical", null, null, "Equipment disappear");
             }
 
         } catch (JSONException e) {
@@ -205,7 +196,7 @@ public class TraceMan implements TraceManSpec {
         JSONObject jsonDevice = getJSONDevice(srcId, event, cause);
         JSONObject coreNotif = getCoreNotif(jsonDevice, null);
         //Trace the notification JSON object in the trace file
-        trace(coreNotif);
+        tracer.trace(coreNotif);
 
     }
 
@@ -219,7 +210,7 @@ public class TraceMan implements TraceManSpec {
         }
         if (n instanceof ProgramLineNotification) {
             JSONObject o = getDecorationNotification((ProgramLineNotification) n);
-            trace(o);
+            tracer.trace(o);
             return;
         }
         ProgramNotification notif = (ProgramNotification) n;
@@ -228,7 +219,11 @@ public class TraceMan implements TraceManSpec {
         //Trace the notification JSON object in the trace file
         JSONObject jsonProgram = getJSONProgram(notif.getProgramId(), notif.getProgramName(), notif.getVarName(), notif.getRunningState(), null);
 
-        trace(getCoreNotif(null, jsonProgram));
+        tracer.trace(getCoreNotif(null, jsonProgram));
+    }
+    @Override
+    public JSONArray getTraces(Long timestamp, Integer number) {
+        return tracer.get(timestamp, number);
     }
 
     private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
@@ -248,17 +243,17 @@ public class TraceMan implements TraceManSpec {
                 if (change != null) {
                     if (change.contentEquals("newProgram")) {
                         event.put("type", "appear");
-                        cause = getJSONDecoration("", "user", null, null, "Program has been added");
+                        cause = Trace.getJSONDecoration("", "user", null, null, "Program has been added");
                     } else if (change.contentEquals("removeProgram")) {
                         event.put("type", "disappaear");
-                        cause = getJSONDecoration("", "user", null, null, "Program has been deleted");
+                        cause = Trace.getJSONDecoration("", "user", null, null, "Program has been deleted");
 
                     } else { //change == "updateProgram"
                         event.put("type", "update");
                     }
                     //Create causality event entry
                     if (change.contentEquals("updateProgram")) {
-                        cause = getJSONDecoration("", "user", null, null, "Program has been updated");
+                        cause = Trace.getJSONDecoration("", "user", null, null, "Program has been updated");
                     }
                 }
 
@@ -271,30 +266,6 @@ public class TraceMan implements TraceManSpec {
         return progNotif;
     }
 
-    /**
-     * Trace the JSON object into the opened trace file
-     *
-     * @param traceObj the trace to add into the trace file
-     */
-    private synchronized void trace(JSONObject traceObj) {
-
-        Long time;
-        try {
-            time = traceObj.getLong("timestamp");
-        } catch (JSONException ex) {
-            time = EHMIProxy.getCurrentTimeInMillis();
-        }
-        TraceManHistory.add(myConfiguration, time, traceObj);
-        if (cptTrace > 0) { //For all trace after the first 
-            traceFileWriter.println(",");
-            traceFileWriter.print(traceObj.toString());
-        } else { //For the first trace
-            traceFileWriter.print(traceObj.toString());
-        }
-        this.traceFileWriter.flush();
-        
-        cptTrace++;
-    }
 
     private JSONObject getDeviceState(String srcId, String varName, String value) {
         try {
@@ -601,37 +572,15 @@ public class TraceMan implements TraceManSpec {
         deviceTypeName.put(srcId, typeFriendlyName);
     }
 
-    /**
-     * Method to format a causality JSON object.
-     *
-     * @param type
-     * @param description
-     * @return the json object
-     */
-    private JSONObject getJSONDecoration(String type, String cause, String source, String target, String description) {
-        JSONObject causality = new JSONObject();
-        try {
-            causality.put("type", type);
-            causality.put("causality", cause);
-            causality.put("source", source);
-            causality.put("target", target);
-            causality.put("description", description);
-
-        } catch (JSONException ex) {
-            // Never happens
-        }
-        return causality;
-
-    }
-
     private JSONObject getDecorationNotification(ProgramLineNotification n) {
         JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId());
-        JSONObject d = getJSONDevice(n.getTargetId(), null, getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, n.getDescription()));
+        JSONObject d = getJSONDevice(n.getTargetId(), null, Trace.getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, n.getDescription()));
         try {
-            p.put("decoration", getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription()));
+            p.put("decoration", Trace.getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription()));
         } catch (JSONException ex) {
         }
         return getCoreNotif(d, p);
     }
+
 
 }

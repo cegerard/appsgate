@@ -15,12 +15,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jr
  */
-public class TraceManHistory {
+public class TraceMongo implements TraceHistory {
+    /**
+     * The logger
+     */
+    private final static Logger LOGGER = LoggerFactory.getLogger(TraceMongo.class);
 
     private static final String DBNAME_DEFAULT = "TraceHistory";
     /**
@@ -28,7 +34,22 @@ public class TraceManHistory {
      */
     private static final String CONTEXT_COLLECTION = "traces";
 
-    public static boolean add(MongoDBConfiguration conf, Long timestamp, JSONObject o) {
+    /**
+     * 
+     */
+     private final MongoDBConfiguration conf;
+
+    public TraceMongo(MongoDBConfiguration c) {
+        this.conf = c;
+    }
+
+    /**
+     *
+     * @param timestamp
+     * @param o
+     * @return
+     */
+    private boolean add(Long timestamp, JSONObject o) {
         if (conf != null && conf.isValid()) {
             try {
                 DBCollection context = conf.getDB(DBNAME_DEFAULT).getCollection(CONTEXT_COLLECTION);
@@ -47,19 +68,13 @@ public class TraceManHistory {
         return false;
     }
 
-    /**
-     *
-     * @param conf
-     * @param timestamp
-     * @param count
-     * @return
-     */
-    public static JSONArray get(MongoDBConfiguration conf, Long timestamp, Integer count) throws JSONException {
+    @Override
+    public JSONArray get(Long timestamp, Integer count) {
         if (conf != null && conf.isValid()) {
 
             DBCollection context = conf.getDB(DBNAME_DEFAULT).getCollection(CONTEXT_COLLECTION);
             DBCursor cursor = context
-                    .find(new BasicDBObject("time", new BasicDBObject("$lte", timestamp)))                   
+                    .find(new BasicDBObject("time", new BasicDBObject("$lte", timestamp)))
                     //.find()
                     .limit(count)
                     .sort(new BasicDBObject("time", 1));
@@ -67,7 +82,11 @@ public class TraceManHistory {
             JSONArray a = new JSONArray();
             for (DBObject cur : cursor) {
                 String o = cur.get("trace").toString();
-                a.put(new JSONObject(o));
+                try {
+                    a.put(new JSONObject(o));
+                } catch (JSONException ex) {
+
+                }
             }
             return a;
         }
@@ -75,4 +94,27 @@ public class TraceManHistory {
         return null;
 
     }
+
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public void trace(JSONObject o) {
+        try {
+            add(o.getLong("timestamp"), o);
+        } catch (JSONException ex) {
+            // if there is no timestamp, just don't log the trace
+        }
+    }
+
+    @Override
+    public Boolean init() {
+        if (conf != null && conf.isValid()) {
+            return true;
+        }
+        LOGGER.error("Unable to init the MongoDB connection");
+        return false;
+    }
+
 }

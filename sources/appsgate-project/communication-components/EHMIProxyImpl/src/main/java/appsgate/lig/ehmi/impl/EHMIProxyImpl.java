@@ -876,7 +876,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      */
     @Override
     public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(String objIdentifier, String method, JSONArray args) {
-        traceManager.commandHasBeenPassed(objIdentifier, method, "PROGRAM");
+//        traceManager.commandHasBeenPassed(objIdentifier, method, "PROGRAM");
         return coreProxy.executeCommand(objIdentifier, method, args);
     }
 
