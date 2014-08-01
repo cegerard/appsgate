@@ -6,15 +6,14 @@
 package appsgate.lig.ehmi.trace;
 
 import appsgate.lig.persistence.MongoDBConfiguration;
-import java.util.ArrayList;
-import java.util.Map.Entry;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
-import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import org.json.JSONObject;
 
 /**
@@ -28,7 +27,6 @@ public class TraceManHistory {
      * The collection containing symbol table
      */
     private static final String CONTEXT_COLLECTION = "traces";
-    
 
     public static boolean add(MongoDBConfiguration conf, Long timestamp, JSONObject o) {
         if (conf != null && conf.isValid()) {
@@ -37,19 +35,44 @@ public class TraceManHistory {
 
                 BasicDBObject newVal = new BasicDBObject("name", "")
                         .append("time", timestamp)
-                        .append("trace", o);
-
-                ArrayList<BasicDBObject> stateArray = new ArrayList<BasicDBObject>();
-
+                        .append("trace", o.toString());
 
                 context.insert(newVal);
                 return true;
 
             } catch (MongoException e) {
-                
+
             }
         }
         return false;
     }
 
+    /**
+     *
+     * @param conf
+     * @param timestamp
+     * @param count
+     * @return
+     */
+    public static JSONArray get(MongoDBConfiguration conf, Long timestamp, Integer count) throws JSONException {
+        if (conf != null && conf.isValid()) {
+
+            DBCollection context = conf.getDB(DBNAME_DEFAULT).getCollection(CONTEXT_COLLECTION);
+            DBCursor cursor = context
+                    .find(new BasicDBObject("time", new BasicDBObject("$lte", timestamp)))                   
+                    //.find()
+                    .limit(count)
+                    .sort(new BasicDBObject("time", 1));
+
+            JSONArray a = new JSONArray();
+            for (DBObject cur : cursor) {
+                String o = cur.get("trace").toString();
+                a.put(new JSONObject(o));
+            }
+            return a;
+        }
+
+        return null;
+
+    }
 }

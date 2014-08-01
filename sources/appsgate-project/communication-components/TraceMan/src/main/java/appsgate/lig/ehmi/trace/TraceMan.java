@@ -22,6 +22,7 @@ import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.persistence.MongoDBConfiguration;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -277,7 +278,13 @@ public class TraceMan implements TraceManSpec {
      */
     private synchronized void trace(JSONObject traceObj) {
 
-        TraceManHistory.add(myConfiguration, EHMIProxy.getCurrentTimeInMillis(), traceObj);
+        Long time;
+        try {
+            time = traceObj.getLong("timestamp");
+        } catch (JSONException ex) {
+            time = EHMIProxy.getCurrentTimeInMillis();
+        }
+        TraceManHistory.add(myConfiguration, time, traceObj);
         if (cptTrace > 0) { //For all trace after the first 
             traceFileWriter.println(",");
             traceFileWriter.print(traceObj.toString());
@@ -285,7 +292,7 @@ public class TraceMan implements TraceManSpec {
             traceFileWriter.print(traceObj.toString());
         }
         this.traceFileWriter.flush();
-
+        
         cptTrace++;
     }
 

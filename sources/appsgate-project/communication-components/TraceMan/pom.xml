@@ -42,9 +42,9 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
+            <version>${mongo-api-version}</version>
+            <!--<version>2.10.1</version>-->
+        </dependency>        
         <dependency>
             <groupId>appsgate.components</groupId>
             <artifactId>MongoDBConfigurationImpl</artifactId>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.ipojo</artifactId>
-            <version>1.11.0</version>
+            <version>${ipojo.version}</version>
             <type>jar</type>
         </dependency>
         <!-- <dependency> -->
