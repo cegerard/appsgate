@@ -108,6 +108,8 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
             LOG.error("Failed to load type {}, importing process aborted.", pojo.getType(), e);
         }
 
+        handleImportDeclaration(importDeclaration);
+
     }
 
     @Override
