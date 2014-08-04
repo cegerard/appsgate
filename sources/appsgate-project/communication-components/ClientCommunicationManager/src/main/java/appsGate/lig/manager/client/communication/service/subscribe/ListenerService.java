@@ -26,5 +26,21 @@ public interface ListenerService {
 	 * @return true if the command listener has been removed, false otherwise
 	 */
 	public boolean removeCommandListener(String target);
+	
+	/**
+	 * Add and create a dedicated server through the specified port 
+	 * @param cmdListener the listener json coming messages
+	 * @param name a unique human readable connection name
+	 * @param port the port where to listen
+	 * @return true if the connection has been opened
+	 */
+	public boolean createDedicatedServer(CommandListener cmdListener, String name, int port);
+	
+	/**
+	 * Remove an existing dedicated connection
+	 * @param name the name of the connection to remove
+	 * @return true if the connection has been removed, false otherwise
+	 */
+	public boolean removeDedicatedServer(String name);
 
 }

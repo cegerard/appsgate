@@ -55,5 +55,20 @@ public interface SendWebsocketsService {
 	 * @param msg JSON stringify message to send
 	 */
 	public void send(int clientId, String msg);
+	
+	/**
+	 * Send to all clients connected behind a dedicated server
+	 * @param name the name of the dedicated server
+	 * @param msg the message to send
+	 */
+	public void sendTo(String name, String msg);
+	
+	/**
+	 * Send to a specified client connected behind a dedicated server
+	 * @param name the name of the dedicated server
+	 * @param clientId the client connection id
+	 * @param msg the message to send
+	 */
+	public void sendTo(String name, int clientId, String msg);
 
 }
