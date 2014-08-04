@@ -244,7 +244,7 @@
 
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
-                                    <artifactId>appsgate-app-weather</artifactId>
+                                    <artifactId>YahooWeatherAdapter</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
                                 <artifactItem>
