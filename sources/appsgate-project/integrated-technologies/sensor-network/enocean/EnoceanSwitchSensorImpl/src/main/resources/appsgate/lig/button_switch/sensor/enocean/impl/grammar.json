@@ -1,8 +1,8 @@
 {
-    "friendlyName": "sensor",
-    "typename":"switchSensor",
-    "properties": [
-    ],
+    "friendlyName": "Switch sensor",
+    "typename":"Switch",
+    "traceDesc" : ["switchNumber", "buttonStatus"],
+    "properties" : ["switchNumber", "buttonStatus"],
     "states": [
     ]
 }

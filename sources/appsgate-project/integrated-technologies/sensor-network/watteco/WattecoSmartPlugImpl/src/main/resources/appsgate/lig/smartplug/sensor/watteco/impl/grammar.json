@@ -1,8 +1,8 @@
 {
     "friendlyName": "Watteco smartplug sensor",
-    "typename":"wattecoSmartPlug",
-    "properties": [
-    ],
+    "typename":"SmartPlug",
+    "properties": ["plugState", "consumption"],
+    "traceDesc": ["plugState", "consumption"],
     "states": [
     ]
 }

@@ -1,8 +1,8 @@
 {
     "friendlyName": "temperature sensor",
-    "typename":"wattecoTemperatureSensor",
-    "properties": [
-    ],
+    "typename":"Temperature",
+    "properties": [ "currentTemperature"],
+    "traceDesc": [ "value"],
     "states": [
     ]
 }

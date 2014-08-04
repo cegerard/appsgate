@@ -4,6 +4,8 @@ import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import appsgate.lig.eude.interpreter.langage.nodes.Builder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +37,7 @@ public class CoreObjectBehaviorTest {
             Assert.fail("Unable to load description");
         }
         checkStates(desc);
+        checkProperties(desc);
         return nbError;
     }
 
@@ -49,6 +52,34 @@ public class CoreObjectBehaviorTest {
             System.out.println(ex.getCause());
             Assert.fail("JSON not correctly loaded");
         }
+    }
+
+    private void checkProperties(JSONObject desc) {
+        checkOk("No friendly name", desc.has("friendlyName"));
+        checkOk("No typename", desc.has("typename"));
+        int pSize = 0;
+        int dSize = 0;
+        if (desc.has("properties")) {
+            try {
+                pSize = desc.getJSONArray("properties").length();
+            } catch (JSONException ex) {
+                checkOk("properties is not an array", false);
+            }
+        } else {
+            checkOk("There is no properties", false);
+        }
+        if (desc.has("traceDesc")) {
+            try {
+                dSize = desc.getJSONArray("traceDesc").length();
+            } catch (JSONException ex) {
+                checkOk("traceDesc is not an array", false);
+            }
+        } else {
+            checkOk("There is no trace description", false);
+        }
+        checkOk("properties is empty", pSize > 0);
+        checkOk("traceDesc is empty", dSize > 0);
+        checkOk("The properties and trace desc has not the same size", pSize == dSize);
     }
 
     /**
@@ -88,4 +119,5 @@ public class CoreObjectBehaviorTest {
         System.out.println(" - " + errorMessage);
         nbError++;
     }
+
 }

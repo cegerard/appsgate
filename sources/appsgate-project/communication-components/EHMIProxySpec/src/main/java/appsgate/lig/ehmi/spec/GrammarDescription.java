@@ -7,8 +7,6 @@ package appsgate.lig.ehmi.spec;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +28,7 @@ public class GrammarDescription {
      */
     public GrammarDescription(JSONObject o) {
         this.json = o;
-        if (o!= null && o.has("commands")) {
+        if (o != null && o.has("commands")) {
             try {
                 JSONArray commands = o.getJSONArray("commands");
 
@@ -45,7 +43,7 @@ public class GrammarDescription {
                 }
             } catch (JSONException ex) {
             }
-        } 
+        }
     }
 
     /**
@@ -56,6 +54,20 @@ public class GrammarDescription {
         try {
             if (this.json.has("typename")) {
                 return this.json.getString("typename");
+            }
+        } catch (JSONException ex) {
+        }
+        return "unknown";
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getFriendlyName() {
+        try {
+            if (this.json.has("friendlyName")) {
+                return this.json.getString("friendlyName");
             }
         } catch (JSONException ex) {
         }
@@ -88,6 +100,41 @@ public class GrammarDescription {
         } catch (JSONException ex) {
         }
         return null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<String> getProperties() {
+        ArrayList<String> ret = new ArrayList<String>();
+        if (json.has("properties")) {
+            try {
+                JSONArray array = json.getJSONArray("properties");
+                for (int i = 0; i < array.length(); i++) {
+                    ret.add(array.getString(i));
+                }
+            } catch (JSONException ex) {
+
+            }
+        }
+        return ret;
+    }
+
+    public String getValueVarName(String what) {
+        String ret = what;
+        try {
+            JSONArray a = json.getJSONArray("traceDesc");
+            int i = 0;
+            for (String s : getProperties()) {
+                if (s.equalsIgnoreCase(what)) {
+                    return a.getString(i);
+                }
+                i++;
+            }
+        } catch (JSONException ex) {
+        }
+        return ret;
     }
 
 }

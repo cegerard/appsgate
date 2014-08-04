@@ -1,8 +1,8 @@
 {
-    "friendlyName": "illumination sensor",
-    "typename":"illumination",
-    "properties": [
-    ],
+    "friendlyName": "Illumination sensor",
+    "typename":"Illumination",
+    "traceDesc": ["value"],
+    "properties": ["value"],
     "states": [
     ]
 }

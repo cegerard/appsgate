@@ -1,13 +1,13 @@
 {
-    "friendlyName": "contact sensor",
-    "typename":"contactSensor",
-    "properties": [
-    ],
+    "friendlyName": "Contact sensor",
+    "typename": "Contact",
+    "traceDesc" : ["value"],
+    "properties": ["contact" ],
     "states": [
         {
             "name": "isOpen",
-            "stateName" : "getContactStatus",
-            "stateValue" : "false",
+            "stateName": "getContactStatus",
+            "stateValue": "false",
             "setter": {
                 "type": "empty"
             },
@@ -24,8 +24,8 @@
         },
         {
             "name": "isClose",
-            "stateName" : "getContactStatus",
-            "stateValue" : "true",
+            "stateName": "getContactStatus",
+            "stateValue": "true",
             "setter": {
                 "type": "empty"
             },

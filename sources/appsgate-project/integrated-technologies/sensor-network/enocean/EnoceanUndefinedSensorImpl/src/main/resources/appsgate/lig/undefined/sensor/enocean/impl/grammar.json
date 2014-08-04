@@ -1,7 +1,9 @@
 {
     "friendlyName": "undefined sensor",
     "typename":"undefinedSensor",
-    "properties": [
+    "traceDesc": [""
+    ],
+    "properties": [""
     ],
     "states": [
     ]

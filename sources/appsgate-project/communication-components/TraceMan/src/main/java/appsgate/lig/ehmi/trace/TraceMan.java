@@ -18,6 +18,7 @@ import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.persistence.MongoDBConfiguration;
+import java.util.ArrayList;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -287,6 +288,30 @@ public class TraceMan implements TraceManSpec {
     }
 
     private JSONObject getDeviceState(String srcId, String varName, String value) {
+        JSONObject deviceState = new JSONObject();
+        GrammarDescription g = deviceGrammar.get(srcId);
+        // If the state of a device is complex
+
+        JSONObject deviceProxyState = EHMIProxy.getDevice(srcId);
+        ArrayList<String> props = g.getProperties();
+        for (String k : props) {
+            if (k != null && !k.isEmpty()) {
+                try {
+                    deviceState.put(g.getValueVarName(k), deviceProxyState.get(k));
+                } catch (JSONException ex) {
+                    LOGGER.error("Unable to retrieve key[{}] from {} for {}", k, srcId, g.getType());
+                }
+            }
+        }
+        try {
+            deviceState.put("status", "2");
+            deviceState.put(varName, value); // Not sure this is really necessary
+        } catch (JSONException ex) {
+        }
+        return deviceState;
+    }
+/*
+    private JSONObject getDeviceStateOld(String srcId, String varName, String value) {
         try {
             JSONObject deviceState = new JSONObject();
 
@@ -504,7 +529,7 @@ public class TraceMan implements TraceManSpec {
         }
         return null;
     }
-
+*/
     private void addUserType(String srcId, String userType) {
 
         String typeFriendlyName;

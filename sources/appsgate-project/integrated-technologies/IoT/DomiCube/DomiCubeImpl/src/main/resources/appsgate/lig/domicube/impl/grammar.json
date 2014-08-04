@@ -1,8 +1,8 @@
 {
     "friendlyName": "DomiCube",
-    "typename": "domicube",
-    "properties": [
-    ],
+    "typename": "DomiCube",
+    "varDesc": ["activeFace", "batteryLevel", "dimValue"],
+    "properties": ["activeFace", "batteryLevel", "dimValue"],
     "states": [
         {
             "name": "Music",

@@ -1,7 +1,9 @@
 {
-    "friendlyName": "CO2 sensor",
-    "typename":"wattecoCo2Sensor",
-    "properties": [
+    "friendlyName": "Watteco CO2 sensor",
+    "typename":"Co2",
+    "traceDesc": ["value"
+    ],
+    "properties": ["value"
     ],
     "states": [
     ]

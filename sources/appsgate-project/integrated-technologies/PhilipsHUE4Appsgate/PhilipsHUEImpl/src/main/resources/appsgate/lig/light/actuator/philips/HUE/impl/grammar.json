@@ -1,8 +1,8 @@
 {
-    "friendlyName": "lamp",
-    "typename": "lamp",
-    "properties": [
-    ],
+    "friendlyName": "Philips Hue Lamp",
+    "typename": "ColorLight",
+    "traceDesc" : ["state", "color", "saturation", "brightness"],
+    "properties" : ["value", "color", "saturation", "brightness"],
     "states": [
         {
             "name": "isOn",

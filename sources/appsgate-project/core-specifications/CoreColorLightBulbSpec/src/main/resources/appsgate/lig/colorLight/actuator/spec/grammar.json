@@ -1,8 +1,8 @@
 {
-    "friendlyName": "lamp",
-    "typename":"lamp",
-    "properties": [
-    ],
+    "friendlyName": "Color light",
+    "typename":"Colorlight",
+    "traceDesc" : ["state", "color", "saturation", "brightness"],
+    "properties" : ["value", "color", "saturation", "brightness"],
     "states": [
         {
             "name": "isOn",

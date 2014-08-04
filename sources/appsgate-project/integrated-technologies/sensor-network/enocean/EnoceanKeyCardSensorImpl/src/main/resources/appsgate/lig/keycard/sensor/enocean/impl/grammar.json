@@ -1,8 +1,8 @@
 {
-    "friendlyName": "keycard sensor",
-    "typename": "keycardSensor",
-    "properties": [
-    ],
+    "friendlyName": "Keycard switch",
+    "typename": "KeyCardSwitch",
+    "traceDesc": ["value"],
+    "properties": ["inserted"],
     "states": [
         {
             "name": "inserted",

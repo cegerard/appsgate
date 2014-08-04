@@ -1,8 +1,8 @@
 {
-    "friendlyName": "ard contact sensor",
-    "typename":"contactSensor",
-    "properties": [
-    ],
+    "friendlyName": "ARD contact sensor",
+    "typename":"Contact",
+    "traceDesc" : ["value"],
+    "properties" : ["contact"],
     "states": [
         {
             "name": "isOpen",

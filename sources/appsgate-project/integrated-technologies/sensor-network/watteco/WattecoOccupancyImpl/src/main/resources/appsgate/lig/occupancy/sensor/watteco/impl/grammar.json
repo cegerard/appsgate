@@ -1,8 +1,8 @@
 {
-    "friendlyName": "occupancy sensor",
-    "typename":"wattecoOccupancySensor",
-    "properties": [
-    ],
+    "friendlyName": "Watteco occupancy sensor",
+    "typename": "Occupancy",
+    "properties": ["occupied"],
+    "traceDesc": ["value"],
     "states": [
     ]
 }

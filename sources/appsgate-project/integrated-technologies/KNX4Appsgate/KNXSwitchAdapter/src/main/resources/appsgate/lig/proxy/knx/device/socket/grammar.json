@@ -1,8 +1,8 @@
 {
     "friendlyName": "on/off actuator",
-    "typename":"onOffActuator",
-    "properties": [
-    ],
+    "typename": "onOffActuator",
+    "traceDesc": ["isOn"],
+    "properties": ["isOn"],
     "states": [
     ]
 }
