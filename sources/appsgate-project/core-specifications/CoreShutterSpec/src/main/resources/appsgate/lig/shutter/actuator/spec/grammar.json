@@ -1,0 +1,38 @@
+{
+    "friendlyName": "shutter",
+    "typename":"shutter",
+    "properties": [
+    ],
+    "states": [
+        {
+            "name": "isOpen",
+            "setter": {
+                "type": "NodeAction",
+                "methodName": "open"
+            },
+            "endEvent": {
+                "name" : "value",
+                "value" : "false" 
+            },
+            "startEvent": {
+                "name" : "value",
+                "value" : "true" 
+            }
+
+        },
+        {
+            "name": "isClose",
+            "actions": {
+                "type": "NodeAction",
+                "methodName": "close"
+            },
+            "endEvent": {
+                "name" : "lightOn"
+            },
+            "startEvent": {
+                "name" : "lightOff"
+            }
+
+        }
+    ]
+}
