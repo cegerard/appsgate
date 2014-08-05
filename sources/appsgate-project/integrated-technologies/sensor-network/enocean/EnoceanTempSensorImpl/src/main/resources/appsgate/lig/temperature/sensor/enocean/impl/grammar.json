@@ -2,7 +2,7 @@
     "friendlyName": "Temperature sensor",
     "typename":"Temperature",
     "traceDesc" : ["value"],
-    "properties": ["currentTemperature"],
+    "properties": ["value"],
     "states": [
     ]
 }
