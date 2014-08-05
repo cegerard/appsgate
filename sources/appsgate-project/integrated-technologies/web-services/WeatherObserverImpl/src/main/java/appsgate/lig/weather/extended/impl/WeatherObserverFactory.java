@@ -5,6 +5,8 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.util.Util;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.jkernel.BundleCheck;
 
 import java.util.Hashtable;
@@ -15,6 +17,9 @@ import java.util.Map;
  */
 public class WeatherObserverFactory {
 
+    private static Logger logger = LoggerFactory
+            .getLogger(WeatherObserverFactory.class);
+
     public static final String LOCATIONS="org.lig.appsgate.weather.locations";
 
 
@@ -23,16 +28,16 @@ public class WeatherObserverFactory {
         try {
             Implementation observerImpl = CST.componentBroker.getImpl(WeatherObserverImpl.IMPL_NAME);
 
-            Map<String,Object> configuration = new Hashtable<String,Object>();
+            Map<String,String> configuration = new Hashtable<String,String>();
             configuration.put("currentLocation", location);
 
 
-            WeatherObserverImpl impl = (WeatherObserverImpl) observerImpl.getApformImpl().addDiscoveredInstance(configuration).getServiceObject();
+            WeatherObserverImpl impl = (WeatherObserverImpl) observerImpl.createInstance(null, configuration);
 
             return impl;
 
         } catch( Exception exc) {
-            exc.printStackTrace();
+            logger.warn("Exception when creating WeatherObserver for "+location+" : "+exc.getMessage());
             return null;
         }
     }
@@ -50,8 +55,7 @@ public class WeatherObserverFactory {
                 createObserver(location);
             }
         } catch (Exception exc) {
-            System.out.println(" Exception occured");
-            exc.printStackTrace();
+            logger.error(" Exception occured when reading the locations : "+exc.getMessage());
         }
     }
 }

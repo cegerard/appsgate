@@ -74,6 +74,17 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
         // TODO register TimerTask
     }
 
+    public void start() throws WeatherForecastException {
+        if(currentLocation != null
+                && currentLocation.length()> 0) {
+            weatherService.addLocation(currentLocation);
+        } else {
+            throw new WeatherForecastException("Trying to create a WeatherObserver with an empty or null location");
+        }
+
+
+    }
+
     @Override
     public String getAbstractObjectId() {
         return appsgateObjectId;
