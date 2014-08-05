@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
@@ -685,5 +686,13 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             targetId = p.getId();
         }
         return new ProgramLineNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type);
+    }
+    
+    /**
+     * 
+     * @param table 
+     */
+    protected void buildReferences(ReferenceTable table) {
+       // Do nothing for leaf if no Device or no Program is referenced 
     }
 }

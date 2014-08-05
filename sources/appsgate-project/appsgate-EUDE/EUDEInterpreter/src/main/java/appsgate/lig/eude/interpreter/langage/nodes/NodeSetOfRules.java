@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.List;
@@ -184,5 +185,11 @@ public class NodeSetOfRules extends Node implements INodeSet {
 
         return ret;
 
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        for (Node n : this.instructions) {
+            n.buildReferences(table);
+        }
     }
 }

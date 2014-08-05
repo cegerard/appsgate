@@ -9,6 +9,7 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -308,6 +309,18 @@ public class NodeState extends Node implements ICanBeEvaluated {
     @Override
     public String getResultType() {
         return "boolean";
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (this.eventEndNode != null) {
+            eventEndNode.buildReferences(table);
+        }
+        if (this.eventStartNode != null) {
+            eventStartNode.buildReferences(table);
+        }
+        if (this.objectNode != null) {
+            objectNode.buildReferences(table);
+        }
     }
 
 }

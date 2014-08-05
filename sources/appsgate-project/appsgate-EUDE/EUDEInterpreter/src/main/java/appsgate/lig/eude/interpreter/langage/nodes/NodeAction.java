@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
@@ -302,6 +303,17 @@ public class NodeAction extends Node implements ICanBeEvaluated {
             LOGGER.debug("this action has no return type");
         }
         return this.returnType;
+    }
+
+    @Override
+    protected void buildReferences(ReferenceTable r) {
+        String id = target.getValue();
+        if (target.getType().equalsIgnoreCase("program")) {
+            r.addProgram(id);
+        } else {
+            r.addDevice(id);
+        }
+
     }
 
 }

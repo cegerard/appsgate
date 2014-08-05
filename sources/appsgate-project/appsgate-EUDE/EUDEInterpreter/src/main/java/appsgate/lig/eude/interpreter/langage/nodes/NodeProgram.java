@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
@@ -87,6 +88,9 @@ final public class NodeProgram extends Node {
      */
     private Node body;
 
+    /**
+     * Sub programs
+     */
     private HashMap<String, NodeProgram> subPrograms;
 
     /**
@@ -100,6 +104,7 @@ final public class NodeProgram extends Node {
      */
     private EUDEInterpreter mediator = null;
 
+    private ReferenceTable references = null;
     /**
      * Default constructor
      *
@@ -166,6 +171,7 @@ final public class NodeProgram extends Node {
             this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
             body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
             this.programJSON = getJSONObject(json, "body");
+            this.buildReferences();
             this.runningState = RUNNING_STATE.DEPLOYED;
             return true;
         } catch (SpokException ex) {
@@ -175,6 +181,14 @@ final public class NodeProgram extends Node {
         return false;
 
     }
+    /**
+     * 
+     */
+    private void buildReferences(){
+        this.references = new ReferenceTable(mediator);
+        this.body.buildReferences(this.references);
+    }
+    
 
     /**
      * Launch the interpretation of the rules
