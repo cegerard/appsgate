@@ -37,6 +37,13 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <artifactId>org.osgi.core</artifactId>
+            <groupId>org.osgi</groupId>
+            <version>${osgi.version}</version>
+        </dependency>
+
+
 
         <dependency>
             <artifactId>ExtendedWeatherObserverSpec</artifactId>
