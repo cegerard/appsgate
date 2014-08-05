@@ -58,10 +58,6 @@ public class TraceMan implements TraceManSpec {
     /**
      * Map for device id to their user friendly name
      */
-    private final HashMap<String, String> deviceTypeName = new HashMap<String, String>();
-    /**
-     * Map for device id to their user friendly name
-     */
     private final HashMap<String, GrammarDescription> deviceGrammar = new HashMap<String, GrammarDescription>();
 
     /**
@@ -103,7 +99,7 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
-        if (deviceTypeName.get(objectID) != null) { //if the equipment has been instantiated from ApAM spec before
+        if (deviceGrammar.get(objectID) != null) { //if the equipment has been instantiated from ApAM spec before
             //Create the event description device entry
             JSONObject event = new JSONObject();
             JSONObject deviceJson = getJSONDevice(objectID, event, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action using HMI"));
@@ -116,7 +112,7 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
-        if (deviceTypeName.get(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
+        if (deviceGrammar.get(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
             //Create the event description device entry
             JSONObject event = new JSONObject();
             try {
@@ -163,7 +159,7 @@ public class TraceMan implements TraceManSpec {
         try {
             objectNotif.put("id", srcId);
             objectNotif.put("name", devicePropTable.getName(srcId, ""));
-            objectNotif.put("type", deviceTypeName.get(srcId));
+            objectNotif.put("type", deviceGrammar.get(srcId).getType());
             JSONObject location = new JSONObject();
             location.put("id", placeManager.getCoreObjectPlaceId(srcId));
             SymbolicPlace place = placeManager.getPlaceWithDevice(srcId);
@@ -188,7 +184,6 @@ public class TraceMan implements TraceManSpec {
         //Put the user friendly core type in the map
         GrammarDescription grammar = EHMIProxy.getGrammarFromType(userType);
 
-        addUserType(srcId, userType);
         deviceGrammar.put(srcId, grammar);
 
         JSONObject event = new JSONObject();
@@ -300,320 +295,16 @@ public class TraceMan implements TraceManSpec {
                     deviceState.put(g.getValueVarName(k), deviceProxyState.get(k));
                 } catch (JSONException ex) {
                     LOGGER.error("Unable to retrieve key[{}] from {} for {}", k, srcId, g.getType());
+                    LOGGER.error("DeviceState: " + deviceProxyState.toString());
                 }
             }
         }
         try {
             deviceState.put("status", "2");
-            deviceState.put(varName, value); // Not sure this is really necessary
+        //    deviceState.put(varName, value); // Not sure this is really necessary
         } catch (JSONException ex) {
         }
         return deviceState;
-    }
-/*
-    private JSONObject getDeviceStateOld(String srcId, String varName, String value) {
-        try {
-            JSONObject deviceState = new JSONObject();
-
-            String deviceFriendlyType = deviceTypeName.get(srcId);
-
-            if (deviceFriendlyType.contentEquals("Temperature")) {
-                if (varName.contentEquals("currentTemperature")) {
-                    deviceState.put("value", value);
-                    deviceState.put("status", "2");
-                } else if (varName.contentEquals("status")) {
-                    deviceState.put("status", value);
-                    deviceState.put("value", EHMIProxy.getDevice(srcId).getString("value"));
-                } else {
-                    deviceState.put("status", "2");
-                    deviceState.put("value", EHMIProxy.getDevice(srcId).getString("value"));
-                }
-
-            } else if (deviceFriendlyType.contentEquals("Illumination")
-                    || deviceFriendlyType.contentEquals("Co2")) {
-                if (varName.contains("current")) {
-                    deviceState.put("value", value);
-                    deviceState.put("status", "2");
-                } else if (varName.contentEquals("status")) {
-                    deviceState.put("status", value);
-                    deviceState.put("value", EHMIProxy.getDevice(srcId).getString("value"));
-                } else {
-                    deviceState.put("status", "2");
-                    deviceState.put("value", EHMIProxy.getDevice(srcId).getString("value"));
-                }
-
-            } else if (deviceFriendlyType.contentEquals("Switch")) {
-                if (varName.contains("switchNumber")) {
-                    deviceState.put("switchNumber", value);
-                    deviceState.put("buttonStatus", "true");
-                    deviceState.put("status", "2");
-                } else if (varName.contentEquals("status")) {
-                    deviceState.put("status", value);
-                    JSONObject descr = EHMIProxy.getDevice(srcId);
-                    deviceState.put("switchNumber", descr.getString("switchNumber"));
-                    deviceState.put("buttonStatus", descr.getInt("buttonStatus"));
-                } else {
-                    JSONObject descr = EHMIProxy.getDevice(srcId);
-                    deviceState.put("status", descr.getString("status"));
-                    deviceState.put("switchNumber", descr.getString("switchNumber"));
-                    deviceState.put("buttonStatus", descr.getInt("buttonStatus"));
-                }
-
-            } else if (deviceFriendlyType.contentEquals("Contact")
-                    || deviceFriendlyType.contentEquals("KeyCardSwitch")
-                    || deviceFriendlyType.contentEquals("Occupancy")
-                    || deviceFriendlyType.contentEquals("OnOffActuator")) {
-
-                if (varName.contains("current") || varName.contains("occupied")
-                        || varName.contains("isOn")) {
-
-                    deviceState.put("status", "2");
-                    deviceState.put("value", value);
-
-                } else if (varName.contentEquals("status")) {
-
-                    deviceState.put("status", value);
-                    if (deviceFriendlyType.contentEquals("Contact")) {
-                        deviceState.put("value", EHMIProxy.getDevice(srcId).getString("contact"));
-                    } else if (deviceFriendlyType.contentEquals("KeyCardSwitch")) {
-                        deviceState.put("value", EHMIProxy.getDevice(srcId).getString("inserted"));
-                    } else if (deviceFriendlyType.contentEquals("Occupancy")) {
-                        deviceState.put("value", EHMIProxy.getDevice(srcId).getString("occupied"));
-                    } else if (deviceFriendlyType.contentEquals("OnOffActuator")) {
-                        deviceState.put("value", EHMIProxy.getDevice(srcId).getString("isOn"));
-                    }
-                } else {
-                    deviceState.put("status", "2");
-                    if (deviceFriendlyType.contentEquals("Contact")) {
-                        deviceState.put("value", EHMIProxy.getDevice(srcId).getString("contact"));
-                    } else if (deviceFriendlyType.contentEquals("KeyCardSwitch")) {
-                        deviceState.put("value", EHMIProxy.getDevice(srcId).getString("inserted"));
-                    } else if (deviceFriendlyType.contentEquals("Occupancy")) {
-                        deviceState.put("value", EHMIProxy.getDevice(srcId).getString("occupied"));
-                    } else if (deviceFriendlyType.contentEquals("OnOffActuator")) {
-                        deviceState.put("value", EHMIProxy.getDevice(srcId).getString("isOn"));
-                    }
-                }
-
-            } else if (deviceFriendlyType.contentEquals("SmartPlug")) {
-                if (varName.contains("plugState")) {
-                    deviceState.put("plugState", value);
-                    deviceState.put("consumption", EHMIProxy.getDevice(srcId).getString("consumption"));
-                    deviceState.put("status", "2");
-                } else if (varName.contentEquals("consumption")) {
-                    deviceState.put("status", "2");
-                    deviceState.put("plugState", EHMIProxy.getDevice(srcId).getString("plugState"));
-                    deviceState.put("consumption", value);
-                } else if (varName.contentEquals("status")) {
-                    deviceState.put("status", value);
-                    JSONObject descr = EHMIProxy.getDevice(srcId);
-                    deviceState.put("plugState", descr.getString("plugState"));
-                    deviceState.put("consumption", descr.getString("consumption"));
-                } else {
-                    JSONObject descr = EHMIProxy.getDevice(srcId);
-                    deviceState.put("status", descr.getString("status"));
-                    deviceState.put("plugState", descr.getString("plugState"));
-                    deviceState.put("consumption", descr.getString("consumption"));
-                }
-            } else if (deviceFriendlyType.contentEquals("Colorlight")) {
-                JSONObject descr = EHMIProxy.getDevice(srcId);
-                if (varName.contains("state")) {
-                    deviceState.put("state", value);
-                    deviceState.put("color", descr.getInt("color"));
-                    deviceState.put("saturation", descr.getInt("saturation"));
-                    deviceState.put("brightness", descr.getInt("brightness"));
-                    deviceState.put("status", descr.getString("status"));
-
-                } else if (varName.contentEquals("hue")) {
-                    deviceState.put("state", descr.getBoolean("value"));
-                    deviceState.put("color", value);
-                    deviceState.put("saturation", descr.getInt("saturation"));
-                    deviceState.put("brightness", descr.getInt("brightness"));
-                    deviceState.put("status", descr.getString("status"));
-
-                } else if (varName.contentEquals("sat")) {
-                    deviceState.put("state", descr.getBoolean("value"));
-                    deviceState.put("color", descr.getInt("color"));
-                    deviceState.put("saturation", value);
-                    deviceState.put("brightness", descr.getInt("brightness"));
-                    deviceState.put("status", descr.getString("status"));
-
-                } else if (varName.contentEquals("bri")) {
-                    deviceState.put("state", descr.getBoolean("value"));
-                    deviceState.put("color", descr.getInt("color"));
-                    deviceState.put("saturation", descr.getInt("saturation"));
-                    deviceState.put("brightness", value);
-                    deviceState.put("status", descr.getString("status"));
-
-                } else if (varName.contentEquals("reachable")) {
-                    deviceState.put("state", descr.getBoolean("value"));
-                    deviceState.put("color", descr.getInt("color"));
-                    deviceState.put("saturation", descr.getInt("saturation"));
-                    deviceState.put("brightness", descr.getInt("brightness"));
-                    if (value.contentEquals("true")) {
-                        deviceState.put("status", "2");
-                    } else {
-                        deviceState.put("status", "0");
-                    }
-                } else {
-                    deviceState.put("state", descr.getBoolean("value"));
-                    deviceState.put("color", descr.getInt("color"));
-                    deviceState.put("saturation", descr.getInt("saturation"));
-                    deviceState.put("brightness", descr.getInt("brightness"));
-                    deviceState.put("status", descr.getString("status"));
-                }
-            } else if (deviceFriendlyType.contentEquals("SystemClock")) {
-                //TODO Add state profile in next version
-
-            } else if (deviceFriendlyType.contentEquals("MediaPlayer")) {
-                //TODO Add state profile in next version
-
-            } else if (deviceFriendlyType.contentEquals("MediaBrowser")) {
-                //TODO Add state profile in next version
-
-            } else if (deviceFriendlyType.contentEquals("GoogleCalendar")) {
-                //TODO Add state profile in next version
-
-            } else if (deviceFriendlyType.contentEquals("Mail")) {
-                //TODO Add state profile in next version
-
-            } else if (deviceFriendlyType.contentEquals("Weather")) {
-                //TODO Add state profile in next version
-
-            } else if (deviceFriendlyType.contentEquals("MobileDevice")) {
-                //TODO Add state profile in next version
-
-            } else if (deviceFriendlyType.contentEquals("DomiCube")) {
-
-                JSONObject descr = EHMIProxy.getDevice(srcId);
-                if (varName.contains("newFace")) {
-                    deviceState.put("activeFace", value);
-                    deviceState.put("batteryLevel", descr.getString("batteryLevel"));
-                    deviceState.put("dimValue", descr.getString("dimValue"));
-                    deviceState.put("status", descr.getString("status"));
-
-                } else if (varName.contentEquals("newBatteryLevel")) {
-                    deviceState.put("activeFace", descr.getString("activeFace"));
-                    deviceState.put("batteryLevel", value);
-                    deviceState.put("dimValue", descr.getString("dimValue"));
-                    deviceState.put("status", descr.getString("status"));
-
-                } else if (varName.contentEquals("newDimValue")) {
-                    deviceState.put("activeFace", descr.getString("activeFace"));
-                    deviceState.put("batteryLevel", descr.getString("batteryLevel"));
-                    deviceState.put("dimValue", value);
-                    deviceState.put("status", descr.getString("status"));
-
-                } else if (varName.contentEquals("status")) {
-                    deviceState.put("activeFace", descr.getString("activeFace"));
-                    deviceState.put("batteryLevel", descr.getString("batteryLevel"));
-                    deviceState.put("dimValue", descr.getString("dimValue"));
-                    deviceState.put("status", value);
-                } else {
-                    deviceState.put("activeFace", descr.getString("activeFace"));
-                    deviceState.put("batteryLevel", descr.getString("batteryLevel"));
-                    deviceState.put("dimValue", descr.getString("dimValue"));
-                    deviceState.put("status", descr.getString("status"));
-                }
-
-            } else {
-                if (varName.contentEquals("status")) {
-                    deviceState.put("status", value);
-                }
-            }
-
-            return deviceState;
-
-        } catch (JSONException ex) {
-            LOGGER.error("JSONException thrown: " + ex.getMessage());
-        }
-        return null;
-    }
-*/
-    private void addUserType(String srcId, String userType) {
-
-        String typeFriendlyName;
-        int i_userType = Integer.valueOf(userType);
-
-        switch (i_userType) {
-            case 0:
-                typeFriendlyName = "Temperature";
-                break;
-            case 1:
-                typeFriendlyName = "Illumination";
-                break;
-            case 2:
-                typeFriendlyName = "Switch";
-                break;
-            case 3:
-                typeFriendlyName = "Contact";
-                break;
-            case 4:
-                typeFriendlyName = "KeyCardSwitch";
-                break;
-            case 5:
-                typeFriendlyName = "Occupancy";
-                break;
-            case 6:
-                typeFriendlyName = "SmartPlug";
-                break;
-            case 7:
-                typeFriendlyName = "Colorlight";
-                break;
-            case 8:
-                typeFriendlyName = "OnOffActuator";
-                break;
-            case 9:
-                typeFriendlyName = "Co2";
-                break;
-            case 21:
-                typeFriendlyName = "SystemClock";
-                break;
-            case 31:
-                typeFriendlyName = "MediaPlayer";
-                break;
-            case 36:
-                typeFriendlyName = "MediaBrowser";
-                break;
-            case 101:
-                typeFriendlyName = "GoogleCalendar";
-                break;
-            case 102:
-                typeFriendlyName = "Mail";
-                break;
-            case 103:
-                typeFriendlyName = "Weather";
-                break;
-            case 200:
-                typeFriendlyName = "MobileDevice";
-                break;
-            case 210:
-                typeFriendlyName = "DomiCube";
-                break;
-            case 794225618:
-                typeFriendlyName = "ContentDirectory";
-                break;
-//    		case -532540516:
-//    			typeFriendlyName = "Unknown";
-//				break;
-            case 2052964255:
-                typeFriendlyName = "ConnectionManager";
-                break;
-            case 415992004:
-                typeFriendlyName = "AvTransport";
-                break;
-            case -164696113:
-                typeFriendlyName = "RenderingControl";
-                break;
-//    		case -1943939940:
-//    			typeFriendlyName = "Unknown";
-//				break;
-            default:
-                typeFriendlyName = "Undefined";
-                break;
-        }
-
-        deviceTypeName.put(srcId, typeFriendlyName);
     }
 
     private JSONObject getDecorationNotification(ProgramLineNotification n) {
