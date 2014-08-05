@@ -42,7 +42,7 @@ public class YahooWeatherUniversalShellCommand {
 	for (Instance instance : CST.componentBroker.getInsts()) {
 
 	    // Only those services that implement this spec are acceptable
-	    if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
+	    if (!instance.getSpec().getName().equals("WeatherAdapterSpec"))
 		continue;
 
 	    out.print(String.format("Apam-Instance: %s\n", instance.getName()));
@@ -63,7 +63,7 @@ public class YahooWeatherUniversalShellCommand {
 	for (Instance instance : CST.componentBroker.getInsts()) {
 
 	    // Only those services that implement this spec are acceptable
-	    if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
+	    if (!instance.getSpec().getName().equals("WeatherAdapterSpec"))
 		continue;
 
         WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
@@ -83,7 +83,7 @@ public class YahooWeatherUniversalShellCommand {
 	for (Instance instance : CST.componentBroker.getInsts()) {
 
 	    // Only those services that implement this spec are acceptable
-	    if (!instance.getSpec().getName().equals("CoreWeatherServiceSpec"))
+	    if (!instance.getSpec().getName().equals("WeatherAdapterSpec"))
 		continue;
 
         WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
