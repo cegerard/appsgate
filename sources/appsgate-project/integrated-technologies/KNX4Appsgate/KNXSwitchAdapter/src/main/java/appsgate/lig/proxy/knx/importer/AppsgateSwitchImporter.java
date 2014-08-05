@@ -56,9 +56,11 @@ public class AppsgateSwitchImporter extends AbstractImporterComponent {
 
             logger.info("****************** Appsgate Switch importer was invoked *************************");
 
-            final Switch fuchsiaSwitch=(Switch)importDeclaration.getMetadata().get("discovery.knx.device.object");
+            final String id=importDeclaration.getMetadata().get("id").toString();
 
-            final String appsgateDeviceInstance=generateAppsgateDeviceInstanceName(fuchsiaSwitch.getId());
+            final String instanceName=importDeclaration.getMetadata().get("discovery.knx.device.instance.name").toString();
+
+            final String appsgateDeviceInstance=generateAppsgateDeviceInstanceName(id);
 
             logger.info("Found new KNX instance, creating Appsgate Switch instance to represent the device {} ..",appsgateDeviceInstance);
 
@@ -73,8 +75,8 @@ public class AppsgateSwitchImporter extends AbstractImporterComponent {
                     logger.info("Trying to create apam instance with name {}", appsgateDeviceInstance);
 
                     properties.put("instance.name", appsgateDeviceInstance);
-                    properties.put("deviceName", fuchsiaSwitch.getId());
-                    properties.put("deviceId", fuchsiaSwitch.getId());
+                    properties.put("deviceName", instanceName);
+                    properties.put("deviceId", id);
                     properties.put("deviceType", "8");
 
                     Instance apamInstance = apamImpl.createInstance(null, properties);
