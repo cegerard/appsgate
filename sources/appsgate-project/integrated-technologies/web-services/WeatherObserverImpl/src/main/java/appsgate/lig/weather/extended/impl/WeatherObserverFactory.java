@@ -7,7 +7,6 @@ import fr.imag.adele.apam.util.Util;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.jkernel.BundleCheck;
 
 import java.util.Hashtable;
 import java.util.Map;

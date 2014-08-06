@@ -513,6 +513,7 @@
       "is-turned-off-lamp-state":"éteinte",
       "light-brightness":"l'intensité de ",
       "state-verb":"est",
+      "getTemperature": "la température mesurée",
 
       "weather" : {
           "is-current-weather-code-state": "la météo actuelle",
@@ -604,6 +605,8 @@
       "pause-media-action":"Mettre en pause le media",
       "stop-media-action":"Stopper",
       "set-volume-media-action":"Mettre le volume",
+      "getTemperature": "la température mesurée",
+
       "weather" : {
           "weather-at": "à",
 
