@@ -189,6 +189,10 @@ final public class NodeProgram extends Node {
         this.body.buildReferences(this.references);
     }
     
+    
+    public ReferenceTable getReferences() {
+        return this.references;
+    }
 
     /**
      * Launch the interpretation of the rules

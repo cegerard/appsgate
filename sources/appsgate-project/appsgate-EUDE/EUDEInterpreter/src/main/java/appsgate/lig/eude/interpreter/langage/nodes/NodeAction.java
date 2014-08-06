@@ -307,13 +307,9 @@ public class NodeAction extends Node implements ICanBeEvaluated {
 
     @Override
     protected void buildReferences(ReferenceTable r) {
-        String id = target.getValue();
-        if (target.getType().equalsIgnoreCase("program")) {
-            r.addProgram(id);
-        } else {
-            r.addDevice(id);
+        if (target != null) {
+            target.buildReferences(r);
         }
-
     }
 
 }

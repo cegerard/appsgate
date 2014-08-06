@@ -10,12 +10,14 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 import org.jmock.Expectations;
 
@@ -122,8 +124,8 @@ public class TechnicalTest {
     }
 
     @Test
-    public void testReadProgram() throws Exception{
-        for (File f:listFiles) {
+    public void testReadProgram() throws Exception {
+        for (File f : listFiles) {
             System.out.println("Reading " + f.getName());
             JSONObject o = TestUtilities.loadFileJSON(f.getPath());
             Assert.assertNotNull(o);
@@ -143,5 +145,20 @@ public class TechnicalTest {
         Assert.assertTrue(instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/techniques/t01.json")));
     }
 
+    @Test
+    public void testBuildReferences() throws Exception{
+        System.out.println("References");
+        instance.addProgram(TestUtilities.loadFileJSON("src/test/resources/prog/pgm.json"));
+        NodeProgram p = instance.getNodeProgram("pgm");
+        Assert.assertNotNull(p);
+        ReferenceTable references = p.getReferences();
+        Assert.assertNotNull(references);
+        Set<String> devicesId = references.getDevicesId();
+        Assert.assertEquals(1, devicesId.size());
+        Set<String> programsId = references.getProgramsId();
+        Assert.assertEquals(1, programsId.size());
+        Boolean ret = references.parseReferenceOK();
+        Assert.assertNull(ret);
+    }
 
 }

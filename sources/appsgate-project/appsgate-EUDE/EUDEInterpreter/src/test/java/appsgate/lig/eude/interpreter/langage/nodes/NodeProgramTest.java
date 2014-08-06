@@ -96,7 +96,7 @@ public class NodeProgramTest extends NodeTest {
         Assert.assertEquals(expResult, result);
     }
 
-
+    
     /**
      * Test of setDeployed method, of class NodeProgram.
      *

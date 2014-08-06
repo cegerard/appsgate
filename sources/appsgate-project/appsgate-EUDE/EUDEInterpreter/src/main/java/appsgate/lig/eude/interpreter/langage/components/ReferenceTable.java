@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import java.util.HashMap;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +21,10 @@ public class ReferenceTable {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceTable.class);
 
-    private EUDEInterpreter interpreter;
+    private final EUDEInterpreter interpreter;
 
-    private HashMap<String, Boolean> devices;
-    private HashMap<String, Boolean> programs;
+    private final HashMap<String, Boolean> devices;
+    private final HashMap<String, Boolean> programs;
 
     /**
      *
@@ -52,11 +53,11 @@ public class ReferenceTable {
 
     }
 
-    public Iterable<String> getProgramsId() {
+    public Set<String> getProgramsId() {
         return programs.keySet();
     }
 
-    public Iterable<String> getDevicesId() {
+    public Set<String> getDevicesId() {
         return devices.keySet();
     }
 
