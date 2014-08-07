@@ -1,6 +1,11 @@
 package appsgate.lig.ehmi.trace;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import appsgate.lig.context.device.properties.table.spec.DevicePropertiesTableSpec;
-import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
@@ -18,7 +23,6 @@ import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.persistence.MongoDBConfiguration;
-import java.util.ArrayList;
 
 /**
  * This component get CHMI from the EHMI proxy and got notifications for each
@@ -68,6 +72,29 @@ public class TraceMan implements TraceManSpec {
      *
      */
     private TraceHistory dbTracer;
+    
+    /**
+     * Define the trace time width in milliseconds
+     * value to 0 means no aggregation interval and each change
+     * is trace when it appear
+     */
+    private long deltaTinMillis = 0;
+    
+    /**
+     * The buffer queue for AppsGate traces
+     */
+    private TraceQueue<JSONObject> traceQueue;
+    
+    /**
+     * Thread to manage trace writing and aggregation
+     */
+    private TraceExecutor traceExec;
+
+    /**
+     * Last trace time stamp
+     * use to avoid collisions
+     */
+	private long lastTimeStamp;
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -81,20 +108,82 @@ public class TraceMan implements TraceManSpec {
         if (!dbTracer.init()) {
             LOGGER.warn("Unable to start the tracer");
         }
+        
+        traceQueue = new TraceQueue<JSONObject>();
+        traceExec = new TraceExecutor();
+        new Thread(traceExec).start();
     }
 
     /**
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-        fileTracer.close();
+    	fileTracer.close();
         dbTracer.close();
+    	traceExec.stop();
     }
 
+    /**
+     * Request the trace man instance to trace event.
+     * Add the time stamp to the trace and put it in the queue
+     * @param o the event to trace
+     */
     private void trace(JSONObject o) {
-        dbTracer.trace(o);
-        fileTracer.trace(o);
-        //liveTracer.trace(o);
+    	synchronized(traceQueue) {
+    		try {
+    			o.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
+    			traceQueue.offer(o);
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    	synchronized(traceExec) {
+    		if (traceExec.isSleeping()) {
+    			traceExec.notify();
+    		}
+    	}
+    }
+    
+    /**
+     * Write the trace into destination
+     * @param trace the event to write
+     * @exception trace time stamp must be greater than
+     * one deltaTinMilis + previous written time stamp value
+     */
+    private synchronized void writeTrace(JSONObject trace){
+		try {
+			long timeStamp = trace.getLong("timestamp");
+			
+			if(timeStamp >/*=*/ lastTimeStamp + deltaTinMillis){
+				
+	    		lastTimeStamp = timeStamp;
+	    		dbTracer.trace(trace);
+	    		fileTracer.trace(trace);
+	    		//liveTracer.trace(trace);
+	    		
+	    	}else {
+	    		LOGGER.error("Multiple trace request with the same time stamp value: "+timeStamp+". Entry are skipped.");
+	    		throw new Error("Multiple trace request with the same time stamp value. Entry with time stamp "+timeStamp+" are skipped.");
+	    	}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    /**
+     * Write an array of traces into the destination
+     * @param traceArray the event array to write
+     */
+    private synchronized void writeTraces(JSONArray traceArray) {
+    	int nbTraces = traceArray.length();
+    	
+    	for(int i=0; i < nbTraces; i++ ){
+    		try {
+				writeTrace(traceArray.getJSONObject(i));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+    	}
     }
 
     @Override
@@ -131,7 +220,6 @@ public class TraceMan implements TraceManSpec {
     private JSONObject getCoreNotif(JSONObject device, JSONObject program) {
         JSONObject coreNotif = new JSONObject();
         try {
-            coreNotif.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
             //Create the device tab JSON entry
             JSONArray deviceTab = new JSONArray();
             {
@@ -315,6 +403,191 @@ public class TraceMan implements TraceManSpec {
         } catch (JSONException ex) {
         }
         return getCoreNotif(d, p);
+    }
+    
+    /**
+     * Get the current delta time for trace aggregation
+     * @return the delta time in milliseconds
+     */
+    public long getDeltaTinMillis() {
+		return deltaTinMillis;
+	}
+
+    /**
+     * Set the delta time for traces aggregation
+     * @param deltaTinMillis the new delta time value
+     */
+	public void setDeltaTinMillis(long deltaTinMillis) {
+		this.deltaTinMillis = deltaTinMillis;
+		traceExec.reScheduledTraceTimer(deltaTinMillis);
+	}
+    
+    /******************************/
+    /** Inner class for tracing **/
+    /*****************************/
+
+
+	/**
+     * TraceQueue is a dedicated queue for AppsGate
+     * JSON formatted traces.
+     * 
+     * @author Cedric Gerard
+     * @since August 06, 2014
+     * @version 0.5.0
+     */
+    private class TraceQueue<E> extends ArrayBlockingQueue<E>{
+
+    	
+		private static final long serialVersionUID = 1L;
+
+		/**
+    	 * Default TraceQueue constructor with max capacity
+    	 * set to 1000 elements
+    	 */
+		public TraceQueue() {
+			super(1000);
+			
+		}
+    	
+    	/**
+    	 * TraceQueue constructor with max capacity
+    	 * @param capacity the max queue capacity
+    	 */
+		public TraceQueue(int capacity) {
+			super(capacity);
+			
+		}
+		
+		/**
+		 * Load the Queue with a collection of traces
+		 * @param traces the collection to load
+		 */
+		public synchronized void loadTraces (Collection<E> traces) {
+			this.clear();
+			this.addAll(traces);
+		}
+    }
+    
+    /**
+     * A thread class to trace all elements in the trace
+     * queue
+     * 
+     * @author Cedric Gerard
+     * @since August 06, 2014
+     * @version 0.5.0
+     */
+    private class TraceExecutor implements Runnable {
+    	
+    	/**
+    	 * Indicates if the thread is in infinite
+    	 * waiting 
+    	 */
+    	private boolean sleeping;
+
+    	/**
+    	 * Use to manage thread loop execution
+    	 */
+    	private boolean start;
+    	
+    	/**
+    	 * Timer to wake up the thread each deltaT time interval
+    	 */
+    	private Timer timer;
+    	
+    	/**
+    	 * Default constructor
+    	 */
+    	public TraceExecutor() {
+    		
+    		start = true;
+    		sleeping = false;
+    		timer = new Timer();
+    		if(deltaTinMillis > 0) {
+    			timer.scheduleAtFixedRate(new TimerTask() {
+    				@Override
+    				public void run() {traceExec.notify();}
+    					}, 0, deltaTinMillis);
+    		}
+    	}
+    	
+		@Override
+		public void run() {
+			
+			while(start) {
+				try {
+					if(traceQueue.isEmpty()){
+						synchronized(this) {
+							sleeping = true;
+							wait();
+							sleeping = false;
+						}
+					}
+					writeTraces(apply(null));
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		/**
+		 * Apply a policy on the queue to aggregate traces
+		 * The default policy is the deltaTInMilis attribute
+		 * 
+		 * @param policy other policies to apply (e.g. type of device)
+		 * @return the aggregated traces as a JSONArray
+		 */
+		private JSONArray apply(JSONObject policy) {
+			synchronized(traceQueue) {
+				
+				JSONArray aggregateTraces = new JSONArray();
+				
+				//No aggregation
+				if(policy == null && deltaTinMillis == 0) {
+					
+					while(!traceQueue.isEmpty()) {
+						JSONObject trace = traceQueue.poll();
+						aggregateTraces.put(trace);
+					}
+				
+				}
+				
+				return aggregateTraces;
+			}
+		}
+		
+		/**
+		 * Schedule the trace timer for aggregation
+		 * @param time the time interval
+		 */
+		public void reScheduledTraceTimer(long time){
+			timer.cancel();
+			timer.purge();
+			
+			timer = new Timer();
+			timer.scheduleAtFixedRate(new TimerTask() {
+				@Override
+				public void run() {traceExec.notify();}
+					}, 0, time);
+		}
+
+		/**
+		 * Is this thread infinitely sleeping
+		 * @return true if the thread is waiting till the end of time, false otherwise
+		 */
+		public synchronized boolean isSleeping() {
+			return sleeping;
+		}
+		
+		/**
+		 * Stop the current thread by ending its execution
+		 * cleanly 
+		 */
+		public void stop(){
+			timer.cancel();
+			timer.purge();
+			start = false;
+			traceExec.notify();
+		}
     }
 
 }
