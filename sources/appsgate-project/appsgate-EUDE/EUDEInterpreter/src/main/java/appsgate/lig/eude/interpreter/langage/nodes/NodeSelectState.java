@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -259,6 +260,10 @@ public class NodeSelectState extends Node implements INodeList, ICanBeEvaluated 
     @Override
     public String toString() {
         return "[SelectSate]";
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        // TODO implement reference for select state
     }
 
 }

@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -170,4 +171,10 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
         }
     }
 
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (value != null) {
+            value.buildReferences(table);
+        }
+    }
 }

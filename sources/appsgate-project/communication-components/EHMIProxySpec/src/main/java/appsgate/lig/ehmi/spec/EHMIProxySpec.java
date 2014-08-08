@@ -80,11 +80,12 @@ public interface EHMIProxySpec {
 	
 	/**
 	 * Add grammar in the context properties manager for a new device type
+         * @param deviceId the id if the device
 	 * @param deviceType the type of device
 	 * @param grammarDescription the grammar associated to the device type
 	 * @return true if the grammar is really new, false if the grammar has been replaced
 	 */
-	public boolean addGrammar(String deviceType, GrammarDescription grammarDescription);
+	public boolean addGrammar(String deviceId, String deviceType, GrammarDescription grammarDescription);
 	
 	/**
 	 * Remove grammar associated to a device type
@@ -99,6 +100,12 @@ public interface EHMIProxySpec {
 	 * @return the grammar as a JSONObject
 	 */
 	public GrammarDescription getGrammarFromType(String deviceType);
+	/**
+	 * Get the grammar associated to a device 
+	 * @param deviceId the device id from which to get the grammar
+	 * @return the grammar as a JSONObject
+	 */
+	public GrammarDescription getGrammarFromDevice(String deviceId);
 	
 	
 	/***************************/

@@ -1,0 +1,235 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package appsgate.lig.eude.interpreter.langage.components;
+
+import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import java.util.HashMap;
+import java.util.Set;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ *
+ * @author jr
+ */
+public class ReferenceTable {
+
+    /**
+     * Static class member uses to log what happened in each instances
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceTable.class);
+
+    /**
+     *
+     */
+    private final EUDEInterpreter interpreter;
+    /**
+     *
+     */
+    private final String myProgId;
+
+    /**
+     *
+     */
+    private STATUS state;
+
+    /**
+     * 
+     * @return 
+     */
+    public STATUS getStatus() {
+        return this.state;
+    }
+
+    public enum STATUS {
+        OK,
+        UNSTABLE,
+        INVALID,
+        MISSING,
+        UNKNOWN
+    };
+
+    /**
+     *
+     */
+    private final HashMap<String, STATUS> devices;
+    /**
+     *
+     */
+    private final HashMap<String, STATUS> programs;
+
+    /**
+     *
+     * @param interpreter
+     * @param pid
+     */
+    public ReferenceTable(EUDEInterpreter interpreter, String pid) {
+        devices = new HashMap<String, STATUS>();
+        programs = new HashMap<String, STATUS>();
+        this.interpreter = interpreter;
+        this.state = STATUS.UNKNOWN;
+        this.myProgId = pid;
+    }
+
+    /**
+     *
+     * @param programId
+     */
+    public void addProgram(String programId) {
+        if (programId.equalsIgnoreCase(myProgId)) {
+            LOGGER.debug("Trying to self reference the program");
+            return;
+        }
+        programs.put(programId, STATUS.UNKNOWN);
+    }
+
+    /**
+     *
+     * @param deviceId
+     */
+    public void addDevice(String deviceId) {
+        devices.put(deviceId, STATUS.UNKNOWN);
+    }
+
+    /**
+     *
+     * @param deviceId
+     * @param newStatus
+     * @return true if something changed in the status, false otherwise
+     */
+    public Boolean setDeviceStatus(String deviceId, STATUS newStatus) {
+        if (devices.containsKey(deviceId)) {
+            devices.put(deviceId, newStatus);
+            return checkStatus();
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param programId
+     * @param newStatus
+     * @return true if something changed in the status, false otherwise
+     */
+    public Boolean setProgramStatus(String programId, STATUS newStatus) {
+        if (programs.containsKey(programId)) {
+            programs.put(programId, newStatus);
+            return checkStatus();
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * @return true if something has change false otherwise
+     */
+    public Boolean checkStatus() {
+        STATUS oldStatus = this.state;
+        return computeStatus() != oldStatus;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Set<String> getProgramsId() {
+        return programs.keySet();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Set<String> getDevicesId() {
+        return devices.keySet();
+    }
+
+    /**
+     *
+     * @param status
+     */
+    private void setState(STATUS status) {
+        if (status == STATUS.INVALID) {
+            this.state = status;
+        } else if (status == STATUS.UNSTABLE && this.state == STATUS.OK) {
+            this.state = status;
+        }
+    }
+
+    /**
+     *
+     */
+    private void retrieveReferences() {
+        for (String k : programs.keySet()) {
+            NodeProgram prog = interpreter.getNodeProgram(k);
+            if (prog != null) {
+                if (!prog.isValid()) {
+                    LOGGER.error("The program {} is not valid.", k);
+                    setProgramStatus(k, STATUS.INVALID);
+                } else if (prog.getReferences().state != STATUS.OK) {
+                    LOGGER.warn("The program {} is not stable.", k);
+                    setProgramStatus(k, STATUS.UNSTABLE);
+                }
+            } else {
+                LOGGER.error("The program {} does not exist anymore.", k);
+                setProgramStatus(k, STATUS.MISSING);
+            }
+        }
+        // Services && devices are treated the same way
+        for (String k : devices.keySet()) {
+            JSONObject device = interpreter.getContext().getDevice(k);
+            try {
+                if (device == null || !device.has("status") || !device.getString("status").equals("2")) {
+                    LOGGER.warn("The device {} is missing.", k);
+                    setDeviceStatus(k, STATUS.MISSING);
+                }
+            } catch (JSONException ex) {
+            }
+        }
+
+    }
+
+    /**
+     *
+     * @return
+     */
+    private STATUS computeStatus() {
+        this.state = STATUS.OK;
+        for (String k : programs.keySet()) {
+            switch (programs.get(k)) {
+                case MISSING:
+                case INVALID:
+                    setState(STATUS.INVALID);
+                    break;
+                case UNSTABLE:
+                    setState(STATUS.UNSTABLE);
+                    break;
+            }
+        }
+        // Services && devices are treated the same way
+        for (String k : devices.keySet()) {
+            switch (devices.get(k)) {
+                case MISSING:
+                    setState(STATUS.UNSTABLE);
+                    break;
+            }
+        }
+        return this.state;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public STATUS checkReferences() {
+        retrieveReferences();
+        return computeStatus();
+    }
+
+}

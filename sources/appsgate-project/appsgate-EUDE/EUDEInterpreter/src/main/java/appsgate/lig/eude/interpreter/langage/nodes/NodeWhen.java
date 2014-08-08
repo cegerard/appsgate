@@ -4,6 +4,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
@@ -151,6 +152,15 @@ public class NodeWhen extends Node implements INodeRule{
         ret.seqRules = seqRules.copy(ret);
         return ret;
 
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (this.seqEventNode != null) {
+            seqEventNode.buildReferences(table);
+        }
+        if (this.seqRules != null) {
+            seqRules.buildReferences(table);
+        }
     }
 
 }

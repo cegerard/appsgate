@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
@@ -132,5 +133,14 @@ public class NodeWait extends Node {
         setStarted(false);
         setProgramProcessing();
         fireEndEvent(new EndEvent(this));
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (this.event != null) {
+            event.buildReferences(table);
+        }
+        if (this.waitFor != null) {
+            waitFor.buildReferences(table);
+        }
     }
 }

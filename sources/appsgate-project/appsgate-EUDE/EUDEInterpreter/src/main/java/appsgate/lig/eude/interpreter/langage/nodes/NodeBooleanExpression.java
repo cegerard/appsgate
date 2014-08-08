@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -25,6 +26,7 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
      * Logger
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeBooleanExpression.class);
+
 
     /**
      * Different operator that are supported by the language
@@ -282,6 +284,16 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
     @Override
     public String getResultType() {
         return "boolean";
+    }
+    
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (leftNode != null) {
+            leftNode.buildReferences(table);
+        }
+        if (rightNode != null) {
+            rightNode.buildReferences(table);
+        }
     }
 
 }

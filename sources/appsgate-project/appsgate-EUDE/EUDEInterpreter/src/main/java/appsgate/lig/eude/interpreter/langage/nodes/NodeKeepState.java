@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONException;
@@ -124,6 +125,15 @@ public class NodeKeepState extends Node {
      */
     public NodeState getState() {
         return state;
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (this.state != null) {
+            this.state.buildReferences(table);
+        }
+        if (this.setter != null) {
+            this.setter.buildReferences(table);
+        }
     }
 
 }

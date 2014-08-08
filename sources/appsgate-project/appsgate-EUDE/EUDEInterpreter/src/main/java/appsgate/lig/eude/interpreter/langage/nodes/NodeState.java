@@ -9,11 +9,12 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -281,7 +282,7 @@ public class NodeState extends Node implements ICanBeEvaluated {
         }
         String targetId = object.getResult().getValue();
         LOGGER.trace("Asking for {}, {}", object.getResult().getValue(), desc.getStateName());
-        ProgramLineNotification notif = getProgramLineNotification(null, targetId, "Reading from", ProgramLineNotification.Type.READ);
+        ProgramCommandNotification notif = getProgramLineNotification(null, targetId, "Reading from", ProgramCommandNotification.Type.READ);
 
         GenericCommand cmd = getMediator().executeCommand(targetId, desc.getStateName(), new JSONArray(), notif);
         if (cmd == null) {
@@ -308,6 +309,18 @@ public class NodeState extends Node implements ICanBeEvaluated {
     @Override
     public String getResultType() {
         return "boolean";
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (this.eventEndNode != null) {
+            eventEndNode.buildReferences(table);
+        }
+        if (this.eventStartNode != null) {
+            eventStartNode.buildReferences(table);
+        }
+        if (this.objectNode != null) {
+            objectNode.buildReferences(table);
+        }
     }
 
 }

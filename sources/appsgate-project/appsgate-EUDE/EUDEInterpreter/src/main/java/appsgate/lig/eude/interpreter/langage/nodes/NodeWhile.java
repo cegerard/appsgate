@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
@@ -199,5 +200,18 @@ public class NodeWhile extends Node implements INodeRule {
     @Override
     public String toString() {
         return "[Node While " + state.toString() + "]";
+
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (this.rules != null) {
+            this.rules.buildReferences(table);
+        }
+        if (this.rulesThen != null) {
+            this.rulesThen.buildReferences(table);
+        }
+        if (this.state != null) {
+            this.state.buildReferences(table);
+        }
     }
 }

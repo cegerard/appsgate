@@ -179,7 +179,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 			try {
 				state = jsonResponse.getJSONObject("state");
 				lightState = state.getBoolean("on");
-                status = String.valueOf(lightState);
+ //               status = String.valueOf(lightState);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

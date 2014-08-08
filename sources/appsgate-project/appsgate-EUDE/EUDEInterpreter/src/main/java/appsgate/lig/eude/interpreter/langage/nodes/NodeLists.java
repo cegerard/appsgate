@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
@@ -246,6 +247,15 @@ public class NodeLists extends Node implements INodeList, ICanBeEvaluated {
     public List<NodeValue> getElements() {
         return result;
 
+    }
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (this.left != null) {
+            left.buildReferences(table);
+        }
+        if (this.right != null) {
+            right.buildReferences(table);
+        }
     }
 
 }

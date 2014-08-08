@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 
 import java.util.Collection;
@@ -33,6 +34,7 @@ public class NodeProgramTest extends NodeTest {
         context.checking(new Expectations() {
             {
                 allowing(mediator).notifyChanges(with(any(ProgramStateNotification.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
             }
         });
         ruleJSON = new JSONObject();
@@ -96,7 +98,7 @@ public class NodeProgramTest extends NodeTest {
         Assert.assertEquals(expResult, result);
     }
 
-
+    
     /**
      * Test of setDeployed method, of class NodeProgram.
      *

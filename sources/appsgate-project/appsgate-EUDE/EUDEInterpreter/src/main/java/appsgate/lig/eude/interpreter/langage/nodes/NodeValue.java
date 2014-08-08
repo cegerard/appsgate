@@ -6,6 +6,7 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
@@ -267,5 +268,19 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
     public String toString() {
         return "[NodeValue type: " + getType() + ", value: " + getExpertProgramScript() + "]";
     }
-
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        switch(this.type) {
+            case PROGRAMCALL:
+                table.addProgram(value);
+                break;
+            case SERVICE:
+            case DEVICE:
+                table.addDevice(value);
+                break;
+            default:
+                LOGGER.debug("Unknonw case to handle");
+                break;
+        }
+    }
 }

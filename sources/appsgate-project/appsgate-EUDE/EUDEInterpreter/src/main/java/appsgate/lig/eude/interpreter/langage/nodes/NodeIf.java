@@ -4,6 +4,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
@@ -221,6 +222,19 @@ public class NodeIf extends Node {
             listenAndCall(seqRulesTrue);
         } else {
             listenAndCall(seqRulesFalse);
+        }
+    }
+    
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (this.expBool != null) {
+            expBool.buildReferences(table);
+        }
+        if (this.seqRulesTrue != null) {
+            seqRulesTrue.buildReferences(table);
+        }
+        if (this.seqRulesFalse != null) {
+            seqRulesFalse.buildReferences(table);
         }
     }
 

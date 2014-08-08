@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventGenerator;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
@@ -15,6 +16,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import java.util.ArrayList;
 import java.util.Set;
@@ -153,7 +155,11 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param e The start event to fire for all the listeners
      */
     protected void fireStartEvent(StartEvent e) {
-        //during the execution the list can be updated
+        try {
+            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), iid));
+        } catch (SpokExecutionException ex) {
+        }
+        
         int nbListeners = startEventListeners.size();
         for (int i = 0; i < nbListeners; i++) {
             StartEventListener l = startEventListeners.poll();
@@ -676,7 +682,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param type
      * @return 
      */
-    protected ProgramLineNotification getProgramLineNotification(String sourceId, String targetId, String description, ProgramLineNotification.Type type) {
+    protected ProgramCommandNotification getProgramLineNotification(String sourceId, String targetId, String description, ProgramCommandNotification.Type type) {
         NodeProgram p = this.getProgramNode();
         if (sourceId == null) {
             sourceId = p.getId();
@@ -684,6 +690,15 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         if (targetId == null) {
             targetId = p.getId();
         }
-        return new ProgramLineNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type);
+        return new ProgramCommandNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type);
     }
+    
+    /**
+     * 
+     * @param table 
+     */
+    protected void buildReferences(ReferenceTable table) {
+       // Do nothing for leaf if no Device or no Program is referenced 
+    }
+    
 }

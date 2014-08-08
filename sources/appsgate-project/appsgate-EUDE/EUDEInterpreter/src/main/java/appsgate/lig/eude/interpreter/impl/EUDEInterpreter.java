@@ -18,12 +18,13 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
-import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 
@@ -229,9 +230,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             p.addEndEventListener(this);
             calledStatus = p.call();
         }
-
         return (calledStatus != null);
-
     }
 
     @Override
@@ -299,7 +298,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param args the args to pass to the command
      * @return the command to be executed
      */
-    public GenericCommand executeCommand(String objectId, String methodName, JSONArray args, ProgramLineNotification notif) {
+    public GenericCommand executeCommand(String objectId, String methodName, JSONArray args, ProgramCommandNotification notif) {
         GenericCommand command = ehmiProxy.executeRemoteCommand(objectId, methodName, args);
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, objectId);
@@ -374,6 +373,11 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param source
      */
     private void notifyUpdateProgram(String id, String runningState, String name, JSONObject source) {
+        if (runningState.equalsIgnoreCase("INVALID")) {
+            newProgramStatus(id, ReferenceTable.STATUS.INVALID);
+        } else {
+            newProgramStatus(id, ReferenceTable.STATUS.OK);
+        }
         notifyChanges(new ProgramNotification("updateProgram", id, runningState, name, source, null));
     }
 
@@ -386,12 +390,12 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     private void notifyAddProgram(String id, String runningState, String name, JSONObject source) {
         notifyChanges(new ProgramNotification("newProgram", id, runningState, name, source, null));
     }
-
     /**
      *
      * @param id
      */
     private void notifyRemoveProgram(String id, String name) {
+        newProgramStatus(id, ReferenceTable.STATUS.MISSING);
         notifyChanges(new ProgramNotification("removeProgram", id, "", name, null, null));
     }
 
@@ -599,6 +603,27 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     @Override
     public String toString() {
         return "[EUDE Mediator]";
+    }
+
+    @Override
+    public void newDeviceStatus(String deviceId, Boolean statusOK) {
+        ReferenceTable.STATUS s = ReferenceTable.STATUS.OK;
+        if (!statusOK) {
+            s = ReferenceTable.STATUS.MISSING;
+        }
+        for (NodeProgram p : mapPrograms.values()) {
+            p.setDeviceStatus(deviceId, s);
+        }
+    }
+    /**
+     * 
+     * @param deviceId
+     * @param status 
+     */
+    public void newProgramStatus(String deviceId, ReferenceTable.STATUS status) {
+        for (NodeProgram p : mapPrograms.values()) {
+            p.setProgramStatus(deviceId, status);
+        }
     }
 
 }

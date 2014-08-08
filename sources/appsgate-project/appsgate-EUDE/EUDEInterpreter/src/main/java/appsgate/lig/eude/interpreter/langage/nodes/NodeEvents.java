@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.impl.ClockProxy;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
@@ -202,4 +203,12 @@ public abstract class NodeEvents extends Node implements INodeEvent{
     abstract void dealWithClockEvent(NodeEvent e) throws SpokExecutionException;
 
     abstract void dealWithNormalEvent(NodeEvent e) throws SpokExecutionException;
+        
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        for (Node n: this.listOfEvent) {
+            n.buildReferences(table);
+        }
+    }
+
 }

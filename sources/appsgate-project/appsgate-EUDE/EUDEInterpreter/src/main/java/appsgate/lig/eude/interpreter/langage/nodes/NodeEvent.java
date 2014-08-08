@@ -5,6 +5,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import org.json.JSONException;
@@ -80,8 +81,6 @@ public class NodeEvent extends Node implements INodeEvent {
         eventValue = getJSONString(eventJSON, "eventValue");
 
     }
-
-    
 
     @Override
     public JSONObject call() {
@@ -221,6 +220,13 @@ public class NodeEvent extends Node implements INodeEvent {
         ret.source = source.copy(parent);
         return ret;
 
+    }
+
+    @Override
+    protected void buildReferences(ReferenceTable table) {
+        if (source != null) {
+            source.buildReferences(table);
+        }
     }
 
 }
