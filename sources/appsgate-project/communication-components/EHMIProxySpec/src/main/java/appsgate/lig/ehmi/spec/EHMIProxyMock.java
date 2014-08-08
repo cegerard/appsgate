@@ -116,6 +116,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
             return new ArrayList<String>();
         }
 
+    @Override
+    public GrammarDescription getGrammarFromDevice(String deviceId) {
+        return null;
+    }
+
     public final class Library {
 
         /**
@@ -242,7 +247,7 @@ public class EHMIProxyMock implements EHMIProxySpec {
 
 
 	@Override
-	public boolean addGrammar(String deviceType, GrammarDescription grammarDescription) {
+	public boolean addGrammar(String deviceId, String deviceType, GrammarDescription grammarDescription) {
 		return false;
 	}
 

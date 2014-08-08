@@ -41,12 +41,13 @@ public interface DevicePropertiesTableSpec {
     /**
      * Add a grammar for a device type
      *
+     * @param deviceId the id of device to add
      * @param deviceType the device type to add a grammar
      * @param grammar the grammar description to associate to a device type
      * @return true if the grammar is new, false if a previous grammar has been
      * replaced
      */
-    public boolean addGrammarForDeviceType(String deviceType, GrammarDescription grammar);
+    public boolean addGrammarForDevice(String deviceId, String deviceType, GrammarDescription grammar);
 
     /**
      * Remove a grammar associate to a device type
@@ -64,5 +65,28 @@ public interface DevicePropertiesTableSpec {
      * @return the grammar as a JSONObject
      */
     public GrammarDescription getGrammarFromType(String deviceType);
+    /**
+     * Get the grammar associate to a device type
+     *
+     * @param deviceId the device id from which to get the grammar
+     * @return the grammar as a JSONObject
+     */
+    public GrammarDescription getGrammarFromDevice(String deviceId);
+
+
+    /**
+     * set a type of a device
+     * @param deviceId
+     * @param type 
+     */
+    public void setType(String deviceId, String type);
+    
+    /**
+     * 
+     * @param deviceId
+     * @return the type associated to the device id
+     */
+    public String getType(String deviceId);
+    
 
 }

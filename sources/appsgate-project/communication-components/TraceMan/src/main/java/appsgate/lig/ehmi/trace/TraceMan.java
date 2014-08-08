@@ -59,10 +59,6 @@ public class TraceMan implements TraceManSpec {
      */
     private MongoDBConfiguration myConfiguration;
 
-    /**
-     * Map for device id to their user friendly name
-     */
-    private final HashMap<String, GrammarDescription> deviceGrammar = new HashMap<String, GrammarDescription>();
 
     /**
      *
@@ -188,7 +184,7 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
-        if (deviceGrammar.get(objectID) != null) { //if the equipment has been instantiated from ApAM spec before
+        if (EHMIProxy.getGrammarFromDevice(objectID) != null) { //if the equipment has been instantiated from ApAM spec before
             //Create the event description device entry
             JSONObject event = new JSONObject();
             JSONObject deviceJson = getJSONDevice(objectID, event, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action using HMI"));
@@ -201,7 +197,7 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
-        if (deviceGrammar.get(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
+        if (EHMIProxy.getGrammarFromDevice(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
             //Create the event description device entry
             JSONObject event = new JSONObject();
             try {
@@ -247,7 +243,10 @@ public class TraceMan implements TraceManSpec {
         try {
             objectNotif.put("id", srcId);
             objectNotif.put("name", devicePropTable.getName(srcId, ""));
-            objectNotif.put("type", deviceGrammar.get(srcId).getType());
+            GrammarDescription g =  EHMIProxy.getGrammarFromDevice(srcId);
+            if (g != null) {
+            objectNotif.put("type", g.getType());
+            }
             JSONObject location = new JSONObject();
             location.put("id", placeManager.getCoreObjectPlaceId(srcId));
             SymbolicPlace place = placeManager.getPlaceWithDevice(srcId);
@@ -268,11 +267,6 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void coreUpdateNotify(long timeStamp, String srcId, String coreType,
             String userType, String name, JSONObject description, String eventType) {
-
-        //Put the user friendly core type in the map
-        GrammarDescription grammar = EHMIProxy.getGrammarFromType(userType);
-
-        deviceGrammar.put(srcId, grammar);
 
         JSONObject event = new JSONObject();
         JSONObject cause = new JSONObject();
@@ -372,7 +366,7 @@ public class TraceMan implements TraceManSpec {
 
     private JSONObject getDeviceState(String srcId, String varName, String value) {
         JSONObject deviceState = new JSONObject();
-        GrammarDescription g = deviceGrammar.get(srcId);
+        GrammarDescription g = EHMIProxy.getGrammarFromDevice(srcId);
         // If the state of a device is complex
 
         JSONObject deviceProxyState = EHMIProxy.getDevice(srcId);
