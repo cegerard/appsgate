@@ -61,13 +61,13 @@ public interface CoreColorLightSpec {
 	 * Switch the light on
 	 * @return true if the light turn on, false otherwise
 	 */
-	public boolean On();
+	public boolean on();
 	
 	/**
 	 * Switch the light off
 	 * @return true if the light turn off, false otherwise 
 	 */
-	public boolean Off();
+	public boolean off();
 	
 	/**
 	 * Put the light color

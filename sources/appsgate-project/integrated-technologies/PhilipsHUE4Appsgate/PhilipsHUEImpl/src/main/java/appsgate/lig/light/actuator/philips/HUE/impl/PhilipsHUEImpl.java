@@ -179,7 +179,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 			try {
 				state = jsonResponse.getJSONObject("state");
 				lightState = state.getBoolean("on");
-                status = String.valueOf(lightState);
+ //               status = String.valueOf(lightState);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -217,7 +217,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	}
 
 	@Override
-	public boolean On() {
+	public boolean on() {
 		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", true)) {
 
@@ -230,7 +230,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	}
 
 	@Override
-	public boolean Off() {		
+	public boolean off() {		
 		if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", false)) {
 			notifyChanges("value", on, "false");
             on = String.valueOf(false);
@@ -243,9 +243,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	@Override
 	public boolean toggle() {
 		if(getCurrentState()) {
-			return Off();
+			return off();
 		} else {
-			return On();
+			return on();
 		}
 	}
 
