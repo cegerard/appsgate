@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 final public class NodeProgram extends Node {
 
+
     /**
      * Program running state static enumeration
      *
@@ -39,7 +40,7 @@ final public class NodeProgram extends Node {
      */
     public static enum RUNNING_STATE {
 
-        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"), WAITING("WAITING");
+        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"), WAITING("WAITING"), KEEPING("KEEPING");
 
         private String name = "";
 
@@ -214,7 +215,7 @@ final public class NodeProgram extends Node {
     public JSONObject call() {
         JSONObject ret = new JSONObject();
         if (runningState == RUNNING_STATE.DEPLOYED) {
-            setProcessing(this.body.getIID());
+            //setProcessing(this.body.getIID());
             fireStartEvent(new StartEvent(this));
             body.addStartEventListener(this);
             body.addEndEventListener(this);
@@ -299,7 +300,7 @@ final public class NodeProgram extends Node {
      * @return true if the program can be stopped, false otherwise
      */
     final public boolean isRunning() {
-        return (this.runningState == RUNNING_STATE.PROCESSING || this.runningState == RUNNING_STATE.WAITING);
+        return (this.runningState == RUNNING_STATE.PROCESSING || this.runningState == RUNNING_STATE.WAITING || this.runningState == RUNNING_STATE.KEEPING);
     }
 
     /**
@@ -323,7 +324,7 @@ final public class NodeProgram extends Node {
      * @param iid
      */
     final public void setWaiting(String iid) {
-        if (isRunning()) {
+        if (isValid()) {
             setRunningState(RUNNING_STATE.WAITING, iid);
         } else {
             LOGGER.warn("Trying to set {} waiting, while being {}", this, this.runningState);
@@ -338,6 +339,13 @@ final public class NodeProgram extends Node {
     public void setProcessing(String iid) {
         if (isValid()) {
             setRunningState(RUNNING_STATE.PROCESSING, iid);
+        } else {
+            LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
+        }
+    }
+    void setKeeping(String iid) {
+        if (isValid()){
+            setRunningState(RUNNING_STATE.KEEPING, iid);
         } else {
             LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
         }

@@ -49,7 +49,6 @@ public class NodeWait extends Node {
 
     @Override
     protected void specificStop() {
-        setProgramProcessing();
         if (waitFor != null) {
             waitFor.stop();
         }

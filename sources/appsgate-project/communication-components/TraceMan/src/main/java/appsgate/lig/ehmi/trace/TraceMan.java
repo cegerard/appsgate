@@ -70,21 +70,9 @@ public class TraceMan implements TraceManSpec {
     private TraceHistory dbTracer;
     
     /**
-     * Define the trace time width in milliseconds
-     * value to 0 means no aggregation interval and each change
-     * is trace when it appear
-     */
-    private long deltaTinMillis = 0;
-    
-    /**
      * The buffer queue for AppsGate traces
      */
     private TraceQueue<JSONObject> traceQueue;
-    
-    /**
-     * Thread to manage trace writing and aggregation
-     */
-    private TraceExecutor traceExec;
 
     /**
      * Last trace time stamp
@@ -105,9 +93,8 @@ public class TraceMan implements TraceManSpec {
             LOGGER.warn("Unable to start the tracer");
         }
         
-        traceQueue = new TraceQueue<JSONObject>();
-        traceExec = new TraceExecutor();
-        new Thread(traceExec).start();
+        //TraceQueue initialization with 1ms buffer
+        traceQueue = new TraceQueue<JSONObject>(0);
     }
 
     /**
@@ -116,7 +103,7 @@ public class TraceMan implements TraceManSpec {
     public void deleteInst() {
     	fileTracer.close();
         dbTracer.close();
-    	traceExec.stop();
+        traceQueue.stop();
     }
 
     /**
@@ -133,11 +120,6 @@ public class TraceMan implements TraceManSpec {
     			e.printStackTrace();
     		}
     	}
-    	synchronized(traceExec) {
-    		if (traceExec.isSleeping()) {
-    			traceExec.notify();
-    		}
-    	}
     }
     
     /**
@@ -150,14 +132,14 @@ public class TraceMan implements TraceManSpec {
 		try {
 			long timeStamp = trace.getLong("timestamp");
 			
-			if(timeStamp >/*=*/ lastTimeStamp + deltaTinMillis){
+			if(timeStamp > lastTimeStamp){
 				
 	    		lastTimeStamp = timeStamp;
 	    		dbTracer.trace(trace);
 	    		fileTracer.trace(trace);
 	    		//liveTracer.trace(trace);
 	    		
-	    	}else {
+	    	} else {
 	    		LOGGER.error("Multiple trace request with the same time stamp value: "+timeStamp+". Entry are skipped.");
 	    		throw new Error("Multiple trace request with the same time stamp value. Entry with time stamp "+timeStamp+" are skipped.");
 	    	}
@@ -403,23 +385,21 @@ public class TraceMan implements TraceManSpec {
      * Get the current delta time for trace aggregation
      * @return the delta time in milliseconds
      */
-    public long getDeltaTinMillis() {
-		return deltaTinMillis;
+    public long getDeltaT() {
+		return traceQueue.getDeltaTinMillis();
 	}
 
     /**
      * Set the delta time for traces aggregation
      * @param deltaTinMillis the new delta time value
      */
-	public void setDeltaTinMillis(long deltaTinMillis) {
-		this.deltaTinMillis = deltaTinMillis;
-		traceExec.reScheduledTraceTimer(deltaTinMillis);
+	public void setDeltaT(long deltaTinMillis) {
+		traceQueue.setDeltaTinMillis(deltaTinMillis);
 	}
     
-    /******************************/
-    /** Inner class for tracing **/
     /*****************************/
-
+    /** Trace Queue inner class **/
+    /*****************************/
 
 	/**
      * TraceQueue is a dedicated queue for AppsGate
@@ -433,23 +413,66 @@ public class TraceMan implements TraceManSpec {
 
     	
 		private static final long serialVersionUID = 1L;
+		
+	    /**
+	     * Thread to manage trace writing and aggregation
+	     */
+	    private TraceExecutor traceExec;
+	    
+	    /**
+	     * Define the trace time width in milliseconds
+	     * value to 0 means no aggregation interval and each change
+	     * is trace when it appear
+	     */
+	    private long deltaTinMillis;
+		
 
 		/**
     	 * Default TraceQueue constructor with max capacity
-    	 * set to 1000 elements
+    	 * set to 50000 elements
+    	 * @param deltaT time interval size of packet
     	 */
-		public TraceQueue() {
-			super(1000);
+		public TraceQueue(long deltaT) {
+			super(50000);
 			
+			this.deltaTinMillis = deltaT;
+			
+			traceExec = new TraceExecutor();
+		    new Thread(traceExec).start();
 		}
-    	
-    	/**
+		
+		/**
     	 * TraceQueue constructor with max capacity
     	 * @param capacity the max queue capacity
+    	 * @param deltaT time interval size of packet
     	 */
-		public TraceQueue(int capacity) {
+		public TraceQueue(int capacity, long deltaT) {
 			super(capacity);
 			
+			this.deltaTinMillis = deltaT;
+			
+			traceExec = new TraceExecutor();
+		    new Thread(traceExec).start();
+		}
+		
+    	@Override
+		public boolean offer(E e) {
+			boolean res = super.offer(e);
+			
+			synchronized(traceExec) {
+				if(deltaTinMillis == 0 && traceExec.isSleeping()) {
+	    			traceExec.notify();
+	    		}
+	    	}
+			
+			return res;
+		}
+
+		/**
+    	 * Stop the trace queue thread execution
+    	 */
+    	public void stop() {
+    		traceExec.stop();
 		}
 		
 		/**
@@ -460,128 +483,161 @@ public class TraceMan implements TraceManSpec {
 			this.clear();
 			this.addAll(traces);
 		}
-    }
-    
-    /**
-     * A thread class to trace all elements in the trace
-     * queue
-     * 
-     * @author Cedric Gerard
-     * @since August 06, 2014
-     * @version 0.5.0
-     */
-    private class TraceExecutor implements Runnable {
-    	
-    	/**
-    	 * Indicates if the thread is in infinite
-    	 * waiting 
-    	 */
-    	private boolean sleeping;
+		
+		/**
+	     * Get the current delta time for trace aggregation
+	     * @return the delta time in milliseconds
+	     */
+	    public long getDeltaTinMillis() {
+			return deltaTinMillis;
+		}
+	    
+	    /**
+	     * Set the delta time for traces aggregation
+	     * @param deltaTinMillis the new delta time value
+	     */
+		public void setDeltaTinMillis(long deltaTinMillis) {
+			this.deltaTinMillis = deltaTinMillis;
+			traceExec.reScheduledTraceTimer(deltaTinMillis);
+		}
+		
+		/**
+	     * A thread class to trace all elements in the trace
+	     * queue
+	     * 
+	     * @author Cedric Gerard
+	     * @since August 06, 2014
+	     * @version 0.5.0
+	     */
+	    private class TraceExecutor implements Runnable {
+	    	
+	    	/**
+	    	 * Indicates if the thread is in infinite
+	    	 * waiting 
+	    	 */
+	    	private boolean sleeping;
 
-    	/**
-    	 * Use to manage thread loop execution
-    	 */
-    	private boolean start;
-    	
-    	/**
-    	 * Timer to wake up the thread each deltaT time interval
-    	 */
-    	private Timer timer;
-    	
-    	/**
-    	 * Default constructor
-    	 */
-    	public TraceExecutor() {
-    		
-    		start = true;
-    		sleeping = false;
-    		timer = new Timer();
-    		if(deltaTinMillis > 0) {
-    			timer.scheduleAtFixedRate(new TimerTask() {
-    				@Override
-    				public void run() {traceExec.notify();}
-    					}, 0, deltaTinMillis);
-    		}
-    	}
-    	
-		@Override
-		public void run() {
+	    	/**
+	    	 * Use to manage thread loop execution
+	    	 */
+	    	private boolean start;
+	    	
+	    	/**
+	    	 * Timer to wake up the thread each deltaT time interval
+	    	 */
+	    	private Timer timer;
+	    	
+	    	/**
+	    	 * Default constructor
+	    	 */
+	    	public TraceExecutor() {
+	    		
+	    		start = true;
+	    		sleeping = false;
+	    		timer = new Timer();
+	    		if(deltaTinMillis > 0) {
+	    			timer.scheduleAtFixedRate(new TimerTask() {
+	    				@Override
+	    				public void run() {
+	    					synchronized(traceExec) {
+	    						if(traceExec.isSleeping()){
+	    							traceExec.notify();
+	    						}
+	    					}
+	    				}
+	    			}, 0, deltaTinMillis);
+	    		}
+	    	}
+	    	
+			@Override
+			public void run() {
+				
+				while(start) {
+					try {
+						if(traceQueue.isEmpty()){
+							synchronized(this) {
+								sleeping = true;
+								wait();
+								sleeping = false;
+							}
+						}
+						writeTraces(apply(null));
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 			
-			while(start) {
-				try {
-					if(traceQueue.isEmpty()){
-						synchronized(this) {
-							sleeping = true;
-							wait();
-							sleeping = false;
+			/**
+			 * Apply a policy on the queue to aggregate traces
+			 * The default policy is the deltaTInMilis attribute
+			 * 
+			 * @param policy other policies to apply (e.g. type of device)
+			 * @return the aggregated traces as a JSONArray
+			 */
+			private JSONArray apply(JSONObject policy) {
+				synchronized(traceQueue) {
+					
+					JSONArray aggregateTraces = new JSONArray();
+					
+					//No aggregation
+					if(policy == null && deltaTinMillis == 0) {
+						
+						while(!traceQueue.isEmpty()) {
+							JSONObject trace = traceQueue.poll();
+							aggregateTraces.put(trace);
+						}
+					
+					}else {
+						if(policy == null){ //default aggregation (time and identifiers)
+							//TODO default aggregation
+							JSONObject trace = traceQueue.poll();
+							aggregateTraces.put(trace);
+						} else { //Apply specific aggregation policy
+							//TODO generic aggregation mechanism
 						}
 					}
-					writeTraces(apply(null));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		/**
-		 * Apply a policy on the queue to aggregate traces
-		 * The default policy is the deltaTInMilis attribute
-		 * 
-		 * @param policy other policies to apply (e.g. type of device)
-		 * @return the aggregated traces as a JSONArray
-		 */
-		private JSONArray apply(JSONObject policy) {
-			synchronized(traceQueue) {
-				
-				JSONArray aggregateTraces = new JSONArray();
-				
-				//No aggregation
-				if(policy == null && deltaTinMillis == 0) {
 					
-					while(!traceQueue.isEmpty()) {
-						JSONObject trace = traceQueue.poll();
-						aggregateTraces.put(trace);
-					}
-				
+					return aggregateTraces;
 				}
-				
-				return aggregateTraces;
 			}
-		}
-		
-		/**
-		 * Schedule the trace timer for aggregation
-		 * @param time the time interval
-		 */
-		public void reScheduledTraceTimer(long time){
-			timer.cancel();
-			timer.purge();
 			
-			timer = new Timer();
-			timer.scheduleAtFixedRate(new TimerTask() {
-				@Override
-				public void run() {traceExec.notify();}
-					}, 0, time);
-		}
+			/**
+			 * Schedule the trace timer for aggregation
+			 * @param time the time interval
+			 */
+			public void reScheduledTraceTimer(long time){
+				timer.cancel();
+				timer.purge();
+				
+				timer = new Timer();
+				timer.scheduleAtFixedRate(new TimerTask() {
+					@Override
+					public void run() {traceExec.notify();}
+						}, 0, time);
+			}
 
-		/**
-		 * Is this thread infinitely sleeping
-		 * @return true if the thread is waiting till the end of time, false otherwise
-		 */
-		public synchronized boolean isSleeping() {
-			return sleeping;
-		}
+			/**
+			 * Is this thread infinitely sleeping
+			 * @return true if the thread is waiting till the end of time, false otherwise
+			 */
+			public synchronized boolean isSleeping() {
+				return sleeping;
+			}
+			
+			/**
+			 * Stop the current thread by ending its execution
+			 * cleanly 
+			 */
+			public void stop(){
+				timer.cancel();
+				timer.purge();
+				start = false;
+				traceExec.notify();
+			}
+	    }
 		
-		/**
-		 * Stop the current thread by ending its execution
-		 * cleanly 
-		 */
-		public void stop(){
-			timer.cancel();
-			timer.purge();
-			start = false;
-			traceExec.notify();
-		}
     }
+    
 
 }

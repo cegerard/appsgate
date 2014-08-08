@@ -92,6 +92,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         target.addEndEventListener(this);
+        setProgramProcessing();
 
         return target.call();
     }

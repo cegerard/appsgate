@@ -112,7 +112,6 @@ public class NodeWhen extends Node implements INodeRule{
 
     @Override
     protected void specificStop() {
-        setProgramProcessing();
         seqEventNode.removeEndEventListener(this);
         seqEventNode.stop();
         seqRules.removeEndEventListener(this);
