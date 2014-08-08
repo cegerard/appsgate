@@ -72,7 +72,7 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
     }
 
     @Override
-    public boolean On() {
+    public boolean on() {
 
         getDevice().on();
 
@@ -84,7 +84,7 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
     }
 
     @Override
-    public boolean Off() {
+    public boolean off() {
 
         getDevice().off();
 
@@ -94,16 +94,16 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
     @Override
     public boolean setWhite() {
 
-        return On();
+        return on();
 
     }
 
     @Override
     public boolean toggle() {
         if(getCurrentState()) {
-            return Off();
+            return off();
         } else {
-            return On();
+            return on();
         }
     }
 
