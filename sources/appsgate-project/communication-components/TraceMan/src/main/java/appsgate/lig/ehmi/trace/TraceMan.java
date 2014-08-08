@@ -18,7 +18,7 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
-import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
@@ -300,8 +300,8 @@ public class TraceMan implements TraceManSpec {
         if (!(n instanceof ProgramNotification)) {
             return;
         }
-        if (n instanceof ProgramLineNotification) {
-            JSONObject o = getDecorationNotification((ProgramLineNotification) n);
+        if (n instanceof ProgramCommandNotification) {
+            JSONObject o = getDecorationNotification((ProgramCommandNotification) n);
             trace(o);
             return;
         }
@@ -389,7 +389,7 @@ public class TraceMan implements TraceManSpec {
         return deviceState;
     }
 
-    private JSONObject getDecorationNotification(ProgramLineNotification n) {
+    private JSONObject getDecorationNotification(ProgramCommandNotification n) {
         JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId());
         JSONObject d = getJSONDevice(n.getTargetId(), null, Trace.getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, n.getDescription()));
         try {

@@ -1,82 +1,56 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package appsgate.lig.eude.interpreter.spec;
 
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  *
  * @author jr
  */
-public class ProgramLineNotification extends ProgramNotification {
+public class ProgramLineNotification implements NotificationMsg {
+
+    private final String programId;
+    private final String nodeId;
 
     /**
      *
+     * @param pid
+     * @param nodeId
      */
-    private final String sid;
-    /**
-     *
-     */
-    private final String tid;
-    /**
-     *
-     */
-    private final String desc;
-    
-    public enum Type { READ, WRITE};
-    
-    private Type t;
-
-    /**
-     *
-     * @param source
-     * @param programId
-     * @param programName
-     * @param runningState
-     * @param instructionId
-     * @param sourceId
-     * @param targetId
-     * @param description
-     * @param type
-     */
-    public ProgramLineNotification(JSONObject source, String programId, String programName,
-            String runningState, String instructionId, String sourceId, String targetId, String description, Type type) {
-        super("", programId, runningState, programName, source, instructionId);
-        this.sid = sourceId;
-        this.tid = targetId;
-        this.desc = description;
-        this.t = type;
+    public ProgramLineNotification(String pid, String nodeId) {
+        this.programId = pid;
+        this.nodeId = nodeId;
     }
 
-    /**
-     * @return the source id
-     */
-    public String getSourceId() {
-        return sid;
+    @Override
+    public String getSource() {
+        return programId;
     }
 
-    /**
-     * @return the target id
-     */
-    public String getTargetId() {
-        return tid;
+    @Override
+    public String getNewValue() {
+        return nodeId;
     }
 
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return desc;
+    @Override
+    public String getVarName() {
+        return "nodeId";
     }
-    
-    /**
-     * @return the string representing the type of notification (ie 'read' or 'write')
-     */
-    public String getType() {
-        return this.t.toString().toLowerCase();
+
+    @Override
+    public JSONObject JSONize() {
+        JSONObject content = new JSONObject();
+        try {
+
+            content.put("id", programId);
+            content.put("nodeId", nodeId);
+
+        } catch (JSONException ex) {
+            //  No exception will be thrown since changes is not empty
+        }
+        return content;
+
     }
 
 }

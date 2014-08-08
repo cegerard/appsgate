@@ -7,7 +7,9 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.ClockProxy;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import org.jmock.Expectations;
+import static org.jmock.Expectations.any;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -31,6 +33,7 @@ public class NodeEventsAndTest extends NodeTest {
                 allowing(mediator).removeNodeListening(with(any(NodeEvent.class)));
                 allowing(mediator).getTime();
                 will(returnValue(new Long(2000)));
+                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
             }
         });
         ruleJSON.put("type", "eventsAnd");

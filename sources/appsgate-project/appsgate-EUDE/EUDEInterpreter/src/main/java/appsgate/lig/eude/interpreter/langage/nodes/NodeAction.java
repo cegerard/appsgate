@@ -10,7 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -128,11 +128,11 @@ public class NodeAction extends Node implements ICanBeEvaluated {
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
         LOGGER.debug("Device action {} on {}", methodName, target);
-        ProgramLineNotification notif;
+        ProgramCommandNotification notif;
         if (returnType.isEmpty()) {
-            notif = getProgramLineNotification(null, target, "Acting on a device", ProgramLineNotification.Type.WRITE);
+            notif = getProgramLineNotification(null, target, "Acting on a device", ProgramCommandNotification.Type.WRITE);
         } else {
-            notif = getProgramLineNotification(null, target, "Reading from", ProgramLineNotification.Type.READ);
+            notif = getProgramLineNotification(null, target, "Reading from", ProgramCommandNotification.Type.READ);
         }
 
         command = getMediator().executeCommand(target, methodName, args, notif);
