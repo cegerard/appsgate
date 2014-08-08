@@ -27,8 +27,12 @@ public class GrammarDescription {
      * @param o
      */
     public GrammarDescription(JSONObject o) {
-        if (o != null && o.has("commands")) {
-            this.json = o;
+        if (o == null) {
+            this.json = new JSONObject();
+            return;
+        }
+        this.json = o;
+        if (this.json.has("commands")) {
             try {
                 JSONArray commands = o.getJSONArray("commands");
 
@@ -43,8 +47,6 @@ public class GrammarDescription {
                 }
             } catch (JSONException ex) {
             }
-        } else {
-            this.json = new JSONObject();
         }
     }
 
