@@ -129,7 +129,7 @@ public class TraceMan implements TraceManSpec {
     /**
      * Write the trace into destination
      * @param trace the event to write
-     * @exception trace time stamp must be greater than
+     * exception trace time stamp must be greater than
      * one deltaTinMilis + previous written time stamp value
      */
     private synchronized void writeTrace(JSONObject trace){
@@ -486,6 +486,7 @@ public class TraceMan implements TraceManSpec {
 		 * @param traces the collection to load
 		 */
 		public synchronized void loadTraces (Collection<E> traces) {
+            //TODO cut the streaming, make trace agregation and send
 			this.clear();
 			this.addAll(traces);
 		}
@@ -532,6 +533,11 @@ public class TraceMan implements TraceManSpec {
 	    	 * Timer to wake up the thread each deltaT time interval
 	    	 */
 	    	private Timer timer;
+
+            /**
+             * The next time to log
+             */
+            private long logTime;
 	    	
 	    	/**
 	    	 * Default constructor
@@ -546,7 +552,7 @@ public class TraceMan implements TraceManSpec {
 	    				@Override
 	    				public void run() {
 	    					synchronized(traceExec) {
-	    						if(traceExec.isSleeping()){
+	    						if(!traceQueue.isEmpty() && traceExec.isSleeping()){
 	    							traceExec.notify();
 	    						}
 	    					}
@@ -560,7 +566,7 @@ public class TraceMan implements TraceManSpec {
 				
 				while(start) {
 					try {
-						if(traceQueue.isEmpty()){
+						if(traceQueue.isEmpty() || deltaTinMillis > 0 ){
 							synchronized(this) {
 								sleeping = true;
 								wait();
@@ -570,7 +576,9 @@ public class TraceMan implements TraceManSpec {
 						writeTraces(apply(null));
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-					}
+					}  catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
 				}
 			}
 			
@@ -581,9 +589,10 @@ public class TraceMan implements TraceManSpec {
 			 * @param policy other policies to apply (e.g. type of device)
 			 * @return the aggregated traces as a JSONArray
 			 */
-			private JSONArray apply(JSONObject policy) {
+			private JSONArray apply(JSONObject policy) throws JSONException {
 				synchronized(traceQueue) {
-					
+                    logTime = EHMIProxy.getCurrentTimeInMillis();
+
 					JSONArray aggregateTraces = new JSONArray();
 					
 					//No aggregation
@@ -596,9 +605,59 @@ public class TraceMan implements TraceManSpec {
 					
 					}else {
 						if(policy == null){ //default aggregation (time and identifiers)
-							//TODO default aggregation
-							JSONObject trace = traceQueue.poll();
-							aggregateTraces.put(trace);
+
+                            //Get all traces from trace queue
+                            JSONArray tempTraces = new JSONArray();
+                            while(!traceQueue.isEmpty()) {
+                                    tempTraces.put(traceQueue.poll());
+                            }
+
+                            //Create new aggregate trace instance
+                            JSONObject jsonTrace = new JSONObject();
+                            JSONArray jsonTraceDevices = new JSONArray();
+                            JSONArray jsonTracePgms = new JSONArray();
+                            jsonTrace.put("timestamp", logTime);
+
+                            int nbTraces = tempTraces.length();
+                            int i = 0;
+                            while(i < nbTraces){
+                                //Get a trace to aggregate from the array
+                                JSONObject tempObj = tempTraces.getJSONObject(i);
+                                JSONArray tempDevices = tempObj.getJSONArray("devices");
+                                JSONArray tempPgms = tempObj.getJSONArray("programs");
+
+                                int tempDevicesSize = tempDevices.length();
+                                int tempPgmsSize = tempPgms.length();
+
+                                //If there is some device trace to merge
+                                if(tempDevicesSize > 0){
+                                    int x = 0;
+                                    while(x < tempDevicesSize){
+                                        //Merge the device trace
+                                        JSONObject tempDev = tempDevices.getJSONObject(x);
+                                        tempDev.put("timestamp", tempObj.get("timestamp"));
+                                        jsonTraceDevices.put(tempDev);
+                                        x++;
+                                    }
+                                }
+
+                                //If there is some program trace to merge
+                                if( tempPgmsSize > 0){
+                                    int y = 0;
+                                    while(y < tempPgmsSize){
+                                        //Merge the program trace
+                                        JSONObject tempPgm = tempDevices.getJSONObject(y);
+                                        tempPgm.put("timestamp", tempObj.get("timestamp"));
+                                        jsonTracePgms.put(tempPgm);
+                                        y++;
+                                    }
+                                }
+
+                                i++;
+                            }
+
+							aggregateTraces.put(jsonTrace);
+
 						} else { //Apply specific aggregation policy
 							//TODO generic aggregation mechanism
 						}
@@ -617,10 +676,18 @@ public class TraceMan implements TraceManSpec {
 				timer.purge();
 				
 				timer = new Timer();
-				timer.scheduleAtFixedRate(new TimerTask() {
-					@Override
-					public void run() {traceExec.notify();}
-						}, 0, time);
+                if(deltaTinMillis > 0) {
+                    timer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            synchronized (traceExec) {
+                                if (!traceQueue.isEmpty() && traceExec.isSleeping()) {
+                                    traceExec.notify();
+                                }
+                            }
+                        }
+                    }, 0, deltaTinMillis);
+                }
 			}
 
 			/**
