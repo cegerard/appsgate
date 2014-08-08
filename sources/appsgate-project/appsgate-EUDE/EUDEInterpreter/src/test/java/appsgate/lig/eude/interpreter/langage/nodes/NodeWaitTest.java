@@ -5,6 +5,7 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.impl.ClockProxy;
 import org.jmock.Expectations;
 import org.json.JSONObject;
@@ -24,6 +25,7 @@ public class NodeWaitTest extends NodeTest {
 
         context.checking(new Expectations() {
             {
+                allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
                 allowing(mediator).getClock();
                 will(returnValue(appsGate));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));

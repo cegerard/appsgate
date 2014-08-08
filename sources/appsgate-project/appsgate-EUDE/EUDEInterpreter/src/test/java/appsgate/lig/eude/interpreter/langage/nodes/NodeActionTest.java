@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import java.util.Collection;
@@ -54,7 +55,7 @@ public class NodeActionTest extends NodeTest {
         context.checking(new Expectations() {
             {
                 exactly(1).of(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramLineNotification.class)));
-                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
+                allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
             }
         });
         printTestName("call");
@@ -72,7 +73,7 @@ public class NodeActionTest extends NodeTest {
             {
                 allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramLineNotification.class)));
                 then(tested.is("Yes"));
-                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
+                allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
 
             }
         });
