@@ -42,7 +42,7 @@ define([
         e.preventDefault();
 
         // update the name if it is ok
-        if (this.checkProgramName()) {
+        if ((e.keyCode < 9 || e.keyCode > 45) && this.checkProgramName()) {
           // set the new name to the place
           this.model.set("name", $(".programNameInput").val());
         }

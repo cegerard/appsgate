@@ -57,11 +57,15 @@ public class AppsgateLampImporter extends AbstractImporterComponent {
         @Override
         protected void useImportDeclaration(final ImportDeclaration importDeclaration) throws BinderException {
 
+            super.handleImportDeclaration(importDeclaration);
+
             logger.info("****************** Appsgate Lamp importer was invoked *************************");
 
-            final Switch fuchsiaSwitch=(Switch)importDeclaration.getMetadata().get("discovery.knx.device.object");
+            final String id=importDeclaration.getMetadata().get("id").toString();
 
-            final String appsgateDeviceInstance=generateAppsgateDeviceInstanceName(fuchsiaSwitch.getId());
+            final String instanceName=importDeclaration.getMetadata().get("discovery.knx.device.instance.name").toString();
+
+            final String appsgateDeviceInstance=generateAppsgateDeviceInstanceName(id);
 
             logger.info("Found new KNX instance, creating Appsgate instance to represent the device {} ..",appsgateDeviceInstance);
 
@@ -74,8 +78,8 @@ public class AppsgateLampImporter extends AbstractImporterComponent {
                     Map properties = new HashMap<String, String>();
 
                     properties.put("instance.name", appsgateDeviceInstance);
-                    properties.put("deviceName", fuchsiaSwitch.getId());
-                    properties.put("deviceId", fuchsiaSwitch.getId());
+                    properties.put("deviceName", instanceName);
+                    properties.put("deviceId", id);
                     properties.put("deviceType", "7");
 
                     Instance apamInstance = apamImpl.createInstance(null, properties);
@@ -83,8 +87,6 @@ public class AppsgateLampImporter extends AbstractImporterComponent {
                     logger.info("Appsgate instance {} created", appsgateDeviceInstance);
                 }
             };
-
-            super.handleImportDeclaration(importDeclaration);
 
             t1.setDaemon(true);
             t1.start();
@@ -94,7 +96,9 @@ public class AppsgateLampImporter extends AbstractImporterComponent {
         @Override
         protected void denyImportDeclaration(final ImportDeclaration importDeclaration) throws BinderException {
 
-            logger.info("******************  Appsgate Switch deny importer was invoked **************");
+            super.unhandleImportDeclaration(importDeclaration);
+
+            logger.info("******************  Appsgate Lamp deny importer was invoked **************");
 
             final String id=importDeclaration.getMetadata().get("id").toString();
 
@@ -113,7 +117,7 @@ public class AppsgateLampImporter extends AbstractImporterComponent {
             t1.setDaemon(true);
             t1.start();
 
-            unhandleImportDeclaration(importDeclaration);
+
         }
 
 

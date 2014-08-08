@@ -1,0 +1,28 @@
+#!/bin/sh
+set -ex
+
+export DISPLAY=:0.0
+
+MONGOHOME=/srv/mongodb-linux-x86_64-2.4.1
+APPSGATEHOME=/home/appsgate/appsgate
+AGCLIENT=$APPSGATEHOME/sources/appsgate-client
+AGSERVER=$APPSGATEHOME/distributions/Appsgate-distribution-light
+
+echo "Appsgate starting..."
+
+echo "Mongo data base for Appsgate server starting..."
+
+$MONGOHOME/bin/mongod --repair --dbpath $MONGOHOME/data/db || true 
+
+$MONGOHOME/bin/mongod --dbpath $MONGOHOME/data/db &
+
+#Ensures that DB is ready for use
+sleep 10
+
+echo "Mongo data base for Appsgate server started."
+echo "Launch Appsgate server" 
+#cd /home/appsgate/appsgate/sources/appsgate-client
+http-server $AGCLIENT -p 8181 &
+cd $AGSERVER
+sh ./apam
+echo "Appsgate server down !"

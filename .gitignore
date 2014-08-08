@@ -177,7 +177,7 @@ sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/
 sources/appsgate-project/appsgate-context/PropertyHistoryManager/target/classes/metadata.xml
 
 
-.gitignore
+distributions/android-appsgate
 
 distributions/Appsgate-distribution/felix-cache/*
 sources/appsgate-project/android-utils/CyberGarageAndroidAdapter/target/classes/META-INF/MANIFEST.MF

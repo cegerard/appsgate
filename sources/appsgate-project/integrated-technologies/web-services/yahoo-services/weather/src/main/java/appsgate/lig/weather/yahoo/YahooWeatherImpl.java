@@ -48,6 +48,8 @@ public class YahooWeatherImpl  implements WeatherAdapterSpec {
     protected String feedUrl;
     protected char currentUnit;
 
+    private Object lock = new Object();
+
 
     /*
      * For each human place Name, as the user entered it (the key), associate a
@@ -165,18 +167,20 @@ public class YahooWeatherImpl  implements WeatherAdapterSpec {
 			throw new WeatherForecastException(
 					"Already monitoring this location");
 
-		String okPlaceName = placeName.replace(" ", "%20");
-		logger.info("addLocation(String placeName: " + okPlaceName	+ " )");
+		synchronized(lock) {
+            String okPlaceName = placeName.replace(" ", "%20");
+            logger.info("addLocation(String placeName: " + okPlaceName + " )");
 
-		String newWOEID = geoPlanet.getWOEIDFromPlaceName(okPlaceName);
-		if (newWOEID != null) {
-			woeidFromePlaceName.put(placeName, newWOEID);
-			lastPublicationDates.put(newWOEID, null);
-			currentWeathers.put(newWOEID, null);
-			forecasts.put(newWOEID, null);
-			fetch();
-		} else
-			throw new WeatherForecastException("Place was not found");
+            String newWOEID = geoPlanet.getWOEIDFromPlaceName(okPlaceName);
+            if (newWOEID != null && newWOEID.length() > 0) {
+                woeidFromePlaceName.put(placeName, newWOEID);
+                lastPublicationDates.put(newWOEID, null);
+                currentWeathers.put(newWOEID, null);
+                forecasts.put(newWOEID, null);
+                fetch();
+            } else
+                throw new WeatherForecastException("Place was not found");
+        }
 	}
 
 	/*
@@ -290,29 +294,31 @@ public class YahooWeatherImpl  implements WeatherAdapterSpec {
 			for (String placeName : woeidFromePlaceName.keySet()) {
 				String woeid = woeidFromePlaceName.get(placeName);
 				logger.debug("Fetching Weather for " + placeName);
+                synchronized (lock) {
 
-				feedUrl = String.format(feedUrlTemplate, woeid, currentUnit);
+                    feedUrl = String.format(feedUrlTemplate, woeid, currentUnit);
 
-				this.url = new URL(feedUrl);
+                    this.url = new URL(feedUrl);
 
-				DocumentBuilder db = null;
-				db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				Document doc = db.parse(url.openStream());
-				Calendar newPubDate = YahooWeatherParser
-						.parsePublicationDate(doc);
+                    DocumentBuilder db = null;
+                    db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                    Document doc = db.parse(url.openStream());
+                    Calendar newPubDate = YahooWeatherParser
+                            .parsePublicationDate(doc);
 
-				if (newPubDate != null
-						&& (newPubDate.after(lastPublicationDates.get(woeid)) || lastPublicationDates
-								.get(woeid) == null)) {
-					logger.info("Publication date for " + placeName
-							+ " is newer, parsing new Weather Data !");
-					currentWeathers.put(woeid,
-							YahooWeatherParser.parseCurrentConditions(doc));
-					forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
-					lastPublicationDates.put(woeid, newPubDate);
-				} else
-					logger.info("Publication date for " + placeName
-							+ " is NOT newer, does nothing");
+                    if (newPubDate != null
+                            && (newPubDate.after(lastPublicationDates.get(woeid)) || lastPublicationDates
+                            .get(woeid) == null)) {
+                        logger.info("Publication date for " + placeName
+                                + " is newer, parsing new Weather Data !");
+                        currentWeathers.put(woeid,
+                                YahooWeatherParser.parseCurrentConditions(doc));
+                        forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
+                        lastPublicationDates.put(woeid, newPubDate);
+                    } else
+                        logger.info("Publication date for " + placeName
+                                + " is NOT newer, does nothing");
+                }
 			}
 
 		} catch (Exception e) {

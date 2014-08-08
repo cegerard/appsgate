@@ -33,17 +33,25 @@ public class FuchsiaForKNXSetup {
             .of(AppsgateSwitchImporter.class.getName())
             .with("target").setto("(&(discovery.knx.device.object=*)(appsgate.type=socket))");
 
+    /**
+     * Generic Linker
     Instance appsgateKNXLinker = instance()
             .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
             .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(&(discovery.knx.device.object=*)(appsgate.type=*))")
             .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=appsgateKNX*)");
+     **/
 
-    /*
-    Instance appsgateSocketLinker = instance()
+    /** One linker for each importer (in case of problems sharing linkers **/
+    Instance appsgateKNXLampLinker = instance()
+            .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
+            .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(&(discovery.knx.device.object=*)(appsgate.type=lamp))")
+            .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=appsgateKNXLampImporter)");
+
+    Instance appsgateKNXOnOffActuatorLinker = instance()
             .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
             .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(&(discovery.knx.device.object=*)(appsgate.type=socket))")
-            .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=appsgateOnOffActuatorImporter)");
+            .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=appsgateKNXOnOffActuatorImporter)");
 
-*/
+
 
 }
