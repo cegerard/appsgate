@@ -331,7 +331,7 @@ public class TraceMan implements TraceManSpec {
                         event.put("type", "appear");
                         cause = Trace.getJSONDecoration("", "user", null, null, "Program has been added");
                     } else if (change.contentEquals("removeProgram")) {
-                        event.put("type", "disappaear");
+                        event.put("type", "disappear");
                         cause = Trace.getJSONDecoration("", "user", null, null, "Program has been deleted");
 
                     } else { //change == "updateProgram"
@@ -552,12 +552,12 @@ public class TraceMan implements TraceManSpec {
 	    				@Override
 	    				public void run() {
 	    					synchronized(traceExec) {
-	    						if(!traceQueue.isEmpty() && traceExec.isSleeping()){
-	    							traceExec.notify();
+	    						if(traceQueue != null && !traceQueue.isEmpty() && traceExec.isSleeping()){
+                                    traceExec.notify();
 	    						}
 	    					}
 	    				}
-	    			}, 0, deltaTinMillis);
+	    			}, deltaTinMillis, deltaTinMillis);
 	    		}
 	    	}
 	    	
@@ -584,7 +584,7 @@ public class TraceMan implements TraceManSpec {
 			
 			/**
 			 * Apply a policy on the queue to aggregate traces
-			 * The default policy is the deltaTInMilis attribute
+			 * The default policy is the deltaTInMillis attribute
 			 * 
 			 * @param policy other policies to apply (e.g. type of device)
 			 * @return the aggregated traces as a JSONArray
@@ -605,7 +605,6 @@ public class TraceMan implements TraceManSpec {
 					
 					}else {
 						if(policy == null){ //default aggregation (time and identifiers)
-
                             //Get all traces from trace queue
                             JSONArray tempTraces = new JSONArray();
                             while(!traceQueue.isEmpty()) {
@@ -614,9 +613,9 @@ public class TraceMan implements TraceManSpec {
 
                             //Create new aggregate trace instance
                             JSONObject jsonTrace = new JSONObject();
-                            JSONArray jsonTraceDevices = new JSONArray();
-                            JSONArray jsonTracePgms = new JSONArray();
                             jsonTrace.put("timestamp", logTime);
+                            HashMap<String,JSONObject> devicesToAgg = new HashMap<String, JSONObject>();
+                            HashMap<String,JSONObject> programsToAgg = new HashMap<String, JSONObject>();
 
                             int nbTraces = tempTraces.length();
                             int i = 0;
@@ -636,8 +635,15 @@ public class TraceMan implements TraceManSpec {
                                         //Merge the device trace
                                         JSONObject tempDev = tempDevices.getJSONObject(x);
                                         tempDev.put("timestamp", tempObj.get("timestamp"));
-                                        jsonTraceDevices.put(tempDev);
+                                        String id = tempDev.getString("id");
+                                        if(!devicesToAgg.containsKey(id)){
+                                            devicesToAgg.put(id, tempDev);
+                                        }else{
+                                            //TODO aggregate the decoration of the device trace
+                                        }
+
                                         x++;
+
                                     }
                                 }
 
@@ -648,7 +654,12 @@ public class TraceMan implements TraceManSpec {
                                         //Merge the program trace
                                         JSONObject tempPgm = tempDevices.getJSONObject(y);
                                         tempPgm.put("timestamp", tempObj.get("timestamp"));
-                                        jsonTracePgms.put(tempPgm);
+                                        String id = tempPgm.getString("id");
+                                        if(!programsToAgg.containsKey(id)){
+                                            programsToAgg.put(id, tempPgm);
+                                        }else{
+                                            //TODO aggregate the decoration of the program trace
+                                        }
                                         y++;
                                     }
                                 }
@@ -656,6 +667,8 @@ public class TraceMan implements TraceManSpec {
                                 i++;
                             }
 
+                            jsonTrace.put("devices", new JSONArray(devicesToAgg.values()));
+                            jsonTrace.put("programs", new JSONArray(programsToAgg.values()));
 							aggregateTraces.put(jsonTrace);
 
 						} else { //Apply specific aggregation policy
