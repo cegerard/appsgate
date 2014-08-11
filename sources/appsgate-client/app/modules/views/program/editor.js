@@ -320,7 +320,6 @@ define([
         this.refreshDisplay();
       },
       refreshDisplay: function(e) {
-        //if (e == undefined || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
         if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
           this.Mediator.buildInputFromJSON();
           this.Mediator.buildKeyboard();
@@ -330,15 +329,15 @@ define([
           this.applyEditMode();
           // translate the view
           this.$el.i18n();
-        if (this.Mediator.isValid) {
-          this.model.set("runningState", "DEPLOYED");
-          $(".led").addClass("led-default").removeClass("led-orange");
-          $(".programNameInput").addClass("valid-program");
-        } else {
-          this.model.set("runningState", "INVALID");
-          $(".led").addClass("led-orange").removeClass("led-default");
-          $(".programNameInput").removeClass("valid-program");
-        }
+          if (this.Mediator.isValid) {
+            this.model.set("runningState", "DEPLOYED");
+            $(".led").addClass("led-default").removeClass("led-orange");
+            $(".programNameInput").addClass("valid-program");
+          } else {
+            this.model.set("runningState", "INVALID");
+            $(".led").addClass("led-orange").removeClass("led-default");
+            $(".programNameInput").removeClass("valid-program");
+          }
         }
       },
       applyEditMode: function() {
@@ -357,6 +356,9 @@ define([
 
         $(".programInput").find(".selected-node").removeClass("selected-node");
         $("#" + parseInt(this.Mediator.currentNode)).addClass("selected-node");
+
+        $(".input-spot-then").removeClass("input-spot-then");
+        $(".input-spot").prev().children(".btn-and, .btn-then").addClass("input-spot-then");
       },
       /**
       * Render the editor view

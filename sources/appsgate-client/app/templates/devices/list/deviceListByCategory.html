@@ -41,18 +41,30 @@
     <% } else { %>
     <span data-i18n="devices.plug.name.plural"></span>
     <% } %>
+    <div class="pull-right">
+      <button type="button" class="btn btn-info btn-sm group-off-button plugs-off-button" data-i18n="devices.plug.action.turnOff"></button>
+      <button type="button" class="btn btn-info btn-sm group-on-button plugs-on-button" data-i18n="devices.plug.action.turnOn"></button>
+    </div>
     <% } else if (type === "7") { %>
     <% if (devices.where({type : 7}).length === 1) { %>
     <span data-i18n="devices.lamp.name.singular"></span>
     <% } else { %>
     <span data-i18n="devices.lamp.name.plural"></span>
     <% } %>
+    <div class="pull-right">
+      <button type="button" class="btn btn-info btn-sm group-off-button lamps-off-button" data-i18n="devices.lamp.action.turnOff"></button>
+      <button type="button" class="btn btn-info btn-sm group-on-button lamps-on-button" data-i18n="devices.lamp.action.turnOn"></button>
+    </div>
     <% } else if (type === "8") { %>
     <% if (devices.where({type : 8}).length === 1) { %>
     <span data-i18n="devices.actuator.name.singular"></span>
     <% } else { %>
     <span data-i18n="devices.actuator.name.plural"></span>
     <% } %>
+    <div class="pull-right">
+      <button type="button" class="btn btn-info btn-sm group-off-button actuator-off-button" data-i18n="devices.actuator.action.turnOff"></button>
+      <button type="button" class="btn btn-info btn-sm group-on-button actuator-on-button" data-i18n="devices.actuator.action.turnOn"></button>
+    </div>
     <% } else if (type === "31") { %>
     <% if (devices.where({type : 31}).length === 1) { %>
     <span data-i18n="devices.mediaplayer.name.singular"></span>
@@ -127,9 +139,9 @@
                 <span class="label label-success" data-i18n="devices.status.connected"></span>
                 <% } %>
                 <% if (type === "0") { %>
-                <span class="label label-info"><%= Math.round(s.get("value")) %>&deg;C</span>
+                <span class="label-value"><%= Math.round(s.get("value")) %>&deg;C</span>
                 <% } else if (type === "1") { %>
-                <span class="label label-info"><%= s.get("value") %> Lux</span>
+                <span class="label-value"><%= s.get("value") %> Lux</span>
                 <% } else if (type === "2") { %>
                 <% if (s.get("buttonStatus") === "true") { %>
                 <span class="label label-yellow" data-i18n="devices.switch.value.opened"></span>
@@ -149,12 +161,12 @@
                 <span class="label label-default" data-i18n="devices.keycard-reader.value.not-inserted"></span>
                 <% } %>
                 <% } else if (type === "6") { %>
-                <span class="label label-info"><%= s.get("consumption") %> W</span>
                 <% if (s.get("plugState") === "true" || s.get("plugState") === true) { %>
                 <span class="label label-yellow" data-i18n="devices.plug.status.turnedOn"></span>
                 <% } else { %>
                 <span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                 <% } %>
+                <span class="label-value"><%= s.get("consumption") %> W</span>
                 <% } else if (type === "7") { %>
                 <% if (s.get("value") === "true" || s.get("value") === true) { %>
                 <span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>

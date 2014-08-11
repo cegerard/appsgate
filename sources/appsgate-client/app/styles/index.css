@@ -190,6 +190,14 @@ div {
   border: 1px solid #999999;
 }
 
+.label-value{
+  padding: .2em .6em .3em;
+  font-size:75%;
+  line-height:1;
+  font-weight:bold;
+  text-decoration:underline;
+}
+
 .lamp-color-led{
   color:transparent;
 }
@@ -365,6 +373,9 @@ div {
   font-size:25px;
   display:none;
   cursor:pointer;
+}
+.circlemenu li.disabled {
+  background:#E6E6E6;
 }
 .circlemenu a{
   background:#fff;
@@ -594,10 +605,15 @@ div {
   border: none !important;
 }
 
+.btn {
+  box-shadow: 2px 2px 1px #888888;
+}
+
 .read-only .btn {
   color: black;
   background: transparent;
   border: none !important;
+  box-shadow: none;
 }
 
 .read-only .btn:hover,
@@ -649,6 +665,15 @@ div {
 }
 
 .secondary-block-node .btn-primary {
+  background-color:#85BAE7;
+}
+
+.input-spot {
+  border: 1px dashed black;
+}
+
+.input-spot-then {
+  border: 1px dashed white;
   background-color:#85BAE7;
 }
 
