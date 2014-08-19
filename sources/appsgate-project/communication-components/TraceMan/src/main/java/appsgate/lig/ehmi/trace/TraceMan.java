@@ -64,17 +64,19 @@ public class TraceMan implements TraceManSpec {
      */
     private final HashMap<String, GrammarDescription> deviceGrammar = new HashMap<String, GrammarDescription>();
 
-    /**
-     *
-     */
-    private TraceHistory fileTracer;
-    /**
-     *
-     */
-    private TraceHistory dbTracer;
+   /**
+    * Default tracer use to have complete trace history
+    * Only simple trace (no aggregation) are log in.
+    */
+   private TraceHistory dbTracer;
     
     /**
-     * The buffer queue for AppsGate traces
+     * Trace log in file use to inspect trace
+     */
+    private TraceHistory fileTracer;
+    
+    /**
+     * The buffer queue for AppsGate simple traces
      */
     private TraceQueue<JSONObject> traceQueue;
 
@@ -97,7 +99,7 @@ public class TraceMan implements TraceManSpec {
             LOGGER.warn("Unable to start the tracer");
         }
         
-        //TraceQueue initialization with 1ms buffer
+        //TraceQueue initialization with no aggregation
         traceQueue = new TraceQueue<JSONObject>(0);
     }
 
@@ -113,13 +115,17 @@ public class TraceMan implements TraceManSpec {
     /**
      * Request the trace man instance to trace event.
      * Add the time stamp to the trace and put it in the queue
+     * 
      * @param o the event to trace
      */
     private void trace(JSONObject o) {
     	synchronized(traceQueue) {
     		try {
     			o.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
+    			//Delayed in queue to by aggregate by policy
     			traceQueue.offer(o);
+    	    	//Simple trace save in data base
+    	    	dbTracer.trace(o);
     		} catch (JSONException e) {
     			e.printStackTrace();
     		}
@@ -127,21 +133,23 @@ public class TraceMan implements TraceManSpec {
     }
     
     /**
-     * Write the trace into destination
+     * Send the trace into destinations
+     * Destination can not be dbTracer
+     * 
      * @param trace the event to write
      * exception trace time stamp must be greater than
      * one deltaTinMilis + previous written time stamp value
      */
-    private synchronized void writeTrace(JSONObject trace){
+    private synchronized void sendTrace(JSONObject trace){
 		try {
 			long timeStamp = trace.getLong("timestamp");
 			
 			if(timeStamp > lastTimeStamp){
-				
 	    		lastTimeStamp = timeStamp;
-	    		dbTracer.trace(trace);
-	    		fileTracer.trace(trace);
-	    		//liveTracer.trace(trace);
+	   
+	    		fileTracer.trace(trace); //Save into local file
+	    		//TODO live tracer on socket
+	    		//liveTracer.trace(trace); //Send trace packet to client side
 	    		
 	    	} else {
 	    		LOGGER.error("Multiple trace request with the same time stamp value: "+timeStamp+". Entry are skipped.");
@@ -153,15 +161,17 @@ public class TraceMan implements TraceManSpec {
     }
     
     /**
-     * Write an array of traces into the destination
+     * Send an array of traces into the destinations
+     * using sendTrace method
+     * 
      * @param traceArray the event array to write
      */
-    private synchronized void writeTraces(JSONArray traceArray) {
+    private synchronized void sendTraces(JSONArray traceArray) {
     	int nbTraces = traceArray.length();
     	
     	for(int i=0; i < nbTraces; i++ ){
     		try {
-				writeTrace(traceArray.getJSONObject(i));
+				sendTrace(traceArray.getJSONObject(i));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -486,7 +496,7 @@ public class TraceMan implements TraceManSpec {
 		 * @param traces the collection to load
 		 */
 		public synchronized void loadTraces (Collection<E> traces) {
-            //TODO cut the streaming, make trace agregation and send
+            //TODO cut the streaming, make trace aggregation and send
 			this.clear();
 			this.addAll(traces);
 		}
@@ -553,6 +563,7 @@ public class TraceMan implements TraceManSpec {
 	    				public void run() {
 	    					synchronized(traceExec) {
 	    						if(traceQueue != null && !traceQueue.isEmpty() && traceExec.isSleeping()){
+	    							logTime = EHMIProxy.getCurrentTimeInMillis();
                                     traceExec.notify();
 	    						}
 	    					}
@@ -573,7 +584,7 @@ public class TraceMan implements TraceManSpec {
 								sleeping = false;
 							}
 						}
-						writeTraces(apply(null));
+						sendTraces(apply(null));
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}  catch (JSONException ex) {
@@ -591,8 +602,7 @@ public class TraceMan implements TraceManSpec {
 			 */
 			private JSONArray apply(JSONObject policy) throws JSONException {
 				synchronized(traceQueue) {
-                    logTime = EHMIProxy.getCurrentTimeInMillis();
-
+					
 					JSONArray aggregateTraces = new JSONArray();
 					
 					//No aggregation
@@ -636,10 +646,25 @@ public class TraceMan implements TraceManSpec {
                                         JSONObject tempDev = tempDevices.getJSONObject(x);
                                         tempDev.put("timestamp", tempObj.get("timestamp"));
                                         String id = tempDev.getString("id");
-                                        if(!devicesToAgg.containsKey(id)){
+                                        if(!devicesToAgg.containsKey(id)){ //No aggregation for now
                                             devicesToAgg.put(id, tempDev);
-                                        }else{
-                                            //TODO aggregate the decoration of the device trace
+                                        }else{ //Device id exist for this time stamp --> aggregation
+                                        	JSONObject existingDev = devicesToAgg.get(id);
+                                        	
+                                        	if(existingDev.has("event")){ //First aggregation only, mutate the simple trace into message trace
+                                        		existingDev.remove("event");
+                                        		JSONArray decorations = new JSONArray();
+                                        		decorations.put(existingDev.getJSONObject("decoration").put("order", 0));
+                                        		existingDev.put("decorations", decorations);
+                                        		existingDev.remove("decoration");
+                                        	}
+                                        	
+                                        	//Aggregates the device trace has a decoration
+                                        	JSONArray existingDecorations = existingDev.getJSONArray("decorations");
+                                        	JSONObject tempDec = tempDev.getJSONObject("decoration");
+                                        	tempDec.put("order", existingDecorations.length());
+                                        	existingDev.put("decorations", existingDecorations.put(tempDec));
+
                                         }
 
                                         x++;
@@ -655,10 +680,25 @@ public class TraceMan implements TraceManSpec {
                                         JSONObject tempPgm = tempDevices.getJSONObject(y);
                                         tempPgm.put("timestamp", tempObj.get("timestamp"));
                                         String id = tempPgm.getString("id");
-                                        if(!programsToAgg.containsKey(id)){
+                                        if(!programsToAgg.containsKey(id)){//No aggregation for now
                                             programsToAgg.put(id, tempPgm);
-                                        }else{
-                                            //TODO aggregate the decoration of the program trace
+                                        }else{ //program id exist for this time stamp --> aggregation
+                                        	
+                                        	JSONObject existingPgm = programsToAgg.get(id);
+                                        	
+                                        	if(existingPgm.has("event")){ //First aggregation only, mutate the simple trace into message trace
+                                        		existingPgm.remove("event");
+                                        		JSONArray decorations = new JSONArray();
+                                        		decorations.put(existingPgm.getJSONObject("decoration").put("order", 0));
+                                        		existingPgm.put("decorations", decorations);
+                                        		existingPgm.remove("decoration");
+                                        	}
+                                        	
+                                        	//Aggregates the device trace has a decoration
+                                        	JSONArray existingDecorations = existingPgm.getJSONArray("decorations");
+                                        	JSONObject tempDec = tempPgm.getJSONObject("decoration");
+                                        	tempDec.put("order", existingDecorations.length());
+                                        	existingPgm.put("decorations", existingDecorations.put(tempDec));
                                         }
                                         y++;
                                     }
