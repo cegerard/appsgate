@@ -204,17 +204,18 @@ public class TraceMan implements TraceManSpec {
             } catch (JSONException e) {
             }
             
+            JSONObject JDecoration = null;
             if(varName.equalsIgnoreCase("status")) {
             	if(value.equalsIgnoreCase("2")){
-            		Trace.getJSONDecoration("connection", "technical", null, null, "Connection");
+            		JDecoration = Trace.getJSONDecoration("connection", "technical", null, null, "Connection");
             	}else if (value.equalsIgnoreCase("0")) {
-            		Trace.getJSONDecoration("deconnection", "technical", null, null, "Deconnection");
+            		JDecoration = Trace.getJSONDecoration("deconnection", "technical", null, null, "Deconnection");
             	} else {
-            		Trace.getJSONDecoration("error", "technical", null, null, "Error dectected");
+            		JDecoration = Trace.getJSONDecoration("error", "technical", null, null, "Error dectected");
             	}
             }
             
-            JSONObject deviceJson = getJSONDevice(srcId, event, null);
+            JSONObject deviceJson = getJSONDevice(srcId, event, JDecoration);
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
@@ -400,8 +401,12 @@ public class TraceMan implements TraceManSpec {
             }
         }
         try {
-            deviceState.put("status", "2");
-        //    deviceState.put(varName, value); // Not sure this is really necessary
+        	if(varName.equalsIgnoreCase("status")){
+        		 deviceState.put("status", value);
+        	} else {
+        		deviceState.put("status", "2");
+        	}
+          
         } catch (JSONException ex) {
         }
         return deviceState;
