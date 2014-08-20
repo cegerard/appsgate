@@ -30,7 +30,9 @@ import appsgate.lig.persistence.MongoDBConfiguration;
  *
  * @author Cedric Gerard
  * @since July 13, 2014
- * @version 1.0.0
+ * @version 1.1.0
+ * 
+ * Compliant with the version 4 of trace specification
  */
 public class TraceMan implements TraceManSpec {
 
@@ -54,7 +56,7 @@ public class TraceMan implements TraceManSpec {
      */
     private PlaceManagerSpec placeManager;
 
-    /*
+    /**
      * The collection containing the links (wires) created, and deleted
      */
     private MongoDBConfiguration myConfiguration;
@@ -201,6 +203,17 @@ public class TraceMan implements TraceManSpec {
                 event.put("state", getDeviceState(srcId, varName, value));
             } catch (JSONException e) {
             }
+            
+            if(varName.equalsIgnoreCase("status")) {
+            	if(value.equalsIgnoreCase("2")){
+            		Trace.getJSONDecoration("connection", "technical", null, null, "Connection");
+            	}else if (value.equalsIgnoreCase("0")) {
+            		Trace.getJSONDecoration("deconnection", "technical", null, null, "Deconnection");
+            	} else {
+            		Trace.getJSONDecoration("error", "technical", null, null, "Error dectected");
+            	}
+            }
+            
             JSONObject deviceJson = getJSONDevice(srcId, event, null);
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
@@ -333,7 +346,14 @@ public class TraceMan implements TraceManSpec {
             JSONObject cause = new JSONObject();
             {
                 JSONObject s = new JSONObject();
-                s.put("name", state);
+                
+                if(state.equalsIgnoreCase("disabled") || state.equalsIgnoreCase("invalid")){
+                	 s.put("name", state);
+                } else {
+                	 s.put("name", "enabled");
+                }
+                
+               
                 s.put("instruction_id", iid);
                 event.put("state", s);
                 if (change != null) {
