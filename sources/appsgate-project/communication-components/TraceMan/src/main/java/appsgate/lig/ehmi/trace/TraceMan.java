@@ -201,6 +201,7 @@ public class TraceMan implements TraceManSpec {
             try {
                 event.put("type", "update");
                 event.put("state", getDeviceState(srcId, varName, value));
+                event.put("picto", Trace.getPictoState(deviceGrammar.get(srcId).getType(), varName, value));
             } catch (JSONException e) {
             }
             
@@ -223,7 +224,7 @@ public class TraceMan implements TraceManSpec {
         }
     }
 
-    private JSONObject getCoreNotif(JSONObject device, JSONObject program) {
+	private JSONObject getCoreNotif(JSONObject device, JSONObject program) {
         JSONObject coreNotif = new JSONObject();
         try {
             //Create the device tab JSON entry
