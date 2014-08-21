@@ -122,6 +122,17 @@ public class Trace {
     		} else {
     			picto = PICTO_TABLE.COLORLIGHT_TYPE.stringify();
     		}
+    		
+    	} else if (type.equalsIgnoreCase("SmartPlug")){
+    		if(varName.equalsIgnoreCase("state")){
+    			if(value.equalsIgnoreCase("true")){
+    				picto = PICTO_TABLE.SMARTPLUG_STATE_ON.stringify();
+    			} else {
+    				picto = PICTO_TABLE.SMARTPLUG_STATE_OFF.stringify();
+    			}
+    		} else {
+    			picto = PICTO_TABLE.SMARTPLUG_TYPE.stringify();
+    		}
     	}
     	
 		return picto;
