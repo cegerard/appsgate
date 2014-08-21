@@ -349,10 +349,12 @@ public class TraceMan implements TraceManSpec {
             {
                 JSONObject s = new JSONObject();
                 
-                if(state.equalsIgnoreCase("deployed") || state.equalsIgnoreCase("invalid")){
+                if(state.equalsIgnoreCase("deployed")){
+                	 s.put("name", "disabled");
+                } else if (state.equalsIgnoreCase("invalid")) {
                 	 s.put("name", state.toLowerCase());
                 } else {
-                	 s.put("name", "enable");
+                	 s.put("name", "enabled");
                 }
                 
                
