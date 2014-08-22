@@ -28,7 +28,9 @@
 	</repositories>
 
 	<modules>
+        <!-- Disabled until ne version of calendar is released
 		<module>calendar</module>
 		<module>GoogleAdapter</module>
+		-->
 	</modules>
 </project>
