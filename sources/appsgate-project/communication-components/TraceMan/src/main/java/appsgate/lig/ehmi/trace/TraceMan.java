@@ -262,7 +262,7 @@ public class TraceMan implements TraceManSpec {
                 location.put("name", place.getName());
             }
             objectNotif.put("location", location);
-            objectNotif.put("decoration", cause);
+            objectNotif.put("decorations", new JSONArray().put(cause));
             objectNotif.put("event", event);
 
         } catch (JSONException e) {
@@ -379,7 +379,7 @@ public class TraceMan implements TraceManSpec {
 
             }
             progNotif.put("event", event);
-            progNotif.put("decoration", cause);
+            progNotif.put("decorations", new JSONArray().put(cause));
         } catch (JSONException e) {
 
         }
@@ -419,7 +419,7 @@ public class TraceMan implements TraceManSpec {
         JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId());
         JSONObject d = getJSONDevice(n.getTargetId(), null, Trace.getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, n.getDescription()));
         try {
-            p.put("decoration", Trace.getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription()));
+            p.put("decorations", new JSONArray().put(Trace.getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription())));
         } catch (JSONException ex) {
         }
         return getCoreNotif(d, p);
@@ -675,12 +675,8 @@ public class TraceMan implements TraceManSpec {
                                         tempDev.put("timestamp", tempObj.get("timestamp"));
                                         String id = tempDev.getString("id");
                                         
-                                        if(!devicesToAgg.containsKey(id)){ //No aggregation for now, mutate from simple trace to message trace
-                                        	
-                                        	JSONArray decorations = new JSONArray();
-                                        	decorations.put(tempDev.getJSONObject("decoration").put("order", 0));
-                                        	tempDev.put("decorations", decorations);
-                                        	tempDev.remove("decoration");
+                                        if(!devicesToAgg.containsKey(id)){ //No aggregation for now
+                      
                                             devicesToAgg.put(id, tempDev);
                                             
                                         }else{ //Device id exist for this time stamp --> aggregation
@@ -692,9 +688,16 @@ public class TraceMan implements TraceManSpec {
                                         	
                                         	//Aggregates the device trace has a decoration
                                         	JSONArray existingDecorations = existingDev.getJSONArray("decorations");
-                                        	JSONObject tempDec = tempDev.getJSONObject("decoration");
-                                        	tempDec.put("order", existingDecorations.length());
-                                        	existingDev.put("decorations", existingDecorations.put(tempDec));
+                                        	JSONArray tempDecs = tempDev.getJSONArray("decorations");
+                                        	int decSize = tempDecs.length();
+                                        	int x1 = 0;
+                                        	while(x1 < decSize){
+                                        		JSONObject tempDec = tempDecs.getJSONObject(x1);
+                                        		tempDec.put("order", existingDecorations.length());
+                                        		existingDecorations.put(tempDec);
+                                        		x1++;
+                                        	}
+                                        	//existingDev.put("decorations", existingDecorations);
                                         }
                                         x++;
                                     }
@@ -709,12 +712,8 @@ public class TraceMan implements TraceManSpec {
                                         tempPgm.put("timestamp", tempObj.get("timestamp"));
                                         String id = tempPgm.getString("id");
                                         
-                                        if(!programsToAgg.containsKey(id)){//No aggregation for now, mutate from simple trace to message trace
+                                        if(!programsToAgg.containsKey(id)){//No aggregation for now
                                         	
-                                        	JSONArray decorations = new JSONArray();
-                                        	decorations.put(tempPgm.getJSONObject("decoration").put("order", 0));
-                                        	tempPgm.put("decorations", decorations);
-                                        	tempPgm.remove("decoration");
                                             programsToAgg.put(id, tempPgm);
                                             
                                         }else{ //program id exist for this time stamp --> aggregation
@@ -727,9 +726,16 @@ public class TraceMan implements TraceManSpec {
                                         	
                                         	//Aggregates the device trace has a decoration
                                         	JSONArray existingDecorations = existingPgm.getJSONArray("decorations");
-                                        	JSONObject tempDec = tempPgm.getJSONObject("decoration");
-                                        	tempDec.put("order", existingDecorations.length());
-                                        	existingPgm.put("decorations", existingDecorations.put(tempDec));
+                                        	JSONArray tempDecs = tempPgm.getJSONArray("decorations");
+                                        	int decSize = tempDecs.length();
+                                        	int y1 = 0;
+                                        	while(y1 < decSize){
+                                        		JSONObject tempDec = tempDecs.getJSONObject(y1);
+                                        		tempDec.put("order", existingDecorations.length());
+                                        		existingDecorations.put(tempDec);
+                                        		y1++;
+                                        	}
+                                        	//existingPgm.put("decorations", existingDecorations);
                                         }
                                         y++;
                                     }

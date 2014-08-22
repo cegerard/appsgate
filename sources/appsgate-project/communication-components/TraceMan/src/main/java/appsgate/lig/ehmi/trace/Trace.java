@@ -29,6 +29,7 @@ public class Trace {
     public static JSONObject getJSONDecoration(String type, String cause, String source, String target, String description) {
         JSONObject causality = new JSONObject();
         try {
+        	causality.put("order", 0);
             causality.put("type", getPictoFromType(type, cause));
             causality.put("causality", cause);
             causality.put("source", source);
