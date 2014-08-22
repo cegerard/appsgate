@@ -194,22 +194,26 @@ public class TraceMan implements TraceManSpec {
         if (EHMIProxy.getGrammarFromDevice(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
             //Create the event description device entry
             JSONObject event = new JSONObject();
+            JSONObject JDecoration = null;
             try {
-                event.put("type", "update");
+            	
+            	if(varName.equalsIgnoreCase("status")) {
+            		if(value.equalsIgnoreCase("2")){
+            			event.put("type", "connection");
+                		JDecoration = Trace.getJSONDecoration("connection", "technical", null, null, "Connection");
+                	}else if (value.equalsIgnoreCase("0")) {
+                		event.put("type", "deconnection");
+                		JDecoration = Trace.getJSONDecoration("deconnection", "technical", null, null, "Deconnection");
+                	} else {
+                		event.put("type", "update");
+                		JDecoration = Trace.getJSONDecoration("error", "technical", null, null, "Error dectected");
+                	}
+            	}else{
+            		 event.put("type", "update");
+            	}
                 event.put("state", getDeviceState(srcId, varName, value));
                 event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
             } catch (JSONException e) {
-            }
-            
-            JSONObject JDecoration = null;
-            if(varName.equalsIgnoreCase("status")) {
-            	if(value.equalsIgnoreCase("2")){
-            		JDecoration = Trace.getJSONDecoration("connection", "technical", null, null, "Connection");
-            	}else if (value.equalsIgnoreCase("0")) {
-            		JDecoration = Trace.getJSONDecoration("deconnection", "technical", null, null, "Deconnection");
-            	} else {
-            		JDecoration = Trace.getJSONDecoration("error", "technical", null, null, "Error dectected");
-            	}
             }
             
             JSONObject deviceJson = getJSONDevice(srcId, event, JDecoration);
