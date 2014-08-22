@@ -11,7 +11,7 @@
 
     <artifactId>CoreClockSpec</artifactId>
     <packaging>bundle</packaging>
-    <name>Core time and date sensor specification</name>
+    <name>Core Clock sensor specification</name>
 
 
 	<properties>
@@ -31,28 +31,26 @@
 
 	<!-- Build Description -->
 	<build>
+        <pluginManagement>
+            <plugins>
+                <!-- This is a workaround because maven-bundle-plugin v2.5 has an issue with package name containing clock -->
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${bundle.plugin.version}</version>
+                    <configuration>
+                        <instructions>
+                            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        </instructions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
 		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-					</instructions>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>fr.imag.adele.apam</groupId>
 				<artifactId>apam-maven-plugin</artifactId>
-				<version>${apam.current.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>apam-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

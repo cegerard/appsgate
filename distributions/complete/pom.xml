@@ -161,11 +161,12 @@
                                     <artifactId>PropertyHistoryManagerSpec</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>appsgate.components</groupId>
-                                    <artifactId>GoogleAdapter</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
+                                <!-- Disabled while new version of agenda is released -->
+                                <!--<artifactItem>-->
+                                    <!--<groupId>appsgate.components</groupId>-->
+                                    <!--<artifactId>GoogleAdapter</artifactId>-->
+                                    <!--<version>${project.version}</version>-->
+                                <!--</artifactItem>-->
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>PhilipsHUEAdapterSpec</artifactId>
