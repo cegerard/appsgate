@@ -13,24 +13,43 @@ define([
             "click button.toggle-plug-button": "onTogglePlugButton",
             "click button.blink-lamp-button": "onBlinkLampButton",
             "click button.toggle-lamp-button": "onToggleLampButton",
-            "click button.toggle-actuator-button": "onToggleActuatorButton"
+            "click button.toggle-actuator-button": "onToggleActuatorButton",
+            "click button.group-on-button": "onGroupOnButton",
+            "click button.group-off-button": "onGroupOffButton"
         },
         /**
          * Listen to the updates on the devices of the category and refresh if any
-         * 
+         *
          * @constructor
          */
         initialize: function() {
-            var self = this;
-
-            devices.getDevicesByType()[this.id].forEach(function(device) {
-                self.listenTo(device, "change", self.render);
-                self.listenTo(device, "remove", self.render);
-            });
+          var self = this;
+          devices.getDevicesByType()[this.id].forEach(function(device) {
+            self.listenTo(device, "change", self.render);
+            self.listenTo(device, "remove", self.render);
+          });
+        },
+        /**
+         * Callback to switch a group of actuators on
+         * @param e JS mouse event
+         */
+        onGroupOnButton: function(e) {
+          devices.getDevicesByType()[this.id].forEach(function(device) {
+            device.remoteControl("on", []);
+          });
+        },
+        /**
+         * Callback to switch a group of actuators off
+         * @param e JS mouse event
+         */
+        onGroupOffButton: function(e) {
+          devices.getDevicesByType()[this.id].forEach(function(device) {
+            device.remoteControl("off", []);
+          });
         },
         /**
          * Callback to toggle a plug
-         * 
+         *
          * @param e JS mouse event
          */
         onTogglePlugButton: function(e) {
@@ -62,7 +81,7 @@ define([
         },
         /**
          * Callback to toggle a lamp
-         * 
+         *
          * @param e JS mouse event
          */
         onToggleLampButton: function(e) {
@@ -106,7 +125,7 @@ define([
         },
         /**
          * Callback to toggle an actuator
-         * 
+         *
          * @param e JS mouse event
          */
         onToggleActuatorButton: function(e) {
@@ -144,6 +163,24 @@ define([
                     type: this.id,
                     places: places
                 }));
+
+                var allOn = true;
+                var allOff = true;
+                var state = "value";
+                if(this.id == 6) {
+                  state = "plugState";
+                }
+                devices.getDevicesByType()[this.id].forEach(function(device) {
+                  if(device.get(state) === "true") {
+                    allOff = false;
+                  }
+                  else{
+                    allOn = false;
+                  }
+                });
+
+                $(".group-on-button").prop("disabled", allOn);
+                $(".group-off-button").prop("disabled", allOff);
 
                 // translate the view
                 this.$el.i18n();

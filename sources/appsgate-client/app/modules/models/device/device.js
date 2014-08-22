@@ -121,7 +121,7 @@ define([
             }
         },
         emergencyStop:function(method,model) {
-          this.remoteControl("Off", []);
+          this.remoteControl("off", []);
         }
 
     });

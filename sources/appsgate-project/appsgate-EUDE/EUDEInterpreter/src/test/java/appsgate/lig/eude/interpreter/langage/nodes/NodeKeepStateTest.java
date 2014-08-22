@@ -3,7 +3,9 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 
 import org.jmock.Expectations;
@@ -30,7 +32,8 @@ public class NodeKeepStateTest extends NodeTest {
 
         context.checking(new Expectations() {
             {
-                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramLineNotification.class)));
+                allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
+                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramCommandNotification.class)));
                 will(returnValue(cmd));
                 allowing(cmd).run();
                 allowing(cmd).getReturn();
@@ -59,6 +62,7 @@ public class NodeKeepStateTest extends NodeTest {
     public void testKeepState() throws Exception {
         context.checking(new Expectations() {
             {
+                allowing(mediator).notifyChanges(with(any(ProgramCommandNotification.class)));
                 allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
             }
         });

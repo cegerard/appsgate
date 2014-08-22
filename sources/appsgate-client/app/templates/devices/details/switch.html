@@ -1,10 +1,10 @@
 <li class="list-group-item">
 	<strong data-i18n="devices.value-label"></strong>
-	<div class="pull-right label label-info">
+	<div class="pull-right">
 		<% if (device.get("buttonStatus")==="true") { %>
-			<span data-i18n="devices.switch.value.opened"></span>
+			<span class="label label-yellow" data-i18n="devices.switch.value.opened"></span>
 		<% } else { %>
-			<span data-i18n="devices.switch.value.closed"></span>
+			<span class="label label-default" data-i18n="devices.switch.value.closed"></span>
 		<% } %>
 	</div>
 </li>

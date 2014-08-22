@@ -175,9 +175,9 @@ define([
      */
     sendValue:function() {
       if (this.get("value") === "true") {
-        this.remoteControl("On", []);
+        this.remoteControl("on", []);
       } else {
-        this.remoteControl("Off", []);
+        this.remoteControl("off", []);
       }
     },
 

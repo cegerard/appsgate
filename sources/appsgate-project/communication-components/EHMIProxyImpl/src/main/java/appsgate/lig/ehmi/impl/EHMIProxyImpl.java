@@ -40,6 +40,7 @@ import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import java.net.*;
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * This class is the central component for AppsGate server. It allow client part
@@ -213,18 +214,18 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             //before subscribing to new Core Device, synchronize the existing ones
             JSONArray devicesArray = coreProxy.getDevices();
             for (int i = 0; i < devicesArray.length(); i++) {
-                try{
+                try {
                     String type = devicesArray.getJSONObject(i).getString("type");
+                    String id = devicesArray.getJSONObject(i).getString("id");
 
-                    if(type != "21" && getGrammarFromType(type)==null) {
-                        addGrammar(type,new GrammarDescription(coreProxy.getDeviceBehavior(type)));
+                    if (type != "21" && getGrammarFromType(type) == null) {
+                        addGrammar(id, type, new GrammarDescription(coreProxy.getDeviceBehavior(type)));
                     }
-                }catch (JSONException e) {
+                } catch (JSONException e) {
                     logger.error(e.getMessage());
                 }
 
             }
-
 
             if (coreProxy.CoreEventsSubscribe(objectEventsListener)) {
                 logger.info("Core event listener deployed.");
@@ -364,8 +365,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     }
 
     @Override
-    public boolean addGrammar(String deviceType, GrammarDescription grammarDescription) {
-        return devicePropertiesTable.addGrammarForDeviceType(deviceType, grammarDescription);
+    public boolean addGrammar(String deviceId, String deviceType, GrammarDescription grammarDescription) {
+        return devicePropertiesTable.addGrammarForDevice(deviceId, deviceType, grammarDescription);
     }
 
     @Override
@@ -853,7 +854,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      *
      * @param objIdentifier the identifier of the object on the remote system
      * @param method the method name to call
-     * @param arguments the arguments values corresponding to the method to invoke
+     * @param arguments the arguments values corresponding to the method to
+     * invoke
      * @param types the arguments JAVA types
      * @param clientId the client connection identifier
      * @param callId the remote call identifier
@@ -1032,6 +1034,28 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     public void getLog(long timeStart, long timeEnd) {
 
+    }
+
+    public void newDeviceStatus(String objectId, Boolean bool) {
+        interpreter.newDeviceStatus(objectId, bool);
+    }
+
+    @Override
+    public GrammarDescription getGrammarFromDevice(String deviceId) {
+        GrammarDescription grammar = devicePropertiesTable.getGrammarFromDevice(deviceId);
+        if (grammar != null) {
+            return grammar;
+        }
+        // Add the grammar to the table
+        JSONObject device = coreProxy.getDevice(deviceId);
+        try {
+            String type = device.getString("type");
+            devicePropertiesTable.setType(deviceId, type);
+            return devicePropertiesTable.getGrammarFromType(type);
+        } catch (JSONException ex) {
+            logger.error("Unable to get 'type' from {}", device.toString());
+        }
+        return null;
     }
 
 }

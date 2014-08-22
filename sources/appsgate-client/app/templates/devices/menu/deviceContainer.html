@@ -85,11 +85,11 @@
 							<em data-i18n="places-details.place-no-name"></em>
 						<% } %>
 						<% if (type === "0") { %>
-							<span class="label label-info"><%= place.getAverageTemperature() %>&deg;C</span>
+							<span class="label-value"><%= place.getAverageTemperature() %>&deg;C</span>
 						<% } else if (type === "1") { %>
-							<span class="label label-info"><%= place.getAverageIllumination() %> Lux</span>
+							<span class="label-value"><%= place.getAverageIllumination() %> Lux</span>
 						<% } else if (type === "6") { %>
-							<span class="label label-info"><%= place.getTotalConsumption() %> W</span>
+							<span class="label-value"><%= place.getTotalConsumption() %> W</span>
 						<% } %>
 						<span class="pull-right badge">
 							<%= place.getTypeSensors(type).length %>

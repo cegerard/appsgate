@@ -512,6 +512,8 @@
       "light-brightness":"the intensity of",
       "state-verb":"is",
 
+      "getTemperature": "the temperature from sensor",
+
        "weather" : {
            "is-current-weather-code-state": "current weather",
            "is-forecast-weather-code-state": "current weather for",
@@ -548,7 +550,6 @@
 
       "domicube-inactivated":"domicube is idle",
       "domicube-activated":"domicube is activated",
-      "getTemperature":"temperature of",
       "selector":{
         "prefix-m":"every ",
         "prefix-f":"every ",
@@ -602,6 +603,8 @@
       "pause-media-action":"Pause the media",
       "stop-media-action":"Stop",
       "set-volume-media-action":"Set the volume",
+      "getTemperature": "the temperature from sensor",
+
        "weather" : {
 
            "is-current-weather-code-state": "current weather",

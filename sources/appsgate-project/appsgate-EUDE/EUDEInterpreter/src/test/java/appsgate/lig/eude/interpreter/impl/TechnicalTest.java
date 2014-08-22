@@ -122,8 +122,8 @@ public class TechnicalTest {
     }
 
     @Test
-    public void testReadProgram() throws Exception{
-        for (File f:listFiles) {
+    public void testReadProgram() throws Exception {
+        for (File f : listFiles) {
             System.out.println("Reading " + f.getName());
             JSONObject o = TestUtilities.loadFileJSON(f.getPath());
             Assert.assertNotNull(o);

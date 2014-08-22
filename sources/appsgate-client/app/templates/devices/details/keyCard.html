@@ -1,10 +1,10 @@
 <li class="list-group-item">
 	<strong data-i18n="devices.state-label">Etat</strong>
-	<div class="pull-right label label-info">
+	<div class="pull-right">
 		<% if (device.get("inserted") === "true") { %>
-			<span data-i18n="devices.keycard-reader.value.inserted"></span>
+			<span class="label label-yellow" data-i18n="devices.keycard-reader.value.inserted"></span>
 		<% } else { %>
-			<span data-i18n="devices.keycard-reader.value.not-inserted"></span>
+			<span class="label label-default" data-i18n="devices.keycard-reader.value.not-inserted"></span>
 		<% } %>
 	</div>
 </li>

@@ -21,7 +21,7 @@ define([
         },
         /**
          * Listen to the updates on devices and update if any
-         * 
+         *
          * @constructor
          */
         initialize: function() {
@@ -48,7 +48,7 @@ define([
         },
         /**
          * Update the side menu to set the correct active element
-         * 
+         *
          * @param e JS click event
          */
         updateSideMenu: function(e) {
@@ -103,9 +103,10 @@ define([
                 // for each category of devices, add a menu item
                 this.$el.append(this.tpl());
                 var types = devices.getDevicesByType();
+                var container = document.createDocumentFragment();
                 _.forEach(_.keys(types), function(type) {
                     if (type !== "21" && type !== "36" && type !== "102" && type !== "103") {
-                        $(self.$el.find(".list-group")[1]).append(self.tplDeviceContainer({
+                        $(container).append(self.tplDeviceContainer({
                             type: type,
                             devices: types[type],
                             places: places,
@@ -115,6 +116,16 @@ define([
                             active: Backbone.history.fragment.split("devices/types/")[1] === type ? true : false
                         }));
                     }
+                });
+
+                var deviceGroups = $(container).children();
+
+                deviceGroups.sort(function(a, b) {
+                  return $($(a).children(".list-group-item-heading").children(":first")[0]).i18n().text().toUpperCase().localeCompare($($(b).children(".list-group-item-heading").children(":first")[0]).i18n().text().toUpperCase());
+                });
+
+                $.each(deviceGroups, function(idx, itm) {
+                    $(self.$el.find(".list-group")[1]).append(itm);
                 });
 
                 // set active the current item menu

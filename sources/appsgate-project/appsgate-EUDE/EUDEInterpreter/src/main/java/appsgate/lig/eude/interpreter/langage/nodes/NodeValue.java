@@ -274,6 +274,7 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
             case PROGRAMCALL:
                 table.addProgram(value);
                 break;
+            case SERVICE:
             case DEVICE:
                 table.addDevice(value);
                 break;

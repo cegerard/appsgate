@@ -185,13 +185,6 @@ define([
                 // for each place, add a menu item
                 this.$el.append(this.tpl());
 
-                // put the unlocated devices into a separate group list
-                //this.$el.append(this.tpl());
-                $(this.$el.find(".list-group")[1]).append(this.tplPlaceContainer({
-                    place: places.get("-1"),
-                    active: Backbone.history.fragment.split("/")[1] === "-1" ? true : false
-                }));
-
                 places.forEach(function(place) {
                     if (place.get("id") !== "-1") {
                         $(self.$el.find(".list-group")[1]).append(self.tplPlaceContainer({
@@ -200,6 +193,12 @@ define([
                         }));
                     }
                 });
+
+                // put the unlocated devices into a separate group list
+                $(this.$el.find(".list-group")[1]).append(this.tplPlaceContainer({
+                    place: places.get("-1"),
+                    active: Backbone.history.fragment.split("/")[1] === "-1" ? true : false
+                }));
 
                 // translate the menu
                 this.$el.i18n();

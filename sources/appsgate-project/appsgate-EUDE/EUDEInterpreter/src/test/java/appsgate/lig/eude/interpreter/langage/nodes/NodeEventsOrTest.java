@@ -5,9 +5,12 @@
  */
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.impl.ClockProxy;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import org.jmock.Expectations;
+import static org.jmock.Expectations.any;
 import static org.jmock.Expectations.returnValue;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,6 +37,7 @@ public class NodeEventsOrTest extends NodeTest {
                 allowing(mediator).removeNodeListening(with(any(NodeEvent.class)));
                 allowing(mediator).getTime();
                 will(returnValue(new Long(2000)));
+                allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
             }
         });
         ruleJSON.put("type", "eventsOr");
@@ -45,11 +49,17 @@ public class NodeEventsOrTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeEventsOr(this.ruleJSON, null);
+        this.instance = new NodeEventsOr(this.ruleJSON, programNode);
     }
 
     @Test
     public void testGetManyEvents() throws Exception {
+        context.checking(new Expectations() {
+            {
+                allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
+            }
+        });
+
         this.printTestName("GetManyEvents");
         NodeEventTest t = new NodeEventTest();
         t.setUp();
@@ -63,7 +73,6 @@ public class NodeEventsOrTest extends NodeTest {
         json.put("nbEventToOccur", 2);
         json.put("duration", 0);
         NodeEvents n = new NodeEventsOr(json, programNode);
-
         n.call();
         n.endEventFired(new EndEvent(nodeEvent));
         Assert.assertTrue("Node should be started", n.isStarted());
@@ -74,6 +83,11 @@ public class NodeEventsOrTest extends NodeTest {
     @Test
     public void testGetEventsDuration() throws Exception {
         this.printTestName("GetEventsDuration");
+        context.checking(new Expectations() {
+            {
+                allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
+            }
+        });
 
         NodeEventTest t = new NodeEventTest();
         t.setUp();

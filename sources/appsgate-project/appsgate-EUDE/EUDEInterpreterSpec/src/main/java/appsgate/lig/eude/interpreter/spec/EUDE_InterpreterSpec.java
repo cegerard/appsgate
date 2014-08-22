@@ -78,5 +78,13 @@ public interface EUDE_InterpreterSpec {
 	 * @return true if the program is active, false otherwise
 	 */
 	public boolean isProgramActive(String programId);
+        
+        /**
+         * warn the Interpreter that a status has a new status
+         * 
+         * @param deviceId the id of the device or service
+         * @param statusOK true if the status is OK
+         */
+        public void newDeviceStatus(String deviceId, Boolean statusOK);
 
 }

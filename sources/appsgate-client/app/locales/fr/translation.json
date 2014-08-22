@@ -86,7 +86,7 @@
       "undefined":"Non défini",
       "no-plugs":"Pas de prise",
       "header":{
-         "device-number-title":"Nombre de équipements",
+         "device-number-title":"Nombre d'équipements",
          "temperature-label":"Température",
          "illumination-label":"Luminosité",
          "consumption-label":"Consommation"
@@ -216,8 +216,8 @@
       },
       "plug":{
          "name":{
-            "singular":"Prise gigogne",
-            "plural":"Prises gigognes"
+            "singular":"Prise pilotable",
+            "plural":"Prises pilotables"
          },
          "status":{
             "turnedOn":"Allumée",
@@ -513,6 +513,7 @@
       "is-turned-off-lamp-state":"éteinte",
       "light-brightness":"l'intensité de ",
       "state-verb":"est",
+      "getTemperature": "la température mesurée",
 
       "weather" : {
           "is-current-weather-code-state": "la météo actuelle",
@@ -604,6 +605,8 @@
       "pause-media-action":"Mettre en pause le media",
       "stop-media-action":"Stopper",
       "set-volume-media-action":"Mettre le volume",
+      "getTemperature": "la température mesurée",
+
       "weather" : {
           "weather-at": "à",
 
@@ -620,8 +623,8 @@
           "currently-daylight": "il fait jour"
       },
        "selector":{
-        "prefix-m":"Tous les ",
-        "prefix-f":"Toutes les ",
+        "prefix-m":"Les ",
+        "prefix-f":"Les ",
         "type":{
           "1":"capteurs de temperature",
           "2":"capteurs de luminosité",

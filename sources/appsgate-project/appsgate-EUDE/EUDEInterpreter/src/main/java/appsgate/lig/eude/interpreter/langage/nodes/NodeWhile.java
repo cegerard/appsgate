@@ -87,7 +87,6 @@ public class NodeWhile extends Node implements INodeRule {
 
     @Override
     protected void specificStop() {
-        setProgramProcessing();
         state.removeEndEventListener(this);
         state.removeStartEventListener(this);
         state.stop();
@@ -135,6 +134,7 @@ public class NodeWhile extends Node implements INodeRule {
         if (node == state) {
             state.addEndEventListener(this);
             rules.addEndEventListener(this);
+            setProgramKeeping();
             rules.call();
         }
     }

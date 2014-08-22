@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 final public class NodeProgram extends Node {
 
+
     /**
      * Program running state static enumeration
      *
@@ -39,7 +40,7 @@ final public class NodeProgram extends Node {
      */
     public static enum RUNNING_STATE {
 
-        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"), WAITING("WAITING");
+        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"), WAITING("WAITING"), KEEPING("KEEPING");
 
         private String name = "";
 
@@ -105,6 +106,7 @@ final public class NodeProgram extends Node {
     private EUDEInterpreter mediator = null;
 
     private ReferenceTable references = null;
+
     /**
      * Default constructor
      *
@@ -116,6 +118,7 @@ final public class NodeProgram extends Node {
         super(p);
         this.mediator = i;
         subPrograms = new HashMap<String, NodeProgram>();
+        references = new ReferenceTable(i, this.id);
     }
 
     /**
@@ -171,9 +174,8 @@ final public class NodeProgram extends Node {
             this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
             body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
             this.programJSON = getJSONObject(json, "body");
-            this.buildReferences();
-            this.runningState = RUNNING_STATE.DEPLOYED;
-            return true;
+
+            return this.buildReferences();
         } catch (SpokException ex) {
             LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
         }
@@ -181,14 +183,28 @@ final public class NodeProgram extends Node {
         return false;
 
     }
+
     /**
-     * 
+     *
      */
-    private void buildReferences(){
-        this.references = new ReferenceTable(mediator);
+    private Boolean buildReferences() {
+        if (this.body == null) {
+            return false;
+        }
+        this.references = new ReferenceTable(mediator, this.id);
         this.body.buildReferences(this.references);
+        ReferenceTable.STATUS newStatus = this.references.checkReferences();
+        if (newStatus != ReferenceTable.STATUS.OK) {
+            setInvalid();
+            return false;
+        }
+        setValid();
+        return true;
     }
-    
+
+    public ReferenceTable getReferences() {
+        return this.references;
+    }
 
     /**
      * Launch the interpretation of the rules
@@ -199,7 +215,7 @@ final public class NodeProgram extends Node {
     public JSONObject call() {
         JSONObject ret = new JSONObject();
         if (runningState == RUNNING_STATE.DEPLOYED) {
-            setProcessing(this.body.getIID());
+            //setProcessing(this.body.getIID());
             fireStartEvent(new StartEvent(this));
             body.addStartEventListener(this);
             body.addEndEventListener(this);
@@ -265,6 +281,15 @@ final public class NodeProgram extends Node {
     }
 
     /**
+     * set the state to a valid state
+     */
+    private void setValid() {
+        if (runningState == RUNNING_STATE.INVALID) {
+            setRunningState(RUNNING_STATE.DEPLOYED, id);
+        }
+    }
+
+    /**
      * @return true if the program can be run, false otherwise
      */
     final public boolean canRun() {
@@ -275,7 +300,7 @@ final public class NodeProgram extends Node {
      * @return true if the program can be stopped, false otherwise
      */
     final public boolean isRunning() {
-        return (this.runningState == RUNNING_STATE.PROCESSING || this.runningState == RUNNING_STATE.WAITING);
+        return (this.runningState == RUNNING_STATE.PROCESSING || this.runningState == RUNNING_STATE.WAITING || this.runningState == RUNNING_STATE.KEEPING);
     }
 
     /**
@@ -295,10 +320,11 @@ final public class NodeProgram extends Node {
     /**
      * set the state of this program to waiting, if this program is already
      * running
+     *
      * @param iid
      */
     final public void setWaiting(String iid) {
-        if (isRunning()) {
+        if (isValid()) {
             setRunningState(RUNNING_STATE.WAITING, iid);
         } else {
             LOGGER.warn("Trying to set {} waiting, while being {}", this, this.runningState);
@@ -307,11 +333,19 @@ final public class NodeProgram extends Node {
 
     /**
      * set the state to processing if the program is valid
+     *
      * @param iid
      */
     public void setProcessing(String iid) {
         if (isValid()) {
             setRunningState(RUNNING_STATE.PROCESSING, iid);
+        } else {
+            LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
+        }
+    }
+    void setKeeping(String iid) {
+        if (isValid()){
+            setRunningState(RUNNING_STATE.KEEPING, iid);
         } else {
             LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
         }
@@ -526,5 +560,47 @@ final public class NodeProgram extends Node {
             return subPrograms.values();
         }
         return new HashSet<NodeProgram>();
+    }
+
+    /**
+     * Method to get a device change and propagate it to the reference table
+     *
+     * @param id the id of the device
+     * @param s the status
+     */
+    public void setDeviceStatus(String id, ReferenceTable.STATUS s) {
+        if (references.setDeviceStatus(id, s)) {
+            changeStatus();
+        }
+    }
+
+    /**
+     * Method to get a program change and propagate it to the reference table
+     *
+     * @param id the id of the program
+     * @param s the new status
+     */
+    public void setProgramStatus(String id, ReferenceTable.STATUS s) {
+        if (references.setProgramStatus(id, s)) {
+            changeStatus();
+        }
+    }
+
+    /**
+     * method to handle a change in the reference table status
+     */
+    private void changeStatus() {
+        switch (references.getStatus()) {
+            case INVALID:
+            case MISSING:
+            case UNSTABLE:
+            case UNKNOWN:
+                setInvalid();
+                break;
+            case OK:
+                setValid();
+                break;
+        }
+
     }
 }

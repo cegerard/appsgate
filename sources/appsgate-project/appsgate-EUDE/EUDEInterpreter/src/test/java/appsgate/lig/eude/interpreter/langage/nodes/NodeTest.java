@@ -7,6 +7,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
+import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import java.util.Iterator;
 import org.jmock.Expectations;
@@ -89,6 +90,7 @@ public abstract class NodeTest {
     public void testCall() throws Exception {
         context.checking(new Expectations() {
             {
+                allowing(mediator).notifyChanges(with(any(ProgramCommandNotification.class)));
                 allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
             }
         });

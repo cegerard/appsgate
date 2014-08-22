@@ -7,7 +7,7 @@
 			<em data-i18n="places-menu.place-no-name"></em>
 		<% } %>
 	</p>
-	
+
 	<!-- body -->
 	<p class="list-group-item-text">
 		<ul class="list-unstyled">
@@ -19,7 +19,7 @@
 				<% } else { %>
 					<span data-i18n="devices.temperature.name.plural"></span>
 				<% } %>
-				<span class="label label-info">
+				<span class="label-value">
 					<%= place.getAverageTemperature() %>&degC
 				</span>
 				<span class="pull-right badge">
@@ -27,7 +27,7 @@
 				</span>
 			</li>
 			<% } %>
-			
+
 			<!-- illumination sensors -->
 			<% if (place.getIlluminationSensors().length > 0) { %>
 			<li>
@@ -36,7 +36,7 @@
 				<% } else { %>
 					<span data-i18n="devices.illumination.name.plural"></span>
 				<% } %>
-				<div class="label label-info">
+				<div class="label-value">
 					<%= place.getAverageIllumination() %> Lux
 				</div>
 				<span class="pull-right badge">
@@ -44,7 +44,7 @@
 				</span>
 			</li>
 			<% } %>
-			
+
 			<!-- switches -->
 			<% if (place.getSwitches().length > 0) { %>
 			<li>
@@ -58,7 +58,7 @@
 				</span>
 			</li>
 			<% } %>
-			
+
 			<!-- contact sensors -->
 			<% if (place.getContactSensors().length > 0) { %>
 			<li>
@@ -72,7 +72,7 @@
 				</span>
 			</li>
 			<% } %>
-			
+
 			<!-- key-card readers -->
 			<% if (place.getKeyCardReaders().length > 0) { %>
 			<li>
@@ -86,7 +86,7 @@
 				</span>
 			</li>
 			<% } %>
-			
+
 			<!-- ard sensors -->
 			<% if (place.getARDLock().length > 0) { %>
 			<li>
@@ -100,7 +100,7 @@
 				</span>
 			</li>
 			<% } %>
-			
+
 			<!-- plugs -->
 			<% if (place.getPlugs().length > 0) { %>
 			<li>
@@ -109,7 +109,7 @@
 				<% } else { %>
 					<span data-i18n="devices.plug.name.plural"></span>
 				<% } %>
-				<span class="label label-info">
+				<span class="label-value">
 					<%= place.getTotalConsumption() %> Watt
 				</span>
 				<span class="pull-right badge">
@@ -117,7 +117,7 @@
 				</span>
 			</li>
 			<% } %>
-			
+
 			<!-- philips hue lamps -->
 			<% if (place.getPhilipsHueLamps().length > 0) { %>
 			<li>

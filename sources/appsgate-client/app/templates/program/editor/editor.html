@@ -15,10 +15,11 @@
         <% } %>
         <% if (program.get("name") !== "") { %>
         <input class="programNameInput" type="text" value="<%= program.get('name') %>"/>
-        <span class="hide text-danger" data-i18n="modal-edit-program.program-already-existing"></span>
         <% } else { %>
-        <em>Programme sans nom</em>
+        <input class="programNameInput" type="text" value="<%= $.i18n.t('programs.program-no-name') %>"/>
         <% } %>
+        <span class="hide text-danger" data-i18n="modal-edit-program.program-already-existing"></span>
+
         </div>
         <div class="pull-right">
             <a href="#programs/<%= program.get('id') %>" class="btn btn-default">
