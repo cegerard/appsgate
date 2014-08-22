@@ -197,7 +197,7 @@ public class TraceMan implements TraceManSpec {
             try {
                 event.put("type", "update");
                 event.put("state", getDeviceState(srcId, varName, value));
-                event.put("picto", Trace.getPictoState(deviceGrammar.get(srcId).getType(), varName, value));
+                event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
             } catch (JSONException e) {
             }
             
