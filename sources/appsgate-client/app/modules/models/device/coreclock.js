@@ -20,6 +20,8 @@ define([
 
       CoreClock.__super__.initialize.apply(this, arguments);
 
+      self.set("reset", false);
+
       // when the flow rate changes, update the interval that controls the local time
       this.on("change:flowRate", function() {
         //clearInterval(this.intervalLocalClockValue);
@@ -41,7 +43,7 @@ define([
       });
 
       this.on("change:resetClock", function() {
-            self.resetClock();
+        self.resetClock();
       });
 
       dispatcher.on("updateClockClientSide",function(timePassed){
