@@ -41,7 +41,7 @@ define([
           break;
         case "switchOff":
           $(btn).append("<span data-i18n='keyboard.turn-off-lamp-action'/>");
-          v.methodName = "Off";
+          v.methodName = "off";
           v.phrase = "language.turn-off-lamp-action";
           $(btn).attr("json", JSON.stringify(v));
           break;
