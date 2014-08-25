@@ -6,6 +6,8 @@
 
 package appsgate.lig.ehmi.trace;
 
+import java.util.Collection;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -187,4 +189,12 @@ public class Trace {
     		return this.toString().toLowerCase();
     	}
     }
+
+	public static String getConnectionPicto() {
+		return PICTO_TABLE.CONNECTION.stringify();
+	}
+
+	public static String getDeconnectionPicto() {
+		return PICTO_TABLE.DECONNECTION.stringify();
+	}
 }

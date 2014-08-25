@@ -200,19 +200,23 @@ public class TraceMan implements TraceManSpec {
             	if(varName.equalsIgnoreCase("status")) {
             		if(value.equalsIgnoreCase("2")){
             			event.put("type", "connection");
+            			event.put("picto", Trace.getConnectionPicto());
                 		JDecoration = Trace.getJSONDecoration("connection", "technical", null, null, "Connection");
                 	}else if (value.equalsIgnoreCase("0")) {
                 		event.put("type", "deconnection");
+                		event.put("picto", Trace.getDeconnectionPicto());
                 		JDecoration = Trace.getJSONDecoration("deconnection", "technical", null, null, "Deconnection");
                 	} else {
                 		event.put("type", "update");
                 		JDecoration = Trace.getJSONDecoration("error", "technical", null, null, "Error dectected");
+                		event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
                 	}
             	}else{
             		 event.put("type", "update");
+            		 event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
             	}
                 event.put("state", getDeviceState(srcId, varName, value));
-                event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
+               
             } catch (JSONException e) {
             }
             
