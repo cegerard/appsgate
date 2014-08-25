@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 
@@ -485,6 +487,33 @@ public class EHMIProxyMock implements EHMIProxySpec {
 	@Override
 	public long getCurrentTimeInMillis() {
 		return 0;
+	}
+
+
+	@Override
+	public boolean addClientConnexion(CommandListener cmdListener, String name,
+			int port) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean removeClientConnexion(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public void sendFromConnection(String name, String msg) {
+		// TODO Auto-generated method stub
+	}
+
+
+	@Override
+	public void sendFromConnection(String name, int clientId, String msg) {
+		// TODO Auto-generated method stub
 	}
 
 }

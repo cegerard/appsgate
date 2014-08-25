@@ -64,5 +64,10 @@ public interface TraceManSpec {
      * @return a JSONArray containing the traces between that interval
      */
     public JSONArray getTracesBetweenInterval(Long start, Long end);
+    
+    /**
+	 * Toggle live tracing for real time debug session
+	 */
+    public boolean toggleLiveTrace();
 
 }

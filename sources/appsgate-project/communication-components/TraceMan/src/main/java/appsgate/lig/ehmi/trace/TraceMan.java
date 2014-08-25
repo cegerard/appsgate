@@ -18,6 +18,7 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
+import appsgate.lig.ehmi.trace.listener.TraceCmdListener;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
@@ -74,6 +75,16 @@ public class TraceMan implements TraceManSpec {
     private TraceHistory fileTracer;
     
     /**
+     *Boolean for live tracer activation
+     */
+    private boolean liveTraceActivated = false;
+    
+    /**
+     * Trace log in real time
+     */
+    private TraceRT liveTracer;
+    
+    /**
      * The buffer queue for AppsGate simple traces
      */
     private TraceQueue<JSONObject> traceQueue;
@@ -83,6 +94,9 @@ public class TraceMan implements TraceManSpec {
      * use to avoid collisions
      */
 	private long lastTimeStamp;
+	
+	private final String DEBUGGUER_COX_NAME = "debuguer";
+	private final int DEBUGGUER_DEFAULT_PORT = 8090;
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -96,7 +110,7 @@ public class TraceMan implements TraceManSpec {
         if (!dbTracer.init()) {
             LOGGER.warn("Unable to start the tracer");
         }
-        
+
         //TraceQueue initialization with no aggregation
         traceQueue = new TraceQueue<JSONObject>(0);
     }
@@ -108,6 +122,7 @@ public class TraceMan implements TraceManSpec {
     	fileTracer.close();
         dbTracer.close();
         traceQueue.stop();
+        EHMIProxy.removeClientConnexion(DEBUGGUER_COX_NAME);
     }
 
     /**
@@ -146,8 +161,10 @@ public class TraceMan implements TraceManSpec {
 	    		lastTimeStamp = timeStamp;
 	   
 	    		fileTracer.trace(trace); //Save into local file
-	    		//TODO live tracer on socket
-	    		//liveTracer.trace(trace); //Send trace packet to client side
+	    		
+	    		if(liveTraceActivated) {
+	    			liveTracer.trace(trace); //Send trace packet to client side
+	    		}
 	    		
 	    	} else {
 	    		LOGGER.error("Multiple trace request with the same time stamp value: "+timeStamp+". Entry are skipped.");
@@ -441,6 +458,22 @@ public class TraceMan implements TraceManSpec {
      */
 	public void setDeltaT(long deltaTinMillis) {
 		traceQueue.setDeltaTinMillis(deltaTinMillis);
+	}
+		
+	@Override
+	public boolean toggleLiveTrace(){
+		if(liveTraceActivated){
+			liveTraceActivated = false;
+			return EHMIProxy.removeClientConnexion(DEBUGGUER_COX_NAME);
+		}else{
+			liveTraceActivated = true;
+			//Socket and live trace initialization
+	        if(EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGUER_COX_NAME, DEBUGGUER_DEFAULT_PORT)){
+	        	liveTracer = new TraceRT(DEBUGGUER_COX_NAME, EHMIProxy);
+	        	return true;
+	        }
+	        return false;
+		}
 	}
     
     /*****************************/
