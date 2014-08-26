@@ -1,6 +1,6 @@
-package appsgate.lig.mail.gmail;
+package appsgate.lig.mail.javamail;
 
-import appsgate.lig.mail.gmail.utils.JSSEProvider;
+import appsgate.lig.mail.javamail.utils.JSSEProvider;
 import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Security;
-import java.util.Properties;
 
 /**
  * Created by thibaud on 21/07/2014.
@@ -24,11 +23,6 @@ import java.util.Properties;
 public class MailSender extends javax.mail.Authenticator {
     private final static org.slf4j.Logger logger = LoggerFactory.getLogger(MailSender.class);
 
-    private String mailhost ;
-    private String mailport ;
-
-    private String user;
-    private String password;
     private Session session;
 
     static {
@@ -42,7 +36,8 @@ public class MailSender extends javax.mail.Authenticator {
     }
 
     protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(user, password);
+        return new PasswordAuthentication(session.getProperty(MailConfiguration.USER),
+                session.getProperty(MailConfiguration.PASSWORD));
     }
 
     public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {

@@ -1,9 +1,7 @@
 /**
  * 
  */
-package appsgate.lig.mail.gmail;
-
-import static org.junit.Assert.*;
+package appsgate.lig.mail.javamail;
 
 import org.junit.*;
 import org.slf4j.LoggerFactory;
@@ -16,8 +14,8 @@ import java.util.List;
  * @author thibaud
  *
  */
-public class GmailTest {
-    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(GmailTest.class);
+public class MailServiceTest {
+    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(MailServiceTest.class);
 
 
     /**
@@ -52,7 +50,7 @@ public class GmailTest {
     @Ignore //Disabled because with too much testing on the same account, gmail suspect hacking
 	public void test() throws Exception {
         logger.debug("Begin test");
-        Gmail mailer = new Gmail();
+        MailServiceImpl mailer = new MailServiceImpl();
         mailer.setAccount("smarthome.inria@gmail.com","smarthome2014");
 
         logger.debug("Mailer creation OK");

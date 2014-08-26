@@ -159,8 +159,8 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	
 	
 	public static Object initGoogleMail() {
-		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"mail-service-specification",
-				"GmailImpl", null);
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"CoreMailSpec",
+				"MailService", null);
 	}
 	
 	

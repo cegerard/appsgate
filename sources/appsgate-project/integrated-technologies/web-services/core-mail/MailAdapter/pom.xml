@@ -35,7 +35,7 @@
 
         <dependency>
             <groupId>appsgate.components</groupId>
-            <artifactId>core-mail-gmail</artifactId>
+            <artifactId>MailService</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -43,6 +43,11 @@
             <groupId>fr.imag.adele.apam</groupId>
             <artifactId>apam-core</artifactId>
             <version>${apam.current.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+            <version>${ipojo.annotations.version}</version>
         </dependency>
 
         <dependency>

@@ -219,7 +219,7 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
-                                    <artifactId>core-mail-gmail</artifactId>
+                                    <artifactId>MailService</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
                                 <artifactItem>
@@ -413,7 +413,12 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
-                                    <artifactId>core-mail-service-specification</artifactId>
+                                    <artifactId>CoreMailSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>MailAdapter</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
 

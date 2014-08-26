@@ -1,38 +1,16 @@
-package appsgate.lig.mail.gmail;
-
-import java.security.Security;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import appsgate.lig.mail.gmail.utils.JSSEProvider;
-import org.json.JSONException;
-import org.json.JSONObject;
+package appsgate.lig.mail.javamail;
 
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.mail.Mail;
-
 import com.sun.mail.imap.IMAPFolder;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
+
+import javax.mail.*;
+import java.util.*;
 
 /**
  * Gmail implementation for mail service
@@ -41,12 +19,12 @@ import org.slf4j.LoggerFactory;
  * @author Cédric Gérard
  *
  */
-public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
+public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailService, CoreObjectSpec {
 
     /**
      * Static class member uses to log what happened in each instances
      */
-    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(Gmail.class);
+    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
     private Timer refreshTimer;
 
     private MailSender mailSender = null;
@@ -57,6 +35,8 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
     private String serviceId;
     private String userType;
     private String status;
+
+    private String user;
 
     /*
      * State variables
@@ -75,20 +55,25 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
     private TimerTask refreshtask;
 
-    public Gmail() {
+    public MailServiceImpl() {
         properties= new MailConfiguration();
     }
+
+    @Override
     public void setConfiguration(MailConfiguration config){
         properties= new MailConfiguration();
         properties.putAll(config);
     }
 
+    @Override
     public void setAccount(String user, String password) {
+        this.user = user;
         properties.put(MailConfiguration.USER,user);
         properties.put(MailConfiguration.FROM,user);
         properties.put(MailConfiguration.PASSWORD,password);
     }
 
+    @Override
     public void start() {
 
         try {
@@ -104,6 +89,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
     }
 
+    @Override
     public void stop() {
 
         refreshtask.cancel();
@@ -119,6 +105,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
         }
     }
 
+    @Override
     public void release() {
 
         try {
@@ -177,7 +164,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
                 try {
                     logger.trace("Refreshing mail data");
-                    Gmail.this.fetch();
+                    MailServiceImpl.this.fetch();
                 } catch (MessagingException e) {
                     logger.warn("Refreshing mail data FAILED with the message: {}", e.getMessage());
                 }
@@ -337,6 +324,10 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
             IMAPFolder folder = getMailBox(GMailConstants.DEFAULT_INBOX);
 
             Message[] messages;
+            int totalSize = folder.getMessageCount();
+            if(size>totalSize) {
+                size=totalSize;
+            }
 
             if (size == 0) {
                 messages = folder.getMessages();
@@ -450,6 +441,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
         return lastFetchDateTime;
     }
 
+    @Override
     public void autoRefreshValueChanged(Object newValue) {
         refreshtask.cancel();
         logger.trace("Auto-refresh changed to: {}", refreshRate);

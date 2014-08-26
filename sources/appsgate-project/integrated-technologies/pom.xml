@@ -17,17 +17,14 @@
 	<modules>
 		<module>devicegen</module>
 		<module>ubikit</module>
-<!--		<module>immotronic</module>-->
 		<module>cybergarage</module>
 		<module>PhilipsHUE4Appsgate</module>
 		<module>KNX4Appsgate</module>
 		<module>sensor-network</module>
 		<module>upnp-dlna</module>
 		<module>web-services</module>
-<!-- 		<module>device-mockups</module> -->
 		<module>software-services</module>
 		<module>fuchsia-ard-plugin</module>
-<!-- 		<module>dfki-integration</module> -->
 		<module>devices</module>
 		<module>IoT</module>
 	</modules>

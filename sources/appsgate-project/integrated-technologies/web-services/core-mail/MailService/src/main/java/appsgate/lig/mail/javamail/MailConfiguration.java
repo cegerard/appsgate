@@ -1,13 +1,13 @@
-package appsgate.lig.mail.gmail;
+package appsgate.lig.mail.javamail;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
  * Created by thibaud on 25/08/2014.
  */
 public class MailConfiguration extends Properties {
+
+    public static String PROVIDER="";
 
     // Those constants are compatible with JavaMail API
     public final static String MAIL_PREFIX = "mail.";

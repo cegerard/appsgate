@@ -5,7 +5,6 @@
 	<specification name="CoreMailSpec"
 		interfaces="appsgate.lig.mail.Mail, appsgate.lig.core.object.spec.CoreObjectSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
 		<definition name="user" type="string" />
-		<definition name="password" type="string" />
 		<definition name="auto-refresh" type="int" />
 	</specification>
 

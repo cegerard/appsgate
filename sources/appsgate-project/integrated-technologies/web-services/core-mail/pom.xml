@@ -13,7 +13,7 @@
 	<name>Mail Services</name>
 	
 	<modules>
-		<module>core-mail-gmail</module>
+		<module>MailService</module>
 		<module>MailAdapter</module>
 	</modules>
 	

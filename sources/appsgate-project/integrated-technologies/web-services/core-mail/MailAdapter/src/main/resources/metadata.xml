@@ -3,7 +3,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                               
 	<implementation name="MailAdapter" classname="appsgate.lig.mail.adapter.MailAdapter">
-        <relation implementation="GmailImpl" field="mailInstances" multiple="true" resolve="exist" creation="eager"/>
+        <relation implementation="MailService" field="mailInstances" multiple="true" resolve="exist" creation="eager"/>
 	    
 		<callback onInit="start" onRemove="stop" />
 	</implementation>

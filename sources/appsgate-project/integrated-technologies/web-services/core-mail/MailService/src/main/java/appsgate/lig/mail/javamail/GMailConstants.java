@@ -1,9 +1,10 @@
-package appsgate.lig.mail.gmail;
+package appsgate.lig.mail.javamail;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class GMailConstants extends MailConfiguration{
+
+    public static String PROVIDER="GMail";
+
 
     public static final String DEFAULT_INBOX = "inbox";
 

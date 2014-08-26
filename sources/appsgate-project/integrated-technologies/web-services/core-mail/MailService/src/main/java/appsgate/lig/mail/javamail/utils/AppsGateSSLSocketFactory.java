@@ -1,4 +1,4 @@
-package appsgate.lig.mail.gmail.utils;
+package appsgate.lig.mail.javamail.utils;
 
 import java.io.IOException;
 import java.net.InetAddress;

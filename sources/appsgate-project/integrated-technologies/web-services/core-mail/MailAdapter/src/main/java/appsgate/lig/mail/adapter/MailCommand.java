@@ -46,13 +46,6 @@ public class MailCommand {
 
     PrintStream out = System.out;
 
-
-
-//			"mailShow#show last 5 mails",
-//			"mailSend#send mail",
-//			"mailFetch#fetch mail from the mail server",
-//			"mailInfo#shows information about mail service"};
-
     @Descriptor("show last 5 mails")
     public void mailShow(@Descriptor("none") String... args) throws  MessagingException{
 
@@ -60,7 +53,7 @@ public class MailCommand {
 
 		String instanceParam = getArgumentValue("-instance", args);
 		
-		Integer size=Integer.parseInt(getArgumentValueDefault("-size","10", args));
+		Integer size=Integer.parseInt(getArgumentValueDefault("-size","5", args));
 
 		if (instanceParam != null) {
 			Instance instance = CST.componentBroker.getInst(instanceParam);
@@ -68,7 +61,7 @@ public class MailCommand {
 		} else {
 			for (Instance instance : CST.componentBroker.getInsts()) {
 				if (!instance.getSpec().getName()
-						.equals("mail-service-specification"))
+						.equals("CoreMailSpec"))
 					continue;
 				instances.add(instance);
 			}
@@ -109,7 +102,7 @@ public class MailCommand {
 		} else {
 			for (Instance instance : CST.componentBroker.getInsts()) {
 				if (!instance.getSpec().getName()
-						.equals("mail-service-specification"))
+						.equals("CoreMailSpec"))
 					continue;
 				instances.add(instance);
 			}
@@ -153,7 +146,7 @@ public class MailCommand {
 		} else {
 			for (Instance instance : CST.componentBroker.getInsts()) {
 				if (!instance.getSpec().getName()
-						.equals("mail-service-specification"))
+						.equals("CoreMailSpec"))
 					continue;
 				instances.add(instance);
 			}
@@ -184,7 +177,7 @@ public class MailCommand {
 		} else {
 			for (Instance instance : CST.componentBroker.getInsts()) {
 				if (!instance.getSpec().getName()
-						.equals("mail-service-specification"))
+						.equals("CoreMailSpec"))
 					continue;
 				instances.add(instance);
 			}

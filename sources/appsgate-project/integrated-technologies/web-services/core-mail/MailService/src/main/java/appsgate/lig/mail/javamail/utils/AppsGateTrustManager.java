@@ -1,4 +1,4 @@
-package appsgate.lig.mail.gmail.utils;
+package appsgate.lig.mail.javamail.utils;
 
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
