@@ -196,9 +196,7 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
         if (EHMIProxy.getGrammarFromDevice(objectID) != null) { //if the equipment has been instantiated from ApAM spec before
-            //Create the event description device entry
-            JSONObject event = new JSONObject();
-            JSONObject deviceJson = getJSONDevice(objectID, event, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action using HMI"));
+            JSONObject deviceJson = getJSONDevice(objectID, null, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action using HMI"));
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
@@ -286,9 +284,15 @@ public class TraceMan implements TraceManSpec {
                 location.put("name", place.getName());
             }
             objectNotif.put("location", location);
-            objectNotif.put("decorations", new JSONArray().put(cause));
-            objectNotif.put("event", event);
-
+            if(cause != null) {
+            	objectNotif.put("decorations", new JSONArray().put(cause));
+            }else{
+            	objectNotif.put("decorations", new JSONArray());
+            }
+            if(event != null) {
+            	objectNotif.put("event", event);
+            }
+            
         } catch (JSONException e) {
 
         }

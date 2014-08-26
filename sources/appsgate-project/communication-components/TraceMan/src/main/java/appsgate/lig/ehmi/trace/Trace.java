@@ -6,8 +6,6 @@
 
 package appsgate.lig.ehmi.trace;
 
-import java.util.Collection;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
