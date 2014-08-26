@@ -348,7 +348,18 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public JSONArray getTraces(Long timestamp, Integer number) {
-        return dbTracer.get(timestamp, number);
+    	JSONArray tracesTab = dbTracer.get(timestamp, number);
+    	if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
+    		return tracesTab;
+    	} else { // Apply aggregation policy
+    		try {
+				return traceQueue.applyAggregationPolicy(null);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+    	}
+    	
+    	return tracesTab;
     }
 
     @Override
@@ -364,7 +375,7 @@ public class TraceMan implements TraceManSpec {
 
             //Create the event description device entry
             JSONObject event = new JSONObject();
-            JSONObject cause = new JSONObject();
+            JSONObject cause = null;
             {
                 JSONObject s = new JSONObject();
                 
@@ -398,7 +409,11 @@ public class TraceMan implements TraceManSpec {
 
             }
             progNotif.put("event", event);
-            progNotif.put("decorations", new JSONArray().put(cause));
+            if( cause != null) {
+            	progNotif.put("decorations", new JSONArray().put(cause));
+            }else{
+            	progNotif.put("decorations", new JSONArray());
+            }
         } catch (JSONException e) {
 
         }
@@ -581,6 +596,16 @@ public class TraceMan implements TraceManSpec {
 		}
 		
 		/**
+		 * Aggregate traces with the spificied policy
+		 * @param policy the policy to apply to traces
+		 * @return a JSONArray of aggregate traces
+		 * @throws JSONException 
+		 */
+		public JSONArray applyAggregationPolicy(JSONObject policy) throws JSONException{
+			return traceExec.apply(policy);
+		}
+		
+		/**
 	     * A thread class to trace all elements in the trace
 	     * queue
 	     * 
@@ -662,7 +687,7 @@ public class TraceMan implements TraceManSpec {
 			 * @param policy other policies to apply (e.g. type of device)
 			 * @return the aggregated traces as a JSONArray
 			 */
-			private JSONArray apply(JSONObject policy) throws JSONException {
+			public JSONArray apply(JSONObject policy) throws JSONException {
 				synchronized(traceQueue) {
 					
 					JSONArray aggregateTraces = new JSONArray();
