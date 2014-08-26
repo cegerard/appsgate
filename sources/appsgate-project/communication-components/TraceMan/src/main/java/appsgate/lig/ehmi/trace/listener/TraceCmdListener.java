@@ -35,13 +35,8 @@ public class TraceCmdListener implements CommandListener{
 
 	@Override
 	public void onReceivedCommand(JSONObject obj) {
-		LOGGER.trace("debbuguer commande received: "+obj.toString());
-		
-		//TODO remove test
-		if(obj.has("deactivate")){
-			traceMan.toggleLiveTrace();
-		}
-		
+		LOGGER.error("debugguer commande received: "+obj.toString());
+
 		//TODO add client debugguer communication protocl here
 	}
 

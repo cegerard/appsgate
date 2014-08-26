@@ -477,4 +477,14 @@ public interface EHMIProxySpec {
      * @param msg the message to send
      */
     public void sendFromConnection(String name, int clientId, String msg);
+    
+	/************************************/
+	/**       Trace man  commands       */
+	/************************************/
+   
+    /**
+     * Toggle real tracing mecanism 
+     * @return true if live trace is toggled, false if not
+     */
+    public boolean toggleLiveTrace();
 }

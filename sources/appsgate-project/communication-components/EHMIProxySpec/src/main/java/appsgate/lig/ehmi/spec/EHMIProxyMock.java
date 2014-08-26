@@ -516,4 +516,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		// TODO Auto-generated method stub
 	}
 
+
+	@Override
+	public boolean toggleLiveTrace() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

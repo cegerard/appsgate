@@ -67,6 +67,7 @@ public interface TraceManSpec {
     
     /**
 	 * Toggle live tracing for real time debug session
+	 * @return true if live trace is toggled, false if not
 	 */
     public boolean toggleLiveTrace();
 

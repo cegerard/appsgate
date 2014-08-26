@@ -466,13 +466,12 @@ public class TraceMan implements TraceManSpec {
 			liveTraceActivated = false;
 			return EHMIProxy.removeClientConnexion(DEBUGGUER_COX_NAME);
 		}else{
-			liveTraceActivated = true;
 			//Socket and live trace initialization
 	        if(EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGUER_COX_NAME, DEBUGGUER_DEFAULT_PORT)){
 	        	liveTracer = new TraceRT(DEBUGGUER_COX_NAME, EHMIProxy);
-	        	return true;
+	        	liveTraceActivated = true;
 	        }
-	        return false;
+	        return liveTraceActivated;
 		}
 	}
     

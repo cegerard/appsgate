@@ -1079,4 +1079,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		sendToClientService.sendTo(name, clientId, msg);
 	}
 
+	@Override
+	public boolean toggleLiveTrace() {
+		return traceManager.toggleLiveTrace();
+	}
+
 }
