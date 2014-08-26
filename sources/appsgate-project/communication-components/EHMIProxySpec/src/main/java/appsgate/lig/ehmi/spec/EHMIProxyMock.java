@@ -523,4 +523,18 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		return false;
 	}
 
+
+	@Override
+	public JSONArray getNbTraces(Long timestamp, Integer number) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public JSONArray getTraces(Long start, Long end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

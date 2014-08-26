@@ -479,7 +479,7 @@ public interface EHMIProxySpec {
     public void sendFromConnection(String name, int clientId, String msg);
     
 	/************************************/
-	/**       Trace man  commands       */
+	/**    Trace mananager commands     */
 	/************************************/
    
     /**
@@ -487,4 +487,20 @@ public interface EHMIProxySpec {
      * @return true if live trace is toggled, false if not
      */
     public boolean toggleLiveTrace();
+    
+    /**
+     * Get a specififed number of traces from a specified date in the past
+     * @param timestamp the time till the last information
+     * @param number the max number of elements to return (0 for all)
+     * @return a JSONArray containing the traces
+     */
+    public JSONArray getNbTraces(Long timestamp, Integer number);
+    
+    /**
+     * Get traces from start date till the end date
+     * @param start the start of interval
+     * @param end the end of interval
+     * @return a JSONArray containing the traces between that interval
+     */
+   public JSONArray getTraces(Long start, Long end);
 }

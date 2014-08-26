@@ -1,7 +1,6 @@
 package appsgate.lig.ehmi.trace;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -357,7 +356,8 @@ public class TraceMan implements TraceManSpec {
     		return tracesTab;
     	} else { // Apply aggregation policy
     		try {
-				return traceQueue.applyAggregationPolicy(null);
+    			traceQueue.loadTraces(tracesTab);
+				return traceQueue.applyAggregationPolicy(null); //Call with default aggregation policy (id and time)
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -368,7 +368,19 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public JSONArray getTracesBetweenInterval(Long start, Long end) {
-        return dbTracer.getInterval(start, end);
+    	JSONArray tracesTab = dbTracer.getInterval(start, end);
+    	if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
+    		return tracesTab;
+    	} else { // Apply aggregation policy
+    		try {
+    			traceQueue.loadTraces(tracesTab);
+				return traceQueue.applyAggregationPolicy(null); //Call with default aggregation policy (id and time)
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+    	}
+    	
+    	return tracesTab;
     }
 
     private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
@@ -575,11 +587,20 @@ public class TraceMan implements TraceManSpec {
 		/**
 		 * Load the Queue with a collection of traces
 		 * @param traces the collection to load
+		 * @throws JSONException 
 		 */
-		public synchronized void loadTraces (Collection<E> traces) {
-            //TODO cut the streaming, make trace aggregation and send
+		@SuppressWarnings("unchecked")
+		public synchronized void loadTraces (JSONArray traces) throws JSONException {
+			
+			ArrayList<E> traceCollection = new ArrayList<E>();
+			int nbTrace = traces.length();
+			
+			for(int i =0; i < nbTrace; i++){
+				traceCollection.add((E) traces.getJSONObject(i));
+			}
+			
 			this.clear();
-			this.addAll(traces);
+			this.addAll(traceCollection);
 		}
 		
 		/**
