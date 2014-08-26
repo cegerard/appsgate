@@ -1,6 +1,7 @@
 package appsgate.lig.mail.gmail;
 
 import appsgate.lig.mail.gmail.utils.JSSEProvider;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -21,6 +22,8 @@ import java.util.Properties;
  * Created by thibaud on 21/07/2014.
  */
 public class MailSender extends javax.mail.Authenticator {
+    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(MailSender.class);
+
     private String mailhost ;
     private String mailport ;
 
@@ -32,26 +35,10 @@ public class MailSender extends javax.mail.Authenticator {
         Security.addProvider(new JSSEProvider());
     }
 
-    public MailSender(String mailhost, String mailport, String user, String password) {
-        this.user = user;
-        this.password = password;
-        this.mailhost = mailhost;
-        this.mailport = mailport;
+    public MailSender(Session session) {
+        logger.debug("new MailSender(...)");
 
-
-
-        Properties props = new Properties();
-        props.setProperty("mail.transport.protocol", "smtp");
-        props.setProperty("mail.host", mailhost);
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", mailport);
-        props.put("mail.smtp.socketFactory.port", mailport);
-        props.put("mail.smtp.socketFactory.class",
-                "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.socketFactory.fallback", "false");
-        props.setProperty("mail.smtp.quitwait", "false");
-
-        session = Session.getDefaultInstance(props, this);
+        this.session = session;
     }
 
     protected PasswordAuthentication getPasswordAuthentication() {
@@ -59,6 +46,8 @@ public class MailSender extends javax.mail.Authenticator {
     }
 
     public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {
+        logger.debug("sendMail(String subject: {}, String body: {}, String sender: {}, String recipients: {})"
+                ,subject,body,sender, recipients);
         try{
             MimeMessage message = new MimeMessage(session);
             DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
@@ -70,8 +59,9 @@ public class MailSender extends javax.mail.Authenticator {
             else
                 message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
             Transport.send(message);
+            logger.debug("sendMail(...), mail successfully sent");
         }catch(Exception e){
-
+            logger.error("Error sending mail : "+e.getMessage());
         }
     }
 

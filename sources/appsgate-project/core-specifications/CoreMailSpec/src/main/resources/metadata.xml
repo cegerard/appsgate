@@ -2,7 +2,7 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<specification name="mail-service-specification"
+	<specification name="CoreMailSpec"
 		interfaces="appsgate.lig.mail.Mail, appsgate.lig.core.object.spec.CoreObjectSpec" messages="appsgate.lig.core.object.messages.NotificationMsg">
 		<definition name="user" type="string" />
 		<definition name="password" type="string" />

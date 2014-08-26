@@ -10,11 +10,11 @@
 	
 	<artifactId>core-mail</artifactId>
 	<packaging>pom</packaging>
-	<name>CoreMail bundle</name>
+	<name>Mail Services</name>
 	
 	<modules>
 		<module>core-mail-gmail</module>
-		<module>core-mail-service-specification</module>
+		<module>MailAdapter</module>
 	</modules>
 	
 </project>

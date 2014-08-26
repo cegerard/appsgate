@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>core-mail-service-specification</artifactId>
+			<artifactId>CoreMailSpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -60,16 +60,6 @@
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>1.4.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.gogo.runtime</artifactId>
-            <version>${felix.gogo.runtime.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.gogo.command</artifactId>
-            <version>${felix.gogo.command.version}</version>
         </dependency>
     </dependencies>
 

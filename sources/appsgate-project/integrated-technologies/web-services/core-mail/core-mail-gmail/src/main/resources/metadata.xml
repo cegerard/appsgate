@@ -4,10 +4,8 @@
                               
 	<implementation name="GmailImpl" classname="appsgate.lig.mail.gmail.Gmail" specification="mail-service-specification" push="mailReceivedNotification">
 	    
-		<callback onInit="start" onRemove="stop" />
-		
-		<definition name="user" type="string" field="USER" injected="both"/>
-		<definition name="password" type="string" field="PASSWORD" injected="both"/>
+		<callback onRemove="stop" />
+
 		<definition name="auto-refresh" type="int" field="refreshRate" injected="both" method="autoRefreshValueChanged"/>
 		
 		<definition name="deviceId" 	type="string" default="666666666" field="serviceId"/>

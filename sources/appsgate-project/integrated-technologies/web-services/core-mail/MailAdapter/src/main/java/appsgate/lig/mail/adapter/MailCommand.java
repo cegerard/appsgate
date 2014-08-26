@@ -1,4 +1,4 @@
-package appsgate.lig.mail.gmail;
+package appsgate.lig.mail.adapter;
 
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -27,8 +27,8 @@ import org.apache.felix.service.command.Descriptor;
  */
 @Instantiate
 @org.apache.felix.ipojo.annotations.Component(public_factory = false, immediate = true)
-@Provides(specifications = GmailGogoCommand.class)
-public class GmailGogoCommand {
+@Provides(specifications = MailCommand.class)
+public class MailCommand {
 
 	@Requires
 	Apam apam;

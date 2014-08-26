@@ -49,12 +49,6 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
     private final static org.slf4j.Logger logger = LoggerFactory.getLogger(Gmail.class);
     private Timer refreshTimer;
 
-    /*
-     * Connection information variables
-     */
-    private String USER;
-    private String PASSWORD;
-
     private MailSender mailSender = null;
 
     /*
@@ -69,7 +63,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
      */
     private Calendar lastFetchDateTime = null;
     private final Integer refreshRate = -1;
-    private final Properties properties;
+    private MailConfiguration properties;
     private final HashMap<String, Message> messagesCached = new HashMap<String, Message>();
 
     /*
@@ -82,22 +76,24 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
     private TimerTask refreshtask;
 
     public Gmail() {
-        properties = System.getProperties();
-        logger.debug("System props before : "+System.getProperties());
-        properties.putAll(GMailConstants.defaultGoogleProperties);
-        logger.debug("System props after : "+System.getProperties());
-
+        properties= new MailConfiguration();
+    }
+    public void setConfiguration(MailConfiguration config){
+        properties= new MailConfiguration();
+        properties.putAll(config);
     }
 
     public void setAccount(String user, String password) {
-        USER=user;
-        PASSWORD=password;
+        properties.put(MailConfiguration.USER,user);
+        properties.put(MailConfiguration.FROM,user);
+        properties.put(MailConfiguration.PASSWORD,password);
     }
 
     public void start() {
 
         try {
-            String target = USER + PASSWORD;
+            String target = properties.getProperty(MailConfiguration.USER)
+                    + properties.getProperty(MailConfiguration.PASSWORD);
             serviceId = String.valueOf(target.hashCode());
             fetch();
         } catch (MessagingException e) {
@@ -149,10 +145,12 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
 
 // Get the store
-                store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
+                store = getSession().getStore(properties.getProperty(MailConfiguration.STORE_PROTOCOL));
                 logger.debug("Establishing connection with IMAP server.");
 
-                store.connect(GMailConstants.IMAP_SERVER,  USER, PASSWORD);
+                store.connect(properties.getProperty(MailConfiguration.STORE_HOST),
+                        properties.getProperty(MailConfiguration.USER),
+                        properties.getProperty(MailConfiguration.PASSWORD));
                 logger.debug("Connection established with IMAP server, "+"store : "+store);
 
             }catch(Exception exc) {
@@ -210,7 +208,8 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
                         @Override
                         protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(Gmail.this.USER, Gmail.this.PASSWORD);
+                            return new PasswordAuthentication(properties.getProperty(MailConfiguration.USER),
+                                    properties.getProperty(MailConfiguration.PASSWORD));
                         }
                     });
         }
@@ -229,7 +228,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
         try {
 
-            IMAPFolder box = getMailBox(GMailConstants.DEFAULT_INBOX);
+            IMAPFolder box = getMailBox(properties.getProperty(GMailConstants.DEFAULT_FOLDER));
 
             for (Message message : box.getMessages()) {
 
@@ -281,7 +280,9 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
         try {
             sendMailSimple(message.getAllRecipients()[0].toString(), message.getSubject(), message.getContent().toString());
         } catch (Exception exc) {
-            logger.error("Impossible to send mail from account {} due to '{}'", USER, exc.getStackTrace());
+            logger.error("Impossible to send mail from account {} due to '{}'",
+                    properties.getProperty(MailConfiguration.USER),
+                    exc.getStackTrace());
             
             return false;
         }
@@ -298,20 +299,22 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
         try {
             if(mailSender == null ) {
-                mailSender = new MailSender("smtp.gmail.com","465",USER, PASSWORD);
+                mailSender = new MailSender(getSession());
             }
 
             logger.info("Sending mail to: {}", to);
 
             mailSender.sendMail(subject,
                     body,
-                    USER,
+                    properties.getProperty(MailConfiguration.USER),
                     to);
 
             return true;
 
         } catch (Exception e) {
-            logger.error("Impossible to send mail from account {} due to '{}'", USER, e.getStackTrace());
+            logger.error("Impossible to send mail from account {} due to '{}'",
+                    properties.getProperty(MailConfiguration.USER)
+                    , e.getStackTrace());
             return false;
         }
 
@@ -413,7 +416,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
 
                     result.put("objectId", serviceId);
                     result.put("varName", "newMail");
-                    result.put("value", USER);
+                    result.put("value", properties.get(MailConfiguration.USER));
 
                     result.put("subject", msg.getSubject());
                     result.put("from", msg.getFrom());
@@ -481,7 +484,7 @@ public class Gmail extends CoreObjectBehavior implements Mail, CoreObjectSpec {
         descr.put("id", serviceId);
         descr.put("type", userType); //102 for mail
         descr.put("status", status);
-        descr.put("user", USER);
+        descr.put("user", properties.getProperty(MailConfiguration.USER));
         descr.put("refreshRate", refreshRate);
 
         return descr;
