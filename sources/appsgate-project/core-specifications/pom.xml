@@ -35,6 +35,7 @@
 		<module>CoreDomiCubeSpec</module>
 		<module>CoreShutterSpec</module>
 		<module>CoreARDBadgeDoorSpec</module>
+		<module>CoreMailSpec</module>
 	</modules>
 
 </project>
