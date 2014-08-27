@@ -94,8 +94,8 @@ public class TraceMan implements TraceManSpec {
      */
 	private long lastTimeStamp;
 	
-	private final String DEBUGGUER_COX_NAME = "debuguer";
-	private final int DEBUGGUER_DEFAULT_PORT = 8090;
+	private final String DEBUGGER_COX_NAME = "debugger";
+	private final int DEBUGGER_DEFAULT_PORT = 8090;
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -111,7 +111,7 @@ public class TraceMan implements TraceManSpec {
         }
 
         //TraceQueue initialization with no aggregation
-        traceQueue = new TraceQueue<JSONObject>(0);
+        traceQueue = new TraceQueue<JSONObject>(10000);
     }
 
     /**
@@ -121,7 +121,7 @@ public class TraceMan implements TraceManSpec {
     	fileTracer.close();
         dbTracer.close();
         traceQueue.stop();
-        EHMIProxy.removeClientConnexion(DEBUGGUER_COX_NAME);
+        EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
     }
 
     /**
@@ -495,11 +495,11 @@ public class TraceMan implements TraceManSpec {
 	public boolean toggleLiveTrace(){
 		if(liveTraceActivated){
 			liveTraceActivated = false;
-			return EHMIProxy.removeClientConnexion(DEBUGGUER_COX_NAME);
+			return EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
 		}else{
 			//Socket and live trace initialization
-	        if(EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGUER_COX_NAME, DEBUGGUER_DEFAULT_PORT)){
-	        	liveTracer = new TraceRT(DEBUGGUER_COX_NAME, EHMIProxy);
+	        if(EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGER_COX_NAME, DEBUGGER_DEFAULT_PORT)){
+	        	liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
 	        	liveTraceActivated = true;
 	        }
 	        return liveTraceActivated;
@@ -527,6 +527,16 @@ public class TraceMan implements TraceManSpec {
 	     * Thread to manage trace writing and aggregation
 	     */
 	    private TraceExecutor traceExec;
+
+        /**
+         * Timer to wake up the thread each deltaT time interval
+         */
+        private Timer timer;
+
+        /**
+         * The next time to log
+         */
+        private long logTime;
 	    
 	    /**
 	     * Define the trace time width in milliseconds
@@ -534,7 +544,6 @@ public class TraceMan implements TraceManSpec {
 	     * is trace when it appear
 	     */
 	    private long deltaTinMillis;
-		
 
 		/**
     	 * Default TraceQueue constructor with max capacity
@@ -545,9 +554,7 @@ public class TraceMan implements TraceManSpec {
 			super(50000);
 			
 			this.deltaTinMillis = deltaT;
-			
-			traceExec = new TraceExecutor();
-		    new Thread(traceExec).start();
+            initTraceExec();
 		}
 		
 		/**
@@ -559,10 +566,32 @@ public class TraceMan implements TraceManSpec {
 			super(capacity);
 			
 			this.deltaTinMillis = deltaT;
-			
-			traceExec = new TraceExecutor();
-		    new Thread(traceExec).start();
+            initTraceExec();
 		}
+
+        /**
+         * Initiate the trace executor thread/service
+         */
+        private  void initTraceExec() {
+            traceExec = new TraceExecutor();
+            new Thread(traceExec).start();
+            timer = new Timer();
+            if(deltaTinMillis > 0) {
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        //TODO to remove, this log is just for timer ring following in console log
+                        LOGGER.error("Trace timer ring !");
+                        synchronized(traceExec) {
+                            if(traceQueue != null && !traceQueue.isEmpty() && traceExec.isSleeping()){
+                                logTime = EHMIProxy.getCurrentTimeInMillis();
+                                traceExec.notify();
+                            }
+                        }
+                    }
+                }, deltaTinMillis, deltaTinMillis);
+            }
+        }
 		
     	@Override
 		public boolean offer(E e) {
@@ -617,11 +646,34 @@ public class TraceMan implements TraceManSpec {
 	     */
 		public void setDeltaTinMillis(long deltaTinMillis) {
 			this.deltaTinMillis = deltaTinMillis;
-			traceExec.reScheduledTraceTimer(deltaTinMillis);
+			reScheduledTraceTimer(deltaTinMillis);
 		}
+
+        /**
+         * Schedule the trace timer for aggregation
+         * @param time the time interval
+         */
+        public void reScheduledTraceTimer(long time){
+            timer.cancel();
+            timer.purge();
+
+            timer = new Timer();
+            if(deltaTinMillis > 0) {
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        synchronized (traceExec) {
+                            if (!traceQueue.isEmpty() && traceExec.isSleeping()) {
+                                traceExec.notify();
+                            }
+                        }
+                    }
+                }, 0, deltaTinMillis);
+            }
+        }
 		
 		/**
-		 * Aggregate traces with the spificied policy
+		 * Aggregate traces with the specified policy
 		 * @param policy the policy to apply to traces
 		 * @return a JSONArray of aggregate traces
 		 * @throws JSONException 
@@ -652,36 +704,12 @@ public class TraceMan implements TraceManSpec {
 	    	private boolean start;
 	    	
 	    	/**
-	    	 * Timer to wake up the thread each deltaT time interval
-	    	 */
-	    	private Timer timer;
-
-            /**
-             * The next time to log
-             */
-            private long logTime;
-	    	
-	    	/**
 	    	 * Default constructor
 	    	 */
 	    	public TraceExecutor() {
 	    		
 	    		start = true;
 	    		sleeping = false;
-	    		timer = new Timer();
-	    		if(deltaTinMillis > 0) {
-	    			timer.scheduleAtFixedRate(new TimerTask() {
-	    				@Override
-	    				public void run() {
-	    					synchronized(traceExec) {
-	    						if(traceQueue != null && !traceQueue.isEmpty() && traceExec.isSleeping()){
-	    							logTime = EHMIProxy.getCurrentTimeInMillis();
-                                    traceExec.notify();
-	    						}
-	    					}
-	    				}
-	    			}, deltaTinMillis, deltaTinMillis);
-	    		}
 	    	}
 	    	
 			@Override
@@ -689,7 +717,7 @@ public class TraceMan implements TraceManSpec {
 				
 				while(start) {
 					try {
-						if(traceQueue.isEmpty() || deltaTinMillis > 0 ){
+						if( deltaTinMillis > 0 || traceQueue.isEmpty() ){
 							synchronized(this) {
 								sleeping = true;
 								wait();
@@ -838,29 +866,6 @@ public class TraceMan implements TraceManSpec {
 					
 					return aggregateTraces;
 				}
-			}
-			
-			/**
-			 * Schedule the trace timer for aggregation
-			 * @param time the time interval
-			 */
-			public void reScheduledTraceTimer(long time){
-				timer.cancel();
-				timer.purge();
-				
-				timer = new Timer();
-                if(deltaTinMillis > 0) {
-                    timer.scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            synchronized (traceExec) {
-                                if (!traceQueue.isEmpty() && traceExec.isSleeping()) {
-                                    traceExec.notify();
-                                }
-                            }
-                        }
-                    }, 0, deltaTinMillis);
-                }
 			}
 
 			/**
