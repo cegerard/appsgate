@@ -15,7 +15,7 @@ public class MailAdapter {
 
     public void createMailInst(String mailProvider, String login, String passwd) {
         try {
-            Implementation mailImpl = CST.componentBroker.getImpl("MailService");
+            Implementation mailImpl = CST.apamResolver.findImplByName(null,"MailService");
 
             Map<String,String> configuration = new Hashtable<String,String>();
 
