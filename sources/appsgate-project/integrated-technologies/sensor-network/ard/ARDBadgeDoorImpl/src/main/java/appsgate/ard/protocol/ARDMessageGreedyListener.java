@@ -8,12 +8,14 @@ import appsgate.lig.core.object.messages.NotificationMsg;
  */
 public class ARDMessageGreedyListener {
 
+    private static final String NAME="ARD Greedy Message Listener";
+
     public void start(){
-        System.out.println("Starting ARD adaptor");
+        System.out.println("Starting "+NAME);
     }
 
     public void stop(){
-        System.out.println("Stopping ARD adaptor");
+        System.out.println("Stopping "+NAME);
     }
 
     public void apamMessageReceived(NotificationMsg mesg){

@@ -35,7 +35,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException, JSONException {
 
-        ARDController ard= ARDController.getInstance("192.168.3.110", 2001);
+
+        ARDController ard=new ARDController("192.168.3.110", 2001);
 
         //Open the socket with ard box
         ard.connect();

@@ -26,8 +26,6 @@ public class ARDAdaptor {
 
     private Instance instance;
 
-    private String server;
-
     Constraint constraintForARDContactSensor=new Constraint() {
         public boolean evaluate(JSONObject jsonObject) throws JSONException{
             return jsonObject.getJSONObject("event").getString("class").equals("card");
@@ -39,24 +37,12 @@ public class ARDAdaptor {
         try {
 
             logger.info("Instantiating ARD Controller (low level abstraction)");
-            ard = ARDController.getInstance(server, 2001);
-            logger.info("Connecting with ARD controller on IP {}", server);
-            ard.connect();
-            ard.monitoring();
-
-            ard.sendRequest(new SubscriptionRequest());
 
             Implementation impl = CST.apamResolver.findImplByName(null, "ARDBadgeDoor");
             Map<String, String> properties = new HashMap<String, String>();
 
             properties.put("deviceName", "ARD-ContactSensor");
             properties.put("deviceId", "ARD-ContactSensor");
-            properties.put("deviceType", "ARD_DEVICE");
-
-            properties.put("pictureId", "");
-            properties.put("userType", "");
-            properties.put("status", "2");
-            properties.put("currentStatus", "2");
 
             instance = impl.createInstance(null, properties);
 
