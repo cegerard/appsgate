@@ -50,7 +50,7 @@ require.config({
         // Templates
         "templates": "../app/templates",
         // APPSGATE.debugger
-        "appsgate.debugger": "../vendor/appsgate.debugger/appsgate.debugger.dev"
+        "appsgate.debugger": "../vendor/bower/appsgate.debugger/lib/appsgate.debugger.dev"
     },
     shim: {
         // This is required to ensure Backbone works as expected within the AMD
