@@ -195,7 +195,7 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
         if (EHMIProxy.getGrammarFromDevice(objectID) != null) { //if the equipment has been instantiated from ApAM spec before
-            JSONObject deviceJson = getJSONDevice(objectID, null, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action using HMI"));
+            JSONObject deviceJson = getJSONDevice(objectID, null, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action ("+command+") using HMI"));
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
@@ -215,18 +215,19 @@ public class TraceMan implements TraceManSpec {
             		if(value.equalsIgnoreCase("2")){
             			event.put("type", "connection");
             			event.put("picto", Trace.getConnectionPicto());
-                		JDecoration = Trace.getJSONDecoration("connection", "technical", null, null, "Connection");
+                		JDecoration = Trace.getJSONDecoration("connection", "technical", srcId, null, "Connection");
                 	}else if (value.equalsIgnoreCase("0")) {
                 		event.put("type", "deconnection");
                 		event.put("picto", Trace.getDeconnectionPicto());
-                		JDecoration = Trace.getJSONDecoration("deconnection", "technical", null, null, "Deconnection");
+                		JDecoration = Trace.getJSONDecoration("deconnection", "technical", srcId, null, "Deconnection");
                 	} else {
                 		event.put("type", "update");
-                		JDecoration = Trace.getJSONDecoration("error", "technical", null, null, "Error dectected");
+                		JDecoration = Trace.getJSONDecoration("error", "technical", srcId, null, "Error dectected");
                 		event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
                 	}
             	}else{
             		 event.put("type", "update");
+            		 JDecoration = Trace.getJSONDecoration("update", "technical", srcId, null, "update of "+varName+" to "+ value);
             		 event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
             	}
                 event.put("state", getDeviceState(srcId, varName, value));
@@ -283,11 +284,8 @@ public class TraceMan implements TraceManSpec {
                 location.put("name", place.getName());
             }
             objectNotif.put("location", location);
-            if(cause != null) {
-            	objectNotif.put("decorations", new JSONArray().put(cause));
-            }else{
-            	objectNotif.put("decorations", new JSONArray());
-            }
+            objectNotif.put("decorations", new JSONArray().put(cause));
+
             if(event != null) {
             	objectNotif.put("event", event);
             }
@@ -308,12 +306,12 @@ public class TraceMan implements TraceManSpec {
         try {
             if (eventType.contentEquals("new")) {
                 event.put("type", "appear");
-                cause = Trace.getJSONDecoration("", "technical", null, null, "Equipment appear");
+                cause = Trace.getJSONDecoration("appear", "technical", srcId, null, "Equipment ("+ name +") appear");
                 event.put("state", getDeviceState(srcId, "", ""));
 
             } else if (eventType.contentEquals("remove")) {
                 event.put("type", "disappear");
-                cause = Trace.getJSONDecoration("", "technical", null, null, "Equipment disappear");
+                cause = Trace.getJSONDecoration("disappear", "technical", srcId, null, "Equipment ("+name+") disappear");
             }
 
         } catch (JSONException e) {
@@ -409,27 +407,21 @@ public class TraceMan implements TraceManSpec {
                 if (change != null) {
                     if (change.contentEquals("newProgram")) {
                         event.put("type", "appear");
-                        cause = Trace.getJSONDecoration("", "user", null, null, "Program has been added");
+                        cause = Trace.getJSONDecoration("newProgram", "user", name, null, "Program "+name+" has been added");
                     } else if (change.contentEquals("removeProgram")) {
                         event.put("type", "disappear");
-                        cause = Trace.getJSONDecoration("", "user", null, null, "Program has been deleted");
+                        cause = Trace.getJSONDecoration("removeProgram", "user", name, null, "Program "+name+" has been deleted");
 
                     } else { //change == "updateProgram"
                         event.put("type", "update");
-                    }
-                    //Create causality event entry
-                    if (change.contentEquals("updateProgram")) {
-                        cause = Trace.getJSONDecoration("", "user", null, null, "Program has been updated");
+                        cause = Trace.getJSONDecoration("updateProgram", "user", name, null, "Program "+name+" has been updated");
                     }
                 }
 
             }
             progNotif.put("event", event);
-            if( cause != null) {
-            	progNotif.put("decorations", new JSONArray().put(cause));
-            }else{
-            	progNotif.put("decorations", new JSONArray());
-            }
+            progNotif.put("decorations", new JSONArray().put(cause));
+
         } catch (JSONException e) {
 
         }
@@ -580,8 +572,6 @@ public class TraceMan implements TraceManSpec {
                 timer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
-                        //TODO to remove, this log is just for timer ring following in console log
-                        LOGGER.error("Trace timer ring !");
                         synchronized(traceExec) {
                             if(traceQueue != null && !traceQueue.isEmpty() && traceExec.isSleeping()){
                                 logTime = EHMIProxy.getCurrentTimeInMillis();
