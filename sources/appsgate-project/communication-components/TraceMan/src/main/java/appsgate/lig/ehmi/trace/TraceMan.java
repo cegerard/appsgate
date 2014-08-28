@@ -810,7 +810,7 @@ public class TraceMan implements TraceManSpec {
                                     int y = 0;
                                     while(y < tempPgmsSize){
                                         //Merge the program trace
-                                        JSONObject tempPgm = tempDevices.getJSONObject(y);
+                                        JSONObject tempPgm = tempPgms.getJSONObject(y);
                                         tempPgm.put("timestamp", tempObj.get("timestamp"));
                                         String id = tempPgm.getString("id");
                                         
