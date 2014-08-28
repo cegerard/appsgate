@@ -4,6 +4,7 @@
 @import "../../vendor/bower/html5-boilerplate/css/main.css";
 @import "../../vendor/bower/bootstrap/dist/css/bootstrap.css";
 @import "../../vendor/bower/jqueryui/themes/custom-theme/jquery-ui-1.10.4.custom.css";
+@import "../../vendor/appsgate.debugger/themes/basic/theme.css";
 
 /*-- Application stylesheets. -----------------------------------------------*/
 
@@ -754,4 +755,12 @@ div {
 
 .fix-row {
   margin-left:15px;
+}
+
+/* --------------------- Debugger styles ----------------------------------*/
+
+.debugger {
+    margin-right: auto;
+    margin-left: auto;
+    width: 960px;
 }

@@ -11,6 +11,11 @@ require(["config"], function() {
         Backbone.View.prototype.close = function() {
             this.stopListening();
             this.undelegateEvents();
+            // check if there is a destroy function on the view
+            if(_.isFunction('destroy')) {
+                // if yes, call destroy
+                this.destroy.apply(this);
+            }
             // unbind all the events associated to the view
             this.unbind();
         };

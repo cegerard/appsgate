@@ -9,6 +9,7 @@ define(function(require, exports, module) {
   var DevicesRouter = require("routers/device");
   var ServicesRouter = require("routers/service");
   var ProgramsRouter = require("routers/program");
+  var DebuggerRouter = require("routers/debugger");
 
   var mainTemplate = require("text!templates/home/main.html");
   var navbarTemplate = require("text!templates/home/navbar.html");
@@ -21,6 +22,7 @@ define(function(require, exports, module) {
     devicesRouter: new DevicesRouter(),
     servicesRouter: new ServicesRouter(),
     programsRouter: new ProgramsRouter(),
+    debuggerRouter: new DebuggerRouter(),
 
     maintemplate : _.template(mainTemplate),
     navbartemplate : _.template(navbarTemplate),
@@ -35,6 +37,7 @@ define(function(require, exports, module) {
       "devices": "devices",
       "services": "services",
       "programs": "programs",
+      "debugger": "debugger"
     },
     // default route of the application
     login: function() {
@@ -56,6 +59,9 @@ define(function(require, exports, module) {
     },
     programs: function() {
       this.programsRouter.list();
+    },
+    debugger: function() {
+      this.debuggerRouter.all();
     },
     // update the side menu w/ new content
     showMenuView: function(menuView) {
