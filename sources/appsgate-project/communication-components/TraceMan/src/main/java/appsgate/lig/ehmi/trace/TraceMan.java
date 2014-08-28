@@ -355,7 +355,7 @@ public class TraceMan implements TraceManSpec {
     	} else { // Apply aggregation policy
     		try {
     			traceQueue.loadTraces(tracesTab);
-				return traceQueue.applyAggregationPolicy(null); //Call with default aggregation policy (id and time)
+				return traceQueue.applyAggregationPolicy(timestamp, null); //Call with default aggregation policy (id and time)
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -372,7 +372,7 @@ public class TraceMan implements TraceManSpec {
     	} else { // Apply aggregation policy
     		try {
     			traceQueue.loadTraces(tracesTab);
-				return traceQueue.applyAggregationPolicy(null); //Call with default aggregation policy (id and time)
+				return traceQueue.applyAggregationPolicy(start, null); //Call with default aggregation policy (id and time)
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -618,6 +618,8 @@ public class TraceMan implements TraceManSpec {
 				traceCollection.add((E) traces.getJSONObject(i));
 			}
 			
+			
+			
 			this.clear();
 			this.addAll(traceCollection);
 		}
@@ -664,14 +666,51 @@ public class TraceMan implements TraceManSpec {
 		
 		/**
 		 * Aggregate traces with the specified policy
+		 * @param from the starting date
 		 * @param policy the policy to apply to traces
 		 * @return a JSONArray of aggregate traces
 		 * @throws JSONException 
 		 */
-		public JSONArray applyAggregationPolicy(JSONObject policy) throws JSONException{
-			return traceExec.apply(policy);
+		public synchronized JSONArray applyAggregationPolicy(long from, JSONObject policy) throws JSONException{
+			
+			JSONArray aggregateTraces = new JSONArray();
+			
+			if(policy == null){ //default aggregation (time and identifiers)
+
+                long  beginInt = from;
+                long  endInt = from+deltaTinMillis;
+                JSONArray tracesPacket = new JSONArray();
+                
+                while(!traceQueue.isEmpty()) {
+
+                	JSONObject latestTrace = traceQueue.peek();
+                	long latestTraceTS = latestTrace.getLong("timestamp");
+                	
+                	if(latestTraceTS >= beginInt && latestTraceTS < endInt ){
+                		tracesPacket.put(traceQueue.poll());
+                	}else{
+                		beginInt = endInt;
+                		endInt +=  deltaTinMillis;
+                		
+                		if(tracesPacket.length() > 0){ //A packet is complete
+                			traceExec.aggregation(aggregateTraces, tracesPacket, beginInt);
+                			tracesPacket = new JSONArray();
+                		}
+                	}
+                }
+                
+                if(tracesPacket.length() > 0){ //A packet is complete
+        			traceExec.aggregation(aggregateTraces, tracesPacket, beginInt);
+                }
+                
+			} else { //Apply specific aggregation policy
+				//TODO generic aggregation mechanism
+				//aggregationWithPolicy(aggregateTraces, tracesPacket, logTime, policy)
+			}
+			
+			return aggregateTraces;
 		}
-		
+
 		/**
 	     * A thread class to trace all elements in the trace
 	     * queue
@@ -748,114 +787,123 @@ public class TraceMan implements TraceManSpec {
                             //Get all traces from trace queue
                             JSONArray tempTraces = new JSONArray();
                             while(!traceQueue.isEmpty()) {
-                                    tempTraces.put(traceQueue.poll());
+                            	tempTraces.put(traceQueue.poll());
                             }
-
-                            //Create new aggregate trace instance
-                            JSONObject jsonTrace = new JSONObject();
-                            jsonTrace.put("timestamp", logTime);
-                            HashMap<String,JSONObject> devicesToAgg = new HashMap<String, JSONObject>();
-                            HashMap<String,JSONObject> programsToAgg = new HashMap<String, JSONObject>();
-
-                            int nbTraces = tempTraces.length();
-                            int i = 0;
-                            while(i < nbTraces){
-                                //Get a trace to aggregate from the array
-                                JSONObject tempObj = tempTraces.getJSONObject(i);
-                                JSONArray tempDevices = tempObj.getJSONArray("devices");
-                                JSONArray tempPgms = tempObj.getJSONArray("programs");
-
-                                int tempDevicesSize = tempDevices.length();
-                                int tempPgmsSize = tempPgms.length();
-
-                                //If there is some device trace to merge
-                                if(tempDevicesSize > 0){
-                                    int x = 0;
-                                    while(x < tempDevicesSize){
-                                        //Merge the device trace
-                                        JSONObject tempDev = tempDevices.getJSONObject(x);
-                                        tempDev.put("timestamp", tempObj.get("timestamp"));
-                                        String id = tempDev.getString("id");
-                                        
-                                        if(!devicesToAgg.containsKey(id)){ //No aggregation for now
-                      
-                                            devicesToAgg.put(id, tempDev);
-                                            
-                                        }else{ //Device id exist for this time stamp --> aggregation
-                                        	JSONObject existingDev = devicesToAgg.get(id);
-                                        	
-                                        	if(existingDev.has("event")){ //First aggregation only, remove event entry
-                                        		existingDev.remove("event");
-                                        	}
-                                        	
-                                        	//Aggregates the device trace has a decoration
-                                        	JSONArray existingDecorations = existingDev.getJSONArray("decorations");
-                                        	JSONArray tempDecs = tempDev.getJSONArray("decorations");
-                                        	int decSize = tempDecs.length();
-                                        	int x1 = 0;
-                                        	while(x1 < decSize){
-                                        		JSONObject tempDec = tempDecs.getJSONObject(x1);
-                                        		tempDec.put("order", existingDecorations.length());
-                                        		existingDecorations.put(tempDec);
-                                        		x1++;
-                                        	}
-                                        	//existingDev.put("decorations", existingDecorations);
-                                        }
-                                        x++;
-                                    }
-                                }
-
-                                //If there is some program trace to merge
-                                if( tempPgmsSize > 0){
-                                    int y = 0;
-                                    while(y < tempPgmsSize){
-                                        //Merge the program trace
-                                        JSONObject tempPgm = tempPgms.getJSONObject(y);
-                                        tempPgm.put("timestamp", tempObj.get("timestamp"));
-                                        String id = tempPgm.getString("id");
-                                        
-                                        if(!programsToAgg.containsKey(id)){//No aggregation for now
-                                        	
-                                            programsToAgg.put(id, tempPgm);
-                                            
-                                        }else{ //program id exist for this time stamp --> aggregation
-                                        	
-                                        	JSONObject existingPgm = programsToAgg.get(id);
-                                        	
-                                        	if(existingPgm.has("event")){ //First aggregation only, remove event entry
-                                        		existingPgm.remove("event");
-                                        	}
-                                        	
-                                        	//Aggregates the device trace has a decoration
-                                        	JSONArray existingDecorations = existingPgm.getJSONArray("decorations");
-                                        	JSONArray tempDecs = tempPgm.getJSONArray("decorations");
-                                        	int decSize = tempDecs.length();
-                                        	int y1 = 0;
-                                        	while(y1 < decSize){
-                                        		JSONObject tempDec = tempDecs.getJSONObject(y1);
-                                        		tempDec.put("order", existingDecorations.length());
-                                        		existingDecorations.put(tempDec);
-                                        		y1++;
-                                        	}
-                                        	//existingPgm.put("decorations", existingDecorations);
-                                        }
-                                        y++;
-                                    }
-                                }
-                                i++;
-                            }
-
-                            jsonTrace.put("devices", new JSONArray(devicesToAgg.values()));
-                            jsonTrace.put("programs", new JSONArray(programsToAgg.values()));
-							aggregateTraces.put(jsonTrace);
+                            aggregation(aggregateTraces, tempTraces, logTime);
 
 						} else { //Apply specific aggregation policy
 							//TODO generic aggregation mechanism
+							//aggregationWithPolicy(aggregateTraces, tracesPacket, logTime, policy)
 						}
 					}
 					
 					return aggregateTraces;
 				}
+			}
+			
+			/**
+			 * Aggregates traces from a packet and add the aggregate trace to an array
+			 * @param aggregateTraces result of all aggregations
+			 * @param tracesPacket traces to aggregates
+			 * @param logTime timestamp for this trace
+			 * @throws JSONException 
+			 */
+			public void aggregation(JSONArray aggregateTraces, JSONArray tracesPacket, long logTime) throws JSONException {
+				//Create new aggregate trace instance
+	            JSONObject jsonTrace = new JSONObject();
+	            jsonTrace.put("timestamp", logTime);
+	            HashMap<String,JSONObject> devicesToAgg = new HashMap<String, JSONObject>();
+	            HashMap<String,JSONObject> programsToAgg = new HashMap<String, JSONObject>();
+
+	            int nbTraces = tracesPacket.length();
+	            int i = 0;
+	            while(i < nbTraces){
+	                //Get a trace to aggregate from the array
+	                JSONObject tempObj = tracesPacket.getJSONObject(i);
+	                JSONArray tempDevices = tempObj.getJSONArray("devices");
+	                JSONArray tempPgms = tempObj.getJSONArray("programs");
+
+	                int tempDevicesSize = tempDevices.length();
+	                int tempPgmsSize = tempPgms.length();
+
+	                //If there is some device trace to merge
+	                if(tempDevicesSize > 0){
+	                    int x = 0;
+	                    while(x < tempDevicesSize){
+	                        //Merge the device trace
+	                        JSONObject tempDev = tempDevices.getJSONObject(x);
+	                        tempDev.put("timestamp", tempObj.get("timestamp"));
+	                        String id = tempDev.getString("id");
+	                        
+	                        if(!devicesToAgg.containsKey(id)){ //No aggregation for now
+	      
+	                            devicesToAgg.put(id, tempDev);
+	                            
+	                        }else{ //Device id exist for this time stamp --> aggregation
+	                        	JSONObject existingDev = devicesToAgg.get(id);
+	                        	
+	                        	if(existingDev.has("event")){ //First aggregation only, remove event entry
+	                        		existingDev.remove("event");
+	                        	}
+	                        	
+	                        	//Aggregates the device trace has a decoration
+	                        	JSONArray existingDecorations = existingDev.getJSONArray("decorations");
+	                        	JSONArray tempDecs = tempDev.getJSONArray("decorations");
+	                        	int decSize = tempDecs.length();
+	                        	int x1 = 0;
+	                        	while(x1 < decSize){
+	                        		JSONObject tempDec = tempDecs.getJSONObject(x1);
+	                        		tempDec.put("order", existingDecorations.length());
+	                        		existingDecorations.put(tempDec);
+	                        		x1++;
+	                        	}
+	                        }
+	                        x++;
+	                    }
+	                }
+
+	                //If there is some program trace to merge
+	                if( tempPgmsSize > 0){
+	                    int y = 0;
+	                    while(y < tempPgmsSize){
+	                        //Merge the program trace
+	                        JSONObject tempPgm = tempPgms.getJSONObject(y);
+	                        tempPgm.put("timestamp", tempObj.get("timestamp"));
+	                        String id = tempPgm.getString("id");
+	                        
+	                        if(!programsToAgg.containsKey(id)){//No aggregation for now
+	                        	
+	                            programsToAgg.put(id, tempPgm);
+	                            
+	                        }else{ //program id exist for this time stamp --> aggregation
+	                        	
+	                        	JSONObject existingPgm = programsToAgg.get(id);
+	                        	
+	                        	if(existingPgm.has("event")){ //First aggregation only, remove event entry
+	                        		existingPgm.remove("event");
+	                        	}
+	                        	
+	                        	//Aggregates the device trace has a decoration
+	                        	JSONArray existingDecorations = existingPgm.getJSONArray("decorations");
+	                        	JSONArray tempDecs = tempPgm.getJSONArray("decorations");
+	                        	int decSize = tempDecs.length();
+	                        	int y1 = 0;
+	                        	while(y1 < decSize){
+	                        		JSONObject tempDec = tempDecs.getJSONObject(y1);
+	                        		tempDec.put("order", existingDecorations.length());
+	                        		existingDecorations.put(tempDec);
+	                        		y1++;
+	                        	}
+	                        }
+	                        y++;
+	                    }
+	                }
+	                i++;
+	            }
+
+	            jsonTrace.put("devices", new JSONArray(devicesToAgg.values()));
+	            jsonTrace.put("programs", new JSONArray(programsToAgg.values()));
+				aggregateTraces.put(jsonTrace);
 			}
 
 			/**
