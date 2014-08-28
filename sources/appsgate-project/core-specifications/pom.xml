@@ -34,7 +34,8 @@
 		<module>CoreMobileDeviceSpec</module>
 		<module>CoreDomiCubeSpec</module>
 		<module>CoreShutterSpec</module>
-        <module>CoreMailSpec</module>
+		<module>CoreARDBadgeDoorSpec</module>
+		<module>CoreMailSpec</module>
 	</modules>
 
 </project>

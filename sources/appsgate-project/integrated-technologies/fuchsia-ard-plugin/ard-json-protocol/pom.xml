@@ -21,41 +21,13 @@
     </properties>
 
     <dependencies>
-       <dependency>
-            <groupId>org.ow2.chameleon.fuchsia</groupId>
-            <artifactId>org.ow2.chameleon.fuchsia.core</artifactId>
-            <version>${fuchsia.version}</version>
-       </dependency>
-       <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo</artifactId>
-            <version>${ipojo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-            <version>${ipojo.annotations.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>CoreKeyCardSensorSpec</artifactId>
-            <version>${project.version}</version>
-        </dependency><!--
+<!--
         <dependency>
             <groupId>appsgate.components</groupId>
             <artifactId>CoreContactSensorSpec</artifactId>
             <version>1.0.0</version>
         </dependency>-->
-        <dependency>
-            <groupId>appsgate.components</groupId>
-            <artifactId>CoreObjectSpec</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>fr.imag.adele.apam</groupId>
-            <artifactId>apam-core</artifactId>
-            <version>${apam.current.version}</version>
-        </dependency>
+
     </dependencies>
 
     <build>

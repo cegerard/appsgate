@@ -4,20 +4,17 @@
 	
 	<parent>
 		<groupId>appsgate.components</groupId>
-		<artifactId>integrated-technologies</artifactId>
+		<artifactId>sensor-network</artifactId>
 		<version>1.0.0</version>
 	</parent>
 	
-	<artifactId>sensor-network</artifactId>
+	<artifactId>ard</artifactId>
 	<packaging>pom</packaging>
-	<name>Sensor network project</name>
+	<name>ARD integration project</name>
 	
-	<description>This sub-project contain sensor network integration project for Appsgate</description>
-	
+	<description>This sub-project contain all component for ARD Appsgate integration.</description>
+
 	<modules>
-		<module>enocean</module>
-		<module>watteco</module>
-		<module>simulation</module>
-        <module>ard</module>
+		<module>ARDBadgeDoorImpl</module>
 	</modules>
 </project>
