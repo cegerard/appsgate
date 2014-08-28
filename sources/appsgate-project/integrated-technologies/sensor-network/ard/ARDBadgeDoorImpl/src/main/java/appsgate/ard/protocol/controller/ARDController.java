@@ -150,7 +150,6 @@ public class ARDController {
             } catch (Exception e) {
                 if(retry==-1) break;
                 try {
-                    System.out.println("retry:"+retry);
                     Thread.sleep(retry);
                 } catch (InterruptedException e1) {
                     logger.error("Failed retrying to connect with ARD HUB");

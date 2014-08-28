@@ -37,7 +37,7 @@
 
     <implementation name="ARDAdaptor" classname="appsgate.ard.protocol.adaptor.ARDAdaptor" > <!--push="notifyChanges"-->
         <callback onInit="validate" onRemove="invalidate"/>
-        <relation implementation="ARDController" field="ard" fail="wait" />
+        <relation implementation="ARDController" field="ard" creation="eager" added="controllerAdded" removed="controllerRemoved" />
     </implementation>
 
     <!--This listener receives echos apam messages, to display them in order to know that they were correctly dispatched -->
