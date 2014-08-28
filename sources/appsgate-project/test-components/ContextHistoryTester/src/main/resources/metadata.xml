@@ -5,8 +5,10 @@
                           
 	<implementation name="ContextHistoryTesterImpl" classname="appsgate.validation.context.ContextHistoryTester">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		<ipojo:requires field="contextHistory_pull"/>
-		<ipojo:requires field="contextHistory_push"/>
+        <relation specification="ContextHistorySpec" fail="wait">
+            <interface field="contextHistory_pull"/>
+            <interface field="contextHistory_push"/>
+        </relation>
 	</implementation>
 	
 	<apam-instance name="ContextHistoryTesterInst" implementation="ContextHistoryTesterImpl">

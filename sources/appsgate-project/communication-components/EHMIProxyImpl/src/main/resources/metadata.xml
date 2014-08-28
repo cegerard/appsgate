@@ -8,16 +8,16 @@
 		
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<relation field="coreProxy" fail="exception" exception="appsgate.lig.ehmi.exceptions.CoreDependencyException" resolve="exist" />
+		<relation field="coreProxy" fail="wait" resolve="exist" />
 		
-		<relation field="devicePropertiesTable" creation="eager" resolve="external" />
-		<relation field="placeManager" creation="eager" resolve="external" />
-		<relation field="userManager" creation="eager" resolve="external" />
-		<relation field="interpreter" creation="eager" resolve="external" />
-		<relation field="traceManager" creation="eager" resolve="external" />
+		<relation field="devicePropertiesTable" fail="wait" resolve="exist"/>
+		<relation field="placeManager" fail="wait" resolve="exist" />
+		<relation field="userManager" fail="wait" resolve="exist"/>
+		<relation field="interpreter" fail="wait" resolve="exist"/>
+		<relation field="traceManager" fail="wait" resolve="exist"/>
 		
 		<relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"
-			fail="exception" exception="appsgate.lig.ehmi.exceptions.ExternalComDependencyException">
+			fail="wait" >
 			<interface field="addListenerService" />
 			<interface field="sendToClientService" />
 		</relation>

@@ -7,6 +7,8 @@
                main="EHMIProxyImpl">
         <contentMngt>
 
+            <start  implementation="EUDEInterpreter" name="EUDEInterpreterInst" ></start>
+
             <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
 
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>

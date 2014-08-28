@@ -59,97 +59,109 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * Called by ApAM when all dependencies are available
 	 */
 	public void newInst() {
-		logger.info("Place manager starting...");
-		placeObjectsMap = new HashMap<String, SymbolicPlace>();
-		
-		//restore places from data base
-		JSONObject placeMap = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
-		if(placeMap != null){
-			HashMap<String, List<String>> tempChildrenMap = new HashMap<String, List<String>>();
-			try {
-				JSONArray state = placeMap.getJSONArray("state");
-				int length = state.length();
-				int i = 0;
-				
-				while(i < length) {
-					JSONObject obj = state.getJSONObject(i);
-					
-					String placeId = (String)obj.keys().next();
-					JSONObject jsonPlace = new JSONObject(obj.getString(placeId));
-					String name = jsonPlace.getString("name");
-					String parentId = jsonPlace.getString("parent");
-					JSONArray tags = jsonPlace.getJSONArray("tags");
-					JSONArray properties = jsonPlace.getJSONArray("properties");
-					JSONArray devices = jsonPlace.getJSONArray("devices");
-					JSONArray services = jsonPlace.getJSONArray("services");
-					
-					ArrayList<String> tagsList = new ArrayList<String>();
-					HashMap<String, String> propertiesList = new HashMap<String, String>();
-					ArrayList<String> coreObjectList = new ArrayList<String>();
-					ArrayList<String> coreServiceList = new ArrayList<String>();
-					
-					int iTagsArray = 0;
-					int tagsArrayLength = tags.length();
-					while(iTagsArray < tagsArrayLength) {
-						tagsList.add(tags.getString(iTagsArray));
-						iTagsArray++;
-					}
-					
-					int ipropArray = 0;
-					int propArrayLength = properties.length();
-					JSONObject prop;
-					while(ipropArray < propArrayLength) {
-						prop = properties.getJSONObject(ipropArray);
-						propertiesList.put(prop.getString("key"), prop.getString("value"));
-						ipropArray++;
-					}
-					
-					int ideviceArray = 0;
-					int deviceArrayLength = devices.length();
-					while(ideviceArray < deviceArrayLength) {
-						coreObjectList.add(devices.getString(ideviceArray));
-						ideviceArray++;
-					}
-					
-					int iserviceArray = 0;
-					int serviceArrayLength = services.length();
-					while(iserviceArray < serviceArrayLength) {
-						coreServiceList.add(services.getString(iserviceArray));
-						iserviceArray++;
-					}
-					
-					JSONArray children = jsonPlace.getJSONArray("children");
-					ArrayList<String> childIdList = new ArrayList<String>();
-					int ichildArray = 0;
-					int childArrayLength = children.length();
-					while(ichildArray < childArrayLength) {
-						childIdList.add(children.getString(ichildArray));
-						ichildArray++;
-					}
-					if(childArrayLength > 0) {
-						tempChildrenMap.put(placeId, childIdList);
-					}
-					
-					SymbolicPlace loc = new SymbolicPlace(placeId, name, tagsList, propertiesList, placeObjectsMap.get(parentId), coreObjectList, coreServiceList);
+        logger.info("Place manager starting...");
+        placeObjectsMap = null;
+    }
 
-					placeObjectsMap.put(placeId, loc);
-					i++;
-				}
-				//Restore children if any
-				for(String key : tempChildrenMap.keySet()) {
-					SymbolicPlace loc = placeObjectsMap.get(key);
-					List<String> childrenList = tempChildrenMap.get(key);
-					for(String child : childrenList) {
-						loc.addChild(placeObjectsMap.get(child));
-					}
-				}
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		logger.debug("The place manager has been initialized");
+    private synchronized boolean restorePlacesFromDb() {
+		//restore places from data base
+        if(placeObjectsMap != null) {
+            return true;
+        } else if(contextHistory_pull!= null && contextHistory_pull.testDB()){
+            logger.info("Restoring places from DB...");
+
+            JSONObject placeMap = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+            if (placeMap != null && placeMap.length()>0) {
+                placeObjectsMap = new HashMap<String, SymbolicPlace>();
+                HashMap<String, List<String>> tempChildrenMap = new HashMap<String, List<String>>();
+                try {
+                    JSONArray state = placeMap.getJSONArray("state");
+                    int length = state.length();
+                    int i = 0;
+
+                    while (i < length) {
+                        JSONObject obj = state.getJSONObject(i);
+
+                        String placeId = (String) obj.keys().next();
+                        JSONObject jsonPlace = new JSONObject(obj.getString(placeId));
+                        String name = jsonPlace.getString("name");
+                        String parentId = jsonPlace.getString("parent");
+                        JSONArray tags = jsonPlace.getJSONArray("tags");
+                        JSONArray properties = jsonPlace.getJSONArray("properties");
+                        JSONArray devices = jsonPlace.getJSONArray("devices");
+                        JSONArray services = jsonPlace.getJSONArray("services");
+
+                        ArrayList<String> tagsList = new ArrayList<String>();
+                        HashMap<String, String> propertiesList = new HashMap<String, String>();
+                        ArrayList<String> coreObjectList = new ArrayList<String>();
+                        ArrayList<String> coreServiceList = new ArrayList<String>();
+
+                        int iTagsArray = 0;
+                        int tagsArrayLength = tags.length();
+                        while (iTagsArray < tagsArrayLength) {
+                            tagsList.add(tags.getString(iTagsArray));
+                            iTagsArray++;
+                        }
+
+                        int ipropArray = 0;
+                        int propArrayLength = properties.length();
+                        JSONObject prop;
+                        while (ipropArray < propArrayLength) {
+                            prop = properties.getJSONObject(ipropArray);
+                            propertiesList.put(prop.getString("key"), prop.getString("value"));
+                            ipropArray++;
+                        }
+
+                        int ideviceArray = 0;
+                        int deviceArrayLength = devices.length();
+                        while (ideviceArray < deviceArrayLength) {
+                            coreObjectList.add(devices.getString(ideviceArray));
+                            ideviceArray++;
+                        }
+
+                        int iserviceArray = 0;
+                        int serviceArrayLength = services.length();
+                        while (iserviceArray < serviceArrayLength) {
+                            coreServiceList.add(services.getString(iserviceArray));
+                            iserviceArray++;
+                        }
+
+                        JSONArray children = jsonPlace.getJSONArray("children");
+                        ArrayList<String> childIdList = new ArrayList<String>();
+                        int ichildArray = 0;
+                        int childArrayLength = children.length();
+                        while (ichildArray < childArrayLength) {
+                            childIdList.add(children.getString(ichildArray));
+                            ichildArray++;
+                        }
+                        if (childArrayLength > 0) {
+                            tempChildrenMap.put(placeId, childIdList);
+                        }
+
+                        SymbolicPlace loc = new SymbolicPlace(placeId, name, tagsList, propertiesList, placeObjectsMap.get(parentId), coreObjectList, coreServiceList);
+
+                        placeObjectsMap.put(placeId, loc);
+                        i++;
+                    }
+                    //Restore children if any
+                    for (String key : tempChildrenMap.keySet()) {
+                        SymbolicPlace loc = placeObjectsMap.get(key);
+                        List<String> childrenList = tempChildrenMap.get(key);
+                        for (String child : childrenList) {
+                            loc.addChild(placeObjectsMap.get(child));
+                        }
+                    }
+                    logger.debug("The place manager has been initialized");
+
+                    return true;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        }
+        return false;
 	}
 
 	/**
@@ -161,6 +173,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized String addPlace(String name, String parent) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 
 		String placeId = String.valueOf(new String(name+new Double(Math.random())).hashCode());
 		if (!placeObjectsMap.containsKey(placeId)) {
@@ -185,7 +200,12 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized boolean removePlace(String placeId) {
-		SymbolicPlace selectedPlace = placeObjectsMap.get(placeId);
+
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
+
+        SymbolicPlace selectedPlace = placeObjectsMap.get(placeId);
 		SymbolicPlace parent = selectedPlace.getParent();
 		
 		
@@ -216,10 +236,13 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	/**
 	 * Add an object to the designed place.
 	 * 
-	 * @param obj the object to locate
 	 * @param placeId the target place
 	 */
 	private synchronized void addObject(String objId, String placeId) {
+        if(!restorePlacesFromDb()) {
+            return;
+        }
+
 		SymbolicPlace loc = placeObjectsMap.get(placeId);
 		loc.addDevice(objId);
 		
@@ -239,10 +262,13 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	/**
 	 * Add an service to the designed place.
 	 * 
-	 * @param obj the service to locate
 	 * @param placeId the target place
 	 */
 	private synchronized void addService(String serviceId, String placeId) {
+        if(!restorePlacesFromDb()) {
+            return;
+        }
+
 		SymbolicPlace loc = placeObjectsMap.get(placeId);
 		loc.addService(serviceId);
 		
@@ -262,6 +288,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	@Override
 	public synchronized boolean moveObject(String objId,
 			String oldPlaceID, String newPlaceID) {
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
 		
 		boolean moved = false;
 		
@@ -300,6 +329,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	@Override
 	public boolean moveService(String serviceId, String oldPlaceID,
 			String newPlaceID) {
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
 		
 		boolean moved = false;
 		
@@ -337,6 +369,10 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized boolean renamePlace(String placeId, String newName) {
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
+
 		SymbolicPlace loc = placeObjectsMap.get(placeId);
 		String oldName = loc.getName();
 		loc.setName(newName);
@@ -357,11 +393,17 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	
 	@Override
 	public synchronized SymbolicPlace getSymbolicPlace(String placId) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		return placeObjectsMap.get(placId);
 	}
 
 	@Override
 	public synchronized JSONArray getJSONPlaces() {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		Iterator<SymbolicPlace> places = placeObjectsMap.values().iterator();
 		JSONArray jsonPlaceList = new JSONArray();
 		SymbolicPlace loc;
@@ -376,6 +418,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	
 	@Override
 	public synchronized String getCoreObjectPlaceId(String objId) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		Iterator<SymbolicPlace>  it = placeObjectsMap.values().iterator();
 		
 		SymbolicPlace loc = null;
@@ -401,7 +446,6 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * 
 	 * @param oldPlaceId the former AbstractObject place
 	 * @param newPlaceId the new AbstractObject place
-	 * @param object the AbstractObject which has been moved.
 	 * @param moveType the type of the object that moved
 	 */
 	private void notifyMove(String oldPlaceId, String newPlaceId, String objId, int moveType) {
@@ -431,6 +475,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized boolean movePlace(String placeId, String newParentId) {
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
 		try {
 			SymbolicPlace place = placeObjectsMap.get(placeId);
 			SymbolicPlace newParent = placeObjectsMap.get(newParentId);
@@ -456,6 +503,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized void setTagsList(String placeId, ArrayList<String> tags) {
+        if(!restorePlacesFromDb()) {
+            return;
+        }
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		place.setTags(tags);
 		
@@ -474,6 +524,10 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized void clearTagsList(String placeId) {
+        if(!restorePlacesFromDb()) {
+            return;
+        }
+
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		place.clearTags();
 		
@@ -493,6 +547,10 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized boolean addTag(String placeId, String tag) {
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
+
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		if (place.addTag(tag)) {
 
@@ -514,6 +572,10 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized boolean removeTag(String placeId, String tag) {
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
+
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		if(place.removeTag(tag)) {
 		
@@ -534,6 +596,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized void setProperties(String placeId, HashMap<String, String> properties) {
+        if(!restorePlacesFromDb()) {
+            return;
+        }
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		place.setProperties(properties);
 		notifyPlace(placeId, "newPropertiesList", "updatePlaceProp");
@@ -550,6 +615,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized void clearPropertiesList(String placeId) {
+        if(!restorePlacesFromDb()) {
+            return ;
+        }
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		place.clearProperties();
 		notifyPlace(placeId, "propertiesListFree", "updatePlaceProp");
@@ -567,6 +635,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized boolean addProperty(String placeId, String key, String value) {
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		if( place.addProperty(key, value)) {
 			notifyPlace(placeId, key+"-"+value, "updatePlaceProp");
@@ -585,6 +656,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized boolean removeProperty(String placeId, String key) {
+        if(!restorePlacesFromDb()) {
+            return false;
+        }
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		if( place.removeProperty(key)) {
 			notifyPlace(placeId, key, "removePlaceProp");
@@ -603,6 +677,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized void removeAllCoreObject(String placeId) {
+        if(!restorePlacesFromDb()) {
+            return;
+        }
 		SymbolicPlace place = placeObjectsMap.get(placeId);
 		place.clearDevices();
 		notifyPlace(placeId, "coreObjectListFree", "updatePlaceObject");
@@ -619,6 +696,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized ArrayList<SymbolicPlace> getRootPlaces() {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		ArrayList<SymbolicPlace> rootPlaces = new ArrayList<SymbolicPlace>();
 		for(SymbolicPlace place : placeObjectsMap.values()) {
 			if(place.getParent() == null) {
@@ -630,11 +710,17 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized ArrayList<SymbolicPlace> getPlaces() {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		return new ArrayList<SymbolicPlace>(placeObjectsMap.values());
 	}
 
 	@Override
 	public synchronized ArrayList<SymbolicPlace> getPlacesWithName(String name) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		ArrayList<SymbolicPlace> placeName = new ArrayList<SymbolicPlace>();
 		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
 			if(currentPlace.getName().contentEquals(name)){
@@ -646,6 +732,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized ArrayList<SymbolicPlace> getPlacesWithTags(ArrayList<String> tags) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		ArrayList<SymbolicPlace> placeTags = new ArrayList<SymbolicPlace>();
 		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
 			if(currentPlace.getTags().containsAll(tags)){
@@ -657,7 +746,11 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized ArrayList<SymbolicPlace> getPlacesWithProperties(
+
 			ArrayList<String> propertiesKey) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		ArrayList<SymbolicPlace> placeprop = new ArrayList<SymbolicPlace>();
 		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
 			if(currentPlace.getProperties().keySet().containsAll(propertiesKey)){
@@ -669,6 +762,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
 	@Override
 	public synchronized ArrayList<SymbolicPlace> getPlacesWithPropertiesValue(HashMap<String, String> properties) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		ArrayList<SymbolicPlace> placeprop = new ArrayList<SymbolicPlace>();
 		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
 			HashMap<String, String> currentProperties = currentPlace.getProperties();
@@ -696,6 +792,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	
 	@Override
 	public SymbolicPlace getPlaceWithDevice(String deviceId) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		SymbolicPlace place = null;
 		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
 			boolean isHere = false;
@@ -715,6 +814,9 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	
 	@Override
 	public SymbolicPlace getPlaceWithService(String serviceId) {
+        if(!restorePlacesFromDb()) {
+            return null;
+        }
 		SymbolicPlace place = null;
 		for(SymbolicPlace currentPlace : placeObjectsMap.values()) {
 			boolean isHere = false;

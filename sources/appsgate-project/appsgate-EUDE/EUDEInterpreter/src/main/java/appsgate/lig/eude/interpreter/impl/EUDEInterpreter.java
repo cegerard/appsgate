@@ -107,7 +107,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public void newInst() {
         LOGGER.debug("A new instance of Mediator is created");
-        restorePrograms();
+//        restorePrograms();
         LOGGER.debug("The interpreter component is initialized");
     }
 
@@ -127,6 +127,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean addProgram(JSONObject programJSON) {
+        if(!restorePrograms()) {
+            return false;
+        }
         NodeProgram p = putProgram(programJSON);
         if (p == null) {
             LOGGER.warn("Unable to add program.");
@@ -145,6 +148,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean removeProgram(String programId) {
+        if(!restorePrograms()) {
+            return false;
+        }
         NodeProgram p = mapPrograms.get(programId);
 
         if (p == null) {
@@ -178,6 +184,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean update(JSONObject jsonProgram) {
+        if(!restorePrograms()) {
+            return false;
+        }
         String prog_id;
         try {
             prog_id = jsonProgram.getString("id");
@@ -211,6 +220,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean callProgram(String programId) {
+        if(!restorePrograms()) {
+            return false;
+        }
         return callProgram(programId, null);
     }
 
@@ -222,6 +234,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     @Override
     public boolean callProgram(String programId, JSONArray args) {
+        if(!restorePrograms()) {
+            return false;
+        }
         NodeProgram p = mapPrograms.get(programId);
         JSONObject calledStatus = null;
 
@@ -235,6 +250,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean stopProgram(String programId) {
+        if(!restorePrograms()) {
+            return false;
+        }
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
@@ -251,6 +269,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the list of id that contains a program
      */
     public List<String> getListProgramIds(NodeProgram node) {
+        if(!restorePrograms()) {
+            return null;
+        }
         List<String> list = new ArrayList<String>();
         list.add(node.getId());
         for (NodeProgram n : node.getSubPrograms()) {
@@ -261,6 +282,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public HashMap<String, JSONObject> getListPrograms() {
+        if(!restorePrograms()) {
+            return null;
+        }
         HashMap<String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
         for (NodeProgram p : mapPrograms.values()) {
             mapProgramJSON.put(p.getId(), p.getJSONDescription());
@@ -271,6 +295,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean isProgramActive(String programId) {
+        if(!restorePrograms()) {
+            return false;
+        }
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
@@ -287,6 +314,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return Node of the program if found, null otherwise
      */
     public NodeProgram getNodeProgram(String programId) {
+        if(!restorePrograms()) {
+            return null;
+        }
         return mapPrograms.get(programId);
     }
 
@@ -395,6 +425,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param id
      */
     private void notifyRemoveProgram(String id, String name) {
+
         newProgramStatus(id, ReferenceTable.STATUS.MISSING);
         notifyChanges(new ProgramNotification("removeProgram", id, "", name, null, null));
     }
@@ -437,6 +468,11 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the description of the programs for internal use
      */
     private ArrayList<Entry<String, Object>> getProgramsDesc() {
+        if(!restorePrograms()) {
+            return null;
+        }
+
+
         ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
         for (NodeProgram subProgram : root.getSubPrograms()) {
             for (String key : getListProgramIds(subProgram)) {
@@ -446,33 +482,47 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         return properties;
     }
 
+    boolean synchro=false;
     /**
      * Retrieve the programs from database and put them in the interpreter
      */
-    private void restorePrograms() {
-        LOGGER.debug("Restore interpreter program list from database");
-        JSONObject userbase = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
-        if (userbase != null) {
-            try {
-                JSONArray state = userbase.getJSONArray("state");
-                for (int i = 0; i < state.length(); i++) {
-                    JSONObject obj = state.getJSONObject(i);
-                    String key = (String) obj.keys().next();
-                    NodeProgram np;
-                    np = putProgram(new JSONObject(obj.getString(key)));
-                    if (np == null) {
-                        LOGGER.error("Unable to restore a program");
-                        return;
+    private synchronized boolean restorePrograms() {
+        //restore places from data base
+        if(synchro) {
+            return true;
+        } else if(contextHistory_pull!= null && contextHistory_pull.testDB()) {
+            synchro = true;
+
+            LOGGER.debug("Restore interpreter program list from database");
+            JSONObject userbase = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+            if (userbase != null) {
+                try {
+                    JSONArray state = userbase.getJSONArray("state");
+                    for (int i = 0; i < state.length(); i++) {
+                        JSONObject obj = state.getJSONObject(i);
+                        String key = (String) obj.keys().next();
+                        NodeProgram np;
+                        np = putProgram(new JSONObject(obj.getString(key)));
+                        if (np == null) {
+                            LOGGER.error("Unable to restore a program");
+                            return false;
+                        }
+                        if (np.isRunning()) {
+                            //TODO:Restore complete interpreter and programs state
+                            this.callProgram(np.getId());
+                        }
                     }
-                    if (np.isRunning()) {
-                        //TODO:Restore complete interpreter and programs state
-                        this.callProgram(np.getId());
-                    }
+                    LOGGER.debug("program list successfully synchronized with database");
+                    return true;
+
+                } catch (JSONException e) {
+                    LOGGER.warn("JSONException: {}", e.getMessage());
+                    return false;
                 }
-            } catch (JSONException e) {
-                LOGGER.warn("JSONException: {}", e.getMessage());
             }
+
         }
+        return false;
 
     }
 

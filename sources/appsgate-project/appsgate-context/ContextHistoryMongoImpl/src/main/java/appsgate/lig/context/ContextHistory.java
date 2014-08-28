@@ -56,6 +56,13 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 	public void stop() {
 	}
 
+    public boolean testDB() {
+        if (myConfiguration != null && myConfiguration.isValid()) {
+            return true;
+        }
+        else return false;
+    }
+
 	@Override
 	public boolean pushData_add(String name, String userID, String objectID,
 			String addedValue, ArrayList<Entry<String, Object>> properties) {
@@ -150,6 +157,9 @@ public class ContextHistory implements DataBasePullService, DataBasePushService 
 			}
 		return false;
 	}
+
+
+
 
 	@Override
 	public JSONObject pullLastObjectVersion(String ObjectName) {

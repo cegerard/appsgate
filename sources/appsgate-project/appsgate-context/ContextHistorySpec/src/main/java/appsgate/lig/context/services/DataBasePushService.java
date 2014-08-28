@@ -12,7 +12,11 @@ import java.util.Map;
  * 
  */
 public interface DataBasePushService {
-	/**
+
+    public boolean testDB();
+
+
+    /**
 	 * Push the last state of an object name "name". The state is represent by a set of properties
 	 * and an header represent the last addition of this object. This method specify the user that
 	 * trigger the update.

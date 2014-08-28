@@ -6,9 +6,11 @@
 	<implementation name="EUDEInterpreter" classname="appsgate.lig.eude.interpreter.impl.EUDEInterpreter" specification="EUDEInterpreterSpec" singleton="true" push="notifyChanges">
 		<callback onInit="newInst" onRemove="deleteInst" />
 		<relation field="ehmiProxy" fail="wait" resolve="exist"/>
-                <relation field="propHistoryManager" fail="wait" resolve="exist"/>
-		<ipojo:requires field="contextHistory_pull"/>
-		<ipojo:requires field="contextHistory_push"/>
+        <relation field="propHistoryManager" fail="wait" resolve="exist"/>
+        <relation specification="ContextHistorySpec" creation="eager" fail="wait" resolve="exist" added="restorePrograms">
+            <interface field="contextHistory_pull"/>
+            <interface field="contextHistory_push"/>
+        </relation>
 	</implementation>
 
 </apam>
