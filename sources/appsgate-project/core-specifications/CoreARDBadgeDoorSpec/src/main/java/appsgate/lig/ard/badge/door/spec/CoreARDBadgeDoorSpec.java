@@ -3,10 +3,9 @@ package appsgate.lig.ard.badge.door.spec;
 public interface CoreARDBadgeDoorSpec {
 
 	public boolean getContactStatus();
-    public String getLastCard();
+    public Integer getLastCard();
     public String getARDClass();
-    public int getDoorID();
-    public int getCardID();
+    public Integer getDoorID();
     public String getStatus();
 
 }
