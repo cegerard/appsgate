@@ -3,6 +3,7 @@ package appsgate.lig.weather.extended.impl;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
+import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.util.Util;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -31,9 +32,9 @@ public class WeatherObserverFactory {
             configuration.put("currentLocation", location);
 
 
-            WeatherObserverImpl impl = (WeatherObserverImpl) observerImpl.createInstance(null, configuration);
+            Instance inst = observerImpl.createInstance(null, configuration);
 
-            return impl;
+            return (inst == null) ? null: (ExtendedWeatherObserver) inst.getServiceObject();
 
         } catch( Exception exc) {
             logger.warn("Exception when creating WeatherObserver for "+location+" : "+exc.getMessage());
