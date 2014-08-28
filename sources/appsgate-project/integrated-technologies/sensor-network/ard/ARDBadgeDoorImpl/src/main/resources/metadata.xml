@@ -30,6 +30,7 @@
 
     <implementation name="ARDController" classname="appsgate.ard.protocol.controller.ARDController">
         <callback onInit="validate" onRemove="invalidate"/>
+        <definition name="retry" field="retry" type="int" default="2000" />
         <definition name="host" field="host" type="string" default="192.168.3.110" />
         <definition name="port" field="port" type="int" default="2001" />
     </implementation>
