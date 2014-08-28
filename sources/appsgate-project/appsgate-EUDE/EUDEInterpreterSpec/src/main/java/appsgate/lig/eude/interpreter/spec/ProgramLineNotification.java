@@ -11,16 +11,19 @@ import org.json.JSONObject;
 public class ProgramLineNotification implements NotificationMsg {
 
     private final String programId;
-    private final String nodeId;
+    private final JSONObject activeNodes;
+    private final JSONObject nodesCounter;
 
     /**
      *
      * @param pid
-     * @param nodeId
+     * @param activeNodes
+     * @param nodesCounter
      */
-    public ProgramLineNotification(String pid, String nodeId) {
+    public ProgramLineNotification(String pid, JSONObject activeNodes, JSONObject nodesCounter) {
         this.programId = pid;
-        this.nodeId = nodeId;
+        this.activeNodes = activeNodes;
+        this.nodesCounter = nodesCounter;
     }
 
     @Override
@@ -30,21 +33,23 @@ public class ProgramLineNotification implements NotificationMsg {
 
     @Override
     public String getNewValue() {
-        return nodeId;
+        return null;
     }
 
     @Override
     public String getVarName() {
-        return "nodeId";
+        return null;
     }
+
 
     @Override
     public JSONObject JSONize() {
         JSONObject content = new JSONObject();
         try {
 
-            content.put("id", programId);
-            content.put("nodeId", nodeId);
+            content.put("objectId", programId);
+            content.put("activeNodes", activeNodes);
+            content.put("nodesCounter", nodesCounter);
 
         } catch (JSONException ex) {
             //  No exception will be thrown since changes is not empty

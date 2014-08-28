@@ -18,7 +18,9 @@ define([
             parameters: [],
             header: {},
             definitions: [],
-			body : {}
+			      body : {},
+            nodesCounter: {},
+            activeNodes: {}
 		},
         /**
          * Extract the name and the daemon attributes from the source to simplify their usage w/ backbone and in the templates

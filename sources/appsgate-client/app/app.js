@@ -28,9 +28,9 @@ define(function(require, exports, module) {
         window.dispatcher = _.clone(Backbone.Events);
 
         // Setting the connection with the box
-        //window.communicator = new Communicator('ws://192.168.1.250:8087');
-//        window.communicator = new Communicator('ws://localhost:8087');
-        window.communicator = new Communicator('ws://192.168.1.2:8087');
+        window.communicator = new Communicator('ws://192.168.1.12:8087');
+        //window.communicator = new Communicator('ws://localhost:8087');
+        //window.communicator = new Communicator('ws://192.168.1.2:8087');
 
         window.addEventListener("click", onFocusOutCircleMenu, false);
 

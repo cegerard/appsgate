@@ -156,7 +156,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     protected void fireStartEvent(StartEvent e) {
         try {
-            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), iid));
+            LOGGER.warn(this.getProgramNode().toString());
+            this.getProgramNode().setActiveNode(iid, true);
+            this.getProgramNode().incrementNodeCounter(iid);
+            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), this.getProgramNode().getActiveNodes(), this.getProgramNode().getNodesCounter()));
         } catch (SpokExecutionException ex) {
         }
         
@@ -188,6 +191,12 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param e The end event to fire for all the listeners
      */
     protected synchronized void fireEndEvent(EndEvent e) {
+        try {
+            this.getProgramNode().setActiveNode(iid, false);
+            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), this.getProgramNode().getActiveNodes(), this.getProgramNode().getNodesCounter()));
+        } catch (SpokExecutionException ex) {
+        }
+
         //during the execution the list can be updated
         int nbListeners = endEventListeners.size();
         LOGGER.trace("fire endEvent {} for {} nodes", e.getSource(), nbListeners);

@@ -80,7 +80,7 @@ public class NodeStateTest extends NodeTest {
     public void testCompositeState()  throws JSONException{
         
         ruleJSON.put("name", "testState");
-        programNode.getMediator().notifyChanges(new ProgramLineNotification(null, null));
+        programNode.getMediator().notifyChanges(new ProgramLineNotification(null, null, null));
         try {
             state = new NodeState(ruleJSON, programNode);
         } catch (SpokNodeException ex) {

@@ -6,7 +6,7 @@
 
     <div class="row lead">
         <div class="pull-left">
-        <% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "PROCESSING") { %>
+        <% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "KEEPING" || program.get("runningState") === "PROCESSING") { %>
         <div class="led led-yellow pull-left"></div>
         <% } else if (program.get("runningState") === "DEPLOYED") { %>
         <div class="led led-default pull-left"></div>
