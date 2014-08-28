@@ -28,6 +28,7 @@
       "devices":"Devices",
       "services":"Services",
       "programs":"Programs",
+      "debugger":"Debugger",
       "button-settings":"Preferences",
       "emergency-stop":"Emergency stop"
    },
@@ -641,5 +642,8 @@
           "210":"domicubes"
         }
       }
+   },
+   "debugger": {
+     "all": "All"
    }
 }
