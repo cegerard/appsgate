@@ -21,7 +21,8 @@
     "requirejs-text": "2.0.10",
     "sinon": "~1.7.3",
     "Snap.svg": null,
-    "raphael": "latest"
+    "raphael": "latest",
+    "d3": "~3.4.11"
   },
   "version": "1",
   "homepage": "https://github.com/kpetouk/appsgate-client",
