@@ -111,7 +111,7 @@ public class TraceMan implements TraceManSpec {
         }
 
         //TraceQueue initialization with no aggregation
-        traceQueue = new TraceQueue<JSONObject>(10000);
+        traceQueue = new TraceQueue<JSONObject>(0);
     }
 
     /**
@@ -354,6 +354,7 @@ public class TraceMan implements TraceManSpec {
     		return tracesTab;
     	} else { // Apply aggregation policy
     		try {
+    			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
 				return traceQueue.applyAggregationPolicy(timestamp, null); //Call with default aggregation policy (id and time)
 			} catch (JSONException e) {
@@ -371,6 +372,7 @@ public class TraceMan implements TraceManSpec {
     		return tracesTab;
     	} else { // Apply aggregation policy
     		try {
+    			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
 				return traceQueue.applyAggregationPolicy(start, null); //Call with default aggregation policy (id and time)
 			} catch (JSONException e) {
@@ -487,6 +489,7 @@ public class TraceMan implements TraceManSpec {
 	public boolean toggleLiveTrace(){
 		if(liveTraceActivated){
 			liveTraceActivated = false;
+			liveTracer.close();
 			return EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
 		}else{
 			//Socket and live trace initialization
@@ -546,7 +549,7 @@ public class TraceMan implements TraceManSpec {
 			super(50000);
 			
 			this.deltaTinMillis = deltaT;
-            initTraceExec();
+			traceExec = new TraceExecutor();
 		}
 		
 		/**
@@ -558,14 +561,13 @@ public class TraceMan implements TraceManSpec {
 			super(capacity);
 			
 			this.deltaTinMillis = deltaT;
-            initTraceExec();
+			traceExec = new TraceExecutor();
 		}
 
         /**
          * Initiate the trace executor thread/service
          */
         private  void initTraceExec() {
-            traceExec = new TraceExecutor();
             new Thread(traceExec).start();
             timer = new Timer();
             if(deltaTinMillis > 0) {
@@ -600,7 +602,12 @@ public class TraceMan implements TraceManSpec {
     	 * Stop the trace queue thread execution
     	 */
     	public void stop() {
-    		traceExec.stop();
+    		timer.cancel();
+			timer.purge();
+			traceExec.stop();
+			synchronized(traceExec) {
+				traceExec.notify();
+			}
 		}
 		
 		/**
@@ -617,9 +624,7 @@ public class TraceMan implements TraceManSpec {
 			for(int i =0; i < nbTrace; i++){
 				traceCollection.add((E) traces.getJSONObject(i));
 			}
-			
-			
-			
+
 			this.clear();
 			this.addAll(traceCollection);
 		}
@@ -674,11 +679,12 @@ public class TraceMan implements TraceManSpec {
 		public synchronized JSONArray applyAggregationPolicy(long from, JSONObject policy) throws JSONException{
 			
 			JSONArray aggregateTraces = new JSONArray();
+			JSONObject olderTrace = traceQueue.peek();
 			
-			if(policy == null){ //default aggregation (time and identifiers)
+			if(policy == null && olderTrace != null){ //default aggregation (time and identifiers)
 
-                long  beginInt = from;
-                long  endInt = from+deltaTinMillis;
+				long beginInt = olderTrace.getLong("timestamp");
+				long  endInt = from+deltaTinMillis;
                 JSONArray tracesPacket = new JSONArray();
                 
                 while(!traceQueue.isEmpty()) {
@@ -703,11 +709,10 @@ public class TraceMan implements TraceManSpec {
         			traceExec.aggregation(aggregateTraces, tracesPacket, beginInt);
                 }
                 
-			} else { //Apply specific aggregation policy
+			} else if(olderTrace != null) { //Apply specific aggregation policy
 				//TODO generic aggregation mechanism
 				//aggregationWithPolicy(aggregateTraces, tracesPacket, logTime, policy)
 			}
-			
 			return aggregateTraces;
 		}
 
@@ -741,6 +746,10 @@ public class TraceMan implements TraceManSpec {
 	    		sleeping = false;
 	    	}
 	    	
+			public void stop() {
+				start = false;
+			}
+
 			@Override
 			public void run() {
 				
@@ -753,7 +762,9 @@ public class TraceMan implements TraceManSpec {
 								sleeping = false;
 							}
 						}
-						sendTraces(apply(null));
+						if(start){
+							sendTraces(apply(null));
+						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}  catch (JSONException ex) {
@@ -914,16 +925,6 @@ public class TraceMan implements TraceManSpec {
 				return sleeping;
 			}
 			
-			/**
-			 * Stop the current thread by ending its execution
-			 * cleanly 
-			 */
-			public void stop(){
-				timer.cancel();
-				timer.purge();
-				start = false;
-				traceExec.notify();
-			}
 	    }
 		
     }
