@@ -33,6 +33,15 @@ public class ARDAdaptor {
     };
 
     public void controllerAdded(ARDController con){
+
+    }
+
+    public void controllerRemoved(ARDController con){
+
+    }
+
+    public void validate() {
+        System.out.println("Removing ARD Adaptor instance");
         try {
 
             logger.info("Instantiating ARD Controller (low level abstraction)");
@@ -52,7 +61,8 @@ public class ARDAdaptor {
         }
     }
 
-    public void controllerRemoved(ARDController con){
+    public void invalidate() {
+        System.out.println("Instantiating ARD Adaptor");
         Thread t1=new Thread() {
             public void run() {
                 String appsgateInstanceName = instance.getName();
@@ -63,14 +73,6 @@ public class ARDAdaptor {
         };
         t1.setDaemon(true);
         t1.start();
-    }
-
-    public void validate() {
-        System.out.println("Removing ARD Adaptor instance");
-    }
-
-    public void invalidate() {
-        System.out.println("Instantiating ARD Adaptor");
     }
 
 }

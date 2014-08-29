@@ -29,10 +29,10 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
      */
     private String status;
     private String pictureId;
-    private Integer doorID;
-    private Integer lastCard;
-    private Boolean authorized;
-    private String ardClass;
+    private Integer doorID=-1;
+    private Integer lastCard=-1;
+    private Boolean authorized=false;
+    private String ardClass="";
 
     public String getAbstractObjectId() {
         return sensorId;

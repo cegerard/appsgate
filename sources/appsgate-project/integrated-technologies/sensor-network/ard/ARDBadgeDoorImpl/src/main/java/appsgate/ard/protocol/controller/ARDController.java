@@ -141,22 +141,31 @@ public class ARDController {
 
     public void validate() throws JSONException {
 
-        while(!isConnected()){
+        Thread t1=new Thread(){
 
-            try {
-                connect();
-                monitoring();
-                sendRequest(new SubscriptionRequest());
-            } catch (Exception e) {
-                if(retry==-1) break;
-                try {
-                    Thread.sleep(retry);
-                } catch (InterruptedException e1) {
-                    logger.error("Failed retrying to connect with ARD HUB");
+            public void run(){
+                while(!isConnected()){
+
+                    try {
+                        connect();
+                        monitoring();
+                        sendRequest(new SubscriptionRequest());
+                    } catch (Exception e) {
+                        if(retry==-1) break;
+                        try {
+                            Thread.sleep(retry);
+                        } catch (InterruptedException e1) {
+                            logger.error("Failed retrying to connect with ARD HUB");
+                        }
+                    }
+
                 }
             }
 
-        }
+        };
+        t1.setDaemon(true);
+        t1.start();
+
 
     }
 
