@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
@@ -42,11 +43,11 @@ import java.util.Map;
 public class ARDController {
 
     private Logger logger = LoggerFactory.getLogger(ARDController.class);
-
+    private final Integer SOCKET_TIMEOUT=1000;
+    private final Integer STREAM_FLOW_RESTTIME=100;
+    private Integer retry;
     private String host;
-
     private Integer port;
-
     private Socket socket;
     private ARDBusMonitor monitor;
     private Object token=new Object();
@@ -64,7 +65,7 @@ public class ARDController {
 
     public void connect() throws IOException {
         socket = new Socket(); //host, port
-        socket.connect(new InetSocketAddress(host, port), 1000);
+        socket.connect(new InetSocketAddress(host, port), SOCKET_TIMEOUT);
         globalMessageReceived =new ARDMessage() {
             public void ardMessageReceived(JSONObject json) throws JSONException {
                 logger.debug("Messages received {}", json.toString());
@@ -99,7 +100,7 @@ public class ARDController {
     }
 
     private Boolean isConnected(){
-        return socket.isConnected();
+        return socket==null?false:socket.isConnected();
     }
 
     public void monitoring() throws IOException {
@@ -126,7 +127,7 @@ public class ARDController {
                 socket.getOutputStream().write(boss.toByteArray());
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(STREAM_FLOW_RESTTIME);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -134,16 +135,38 @@ public class ARDController {
             } else {
                 logger.debug("Socket was closed, impossible to send commands to {}:{}", host, port);
             }
-
-
         }
 
     }
 
-    public void validate() throws IOException, JSONException {
-        connect();
-        monitoring();
-        sendRequest(new SubscriptionRequest());
+    public void validate() throws JSONException {
+
+        Thread t1=new Thread(){
+
+            public void run(){
+                while(!isConnected()){
+
+                    try {
+                        connect();
+                        monitoring();
+                        sendRequest(new SubscriptionRequest());
+                    } catch (Exception e) {
+                        if(retry==-1) break;
+                        try {
+                            Thread.sleep(retry);
+                        } catch (InterruptedException e1) {
+                            logger.error("Failed retrying to connect with ARD HUB");
+                        }
+                    }
+
+                }
+            }
+
+        };
+        t1.setDaemon(true);
+        t1.start();
+
+
     }
 
     public void invalidate() throws IOException {

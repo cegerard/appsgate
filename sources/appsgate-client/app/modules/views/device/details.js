@@ -426,7 +426,7 @@ define([
                     case 5: // ARD lock
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/keycard.jpg",
+                            sensorImg: "app/img/sensors/ard-logo.png",
                             sensorType: $.i18n.t("devices.ard.name.singular"),
                             places: places,
                             deviceDetails: this.tplARD

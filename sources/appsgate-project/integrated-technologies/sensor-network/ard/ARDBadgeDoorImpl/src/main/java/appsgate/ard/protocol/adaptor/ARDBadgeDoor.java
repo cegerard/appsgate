@@ -29,10 +29,10 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
      */
     private String status;
     private String pictureId;
-    private Integer doorID;
-    private Integer lastCard;
-    private Boolean authorized;
-    private String ardClass;
+    private Integer doorID=-1;
+    private Integer lastCard=-1;
+    private Boolean authorized=false;
+    private String ardClass="";
 
     public String getAbstractObjectId() {
         return sensorId;
@@ -57,6 +57,8 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         descr.put("status", status);
         descr.put("contact", currentStatus);
         descr.put("deviceType", sensorType);
+        descr.put("lastCard", lastCard);
+        descr.put("authorized", authorized);
 
         return descr;
     }
@@ -108,16 +110,27 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     public void ardMessageReceived(JSONObject json)  {
+
         try {
+
             JSONObject eventNode=json.getJSONObject("event");
-            lastCard=eventNode.getInt("card_idx");
-            doorID=eventNode.getInt("door_idx");
-            authorized=eventNode.getString("status").equalsIgnoreCase("ok")?true:false;
-            ardClass=eventNode.getString("class");
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("card_idx","",lastCard.toString(),this));
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("door_idx","",doorID.toString(),this));
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("authorized","",authorized.toString(),this));
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("ardClass","",ardClass,this));
+
+            Integer newCard=eventNode.getInt("card_idx");
+            Integer newDoorID=eventNode.getInt("door_idx");
+            Boolean newAuthorized=eventNode.getString("status").equalsIgnoreCase("ok")?true:false;
+            String newArdClass=eventNode.getString("class");
+
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("lastCard",lastCard.toString(),newCard.toString(),this));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("card_idx",lastCard.toString(),newCard.toString(),this));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("door_idx",doorID.toString(),newDoorID.toString(),this));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("authorized",authorized.toString(),newAuthorized.toString(),this));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("ardClass",ardClass,newArdClass,this));
+
+            lastCard=newCard;
+            doorID=newDoorID;
+            authorized=newAuthorized;
+            ardClass=newArdClass;
+
         }catch(JSONException e){
             logger.error("Failed parsing ARD JSON message.",e);
         }
