@@ -35,6 +35,8 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     protected String appsgateObjectId;
     protected String appsgateServiceName;
 
+    public final static String OBJECTID_PREFIX= "WeatherObserver-";
+
     protected CORE_TYPE appsgateCoreType;
 
 
@@ -90,6 +92,14 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
         return appsgateObjectId;
     }
 
+    /**
+     * Helper class to simulate a WeatherObserver if not created using apam
+     * @param location
+     * @return
+     */
+    public static String getFakeObjectId(String location) {
+        return OBJECTID_PREFIX+location;
+    }
 
     @Override
     public JSONObject getDescription() throws JSONException {
