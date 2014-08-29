@@ -278,7 +278,13 @@
             "inactive":"Inactif",
             "unknown":"Inconnu"
          }
-      }
+      },
+      "ard":{
+           "name":{
+               "singular":"ARD",
+               "plural":"ARD"
+           }
+       }
    },
    "services":{
       "unknown":"Inconnu",
