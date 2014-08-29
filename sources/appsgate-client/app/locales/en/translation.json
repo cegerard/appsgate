@@ -280,6 +280,8 @@
          }
       },
       "ard":{
+          "last-card":"Last badge passed",
+          "last-authorized":"Last badge access granted",
           "name":{
               "singular":"ARD",
               "plural":"ARD"

@@ -1,8 +1,12 @@
 <li class="list-group-item">
-    <!--
-    Addional information that can be provided by the ARD Door should be added here
-	<strong data-i18n="devices.state-label">Etat</strong>
-	<div class="pull-right label label-default">
-	</div>
-	-->
+    <strong data-i18n="devices.ard.last-card"></strong>
+    <div class="pull-right label label-default">
+        <%= device.get('lastCard') %>
+    </div>
+</li>
+<li class="list-group-item">
+    <strong data-i18n="devices.ard.last-authorized"></strong>
+    <div class="pull-right label label-default">
+        <%= device.get('authorized') %>
+    </div>
 </li>

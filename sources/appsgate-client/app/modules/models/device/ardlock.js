@@ -21,7 +21,7 @@ define([
     getStates: function(which) {
           switch (which) {
               case "state":
-                  return [];//"getLastCard"
+                  return []; //"getLastCard"
               default:
                   return [];
           }

@@ -57,6 +57,8 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         descr.put("status", status);
         descr.put("contact", currentStatus);
         descr.put("deviceType", sensorType);
+        descr.put("lastCard", lastCard);
+        descr.put("authorized", authorized);
 
         return descr;
     }
@@ -114,17 +116,18 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
             JSONObject eventNode=json.getJSONObject("event");
 
             Integer newCard=eventNode.getInt("card_idx");
-            Integer newdoorID=eventNode.getInt("door_idx");
+            Integer newDoorID=eventNode.getInt("door_idx");
             Boolean newAuthorized=eventNode.getString("status").equalsIgnoreCase("ok")?true:false;
             String newArdClass=eventNode.getString("class");
 
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("lastCard",lastCard.toString(),newCard.toString(),this));
             triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("card_idx",lastCard.toString(),newCard.toString(),this));
-            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("door_idx",doorID.toString(),newdoorID.toString(),this));
+            triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("door_idx",doorID.toString(),newDoorID.toString(),this));
             triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("authorized",authorized.toString(),newAuthorized.toString(),this));
             triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("ardClass",ardClass,newArdClass,this));
 
             lastCard=newCard;
-            doorID=newdoorID;
+            doorID=newDoorID;
             authorized=newAuthorized;
             ardClass=newArdClass;
 
