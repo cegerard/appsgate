@@ -20,4 +20,7 @@ public interface DataBasePullService {
 	 */
 	public JSONObject pullLastObjectVersion(String ObjectName);
 
+    public boolean testDB();
+
+
 }

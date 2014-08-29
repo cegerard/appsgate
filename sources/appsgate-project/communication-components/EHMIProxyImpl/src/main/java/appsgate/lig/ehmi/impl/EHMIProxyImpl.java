@@ -77,7 +77,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     /**
      * The space manager ApAM component to handle the object space
      */
-    private PlaceManagerSpec placeManager;
+    private PlaceManagerSpec
+
+            placeManager;
 
     /**
      * The user manager ApAM component to handle the user base

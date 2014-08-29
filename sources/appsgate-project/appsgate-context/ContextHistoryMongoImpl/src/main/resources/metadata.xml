@@ -17,12 +17,7 @@
         specification="ContextHistorySpec"
 		singleton="true">
 
-        <relation implementation="MongoDBConfiguration" field="myConfiguration" creation="eager"
-                  resolve="exist" fail="wait" added="bindConfiguration" removed="unbindConfiguration"/>
-
-	    <ipojo:provides specifications="{appsgate.lig.context.services.DataBasePullService,
-	        appsgate.lig.context.services.DataBasePushService}"/>
-
-		<callback onInit="start" onRemove="stop" />
+        <relation implementation="MongoDBConfiguration" field="myConfiguration"
+                  resolve="exist" fail="wait"/>
 	</implementation>
 </apam>

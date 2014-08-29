@@ -33,6 +33,5 @@
     <modules>
         <module>ard-importer</module>
         <module>ard-importer-adaptor</module>
-	<module>ard-json-protocol</module>
     </modules>
 </project>

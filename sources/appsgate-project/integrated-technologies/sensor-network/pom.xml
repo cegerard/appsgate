@@ -18,5 +18,6 @@
 		<module>enocean</module>
 		<module>watteco</module>
 		<module>simulation</module>
+        <module>ard</module>
 	</modules>
 </project>

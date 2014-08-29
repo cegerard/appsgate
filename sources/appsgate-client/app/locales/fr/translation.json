@@ -279,7 +279,23 @@
             "inactive":"Inactif",
             "unknown":"Inconnu"
          }
-      }
+      },
+      "ard":{
+           "last-card":"Dernier badge passé",
+           "last-authorized":"Dernier badge accès autorisé",
+           "name":{
+               "singular":"ARD",
+               "plural":"ARD"
+           },
+          "event":{
+              "authorized":"badge est autorisé sur",
+              "non_authorized":"badge n'est pas autorisé sur"
+          },
+          "state":{
+              "authorized":"badge est autorisé sur",
+              "non_authorized":"badge n'est pas autorisé sur"
+          }
+       }
    },
    "services":{
       "unknown":"Inconnu",

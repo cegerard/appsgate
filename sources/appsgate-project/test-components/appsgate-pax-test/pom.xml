@@ -44,7 +44,7 @@
 
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>core-mail-service-specification</artifactId>
+			<artifactId>CoreMailSpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

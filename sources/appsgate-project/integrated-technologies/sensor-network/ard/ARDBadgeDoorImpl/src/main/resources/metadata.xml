@@ -1,0 +1,46 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ev="org.apache.felix.ipojo.handlers.event"
+      xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd org.apache.felix.ipojo.handlers.event http://felix.apache.org/ipojo/schemas/CURRENT/event-admin.xsd">
+
+	<implementation name="ARDBadgeDoor"
+		classname="appsgate.ard.protocol.adaptor.ARDBadgeDoor" specification="CoreARDBadgeDoorSpec" push="triggerApamMessage">
+		<callback onInit="newInst" onRemove="deleteInst" />
+		
+		<!-- device kernel meta data -->
+		<definition name="deviceName"	 type="string" default="Unknown" 		  field="sensorName"/>
+		<definition name="deviceId" 	 type="string" default="000000" 		  field="sensorId"/>
+		<definition name="deviceType" 	 type="string" default="ARD_DEVICE" field="sensorType"/>
+
+		<definition name="pictureId" 	 type="string" default="/dev/null"		field="pictureId"/>
+		<definition name="userType" 	 type="string" default="5" 			  field="userType"/>
+		<definition name="status" 		 type="string" default="2" 			  field="status" /> <!-- method="statusChanged" -->
+
+		<definition name="isPaired"		 type="string" default="false" 		  field="isPaired" /> <!-- method="isPairedChanged" -->
+		<definition name="signal"		 type="string" default="0" 		  	  field="signal" /> <!-- method="signalChanged" -->
+
+		<definition name="currentStatus" type="string" default="false"		  field="currentStatus"/> <!-- method="currentStatusChanged" -->
+
+	</implementation>
+
+    <implementation name="ARDMessageGreedyListener" classname="appsgate.ard.protocol.ARDMessageGreedyListener">
+        <relation push="apamMessageReceived" resolve="exist" multiple="true" />
+        <callback onInit="start" onRemove="stop" />
+    </implementation>
+
+    <implementation name="ARDController" classname="appsgate.ard.protocol.controller.ARDController" singleton="true">
+        <callback onInit="validate" onRemove="invalidate"/>
+        <definition name="retry" field="retry" type="int" default="2000" />
+        <definition name="host" field="host" type="string" default="192.168.3.110" />
+        <definition name="port" field="port" type="int" default="2001" />
+    </implementation>
+
+    <implementation name="ARDAdaptor" classname="appsgate.ard.protocol.adaptor.ARDAdaptor" > <!--push="notifyChanges"-->
+        <callback onInit="validate" onRemove="invalidate"/>
+        <relation implementation="ARDController" field="ard" creation="eager"/>
+    </implementation>
+
+    <!--This listener receives echos apam messages, to display them in order to know that they were correctly dispatched -->
+    <apam-instance implementation="ARDMessageGreedyListener" name="ARDMessageGreedyListener-0"/>
+    <apam-instance implementation="ARDAdaptor" name="ARDAdaptor-0"/>
+</apam>

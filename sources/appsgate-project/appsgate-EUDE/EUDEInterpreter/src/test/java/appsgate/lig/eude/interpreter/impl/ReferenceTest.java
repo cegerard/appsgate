@@ -77,6 +77,12 @@ public class ReferenceTest {
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
+                allowing(pull_service).testDB();
+                will(returnValue(true));
+
+                allowing(push_service).testDB();
+                will(returnValue(true));
+
                 allowing(pull_service).pullLastObjectVersion(with(any(String.class)));
                 will(returnValue(null));
                 allowing(push_service).pushData_change(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));

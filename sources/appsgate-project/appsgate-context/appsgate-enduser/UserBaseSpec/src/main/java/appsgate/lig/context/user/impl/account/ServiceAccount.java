@@ -71,7 +71,7 @@ public class ServiceAccount {
 					impl.createInstance(null, properties);
 				} 
 			}else if(service.contentEquals("Mail")) {
-				impl = CST.apamResolver.findImplByName(null, "GmailImpl");
+				impl = CST.apamResolver.findImplByName(null, "MailService");
 				if(impl != null) {
 					HashMap<String,String> properties = new HashMap<String, String>();
 					properties.put("user", login);

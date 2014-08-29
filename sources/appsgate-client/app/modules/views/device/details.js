@@ -57,12 +57,13 @@ define([
         },
         clockReset: function(e) {
 
-            console.log("clicked");
-
-            if($("#clock-server-sync").prop("checked")===true){
-                console.log("changed");
+            /*
+            Nothing should be applied to the clock on checkbox clicking,
+                all validations and triggers are done when validating the form
+            if ($("#clock-server-sync").prop("checked") === true) {
                 this.model.trigger("change:resetClock");
             }
+            */
 
             return true;
         },
@@ -247,6 +248,14 @@ define([
          * @return false if the information are not correct, true otherwise
          */
         checkDevice: function() {
+
+            if($("#clock-server-sync").prop("checked")===true){
+                this.model.set("reset",true);
+                //this.model.trigger("change:resetClock");
+            }else {
+                this.model.set("reset",false);
+            }
+
             // name already exists
             if (devices.where({name: $("#edit-device-modal input").val()}).length > 0) {
                 if (devices.where({name: $("#edit-device-modal input").val()})[0].get("id") !== this.model.get("id")) {
@@ -266,6 +275,8 @@ define([
             // ok
             $("#edit-device-modal .text-danger").addClass("hide");
             $("#edit-device-modal .valid-button").removeClass("disabled");
+
+
 
             return true;
         },
@@ -288,11 +299,6 @@ define([
 
 
                     this.$el.find("#edit-device-modal").on("hidden.bs.modal", function() {
-                        // set the new name to the device
-                        self.model.set("name", $("#edit-device-modal input#device-name").val());
-
-                        // send the updates to the server
-                        self.model.save();
 
                         // tell the router that there is no modal any more
                         appRouter.isModalShown = false;
@@ -317,7 +323,7 @@ define([
                             // update the attribute time flow rate
                             self.model.set("flowRate", timeFlowRate);
 
-                            if($("#clock-server-sync").prop("checked")===true){
+                            if(self.model.get("reset")===true){
                                 self.model.trigger("change:resetClock");
                                 self.model.set("flowRate", "1");
                             }
@@ -325,6 +331,12 @@ define([
                             //send the update to the server
                             self.model.save();
                         }
+
+                        // set the new name to the device
+                        self.model.set("name", $("#edit-device-modal input#device-name").val());
+
+                        // send the updates to the server
+                        self.model.save();
 
                         // rerender the view
                         self.render();
@@ -414,7 +426,7 @@ define([
                     case 5: // ARD lock
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/keycard.jpg",
+                            sensorImg: "app/img/sensors/ard-logo.png",
                             sensorType: $.i18n.t("devices.ard.name.singular"),
                             places: places,
                             deviceDetails: this.tplARD

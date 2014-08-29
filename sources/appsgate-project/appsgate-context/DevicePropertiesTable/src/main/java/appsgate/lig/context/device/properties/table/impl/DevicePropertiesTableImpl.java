@@ -43,7 +43,7 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
      * Map of user of all name given for an core object or service by an end
      * user
      */
-    HashMap<String, String> userObjectName = new HashMap<String, String>();
+    HashMap<String, String> userObjectName = null;
 
     /**
      * Map of grammar associated to a device type
@@ -66,6 +66,9 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
 
     @Override
     public void addName(String objectId, String usrId, String newName) {
+        if(!restoreFromDB()) {
+            return;
+        }
         userObjectName.put(usrId + "-" + objectId, newName);
         notifyChanges(objectId, usrId, "name", newName);
 
@@ -82,6 +85,10 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
 
     @Override
     public void deleteName(String objectId, String usrId) {
+        if(!restoreFromDB()) {
+            return;
+        }
+
         String eventKey = usrId + "-" + objectId;
 
         Set<String> keys = userObjectName.keySet();
@@ -110,6 +117,10 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
 
     @Override
     public String getName(String objectId, String usrId) {
+        if(!restoreFromDB()) {
+            return null;
+        }
+
         String eventKey = usrId + "-" + objectId;
 
         Set<String> keys = userObjectName.keySet();
@@ -160,24 +171,38 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
     public void newInst() {
         logger.debug("The device properties table has been instanciated");
 
-        JSONObject table = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
-        logger.debug("Restore device properties table from database");
-        if (table != null) {
-            try {
-                JSONArray state = table.getJSONArray("state");
-                int length = state.length();
-                int i = 0;
-                while (i < length) {
-                    JSONObject obj = state.getJSONObject(i);
-                    String key = (String) obj.keys().next();
-                    userObjectName.put(key, obj.getString(key));
-                    i++;
+    }
+
+    private synchronized boolean restoreFromDB(){
+        if(userObjectName!=null) {
+            return true;
+        } else if (contextHistory_pull != null && contextHistory_pull.testDB()) {
+            userObjectName = new HashMap<String, String>();
+
+
+            JSONObject table = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+            logger.debug("Restore device properties table from database");
+            if (table != null) {
+                try {
+                    JSONArray state = table.getJSONArray("state");
+                    int length = state.length();
+                    int i = 0;
+                    while (i < length) {
+                        JSONObject obj = state.getJSONObject(i);
+                        String key = (String) obj.keys().next();
+                        userObjectName.put(key, obj.getString(key));
+                        i++;
+                    }
+                    logger.debug("The device properties table has been initialized");
+                    return true;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return false;
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
-        logger.debug("The device properties table has been initialized");
+        return false;
     }
 
     /**

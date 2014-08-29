@@ -98,10 +98,22 @@ public class EUDEInterpreterTest {
         tested = context.states("NotYet");
         context.checking(new Expectations() {
             {
+                allowing(pull_service).testDB();
+                will(returnValue(true));
+
+                allowing(push_service).testDB();
+                will(returnValue(true));
+
+                //contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", getProgramsDesc());
+
+
                 allowing(pull_service).pullLastObjectVersion(with(any(String.class)));
                 will(returnValue(null));
                 allowing(push_service).pushData_change(with(any(String.class)), with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
+
                 allowing(push_service).pushData_add(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
+                will(returnValue(true));
+                allowing(push_service).pushData_add(with(any(String.class)), with(any(String.class)), with(any(String.class)),  with(aNull(ArrayList.class)) );
                 will(returnValue(true));
                 allowing(push_service).pushData_remove(with(any(String.class)), with(any(String.class)), with(any(String.class)), (ArrayList<Map.Entry<String, Object>>) with(any(Object.class)));
                 will(returnValue(true));
@@ -147,6 +159,8 @@ public class EUDEInterpreterTest {
     @Test
     public void testDeleteInst() {
         System.out.println("deleteInst");
+        instance.addProgram(programJSON);
+
         instance.deleteInst();
     }
 
@@ -158,7 +172,10 @@ public class EUDEInterpreterTest {
     @Test
     public void testAddProgram() throws JSONException {
         System.out.println("addProgram");
+        System.out.println("Empty program : "+programJSON.toString());
         boolean result = instance.addProgram(programJSON);
+        System.out.println("result : "+result);
+
         instance.getNodeProgram(programId);
         Assert.assertTrue("Program should be added", result);
     }

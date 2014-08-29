@@ -7,6 +7,8 @@
                main="EHMIProxyImpl">
         <contentMngt>
 
+            <start  implementation="EUDEInterpreter" name="EUDEInterpreterInst" ></start>
+
             <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
 
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
@@ -69,15 +71,14 @@
         </contentMngt>
     </composite>
 
-    <composite name="AppsGateGoogleServices" singleton="true"
-               main="AppsgateGoogleAdapter">
+    <composite name="AppsGateGoogleServices" singleton="true">
+<!--               main="AppsgateGoogleAdapter">-->
         <contentMngt>
             <!-- <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
-            <start implementation="GmailImpl" name="GmailInst">
-                <property name="user" value="smarthome.inria@gmail.com" />
-                <property name="password" value="smarthome2014" />
-                <property name="auto-refresh" value="120000" />
+            <start implementation="MailAdapter" name="MailAdapterInst">
+
             </start>
+
         </contentMngt>
     </composite>
 

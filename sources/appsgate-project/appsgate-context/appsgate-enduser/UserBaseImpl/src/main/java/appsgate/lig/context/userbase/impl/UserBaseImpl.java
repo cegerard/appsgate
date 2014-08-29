@@ -47,32 +47,14 @@ public class UserBaseImpl implements UserBaseSpec {
 	/**
 	 * user list hahMap
 	 */
-	private HashMap<String, AppsgateEndUser> userList = new HashMap<String, AppsgateEndUser>();
+	private HashMap<String, AppsgateEndUser> userList = null;
 	
 	/**
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void newInst() {
-		logger.debug("The users base has been instanciated");
+		logger.debug("User base starting");
 		
-		JSONObject userbase = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
-		logger.debug("Restore user base from database");
-		if(userbase != null){
-			try {
-				JSONArray state = userbase.getJSONArray("state");
-				int length = state.length();
-				int i = 0;
-				while(i < length) {
-					JSONObject obj = state.getJSONObject(i);
-					String key = (String)obj.keys().next();
-					userList.put(key, new AppsgateEndUser(new JSONObject(obj.getString(key))));
-					i++;
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		logger.debug("The users base has been initialized");
 	}
 
 	/**
@@ -84,6 +66,9 @@ public class UserBaseImpl implements UserBaseSpec {
 
 	@Override
 	public boolean adduser(String id, String password, String lastName, String firstName, String role) {
+        if(!restoreUsersFromDb()) {
+            return false;
+        }
 		
 		try{
 			AppsgateEndUser newUser = new AppsgateEndUser(id, password, lastName, firstName, role);
@@ -107,6 +92,9 @@ public class UserBaseImpl implements UserBaseSpec {
 
 	@Override
 	public boolean removeUser(String id, String password) {
+        if(!restoreUsersFromDb()) {
+            return false;
+        }
 		try{
 			AppsgateEndUser aeu = userList.get(id);
 			if(aeu.authenticate(password)) {
@@ -132,6 +120,9 @@ public class UserBaseImpl implements UserBaseSpec {
 
 	@Override
 	public JSONArray getUsers() {
+        if(!restoreUsersFromDb()) {
+            return null;
+        }
 		JSONArray array = new JSONArray();
 		for(AppsgateEndUser aeu : userList.values()) {
 			array.put(aeu.getDescription());
@@ -141,18 +132,27 @@ public class UserBaseImpl implements UserBaseSpec {
 
 	@Override
 	public JSONObject getUserDetails(String id) {
+        if(!restoreUsersFromDb()) {
+            return null;
+        }
 		AppsgateEndUser aeu = userList.get(id);
 		return aeu.getDescription();
 	}
 
 	@Override
 	public boolean checkIfIdIsFree(String id) {
-		return (userList.get(id) == null);
+        if(!restoreUsersFromDb()) {
+            return false;
+        }
+        return (userList.get(id) == null);
 	}
 
 	@Override
 	public boolean addAccount(String id, String password,
 			JSONObject accountDetails) {
+        if(!restoreUsersFromDb()) {
+            return false;
+        }
 		
 		AppsgateEndUser aeu = userList.get(id);
 		
@@ -179,6 +179,9 @@ public class UserBaseImpl implements UserBaseSpec {
 	@Override
 	public boolean removeAccount(String id, String password,
 			JSONObject accountDetails) {
+        if(!restoreUsersFromDb()) {
+            return false;
+        }
 		
 		AppsgateEndUser aeu = userList.get(id);
 		
@@ -204,6 +207,9 @@ public class UserBaseImpl implements UserBaseSpec {
 	
 	@Override
 	public JSONArray getAccountsDetails(String id) {
+        if(!restoreUsersFromDb()) {
+            return null;
+        }
 		try {
 			return userList.get(id).getAccountsDetailsJSONArray();
 		}catch (Exception e) {
@@ -214,6 +220,9 @@ public class UserBaseImpl implements UserBaseSpec {
 
 	@Override
 	public boolean addDevice(String id, String password, String deviceId) {
+        if(!restoreUsersFromDb()) {
+            return false;
+        }
 		AppsgateEndUser aeu = userList.get(id);
 		
 		if(aeu.authenticate(password)) {
@@ -235,6 +244,9 @@ public class UserBaseImpl implements UserBaseSpec {
 
 	@Override
 	public boolean removeDevice(String id, String password, String deviceId) {
+        if(!restoreUsersFromDb()) {
+            return false;
+        }
 		AppsgateEndUser aeu = userList.get(id);
 		
 		if(aeu.authenticate(password)) {
@@ -256,6 +268,9 @@ public class UserBaseImpl implements UserBaseSpec {
 
 	@Override
 	public JSONArray getAssociatedDevices(String id) {
+        if(!restoreUsersFromDb()) {
+            return null;
+        }
 		try {
 			return userList.get(id).getDeviceListJSONArray();
 		}catch (Exception e) {
@@ -275,5 +290,34 @@ public class UserBaseImpl implements UserBaseSpec {
 		// TODO Auto-generated method stub
 		
 	}
+
+    private synchronized boolean restoreUsersFromDb() {
+        //restore places from data base
+        if(userList != null) {
+            return true;
+        } else if(contextHistory_pull!= null && contextHistory_pull.testDB()) {
+            JSONObject userbase = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
+            logger.debug("Restore user base from database");
+            if(userbase != null){
+                try {
+                    JSONArray state = userbase.getJSONArray("state");
+                    int length = state.length();
+                    int i = 0;
+                    while(i < length) {
+                        JSONObject obj = state.getJSONObject(i);
+                        String key = (String)obj.keys().next();
+                        userList.put(key, new AppsgateEndUser(new JSONObject(obj.getString(key))));
+                        i++;
+                    }
+                    logger.debug("The users base has been initialized");
+                    return true;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 
 }

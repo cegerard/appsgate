@@ -5,8 +5,10 @@
 
 	<implementation name="AppsGateContextUserBaseImpl" classname="appsgate.lig.context.userbase.impl.UserBaseImpl" specification="AppsGateContextUseBaseSpec" singleton="true">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		<ipojo:requires field="contextHistory_pull"/>
-		<ipojo:requires field="contextHistory_push"/>
+        <relation specification="ContextHistorySpec" fail="wait" resolve="exist">
+            <interface field="contextHistory_pull"/>
+            <interface field="contextHistory_push"/>
+        </relation>
 	</implementation>
 	
 <!-- 	<apam-instance name="AppsGateContextUserBaseInst" implementation="AppsGateContextUserBaseImpl"> -->
