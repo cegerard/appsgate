@@ -68,10 +68,15 @@ public class TraceMan implements TraceManSpec {
     */
    private TraceHistory dbTracer;
     
-    /**
-     * Trace log in file use to inspect trace
-     */
-    private TraceHistory fileTracer;
+   /**
+    * Boolean for file tracer activation
+    */
+   private boolean fileTraceActivated = false;
+   
+   /**
+    * Trace log in file use to inspect trace
+    */
+   private TraceHistory fileTracer;
     
     /**
      *Boolean for live tracer activation
@@ -101,10 +106,7 @@ public class TraceMan implements TraceManSpec {
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-        fileTracer = new TraceFile();
-        if (!fileTracer.init()) {
-            LOGGER.warn("Unable to start the tracer");
-        }
+        
         dbTracer = new TraceMongo(myConfiguration);
         if (!dbTracer.init()) {
             LOGGER.warn("Unable to start the tracer");
@@ -118,10 +120,14 @@ public class TraceMan implements TraceManSpec {
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-    	fileTracer.close();
+    	
+    	if(traceQueue != null)
+    		traceQueue.stop();
+    	if(fileTracer != null)
+    		fileTracer.close();
+    	
+    	EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
         dbTracer.close();
-        traceQueue.stop();
-        EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
     }
 
     /**
@@ -159,10 +165,12 @@ public class TraceMan implements TraceManSpec {
 			if(timeStamp > lastTimeStamp){
 	    		lastTimeStamp = timeStamp;
 	   
-	    		fileTracer.trace(trace); //Save into local file
-	    		
 	    		if(liveTraceActivated) {
 	    			liveTracer.trace(trace); //Send trace packet to client side
+	    		}
+	    		
+	    		if(fileTraceActivated) {
+	    			fileTracer.trace(trace); //Save into local file
 	    		}
 	    		
 	    	} else {
@@ -366,21 +374,20 @@ public class TraceMan implements TraceManSpec {
     }
 
     @Override
-    public JSONArray getTracesBetweenInterval(Long start, Long end) {
+    public void getTracesBetweenInterval(Long start, Long end) {
     	JSONArray tracesTab = dbTracer.getInterval(start, end);
     	if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
-    		return tracesTab;
+    		EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, tracesTab.toString());
     	} else { // Apply aggregation policy
     		try {
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
-				return traceQueue.applyAggregationPolicy(start, null); //Call with default aggregation policy (id and time)
+    			tracesTab = traceQueue.applyAggregationPolicy(start, null); //Call with default aggregation policy (id and time)
+				EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, tracesTab.toString());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
     	}
-    	
-    	return tracesTab;
     }
 
     private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
@@ -486,20 +493,67 @@ public class TraceMan implements TraceManSpec {
 	}
 		
 	@Override
-	public boolean toggleLiveTrace(){
-		if(liveTraceActivated){
-			liveTraceActivated = false;
-			liveTracer.close();
-			return EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
-		}else{
-			//Socket and live trace initialization
-	        if(EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGER_COX_NAME, DEBUGGER_DEFAULT_PORT)){
-	        	liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
-	        	liveTraceActivated = true;
-	        }
-	        return liveTraceActivated;
+	public int startDebugger(){
+		//Socket and live trace initialization
+	    if(EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGER_COX_NAME, DEBUGGER_DEFAULT_PORT)){
+	        return DEBUGGER_DEFAULT_PORT;
+	    }else {
+	    	return 0;
 		}
 	}
+
+	@Override
+	public boolean stopDebugger() {
+		if(liveTracer != null){
+			liveTraceActivated = false;
+			liveTracer.close();
+			liveTracer = null;
+		}
+		
+		if(fileTracer != null){
+			fileTraceActivated = false;
+			fileTracer.close();
+			fileTracer = null;
+		}
+		traceQueue.stop();
+		return EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
+	}
+	
+	/**
+	 * Initiate the live tracer
+	 * @return true if the live tracer is ready, false otherwise
+	 */
+	public boolean initLiveTracer() {
+		liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
+        liveTraceActivated = true;
+        
+        if(!traceQueue.isInitiated()){
+        	traceQueue.initTraceExec();
+        }
+        
+        return liveTraceActivated;
+	}
+	
+	/**
+	 * Initiate the file tracer
+	 * @return true if the file tracer is initiated, false otherwise
+	 */
+	public boolean initFileTracer() {
+		fileTracer = new TraceFile();
+        if (!fileTracer.init()) {
+            LOGGER.warn("Unable to start the tracer");
+            fileTraceActivated = false;
+        }else{
+        	fileTraceActivated = true;
+        }
+        
+        if(!traceQueue.isInitiated()){
+        	traceQueue.initTraceExec();
+        }
+        
+        return fileTraceActivated;
+	}
+	
     
     /*****************************/
     /** Trace Queue inner class **/
@@ -539,6 +593,11 @@ public class TraceMan implements TraceManSpec {
 	     * is trace when it appear
 	     */
 	    private long deltaTinMillis;
+	    
+	    /**
+	     * Is the trace executor thread initiated or not
+	     */
+	    private boolean initiated = false;
 
 		/**
     	 * Default TraceQueue constructor with max capacity
@@ -567,7 +626,7 @@ public class TraceMan implements TraceManSpec {
         /**
          * Initiate the trace executor thread/service
          */
-        private  void initTraceExec() {
+        public void initTraceExec() {
             new Thread(traceExec).start();
             timer = new Timer();
             if(deltaTinMillis > 0) {
@@ -583,6 +642,7 @@ public class TraceMan implements TraceManSpec {
                     }
                 }, deltaTinMillis, deltaTinMillis);
             }
+            initiated = true;
         }
 		
     	@Override
@@ -602,8 +662,10 @@ public class TraceMan implements TraceManSpec {
     	 * Stop the trace queue thread execution
     	 */
     	public void stop() {
-    		timer.cancel();
-			timer.purge();
+    		if(timer != null) {
+    			timer.cancel();
+    			timer.purge();
+    		}
 			traceExec.stop();
 			synchronized(traceExec) {
 				traceExec.notify();
@@ -715,6 +777,16 @@ public class TraceMan implements TraceManSpec {
 			}
 			return aggregateTraces;
 		}
+		
+		/**
+		 * Is the trace executor thread initiated
+		 * @return true if the trace executor thread is started, false otherwise
+		 */
+		public boolean isInitiated() {
+			return initiated;
+		}
+
+
 
 		/**
 	     * A thread class to trace all elements in the trace
@@ -748,6 +820,7 @@ public class TraceMan implements TraceManSpec {
 	    	
 			public void stop() {
 				start = false;
+				initiated = false;
 			}
 
 			@Override

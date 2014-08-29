@@ -483,24 +483,14 @@ public interface EHMIProxySpec {
 	/************************************/
    
     /**
-     * Toggle real tracing mecanism 
-     * @return true if live trace is toggled, false if not
+     * Start the debugger on a new client connexion
+     * @return the port number on which the connexion is open, 0 if connexion error
      */
-    public boolean toggleLiveTrace();
+    public int startDebugger();
     
     /**
-     * Get a specififed number of traces from a specified date in the past
-     * @param timestamp the time till the last information
-     * @param number the max number of elements to return (0 for all)
-     * @return a JSONArray containing the traces
+     * Close the debugger client connexion
+     * @return true if the connexion is closed, flase otherwise
      */
-    public JSONArray getNbTraces(Long timestamp, Integer number);
-    
-    /**
-     * Get traces from start date till the end date
-     * @param start the start of interval
-     * @param end the end of interval
-     * @return a JSONArray containing the traces between that interval
-     */
-   public JSONArray getTraces(Long start, Long end);
+    public boolean stopDebugger();
 }

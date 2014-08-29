@@ -518,23 +518,15 @@ public class EHMIProxyMock implements EHMIProxySpec {
 
 
 	@Override
-	public boolean toggleLiveTrace() {
+	public int startDebugger() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean stopDebugger() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-
-	@Override
-	public JSONArray getNbTraces(Long timestamp, Integer number) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public JSONArray getTraces(Long start, Long end) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

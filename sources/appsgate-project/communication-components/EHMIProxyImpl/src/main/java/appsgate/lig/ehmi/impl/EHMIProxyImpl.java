@@ -1080,18 +1080,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
 
 	@Override
-	public boolean toggleLiveTrace() {
-		return traceManager.toggleLiveTrace();
+	public int startDebugger() {
+		return traceManager.startDebugger();
 	}
-
+	
 	@Override
-	public JSONArray getNbTraces(Long timestamp, Integer number) {
-		return traceManager.getTraces(timestamp, number);
+	public boolean stopDebugger() {
+		return traceManager.stopDebugger();
 	}
-
-	@Override
-	public JSONArray getTraces(Long start, Long end) {
-		return traceManager.getTracesBetweenInterval(start, end);
-	}
-
 }

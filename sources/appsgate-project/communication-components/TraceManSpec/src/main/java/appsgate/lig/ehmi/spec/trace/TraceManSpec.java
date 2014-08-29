@@ -61,14 +61,19 @@ public interface TraceManSpec {
      *
      * @param start the start of interval
      * @param end the end of interval
-     * @return a JSONArray containing the traces between that interval
      */
-    public JSONArray getTracesBetweenInterval(Long start, Long end);
+    public void getTracesBetweenInterval(Long start, Long end);
     
     /**
-	 * Toggle live tracing for real time debug session
-	 * @return true if live trace is toggled, false if not
-	 */
-    public boolean toggleLiveTrace();
+     * Start the debugger on a new client connexion
+     * @return the port number on which the connexion is open, 0 if connexion error
+     */
+    public int startDebugger();
+    
+    /**
+     * Close the debugger client connexion
+     * @return true if the connexion is closed, flase otherwise
+     */
+    public boolean stopDebugger();
 
 }
