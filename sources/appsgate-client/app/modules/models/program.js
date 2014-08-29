@@ -43,7 +43,12 @@ define([
 
             // each program listens to the event whose id corresponds to its own id
             dispatcher.on(this.get("id"), function(updatedVariableJSON) {
+              if(typeof updatedVariableJSON.activeNodes !== 'undefined' &&  typeof updatedVariableJSON.nodesCounter !== 'undefined'){
+                self.set('activeNodes',updatedVariableJSON.activeNodes);
+                self.set('nodesCounter',updatedVariableJSON.nodesCounter);
+              } else {
                 self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
+              }
             });
         },
         /**

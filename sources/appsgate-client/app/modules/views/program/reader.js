@@ -146,7 +146,7 @@ define([
             }
           });
         }
-        if(this.model.get("runningState") !== "PROCESSING"){
+        if(this.model.get("runningState") === "DEPLOYED" || this.model.get("runningState") === "INVALID"){
           $(input).find(".unlocked-node-indicator").addClass("hidden");
           $(input).find(".locked-node-indicator").addClass("hidden");
         }
