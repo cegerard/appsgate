@@ -4,6 +4,7 @@ import appsgate.lig.context.services.DataBasePullService;
 import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
@@ -22,7 +23,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 /**
  * Created by thibaud on 02/07/2014.
  */
-public class WeatherObserverFactory {
+public class WeatherObserverFactory implements WeatherAdapterSpec {
     private static Logger logger = LoggerFactory
             .getLogger(WeatherObserverFactory.class);
     BundleContext context;
@@ -45,14 +46,17 @@ public class WeatherObserverFactory {
             for(String location : Util.split(context.getProperty(WeatherObserverFactory.LOCATIONS))) {
                 logger.debug("Adding "+location+" to the pending weather observer list");
                 pendingLocations.add(location);
-                SynchroObserverTask nextRefresh = new SynchroObserverTask(this);
-                timer = new Timer();
-                // Next refresh will in 30secs (DB and web service should be available by then)
-                timer.schedule(nextRefresh, 30 * 1000);
             }
         } catch (Exception exc) {
             logger.error(" Exception occured when reading the locations : "+exc.getMessage());
         }
+        SynchroObserverTask nextRefresh = new SynchroObserverTask(this);
+        timer = new Timer();
+        // Next refresh will in 30secs (DB and web service should be available by then)
+        timer.schedule(nextRefresh, 30 * 1000);
+        logger.trace("started successfully, waiting for SynchroObserverTask to wake up");
+
+
     }
 
     public void synchronizeObservers() {
@@ -61,7 +65,7 @@ public class WeatherObserverFactory {
 
         for(String location:pendingLocations.toArray(new String[0]) ) {
             checkRunningLocations();
-            addLocation(location);
+            addLocationObserver(location);
         }
 
 
@@ -104,7 +108,8 @@ public class WeatherObserverFactory {
     private DataBasePushService contextHistory_push;
 
 
-    public void addLocation(String location) {
+    @Override
+    public void addLocationObserver(String location) {
         if(location!= null && location.length()>0) {
             // One annoying thing, if the location is incorrect
             // (i.e: the place does not exist, we cannot check it util the WeatherAdapter is bound indirectly using the instance)
@@ -146,8 +151,8 @@ public class WeatherObserverFactory {
         }
     }
 
-
-    public void removeLocation(String location) {
+    @Override
+    public void removeLocationObserver(String location) {
         if(location!= null && location.length()>0) {
             // One annoying thing, if the location is incorrect
             // (i.e: the place does not exist, we cannot check it util the WeatherAdapter is bound indirectly using the instance)
@@ -157,11 +162,13 @@ public class WeatherObserverFactory {
         }
     }
 
+    @Override
     public Set<String> getActiveLocationsObservers() {
         checkRunningLocations();
         return runningLocations;
     }
 
+    @Override
     public Set<String> getAllLocationsObservers() {
         return pendingLocations;
     }

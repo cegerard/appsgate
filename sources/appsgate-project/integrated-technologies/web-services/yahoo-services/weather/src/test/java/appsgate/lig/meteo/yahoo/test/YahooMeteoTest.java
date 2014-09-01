@@ -1,7 +1,7 @@
 package appsgate.lig.meteo.yahoo.test;
 
 import appsgate.lig.weather.spec.WeatherAdapterSpec;
-import appsgate.lig.weather.yahoo.YahooWeatherImpl;
+import appsgate.lig.yahoo.impl.YahooWeatherImpl;
 
 public class YahooMeteoTest {
 

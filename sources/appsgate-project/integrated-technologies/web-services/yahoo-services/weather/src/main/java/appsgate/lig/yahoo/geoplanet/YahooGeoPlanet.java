@@ -14,11 +14,11 @@
  *
  * YahooGeoPlanet.java - 15 juil. 2013
  */
-package appsgate.lig.weather.yahoo;
+package appsgate.lig.yahoo.geoplanet;
 
 /**
  * Java Interface to use Yahoo GeoPlanet WebService API
- * @see http://developer.yahoo.com/geo/geoplanet/
+ * @see <a href="http://developer.yahoo.com/geo/geoplanet/">Geo Planet</a>
  * @author thibaud
  *
  */
@@ -26,8 +26,8 @@ public interface YahooGeoPlanet {
     
     /**
      * Retrieving the Most Likely Place for a Given Place Name :
-     * http://where.yahooapis.com/v1/places.q(placeName)?appid=[YahooAppID]
-     * @see http://developer.yahoo.com/geo/geoplanet/guide/api-reference.html
+     * "http://where.yahooapis.com/v1/places.q(placeName)?appid=[YahooAppID]"
+     * @see <a href="http://developer.yahoo.com/geo/geoplanet/guide/api-reference.html">GeoPlanet API</a>
      * @param placeName is a Human friendly place name
      * @return the most likely valid WOEID (Where On Earth ID) - to be used by Yahoo services 
      */

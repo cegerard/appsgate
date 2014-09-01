@@ -1,8 +1,8 @@
-package appsgate.lig.weather.yahoo;
+package appsgate.lig.yahoo.utils;
 
 import java.io.PrintWriter;
 
-import appsgate.lig.weather.spec.WeatherAdapterSpec;
+import appsgate.lig.yahoo.weather.YahooWeather;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
@@ -42,12 +42,12 @@ public class YahooWeatherUniversalShellCommand {
 	for (Instance instance : CST.componentBroker.getInsts()) {
 
 	    // Only those services that implement this spec are acceptable
-	    if (!instance.getSpec().getName().equals("WeatherAdapterSpec"))
+	    if (!instance.getSpec().getName().equals("YahooWeatherSpec"))
 		continue;
 
 	    out.print(String.format("Apam-Instance: %s\n", instance.getName()));
 
-	    WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
+        YahooWeather meteo = (YahooWeather) instance
 		    .getServiceObject();
 
 	    out.println(meteo);
@@ -63,10 +63,10 @@ public class YahooWeatherUniversalShellCommand {
 	for (Instance instance : CST.componentBroker.getInsts()) {
 
 	    // Only those services that implement this spec are acceptable
-	    if (!instance.getSpec().getName().equals("WeatherAdapterSpec"))
+	    if (!instance.getSpec().getName().equals("YahooWeatherSpec"))
 		continue;
 
-        WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
+        YahooWeather meteo = (YahooWeather) instance
 		    .getServiceObject();
 	    try {
 		meteo.fetch();
@@ -83,10 +83,10 @@ public class YahooWeatherUniversalShellCommand {
 	for (Instance instance : CST.componentBroker.getInsts()) {
 
 	    // Only those services that implement this spec are acceptable
-	    if (!instance.getSpec().getName().equals("WeatherAdapterSpec"))
+	    if (!instance.getSpec().getName().equals("YahooWeatherSpec"))
 		continue;
 
-        WeatherAdapterSpec meteo = (WeatherAdapterSpec) instance
+        YahooWeather meteo = (YahooWeather) instance
 		    .getServiceObject();
 	    try {
 		switch (args.length) {

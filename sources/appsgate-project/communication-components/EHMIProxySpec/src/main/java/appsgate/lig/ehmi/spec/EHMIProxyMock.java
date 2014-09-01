@@ -420,8 +420,28 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		return false;
 	}
 
+    @Override
+    public void addLocationObserver(String location) {
 
-	@Override
+    }
+
+    @Override
+    public void removeLocationObserver(String location) {
+
+    }
+
+    @Override
+    public JSONArray getActiveLocationsObservers() {
+        return null;
+    }
+
+    @Override
+    public JSONArray getAllLocationsObservers() {
+        return null;
+    }
+
+
+    @Override
 	public boolean addProgram(JSONObject jsonProgram) {
 		return false;
 	}

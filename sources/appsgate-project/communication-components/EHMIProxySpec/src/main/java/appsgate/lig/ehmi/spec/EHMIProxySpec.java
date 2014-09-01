@@ -1,6 +1,7 @@
 package appsgate.lig.ehmi.spec;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -327,7 +328,40 @@ public interface EHMIProxySpec {
 	 */
 	public boolean separateDevice(String id, String password, String deviceId);
 
-	
+    /************************************/
+    /**  Weather Observers management   */
+    /************************************/
+
+
+    /**
+     * Try to create an Observer with an human friendly name to fetch Weather conditions
+     *
+     * @param location
+     *            A human place name : a town, a country, a particular place or point of interest (poi)
+     */
+    public void addLocationObserver(String location);
+
+    /**
+     * Try to remove a weather observer previously added
+     *
+     * @param location the placeName as it was previously added
+     * @return true if the place was found and was successfully removed
+     */
+    public void removeLocationObserver(String location);
+
+    /**
+     * Retrieves the Location Observers currently running
+     * @return
+     */
+    public JSONArray getActiveLocationsObservers();
+
+    /**
+     * Retrieves all Location Observers created (but maybe not running)
+     * @return
+     */
+    public JSONArray getAllLocationsObservers();
+
+
 	/************************************/
 	/**   End User programs management  */
 	/************************************/

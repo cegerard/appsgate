@@ -1,4 +1,4 @@
-package appsgate.lig.weather.yahoo;
+package appsgate.lig.yahoo.impl;
 
 import java.net.URL;
 import java.util.Calendar;
@@ -7,24 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
-import java.util.TimerTask;
 
-import appsgate.lig.weather.spec.WeatherAdapterSpec;
+import appsgate.lig.yahoo.geoplanet.YahooGeoPlanet;
+import appsgate.lig.yahoo.weather.YahooWeather;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
-import appsgate.lig.weather.utils.SimplifiedWeatherCodesHelper;
-import appsgate.lig.weather.utils.WeatherCodesHelper;
 import appsgate.lig.weather.exception.WeatherForecastException;
 
 /**
@@ -38,7 +33,7 @@ import appsgate.lig.weather.exception.WeatherForecastException;
  * @author thibaud
  * 
  */
-public class YahooWeatherImpl  implements WeatherAdapterSpec {
+public class YahooWeatherImpl  implements YahooWeather {
 
     private static Logger logger = LoggerFactory
             .getLogger(YahooWeatherImpl.class);
@@ -240,7 +235,7 @@ public class YahooWeatherImpl  implements WeatherAdapterSpec {
 			return Unit.US;
 		default:
 			currentUnit = 'c';
-			return WeatherAdapterSpec.Unit.EU;
+			return YahooWeather.Unit.EU;
 		}
 	}
 

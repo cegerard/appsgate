@@ -14,7 +14,7 @@
  *
  * YahooGeoPlanetImpl.java - 15 juil. 2013
  */
-package appsgate.lig.weather.yahoo;
+package appsgate.lig.yahoo.impl;
 
 import java.net.URL;
 
@@ -23,6 +23,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
+import appsgate.lig.yahoo.geoplanet.YahooGeoPlanet;
 import org.w3c.dom.Document;
 
 

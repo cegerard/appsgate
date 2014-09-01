@@ -11,7 +11,7 @@
 
     <artifactId>WeatherObserverImpl</artifactId>
     <packaging>bundle</packaging>
-    <name>Extended Weather Implementation</name>
+    <name>Weather Implementation</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,11 +25,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <artifactId>WeatherAdapterSpec</artifactId>
-            <groupId>appsgate.components</groupId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <artifactId>CoreClockSpec</artifactId>
@@ -45,8 +40,19 @@
 
 
 
+
+        <dependency>
+            <artifactId>WeatherAdapterSpec</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <artifactId>ExtendedWeatherObserverSpec</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>YahooWeatherAdapter</artifactId>
             <groupId>appsgate.components</groupId>
             <version>${project.version}</version>
         </dependency>
@@ -68,26 +74,8 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                    </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>fr.imag.adele.apam</groupId>
                 <artifactId>apam-maven-plugin</artifactId>
-                <version>${apam.current.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>apam-bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -2,6 +2,7 @@ package appsgate.lig.ehmi.impl;
 
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,6 +100,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      * Reference to the EUDE interpreter to manage end user programs
      */
     private EUDE_InterpreterSpec interpreter;
+
+    /**
+     * The user manager ApAM component to handle the user base
+     */
+    private WeatherAdapterSpec weatherAdapter;
 
     /**
      * Service to be notified when clients send commands
@@ -554,6 +560,26 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     @Override
     public boolean separateDevice(String id, String password, String deviceId) {
         return userManager.removeDevice(id, password, deviceId);
+    }
+
+    @Override
+    public void addLocationObserver(String location) {
+        weatherAdapter.addLocationObserver(location);
+    }
+
+    @Override
+    public void removeLocationObserver(String location) {
+        weatherAdapter.removeLocationObserver(location);
+    }
+
+    @Override
+    public JSONArray getActiveLocationsObservers() {
+        return new JSONArray(weatherAdapter.getActiveLocationsObservers());
+    }
+
+    @Override
+    public JSONArray getAllLocationsObservers() {
+        return new JSONArray(weatherAdapter.getAllLocationsObservers());
     }
 
     @Override
