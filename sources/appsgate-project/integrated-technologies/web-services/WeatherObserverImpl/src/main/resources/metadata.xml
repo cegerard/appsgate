@@ -26,14 +26,17 @@
 
         <callback onInit="start"/>
 
-
         <definition name="currentLocation" type="string" field="currentLocation"  />
-
 
     </implementation>
     
     <implementation name="WeatherObserverFactory" classname="appsgate.lig.weather.extended.impl.WeatherObserverFactory">
         <callback onInit="start" />
+
+        <relation specification="ContextHistorySpec" fail="wait" resolve="exist">
+            <interface field="contextHistory_pull"/>
+            <interface field="contextHistory_push"/>
+        </relation>
 
     </implementation>
 

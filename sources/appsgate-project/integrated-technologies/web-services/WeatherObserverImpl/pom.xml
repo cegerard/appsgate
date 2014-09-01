@@ -56,6 +56,13 @@
             <artifactId>apam-core</artifactId>
             <version>${apam.current.version}</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>ContextHistorySpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

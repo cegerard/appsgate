@@ -140,7 +140,7 @@ public class YahooWeatherParser {
         logger.info("Current publication date : " + date);
 
         DateFormat yahooForecastDateAttributeParser = new SimpleDateFormat(
-                "EEE, d MMM yyyy h:m a zzz", Locale.ENGLISH);
+                "EEE, d MMM yyyy h:m a z", Locale.US);
 
         Date pubdate = yahooForecastDateAttributeParser.parse(date);
         Calendar cal=Calendar.getInstance();
