@@ -282,6 +282,8 @@
       "ard":{
           "last-card":"Last badge passed",
           "last-authorized":"Last badge access granted",
+          "affirmative":"Yes",
+          "negative":"No",
           "name":{
               "singular":"ARD",
               "plural":"ARD"
