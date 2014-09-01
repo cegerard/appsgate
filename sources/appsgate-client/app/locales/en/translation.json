@@ -28,6 +28,7 @@
       "devices":"Devices",
       "services":"Services",
       "programs":"Programs",
+      "debugger":"Debugger",
       "button-settings":"Preferences",
       "emergency-stop":"Emergency stop"
    },
@@ -282,6 +283,8 @@
       "ard":{
           "last-card":"Last badge passed",
           "last-authorized":"Last badge access granted",
+          "affirmative":"Yes",
+          "negative":"No",
           "name":{
               "singular":"ARD",
               "plural":"ARD"
@@ -657,5 +660,8 @@
           "210":"domicubes"
         }
       }
+   },
+   "debugger": {
+     "all": "All"
    }
 }

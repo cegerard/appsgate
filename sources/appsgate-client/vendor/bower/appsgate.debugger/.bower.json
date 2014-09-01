@@ -1,0 +1,49 @@
+{
+  "name": "appsgate.debugger",
+  "description": "Debugger for AppsGate",
+  "version": "0.0.1",
+  "license": "ISC",
+  "private": true,
+  "author": {
+    "name": "Remi Barraquand",
+    "email": "dev@remibarraquand.com",
+    "url": "http://barraq.io"
+  },
+  "main": [
+    "LICENSE",
+    "lib/appsgate.debugger.js",
+    "lib/appsgate.debugger.dev.js",
+    "lib/appsgate.debugger.min.js",
+    "lib/appsgate.debugger.min.js.map",
+    "lib/themes/basic/theme.css",
+    "lib/themes/basic/pictograms/*.png"
+  ],
+  "ignore": [
+    "server.js",
+    "bower",
+    "Gruntfile.js",
+    "tasks",
+    "examples",
+    "screenshots",
+    "src"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "d3": "~3.4.11",
+    "lodash": "~2.4.1",
+    "jquery": "~2.1.1",
+    "requirejs": "~2.1.14",
+    "jqueryui": "~1.11.0"
+  },
+  "homepage": "https://github.com/yeastlab/appsgate.debugger",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "bf754ad9b25b6c9a1300ce0014882c744186150a"
+  },
+  "_source": "https://github.com/yeastlab/appsgate.debugger.git",
+  "_target": "~0.0.1",
+  "_originalSource": "https://github.com/yeastlab/appsgate.debugger.git",
+  "_direct": true
+}

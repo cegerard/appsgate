@@ -1,6 +1,6 @@
 {
     "friendlyName": "Enocean plug",
-    "typename": "enoceanPlug",
+    "typename": "SmartPlug",
     "traceDesc": ["consumption", "plugState"
     ],
     "properties": ["consumption", "plugState"

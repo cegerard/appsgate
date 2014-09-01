@@ -10,7 +10,7 @@
             "stateValue" : "true",
             "setter": {
                 "type": "action",
-                "methodName": "On"
+                "methodName": "on"
             },
             "endEvent": {
                 "type": "event",
@@ -29,7 +29,7 @@
             "stateValue" : "false",
             "setter": {
                 "type": "action",
-                "methodName": "Off"
+                "methodName": "off"
             },
             "endEvent": {
                 "type": "event",

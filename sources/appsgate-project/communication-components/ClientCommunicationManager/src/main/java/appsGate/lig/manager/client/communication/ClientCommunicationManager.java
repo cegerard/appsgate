@@ -232,6 +232,7 @@ public class ClientCommunicationManager implements ListenerService, SendWebsocke
 		try {
 			WebSockeServer server = new WebSockeServer(name, port);
 			socketMap.put(name, server);
+			server.start();
 			return server.addListener(cmdListener, WebSockeServer.DEFAULT_TARGET);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -242,15 +243,12 @@ public class ClientCommunicationManager implements ListenerService, SendWebsocke
 
 	@Override
 	public boolean removeDedicatedServer(String name) {
-		
 		WebSockeServer server = socketMap.get(name);
 		server.removeListener(WebSockeServer.DEFAULT_TARGET);
 		
-		try {
-			
+		try {			
 			server.stop();
 			return socketMap.remove(name) != null;
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

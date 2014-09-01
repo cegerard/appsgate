@@ -8,7 +8,7 @@ require.config({
         // Almond is used to lighten the output filesize.
         "almond": "../vendor/bower/almond/almond",
         // Opt for Lo-Dash Underscore compatibility build over Underscore.
-        "underscore": "../vendor/bower/lodash/dist/lodash.underscore",
+        "underscore": "../vendor/bower/lodash/dist/lodash",
         // JQuery and Backbone
         "jquery": "../vendor/bower/jquery/jquery",
         "jqueryui": "../vendor/bower/jqueryui/ui/jquery-ui",
@@ -34,6 +34,8 @@ require.config({
         colorwheel: "../vendor/raphael/plugins/colorwheel",
         // jsTree for file browsing
         jstree: "../vendor/jstree/jquery.jstree",
+        // d3 library
+        d3: "../vendor/bower/d3/d3",
         // APPSGATE
         // Modules
         "modules": "../app/modules",
@@ -46,8 +48,9 @@ require.config({
         // Views
         "views": "../app/modules/views",
         // Templates
-        "templates": "../app/templates"
-
+        "templates": "../app/templates",
+        // APPSGATE.debugger
+        "appsgate.debugger": "../vendor/bower/appsgate.debugger/lib/appsgate.debugger.dev"
     },
     shim: {
         // This is required to ensure Backbone works as expected within the AMD
@@ -84,8 +87,13 @@ require.config({
         },
         "moment": {
             exports: "moment"
+        },
+        "d3": {
+            exports: "d3"
+        },
+        "appsgate.debugger": {
+            deps: ['jquery', 'jqueryui', 'backbone', 'underscore', 'd3']
         }
-
     }
 });
 

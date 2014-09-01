@@ -30,6 +30,7 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
 import appsgate.lig.chmi.spec.listeners.CoreUpdatesListener;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
+import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec.CORE_TYPE;
@@ -266,10 +267,11 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * @param notif the notification message from ApAM
      */
     public void gotNotification(NotificationMsg notif) {
-        logger.debug("Notification message received, " + notif.JSONize());
-        notifyAllEventsListeners(notif.getSource().getAbstractObjectId(), notif.getVarName(), notif.getNewValue());
+    	JSONObject not = notif.JSONize();
+        logger.debug("Notification message received, " + not);
+        notifyAllEventsListeners(notif.getSource().getAbstractObjectId(), notif.getVarName(), not.getString("value"));
         try{
-        	sendToClientService.send(notif.JSONize().toString());
+        	sendToClientService.send(not.toString());
     	}catch(ExternalComDependencyException comException) {
     		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
     	}
