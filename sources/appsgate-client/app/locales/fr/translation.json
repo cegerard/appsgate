@@ -28,6 +28,7 @@
       "devices":"Equipements",
       "services":"Services",
       "programs":"Programmes",
+      "debugger":"Comprendre",
       "button-settings":"Préférences",
       "emergency-stop":"Tout stopper"
    },
@@ -656,5 +657,8 @@
           "210":"domicubes"
         }
       }
+   },
+   "debugger": {
+     "all": "Tous"
    }
 }

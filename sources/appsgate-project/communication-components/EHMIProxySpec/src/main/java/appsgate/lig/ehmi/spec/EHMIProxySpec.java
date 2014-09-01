@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 
 /**
@@ -404,7 +405,6 @@ public interface EHMIProxySpec {
      */
     public void deleteCoreListener(CoreListener coreListener);
     
-    
 	/************************************/
 	/**    General AppsGate commands    */
 	/************************************/
@@ -441,6 +441,56 @@ public interface EHMIProxySpec {
 	 */
 	public long getCurrentTimeInMillis() ;
 	
-	
-	
+	/************************************/
+	/**       Client comm commands      */
+	/************************************/
+    
+    /**
+     * Add a new client connexion.
+     * 
+     * @param cmdListener the callback for input messages
+     * @param name the name of the connexion, muste be unique
+     * @param port the port for the connexion
+     * @return true if the connexion is opened, false otherwise
+     */
+    public boolean addClientConnexion(CommandListener cmdListener, String name, int port);
+    
+    /**
+     * Remove an existing client connexion
+     * 
+     * @param name the name of the connexion to remove
+     * @return true if the connexion has been closed and removed, false otherwise
+     */
+    public boolean removeClientConnexion(String name);
+    
+    /**
+     * Send message to all clients behind a dedicated connection
+     * @param name the connection identifier
+     * @param msg the message to send as a String
+     */
+    public void sendFromConnection(String name, String msg);
+    
+    /**
+     * Send message to on client throught a dedicated connection
+     * @param name the connection name
+     * @param clientId the targeted client identifier
+     * @param msg the message to send
+     */
+    public void sendFromConnection(String name, int clientId, String msg);
+    
+	/************************************/
+	/**    Trace mananager commands     */
+	/************************************/
+   
+    /**
+     * Start the debugger on a new client connexion
+     * @return the port number on which the connexion is open, 0 if connexion error
+     */
+    public int startDebugger();
+    
+    /**
+     * Close the debugger client connexion
+     * @return true if the connexion is closed, flase otherwise
+     */
+    public boolean stopDebugger();
 }
