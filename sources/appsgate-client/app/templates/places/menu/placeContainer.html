@@ -131,6 +131,34 @@
 				</span>
 			</li>
 			<% } %>
+
+			<!-- actuators -->
+			<% if (place.getActuators().length > 0) { %>
+			<li>
+				<% if (place.getActuators().length === 1) { %>
+					<span data-i18n="devices.actuator.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.actuator.name.plural"></span>
+				<% } %>
+				<span class="pull-right badge">
+					<%= place.getActuators().length %>
+				</span>
+			</li>
+			<% } %>
+
+			<!-- DomiCubes -->
+			<% if (place.getDomiCubes().length > 0) { %>
+			<li>
+				<% if (place.getDomiCubes().length === 1) { %>
+					<span data-i18n="devices.domicube.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="devices.domicube.name.plural"></span>
+				<% } %>
+				<span class="pull-right badge">
+					<%= place.getDomiCubes().length %>
+				</span>
+			</li>
+			<% } %>
 		</ul>
 	</p>
 </a>

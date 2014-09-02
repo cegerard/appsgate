@@ -1,4 +1,4 @@
-package appsgate.lig.weather.yahoo;
+package appsgate.lig.yahoo.impl;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

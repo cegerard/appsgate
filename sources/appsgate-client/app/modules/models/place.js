@@ -210,8 +210,17 @@ define([
         getPhilipsHueLamps: function() {
             return this.getTypeSensors(7);
         },
-        getMediaPlayers: function() {
-            return this.getTypeSensors(31);
+        /**
+         * @return Array of the actuators in the place
+         */
+        getActuators: function() {
+            return this.getTypeSensors(8)
+        },
+        /**
+         * @return Array of the DomiCubes in the place
+         */
+        getDomiCubes: function() {
+            return this.getTypeSensors(210);
         },
         /**
          * Send a message to the server to perform a remote call

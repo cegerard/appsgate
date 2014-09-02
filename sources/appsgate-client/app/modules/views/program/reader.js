@@ -89,6 +89,7 @@ define([
         var self = this;
         _.defer(function() {
           input = self.applyReadMode(input);
+          input = self.updateProgressIndicators(input);
           $(".programInput").html(input).addClass("read-only");
           $(".secondary-block-node").addClass("hidden");
           if($(".input-spot").next().find(".btn-and").length > 0 || $(".input-spot").next().find(".btn-then").length > 0){
@@ -98,7 +99,7 @@ define([
           $(".input-spot").remove();
         });
         if(typeof this.model !== "undefined"){
-          if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "WAITING") {
+          if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "KEEPING" || this.model.get("runningState") === "WAITING") {
             $("#led-" + this.model.get("id")).addClass("led-yellow").removeClass("led-orange").removeClass("led-default");
             $(".start-program-button").hide();
             $(".stop-program-button").show();
@@ -125,6 +126,39 @@ define([
         $(input).find("textarea").replaceWith(function() {
             return '<span>' + this.value.replace(/(\n)/gm,"<br/>") + '</span>';
         });
+
+        return input;
+      },
+      updateProgressIndicators: function(input) {
+        var activeSet = $.map(this.model.get("activeNodes"), function(value,index){return [[index, value]];});
+
+        // mark active nodes as locked
+        if(activeSet.length > 0){
+          activeSet.forEach(function(activeNodes) {
+            var t = $(input).find("#progress-" + activeNodes[0]);
+            if(activeNodes[1] == true) {
+              $(t.find(".locked-node-indicator")[0]).addClass("hidden");
+              $(t.find(".unlocked-node-indicator")[0]).removeClass("hidden");
+            }
+            else{
+              $(t.find(".unlocked-node-indicator")[0]).addClass("hidden");
+              $(t.find(".locked-node-indicator")[0]).removeClass("hidden");
+            }
+          });
+        }
+        if(this.model.get("runningState") === "DEPLOYED" || this.model.get("runningState") === "INVALID"){
+          $(input).find(".unlocked-node-indicator").addClass("hidden");
+          $(input).find(".locked-node-indicator").addClass("hidden");
+        }
+
+        // updated counters
+        var counterSet = $.map(this.model.get("nodesCounter"), function(value,index){return [[index, value]];});
+        if(counterSet.length > 0){
+          counterSet.forEach(function(nodeCounter) {
+            var t = $(input).find("#progress-counter-" + nodeCounter[0]);
+            $(input).find("#progress-counter-" + nodeCounter[0]).text(nodeCounter[1]);
+          });
+        }
 
         return input;
       },
