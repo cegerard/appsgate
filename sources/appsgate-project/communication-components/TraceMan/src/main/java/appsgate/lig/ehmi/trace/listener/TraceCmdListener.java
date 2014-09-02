@@ -42,14 +42,32 @@ public class TraceCmdListener implements CommandListener{
 			String cmd;
 			try {
 				cmd = obj.getString("name");
+				
 				if(cmd.equalsIgnoreCase("historytrace")){
+					
 					JSONObject args = obj.getJSONObject("args");
 					long from = args.getLong("from");
 					long to = args.getLong("to");
-					//int res = args.getInt("res");
+					int res = args.getInt("res");
 					
-					//TODO set the deltaTInMilis from resolution param
+					//Set the delta time aggregation interval from client info
+					traceMan.setDeltaT(((from-to)*TraceMan.WIDTH)/res);
 					
+					//Set the grouping order
+					if(args.has("order")){
+						traceMan.setGroupingOrder(args.getString("order"));
+					}else{
+						traceMan.setGroupingOrder("type");
+					}
+					
+					//If focus is defined trace are filtered with the focus
+					//equipment identifier
+					if(args.has("focus")){
+						traceMan.setFocusEquipment(args.getString("focus"));
+					}else{
+						traceMan.setFocusEquipment(TraceMan.NOFOCUS);
+					}
+
 					traceMan.getTracesBetweenInterval(from, to);
 					
 				}else if(cmd.equalsIgnoreCase("livetrace")){

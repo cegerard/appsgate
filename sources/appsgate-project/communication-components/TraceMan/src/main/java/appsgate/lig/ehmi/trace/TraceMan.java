@@ -99,8 +99,36 @@ public class TraceMan implements TraceManSpec {
      */
 	private long lastTimeStamp;
 	
+	/**
+	 * Debugger connection name
+	 */
 	private final String DEBUGGER_COX_NAME = "debugger";
+	
+	/**
+	 * Debugger default port connection
+	 */
 	private final int DEBUGGER_DEFAULT_PORT = 8090;
+	
+    /**
+     * The grouping policy
+     */
+	private String grouping = "type";
+
+	/**
+	 * The focus identifier
+	 */
+	private String focus = NOFOCUS;
+	
+	/**
+	 * Smallest trace interval 
+	 */
+	public static int WIDTH = 5;
+	
+	/**
+	 * No filtering for traces
+	 * (i.e. all trace are returned)
+	 */
+	public static final String NOFOCUS = "NONE";
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -140,9 +168,16 @@ public class TraceMan implements TraceManSpec {
     	synchronized(traceQueue) {
     		try {
     			o.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
-    			//Delayed in queue to by aggregate by policy
-    			traceQueue.offer(o);
-    	    	//Simple trace save in data base
+    			
+    			//Delayed in queue to by aggregate by policy after filtering
+    			if(focus.equalsIgnoreCase(TraceMan.NOFOCUS)) {
+    				traceQueue.offer(o);
+    			}else{
+    				if(o.toString().contains(focus)){
+    					traceQueue.offer(o);
+    				}
+    			}
+    	    	//Simple trace always save in data base
     	    	dbTracer.trace(o);
     		} catch (JSONException e) {
     			e.printStackTrace();
@@ -362,6 +397,7 @@ public class TraceMan implements TraceManSpec {
     		return tracesTab;
     	} else { // Apply aggregation policy
     		try {
+    			filteringOnFocus(tracesTab);
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
 				return traceQueue.applyAggregationPolicy(timestamp, null); //Call with default aggregation policy (id and time)
@@ -380,6 +416,7 @@ public class TraceMan implements TraceManSpec {
     		EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, tracesTab.toString());
     	} else { // Apply aggregation policy
     		try {
+    			filteringOnFocus(tracesTab);
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
     			tracesTab = traceQueue.applyAggregationPolicy(start, null); //Call with default aggregation policy (id and time)
@@ -390,7 +427,31 @@ public class TraceMan implements TraceManSpec {
     	}
     }
 
-    private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
+    /**
+     * Filter trace on focus identifier
+     * @param tracesTab the focuses equipment identifier
+     * @throws JSONException 
+     */
+    private void filteringOnFocus(JSONArray tracesTab) throws JSONException {
+    	if(!focus.equalsIgnoreCase(TraceMan.NOFOCUS)) {
+    		int l = tracesTab.length();
+    		int i = 0;
+    	
+    		JSONArray filteredArray = new JSONArray();
+    	
+    		while(i < l) {
+    			JSONObject obj = tracesTab.getJSONObject(i);
+    			if(obj.toString().contains(focus)){
+    				filteredArray.put(obj);
+    			}
+    			i++;
+    		}
+    	
+    		tracesTab = filteredArray;
+    	}
+	}
+
+	private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
         JSONObject progNotif = new JSONObject();
         try {
             progNotif.put("id", id);
@@ -490,6 +551,23 @@ public class TraceMan implements TraceManSpec {
      */
 	public void setDeltaT(long deltaTinMillis) {
 		traceQueue.setDeltaTinMillis(deltaTinMillis);
+	}
+	
+	
+    /**
+     * set the grouping policy
+     * @param order the policy to make group from
+     */
+	public void setGroupingOrder(String order) {
+		this.grouping = order;
+	}
+
+	/**
+	 * Set the filtering identifier for trace
+	 * @param focus the identifier use to filter trace
+	 */
+	public void setFocusEquipment(String focus) {
+		this.focus = focus;
 	}
 		
 	@Override
@@ -713,22 +791,25 @@ public class TraceMan implements TraceManSpec {
          * @param time the time interval
          */
         public void reScheduledTraceTimer(long time){
-            timer.cancel();
-            timer.purge();
+        	if(isInitiated()){
+        		timer.cancel();
+        		timer.purge();
 
-            timer = new Timer();
-            if(deltaTinMillis > 0) {
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        synchronized (traceExec) {
-                            if (!traceQueue.isEmpty() && traceExec.isSleeping()) {
-                                traceExec.notify();
-                            }
-                        }
-                    }
-                }, 0, deltaTinMillis);
-            }
+        		timer = new Timer();
+        		if(deltaTinMillis > 0) {
+        			timer.scheduleAtFixedRate(new TimerTask() {
+        				@Override
+        				public void run() {
+        					synchronized (traceExec) {
+        						if (!traceQueue.isEmpty() && traceExec.isSleeping()) {
+        							logTime = EHMIProxy.getCurrentTimeInMillis();
+        							traceExec.notify();
+        						}
+        					}
+        				}
+        			}, deltaTinMillis, deltaTinMillis);
+        		}
+        	}
         }
 		
 		/**
@@ -785,8 +866,6 @@ public class TraceMan implements TraceManSpec {
 		public boolean isInitiated() {
 			return initiated;
 		}
-
-
 
 		/**
 	     * A thread class to trace all elements in the trace
@@ -1001,6 +1080,5 @@ public class TraceMan implements TraceManSpec {
 	    }
 		
     }
-    
 
 }
