@@ -28,19 +28,23 @@
         <callback onInit="start" onRemove="stop" />
     </implementation>
 
+    <!--
     <implementation name="ARDController" classname="appsgate.ard.protocol.controller.ARDController" singleton="true">
         <callback onInit="validate" onRemove="invalidate"/>
         <definition name="retry" field="retry" type="int" default="2000" />
         <definition name="host" field="host" type="string" default="192.168.3.110" />
         <definition name="port" field="port" type="int" default="2001" />
     </implementation>
-
-    <implementation name="ARDAdaptor" classname="appsgate.ard.protocol.adaptor.ARDAdaptor" > <!--push="notifyChanges"-->
+    -->
+    <!--
+        <implementation name="ARDAdaptor" classname="appsgate.ard.protocol.adaptor.ARDAdaptor" >
         <callback onInit="validate" onRemove="invalidate"/>
-        <relation implementation="ARDController" field="ard" creation="eager"/>
+        <relation implementation="ARDController" field="ard" creation="eager" resolve="exist"/>
     </implementation>
-
+    -->
     <!--This listener receives echos apam messages, to display them in order to know that they were correctly dispatched -->
     <apam-instance implementation="ARDMessageGreedyListener" name="ARDMessageGreedyListener-0"/>
+    <!--
     <apam-instance implementation="ARDAdaptor" name="ARDAdaptor-0"/>
+    -->
 </apam>

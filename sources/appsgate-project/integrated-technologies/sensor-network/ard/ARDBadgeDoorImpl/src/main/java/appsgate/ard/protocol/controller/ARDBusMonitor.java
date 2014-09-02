@@ -36,7 +36,7 @@ public class ARDBusMonitor extends Thread {
             StringBuffer sb = new StringBuffer();
             try {
                 int l;
-                while ((l = is.read()) != -1) {
+                while (keepMonitoring && (l = is.read()) != -1) {
 
                     //System.out.println("Adding:"+l+"(int) "+Integer.toHexString(l)+"(hex)"+(char)l+"(char) " + new String(new byte[]{new Integer(l).byteValue()}, "UTF-8")+"(utf)");
                     //0 is the marker at the end of JSON messages
@@ -67,7 +67,6 @@ public class ARDBusMonitor extends Thread {
             }
 
         }while(keepMonitoring);
-
 
     }
 
