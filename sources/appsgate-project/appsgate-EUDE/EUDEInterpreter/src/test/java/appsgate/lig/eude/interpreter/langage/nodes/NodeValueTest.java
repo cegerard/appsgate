@@ -38,7 +38,7 @@ public class NodeValueTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.node = new NodeValue(ruleJSON, null);
+        this.node = new NodeValue(ruleJSON, programNode);
         this.instance = this.node;
 
     }

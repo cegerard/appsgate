@@ -39,7 +39,7 @@ public class NodeComparatorTest extends NodeTest{
 
     @Before
     public void setUp() throws Exception {
-        this.node = new NodeComparator(ruleJSON, null);
+        this.node = new NodeComparator(ruleJSON, programNode);
         this.instance = this.node;
     }
 

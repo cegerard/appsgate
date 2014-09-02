@@ -59,7 +59,7 @@ public class NodeProgramTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.programTest = new NodeProgram(mediator, this.ruleJSON, null);
+        this.programTest = new NodeProgram(mediator, this.ruleJSON, programNode);
         this.instance = this.programTest;
     }
 

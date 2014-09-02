@@ -25,7 +25,7 @@ public class NodeVariableDefinitionTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeVariableDefinition(ruleJSON, null);
+        this.instance = new NodeVariableDefinition(ruleJSON, programNode);
 
     }
 

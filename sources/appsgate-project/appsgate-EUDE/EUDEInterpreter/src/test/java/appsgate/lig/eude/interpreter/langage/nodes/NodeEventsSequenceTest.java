@@ -27,6 +27,6 @@ public class NodeEventsSequenceTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeEventsSequence(this.ruleJSON, null);
+        this.instance = new NodeEventsSequence(this.ruleJSON, programNode);
     }
 }

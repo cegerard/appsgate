@@ -24,7 +24,7 @@ public class NodeFunctionTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeFunction(ruleJSON, null);
+        this.instance = new NodeFunction(ruleJSON, programNode);
     }
 
     @Test
@@ -33,6 +33,7 @@ public class NodeFunctionTest extends NodeTest {
         assertNotNull(defNode);
         JSONArray p = new JSONArray("[{'type':'number', 'value':'40'}, {'type':'boolean', 'value':'true'}, {'type':'string', 'value':'c'}]");
         NodeFunction func = new NodeFunction("test", defNode, p);
+        func.setParent(programNode);
         assertNotNull(func);
         System.out.println(func.getExpertProgramScript());
         Assert.assertEquals(null, func.call());
