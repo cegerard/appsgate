@@ -38,7 +38,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.node = new NodeBooleanExpression(ruleJSON, null);
+        this.node = new NodeBooleanExpression(ruleJSON, programNode);
         this.instance = this.node;
     }
 

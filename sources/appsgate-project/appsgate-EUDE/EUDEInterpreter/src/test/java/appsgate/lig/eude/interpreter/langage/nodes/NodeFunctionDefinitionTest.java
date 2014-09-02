@@ -33,7 +33,7 @@ public class NodeFunctionDefinitionTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.node = new NodeFunctionDefinition(ruleJSON, null);
+        this.node = new NodeFunctionDefinition(ruleJSON, programNode);
         this.instance = this.node;
 
     }

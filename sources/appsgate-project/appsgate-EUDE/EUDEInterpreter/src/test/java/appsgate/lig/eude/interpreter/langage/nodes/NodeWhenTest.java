@@ -24,7 +24,7 @@ public class NodeWhenTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeWhen(this.ruleJSON, null);
+        this.instance = new NodeWhen(this.ruleJSON, programNode);
 
     }
 

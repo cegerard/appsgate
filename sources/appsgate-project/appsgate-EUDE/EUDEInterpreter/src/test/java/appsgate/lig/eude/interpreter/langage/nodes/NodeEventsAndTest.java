@@ -44,7 +44,7 @@ public class NodeEventsAndTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeEventsAnd(this.ruleJSON, null);
+        this.instance = new NodeEventsAnd(this.ruleJSON, programNode);
     }
 
     @Test

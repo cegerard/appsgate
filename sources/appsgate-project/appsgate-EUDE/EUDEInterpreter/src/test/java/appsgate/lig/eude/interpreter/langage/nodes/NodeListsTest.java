@@ -35,7 +35,7 @@ public class NodeListsTest extends NodeTest {
 
     @Test
     public void testIntersection() throws Exception {
-        NodeLists inter = new NodeLists(TestUtilities.loadFileJSON("src/test/resources/node/intersection.json"), null);
+        NodeLists inter = new NodeLists(TestUtilities.loadFileJSON("src/test/resources/node/intersection.json"), programNode);
         Assert.assertNotNull(inter);
         JSONObject call = inter.call();
         Assert.assertNull(call);
@@ -51,7 +51,7 @@ public class NodeListsTest extends NodeTest {
     public void testUnion() throws Exception {
         JSONObject json = TestUtilities.loadFileJSON("src/test/resources/node/intersection.json");
         json.put("operator", "U");
-        NodeLists inter = new NodeLists(json, null);
+        NodeLists inter = new NodeLists(json, programNode);
         Assert.assertNotNull(inter);
         JSONObject call = inter.call();
         Assert.assertNull(call);
@@ -67,7 +67,7 @@ public class NodeListsTest extends NodeTest {
     public void testNotin() throws Exception {
         JSONObject json = TestUtilities.loadFileJSON("src/test/resources/node/intersection.json");
         json.put("operator", "N");
-        NodeLists inter = new NodeLists(json, null);
+        NodeLists inter = new NodeLists(json, programNode);
         Assert.assertNotNull(inter);
         JSONObject call = inter.call();
         Assert.assertNull(call);
