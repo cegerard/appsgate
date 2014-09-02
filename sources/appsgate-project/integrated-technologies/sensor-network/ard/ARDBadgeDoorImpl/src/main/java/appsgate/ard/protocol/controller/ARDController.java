@@ -23,10 +23,7 @@ import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.ard.protocol.model.command.ARDRequest;
 import appsgate.ard.protocol.model.Constraint;
 import appsgate.ard.protocol.model.command.request.SubscriptionRequest;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Property;
-import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -40,19 +37,27 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
+@Provides
 public class ARDController {
 
     private Logger logger = LoggerFactory.getLogger(ARDController.class);
     private final Integer SOCKET_TIMEOUT=1000;
     private final Integer STREAM_FLOW_RESTTIME=100;
-    private Integer retry;
-    private String host;
-    private Integer port;
+
+
     private Socket socket;
     private ARDBusMonitor monitor;
     private Object token=new Object();
     private ARDMessage globalMessageReceived;
     private Map<Constraint,ARDMessage> mapRouter=new HashMap<Constraint, ARDMessage>();
+
+    @Property(value = "-1")
+    private Integer retry;
+    @Property(mandatory = true)
+    private String host;
+    @Property(mandatory = true)
+    private Integer port;
 
     public ARDController(){
         //to keep ipojo compatility
@@ -139,6 +144,7 @@ public class ARDController {
 
     }
 
+    @Validate
     public void validate() throws JSONException {
 
         Thread t1=new Thread(){
@@ -151,12 +157,14 @@ public class ARDController {
                         monitoring();
                         sendRequest(new SubscriptionRequest());
                     } catch (Exception e) {
-                        if(retry==-1) break;
+                        e.printStackTrace();
+                        if(retry==null || retry==-1) break;
                         try {
                             Thread.sleep(retry);
                         } catch (InterruptedException e1) {
                             logger.error("Failed retrying to connect with ARD HUB");
                         }
+
                     }
 
                 }
@@ -169,6 +177,27 @@ public class ARDController {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ARDController that = (ARDController) o;
+
+        if (!host.equals(that.host)) return false;
+        if (!port.equals(that.port)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = host.hashCode();
+        result = 31 * result + port.hashCode();
+        return result;
+    }
+
+    @Invalidate
     public void invalidate() throws IOException {
        disconnect();
     }

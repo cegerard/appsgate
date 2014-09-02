@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package appsgate.ard.protocol;
+package appsgate.ard.protocol.main;
 
 import appsgate.ard.protocol.controller.ARDController;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;

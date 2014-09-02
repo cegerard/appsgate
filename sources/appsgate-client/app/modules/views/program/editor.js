@@ -349,7 +349,7 @@ define([
         }
         // if no input point is chosen at this point, we select the last empty element
         if ($(".expected-elements").children().length === 0) {
-          var lastInputPoint = $(".programInput").children(".input-spot").last();
+          var lastInputPoint = $(".programInput").find(".input-spot").last();
           this.Mediator.setCursorAndBuildKeyboard(parseInt(lastInputPoint.attr("id")));
           console.log("lastInputPoint : "+lastInputPoint);
         }
@@ -359,6 +359,8 @@ define([
 
         $(".input-spot-then").removeClass("input-spot-then");
         $(".input-spot").prev().children(".btn-and, .btn-then").addClass("input-spot-then");
+
+        $(".programInput").find(".progress-indicator-group").addClass("hidden");
       },
       /**
       * Render the editor view

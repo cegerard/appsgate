@@ -28,21 +28,17 @@
 
 <!-- render located services -->
 <div class="contents-list">
-    <% places.forEach(function(place) { %>
-        <% if (place.getTypeServices(type).length > 0) { %>
-            <div class="panel panel-default">
-                <div class="list-group">
-                    <% place.getTypeServices(type).forEach(function(s) { %>
-                        <a href="#services/<%= s.get('id') %>" class="list-group-item">
-                            <% if (s.get("name") !== "") { %>
-                                <%= s.get("name") %>
-                            <% } else { %>
-                                <%= s.get("friendlyName") %>
-                            <% } %>
-                        </a>
-                    <% }) %>
-                </div>
-            </div>
-        <% } %>
-    <% }) %>
+  <div class="panel panel-default">
+    <div class="list-group">
+      <%services.getServicesByType()[type].forEach(function(s) { %>
+        <a href="#services/<%= s.get('id') %>" class="list-group-item">
+          <% if (s.get("name") !== "") { %>
+            <%= s.get("name") %>
+          <% } else { %>
+            <%= s.get("friendlyName") %>
+          <% } %>
+        </a>
+      <% }) %>
+    </div>
+  </div>
 </div>

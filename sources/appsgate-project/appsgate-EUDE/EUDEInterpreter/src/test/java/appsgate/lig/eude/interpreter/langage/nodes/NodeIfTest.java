@@ -42,7 +42,7 @@ public class NodeIfTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.ifTest = new NodeIf(ruleJSON, null);
+        this.ifTest = new NodeIf(ruleJSON, programNode);
         this.instance = this.ifTest;
     }
 

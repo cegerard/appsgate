@@ -485,6 +485,7 @@
                                         <include name="*.txt" />
                                         <include name="bin/**/*" />
                                         <include name="bundle/**/*" />
+                                        <include name="load/*" />
                                         <include name="natives/**/*" />
                                         <include name="conf/**/*" />
                                     </fileset>
