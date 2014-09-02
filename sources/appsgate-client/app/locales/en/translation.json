@@ -28,6 +28,7 @@
       "devices":"Devices",
       "services":"Services",
       "programs":"Programs",
+      "debugger":"Debugger",
       "button-settings":"Preferences",
       "emergency-stop":"Emergency stop"
    },
@@ -278,7 +279,25 @@
             "inactive":"Inactive",
             "unknown":"Unknown"
          }
-      }
+      },
+      "ard":{
+          "last-card":"Last badge passed",
+          "last-authorized":"Last badge access granted",
+          "affirmative":"Yes",
+          "negative":"No",
+          "name":{
+              "singular":"ARD",
+              "plural":"ARD"
+          },
+          "event":{
+              "authorized":"badge is authorized on",
+              "non_authorized":"badge is NOT authorized on"
+          },
+          "state":{
+              "authorized":"badge is authorized on",
+              "non_authorized":"badge is NOT authorized on"
+          }
+       }
    },
    "services":{
       "unknown":"Unknown",
@@ -641,5 +660,8 @@
           "210":"domicubes"
         }
       }
+   },
+   "debugger": {
+     "all": "All"
    }
 }

@@ -10,10 +10,10 @@
 		<!-- device kernel meta data -->
 		<definition name="deviceName"	 type="string" default="Unknown" 		  field="sensorName"/>
 		<definition name="deviceId" 	 type="string" default="000000" 		  field="sensorId"/>
-		<definition name="deviceType" 	 type="string" default="EnOcean_DEVICE" field="sensorType"/>
+		<definition name="deviceType" 	 type="string" default="ARD_DEVICE" field="sensorType"/>
 
-		<definition name="pictureId" 	 type="string" 			 			  field="pictureId"/>
-		<definition name="userType" 	 type="string" default="3" 			  field="userType"/>
+		<definition name="pictureId" 	 type="string" default="/dev/null"		field="pictureId"/>
+		<definition name="userType" 	 type="string" default="5" 			  field="userType"/>
 		<definition name="status" 		 type="string" default="2" 			  field="status" /> <!-- method="statusChanged" -->
 
 		<definition name="isPaired"		 type="string" default="false" 		  field="isPaired" /> <!-- method="isPairedChanged" -->
@@ -21,51 +21,26 @@
 
 		<definition name="currentStatus" type="string" default="false"		  field="currentStatus"/> <!-- method="currentStatusChanged" -->
 
-		
 	</implementation>
-
-    <!--
-    <specification name="ARDWatchDogSpec"
-                   interfaces="appsgate.ard.protocol.spec.ARDWatchDogSpec, appsgate.lig.core.object.spec.CoreObjectSpec"
-                   messages="appsgate.lig.core.object.messages.NotificationMsg">
-
-
-        <definition name="deviceName" type="string" />
-        <definition name="deviceId" type="string" />
-        <definition name="deviceType" type="string" />
-
-
-        <definition name="pictureId" type="string" />
-        <definition name="userType" type="string" />
-        <definition name="status" type="string" />
-
-
-        <definition name="currentStatus" type="string" />
-
-    </specification>
-    -->
-
-    <!--
-    <implementation name="ARDContactSensorImpl" classname="appsgate.ard.protocol.adaptor.ARDWatchDog" specification="CoreARDBadgeDoorSpec"  push="triggerApamMessage">
-        <callback onInit="newInst" onRemove="deleteInst" />
-    </implementation>
-    -->
 
     <implementation name="ARDMessageGreedyListener" classname="appsgate.ard.protocol.ARDMessageGreedyListener">
         <relation push="apamMessageReceived" resolve="exist" multiple="true" />
         <callback onInit="start" onRemove="stop" />
     </implementation>
 
-
-    <implementation name="ARDAdaptor" classname="appsgate.ard.protocol.adaptor.ARDAdaptor" > <!--push="notifyChanges"-->
-
-        <definition name="server" field="server" type="string" />
-        <property name="server" value="192.168.3.110" />
+    <implementation name="ARDController" classname="appsgate.ard.protocol.controller.ARDController" singleton="true">
         <callback onInit="validate" onRemove="invalidate"/>
-
+        <definition name="retry" field="retry" type="int" default="2000" />
+        <definition name="host" field="host" type="string" default="192.168.3.110" />
+        <definition name="port" field="port" type="int" default="2001" />
     </implementation>
 
-    <apam-instance implementation="ARDMessageGreedyListener" name="ARDApamAdaptorInstance"/>
-    <apam-instance implementation="ARDAdaptor" name="ARDAdaptorInstance"/>
+    <implementation name="ARDAdaptor" classname="appsgate.ard.protocol.adaptor.ARDAdaptor" > <!--push="notifyChanges"-->
+        <callback onInit="validate" onRemove="invalidate"/>
+        <relation implementation="ARDController" field="ard" creation="eager"/>
+    </implementation>
 
+    <!--This listener receives echos apam messages, to display them in order to know that they were correctly dispatched -->
+    <apam-instance implementation="ARDMessageGreedyListener" name="ARDMessageGreedyListener-0"/>
+    <apam-instance implementation="ARDAdaptor" name="ARDAdaptor-0"/>
 </apam>

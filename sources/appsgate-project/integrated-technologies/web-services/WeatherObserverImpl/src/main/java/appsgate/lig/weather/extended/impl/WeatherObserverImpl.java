@@ -8,12 +8,10 @@ import appsgate.lig.core.object.spec.AbstractObjectSpec;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
-import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
 import appsgate.lig.weather.utils.SimplifiedWeatherCodesHelper;
-import appsgate.lig.weather.utils.WeatherCodesHelper;
+import appsgate.lig.yahoo.weather.YahooWeather;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -35,6 +33,8 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     protected String appsgateObjectId;
     protected String appsgateServiceName;
 
+    public final static String OBJECTID_PREFIX= "WeatherObserver-";
+
     protected CORE_TYPE appsgateCoreType;
 
 
@@ -53,7 +53,7 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     private long lastFetch = -1;
     private Timer timer;
 
-    private WeatherAdapterSpec weatherService;
+    private YahooWeather weatherService;
     private CoreClockSpec clock;
 
     private int alarmSunset=-1;
@@ -90,14 +90,27 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
         return appsgateObjectId;
     }
 
+    /**
+     * Helper class to simulate a WeatherObserver if not created using apam
+     * @param location
+     * @return
+     */
+    public static String getFakeObjectId(String location) {
+        return OBJECTID_PREFIX+location;
+    }
 
     @Override
     public JSONObject getDescription() throws JSONException {
-        JSONObject descr = super.getDescription();
+        JSONObject descr = new JSONObject();
 
         // mandatory appsgate properties
         descr.put("id", appsgateObjectId);
+        // mandatory appsgate properties
+        descr.put("id", appsgateObjectId);
+        descr.put("type", appsgateUserType);
+        descr.put("status", appsgateDeviceStatus);
 
+        descr.put("pictureId", appsgatePictureId);
         try {
 
             descr.put("location", getCurrentLocation());

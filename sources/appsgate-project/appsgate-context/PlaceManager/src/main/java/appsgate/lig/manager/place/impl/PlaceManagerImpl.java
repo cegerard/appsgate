@@ -69,6 +69,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
             return true;
         } else if(contextHistory_pull!= null && contextHistory_pull.testDB()){
             logger.info("Restoring places from DB...");
+            placeObjectsMap = new HashMap<String, SymbolicPlace>();
 
             JSONObject placeMap = contextHistory_pull.pullLastObjectVersion(this.getClass().getSimpleName());
             if (placeMap != null && placeMap.length()>0) {
@@ -157,9 +158,10 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    return false;
+                    return true;
                 }
             }
+            return true;
         }
         return false;
 	}

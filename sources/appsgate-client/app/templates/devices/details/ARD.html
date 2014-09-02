@@ -1,5 +1,16 @@
 <li class="list-group-item">
-	<strong data-i18n="devices.state-label">Etat</strong>
-	<div class="pull-right label label-default">
-	</div>
+    <strong data-i18n="devices.ard.last-card"></strong>
+    <div class="pull-right label label-default">
+        <%= device.get('lastCard') %>
+    </div>
+</li>
+<li class="list-group-item">
+    <strong data-i18n="devices.ard.last-authorized"></strong>
+    <% if ( device.get("authorized") === true || device.get("authorized") === "true") { %>
+        <div class="pull-right label label-success" data-i18n="devices.ard.affirmative">
+        </div>
+    <% } else { %>
+        <div class="pull-right label label-default" data-i18n="devices.ard.negative">
+        </div>
+    <% } %>
 </li>

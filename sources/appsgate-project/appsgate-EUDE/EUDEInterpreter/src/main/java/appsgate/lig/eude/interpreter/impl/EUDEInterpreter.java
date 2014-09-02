@@ -116,27 +116,29 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public void deleteInst() {
         LOGGER.debug("The router interpreter components has been stopped");
+        boolean bdFound=restorePrograms();
         // delete the event listeners from the context
         for (CoreEventListener listener : mapCoreNodeEvent) {
             ehmiProxy.deleteCoreListener(listener);
         }
-
         //save program map state
-        contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", getProgramsDesc());
+        if(bdFound) {
+            contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", getProgramsDesc());
+        }
     }
 
     @Override
     public boolean addProgram(JSONObject programJSON) {
-        if(!restorePrograms()) {
-            return false;
-        }
+        boolean bdFound=restorePrograms();
+
         NodeProgram p = putProgram(programJSON);
         if (p == null) {
             LOGGER.warn("Unable to add program.");
             return false;
         }
+
         //save program map state
-        if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
+        if (bdFound && contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
             p.setDeployed();
             notifyAddProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
             return true;
@@ -148,9 +150,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean removeProgram(String programId) {
-        if(!restorePrograms()) {
-            return false;
-        }
+        boolean bdFound=restorePrograms();
+
         NodeProgram p = mapPrograms.get(programId);
 
         if (p == null) {
@@ -173,7 +174,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         mapPrograms.remove(programId);
 
         //save program map state
-        if (contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
+        if (bdFound && contextHistory_push.pushData_remove(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
             notifyRemoveProgram(p.getId(), p.getProgramName());
             return true;
         }
@@ -184,9 +185,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean update(JSONObject jsonProgram) {
-        if(!restorePrograms()) {
-            return false;
-        }
+        boolean bdFound=restorePrograms();
+
         String prog_id;
         try {
             prog_id = jsonProgram.getString("id");
@@ -210,7 +210,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             notifyUpdateProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
             //save program map state
 
-            if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
+            if (bdFound && contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
                 return true;
             }
         }
@@ -220,9 +220,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean callProgram(String programId) {
-        if(!restorePrograms()) {
-            return false;
-        }
+
         return callProgram(programId, null);
     }
 
@@ -234,9 +232,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     @Override
     public boolean callProgram(String programId, JSONArray args) {
-        if(!restorePrograms()) {
-            return false;
-        }
+        boolean bdFound=restorePrograms();
+
         NodeProgram p = mapPrograms.get(programId);
         JSONObject calledStatus = null;
 
@@ -250,9 +247,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean stopProgram(String programId) {
-        if(!restorePrograms()) {
-            return false;
-        }
+        boolean bdFound=restorePrograms();
+
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
@@ -269,9 +265,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the list of id that contains a program
      */
     public List<String> getListProgramIds(NodeProgram node) {
-        if(!restorePrograms()) {
-            return null;
-        }
+        boolean bdFound=restorePrograms();
+
         List<String> list = new ArrayList<String>();
         list.add(node.getId());
         for (NodeProgram n : node.getSubPrograms()) {
@@ -282,9 +277,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public HashMap<String, JSONObject> getListPrograms() {
-        if(!restorePrograms()) {
-            return null;
-        }
+        boolean bdFound=restorePrograms();
+
         HashMap<String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
         for (NodeProgram p : mapPrograms.values()) {
             mapProgramJSON.put(p.getId(), p.getJSONDescription());
@@ -295,9 +289,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean isProgramActive(String programId) {
-        if(!restorePrograms()) {
-            return false;
-        }
+        boolean bdFound=restorePrograms();
+
         NodeProgram p = mapPrograms.get(programId);
 
         if (p != null) {
@@ -314,9 +307,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return Node of the program if found, null otherwise
      */
     public NodeProgram getNodeProgram(String programId) {
-        if(!restorePrograms()) {
-            return null;
-        }
+        boolean bdFound=restorePrograms();
+
         return mapPrograms.get(programId);
     }
 
@@ -517,12 +509,11 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
                 } catch (JSONException e) {
                     LOGGER.warn("JSONException: {}", e.getMessage());
-                    return false;
                 }
             }
 
         }
-        return false;
+        return synchro;
 
     }
 

@@ -28,6 +28,7 @@
       "devices":"Equipements",
       "services":"Services",
       "programs":"Programmes",
+      "debugger":"Comprendre",
       "button-settings":"Préférences",
       "emergency-stop":"Tout stopper"
    },
@@ -278,7 +279,25 @@
             "inactive":"Inactif",
             "unknown":"Inconnu"
          }
-      }
+      },
+      "ard":{
+          "last-card":"Dernier badge passé",
+          "last-authorized":"Dernier badge accès autorisé",
+          "affirmative":"Oui",
+          "negative":"Non",
+           "name":{
+               "singular":"ARD",
+               "plural":"ARD"
+           },
+          "event":{
+              "authorized":"badge est autorisé sur",
+              "non_authorized":"badge n'est pas autorisé sur"
+          },
+          "state":{
+              "authorized":"badge est autorisé sur",
+              "non_authorized":"badge n'est pas autorisé sur"
+          }
+       }
    },
    "services":{
       "unknown":"Inconnu",
@@ -638,5 +657,8 @@
           "210":"domicubes"
         }
       }
+   },
+   "debugger": {
+     "all": "Tous"
    }
 }

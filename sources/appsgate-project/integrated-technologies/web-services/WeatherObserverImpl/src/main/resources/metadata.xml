@@ -21,19 +21,22 @@
 
 
 
-        <relation specification="WeatherAdapterSpec" field="weatherService" resolve="exist" fail="wait"/>
+        <relation specification="YahooWeatherSpec" field="weatherService" resolve="exist" fail="wait"/>
         <relation specification="CoreClockSpec" field="clock" resolve="exist" fail="wait"/>
 
         <callback onInit="start"/>
 
-
         <definition name="currentLocation" type="string" field="currentLocation"  />
-
 
     </implementation>
     
     <implementation name="WeatherObserverFactory" classname="appsgate.lig.weather.extended.impl.WeatherObserverFactory">
         <callback onInit="start" />
+
+        <relation specification="ContextHistorySpec" fail="wait" resolve="exist">
+            <interface field="contextHistory_pull"/>
+            <interface field="contextHistory_push"/>
+        </relation>
 
     </implementation>
 

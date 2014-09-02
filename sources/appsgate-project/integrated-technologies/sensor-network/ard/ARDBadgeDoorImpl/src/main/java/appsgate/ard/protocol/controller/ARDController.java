@@ -22,6 +22,11 @@ package appsgate.ard.protocol.controller;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.ard.protocol.model.command.ARDRequest;
 import appsgate.ard.protocol.model.Constraint;
+import appsgate.ard.protocol.model.command.request.SubscriptionRequest;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Property;
+import org.apache.felix.ipojo.annotations.Provides;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -29,61 +34,60 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Singleton for ARD controller
- */
 public class ARDController {
 
     private Logger logger = LoggerFactory.getLogger(ARDController.class);
-
-    private static ARDController instance;
-
+    private final Integer SOCKET_TIMEOUT=1000;
+    private final Integer STREAM_FLOW_RESTTIME=100;
+    private Integer retry;
     private String host;
-    private int port;
-
+    private Integer port;
     private Socket socket;
     private ARDBusMonitor monitor;
     private Object token=new Object();
     private ARDMessage globalMessageReceived;
     private Map<Constraint,ARDMessage> mapRouter=new HashMap<Constraint, ARDMessage>();
 
-    private ARDController(String host, int port){
+    public ARDController(){
+        //to keep ipojo compatility
+    }
+
+    public ARDController(String host, int port){
         this.port=port;
         this.host=host;
     }
 
-    public final static ARDController getInstance(String host, int port){
-
-        if(instance==null){
-            instance=new ARDController(host,port);
-        }
-
-        return instance;
-
-    }
-
     public void connect() throws IOException {
-        socket = new Socket(host, port);
+        socket = new Socket(); //host, port
+        socket.connect(new InetSocketAddress(host, port), SOCKET_TIMEOUT);
         globalMessageReceived =new ARDMessage() {
             public void ardMessageReceived(JSONObject json) throws JSONException {
                 logger.debug("Messages received {}", json.toString());
                 for(Constraint cons:mapRouter.keySet()){
+                    Boolean checkResult=false;
                     try {
-                        Boolean checkResult=cons.evaluate(json);
+                        checkResult=cons.evaluate(json);
+                    }catch(JSONException e){
+                        logger.debug("Exception was raised when evaluating the constraint {}", json.toString());
+                    }
+
+                    try {
                         if (checkResult){
                             logger.debug("Forwarding message {} received to higher layer", json.toString());
                             mapRouter.get(cons).ardMessageReceived(json);
                         }else {
                             logger.debug("{} evaluated to {}", new Object[]{Constraint.class.getSimpleName(), checkResult});
                         }
-
                     }catch(JSONException e){
-                        logger.debug("Exception was raised when evaluating the constraint {}", json.toString());
+                        logger.debug("Exception was raised when invoking listener {}", mapRouter.get(cons).toString());
                     }
+
                 }
 
             }
@@ -96,7 +100,7 @@ public class ARDController {
     }
 
     private Boolean isConnected(){
-        return socket.isConnected();
+        return socket==null?false:socket.isConnected();
     }
 
     public void monitoring() throws IOException {
@@ -123,7 +127,7 @@ public class ARDController {
                 socket.getOutputStream().write(boss.toByteArray());
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(STREAM_FLOW_RESTTIME);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -131,10 +135,42 @@ public class ARDController {
             } else {
                 logger.debug("Socket was closed, impossible to send commands to {}:{}", host, port);
             }
-
-
         }
 
+    }
+
+    public void validate() throws JSONException {
+
+        Thread t1=new Thread(){
+
+            public void run(){
+                while(!isConnected()){
+
+                    try {
+                        connect();
+                        monitoring();
+                        sendRequest(new SubscriptionRequest());
+                    } catch (Exception e) {
+                        if(retry==-1) break;
+                        try {
+                            Thread.sleep(retry);
+                        } catch (InterruptedException e1) {
+                            logger.error("Failed retrying to connect with ARD HUB");
+                        }
+                    }
+
+                }
+            }
+
+        };
+        t1.setDaemon(true);
+        t1.start();
+
+
+    }
+
+    public void invalidate() throws IOException {
+       disconnect();
     }
 
     public Map<Constraint, ARDMessage> getMapRouter() {

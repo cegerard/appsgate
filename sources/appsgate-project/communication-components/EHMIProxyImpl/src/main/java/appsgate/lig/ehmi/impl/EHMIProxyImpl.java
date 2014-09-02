@@ -2,6 +2,7 @@ package appsgate.lig.ehmi.impl;
 
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +13,9 @@ import org.osgi.service.http.NamespaceException;
 import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import appsGate.lig.manager.client.communication.service.send.SendWebsocketsService;
+import appsGate.lig.manager.client.communication.service.subscribe.CommandListener;
 import appsGate.lig.manager.client.communication.service.subscribe.ListenerService;
 import appsgate.lig.chmi.spec.CHMIProxySpec;
 import appsgate.lig.chmi.spec.listeners.CoreEventsListener;
@@ -40,7 +43,6 @@ import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
 import java.net.*;
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * This class is the central component for AppsGate server. It allow client part
@@ -99,6 +101,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
      * Reference to the EUDE interpreter to manage end user programs
      */
     private EUDE_InterpreterSpec interpreter;
+
+    /**
+     * The user manager ApAM component to handle the user base
+     */
+    private WeatherAdapterSpec weatherAdapter;
 
     /**
      * Service to be notified when clients send commands
@@ -554,6 +561,26 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     @Override
     public boolean separateDevice(String id, String password, String deviceId) {
         return userManager.removeDevice(id, password, deviceId);
+    }
+
+    @Override
+    public void addLocationObserver(String location) {
+        weatherAdapter.addLocationObserver(location);
+    }
+
+    @Override
+    public void removeLocationObserver(String location) {
+        weatherAdapter.removeLocationObserver(location);
+    }
+
+    @Override
+    public JSONArray getActiveLocationsObservers() {
+        return new JSONArray(weatherAdapter.getActiveLocationsObservers());
+    }
+
+    @Override
+    public JSONArray getAllLocationsObservers() {
+        return new JSONArray(weatherAdapter.getAllLocationsObservers());
     }
 
     @Override
@@ -1060,4 +1087,33 @@ public class EHMIProxyImpl implements EHMIProxySpec {
         return null;
     }
 
+	@Override
+	public boolean addClientConnexion(CommandListener cmdListener, String name, int port) {
+		return addListenerService.createDedicatedServer(cmdListener, name, port);
+	}
+
+	@Override
+	public boolean removeClientConnexion(String name) {
+		return addListenerService.removeDedicatedServer(name);
+	}
+
+	@Override
+	public void sendFromConnection(String name, String msg) {
+		sendToClientService.sendTo(name, msg);
+	}
+
+	@Override
+	public void sendFromConnection(String name, int clientId, String msg) {
+		sendToClientService.sendTo(name, clientId, msg);
+	}
+
+	@Override
+	public int startDebugger() {
+		return traceManager.startDebugger();
+	}
+	
+	@Override
+	public boolean stopDebugger() {
+		return traceManager.stopDebugger();
+	}
 }
