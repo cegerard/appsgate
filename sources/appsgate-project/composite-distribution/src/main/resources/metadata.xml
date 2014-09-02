@@ -21,6 +21,8 @@
 
             <start implementation="AppsGateHUEServices" name="AppsGateHUEServicesInst"></start>
 
+            <start implementation="ARDServices" name="ARDServicesInst"></start>
+
             <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
             <start implementation="TraceMan" name="TraceManInst"></start>
@@ -68,6 +70,13 @@
                main="PhilipsHUEImplFactory">
         <contentMngt>
             <start implementation="PhilipsHUEAdapterImpl" name="AppsgatePhilipsHUEAdapter" />
+        </contentMngt>
+    </composite>
+
+    <composite name="ARDServices" singleton="true">
+        <contentMngt>
+            <start implementation="ARDMessageGreedyListener" name="ARDMessageGreedyListenerInst" >
+            </start>
         </contentMngt>
     </composite>
 

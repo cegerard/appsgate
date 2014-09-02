@@ -290,9 +290,6 @@
                                     <version>${org.knowhowlab.osgi.shell.felix-gogo.version}</version>
                                 </artifactItem>
 
-
-
-
                                 <!--fuchsia -->
                                 <artifactItem>
                                     <groupId>org.ow2.chameleon.fuchsia</groupId>
@@ -350,6 +347,16 @@
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.ipojo.handler.eventadmin</artifactId>
                                     <version>${org.apache.felix.eventadmin.handler.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <artifactId>org.ow2.chameleon.fuchsia.discovery.filebased</artifactId>
+                                    <groupId>org.ow2.chameleon.fuchsia.discovery</groupId>
+                                    <version>${fuchsia.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>commons-io</groupId>
+                                    <artifactId>commons-io</artifactId>
+                                    <version>2.4</version>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${basedir}/bundle</outputDirectory>
@@ -445,6 +452,7 @@
                                         <include name="*.txt" />
                                         <include name="natives/**/*" />
                                         <include name="conf/**/*" />
+                                        <include name="load/*" />
                                     </fileset>
                                 </copy>
                                 <copy failonerror="true" overwrite="true" todir="${basedir}/bundle/">
