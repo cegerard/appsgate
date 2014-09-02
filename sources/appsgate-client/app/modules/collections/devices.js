@@ -111,8 +111,9 @@ define([
                 self.templates['property'][brick.type] = device.getTemplateProperty();
                 self.add(device);
                 //code
+                places.get(brick.placeId).get("devices").push(brick.id);
             }
-            places.get(brick.placeId).get("devices").push(brick.id);
+
         },
         /**
          * @return Array of the devices of a given type

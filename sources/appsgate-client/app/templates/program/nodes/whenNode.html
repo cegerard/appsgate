@@ -1,4 +1,8 @@
 <div class="main-block-node" id="<%= node.iid %>">
+    <div id="progress-<%= node.iid %>" class="progress-indicator-group">
+      <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
+      <span id="progress-counter-<%=node.iid %>">0</span>
+    </div>
     <div class="row">
         <button class="btn btn-prog btn-primary btn-then">
             <span data-i18n="language.when-keyword"></span>
@@ -9,4 +13,3 @@
         <%=engine.buildInputFromNode(node.seqRulesThen, currentNode) %>
     </div>
 </div>
-
