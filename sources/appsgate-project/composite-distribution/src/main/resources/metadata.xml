@@ -46,7 +46,6 @@
         <contentMngt>
 
             <start implementation="YahooWeatherImpl" name="YahooWeather">
-                <property name="auto-refresh" value="1800000" />
             </start>
 
             <start implementation="WeatherObserverFactory" name="WeatherObserverFactoryInst"/>
