@@ -63,7 +63,6 @@ public class TraceCmdListener implements CommandListener{
 					//If focus is defined trace are filtered with the focus
 					//equipment identifier
 					if(args.has("focus")){
-     
 						traceMan.setFocusEquipment(args.getString("focus"), args.getString("focusType"));
 					}else{
 						traceMan.setFocusEquipment(TraceMan.NOFOCUS, "");
