@@ -1,4 +1,4 @@
-package appsgate.lig.proxy.google.calendar;
+package appsgate.lig.google.helpers;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
