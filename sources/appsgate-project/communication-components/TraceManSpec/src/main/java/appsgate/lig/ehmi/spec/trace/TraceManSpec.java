@@ -61,8 +61,9 @@ public interface TraceManSpec {
      *
      * @param start the start of interval
      * @param end the end of interval
+     * @param the initial request 
      */
-    public void getTracesBetweenInterval(Long start, Long end);
+    public void getTracesBetweenInterval(Long start, Long end, JSONObject reuqest);
     
     /**
      * Start the debugger on a new client connexion

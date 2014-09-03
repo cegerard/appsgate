@@ -1,7 +1,9 @@
 package appsgate.lig.ehmi.trace;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -118,6 +120,11 @@ public class TraceMan implements TraceManSpec {
 	 * The focus identifier
 	 */
 	private String focus = NOFOCUS;
+
+	/**
+	 * The focus type
+	 */
+	private String focusType;
 	
 	/**
 	 * Smallest trace interval 
@@ -397,7 +404,7 @@ public class TraceMan implements TraceManSpec {
     		return tracesTab;
     	} else { // Apply aggregation policy
     		try {
-    			filteringOnFocus(tracesTab);
+    			//filteringOnFocus(tracesTab);
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
 				return traceQueue.applyAggregationPolicy(timestamp, null); //Call with default aggregation policy (id and time)
@@ -410,46 +417,217 @@ public class TraceMan implements TraceManSpec {
     }
 
     @Override
-    public void getTracesBetweenInterval(Long start, Long end) {
+    public void getTracesBetweenInterval(Long start, Long end, JSONObject request) {
+    	JSONObject requestResult = new JSONObject();
     	JSONArray tracesTab = dbTracer.getInterval(start, end);
-    	if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
-    		EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, tracesTab.toString());
-    	} else { // Apply aggregation policy
-    		try {
-    			filteringOnFocus(tracesTab);
+    	JSONObject result = new JSONObject();
+		try {
+			if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
+    		
+				result.put("res", tracesTab);
+    			result.put("groups", computeGroupsFromPolicy(tracesTab)); 
+    			
+				requestResult.put("result", result);
+				requestResult.put("request", request);
+    		
+				EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
+			} else { // Apply aggregation policy
+
+    			//filteringOnFocus(tracesTab);
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
     			tracesTab = traceQueue.applyAggregationPolicy(start, null); //Call with default aggregation policy (id and time)
-				EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, tracesTab.toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
+				
+    			
+    			
+    			result.put("res", tracesTab);
+    			result.put("groups", computeGroupsFromPolicy(tracesTab));
+    			
+    			requestResult.put("result", result);
+    			requestResult.put("request", request);
+    			
+    			EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
 			}
-    	}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
     }
 
     /**
-     * Filter trace on focus identifier
-     * @param tracesTab the focuses equipment identifier
-     * @throws JSONException 
+     * Compute groups to display
+     * By default the type is to make group.
+     * If a focus is define, the gourping policy can be type of dep
+     *  
+     * @param tracesTab the trace tab use to compute group from
+     * @return a JSONArray containing each group
+     * @throws JSONException
      */
-    private void filteringOnFocus(JSONArray tracesTab) throws JSONException {
-    	if(!focus.equalsIgnoreCase(TraceMan.NOFOCUS)) {
-    		int l = tracesTab.length();
-    		int i = 0;
+    private JSONArray computeGroupsFromPolicy(JSONArray tracesTab) throws JSONException {
     	
-    		JSONArray filteredArray = new JSONArray();
+    	JSONArray groups = new JSONArray();
+    	HashMap<String, JSONArray> groupFollower = new HashMap<String, JSONArray>();
+    	int l = tracesTab.length();
     	
-    		while(i < l) {
-    			JSONObject obj = tracesTab.getJSONObject(i);
-    			if(obj.toString().contains(focus)){
-    				filteredArray.put(obj);
+    	if(focus.equalsIgnoreCase(TraceMan.NOFOCUS)){ //No specific focus required
+    		if(grouping.equalsIgnoreCase("type")){ //One group for each type
+    				
+    			for(int i=0; i<l; i++) {
+    	    		JSONObject trace = tracesTab.getJSONObject(i);
+    	    		
+    				String type = "program"; //Defaut is a program
+        			if (trace.has("type")){ //in fact is an equipment
+        				type = trace.getString("type");
+        			}
+        			
+        			if(!groupFollower.containsKey(type)){
+    					JSONArray objs = new JSONArray();
+    					objs.put(trace.get("id"));
+    					groupFollower.put(type, objs);
+    				}else{
+    					JSONArray objs = groupFollower.get(type);
+    					if(!objs.toString().contains(trace.getString("id"))){
+    						objs.put(trace.get("id"));
+    					}
+    				}
     			}
-    			i++;
+    				
+    		}else{ //just the all group
+    			groupFollower.put("all", new JSONArray());
+    			for(int i=0; i<l; i++) {
+        	    	JSONObject trace = tracesTab.getJSONObject(i);
+        	    	JSONArray objs = groupFollower.get("all");
+    				if(!objs.toString().contains(trace.getString("id"))){
+    					objs.put(trace.get("id"));
+    				}
+    			}
     		}
-    	
-    		tracesTab = filteredArray;
+    			
+    	}else { //Focus required check the kind of focus
+    		if(focusType.equalsIgnoreCase("id")){ //Focus on something (equipment or program)
+    				
+    			groupFollower.put("focus", new JSONArray().put(focus));
+    			groupFollower.put("others", new JSONArray());
+    				
+    			if(grouping.equalsIgnoreCase("dep")){//Group based on id dependency (focus, dependencies, others)
+    					
+    				groupFollower.put("dependencies", new JSONArray());
+
+    				for(int i=0; i<l; i++) {
+            	    	JSONObject trace = tracesTab.getJSONObject(i);
+            	    	JSONArray objs = null;
+            	    		
+            	    	if(!trace.getString("id").equalsIgnoreCase(focus) && trace.toString().contains(focus)) { //dep
+            	    		objs = groupFollower.get("dependencies");
+            	    	} else { //others
+            	    		objs = groupFollower.get("others");
+            	    	}
+            	    		
+            	    	if(!objs.toString().contains(trace.getString("id"))){
+        					objs.put(trace.get("id"));
+        				}
+        			}
+    					
+    			} else { //One group focus and all in other
+    				JSONArray objs = groupFollower.get("others");
+    				for(int i=0; i<l; i++) {
+            	    	JSONObject trace = tracesTab.getJSONObject(i);
+            	    	if(!objs.toString().contains(trace.getString("id"))){
+        					objs.put(trace.get("id"));
+        				}
+    				}
+    			}
+    			
+    		} else if (focusType.equalsIgnoreCase("location")){ //focus on location name (location name, others)
+    				
+    			groupFollower.put(focus, new JSONArray());
+    			groupFollower.put("others", new JSONArray());
+    				
+    			for(int i=0; i<l; i++) {
+        	    	JSONObject trace = tracesTab.getJSONObject(i);
+        	    	JSONArray objs = null;
+        	    		
+        	    	if(trace.has("location")){ //Equipment
+        	    		JSONObject loc = trace.getJSONObject("location");
+        	    			
+        	    		if(loc.getString("id").equalsIgnoreCase("-1")){
+        	    			objs = groupFollower.get("others");
+        	    		}else{
+        	    			if(loc.getString("name").equalsIgnoreCase(focus)){
+        	    				objs = groupFollower.get(focus);
+        	    			}else{
+        	    				objs = groupFollower.get("others");
+        	    			}	
+        	    		}
+        	    	}else{ //Program
+        	    		objs = groupFollower.get("others");
+        	    	}
+        	    		
+        	    	if(!objs.toString().contains(trace.getString("id"))){
+    					objs.put(trace.get("id"));
+    				}
+				}
+    				
+    		} else if (focusType.equalsIgnoreCase("type")){ //focus on type (type, others)
+    			groupFollower.put(focus, new JSONArray());
+    			groupFollower.put("others", new JSONArray());
+    				
+    			for(int i=0; i<l; i++) {
+        	    	JSONObject trace = tracesTab.getJSONObject(i);
+        	    	JSONArray objs = null;
+        	    		
+        			String type = "program"; //Defaut is a program
+            		if (trace.has("type")){ //in fact is an equipment
+            			type = trace.getString("type");
+            		}
+            			
+            		if(type.equalsIgnoreCase(focus)){
+            			objs = groupFollower.get(focus);
+            		} else {
+            			objs = groupFollower.get("others");
+            		}
+            			
+            		if(!objs.toString().contains(trace.getString("id"))){
+    					objs.put(trace.get("id"));
+    				}
+        		}
+    		}
     	}
+    	
+    	//Fill the JSONArray with HashMap
+    	for(String key : groupFollower.keySet()){
+    		JSONObject obj = new JSONObject();
+    		obj.put("name", key);
+    		obj.put("members", groupFollower.get(key));
+    		groups.put(obj);
+    	}
+    	
+		return groups;
 	}
+
+//	/**
+//     * Filter trace on focus identifier
+//     * @param tracesTab the focuses equipment identifier
+//     * @throws JSONException 
+//     */
+//    private void filteringOnFocus(JSONArray tracesTab) throws JSONException {
+//    	if(!focus.equalsIgnoreCase(TraceMan.NOFOCUS)) {
+//    		int l = tracesTab.length();
+//    		int i = 0;
+//    	
+//    		JSONArray filteredArray = new JSONArray();
+//    	
+//    		while(i < l) {
+//    			JSONObject obj = tracesTab.getJSONObject(i);
+//    			//TODO manage the focus type (not necessary it could be work like that)
+//    			if(obj.toString().contains(focus)){
+//    				filteredArray.put(obj);
+//    			}
+//    			i++;
+//    		}
+//    	
+//    		tracesTab = filteredArray;
+//    	}
+//	}
 
 	private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
         JSONObject progNotif = new JSONObject();
@@ -565,9 +743,11 @@ public class TraceMan implements TraceManSpec {
 	/**
 	 * Set the filtering identifier for trace
 	 * @param focus the identifier use to filter trace
+	 * @param focusType the type of focus (location, type, equipment)
 	 */
-	public void setFocusEquipment(String focus) {
+	public void setFocusEquipment(String focus, String focusType) {
 		this.focus = focus;
+		this.focusType = focusType;
 	}
 		
 	@Override
