@@ -323,7 +323,7 @@ public class DomiCubeMQTTAdapterImpl {
         public MQTTListeningThread() {
             super();
             setListening(true);
-            logger.debug("MQTTListeningThread instanciated.");
+            logger.debug("MQTTListeningThread instantiated.");
         }
 
         public void run() {

@@ -9,10 +9,10 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>KNXSwitchAdapter</artifactId>
+	<artifactId>KNXAdapter</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>KNXSwitchAdapter OSGi Bundle</name>
+	<name>KNXAdapter OSGi Bundle</name>
 
 	<!-- Dependencies Description -->
 	<dependencies>
