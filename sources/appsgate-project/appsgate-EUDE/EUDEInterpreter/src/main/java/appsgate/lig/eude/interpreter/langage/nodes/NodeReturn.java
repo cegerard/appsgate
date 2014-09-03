@@ -40,7 +40,6 @@ public class NodeReturn extends Node implements ICanBeEvaluated {
      * Constructor to copy nodes
      *
      * @param p parent node
-     * @param id the id of the node
      */
     public NodeReturn(Node p) {
         super(p);
@@ -92,7 +91,7 @@ public class NodeReturn extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult() {
         if (returnValue == null) {
             return null;
         }

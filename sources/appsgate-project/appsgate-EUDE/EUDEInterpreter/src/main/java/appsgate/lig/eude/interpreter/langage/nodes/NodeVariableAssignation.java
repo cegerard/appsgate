@@ -8,7 +8,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
@@ -117,15 +116,11 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
     @Override
     public void endEventFired(EndEvent e) {
         ICanBeEvaluated source = (ICanBeEvaluated) e.getSource();
-        try {
-            SpokObject v = source.getResult();
-            if (v != null) {
-                setVariable(v);
-            } else {
-                setVariable(null);
-            }
-        } catch (SpokExecutionException ex) {
-            LOGGER.error("Exception raised during evaluation" + ex);
+        SpokObject v = source.getResult();
+        if (v != null) {
+            setVariable(v);
+        } else {
+            setVariable(null);
         }
         fireEndEvent(new EndEvent(this));
     }
@@ -137,9 +132,10 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult() {
         if (value == null) {
-            throw new SpokExecutionException("A variable assignation should not be null");
+            LOGGER.error("A variable assignation should not be null");
+            return null;
         }
         return ((ICanBeEvaluated) value).getResult();
     }

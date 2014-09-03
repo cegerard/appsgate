@@ -17,9 +17,8 @@ public interface ICanBeEvaluated {
      * Method that return the value associated to a node Must be overridden
      *
      * @return 
-     * @throws SpokExecutionException 
      */
-    public NodeValue getResult() throws SpokExecutionException;
+    public NodeValue getResult();
 
     /**
      * 

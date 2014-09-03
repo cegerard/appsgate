@@ -98,26 +98,21 @@ public class NodeState extends Node implements ICanBeEvaluated {
     @Override
     public JSONObject call() {
         setStarted(true);
-        try {
-            buildEventsList();
-        } catch (SpokExecutionException ex) {
-            LOGGER.error("Unable to build Events list");
+        buildEventsList();
+        // We are in state
+        Boolean state = isOfState();
+        if (state == null) {
+            SpokExecutionException ex = new SpokExecutionException("Unable to compute a boolean value for this state");
             return ex.getJSONDescription();
         }
-        try {
-            // We are in state
-            if (isOfState()) {
-                isOnRules = true;
-                fireStartEvent(new StartEvent(this));
-                listenEndStateEvent();
-            } else {
-                isOnRules = false;
-                eventStartNode.addEndEventListener(this);
-                eventStartNode.call();
-            }
-        } catch (SpokExecutionException ex) {
-            LOGGER.error("Unable to execute the State node, due to: " + ex);
-            return ex.getJSONDescription();
+        if (state) {
+            isOnRules = true;
+            fireStartEvent(new StartEvent(this));
+            listenEndStateEvent();
+        } else {
+            isOnRules = false;
+            eventStartNode.addEndEventListener(this);
+            eventStartNode.call();
         }
         return null;
     }
@@ -168,17 +163,19 @@ public class NodeState extends Node implements ICanBeEvaluated {
 
     /**
      * Method that build the event list
-     *
-     * @throws SpokExecutionException
      */
-    private void buildEventsList() throws SpokExecutionException {
+    private void buildEventsList() {
         EHMIProxySpec context;
-        context = getMediator().getContext();
-        desc = context.getEventsFromState(object.getResult().getValue(), stateName);
+        try {
+            context = getMediator().getContext();
+            desc = context.getEventsFromState(object.getResult().getValue(), stateName);
+        } catch (SpokExecutionException ex) {
+
+        }
 
         if (desc == null) {
             LOGGER.error("State {} not found for {}", stateName, object.getResult().getValue());
-            throw new SpokExecutionException("There is no type found for the device " + objectNode.getValue());
+            return;
         }
         // everything is OK
         if (eventStart == null) {
@@ -197,10 +194,11 @@ public class NodeState extends Node implements ICanBeEvaluated {
      * @return
      * @throws SpokExecutionException
      */
-    private INodeEvent buildFromOntology(JSONObject o) throws SpokExecutionException {
+    private INodeEvent buildFromOntology(JSONObject o) {
         Node events;
         if (o == null) {
-            throw new SpokExecutionException("No event associated with this state");
+            LOGGER.error("No event associated with this state");
+            return null;
         }
 
         JSONObject target;
@@ -210,10 +208,11 @@ public class NodeState extends Node implements ICanBeEvaluated {
             events = Builder.buildFromJSON(o, this, target);
         } catch (SpokTypeException ex) {
             LOGGER.error("Unable to build events: {}", ex.getMessage());
-            throw new SpokExecutionException("grammar is not correctly formed");
+            return null;
         }
         if (!(events instanceof INodeEvent)) {
-            throw new SpokExecutionException("The events state of the grammar is not an event (INodeEvent)");
+            LOGGER.error("The events state of the grammar is not an event (INodeEvent)");
+            return null;
         }
         return (INodeEvent) events;
     }
@@ -241,6 +240,8 @@ public class NodeState extends Node implements ICanBeEvaluated {
 
     /**
      * @return the method that set the state in the correct shape
+     * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException
+     * @throws appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException
      */
     public NodeAction getSetter() throws SpokExecutionException, SpokNodeException {
         JSONObject action = desc.getSetter();
@@ -275,7 +276,7 @@ public class NodeState extends Node implements ICanBeEvaluated {
      * @return true if the state is ok
      * @throws SpokExecutionException
      */
-    private boolean isOfState() throws SpokExecutionException {
+    private Boolean isOfState() {
         if (desc.getStateName() == null) {
             LOGGER.debug("No state name, so the result is false");
             return false;
@@ -284,21 +285,27 @@ public class NodeState extends Node implements ICanBeEvaluated {
         LOGGER.trace("Asking for {}, {}", object.getResult().getValue(), desc.getStateName());
         ProgramCommandNotification notif = getProgramLineNotification(null, targetId, "Reading from", ProgramCommandNotification.Type.READ);
 
-        GenericCommand cmd = getMediator().executeCommand(targetId, desc.getStateName(), new JSONArray(), notif);
+        GenericCommand cmd = null;
+        try {
+            cmd = getMediator().executeCommand(targetId, desc.getStateName(), new JSONArray(), notif);
+        } catch (SpokExecutionException ex) {
+        }
         if (cmd == null) {
-            throw new SpokExecutionException("The command has not been created");
+            LOGGER.error("Unable to retrieve the command, considering as null");
+            return null;
         }
         cmd.run();
         Object aReturn = cmd.getReturn();
         if (aReturn == null) {
-            throw new SpokExecutionException("The command has no return");
+            LOGGER.error("There was no return value, returning null");
+            return null;
         }
         LOGGER.debug("Is of state: [" + aReturn.toString() + "] compared to: [" + desc.getStateValue() + "]");
         return (desc.getStateValue().equalsIgnoreCase(aReturn.toString()));
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult() {
         if (isOfState()) {
             return new NodeValue("boolean", "true", this);
         } else {
@@ -310,6 +317,7 @@ public class NodeState extends Node implements ICanBeEvaluated {
     public String getResultType() {
         return "boolean";
     }
+
     @Override
     protected void buildReferences(ReferenceTable table) {
         if (this.eventEndNode != null) {
