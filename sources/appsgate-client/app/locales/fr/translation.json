@@ -533,6 +533,7 @@
       "light-brightness":"l'intensité de ",
       "state-verb":"est",
       "getTemperature": "la température mesurée",
+      "getIllumination": "l'éclairage mesuré", 
 
       "weather" : {
           "is-current-weather-code-state": "la météo actuelle",
@@ -625,6 +626,7 @@
       "stop-media-action":"Stopper",
       "set-volume-media-action":"Mettre le volume",
       "getTemperature": "la température mesurée",
+      "getIllumination": "l'éclairage mesuré",
 
       "weather" : {
           "weather-at": "à",
