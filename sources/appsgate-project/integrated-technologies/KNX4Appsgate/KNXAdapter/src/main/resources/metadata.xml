@@ -3,25 +3,7 @@
       xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
 	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd org.apache.felix.ipojo.handlers.event http://felix.apache.org/ipojo/schemas/CURRENT/event-admin.xsd">
 
-<!--
-    <implementation name="KNXAdapterImpl"
-                    classname="appsgate.lig.proxy.knx.KNXAdapterImpl">
-
-        <ipojo:requires field="lights"  aggregate="true" optional="true" specification="org.ow2.chameleon.fuchsia.importer.knx.device.iface.Switch">
-            <ipojo:callback type="bind" method="switchAdd"/>
-            <ipojo:callback type="unbind" method="switchRemove"/>
-        </ipojo:requires>
-
-
-        <relation specification="AppsgateClientCommunicationManagerSpec"
-                  creation="eager" resolve="external">
-            <interface field="listenerService"/>
-            <interface field="sendToClientService"/>
-        </relation>
-
-
-    </implementation>
--->
+    <specification name="KNXDummySpec"></specification>
 
     <implementation name="KNXLightImpl"
                     classname="appsgate.lig.proxy.knx.device.lamp.AppsgateLightKNXDevice"
@@ -52,10 +34,6 @@
     <implementation name="KNXOnOffImpl"
                     classname="appsgate.lig.proxy.knx.device.socket.AppsgateOnOffKNXDevice"
                     specification="CoreOnOffActuatorSpec" push="notifyChanges">
-
-<!--
-        <relation field="adapter" implementation="KNXAdapterImpl" />
--->
 
         <!-- device kernel meta data -->
         <definition name="deviceName" type="string"
