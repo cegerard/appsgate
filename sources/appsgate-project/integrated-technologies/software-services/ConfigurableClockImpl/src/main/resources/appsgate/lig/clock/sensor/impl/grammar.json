@@ -1,0 +1,8 @@
+{
+    "friendlyName": "Clock sensor",
+    "typename":"Clock",
+    "traceDesc": ["value"],
+    "properties": ["clockValue"],
+    "states": [
+    ]
+}
