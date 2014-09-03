@@ -23,6 +23,8 @@
 
             <start implementation="ARDServices" name="ARDServicesInst"></start>
 
+            <start implementation="KNXServices" name="KNXServicesInst"></start>
+
             <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
             <start implementation="TraceMan" name="TraceManInst"></start>
@@ -71,6 +73,10 @@
         <contentMngt>
             <start implementation="PhilipsHUEAdapterImpl" name="AppsgatePhilipsHUEAdapter" />
         </contentMngt>
+    </composite>
+
+    <composite name="KNXServices" singleton="true">
+        <relation specification="KNXDummySpec" creation="eager" targetKind="specification"></relation>
     </composite>
 
     <composite name="ARDServices" singleton="true">
