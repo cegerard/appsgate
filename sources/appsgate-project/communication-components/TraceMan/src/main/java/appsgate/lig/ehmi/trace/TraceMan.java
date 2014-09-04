@@ -424,13 +424,15 @@ public class TraceMan implements TraceManSpec {
 		try {
 			if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
     		
-				result.put("res", tracesTab);
+				result.put("data", tracesTab);
     			result.put("groups", computeGroupsFromPolicy(tracesTab)); 
+    			//TODO add result.timeline [{"timestamp":long , "value":int}] without aggregation
     			
 				requestResult.put("result", result);
 				requestResult.put("request", request);
     		
 				EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
+				
 			} else { // Apply aggregation policy
 
     			//filteringOnFocus(tracesTab);
@@ -440,7 +442,7 @@ public class TraceMan implements TraceManSpec {
 				
     			
     			
-    			result.put("res", tracesTab);
+    			result.put("data", tracesTab);
     			result.put("groups", computeGroupsFromPolicy(tracesTab));
     			
     			requestResult.put("result", result);
