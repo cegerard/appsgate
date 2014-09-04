@@ -51,7 +51,7 @@ public class TraceCmdListener implements CommandListener{
 					int res = args.getInt("res");
 					
 					//Set the delta time aggregation interval from client info
-					traceMan.setDeltaT(((from-to)*TraceMan.WIDTH)/res);
+					traceMan.setDeltaT(((to-from)*TraceMan.WIDTH)/res);
 					
 					//Set the grouping order
 					if(args.has("order")){

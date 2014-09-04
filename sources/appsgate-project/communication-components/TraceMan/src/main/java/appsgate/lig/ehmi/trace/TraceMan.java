@@ -1,9 +1,7 @@
 package appsgate.lig.ehmi.trace;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -417,9 +415,9 @@ public class TraceMan implements TraceManSpec {
     }
 
     @Override
-    public void getTracesBetweenInterval(Long start, Long end, JSONObject request) {
+    public void getTracesBetweenInterval(Long from, Long to, JSONObject request) {
     	JSONObject requestResult = new JSONObject();
-    	JSONArray tracesTab = dbTracer.getInterval(start, end);
+    	JSONArray tracesTab = dbTracer.getInterval(from, to);
     	JSONObject result = new JSONObject();
 		try {
 			if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
@@ -436,14 +434,13 @@ public class TraceMan implements TraceManSpec {
 			} else { // Apply aggregation policy
 
     			//filteringOnFocus(tracesTab);
+				//TODO debug group computation program:[] and devices:[]
+    			//result.put("groups", computeGroupsFromPolicy(tracesTab));
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
-    			tracesTab = traceQueue.applyAggregationPolicy(start, null); //Call with default aggregation policy (id and time)
-				
-    			
-    			
+    			tracesTab = traceQueue.applyAggregationPolicy(from, null); //Call with default aggregation policy (id and time)
+
     			result.put("data", tracesTab);
-    			result.put("groups", computeGroupsFromPolicy(tracesTab));
     			
     			requestResult.put("result", result);
     			requestResult.put("request", request);
@@ -1004,11 +1001,10 @@ public class TraceMan implements TraceManSpec {
 		public synchronized JSONArray applyAggregationPolicy(long from, JSONObject policy) throws JSONException{
 			
 			JSONArray aggregateTraces = new JSONArray();
-			JSONObject olderTrace = traceQueue.peek();
 			
-			if(policy == null && olderTrace != null){ //default aggregation (time and identifiers)
+			if(policy == null){ //default aggregation (time and identifiers)
 
-				long beginInt = olderTrace.getLong("timestamp");
+				long beginInt = from;
 				long  endInt = from+deltaTinMillis;
                 JSONArray tracesPacket = new JSONArray();
                 
@@ -1034,7 +1030,7 @@ public class TraceMan implements TraceManSpec {
         			traceExec.aggregation(aggregateTraces, tracesPacket, beginInt);
                 }
                 
-			} else if(olderTrace != null) { //Apply specific aggregation policy
+			} else { //Apply specific aggregation policy
 				//TODO generic aggregation mechanism
 				//aggregationWithPolicy(aggregateTraces, tracesPacket, logTime, policy)
 			}
