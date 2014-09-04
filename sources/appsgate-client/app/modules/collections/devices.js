@@ -46,7 +46,7 @@ define([
 
             dispatcher.on("removeDevice", function(device) {
               var deviceModel = devices.findWhere({id: device.objectId});
-              devices.remove(deviceModel);
+              self.removeDevice(deviceModel);
             });
 
             // send the request to fetch the devices
@@ -111,9 +111,26 @@ define([
                 self.templates['property'][brick.type] = device.getTemplateProperty();
                 self.add(device);
                 //code
-                places.get(brick.placeId).get("devices").push(brick.id);
+                if(typeof brick.placeId !== "undefined"){
+                  places.get(brick.placeId).get("devices").push(brick.id);
+                  places.get(brick.placeId).trigger('change');
+                }
+                else{
+                  places.get("-1").get("devices").push(brick.id);
+                  places.get("-1").trigger('change');
+                }
             }
-
+        },
+        /**
+         * Removes a given device
+         * @param device
+         */
+        removeDevice: function(device) {
+          if(typeof device.get("placeId") !== "undefined"){
+            var index = places.get(device.get("placeId")).get("devices").indexOf(device.id);
+            places.get(device.get("placeId")).get("devices").splice(index,1);
+          }
+          devices.remove(device);
         },
         /**
          * @return Array of the devices of a given type
