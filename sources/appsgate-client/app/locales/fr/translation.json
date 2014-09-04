@@ -201,8 +201,8 @@
       },
       "keycard-reader":{
          "name":{
-            "singular":"Lecteur de carte",
-            "plural":"Lecteurs de carte"
+            "singular":"Interrupteur à carte",
+            "plural":"Interrupteurs à carte"
          },
          "value":{
             "inserted":"Carte insérée",

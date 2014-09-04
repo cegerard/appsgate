@@ -201,8 +201,8 @@
       },
       "keycard-reader":{
          "name":{
-            "singular":"Card reader",
-            "plural":"Card readers"
+            "singular":"Card switch",
+            "plural":"Card switches"
          },
          "value":{
             "inserted":"card inserted",
