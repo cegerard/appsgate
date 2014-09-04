@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import org.json.JSONException;
@@ -93,6 +94,16 @@ final public class NodeProgram extends Node {
      * Sub programs
      */
     private HashMap<String, NodeProgram> subPrograms;
+
+    /**
+     * Object representing active nodes of the program
+     */
+    private JSONObject activeNodes;
+
+    /**
+     * Object counting the number of times node were executed
+     */
+    private JSONObject nodesCounter;
 
     /**
      * The current running state of this program - DEPLOYED - INVALID -
@@ -214,6 +225,8 @@ final public class NodeProgram extends Node {
     @Override
     public JSONObject call() {
         JSONObject ret = new JSONObject();
+        activeNodes = new JSONObject();
+        nodesCounter = new JSONObject();
         if (runningState == RUNNING_STATE.DEPLOYED) {
             //setProcessing(this.body.getIID());
             fireStartEvent(new StartEvent(this));
@@ -422,6 +435,9 @@ final public class NodeProgram extends Node {
 
             o.put("body", getJSONSource());
 
+            o.put("activeNodes", activeNodes);
+            o.put("nodesCounter", nodesCounter);
+
             o.put("definitions", getSymbolTableDescription());
 
         } catch (JSONException e) {
@@ -602,5 +618,50 @@ final public class NodeProgram extends Node {
                 break;
         }
 
+    }
+
+    /**
+     * Updates a node status in the active nodes set
+     * @param nodeId
+     * @param status
+     * @throws JSONException
+     */
+    public void setActiveNode(String nodeId, boolean status) throws SpokExecutionException {
+        try {
+            this.activeNodes.put(nodeId, status);
+        } catch (Exception e) {
+            throw new SpokExecutionException("Unable to update the active nodes set");
+        }
+
+    }
+
+    /**
+     * Increments a given node counter
+     * @param nodeId
+     * @throws JSONException
+     */
+    public void incrementNodeCounter(String nodeId) throws SpokExecutionException {
+        try {
+            int counter = this.nodesCounter.has(nodeId)?Integer.parseInt((String) this.nodesCounter.get(nodeId))+1:1;
+            this.nodesCounter.put(nodeId, String.valueOf(counter));
+        } catch (Exception e) {
+            throw new SpokExecutionException("Unable to increment the node counter for: " + nodeId);
+        }
+    }
+
+    /**
+     * Returns the object representing the active nodes of the program
+     * @return
+     */
+    public JSONObject getActiveNodes() {
+        return this.activeNodes;
+    }
+
+    /**
+     * Returns the object representing the node counters of the program
+     * @return
+     */
+    public JSONObject getNodesCounter() {
+        return this.nodesCounter;
     }
 }

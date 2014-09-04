@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
@@ -19,7 +18,7 @@ import org.junit.Before;
  *
  * @author jr
  */
-public class NodeComparatorTest extends NodeTest{
+public class NodeComparatorTest extends NodeTest {
 
     private NodeComparator node;
 
@@ -39,7 +38,7 @@ public class NodeComparatorTest extends NodeTest{
 
     @Before
     public void setUp() throws Exception {
-        this.node = new NodeComparator(ruleJSON, null);
+        this.node = new NodeComparator(ruleJSON, programNode);
         this.instance = this.node;
     }
 
@@ -83,14 +82,9 @@ public class NodeComparatorTest extends NodeTest{
         l.put("value", true);
         o.put("leftOperand", l);
         o.put("rightOperand", l);
-        try {
-            NodeComparator e0 = new NodeComparator(o, null);
-            e0.getResult();
+        NodeComparator e0 = new NodeComparator(o, null);
+        Assert.assertNull(e0.getResult());
 
-            Assert.fail("An exception should have been raised");
-        } catch (SpokException ex) {
-            Assert.assertNotNull(ex);
-        }
         l.put("type", "number");
         l.put("value", "12");
         o.put("leftOperand", l);
@@ -111,5 +105,4 @@ public class NodeComparatorTest extends NodeTest{
         Assert.assertEquals("true", result2.getValue());
     }
 
-    
 }

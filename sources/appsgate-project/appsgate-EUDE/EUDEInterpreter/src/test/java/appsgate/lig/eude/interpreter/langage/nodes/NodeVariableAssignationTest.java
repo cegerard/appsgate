@@ -25,7 +25,7 @@ public class NodeVariableAssignationTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.node =  new NodeVariableAssignation(ruleJSON, null);
+        this.node =  new NodeVariableAssignation(ruleJSON, programNode);
         this.instance = node;
     }
 

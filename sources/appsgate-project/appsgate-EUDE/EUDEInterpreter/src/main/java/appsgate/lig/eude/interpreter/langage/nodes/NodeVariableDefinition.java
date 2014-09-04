@@ -279,7 +279,7 @@ public class NodeVariableDefinition extends Node implements INodeList, ICanBeEva
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult() {
         if (valueNode != null) {
             return valueNode.getResult();
         }

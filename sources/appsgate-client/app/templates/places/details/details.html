@@ -21,7 +21,7 @@
 <div class="panel panel-default">
 	<div class="panel-body">
 		<span data-i18n="places-details.header.device-number-title"></span>
-		<span class="badge pull-right"><%= place.get("devices").length %></span>
+		<span class="badge pull-right"><%= place.get("devices").length - 1 %></span>
 		<br>
 		<span data-i18n="places-details.header.consumption-label"></span>
 		<% if (typeof place.getTotalConsumption() !== "undefined") { %>
@@ -392,6 +392,109 @@
 	</div>
 </div>
 <% } %>
+
+<!-- actuator -->
+<% if (place.getActuators().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getActuators().length === 1) { %>
+				<span data-i18n="devices.actuator.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.actuator.name.plural"></span>
+			<% } %>
+			<div class="badge pull-right">
+				<%= place.getActuators().length %>
+			</div>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getActuators().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<div class="pull-right">
+					<% if (s.get("value") === "true" || s.get("value") === true) { %>
+						<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-actuator-button" data-i18n="devices.actuator.action.turnOff"></button>
+					<% } else { %>
+						<button type="button" id="<%= s.get('id') %>" class="btn btn-info btn-sm toggle-actuator-button" data-i18n="devices.actuator.action.turnOn"></button>
+					<% } %>
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<% if (s.get("value") === "true" || s.get("value") === true) { %>
+					<span class="label label-yellow" data-i18n="devices.actuator.status.turnedOn"></span>
+				<% } else { %>
+					<span class="label label-default" data-i18n="devices.actuator.status.turnedOff"></span>
+				<% } %>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- DomiCube -->
+<% if (place.getDomiCubes().length > 0) { %>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<% if (place.getDomiCubes().length === 1) { %>
+				<span data-i18n="devices.domicube.name.singular"></span>
+			<% } else { %>
+				<span data-i18n="devices.domicube.name.plural"></span>
+			<% } %>
+			<div class="badge pull-right">
+				<%= place.getDomiCubes().length %>
+			</div>
+		</h3>
+	</div>
+	<div class="list-group">
+		<% place.getDomiCubes().forEach(function(s) { %>
+			<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+				<% if (s.get("name") !== "") { %>
+					<%= s.get("name") %>
+				<% } else { %>
+					<em data-i18n="places-details.body.device-no-name"></em>
+				<% } %>
+				<br>
+				<% if (s.get("status") === "0") { %>
+					<span class="label label-danger" data-18n="devices.status.disconnected"></span>
+				<% } else if (s.get("status" === "1")) { %>
+					<span class="label label-warning" data-i18n="devices.status.waiting"></span>
+				<% } else { %>
+					<span class="label label-success" data-i18n="devices.status.connected"></span>
+				<% } %>
+				<% if(s.get("activeFace") === "1") { %>
+					<img src='/app/img/lan.svg' width='18px' class="img-responsive">
+				<% } else if(s.get("activeFace") === "2") { %>
+					<span data-i18n='devices.domicube.status.unknown'></span>
+				<% } else if(s.get("activeFace") === "3") { %>
+					<img src='/app/img/music.png' width='18px' class="img-responsive">
+				<% } else if(s.get("activeFace") === "4") { %>
+					<img src='/app/img/question.svg' width='18px' class="img-responsive">
+				<% } else if(s.get("activeFace") === "5") { %>
+					<img src='/app/img/night.png' width='18px' class="img-responsive">
+				<% } else if(s.get("activeFace") === "6") { %>
+					<img src='/app/img/meal.png' width='18px' class="img-responsive">
+				<% } else { %>
+					<span data-i18n='devices.domicube.status.unknown'></span>
+				<% } %>
+			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
 
 <!-- if the place has no device, show a message -->
 <% if (place.get("devices").length === 0) { %>

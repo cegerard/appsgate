@@ -16,12 +16,12 @@
  */
 package appsgate.lig.meteo.yahoo.test;
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
 
-import appsgate.lig.weather.yahoo.YahooGeoPlanet;
-import appsgate.lig.weather.yahoo.YahooGeoPlanetImpl;
+import appsgate.lig.yahoo.geoplanet.YahooGeoPlanet;
+import appsgate.lig.yahoo.impl.YahooGeoPlanetImpl;
 
 /**
  * @author thibaud

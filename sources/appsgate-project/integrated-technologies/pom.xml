@@ -24,7 +24,6 @@
 		<module>upnp-dlna</module>
 		<module>web-services</module>
 		<module>software-services</module>
-		<module>fuchsia-ard-plugin</module>
 		<module>devices</module>
 		<module>IoT</module>
 	</modules>

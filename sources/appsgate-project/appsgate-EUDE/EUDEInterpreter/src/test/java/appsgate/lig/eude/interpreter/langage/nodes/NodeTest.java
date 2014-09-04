@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 import java.util.Iterator;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -92,6 +93,7 @@ public abstract class NodeTest {
             {
                 allowing(mediator).notifyChanges(with(any(ProgramCommandNotification.class)));
                 allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotification.class)));
             }
         });
         printTestName("call");

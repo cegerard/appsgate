@@ -76,27 +76,8 @@
     <build>
         <plugins>
             <plugin>
-               	<groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Private-Package>appsgate.lig.weather.yahoo.test.*</Private-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>fr.imag.adele.apam</groupId>
                 <artifactId>apam-maven-plugin</artifactId>
-                <version>${apam.current.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>apam-bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

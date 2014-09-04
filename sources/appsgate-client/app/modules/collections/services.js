@@ -5,7 +5,7 @@ define([
     "models/service/mediaplayer",
     "models/service/mediabrowser",
     "models/service/mail",
-    "models/service/weather"    
+    "models/service/weather"
 ], function(App, Service, ActionTemplate, MediaPlayer, MediaBrowser, Mail, Weather) {
 
     var Services = {};
@@ -77,7 +77,6 @@ define([
                 self.templates['state'][brick.type] = service.getTemplateState();
                 self.templates['property'][brick.type] = service.getTemplateProperty();
             }
-            places.get(brick.placeId).get("devices").push(brick.id);
         },
         /**
          * @return Array of the devices of a given type
@@ -98,7 +97,7 @@ define([
          */
         getCoreWeather: function() {
             return services.findWhere({type: 103});
-        },        
+        },
         /**
          * @return Array of UPnP media players
          */
@@ -113,10 +112,10 @@ define([
         },
         /**
          * @returns the template corresponding to the device
-         */ 
+         */
         getTemplateByType: function(word,type,param) {
             if (this.templates[word][type]) {
-                return this.templates[word][type](param);  
+                return this.templates[word][type](param);
             } else {
                 console.warn("No template is defined for type: " + type);
             }

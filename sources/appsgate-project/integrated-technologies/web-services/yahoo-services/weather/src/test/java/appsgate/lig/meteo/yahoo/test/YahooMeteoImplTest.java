@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import appsgate.lig.weather.yahoo.YahooWeatherImpl;
+import appsgate.lig.yahoo.impl.YahooWeatherImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,7 @@ public class YahooMeteoImplTest {
 
 
     /**
-     * Test method for {@link appsgate.lig.weather.yahoo.YahooWeatherImpl#fetch()}.
+     * Test method for {@link appsgate.lig.yahoo.impl.YahooWeatherImpl#fetch()}.
      */
     @Test
     public void testFetch() {

@@ -12,6 +12,8 @@
         "rules": [
             { "type" : "empty" }
         ]
-    }
+    },
+    "activeNodes": {},
+    "nodesCounter": {}
 }
 

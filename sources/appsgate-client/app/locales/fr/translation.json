@@ -99,7 +99,7 @@
    },
    "modal-edit-device":{
       "name-label":"Nom",
-      "name-placeholder":"Nom du lieu de vie",
+      "name-placeholder":"Nom de l'équipement",
       "name-already-existing":"Nom de l'équipement déjà existant",
       "place-label":"Lieu de vie",
       "time-label":"Heure",
@@ -281,8 +281,10 @@
          }
       },
       "ard":{
-           "last-card":"Dernier badge passé",
-           "last-authorized":"Dernier badge accès autorisé",
+          "last-card":"Dernier badge passé",
+          "last-authorized":"Dernier badge accès autorisé",
+          "affirmative":"Oui",
+          "negative":"Non",
            "name":{
                "singular":"ARD",
                "plural":"ARD"
@@ -531,6 +533,7 @@
       "light-brightness":"l'intensité de ",
       "state-verb":"est",
       "getTemperature": "la température mesurée",
+      "getIllumination": "l'éclairage mesuré", 
 
       "weather" : {
           "is-current-weather-code-state": "la météo actuelle",
@@ -623,6 +626,7 @@
       "stop-media-action":"Stopper",
       "set-volume-media-action":"Mettre le volume",
       "getTemperature": "la température mesurée",
+      "getIllumination": "l'éclairage mesuré",
 
       "weather" : {
           "weather-at": "à",

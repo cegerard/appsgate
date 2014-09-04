@@ -1,4 +1,8 @@
 <div class="main-block-node">
+    <div id="progress-<%= node.iid %>" class="progress-indicator-group">
+      <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
+      <span id="progress-counter-<%=node.iid %>">0</span>
+    </div>
     <div>
         <button class="btn btn-prog btn-primary" id="<%= node.iid %>">
             <span data-i18n="language.if-keyword"/>

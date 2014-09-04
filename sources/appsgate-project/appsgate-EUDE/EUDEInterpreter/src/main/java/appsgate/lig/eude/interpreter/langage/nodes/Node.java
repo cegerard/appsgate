@@ -156,10 +156,13 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     protected void fireStartEvent(StartEvent e) {
         try {
-            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), iid));
+            LOGGER.warn(this.getProgramNode().toString());
+            this.getProgramNode().setActiveNode(iid, true);
+            this.getProgramNode().incrementNodeCounter(iid);
+            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), this.getProgramNode().getActiveNodes(), this.getProgramNode().getNodesCounter()));
         } catch (SpokExecutionException ex) {
         }
-        
+
         int nbListeners = startEventListeners.size();
         for (int i = 0; i < nbListeners; i++) {
             StartEventListener l = startEventListeners.poll();
@@ -188,6 +191,12 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param e The end event to fire for all the listeners
      */
     protected synchronized void fireEndEvent(EndEvent e) {
+        try {
+            this.getProgramNode().setActiveNode(iid, false);
+            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), this.getProgramNode().getActiveNodes(), this.getProgramNode().getNodesCounter()));
+        } catch (SpokExecutionException ex) {
+        }
+
         //during the execution the list can be updated
         int nbListeners = endEventListeners.size();
         LOGGER.trace("fire endEvent {} for {} nodes", e.getSource(), nbListeners);
@@ -511,18 +520,21 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param what
      * @param where
      * @return
-     * @throws SpokExecutionException
      */
-    protected JSONArray getDevicesInSpaces(JSONArray what, JSONArray where)
-            throws SpokExecutionException {
+    protected JSONArray getDevicesInSpaces(JSONArray what, JSONArray where) {
         ArrayList<String> WHAT = getStringList(what);
 
         ArrayList<String> WHERE = getStringList(where);
-        ArrayList<String> devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
         JSONArray retArray = new JSONArray();
+        ArrayList<String> devicesInSpaces;
+        try {
+            devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
         for (String name : devicesInSpaces) {
             NodeValue n = new NodeValue("device", name, this);
             retArray.put(n.getJSONDescription());
+        }
+        } catch (SpokExecutionException ex) {
+            LOGGER.warn("Unable to get devices in space");
         }
         return retArray;
     }
@@ -533,10 +545,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      *
      * @param what the JSONArray containing
      * @return an array list of string
-     * @throws SpokExecutionException
      */
-    private ArrayList<String> getStringList(JSONArray what)
-            throws SpokExecutionException {
+    private ArrayList<String> getStringList(JSONArray what) {
         ArrayList<String> WHAT = new ArrayList<String>();
 
         for (int i = 0; i < what.length(); i++) {
@@ -551,12 +561,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
                         }
                     } else {
                         LOGGER.warn("Found an unexpected node: " + n);
-                        throw new SpokExecutionException(("Unable to parse object in selector"));
                     }
                 } catch (SpokTypeException ex) {
                     LOGGER.error("Unable to parse the what branch of selector");
                     LOGGER.debug("Unable to parse: " + o.toString());
-                    throw new SpokExecutionException(("Unable to parse object in selector"));
                 }
             }
         }
@@ -686,12 +694,12 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     }
 
     /**
-     * 
+     *
      * @param sourceId
      * @param targetId
      * @param description
      * @param type
-     * @return 
+     * @return
      */
     protected ProgramCommandNotification getProgramLineNotification(String sourceId, String targetId, String description, ProgramCommandNotification.Type type) {
         NodeProgram p = this.getProgramNode();
@@ -703,13 +711,13 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         }
         return new ProgramCommandNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type);
     }
-    
+
     /**
-     * 
-     * @param table 
+     *
+     * @param table
      */
     protected void buildReferences(ReferenceTable table) {
-       // Do nothing for leaf if no Device or no Program is referenced 
+        // Do nothing for leaf if no Device or no Program is referenced 
     }
-    
+
 }

@@ -49,6 +49,9 @@ public class NodeProgramTest extends NodeTest {
         NodeSetOfRulesTest t = new NodeSetOfRulesTest();
         JSONObject rules = t.ruleJSON;
         ruleJSON.put("body", rules);
+        ruleJSON.put("activeNodes", new JSONObject());
+        ruleJSON.put("nodesCounter", new JSONObject());
+
         ruleJSON.put("definitions", (Collection) null);
         ruleJSON.put("userSource", "test");
 
@@ -56,7 +59,7 @@ public class NodeProgramTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.programTest = new NodeProgram(mediator, this.ruleJSON, null);
+        this.programTest = new NodeProgram(mediator, this.ruleJSON, programNode);
         this.instance = this.programTest;
     }
 
@@ -91,6 +94,10 @@ public class NodeProgramTest extends NodeTest {
 
         rules.put("name", "test");
         rules.put("body", rules);
+
+        rules.put("activeNodes", new JSONObject());
+        rules.put("nodesCounter", new JSONObject());
+
         rules.put("definitions", (Collection) null);
 
         boolean expResult = true;

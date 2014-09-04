@@ -38,7 +38,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.node = new NodeBooleanExpression(ruleJSON, null);
+        this.node = new NodeBooleanExpression(ruleJSON, programNode);
         this.instance = this.node;
     }
 
@@ -82,13 +82,8 @@ public class NodeBooleanExpressionTest extends NodeTest {
         l.put("value", 12);
         o.put("leftOperand", l);
         o.put("rightOperand", l);
-        try {
-            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
-            e0.getResult();
-            Assert.fail("An exception should have been raised");
-        } catch (SpokException ex) {
-            Assert.assertNotNull(ex);
-        }
+        NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
+        Assert.assertNull(e0.getResult());
         // Test with 1 AND 1
         l.put("type", "boolean");
         l.put("value", "true");
@@ -143,14 +138,9 @@ public class NodeBooleanExpressionTest extends NodeTest {
         l.put("value", 12);
         o.put("leftOperand", l);
         o.put("rightOperand", l);
-        try {
-            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
-            e0.getResult();
+        NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
+        Assert.assertNull(e0.getResult());
 
-            Assert.fail("An exception should have been raised");
-        } catch (SpokException ex) {
-            Assert.assertNotNull(ex);
-        }
         // Test with 1 Or 1
         l.put("type", "boolean");
         l.put("value", "true");
@@ -203,13 +193,8 @@ public class NodeBooleanExpressionTest extends NodeTest {
         l.put("type", "number");
         l.put("value", 12);
         o.put("leftOperand", l);
-        try {
-            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
-            e0.getResult();
-            Assert.fail("An exception should have been raised");
-        } catch (SpokException ex) {
-            Assert.assertNotNull(ex);
-        }
+        NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
+        Assert.assertNull(e0.getResult());
         // Test with true
         l.put("type", "boolean");
         l.put("value", "true");
@@ -229,6 +214,7 @@ public class NodeBooleanExpressionTest extends NodeTest {
         Assert.assertEquals("boolean", result2.getType());
         Assert.assertEquals("true", result2.getValue());
     }
+
     @Test
     public void testTrueOperation() throws Exception {
         printTestName("TrueOperation");
@@ -239,13 +225,8 @@ public class NodeBooleanExpressionTest extends NodeTest {
         l.put("type", "number");
         l.put("value", 12);
         o.put("leftOperand", l);
-        try {
-            NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
-            e0.getResult();
-            Assert.fail("An exception should have been raised");
-        } catch (SpokException ex) {
-            Assert.assertNotNull(ex);
-        }
+        NodeBooleanExpression e0 = new NodeBooleanExpression(o, null);
+        Assert.assertNull(e0.getResult());
         // Test with true
         l.put("type", "boolean");
         l.put("value", "true");

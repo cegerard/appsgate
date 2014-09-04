@@ -8,7 +8,7 @@
             "name": "isOn",
             "setter": {
                 "type": "NodeAction",
-                "methodName": "On"
+                "methodName": "on"
             },
             "endEvent": {
                 "name" : "value",
@@ -24,7 +24,7 @@
             "name": "testState",
             "setter": {
                 "type": "NodeAction",
-                "methodName": "On"
+                "methodName": "on"
             },
             "endEvent": {
                 "name" : "lightOff"
@@ -39,7 +39,7 @@
             "name": "isOff",
             "actions": {
                 "type": "NodeAction",
-                "methodName": "Off"
+                "methodName": "off"
             },
             "endEvent": {
                 "name" : "lightOn"

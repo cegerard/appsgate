@@ -15,8 +15,10 @@
 		<relation field="userManager" fail="wait" resolve="exist"/>
 		<relation field="interpreter" fail="wait" resolve="exist"/>
 		<relation field="traceManager" fail="wait" resolve="exist"/>
-		
-		<relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"
+        <relation field="weatherAdapter" fail="wait" resolve="exist"/>
+
+
+        <relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"
 			fail="wait" >
 			<interface field="addListenerService" />
 			<interface field="sendToClientService" />

@@ -2,6 +2,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
+import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManagerMock;
 import org.jmock.Expectations;
@@ -31,6 +32,7 @@ public class NodeSelectStateTest extends NodeTest {
                 will(returnValue(prop));
                 allowing(mediator).getTime();
                 will(returnValue(new Long(0)));
+                ignoring(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
             }
         });
         ruleJSON.put("type", "selectState");

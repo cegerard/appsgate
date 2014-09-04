@@ -67,6 +67,6 @@
 	</build>
 
   <modules>
-    <module>KNXSwitchAdapter</module>
+    <module>KNXAdapter</module>
   </modules>
 </project>

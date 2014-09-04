@@ -283,6 +283,8 @@
       "ard":{
           "last-card":"Last badge passed",
           "last-authorized":"Last badge access granted",
+          "affirmative":"Yes",
+          "negative":"No",
           "name":{
               "singular":"ARD",
               "plural":"ARD"
@@ -530,6 +532,7 @@
       "state-verb":"is",
 
       "getTemperature": "the temperature from sensor",
+      "getIllumination": "the illumination from sensor",  
 
        "weather" : {
            "is-current-weather-code-state": "current weather",
@@ -621,6 +624,7 @@
       "stop-media-action":"Stop",
       "set-volume-media-action":"Set the volume",
       "getTemperature": "the temperature from sensor",
+      "getIllumination": "the illumination from sensor",
 
        "weather" : {
 

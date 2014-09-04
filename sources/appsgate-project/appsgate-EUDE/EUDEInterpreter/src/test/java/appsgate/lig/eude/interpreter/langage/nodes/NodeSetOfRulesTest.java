@@ -23,7 +23,7 @@ public class NodeSetOfRulesTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeSetOfRules(ruleJSON, null);
+        this.instance = new NodeSetOfRules(ruleJSON, programNode);
     }
 
 }

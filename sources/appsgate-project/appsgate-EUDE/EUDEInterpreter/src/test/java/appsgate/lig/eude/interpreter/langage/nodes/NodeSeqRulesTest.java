@@ -26,14 +26,14 @@ public class NodeSeqRulesTest extends NodeTest {
 
     @Before
     public void setUp() throws Exception {
-        this.instance = new NodeSeqRules(this.ruleJSON, null);
+        this.instance = new NodeSeqRules(this.ruleJSON, programNode);
     }
 
     @Test
     public void testBuildFromJson() throws Exception {
         printTestName("Build From JSON");
 
-        NodeSeqRules seq = new NodeSeqRules(TestUtilities.loadFileJSON("src/test/resources/node/seqRules.json"), null);
+        NodeSeqRules seq = new NodeSeqRules(TestUtilities.loadFileJSON("src/test/resources/node/seqRules.json"), programNode);
         Assert.assertNotNull(seq);
         System.out.println(seq.getExpertProgramScript());
         seq.call();
