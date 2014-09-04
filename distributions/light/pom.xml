@@ -317,21 +317,31 @@
                                     <version>${fuchsia.version}</version>
                                 </artifactItem>
                                 <artifactItem>
+                                    <groupId>org.ow2.chameleon.fuchsia.importer</groupId>
+                                    <artifactId>org.ow2.chameleon.fuchsia.importer.knx</artifactId>
+                                    <version>${fuchsia.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <artifactId>org.ow2.chameleon.fuchsia.base.knx.calimero</artifactId>
+                                    <groupId>org.ow2.chameleon.fuchsia.base.knx</groupId>
+                                    <version>${fuchsia.version}</version>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.eventadmin</artifactId>
                                     <version>${org.apache.felix.eventadmin.version}</version>
                                 </artifactItem>
 
-                                <dependency>
+                                <artifactItem>
                                     <groupId>org.fusesource.hawtdispatch</groupId>
                                     <artifactId>hawtdispatch</artifactId>
                                     <version>${hawtdispatch.version}</version>
-                                </dependency>
-                                <dependency>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>org.fusesource.hawtdispatch</groupId>
                                     <artifactId>hawtdispatch-transport</artifactId>
                                     <version>${hawtdispatch.version}</version>
-                                </dependency>
+                                </artifactItem>
 
                                 <artifactItem>
                                     <groupId>org.fusesource.mqtt-client</groupId>

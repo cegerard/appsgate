@@ -11,7 +11,7 @@ BLOC = SEQ
 
 INSTS  = _ (INST _)+ / "(" INSTS ")"
 
-INST  = IF / WHEN / WHILE / ACTION / EMPTY / WAIT
+INST  = IF / WHEN / WHILE / ACTION / EMPTY / WAIT / SEQ
 
 IF  = ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")" _ "(" _ BLOC _ ")"
     / ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")"

@@ -12,8 +12,8 @@ define([
         this.ProgramInputBuilder = new ProgramInputBuilder();
 
         this.resetProgramJSON();
-        this.currentNode = 1;
-        this.maxNodeId = 1;
+        this.currentNode = 3;
+        this.maxNodeId = 3;
         this.lastAddedNode = null;
         this.Grammar = new Grammar();
       },
@@ -26,7 +26,14 @@ define([
           type: "setOfRules",
           rules: [{
             iid: 1,
-            type: "empty"
+            type: "seqRules",
+			rules: [{
+			  iid: 2,
+			  type: "empty",
+			}]
+			},{
+			iid: 3,
+			type: "empty"
           }]
         };
       },

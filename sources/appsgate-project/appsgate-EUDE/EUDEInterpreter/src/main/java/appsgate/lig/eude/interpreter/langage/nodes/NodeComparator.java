@@ -172,7 +172,7 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult()  {
         Boolean result = false;
         try {
             switch (comparator) {
@@ -195,7 +195,7 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
 
         } catch (SpokTypeException ex) {
             LOGGER.error("Unable to parse the result");
-            throw new SpokExecutionException("The type are not those excepted");
+            return null;
         }
 
         return new NodeValue("boolean", result.toString(), null);

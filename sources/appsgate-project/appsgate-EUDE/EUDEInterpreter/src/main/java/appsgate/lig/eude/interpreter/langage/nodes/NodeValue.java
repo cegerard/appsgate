@@ -190,10 +190,6 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
             LOGGER.error("The value was not correct: {}", this.getExpertProgramScript());
             LOGGER.debug(this.getJSONDescription().toString());
             return null;
-        } catch (SpokExecutionException ex) {
-            LOGGER.error("Execution exception on reading value: {}", this.getExpertProgramScript());
-            LOGGER.debug(this.getJSONDescription().toString());
-            return null;
         }
     }
 
@@ -223,7 +219,7 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult() {
         if (type == TYPE.VARIABLE) {
             return getVariableByName(value).getResult();
         }
