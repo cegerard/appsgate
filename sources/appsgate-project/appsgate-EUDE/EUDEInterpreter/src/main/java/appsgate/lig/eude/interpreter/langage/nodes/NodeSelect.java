@@ -83,7 +83,7 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
     @Override
     public NodeValue getResult() {
         if (specificDevices == null) {
-            return null;
+            specificDevices = getDevicesInSpaces(what, where);
         }
         JSONObject o = new JSONObject();
         try {
