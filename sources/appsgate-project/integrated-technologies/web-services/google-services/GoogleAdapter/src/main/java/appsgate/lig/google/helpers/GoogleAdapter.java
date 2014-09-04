@@ -1,4 +1,4 @@
-package appsgate.lig.proxy.google.calendar;
+package appsgate.lig.google.helpers;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -89,7 +89,7 @@ public class GoogleAdapter implements GoogleCalendarAdapter{
 	 * startDate to the last register event. It is possible to specify a end date to get the calendar between startDate and endDate.
 	 * If startDate is null the endDate will not be consider.
 	 * 
-	 * @param calendar the remote calendar you want to get
+	 * @param calendarName the remote calendar you want to get
 	 * @param account the remote service account
 	 * @param password the password corresponding to the account
 	 * @param startDate the date from when you want to get events
@@ -115,7 +115,7 @@ public class GoogleAdapter implements GoogleCalendarAdapter{
 				}
 				i++;
 			}
-			
+
 			TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
 			
 //			System.out.println("************ timezone to:"+calendarEntry.getTimeZone().getValue());

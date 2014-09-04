@@ -220,7 +220,7 @@ public class NodeLists extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult() {
         if (result == null) {
             return null;
         }
@@ -239,7 +239,8 @@ public class NodeLists extends Node implements INodeList, ICanBeEvaluated {
             return new NodeValue(o, this);
 
         } catch (SpokNodeException ex) {
-            throw new SpokExecutionException("Unable to build the NodeValue");
+            LOGGER.error("Unable to build the NodeValue");
+            return null;
         }
     }
 

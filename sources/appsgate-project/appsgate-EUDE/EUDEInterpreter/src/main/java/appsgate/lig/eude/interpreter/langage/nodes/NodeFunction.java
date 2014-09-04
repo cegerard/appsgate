@@ -139,12 +139,7 @@ public class NodeFunction extends Node implements ICanBeEvaluated {
     public void endEventFired(EndEvent e) {
         ICanBeEvaluated source = (ICanBeEvaluated) e.getSource();
         LOGGER.debug("The end event ({}) has been catched by {}", source, this);
-        try {
-            this.result = source.getResult();
-        } catch (SpokExecutionException ex) {
-            LOGGER.error("An exception occurs in FUNCTION");
-            this.result = null;
-        }
+        this.result = source.getResult();
         fireEndEvent(new EndEvent(this));
     }
 
@@ -261,7 +256,8 @@ public class NodeFunction extends Node implements ICanBeEvaluated {
     public NodeValue getResult() {
         return this.result;
     }
-        @Override
+
+    @Override
     public String getResultType() {
         return this.result.getResultType();
     }

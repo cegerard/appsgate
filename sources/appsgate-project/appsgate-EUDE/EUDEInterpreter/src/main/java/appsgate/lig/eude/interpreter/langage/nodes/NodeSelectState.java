@@ -177,7 +177,7 @@ public class NodeSelectState extends Node implements INodeList, ICanBeEvaluated 
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult() {
         if (devicesSelected == null) {
             return null;
         }
@@ -190,7 +190,8 @@ public class NodeSelectState extends Node implements INodeList, ICanBeEvaluated 
         try {
             return new NodeValue(o, this);
         } catch (SpokNodeException ex) {
-            throw new SpokExecutionException("Unable to build the node value");
+            LOGGER.error("Unable to build the node value");
+            return null;
         }
     }
 

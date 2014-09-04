@@ -81,7 +81,7 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    public NodeValue getResult() throws SpokExecutionException {
+    public NodeValue getResult() {
         if (specificDevices == null) {
             return null;
         }
@@ -94,18 +94,15 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
         try {
             return new NodeValue(o, this);
         } catch (SpokNodeException ex) {
-            throw new SpokExecutionException("Unable to build the node value");
+            LOGGER.error("Unable to build the node value");
+            return null;
         }
     }
 
     @Override
     public JSONObject call() {
         setStarted(true);
-        try {
-            specificDevices = getDevicesInSpaces(what, where);
-        } catch (SpokExecutionException ex) {
-            return ex.getJSONDescription();
-        }
+        specificDevices = getDevicesInSpaces(what, where);
         fireEndEvent(new EndEvent(this));
         return null;
     }
@@ -154,10 +151,12 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
     public String getType() {
         return "list";
     }
+
     @Override
     public String getResultType() {
         return this.getType();
     }
+
     @Override
     protected void buildReferences(ReferenceTable table) {
         // For now, do nothing
