@@ -44,9 +44,9 @@ define([
                 self.addDevice(device);
             });
 
-            dispatcher.on("removeDevice", function(deviceId) {
-                var device = devices.findWhere({id: deviceId});
-                devices.remove(device);
+            dispatcher.on("removeDevice", function(device) {
+              var deviceModel = devices.findWhere({id: device.objectId});
+              devices.remove(deviceModel);
             });
 
             // send the request to fetch the devices
