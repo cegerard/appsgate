@@ -1228,10 +1228,7 @@ public class TraceMan implements TraceManSpec {
 	                            
 	                        }else{ //Device id exist for this time stamp --> aggregation
 	                        	JSONObject existingDev = devicesToAgg.get(id);
-	                        	
-	                        	if(existingDev.has("event")){ //First aggregation only, remove event entry
-	                        		existingDev.remove("event");
-	                        	}
+	                        	existingDev.put("event", tempDev.get("event")); //replace the state by the last known state
 	                        	
 	                        	//Aggregates the device trace has a decoration
 	                        	JSONArray existingDecorations = existingDev.getJSONArray("decorations");
@@ -1249,11 +1246,11 @@ public class TraceMan implements TraceManSpec {
 	                    }
 	                }
 
-	                //If there is some program trace to merge
+	                //If there is some program traces to merge
 	                if( tempPgmsSize > 0){
 	                    int y = 0;
 	                    while(y < tempPgmsSize){
-	                        //Merge the program trace
+	                        //Merge program traces
 	                        JSONObject tempPgm = tempPgms.getJSONObject(y);
 	                        tempPgm.put("timestamp", tempObj.get("timestamp"));
 	                        String id = tempPgm.getString("id");
@@ -1265,10 +1262,7 @@ public class TraceMan implements TraceManSpec {
 	                        }else{ //program id exist for this time stamp --> aggregation
 	                        	
 	                        	JSONObject existingPgm = programsToAgg.get(id);
-	                        	
-	                        	if(existingPgm.has("event")){ //First aggregation only, remove event entry
-	                        		existingPgm.remove("event");
-	                        	}
+	                        	existingPgm.put("event", tempPgm.get("event")); //replace the state by the last known state
 	                        	
 	                        	//Aggregates the device trace has a decoration
 	                        	JSONArray existingDecorations = existingPgm.getJSONArray("decorations");
