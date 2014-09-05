@@ -14,6 +14,7 @@ define([
         "mouseup .btn-keyboard": "onClickKeyboard",
         "mouseup .btn-prog": "onClickProg",
         "click #end-edit-button": "onClickEndEdit",
+        "click #cancel-edit-button": "onClickCancelEdit",
         "change .lamp-color-picker": "onChangeLampColorNode",
         "change .selector-place-picker": "onChangeSeletorPlaceNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
@@ -80,6 +81,7 @@ define([
       onClickEndEdit: function(e) {
         this.model.set("body", this.Mediator.programJSON);
         this.model.set("modified", false);
+        this.model.set("isNew", "false");
         if (this.Mediator.isValid) {
           this.model.set("runningState", "DEPLOYED");
         } else {
@@ -87,6 +89,14 @@ define([
         }
         this.model.save();
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
+      },
+      onClickCancelEdit: function(e) {
+        if(this.model.get("isNew") === "true"){
+          this.model.destroy();
+          appRouter.navigate("#programs", {trigger: true});
+        } else{
+          appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
+        }
       },
       /**
        * Method to handle event on a button on the keyboard

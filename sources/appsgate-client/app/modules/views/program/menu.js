@@ -134,7 +134,8 @@ define([
                     // instantiate a model for the new program
                     program = programs.create({
                         name: $("#add-program-modal input:text").val(),
-                        daemon: "false"
+                        daemon: "false",
+                        isNew: "true"
                     });
 
                     // hide the modal
