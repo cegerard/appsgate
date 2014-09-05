@@ -21,11 +21,22 @@ public class GoogleOpenAuthent {
 	public static final String PARAM_ACCESSTOKEN = "access_token";	
 	public final static String PARAM_AUTH = "Authorization";
 	public final static String PARAM_APIKEY = "key";	
-	public final static String PARAM_ERROR = "error";	
+	
+	public final static String RESP_ERROR = "error";
+
+	public final static String RESP_VERIFICATIONURL = "verification_url";
+	public final static String RESP_USERCODE = "user_code";
+	public final static String RESP_DEVICECODE = "device_code";
+	public final static String RESP_EXPIREIN = "expires_in";
+	public final static String RESP_INTERVAL = "interval";	
+	public final static String RESP_TOKENTYPE = "token_type";	
+	public final static String RESP_REFRESHTOKEN = PARAM_REFRESHTOKEN;	
+	public final static String RESP_ACCESSTOKEN = PARAM_ACCESSTOKEN;	
+	
 
 	
 	public static final String GRANT_DEVICE = "http://oauth.net/grant_type/device/1.0";
-	public static final String GRANT_REFRESH = "refresh_token";
+	public static final String GRANT_REFRESH = PARAM_REFRESHTOKEN;
 
 	public static final String oauthDeviceURL= "https://accounts.google.com/o/oauth2/device/code";
 	public static final String oauthTokenURL= "https://accounts.google.com/o/oauth2/token";
@@ -115,7 +126,7 @@ public class GoogleOpenAuthent {
 		
 				
 		JSONObject result = GoogleHTTPRequest.httpsGet(oauthTokenInfoURL, null, urlParameters);
-		if(result==null || result.opt(PARAM_ERROR) != null) {
+		if(result==null || result.opt(RESP_ERROR) != null) {
 			logger.info("access token is not valid");
 			return false;
 		}

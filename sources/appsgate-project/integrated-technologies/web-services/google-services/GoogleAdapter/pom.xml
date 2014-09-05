@@ -22,34 +22,41 @@
             <artifactId>json</artifactId>
             <version>${json.version}</version>
         </dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>${ipojo.annotations.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openengsb.wrapped</groupId>
-			<artifactId>com.google.gdata-calendar</artifactId>
-			<version>1.41.5.w1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mnode.ical4j</groupId>
-			<artifactId>ical4j</artifactId>
-			<version>${ical-version}</version>
-		</dependency>
+
         <dependency>
-            <groupId>org.mnode.ical4j</groupId>
-            <artifactId>ical4j</artifactId>
-            <version>${ical-version}</version>
+            <groupId>fr.imag.adele.apam</groupId>
+            <artifactId>apam-core</artifactId>
+            <version>${apam.current.version}</version>
         </dependency>
-
-
+        
         <dependency>
-            <groupId>appsgate.libs</groupId>
-            <artifactId>GoogleApiAdapter</artifactId>
+            <artifactId>CoreClockSpec</artifactId>
+            <groupId>appsgate.components</groupId>
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <artifactId>org.osgi.core</artifactId>
+            <groupId>org.osgi</groupId>
+            <version>${osgi.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+            <version>${ipojo.annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.runtime</artifactId>
+            <version>${felix.gogo.runtime.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.eclipse.osgi</artifactId>
+                    <groupId>org.eclipse.osgi</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>          
 
 
         <dependency>
