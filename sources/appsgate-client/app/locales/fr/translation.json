@@ -385,6 +385,7 @@
       "edit-program":"Editer",
       "end-edit-program":"Valider",
       "delete-program":"Supprimer",
+      "warning-program-edition":"Attention, éditer le programme le désactivera",
       "state":{
          "deployed":"Déployé",
          "started":"Démarré",

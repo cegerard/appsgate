@@ -342,6 +342,7 @@ define([
           if (this.Mediator.isValid) {
             this.model.set("runningState", "DEPLOYED");
             $(".led").addClass("led-default").removeClass("led-orange");
+            $(".led").addClass("led-default").removeClass("led-yellow");
             $(".programNameInput").addClass("valid-program");
           } else {
             this.model.set("runningState", "INVALID");
