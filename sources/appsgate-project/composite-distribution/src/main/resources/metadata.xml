@@ -25,6 +25,8 @@
 
             <start implementation="KNXServices" name="KNXServicesInst"></start>
 
+            <start implementation="FuchsiaServices" name="FuchsiaServicesInst"></start>
+
             <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
             <start implementation="TraceMan" name="TraceManInst"></start>
@@ -78,6 +80,10 @@
         <relation specification="KNXDummySpec" creation="eager" targetKind="specification"></relation>
     </composite>
 
+    <composite name="FuchsiaServices" singleton="true">
+        <relation specification="FuchsiaSetupDummySpec" creation="eager" targetKind="specification"></relation>
+    </composite>
+
     <composite name="ARDServices" singleton="true">
         <contentMngt>
             <start implementation="ARDMessageGreedyListener" name="ARDMessageGreedyListenerInst" >
@@ -85,8 +91,8 @@
         </contentMngt>
     </composite>
 
-    <composite name="AppsGateGoogleServices" singleton="true">
-<!--               main="AppsgateGoogleAdapter">-->
+    <composite name="AppsGateGoogleServices" singleton="true"
+               main="AppsgateGoogleAdapterImpl">
         <contentMngt>
             <!-- <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
             <start implementation="MailAdapter" name="MailAdapterInst">

@@ -31,45 +31,45 @@ public class GoogleHTTPRequest {
 
 
 		try {
-			String clientId = "767635155947-d4g4nol633qqtceotb98m6jgu8ia5j2f.apps.googleusercontent.com";
-			String clientSecret = "yrXTCVBz3cR-vkuboXfWXavT";
-			String scope= "https://www.googleapis.com/auth/calendar";
-			String deviceCode = "4/uWExoAh1tG8ZSsJ0f0z8vUWm5l_h";
-			String refreshToken = "1/_cd-v7FNEYsoE2sm1Oewj6B8ov23P1lbkk4NncU635Q";
-			String accessTokenType = "Bearer";
-			String accessTokenValue= "ya29.dQA4zXXCA4Bh6x0AAAB0yY_wR8tdhMrc-U0UYK0Kub_oN5jK0fMNeI6k9gaH-Q";
-			String apiKey = "AIzaSyASWRbL70yXR0rRJHNMUV95oCU9hxb-U_s";
-			
-			String calendarId="primary";
-			
-			Date currentDate = new Date();			
-			Date startDate = new Date(currentDate.getTime() + 1800000);
-			Date endDate = new Date(startDate.getTime() + 3600000);
-			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-			
-			Map<String, String> urlParameters=new HashMap<String, String>();
-
-			JSONObject res = GoogleOpenAuthent.getAccessToken(clientId, clientSecret, refreshToken);
-			logger.debug(" returns : "+res.toString());
-			accessTokenValue = res.getString(GoogleOpenAuthent.PARAM_ACCESSTOKEN);			
-			urlParameters.put("timeMin", dateFormat.format(currentDate));
-			logger.debug(" get returns : "+GoogleCalendarReader.getEvents(apiKey, accessTokenType, accessTokenValue, calendarId, urlParameters));
-			
-			String requestContent;
-			JSONObject content = new JSONObject();
-			content.put("start", new JSONObject().put("dateTime",  dateFormat.format(startDate)));
-			content.put("end", new JSONObject().put("dateTime",  dateFormat.format(endDate)));
-			content.put("summary", "testMAnualAdding");
-			requestContent=content.toString();
-			
-			JSONObject res2=GoogleCalendarWriter.addEvent(apiKey, accessTokenType, accessTokenValue, calendarId, requestContent);
-			logger.debug(" add returns : "+res2.toString());
-					
-			logger.debug(" get returns : "+GoogleCalendarReader.getEvents(apiKey, accessTokenType, accessTokenValue, calendarId, urlParameters));
-			String eventId=res2.getString("id");
-			
-			logger.debug(" delete returns : "+GoogleCalendarWriter.deleteEvent(apiKey, accessTokenType, accessTokenValue, calendarId, eventId));
-			logger.debug(" get returns : "+GoogleCalendarReader.getEvents(apiKey, accessTokenType, accessTokenValue, calendarId, urlParameters));
+//			String clientId = "767635155947-d4g4nol633qqtceotb98m6jgu8ia5j2f.apps.googleusercontent.com";
+//			String clientSecret = "yrXTCVBz3cR-vkuboXfWXavT";
+//			String scope= "https://www.googleapis.com/auth/calendar";
+//			String deviceCode = "4/uWExoAh1tG8ZSsJ0f0z8vUWm5l_h";
+//			String refreshToken = "1/_cd-v7FNEYsoE2sm1Oewj6B8ov23P1lbkk4NncU635Q";
+//			String accessTokenType = "Bearer";
+//			String accessTokenValue= "ya29.dQA4zXXCA4Bh6x0AAAB0yY_wR8tdhMrc-U0UYK0Kub_oN5jK0fMNeI6k9gaH-Q";
+//			String apiKey = "AIzaSyASWRbL70yXR0rRJHNMUV95oCU9hxb-U_s";
+//			
+//			String calendarId="primary";
+//			
+//			Date currentDate = new Date();			
+//			Date startDate = new Date(currentDate.getTime() + 1800000);
+//			Date endDate = new Date(startDate.getTime() + 3600000);
+//			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+//			
+//			Map<String, String> urlParameters=new HashMap<String, String>();
+//
+//			JSONObject res = GoogleOpenAuthent.getAccessToken(clientId, clientSecret, refreshToken);
+//			logger.debug(" returns : "+res.toString());
+//			accessTokenValue = res.getString(GoogleOpenAuthent.PARAM_ACCESSTOKEN);			
+//			urlParameters.put("timeMin", dateFormat.format(currentDate));
+//			logger.debug(" get returns : "+GoogleCalendarReader.getEvents(apiKey, accessTokenType, accessTokenValue, calendarId, urlParameters));
+//			
+//			String requestContent;
+//			JSONObject content = new JSONObject();
+//			content.put("start", new JSONObject().put("dateTime",  dateFormat.format(startDate)));
+//			content.put("end", new JSONObject().put("dateTime",  dateFormat.format(endDate)));
+//			content.put("summary", "testMAnualAdding");
+//			requestContent=content.toString();
+//			
+//			JSONObject res2=GoogleCalendarWriter.addEvent(apiKey, accessTokenType, accessTokenValue, calendarId, requestContent);
+//			logger.debug(" add returns : "+res2.toString());
+//					
+//			logger.debug(" get returns : "+GoogleCalendarReader.getEvents(apiKey, accessTokenType, accessTokenValue, calendarId, urlParameters));
+//			String eventId=res2.getString("id");
+//			
+//			logger.debug(" delete returns : "+GoogleCalendarWriter.deleteEvent(apiKey, accessTokenType, accessTokenValue, calendarId, eventId));
+//			logger.debug(" get returns : "+GoogleCalendarReader.getEvents(apiKey, accessTokenType, accessTokenValue, calendarId, urlParameters));
 			
 			
 //			logger.debug(" returns : "+GoogleOpenAuthent.getDeviceCode(clientId, scope));
@@ -142,6 +142,9 @@ public class GoogleHTTPRequest {
 	public static final String IF = "?";
 	public static final String SPACE = " ";
 	public static final String SLASH = "/";
+	
+	public static final String PARAM_CONTENTTYPE = "Content-Type";
+	public static final String CONTENTTYPE_JSON = "application/json";	
 
 
 	public static final String DEFAULT_ENCODING = "UTF-8";

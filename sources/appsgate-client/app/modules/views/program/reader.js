@@ -14,6 +14,9 @@ define([
         "click button.start-program-button": "onStartProgramButton",
         "click button.stop-program-button": "onStopProgramButton",
         "click button.delete-program-button": "onDeleteProgramButton",
+        "click button.cancel-edit-program-button": "onCancelEditProgram",
+        "click button.launch-edit-program-button": "onLaunchEditProgram",
+        "click button.edit-popover-button": "onClickEditProgram",
       },
       /**
       * @constructor
@@ -76,6 +79,45 @@ define([
 
         // navigate to the list of programs
         appRouter.navigate("#programs", {trigger: true});
+      },
+      /**
+      * Callback when the user has clicked on the button to cancel the launching of edition. Return to the program
+      */
+      onCancelEditProgram : function() {
+        // destroy the popover
+        this.$el.find("#edit-program-popover").popover('destroy');
+      },
+      /**
+      * Callback when the user has clicked on the button edit and confirm it. Go to the editor
+      */
+      onLaunchEditProgram : function() {
+        // navigate to the editor
+        appRouter.navigate("#programs/editor/" + this.model.get('id'), {trigger: true});
+      },
+      /**
+      * Callback when the user has clicked on the button edit. Go to the editor or show the popup
+      */
+      onClickEditProgram : function(e) {
+        var self = this;
+        // if program waiting, show the popup warning  
+        if (this.model.get('runningState') === "WAITING") {
+            // create the popover
+            this.$el.find("#edit-program-popover").popover({
+            html: true,
+            title: $.i18n.t("programs.warning-program-edition"),
+            content: "<div><button type='button' class='btn btn-default cancel-edit-program-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-primary launch-edit-program-button'>" + $.i18n.t("programs.edit-program") + "</button></div>",
+            placement: "bottom"
+            });
+            // listen the hide event to destroy the popup, because create to every click on Edit
+            this.$el.find("#edit-program-popover").on('hidden.bs.popover', function () {
+                self.onCancelEditProgram();
+            })
+            // show the popup
+            this.$el.find("#edit-program-popover").popover('show');
+        } else {
+            // else go to edit directly
+            this.onLaunchEditProgram();
+        }
       },
       refreshDisplay: function(e) {
         // To avoid to refresh the whole page at each second

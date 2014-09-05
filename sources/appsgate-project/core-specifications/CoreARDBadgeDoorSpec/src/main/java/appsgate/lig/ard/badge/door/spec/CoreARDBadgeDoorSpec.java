@@ -7,5 +7,6 @@ public interface CoreARDBadgeDoorSpec {
     public String getARDClass();
     public Integer getDoorID();
     public String getStatus();
+    public String getLastMessage();
 
 }
