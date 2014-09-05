@@ -1,6 +1,7 @@
 package appsgate.lig.ehmi.trace;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -174,13 +175,9 @@ public class TraceMan implements TraceManSpec {
     		try {
     			o.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
     			
-    			//Delayed in queue to by aggregate by policy after filtering
-    			if(focus.equalsIgnoreCase(TraceMan.NOFOCUS)) {
+    			//Delayed in queue to by aggregate by policy if real time tracing is actived
+    			if(liveTraceActivated || fileTraceActivated) {
     				traceQueue.offer(o);
-    			}else{
-    				if(o.toString().contains(focus)){
-    					traceQueue.offer(o);
-    				}
     			}
     	    	//Simple trace always save in data base
     	    	dbTracer.trace(o);
@@ -615,7 +612,7 @@ public class TraceMan implements TraceManSpec {
     	//Fill the JSONArray with HashMap
     	for(String key : groupFollower.keySet()){
     		JSONObject obj = new JSONObject();
-    		obj.put("name", key);
+    		obj.put("name", getDiplayableName(key));
     		obj.put("members", groupFollower.get(key));
     		groups.put(obj);
     	}
@@ -648,6 +645,21 @@ public class TraceMan implements TraceManSpec {
 //	}
 
     /**
+     * Moph name with more diplayable string
+     * @param key the group name
+     * @return the morph name from key name
+     */
+    private String getDiplayableName(String key) {
+		String displayableName;
+    	
+		String firstChar = key.substring(0, 1).toUpperCase();
+		
+		displayableName = firstChar + key.substring(1) + "s";
+		
+		return displayableName;
+	}
+
+	/**
      * Merge programs and equipment traces from a super traces into
      * a simple arraylist of JSONbject
      * @param superTrace the super traces from any sources
