@@ -8,18 +8,18 @@
 		
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<relation field="coreProxy" fail="wait" resolve="exist" />
+		<relation field="coreProxy" fail="exception" resolve="exist" />
 		
-		<relation field="devicePropertiesTable" fail="wait" resolve="exist"/>
-		<relation field="placeManager" fail="wait" resolve="exist" />
-		<relation field="userManager" fail="wait" resolve="exist"/>
-		<relation field="interpreter" fail="wait" resolve="exist"/>
-		<relation field="traceManager" fail="wait" resolve="exist"/>
-        <relation field="weatherAdapter" fail="wait" resolve="exist"/>
+		<relation field="devicePropertiesTable" fail="exception" resolve="exist"/>
+		<relation field="placeManager" fail="exception" resolve="exist" />
+		<relation field="userManager" fail="exception" resolve="exist"/>
+		<relation field="interpreter" fail="exception" resolve="exist"/>
+		<relation field="traceManager" fail="exception" resolve="exist"/>
+        <relation field="weatherAdapter" fail="exception" resolve="exist"/>
 
 
         <relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"
-			fail="wait" >
+			fail="exception" >
 			<interface field="addListenerService" />
 			<interface field="sendToClientService" />
 		</relation>

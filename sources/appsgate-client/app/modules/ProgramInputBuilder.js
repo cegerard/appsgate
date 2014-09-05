@@ -224,11 +224,16 @@ define([
         },
 
         getDeviceName: function(id) {
+            var deviceName;
             if (devices.get(id) == undefined) {
                 console.error("device not found: " + id);
-                return "UNKNOWN DEVICE";
+                deviceName = "UNKNOWN DEVICE";
+            } else if (devices.get(id).get("name") !== "") {
+                deviceName = devices.get(id).get("name");
+            } else {
+                deviceName = devices.get(id).get("id");
             }
-            return devices.get(id).get("name");
+            return deviceName;
         },
         getServiceName: function(id) {
             if (services.get(id) == undefined) {
