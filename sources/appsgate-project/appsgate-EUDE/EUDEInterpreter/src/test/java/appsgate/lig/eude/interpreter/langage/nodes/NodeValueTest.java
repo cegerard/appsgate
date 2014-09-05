@@ -111,7 +111,7 @@ public class NodeValueTest extends NodeTest {
         NodeValue v = new NodeValue(r, null);
         Assert.assertNotNull(v);
         Assert.assertEquals("list", v.getType());
-        Assert.assertNotNull(v.getValue());
+        Assert.assertNull(v.getValue());
         Assert.assertEquals("[]", v.getExpertProgramScript());
     }
 

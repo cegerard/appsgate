@@ -130,47 +130,15 @@ define([
                 if (this.checkProgramName()) {
                     var program;
 
-                    // if a file is selected we use the program from file
-                    if (typeof window.FileReader !== 'undefined' && $("#add-program-modal input:file")[0].files[0]) {
-                        var file = $("#add-program-modal input:file")[0].files[0];
-                        var fileR = new FileReader();
-                        fileR.onload = receivedText;
-                        fileR.readAsText(file);
 
-                        // build the program from data read in file
-                        var cb = function receivedText() {
-                            var result = fileR.result;
+                    // instantiate a model for the new program
+                    program = programs.create({
+                        name: $("#add-program-modal input:text").val(),
+                        daemon: "false"
+                    });
 
-                            try {
-                                var resultJSON = JSON.parse(result);
-
-                                program = programs.create(resultJSON);
-                                program.set("id", null); // make sure the program is considered as new one
-                                program.set("name", $("#add-program-modal input:text").val()); // use the name selected by the user
-                                program.get("source").programName = $("#add-program-modal input:text").val();
-
-                                // hide the modal
-                                $("#add-program-modal").modal("hide");
-
-                            } catch (exception) {
-                                $("#add-program-modal .text-danger")
-                                        .text($.i18n.t("modal-add-program.unable-to-parse"))
-                                        .removeClass("hide");
-                                $("#add-program-modal .valid-button").addClass("disabled");
-                            }
-                        };
-
-                    }
-                    else {
-                        // instantiate a model for the new program
-                        program = programs.create({
-                            name: $("#add-program-modal input:text").val(),
-                            daemon: "false"
-                        });
-
-                        // hide the modal
-                        $("#add-program-modal").modal("hide");
-                    }
+                    // hide the modal
+                    $("#add-program-modal").modal("hide");
 
                     // instantiate the program and add it to the collection after the modal has been hidden
                     $("#add-program-modal").on("hidden.bs.modal", function() {

@@ -156,10 +156,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     protected void fireStartEvent(StartEvent e) {
         try {
-            LOGGER.warn(this.getProgramNode().toString());
-            this.getProgramNode().setActiveNode(iid, true);
-            this.getProgramNode().incrementNodeCounter(iid);
-            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), this.getProgramNode().getActiveNodes(), this.getProgramNode().getNodesCounter()));
+            NodeProgram pNode = this.getProgramNode();
+            pNode.setActiveNode(iid, true);
+            pNode.incrementNodeCounter(iid);
+            getMediator().notifyChanges(new ProgramLineNotification(pNode.getId(), pNode.getActiveNodes(), pNode.getNodesCounter()));
         } catch (SpokExecutionException ex) {
         }
 
@@ -192,8 +192,9 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     protected synchronized void fireEndEvent(EndEvent e) {
         try {
-            this.getProgramNode().setActiveNode(iid, false);
-            getMediator().notifyChanges(new ProgramLineNotification(this.getProgramNode().getId(), this.getProgramNode().getActiveNodes(), this.getProgramNode().getNodesCounter()));
+            NodeProgram pNode = this.getProgramNode();
+            pNode.setActiveNode(iid, false);
+            getMediator().notifyChanges(new ProgramLineNotification(pNode.getId(), pNode.getActiveNodes(), pNode.getNodesCounter()));
         } catch (SpokExecutionException ex) {
         }
 
@@ -529,10 +530,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         ArrayList<String> devicesInSpaces;
         try {
             devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
-        for (String name : devicesInSpaces) {
-            NodeValue n = new NodeValue("device", name, this);
-            retArray.put(n.getJSONDescription());
-        }
+            for (String name : devicesInSpaces) {
+                NodeValue n = new NodeValue("device", name, this);
+                retArray.put(n.getJSONDescription());
+            }
         } catch (SpokExecutionException ex) {
             LOGGER.warn("Unable to get devices in space");
         }

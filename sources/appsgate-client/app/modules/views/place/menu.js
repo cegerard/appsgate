@@ -36,6 +36,7 @@ define([
             this.listenTo(places, "change", this.render);
             this.listenTo(places, "remove", this.render);
             this.listenTo(devices, "change", this.onChangedDevice);
+            this.listenTo(devices, "remove", this.render);
         },
         /**
          * Method called when a device has changed
