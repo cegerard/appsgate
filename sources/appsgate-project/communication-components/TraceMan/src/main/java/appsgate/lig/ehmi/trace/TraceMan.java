@@ -1228,8 +1228,9 @@ public class TraceMan implements TraceManSpec {
 	                            
 	                        }else{ //Device id exist for this time stamp --> aggregation
 	                        	JSONObject existingDev = devicesToAgg.get(id);
-	                        	existingDev.put("event", tempDev.get("event")); //replace the state by the last known state
-	                        	
+	                        	if(tempDev.has("event")){//replace the state by the last known state
+	                        		existingDev.put("event", tempDev.get("event")); 
+	                        	}
 	                        	//Aggregates the device trace has a decoration
 	                        	JSONArray existingDecorations = existingDev.getJSONArray("decorations");
 	                        	JSONArray tempDecs = tempDev.getJSONArray("decorations");
@@ -1262,7 +1263,9 @@ public class TraceMan implements TraceManSpec {
 	                        }else{ //program id exist for this time stamp --> aggregation
 	                        	
 	                        	JSONObject existingPgm = programsToAgg.get(id);
-	                        	existingPgm.put("event", tempPgm.get("event")); //replace the state by the last known state
+	                        	if(tempPgm.has("event")){//replace the state by the last known state
+	                        		existingPgm.put("event", tempPgm.get("event")); 
+	                        	}
 	                        	
 	                        	//Aggregates the device trace has a decoration
 	                        	JSONArray existingDecorations = existingPgm.getJSONArray("decorations");
