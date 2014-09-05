@@ -386,6 +386,7 @@
       "edit-program":"Edit",
       "end-edit-program":"Done",
       "delete-program":"Delete",
+      "warning-program-edition":"Warning, edit program will deactivate it",
       "state":{
          "deployed":"Deployed",
          "started":"Started",
