@@ -424,7 +424,7 @@ public class TraceMan implements TraceManSpec {
     		
 				result.put("data", tracesTab);
     			result.put("groups", computeGroupsFromPolicy(tracesTab)); 
-    			//TODO add result.timeline [{"timestamp":long , "value":int}] without aggregation
+    			//TODO add result.timeline [{"timestamp":long , "value":int}] without aggregation for each timestamp get the number of event
     			
 				requestResult.put("result", result);
 				requestResult.put("request", request);
@@ -434,13 +434,13 @@ public class TraceMan implements TraceManSpec {
 			} else { // Apply aggregation policy
 
     			//filteringOnFocus(tracesTab);
-				//TODO debug group computation program:[] and devices:[]
-    			//result.put("groups", computeGroupsFromPolicy(tracesTab));
+    			result.put("groups", computeGroupsFromPolicy(tracesTab));
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
     			tracesTab = traceQueue.applyAggregationPolicy(from, null); //Call with default aggregation policy (id and time)
 
     			result.put("data", tracesTab);
+    			//TODO add result.timeline [{"timestamp":long , "value":int}] without aggregation for each timestamp get the number of event
     			
     			requestResult.put("result", result);
     			requestResult.put("request", request);
@@ -468,71 +468,83 @@ public class TraceMan implements TraceManSpec {
     	int l = tracesTab.length();
     	
     	if(focus.equalsIgnoreCase(TraceMan.NOFOCUS)){ //No specific focus required
-    		if(grouping.equalsIgnoreCase("type")){ //One group for each type
-    				
+    		
+    		if(grouping.equalsIgnoreCase("type")){ //One group for each type	
     			for(int i=0; i<l; i++) {
-    	    		JSONObject trace = tracesTab.getJSONObject(i);
+    	    		JSONObject superTrace = tracesTab.getJSONObject(i);
+    	    		ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
     	    		
-    				String type = "program"; //Defaut is a program
-        			if (trace.has("type")){ //in fact is an equipment
-        				type = trace.getString("type");
-        			}
-        			
-        			if(!groupFollower.containsKey(type)){
-    					JSONArray objs = new JSONArray();
-    					objs.put(trace.get("id"));
-    					groupFollower.put(type, objs);
-    				}else{
-    					JSONArray objs = groupFollower.get(type);
-    					if(!objs.toString().contains(trace.getString("id"))){
-    						objs.put(trace.get("id"));
-    					}
-    				}
-    			}
-    				
+    	    		for(JSONObject trace : innerTraces){
+    	    			String type = "program"; //Defaut is a program
+    	    			if (trace.has("type")){ //in fact is an equipment
+    	    				type = trace.getString("type");
+    	    			}        			
+    	    			if(!groupFollower.containsKey(type)){
+    	    				JSONArray objs = new JSONArray();
+    	    				objs.put(trace.get("id"));
+    	    				groupFollower.put(type, objs);
+    	    			}else{
+    	    				JSONArray objs = groupFollower.get(type);
+    	    				if(!objs.toString().contains(trace.getString("id"))){
+    	    					objs.put(trace.get("id"));
+    	    				}
+    	    			}
+    	    		}
+    			}	
     		}else{ //just the all group
     			groupFollower.put("all", new JSONArray());
     			for(int i=0; i<l; i++) {
-        	    	JSONObject trace = tracesTab.getJSONObject(i);
-        	    	JSONArray objs = groupFollower.get("all");
-    				if(!objs.toString().contains(trace.getString("id"))){
-    					objs.put(trace.get("id"));
-    				}
+        	    	JSONObject superTrace = tracesTab.getJSONObject(i);
+        	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
+        	    	
+        	    	for(JSONObject trace : innerTraces){
+        	    		JSONArray objs = groupFollower.get("all");
+        	    		if(!objs.toString().contains(trace.getString("id"))){
+        	    			objs.put(trace.get("id"));
+        	    		}
+        	    	}
     			}
     		}
     			
     	}else { //Focus required check the kind of focus
+    		
     		if(focusType.equalsIgnoreCase("id")){ //Focus on something (equipment or program)
-    				
     			groupFollower.put("focus", new JSONArray().put(focus));
     			groupFollower.put("others", new JSONArray());
     				
     			if(grouping.equalsIgnoreCase("dep")){//Group based on id dependency (focus, dependencies, others)
-    					
     				groupFollower.put("dependencies", new JSONArray());
 
     				for(int i=0; i<l; i++) {
-            	    	JSONObject trace = tracesTab.getJSONObject(i);
-            	    	JSONArray objs = null;
+            	    	JSONObject superTrace = tracesTab.getJSONObject(i);
+            	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
+            	    	
+            	    	for(JSONObject trace : innerTraces){
+            	    		JSONArray objs = null;
             	    		
-            	    	if(!trace.getString("id").equalsIgnoreCase(focus) && trace.toString().contains(focus)) { //dep
-            	    		objs = groupFollower.get("dependencies");
-            	    	} else { //others
-            	    		objs = groupFollower.get("others");
+            	    		if(!trace.getString("id").equalsIgnoreCase(focus) && trace.toString().contains(focus)) { //dep
+            	    			objs = groupFollower.get("dependencies");
+            	    		} else { //others
+            	    			objs = groupFollower.get("others");
+            	    		}
+            	    		
+            	    		if(!objs.toString().contains(trace.getString("id"))){
+            	    			objs.put(trace.get("id"));
+            	    		}
             	    	}
-            	    		
-            	    	if(!objs.toString().contains(trace.getString("id"))){
-        					objs.put(trace.get("id"));
-        				}
         			}
     					
     			} else { //One group focus and all in other
     				JSONArray objs = groupFollower.get("others");
     				for(int i=0; i<l; i++) {
-            	    	JSONObject trace = tracesTab.getJSONObject(i);
-            	    	if(!objs.toString().contains(trace.getString("id"))){
-        					objs.put(trace.get("id"));
-        				}
+            	    	JSONObject superTrace = tracesTab.getJSONObject(i);
+            	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
+            	    	
+            	    	for(JSONObject trace : innerTraces){
+            	    		if(!objs.toString().contains(trace.getString("id"))){
+            	    			objs.put(trace.get("id"));
+            	    		}
+            	    	}
     				}
     			}
     			
@@ -542,28 +554,32 @@ public class TraceMan implements TraceManSpec {
     			groupFollower.put("others", new JSONArray());
     				
     			for(int i=0; i<l; i++) {
-        	    	JSONObject trace = tracesTab.getJSONObject(i);
-        	    	JSONArray objs = null;
-        	    		
-        	    	if(trace.has("location")){ //Equipment
-        	    		JSONObject loc = trace.getJSONObject("location");
+        	    	JSONObject superTrace = tracesTab.getJSONObject(i);
+        	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
+        	    	
+        	    	for(JSONObject trace : innerTraces){
+        	    		JSONArray objs = null;
+        	    	
+        	    		if(trace.has("location")){ //Equipment
+        	    			JSONObject loc = trace.getJSONObject("location");
         	    			
-        	    		if(loc.getString("id").equalsIgnoreCase("-1")){
-        	    			objs = groupFollower.get("others");
-        	    		}else{
-        	    			if(loc.getString("name").equalsIgnoreCase(focus)){
-        	    				objs = groupFollower.get(focus);
-        	    			}else{
+        	    			if(loc.getString("id").equalsIgnoreCase("-1")){
         	    				objs = groupFollower.get("others");
-        	    			}	
+        	    			}else{
+        	    				if(loc.getString("name").equalsIgnoreCase(focus)){
+        	    					objs = groupFollower.get(focus);
+        	    				}else{
+        	    					objs = groupFollower.get("others");
+        	    				}	
+        	    			}
+        	    		}else{ //Program
+        	    			objs = groupFollower.get("others");
         	    		}
-        	    	}else{ //Program
-        	    		objs = groupFollower.get("others");
-        	    	}
         	    		
-        	    	if(!objs.toString().contains(trace.getString("id"))){
-    					objs.put(trace.get("id"));
-    				}
+        	    		if(!objs.toString().contains(trace.getString("id"))){
+        	    			objs.put(trace.get("id"));
+        	    		}
+        	    	}
 				}
     				
     		} else if (focusType.equalsIgnoreCase("type")){ //focus on type (type, others)
@@ -571,23 +587,27 @@ public class TraceMan implements TraceManSpec {
     			groupFollower.put("others", new JSONArray());
     				
     			for(int i=0; i<l; i++) {
-        	    	JSONObject trace = tracesTab.getJSONObject(i);
-        	    	JSONArray objs = null;
-        	    		
-        			String type = "program"; //Defaut is a program
-            		if (trace.has("type")){ //in fact is an equipment
-            			type = trace.getString("type");
-            		}
+        	    	JSONObject superTrace = tracesTab.getJSONObject(i);
+        	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
+        	    	
+        	    	for(JSONObject trace : innerTraces){
+        	    		JSONArray objs = null;
+        	    	
+        	    		String type = "program"; //Defaut is a program
+        	    		if (trace.has("type")){ //in fact is an equipment
+        	    			type = trace.getString("type");
+        	    		}
             			
-            		if(type.equalsIgnoreCase(focus)){
-            			objs = groupFollower.get(focus);
-            		} else {
-            			objs = groupFollower.get("others");
-            		}
+        	    		if(type.equalsIgnoreCase(focus)){
+        	    			objs = groupFollower.get(focus);
+        	    		} else {
+        	    			objs = groupFollower.get("others");
+        	    		}
             			
-            		if(!objs.toString().contains(trace.getString("id"))){
-    					objs.put(trace.get("id"));
-    				}
+        	    		if(!objs.toString().contains(trace.getString("id"))){
+        	    			objs.put(trace.get("id"));
+        	    		}
+        	    	}
         		}
     		}
     	}
@@ -617,7 +637,6 @@ public class TraceMan implements TraceManSpec {
 //    	
 //    		while(i < l) {
 //    			JSONObject obj = tracesTab.getJSONObject(i);
-//    			//TODO manage the focus type (not necessary it could be work like that)
 //    			if(obj.toString().contains(focus)){
 //    				filteredArray.put(obj);
 //    			}
@@ -627,6 +646,33 @@ public class TraceMan implements TraceManSpec {
 //    		tracesTab = filteredArray;
 //    	}
 //	}
+
+    /**
+     * Merge programs and equipment traces from a super traces into
+     * a simple arraylist of JSONbject
+     * @param superTrace the super traces from any sources
+     * @return an ArrayList<JSONObject> of all inner traces
+     * @throws JSONException 
+     */
+	private ArrayList<JSONObject> mergeInnerTraces(JSONObject superTrace) throws JSONException {
+		ArrayList<JSONObject> innerTraces = new ArrayList<JSONObject>(); 
+		
+		JSONArray pgms    = superTrace.getJSONArray("programs");
+		JSONArray devices = superTrace.getJSONArray("devices");
+		
+		int nbPgms = pgms.length();
+		int nbDev  = devices.length();
+		
+		for(int i=0; i<nbPgms; i++ ){
+			innerTraces.add(pgms.getJSONObject(i));
+		}
+		
+		for(int j=0; j<nbDev; j++){
+			innerTraces.add(devices.getJSONObject(j));
+		}
+		
+		return innerTraces;
+	}
 
 	private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
         JSONObject progNotif = new JSONObject();
@@ -1031,7 +1077,7 @@ public class TraceMan implements TraceManSpec {
                 }
                 
 			} else { //Apply specific aggregation policy
-				//TODO generic aggregation mechanism
+				//generic aggregation mechanism
 				//aggregationWithPolicy(aggregateTraces, tracesPacket, logTime, policy)
 			}
 			return aggregateTraces;
@@ -1133,7 +1179,7 @@ public class TraceMan implements TraceManSpec {
                             aggregation(aggregateTraces, tempTraces, logTime);
 
 						} else { //Apply specific aggregation policy
-							//TODO generic aggregation mechanism
+							//generic aggregation mechanism
 							//aggregationWithPolicy(aggregateTraces, tracesPacket, logTime, policy)
 						}
 					}
