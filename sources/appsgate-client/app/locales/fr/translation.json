@@ -283,6 +283,7 @@
       "ard":{
           "last-card":"Dernier badge passé",
           "last-authorized":"Dernier badge accès autorisé",
+          "last-message": "Denier message",
           "affirmative":"Oui",
           "negative":"Non",
            "name":{
