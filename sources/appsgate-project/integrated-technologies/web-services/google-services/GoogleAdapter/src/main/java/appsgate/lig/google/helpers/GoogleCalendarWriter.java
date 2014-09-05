@@ -29,7 +29,7 @@ public class GoogleCalendarWriter extends GoogleCalendarReader{
 		Map<String, String> urlParameters=new HashMap<String, String>();
 		Map<String, String> requestProperties= new HashMap<String, String>();
 		initParameters(apiKey,accessTokenType,accessTokenValue,requestProperties,urlParameters);
-		requestProperties.put("Content-Type","application/json");
+		requestProperties.put(GoogleHTTPRequest.PARAM_CONTENTTYPE,GoogleHTTPRequest.CONTENTTYPE_JSON);
 		
 		String serviceURL = URL_CALENDARS+GoogleHTTPRequest.SLASH;
 		

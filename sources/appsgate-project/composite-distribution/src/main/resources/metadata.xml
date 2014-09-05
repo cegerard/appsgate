@@ -91,8 +91,8 @@
         </contentMngt>
     </composite>
 
-    <composite name="AppsGateGoogleServices" singleton="true">
-<!--               main="AppsgateGoogleAdapter">-->
+    <composite name="AppsGateGoogleServices" singleton="true"
+               main="AppsgateGoogleAdapterImpl">
         <contentMngt>
             <!-- <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
             <start implementation="MailAdapter" name="MailAdapterInst">

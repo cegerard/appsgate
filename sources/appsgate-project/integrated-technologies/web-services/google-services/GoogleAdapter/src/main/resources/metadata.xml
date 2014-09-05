@@ -12,16 +12,19 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-	<implementation name="AppsgateGoogleAdapter"
-		classname="appsgate.lig.proxy.google.calendar.GoogleAdapter"
+    <specification name="GoogleAdapter"
+        interfaces="appsgate.lig.google.services.GoogleAdapter">        
+    </specification>
+    
+	<implementation name="AppsgateGoogleAdapterImpl"
+		classname="appsgate.lig.google.impl.GoogleAdapterImpl"
+		specification="GoogleAdapter"
 		singleton="true">
+		
+        <relation specification="CoreClockSpec" field="clock" resolve="exist" />
+	    
 
-
-		<ipojo:provides
-			specifications="appsgate.lig.proxy.calendar.interfaces.GoogleCalendarAdapter" />
-
-
-		<callback onInit="validate" onRemove="Invalidate" />
+		<callback onInit="start" />
 	</implementation>
 
 
