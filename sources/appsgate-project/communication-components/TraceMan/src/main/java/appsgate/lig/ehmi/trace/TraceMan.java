@@ -1,7 +1,6 @@
 package appsgate.lig.ehmi.trace;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -1019,8 +1018,10 @@ public class TraceMan implements TraceManSpec {
 	     * @param deltaTinMillis the new delta time value
 	     */
 		public void setDeltaTinMillis(long deltaTinMillis) {
-			this.deltaTinMillis = deltaTinMillis;
-			reScheduledTraceTimer(deltaTinMillis);
+			if(deltaTinMillis != this.deltaTinMillis) {
+				this.deltaTinMillis = deltaTinMillis;
+				reScheduledTraceTimer(deltaTinMillis);
+			}
 		}
 
         /**
@@ -1129,7 +1130,7 @@ public class TraceMan implements TraceManSpec {
 	    	 */
 	    	public TraceExecutor() {
 	    		
-	    		start = true;
+	    		start = false;
 	    		sleeping = false;
 	    	}
 	    	
@@ -1140,7 +1141,7 @@ public class TraceMan implements TraceManSpec {
 
 			@Override
 			public void run() {
-				
+				start = true;
 				while(start) {
 					try {
 						if( deltaTinMillis > 0 || traceQueue.isEmpty() ){

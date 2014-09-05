@@ -71,8 +71,24 @@ public class TraceCmdListener implements CommandListener{
 					traceMan.getTracesBetweenInterval(from, to, obj);
 					
 				}else if(cmd.equalsIgnoreCase("livetrace")){
+					long deltaT = 0;
+					if(obj.has("args")){
+						JSONObject args = obj.getJSONObject("args");
+						if(args.has("delta")){
+							deltaT = args.getLong("delta");
+						}
+					}
+					traceMan.setDeltaT(deltaT);
 					traceMan.initLiveTracer();					
 				}else if (cmd.equalsIgnoreCase("filetrace")){
+					long deltaT = 0;
+					if(obj.has("args")){
+						JSONObject args = obj.getJSONObject("args");
+						if(args.has("delta")){
+							deltaT = args.getLong("delta");
+						}
+					}
+					traceMan.setDeltaT(deltaT);
 					traceMan.initFileTracer();
 				}
 			} catch (JSONException e) {
