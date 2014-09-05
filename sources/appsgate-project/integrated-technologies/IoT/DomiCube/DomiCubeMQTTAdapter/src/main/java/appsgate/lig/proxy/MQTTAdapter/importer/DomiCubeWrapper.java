@@ -35,7 +35,6 @@ public class DomiCubeWrapper {
         String stringFilter = String.format("(&(%s=*)(%s=*)(%s=*)(%s=*)(%s=*)(%s=*))",
                 ID,HOST,PORT,TOPIC_FACE,TOPIC_BATTERY,TOPIC_DIM);
         try {
-            System.out.println("filtering with:"+stringFilter);
             filter = FuchsiaUtils.getFilter(stringFilter);
         } catch (InvalidFilterException e) {
             throw new IllegalStateException(e);

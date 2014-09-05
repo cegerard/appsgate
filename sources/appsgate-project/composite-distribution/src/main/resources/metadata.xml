@@ -25,6 +25,8 @@
 
             <start implementation="KNXServices" name="KNXServicesInst"></start>
 
+            <start implementation="FuchsiaServices" name="FuchsiaServicesInst"></start>
+
             <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
             <start implementation="TraceMan" name="TraceManInst"></start>
@@ -76,6 +78,10 @@
 
     <composite name="KNXServices" singleton="true">
         <relation specification="KNXDummySpec" creation="eager" targetKind="specification"></relation>
+    </composite>
+
+    <composite name="FuchsiaServices" singleton="true">
+        <relation specification="FuchsiaSetupDummySpec" creation="eager" targetKind="specification"></relation>
     </composite>
 
     <composite name="ARDServices" singleton="true">

@@ -26,6 +26,7 @@
 		<module>software-services</module>
 		<module>devices</module>
 		<module>IoT</module>
+		<module>fuchsia</module>
 	</modules>
 	
 </project>
