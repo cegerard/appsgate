@@ -284,6 +284,7 @@
           "last-card":"Dernier badge passé",
           "last-authorized":"Dernier badge accès autorisé",
           "last-message": "Denier message",
+          "last-message-empty": "Pas des message",
           "affirmative":"Oui",
           "negative":"Non",
            "name":{
