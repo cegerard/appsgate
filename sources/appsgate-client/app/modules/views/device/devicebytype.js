@@ -186,7 +186,7 @@ define([
                 this.$el.i18n();
 
                 // resize the list
-                this.resizeDiv($(".contents-list"));
+                this.resize($(".scrollable"));
 
                 return this;
             }

@@ -283,6 +283,8 @@
       "ard":{
           "last-card":"Last badge passed",
           "last-authorized":"Last badge access granted",
+          "last-message": "Last message",
+          "last-message-empty": "No message",
           "affirmative":"Yes",
           "negative":"No",
           "name":{
@@ -385,6 +387,7 @@
       "edit-program":"Edit",
       "end-edit-program":"Done",
       "delete-program":"Delete",
+      "warning-program-edition":"Warning, edit program will deactivate it",
       "state":{
          "deployed":"Deployed",
          "started":"Started",
