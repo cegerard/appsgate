@@ -237,7 +237,7 @@ define([
                 this.$el.i18n();
 
                 // resize the devices list in the selected place
-                this.resizeDiv($(".contents-list"));
+                this.resize($(".scrollable"));
 
                 return this;
             }

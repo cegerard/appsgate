@@ -99,6 +99,12 @@
     </snapshots>
     <url>file://${project.basedir}/local-repo</url>
 </repository>	    
+
+        <repository>
+            <id>Maven Central repository</id>
+            <url>http://repo.maven.apache.org/maven2</url>
+        </repository>
+        
 	    <repository>	    
             <!-- Apache snapshot Repository -->
             <id>apache.snapshots</id>
@@ -116,10 +122,7 @@
             <url>https://repository.apache.org/content/groups/public</url>
         </repository>
 
-        <repository>
-            <id>Maven Central repository</id>
-            <url>http://repo.maven.apache.org/maven2</url>
-        </repository>
+
         <repository>
             <id>apam-repo-snapshot</id> 
             <url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> 

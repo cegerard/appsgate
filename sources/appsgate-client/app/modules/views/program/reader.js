@@ -99,7 +99,7 @@ define([
       */
       onClickEditProgram : function(e) {
         var self = this;
-        // if program waiting, show the popup warning  
+        // if program waiting, show the popup warning
         if (this.model.get('runningState') === "WAITING") {
             // create the popover
             this.$el.find("#edit-program-popover").popover({
@@ -235,7 +235,7 @@ define([
           this.refreshDisplay();
 
           // fix the programs list size to be able to scroll through it
-          this.resizeDiv($(self.$el.find(".editorWorkspace")[0]), true);
+          this.resize($(".scrollable"));
 
           $(".programInput").height("auto");
         }

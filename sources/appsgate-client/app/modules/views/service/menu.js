@@ -126,6 +126,8 @@ define([
                     $(self.$el.find(".list-group")[1]).append(itm);
                 });
 
+                $(self.$el.find(".list-group")[1]).addClass("scrollable-menu");
+
                 // set active the current item menu
                 this.updateSideMenu();
 
@@ -133,7 +135,7 @@ define([
                 this.$el.i18n();
 
                 // resize the menu
-                this.resizeDiv($(self.$el.find(".list-group")[1]));
+                this.resize(self.$el.find(".scrollable-menu"));
 
                 return this;
             }
