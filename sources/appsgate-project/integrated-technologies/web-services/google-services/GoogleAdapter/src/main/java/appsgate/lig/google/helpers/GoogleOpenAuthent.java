@@ -117,8 +117,13 @@ public class GoogleOpenAuthent {
 				null);
 	}
 
-	
-	public static boolean checkAccessToken(String scope,
+	/**
+	 * Return the expire token time, if access token is still valid, 0 or -1 otherwise
+	 * @param scope
+	 * @param accessTokenValue
+	 * @return
+	 */
+	public static int checkAccessToken(String scope,
 			String accessTokenValue) {
 		
 		Map<String, String> urlParameters= new HashMap<String, String>();
@@ -128,18 +133,18 @@ public class GoogleOpenAuthent {
 		JSONObject result = GoogleHTTPRequest.httpsGet(oauthTokenInfoURL, null, urlParameters);
 		if(result==null || result.opt(RESP_ERROR) != null) {
 			logger.info("access token is not valid");
-			return false;
+			return -1;
 		}
 		
 		if(result.get(PARAM_SCOPE) != null) {
 			if(result.getString(PARAM_SCOPE).contains(scope)) {
 				logger.info("access token contains the scope");
 				// TODO Should check audience (?) and low expiration date
-				return true;
+				return result.optInt(RESP_EXPIREIN);
 			}
 		}
 		logger.info("access token is not valid for the scope");
-		return false;
+		return -1;
 	}
 	
 

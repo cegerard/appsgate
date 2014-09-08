@@ -1,6 +1,10 @@
 package appsgate.lig.google.services;
 
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+
+import org.json.JSONObject;
 
 /**
  * 
@@ -13,5 +17,20 @@ public interface GoogleAdapter  {
 	 * @param refreshToken
 	 */
 	public void setRefreshToken(String refreshToken);
+	
+	
+	/**
+	 * If the access token expires in less than this value, it should be renewed
+	 */
+	public static int MIN_ACCESSTOKEN_EXPIRATION = 10;
+	
+	
+	public Set<GoogleEvent> getEvents(String calendarId, Map<String, String> requestParameters);
+	
 		
+	public GoogleEvent addEvent(String calendarId, String requestContent);
+	
+	
+	public boolean deleteEvent(String calendarId, String eventId);
+	
 }
