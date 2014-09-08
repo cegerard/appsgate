@@ -624,12 +624,12 @@ final public class NodeProgram extends Node {
      * Updates a node status in the active nodes set
      * @param nodeId
      * @param status
-     * @throws JSONException
+     * @throws SpokExecutionException
      */
     public void setActiveNode(String nodeId, boolean status) throws SpokExecutionException {
         try {
             this.activeNodes.put(nodeId, status);
-        } catch (Exception e) {
+        } catch (JSONException e) {
             throw new SpokExecutionException("Unable to update the active nodes set");
         }
 
@@ -638,13 +638,15 @@ final public class NodeProgram extends Node {
     /**
      * Increments a given node counter
      * @param nodeId
-     * @throws JSONException
+     * @throws SpokExecutionException
      */
     public void incrementNodeCounter(String nodeId) throws SpokExecutionException {
         try {
             int counter = this.nodesCounter.has(nodeId)?Integer.parseInt((String) this.nodesCounter.get(nodeId))+1:1;
             this.nodesCounter.put(nodeId, String.valueOf(counter));
-        } catch (Exception e) {
+        } catch (JSONException e) {
+            throw new SpokExecutionException("Unable to increment the node counter for: " + nodeId);
+        } catch (NumberFormatException e) {
             throw new SpokExecutionException("Unable to increment the node counter for: " + nodeId);
         }
     }
