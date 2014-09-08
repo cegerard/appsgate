@@ -407,6 +407,8 @@
       "undo-last-action":"Cancel"
    },
    "language":{
+	  "rules":"Rules",
+	  "actions":"Actions",
       "written-by":"written by",
       "when-keyword":"when",
       "end-when-block":".",

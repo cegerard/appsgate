@@ -3,7 +3,7 @@ PG = SET
   return "ok";
 }
 
-SET = ID "setOfRules" _ "[" _ INSTS _ "]"
+SET = ID "setOfRules" _ "[" _ RULES _ "]"
 
 SEQ = ID "seqRules" _ "[" _ INSTS _ "]"
 
@@ -11,7 +11,11 @@ BLOC = SEQ
 
 INSTS  = _ (INST _)+ / "(" INSTS ")"
 
-INST  = IF / WHEN / WHILE / ACTION / EMPTY / WAIT / SEQ
+INST  = IF / ACTION / EMPTY / WAIT / SEQ
+
+RULES  = _ (RULE _)+ / "(" RULES ")"
+
+RULE = WHEN / WHILE / SET / SEQ / EMPTY
 
 IF  = ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")" _ "(" _ BLOC _ ")"
     / ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")"

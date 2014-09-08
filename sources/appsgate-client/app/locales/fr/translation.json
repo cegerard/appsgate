@@ -407,6 +407,8 @@
       "undo-last-action":"Annuler"
    },
    "language":{
+	  "rules":"Règles",
+	  "actions":"Actions",
       "written-by":"ecrit par",
       "when-keyword":"lorsque",
       "end-when-block":".",

@@ -658,6 +658,18 @@ div {
 .main-block-node {
   border:1px solid #428bca;
   padding:2px;
+  margin-top:7px;
+}
+
+.main-block-node>h2 {
+   margin: -10px 0px 0 20px ;
+font-size: smaller;
+  color: #428bca;
+}
+ 
+.main-block-node>h2 span {
+   background-color: white;
+   padding: 3px;
 }
 
 .secondary-block-node {
@@ -675,7 +687,7 @@ div {
 }
 
 .secondary-block-node .btn-primary {
-  background-color:#85BAE7;
+  background-color:85BAE7#;
 }
 
 .input-spot {
@@ -690,6 +702,8 @@ div {
 .selected-node {
   border:4px solid black !important;
 }
+
+
 
 .expected-actions {
   border:1px solid #black;
