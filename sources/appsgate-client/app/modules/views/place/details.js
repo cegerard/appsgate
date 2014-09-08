@@ -24,7 +24,7 @@ define([
         },
         /**
          * Listen to the model update and refresh if any
-         * 
+         *
          * @constructor
          */
         initialize: function() {
@@ -32,6 +32,7 @@ define([
 
             // listen to update on its model...
             this.listenTo(this.model, "change", this.render);
+            this.listenTo(devices, "remove", this.render);
 
             // ... and on all its devices
             this.model.get("devices").forEach(function(deviceId) {
@@ -66,7 +67,7 @@ define([
         },
         /**
          * Check the current value of the input text and show a message error if needed
-         * 
+         *
          * @return false if the typed name already exists, true otherwise
          */
         checkPlace: function() {
@@ -135,7 +136,7 @@ define([
         },
         /**
          * Callback to toggle a plug
-         * 
+         *
          * @param e JS mouse event
          */
         onTogglePlugButton: function(e) {
@@ -166,7 +167,7 @@ define([
         },
         /**
          * Callback to toggle a lamp
-         * 
+         *
          * @param e JS mouse event
          */
         onToggleLampButton: function(e) {

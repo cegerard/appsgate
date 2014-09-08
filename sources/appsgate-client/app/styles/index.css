@@ -660,6 +660,25 @@ div {
   padding:2px;
 }
 
+.seq-block-node {
+  border:1px solid #428bca;
+  padding:2px;
+  margin-top: 5px;
+}
+
+.seq-block-node>h2 {
+   margin: -10px 0px 0 20px ;
+   
+}
+ 
+.seq-block-node>h2>span {
+   background-color: white;
+   padding: 2px;
+   color:#428bca;
+   font-size: smaller;
+}
+
+
 .secondary-block-node {
   border: 1px dashed #428bca;
   padding:2px;

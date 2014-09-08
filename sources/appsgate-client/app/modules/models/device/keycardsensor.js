@@ -34,14 +34,14 @@ define([
         case "insertCard":
           $(btn).append("<span data-i18n='language.inserted-keycard-reader-event'></span>");
           v.eventName = "inserted";
-          v.eventValue = "true/-1";
+          v.eventValue = "true";
           v.phrase = "language.inserted-keycard-reader-event";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "removeCard":
           $(btn).append("<span data-i18n='language.removed-keycard-reader-event'></span>");
           v.eventName = "inserted";
-          v.eventValue = "false/-1";
+          v.eventValue = "false";
           v.phrase = "language.removed-keycard-reader-event";
           $(btn).attr("json", JSON.stringify(v));
           break;

@@ -120,12 +120,14 @@ define([
                     input += "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></div>";
                     break;
                 case "seqRules":
+                    input += "<div class='seq-block-node'><h2><span>Actions</span></h2>";
                     jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
                             input += "<div class='row'><div class='btn btn-default btn-prog btn-then btn-primary'><span data-i18n='language.op-then-rule'/></div></div>";
                         }
                         input += self.buildInputFromNode(rule, currentNode);
                     });
+                    input += "</div>";
                     break;
                 case "setOfRules":
                     jsonNode.rules.forEach(function(rule) {
@@ -224,11 +226,16 @@ define([
         },
 
         getDeviceName: function(id) {
+            var deviceName;
             if (devices.get(id) == undefined) {
                 console.error("device not found: " + id);
-                return "UNKNOWN DEVICE";
+                deviceName = "UNKNOWN DEVICE";
+            } else if (devices.get(id).get("name") !== "") {
+                deviceName = devices.get(id).get("name");
+            } else {
+                deviceName = devices.get(id).get("id");
             }
-            return devices.get(id).get("name");
+            return deviceName;
         },
         getServiceName: function(id) {
             if (services.get(id) == undefined) {

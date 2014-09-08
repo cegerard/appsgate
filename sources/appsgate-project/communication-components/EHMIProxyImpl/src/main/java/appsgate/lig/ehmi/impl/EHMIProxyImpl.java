@@ -351,7 +351,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             GrammarDescription grammar = devicePropertiesTable.getGrammarFromType(deviceDetails.getString("type"));
             return new StateDescription(grammar.getStateDescription(stateName));
         } catch (JSONException ex) {
-            logger.error("Grammar not well formatted");
+            logger.error("Grammar not well formatted for: {}", objectId );
             return null;
         }
 

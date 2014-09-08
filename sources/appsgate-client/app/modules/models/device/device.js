@@ -69,7 +69,11 @@ define([
          * default method to build a button with its name as the name of the button
          */
         buildButtonFromDevice: function() {
-            return "<button id='" + this.get("id") + "' class='btn btn-default btn-keyboard device-node'><span>" + this.get("name") + "<span></button>"
+            var labelDevice = this.get("name")
+            if (labelDevice === "") {
+                labelDevice = this.get("id");
+            }
+            return "<button id='" + this.get("id") + "' class='btn btn-default btn-keyboard device-node'><span>" + labelDevice + "<span></button>"
         },
 
         getJSONAction: function (type) {

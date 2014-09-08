@@ -297,6 +297,8 @@ define([
                         destPlaceId = $("#edit-device-modal select option:selected").val();
                     }
 
+                    // save the name now to prevent the reset of the modal after the render called in "moveDevice"
+                    var nameDevice = $("#edit-device-modal input#device-name").val();
 
                     this.$el.find("#edit-device-modal").on("hidden.bs.modal", function() {
 
@@ -333,7 +335,7 @@ define([
                         }
 
                         // set the new name to the device
-                        self.model.set("name", $("#edit-device-modal input#device-name").val());
+                        self.model.set("name", nameDevice);
 
                         // send the updates to the server
                         self.model.save();

@@ -12,6 +12,8 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,7 +67,10 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
         switch (type) {
             case LIST:
                 list = this.getJSONArray(o, "value");
-                value = list.toString();
+                JSONObject el1 = list.optJSONObject(0);
+                if(el1 != null) {
+                    value = el1.optString("value");
+                }
                 break;
             default:
                 value = this.getJSONString(o, "value");
@@ -264,9 +269,10 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
     public String toString() {
         return "[NodeValue type: " + getType() + ", value: " + getExpertProgramScript() + "]";
     }
+
     @Override
     protected void buildReferences(ReferenceTable table) {
-        switch(this.type) {
+        switch (this.type) {
             case PROGRAMCALL:
                 table.addProgram(value);
                 break;
@@ -279,4 +285,5 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
                 break;
         }
     }
+
 }
