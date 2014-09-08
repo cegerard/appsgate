@@ -123,6 +123,11 @@ public class TraceMan implements TraceManSpec {
 	 * The focus type
 	 */
 	private String focusType;
+
+	/**
+	 * time line delta value for aggregation
+	 */
+	private long timeLineDelta;
 	
 	/**
 	 * No filtering for traces
@@ -406,7 +411,7 @@ public class TraceMan implements TraceManSpec {
     }
 
     @Override
-    public void getTracesBetweenInterval(Long from, Long to, JSONObject request) {
+    public void getTracesBetweenInterval(Long from, Long to, boolean withEventLine, JSONObject request) {
     	JSONObject requestResult = new JSONObject();
     	JSONArray tracesTab = dbTracer.getInterval(from, to);
     	JSONObject result = new JSONObject();
@@ -415,8 +420,9 @@ public class TraceMan implements TraceManSpec {
     		
 				result.put("data", tracesTab);
     			result.put("groups", computeGroupsFromPolicy(tracesTab)); 
-    			//TODO add result.timeline [{"timestamp":long , "value":int}] without aggregation for each timestamp get the number of event
-    			
+    			if(withEventLine){
+    				result.put("eventline", eventLineComputation(tracesTab, from));
+    			}
 				requestResult.put("result", result);
 				requestResult.put("request", request);
     		
@@ -426,12 +432,14 @@ public class TraceMan implements TraceManSpec {
 
     			//filteringOnFocus(tracesTab);
     			result.put("groups", computeGroupsFromPolicy(tracesTab));
+    			if(withEventLine){
+    				result.put("eventline", eventLineComputation(tracesTab, from));
+    			}
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
     			tracesTab = traceQueue.applyAggregationPolicy(from, null); //Call with default aggregation policy (id and time)
 
     			result.put("data", tracesTab);
-    			//TODO add result.timeline [{"timestamp":long , "value":int}] without aggregation for each timestamp get the number of event
     			
     			requestResult.put("result", result);
     			requestResult.put("request", request);
@@ -443,7 +451,7 @@ public class TraceMan implements TraceManSpec {
 		}
     }
 
-    /**
+	/**
      * Compute groups to display
      * By default the type is to make group.
      * If a focus is define, the gourping policy can be type of dep
@@ -613,6 +621,60 @@ public class TraceMan implements TraceManSpec {
     	
 		return groups;
 	}
+    
+    /**
+     * Compute the event line for debugger
+     * @param traces default traces tab
+     * @param from start time stamp
+     * @return the event line as a JSONArray
+     * @throws JSONException 
+     */
+    private JSONArray eventLineComputation(JSONArray traces, long from) throws JSONException {
+    	
+    	JSONArray eventLine = new JSONArray();
+    	int size = traces.length();
+    	JSONObject trace;
+    	long beg = from;
+    	long end = from+timeLineDelta;
+    	ArrayList<JSONObject> interval = new ArrayList<JSONObject>();
+    	
+    	for(int i=0; i<size; i++){
+    		
+    		trace = traces.getJSONObject(i);
+    		long ts = trace.getLong("timestamp");
+    		
+    		if(ts >= beg && ts < end){
+    			interval.add(trace);
+    		}else{
+    			if(!interval.isEmpty()){
+    				JSONObject entry = new JSONObject();
+    				entry.put("timestamp", from);
+    				int nbEvent = 0;
+    				for(JSONObject tr : interval){
+    					nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
+    				}
+    				entry.put("value", nbEvent);
+    				eventLine.put(entry);
+    			}
+    			i--; //Ensure that all trace are placed in time stamp interval
+    			from = end;
+    			end += timeLineDelta;
+    		}
+    	}
+    	
+		if(!interval.isEmpty()){
+			JSONObject entry = new JSONObject();
+			entry.put("timestamp", from);
+			int nbEvent = 0;
+			for(JSONObject tr : interval){
+				nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
+			}
+			entry.put("value", nbEvent);
+			eventLine.put(entry);
+		}
+    	
+    	return eventLine;
+	}
 
 //	/**
 //     * Filter trace on focus identifier
@@ -780,6 +842,22 @@ public class TraceMan implements TraceManSpec {
      */
 	public void setDeltaT(long deltaTinMillis) {
 		traceQueue.setDeltaTinMillis(deltaTinMillis);
+	}
+	
+	/**
+	 * Set the current time line delta value
+	 * @param timeLineDelta the new time line delta value
+	 */
+	public void setTimeLineDelta(long timeLineDelta) {
+		this.timeLineDelta = timeLineDelta;
+	}
+	
+    /**
+     * Get the current time line delta time for trace aggregation
+     * @return the delta time in milliseconds
+     */
+    public long getTimeLineDelta() {
+		return timeLineDelta;
 	}
 	
 	

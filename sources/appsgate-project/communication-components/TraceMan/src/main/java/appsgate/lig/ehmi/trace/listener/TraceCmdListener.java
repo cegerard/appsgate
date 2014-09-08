@@ -55,6 +55,9 @@ public class TraceCmdListener implements CommandListener{
 					//Set the delta time aggregation interval from client info
 					traceMan.setDeltaT(((to-from)*selector)/res);
 					
+					//set the timeline aggregation value
+					traceMan.setTimeLineDelta((to-from)/res);
+					
 					//Set the grouping order
 					if(args.has("order")){
 						traceMan.setGroupingOrder(args.getString("order"));
@@ -70,7 +73,7 @@ public class TraceCmdListener implements CommandListener{
 						traceMan.setFocusEquipment(TraceMan.NOFOCUS, "");
 					}
 
-					traceMan.getTracesBetweenInterval(from, to, obj);
+					traceMan.getTracesBetweenInterval(from, to, eventLine, obj);
 					
 				}else if(cmd.equalsIgnoreCase("livetrace")){
 					long deltaT = 0;
