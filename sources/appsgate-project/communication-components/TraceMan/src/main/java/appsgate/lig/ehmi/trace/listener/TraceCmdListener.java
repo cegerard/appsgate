@@ -45,13 +45,15 @@ public class TraceCmdListener implements CommandListener{
 				
 				if(cmd.equalsIgnoreCase("historytrace")){
 					
-					JSONObject args = obj.getJSONObject("args");
-					long from = args.getLong("from");
-					long to = args.getLong("to");
-					int res = args.getInt("res");
+					JSONObject args   = obj.getJSONObject("args");
+					long from 		  = args.getLong("from");
+					long to 	 	  = args.getLong("to");
+					int res 	 	  = args.getInt("screenResolution");
+					int selector 	  = args.getInt("selectorResolution");
+					boolean eventLine = args.getBoolean("withEventLine");
 					
 					//Set the delta time aggregation interval from client info
-					traceMan.setDeltaT(((to-from)*TraceMan.WIDTH)/res);
+					traceMan.setDeltaT(((to-from)*selector)/res);
 					
 					//Set the grouping order
 					if(args.has("order")){

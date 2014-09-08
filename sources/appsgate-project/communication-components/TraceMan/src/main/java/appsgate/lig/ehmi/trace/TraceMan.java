@@ -125,11 +125,6 @@ public class TraceMan implements TraceManSpec {
 	private String focusType;
 	
 	/**
-	 * Smallest trace interval 
-	 */
-	public static int WIDTH = 5;
-	
-	/**
 	 * No filtering for traces
 	 * (i.e. all trace are returned)
 	 */
