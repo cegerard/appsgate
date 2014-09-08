@@ -25,11 +25,11 @@
 			<button id="delete-popover" class="btn btn-default" rel="popover">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="programs.delete-program"></span>
 			</button>
-            
+
             <button id="edit-program-popover" class="btn btn-default edit-popover-button" rel="popover" data-trigger="focus">
                 <i class="glyphicon glyphicon-edit"></i><span data-i18n="programs.edit-program"></span>
             </button>
-            
+
 <!--
             <a href="#programs/editor/<%= program.get('id') %>" class="btn btn-default">
 				<i class="glyphicon glyphicon-edit"></i><span data-i18n="programs.edit-program"></span>
@@ -42,7 +42,7 @@
 
 	<div class="alert alert-danger hide" data-i18n="editor.invalid-program-alert"></div>
 
-	<div class="editorWorkspace">
+	<div class="editorWorkspace scrollable">
 		<div class="programInput container"><%= program.get("userInputSource") %></div>
 	</div>
 <% } %>

@@ -11,7 +11,7 @@ define([
         tpl: _.template(serviceListByCategoryTemplate),
         /**
          * Listen to the updates on the services of the category and refresh if any
-         * 
+         *
          * @constructor
          */
         initialize: function() {
@@ -36,7 +36,7 @@ define([
                 this.$el.i18n();
 
                 // resize the list
-                this.resizeDiv($(".contents-list"));
+                this.resize($(".scrollable"));
 
                 return this;
             }

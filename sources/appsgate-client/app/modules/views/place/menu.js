@@ -201,11 +201,13 @@ define([
                     active: Backbone.history.fragment.split("/")[1] === "-1" ? true : false
                 }));
 
+                $(self.$el.find(".list-group")[1]).addClass("scrollable-menu");
+
                 // translate the menu
                 this.$el.i18n();
 
                 // resize the menu
-                this.resizeDiv($(self.$el.find(".list-group")[1]));
+                this.resize(self.$el.find(".scrollable-menu"));
 
                 return this;
             }
