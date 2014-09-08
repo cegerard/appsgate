@@ -648,23 +648,24 @@ public class TraceMan implements TraceManSpec {
     		}else{
     			if(!interval.isEmpty()){
     				JSONObject entry = new JSONObject();
-    				entry.put("timestamp", from);
+    				entry.put("timestamp", beg);
     				int nbEvent = 0;
     				for(JSONObject tr : interval){
     					nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
     				}
     				entry.put("value", nbEvent);
     				eventLine.put(entry);
+    				interval.clear();
     			}
     			i--; //Ensure that all trace are placed in time stamp interval
-    			from = end;
+    			beg = end;
     			end += timeLineDelta;
     		}
     	}
     	
 		if(!interval.isEmpty()){
 			JSONObject entry = new JSONObject();
-			entry.put("timestamp", from);
+			entry.put("timestamp", beg);
 			int nbEvent = 0;
 			for(JSONObject tr : interval){
 				nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
