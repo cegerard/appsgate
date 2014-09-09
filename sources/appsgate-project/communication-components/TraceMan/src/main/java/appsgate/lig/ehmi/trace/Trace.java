@@ -120,6 +120,13 @@ public class Trace {
     			} else {
     				picto = PICTO_TABLE.COLORLIGHT_STATE_OFF.stringify();
     			}
+    		} else if(varName.equalsIgnoreCase("color") ||
+    				  varName.equalsIgnoreCase("bri") ||
+    				  varName.equalsIgnoreCase("sat") ||
+    				  varName.equalsIgnoreCase("hue")
+    				  ) {
+    			picto = PICTO_TABLE.COLORLIGHT_STATE_ON.stringify();
+    			
     		} else {
     			picto = PICTO_TABLE.COLORLIGHT_TYPE.stringify();
     		}
