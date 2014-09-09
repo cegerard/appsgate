@@ -1160,7 +1160,7 @@ public class TraceMan implements TraceManSpec {
                 }
                 
                 if(tracesPacket.length() > 0){ //A packet is complete
-        			traceExec.aggregation(aggregateTraces, tracesPacket, beginInt);
+        			traceExec.aggregation(aggregateTraces, tracesPacket, endInt);
                 }
                 
 			} else { //Apply specific aggregation policy
