@@ -1,5 +1,5 @@
 var chmi;
-var chmiConfGUIVersion = '0.6.0';
+var chmiConfGUIVersion = '0.6.5';
 
 require.config({
     paths: {
@@ -97,20 +97,33 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			this.sendCmd("{\"getConfDevices\":{}, \"CONFIGURATION\":\"getConfDevices\", \"TARGET\":\"ENOCEAN\"}");
 		}
 		
-                        /**
-                         * Get to the UPnP configuration sub menu
-                         */
-                        this.goToUPnPSubMenu = function ()
-                        {
-                        //Get the html source for Philips HUE
-                        var httpRequest=new XMLHttpRequest();
-                        httpRequest.open("GET","./html/upnp/upnp.html",false);
-                        httpRequest.send();
-                        
-                        this.gotToNextSubMenu("UPnP", httpRequest.responseText, "");
-                        
-                        this.sendCmd("{\"getMediaServices\":{}, \"CONFIGURATION\":\"getMediaServices\", \"TARGET\":\"UPNP\"}");
-                        }
+        
+        /**
+         * Get to the UPnP configuration sub menu
+         */
+        this.goToUPnPSubMenu = function ()
+        {
+            //Get the html source for UPnP
+            var httpRequest=new XMLHttpRequest();
+            httpRequest.open("GET","./html/upnp/upnp.html",false);
+            httpRequest.send();
+            this.gotToNextSubMenu("UPnP", httpRequest.responseText, "");
+            this.sendCmd("{\"getMediaServices\":{}, \"CONFIGURATION\":\"getMediaServices\", \"TARGET\":\"UPNP\"}");
+        }
+        
+        /**
+         *  Get the time line configuration sub menu
+         */
+        this.goToTimeLinesSubMenu = function ()
+        {
+           //Get the html source for time lines
+			var httpRequest=new XMLHttpRequest();
+			httpRequest.open("GET","./html/debugger/debugger.html",false);
+			httpRequest.send();
+			
+			this.gotToNextSubMenu("TimeLines", httpRequest.responseText, "");
+        }
+        
 		/**
 		 * Go to the newt sub menu generic method.
 		 */

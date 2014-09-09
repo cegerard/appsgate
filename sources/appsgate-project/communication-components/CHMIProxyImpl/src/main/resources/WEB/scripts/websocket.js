@@ -1,7 +1,7 @@
-define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp'], function (hueRef, enoceanRef,upnpRef) {
+define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp', 'debugger/debugger'], function (hueRef, enoceanRef, upnpRef, debuggerRef) {
 //define begin
     var returnedModule = function () {
-    
+        
         var _name = 'web socket module';
         this.getName = function () {return _name;}
         
@@ -10,12 +10,15 @@ define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp'], function (hueR
         
         var enocean = new enoceanRef();
         this.getEnocean = function () {return enocean;}
+        
+        var upnp = new upnpRef();
+        this.getUPnP = function () {return upnp;}
        
-       var upnp = new upnpRef();
-       this.getUPnP = function () {return upnp;}
-       
-		var ws;
-		var DEFAULT_SERVER_PORT = 8087;
+        var deb = new debuggerRef();
+        this.getDebbuger = function () {return deb;}
+        
+        var ws;
+        var DEFAULT_SERVER_PORT = 8087;
 
 		/** Open a web socket connection to the AppsGate server*/
 		this.WebSocketOpen = function WebSocketOpen() 
