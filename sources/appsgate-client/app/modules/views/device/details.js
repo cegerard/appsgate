@@ -465,9 +465,6 @@ define([
                         // if the lamp is on, we allow the user to pick a color
                         this.renderColorWheel(enabled, color);
 
-                        // update the size of the color picker container
-                        this.$el.find(".color-picker").height(colorWheel.size2 * 2);
-
                         break;
                     case 8: // switch actuator
                         this.$el.html(this.template({
@@ -524,20 +521,30 @@ define([
             // create the color picker
             var wheelRadius = $(".body-content").outerWidth() / 10 + 80;
 
-            // instantiate the color wheel
-            window.colorWheel = Raphael.colorwheel($(".color-picker")[0], wheelRadius * 2).color(color);
+            var colorPickerDomElement=$(".color-picker")[0];
 
-            // bind the events
-            if (typeof enabled !== undefined && enabled === "true") {
-                // color change enabled
-                window.colorWheel.ondrag(null, this.onChangeColor);
+            if(colorPickerDomElement){
+
+                // instantiate the color wheel
+                window.colorWheel = Raphael.colorwheel(colorPickerDomElement, wheelRadius * 2).color(color);
+
+                // bind the events
+                if (typeof enabled !== undefined && enabled === "true") {
+                    // color change enabled
+                    window.colorWheel.ondrag(null, this.onChangeColor);
+                }
+                else {
+                    // color change disabled
+                    window.colorWheel.onchange(function() {
+                        window.colorWheel.color(color);
+                    });
+                }
+
+                // update the size of the color picker container
+                this.$el.find(".color-picker").height(colorWheel.size2 * 2);
             }
-            else {
-                // color change disabled
-                window.colorWheel.onchange(function() {
-                    window.colorWheel.color(color);
-                });
-            }
+
+
         }
     });
     return DeviceDetailsView

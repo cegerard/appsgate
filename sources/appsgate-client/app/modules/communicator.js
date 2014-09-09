@@ -38,6 +38,20 @@ define([
 
       // open a websocket
       this.webSocket = new WebSocket(this.serverAddr);
+        this.webSocket.onopen = function () {
+            connection.send('Ping'); // Send the message 'Ping' to the server
+        };
+
+// Log errors
+        this.webSocket.onerror = function (error) {
+            console.log('WebSocket Error ' + error);
+        };
+
+// Log messages from the server
+        this.webSocket.onmessage = function (e) {
+            console.log('Server: ' + e.data);
+        };
+
 
       // socket closed event or error occured during the connection - show the error in the modal settings
       this.webSocket.onclose = function() {
