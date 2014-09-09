@@ -120,12 +120,14 @@ define([
                     input += "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></div>";
                     break;
                 case "seqRules":
+                    input+= "<div class='main-block-node'><h2><span data-i18n='language.actions'/></h2>";
                     jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
                             input += "<div class='row'><div class='btn btn-default btn-prog btn-then btn-primary'><span data-i18n='language.op-then-rule'/></div></div>";
                         }
                         input += self.buildInputFromNode(rule, currentNode);
                     });
+                    input+="</div>";
                     break;
                 case "setOfRules":
                     jsonNode.rules.forEach(function(rule) {

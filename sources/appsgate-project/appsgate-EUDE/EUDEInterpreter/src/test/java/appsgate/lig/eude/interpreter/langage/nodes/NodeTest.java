@@ -59,6 +59,13 @@ public abstract class NodeTest {
         emptySeqRules.put("rules", new JSONArray());
         emptySeqRules.put("iid", "empty");
         emptySeqRules.put("phrase", "");
+        context.checking(new Expectations() {
+            {
+                allowing(mediator).notifyChanges(with(any(ProgramCommandNotification.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
+                allowing(mediator).notifyChanges(with(any(ProgramStateNotification.class)));
+            }
+        });
     }
 
 
@@ -89,13 +96,6 @@ public abstract class NodeTest {
      */
     @Test
     public void testCall() throws Exception {
-        context.checking(new Expectations() {
-            {
-                allowing(mediator).notifyChanges(with(any(ProgramCommandNotification.class)));
-                allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
-                allowing(mediator).notifyChanges(with(any(ProgramStateNotification.class)));
-            }
-        });
         printTestName("call");
         JSONObject expResult = null;
         JSONObject result = this.instance.call();

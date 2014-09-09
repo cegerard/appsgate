@@ -142,6 +142,7 @@ public class GoogleHTTPRequest {
 	public static final String IF = "?";
 	public static final String SPACE = " ";
 	public static final String SLASH = "/";
+	public static final String COMMA = ",";
 	
 	public static final String PARAM_CONTENTTYPE = "Content-Type";
 	public static final String CONTENTTYPE_JSON = "application/json";	

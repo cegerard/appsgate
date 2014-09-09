@@ -228,7 +228,7 @@ define([
     break;
   }
   // resize the panel
-  this.resizeDiv($(this.$el.find(".list-group")[0]));
+  this.resize($(".scrollable"));
 
   // translate the view
   this.$el.i18n();

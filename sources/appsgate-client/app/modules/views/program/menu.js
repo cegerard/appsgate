@@ -211,6 +211,8 @@ define([
                     }));
                 });
 
+                programsDiv.addClass("scrollable-menu");
+
                 // we add all elements all at once to avoid rendering them individually and thus reflowing the dom several times
                 programsDiv.append(container);
 
@@ -221,7 +223,7 @@ define([
                 this.$el.i18n();
 
                 // fix the programs list size to be able to scroll through it
-                this.resizeDiv(programsDiv);
+                this.resize(self.$el.find(".scrollable-menu"));
 
                 return this;
             }

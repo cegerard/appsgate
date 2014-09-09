@@ -389,7 +389,7 @@ define([
           this.refreshDisplay();
 
           // fix the programs list size to be able to scroll through it
-          this.resizeDiv($(self.$el.find(".editorWorkspace")[0]), true);
+          this.resize($(".scrollable"));
         }
 
         return this;

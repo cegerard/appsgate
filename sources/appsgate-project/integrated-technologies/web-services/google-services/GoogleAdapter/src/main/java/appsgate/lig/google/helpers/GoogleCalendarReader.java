@@ -26,7 +26,11 @@ public class GoogleCalendarReader {
 	public final static String URL_CALENDARLIST = "https://www.googleapis.com/calendar/v3/users/me/calendarList";
 	public final static String URL_CALENDARS = "https://www.googleapis.com/calendar/v3/calendars";
 	
-	public final static String PARAM_EVENTS = "events";
+	public final static String PARAM_EVENTS = "events";	
+	public final static String PARAM_TIMEMIN = "timeMin";
+	public final static String PARAM_TIMEMAX = "timeMax";
+
+	public final static String RESP_ITEMS = "items";
 
 	
 	/**
