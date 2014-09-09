@@ -28,15 +28,10 @@ define(function(require, exports, module) {
         window.dispatcher = _.clone(Backbone.Events);
 
         // Setting the connection with the box
-        //window.communicator = new Communicator('ws://192.168.1.12:8087');
-<<<<<<< Updated upstream
-        //window.communicator = new Communicator('ws://localhost:8087');
-        window.communicator = new Communicator('ws://appsgatebox:8087');
-=======
-        window.communicator = new Communicator('ws://localhost:8087');
-        //window.communicator = new Communicator('ws://192.168.1.2:8087');
->>>>>>> Stashed changes
-
+        //Parser the URL called to generate the server provider.
+        var serverAddr=document.URL.replace(/http:\/\//i,"").replace(/\/.*/i,"").replace(/:.*/i,"");
+        //DO NOT change the IP anymore, its not necessary
+        window.communicator = new Communicator('ws://'+serverAddr+':8087');
         window.addEventListener("click", onFocusOutCircleMenu, false);
 
         // Wait for the socket to be opened
