@@ -1306,7 +1306,7 @@ public class TraceMan implements TraceManSpec {
 	                    while(x < tempDevicesSize){
 	                        //Merge the device trace
 	                        JSONObject tempDev = tempDevices.getJSONObject(x);
-	                        tempDev.put("timestamp", tempObj.get("timestamp"));
+	                        //tempDev.put("timestamp", tempObj.get("timestamp"));
 	                        String id = tempDev.getString("id");
 	                        
 	                        if(!devicesToAgg.containsKey(id)){ //No aggregation for now
@@ -1340,7 +1340,7 @@ public class TraceMan implements TraceManSpec {
 	                    while(y < tempPgmsSize){
 	                        //Merge program traces
 	                        JSONObject tempPgm = tempPgms.getJSONObject(y);
-	                        tempPgm.put("timestamp", tempObj.get("timestamp"));
+	                        //tempPgm.put("timestamp", tempObj.get("timestamp"));
 	                        String id = tempPgm.getString("id");
 	                        
 	                        if(!programsToAgg.containsKey(id)){//No aggregation for now
