@@ -53,10 +53,10 @@ public class TraceCmdListener implements CommandListener{
 					boolean eventLine = args.getBoolean("withEventLine");
 					
 					//Set the delta time aggregation interval from client info
-					traceMan.setDeltaT(((to-from)*selector)/res);
+					traceMan.setDeltaT((long)Math.ceil(((to-from)*selector)/res));
 					
 					//set the timeline aggregation value
-					traceMan.setTimeLineDelta((to-from)/res);
+					traceMan.setTimeLineDelta((long)Math.ceil((to-from)/res));
 					
 					//Set the grouping order
 					if(args.has("order")){
