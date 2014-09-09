@@ -168,7 +168,6 @@ sources/PhilipsHUE4Appsgate/PhilipsHUEImpl/src/main/resources/obr.xml
 
 *.ser
 
-*.properties
 
 *.script
 
