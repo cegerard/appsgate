@@ -327,6 +327,11 @@
                                     <version>${fuchsia.version}</version>
                                 </artifactItem>
                                 <artifactItem>
+                                    <groupId>org.ow2.chameleon.fuchsia.tools</groupId>
+                                    <artifactId>fuchsia-grid</artifactId>
+                                    <version>${fuchsia.version}</version>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.eventadmin</artifactId>
                                     <version>${org.apache.felix.eventadmin.version}</version>
