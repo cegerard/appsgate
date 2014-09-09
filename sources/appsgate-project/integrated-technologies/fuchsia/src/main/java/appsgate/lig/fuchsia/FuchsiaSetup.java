@@ -71,6 +71,10 @@ public class FuchsiaSetup {
         Instance appsgateKNXOnOffActuatorImporter = instance()
                 .of(AppsgateSwitchImporter.class.getName())
                 .with("target").setto("(&(discovery.knx.device.object=*)(appsgate.type=socket))");
+
+        Instance appsgateKNXShutterActuatorImporter = instance()
+            .of(AppsgateSwitchImporter.class.getName())
+            .with("target").setto("(&(discovery.knx.device.object=*)(appsgate.type=shutter))");
         /**
          * Generic Linker
          Instance appsgateKNXLinker = instance()
@@ -89,6 +93,11 @@ public class FuchsiaSetup {
                 .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
                 .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(&(discovery.knx.device.object=*)(appsgate.type=socket))")
                 .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=appsgateKNXOnOffActuatorImporter)");
+
+        Instance appsgateKNXShutterActuatorLinker = instance()
+            .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
+            .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(&(discovery.knx.device.object=*)(appsgate.type=shutter))")
+            .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=appsgateKNXShutterActuatorImporter)");
 
         /**
          * ARD

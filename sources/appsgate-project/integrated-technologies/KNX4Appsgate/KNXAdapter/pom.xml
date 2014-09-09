@@ -71,6 +71,11 @@
         </dependency>
         <dependency>
             <groupId>appsgate.components</groupId>
+            <artifactId>CoreShutterSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
             <artifactId>CoreObjectSpec</artifactId>
             <version>${project.version}</version>
         </dependency>

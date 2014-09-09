@@ -52,4 +52,25 @@
 
     </implementation>
 
+    <implementation name="KNXShutterImpl"
+                    classname="appsgate.lig.proxy.knx.device.shutter.AppsgateShutterKNXDevice"
+                    specification="CoreRollerShutterSpec" push="notifyChanges">
+
+        <!-- device kernel meta data -->
+        <definition name="deviceName" type="string"
+                    field="deviceName" />
+        <definition name="deviceId" type="string"
+                    field="deviceId" />
+        <definition name="deviceType" type="string"
+                    field="deviceType" />
+
+        <!-- device client meta data -->
+        <definition name="pictureId" type="string" field="pictureId" />
+        <definition name="userType" type="string" default="8"
+                    field="userType" />
+        <definition name="status" type="string" default="2" field="status"
+                    method="statusChanged" />
+
+    </implementation>
+
 </apam>

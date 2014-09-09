@@ -130,6 +130,8 @@ final public class NodeProgram extends Node {
         this.mediator = i;
         subPrograms = new HashMap<String, NodeProgram>();
         references = new ReferenceTable(i, this.id);
+        activeNodes = new JSONObject();
+        nodesCounter = new JSONObject();
     }
 
     /**
