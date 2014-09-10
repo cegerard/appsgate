@@ -259,3 +259,4 @@ distributions/complete/assembly.xml
 distributions/light/assembly.xml
 distributions/light/traceMan-*.json
 distributions/complete/traceMan-*.json
+distributions/Appsgate-distribution-light/*
