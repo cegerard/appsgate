@@ -1,7 +1,6 @@
 package appsgate.lig.ehmi.spec;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -527,4 +526,10 @@ public interface EHMIProxySpec {
      * @return true if the connexion is closed, flase otherwise
      */
     public boolean stopDebugger();
+    
+    /**
+     * Get trace man status
+     * @return the complete status of trace man as a JSONObject
+     */
+    public JSONObject getTraceManStatus();
 }

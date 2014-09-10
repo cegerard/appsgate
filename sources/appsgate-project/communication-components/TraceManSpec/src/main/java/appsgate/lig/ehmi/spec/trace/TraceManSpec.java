@@ -77,5 +77,11 @@ public interface TraceManSpec {
      * @return true if the connexion is closed, flase otherwise
      */
     public boolean stopDebugger();
+    
+    /**
+     * Get the trace manager complete status
+     * @return the trace manager status as a JSONObject
+     */
+    public JSONObject getStatus();
 
 }

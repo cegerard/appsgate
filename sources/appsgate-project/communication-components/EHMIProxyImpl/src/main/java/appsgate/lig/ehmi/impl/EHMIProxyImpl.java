@@ -1116,4 +1116,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	public boolean stopDebugger() {
 		return traceManager.stopDebugger();
 	}
+
+	@Override
+	public JSONObject getTraceManStatus() {
+		return traceManager.getStatus();
+	}
 }

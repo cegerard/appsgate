@@ -549,4 +549,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		return false;
 	}
 
+
+	@Override
+	public JSONObject getTraceManStatus() {
+		// TODO Auto-generated method stub
+		return new JSONObject();
+	}
+
 }

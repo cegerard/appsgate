@@ -128,6 +128,11 @@ public class TraceMan implements TraceManSpec {
 	 * time line delta value for aggregation
 	 */
 	private long timeLineDelta;
+
+	/**
+	 * TraceMan socket state
+	 */
+	private boolean state;
 	
 	/**
 	 * No filtering for traces
@@ -889,9 +894,14 @@ public class TraceMan implements TraceManSpec {
 	public int startDebugger(){
 		//Socket and live trace initialization
 	    if(EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGER_COX_NAME, DEBUGGER_DEFAULT_PORT)){
+	    	this.state = true;
 	        return DEBUGGER_DEFAULT_PORT;
 	    }else {
-	    	return 0;
+	    	if(this.state){
+	    		return DEBUGGER_DEFAULT_PORT;
+	    	}else{
+	    		return 0;
+	    	}
 		}
 	}
 
@@ -909,7 +919,12 @@ public class TraceMan implements TraceManSpec {
 			fileTracer = null;
 		}
 		traceQueue.stop();
-		return EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
+		
+		if(EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME)){
+			state = false;
+		}
+		
+		return !state;
 	}
 	
 	/**
@@ -1393,5 +1408,31 @@ public class TraceMan implements TraceManSpec {
 	    }
 		
     }
+
+	@Override
+	public JSONObject getStatus() {
+		JSONObject status = new JSONObject();
+		
+		try {
+			status.put("port", DEBUGGER_DEFAULT_PORT);
+			status.put("state", this.state);
+			
+			String mode = "history";
+			if(fileTraceActivated){
+				mode += "file ";
+			}
+			
+			if(liveTraceActivated){
+				mode += "live ";
+			}
+			
+			status.put("mode", mode);
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return status;
+	}
 
 }
