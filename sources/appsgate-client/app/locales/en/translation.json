@@ -611,6 +611,7 @@
       "turn-off-plug-action":"Turn off",
       "blink-lamp-action":"Blink",
       "when-keyword":"When",
+      "whenImp-keyword":"As soon as",
       "if-keyword":"If",
       "if-and":"if ... and ...",
       "if-or":"If ... or ...",

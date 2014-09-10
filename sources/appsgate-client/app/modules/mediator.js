@@ -141,6 +141,17 @@ define([
               "rules": [this.getEmptyJSON("mandatory")]
             }
           };
+        } else if ($(button).hasClass("whenImp-node")) {
+          n = {
+            "type": "whenImp",
+            "iid": "X",
+            "events": this.getEmptyJSON("mandatory"),
+            "seqRulesThen": {
+              "iid": "X",
+              "type": "seqRules",
+              "rules": [this.getEmptyJSON("mandatory")]
+            }
+          };
         } else if ($(button).hasClass("while-node")) {
           n = {
             "type": "while",

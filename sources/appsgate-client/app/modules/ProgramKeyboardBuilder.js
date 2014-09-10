@@ -47,6 +47,9 @@ define([
                                 case '"booleanExpression"':
                                     //this.buildBooleanExpressionKeys();
                                     break;
+                                case '"whenImp"':
+                                    $(".expected-links").append("<button class='btn btn-default btn-keyboard whenImp-node'><span data-i18n='keyboard.whenImp-keyword'><span></button>");
+                                    break;
                                 case '"when"':
                                     $(".expected-links").append("<button class='btn btn-default btn-keyboard when-node'><span data-i18n='keyboard.when-keyword'><span></button>");
                                     break;

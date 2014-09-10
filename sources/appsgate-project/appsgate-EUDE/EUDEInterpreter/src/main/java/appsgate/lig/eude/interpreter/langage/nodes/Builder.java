@@ -141,6 +141,9 @@ public class Builder {
         if (type.equalsIgnoreCase("when")) {
             return NODE_TYPE.NODE_WHEN;
         }
+        if (type.equalsIgnoreCase("whenImp")) {
+            return NODE_TYPE.NODE_WHEN;
+        }
         if (type.equalsIgnoreCase("while")) {
             return NODE_TYPE.NODE_WHILE;
         }

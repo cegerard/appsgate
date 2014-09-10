@@ -78,6 +78,7 @@ define([
                     input += this.buildComparatorNode(param, currentNode);
                     break;
                 case "when":
+                case "whenImp":
                     deletable = true;
                     input += this.tplWhenNode(param);
                     break;
