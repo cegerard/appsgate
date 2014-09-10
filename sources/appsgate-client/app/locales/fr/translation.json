@@ -613,6 +613,7 @@
       "turn-off-plug-action":"Eteindre la prise",
       "blink-lamp-action":"Faire clignoter",
       "when-keyword":"Lorsque",
+      "whenImp-keyword":"Dès que",
       "if-keyword":"Si",
       "if-and":"Si ... et ...",
       "if-or":"Si ... ou ...",

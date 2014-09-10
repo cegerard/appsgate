@@ -11,7 +11,7 @@ BLOC = SEQ
 
 INSTS  = _ (INST _)+ / "(" INSTS ")"
 
-INST  = IF / ACTION / EMPTY / WAIT / SEQ
+INST  = IF / ACTION / EMPTY / WAIT / SEQ / WHEN_IMP
 
 RULES  = _ (RULE _)+ / "(" RULES ")"
 
@@ -21,6 +21,8 @@ IF  = ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")" _ "(" _ BLOC _ ")"
     / ID "if" _ "(" BOOLEAN ")" _ "(" _ BLOC _ ")"
 
 WHEN  = ID "when" _ "(" _ EVT _ ")" _ "(" _ BLOC _")"
+
+WHEN_IMP  = ID "whenImp" _ "(" _ EVT _ ")" _ "(" _ BLOC _")"
 
 WHILE  = ID "while" _ "(" _ STATE _ ")" _ "(" _ KEEP _ ")" _ "(" _ BLOC _ ")"
 
