@@ -17,7 +17,7 @@ define([], function () {
         /** Return messgae handler for trace manager */
         this.messageHandler = function messageHandler(message) {
 			
-            console.log("traceMan CHMI GUI: "+message);
+            console.log("traceMan CHMI GUI: "+eval(message));
             var callId = message.callId;
             
             if (callId == "startDB"){
@@ -25,62 +25,30 @@ define([], function () {
                 if(port > 0 ){
                     $( "#traceMan-port" ).html("traceMan port: "+port);
                     $( "#traceMan-state" ).html("state: STARTED");
-                    $( "#traceMan-status" ).removeClass("bg-color-red").addClass("bg-color-green");
-                    $( "#traceMan-status" ).attr("onclick", "javascript:chmi.getWebSocket().getDebbuger().stopDebugger();");
-                    $( "#traceMan-ico" ).removeClass("icon-stop").addClass("icon-play");
-                    $( "#traceMan-label" ).html("Started");
+                    $( "#traceMan-status" ).removeClass("bg-color-green").addClass("bg-color-red");
+                    $( "#traceMan-status" ).on('click', function() { chmi.getWebSocket().getDebbuger().stopDebugger() });
+                    $( "#traceMan-ico" ).removeClass("icon-play").addClass("icon-stop");
+                    $( "#traceMan-label" ).html("Stop");
                 }
             } else if (callId == "stopDB") {
                  if( String(message.value) == "true"){
                     $( "#traceMan-port" ).html("traceMan port: ");
                     $( "#traceMan-state" ).html("state: STOPPED");
-                    $( "#traceMan-status" ).removeClass("bg-color-green").addClass("bg-color-red");
+                    $( "#traceMan-status" ).removeClass("bg-color-red").addClass("bg-color-green");
                     $( "#traceMan-status" ).attr("onclick", "javascript:chmi.getWebSocket().getDebbuger().startDebugger();");
-                    $( "#traceMan-ico" ).removeClass("icon-play").addClass("icon-stop");
-                    $( "#traceMan-label" ).html("Stopped");
+                    $( "#traceMan-ico" ).removeClass("icon-stop").addClass("icon-play");
+                    $( "#traceMan-label" ).html("Start");
                  }
+            } else if (callId == "getTraceManConf") {
+                var value = JSON.parse(message.value);
+                 $( "#traceMan-port" ).html("traceMan port: "+value.port);
+                if(value.state){
+                     $( "#traceMan-state" ).html("state: STARTED");
+                }else{
+                    $( "#traceMan-state" ).html("state: STOPPED");
+                }
+                $( "#traceMan-mode" ).html("mode: "+value.mode);
             }
-            
-            
-			if (message.hasOwnProperty("newObject")){
-				$("#undefinedDeviceTile-"+message.newObject.id).remove();
-	       	} else if(message.hasOwnProperty("pairingModeChanged")) {
-	       		var pairingState = message.pairingModeChanged;
-	       		var state = pairingState.pairingMode;
-	       		if(state){
-	       			_pairingMode = true;
-	       			$( "#pairingState-value" ).html("On");
-	       			$( "#pairingState-tile" ).removeClass("bg-color-red").addClass("bg-color-green");
-	       		}else{
-	       			_pairingMode = false;
-	       			$( "#pairingState-value" ).html("Off");
-	       			$( "#pairingState-tile" ).removeClass("bg-color-green").addClass("bg-color-red");
-	       		}
-	       		
-	       	} else if (message.hasOwnProperty("newUndefinedSensor")){
-	       		this.addUndefinedTile(message.newUndefinedSensor);
-	       		
-	       	} else if( message.hasOwnProperty("confDevices")) {
-	       		var confDeviceJSON = message.confDevices
-	       		_pairingMode = confDeviceJSON.pairingMode;
-	       		
-	       		if(_pairingMode){
-	       			$( "#pairingState-value" ).html("On");
-	       			$( "#pairingState-tile" ).removeClass("bg-color-red").addClass("bg-color-green");
-	       		}
-	       		
-	       		var enoceanDevList = confDeviceJSON.enoceanDevices;
-	       		for(dev in enoceanDevList){
-	       			call = eval({"method":"getDevice", "args":[{"type":"String", "value":enoceanDevList[dev]}], "callId":"enocean-conf-target-get-device", "TARGET":"CHMI"});
-	       			chmi.sendCmd(JSON.stringify(call));
-	       		}
-	       	} else {
-	       		
-	       		if( message.callId == "enocean-conf-target-get-device") {
-	       			var returnedCall = JSON.parse(message.value);
-	       			this.addDeviceTile(returnedCall);
-		       	}
-	       	}
 		}
         
     };

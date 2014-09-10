@@ -60,6 +60,10 @@ define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp', 'debugger/debug
                             upnp.messageHandler(jsonMess);
                         }else if(callId.indexOf("getTraceManConf") != -1) {
                             deb.messageHandler(jsonMess);
+                        }else if(callId.indexOf("startDB") != -1) {
+                            deb.messageHandler(jsonMess);
+                        }else if(callId.indexOf("stopDB") != -1) {
+                            deb.messageHandler(jsonMess);
                         }else {
 							chmi.returnCallHandler(jsonMess.callId, jsonMess);
 						}
