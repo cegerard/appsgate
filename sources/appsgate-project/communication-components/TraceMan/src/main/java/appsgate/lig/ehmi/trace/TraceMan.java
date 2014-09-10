@@ -267,14 +267,19 @@ public class TraceMan implements TraceManSpec {
                 	} else {
                 		event.put("type", "update");
                 		JDecoration = Trace.getJSONDecoration("error", "technical", srcId, null, "Error dectected");
-                		event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
                 	}
             	}else{
             		 event.put("type", "update");
             		 JDecoration = Trace.getJSONDecoration("update", "technical", srcId, null, "update of "+varName+" to "+ value);
-            		 event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value));
             	}
-                event.put("state", getDeviceState(srcId, varName, value));
+            	
+            	JSONObject jsonState = getDeviceState(srcId, varName, value);
+            	
+            	if(event.getString("type").equalsIgnoreCase("update")){
+            		event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value, jsonState));
+            	}
+            	
+                event.put("state", jsonState);
                
             } catch (JSONException e) {
             }

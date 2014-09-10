@@ -75,9 +75,11 @@ public class Trace {
      * @param type the device type
      * @param varName the variable that changed
      * @param value the new value of this variable
+     * @param fullState the current state of the device as a JSONObject
      * @return the pictoID as a String
+     * @throws JSONException 
      */
-    public static String getPictoState(String type, String varName, String value) {
+    public static String getPictoState(String type, String varName, String value, JSONObject fullState) throws JSONException {
     	
 		String picto = PICTO_TABLE.DEFAULT.stringify();
 		
@@ -114,20 +116,19 @@ public class Trace {
     		}
     		
     	} else if (type.equalsIgnoreCase("ColorLight")){
-    		if(varName.equalsIgnoreCase("state")){
-    			if(value.equalsIgnoreCase("true")){
+    		if(varName.equalsIgnoreCase("state") ||
+    			varName.equalsIgnoreCase("color") ||
+  				varName.equalsIgnoreCase("bri") ||
+  				varName.equalsIgnoreCase("sat") ||
+  				varName.equalsIgnoreCase("hue") ||
+  				varName.equalsIgnoreCase("value")){
+    			
+    			if(fullState.getBoolean("state")){
     				picto = PICTO_TABLE.COLORLIGHT_STATE_ON.stringify();
-    			} else {
+    			}else{
     				picto = PICTO_TABLE.COLORLIGHT_STATE_OFF.stringify();
     			}
-    		} else if(varName.equalsIgnoreCase("color") ||
-    				  varName.equalsIgnoreCase("bri") ||
-    				  varName.equalsIgnoreCase("sat") ||
-    				  varName.equalsIgnoreCase("hue")
-    				  ) {
-    			picto = PICTO_TABLE.COLORLIGHT_STATE_ON.stringify();
-    			
-    		} else {
+    		}  else {
     			picto = PICTO_TABLE.COLORLIGHT_TYPE.stringify();
     		}
     		
