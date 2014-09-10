@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  */
 final public class NodeProgram extends Node {
 
-
     /**
      * Program running state static enumeration
      *
@@ -358,8 +357,9 @@ final public class NodeProgram extends Node {
             LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
         }
     }
+
     void setKeeping(String iid) {
-        if (isValid()){
+        if (isValid()) {
             setRunningState(RUNNING_STATE.KEEPING, iid);
         } else {
             LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
@@ -624,11 +624,15 @@ final public class NodeProgram extends Node {
 
     /**
      * Updates a node status in the active nodes set
+     *
      * @param nodeId
      * @param status
      * @throws SpokExecutionException
      */
     public void setActiveNode(String nodeId, boolean status) throws SpokExecutionException {
+        if (nodeId == null) {
+            return;
+        }
         try {
             this.activeNodes.put(nodeId, status);
         } catch (JSONException e) {
@@ -639,12 +643,16 @@ final public class NodeProgram extends Node {
 
     /**
      * Increments a given node counter
+     *
      * @param nodeId
      * @throws SpokExecutionException
      */
     public void incrementNodeCounter(String nodeId) throws SpokExecutionException {
+        if (nodeId == null) {
+            return;
+        }
         try {
-            int counter = this.nodesCounter.has(nodeId)?Integer.parseInt((String) this.nodesCounter.get(nodeId))+1:1;
+            int counter = this.nodesCounter.has(nodeId) ? Integer.parseInt((String) this.nodesCounter.get(nodeId)) + 1 : 1;
             this.nodesCounter.put(nodeId, String.valueOf(counter));
         } catch (JSONException e) {
             throw new SpokExecutionException("Unable to increment the node counter for: " + nodeId);
@@ -655,6 +663,7 @@ final public class NodeProgram extends Node {
 
     /**
      * Returns the object representing the active nodes of the program
+     *
      * @return
      */
     public JSONObject getActiveNodes() {
@@ -663,6 +672,7 @@ final public class NodeProgram extends Node {
 
     /**
      * Returns the object representing the node counters of the program
+     *
      * @return
      */
     public JSONObject getNodesCounter() {
