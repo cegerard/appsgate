@@ -55,7 +55,7 @@ public class TraceCmdListener implements CommandListener{
 					//Set the delta time aggregation interval from client info
 					if(args.has("brushResolution")){
 						int brushRes = args.getInt("brushResolution");
-						traceMan.setDeltaT((long)Math.ceil(((to-from)*selector)/(Math.sqrt(res)/brushRes)));
+						traceMan.setDeltaT((long)Math.ceil(((to-from)*selector*brushRes)/(res*res)));
 					}else{
 						traceMan.setDeltaT((long)Math.ceil(((to-from)*selector)/res));
 					}
