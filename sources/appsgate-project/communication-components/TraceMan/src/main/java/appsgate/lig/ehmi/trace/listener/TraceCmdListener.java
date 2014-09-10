@@ -51,9 +51,10 @@ public class TraceCmdListener implements CommandListener{
 					int res 	 	  = args.getInt("screenResolution");
 					int selector 	  = args.getInt("selectorResolution");
 					boolean eventLine = args.getBoolean("withEventLine");
+					int brushRes	  = args.getInt("brushRes");
 					
 					//Set the delta time aggregation interval from client info
-					traceMan.setDeltaT((long)Math.ceil(((to-from)*selector)/res));
+					traceMan.setDeltaT((long)Math.ceil(((to-from)*selector)/(Math.sqrt(res)/brushRes)));
 					
 					//set the timeline aggregation value
 					traceMan.setTimeLineDelta((long)Math.ceil((to-from)/res));
