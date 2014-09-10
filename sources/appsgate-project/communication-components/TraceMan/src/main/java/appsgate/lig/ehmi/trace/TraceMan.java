@@ -431,7 +431,7 @@ public class TraceMan implements TraceManSpec {
 				result.put("data", tracesTab);
     			result.put("groups", computeGroupsFromPolicy(tracesTab)); 
     			if(withEventLine){
-    				result.put("eventline", eventLineComputation(tracesTab, from));
+    				result.put("eventline", eventLineComputation(tracesTab, from, to));
     			}
 				requestResult.put("result", result);
 				requestResult.put("request", request);
@@ -443,7 +443,7 @@ public class TraceMan implements TraceManSpec {
     			//filteringOnFocus(tracesTab);
     			result.put("groups", computeGroupsFromPolicy(tracesTab));
     			if(withEventLine){
-    				result.put("eventline", eventLineComputation(tracesTab, from));
+    				result.put("eventline", eventLineComputation(tracesTab, from, to));
     			}
     			traceQueue.stop();
     			traceQueue.loadTraces(tracesTab);
@@ -636,10 +636,11 @@ public class TraceMan implements TraceManSpec {
      * Compute the event line for debugger
      * @param traces default traces tab
      * @param from start time stamp
+     * @param to end time stamp
      * @return the event line as a JSONArray
      * @throws JSONException 
      */
-    private JSONArray eventLineComputation(JSONArray traces, long from) throws JSONException {
+    private JSONArray eventLineComputation(JSONArray traces, long from, long to) throws JSONException {
     	
     	JSONArray eventLine = new JSONArray();
     	int size = traces.length();
@@ -647,42 +648,63 @@ public class TraceMan implements TraceManSpec {
     	long beg = from;
     	long end = from+timeLineDelta;
     	ArrayList<JSONObject> interval = new ArrayList<JSONObject>();
+
+    	if(size > 0) {
     	
-    	for(int i=0; i<size; i++){
-    		
-    		trace = traces.getJSONObject(i);
-    		long ts = trace.getLong("timestamp");
-    		
-    		if(ts >= beg && ts < end){
-    			interval.add(trace);
-    		}else{
-    			if(!interval.isEmpty()){
-    				JSONObject entry = new JSONObject();
-    				entry.put("timestamp", beg);
-    				int nbEvent = 0;
-    				for(JSONObject tr : interval){
-    					nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
-    				}
-    				entry.put("value", nbEvent);
-    				eventLine.put(entry);
-    				interval.clear();
-    			}
-    			i--; //Ensure that all trace are placed in time stamp interval
-    			beg = end;
-    			end += timeLineDelta;
+    		if(traces.getJSONObject(0).getLong("timestamp") > from){
+    			JSONObject firstEntry = new JSONObject();
+    			firstEntry.put("timestamp", from);
+    			firstEntry.put("value", 0);
+    			eventLine.put(firstEntry);
     		}
+    		
+    		for(int i=0; i<size; i++){
+    		
+    			trace = traces.getJSONObject(i);
+    			long ts = trace.getLong("timestamp");
+    		
+    			if(ts >= beg && ts < end){
+    				interval.add(trace);
+    			}else{
+    				if(!interval.isEmpty()){
+    					JSONObject entry = new JSONObject();
+    					entry.put("timestamp", beg);
+    					int nbEvent = 0;
+    					for(JSONObject tr : interval){
+    						nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
+    					}
+    					entry.put("value", nbEvent);
+    					eventLine.put(entry);
+    					interval.clear();
+    				}
+    				i--; //Ensure that all trace are placed in time stamp interval
+    				beg = end;
+    				end += timeLineDelta;
+    			}
+    		}
+    	
+    		if(!interval.isEmpty()){
+    			JSONObject entry = new JSONObject();
+    			entry.put("timestamp", beg);
+    			int nbEvent = 0;
+    			for(JSONObject tr : interval){
+    				nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
+    			}
+    			entry.put("value", nbEvent);
+    			eventLine.put(entry);
+    		}
+    		
+    	} else {
+    		JSONObject firstEntry = new JSONObject();
+			firstEntry.put("timestamp", from);
+			firstEntry.put("value", 0);
+			eventLine.put(firstEntry);
     	}
     	
-		if(!interval.isEmpty()){
-			JSONObject entry = new JSONObject();
-			entry.put("timestamp", beg);
-			int nbEvent = 0;
-			for(JSONObject tr : interval){
-				nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
-			}
-			entry.put("value", nbEvent);
-			eventLine.put(entry);
-		}
+    	JSONObject lastEntry = new JSONObject();
+    	lastEntry.put("timestamp", to);
+    	lastEntry.put("value", 0);
+		eventLine.put(lastEntry);
     	
     	return eventLine;
 	}
