@@ -122,6 +122,7 @@ require(['websocket', 'clock', 'jQuery'], function(websocketRef, clockModuleRef,
 			httpRequest.send();
 			
 			this.gotToNextSubMenu("TimeLines", httpRequest.responseText, "");
+            this.sendJSONCmd(eval({"method":"getTraceManStatus", "args":[], "callId":"getTraceManConf", "TARGET":"EHMI"}))
         }
         
 		/**

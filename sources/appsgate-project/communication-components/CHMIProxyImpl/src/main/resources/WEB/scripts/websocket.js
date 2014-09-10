@@ -58,6 +58,8 @@ define(['philipshue/philipshue', 'enocean/enocean', 'upnp/upnp', 'debugger/debug
 							philipshue.messageHandler(jsonMess);
                         }else if(callId.indexOf("upnp-conf-target") != -1) {
                             upnp.messageHandler(jsonMess);
+                        }else if(callId.indexOf("getTraceManConf") != -1) {
+                            deb.messageHandler(jsonMess);
                         }else {
 							chmi.returnCallHandler(jsonMess.callId, jsonMess);
 						}
