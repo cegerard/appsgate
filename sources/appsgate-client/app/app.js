@@ -39,54 +39,36 @@ define(function(require, exports, module) {
             // delete the current collections if any - in case of a reconnection
             if (typeof devices !== "undefined") {
                 devices.getCoreClock().unsynchronize();
-                devices.reset();
+                //devices.reset();
             }
             if (typeof places !== "undefined") {
-                places.reset();
+                //places.reset();
             }
             if (typeof services !== "undefined") {
-                services.reset();
+                //services.reset();
             }
             if (typeof programs !== "undefined") {
-                programs.reset();
+                //programs.reset();
             }
-
-            // wait for the data before launching the user interface
-            var placesReady = false;
-            var devicesReady = false;
-            var servicesReady = false;
-            var programsReady = false;
 
             // places
             dispatcher.on("placesReady", function() {
-                placesReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
-                    dispatcher.trigger("dataReady");
-                }
+                dispatcher.trigger("dataReady");
             });
 
             // devices
             dispatcher.on("devicesReady", function() {
-                devicesReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
-                    dispatcher.trigger("dataReady");
-                }
+                dispatcher.trigger("dataReady");
             });
 
             // services
             dispatcher.on("servicesReady", function() {
-                servicesReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
-                    dispatcher.trigger("dataReady");
-                }
+                dispatcher.trigger("dataReady");
             });
 
             // programs
             dispatcher.on("programsReady", function() {
-                programsReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
-                    dispatcher.trigger("dataReady");
-                }
+                dispatcher.trigger("dataReady");
             });
 
             // all data have been received, launch the user interface
