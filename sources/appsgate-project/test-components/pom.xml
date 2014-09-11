@@ -30,6 +30,7 @@
 <!-- 		<module>ExperimentaConfiguration</module> -->
 <!-- 		<module>ExperimentaPrograms</module> -->
     <module>CoreTest</module>
+    <module>EUDTest</module>
   </modules>
 
 </project>
