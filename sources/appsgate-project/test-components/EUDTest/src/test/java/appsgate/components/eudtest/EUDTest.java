@@ -1,17 +1,13 @@
 package appsgate.components.eudtest;
 
 import appsgate.components.eudtest.util.EUDTestHelper;
-import com.thoughtworks.selenium.SeleneseTestBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openqa.grid.selenium.GridLauncher;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.List;
 
@@ -23,11 +19,13 @@ import java.util.List;
 public class EUDTest extends EUDTestHelper {
 
     @Before
+    @Override
     public void setUp() throws Exception {
        super.setUp();
     }
 
     @After
+    @Override
     public void tearDown(){
         super.tearDown();
     }

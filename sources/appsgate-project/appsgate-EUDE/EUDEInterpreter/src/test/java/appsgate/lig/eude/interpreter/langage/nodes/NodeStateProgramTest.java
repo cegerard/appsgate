@@ -27,11 +27,11 @@ import org.junit.Before;
  *
  * @author jr
  */
-public class NodeStateTest extends NodeTest {
+public class NodeStateProgramTest extends NodeTest {
 
     private NodeState state;
     
-    public NodeStateTest() throws Exception {
+    public NodeStateProgramTest() throws Exception {
         super();
         final EHMIProxySpec c = new EHMIProxyMock("src/test/resources/jsonLibs/toto.json");
         final JSONObject events = new JSONObject();
@@ -59,14 +59,14 @@ public class NodeStateTest extends NodeTest {
         JSONObject o = t.ruleJSON;
         o.put("type", "device");
         o.put("value", "test");
-        ruleJSON.put("type", "state");
+        ruleJSON.put("type", "stateProgram");
         ruleJSON.put("object", o);
         ruleJSON.put("name", "isOn");
     }
 
     @Before
     public void setUp() throws Exception {
-        state = new NodeState(ruleJSON, programNode);
+        state = new NodeStateProgram(ruleJSON, programNode);
         this.instance = state;
     }
 
@@ -75,18 +75,5 @@ public class NodeStateTest extends NodeTest {
         String expertProgramScript = this.instance.getExpertProgramScript();
         System.out.println(expertProgramScript);
         Assert.assertEquals("/test/.isOfState(isOn)", expertProgramScript);
-    }
-    @Test
-    public void testCompositeState()  throws JSONException{
-        
-        ruleJSON.put("name", "testState");
-        programNode.getMediator().notifyChanges(new ProgramLineNotification(null, null, null));
-        try {
-            state = new NodeState(ruleJSON, programNode);
-        } catch (SpokNodeException ex) {
-            ex.printStackTrace();
-            Assert.fail("No exception should have been raised");
-        }
-        Assert.assertNull(state.call());
     }
 }
