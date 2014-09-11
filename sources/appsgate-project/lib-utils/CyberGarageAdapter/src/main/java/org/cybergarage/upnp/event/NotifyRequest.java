@@ -188,7 +188,7 @@ public class NotifyRequest extends SOAPRequest
 	public PropertyList getPropertyList() {
 		PropertyList properties = new PropertyList();
 		Node varSetNode = getEnvelopeNode();
-		for (int i = 0; i<varSetNode.getNNodes(); i++){
+		for (int i = 0; varSetNode!=null && i<varSetNode.getNNodes(); i++){
 			Node propNode = varSetNode.getNode(i);
 			if (propNode == null)
 				continue;

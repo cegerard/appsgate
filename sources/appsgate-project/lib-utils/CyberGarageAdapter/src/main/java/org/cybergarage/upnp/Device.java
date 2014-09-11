@@ -689,7 +689,14 @@ public class Device implements org.cybergarage.http.HTTPRequestListener,
 	// //////////////////////////////////////////////
 	// LeaseTime
 	// //////////////////////////////////////////////
-
+	boolean overridenLease = false;
+	public void overrideLeaseTime(int value) {
+		if(value==-1)
+			overridenLease=false;
+		overridenLease=true;
+		setLeaseTime(value);
+	}
+	
 	public void setLeaseTime(int value) {
 		getDeviceData().setLeaseTime(value);
 		Advertiser adv = getAdvertiser();
@@ -700,6 +707,9 @@ public class Device implements org.cybergarage.http.HTTPRequestListener,
 	}
 
 	public int getLeaseTime() {
+		if(overridenLease)
+			return getDeviceData().getLeaseTime();
+		
 		SSDPPacket packet = getSSDPPacket();
 		if (packet != null)
 			return packet.getLeaseTime();
