@@ -26,7 +26,7 @@ define([], function () {
                     $( "#traceMan-port" ).html("traceMan port: "+port);
                     $( "#traceMan-state" ).html("state: STARTED");
                     $( "#traceMan-status" ).removeClass("bg-color-green").addClass("bg-color-red");
-                    $( "#traceMan-status" ).on('click', function() { chmi.getWebSocket().getDebbuger().stopDebugger() });
+                    $( "#traceMan-status" ).attr("onclick", "javascript:chmi.getWebSocket().getDebbuger().stopDebugger();");
                     $( "#traceMan-ico" ).removeClass("icon-play").addClass("icon-stop");
                     $( "#traceMan-label" ).html("Stop");
                 }
@@ -43,9 +43,17 @@ define([], function () {
                 var value = JSON.parse(message.value);
                  $( "#traceMan-port" ).html("traceMan port: "+value.port);
                 if(value.state){
-                     $( "#traceMan-state" ).html("state: STARTED");
+                    $( "#traceMan-state" ).html("state: STARTED");
+                    $( "#traceMan-status" ).removeClass("bg-color-green").addClass("bg-color-red");
+                    $( "#traceMan-status" ).attr("onclick", "javascript:chmi.getWebSocket().getDebbuger().stopDebugger();");
+                    $( "#traceMan-ico" ).removeClass("icon-play").addClass("icon-stop");
+                    $( "#traceMan-label" ).html("Stop"); 
                 }else{
                     $( "#traceMan-state" ).html("state: STOPPED");
+                    $( "#traceMan-status" ).removeClass("bg-color-red").addClass("bg-color-green");
+                    $( "#traceMan-status" ).attr("onclick", "javascript:chmi.getWebSocket().getDebbuger().startDebugger();");
+                    $( "#traceMan-ico" ).removeClass("icon-stop").addClass("icon-play");
+                    $( "#traceMan-label" ).html("Start");  
                 }
                 $( "#traceMan-mode" ).html("mode: "+value.mode);
             }
