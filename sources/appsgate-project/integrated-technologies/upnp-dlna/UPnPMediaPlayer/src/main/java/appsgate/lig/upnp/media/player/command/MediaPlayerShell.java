@@ -53,13 +53,27 @@ public class MediaPlayerShell {
     private MediaPlayer retrieveMediaPlayerInstance(String player) {
 		Implementation implementation = CST.apamResolver.findImplByName(null,
 			"MediaPlayer");
-		return (MediaPlayer) implementation.getInst(player).getServiceObject();
+		if(implementation == null) {
+			System.out.println("Media Player Implementation not found");
+			return null;
+		}
+		Instance inst = implementation.getInst(player);
+		if(inst == null) {
+			System.out.println("No Media Player Instance with name : "+player+" found");
+			return null;
+		}
+		
+		return (MediaPlayer) inst.getServiceObject();
 	    
 	}
 
     @Descriptor("list the available players")
 	public void players(@Descriptor("none") String... args) {
 		Implementation implementation = CST.apamResolver.findImplByName(null,"MediaPlayer");
+		if(implementation == null) {
+			System.out.println("Media Player Implementation not found");
+			return;
+		}		
 		
 		StringBuilder players = new StringBuilder();
 		

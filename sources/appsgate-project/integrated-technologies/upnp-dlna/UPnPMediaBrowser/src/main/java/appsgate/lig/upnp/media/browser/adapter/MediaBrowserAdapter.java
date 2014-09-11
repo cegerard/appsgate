@@ -163,6 +163,11 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
             logger.error("ParserConfigurationException "+ex.getMessage());
             return "<empty/>";
         }
+        
+        if(contentDirectory == null) {
+        	logger.error("No Content Directory service bound");
+        	return "<empty/>";
+        }
 
         try {
             String ret = "";
@@ -176,7 +181,7 @@ public class MediaBrowserAdapter extends CoreObjectBehavior implements MediaBrow
             return result.getObject();
 
         } catch (UPnPException ignored) {
-            logger.error("UPNP Exception  "+ignored.getStackTrace());
+            logger.error("UPNP Exception  "+ignored.getMessage()+" UPnP code : "+ignored.getUPnPError_Code());
             return "<empty/>";
         }
     }
