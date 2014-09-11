@@ -454,6 +454,8 @@
       "indicate-illumination":"indique",
       "pushed-switch-event":"on appuie sur",
       "released-switch-event":"on relache",
+      "pushed-switch-up":"on appuie sur haut de",
+      "pushed-switch-bottom":"on appuie sur bas de",
       "pushed-switch-B1":"on appuie sur B1 de",
       "pushed-switch-B2":"on appuie sur B2 de",
       "pushed-switch-B1-on":"on appuie sur B1-on de",

@@ -9,7 +9,7 @@
     },
     "parameters": [],
     "definitions": [],
-    "body": {
+    "rules": {
         "type": "setOfRules",
         "rules": [
             {

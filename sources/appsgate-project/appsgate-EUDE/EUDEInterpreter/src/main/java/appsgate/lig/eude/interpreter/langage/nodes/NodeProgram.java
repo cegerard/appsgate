@@ -16,6 +16,7 @@ import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,12 +83,20 @@ final public class NodeProgram extends Node {
     /**
      * The json program
      */
-    private JSONObject programJSON = null;
+    private JSONObject bodyJSON = null;
 
     /**
      * Sequence of rules to interpret
      */
     private Node body;
+    /**
+     * The json program
+     */
+    private JSONObject rulesJSON = null;
+    /**
+     * The json program
+     */
+    private JSONObject actionsJSON = null;
 
     /**
      * Sub programs
@@ -147,7 +156,8 @@ final public class NodeProgram extends Node {
             setInvalid();
             return;
         }
-        this.programJSON = o.optJSONObject("body");
+        this.bodyJSON = o.optJSONObject("body");
+        this.rulesJSON = o.optJSONObject("rules");
         // initialize the program with the JSON
         try {
 
@@ -184,9 +194,23 @@ final public class NodeProgram extends Node {
             header = getJSONObject(json, "header");
 
             this.setSymbolTable(new SymbolTable(json.optJSONArray("definitions"), this));
-            body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
-            this.programJSON = getJSONObject(json, "body");
-
+            this.bodyJSON = json.optJSONObject("body");
+            this.rulesJSON = json.optJSONObject("rules");
+            this.actionsJSON = json.optJSONObject("actions");
+            if (this.bodyJSON != null) {
+                body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
+            } else {
+                JSONArray rules = new JSONArray();
+                rules.put(this.rulesJSON);
+                rules.put(this.actionsJSON);
+                JSONObject o = new JSONObject();
+                try {
+                    o.put("type", "SetOfRules");
+                    o.put("rules", rules);
+                } catch (JSONException ex) {
+                }
+                body = Builder.nodeOrNull(o, this);
+            }
             return this.buildReferences();
         } catch (SpokException ex) {
             LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
@@ -204,7 +228,9 @@ final public class NodeProgram extends Node {
             return false;
         }
         this.references = new ReferenceTable(mediator, this.id);
-        this.body.buildReferences(this.references);
+        if (this.body != null) {
+            this.body.buildReferences(this.references);
+        }
         ReferenceTable.STATUS newStatus = this.references.checkReferences();
         if (newStatus != ReferenceTable.STATUS.OK) {
             setInvalid();
@@ -405,8 +431,21 @@ final public class NodeProgram extends Node {
     /**
      * @return the JSON source of the program
      */
-    public JSONObject getJSONSource() {
-        return programJSON;
+    public JSONObject getJSONBody() {
+        return bodyJSON;
+    }
+
+    /**
+     * @return the JSON source of the rules
+     */
+    public JSONObject getJSONRules() {
+        return rulesJSON;
+    }
+    /**
+     * @return the JSON source of the actions
+     */
+    public JSONObject getJSONActions() {
+        return actionsJSON;
     }
 
     /**
@@ -435,7 +474,9 @@ final public class NodeProgram extends Node {
             o.put("header", header);
             o.put("package", getPath());
 
-            o.put("body", getJSONSource());
+            o.put("body", getJSONBody());
+            o.put("rules", getJSONRules());
+            o.put("actions", getJSONActions());
 
             o.put("activeNodes", activeNodes);
             o.put("nodesCounter", nodesCounter);

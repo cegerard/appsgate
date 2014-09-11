@@ -454,6 +454,8 @@
       "indicate-illumination":"indicates",
       "pushed-switch-event":"pressing",
       "released-switch-event":"releasing it",
+      "pushed-switch-up":"pressing the top button of",
+      "pushed-switch-bottom":"pressing the bottom button of",
       "pushed-switch-B1-on":"pressing B1-on",
       "pushed-switch-B2-on":"pressing B2-on",
       "pushed-switch-B1-off":"pressing B1-off",
