@@ -19,6 +19,10 @@ define([
       var self = this;
 
       CoreClock.__super__.initialize.apply(this, arguments);
+      // setting default friendly name if none exists
+      if (this.get("name") === "") {
+          this.set("name", $.i18n.t("devices.clock.name.singular"));
+      }
 
       self.set("reset", false);
 

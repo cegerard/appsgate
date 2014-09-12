@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>appsgate.libs</groupId>
+        <artifactId>lib-utils</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    	
+        <artifactId>enocean-driver-adapter</artifactId>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<file>src/main/resources/enocean-driver-1.12.0.jar</file>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+                                <artifactId>enocean-driver</artifactId>
+                                <groupId>ubikit</groupId>
+								<version>1.12.0</version>
+								<packaging>jar</packaging>
+								<file>src/main/resources/enocean-driver-1.12.0.jar</file>
+								<generatePom>true</generatePom>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
