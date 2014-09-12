@@ -76,7 +76,7 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
     }
 
-    @Requires(specification = PHBridgeImpl.class,optional = true)
+    @Requires(specification = PHBridgeImpl.class,optional = true,proxy = false)
     List<PHBridgeImpl> bridges;
 
     @Override
@@ -84,38 +84,50 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
         LOG.info("Appsgate philips hue importer was invoked");
 
+        Boolean bridgeExist=bridges.size()>0;
+
         PhilipsHueLightDeclarationWrapper pojo= PhilipsHueLightDeclarationWrapper.create(importDeclaration);
 
-        try {
+        if(bridgeExist){
+            try {
 
-            FuchsiaUtils.loadClass(context, pojo.getType());
+                FuchsiaUtils.loadClass(context, pojo.getType());
 
-            Dictionary<String, Object> props = new Hashtable<String, Object>();
+                Dictionary<String, Object> props = new Hashtable<String, Object>();
 
-            LightWrapper wrap=new LightWrapper(pojo.getLight(),pojo.getBridge());
+                LightWrapper wrap=new LightWrapper(pojo.getLight(),pojo.getBridge());
 
-            ServiceRegistration lampService=context.registerService(LightWrapper.class,wrap,props);
+                ServiceRegistration lampService=context.registerService(LightWrapper.class,wrap,props);
 
-            lamps.put(pojo.getId(),lampService);
+                lamps.put(pojo.getId(),lampService);
 
-            //This is done in a different thread duo to an Apam blockage
-            PhilipsHueFactoryExecutor pfe=new PhilipsHueFactoryExecutor(bridges.get(0), pojo.getLight(),this,importDeclaration);
-            lampsApamInstance.put(pojo.getId(),pfe.getDeviceID());
-            new Thread(pfe).start();
+                //This is done in a different thread duo to an Apam blockage
+                PhilipsHueFactoryExecutor pfe=new PhilipsHueFactoryExecutor(bridges.get(0), pojo.getLight(),this,importDeclaration);
+                lampsApamInstance.put(pojo.getId(),pfe.getDeviceID());
+                new Thread(pfe).start();
 
+                handleImportDeclaration(importDeclaration);
 
-        } catch (ClassNotFoundException e) {
-            LOG.error("Failed to load type {}, importing process aborted.", pojo.getType(), e);
+            } catch (ClassNotFoundException e) {
+                LOG.error("Failed to load type {}, importing process aborted.", pojo.getType(), e);
+            }
+
+        }else {
+            LOG.warn("Importer notified without a bridge present, this might be a bug");
         }
 
-        handleImportDeclaration(importDeclaration);
+
 
     }
 
     @Override
     protected void denyImportDeclaration(final ImportDeclaration importDeclaration) throws BinderException {
 
+        System.out.println("Removing Lamp:"+importDeclaration.getMetadata().get("ID"));
+
         PhilipsHueLightDeclarationWrapper pojo= PhilipsHueLightDeclarationWrapper.create(importDeclaration);
+
+        unhandleImportDeclaration(importDeclaration);
 
         try {
             lamps.remove(pojo.getId()).unregister();
@@ -124,13 +136,14 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
         }
 
         try {
+            LOG.info("Trying to remove instance {} from apam",pojo.getId());
             String apamInstanceName=lampsApamInstance.remove(pojo.getId());
             ((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(apamInstanceName);
         }catch(IllegalStateException e){
             LOG.error("failed unregistering lamp", e);
         }
 
-        unhandleImportDeclaration(importDeclaration);
+
     }
 
 
