@@ -175,7 +175,14 @@ public class GoogleEvent {
 		currentEvent+=GoogleHTTPRequest.COMMA+PARAM_UPDATED+GoogleHTTPRequest.EQUAL+updated;
 		currentEvent+=GoogleHTTPRequest.COMMA+PARAM_START+GoogleHTTPRequest.EQUAL+startTime;
 		currentEvent+=GoogleHTTPRequest.COMMA+PARAM_END+GoogleHTTPRequest.EQUAL+endTime;
-		currentEvent+=GoogleHTTPRequest.COMMA+PARAM_UNPARSED+GoogleHTTPRequest.EQUAL+unparsedJSON;
+		for(ScheduledInstruction inst : onBeginInstructions) {
+			currentEvent+="\n"+ON_BEGIN+GoogleHTTPRequest.EQUAL+inst.toString();
+		}
+		for(ScheduledInstruction inst : onEndInstructions) {
+			currentEvent+="\n"+ON_END+GoogleHTTPRequest.EQUAL+inst.toString();
+		}		
+		currentEvent+="\n"+PARAM_UNPARSED+GoogleHTTPRequest.EQUAL+unparsedJSON;
+
 		return currentEvent;
 	}
 	

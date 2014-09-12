@@ -62,6 +62,14 @@ public class GoogleScheduler implements AlarmEventObserver {
 	 */
 	String calendarId = "primary";
 
+	public String getCalendarId() {
+		return calendarId;
+	}
+
+	public void setCalendarId(String calendarId) {
+		this.calendarId = calendarId;
+	}
+
 	public GoogleScheduler() {
 		lock=new Object();
 	}
@@ -117,6 +125,7 @@ public class GoogleScheduler implements AlarmEventObserver {
 			}
 			
 			for (GoogleEvent event : events) {
+				logger.trace("Found event : "+event.toString());
 				
 			}
 			// Step 4: Register all the events whose start time between the nearest one and one minute later

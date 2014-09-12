@@ -53,7 +53,7 @@ public class ScheduledInstruction {
 	
 	@Override
 	public String toString() {
-		return "Command:"+command+", target: "+target;
+		return command+SEPARATOR+target;
 	}
 
 }
