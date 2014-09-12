@@ -1,10 +1,15 @@
 package appsgate.lig.google.services;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import appsgate.lig.google.helpers.GoogleHTTPRequest;
 
@@ -14,7 +19,9 @@ import appsgate.lig.google.helpers.GoogleHTTPRequest;
  * @author thibaud
  */
 public class GoogleEvent {
-	
+		
+	private static Logger logger = LoggerFactory.getLogger(GoogleEvent.class);
+
 	public static final String PARAM_ID="id";
 	public static final String PARAM_SUMMARY="summary";
 	public static final String PARAM_DESCRIPTION="description";
@@ -27,6 +34,28 @@ public class GoogleEvent {
 	public static final String PARAM_DATETIME="dateTime";
 	
 	public static final String PARAM_UNPARSED="unparsedJSON";
+	
+	/**
+	 * Reserved keyword for AppsGate in the description,
+	 * to map appsgate instruction (such as appsgate schedules)
+	 * To the beginning of the event
+	 * (one instruction per line, must start with the keyword and the '=' separator
+	 * Ex: begin=start.program-5524
+	 */
+	public static final String ON_BEGIN="begin";
+	
+	/**
+	 * Reserved keyword for AppsGate in the description,
+	 * to map appsgate instruction (such as appsgate schedules)
+	 * To the end of the event
+	 * (one instruction per line, must start with the keyword and the '=' separator
+	 * Ex: end=stop.program-5524
+	 */	
+	public static final String ON_END="end";
+
+	public final String SEPARATOR=".";
+
+	
 
 
 	public String getId() {
@@ -72,6 +101,22 @@ public class GoogleEvent {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public Set<ScheduledInstruction> getOnBeginInstructions() {
+		return onBeginInstructions;
+	}
+
+	public Set<ScheduledInstruction> getOnEndInstructions() {
+		return onEndInstructions;
+	}
+
+	public void setOnBeginInstructions(Set<ScheduledInstruction> onBeginInstructions) {
+		this.onBeginInstructions = onBeginInstructions;
+	}
+
+	public void setOnEndInstructions(Set<ScheduledInstruction> onEndInstructions) {
+		this.onEndInstructions = onEndInstructions;
+	}	
 
 	String id=null;
 	String startTime=null;
@@ -80,10 +125,9 @@ public class GoogleEvent {
 	String name=null;
 	String description=null;
 	String unparsedJSON=null;
-		
-	Set<String> appsGateInstructions=new HashSet<String>();
-	
-	
+
+	Set<ScheduledInstruction> onBeginInstructions=new HashSet<ScheduledInstruction>();
+	Set<ScheduledInstruction> onEndInstructions=new HashSet<ScheduledInstruction>();
 
 	/**
 	 * Parse a google calendar event to build the corresponding java object
@@ -97,7 +141,6 @@ public class GoogleEvent {
 			
 			id=jsonEvent.getString(PARAM_ID);
 			name=jsonEvent.getString(PARAM_SUMMARY);
-			description=jsonEvent.optString(PARAM_DESCRIPTION); // This one is optional
 			updated=jsonEvent.getString(PARAM_UPDATED);
 			
 			JSONObject start = jsonEvent.getJSONObject(PARAM_START);
@@ -107,6 +150,11 @@ public class GoogleEvent {
 			
 			JSONObject end = jsonEvent.getJSONObject(PARAM_END);
 			endTime=end.getString(PARAM_DATETIME);
+			
+			description=jsonEvent.optString(PARAM_DESCRIPTION); // This one is optional
+			onBeginInstructions=parseDescription(description, ON_BEGIN);
+			onEndInstructions=parseDescription(description, ON_END);
+			
 			
 			
 		} catch (JSONException exc) {
@@ -131,5 +179,38 @@ public class GoogleEvent {
 		return currentEvent;
 	}
 	
+	
+	/**
+	 * Parse the description part of a Calendar Event to fetch specific AppsGate keywords
+	 * @param description
+	 * @return an set of appsgate instructions may be empty but should not be null
+	 */
+	public static Set<ScheduledInstruction> parseDescription(String description, String keyword) {
+		Set<ScheduledInstruction> instructions=new HashSet<ScheduledInstruction>();
+		
+		if(description != null &&keyword!=null && description.length()>0
+				&& keyword.length()>0) {
+			BufferedReader bfr = new BufferedReader(new StringReader(description));
+			String line=null;
+			try{
+				line = bfr.readLine();
+				while (line!=null) {
+					if (line.startsWith(keyword)) {
+						ScheduledInstruction inst = ScheduledInstruction.parseInstruction(
+								line.substring(keyword.length()+ScheduledInstruction.SEPARATOR.length()  ));
+						if(inst != null ) {
+							instructions.add(inst);
+							logger.trace("Added instruction on "+keyword+" : "+inst.toString());
+						}else {
+							logger.info("Unrecognized instruction : "+line);
+						}
+					}
+				}
+			} catch (IOException exc) {
+				logger.error("Error while parsing "+line+", message : "+exc.getMessage());	
+			}
+		}
+		return instructions;
+	}
 
 }

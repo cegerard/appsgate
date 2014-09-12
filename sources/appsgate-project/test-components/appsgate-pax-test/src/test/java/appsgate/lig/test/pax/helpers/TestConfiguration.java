@@ -165,7 +165,8 @@ public class TestConfiguration {
 				cleanCaches(), systemProperty("logback.configurationFile")
 						.value(logpath), systemProperty(
 						"org.ops4j.pax.logging.DefaultServiceLog.level").value(
-						"WARN"));
+						"WARN"),
+						systemProperty("google.configuration.file").value("conf/google.cfg"));
 
 		return initial;
 	}

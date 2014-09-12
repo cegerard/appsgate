@@ -22,7 +22,7 @@ public class ScheduleAutoRefresh extends TimerTask {
 	 */
 	@Override
 	public void run() {
-		scheduler.refresh();
+		scheduler.refreshScheduler();
 	}
 
 }

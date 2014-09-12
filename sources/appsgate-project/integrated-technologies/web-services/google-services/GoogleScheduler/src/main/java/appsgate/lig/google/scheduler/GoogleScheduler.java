@@ -16,8 +16,9 @@ import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.google.helpers.GoogleCalendarReader;
-import appsgate.lig.google.helpers.GoogleCalendarWriter;
+import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleAppsGateEvent;
+import appsgate.lig.google.services.GoogleEvent;
 
 
 /**
@@ -31,22 +32,35 @@ public class GoogleScheduler implements AlarmEventObserver {
 	 * This constant define the t0 -> t1 interval in which we observe the Calendar Events (in ms)
 	 */
 	public static final long TIME_INTERVAL = 24*60*60*1000;
+	private long observationInterval = TIME_INTERVAL;
+	
 	
 	/**
 	 * Even if no events from the clock, the scheduler will scan again all events in the calendar
 	 * at this rate in ms
 	 * (it should be defined depends on the time flow rate, 10 minutes intervals in real time should be fine)
 	 */
-	public long currentRefresh = BASE_REFRESH;
+	private long currentRefresh = BASE_REFRESH;
 	public static final long BASE_REFRESH = 10*60*1000;
 
+	// this one will be injected by ApAM
+	private GoogleAdapter serviceAdapter;
 
-	Object lock;
+	// this one will be injected by ApAM
 	CoreClockSpec clock;
+	
+	Object lock;
 	
 	Set<Integer> currentAlarms=new HashSet<Integer>();
 	Map<Integer, String> currentEventsId = new HashMap<Integer, String>();
 	Map<String, GoogleAppsGateEvent> eventMap = new HashMap<String, GoogleAppsGateEvent>();
+	
+	/*
+	 * By default if the user as granted access to GoogleCalendar service
+	 * He should have a primary calendar,
+	 * nevertheless this parameter should be overridden with a calendar dedicated to the smart home 
+	 */
+	String calendarId = "primary";
 
 	public GoogleScheduler() {
 		lock=new Object();
@@ -60,18 +74,22 @@ public class GoogleScheduler implements AlarmEventObserver {
 		//        logger.trace("started successfully, waiting for SynchroObserverTask to wake up");
 	}
 	
-	public void refresh() {
+	public void refreshScheduler() {
 		// TODO
 	}
 	
 	public void resetScheduler() {
-		if(clock!=null) {
-			logger.warn("No CoreClock bound, aborting refreshTimer and reseting current Alarms");
+		if(clock==null) {
+			logger.warn("No CoreClock bound, aborting reset");
+			return;
+		}
+		if(serviceAdapter==null) {
+			logger.warn("No GoogleAdapter bound, aborting reset");
 			return;
 		}
 		
 		synchronized (lock) {
-			// Step 1: unregister alarms 
+			// Step 1: unregister alarms and clearing all registered events  
 			for(Integer i : currentAlarms) {
 				clock.unregisterAlarm(i.intValue());
 			}
@@ -81,20 +99,26 @@ public class GoogleScheduler implements AlarmEventObserver {
 			
 			// Step 2: get the current clockTime
 			long currentTime = clock.getCurrentTimeInMillis();
-			long endPeriod = currentTime + TIME_INTERVAL;
+			long endPeriod = currentTime + observationInterval;
 			
-			Map<String, String> urlParameters=new HashMap<String, String>();			
+			Map<String, String> requestParameters=new HashMap<String, String>();			
 			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-			urlParameters.put(GoogleCalendarReader.PARAM_TIMEMIN, dateFormat.format(new Date(currentTime)));
-			urlParameters.put(GoogleCalendarReader.PARAM_TIMEMIN, dateFormat.format(new Date(endPeriod)));
-			
-
+			requestParameters.put(GoogleCalendarReader.PARAM_TIMEMIN, dateFormat.format(new Date(currentTime)));
+			requestParameters.put(GoogleCalendarReader.PARAM_TIMEMAX, dateFormat.format(new Date(endPeriod)));
 			
 			// Step 3: Get the events in the time Interval
-//			GoogleCalendarReader.getEvents(apiKey, accessTokenType, accessTokenValue, calendarId, urlParameters);
+			Set <GoogleEvent> events = serviceAdapter.getEvents(calendarId, requestParameters);
 			
 			
+			// If no events, we do nothing (expecting the refresh timer to wake up in case of new events registered)
+			if(events==null ||events.size()<1) {
+				logger.info("No events registered for the next "+observationInterval/(1000*60*60)+" hours");
+				return;
+			}
 			
+			for (GoogleEvent event : events) {
+				
+			}
 			// Step 4: Register all the events whose start time between the nearest one and one minute later
 			
 			// Idee, utiliser les update pour voir si l'évenement a changé

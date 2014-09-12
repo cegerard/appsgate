@@ -17,6 +17,7 @@
 		singleton="true">
 		
         <relation specification="CoreClockSpec" field="clock" resolve="exist" />
+        <relation specification="GoogleAdapter" field="serviceAdapter" resolve="exist" />
         
         <relation push="clockFlowRateChanged" resolve="exist"></relation>
         <relation push="clockSetChanged" resolve="exist"></relation>
