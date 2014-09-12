@@ -29,6 +29,7 @@ import fr.imag.adele.apam.Instance;
 import appsgate.lig.calendar.service.spec.CoreCalendarSpec;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
 import appsgate.lig.google.impl.GoogleAdapterImpl;
+import appsgate.lig.google.scheduler.GoogleScheduler;
 import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.mail.Mail;
@@ -117,6 +118,22 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 	}
 	
 	
+	public void testGoogleScheduler() {
+		String mailAccount= "smarthome.adele@gmail.com";
+		
+		TestCoreAppsgate.testEmptyAppsgate();
+		
+		CoreClockSpec service = (CoreClockSpec) initTestClock();
+		GoogleAdapter ga = (GoogleAdapter) initGoogleAdapter();
+		GoogleScheduler toto = (GoogleScheduler) initGoogleScheduler();
+		
+		toto.resetScheduler();
+	}
+
+	public static Object initGoogleScheduler() {
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,null,
+				"GoogleScheduler", null);
+	}		
 	
 	public static Object initGoogleAdapter() {
 		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"GoogleAdapter",

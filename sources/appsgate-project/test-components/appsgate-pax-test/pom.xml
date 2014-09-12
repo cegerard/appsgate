@@ -53,6 +53,12 @@
             <artifactId>GoogleAdapter</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>GoogleScheduler</artifactId>
+            <version>${project.version}</version>
+        </dependency>    
 
 		<!-- repackaged/patched dependencies (as osgi bundles, or apamcomponents) 
 			for appsgate -->
