@@ -15,7 +15,35 @@
 <ul class="list-group scrollable">
 	<% if (typeof sensorImg !== "undefined") { %>
 		<li class="list-group-item">
-			<img src="<%= sensorImg %>" class="img-responsive">
+            <!-- Label photo plural/singular -->
+            <% if (sensorImg.length === 1) { %>
+                <strong data-i18n="devices.photo-label.singular"></strong>
+            <% } else { %>
+                <strong data-i18n="devices.photo-label.plural"></strong>
+            <% } %>
+        
+            <div class= "row">
+                <% _.each(sensorImg, function(img) { %>
+                    <!-- One image -->
+                    <% if (sensorImg.length === 1) {%>
+                        <div class="device-div-img">
+                            <img src="<%= img %>" class="img-responsive device-img">
+                             <% if (typeof sensorCaption !== "undefined" && sensorCaption[sensorImg.indexOf(img)] !== "undefined") { %>
+                                <span><%= sensorCaption[sensorImg.indexOf(img)] %></%></span>
+                             <% } %>
+                        </div>
+                    <% } else if (sensorImg.length === 2) { %>
+                        <!-- Two images -->
+                        <div class=" col-xs-6 device-div-img">
+                            <img src="<%= img %>" class="img-responsive device-img">
+                            <% if (typeof sensorCaption !== "undefined" && sensorCaption[sensorImg.indexOf(img)] !== "undefined") { %>
+                                <span><%= sensorCaption[sensorImg.indexOf(img)] %></%></span>
+                             <% } %>
+                        </div>
+                    <% } %>
+                    <!-- If more than two images.. -->
+                <% }) %>
+            </div>            
 		</li>
 	<% } else if (device.get("type") === "21" || device.get("type") === 21) { %>
 		<li class="list-group-item">

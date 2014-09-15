@@ -379,7 +379,8 @@ define([
                     case 0: // temperature sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/temperature.jpg",
+                            sensorImg: ["app/img/sensors/temperature_intern.png", "app/img/sensors/temperature_extern.png"],
+                            sensorCaption: [$.i18n.t("devices.temperature.caption.intern"), $.i18n.t("devices.temperature.caption.extern")],
                             sensorType: $.i18n.t("devices.temperature.name.singular"),
                             places: places,
                             deviceDetails: this.tplTemperature
@@ -389,7 +390,8 @@ define([
                     case 1: // illumination sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/illumination.jpg",
+                            sensorImg: ["app/img/sensors/illumination_intern.png", "app/img/sensors/illumination_extern.png"],
+                            sensorCaption: [$.i18n.t("devices.illumination.caption.intern"), $.i18n.t("devices.illumination.caption.extern")],
                             sensorType: $.i18n.t("devices.illumination.name.singular"),
                             places: places,
                             deviceDetails: this.tplIllumination
@@ -399,7 +401,7 @@ define([
                     case 2: // switch sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/doubleSwitch.jpg",
+                            sensorImg: ["app/img/sensors/switch.png"],
                             sensorType: $.i18n.t("devices.switch.name.singular"),
                             places: places,
                             deviceDetails: this.tplSwitch
@@ -409,7 +411,7 @@ define([
                     case 3: // contact sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/contact.jpg",
+                            sensorImg: ["app/img/sensors/contact.png"],
                             sensorType: $.i18n.t("devices.contact.name.singular"),
                             places: places,
                             deviceDetails: this.tplContact
@@ -419,7 +421,7 @@ define([
                     case 4: // key card sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/keycard.jpg",
+                            sensorImg: ["app/img/sensors/keycard.png"],
                             sensorType: $.i18n.t("devices.keycard-reader.name.singular"),
                             places: places,
                             deviceDetails: this.tplKeyCard
@@ -428,7 +430,7 @@ define([
                     case 5: // ARD lock
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/ard-logo.png",
+                            sensorImg: ["app/img/sensors/ard-logo.png"],
                             sensorType: $.i18n.t("devices.ard.name.singular"),
                             places: places,
                             deviceDetails: this.tplARD
@@ -438,7 +440,7 @@ define([
                     case 6: // plug
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/plug.jpg",
+                            sensorImg: ["app/img/sensors/plug.png"],
                             sensorType: $.i18n.t("devices.plug.name.singular"),
                             places: places,
                             deviceDetails: this.tplPlug
@@ -450,7 +452,7 @@ define([
 
                         this.$el.html(this.template({
                             device: lamp,
-                            sensorImg: "app/img/sensors/philips-hue.jpg",
+                            sensorImg: ["app/img/sensors/philips-hue.jpg"],
                             sensorType: $.i18n.t("devices.lamp.name.singular"),
                             places: places,
                             deviceDetails: this.tplPhillipsHue
@@ -469,7 +471,7 @@ define([
                     case 8: // switch actuator
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/doubleSwitch.jpg",
+                            sensorImg: ["app/img/sensors/doubleSwitch.jpg"],
                             sensorType: $.i18n.t("devices.actuator.name.singular"),
                             places: places,
                             deviceDetails: this.tplActuator
@@ -497,7 +499,7 @@ define([
                     case 210: // domicube
                       this.$el.html(this.template({
                           device: this.model,
-                          sensorImg: "app/img/sensors/domicube.jpg",
+                          sensorImg: ["app/img/sensors/domicube.jpg"],
                           sensorType: $.i18n.t("devices.domicube.name.singular"),
                           places:places,
                           deviceDetails: this.tplDomiCube
