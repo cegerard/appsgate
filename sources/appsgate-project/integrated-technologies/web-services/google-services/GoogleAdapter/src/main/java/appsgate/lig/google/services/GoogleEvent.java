@@ -212,6 +212,7 @@ public class GoogleEvent {
 							logger.info("Unrecognized instruction : "+line);
 						}
 					}
+					line = bfr.readLine();
 				}
 			} catch (IOException exc) {
 				logger.error("Error while parsing "+line+", message : "+exc.getMessage());	
