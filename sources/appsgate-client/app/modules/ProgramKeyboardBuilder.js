@@ -59,8 +59,14 @@ define([
                                 case '"state"':
                                     this.buildStateKeys("state");
                                     break;
-                                case '"maintanableState"':
-                                    this.buildStateKeys("maintanableState");
+                                case '"stateProgram"':
+                                    this.buildStateProgramKeys("stateProgram");
+                                    break;
+                                case '"keepStateProgram"':
+                                    this.buildStateProgramKeys("keepStateProgram");
+                                    break;
+                                case '"maintainableState"':
+                                    this.buildStateKeys("maintainableState");
                                     break;
                                 case '"seqRules"':
                                     break;
@@ -195,6 +201,30 @@ define([
                     }
                 }
             }
+            
+            
+        },
+        
+        buildStateProgramKeys: function(which) {
+            var keep = "";
+            if (which != "state") {
+                keep = "-keep";
+            }
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var v = {"type": which, "object": {"iid": "X", "type": 'programs'}, "iid": "X"};
+            $(btn).append("<span data-i18n='programs.keyboard.stateStarted"+keep+"'/>");
+            v.phrase = "programs.language.stateStarted"+keep;
+            v.name = "isStarted";
+            $(btn).attr("json", JSON.stringify(v));
+            $(".expected-links").append(btn);
+            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var v2 = {"type": which, "object": {"iid": "X", "type": 'programs'}, "iid": "X"};
+            $(btn2).append("<span data-i18n='programs.keyboard.stateStopped"+keep+"'/>");
+            v2.phrase = "programs.language.stateStopped"+keep;
+            v2.name = "isStopped";
+            $(btn2).attr("json", JSON.stringify(v2));
+            $(".expected-links").append(btn2);
+  
         },
         buildDevices: function() {
             devices.forEach(function(device) {

@@ -49,9 +49,9 @@ public class NodeStateProgram extends NodeState {
         JSONObject beginEvent;
         JSONObject endEvent;
         try {
-            beginEvent = new JSONObject("{'type':'nodeEvent', 'eventName':'programCall', 'eventValue':'start'}");
+            beginEvent = new JSONObject("{'type':'nodeEvent', 'eventName':'runningState', 'eventValue':'start'}");
             beginEvent.put("source", getObjectNode().getJSONDescription());
-            endEvent = new JSONObject("{'type':'nodeEvent', 'eventName':'programCall', 'eventValue':'stop'}");
+            endEvent = new JSONObject("{'type':'nodeEvent', 'eventName':'runningState', 'eventValue':'stop'}");
             endEvent.put("source", getObjectNode().getJSONDescription());
         } catch (JSONException ex) {
             LOGGER.error("unable to build a JSON object");
@@ -79,13 +79,13 @@ public class NodeStateProgram extends NodeState {
 
         if (stateOn == true) {
             try {
-                o.put("action", "start");
+                o.put("methodName", "start");
             } catch (JSONException ex) {
             }
             return new NodeAction(o, this);
         } else {
             try {
-                o.put("action", "stop");
+                o.put("methodName", "stop");
             } catch (JSONException ex) {
             }
             return new NodeAction(o, this);

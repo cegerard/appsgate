@@ -239,7 +239,19 @@
          "action":{
             "turnOn":"Allumer",
             "turnOff":"Eteindre"
-         }
+         },
+		 "language" : {
+			"isOff" : "__myVar__ est éteinte",
+			"isOn" : "__myVar__ est allumée",
+			"isOff-keep" : "__myVar__ éteinte",
+			"isOn-keep" : "__myVar__ allumée"
+		 },
+		 "keyboard" : {
+			"isOff" : "la prise est éteinte",
+			"isOn" : "la prise est allumée",
+			"isOff-keep" : "la prise éteinte",
+			"isOn-keep" : "la prise allumée"
+		 }
       },
       "lamp":{
          "name":{
@@ -254,7 +266,19 @@
             "turnOn":"Allumer",
             "turnOff":"Eteindre",
             "blink":"Faire clignoter"
-         }
+         },
+		 "language" : {
+			"isOff" : "__myVar__ est éteinte",
+			"isOn" : "__myVar__ est allumée",
+			"isOff-keep" : "__myVar__ éteinte",
+			"isOn-keep" : "__myVar__ allumée"
+		 },
+		 "keyboard" : {
+			"isOff" : "la lampe est éteinte",
+			"isOn" : "la lampe est allumée",
+			"isOff-keep" : "la lampe éteinte",
+			"isOn-keep" : "la lampe allumée"
+		 }
       },
       "clock":{
          "name":{
@@ -412,13 +436,20 @@
       },
 	  "keyboard" : {
 			"eventStart" : "on active le programme",
-			"eventStop" : "on désactive le programme"
+			"eventStop" : "on désactive le programme",
+			"stateStarted": "le programme est actif",
+			"stateStarted-keep": "le programme actif",
+			"stateStopped": "le programme est inactif",
+			"stateStopped-keep": "le programme inactif"
 	  },
 	  "language" : {
 			"eventStart" : "on active __myVar__",
-			"eventStop" : "on désactive __myVar__"
+			"eventStop" : "on désactive __myVar__",
+			"stateStarted": "__myVar__ est actif",
+			"stateStarted-keep": "__myVar__ actif",
+			"stateStopped": "__myVar__ est inactif",
+			"stateStopped-keep": "__myVar__ inactif"
 	  }
-	  
    },
    "editor":{
       "title":"Editeur de programme",

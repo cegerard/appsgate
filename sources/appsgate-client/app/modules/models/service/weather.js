@@ -65,8 +65,12 @@ define([
         /**
          * return the list of available states (only those returning a boolean)
          */
-        getStates: function() {
+        getStates: function(which) {
+		  if (which == "state") {
+			//code
             return ["isCurrentlyDaylight", "isCurrentWeatherCode", "isForecastWeatherCode"];
+		  }
+		  return [];
         },
 
         getKeyboardForState: function(state,which){

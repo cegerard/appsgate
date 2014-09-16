@@ -104,7 +104,9 @@ define([
                     input += this.buildEventProgramNode(param);
                     break;
                 case "state":
-                case "maintanableState":
+                case "stateProgram":
+                case "keepStateProgram":
+                case "maintainableState":
                     deletable = true;
                     input = this.buildStateNode(param);
                     break;

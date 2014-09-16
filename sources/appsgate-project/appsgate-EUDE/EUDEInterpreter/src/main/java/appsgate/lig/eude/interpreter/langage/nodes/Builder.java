@@ -114,6 +114,9 @@ public class Builder {
         if (type.equalsIgnoreCase("state")) {
             return NODE_TYPE.NODE_STATE;
         }
+        if (type.equalsIgnoreCase("keepStateProgram")) {
+            return NODE_TYPE.NODE_STATE_PROGRAM;
+        }
         if (type.equalsIgnoreCase("stateProgram")) {
             return NODE_TYPE.NODE_STATE_PROGRAM;
         }

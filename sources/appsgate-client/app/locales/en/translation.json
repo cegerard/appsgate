@@ -412,11 +412,15 @@
       },
 	  "keyboard" : {
 			"eventStart" : "program is being started",
-			"eventStop" : "program is being stopped"
+			"eventStop" : "program is being stopped",
+            "stateStarted" : "program is started",
+            "stateStopped" : "program is stopped"
 	  },
 	  "language" : {
 			"eventStart" : "__myVar__ is being started",
-			"eventStop" : "__myVar__ is being stopped"
+			"eventStop" : "__myVar__ is being stopped",
+            "stateStarted" : "__myVar__ is started",
+            "stateStopped" : "__myVar__ is stopped"
 	  }
    },
    "editor":{
