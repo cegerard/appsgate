@@ -385,7 +385,7 @@ define([
             }
         },
         buildEventProgramKeys: function() {
-            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.language.eventStart'/></button>");
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.keyboard.eventStart'/></button>");
             var v = {
                 "type": "eventProgram",
                 "iid": "X",
@@ -394,15 +394,16 @@ define([
                     'iid' : "X"
                     },
                 "eventName" : "runningState",
-                "eventValue" : "start"
+                "eventValue" : "start",
+                "phrase" : "programs.language.eventStart"
 
             };
             $(btn).attr("json", JSON.stringify(v));
 
             $(".expected-events").append(btn);
             
-            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.language.eventStop'/></button>");
-            var v = {
+            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.keyboard.eventStop'/></button>");
+            var w = {
                 "type": "eventProgram",
                 "iid": "X",
                 "source" : {
@@ -410,11 +411,12 @@ define([
                     'iid' : "X"
                     },
                 "eventName" : "runningState",
-                "eventValue" : "stop"
+                "eventValue" : "stop",
+                "phrase" : "programs.language.eventStop"
 
             };
-            $(btn2).attr("json", JSON.stringify(v));
-            $(".expected-events").append(btn);
+            $(btn2).attr("json", JSON.stringify(w));
+            $(".expected-events").append(btn2);
 
 
         },

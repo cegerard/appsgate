@@ -410,9 +410,13 @@
          "start":"Activer",
          "stop":"Désactiver"
       },
+	  "keyboard" : {
+			"eventStart" : "on active le programme",
+			"eventStop" : "on désactive le programme"
+	  },
 	  "language" : {
-			"eventStart" : "Le programme démarre",
-			"eventStop" : "Le programme s'arrête"
+			"eventStart" : "on active __myVar__",
+			"eventStop" : "on désactive __myVar__"
 	  }
 	  
    },
