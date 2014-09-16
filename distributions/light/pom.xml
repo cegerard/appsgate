@@ -326,6 +326,16 @@
                                     <groupId>org.ow2.chameleon.fuchsia.base.knx</groupId>
                                     <version>${fuchsia.version}</version>
                                 </artifactItem>
+				<artifactItem>
+					<groupId>javax.jmdns</groupId>
+					<artifactId>jmdns</artifactId>
+					<version>3.4.1</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.ow2.chameleon.fuchsia.discovery</groupId>
+					<artifactId>org.ow2.chameleon.fuchsia.discovery.mdns</artifactId>
+					<version>${fuchsia.version}</version>
+				</artifactItem>
                                 <artifactItem>
                                     <groupId>org.ow2.chameleon.fuchsia.tools</groupId>
                                     <artifactId>fuchsia-grid</artifactId>

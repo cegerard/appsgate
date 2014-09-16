@@ -19,9 +19,9 @@
 		<definition name="status"    type="string" default="2"   field="status" method="statusChanged" />
 
 		<!-- device meta data -->
-		<definition name="activeFace"   type="string" field="activeFace" method="faceChanged"/>
-		<definition name="batteryLevel" type="string" field="batteryLevel" method="batteryChanged"/>
-		<definition name="dimValue"     type="string" field="dimValue" method="dimValueChanged"/>
+		<definition name="activeFace"   type="string" field="activeFace" method="faceChanged" default="amiqual4home/hmi/cube/office/1/active_face"/>
+		<definition name="batteryLevel" type="string" field="batteryLevel" method="batteryChanged" default="amiqual4home/hmi/cube/office/1/battery_level"/>
+		<definition name="dimValue"     type="string" field="dimValue" method="dimValueChanged" default="amiqual4home/hmi/cube/office/1/dim_value"/>
 		
 	</implementation>
 

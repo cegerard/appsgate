@@ -17,6 +17,11 @@ public class FuchsiaSetup {
         Instance fileBasedDiscovery = instance()
                 .of("org.ow2.chameleon.fuchsia.discovery.filebased.FileBasedDiscoveryImport");
 
+        Instance domicubeMDNSDiscovery = instance()
+            .of("org.ow2.chameleon.fuchsia.discovery.mdns.DNSSDDiscovery")
+                .with("dnssd.service.type").setto("_http._tcp.local.")
+                .with("dnssd.service.name").setto("domicube");
+
         /**
          * Domicube
          */
@@ -26,7 +31,7 @@ public class FuchsiaSetup {
 
         Instance domicubeLinker = instance()
                 .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
-                .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(&(domicube.host=*)(domicube.port=*))")
+                .with(ImportationLinker.FILTER_IMPORTDECLARATION_PROPERTY).setto("(&(discovery.mdns.device.host=*)(discovery.mdns.device.port=*))")
                 .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=domiCubeImporter)");
 
         /**
