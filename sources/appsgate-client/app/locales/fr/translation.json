@@ -133,6 +133,10 @@
    "devices":{
       "device-no-name":"Equipement sans nom",
       "device-unlocated":"Non localisé",
+      "photo-label": {
+          "singular":"Photo",
+          "plural":"Photos"
+      },
       "type-label":"Type",
       "place-label":"Emplacement",
       "state-label":"Etat",
@@ -149,13 +153,21 @@
          "name":{
             "singular":"Capteur de température",
             "plural":"Capteurs de température"
-         }
+         },
+         "caption":{
+            "extern":"Capteur de température extérieur",
+            "intern":"Capteur de température intérieur"
+        }
       },
       "illumination":{
          "name":{
             "singular":"Capteur de luminosité",
             "plural":"Capteurs de luminosité"
-         }
+         },
+         "caption":{
+            "extern":"Capteur de luminosité extérieur",
+            "intern":"Capteur de luminosité intérieur"
+        }
       },
       "switch":{
          "name":{

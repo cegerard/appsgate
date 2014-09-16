@@ -181,6 +181,7 @@ define([
           case 31: // media player
           this.$el.html(this.template({
             service: this.model,
+            sensorImg: "app/img/services/media_player.png",
             sensorType: $.i18n.t("services.mediaplayer.name.singular"),
             places: places,
             serviceDetails: this.tplMediaPlayer

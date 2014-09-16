@@ -527,6 +527,18 @@ div {
   font-size:2pt;
 }
 
+.device-img {
+    max-height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.device-div-img {
+    text-align: center;
+    text-decoration: underline;
+    color: grey;
+}
+
 /* --------------------- Editor styles ----------------------------------*/
 
 .action-node-input {
