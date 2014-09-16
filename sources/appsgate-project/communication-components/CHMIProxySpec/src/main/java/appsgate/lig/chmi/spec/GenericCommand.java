@@ -133,7 +133,7 @@ public class GenericCommand implements Runnable {
 			}
 			
 		} catch (Exception e) {
-                    logger.error("The method is not found: {}", methodName);
+                    logger.error("The method {} is not found for {}", methodName, this.objId);
                     logger.debug(e.getMessage());
 		}
 	}
