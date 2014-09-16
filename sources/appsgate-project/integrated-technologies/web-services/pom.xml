@@ -15,7 +15,8 @@
 	<description>This sub-project contain all integrated web services components for Appsgate</description>
 	
 	<modules>
-		<module>google-services</module>
+        <module>SchedulerSpec</module>
+	    <module>google-services</module>
 		<module>core-mail</module>
         <module>WeatherAdapterSpec</module>
 		<module>yahoo-services</module>

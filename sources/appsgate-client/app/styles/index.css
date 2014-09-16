@@ -631,6 +631,13 @@ div {
   box-shadow: 2px 2px 1px #888888;
 }
 
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+
 .read-only .btn {
   color: black;
   background: transparent;
@@ -664,7 +671,7 @@ div {
 
 .mandatory-spot{
   color:transparent;
-  border:2px solid black;
+  border:2px solid black !important;
 }
 
 .main-block-node {

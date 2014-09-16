@@ -105,6 +105,7 @@ define([
                 var types = services.getServicesByType();
                 var container = document.createDocumentFragment();
                 _.forEach(_.keys(types), function(type) {
+                  if (type !== "36") {
                     $(container).append(self.tplServiceContainer({
                         type: type,
                         services: types[type],
@@ -114,6 +115,7 @@ define([
                         }),
                         active: Backbone.history.fragment.split("services/types/")[1] === type ? true : false
                     }));
+                  }
                 });
 
                 var serviceGroups = $(container).children();

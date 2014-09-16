@@ -12,7 +12,7 @@
             <%=engine.buildInputFromNode(node.state, currentNode)%>
         </div>
         <div class="row indent-level-1">
-            <div class="btn btn-prog btn-primary">
+            <div class="btn btn-prog btn-primary disabled">
                 <span name="keep" data-i18n="language.keep-keyword"></span>
             </div>
 
@@ -28,7 +28,7 @@
         <span data-i18n="language.it-is-not-the-case"></span>
       </div>
       <div class="row indent-level-1">
-            <div class="btn btn-prog btn-primary">
+            <div class="btn btn-prog btn-primary disabled">
                 <span data-i18n="language.then-keyword"></span>
             </div>
             <%=engine.buildInputFromNode(node.rulesThen, currentNode) %>

@@ -12,19 +12,8 @@
 	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
     
-	<implementation name="GoogleScheduler"
-		classname="appsgate.lig.google.scheduler.GoogleScheduler"
-		specification="SchedulerSpec">
-		
-        <relation specification="CoreClockSpec" field="clock" resolve="exist" />
-        <relation specification="GoogleAdapter" field="serviceAdapter" resolve="exist" />
-        <relation specification="EHMIProxySpec" field="ehmiService" resolve="exist" />
-        
-        <relation push="clockFlowRateChanged" resolve="exist"></relation>
-        <relation push="clockSetChanged" resolve="exist"></relation>
-        
-		<callback onInit="start" />
-	</implementation>
-
-
+    <specification name="SchedulerSpec"
+        interfaces="appsgate.lig.scheduler.SchedulerSpec">    
+    </specification>
+    
 </apam>
