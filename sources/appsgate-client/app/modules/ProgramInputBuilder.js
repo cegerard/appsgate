@@ -106,7 +106,6 @@ define([
                 case "state":
                 case "maintanableState":
                     deletable = true;
-//                    input += this.tplStateNode(param);
                     input = this.buildStateNode(param);
                     break;
                 case "property":
@@ -130,7 +129,7 @@ define([
                     input+= "<div class='main-block-node'><h2><span data-i18n='language.actions'/></h2>";
                     jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
-                            input += "<div class='row'><div class='btn btn-default btn-prog btn-then btn-primary'><span data-i18n='language.op-then-rule'/></div></div>";
+                            input += "<div class='row'><div class='btn btn-default btn-prog btn-then btn-primary disabled'><span data-i18n='language.op-then-rule'/></div></div>";
                         }
                         input += self.buildInputFromNode(rule, currentNode);
                     });
@@ -139,7 +138,7 @@ define([
                 case "setOfRules":
                     jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
-                            input += "<div class='row'><div class='btn btn-default btn-prog btn-and btn-primary'><span data-i18n='language.op-and-rule'/></div></div>";
+                            input += "<div class='row'><div class='btn btn-default btn-prog btn-and btn-primary disabled'><span data-i18n='language.op-and-rule'/></div></div>";
                         }
                         input += self.buildInputFromNode(rule, currentNode);
                     });

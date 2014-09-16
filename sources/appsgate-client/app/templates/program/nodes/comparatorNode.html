@@ -1,4 +1,3 @@
-(
 <%=engine.buildInputFromNode(node.leftOperand, currentNode) %>
 <select id="comparator-<%= node.iid %>" class="comparator-select" target-id="<%= node.iid %>">
     <option <% if (node.comparator === '==') { %>selected<% } %> value="==" data-i18n="language.if-equals"></option>
@@ -6,6 +5,4 @@
     <option <% if (node.comparator === '<') { %>selected<% } %> value="<" data-i18n="language.if-inf"></option>
     <option <% if (node.comparator === '!=') { %>selected<% } %> value="!=" data-i18n="language.if-dif"></option>
 </select>
-<%=engine.buildInputFromNode(node.rightOperand, currentNode) %>
-
-)	
+<%=engine.buildInputFromNode(node.rightOperand, currentNode) %>	

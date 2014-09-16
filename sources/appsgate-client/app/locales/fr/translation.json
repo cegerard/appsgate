@@ -561,7 +561,7 @@
       "light-brightness":"l'intensité de ",
       "state-verb":"est",
       "getTemperature": "la température mesurée",
-      "getIllumination": "l'éclairage mesuré", 
+      "getIllumination": "la luminosité mesurée", 
 
       "weather" : {
           "is-current-weather-code-state": "la météo actuelle",
