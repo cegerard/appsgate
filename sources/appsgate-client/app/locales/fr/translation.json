@@ -646,7 +646,7 @@
       "stop-media-action":"Stopper",
       "set-volume-media-action":"Mettre le volume",
       "getTemperature": "la température mesurée",
-      "getIllumination": "l'éclairage mesuré",
+      "getIllumination": "la luminosité mesurée",
 
       "weather" : {
           "weather-at": "à",
