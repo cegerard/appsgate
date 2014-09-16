@@ -187,11 +187,16 @@ div {
 
 .progress-indicator-group {
   margin-left:5px;
+  display: table;
+  height:50px;
+  text-align:center;
 }
 
 .progress-indicator {
   height: 50px;
-  height: 50px;
+  display: table-cell;
+  vertical-align: middle;
+  padding:3px;
 }
 
 .label-yellow{
@@ -685,7 +690,7 @@ fieldset[disabled] .btn {
 font-size: smaller;
   color: #428bca;
 }
- 
+
 .main-block-node>h2 span {
    background-color: white;
    padding: 3px;

@@ -2,7 +2,8 @@
   <img src="/app/img/locked-node.svg" class="progress-indicator locked-node-indicator hidden"/>
   <img src="/app/img/unlocked-node.svg" class="progress-indicator unlocked-node-indicator hidden"/>
   <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
-  <span id="progress-counter-<%=node.waitFor.iid %>">0</span>
+  <span id="progress-counter-<%=node.waitFor.iid %>" class="progress-indicator">0</span>
+  <span class="progress-indicator" data-i18n='debugger.times'/>
 </div>
 <div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
     <span data-i18n="language.wait"></span>
