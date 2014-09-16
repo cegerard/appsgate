@@ -110,9 +110,10 @@ define([
         this.Mediator.addNodeFromButton(button);
       },
       /**
-       *
+       * Method to handle event on a button click in the input area
        */
       onClickProg: function(e) {
+        // checking what kind of button was clicked
         button = e.target;
         if (button !== null && typeof button.classList !== 'undefined' && (button.classList.contains('btn-media-choice') || button.classList.contains('default-media-choice'))) {
           e.stopPropagation();
@@ -127,11 +128,11 @@ define([
             // do nothing
             return;
           }
+          // checking if the node has to be deleted or selected
           if ($(button).hasClass("glyphicon-trash")) {
             this.Mediator.removeNode(button.id);
           } else {
             this.Mediator.setCurrentPos(button.id);
-            this.refreshDisplay();
           }
         }
       },
@@ -372,6 +373,11 @@ define([
         $(".input-spot").prev().children(".btn-and, .btn-then").addClass("input-spot-then");
 
         $(".programInput").find(".progress-indicator-group").addClass("hidden");
+
+        //disabling not clickable buttons
+        if($(".programInput").find(".mandatory-spot").length > 0){
+            $(".input-spot:not(.mandatory-spot:first)").addClass("disabled");
+        }
       },
       /**
       * Render the editor view

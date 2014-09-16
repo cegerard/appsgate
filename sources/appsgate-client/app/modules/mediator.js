@@ -77,19 +77,19 @@ define([
       */
       setCurrentPos: function(id) {
         if (id) {
-		  var n = this.Grammar.parse(this.programJSON, id);
+		      var n = this.Grammar.parse(this.programJSON, id);
           if (n != null) {
             console.debug("Setting current_pos to: " + n.id);
            this.currentNode = n.id;
           } else {
             console.debug("Setting current_pos to: " + id);
-			this.currentNode = id;
-		  }
+			      this.currentNode = id;
+		      }
         } else {
           this.currentNode = -1;
           console.error("A non valid pos has been passed to setCurrent pos: " + id);
         }
-
+        dispatcher.trigger("refreshDisplay");
       },
       /**
       * method that set the cursor and build keyboard
@@ -221,9 +221,10 @@ define([
       */
       recursivelyRemove: function(pos, curNode, parentNode) {
         if (parseInt(curNode.iid) === parseInt(pos)) {
+          var nodeType = Array.isArray(parentNode)?"empty":"mandatory";
           curNode = {
             iid: curNode.iid,
-            type: "empty"
+            type: nodeType
           };
         } else {
           for (var o in curNode) {
