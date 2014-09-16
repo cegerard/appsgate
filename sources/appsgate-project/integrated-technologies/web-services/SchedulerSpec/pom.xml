@@ -5,10 +5,10 @@
     <artifactId>google-services</artifactId>
     <version>1.0.0</version>
   </parent>
-  <artifactId>GoogleScheduler</artifactId>
+  <artifactId>SchedulerSpec</artifactId>
     <packaging>bundle</packaging>
-    <name>Google Scheduler</name>
-    <description>Starts/Stops End-User Programs upon google Agenda and the CoreClock</description>
+    <name>Scheduler Service Spec</name>
+    <description>Starts/Stops End-User Programs upon an agenda and the CoreClock</description>
     
     <properties>
     </properties>
@@ -44,37 +44,6 @@
             <groupId>appsgate.components</groupId>
             <version>${project.version}</version>
         </dependency>
-            
-        <dependency>
-            <artifactId>SchedulerSpec</artifactId>
-            <groupId>appsgate.components</groupId>
-            <version>${project.version}</version>
-        </dependency>
-        
-        <dependency>
-            <artifactId>org.osgi.core</artifactId>
-            <groupId>org.osgi</groupId>
-            <version>${osgi.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-            <version>${ipojo.annotations.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.gogo.runtime</artifactId>
-            <version>${felix.gogo.runtime.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.eclipse.osgi</artifactId>
-                    <groupId>org.eclipse.osgi</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>          
-
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
