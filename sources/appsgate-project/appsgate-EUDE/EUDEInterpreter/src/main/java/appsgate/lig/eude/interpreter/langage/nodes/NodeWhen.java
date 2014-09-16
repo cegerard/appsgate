@@ -56,7 +56,7 @@ public class NodeWhen extends Node implements INodeRule{
             seqEventNode =  Builder.buildFromJSON(getJSONObject(ruleWhenJSON, "events"), this);
             seqEvent = (INodeEvent) seqEventNode;
         } catch (SpokTypeException ex) {
-            LOGGER.error("Unable to build events");
+            LOGGER.error("Unable to build events {}", ex.getMessage());
             throw new SpokNodeException("NodeWhen", "events", ex);
         }
         try {

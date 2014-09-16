@@ -407,7 +407,7 @@ define([
                 "type": "eventProgram",
                 "iid": "X",
                 "source" : {
-                    'type' : 'empty',
+                    'type' : 'programs',
                     'iid' : "X"
                     },
                 "eventName" : "runningState",

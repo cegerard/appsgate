@@ -254,7 +254,7 @@ public class Builder {
                 case NODE_COMPARATOR:
                     return new NodeComparator(o, parent);
                 default:
-                    LOGGER.debug("No such type found : {}", o.toString());
+                    LOGGER.error("No such type found : {}", o.toString());
                     throw new SpokNodeException("NodeBuilder", "type", null);
             }
         } catch (SpokNodeException ex) {
