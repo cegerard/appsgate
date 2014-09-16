@@ -1,4 +1,3 @@
-(
 <%=engine.buildInputFromNode(node.leftOperand, currentNode) %>
 <button class="btn btn-prog btn-primary" id="<%= node.iid %>">
 <% switch(node.operator) {
@@ -12,5 +11,4 @@
 </button>
 <% if (node.operator != '!'){%>
 <%=engine.buildInputFromNode(node.rightOperand, currentNode) %>
-<%}%>
-)	
+<%}%>	
