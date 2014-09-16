@@ -84,6 +84,9 @@ define([
                                 case '"event"':
                                     this.buildEventKeys();
                                     break;
+                                case '"eventProgram"':
+                                    this.buildEventProgramKeys();
+                                    break;
                                 case '"property"':
                                     this.buildGetPropertyKeys();
                                     break;
@@ -380,6 +383,40 @@ define([
                     }
                 }
             }
+        },
+        buildEventProgramKeys: function() {
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.language.eventStart'/></button>");
+            var v = {
+                "type": "eventProgram",
+                "iid": "X",
+                "source" : {
+                    'type' : 'programs',
+                    'iid' : "X"
+                    },
+                "eventName" : "runningState",
+                "eventValue" : "start"
+
+            };
+            $(btn).attr("json", JSON.stringify(v));
+
+            $(".expected-events").append(btn);
+            
+            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.language.eventStop'/></button>");
+            var v = {
+                "type": "eventProgram",
+                "iid": "X",
+                "source" : {
+                    'type' : 'empty',
+                    'iid' : "X"
+                    },
+                "eventName" : "runningState",
+                "eventValue" : "stop"
+
+            };
+            $(btn2).attr("json", JSON.stringify(v));
+            $(".expected-events").append(btn);
+
+
         },
 
         buildGetPropertyKeys: function() {

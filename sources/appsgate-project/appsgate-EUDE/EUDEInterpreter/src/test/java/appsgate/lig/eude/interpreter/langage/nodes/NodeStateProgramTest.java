@@ -9,7 +9,6 @@ import appsgate.lig.chmi.spec.GenericCommand;
 import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
-import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -50,7 +49,7 @@ public class NodeStateProgramTest extends NodeTest {
         });
         NodeValueTest t = new NodeValueTest();
         JSONObject o = t.ruleJSON;
-        o.put("type", "programcall");
+        o.put("type", "programCall");
         o.put("value", "test");
         ruleJSON.put("type", "stateProgram");
         ruleJSON.put("object", o);

@@ -35,7 +35,7 @@ EVENTS  = ID "eventsSequence" _ "[" _ EVENTLIST _ "]"
 
 EVENTLIST = (EVENTS _)+
 
-EVT  = ID "event" _ "(" _ SOURCE _ ")"
+EVT  = ID "event" _ "(" _ SOURCE _ ")" / ID "eventProgram" _ "(" _ SOURCE _ ")"
 
 WAIT = ID "wait" _ "(" _ NUMERIC_VALUE _ ")"
 
@@ -50,7 +50,7 @@ BOOLEAN  = ID "booleanExpression" _"(" _ BOOLEAN _ ")" _ "(" _ BOOLEAN _ ")"
 
 NUMERIC_VALUE = ID "number"
 			/ ID "boolean"
-              / PROPERTY
+            / PROPERTY
 
 ACTION = ID "action" _ "(" _ TARGET _ ")"
 
@@ -64,7 +64,7 @@ MAINTANABLE_STATE = ID "maintanableState" "(" _ TARGET _ ")"
 
 TARGET = ID "variable" / ID "select" / ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY_SEL
 
-SOURCE = ID "device" / ID "service" / ID "programCall" / EMPTY / MANDATORY
+SOURCE = ID "device" / ID "service" / ID "programCall" /EMPTY / MANDATORY
 
 EMPTY = ID "empty"
 

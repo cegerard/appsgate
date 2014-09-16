@@ -397,7 +397,12 @@
       "action":{
          "start":"Activer",
          "stop":"Désactiver"
-      }
+      },
+	  "language" : {
+			"eventStart" : "Le programme démarre",
+			"eventStop" : "Le programme s'arrête"
+	  }
+	  
    },
    "editor":{
       "title":"Editeur de programme",

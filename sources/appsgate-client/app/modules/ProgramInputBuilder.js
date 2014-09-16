@@ -8,6 +8,7 @@ define([
     "text!templates/program/nodes/ifNode.html",
     "text!templates/program/nodes/whenNode.html",
     "text!templates/program/nodes/defaultEventNode.html",
+    "text!templates/program/nodes/programEventNode.html",
     "text!templates/program/nodes/stateNode.html",
     "text!templates/program/nodes/keepStateNode.html",
     "text!templates/program/nodes/whileNode.html",
@@ -18,7 +19,7 @@ define([
     "text!templates/program/nodes/programNode.html",
     "text!templates/program/nodes/defaultPropertyNode.html",
     "text!templates/program/nodes/selectNode.html"
-], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl) {
+], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl) {
     var ProgramInputBuilder = {};
     // router
     ProgramInputBuilder = Backbone.Model.extend({
@@ -28,6 +29,7 @@ define([
         tplIfNode: _.template(ifTpl),
         tplWhenNode: _.template(whenTpl),
         tplEventNode: _.template(dfltEventTpl),
+        tplEventProgramNode: _.template(programEventTpl),
         tplStateNode: _.template(stateTpl),
         tplKeepStateNode: _.template(keepStateTpl),
         tplWhileNode: _.template(whileTpl),
@@ -96,6 +98,10 @@ define([
                 case "event":
                     deletable = true;
                     input += this.buildEventNode(param);
+                    break;
+                case "eventProgram":
+                    deletable = true;
+                    input += this.buildEventProgramNode(param);
                     break;
                 case "state":
                 case "maintanableState":
@@ -211,6 +217,9 @@ define([
 
             }
             return this.tplEventNode(param);
+        },
+        buildEventProgramNode: function(param) {
+            return this.tplEventProgramNode(param);
         },
         // Hack for a simple prestenation when X == true, we only show X
         buildComparatorNode: function(param, currentNode) {

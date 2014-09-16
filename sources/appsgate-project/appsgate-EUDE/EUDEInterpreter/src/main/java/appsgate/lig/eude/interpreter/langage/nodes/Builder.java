@@ -66,6 +66,9 @@ public class Builder {
         if (type.equalsIgnoreCase("event")) {
             return NODE_TYPE.NODE_EVENT;
         }
+        if (type.equalsIgnoreCase("eventProgram")) {
+            return NODE_TYPE.NODE_EVENT;
+        }
         if (type.equalsIgnoreCase("eventsOr")) {
             return NODE_TYPE.NODE_EVENTS_OR;
         }

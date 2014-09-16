@@ -397,7 +397,11 @@
       "action":{
          "start":"Start",
          "stop":"Stop"
-      }
+      },
+	  "language" : {
+			"eventStart" : "Program starts",
+			"eventStop" : "Program stops"
+	  }
    },
    "editor":{
       "title":"Program Editor",
