@@ -1,7 +1,8 @@
 <div class="main-block-node">
     <div id="progress-<%= node.iid %>" class="progress-indicator-group">
       <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
-      <span id="progress-counter-<%=node.iid %>">0</span>
+      <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
+      <span class="progress-indicator" data-i18n='debugger.times'/>
     </div>
     <div>
         <button class="btn btn-prog btn-primary" id="<%= node.iid %>">

@@ -5,15 +5,15 @@
 
 
 	<implementation name="DomiCubeAdapterImpl"
-		classname="appsgate.lig.proxy.MQTTAdapter.DomiCubeMQTTAdapterImpl">
+		classname="appsgate.lig.proxy.MQTTAdapter.DomiCubeMQTTAdapterImpl" singleton="true">
 
-		<callback onInit="newInst" onRemove="delInst" />		
+		<callback onInit="newInst" onRemove="delInst" />
 		
 		<definition name="host"  		type="string" field="host"  method="onHostChanged" />
 		<definition name="port"  		type="string" field="port"  method="onPortChanged"/>
-		<definition name="faceTopic" 	type="string" field="faceTopic" method="onFaceTopicChanged"/>
-		<definition name="batteryTopic" type="string" field="batteryTopic" method="onBatteryTopicChanged"/>
-		<definition name="dimTopic" 	type="string" field="dimTopic" method="onDimTopicChanged"/>
+		<definition name="faceTopic" 	type="string" field="faceTopic" method="onFaceTopicChanged" default="amiqual4home/hmi/cube/+/active_face"/>
+		<definition name="batteryTopic" type="string" field="batteryTopic" method="onBatteryTopicChanged" default="amiqual4home/hmi/cube/+/battery_level"/>
+		<definition name="dimTopic" 	type="string" field="dimTopic" method="onDimTopicChanged" default="amiqual4home/hmi/cube/+/dim_value"/>
 
 
 	</implementation>

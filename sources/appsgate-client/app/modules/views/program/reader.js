@@ -147,7 +147,9 @@ define([
             $(".stop-program-button").show();
           } else if (this.model.get("runningState") === "INVALID"){
             $("#led-" + this.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
-            $(".start-program-button").hide();
+            $(".start-program-button").show();
+            //$(".start-program-button").hide(); Now we don't hide it just disable it
+            $(".start-program-button").prop('disabled', true);
             $(".stop-program-button").hide();
           } else{
             $("#led-" + this.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");

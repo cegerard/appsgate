@@ -15,30 +15,22 @@ public class DomiCubeNotificationMsg extends CoreNotificationMsg {
 	/**
 	 * The current DomiCube status
 	 */
-	private final int currentFaceNumber;
+	private final int currentFaceNumber=0;
 	
 	/**
 	 * The current battery level
 	 */
-	private final int batteryLevel;
+	private final int batteryLevel=0;
 	
 	/**
 	 * The current angle of the DomiCube
 	 */
-	private final float currentDimValue;
+	private final float currentDimValue=0;
 
-	/**
-	 * Constructor of an DomiCube notification
-	 * @param newFace the new face number
-	 * @param varName the state variable that change
-	 * @param source the core object reference
-	 */
-	public DomiCubeNotificationMsg(int newFace, int batteryLevel, float dimValue, String varName, String oldValue, String newValue, CoreObjectSpec source) {
-		super(varName, oldValue, newValue , source);
-		this.currentFaceNumber = newFace;
-		this.batteryLevel = batteryLevel;
-		this.currentDimValue = dimValue;
-	}
+
+    public DomiCubeNotificationMsg(String varName, String oldValue, String newValue, CoreObjectSpec source) {
+        super(varName, oldValue, newValue , source);
+    }
 	
 	/**
 	 * Get the current face number of the DomiCube instance

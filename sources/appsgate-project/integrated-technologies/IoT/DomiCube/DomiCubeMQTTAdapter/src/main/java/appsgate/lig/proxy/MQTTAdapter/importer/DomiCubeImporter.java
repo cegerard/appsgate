@@ -72,6 +72,8 @@ public class DomiCubeImporter extends AbstractImporterComponent {
 
                     Map propertiesAdaptor = new HashMap<String, String>();
 
+                    logger.info("MQTT Instance adapter host {} port {}",dto.getHost(),dto.getPort().toString());
+
                     propertiesAdaptor.put(Factory.INSTANCE_NAME_PROPERTY, dto.getId()+"-adaptor");
                     propertiesAdaptor.put("host", dto.getHost());
                     propertiesAdaptor.put("port", dto.getPort().toString());
@@ -80,6 +82,8 @@ public class DomiCubeImporter extends AbstractImporterComponent {
                     //propertiesAdaptor.put("dimTopic", dto.getTopicDim());
 
                     Instance apamInstance = apamImpl.createInstance(null, propertiesAdaptor);
+                    //apamInstance.setProperty("host", dto.getHost());
+                    //apamInstance.setProperty("port", dto.getPort().toString());
 
                     Map propertiesDomicube = new HashMap<String, String>();
 
