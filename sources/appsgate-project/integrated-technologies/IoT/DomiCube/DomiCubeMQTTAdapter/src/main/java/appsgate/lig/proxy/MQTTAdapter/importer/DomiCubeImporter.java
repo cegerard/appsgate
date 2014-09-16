@@ -42,7 +42,7 @@ public class DomiCubeImporter extends AbstractImporterComponent {
 
     private ServiceReference serviceReference;
 
-    @ServiceProperty(mandatory = false,value = "(&(id=*)(domicube.host=*)(domicube.port=*)(domicube.topic.face=*)(domicube.topic.battery=*)(domicube.topic.dim=*))")//(name = "target", value = "(&(discovery.knx.device.object=*)(appsgate.type=lamp))")
+    @ServiceProperty(mandatory = false,value = "(&(id=*)(discovery.mdns.device.host=*)(discovery.mdns.device.port=*))")//(name = "target", value = "(&(discovery.knx.device.object=*)(appsgate.type=lamp))")
     private String target;
 
     @ServiceProperty(name = INSTANCE_NAME_PROPERTY)
@@ -75,9 +75,9 @@ public class DomiCubeImporter extends AbstractImporterComponent {
                     propertiesAdaptor.put(Factory.INSTANCE_NAME_PROPERTY, dto.getId()+"-adaptor");
                     propertiesAdaptor.put("host", dto.getHost());
                     propertiesAdaptor.put("port", dto.getPort().toString());
-                    propertiesAdaptor.put("faceTopic", dto.getTopicFace());
-                    propertiesAdaptor.put("batteryTopic", dto.getTopicBattery());
-                    propertiesAdaptor.put("dimTopic", dto.getTopicDim());
+                    //propertiesAdaptor.put("faceTopic", dto.getTopicFace());
+                    //propertiesAdaptor.put("batteryTopic", dto.getTopicBattery());
+                    //propertiesAdaptor.put("dimTopic", dto.getTopicDim());
 
                     Instance apamInstance = apamImpl.createInstance(null, propertiesAdaptor);
 
@@ -92,6 +92,8 @@ public class DomiCubeImporter extends AbstractImporterComponent {
 
                     logger.info("Appsgate instance for domicube {} created", dto.getId());
 
+                    DomiCubeImporter.this.handleImportDeclaration(importDeclaration);
+
                 }catch(BinderException e){
                     e.printStackTrace();
                     logger.warn("Impossible to create Appsgate instance for domicube {}, reason {}", importDeclaration.getMetadata().get(ID),e.getMessage(),e);
@@ -105,6 +107,8 @@ public class DomiCubeImporter extends AbstractImporterComponent {
 
     @Override
     protected void denyImportDeclaration(ImportDeclaration importDeclaration) throws BinderException {
+
+        unhandleImportDeclaration(importDeclaration);
 
         final DomiCubeWrapper dto=DomiCubeWrapper.create(importDeclaration);
 

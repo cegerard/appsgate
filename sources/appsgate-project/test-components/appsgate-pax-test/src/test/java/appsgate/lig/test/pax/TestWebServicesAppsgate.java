@@ -3,10 +3,15 @@
  */
 package appsgate.lig.test.pax;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.felix.ipojo.annotations.Ignore;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +28,10 @@ import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import appsgate.lig.calendar.service.spec.CoreCalendarSpec;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
+import appsgate.lig.google.impl.GoogleAdapterImpl;
+import appsgate.lig.google.scheduler.GoogleScheduler;
+import appsgate.lig.google.services.GoogleAdapter;
+import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.mail.Mail;
 import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
@@ -39,6 +48,97 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 
 	private static Logger logger = LoggerFactory
 			.getLogger(TestWebServicesAppsgate.class);
+	
+
+/**
+ * This test is not automated as it require valid informations (refresh token) according to a connected user
+ * 
+ */
+	public void testGoogleAdapter() {
+		String mailAccount= "smarthome.adele@gmail.com";
+		TestCoreAppsgate.testEmptyAppsgate();
+		logger.debug("This test is for the Google Adapter");
+		
+		GoogleAdapter ga = (GoogleAdapter) initGoogleAdapter();
+
+		Date currentDate = new Date();			
+		Date startDate = new Date(currentDate.getTime() + 1800000);
+		Date endDate = new Date(startDate.getTime() + 3600000);
+		SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		
+		Map<String, String> urlParameters=new HashMap<String, String>();
+
+		urlParameters.put("timeMin", dateFormat.format(currentDate));
+		logger.debug("*** FIRST get returns : "+ga.getEvents(mailAccount, urlParameters));
+		
+		String requestContent;
+		JSONObject content = new JSONObject();
+		content.put("start", new JSONObject().put("dateTime",  dateFormat.format(startDate)));
+		content.put("end", new JSONObject().put("dateTime",  dateFormat.format(endDate)));
+		content.put("summary", "testMAnualAdding");
+		requestContent=content.toString();
+		
+		GoogleEvent res2=ga.addEvent(mailAccount, requestContent);
+		logger.debug("*** add returns : "+res2.toString());
+		String eventId=res2.getId();
+				
+		logger.debug("*** SECOND get returns : "+ga.getEvents(mailAccount, urlParameters));
+		
+		logger.debug("*** delete returns : "+ga.deleteEvent( mailAccount, eventId));
+		logger.debug("*** THIRD get returns : "+ga.getEvents(mailAccount, urlParameters));		
+		
+		//Set<GoogleEvent> events= ga.getEvents("smarthome.adele@gmail.com", null);
+
+		logger.debug("test finished");
+	}
+	
+	public void testCleanGoogleAgenda() {
+		String mailAccount= "smarthome.adele@gmail.com";
+		
+		TestCoreAppsgate.testEmptyAppsgate();
+		logger.debug("testCleanGoogleAgenda");
+		
+		GoogleAdapter ga = (GoogleAdapter) initGoogleAdapter();
+
+		Date currentDate = new Date();			
+		Date endDate = new Date(currentDate.getTime() + 24*3600000);
+		SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T00:00:00.000'Z");
+		
+		Map<String, String> urlParameters=new HashMap<String, String>();
+		urlParameters.put("timeMin", dateFormat.format(currentDate));
+		urlParameters.put("timeMax", dateFormat.format(endDate));
+		
+		Set<GoogleEvent> events= ga.getEvents(mailAccount, urlParameters);
+		for(GoogleEvent evt : events) {
+			ga.deleteEvent(mailAccount, evt.getId());
+		}
+
+		logger.debug("test finished");		
+		
+	}
+	
+	
+	public void testGoogleScheduler() {
+		String mailAccount= "smarthome.adele@gmail.com";
+		
+		TestCoreAppsgate.testEmptyAppsgate();
+		
+		CoreClockSpec service = (CoreClockSpec) initTestClock();
+		GoogleAdapter ga = (GoogleAdapter) initGoogleAdapter();
+		GoogleScheduler toto = (GoogleScheduler) initGoogleScheduler();
+		
+		toto.resetScheduler();
+	}
+
+	public static Object initGoogleScheduler() {
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,null,
+				"GoogleScheduler", null);
+	}		
+	
+	public static Object initGoogleAdapter() {
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"GoogleAdapter",
+				"AppsgateGoogleAdapterImpl", null);
+	}	
 	
 	@Test
 	public void testConfigurableClock() {
@@ -138,10 +238,7 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		 
 	}
 	
-	public static Object initGoogleAdapter() {
-		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,null,
-				"AppsgateGoogleAdapter", null);
-	}	
+
 	public static Object initGoogleCalendar() {
 		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"CoreCalendarSpec",
 				"GoogleCalendarImpl", null);
@@ -189,9 +286,7 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 
 	public static void fillWebServicesBundleList(Map<String, String> testApps) {
 
-		testApps.put("com.google.gdata-calendar", "org.openengsb.wrapped");
 		testApps.put("guava-osgi", "com.googlecode.guava-osgi");
-		testApps.put("ical4j", "org.mnode.ical4j");
 	}
 
 }

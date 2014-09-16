@@ -133,6 +133,10 @@
    "devices":{
       "device-no-name":"Device unnamed",
       "device-unlocated":"Not located",
+      "photo-label": {
+          "singular":"Photo",
+          "plural":"Photos"
+      },
       "type-label":"Type",
       "place-label":"Location",
       "state-label":"State",
@@ -149,13 +153,21 @@
          "name":{
             "singular":"Temperature sensor",
             "plural":"Temperature sensors"
-         }
+         },
+        "caption":{
+            "extern":"External temperature sensor",
+            "intern":"Internal temperature sensor"
+        }
       },
       "illumination":{
          "name":{
             "singular":"Light sensor",
             "plural":"Brightness sensors"
-         }
+         },
+        "caption":{
+            "extern":"External Light sensor",
+            "intern":"Internal Light sensor"
+        }
       },
       "switch":{
          "name":{
