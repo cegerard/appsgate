@@ -57,9 +57,6 @@ define([
                 case 31:
                     service = new MediaPlayer(brick);
                     break;
-                case 36:
-                    service = new MediaBrowser(brick);
-                    break;
                 case 102:
                     service = new Mail(brick);
                     break;
