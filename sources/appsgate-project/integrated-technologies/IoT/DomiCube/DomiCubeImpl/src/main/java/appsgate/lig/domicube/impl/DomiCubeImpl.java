@@ -110,7 +110,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 *         posted.
 	 */
 	public NotificationMsg notifyChanges(String varName, String value) {//TODO: add the old value (and probably refactor all this stuff)
-		return new DomiCubeNotificationMsg(getCurrentFaceNumber(), getBatteryLevel(), getDimValue(), varName, "", value, this);
+		return new DomiCubeNotificationMsg(varName,"",value,this);
 	}
 	
 
@@ -182,6 +182,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 		
 		logger.info("The DomiCube, "+ deviceId+" face changed to "+newFace);
 		notifyChanges("newFace", newFace);
+        notifyChanges("activeFace", newFace);
 
 	}
 	
