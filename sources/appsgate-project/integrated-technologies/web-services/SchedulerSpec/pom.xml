@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>appsgate.components</groupId>
-    <artifactId>google-services</artifactId>
+    <artifactId>web-services</artifactId>
     <version>1.0.0</version>
   </parent>
   <artifactId>SchedulerSpec</artifactId>
@@ -16,40 +16,10 @@
     <!-- Dependencies Description -->
     <dependencies>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>${json.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.imag.adele.apam</groupId>
-            <artifactId>apam-core</artifactId>
-            <version>${apam.current.version}</version>
-        </dependency>
-        
-        <dependency>
             <artifactId>CoreClockSpec</artifactId>
             <groupId>appsgate.components</groupId>
             <version>${project.version}</version>
         </dependency>
-        
-        <dependency>
-            <artifactId>GoogleAdapter</artifactId>
-            <groupId>appsgate.components</groupId>
-            <version>${project.version}</version>
-        </dependency>
-        
-        <dependency>
-            <artifactId>EHMIProxySpec</artifactId>
-            <groupId>appsgate.components</groupId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-
     </dependencies>
 
   <!-- Dependencies Instructions -->
