@@ -392,7 +392,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
         listener.addNodeEvent(nodeEvent);
         mapCoreNodeEvent.add(listener);
-        ehmiProxy.addCoreListener(listener);
+        if (! nodeEvent.isProgramEvent()) {
+            ehmiProxy.addCoreListener(listener);
+        }
         LOGGER.debug("Add node event listener list.{}", nodeEvent.getEventName());
 
     }
@@ -651,11 +653,26 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     public void endEventFired(EndEvent e) {
         NodeProgram p = (NodeProgram) e.getSource();
         LOGGER.info("Program " + p.getProgramName() + " ended.");
+        for (CoreEventListener l : mapCoreNodeEvent) {
+            if (l.equals(e)) {
+                l.notifyEvent();
+                return;
+            }
+
+        }
+        p.addStartEventListener(this);
+        // Check if no end Event is listened
     }
 
     @Override
     public void startEventFired(StartEvent e) {
+        for (CoreEventListener l : mapCoreNodeEvent) {
+            if (l.equals(e)) {
+                l.notifyEvent();
+                return;
+            }
 
+        }
     }
 
     /**

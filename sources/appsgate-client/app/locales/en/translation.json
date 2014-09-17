@@ -409,7 +409,25 @@
       "action":{
          "start":"Start",
          "stop":"Stop"
-      }
+      },
+	  "keyboard" : {
+			"eventStart" : "program is being started",
+			"eventStop" : "program is being stopped",
+            "stateStarted" : "program is started",
+            "stateStopped" : "program is stopped",
+            "actionDisactivate" : "Stop program ...",
+            "actionDisactivate-self" : "Stop myself",
+            "actionActivate" : "Start program ..."
+	  },
+	  "language" : {
+			"eventStart" : "__myVar__ is being started",
+			"eventStop" : "__myVar__ is being stopped",
+            "stateStarted" : "__myVar__ is started",
+            "stateStopped" : "__myVar__ is stopped",
+            "actionDisactivate" : "stop __myVar__",
+            "actionDisactivate-self" : "stop myself",
+            "actionActivate" : "start __myVar__"
+	  }
    },
    "editor":{
       "title":"Program Editor",
@@ -420,9 +438,12 @@
    },
    "language":{
 	  "rules":"Rules",
+    "repeated":"Repeated",
+    "only-once":"Only once",
 	  "actions":"Actions",
       "written-by":"written by",
-      "when-keyword":"when",
+      "when-keyword":"Every time",
+      "when-imp-keyword":"As soon as",
       "end-when-block":".",
       "if-keyword":"if",
       "if-and":"if ... and ...",
@@ -439,7 +460,8 @@
       "while-keep":"while ... keep ...",
       "keep-state":"state",
       "keep-keyword":"Keep",
-      "and-when":"and when",
+      "keep-then":"Then",
+      "and-when":"As soon as",
       "it-is-not-the-case":"it is not true anymore",
       "activate-program-action":"Start program",
       "disactivate-program-action":"Stop program",

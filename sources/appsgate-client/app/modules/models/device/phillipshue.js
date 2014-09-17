@@ -106,25 +106,22 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONState("mandatory");
       v.type = which;
+      var keep = "";
+      if (which == "maintainableState") {
+        keep = "-keep";
+      }
       switch(state) {
         case "isOn":
-          $(btn).append("<span data-i18n='keyboard.is-turned-on-lamp-state'><span>");
-          v.name = "isOn";
-          v.phrase = "language.is-turned-on-lamp-state";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
         case "isOff":
-          $(btn).append("<span data-i18n='keyboard.is-turned-off-lamp-state'><span>");
-          v.name = "isOff";
-          v.phrase = "language.is-turned-off-lamp-state";
+          $(btn).append("<span data-i18n='devices.lamp.keyboard." + state + keep + "'><span>");
+          v.name = state;
+          v.phrase = "devices.lamp.language." + state + keep;
           $(btn).attr("json", JSON.stringify(v));
-          break;
+        return btn;
         default:
           console.error("unexpected state found for PhilipsHue: " + state);
-          btn = null;
-          break;
+          return null;
       }
-      return btn;
     },
 
     /**

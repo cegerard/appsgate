@@ -239,7 +239,19 @@
          "action":{
             "turnOn":"Allumer",
             "turnOff":"Eteindre"
-         }
+         },
+		 "language" : {
+			"isOff" : "__myVar__ est éteinte",
+			"isOn" : "__myVar__ est allumée",
+			"isOff-keep" : "__myVar__ éteinte",
+			"isOn-keep" : "__myVar__ allumée"
+		 },
+		 "keyboard" : {
+			"isOff" : "la prise est éteinte",
+			"isOn" : "la prise est allumée",
+			"isOff-keep" : "la prise éteinte",
+			"isOn-keep" : "la prise allumée"
+		 }
       },
       "lamp":{
          "name":{
@@ -254,7 +266,19 @@
             "turnOn":"Allumer",
             "turnOff":"Eteindre",
             "blink":"Faire clignoter"
-         }
+         },
+		 "language" : {
+			"isOff" : "__myVar__ est éteinte",
+			"isOn" : "__myVar__ est allumée",
+			"isOff-keep" : "__myVar__ éteinte",
+			"isOn-keep" : "__myVar__ allumée"
+		 },
+		 "keyboard" : {
+			"isOff" : "la lampe est éteinte",
+			"isOn" : "la lampe est allumée",
+			"isOff-keep" : "la lampe éteinte",
+			"isOn-keep" : "la lampe allumée"
+		 }
       },
       "clock":{
          "name":{
@@ -409,7 +433,29 @@
       "action":{
          "start":"Activer",
          "stop":"Désactiver"
-      }
+      },
+	  "keyboard" : {
+			"eventStart" : "on active le programme",
+			"eventStop" : "on désactive le programme",
+			"stateStarted": "le programme est actif",
+			"stateStarted-keep": "le programme actif",
+			"stateStopped": "le programme est inactif",
+			"stateStopped-keep": "le programme inactif",
+            "actionDisactivate" : "Déscativer le programme ...",
+            "actionDisactivate-self" : "Désactiver ce programme",
+            "actionActivate" : "Activer le programme ..."
+	  },
+	  "language" : {
+			"eventStart" : "on active __myVar__",
+			"eventStop" : "on désactive __myVar__",
+			"stateStarted": "__myVar__ est actif",
+			"stateStarted-keep": "__myVar__ actif",
+			"stateStopped": "__myVar__ est inactif",
+			"stateStopped-keep": "__myVar__ inactif",
+            "actionDisactivate" : "Désactiver __myVar__",
+            "actionDisactivate-self" : "Désactiver ce programme",
+            "actionActivate" : "Activer __myVar__"
+	  }
    },
    "editor":{
       "title":"Editeur de programme",
@@ -420,9 +466,12 @@
    },
    "language":{
 	  "rules":"Règles",
+    "repeated":"Répété",
+    "only-once":"Une seule fois",
 	  "actions":"Actions",
       "written-by":"ecrit par",
-      "when-keyword":"lorsque",
+      "when-keyword":"Chaque fois que",
+      "when-imp-keyword":"Dès que",
       "end-when-block":".",
       "if-keyword":"Si",
       "if-and":"Si ... et ...",
@@ -435,14 +484,16 @@
       "else-keyword":"sinon",
       "end-if-block":".",
       "then-keyword":"Alors",
-      "while-keyword":"Tant que",
-      "while-keep":"Tant que ... maintenir ...",
+      "while-keyword":"Pendant que",
+      "while-keep":"Pendant que ... maintenir ...",
       "keep-state":" l'état ",
       "keep-keyword":"Maintenir",
-      "and-when":"Et lorsque",
+      "keep-then":"Ensuite",
+      "and-when":"Dès que",
       "it-is-not-the-case":"ce n'est plus le cas",
-      "activate-program-action":"Activer le programme",
-      "disactivate-program-action":"Désactiver le programme",
+      "activate-program-action":"Activer le programme...",
+      "disactivate-program-action":"Désactiver le programme...",
+      "disactivate-program-action-self":"Désactiver ce programme",
       "activate":"Activer",
       "disactivate":"Désactiver",
       "is-activated-program-event":"est activé",
@@ -451,8 +502,8 @@
       "is-stopped-program-status":"est inactif",
       "op-event":"et",
       "op-event-bool":"et",
-      "op-and-rule":"et",
-      "op-then-rule":"puis",
+      "op-and-rule":"Et en même temps",
+      "op-then-rule":"Puis",
       "op-or-bool":"ou",
       "op-and-bool":"et",
       "space":"espace",
@@ -626,7 +677,7 @@
       "turn-on-plug-action":"Allumer la prise",
       "turn-off-plug-action":"Eteindre la prise",
       "blink-lamp-action":"Faire clignoter",
-      "when-keyword":"Lorsque",
+      "when-keyword":"Chaque fois que",
       "whenImp-keyword":"Dès que",
       "if-keyword":"Si",
       "if-and":"Si ... et ...",
@@ -637,8 +688,8 @@
       "if-dif":"... est different de ...",
       "if-not":"Si ... n'est pas vrai ...",
       "light-brightness":"l'intensité de l'ampoule",
-      "while-keyword":"Tant que",
-      "while-keep":"Tant que ... maintenir ...",
+      "while-keyword":"Pendant que",
+      "while-keep":"Pendant que ... maintenir ...",
       "keep-state":"Maintenir l'état ...",
       "clock-event":"il est ",
       "play-media-action":"Jouer un media",

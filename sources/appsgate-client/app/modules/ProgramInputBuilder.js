@@ -8,6 +8,7 @@ define([
     "text!templates/program/nodes/ifNode.html",
     "text!templates/program/nodes/whenNode.html",
     "text!templates/program/nodes/defaultEventNode.html",
+    "text!templates/program/nodes/programEventNode.html",
     "text!templates/program/nodes/stateNode.html",
     "text!templates/program/nodes/keepStateNode.html",
     "text!templates/program/nodes/whileNode.html",
@@ -18,7 +19,7 @@ define([
     "text!templates/program/nodes/programNode.html",
     "text!templates/program/nodes/defaultPropertyNode.html",
     "text!templates/program/nodes/selectNode.html"
-], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl) {
+], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl) {
     var ProgramInputBuilder = {};
     // router
     ProgramInputBuilder = Backbone.Model.extend({
@@ -28,6 +29,7 @@ define([
         tplIfNode: _.template(ifTpl),
         tplWhenNode: _.template(whenTpl),
         tplEventNode: _.template(dfltEventTpl),
+        tplEventProgramNode: _.template(programEventTpl),
         tplStateNode: _.template(stateTpl),
         tplKeepStateNode: _.template(keepStateTpl),
         tplWhileNode: _.template(whileTpl),
@@ -43,6 +45,16 @@ define([
         initialize: function() {
         },
 
+        
+        buildInputFromNodeOrMandatory: function(jsonNode, currentNode, test) {
+            if (test) {
+                return this.buildInputFromNode(jsonNode, currentNode);
+            } else {
+                input = "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'>";
+                input += "<span data-i18n='language.mandatory-keyword'/></div>";
+                return input;
+            }
+        },
         /**
          * buildInputFromNode is the only 'public' method, it takes as input
          * the json representation of a SPOK program and build the corresponding representation in HTML
@@ -97,8 +109,14 @@ define([
                     deletable = true;
                     input += this.buildEventNode(param);
                     break;
+                case "eventProgram":
+                    deletable = true;
+                    input += this.buildEventProgramNode(param);
+                    break;
                 case "state":
-                case "maintanableState":
+                case "stateProgram":
+                case "keepStateProgram":
+                case "maintainableState":
                     deletable = true;
                     input = this.buildStateNode(param);
                     break;
@@ -120,22 +138,24 @@ define([
                     input += "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></div>";
                     break;
                 case "seqRules":
-                    input+= "<div class='main-block-node'><h2><span data-i18n='language.actions'/></h2>";
+                    input+= "<div class='seq-block-node'><h2><span data-i18n='language.only-once'/></h2>";
                     jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
-                            input += "<div class='row'><div class='btn btn-default btn-prog btn-then btn-primary disabled'><span data-i18n='language.op-then-rule'/></div></div>";
+                            input += "<div><span data-i18n='language.op-then-rule'/></div>";
                         }
                         input += self.buildInputFromNode(rule, currentNode);
                     });
                     input+="</div>";
                     break;
                 case "setOfRules":
+                    input+= jsonNode.iid != 0?"<div class='set-block-node'><h2><span data-i18n='language.repeated'/></h2>":"";
                     jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
-                            input += "<div class='row'><div class='btn btn-default btn-prog btn-and btn-primary disabled'><span data-i18n='language.op-and-rule'/></div></div>";
+                            input += "<div><span data-i18n='language.op-and-rule'/></div>";
                         }
                         input += self.buildInputFromNode(rule, currentNode);
                     });
+                    input+= jsonNode.iid != 0?"</div>":"";
                     break;
                 case "boolean":
                     input += "<button class='btn btn-prog btn-primary' id='" + jsonNode.iid + "'><span>" + jsonNode.value + "</span></button>";
@@ -210,6 +230,9 @@ define([
 
             }
             return this.tplEventNode(param);
+        },
+        buildEventProgramNode: function(param) {
+            return this.tplEventProgramNode(param);
         },
         // Hack for a simple prestenation when X == true, we only show X
         buildComparatorNode: function(param, currentNode) {

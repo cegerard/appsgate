@@ -544,6 +544,9 @@ div {
     color: grey;
 }
 
+.devices-list {
+  width:100%;
+}
 /* --------------------- Editor styles ----------------------------------*/
 
 .action-node-input {
@@ -677,6 +680,18 @@ fieldset[disabled] .btn {
 .mandatory-spot{
   color:transparent;
   border:2px solid black !important;
+}
+
+.set-block-node {
+  background-color: #F5F5F5;
+  padding:2px;
+  margin-top:7px;
+}
+
+.seq-block-node {
+  background-color: #F1EFE7;
+  padding:2px;
+  margin-top:7px;
 }
 
 .main-block-node {

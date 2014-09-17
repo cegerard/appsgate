@@ -159,7 +159,7 @@ public abstract class NodeTest {
                 if (orig.get(key).getClass() == JSONObject.class && copy.get(key).getClass() == JSONObject.class) {
                     return compareTo((JSONObject) orig.get(key), (JSONObject) copy.get(key));
                 }
-                if (!orig.get(key).toString().equals(copy.get(key).toString())) {
+                if (!orig.get(key).toString().equalsIgnoreCase(copy.get(key).toString())) {
                     ret = false;
                     System.out.println("For key (" + key + "), contents is not equal:\n"
                             + orig.get(key).getClass().getSimpleName() + ":" + orig.get(key).toString() + "\n"
@@ -177,7 +177,7 @@ public abstract class NodeTest {
                 if (orig.get(key).getClass() == JSONObject.class && copy.get(key).getClass() == JSONObject.class) {
                     return compareTo((JSONObject) orig.get(key), (JSONObject) copy.get(key));
                 }
-                if (!orig.get(key).toString().equals(copy.get(key).toString())) {
+                if (!orig.get(key).toString().equalsIgnoreCase(copy.get(key).toString())) {
                     ret = false;
                     System.out.println("For key (" + key + "), contents is not equal:\n"
                             + orig.get(key).getClass().getSimpleName() + ":" + orig.get(key).toString() + "\n"
