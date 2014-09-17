@@ -551,7 +551,7 @@
       "state-verb":"is",
 
       "getTemperature": "the temperature from sensor",
-      "getIllumination": "the illumination from sensor",  
+      "getIllumination": "the illumination from sensor",
 
        "weather" : {
            "is-current-weather-code-state": "current weather",
@@ -684,6 +684,7 @@
       }
    },
    "debugger": {
-     "all": "All"
+     "all": "All",
+     "times": "times"
    }
 }
