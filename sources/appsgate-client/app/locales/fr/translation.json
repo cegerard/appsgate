@@ -440,7 +440,10 @@
 			"stateStarted": "le programme est actif",
 			"stateStarted-keep": "le programme actif",
 			"stateStopped": "le programme est inactif",
-			"stateStopped-keep": "le programme inactif"
+			"stateStopped-keep": "le programme inactif",
+            "actionDisactivate" : "Déscativer le programme ...",
+            "actionDisactivate-self" : "Désactiver ce programme",
+            "actionActivate" : "Activer le programme ..."
 	  },
 	  "language" : {
 			"eventStart" : "on active __myVar__",
@@ -448,7 +451,10 @@
 			"stateStarted": "__myVar__ est actif",
 			"stateStarted-keep": "__myVar__ actif",
 			"stateStopped": "__myVar__ est inactif",
-			"stateStopped-keep": "__myVar__ inactif"
+			"stateStopped-keep": "__myVar__ inactif",
+            "actionDisactivate" : "Désactiver __myVar__",
+            "actionDisactivate-self" : "Désactiver ce programme",
+            "actionActivate" : "Activer __myVar__"
 	  }
    },
    "editor":{
@@ -481,8 +487,9 @@
       "keep-keyword":"Maintenir",
       "and-when":"Et lorsque",
       "it-is-not-the-case":"ce n'est plus le cas",
-      "activate-program-action":"Activer le programme",
-      "disactivate-program-action":"Désactiver le programme",
+      "activate-program-action":"Activer le programme...",
+      "disactivate-program-action":"Désactiver le programme...",
+      "disactivate-program-action-self":"Désactiver ce programme",
       "activate":"Activer",
       "disactivate":"Désactiver",
       "is-activated-program-event":"est activé",

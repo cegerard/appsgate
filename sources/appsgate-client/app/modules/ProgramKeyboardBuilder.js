@@ -12,7 +12,9 @@ define([
         initialize: function() {
 
         },
-
+        setProgramId: function (pid) {
+            this.progId = pid;
+        },
 
         /**
          * buildKeyboard should be the only 'public' function
@@ -242,7 +244,7 @@ define([
         buildPrograms: function() {
             var btnCall = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
 
-            $(btnCall).append("<span data-i18n='language.activate-program-action'/>");
+            $(btnCall).append("<span data-i18n='programs.keyboard.actionActivate'/>");
             var v = {
                 "type": "action",
                 "methodName": "callProgram",
@@ -252,12 +254,12 @@ define([
                 },
                 "args": [],
                 "iid": "X",
-                "phrase": "language.activate"
+                "phrase": "programs.language.actionActivate"
             };
             $(btnCall).attr("json", JSON.stringify(v));
 
             var btnStop = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
-            $(btnStop).append("<span data-i18n='language.disactivate-program-action'/>");
+            $(btnStop).append("<span data-i18n='programs.keyboard.actionDisactivate'/>");
             var w = {
                 "type": "action",
                 "methodName": "stopProgram",
@@ -267,18 +269,37 @@ define([
                 },
                 "args": [],
                 "iid": "X",
-                "phrase": "language.disactivate"
+                "phrase": "programs.language.actionDisactivate"
             };
             $(btnStop).attr("json", JSON.stringify(w));
+            var btnStopMe = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            $(btnStopMe).append("<span data-i18n='programs.keyboard.actionDisactivate-self'/>");
+            var w = {
+                "type": "action",
+                "methodName": "stopProgram",
+                "target": {
+                    "iid": "X",
+                    "value": this.progId,
+                    "type": "programCall"
+                },
+                "args": [],
+                "iid": "X",
+                "phrase": "programs.language.actionDisactivate-self"
+            };
+            $(btnStopMe).attr("json", JSON.stringify(w));
 
             $(".expected-actions").append(btnCall);
             $(".expected-actions").append(btnStop);
+            $(".expected-actions").append(btnStopMe);
         },
 
 
         buildProgramsKeys: function() {
+            id = this.progId;
             programs.forEach(function(prg) {
-                $(".expected-programs").append("<button id='" + prg.get("id") + "' class='btn btn-default btn-keyboard program-node' prg_name='" + prg.get("name") + "'><span>" + prg.get("name") + "<span></button>");
+                if (id != prg.get("id")) {
+                    $(".expected-programs").append("<button id='" + prg.get("id") + "' class='btn btn-default btn-keyboard program-node' prg_name='" + prg.get("name") + "'><span>" + prg.get("name") + "<span></button>");
+                }
             });
         },
 

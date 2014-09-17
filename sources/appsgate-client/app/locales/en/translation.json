@@ -414,13 +414,19 @@
 			"eventStart" : "program is being started",
 			"eventStop" : "program is being stopped",
             "stateStarted" : "program is started",
-            "stateStopped" : "program is stopped"
+            "stateStopped" : "program is stopped",
+            "actionDisactivate" : "Stop program ...",
+            "actionDisactivate-self" : "Stop myself",
+            "actionActivate" : "Start program ..."
 	  },
 	  "language" : {
 			"eventStart" : "__myVar__ is being started",
 			"eventStop" : "__myVar__ is being stopped",
             "stateStarted" : "__myVar__ is started",
-            "stateStopped" : "__myVar__ is stopped"
+            "stateStopped" : "__myVar__ is stopped",
+            "actionDisactivate" : "stop __myVar__",
+            "actionDisactivate-self" : "stop myself",
+            "actionActivate" : "start __myVar__"
 	  }
    },
    "editor":{

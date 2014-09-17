@@ -45,6 +45,16 @@ define([
         initialize: function() {
         },
 
+        
+        buildInputFromNodeOrMandatory: function(jsonNode, currentNode, test) {
+            if (test) {
+                return this.buildInputFromNode(jsonNode, currentNode);
+            } else {
+                input = "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'>";
+                input += "<span data-i18n='language.mandatory-keyword'/></div>";
+                return input;
+            }
+        },
         /**
          * buildInputFromNode is the only 'public' method, it takes as input
          * the json representation of a SPOK program and build the corresponding representation in HTML
