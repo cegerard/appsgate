@@ -9,11 +9,16 @@
 	</p>
 
 	<!-- body -->
-	<p class="list-group-item-text">
-		<ul class="list-unstyled">
+	<!--p class="list-group-item-text"-->
+		<table class="devices-list">
+			<tr>
+				<td style="width:90%"></td>
+				<td style="width:10%"></td>
+			</tr>
 			<!-- temperature sensors -->
 			<% if (place.getTemperatureSensors().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getTemperatureSensors().length === 1) { %>
 					<span data-i18n="devices.temperature.name.singular"></span>
 				<% } else { %>
@@ -22,15 +27,19 @@
 				<span class="label-value">
 					<%= place.getAverageTemperature() %>&degC
 				</span>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getTemperatureSensors().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- illumination sensors -->
 			<% if (place.getIlluminationSensors().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getIlluminationSensors().length === 1) { %>
 					<span data-i18n="devices.illumination.name.singular"></span>
 				<% } else { %>
@@ -39,71 +48,91 @@
 				<div class="label-value">
 					<%= place.getAverageIllumination() %> Lux
 				</div>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getIlluminationSensors().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- switches -->
 			<% if (place.getSwitches().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getSwitches().length === 1) { %>
 					<span data-i18n="devices.switch.name.singular"></span>
 				<% } else { %>
 					<span data-i18n="devices.switch.name.plural"></span>
 				<% } %>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getSwitches().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- contact sensors -->
 			<% if (place.getContactSensors().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getContactSensors().length === 1) { %>
 					<span data-i18n="devices.contact.name.singular"></span>
 				<% } else { %>
 					<span data-i18n="devices.contact.name.plural"></span>
 				<% } %>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getContactSensors().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- key-card readers -->
 			<% if (place.getKeyCardReaders().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getKeyCardReaders().length === 1) { %>
 					<span data-i18n="devices.keycard-reader.name.singular"></span>
 				<% } else { %>
 					<span data-i18n="devices.keycard-reader.name.plural"></span>
 				<% } %>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getKeyCardReaders().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- ard sensors -->
 			<% if (place.getARDLock().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getARDLock().length === 1) { %>
 					<span data-i18n="devices.ard.name.singular"></span>
 				<% } else { %>
 					<span data-i18n="devices.ard.name.plural"></span>
 				<% } %>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getARDLock().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- plugs -->
 			<% if (place.getPlugs().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getPlugs().length === 1) { %>
 					<span data-i18n="devices.plug.name.singular"></span>
 				<% } else { %>
@@ -112,53 +141,68 @@
 				<span class="label-value">
 					<%= place.getTotalConsumption() %> Watt
 				</span>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getPlugs().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- philips hue lamps -->
 			<% if (place.getPhilipsHueLamps().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getPhilipsHueLamps().length === 1) { %>
 					<span data-i18n="devices.lamp.name.singular"></span>
 				<% } else { %>
 					<span data-i18n="devices.lamp.name.plural"></span>
 				<% } %>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getPhilipsHueLamps().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- actuators -->
 			<% if (place.getActuators().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getActuators().length === 1) { %>
 					<span data-i18n="devices.actuator.name.singular"></span>
 				<% } else { %>
 					<span data-i18n="devices.actuator.name.plural"></span>
 				<% } %>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getActuators().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 
 			<!-- DomiCubes -->
 			<% if (place.getDomiCubes().length > 0) { %>
-			<li>
+			<tr>
+				<td>
 				<% if (place.getDomiCubes().length === 1) { %>
 					<span data-i18n="devices.domicube.name.singular"></span>
 				<% } else { %>
 					<span data-i18n="devices.domicube.name.plural"></span>
 				<% } %>
-				<span class="pull-right badge">
+			</td>
+			<td>
+				<span class="badge">
 					<%= place.getDomiCubes().length %>
 				</span>
-			</li>
+			</td>
+			</tr>
 			<% } %>
 		</ul>
-	</p>
+	<!--/p-->
 </a>

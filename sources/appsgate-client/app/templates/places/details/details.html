@@ -20,15 +20,31 @@
 <!-- place status area -->
 <div class="panel panel-default">
 	<div class="panel-body">
-		<span data-i18n="places-details.header.device-number-title"></span>
-		<span class="badge pull-right"><%= place.get("devices").length - 1 %></span>
-		<br>
-		<span data-i18n="places-details.header.consumption-label"></span>
-		<% if (typeof place.getTotalConsumption() !== "undefined") { %>
-			<span class="label-value pull-right"><%= place.getTotalConsumption() %> W</span>
-		<% } else { %>
-			<span class="label label-default pull-right" data-i18n="places-details.no-plugs"></span>
-		<% } %>
+		<table class="devices-list">
+			<tr>
+				<td style="width:90%"/>
+				<td style="width:10%"/>
+			</tr>
+			<tr>
+				<td>
+					<span data-i18n="places-details.header.device-number-title"></span>
+				</td>
+				<td>
+					<span class="badge pull-right"><%= place.getDevicesNumber() %></span>
+				</td>
+			</tr>
+			<td>
+				<span data-i18n="places-details.header.consumption-label"></span>
+			</td>
+			<td>
+				<% if (typeof place.getTotalConsumption() !== "undefined") { %>
+					<span class="label-value pull-right"><%= place.getTotalConsumption() %> W</span>
+				<% } else { %>
+					<span class="label label-default pull-right" data-i18n="places-details.no-plugs"></span>
+				<% } %>
+			</td>
+		</tr>
+	</table>
 	</div>
 </div>
 

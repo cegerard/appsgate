@@ -544,6 +544,9 @@ div {
     color: grey;
 }
 
+.devices-list {
+  width:100%;
+}
 /* --------------------- Editor styles ----------------------------------*/
 
 .action-node-input {

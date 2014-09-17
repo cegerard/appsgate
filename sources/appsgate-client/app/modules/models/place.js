@@ -30,6 +30,16 @@ define([
             return this.get("name");
         },
         /**
+         * Returns the number of devices the place contains
+         */
+        getDevicesNumber: function() {
+          if(this.get("id") == "-1") {
+            // ignoring the domicube
+            return this.get("devices").length - 1;
+          }
+          return this.get("devices").length;
+        },
+        /**
          * Compute the average value of given sensors
          *
          * @param sensors Array of sensors
