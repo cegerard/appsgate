@@ -99,13 +99,13 @@ define([
                                     this.buildGetPropertyKeys();
                                     break;
                                 case '"boolean"':
-                                    this.buildBooleanKeys();
+                                    //this.buildBooleanKeys();
                                     break;
                                 case "ID":
                                     console.log("empty program");
                                     break;
                                 case '"number"':
-                                    $(".expected-events").append("<button class='btn btn-default btn-keyboard number-node'><span>valeur<span></button>");
+                                    //$(".expected-events").append("<button class='btn btn-default btn-keyboard number-node'><span>valeur<span></button>");
                                     break;
                                 case '"wait"':
                                     this.buildWaitKey();

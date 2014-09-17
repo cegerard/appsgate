@@ -42,10 +42,13 @@ WAIT = ID "wait" _ "(" _ NUMERIC_VALUE _ ")"
 /**
  * BOOLEAN expression can manipulate number also, which is not "logical".
  * HACK
- */
-BOOLEAN  = ID "booleanExpression" _"(" _ BOOLEAN _ ")" _ "(" _ BOOLEAN _ ")"
+ 
+BOOLEAN_OLD  = ID "booleanExpression" _"(" _ BOOLEAN _ ")" _ "(" _ BOOLEAN _ ")"
          / ID "comparator" _"(" _ NUMERIC_VALUE _ ")" _ "(" _ NUMERIC_VALUE _ ")"
          / ID "booleanExpression" _"(" _ BOOLEAN _ ")"
+         / STATE
+*/
+BOOLEAN  =  ID "comparator" _"(" _ NUMERIC_VALUE _ ")" _ "(" _ NUMERIC_VALUE _ ")"
          / STATE
 
 NUMERIC_VALUE = ID "number"
