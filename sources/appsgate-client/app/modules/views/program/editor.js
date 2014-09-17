@@ -378,6 +378,7 @@ define([
         if($(".programInput").find(".mandatory-spot").length > 0){
             $(".input-spot:not(.mandatory-spot:first)").addClass("disabled");
         }
+
       },
       /**
       * Render the editor view

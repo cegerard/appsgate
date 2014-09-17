@@ -6,9 +6,14 @@
     </div>
     <div class="row">
         <button class="btn btn-prog btn-primary btn-then">
+          <% if(node.type === "whenImp") { %>
+            <span data-i18n="language.when-imp-keyword"></span>
+          <% } else { %>
             <span data-i18n="language.when-keyword"></span>
+          <% } %>
         </button>
         <%=engine.buildInputFromNode(node.events, currentNode)%>
+        <span data-i18n="language.then-keyword"/>
     </div>
     <div class="row indent-level-1">
         <%=engine.buildInputFromNode(node.seqRulesThen, currentNode) %>

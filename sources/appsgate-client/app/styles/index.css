@@ -682,6 +682,18 @@ fieldset[disabled] .btn {
   border:2px solid black !important;
 }
 
+.set-block-node {
+  background-color: #F5F5F5;
+  padding:2px;
+  margin-top:7px;
+}
+
+.seq-block-node {
+  background-color: #F1EFE7;
+  padding:2px;
+  margin-top:7px;
+}
+
 .main-block-node {
   border:1px solid #428bca;
   padding:2px;
