@@ -207,7 +207,7 @@ define([
         
         buildStateProgramKeys: function(which) {
             var keep = "";
-            if (which != "state") {
+            if (which != "stateProgram") {
                 keep = "-keep";
             }
             var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
