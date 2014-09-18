@@ -547,6 +547,50 @@ div {
 .devices-list {
   width:100%;
 }
+
+.table-scale {
+    margin-top: 10px;
+}
+
+.table-scale tr td {
+    padding: 3px;
+    width: 150px;
+    text-align: center;
+    font-size: small;
+}
+.table-scale tr td:nth-child(1) {
+    background: #333333;
+    color: #ffffff;
+}
+
+.table-scale tr td:nth-child(2) {
+    background: #4C4C4C ;
+    color: #ffffff;
+}
+
+.table-scale tr td:nth-child(3) {
+    background: #666666;
+    color: #ffffff;
+}
+
+.table-scale tr td:nth-child(4) {
+    background: #808080;
+    color: #ffffff;
+}
+
+.table-scale tr td:nth-child(5) {
+    background: #999999;
+    color: #ffffff;
+}
+
+.table-scale tr td:nth-child(6) {
+    background: #CCCCCC;
+}
+
+.table-scale tr td:nth-child(7) {
+    background: #ffffff;
+}
+
 /* --------------------- Editor styles ----------------------------------*/
 
 .action-node-input {

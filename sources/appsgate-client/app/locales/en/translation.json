@@ -167,6 +167,16 @@
         "caption":{
             "extern":"External Light sensor",
             "intern":"Internal Light sensor"
+        },
+        "scale-label":"Scale",
+        "scale":{
+          "lowest":"Night",
+          "very-low":"Very low luminosity",
+          "low":"Low luminosity",
+          "medium":"Medium luminosity",
+          "high":"High luminosity",
+          "very-high":"Very high luminosity",
+          "highest":"Sunlight"
         }
       },
       "switch":{

@@ -141,7 +141,7 @@
                 <% if (type === "0") { %>
                 <span class="label-value"><%= Math.round(s.get("value")) %>&deg;C</span>
                 <% } else if (type === "1") { %>
-                <span class="label-value"><%= s.get("value") %> Lux</span>
+                <span class="label-value"><%= $.i18n.t("devices.illumination.scale." + s.get("label")) %></span>
                 <% } else if (type === "2") { %>
                 <% if (s.get("buttonStatus") === "true") { %>
                 <span class="label label-yellow" data-i18n="devices.switch.value.opened"></span>
