@@ -863,6 +863,10 @@ font-size: smaller;
   margin-left:15px;
 }
 
+.fix-row-right {
+  margin-right: -30px;
+}
+
 /* --------------------- Debugger styles ----------------------------------*/
 
 .debugger {
