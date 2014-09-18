@@ -168,6 +168,7 @@ public class ReferenceTable {
     private void retrieveReferences() {
         for (String k : programs.keySet()) {
             NodeProgram prog = interpreter.getNodeProgram(k);
+        	LOGGER.trace("retrieveReferences(), program "+k+", status "+devices.get(k));        	            
             if (prog != null) {
                 if (!prog.isValid()) {
                     LOGGER.error("The program {} is not valid.", k);
@@ -183,6 +184,7 @@ public class ReferenceTable {
         }
         // Services && devices are treated the same way
         for (String k : devices.keySet()) {
+        	LOGGER.trace("retrieveReferences(), device "+k+", status "+devices.get(k));        	
             JSONObject device = interpreter.getContext().getDevice(k);
             try {
                 if (device == null || !device.has("status") || !device.getString("status").equals("2")) {
@@ -202,6 +204,7 @@ public class ReferenceTable {
     private STATUS computeStatus() {
         this.state = STATUS.OK;
         for (String k : programs.keySet()) {
+        	LOGGER.trace("computeStatus(), program "+k+", status :"+programs.get(k));
             switch (programs.get(k)) {
                 case MISSING:
                 case INVALID:
@@ -214,6 +217,7 @@ public class ReferenceTable {
         }
         // Services && devices are treated the same way
         for (String k : devices.keySet()) {
+        	LOGGER.trace("computeStatus(), device "+k+", status "+devices.get(k));
             switch (devices.get(k)) {
                 case MISSING:
                     setState(STATUS.UNSTABLE);

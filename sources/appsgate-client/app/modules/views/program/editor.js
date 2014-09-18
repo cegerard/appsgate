@@ -32,7 +32,7 @@ define([
       */
       initialize: function() {
         this.Mediator = new Mediator();
-        this.Mediator.loadProgramJSON(this.model.get("body"));
+        this.Mediator.loadProgramJSON(this.model.get("body"), this.model.get("id"));
 
         this.listenTo(this.model, "change", this.refreshDisplay);
         this.listenTo(devices, "change", this.refreshDisplay);
@@ -378,6 +378,7 @@ define([
         if($(".programInput").find(".mandatory-spot").length > 0){
             $(".input-spot:not(.mandatory-spot:first)").addClass("disabled");
         }
+
       },
       /**
       * Render the editor view

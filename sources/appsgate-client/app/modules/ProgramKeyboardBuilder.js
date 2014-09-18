@@ -12,7 +12,9 @@ define([
         initialize: function() {
 
         },
-
+        setProgramId: function (pid) {
+            this.progId = pid;
+        },
 
         /**
          * buildKeyboard should be the only 'public' function
@@ -59,8 +61,14 @@ define([
                                 case '"state"':
                                     this.buildStateKeys("state");
                                     break;
-                                case '"maintanableState"':
-                                    this.buildStateKeys("maintanableState");
+                                case '"stateProgram"':
+                                    this.buildStateProgramKeys("stateProgram");
+                                    break;
+                                case '"keepStateProgram"':
+                                    this.buildStateProgramKeys("keepStateProgram");
+                                    break;
+                                case '"maintainableState"':
+                                    this.buildStateKeys("maintainableState");
                                     break;
                                 case '"seqRules"':
                                     break;
@@ -84,17 +92,20 @@ define([
                                 case '"event"':
                                     this.buildEventKeys();
                                     break;
+                                case '"eventProgram"':
+                                    this.buildEventProgramKeys();
+                                    break;
                                 case '"property"':
                                     this.buildGetPropertyKeys();
                                     break;
                                 case '"boolean"':
-                                    this.buildBooleanKeys();
+                                    //this.buildBooleanKeys();
                                     break;
                                 case "ID":
                                     console.log("empty program");
                                     break;
                                 case '"number"':
-                                    $(".expected-events").append("<button class='btn btn-default btn-keyboard number-node'><span>valeur<span></button>");
+                                    //$(".expected-events").append("<button class='btn btn-default btn-keyboard number-node'><span>valeur<span></button>");
                                     break;
                                 case '"wait"':
                                     this.buildWaitKey();
@@ -192,6 +203,30 @@ define([
                     }
                 }
             }
+            
+            
+        },
+        
+        buildStateProgramKeys: function(which) {
+            var keep = "";
+            if (which != "stateProgram") {
+                keep = "-keep";
+            }
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var v = {"type": which, "object": {"iid": "X", "type": 'programs'}, "iid": "X"};
+            $(btn).append("<span data-i18n='programs.keyboard.stateStarted"+keep+"'/>");
+            v.phrase = "programs.language.stateStarted"+keep;
+            v.name = "isStarted";
+            $(btn).attr("json", JSON.stringify(v));
+            $(".expected-links").append(btn);
+            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var v2 = {"type": which, "object": {"iid": "X", "type": 'programs'}, "iid": "X"};
+            $(btn2).append("<span data-i18n='programs.keyboard.stateStopped"+keep+"'/>");
+            v2.phrase = "programs.language.stateStopped"+keep;
+            v2.name = "isStopped";
+            $(btn2).attr("json", JSON.stringify(v2));
+            $(".expected-links").append(btn2);
+  
         },
         buildDevices: function() {
             devices.forEach(function(device) {
@@ -209,7 +244,7 @@ define([
         buildPrograms: function() {
             var btnCall = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
 
-            $(btnCall).append("<span data-i18n='language.activate-program-action'/>");
+            $(btnCall).append("<span data-i18n='programs.keyboard.actionActivate'/>");
             var v = {
                 "type": "action",
                 "methodName": "callProgram",
@@ -219,12 +254,12 @@ define([
                 },
                 "args": [],
                 "iid": "X",
-                "phrase": "language.activate"
+                "phrase": "programs.language.actionActivate"
             };
             $(btnCall).attr("json", JSON.stringify(v));
 
             var btnStop = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
-            $(btnStop).append("<span data-i18n='language.disactivate-program-action'/>");
+            $(btnStop).append("<span data-i18n='programs.keyboard.actionDisactivate'/>");
             var w = {
                 "type": "action",
                 "methodName": "stopProgram",
@@ -234,18 +269,37 @@ define([
                 },
                 "args": [],
                 "iid": "X",
-                "phrase": "language.disactivate"
+                "phrase": "programs.language.actionDisactivate"
             };
             $(btnStop).attr("json", JSON.stringify(w));
+            var btnStopMe = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            $(btnStopMe).append("<span data-i18n='programs.keyboard.actionDisactivate-self'/>");
+            var w = {
+                "type": "action",
+                "methodName": "stopProgram",
+                "target": {
+                    "iid": "X",
+                    "value": this.progId,
+                    "type": "programCall"
+                },
+                "args": [],
+                "iid": "X",
+                "phrase": "programs.language.actionDisactivate-self"
+            };
+            $(btnStopMe).attr("json", JSON.stringify(w));
 
             $(".expected-actions").append(btnCall);
             $(".expected-actions").append(btnStop);
+            $(".expected-actions").append(btnStopMe);
         },
 
 
         buildProgramsKeys: function() {
+            id = this.progId;
             programs.forEach(function(prg) {
-                $(".expected-programs").append("<button id='" + prg.get("id") + "' class='btn btn-default btn-keyboard program-node' prg_name='" + prg.get("name") + "'><span>" + prg.get("name") + "<span></button>");
+                if (id != prg.get("id")) {
+                    $(".expected-programs").append("<button id='" + prg.get("id") + "' class='btn btn-default btn-keyboard program-node' prg_name='" + prg.get("name") + "'><span>" + prg.get("name") + "<span></button>");
+                }
             });
         },
 
@@ -380,6 +434,42 @@ define([
                     }
                 }
             }
+        },
+        buildEventProgramKeys: function() {
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.keyboard.eventStart'/></button>");
+            var v = {
+                "type": "eventProgram",
+                "iid": "X",
+                "source" : {
+                    'type' : 'programs',
+                    'iid' : "X"
+                    },
+                "eventName" : "runningState",
+                "eventValue" : "start",
+                "phrase" : "programs.language.eventStart"
+
+            };
+            $(btn).attr("json", JSON.stringify(v));
+
+            $(".expected-events").append(btn);
+            
+            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.keyboard.eventStop'/></button>");
+            var w = {
+                "type": "eventProgram",
+                "iid": "X",
+                "source" : {
+                    'type' : 'programs',
+                    'iid' : "X"
+                    },
+                "eventName" : "runningState",
+                "eventValue" : "stop",
+                "phrase" : "programs.language.eventStop"
+
+            };
+            $(btn2).attr("json", JSON.stringify(w));
+            $(".expected-events").append(btn2);
+
+
         },
 
         buildGetPropertyKeys: function() {

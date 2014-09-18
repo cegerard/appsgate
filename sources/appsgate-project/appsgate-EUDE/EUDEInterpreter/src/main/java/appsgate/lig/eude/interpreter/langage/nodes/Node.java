@@ -274,7 +274,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         if (this.parent != null) {
             return this.parent.getMediator();
         }
-        throw new SpokExecutionException("No mediator found");
+        LOGGER.error("No parent found for this node: {}", this);
+        throw new SpokExecutionException("No parent found for the node");
     }
 
     /**

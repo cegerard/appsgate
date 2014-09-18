@@ -49,11 +49,12 @@ define([
       /**
       * method that loads a program and set the max id
       */
-      loadProgramJSON: function(programJSON) {
+      loadProgramJSON: function(programJSON, pid) {
 		if (programJSON === undefined || programJSON.rules === undefined) {
 		  this.resetProgramJSON();
 		} else {
 		  this.programJSON = programJSON;
+		  this.ProgramKeyboardBuilder.setProgramId(pid);
 		}
         this.maxNodeId = this.findMaxId(this.programJSON);
         this.currentNode = -1;

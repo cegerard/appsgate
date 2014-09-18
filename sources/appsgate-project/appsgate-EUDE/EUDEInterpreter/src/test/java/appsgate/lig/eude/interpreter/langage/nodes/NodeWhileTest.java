@@ -10,7 +10,6 @@ import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
-import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 
 import org.jmock.Expectations;
 import static org.jmock.Expectations.any;
@@ -50,7 +49,7 @@ public class NodeWhileTest extends NodeTest {
 
             }
         });
-        NodeStateTest s = new NodeStateTest();
+        NodeStateDeviceTest s = new NodeStateDeviceTest();
         NodeSeqRulesTest seq = new NodeSeqRulesTest();
 
         ruleJSON.put("type", "while");

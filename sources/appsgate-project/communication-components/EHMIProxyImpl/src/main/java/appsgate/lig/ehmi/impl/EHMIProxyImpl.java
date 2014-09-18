@@ -208,6 +208,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
                 logger.error("NameSpace exception");
             }
         }
+        
+        synchroCoreProxy();
 
         try {
             if (addListenerService.addCommandListener(commandListener, "EHMI")) {
@@ -219,45 +221,61 @@ public class EHMIProxyImpl implements EHMIProxySpec {
             logger.debug("Resolution failed for listener service dependency, the EHMICommandListener will not be registered");
         }
 
-        try {
-            //before subscribing to new Core Device, synchronize the existing ones
-            JSONArray devicesArray = coreProxy.getDevices();
-            for (int i = 0; i < devicesArray.length(); i++) {
-                try {
-                    String type = devicesArray.getJSONObject(i).getString("type");
-                    String id = devicesArray.getJSONObject(i).getString("id");
-
-                    if (type != "21" && getGrammarFromType(type) == null) {
-                        addGrammar(id, type, new GrammarDescription(coreProxy.getDeviceBehavior(type)));
-                    }
-                } catch (JSONException e) {
-                    logger.error(e.getMessage());
-                }
-
-            }
-
-            if (coreProxy.CoreEventsSubscribe(objectEventsListener)) {
-                logger.info("Core event listener deployed.");
-                systemClock.startRemoteSync(coreProxy);
-            } else {
-                logger.error("Core event deployement failed.");
-            }
-            if (coreProxy.CoreUpdatesSubscribe(objectUpdatesListener)) {
-                logger.info("Core updates listener deployed.");
-            } else {
-                logger.error("Core updates listener deployement failed.");
-            }
-        } catch (CoreDependencyException coreException) {
-            logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
-            if (systemClock.isRemote()) {
-                systemClock.stopRemoteSync(coreProxy);
-            }
-        }
 
         ((ObjectEventListener) this.objectEventsListener).setTraceManager(traceManager);
         ((ObjectUpdateListener) this.objectUpdatesListener).setTraceManager(traceManager);
     }
 
+    boolean synchroCoreProxy=false;
+    private void synchroCoreProxy() {
+    	logger.debug("synchroCoreProxy()...");
+    	if(synchroCoreProxy) return;
+    	if(coreProxy != null) {
+        	logger.debug("... coreProxy is there");
+
+            try {
+                //before subscribing to new Core Device, synchronize the existing ones
+                JSONArray devicesArray = coreProxy.getDevices();
+                for (int i = 0; i < devicesArray.length(); i++) {
+                    try {
+                        String type = devicesArray.getJSONObject(i).getString("type");
+                        String id = devicesArray.getJSONObject(i).getString("id");
+
+                        if (type != "21" && getGrammarFromType(type) == null) {
+                            addGrammar(id, type, new GrammarDescription(coreProxy.getDeviceBehavior(type)));
+                        }
+                    } catch (JSONException e) {
+                        logger.error(e.getMessage());
+                    }
+
+                }
+
+                if (coreProxy.CoreEventsSubscribe(objectEventsListener)) {
+                    logger.info("Core event listener deployed.");
+                    systemClock.startRemoteSync(coreProxy);
+                } else {
+                    logger.error("Core event deployement failed.");
+                }
+                if (coreProxy.CoreUpdatesSubscribe(objectUpdatesListener)) {
+                    logger.info("Core updates listener deployed.");
+                } else {
+                    logger.error("Core updates listener deployement failed.");
+                }
+                synchroCoreProxy=true;
+
+            } catch (CoreDependencyException coreException) {
+                logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
+                if (systemClock.isRemote()) {
+                    systemClock.stopRemoteSync(coreProxy);
+                }
+            }	
+    	} else {
+        	logger.debug("... coreProxy is not (yet) there");
+    	}
+    }
+    
+    
+    
     /**
      * Called by APAM when an instance of this implementation is removed
      */
@@ -284,6 +302,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public JSONArray getDevices() {
+    	synchroCoreProxy();
         JSONArray devices = new JSONArray();
         try {
             return addContextData(coreProxy.getDevices());
@@ -303,6 +322,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public JSONObject getDevice(String deviceId) {
+    	synchroCoreProxy();
         JSONObject devices = new JSONObject();
         try {
             JSONObject coreObject = coreProxy.getDevice(deviceId);
@@ -325,6 +345,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public JSONArray getDevices(String type) {
+    	synchroCoreProxy();
         JSONArray devices = new JSONArray();
         try {
             return addContextData(coreProxy.getDevices(type));

@@ -4,6 +4,8 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -42,8 +44,10 @@ public class NodeKeepState extends Node {
     public NodeKeepState(JSONObject o, Node parent) throws SpokNodeException {
         super(parent, o);
         try {
-            state = new NodeState(o.getJSONObject("state"), this);
+            state = (NodeState) Builder.buildFromJSON(o.getJSONObject("state"), this);
         } catch (JSONException ex) {
+            throw new SpokNodeException("NodeKeepState", "state", ex);
+        } catch (SpokTypeException ex) {
             throw new SpokNodeException("NodeKeepState", "state", ex);
         }
     }

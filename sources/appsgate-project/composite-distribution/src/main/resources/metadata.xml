@@ -3,19 +3,22 @@
       xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
-    <composite name="AppsGate-Application" singleton="true"
-               main="EHMIProxyImpl">
+    <composite name="AppsGate-Application" singleton="true">
         <contentMngt>
-
+            
+            <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
+            
+            <start  implementation="EHMIProxyImpl" name="EHMIProxyImplInst" ></start>
+            
+            <start  implementation="CHMIProxyImpl" name="CHMIProxyImplInst" ></start>
+            
             <start  implementation="EUDEInterpreter" name="EUDEInterpreterInst" ></start>
 
-            <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
-
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
+            
+            <start implementation="TraceMan" name="TraceManInst"></start>
 
             <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
-
-            <start implementation="CHMIProxyImpl" name="AppsGateCHMIProxyInst"></start>
 
             <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 
@@ -29,7 +32,6 @@
 
             <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
-            <start implementation="TraceMan" name="TraceManInst"></start>
             <start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
 
 
@@ -95,6 +97,8 @@
                main="AppsgateGoogleAdapterImpl">
         <contentMngt>
             <!-- <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
+            <start implementation="GoogleScheduler" name="GoogleSchedulerInst">
+                </start>
             <start implementation="MailAdapter" name="MailAdapterInst">
 
             </start>

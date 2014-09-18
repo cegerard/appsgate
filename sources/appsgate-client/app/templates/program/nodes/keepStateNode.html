@@ -1,21 +1,9 @@
-
-<!--
-<button class="btn btn-prog btn-primary" id="<%= node.iid %>">
-    <span data-i18n="language.keep-state"></span>
-</button>
--->
-<% if (typeof node.state.object !== 'undefined') { %>
-<%=engine.buildInputFromNode(node.state.object, currentNode) %>
-<% } else if (typeof node.state.target !== 'undefined') { %>
-<%=engine.buildInputFromNode(node.state.targe, currentNodet) %>
-<% } %>
-        <% if (typeof node.state.phrase !== 'undefined') { %>
-
-<button class="btn btn-prog btn-prog-action" id="<%= node.state.iid %>">
-            <span data-i18n='<%=node.state.phrase%>'></span>
-</button>
+<% if (typeof node.state.phrase !== 'undefined') { %>
+<div class="btn btn-prog btn-prog-action" id="<%= node.state.iid %>">
+            <span><%= $.i18n.t(node.state.phrase, {myVar:engine.buildInputFromNode(node.state.object, currentNode)})%></span>
+</div>
     <% } else { %>
 <div class='btn btn-default btn-prog input-spot mandatory-spot' id="<%= node.state.iid %>">
     <span data-i18n='language.mandatory-keyword'/>
 </div>
-<% } %>
+<% }%>

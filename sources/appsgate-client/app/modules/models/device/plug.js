@@ -58,26 +58,24 @@ define([
     getKeyboardForState: function(state, which){
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONState("mandatory");
+      var keep = "";
       v.type = which;
+      if (which == "maintainableState") {
+        keep = "-keep";
+      }
       switch(state) {
         case "isOn":
-          $(btn).append("<span data-i18n='keyboard.turned-on-plug-state'></span>");
-          v.phrase = "language.turned-on-plug-state";
-          v.name = "isOn";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
         case "isOff":
-          $(btn).append("<span data-i18n='keyboard.turned-off-plug-state'></span>");
-          v.name = "isOff";
-          v.phrase = "language.turned-off-plug-state";
+          $(btn).append("<span data-i18n='devices.plug.keyboard." + state + keep + "'><span>");
+          v.name = state;
+          v.phrase = "devices.plug.language." + state + keep;
           $(btn).attr("json", JSON.stringify(v));
-          break;
+        return btn;
+
         default:
           console.error("unexpected state found for Contact Sensor: " + state);
-          btn = null;
-          break;
+          return null;
       }
-      return btn;
     },
 
     

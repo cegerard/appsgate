@@ -187,11 +187,16 @@ div {
 
 .progress-indicator-group {
   margin-left:5px;
+  display: table;
+  height:50px;
+  text-align:center;
 }
 
 .progress-indicator {
   height: 50px;
-  height: 50px;
+  display: table-cell;
+  vertical-align: middle;
+  padding:3px;
 }
 
 .label-yellow{
@@ -539,6 +544,10 @@ div {
     color: grey;
 }
 
+.devices-list {
+  width:100%;
+}
+
 .table-scale {
     margin-top: 10px;
 }
@@ -717,6 +726,18 @@ fieldset[disabled] .btn {
   border:2px solid black !important;
 }
 
+.set-block-node {
+  background-color: #F5F5F5;
+  padding:2px;
+  margin-top:7px;
+}
+
+.seq-block-node {
+  background-color: #F1EFE7;
+  padding:2px;
+  margin-top:7px;
+}
+
 .main-block-node {
   border:1px solid #428bca;
   padding:2px;
@@ -728,7 +749,7 @@ fieldset[disabled] .btn {
 font-size: smaller;
   color: #428bca;
 }
- 
+
 .main-block-node>h2 span {
    background-color: white;
    padding: 3px;
