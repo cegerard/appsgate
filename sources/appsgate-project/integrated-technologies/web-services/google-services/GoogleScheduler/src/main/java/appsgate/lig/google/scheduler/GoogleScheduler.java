@@ -26,6 +26,7 @@ import appsgate.lig.scheduler.SchedulingException;
 
 
 /**
+ * 
  */
 public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
@@ -83,7 +84,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 */
 	String calendarId = "primary";
 
-	static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	@Override
 	public String getCalendarId() {
@@ -101,7 +102,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	}
 
 	public void start() {
-		
+
 		//Next refresh will in 30secs (Clock, EHMI and Google calendar should be available by then)
 		refreshTask(30 * 1000);
 		logger.trace("started successfully, waiting for ScheduleAutoRefresh to wake up");
@@ -109,7 +110,9 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 	@Override
 	public void refreshScheduler() throws SchedulingException {
+		logger.trace("refreshScheduler()");
 		if(clock==null) {
+			logger.error("No clock service registered, aborting reset");
 			throw new SchedulingException("No clock service registered, aborting reset");
 		}
 
@@ -128,18 +131,19 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 				for (GoogleEvent event : events) {
 					//if updatedTime have changed we must consider that its content may have changed and therefore register all again
-					if(event.getId() !=null
-							&& eventMap.containsKey(event.getId())
-							&& !event.getUpdated().equals(eventMap.get(event.getId()).getUpdated())) {
-						eventMap.remove(event.getId());
-						// We have to clean all reference to the eventId in the onBegin and onEnd maps
-						removeEventFromAlarms(event.getId());
-
-						registerEventAlarms(event, currentTime);
+					if(event.getId() !=null) {
+						if(eventMap.containsKey(event.getId())
+								&& !event.getUpdated().equals(eventMap.get(event.getId()).getUpdated())) {
+							eventMap.remove(event.getId());
+							// We have to clean all reference to the eventId in the onBegin and onEnd maps
+							removeEventFromAlarms(event.getId());
+							registerEventAlarms(event, currentTime);
+						} else if (!eventMap.containsKey(event.getId())) {
+							registerEventAlarms(event, currentTime);
+						}
 					}
 				}
 			}
-
 		}
 	}
 
@@ -148,6 +152,8 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 * @param eventId
 	 */
 	private void removeEventFromAlarms(String eventId) {
+		logger.trace("removeEventFromAlarms(String eventId : "+eventId+")");
+
 		for(int alarmId: onBeginAlarms.keySet()) {
 			if(onBeginAlarms.get(alarmId).equals(eventId)) {
 				onBeginAlarms.remove(alarmId);
@@ -162,7 +168,10 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 
 	private Set <GoogleEvent> getEvents(long startTime) throws SchedulingException{
+		logger.trace("getEvents(long startTime : "+startTime+")");
+
 		if(serviceAdapter==null) {
+			logger.error("No GoogleAdapter service registered, unavailable to get events");
 			throw new SchedulingException("No GoogleAdapter service registered, unavailable to get events");
 		}
 
@@ -178,7 +187,10 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 	@Override	
 	public void resetScheduler() throws SchedulingException{
+		logger.trace("resetScheduler()");
+
 		if(clock==null) {
+			logger.error("No clock service registered, aborting reset");
 			throw new SchedulingException("No clock service registered, aborting reset");
 		}
 		synchronized (lock) {
@@ -198,6 +210,17 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 	}
 
+	public static void main(String[] args) {
+		try {
+			//dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+			SimpleDateFormat dateFormatbis=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+			System.out.println(dateFormatbis.parse("2014-09-16T12:45:23+0200"));
+			dateFormat.parse("2014-09-16T18:27:00+0200");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private void registerEventAlarms(GoogleEvent event, long currentTime) {
 		logger.trace("registerEventAlarms for : "+event.toString());
@@ -239,8 +262,12 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			}
 		}
 	}
+	
 
 	private void triggerInstruction(String command, String target) throws SchedulingException {
+		logger.trace("triggerInstruction(String command : "+command
+				+", String target : "+target+")");
+
 		if(ehmiService==null) {
 			throw new SchedulingException("No EHMI Proxy service registered, instruction will not be triggered");
 		}
@@ -257,6 +284,8 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 	@Override
 	public void alarmEventFired(int alarmId) {
+		logger.trace("alarmEventFired(int alarmId : "+alarmId+")");
+
 		synchronized (lock) {
 			String eventId = null;
 			if(onBeginAlarms.containsKey(alarmId)) {
@@ -312,7 +341,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 */
 	@Override	
 	public void clockFlowRateChanged(FlowRateSetNotification notif) {
-		logger.debug("clockFlowRateChanged(FlowRateSetNotification notif =  " + notif.JSONize()+")");
+		logger.trace("clockFlowRateChanged(FlowRateSetNotification notif =  " + notif.JSONize()+")");
 		currentRefresh = BASE_REFRESH  * Long.parseLong(notif.getNewValue());
 		refreshTask(currentRefresh);
 		logger.debug("refresh Task successfully changed");
@@ -325,11 +354,11 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	public void refreshTask() {
 		refreshTask(currentRefresh);
 	}
-	
+
 	Timer timer=null;
 
 	private synchronized void refreshTask(long nextRefresh) {
-		
+
 		if(timer != null) {
 			timer.cancel();
 			timer = null;
@@ -347,7 +376,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 */
 	@Override	
 	public void clockSetChanged(ClockSetNotificationMsg notif) {
-		logger.debug("clockSetChanged(ClockSetNotificationMsg notif =  " + notif.JSONize()+")");
+		logger.trace("clockSetChanged(ClockSetNotificationMsg notif =  " + notif.JSONize()+")");
 		try {
 			resetScheduler();
 			logger.debug("All schedules have been computed again");

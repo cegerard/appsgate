@@ -146,10 +146,11 @@ public class GoogleEvent {
 			JSONObject start = jsonEvent.getJSONObject(PARAM_START);
 			// TODO= check all day event (then add the start time, and the correct calendar
 			// TODO: if dateTime, check the TimeZone and add a default one
-			startTime=start.getString(PARAM_DATETIME);
+			startTime=hackDateTimeZone(start.getString(PARAM_DATETIME));
+			
 			
 			JSONObject end = jsonEvent.getJSONObject(PARAM_END);
-			endTime=end.getString(PARAM_DATETIME);
+			endTime=hackDateTimeZone(end.getString(PARAM_DATETIME));
 			
 			description=jsonEvent.optString(PARAM_DESCRIPTION); // This one is optional
 			onBeginInstructions=parseDescription(description, ON_BEGIN);
@@ -165,6 +166,37 @@ public class GoogleEvent {
 					+exc.getMessage());
 		}
 	}
+	/**
+	 * This one is pretty boring, java handle timezone offset such as "+0200"
+	 * But google send TimeZone offset like "+02:00", so we have to remove this ':'
+	 * @param inputDate
+	 * @return
+	 */
+	private static String hackDateTimeZone(String inputDate) {
+		//  first check the separator between Date and Time
+		int index = inputDate.indexOf('T');
+		
+		if(index<0) {
+			return inputDate;
+		}		
+		// then check the + or - that indicates the Timezone offset
+		index = inputDate.indexOf('+',index);
+		if(index<0) {
+			index = inputDate.indexOf('-', index);
+		}
+		if(index<0) {
+			return inputDate;
+		}	
+		// To finally get the ':' character to remove
+		index= inputDate.indexOf(':', index);
+		if(index>0) {
+			return inputDate.substring(0,index)+inputDate.substring(index+1);
+		} else {
+			return inputDate;
+		}
+		
+	}
+	
 	
 	@Override
 	public String toString() {
