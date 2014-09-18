@@ -264,13 +264,17 @@
 			"isOff" : "__myVar__ est éteinte",
 			"isOn" : "__myVar__ est allumée",
 			"isOff-keep" : "__myVar__ éteinte",
-			"isOn-keep" : "__myVar__ allumée"
+			"isOn-keep" : "__myVar__ allumée",
+			"turnOn" : "Allumer __myVar__",
+			"turnOff" : "Allumer __myVar__"
 		 },
 		 "keyboard" : {
-			"isOff" : "la prise est éteinte",
-			"isOn" : "la prise est allumée",
-			"isOff-keep" : "la prise éteinte",
-			"isOn-keep" : "la prise allumée"
+			"isOff" : "la prise ... est éteinte",
+			"isOn" : "la prise ... est allumée",
+			"isOff-keep" : "la prise ... éteinte",
+			"isOn-keep" : "la prise ... allumée",
+			"turnOn" : "Allumer la prise ...",
+			"turnOff" : "Allumer la prise ..."
 		 }
       },
       "lamp":{
@@ -504,19 +508,13 @@
       "if-sup":"est supérieur à",
       "if-inf":"est inférieur à",
       "if-dif":"est différent de",
-      "if-not":"Si ... n'est pas vrai ...",
       "else-keyword":"sinon",
-      "end-if-block":".",
       "then-keyword":"Alors",
       "while-keyword":"Pendant que",
-      "while-keep":"Pendant que ... maintenir ...",
-      "keep-state":" l'état ",
       "keep-keyword":"Maintenir",
       "keep-then":"Ensuite",
       "and-when":"Dès que",
       "it-is-not-the-case":"ce n'est plus le cas",
-      "activate":"Activer",
-      "disactivate":"Désactiver",
       "is-activated-program-event":"est activé",
       "is-disactivated-program-event":"est desactivé",
       "is-running-program-status":"est actif",
@@ -706,6 +704,7 @@
       "pause-media-action":"Mettre en pause le media",
       "stop-media-action":"Stopper",
       "set-volume-media-action":"Mettre le volume",
+	  "wait" : "Attendre...",
 
       "weather" : {
           "weather-at": "à",
