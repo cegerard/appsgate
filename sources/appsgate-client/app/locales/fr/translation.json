@@ -314,16 +314,16 @@
         "isOn": "__myVar__ est allumée",
         "isOff-keep": "__myVar__ éteinte",
         "isOn-keep": "__myVar__ allumée",
-        "turnOn-event": "on allume __myVar__",
-        "turnOff-event": "on éteint __myVar__"
+        "turnOnEvt": "on allume __myVar__",
+        "turnOffEvt": "on éteint __myVar__"
       },
       "keyboard": {
         "isOff": "la lampe ... est éteinte",
         "isOn": "la lampe ... est allumée",
         "isOff-keep": "la lampe ... éteinte",
         "isOn-keep": "la lampe ... allumée",
-        "turnOn-event": "on allume la lampe ...",
-        "turnOff-event": "on éteint la lampe ..."
+        "turnOnEvt": "on allume la lampe ...",
+        "turnOffEvt": "on éteint la lampe ..."
       }
     },
     "clock": {
