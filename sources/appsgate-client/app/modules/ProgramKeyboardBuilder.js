@@ -323,7 +323,8 @@ define([
                             "rightOperand": {
                                 "iid" : "X",
                                 "value" : "0",
-                                "type": "number"
+                                "type": "number",
+                                "unit": json.unit
                             }
                         };
                         v.leftOperand = json;

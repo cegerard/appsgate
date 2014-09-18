@@ -72,17 +72,17 @@ define([
       var v = this.getJSONEvent("mandatory");
       switch(evt) {
         case "switchOn":
-          $(btn).append("<span data-i18n='keyboard.is-turned-on-lamp-event'><span>");
+          $(btn).append("<span data-i18n='devices.lamp.keyboard.switchOn-event'><span>");
           v.eventName = "state";
           v.eventValue = "true";
-          v.phrase = "language.turned-on-lamp-event";
+          v.phrase = "devices.lamp.language.switchOn-event";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchOff":
-          $(btn).append("<span data-i18n='keyboard.is-turned-off-lamp-event'><span>");
+          $(btn).append("<span data-i18n='devices.lamp.keyboard.switchOff-event'><span>");
           v.eventName = "state";
           v.eventValue = "false";
-          v.phrase = "language.turned-off-lamp-event";
+          v.phrase = "devices.lamp.keyboard.switchOff-event";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

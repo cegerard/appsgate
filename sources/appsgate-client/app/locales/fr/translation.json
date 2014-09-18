@@ -157,7 +157,13 @@
          "caption":{
             "extern":"Capteur de température extérieur",
             "intern":"Capteur de température intérieur"
-        }
+        },
+		"language" : {
+			"get" : "la température de __myVar__"
+		},
+		"keyboard" : {
+			"get" : "la température mesurée par ..."
+		}
       },
       "illumination":{
          "name":{
@@ -167,7 +173,13 @@
          "caption":{
             "extern":"Capteur de luminosité extérieur",
             "intern":"Capteur de luminosité intérieur"
-        }
+        },
+		"language" : {
+			"get" : "la luminosité de __myVar__"
+		},
+		"keyboard" : {
+			"get" : "la luminosité mesurée par ..."
+		}
       },
       "switch":{
          "name":{
@@ -175,8 +187,8 @@
             "plural":"Interrupteurs"
          },
          "value":{
-            "opened":"Ouvert",
-            "closed":"Fermé"
+            "opened":"Appuyé",
+            "closed":"Relâché"
          }
       },
       "actuator":{
@@ -279,13 +291,17 @@
 			"isOff" : "__myVar__ est éteinte",
 			"isOn" : "__myVar__ est allumée",
 			"isOff-keep" : "__myVar__ éteinte",
-			"isOn-keep" : "__myVar__ allumée"
+			"isOn-keep" : "__myVar__ allumée",
+			"turnOn-event" : "on allume __myVar__",
+			"turnOff-event":"on éteint __myVar__"
 		 },
 		 "keyboard" : {
-			"isOff" : "la lampe est éteinte",
-			"isOn" : "la lampe est allumée",
-			"isOff-keep" : "la lampe éteinte",
-			"isOn-keep" : "la lampe allumée"
+			"isOff" : "la lampe ... est éteinte",
+			"isOn" : "la lampe ... est allumée",
+			"isOff-keep" : "la lampe ... éteinte",
+			"isOn-keep" : "la lampe ... allumée",
+			"turnOn-event" : "on allume la lampe ...",
+			"turnOff-event":"on éteint la lampe ..."
 		 }
       },
       "clock":{
@@ -484,10 +500,10 @@
       "if-keyword":"Si",
       "if-and":"Si ... et ...",
       "if-or":"Si ... ou ...",
-      "if-equals":"... indique ...",
-      "if-sup":"... est superieur a ...",
-      "if-inf":"... est inferieur a ...",
-      "if-dif":"... est different de ...",
+      "if-equals":"indique",
+      "if-sup":"est supérieur à",
+      "if-inf":"est inférieur à",
+      "if-dif":"est différent de",
       "if-not":"Si ... n'est pas vrai ...",
       "else-keyword":"sinon",
       "end-if-block":".",
@@ -499,9 +515,6 @@
       "keep-then":"Ensuite",
       "and-when":"Dès que",
       "it-is-not-the-case":"ce n'est plus le cas",
-      "activate-program-action":"Activer le programme...",
-      "disactivate-program-action":"Désactiver le programme...",
-      "disactivate-program-action-self":"Désactiver ce programme",
       "activate":"Activer",
       "disactivate":"Désactiver",
       "is-activated-program-event":"est activé",
@@ -566,8 +579,6 @@
       "turn-off-actuator-action":"Eteindre",
       "wait":"Attendre",
       "seconds":"secondes",
-      "turned-on-lamp-event":"on allume",
-      "turned-off-lamp-event":"on éteint",
       "is-turned-on-lamp-status":"est allumée",
       "is-turned-off-lamp-status":"est éteinte",
       "turn-on-lamp-action":"Allumer",
@@ -649,7 +660,6 @@
 
       "domicube-inactivated":"le domicube est désactivé",
       "domicube-activated":"le domicube est activé",
-      "getTemperature":"la température de",
       "selector":{
         "prefix-m":"tous les ",
         "prefix-f":"toutes les ",
@@ -688,24 +698,14 @@
       "when-keyword":"Chaque fois que",
       "whenImp-keyword":"Dès que",
       "if-keyword":"Si",
-      "if-and":"Si ... et ...",
-      "if-or":"Si ... ou ...",
-      "if-equals":"... indique ...",
-      "if-sup":"... est superieur a ...",
-      "if-inf":"... est inferieur a ...",
-      "if-dif":"... est different de ...",
-      "if-not":"Si ... n'est pas vrai ...",
       "light-brightness":"l'intensité de l'ampoule",
       "while-keyword":"Pendant que",
-      "while-keep":"Pendant que ... maintenir ...",
       "keep-state":"Maintenir l'état ...",
       "clock-event":"il est ",
       "play-media-action":"Jouer un media",
       "pause-media-action":"Mettre en pause le media",
       "stop-media-action":"Stopper",
       "set-volume-media-action":"Mettre le volume",
-      "getTemperature": "la température mesurée",
-      "getIllumination": "la luminosité mesurée",
 
       "weather" : {
           "weather-at": "à",
