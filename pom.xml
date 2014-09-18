@@ -87,19 +87,6 @@
 
 	</properties>
 	<repositories>
-<repository>
-    <id>local-repo</id>
-    <name>local-repo</name>
-    <releases>
-        <enabled>true</enabled>
-        <checksumPolicy>ignore</checksumPolicy>
-    </releases>
-    <snapshots>
-        <enabled>false</enabled>
-    </snapshots>
-    <url>file://${project.basedir}/local-repo</url>
-</repository>	    
-
         <repository>
             <id>Maven Central repository</id>
             <url>http://repo.maven.apache.org/maven2</url>
