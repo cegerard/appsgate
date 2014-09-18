@@ -167,6 +167,16 @@
          "caption":{
             "extern":"Capteur de luminosité extérieur",
             "intern":"Capteur de luminosité intérieur"
+        },
+        "scale-label":"Echelle",
+        "scale":{
+          "lowest":"Nuit",
+          "veryLow":"Luminosité très faible",
+          "low":"Luminosité faible",
+          "medium":"Luminosité moyenne",
+          "high":"Luminosité forte",
+          "veryHigh":"Luminosité très forte",
+          "highest":"Plein soleil"
         }
       },
       "switch":{
