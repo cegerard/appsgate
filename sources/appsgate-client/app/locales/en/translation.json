@@ -209,7 +209,15 @@
          "state":{
             "opened":"open",
             "closed":"closed"
-         }
+         },
+		 "language" : {
+			"isOpen" : "__myVar__ is open",
+			"isClose" : "__myVar__ is closed"
+		 },
+		 "keyboard" : {
+			"isOpen" : "contact sensor ... is open",
+			"isClose" : "contact sensor ... is closed"
+		 }
       },
       "keycard-reader":{
          "name":{
