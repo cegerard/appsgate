@@ -15,6 +15,8 @@
             <start  implementation="EUDEInterpreter" name="EUDEInterpreterInst" ></start>
 
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
+            
+            <start implementation="TraceMan" name="TraceManInst"></start>
 
             <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
@@ -30,7 +32,6 @@
 
             <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
 
-            <start implementation="TraceMan" name="TraceManInst"></start>
             <start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
 
 
