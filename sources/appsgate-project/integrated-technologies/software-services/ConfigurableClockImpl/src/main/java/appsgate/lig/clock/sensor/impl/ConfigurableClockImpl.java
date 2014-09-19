@@ -122,7 +122,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 	}
 
-	public NotificationMsg fireClockSetNotificationMsg(Calendar oldTime, Calendar newTime) {
+	public ClockSetNotificationMsg fireClockSetNotificationMsg(Calendar oldTime, Calendar newTime) {
 		return new ClockSetNotificationMsg(this, oldTime.getTime().toString(), newTime.getTime()
 				.toString());
 	}
@@ -644,7 +644,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		}
 	}
 
-	public NotificationMsg fireFlowRateSetNotificationMsg(double oldFlowRate, double newFlowRate) {
+	public FlowRateSetNotification fireFlowRateSetNotificationMsg(double oldFlowRate, double newFlowRate) {
 		return new FlowRateSetNotification(this, String.valueOf(oldFlowRate), String.valueOf(newFlowRate));
 	}
 
