@@ -254,6 +254,11 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreShutterSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
                                     <artifactId>DomiCubeImpl</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
@@ -428,6 +433,16 @@
                                     <version>${project.version}</version>
                                 </artifactItem>
 
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>fuchsia</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>KNXAdapter</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
 
                             </artifactItems>
                             <outputDirectory>${basedir}/load</outputDirectory>

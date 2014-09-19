@@ -1,13 +1,9 @@
 package appsgate.lig.fuchsia;
 
-import appsgate.lig.proxy.MQTTAdapter.importer.DomiCubeImporter;
-import appsgate.lig.proxy.knx.importer.AppsgateLampImporter;
-import appsgate.lig.proxy.knx.importer.AppsgateSwitchImporter;
 import org.apache.felix.ipojo.configuration.Configuration;
 import org.apache.felix.ipojo.configuration.Instance;
 import org.ow2.chameleon.fuchsia.core.FuchsiaConstants;
 import org.ow2.chameleon.fuchsia.core.component.ImportationLinker;
-import org.ow2.chameleon.fuchsia.importer.knx.KNXDeviceLightImporter;
 
 import static org.apache.felix.ipojo.configuration.Instance.instance;
 
@@ -27,7 +23,7 @@ public class FuchsiaSetup {
          */
 
         Instance domiCubeImporter = instance()
-                .of(DomiCubeImporter.class.getName());
+                .of("appsgate.lig.proxy.MQTTAdapter.importer.DomiCubeImporter");
 
         Instance domicubeLinker = instance()
                 .of(FuchsiaConstants.DEFAULT_IMPORTATION_LINKER_FACTORY_NAME)
@@ -61,7 +57,7 @@ public class FuchsiaSetup {
          */
 
         Instance knxImporter = instance()
-                .of(KNXDeviceLightImporter.class.getName())
+                .of("org.ow2.chameleon.fuchsia.importer.knx.KNXDeviceLightImporter")
                 .with("target").setto("(&(discovery.knx.device.addr=*)(!(discovery.knx.device.object=*)))");
 
         Instance knxLinker = instance()
@@ -70,15 +66,15 @@ public class FuchsiaSetup {
                 .with(ImportationLinker.FILTER_IMPORTERSERVICE_PROPERTY).setto("(instance.name=knxImporter)");
 
         Instance appsgateKNXLampImporter = instance()
-                .of(AppsgateLampImporter.class.getName())
+                .of("appsgate.lig.proxy.knx.importer.AppsgateLampImporter")
                 .with("target").setto("(&(discovery.knx.device.object=*)(appsgate.type=lamp))");
 
         Instance appsgateKNXOnOffActuatorImporter = instance()
-                .of(AppsgateSwitchImporter.class.getName())
+                .of("appsgate.lig.proxy.knx.importer.AppsgateSwitchImporter")
                 .with("target").setto("(&(discovery.knx.device.object=*)(appsgate.type=socket))");
 
         Instance appsgateKNXShutterActuatorImporter = instance()
-            .of(AppsgateSwitchImporter.class.getName())
+            .of("appsgate.lig.proxy.knx.importer.AppsgateSwitchImporter")
             .with("target").setto("(&(discovery.knx.device.object=*)(appsgate.type=shutter))");
         /**
          * Generic Linker
