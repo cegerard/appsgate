@@ -75,15 +75,15 @@ define([
       var v = this.getJSONState("mandatory");
       switch(state) {
         case "inserted":
-          $(btn).append("<span data-i18n='language.card-inserted-keycard-reader-status'></span>");
-          v.phrase = "language.card-inserted-keycard-reader-status";
+          $(btn).append("<span data-i18n='devices.keycard-reader.keyboard.card-inserted'></span>");
+          v.phrase = "devices.keycard-reader.language.card-inserted";
           v.name = "inserted";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "empty":
-          $(btn).append("<span data-i18n='language.no-card-inserted-keycard-reader-status'/>");
+          $(btn).append("<span data-i18n='devices.keycard-reader.keyboard.no-card-inserted'/>");
           v.name = "empty";
-          v.phrase = "language.no-card-inserted-keycard-reader-status";
+          v.phrase = "devices.keycard-reader.lanugage.no-card-inserted";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

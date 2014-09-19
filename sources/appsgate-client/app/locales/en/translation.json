@@ -167,6 +167,16 @@
         "caption":{
             "extern":"External Light sensor",
             "intern":"Internal Light sensor"
+        },
+        "scale-label":"Scale",
+        "scale":{
+          "lowest":"Night",
+          "very-low":"Very low luminosity",
+          "low":"Low luminosity",
+          "medium":"Medium luminosity",
+          "high":"High luminosity",
+          "very-high":"Very high luminosity",
+          "highest":"Sunlight"
         }
       },
       "switch":{
@@ -209,7 +219,15 @@
          "state":{
             "opened":"open",
             "closed":"closed"
-         }
+         },
+		 "language" : {
+			"isOpen" : "__myVar__ is open",
+			"isClose" : "__myVar__ is closed"
+		 },
+		 "keyboard" : {
+			"isOpen" : "contact sensor ... is open",
+			"isClose" : "contact sensor ... is closed"
+		 }
       },
       "keycard-reader":{
          "name":{
@@ -652,9 +670,9 @@
       "if-and":"if ... and ...",
       "if-or":"If ... or ...",
       "if-equals":"... says ...",
-      "if-sup":"... is greater than ...",
-      "if-inf":"... is less than ...",
-      "if-dif":"... is different from ...",
+      "if-sup":" is greater than ",
+      "if-inf":" is less than ",
+      "if-dif":" is different from ",
       "if-not":"If ... is not true ...",
       "light-brightness":"the intensity of the bulb",
       "while-keyword":"While",

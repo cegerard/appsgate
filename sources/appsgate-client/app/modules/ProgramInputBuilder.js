@@ -45,6 +45,13 @@ define([
         initialize: function() {
         },
 
+        buildInputFromObjectOrTarget: function(node, currentNode) {
+            if (typeof node.object !== 'undefined') { 
+                this.buildInputFromNode(node.object, currentNode) 
+            } else if (typeof node.target !== 'undefined') { 
+                this.buildInputFromNode(node.target, currentNode) 
+            }
+        },
         
         buildInputFromNodeOrMandatory: function(jsonNode, currentNode, test) {
             if (test) {

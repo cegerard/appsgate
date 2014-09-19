@@ -28,15 +28,15 @@ define([
       var v = this.getJSONAction("mandatory");
       switch(act) {
         case "switchOn":
-          $(btn).append("<span data-i18n='keyboard.turn-on-plug-action'></span>");
+          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOn'></span>");
           v.methodName = "on";
-          v.phrase = "devices.plug.action.turnOn";
+          v.phrase = "devices.plug.language.turnOn";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchOff":
-          $(btn).append("<span data-i18n='keyboard.turn-off-plug-action'></span>");
+          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOff'></span>");
           v.methodName = "off";
-          v.phrase = "devices.plug.action.turnOff";
+          v.phrase = "devices.plug.keyboard.turnOff";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

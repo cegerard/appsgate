@@ -32,12 +32,12 @@ define([
       var v = {"type": "action", "target": {"iid": "X", "type": "service", "serviceType":this.get("type"), "value":this.get("id")}, "iid": "X"};
       switch(act) {
         case "sendMail":
-          $(btn).append("<span data-i18n='language.send-mail-action'></span>");
+          $(btn).append("<span data-i18n='services.mail.keyboard.sendMail'></span>");
           v.methodName = "sendMailSimple";
           v.args = [ {"type":"String", "value": "mail@example.com"},
                     {"type":"String", "value": "Test"},
                     {"type":"String", "value": "..."}];
-          v.phrase = "language.send-mail-action";
+          v.phrase = "services.mail.language.sendMail";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

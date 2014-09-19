@@ -123,7 +123,7 @@
 				<% } else { %>
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
-				<span class="label-value"><%= s.get("value") %> Lux</span>
+				<span class="label-value"><%= $.i18n.t("devices.illumination.scale." + s.get("label")) %></span>
 			</a>
 		<% }) %>
 	</div>

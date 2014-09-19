@@ -7,11 +7,11 @@
     <div class="row lead">
         <div class="pull-left">
         <% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "KEEPING" || program.get("runningState") === "PROCESSING") { %>
-        <div class="led led-yellow pull-left"></div>
+        <div class="led led-yellow pull-left fix-row"></div>
         <% } else if (program.get("runningState") === "DEPLOYED") { %>
-        <div class="led led-default pull-left"></div>
+        <div class="led led-default pull-left fix-row"></div>
         <% } else if (program.get("runningState") === "INVALID") { %>
-        <div class="led led-orange pull-left"></div>
+        <div class="led led-orange pull-left fix-row"></div>
         <% } %>
         <% if (program.get("name") !== "") { %>
         <input class="programNameInput" type="text" value="<%= program.get('name') %>"/>
@@ -21,7 +21,7 @@
         <span class="hide text-danger" data-i18n="modal-edit-program.program-already-existing"></span>
 
         </div>
-        <div class="pull-right">
+        <div class="pull-right fix-row-right">
             <button id="cancel-edit-button" type="button" class="btn btn-default">
                 <span data-i18n="editor.undo-last-action"></span>
             </button>

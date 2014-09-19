@@ -11,215 +11,295 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.luminosity.sensor.messages.IlluminationNotificationMsg;
 import appsgate.lig.luminosity.sensor.spec.CoreLuminositySensorSpec;
 import appsgate.lig.enocean.ubikit.adapter.spec.UbikitAdapterService;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * This is the class that represent the EnOcean implementation of illumination sensor.
- * 
+ * This is the class that represent the EnOcean implementation of illumination
+ * sensor.
+ *
  * @author Cédric Gérard
  * @since December 1, 2012
  * @version 1.0.0
- * 
+ *
  * @see LuminositySensorSpec
  * @see CoreObjectSpec
  */
 public class EnoceanLuminositySensorImpl extends CoreObjectBehavior implements CoreObjectSpec, CoreLuminositySensorSpec {
 
-	/**
-	 * Static class member uses to log what happened in each instances
-	 */
-	private static Logger logger = LoggerFactory.getLogger(EnoceanLuminositySensorImpl.class);
-	
-	/**
-	 * the system name of this sensor.
-	 */
-	private String sensorName;
+    /**
+     * Static class member uses to log what happened in each instances
+     */
+    private static Logger logger = LoggerFactory.getLogger(EnoceanLuminositySensorImpl.class);
 
-	/**
-	 * The network sensor id
-	 */
-	private String sensorId;
+    /**
+     * the system name of this sensor.
+     */
+    private String sensorName;
 
-	/**
-	 * The sensor type (Actuator or Sensor)
-	 */
-	private String sensoreType;
+    /**
+     * The network sensor id
+     */
+    private String sensorId;
 
-	/**
-	 * True if the device is paired with EnOcean proxy false otherwise
-	 */
-	private String isPaired;
-	
-	/**
-	 * Hold the last signal strength in DBM
-	 */
-	private String signal;
-	
-	/**
-	 * The current illumination = the last value received from this sensor
-	 */
-	private String currentIllumination;
+    /**
+     * The sensor type (Actuator or Sensor)
+     */
+    private String sensoreType;
 
-	/**
-	 * The type for user of this sensor
-	 */
-	private String userType;
+    /**
+     * True if the device is paired with EnOcean proxy false otherwise
+     */
+    private String isPaired;
 
-	/**
-	 * The current sensor status.
-	 * 
-	 * 0 = Off line or out of range
-	 * 1 = In validation mode (test range for sensor for instance)
-	 * 2 = In line or connected
-	 */
-	private String status;
+    /**
+     * Hold the last signal strength in DBM
+     */
+    private String signal;
 
-	/**
-	 * The current picture identifier
-	 */
-	private String pictureId;
-	
-	/**
-	 * EnOcean proxy service uses to validate the sensor configuration with the
-	 * EnOcean proxy (pairing phase)
-	 */
-	UbikitAdapterService enoceanProxy;
-	
-	@Override
-	public LuminosityUnit getLuminosityUnit() {
-		return LuminosityUnit.Lux;
-	}
+    /**
+     * The current illumination = the last value received from this sensor
+     */
+    private String currentIllumination;
 
-	@Override
-	public int getIllumination() {
-		return Integer.valueOf(currentIllumination);
-	}
-	
-	public String getSensorName() {
-		return sensorName;
-	}
+    /**
+     * The type for user of this sensor
+     */
+    private String userType;
 
-	public void setSensorName(String sensorName) {
-		this.sensorName = sensorName;
-	}
+    /**
+     * The current sensor status.
+     *
+     * 0 = Off line or out of range 1 = In validation mode (test range for
+     * sensor for instance) 2 = In line or connected
+     */
+    private String status;
 
-	public boolean isPaired() {
-		return Boolean.valueOf(isPaired);
-	}
+    /**
+     * The current picture identifier
+     */
+    private String pictureId;
 
-	public void setPaired(boolean isPaired) {
-		this.isPaired = String.valueOf(isPaired);
-	}
-	
-	public String getSignal() {
-		return signal;
-	}
+    /**
+     * EnOcean proxy service uses to validate the sensor configuration with the
+     * EnOcean proxy (pairing phase)
+     */
+    UbikitAdapterService enoceanProxy;
 
-	public String getSensorId() {
-		return sensorId;
-	}
-	
-	@Override
-	public String getAbstractObjectId() {
-		return getSensorId();
-	}
+    public enum ScaleLuminosity {
 
-	public String getSensoreType() {
-		return sensoreType;
-	}
+        lowest("lowest", 0, 49),
+        veryLow("veryLow", 50, 149),
+        low("low", 150, 249),
+        medium("medium", 250, 499),
+        high("high", 500, 999),
+        veryHigh("veryHigh", 1000, 1999),
+        highest("highest", 2000, 30000);
 
-	@Override
-	public String getUserType() {
-		return userType;
-	}
+        public String label;
+        public int minValue;
+        public int maxValue;
 
-	@Override
-	public int getObjectStatus() {
-		return Integer.valueOf(status);
-	}
+        ScaleLuminosity(String label, int minValue, int maxValue) {
+            this.label = label;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+        }
 
-	@Override
-	public String getPictureId() {
-		return pictureId;
-	}
+    }
 
-	@Override
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-		notifyChanges("pictureId", pictureId);
-	}
-	
-	@Override
-	public JSONObject getDescription() throws JSONException {
-		JSONObject descr = new JSONObject();
-		descr.put("id", sensorId);
-		descr.put("type", userType); //1 for illumination sensor
-		descr.put("status", status);
-		descr.put("value", currentIllumination);
-		descr.put("deviceType", sensoreType);
-		
-		return descr;
-	}
+    @Override
+    public LuminosityUnit getLuminosityUnit() {
+        return LuminosityUnit.Lux;
+    }
 
-	/**
-	 * Called by APAM when an instance of this implementation is created
-	 */
-	public void newInst() {
-		logger.info("New illumination sensor detected, "+sensorId);
-	}
+    @Override
+    public int getIllumination() {
+        return Integer.valueOf(currentIllumination);
+    }
 
-	/**
-	 * Called by APAM when an instance of this implementation is removed
-	 */
-	public void deleteInst() {
-		logger.info("Illumination sensor desapeared, "+sensorId);
-	}
-	
-	public void isPairedChanged(String newPairedState){
-		logger.info("New Paired status, "+newPairedState+", for "+sensorId);
-	}
-	
-	/**
-	 * Called by ApAM when the signal strength changed
-	 * @param newSignalValue the new singal value
-	 */
-	public void signalChanged(String newSignalValue) {
-		logger.info(newSignalValue+" dbm signal strength for "+sensorId);
-		notifyChanges("signal", newSignalValue);
-	}
-	
-	/**
-	 * Called by APAM when a new illumination value is received from the sensor.
-	 * @param newIlluminationValue the new illumination
-	 */
-	public void currentIlluminationChanged(String newIlluminationValue) {
-		logger.info("New illumination value from "+sensorId+"/"+sensorName+", "+newIlluminationValue);
-		notifyChanges("value", newIlluminationValue);
-	}
-	
-	/**
-	 * Called by ApAM when the status value changed
-	 * @param newStatus the new status value.
-	 * its a string the represent a integer value for the status code.
-	 */
-	public void statusChanged(String newStatus) {
-		logger.info("The sensor, "+ sensorId+" status changed to "+newStatus);
-		notifyChanges("status", newStatus);
-	}
-	
-	/**
-	 * This method uses the ApAM message model. Each call produce a
-	 * IlluminationNotificationMsg object and notifies ApAM that a new message has
-	 * been released.
-	 * 
-	 * @return nothing, it just notifies ApAM that a new message has been
-	 *         posted.
-	 */
-	public NotificationMsg notifyChanges(String varName, String value) {
-		return new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value,  this);
-	}
+    public String getSensorName() {
+        return sensorName;
+    }
 
-	@Override
-	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.DEVICE;
-	}
+    public void setSensorName(String sensorName) {
+        this.sensorName = sensorName;
+    }
+
+    public boolean isPaired() {
+        return Boolean.valueOf(isPaired);
+    }
+
+    public void setPaired(boolean isPaired) {
+        this.isPaired = String.valueOf(isPaired);
+    }
+
+    public String getSignal() {
+        return signal;
+    }
+
+    public String getSensorId() {
+        return sensorId;
+    }
+
+    @Override
+    public String getAbstractObjectId() {
+        return getSensorId();
+    }
+
+    public String getSensoreType() {
+        return sensoreType;
+    }
+
+    @Override
+    public String getUserType() {
+        return userType;
+    }
+
+    @Override
+    public int getObjectStatus() {
+        return Integer.valueOf(status);
+    }
+
+    @Override
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    @Override
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
+        notifyChanges("pictureId", pictureId);
+    }
+
+    @Override
+    public JSONObject getDescription() throws JSONException {
+        JSONObject descr = new JSONObject();
+        descr.put("id", sensorId);
+        descr.put("type", userType); //1 for illumination sensor
+        descr.put("status", status);
+        descr.put("value", currentIllumination);
+        descr.put("label", getCurrentIlluminationLabel());
+        descr.put("deviceType", sensoreType);
+
+        return descr;
+    }
+
+    /**
+     * Called by APAM when an instance of this implementation is created
+     */
+    public void newInst() {
+        logger.info("New illumination sensor detected, " + sensorId);
+    }
+
+    /**
+     * Called by APAM when an instance of this implementation is removed
+     */
+    public void deleteInst() {
+        logger.info("Illumination sensor desapeared, " + sensorId);
+    }
+
+    public void isPairedChanged(String newPairedState) {
+        logger.info("New Paired status, " + newPairedState + ", for " + sensorId);
+    }
+
+    /**
+     * Called by ApAM when the signal strength changed
+     *
+     * @param newSignalValue the new singal value
+     */
+    public void signalChanged(String newSignalValue) {
+        logger.info(newSignalValue + " dbm signal strength for " + sensorId);
+        notifyChanges("signal", newSignalValue);
+    }
+
+    /**
+     * Called by APAM when a new illumination value is received from the sensor.
+     *
+     * @param newIlluminationValue the new illumination
+     */
+    public void currentIlluminationChanged(String newIlluminationValue) {
+        logger.info("New illumination value from " + sensorId + "/" + sensorName + ", " + newIlluminationValue);
+        notifyChanges("value", newIlluminationValue);
+        notifyChanges("label", getIlluminationLabel(Integer.valueOf(newIlluminationValue)));
+    }
+
+    /**
+     * Called by ApAM when the status value changed
+     *
+     * @param newStatus the new status value. its a string the represent a
+     * integer value for the status code.
+     */
+    public void statusChanged(String newStatus) {
+        logger.info("The sensor, " + sensorId + " status changed to " + newStatus);
+        notifyChanges("status", newStatus);
+    }
+
+    /**
+     * This method uses the ApAM message model. Each call produce a
+     * IlluminationNotificationMsg object and notifies ApAM that a new message
+     * has been released.
+     *
+     * @return nothing, it just notifies ApAM that a new message has been
+     * posted.
+     */
+    public NotificationMsg notifyChanges(String varName, String value) {
+        return new IlluminationNotificationMsg(Integer.valueOf(currentIllumination), varName, value, this);
+    }
+
+    @Override
+    public CORE_TYPE getCoreType() {
+        return CORE_TYPE.DEVICE;
+    }
+    
+    @Override
+    public String getCurrentIlluminationLabel() {
+        int currentValue = getIllumination();
+        for (ScaleLuminosity sl : ScaleLuminosity.values()) {
+            if (sl.minValue <= currentValue && currentValue <= sl.maxValue) {
+                return sl.label;
+            }
+        }
+        return "Invalid Value";
+    }
+
+    @Override
+    public String getIlluminationLabel(int value) {
+        for (ScaleLuminosity sl : ScaleLuminosity.values()) {
+            if (sl.minValue <= value && value <= sl.maxValue) {
+                return sl.label;
+            }
+        }
+        return "Invalid Value";
+    }
+
+    @Override
+    public List<String> getListScaleLabel() {
+        List listScaleLbl = new ArrayList<String>();
+        for (ScaleLuminosity sl : ScaleLuminosity.values()) {
+            listScaleLbl.add(sl.label);
+        }
+        return listScaleLbl;
+    }
+
+    @Override
+    public int getMinValue(String labelIllumination) {
+        for (ScaleLuminosity sl : ScaleLuminosity.values()) {
+            if (sl.label.equals(labelIllumination)) {
+                return sl.minValue;
+            }
+        }
+        return -99999;
+    }
+
+    @Override
+    public int getMaxValue(String labelIllumination) {
+        for (ScaleLuminosity sl : ScaleLuminosity.values()) {
+            if (sl.label.equals(labelIllumination)) {
+                return sl.maxValue;
+            }
+        }
+        return 99999;
+    }
 
 }

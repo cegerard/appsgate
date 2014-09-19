@@ -75,15 +75,15 @@ define([
       var v = this.getJSONState("mandatory");
       switch(state) {
         case "isOpen":
-          $(btn).append("<span data-i18n='keyboard.is-open-contactSensor-state'/>");
-          v.phrase = "devices.contact.state.opened";
+          $(btn).append("<span data-i18n='devices.contact.keyboard.isOpen'/>");
+          v.phrase = "devices.contact.language.isOpen";
           v.name = "isOpen";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "isClose":
-          $(btn).append("<span data-i18n='keyboard.is-closed-contactSensor-state'/>");
+          $(btn).append("<span data-i18n='devices.contact.keyboard.isClose'/>");
           v.name = "isClose";
-          v.phrase = "devices.contact.state.closed";
+          v.phrase = "devices.contact.language.isClose";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

@@ -323,7 +323,8 @@ define([
                             "rightOperand": {
                                 "iid" : "X",
                                 "value" : "0",
-                                "type": "number"
+                                "type": "number",
+                                "unit": json.unit
                             }
                         };
                         v.leftOperand = json;
@@ -361,7 +362,7 @@ define([
         },
 
         buildWaitKey: function() {
-            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='language.wait'/></button>");
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='keyboard.wait'/></button>");
             var v = {
                 "type": "wait",
                 "iid": "X",

@@ -1,5 +1,7 @@
 package appsgate.lig.luminosity.sensor.spec;
 
+import java.util.List;
+
 /**
  * This java interface is an ApAM specification shared by all ApAM
  * Appsgate application to handle illumination variation from sensors.
@@ -31,5 +33,38 @@ public interface CoreLuminositySensorSpec {
 	 * @return the illumination as an integer
 	 */
 	public int getIllumination();
+        
+        /**
+         * Get the current illumination label = label of the last value sent by the illumination sensor
+         * @return the illumination as a string·
+         */
+        public String getCurrentIlluminationLabel();
+        
+        /**
+         * Get the illumination label = label of the value in parameter
+         * @param value
+         * @return the illumination as a string·
+         */
+        public String getIlluminationLabel(int value);
+        
+        /**
+         * Get the list of the scale labels
+         * @return list of scale labels
+         */
+        public List<String> getListScaleLabel();
+        
+        /**
+         * Get the value of minimum value of the interval of the label
+         * @param labelIllumination
+         * @return minimum value of the current interval 
+         */
+        public int getMinValue(String labelIllumination);
+        
+        /**
+         * Get the value of maximum value of the interval of the label 
+         * @param labelIllumination
+         * @return maximum value of the current interval 
+         */
+        public int getMaxValue(String labelIllumination);
 
 }

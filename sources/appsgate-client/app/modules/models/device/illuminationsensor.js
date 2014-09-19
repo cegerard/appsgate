@@ -30,10 +30,11 @@ define([
       var v = this.getJSONProperty("mandatory");
       switch(property) {
         case "value":
-          $(btn).append("<span data-i18n='keyboard.getIllumination'><span>");
+          $(btn).append("<span data-i18n='devices.illumination.keyboard.get'><span>");
           v.methodName = "getIllumination";
           v.returnType = "number";
-          v.phrase = "language.getIllumination";
+          v.phrase = "devices.illumination.language.get";
+          v.unit = "lux";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
