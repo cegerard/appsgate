@@ -101,7 +101,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 			.getLogger(ConfigurableClockImpl.class);
 
 	public ConfigurableClockImpl() {
-		logger.debug("$$$$$$$$$$$$$$$$$$$$$$ Creating a new Clock with its lock $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 		lock = new Object();
 		resetClock();
 	}
@@ -110,12 +109,12 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 * Called by APAM when an instance of this implementation is created
 	 */
 	public void start() {
-		logger.info("New Configurable clock created");
+		logger.debug("New Configurable clock created");
 		initAppsgateFields();
 	}
 
 	public void stop() {
-		logger.info("Configurable Clock removed");
+		logger.debug("Configurable Clock removed");
 		if (timer != null)
 			timer.cancel();
 		timer = null;
@@ -188,7 +187,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		long simulatedTime = currentLag;
 		if (timeFlowBreakPoint > 0 && timeFlowBreakPoint <= systemTime) {
 			long elapsedTime = (long) ((systemTime - timeFlowBreakPoint) * flowRate);
-			logger.debug("getCurrentTimeInMillis(), system time : "
+			logger.trace("getCurrentTimeInMillis(), system time : "
 					+ systemTime + ", time flow breakpoint : "
 					+ timeFlowBreakPoint + ", elasped time : " + elapsedTime);
 
@@ -387,19 +386,17 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public int registerAlarm(Calendar calendar, AlarmEventObserver observer) {
-		logger.debug("registerAlarm(...), start");
 		if (calendar != null && observer != null) {
 			synchronized (lock) {
-				logger.debug("++++++++++++++++++++++++++++++++++++++++++");
 				Long time = calendar.getTimeInMillis();
 				if (alarms.containsKey(time)) {
-					logger.debug("registerAlarm(...), alarm events already registered for this time, adding this one");
+					logger.trace("registerAlarm(...), alarm events already registered for this time, adding this one");
 					Map<Integer, AlarmEventObserver> observers = alarms
 							.get(time);
 					observers.put(++currentAlarmId, observer);
 					reverseAlarmMap.put(currentAlarmId, time);
 				} else {
-					logger.debug("registerAlarm(...), alarm events not registered for this time, creating a new one");
+					logger.trace("registerAlarm(...), alarm events not registered for this time, creating a new one");
 					/**
 					 * An map between the alarm event ID and the associated
 					 * observers
@@ -413,12 +410,10 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 				logger.debug("registerAlarm(...), alarm events id created : "
 						+ currentAlarmId);
 				calculateNextTimer();
-
-				logger.debug("++++++++++++++++++++++++++++++++++++++++++");
 			}
 			return currentAlarmId;
 		} else {
-			logger.debug("registerAlarm(...), calendar or oberver is null, does not register the alarm");
+			logger.warn("registerAlarm(...), calendar or oberver is null, does not register the alarm");
 			return -1;
 		}
 	}
@@ -447,7 +442,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 			reverseAlarmMap.remove(alarmEventId);
 			calculateNextTimer();
 		}
-		logger.debug("unregisterAlarm(...), end "+alarmEventId);
 	}
 
 	/*
@@ -541,7 +535,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 			long nearestSingle = nearestSingleAlarmDelay(currentTime);
 			long nearestPeriodic = nearestPeriodicAlarmDelay(currentTime);
 
-			logger.debug("calculateNextTimer(), nextAlarmId : " + nextAlarmId
+			logger.trace("calculateNextTimer(), nextAlarmId : " + nextAlarmId
 					+ ", nextAlarmTime : " + nextAlarmTime
 					+ ", nearestSingle :" + nearestSingle + ", nearestPeriodic"
 					+ nearestPeriodic);
@@ -558,7 +552,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 			if (nextAlarmDelay >= 0) {
 				nextAlarmDelay = (long) (nextAlarmDelay / flowRate);
 
-				logger.debug("calculateNextTimer(), next alarm should ring in : "
+				logger.trace("calculateNextTimer(), next alarm should ring in : "
 						+ nextAlarmDelay + "ms");
 				AlarmFiringTask nextAlarm = new AlarmFiringTask();
 				if (timer != null)
@@ -581,13 +575,10 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	public void fireClockAlarms(Map<Integer, AlarmEventObserver> observers) {
 		if (observers != null && !observers.isEmpty()) {
 			Set<Integer> removableObservers = new HashSet<Integer>(); // Observers
-			// are
-			// removed
-			// if not
-			// periodic
+
 
 			for (Integer i : observers.keySet()) {
-				logger.debug("fireClockAlarms(...), AlarmEventId : " + i);
+				logger.trace("fireClockAlarms(...), AlarmEventId : " + i);
 				AlarmEventObserver obs = observers.get(i);
 				removableObservers.add(i);
 
@@ -600,7 +591,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 			}
 			for (Integer i : removableObservers) {
-				logger.debug("fireClockAlarms(...), removing alarmEventId : "
+				logger.trace("fireClockAlarms(...), removing alarmEventId : "
 						+ i);
 				observers.remove(i);
 				reverseAlarmMap.remove(i);
@@ -615,7 +606,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	class AlarmFiringTask extends TimerTask {
 		@Override
 		public void run() {
-			logger.debug("Firing current clock alarms");
 			if (nextAlarmTime > 0) {
 				logger.debug("Firing current clock alarms to all single clock observers");
 				long nextAlarmTimeClone = nextAlarmTime;
@@ -623,13 +613,11 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 				synchronized (lock) {
 					timer.cancel();
 					timer = null;
-					logger.debug("================================");
 					fireClockAlarms(observers);
 						if (observers.isEmpty()){
 						alarms.remove(nextAlarmTimeClone);
 					}
 					nextAlarmTime = -1;
-					logger.debug("================================");
 				}
 			}
 			if (nextAlarmId > 0) {
@@ -688,7 +676,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 				return currentAlarmId;
 			}
 		} else {
-			logger.debug("registerPeriodicAlarm(...), millis incorrect or observer is null, does not register the alarm");
+			logger.warn("registerPeriodicAlarm(...), millis incorrect or observer is null, does not register the alarm");
 			return -1;
 		}
 	}

@@ -9,7 +9,7 @@
             <span data-i18n="language.if-keyword"/>
         </button>
         <%=engine.buildInputFromNode(node.expBool, currentNode) %>
-        <span data-i18n="language.then-keyword"/>
+        <span class='link-span' data-i18n="language.then-keyword"/>
 
 
         <div class="row indent-level-1">
@@ -18,7 +18,7 @@
     </div>
     <% if ( node.seqRulesFalse != undefined) { %>
     <div <% if(node.seqRulesFalse.rules.length < 2 ) { %>class="secondary-block-node"<% } %>>
-        <span data-i18n="language.else-keyword"/>
+        <span class='link-span' data-i18n="language.else-keyword"/>
         <div class="row">
             <div class="indent-level-1 fix-row">
             <%=engine.buildInputFromNode(node.seqRulesFalse, currentNode) %>
