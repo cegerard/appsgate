@@ -11,21 +11,21 @@
       <span data-i18n="language.while-keyword"></span>
     </button>
     <%=engine.buildInputFromNode(node.state, currentNode)%>
-    <span data-i18n="language.then-keyword"/>
+    <span  class='link-span' data-i18n="language.then-keyword"/>
   </div>
   <div class="row indent-level-1">
-    <span name="keep" data-i18n="language.keep-keyword"></span>
+    <span class='link-span' name="keep" data-i18n="language.keep-keyword"></span>
       <%=engine.buildInputFromNode(node.rules, currentNode) %>
-    <span name="keep" data-i18n="language.keep-then"></span>
+    <span class='link-span' name="keep" data-i18n="language.keep-then"></span>
   </div>
   <% if ( node.rulesThen != undefined) { %>
-  <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node seq-block-node"<% } %>>
+  <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node seq-block-node"<% } else { %> class="main-block-node seq-block-node" <% } %>>
     <div>
       <button class="btn btn-prog btn-primary disabled read-only btn-then">
         <span data-i18n="language.and-when"></span>
       </button>
-      <span data-i18n="language.it-is-not-the-case"></span>
-      <span data-i18n="language.then-keyword"></span>
+      <span class='link-span' data-i18n="language.it-is-not-the-case"></span>
+      <span class='link-span' data-i18n="language.then-keyword"></span>
     </div>
     <div class="row indent-level-1">
       <%=engine.buildInputFromNode(node.rulesThen, currentNode) %>

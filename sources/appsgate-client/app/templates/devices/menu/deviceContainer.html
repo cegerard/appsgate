@@ -6,9 +6,9 @@
 			<td style="width:10%"/>
 		</tr>
 		<!-- header -->
-		<p class="list-group-item-heading lead">
 		<tr>
 			<td>
+			<p class="list-group-item-heading lead">
 			<% if (type === "0") { %>
 				<% if (devices.length === 1) { %>
 					<span data-i18n="devices.temperature.name.singular"></span>
@@ -76,13 +76,13 @@
 					<span data-i18n="devices.domicube.name.plural"></span>
 				<% } %>
 			<% } %>
+			</p>
 	</td>
 	<td>
 		<span class="badge">
 			<%= devices.length %>
 		</span>
 	</td>
-	</p>
 
 	<!-- body -->
 	<% places.forEach(function(place) { %>

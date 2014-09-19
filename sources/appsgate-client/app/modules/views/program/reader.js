@@ -139,6 +139,16 @@ define([
           }
           $(".input-spot").prev().remove();
           $(".input-spot").remove();
+
+          var test = $(".programInput").children(".seq-block-node");
+          if($(".programInput").children(".seq-block-node").children().length < 1){
+            $(".programInput").children(".separator").addClass("hidden");
+            $(".programInput").children(".seq-block-node").addClass("hidden");
+          }
+          if($(".programInput").children(".set-block-node").children().length < 1){
+            $(".programInput").children(".separator").addClass("hidden");
+            $(".programInput").children(".set-block-node").addClass("hidden");
+          }
         });
         if(typeof this.model !== "undefined"){
           if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "KEEPING" || this.model.get("runningState") === "WAITING") {
