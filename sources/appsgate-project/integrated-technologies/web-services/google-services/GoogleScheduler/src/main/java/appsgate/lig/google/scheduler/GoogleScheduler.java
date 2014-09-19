@@ -302,7 +302,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 				onBeginAlarms.remove(alarmId);
 
 			} else if (onEndAlarms.containsKey(alarmId)) { 
-				eventId = onBeginAlarms.get(alarmId);
+				eventId = onEndAlarms.get(alarmId);
 				logger.debug("alarmId :"+alarmId+", occured triggering onEnd instructions for Google Calendar EventId : "+eventId);
 				GoogleEvent event = eventMap.get(eventId);
 				for(ScheduledInstruction instruction : event.getOnEndInstructions()) {
@@ -320,6 +320,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			if(eventId != null 
 					&& !onBeginAlarms.containsValue(eventId)
 					&& !onEndAlarms.containsValue(eventId)) {
+				logger.trace("Removing unused event : "+eventId);
 				eventMap.remove(eventId);
 			}	
 		}
