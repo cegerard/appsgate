@@ -44,15 +44,13 @@ define([
 
         initialize: function() {
         },
-
         buildInputFromObjectOrTarget: function(node, currentNode) {
-            if (typeof node.object !== 'undefined') { 
-                this.buildInputFromNode(node.object, currentNode) 
-            } else if (typeof node.target !== 'undefined') { 
-                this.buildInputFromNode(node.target, currentNode) 
+            if (typeof node.object !== 'undefined') {
+                this.buildInputFromNode(node.object, currentNode)
+            } else if (typeof node.target !== 'undefined') {
+                this.buildInputFromNode(node.target, currentNode)
             }
         },
-        
         buildInputFromNodeOrMandatory: function(jsonNode, currentNode, test) {
             if (test) {
                 return this.buildInputFromNode(jsonNode, currentNode);
@@ -145,24 +143,26 @@ define([
                     input += "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></div>";
                     break;
                 case "seqRules":
-                    input+= "<div class='seq-block-node'><h2><span data-i18n='language.only-once'/></h2>";
-                    jsonNode.rules.forEach(function(rule) {
-                        if (rule !== jsonNode.rules[0]) {
-                            input += "<div><span data-i18n='language.op-then-rule'/></div>";
-                        }
-                        input += self.buildInputFromNode(rule, currentNode);
-                    });
-                    input+="</div>";
+                      input+="<div class='seq-block-node'>";
+                      input+= jsonNode.iid == 1 || jsonNode.iid == 3?"<h2 class='seq-block-header'><span data-i18n='language.only-once'/></h2>":"";
+                      jsonNode.rules.forEach(function(rule) {
+                          if (rule !== jsonNode.rules[0]) {
+                              input += "<div class='separator'><span class='link-span' data-i18n='language.op-then-rule'/></div>";
+                          }
+                          input += self.buildInputFromNode(rule, currentNode);
+                      });
+                      input+="</div>";
                     break;
                 case "setOfRules":
-                    input+= jsonNode.iid != 0?"<div class='set-block-node'><h2><span data-i18n='language.repeated'/></h2>":"";
-                    jsonNode.rules.forEach(function(rule) {
+                      input+= jsonNode.iid != 0?"<div class='set-block-node'>":"";
+                      input+= jsonNode.iid == 1 || jsonNode.iid == 3?"<h2 class='set-block-header'><span data-i18n='language.repeated'/></h2>":"";
+                      jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
-                            input += "<div><span data-i18n='language.op-and-rule'/></div>";
+                          input += "<div class='separator'><span class='link-span' data-i18n='language.op-and-rule'/></div>";
                         }
                         input += self.buildInputFromNode(rule, currentNode);
-                    });
-                    input+= jsonNode.iid != 0?"</div>":"";
+                      });
+                      input+= jsonNode.iid != 0?"</div>":"";
                     break;
                 case "boolean":
                     input += "<button class='btn btn-prog btn-primary' id='" + jsonNode.iid + "'><span>" + jsonNode.value + "</span></button>";
