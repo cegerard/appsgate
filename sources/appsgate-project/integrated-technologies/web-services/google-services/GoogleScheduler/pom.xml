@@ -46,6 +46,12 @@
         </dependency>
             
         <dependency>
+            <artifactId>ConfigurableClockImpl</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
+                    
+        <dependency>
             <artifactId>SchedulerSpec</artifactId>
             <groupId>appsgate.components</groupId>
             <version>${project.version}</version>

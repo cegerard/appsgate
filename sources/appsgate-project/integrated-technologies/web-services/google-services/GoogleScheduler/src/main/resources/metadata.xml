@@ -16,7 +16,7 @@
 		classname="appsgate.lig.google.scheduler.GoogleScheduler"
 		specification="SchedulerSpec">
 		
-        <relation implementation="ConfigurableClockImpl" resolve="exist">
+        <relation specification="CoreClockSpec" resolve="exist">
             <interface field="clock"/>
              <message push="clockFlowRateChanged"/>
              <message push="clockSetChanged"/>
