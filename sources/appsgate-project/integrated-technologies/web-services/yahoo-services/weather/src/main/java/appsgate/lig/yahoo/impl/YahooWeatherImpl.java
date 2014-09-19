@@ -44,6 +44,13 @@ public class YahooWeatherImpl  implements YahooWeather {
     protected char currentUnit;
 
     private Object lock = new Object();
+    
+    
+    /**
+     * In order to avoid massive pooling of the webService, two request must be separated by this minimal interval (5 minutes)
+     */
+    private long intervalBetweenRefresh = 1000*60*5;    
+    private long timeStamp=0;
 
 
     /*
@@ -63,7 +70,6 @@ public class YahooWeatherImpl  implements YahooWeather {
 
 
 	boolean noFetch;
-	private Timer refreshTimer = new Timer();
 	private YahooGeoPlanet geoPlanet;
 
 
@@ -87,6 +93,7 @@ public class YahooWeatherImpl  implements YahooWeather {
 		noFetch = true;
 
 		geoPlanet = new YahooGeoPlanetImpl();
+		timeStamp = System.currentTimeMillis();
 		logger.debug("YahooWeatherImpl() is OK");
 	}
 
@@ -172,7 +179,8 @@ public class YahooWeatherImpl  implements YahooWeather {
                 lastPublicationDates.put(newWOEID, null);
                 currentWeathers.put(newWOEID, null);
                 forecasts.put(newWOEID, null);
-                fetch();
+                // Special case of fetch that override the timeStamp (because a new location must be polled one time)
+                fetch(placeName);
             } else
                 throw new WeatherForecastException("Place was not found");
         }
@@ -215,11 +223,6 @@ public class YahooWeatherImpl  implements YahooWeather {
 
 	public void start() {
 
-		try {
-			fetch();
-		} catch (WeatherForecastException exc) {
-			exc.printStackTrace();
-		}
 	}
 
 	public void stop() {
@@ -284,47 +287,62 @@ public class YahooWeatherImpl  implements YahooWeather {
 	 * @see appsgate.lig.weather.WeatherForecast#fetch()
 	 */
 	public void fetch() throws WeatherForecastException {
-		try {
+		if(System.currentTimeMillis()> (timeStamp+intervalBetweenRefresh)) {
+			timeStamp = System.currentTimeMillis();
 
 			for (String placeName : woeidFromePlaceName.keySet()) {
-				String woeid = woeidFromePlaceName.get(placeName);
-				logger.debug("Fetching Weather for " + placeName);
-                synchronized (lock) {
-
-                    feedUrl = String.format(feedUrlTemplate, woeid, currentUnit);
-
-                    this.url = new URL(feedUrl);
-
-                    DocumentBuilder db = null;
-                    db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                    Document doc = db.parse(url.openStream());
-                    Calendar newPubDate = YahooWeatherParser
-                            .parsePublicationDate(doc);
-
-                    if (newPubDate != null
-                            && (newPubDate.after(lastPublicationDates.get(woeid)) || lastPublicationDates
-                            .get(woeid) == null)) {
-                        logger.info("Publication date for " + placeName
-                                + " is newer, parsing new Weather Data !");
-                        currentWeathers.put(woeid,
-                                YahooWeatherParser.parseCurrentConditions(doc));
-                        forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
-                        lastPublicationDates.put(woeid, newPubDate);
-                    } else
-                        logger.info("Publication date for " + placeName
-                                + " is NOT newer, does nothing");
-                }
+				fetch(placeName);
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new WeatherForecastException(
-					"Impossible to fetch to weather forecast service, "
-							+ e.getMessage());
-		}
 
 		lastFetchDate = Calendar.getInstance();
+		}
+		
 	}
+	
+	/**
+	 * This method is private because only the YahooWeatherImpl service can choose to send a request to the web service
+	 * (to avoid pooling)
+	 * @param placeName
+	 * @throws WeatherForecastException
+	 */
+	private void fetch(String placeName) throws WeatherForecastException {
+		try {
+            synchronized (lock) {
+				String woeid = woeidFromePlaceName.get(placeName);
+				logger.trace("Fetching Weather for " + placeName+", WOEID : "+woeid);
+
+                feedUrl = String.format(feedUrlTemplate, woeid, currentUnit);
+
+                this.url = new URL(feedUrl);
+
+                DocumentBuilder db = null;
+                db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                Document doc = db.parse(url.openStream());
+                Calendar newPubDate = YahooWeatherParser
+                        .parsePublicationDate(doc);
+
+                if (newPubDate != null
+                        && (newPubDate.after(lastPublicationDates.get(woeid)) || lastPublicationDates
+                        .get(woeid) == null)) {
+                    logger.info("Publication date for " + placeName
+                            + " is newer, parsing new Weather Data !");
+                    currentWeathers.put(woeid,
+                            YahooWeatherParser.parseCurrentConditions(doc));
+                    forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
+                    lastPublicationDates.put(woeid, newPubDate);
+                } else
+                    logger.info("Publication date for " + placeName
+                            + " is NOT newer, does nothing");
+            }
+		} catch (Exception e) {
+		throw new WeatherForecastException(
+				"Impossible to fetch to weather forecast service, "
+						+ e.getMessage());
+		}
+	}
+
+	
 
 	/*
 	 * (non-Javadoc)
@@ -361,7 +379,6 @@ public class YahooWeatherImpl  implements YahooWeather {
     private void fetchAtLocation(String placeName) throws WeatherForecastException {
 		if (!woeidFromePlaceName.containsKey(placeName))
 			addLocation(placeName);
-		fetch();
     }
 
 

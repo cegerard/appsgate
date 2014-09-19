@@ -222,7 +222,7 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 
 
     /**
-     * Checks and enventually destroy observer that are not running correctly
+     * Checks and eventually destroy observer that are not running correctly
      * or destroy runningLocations string that does not match an existing observer
      */
     public synchronized void checkRunningLocations() {

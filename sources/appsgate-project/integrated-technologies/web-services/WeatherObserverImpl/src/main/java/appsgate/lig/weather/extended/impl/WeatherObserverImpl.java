@@ -71,7 +71,6 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
 
         super.appsgateServiceName = "Yahoo Weather Forecast";
         super.appsgateCoreType = CORE_TYPE.SERVICE;
-        // TODO register TimerTask
     }
 
     public void start() throws WeatherForecastException {
@@ -237,14 +236,14 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     }
 
     public void refresh() throws WeatherForecastException {
-        logger.debug("refreshing weather data for "+currentLocation);
-
         synchronized (lock) {
 
             if (weatherService != null
                     && (lastFetch < 0 || System.currentTimeMillis() - lastFetch > 10000)
                     && (lastPublicationdate == null || !lastPublicationdate.equals(weatherService.getPublicationDate(currentLocation))
             )) {
+                logger.trace("refreshing weather data for "+currentLocation);
+
 
                 checkAndUpdateCurrentWeather(weatherService.getCurrentWeather(currentLocation));
                 checkAndUpdateForecasts(weatherService.getForecast(currentLocation));
@@ -267,8 +266,6 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
                 lastFetch = System.currentTimeMillis();
 
                 lastPublicationdate = weatherService.getPublicationDate(currentLocation);
-            } else {
-                logger.debug("no need to refresh weather data");
             }
 
             WeatherRefreshTask nextRefresh = new WeatherRefreshTask(this);
