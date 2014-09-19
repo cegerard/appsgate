@@ -153,16 +153,18 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 */
 	private void removeEventFromAlarms(String eventId) {
 		logger.trace("removeEventFromAlarms(String eventId : "+eventId+")");
+		synchronized (lock) {			
 
-		for(int alarmId: onBeginAlarms.keySet()) {
-			if(onBeginAlarms.get(alarmId).equals(eventId)) {
-				onBeginAlarms.remove(alarmId);
-			}		
-		}
-		for(int alarmId: onEndAlarms.keySet()) {
-			if(onEndAlarms.get(alarmId).equals(eventId)) {
-				onEndAlarms.remove(alarmId);
-			}		
+			for(int alarmId: onBeginAlarms.keySet()) {
+				if(onBeginAlarms.get(alarmId).equals(eventId)) {
+					onBeginAlarms.remove(alarmId);
+				}		
+			}
+			for(int alarmId: onEndAlarms.keySet()) {
+				if(onEndAlarms.get(alarmId).equals(eventId)) {
+					onEndAlarms.remove(alarmId);
+				}		
+			}
 		}
 	}
 
@@ -226,43 +228,46 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		logger.trace("registerEventAlarms for : "+event.toString());
 
 		// Check onBegin date, if already passed, skip all begin instructions
-		if(event.getOnBeginInstructions().size()>0) {
-			try {
-				Date begin = dateFormat.parse(event.getStartTime());
-				if(begin.after(new Date(currentTime))) {
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(begin);
-					int alarmId = clock.registerAlarm(cal, this);
-					onBeginAlarms.put(alarmId, event.getId());
-					eventMap.put(event.getId(), event);
-					logger.trace("Adding on begin alarm with id "+alarmId+" on event : "+event.toString());
-				} else {
-					logger.trace("Event has already begun :"+event.getStartTime()+"skipping it");
+		synchronized (lock) {			
+			if(event.getOnBeginInstructions().size()>0) {
+				try {
+					Date begin = dateFormat.parse(event.getStartTime());
+					if(begin.after(new Date(currentTime))) {
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(begin);
+						int alarmId = clock.registerAlarm(cal, this);
+						onBeginAlarms.put(alarmId, event.getId());
+						eventMap.put(event.getId(), event);
+						logger.trace("Adding on begin alarm with id "+alarmId+" on event : "+event.toString());
+					} else {
+						logger.trace("Event has already begun :"+event.getStartTime()+"skipping it");
+					}
+
+				} catch (ParseException e) {
+					logger.error("Error while parsing the start date : "+e.getMessage()
+							+", start date : "+event.getStartTime());
 				}
+			}
 
-			} catch (ParseException e) {
-				logger.error("Error while parsing the start date : "+e.getMessage()
-						+", start date : "+event.getStartTime());
+			// End date should not be passed, always register end instructions
+			if(event.getOnEndInstructions().size()>0) {
+				try {
+					Date end=dateFormat.parse(event.getEndTime());
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(end);
+					int alarmId = clock.registerAlarm(cal, this);
+					onEndAlarms.put(alarmId, event.getId());
+					eventMap.put(event.getId(), event);
+					logger.trace("Adding on end alarm with id "+alarmId+" on event : "+event.toString());
+				} catch (ParseException e) {
+					logger.error("Error while parsing the end date : "+e.getMessage()
+							+", start date : "+event.getEndTime());
+				}
 			}
 		}
 
-		// End date should not be passed, always register end instructions
-		if(event.getOnEndInstructions().size()>0) {
-			try {
-				Date end=dateFormat.parse(event.getEndTime());
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(end);
-				int alarmId = clock.registerAlarm(cal, this);
-				onEndAlarms.put(alarmId, event.getId());
-				eventMap.put(event.getId(), event);
-				logger.trace("Adding on end alarm with id "+alarmId+" on event : "+event.toString());
-			} catch (ParseException e) {
-				logger.error("Error while parsing the end date : "+e.getMessage()
-						+", start date : "+event.getEndTime());
-			}
-		}
 	}
-	
+
 
 	private void triggerInstruction(String command, String target) throws SchedulingException {
 		logger.trace("triggerInstruction(String command : "+command
@@ -343,7 +348,8 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	@Override	
 	public void clockFlowRateChanged(FlowRateSetNotification notif) {
 		logger.trace("clockFlowRateChanged(FlowRateSetNotification notif =  " + notif.JSONize()+")");
-		currentRefresh = BASE_REFRESH  * Long.parseLong(notif.getNewValue());
+		double refresh = BASE_REFRESH  * Double.parseDouble(notif.getNewValue());
+		currentRefresh = (long)refresh;
 		refreshTask(currentRefresh);
 		logger.debug("refresh Task successfully changed");
 	}
