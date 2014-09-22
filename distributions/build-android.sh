@@ -95,6 +95,10 @@ rm mail*
 rm kxml*
 rm json*
 rm rxtx*.jar
+rm obrman*
+rm mqtt*
+rm hawt*
+
 find *.android -type f -exec mv {} {}.jar \; 
 
 
@@ -140,14 +144,35 @@ echo You may add dalvik packages to \"org.osgi.framework.system.packages.extra\"
 echo depending on your own bundle needs
 echo XXXX
 cp -R $COMPLETE/conf   $TARGET
-echo updating felix configuration file
-# echo "org.osgi.service.http.port=8080" >>   $TARGET/conf/config.properties
+echo Making a new felix configuration file
+rm $TARGET/conf/config.properties
 
-# Generic Configuration
+echo "# Specific OSGi configuration File for Android" >   $TARGET/conf/config.properties
+
+# Generic OSGI configuration stuff
+echo "org.osgi.framework.storage.clean=onFirstInit" >>   $TARGET/conf/config.properties
+echo "felix.auto.deploy.action=install,start" >>   $TARGET/conf/config.properties
+echo "felix.log.level=1" >>   $TARGET/conf/config.properties
+echo "felix.bootdelegation.implicit=false" >>   $TARGET/conf/config.properties
 echo "felix.fileinstall.tmpdir="$ANDROIDFELIXPATH"/tmp" >>   $TARGET/conf/config.properties
 echo "ipojo.proxy=disabled" >>   $TARGET/conf/config.properties
-echo "felix.bootdelegation.implicit=false" >>   $TARGET/conf/config.properties
-echo "obr.repository.url=http://felix.apache.org/obr/releases.xml" >>   $TARGET/conf/config.properties
+
+echo "org.osgi.service.http.port=8080" >>   $TARGET/conf/config.properties
+
+# Configuration specficis for appsgate
+echo "org.lig.appsgate.websocket.port=8087" >>   $TARGET/conf/config.properties
+echo "org.lig.appsgate.weather.locations=Grenoble" >>   $TARGET/conf/config.properties
+echo "fr.immotronic.enocean.databaseFilename=conf/enocean.db.json" >>   $TARGET/conf/config.properties
+echo "fr.immotronic.enocean.tcm=USB" >>   $TARGET/conf/config.properties
+echo "fr.immotronic.enocean.esp=ESP3" >>   $TARGET/conf/config.properties
+echo "fr.imag.adele.apam.managers.configuration=MongoDBConfiguration:file:./conf/defaultMongoDBConfig.cfg" >>   $TARGET/conf/config.properties
+echo "felix.upnpbase.importer.research.renewal=240" >>   $TARGET/conf/config.properties
+echo "google.configuration.file=conf/google.cfg" >>   $TARGET/conf/config.properties
+
+
+
+# Generic Configuration
+#echo "obr.repository.url=http://felix.apache.org/obr/releases.xml" >>   $TARGET/conf/config.properties
 
 # extra package used for apam
 echo " org.osgi.framework.system.packages.extra= \\" >>   $TARGET/conf/config.properties
@@ -210,8 +235,8 @@ echo XXXX
 
 echo "cd   $TARGET"
 echo "adb -s $ANDROIDADBDEVICE shell rm -rf $ANDROIDFELIXPATH"
-echo "adb -s $ANDROIDADBDEVICE shell mkdir $ANDROIDFELIXPATH/tmp"
-echo "adb -s $ANDROIDADBDEVICE shell chmod 700 /data/ehmi-middleware"
+echo "adb -s $ANDROIDADBDEVICE shell mkdir -p $ANDROIDFELIXPATH/tmp"
+echo "adb -s $ANDROIDADBDEVICE shell chmod -R 700 /data/ehmi-middleware"
 echo "find * -type f -exec adb -s $ANDROIDADBDEVICE push {} $ANDROIDFELIXPATH/{} \;"
 echo "cd .."
 
