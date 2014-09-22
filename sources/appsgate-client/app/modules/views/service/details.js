@@ -24,7 +24,7 @@ define([
         "click button.btn-media-stop": "onStopMedia",
         "click button.btn-media-volume": "onSetVolumeMedia",
         "click button.btn-media-browse": "onBrowseMedia",
-        "show.bs.modal #edit-service-modal": "initializeModal",
+        "shown.bs.modal #edit-service-modal": "initializeModal",
         "hidden.bs.modal #edit-service-modal": "toggleModalValue",
         "click #edit-service-modal button.valid-button": "validEditService",
         "keyup #edit-service-modal input": "validEditService",
@@ -86,6 +86,7 @@ define([
       */
       initializeModal: function() {
         $("#edit-service-modal input#service-name").val(this.model.get("name").replace(/&eacute;/g, "é").replace(/&egrave;/g, "è"));
+        $("#edit-service-modal input#service-name").focus();
         $("#edit-service-modal .text-danger").addClass("hide");
         $("#edit-service-modal .valid-button").addClass("disabled");
 
