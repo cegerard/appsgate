@@ -16,6 +16,8 @@
 		<relation field="interpreter"  resolve="exist"/>
 		<relation field="traceManager" resolve="exist"/>
         <relation field="weatherAdapter" resolve="exist"/>
+        <relation field="schedulerService" resolve="exist" />
+        
 
 
         <relation specification="AppsgateClientCommunicationManagerSpec" resolve="exist"

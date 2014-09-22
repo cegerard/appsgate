@@ -45,6 +45,19 @@ public interface SchedulerSpec extends AlarmEventObserver{
 
 
 	/**
+	 * Create a basic Calendar Event, at AppsGate Clock Time, to schedule the start or stop of a program
+	 * The Event is created just one hour before current Time, and last for 30 minutes  
+	 * @param eventName is the name as it will appear in the Calendar
+	 * @param programId is not checked, but should be a VALID program ID referenced by EUDE Inteprpreter
+	 * @param startOnBegin if program should start when Google Event begin
+	 * @param stopOnEnd if program should start when Google Event end
+	 * @return the Google Event ID
+	 * @throws SchedulingException
+	 */
+	public String createEvent(String eventName, String programId, boolean startOnBegin, boolean stopOnEnd) throws SchedulingException;
+	
+
+	/**
 	 * The method implements what to do when a registered events occurs
 	 */
 	@Override

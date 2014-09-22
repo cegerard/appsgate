@@ -33,6 +33,7 @@ import appsgate.lig.google.scheduler.GoogleScheduler;
 import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.mail.Mail;
+import appsgate.lig.scheduler.SchedulingException;
 import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
 import appsgate.lig.test.pax.helpers.PaxedDistribution.resolveFrom;
@@ -117,7 +118,6 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		
 	}
 	
-	
 	public void testGoogleScheduler() {
 		String mailAccount= "smarthome.adele@gmail.com";
 		
@@ -125,11 +125,38 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		
 		CoreClockSpec service = (CoreClockSpec) initTestClock();
 		GoogleAdapter ga = (GoogleAdapter) initGoogleAdapter();
-		GoogleScheduler toto = (GoogleScheduler) initGoogleScheduler();
+		logger.debug("init Google Adapter OK");
 		
-		toto.resetScheduler();
+		GoogleScheduler toto = (GoogleScheduler) initGoogleScheduler();
+		logger.debug("init Google Scheduler OK");
+
+		//toto.resetScheduler();
+		logger.debug("Scheduler reset OK");
 	}
 
+	
+	public void testAddSchedule() {
+		String mailAccount= "smarthome.adele@gmail.com";
+		
+		TestCoreAppsgate.testEmptyAppsgate();
+		
+		CoreClockSpec service = (CoreClockSpec) initTestClock();
+		GoogleAdapter ga = (GoogleAdapter) initGoogleAdapter();
+		logger.debug("init Google Adapter OK");
+		
+		GoogleScheduler toto = (GoogleScheduler) initGoogleScheduler();
+		logger.debug("init Google Scheduler OK");
+
+		try {
+			toto.createEvent("JplanifieMonTest", "monprogramme", true, true);
+			logger.debug("Scheduler add event ok");
+
+		} catch(Exception exc) {
+			exc.printStackTrace();
+		}
+		//toto.resetScheduler();
+	}	
+	
 	public static Object initGoogleScheduler() {
 		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,null,
 				"GoogleScheduler", null);
@@ -224,7 +251,6 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 				"YahooWeatherImpl", null);
 	}
 
-	@Test
 	public void testGoogleCalendar() {
 		TestCoreAppsgate.testEmptyAppsgate();
 
@@ -259,10 +285,6 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"CoreMailSpec",
 				"MailService", null);
 	}
-	
-	
-	
-	
 
 	@Configuration
 	public Option[] configuration() {

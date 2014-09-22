@@ -28,8 +28,13 @@ public interface GoogleAdapter  {
 	public Set<GoogleEvent> getEvents(String calendarId, Map<String, String> requestParameters);
 	
 		
-	public GoogleEvent addEvent(String calendarId, String requestContent);
-	
+	/**
+	 * Add an an event to the calendar and return the associated GoogleEvent Object
+	 * @param calendarId
+	 * @param requestContent
+	 * @return
+	 */
+	public GoogleEvent addEvent(String calendarId, String requestContent);	
 	
 	public boolean deleteEvent(String calendarId, String eventId);
 	

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -547,6 +548,14 @@ public class EHMIProxyMock implements EHMIProxySpec {
 	public boolean stopDebugger() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	@Override
+	public void scheduleProgram(String eventName, String programId,
+			boolean startOnBegin, boolean stopOnEnd) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

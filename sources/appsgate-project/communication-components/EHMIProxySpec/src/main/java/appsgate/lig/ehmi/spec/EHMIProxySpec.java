@@ -362,6 +362,24 @@ public interface EHMIProxySpec {
      */
     public JSONArray getAllLocationsObservers();
 
+    
+    /************************************/
+    /**  Scheduling service management  */
+    /************************************/
+
+
+	/**
+	 * Try to schedule the start or stop of a program
+	 * The Event is created just one hour before current Time, and last for 30 minutes
+	 * (it up to the end user to modify this event according to its need)
+	 * @param eventName is the name as it will appear in the Calendar
+	 * @param programId should be a VALID program ID referenced by EUDE Interpreter
+	 * @param startOnBegin if program should start when Google Event begin
+	 * @param stopOnEnd if program should start when Google Event end
+	 */
+	public void scheduleProgram(String eventName, String programId, boolean startOnBegin, boolean stopOnEnd);
+    
+    
 
 	/************************************/
 	/**   End User programs management  */

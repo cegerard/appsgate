@@ -2,7 +2,10 @@ package appsgate.lig.ehmi.impl;
 
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
+import appsgate.lig.scheduler.SchedulerSpec;
+import appsgate.lig.scheduler.SchedulingException;
 import appsgate.lig.weather.spec.WeatherAdapterSpec;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +44,7 @@ import appsgate.lig.ehmi.spec.messages.ClockAlarmNotificationMsg;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
+
 import java.net.*;
 import java.util.*;
 
@@ -126,6 +130,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     private StateVariableServerIP serverIP;
     private StateVariableServerURL serverURL;
     private StateVariableServerWebsocket serverWebsocket;
+    
+    
+    private SchedulerSpec schedulerService;
 
     /**
      * Listener for EHMI command from clients
@@ -1136,5 +1143,24 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public boolean stopDebugger() {
 		return traceManager.stopDebugger();
+	}
+
+	@Override
+	public void scheduleProgram(String eventName, String programId,
+			boolean startOnBegin, boolean stopOnEnd) {
+		if(schedulerService == null) {
+			logger.error("No scheduling service, aborting)");
+		} else {
+			try{
+				String eventId = schedulerService.createEvent(eventName, programId, startOnBegin, stopOnEnd);
+				if(eventId != null) {
+					logger.trace(" Program successfully scheduled with event ID : "+eventId);
+				} else {
+					logger.error("Program not scheduled");
+				}
+			} catch (SchedulingException exc) {
+				logger.error("Error when adding an event to the scheduler : "+exc.getMessage());
+			}
+		}
 	}
 }
