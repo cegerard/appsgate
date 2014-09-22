@@ -224,19 +224,15 @@
         "opened": "Ouvert",
         "closed": "Fermé"
       },
-      "event": {
-        "opened": "on ouvre",
-        "closed": "on ferme"
-      },
-      "state": {
-        "opened": "ouvert",
-        "closed": "fermé"
-      },
       "language": {
+		"openEvent" : "on ouvre __myVar__",
+		"closeEvent" : "on ferme __myVar__",
         "isOpen": "__myVar__ est ouvert(e)",
         "isClose": "__myVar__ est fermé(e)"
       },
       "keyboard": {
+		"openEvent" : "on ouvre ...",
+		"closeEvent" : "on ferme ...",
         "isOpen": "le capteur ... est ouvert",
         "isClose": "le capteur ... est fermé"
       }
@@ -284,7 +280,7 @@
         "isOff-keep": "__myVar__ éteinte",
         "isOn-keep": "__myVar__ allumée",
         "turnOn": "Allumer __myVar__",
-        "turnOff": "Allumer __myVar__"
+        "turnOff": "Eteindre __myVar__"
       },
       "keyboard": {
         "isOff": "la prise ... est éteinte",
@@ -310,21 +306,32 @@
         "blink": "Faire clignoter"
       },
       "language": {
+        "blink": "Fait clignoter __myVar__",
+		"brightness": "l'intensité de __myVar__",
         "isOff": "__myVar__ est éteinte",
         "isOn": "__myVar__ est allumée",
         "isOff-keep": "__myVar__ éteinte",
         "isOn-keep": "__myVar__ allumée",
         "turnOnEvt": "on allume __myVar__",
-        "turnOffEvt": "on éteint __myVar__"
+        "turnOffEvt": "on éteint __myVar__",
+        "turnOn": "Allumer __myVar__",
+        "turnOff": "Eteindre __myVar__"
       },
       "keyboard": {
+        "blink": "Fait clignoter ...",
+		"brightness": "l'intensité de la lampe ...",
         "isOff": "la lampe ... est éteinte",
         "isOn": "la lampe ... est allumée",
         "isOff-keep": "la lampe ... éteinte",
         "isOn-keep": "la lampe ... allumée",
         "turnOnEvt": "on allume la lampe ...",
-        "turnOffEvt": "on éteint la lampe ..."
-      }
+        "turnOffEvt": "on éteint la lampe ...",
+        "turnOn": "Allumer la lampe ...",
+        "turnOff": "Eteindre la lampe ..."
+      },
+	  "complement" : {
+		"change-color" : "en"
+	  }
     },
     "clock": {
       "name": {
@@ -521,10 +528,8 @@
     "repeated": "Répété",
     "only-once": "Une seule fois",
     "actions": "Actions",
-    "written-by": "ecrit par",
     "when-keyword": "Chaque fois que",
     "when-imp-keyword": "Dès que",
-    "end-when-block": ".",
     "if-keyword": "Si",
     "if-and": "Si ... et ...",
     "if-or": "Si ... ou ...",
@@ -539,17 +544,12 @@
     "keep-then": "Ensuite",
     "and-when": "Dès que",
     "it-is-not-the-case": "ce n'est plus le cas",
-    "is-activated-program-event": "est activé",
-    "is-disactivated-program-event": "est desactivé",
-    "is-running-program-status": "est actif",
-    "is-stopped-program-status": "est inactif",
     "op-event": "et",
     "op-event-bool": "et",
     "op-and-rule": "Et en même temps",
     "op-then-rule": "Puis",
     "op-or-bool": "ou",
     "op-and-bool": "et",
-    "space": "espace",
     "true": "vrai",
     "false": "faux",
     "op-more-than": "plus de",
@@ -572,40 +572,16 @@
     "pushed-telec-event-bottom": "on appuie sur le bouton bas de",
     "pushed-telec-event-left": "on appuie a gauche de",
     "pushed-telec-event-right": "on appuie a droite de",
-    "opened-contact-event": "on ouvre",
-    "closed-contact-event": "on ferme",
-    "contact-sensor-keyword": "le capteur de contact de",
     "contact-assembled-event": "s assemble",
     "contact-disassembled-event": "se desassemble",
-    "is-closed-contact-status": "ferme",
-    "is-opened-contact-status": "ouvert",
     "is-assembled-contact-status": "assemble",
     "is-disassembled-contact-status": "desassemble",
     "inserted-keycard-reader-event": "on insère une carte dans",
     "removed-keycard-reader-event": "on retire une carte de",
     "card-inserted-keycard-reader-status": "une carte est insérée dans",
     "no-card-inserted-keycard-reader-status": "aucune carte n'est insérée dans",
-    "turned-on-plug-event": "on allume",
-    "turned-off-plug-event": "on éteint",
-    "is-turned-on-plug-status": "est allumée",
-    "is-turned-off-plug-status": "est éteinte",
-    "turned-on-plug-state": "allumée",
-    "turned-off-plug-state": "éteinte",
-    "turn-on-plug-action": "Allumer",
-    "turn-off-plug-action": "Eteindre",
-    "turned-on-actuator-event": "on allume",
-    "turned-off-actuator-event": "on eteint",
-    "is-turned-on-actuator-status": "est allumé",
-    "is-turned-off-actuator-status": "est éteint",
-    "turn-on-actuator-action": "Allumer",
-    "turn-off-actuator-action": "Eteindre",
     "wait": "Attendre",
     "seconds": "secondes",
-    "is-turned-on-lamp-status": "est allumée",
-    "is-turned-off-lamp-status": "est éteinte",
-    "turn-on-lamp-action": "Allumer",
-    "turn-off-lamp-action": "Eteindre",
-    "blink-lamp-action": "Faire clignoter",
     "change-color-lamp-action": "Changer la couleur de",
     "complement-change-color-lamp-action": "en",
     "white-color": "blanc",
@@ -638,9 +614,6 @@
     "well-arrived-subject": "Bien arrivé!",
     "mandatory-keyword": "Obligatoire",
     "nothing-keyword": "Rien",
-    "is-turned-on-lamp-state": "allumée",
-    "is-turned-off-lamp-state": "éteinte",
-    "light-brightness": "l'intensité de ",
     "state-verb": "est",
     "getTemperature": "la température mesurée",
     "getIllumination": "la luminosité mesurée",
@@ -696,23 +669,9 @@
   "keyboard": {
     "true": "Vrai",
     "false": "Faux",
-    "is-open-contactSensor-state": "le capteur est ouvert",
-    "is-closed-contactSensor-state": "le capteur est fermé",
-    "is-turned-off-lamp-state": "l'ampoule est éteinte",
-    "is-turned-on-lamp-state": "l'ampoule est allumée",
-    "is-turned-on-lamp-event": "on allume l'ampoule",
-    "is-turned-off-lamp-event": "on éteint l'ampoule",
-    "turned-on-plug-state": "la prise est allumée",
-    "turned-off-plug-state": "la prise est éteinte",
-    "turn-on-lamp-action": "Allumer l'ampoule",
-    "turn-off-lamp-action": "Eteindre l'ampoule",
-    "turn-on-plug-action": "Allumer la prise",
-    "turn-off-plug-action": "Eteindre la prise",
-    "blink-lamp-action": "Faire clignoter",
     "when-keyword": "Chaque fois que",
     "whenImp-keyword": "Dès que",
     "if-keyword": "Si",
-    "light-brightness": "l'intensité de l'ampoule",
     "while-keyword": "Pendant que",
     "keep-state": "Maintenir l'état ...",
     "clock-event": "il est ",

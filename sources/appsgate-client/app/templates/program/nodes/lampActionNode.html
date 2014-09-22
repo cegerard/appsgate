@@ -4,18 +4,14 @@
   <span class="progress-indicator" data-i18n='debugger.times'/>
 </div>
 <div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
-        <% if (typeof node.phrase !== 'undefined') { %>
-            <span data-i18n='<%=node.phrase%>'></span>
-        <% } else { %>
+        <% if (typeof node.phrase !== 'undefined') {%>
+                <%=$.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+        <%} else { %>
         Uknown
         <% } %>
 
-    <% if (typeof node.target !== 'undefined') { %>
-    <%=engine.buildInputFromNode(node.target, currentNode) %>
-    <% } %>
-
     <% if (node.methodName.search("set") === 0 ) { %>
-    <span data-i18n="language.complement-change-color-lamp-action"></span>
+    <span data-i18n="devices.lamp.complement.change-color"></span>
     <select id="lamp-color-<%= node.idd %>" class="lamp-color-picker" target-id="<%= node.iid %>">
         <option <% if (node.methodName === "setRed") { %>selected<% } %> value="setRed" data-i18n="language.red-color"></option>
         <option <% if (node.methodName === "setBlue") { %>selected<% } %> value="setBlue" data-i18n="language.blue-color"></option>
