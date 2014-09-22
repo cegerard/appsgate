@@ -20,7 +20,7 @@ define([
          */
         events: {
             "click a.list-group-item": "updateSideMenu",
-            "show.bs.modal #add-program-modal": "initializeModal",
+            "shown.bs.modal #add-program-modal": "initializeModal",
             "hidden.bs.modal #add-program-modal": "toggleModalValue",
             "click #add-program-modal button.valid-button": "validAddProgram",
             "keyup #add-program-modal input:text": "validAddProgram"
@@ -72,6 +72,7 @@ define([
          */
         initializeModal: function() {
             $("#add-program-modal input").val("");
+            $("#add-program-modal input").focus();
             $("#add-program-modal .text-danger").addClass("hide");
             $("#add-program-modal input:checkbox").prop("checked", true);
             $("#add-program-modal .valid-button").addClass("disabled");
@@ -151,17 +152,6 @@ define([
 
                         // display the new program
                         appRouter.programsRouter.editor(program.get("id"));
-
-                        // set the current program active
-                        _.forEach($("a.list-group-item"), function(item) {
-                            if (item.id === "side-" + program.id) {
-                                $(item).addClass("active");
-                                $(self.$el.find(".list-group")[1]).scrollTop(1000);
-                            }
-                            else {
-                                $(item).removeClass("active");
-                            }
-                        });
                     });
                 }
             } else if (e.type === "keyup") {

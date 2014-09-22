@@ -36,7 +36,7 @@ define([
         case "switchOff":
           $(btn).append("<span data-i18n='devices.plug.keyboard.turnOff'></span>");
           v.methodName = "off";
-          v.phrase = "devices.plug.keyboard.turnOff";
+          v.phrase = "devices.plug.language.turnOff";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

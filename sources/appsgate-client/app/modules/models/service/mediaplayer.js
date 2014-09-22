@@ -23,6 +23,7 @@ define([
             // setting default friendly name if none exists
             if (this.get("name") === "") {
                 this.set("name", this.get("friendlyName"));
+                this.sendName();
             }
 
             // request current volume level

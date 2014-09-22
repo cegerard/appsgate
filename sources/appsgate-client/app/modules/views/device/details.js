@@ -47,7 +47,7 @@ define([
             "click button.btn-media-stop": "onStopMedia",
             "click button.btn-media-volume": "onSetVolumeMedia",
             "click button.btn-media-browse": "onBrowseMedia",
-            "show.bs.modal #edit-device-modal": "initializeModal",
+            "shown.bs.modal #edit-device-modal": "initializeModal",
             "hidden.bs.modal #edit-device-modal": "toggleModalValue",
             "click #edit-device-modal button.valid-button": "validEditDevice",
             "keyup #edit-device-modal input": "validEditDevice",
@@ -220,6 +220,7 @@ define([
          */
         initializeModal: function() {
             $("#edit-device-modal input#device-name").val(this.model.get("name").replace(/&eacute;/g, "é").replace(/&egrave;/g, "è"));
+            $("#edit-device-modal input#device-name").focus();
             $("#edit-device-modal .text-danger").addClass("hide");
             $("#edit-device-modal .valid-button").addClass("disabled");
 
@@ -509,7 +510,7 @@ define([
                 }
 
                 this.resize($(".scrollable"));
-                                
+
                 // translate the view
                 this.$el.i18n();
 

@@ -14,7 +14,7 @@ define([
          * Bind events of the DOM elements from the view to their callback
          */
         events: {
-            "show.bs.modal #edit-name-place-modal": "initializeModal",
+            "shown.bs.modal #edit-name-place-modal": "initializeModal",
             "click #edit-name-place-modal button.valid-button": "validEditName",
             "keyup #edit-name-place-modal input": "validEditName",
             "click button.delete-place-button": "deletePlace",
@@ -62,6 +62,7 @@ define([
          */
         initializeModal: function() {
             $("#edit-name-place-modal input").val(this.model.getName());
+            $("#edit-name-place-modal input").focus();
             $("#edit-name-place-modal .text-danger").addClass("hide");
             $("#edit-name-place-modal .valid-button").addClass("disabled");
         },

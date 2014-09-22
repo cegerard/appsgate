@@ -354,7 +354,7 @@ define([
       },
       applyEditMode: function() {
         if (this.Mediator.currentNode === -1 && this.Mediator.lastAddedNode !== null) {
-          var nextInput = this.Mediator.findNextInput($(".programInput").find("#" + this.Mediator.lastAddedNode.iid).parent());
+          var nextInput = this.Mediator.findNextInput($(".programInput").find("#" + this.Mediator.lastAddedNode.iid));
 
           this.Mediator.setCursorAndBuildKeyboard(parseInt(nextInput.nextAll(".input-spot").attr("id")));
           console.log("nextInput : "+nextInput.nextAll(".input-spot").attr("id"));
