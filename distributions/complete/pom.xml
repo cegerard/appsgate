@@ -443,7 +443,29 @@
                                     <artifactId>KNXAdapter</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-
+                                
+                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>SchedulerSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>GoogleScheduler</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>       
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreARDBadgeDoorSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>      
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>ARDBadgeDoorImpl</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>       
+                                
                             </artifactItems>
                             <outputDirectory>${basedir}/load</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
