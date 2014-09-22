@@ -89,6 +89,7 @@ define([
         } else {
           this.currentNode = -1;
           console.error("A non valid pos has been passed to setCurrent pos: " + id);
+		  return;
         }
         dispatcher.trigger("refreshDisplay");
       },
@@ -413,8 +414,11 @@ define([
       */
       findNextInput: function(selected) {
         //
+		if (selected.length == 0) {
+		  console.error("Unable to find next input on an empty selector : ", selected.selector);
+		  return selected;
+		}
         while(typeof selected != "undefined") {
-          console.log("selected(inside) : "+selected.nextAll(".input-spot").attr("id"));
           if(selected.nextAll(".input-spot").length != 0) {
             return selected;
           }
