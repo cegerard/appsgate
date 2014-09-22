@@ -152,17 +152,6 @@ define([
 
                         // display the new program
                         appRouter.programsRouter.editor(program.get("id"));
-
-                        // set the current program active
-                        _.forEach($("a.list-group-item"), function(item) {
-                            if (item.id === "side-" + program.id) {
-                                $(item).addClass("active");
-                                $(self.$el.find(".list-group")[1]).scrollTop(1000);
-                            }
-                            else {
-                                $(item).removeClass("active");
-                            }
-                        });
                     });
                 }
             } else if (e.type === "keyup") {

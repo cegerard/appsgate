@@ -810,6 +810,7 @@ font-size: smaller;
   height:25%;
   width: 100%;
   border: 1px solid #999999;
+  border-radius: 15px;
 }
 
 .expected-input {

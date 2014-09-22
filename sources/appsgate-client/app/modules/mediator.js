@@ -12,7 +12,7 @@ define([
         this.ProgramInputBuilder = new ProgramInputBuilder();
 
         this.resetProgramJSON();
-        this.currentNode = 4;
+        this.currentNode = 2;
         this.maxNodeId = 4;
         this.lastAddedNode = null;
         this.Grammar = new Grammar();
@@ -25,39 +25,35 @@ define([
           iid: 0,
           type: "setOfRules",
           rules: [
-			{
-			  iid: 3,
-			  type: "setOfRules",
-			  rules: [
-				{
-				  iid: 4,
-				  type: "empty",
-				}
-				]
-			},
-			{
-			  iid: 1,
-			  type: "seqRules",
-			  rules: [{
-			  	iid: 2,
-				type: "empty",
-			  }]
-		  	}
-		  ]
+               {iid: 1,
+               type: "seqRules",
+               rules: [{
+                  iid: 2,
+                  type: "empty",
+               }]
+               },
+               {iid: 3,
+			         type: "setOfRules",
+			         rules: [{
+				          iid: 4,
+				          type: "empty",
+				          }]
+			         }
+		      ]
         };
       },
       /**
       * method that loads a program and set the max id
       */
       loadProgramJSON: function(programJSON, pid) {
-		if (programJSON === undefined || programJSON.rules === undefined) {
-		  this.resetProgramJSON();
-		} else {
-		  this.programJSON = programJSON;
-		  this.ProgramKeyboardBuilder.setProgramId(pid);
-		}
-        this.maxNodeId = this.findMaxId(this.programJSON);
-        this.currentNode = -1;
+    		if (programJSON === undefined || programJSON.rules === undefined) {
+    		  this.resetProgramJSON();
+    		} else {
+    		  this.programJSON = programJSON;
+    		  this.ProgramKeyboardBuilder.setProgramId(pid);
+          this.maxNodeId = this.findMaxId(this.programJSON);
+          this.currentNode = -1;
+    		}
       },
       /**
       * Method that recursively retrieve the max node id of the program
