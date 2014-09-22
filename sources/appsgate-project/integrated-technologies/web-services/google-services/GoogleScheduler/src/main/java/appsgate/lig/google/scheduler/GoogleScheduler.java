@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -391,5 +392,73 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		} catch(SchedulingException exc) {
 			logger.error("Error occured, scheduler has not been refreshed : "+exc.getMessage());
 		}
+	}
+
+	@Override
+	public String createEvent(String eventName, String programId, boolean startOnBegin,
+			boolean stopOnEnd) throws SchedulingException {
+		logger.trace("String createEvent(String eventName : "+eventName 
+				+ ", String programId : "+programId
+				+", boolean startOnBegin: "+startOnBegin
+				+", boolean stopOnEnd: "+stopOnEnd
+				+")");
+
+		if(serviceAdapter==null) {
+			logger.error("No GoogleAdapter service registered, unable to add events");
+			throw new SchedulingException("No GoogleAdapter service registered, unable to add events");
+		}
+		
+		long currentTime;
+		if (clock==null) {
+			logger.info("No CoreClock service registered, using system time to create the Event");
+			currentTime = System.currentTimeMillis();
+		} else {
+			currentTime = clock.getCurrentTimeInMillis();
+		}
+		
+		String requestContent;
+		
+		//Creating an event starting one hour before
+		Date startDate = new Date(currentTime - (60*60*1000));
+		
+		//The event should end half an hour before current Time
+		Date endDate = new Date(currentTime - (30*60*1000));
+		
+		JSONObject content = new JSONObject();
+		content.put("start", new JSONObject().put("dateTime",  dateFormat.format(startDate)));
+		content.put("end", new JSONObject().put("dateTime",  dateFormat.format(endDate)));
+		
+		content.put("summary", eventName);
+		
+		String description="";
+		if(startOnBegin) {
+			description += GoogleEvent.ON_BEGIN
+					+ ScheduledInstruction.SEPARATOR
+					+ ScheduledInstruction.CALL_PROGRAM
+					+ ScheduledInstruction.SEPARATOR
+					+ programId
+					+ "\n";
+		}
+		if(stopOnEnd) {
+			description += GoogleEvent.ON_END
+					+ ScheduledInstruction.SEPARATOR
+					+ ScheduledInstruction.STOP_PROGRAM
+					+ ScheduledInstruction.SEPARATOR
+					+ programId
+					+ "\n";
+		}
+		
+		content.put("description", description);
+		
+		requestContent=content.toString();
+		
+		GoogleEvent event = serviceAdapter.addEvent(calendarId, requestContent);
+		
+		if( event == null) {
+			throw new SchedulingException("Error during creation of the Calender Event, returned null event");
+		}
+		logger.trace("String createEvent(...), event created successfully, returning eventId : "+event.getId());
+
+		return event.getId();
 	}	
 }
