@@ -66,6 +66,7 @@ define([], function () {
 		/**  Add a tile in configure GUI for the device in parameter */
 		this.addDeviceTile = function addDeviceTile(deviceData) {
    			$( "#no-devices-detected-tag" ).remove();
+
    			$.ajax({
    				url : './html/enocean/enoceanDeviceTile.html',
    				dataType : 'html',
@@ -126,7 +127,17 @@ define([], function () {
 	       			chmi.getWebSocket().getEnocean().setTileStatus(deviceData);
 	       			
 	       			chmi.addNotifHandler(deviceData.id, chmi.getWebSocket().getEnocean().notificationHandler);
-   				}
+
+				var nbDevices = $("#devices-tile-list").children().length;
+				var q = (nbDevices/4>>0);
+				var r = nbDevices % 4;
+				if(q>0 && r==1){
+					q++;
+					var newclass = "tile-column-span-"+(2+q*2);
+					$("#devices-tile-list").attr("class", newclass);
+				}
+
+   			}
    			});
 		}
 		
@@ -163,6 +174,15 @@ define([], function () {
 	       			$("#device-profiles").attr("id", $("#device-profiles").attr("id")+"-"+deviceData.id);
 	       			$("#validate-profile").attr("id", $("#validate-profile").attr("id")+"-"+deviceData.id);
 	       			$("#validate-profile-button").attr("id", $("#validate-profile-button").attr("id")+"-"+deviceData.id);
+
+				var nbDevices = $("#undefined-devices-tile-list").children().length;
+				var q = (nbDevices/4>>0);
+				var r = nbDevices % 4;
+				if(q>0 && r==1){
+					q++;
+					var newclass = "tile-column-span-"+(2+q*2);
+					$("#undefined-devices-tile-list").attr("class", newclass);
+				}
    				}
    			});
 
