@@ -4,37 +4,37 @@
     <span data-i18n="<%= node.phrase %>"/>
 
     <% } %>
-    <%if (node.phrase === 'keyboard.weather.forecast-temperature-min' || node.phrase === 'keyboard.weather.forecast-temperature-max' || node.phrase === 'keyboard.weather.is-forecast-weather-code-state' ) { %>
+    <%if (node.phrase === 'services.weather.language.forecast-temperature-min' || node.phrase === 'services.weather.language.forecast-temperature-max' || node.phrase === 'services.weather.language.is-forecast-weather-code-state' ) { %>
 
     <select id="day-forecast-<%= node.iid %>" class="day-forecast-picker" target-id="<%= node.iid %>">
-        <option <% if (node.args[0].value === "0") { %>selected<% } %> value="0" data-i18n="language.weather.weather-for-0"></option>
-        <option <% if (node.args[0].value === "1") { %>selected<% } %> value="1" data-i18n="language.weather.weather-for-1"></option>
-        <option <% if (node.args[0].value === "2") { %>selected<% } %> value="2" data-i18n="language.weather.weather-for-2"></option>
+        <option <% if (node.args[0].value === "0") { %>selected<% } %> value="0" data-i18n="services.weather.language.weather-for-0"></option>
+        <option <% if (node.args[0].value === "1") { %>selected<% } %> value="1" data-i18n="services.weather.language.weather-for-1"></option>
+        <option <% if (node.args[0].value === "2") { %>selected<% } %> value="2" data-i18n="services.weather.language.weather-for-2"></option>
     </select>
 
     <% }  %>
-    <%if (node.phrase === 'keyboard.weather.is-forecast-weather-code-state' || node.phrase === 'keyboard.weather.is-current-weather-code-state') {  %>
+    <%if (node.phrase === 'services.weather.language.is-forecast-weather-code-state' || node.phrase === 'services.weather.language.is-current-weather-code-state') {  %>
     <% i=0;  %>
 
-    <%if (node.phrase === 'keyboard.weather.is-forecast-weather-code-state') {%>
+    <%if (node.phrase === 'services.weather.language.weather.is-forecast-weather-code-state') {%>
     <% i=i+1; %>
     <% } %>
 
-    <span data-i18n="language.weather.weather-code-verb"/>
+    <span data-i18n="services.weather.language.weather-code-verb"/>
     <select id="code-forecast-<%= node.iid %>" class="code-forecast-picker" target-id="<%= node.iid %>">
-        <option <% if (node.args[i].value === "0") { %>selected<% } %> value="0" data-i18n="language.weather.weather-code-0"></option>
-        <option <% if (node.args[i].value === "1") { %>selected<% } %> value="1" data-i18n="language.weather.weather-code-1"></option>
-        <option <% if (node.args[i].value === "2") { %>selected<% } %> value="2" data-i18n="language.weather.weather-code-2"></option>
-        <option <% if (node.args[i].value === "3") { %>selected<% } %> value="3" data-i18n="language.weather.weather-code-3"></option>
-        <option <% if (node.args[i].value === "4") { %>selected<% } %> value="4" data-i18n="language.weather.weather-code-4"></option>
-        <option <% if (node.args[i].value === "5") { %>selected<% } %> value="5" data-i18n="language.weather.weather-code-5"></option>
-        <option <% if (node.args[i].value === "6") { %>selected<% } %> value="6" data-i18n="language.weather.weather-code-6"></option>
-        <option <% if (node.args[i].value === "7") { %>selected<% } %> value="7" data-i18n="language.weather.weather-code-7"></option>
+        <option <% if (node.args[i].value === "0") { %>selected<% } %> value="0" data-i18n="services.weather.language.weather-code-0"></option>
+        <option <% if (node.args[i].value === "1") { %>selected<% } %> value="1" data-i18n="services.weather.language-code-1"></option>
+        <option <% if (node.args[i].value === "2") { %>selected<% } %> value="2" data-i18n="services.weather.language.weather-code-2"></option>
+        <option <% if (node.args[i].value === "3") { %>selected<% } %> value="3" data-i18n="services.weather.language.weather-code-3"></option>
+        <option <% if (node.args[i].value === "4") { %>selected<% } %> value="4" data-i18n="services.weather.language.weather-code-4"></option>
+        <option <% if (node.args[i].value === "5") { %>selected<% } %> value="5" data-i18n="services.weather.language.weather-code-5"></option>
+        <option <% if (node.args[i].value === "6") { %>selected<% } %> value="6" data-i18n="services.weather.language.weather-code-6"></option>
+        <option <% if (node.args[i].value === "7") { %>selected<% } %> value="7" data-i18n="services.weather.language.weather-code-7"></option>
     </select>
 
     <% } %>
 
-    <span data-i18n='keyboard.weather.weather-at'/>
+    <span data-i18n='services.weather.keyboard.weather-at'/>
 
     <% if (typeof node.object !== 'undefined') { %>
     <%=engine.buildInputFromNode(node.object, currentNode) %>

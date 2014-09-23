@@ -99,7 +99,15 @@
             "status": {
                 "inactive": "Inactif",
                 "unknown": "Inconnu"
-            }
+            },
+			"language" : {
+				"activated": "le domicube est activé",
+				"inactivated": "le domicube est désactivé",
+			},
+			"keyboard" : {
+				"activated": "le domicube est activé",
+				"inactivated": "le domicube est désactivé",
+			}
         },
         "illumination": {
             "caption": {
@@ -327,8 +335,6 @@
         "false": "Faux",
         "if-keyword": "Si",
         "keep-state": "Maintenir l'état ...",
-        "pause-media-action": "Mettre en pause le media",
-        "play-media-action": "Jouer un media",
         "selector": {
             "prefix-f": "Les ",
             "prefix-m": "Les ",
@@ -345,42 +351,32 @@
                 "8": "actionneurs"
             }
         },
-        "set-volume-media-action": "Mettre le volume",
-        "stop-media-action": "Stopper",
         "true": "Vrai",
         "wait": "Attendre...",
-        "weather": {
-            "current-temperature": "la température actuelle",
-            "current-weather-code-state": "la météo actuelle",
-            "currently-daylight": "il fait jour",
-            "forecast-temperature-max": "la température maximale prévue pour",
-            "forecast-temperature-min": "la température minimale prévue pour",
-            "forecast-weather-code-state": "la météo prévue pour",
-            "is-current-weather-code-state": "la météo actuelle",
-            "is-forecast-weather-code-state": "la météo prévue pour",
-            "weather-at": "à"
-        },
         "when-keyword": "Chaque fois que",
         "whenImp-keyword": "Dès que",
         "while-keyword": "Pendant que"
     },
     "language": {
         "actions": "Actions",
-        "alarm-music": "musique douce",
         "and-when": "Dès que",
-        "blue-color": "bleu",
         "browse-media-button": "Parcourir",
-        "card-inserted-keycard-reader-status": "une carte est insérée dans",
+		"color" : {
+			"blue": "bleu",
+			"green": "vert",
+			"orange": "orange",
+			"pink": "rose",
+			"purple": "violet",
+			"red": "rouge",
+			"white": "blanc",
+			"yellow": "jaune"
+		},
         "clock-event": "il est",
         "clock-status": "il est",
-        "complement-change-color-lamp-action": "en",
         "contact-assembled-event": "s assemble",
         "contact-disassembled-event": "se desassemble",
-        "domicube-activated": "le domicube est activé",
-        "domicube-inactivated": "le domicube est désactivé",
         "else-keyword": "sinon",
         "false": "faux",
-        "green-color": "vert",
         "if-and": "Si ... et ...",
         "if-dif": "est différent de",
         "if-equals": "indique",
@@ -393,13 +389,7 @@
         "it-is-not-the-case": "ce n'est plus le cas",
         "keep-keyword": "Maintenir",
         "keep-then": "Ensuite",
-        "mail-body": "objet",
-        "mail-dest": "à",
-        "mail-subject": "dont le sujet est",
         "mandatory-keyword": "Obligatoire",
-        "movie": "film",
-        "music": "musique tonique",
-        "no-card-inserted-keycard-reader-status": "aucune carte n'est insérée dans",
         "nothing-keyword": "Rien",
         "only-once": "Une seule fois",
         "op-and-bool": "et",
@@ -410,17 +400,9 @@
         "op-more-than": "plus de",
         "op-or-bool": "ou",
         "op-then-rule": "Puis",
-        "orange-color": "orange",
-        "pause-media-action": "Mettre en pause le media",
-        "pink-color": "rose",
-        "play-media-action": "Jouer",
-        "purple-color": "violet",
-        "radio": "radio",
-        "red-color": "rouge",
         "repeated": "Répété",
         "rules": "Règles",
         "seconds": "secondes",
-        "selectedMusic": "musique",
         "selector": {
             "all-places": "tous les lieux",
             "complement-selection-target": "de",
@@ -439,44 +421,12 @@
                 "8": "actionneurs"
             }
         },
-        "set-volume-media-action": "Mettre le volume de",
-        "stop-media-action": "Stopper",
         "then-keyword": "Alors",
         "true": "vrai",
         "wait": "Attendre",
-        "weather": {
-            "at": "à",
-            "current-temperature": "la température actuelle",
-            "current-weather-code-state": "la météo actuelle",
-            "currently-daylight": "il fait jour",
-            "forecast-temperature-max": "la température maximale prévue pour",
-            "forecast-temperature-min": "la température minimale prévue pour",
-            "forecast-weather-code-state": "la météo prévue pour",
-            "getTemperature": "la température mesurée",
-            "is-current-weather-code-state": "la météo actuelle",
-            "is-forecast-weather-code-state": "la météo prévue pour",
-            "weather-at": "la météo prévue à",
-            "weather-avg-at": "la température moyenne prévue à",
-            "weather-code-0": "du soleil",
-            "weather-code-1": "des nuages",
-            "weather-code-2": "de la pluie",
-            "weather-code-3": "de la neige",
-            "weather-code-4": "des orages",
-            "weather-code-5": "du brouillard",
-            "weather-code-6": "d'autres conditions",
-            "weather-code-7": "des conditions rares",
-            "weather-code-verb": "annonce",
-            "weather-for-0": "aujourd'hui",
-            "weather-for-1": "demain",
-            "weather-for-2": "après demain",
-            "weather-max-at": "la température maximale prévue à",
-            "weather-min-at": "la température minimale prévue à"
-        },
         "when-imp-keyword": "Dès que",
         "when-keyword": "Chaque fois que",
-        "while-keyword": "Pendant que",
-        "white-color": "blanc",
-        "yellow-color": "jaune"
+        "while-keyword": "Pendant que"
     },
     "login": {
         "confirm-password": "Mot de passe de confirmation",
@@ -643,6 +593,9 @@
                 "sendMail": "Envoyer un mail ..."
             },
             "language": {
+				"body": "objet",
+				"dest": "à",
+				"subject": "dont le sujet est",
                 "sendMail": "Envoyer un mail"
             },
             "name": {
@@ -673,7 +626,20 @@
                 "playing": "Lecture en cours",
                 "selected": "Veuillez choisir un média",
                 "stopped": "Arrêté"
-            }
+            },
+            "language" : {
+			    "pause-media-action": "Mettre en pause le media",
+				"play-media-action": "Jouer",
+				"set-volume-media-action": "Mettre le volume de",
+				"stop-media-action": "Stopper"
+            },
+            "keyboard" : {
+			    "pause-media-action": "Mettre en pause le media ...",
+				"play-media-action": "Jouer ...",
+				"set-volume-media-action": "Mettre le volume de ...",
+				"stop-media-action": "Stopper"
+			}
+
         },
         "place-label": "Emplacement",
         "renderingControl": {
@@ -700,7 +666,45 @@
             "name": {
                 "plural": "Services Meteo",
                 "singular": "Service Meteo"
-            }
+            },
+			"keyboard": {
+				"current-temperature": "la température actuelle",
+				"current-weather-code-state": "la météo actuelle",
+				"currently-daylight": "il fait jour",
+				"forecast-temperature-max": "la température maximale prévue pour",
+				"forecast-temperature-min": "la température minimale prévue pour",
+				"forecast-weather-code-state": "la météo prévue pour",
+				"is-current-weather-code-state": "la météo actuelle",
+				"is-forecast-weather-code-state": "la météo prévue pour",
+				"weather-at": "à"
+			},
+			"lanugage": {
+				"current-temperature": "la température actuelle",
+				"current-weather-code-state": "la météo actuelle",
+				"currently-daylight": "il fait jour",
+				"forecast-temperature-max": "la température maximale prévue pour",
+				"forecast-temperature-min": "la température minimale prévue pour",
+				"forecast-weather-code-state": "la météo prévue pour",
+				"is-current-weather-code-state": "la météo actuelle",
+				"is-forecast-weather-code-state": "la météo prévue pour",
+				"weather-at": "la météo prévue à",
+				"weather-avg-at": "la température moyenne prévue à",
+				"weather-code-0": "du soleil",
+				"weather-code-1": "des nuages",
+				"weather-code-2": "de la pluie",
+				"weather-code-3": "de la neige",
+				"weather-code-4": "des orages",
+				"weather-code-5": "du brouillard",
+				"weather-code-6": "d'autres conditions",
+				"weather-code-7": "des conditions rares",
+				"weather-code-verb": "annonce",
+				"weather-for-0": "aujourd'hui",
+				"weather-for-1": "demain",
+				"weather-for-2": "après demain",
+				"weather-max-at": "la température maximale prévue à",
+				"weather-min-at": "la température minimale prévue à"
+			}
+
         }
     }
 }

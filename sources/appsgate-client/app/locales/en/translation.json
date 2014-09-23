@@ -99,6 +99,15 @@
             "status": {
                 "inactive": "Inactive",
                 "unknown": "Unknown"
+            },
+            "language" : {
+               "activated": "domicube is activated",
+               "inactivated": "domicube is idle",
+            },
+            "keyboard" : {
+               "activated": "domicube is activated",
+               "inactivated": "domicube is idle",
+               
             }
         },
         "illumination": {
@@ -327,8 +336,6 @@
         "false": "False",
         "if-keyword": "If",
         "keep-state": "Keep state ...",
-        "pause-media-action": "Pause the media",
-        "play-media-action": "Play a media",
         "selector": {
             "prefix-f": "every ",
             "prefix-m": "every ",
@@ -345,42 +352,33 @@
                 "8": "actuators"
             }
         },
-        "set-volume-media-action": "Set the volume",
-        "stop-media-action": "Stop",
         "true": "True",
         "wait": "Wait ...",
-        "weather": {
-            "current-temperature": "the temperature for",
-            "current-weather-code-state": "current weather",
-            "currently-daylight": "il fait jour",
-            "forecast-temperature-max": "the maximum temperature expected for",
-            "forecast-temperature-min": "the minimum temperature expected for",
-            "forecast-weather-code-state": "current weather for",
-            "is-current-weather-code-state": "current weather",
-            "is-forecast-weather-code-state": "current weather for",
-            "weather-at": "at"
-        },
         "when-keyword": "When",
         "whenImp-keyword": "As soon as",
         "while-keyword": "While"
     },
     "language": {
         "actions": "Actions",
-        "alarm-music": "sweet music",
         "and-when": "As soon as",
-        "blue-color": "blue",
         "browse-media-button": "Browse",
-        "card-inserted-keycard-reader-status": "a card is inserted in",
         "clock-event": "it is",
         "clock-status": "it is",
+        "color" : {
+            "blue": "blue",
+            "green": "green",
+            "orange": "orange",
+            "pink": "Pink",
+            "purple": "purple",
+            "red": "red",
+            "white": "white",
+            "yellow": "yellow"
+        },
         "complement-media-action": "on",
         "contact-assembled-event": "together",
         "contact-disassembled-event": "is disassembles",
-        "domicube-activated": "domicube is activated",
-        "domicube-inactivated": "domicube is idle",
         "else-keyword": "otherwise",
         "false": "false",
-        "green-color": "green",
         "if-and": "if ... and ...",
         "if-dif": "is different from",
         "if-equals": "is",
@@ -393,13 +391,7 @@
         "it-is-not-the-case": "it is not true anymore",
         "keep-keyword": "Keep",
         "keep-then": "Then",
-        "mail-body": "Content",
-        "mail-dest": "to",
-        "mail-subject": "whose subject is",
         "mandatory-keyword": "Required",
-        "movie": "film",
-        "music": "music",
-        "no-card-inserted-keycard-reader-status": "no card is inserted in ",
         "nothing-keyword": "Nothing",
         "only-once": "Only once",
         "op-and-bool": "and",
@@ -410,17 +402,9 @@
         "op-more-than": "more",
         "op-or-bool": "or",
         "op-then-rule": "then",
-        "orange-color": "orange",
-        "pause-media-action": "Pause the media",
-        "pink-color": "Pink",
-        "play-media-action": "Play",
-        "purple-color": "purple",
-        "radio": "radio",
-        "red-color": "red",
         "repeated": "Repeated",
         "rules": "Rules",
         "seconds": "seconds",
-        "selectedMusic": "music",
         "selector": {
             "all-places": "everywhere",
             "complement-selection-target": "of",
@@ -439,44 +423,12 @@
                 "8": "actuators"
             }
         },
-        "set-volume-media-action": "Set the volume",
-        "stop-media-action": "Stop",
         "then-keyword": "then",
         "true": "true",
         "wait": "wait",
-        "weather": {
-            "at": "at",
-            "current-temperature": "the temperature for",
-            "current-weather-code-state": "current weather",
-            "currently-daylight": "il fait jour",
-            "forecast-temperature-max": "the maximum temperature expected for",
-            "forecast-temperature-min": "the minimum temperature expected for",
-            "forecast-weather-code-state": "current weather for",
-            "getTemperature": "the temperature from sensor",
-            "is-current-weather-code-state": "current weather",
-            "is-forecast-weather-code-state": "current weather for",
-            "weather-at": "current weather",
-            "weather-avg-at": "the average temperature expected for",
-            "weather-code-0": "sun",
-            "weather-code-1": "clouds",
-            "weather-code-2": "rain",
-            "weather-code-3": "snow",
-            "weather-code-4": "storms",
-            "weather-code-5": "fog",
-            "weather-code-6": "other conditions",
-            "weather-code-7": "unusual conditions",
-            "weather-code-verb": "announcement",
-            "weather-for-0": "today",
-            "weather-for-1": "tomorrow",
-            "weather-for-2": "after tomorrow",
-            "weather-max-at": "the maximum temperature expected for",
-            "weather-min-at": "the minimum temperature expected for"
-        },
         "when-imp-keyword": "As soon as",
         "when-keyword": "Every time",
-        "while-keyword": "while",
-        "white-color": "white",
-        "yellow-color": "yellow"
+        "while-keyword": "while"
     },
     "login": {
         "confirm-password": "Password confirmation",
@@ -643,6 +595,9 @@
                 "sendMail": "Send mail ..."
             },
             "language": {
+               "body": "Content",
+               "dest": "to",
+               "subject": "whose subject is",
                 "sendMail": "Send mail"
             },
             "name": {
@@ -673,6 +628,18 @@
                 "playing": "Now Playing",
                 "selected": "Please select a media",
                 "stopped": "Stopped"
+            },
+            "language" : {
+               "pause-media-action": "Pause the media",
+               "play-media-action": "Play",
+               "set-volume-media-action": "Set the volume",
+               "stop-media-action": "Stop"
+            },
+            "keyboard" : {
+               "pause-media-action": "Pause the media ...",
+               "play-media-action": "Play ...",
+               "set-volume-media-action": "Set the volume ...",
+               "stop-media-action": "Stop"
             }
         },
         "place-label": "Location",
@@ -700,6 +667,43 @@
             "name": {
                 "plural": "Weather",
                 "singular": "Weather"
+            },
+            "keyboard": {
+                "current-temperature": "the temperature for",
+                "current-weather-code-state": "current weather",
+                "currently-daylight": "il fait jour",
+                "forecast-temperature-max": "the maximum temperature expected for",
+                "forecast-temperature-min": "the minimum temperature expected for",
+                "forecast-weather-code-state": "current weather for",
+                "is-current-weather-code-state": "current weather",
+                "is-forecast-weather-code-state": "current weather for",
+                "weather-at": "at"
+            },
+            "language": {
+                "current-temperature": "the temperature for",
+                "current-weather-code-state": "current weather",
+                "currently-daylight": "il fait jour",
+                "forecast-temperature-max": "the maximum temperature expected for",
+                "forecast-temperature-min": "the minimum temperature expected for",
+                "forecast-weather-code-state": "current weather for",
+                "is-current-weather-code-state": "current weather",
+                "is-forecast-weather-code-state": "current weather for",
+                "weather-at": "current weather",
+                "weather-avg-at": "the average temperature expected for",
+                "weather-code-0": "sun",
+                "weather-code-1": "clouds",
+                "weather-code-2": "rain",
+                "weather-code-3": "snow",
+                "weather-code-4": "storms",
+                "weather-code-5": "fog",
+                "weather-code-6": "other conditions",
+                "weather-code-7": "unusual conditions",
+                "weather-code-verb": "announcement",
+                "weather-for-0": "today",
+                "weather-for-1": "tomorrow",
+                "weather-for-2": "after tomorrow",
+                "weather-max-at": "the maximum temperature expected for",
+                "weather-min-at": "the minimum temperature expected for"
             }
         }
     }
