@@ -13,22 +13,6 @@
                 "turnOff": "Eteindre",
                 "turnOn": "Allumer"
             },
-            "keyboard": {
-                "pushed-bottom": "on appuie sur bas de ...",
-                "pushed-bottom-B1": "on appuie sur B1-off de ...",
-                "pushed-bottom-B2": "on appuie sur B2-off de ...",
-                "pushed-up": "on appuie sur haut de ...",
-                "pushed-up-B1": "on appuie sur B1-on de ...",
-                "pushed-up-B2": "on appuie sur B2-on de ..."
-            },
-            "language": {
-                "pushed-bottom": "on appuie sur bas de __myVar__",
-                "pushed-bottom-B1": "on appuie sur B1-off de __myVar__",
-                "pushed-bottom-B2": "on appuie sur B2-off de __myVar__",
-                "pushed-up": "on appuie sur haut de __myVar__",
-                "pushed-up-B1": "on appuie sur B1-on de __myVar__",
-                "pushed-up-B2": "on appuie sur B2-on de __myVar__"
-            },
             "name": {
                 "plural": "Actionneurs",
                 "singular": "Actionneur"
@@ -102,11 +86,11 @@
             },
 			"language" : {
 				"activated": "le domicube est activé",
-				"inactivated": "le domicube est désactivé",
+				"inactivated": "le domicube est désactivé"
 			},
 			"keyboard" : {
 				"activated": "le domicube est activé",
-				"inactivated": "le domicube est désactivé",
+				"inactivated": "le domicube est désactivé"
 			}
         },
         "illumination": {
@@ -267,6 +251,22 @@
         },
         "status-label": "Statut",
         "switch": {
+            "keyboard": {
+                "pushed-bottom": "on appuie sur bas de ...",
+                "pushed-bottom-B1": "on appuie sur B1-off de ...",
+                "pushed-bottom-B2": "on appuie sur B2-off de ...",
+                "pushed-up": "on appuie sur haut de ...",
+                "pushed-up-B1": "on appuie sur B1-on de ...",
+                "pushed-up-B2": "on appuie sur B2-on de ..."
+            },
+            "language": {
+                "pushed-bottom": "on appuie sur bas de __myVar__",
+                "pushed-bottom-B1": "on appuie sur B1-off de __myVar__",
+                "pushed-bottom-B2": "on appuie sur B2-off de __myVar__",
+                "pushed-up": "on appuie sur haut de __myVar__",
+                "pushed-up-B1": "on appuie sur B1-on de __myVar__",
+                "pushed-up-B2": "on appuie sur B2-on de __myVar__"
+            },
             "name": {
                 "plural": "Interrupteurs",
                 "singular": "Interrupteur"
@@ -678,7 +678,7 @@
 				"is-forecast-weather-code-state": "la météo prévue pour",
 				"weather-at": "à"
 			},
-			"lanugage": {
+			"language": {
 				"current-temperature": "la température actuelle",
 				"current-weather-code-state": "la météo actuelle",
 				"currently-daylight": "il fait jour",

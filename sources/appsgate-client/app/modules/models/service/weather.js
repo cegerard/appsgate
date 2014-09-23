@@ -106,7 +106,7 @@ define([
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "isCurrentlyDaylight":
-                    $(btn).append("<span data-i18n='services.weather.keyboard.weather.currently-daylight'/>");
+                    $(btn).append("<span data-i18n='services.weather.keyboard.currently-daylight'/>");
 
                     v.methodName = "isCurrentlyDaylight";
                     v.name = "daylightState";

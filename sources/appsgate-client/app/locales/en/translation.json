@@ -13,22 +13,6 @@
                 "turnOff": "Turn off",
                 "turnOn": "Turn on"
             },
-            "keyboard": {
-                "pushed-bottom": "push bottom button of ...",
-                "pushed-bottom-B1": "push B1-off of ...",
-                "pushed-bottom-B2": "push B2-off of ...",
-                "pushed-up": "push top button of ...",
-                "pushed-up-B1": "push B1-on of ...",
-                "pushed-up-B2": "push B2-on of ..."
-            },
-            "language": {
-                "pushed-bottom": "push bottom button of __myVar__",
-                "pushed-bottom-B1": "push B1-off of __myVar__",
-                "pushed-bottom-B2": "push B2-off of __myVar__",
-                "pushed-up": "push top button of __myVar__",
-                "pushed-up-B1": "push B1-on of __myVar__",
-                "pushed-up-B2": "push B2-on of __myVar__"
-            },
             "name": {
                 "plural": "Actuators",
                 "singular": "Actuator"
@@ -102,11 +86,11 @@
             },
             "language" : {
                "activated": "domicube is activated",
-               "inactivated": "domicube is idle",
+               "inactivated": "domicube is idle"
             },
             "keyboard" : {
                "activated": "domicube is activated",
-               "inactivated": "domicube is idle",
+               "inactivated": "domicube is idle"
                
             }
         },
@@ -268,6 +252,22 @@
         },
         "status-label": "Status",
         "switch": {
+            "keyboard": {
+                "pushed-bottom": "push bottom button of ...",
+                "pushed-bottom-B1": "push B1-off of ...",
+                "pushed-bottom-B2": "push B2-off of ...",
+                "pushed-up": "push top button of ...",
+                "pushed-up-B1": "push B1-on of ...",
+                "pushed-up-B2": "push B2-on of ..."
+            },
+            "language": {
+                "pushed-bottom": "push bottom button of __myVar__",
+                "pushed-bottom-B1": "push B1-off of __myVar__",
+                "pushed-bottom-B2": "push B2-off of __myVar__",
+                "pushed-up": "push top button of __myVar__",
+                "pushed-up-B1": "push B1-on of __myVar__",
+                "pushed-up-B2": "push B2-on of __myVar__"
+            },
             "name": {
                 "plural": "Switches",
                 "singular": "Switch"
