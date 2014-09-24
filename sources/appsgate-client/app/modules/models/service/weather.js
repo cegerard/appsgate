@@ -84,11 +84,8 @@ define([
                     v.methodName = "isWeatherSimplifiedCodeForecast";
                     v.returnType = "boolean";
                     v.name = "currentWeatherCodeState";
-
-
                     v.args = [ {"type":"int", "value": "0"}];
-
-                    v.phrase = "services.weather.lanugage.is-current-weather-code-state";
+                    v.phrase = "services.weather.language.is-current-weather-code-state";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "isForecastWeatherCode":
@@ -97,8 +94,6 @@ define([
                     v.methodName = "isWeatherSimplifiedCodeForecast";
                     v.returnType = "boolean";
                     v.name = "forecastWeatherCodeState";
-
-
                     v.args = [ {"type":"int", "value": "0"},
                         {"type":"int", "value": "0"}];
 
