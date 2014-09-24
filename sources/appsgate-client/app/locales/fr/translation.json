@@ -534,7 +534,7 @@
         "end-edit-program": "Valider",
         "keyboard": {
             "actionActivate": "Activer le programme ...",
-            "actionDisactivate": "Déscativer le programme ...",
+            "actionDisactivate": "Désactiver le programme ...",
             "actionDisactivate-self": "Désactiver ce programme",
             "eventStart": "on active le programme ...",
             "eventStop": "on désactive le programme ...",

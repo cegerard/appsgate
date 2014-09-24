@@ -156,6 +156,7 @@ define([
                     v.methodName = property;
                     v.returnType = "number";
                     v.phrase = "services.weather.language.current-temperature";
+					v.unit = "&deg;C";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
 
@@ -188,6 +189,7 @@ define([
                         {"type":"int", "value": "0"}];
                     v.returnType = "number";
                     v.phrase = "services.weather.language.forecast-temperature-min";
+					v.unit = "&deg;C";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "getForecastMaxTemperature":
@@ -198,6 +200,7 @@ define([
                         {"type":"int", "value": "0"}];
                     v.returnType = "number";
                     v.phrase = "services.weather.language.forecast-temperature-max";
+					v.unit = "&deg;C";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 default:
