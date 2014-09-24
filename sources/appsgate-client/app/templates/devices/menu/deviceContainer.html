@@ -85,15 +85,34 @@
 	</td>
 
 	<!-- body -->
+    <!--  Located Devices  -->
 	<% places.forEach(function(place) { %>
-		<% if (place.getTypeSensors(type).length > 0) { %>
+		<% if (place.getTypeSensors(type).length > 0 && place.getName() !== $.i18n.t("places-menu.unlocated-devices")) { %>
 			<tr>
 				<td>
-				<% if (place.getName() !== "") { %>
-					<%= place.getName() %>
-				<% } else { %>
-					<em data-i18n="places-details.place-no-name"></em>
+				<%= place.getName() %>
+				<% if (type === "0") { %>
+					<span class="label-value"><%= place.getAverageTemperature() %>&deg;C</span>
+				<% } else if (type === "1") { %>
+					<span class="label-value"><%= place.getAverageIllumination() %> Lux</span>
+				<% } else if (type === "6") { %>
+					<span class="label-value"><%= place.getTotalConsumption() %> W</span>
 				<% } %>
+				</td>
+				<td>
+					<span class="badge">
+						<%= place.getTypeSensors(type).length %>
+					</span>
+				</td>
+			</tr>
+		<% } %>
+	<% }) %>
+    <!--  Unlocated Devices  -->
+    <% places.forEach(function(place) { %>
+		<% if (place.getTypeSensors(type).length > 0 && place.getName() === $.i18n.t("places-menu.unlocated-devices")) { %>
+			<tr>
+				<td>
+                <%= place.getName() %>
 				<% if (type === "0") { %>
 					<span class="label-value"><%= place.getAverageTemperature() %>&deg;C</span>
 				<% } else if (type === "1") { %>

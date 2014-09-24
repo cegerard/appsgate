@@ -49,27 +49,27 @@ define([
 
             switch (act) {
                 case "play":
-                    $(btn).append("<span data-i18n='keyboard.play-media-action'/>");
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.play-media-action'/>");
                     v.methodName = "play";
-                    v.phrase = "language.play-media-action";
+                    v.phrase = "services.mediaplayer.language.play-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "pause":
-                    $(btn).append("<span data-i18n='keyboard.pause-media-action'/>");
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.pause-media-action'/>");
                     v.methodName = "pause";
-                    v.phrase = "language.pause-media-action";
+                    v.phrase = "services.mediaplayer.language.pause-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "stop":
-                    $(btn).append("<span data-i18n='keyboard.stop-media-action'/>");
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.stop-media-action'/>");
                     v.methodName = "stop";
-                    v.phrase = "language.stop-media-action";
+                    v.phrase = "services.mediaplayer.language.stop-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "setVolume":
-                    $(btn).append("<span data-i18n='keyboard.set-volume-media-action'/>");
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.set-volume-media-action'/>");
                     v.methodName = "setVolume";
-                    v.phrase = "language.set-volume-media-action";
+                    v.phrase = "services.mediaplayer.language.set-volume-media-action";
           			v.args = [ {"type":"int", "value": "0"}];
 
                     $(btn).attr("json", JSON.stringify(v));

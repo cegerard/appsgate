@@ -1,756 +1,710 @@
 {
-  "app": {
-    "name": "AppsGate",
-    "signin": "Identification"
-  },
-  "form": {
-    "enter-button": "Entrer",
-    "cancel-button": "Annuler",
-    "valid-button": "Valider",
-    "close-button": "Fermer",
-    "rename-button": "Renommer",
-    "delete-button": "Supprimer",
-    "edit-button": "Editer",
-    "save-button": "Sauvegarder",
-    "saving-button": "En cours...",
-    "browse-button": "Parcourir",
-    "background-editor": "Fond",
-    "size-editor": "Taille",
-    "size-width": "Largeur",
-    "size-height": "Hauteur"
-  },
-  "navbar": {
-    "home": "Chez nous",
-    "edit": "Editer",
-    "stop-edit": "Fin edition",
-    "users": "Utilisateurs",
-    "places": "Lieux de vie",
-    "devices": "Equipements",
-    "services": "Services",
-    "programs": "Programmes",
-    "debugger": "Comprendre",
-    "button-settings": "Préférences",
-    "emergency-stop": "Tout stopper"
-  },
-  "editbar": {
-    "undo": "Annuler",
-    "redo": "Refaire",
-    "add": "Ajouter",
-    "trashbin": "Corbeille"
-  },
-  "login": {
-    "username": "Nom d'identification",
-    "password": "Mot de passe",
-    "confirm-password": "Mot de passe de confirmation"
-  },
-  "modal-lost-connection": {
-    "title": "Problème de connexion",
-    "interrupted-connection": "La connexion a été interrompue.",
-    "connection": "Connexion...",
-    "change-server-button": "Changer serveur",
-    "reconnection-button": "Se reconnecter"
-  },
-  "modal-settings": {
-    "title": "Préférences",
-    "addr-server": "Adresse du serveur",
-    "language-label": "Langue",
-    "language-fr": "Français",
-    "language-en": "Anglais",
-    "server-unreachable": "Serveur indisponible...",
-    "connection": "Connexion..."
-  },
-  "edit-name-modal": {
-    "title": "Renommer",
-    "name": "Nom",
-    "name-empty": "Le nom doit être renseigné.",
-    "already-existing": "Nom déjà existant."
-  },
-  "places-menu": {
-    "add-button": "Ajouter lieu de vie",
-    "place-no-name": "Lieu de vie sans nom",
-    "unlocated-devices": "Equipements non localisés"
-  },
-  "modal-add-place": {
-    "title": "Ajouter lieu de vie",
-    "place-name": "Nom du lieu de vie",
-    "place-name-empty": "Le nom du lieu de vie doit être renseigné.",
-    "place-already-existing": "Nom de la lieu de vie déjà existant."
-  },
-  "modal-edit-place": {
-    "title": "Renommer lieu de vie",
-    "place-name": "Nom du lieu de vie",
-    "place-name-empty": "Le nom du lieu de vie doit être renseigné.",
-    "place-already-existing": "Nom du lieu de vie déjà existant."
-  },
-  "places-details": {
-    "place-no-name": "Lieu de vie sans nom",
-    "undefined": "Non défini",
-    "no-plugs": "Pas de prise",
-    "header": {
-      "device-number-title": "Nombre d'équipements",
-      "temperature-label": "Température",
-      "illumination-label": "Luminosité",
-      "consumption-label": "Consommation"
+    "app": {
+        "name": "AppsGate",
+        "signin": "Identification"
     },
-    "body": {
-      "device-no-name": "Equipement sans nom",
-      "no-device-in-place": "Aucun equipement n'est assigné dans ce lieu de vie."
-    }
-  },
-  "modal-edit-device": {
-    "name-label": "Nom",
-    "name-placeholder": "Nom de l'équipement",
-    "name-already-existing": "Nom de l'équipement déjà existant",
-    "place-label": "Lieu de vie",
-    "time-label": "Heure",
-    "time-speed-label": "Vitesse",
-    "reset-clock": "Reinitialisé horloge"
-  },
-  "modal-edit-service": {
-    "name-label": "Nom",
-    "name-placeholder": "Nom du service",
-    "name-already-existing": "Nom de service déjà existant",
-    "place-label": "Lieu de vie"
-  },
-  "programs-menu": {
-    "add-button": "Ajouter programme"
-  },
-  "modal-add-program": {
-    "title": "Ajouter programme",
-    "name-label": "Nom",
-    "name-placeholder": "Nom du programme",
-    "name-empty": "Le nom du programme doit être renseigné.",
-    "name-already-existing": "Nom de programme déjà existant",
-    "load-from-file": "Charger depuis un fichier",
-    "unable-to-parse": "Impossible de lire ce fichier"
-  },
-  "modal-edit-program": {
-    "title": "Renommer programme",
-    "program-name": "Nom du programme",
-    "program-name-empty": "Le nom du programme doit être renseigné.",
-    "program-already-existing": "Nom du programme déjà existant."
-  },
-  "devices": {
-    "device-no-name": "Equipement sans nom",
-    "device-unlocated": "Non localisé",
-    "photo-label": {
-      "singular": "Photo",
-      "plural": "Photos"
+    "debugger": {
+        "all": "Tous",
+        "times": "fois"
     },
-    "type-label": "Type",
-    "place-label": "Emplacement",
-    "state-label": "Etat",
-    "value-label": "Valeur",
-    "consumption-label": "Consommation",
-    "status-label": "Statut",
-    "controls-label": "Commandes",
-    "status": {
-      "connected": "Connecté",
-      "waiting": "En attente",
-      "disconnected": "Déconnecté"
+    "devices": {
+        "actuator": {
+            "action": {
+                "turnOff": "Eteindre",
+                "turnOn": "Allumer"
+            },
+            "name": {
+                "plural": "Actionneurs",
+                "singular": "Actionneur"
+            },
+            "status": {
+                "turnedOff": "Eteint",
+                "turnedOn": "Allumé"
+            }
+        },
+        "ard": {
+            "affirmative": "Oui",
+            "event": {
+                "authorized": "badge est autorisé sur",
+                "non_authorized": "badge n'est pas autorisé sur"
+            },
+            "last-authorized": "Dernier badge accès autorisé",
+            "last-card": "Dernier badge passé",
+            "last-message": "Denier message",
+            "last-message-empty": "Pas des message",
+            "name": {
+                "plural": "ARD",
+                "singular": "ARD"
+            },
+            "negative": "Non",
+            "state": {
+                "authorized": "badge est autorisé sur",
+                "non_authorized": "badge n'est pas autorisé sur"
+            }
+        },
+        "clock": {
+            "name": {
+                "no-name": "Horloge système sans nom",
+                "singular": "Horloge système"
+            },
+            "time-speed-label": "Vitesse d'écoulement du temps"
+        },
+        "consumption-label": "Consommation",
+        "contact": {
+            "keyboard": {
+                "closeEvent": "on ferme ...",
+                "isClose": "le capteur ... est fermé",
+                "isOpen": "le capteur ... est ouvert",
+                "openEvent": "on ouvre ..."
+            },
+            "language": {
+                "closeEvent": "on ferme __myVar__",
+                "isClose": "__myVar__ est fermé(e)",
+                "isOpen": "__myVar__ est ouvert(e)",
+                "openEvent": "on ouvre __myVar__"
+            },
+            "name": {
+                "plural": "Capteurs de contact",
+                "singular": "Capteur de contact"
+            },
+            "value": {
+                "closed": "Fermé",
+                "opened": "Ouvert"
+            }
+        },
+        "controls-label": "Commandes",
+        "device-no-name": "Equipement sans nom",
+        "device-unlocated": "Non localisé",
+        "domicube": {
+            "name": {
+                "plural": "DomiCubes",
+                "singular": "DomiCube"
+            },
+            "status": {
+                "inactive": "Inactif",
+                "unknown": "Inconnu"
+            },
+			"language" : {
+				"activated": "le domicube est activé",
+				"inactivated": "le domicube est désactivé"
+			},
+			"keyboard" : {
+				"activated": "le domicube est activé",
+				"inactivated": "le domicube est désactivé"
+			}
+        },
+        "illumination": {
+            "caption": {
+                "extern": "Capteur de luminosité extérieur",
+                "intern": "Capteur de luminosité intérieur"
+            },
+            "keyboard": {
+                "get": "la luminosité mesurée par ..."
+            },
+            "language": {
+                "get": "la luminosité de __myVar__"
+            },
+            "name": {
+                "plural": "Capteurs de luminosité",
+                "singular": "Capteur de luminosité"
+            },
+            "scale": {
+                "high": "Luminosité forte",
+                "highest": "Plein soleil",
+                "low": "Luminosité faible",
+                "lowest": "Nuit",
+                "medium": "Luminosité moyenne",
+                "veryHigh": "Luminosité très forte",
+                "veryLow": "Luminosité très faible"
+            },
+            "scale-label": "Echelle"
+        },
+        "keycard-reader": {
+            "keyboard": {
+                "card-inserted": "une carte est insérée dans ...",
+                "insertedEvent": "on insère une carte dans ...",
+                "no-card-inserted": "aucune carte n'est insérée dans ...",
+                "removedEvent": "on retire une carte de ..."
+            },
+            "language": {
+                "card-inserted": "une carte est insérée dans __myVar__",
+                "insertedEvent": "on insère une carte dans __myVar__",
+                "no-card-inserted": "aucune carte n'est insérée dans __myVar__",
+                "removedEvent": "on retire une carte de __myVar__"
+            },
+            "name": {
+                "plural": "Interrupteurs à carte",
+                "singular": "Interrupteur à carte"
+            },
+            "value": {
+                "inserted": "Carte insérée",
+                "not-inserted": "Pas de carte"
+            }
+        },
+        "lamp": {
+            "action": {
+                "blink": "Faire clignoter",
+                "turnOff": "Eteindre",
+                "turnOn": "Allumer"
+            },
+            "complement": {
+                "change-color": "en"
+            },
+            "keyboard": {
+                "blink": "Fait clignoter ...",
+                "brightness": "l'intensité de la lampe ...",
+                "isOff": "la lampe ... est éteinte",
+                "isOff-keep": "la lampe ... éteinte",
+                "isOn": "la lampe ... est allumée",
+                "isOn-keep": "la lampe ... allumée",
+                "turnOff": "Eteindre la lampe ...",
+                "turnOffEvt": "on éteint la lampe ...",
+                "turnOn": "Allumer la lampe ...",
+                "turnOnEvt": "on allume la lampe ..."
+            },
+            "language": {
+                "blink": "Fait clignoter __myVar__",
+                "brightness": "l'intensité de __myVar__",
+                "isOff": "__myVar__ est éteinte",
+                "isOff-keep": "__myVar__ éteinte",
+                "isOn": "__myVar__ est allumée",
+                "isOn-keep": "__myVar__ allumée",
+                "turnOff": "Eteindre __myVar__",
+                "turnOffEvt": "on éteint __myVar__",
+                "turnOn": "Allumer __myVar__",
+                "turnOnEvt": "on allume __myVar__"
+            },
+            "name": {
+                "plural": "Ampoules Philips Hue",
+                "singular": "Ampoule Philips Hue"
+            },
+            "status": {
+                "turnedOff": "Eteinte",
+                "turnedOn": "Allumée"
+            }
+        },
+        "mediaplayer": {
+            "action": {
+                "browse": "Parcourir",
+                "pause": "Pause",
+                "play": "Lancer",
+                "resume": "Reprendre",
+                "stop": "Arrêter",
+                "volume": "Volume"
+            },
+            "name": {
+                "plural": "Lecteurs multimédia",
+                "singular": "Lecteur multimédia"
+            },
+            "status": {
+                "playing": "Lecture en cours",
+                "selected": "Veuillez choisir un média",
+                "stopped": "Arrêté"
+            }
+        },
+        "movement": {
+            "name": {
+                "plural": "Capteurs de mouvement",
+                "singular": "Capteur de mouvement"
+            }
+        },
+        "photo-label": {
+            "plural": "Photos",
+            "singular": "Photo"
+        },
+        "place-label": "Emplacement",
+        "plug": {
+            "action": {
+                "turnOff": "Eteindre",
+                "turnOn": "Allumer"
+            },
+            "keyboard": {
+                "isOff": "la prise ... est éteinte",
+                "isOff-keep": "la prise ... éteinte",
+                "isOn": "la prise ... est allumée",
+                "isOn-keep": "la prise ... allumée",
+                "turnOff": "Eteindre la prise ...",
+                "turnOn": "Allumer la prise ..."
+            },
+            "language": {
+                "isOff": "__myVar__ est éteinte",
+                "isOff-keep": "__myVar__ éteinte",
+                "isOn": "__myVar__ est allumée",
+                "isOn-keep": "__myVar__ allumée",
+                "turnOff": "Eteindre __myVar__",
+                "turnOn": "Allumer __myVar__"
+            },
+            "name": {
+                "plural": "Prises pilotables",
+                "singular": "Prise pilotable"
+            },
+            "status": {
+                "turnedOff": "Eteinte",
+                "turnedOn": "Allumée"
+            }
+        },
+        "state-label": "Etat",
+        "status": {
+            "connected": "Connecté",
+            "disconnected": "Déconnecté",
+            "waiting": "En attente"
+        },
+        "status-label": "Statut",
+        "switch": {
+            "keyboard": {
+                "pushed-bottom": "on appuie sur bas de ...",
+                "pushed-bottom-B1": "on appuie sur B1-off de ...",
+                "pushed-bottom-B2": "on appuie sur B2-off de ...",
+                "pushed-up": "on appuie sur haut de ...",
+                "pushed-up-B1": "on appuie sur B1-on de ...",
+                "pushed-up-B2": "on appuie sur B2-on de ..."
+            },
+            "language": {
+                "pushed-bottom": "on appuie sur bas de __myVar__",
+                "pushed-bottom-B1": "on appuie sur B1-off de __myVar__",
+                "pushed-bottom-B2": "on appuie sur B2-off de __myVar__",
+                "pushed-up": "on appuie sur haut de __myVar__",
+                "pushed-up-B1": "on appuie sur B1-on de __myVar__",
+                "pushed-up-B2": "on appuie sur B2-on de __myVar__"
+            },
+            "name": {
+                "plural": "Interrupteurs",
+                "singular": "Interrupteur"
+            },
+            "value": {
+                "closed": "Relâché",
+                "opened": "Appuyé"
+            }
+        },
+        "temperature": {
+            "caption": {
+                "extern": "Capteur de température extérieur",
+                "intern": "Capteur de température intérieur"
+            },
+            "keyboard": {
+                "get": "la température mesurée par ..."
+            },
+            "language": {
+                "get": "la température de __myVar__"
+            },
+            "name": {
+                "plural": "Capteurs de température",
+                "singular": "Capteur de température"
+            }
+        },
+        "type-label": "Type",
+        "value-label": "Valeur"
     },
-    "temperature": {
-      "name": {
-        "singular": "Capteur de température",
-        "plural": "Capteurs de température"
-      },
-      "caption": {
-        "extern": "Capteur de température extérieur",
-        "intern": "Capteur de température intérieur"
-      },
-      "language": {
-        "get": "la température de __myVar__"
-      },
-      "keyboard": {
-        "get": "la température mesurée par ..."
-      }
+    "edit-name-modal": {
+        "already-existing": "Nom déjà existant.",
+        "name": "Nom",
+        "name-empty": "Le nom doit être renseigné.",
+        "title": "Renommer"
     },
-    "illumination": {
-      "name": {
-        "singular": "Capteur de luminosité",
-        "plural": "Capteurs de luminosité"
-      },
-      "caption": {
-        "extern": "Capteur de luminosité extérieur",
-        "intern": "Capteur de luminosité intérieur"
-      },
-      "language": {
-        "get": "la luminosité de __myVar__"
-      },
-      "keyboard": {
-        "get": "la luminosité mesurée par ..."
-      },
-      "scale-label": "Echelle",
-      "scale": {
-        "lowest": "Nuit",
-        "veryLow": "Luminosité très faible",
-        "low": "Luminosité faible",
-        "medium": "Luminosité moyenne",
-        "high": "Luminosité forte",
-        "veryHigh": "Luminosité très forte",
-        "highest": "Plein soleil"
-      }
+    "editbar": {
+        "add": "Ajouter",
+        "redo": "Refaire",
+        "trashbin": "Corbeille",
+        "undo": "Annuler"
     },
-    "switch": {
-      "name": {
-        "singular": "Interrupteur",
-        "plural": "Interrupteurs"
-      },
-      "value": {
-        "opened": "Appuyé",
-        "closed": "Relâché"
-      }
+    "editor": {
+        "invalid-program-alert": "Programme invalide",
+        "no-program-alert": "Aucun programme",
+        "title": "Editeur de programme",
+        "undo-last-action": "Annuler",
+        "valid-program-alert": "Programme valide"
     },
-    "actuator": {
-      "name": {
-        "singular": "Actionneur",
-        "plural": "Actionneurs"
-      },
-      "status": {
-        "turnedOn": "Allumé",
-        "turnedOff": "Eteint"
-      },
-      "action": {
-        "turnOn": "Allumer",
-        "turnOff": "Eteindre"
-      }
-    },
-    "contact": {
-      "name": {
-        "singular": "Capteur de contact",
-        "plural": "Capteurs de contact"
-      },
-      "value": {
-        "opened": "Ouvert",
-        "closed": "Fermé"
-      },
-      "event": {
-        "opened": "on ouvre",
-        "closed": "on ferme"
-      },
-      "state": {
-        "opened": "ouvert",
-        "closed": "fermé"
-      },
-      "language": {
-        "isOpen": "__myVar__ est ouvert(e)",
-        "isClose": "__myVar__ est fermé(e)"
-      },
-      "keyboard": {
-        "isOpen": "le capteur ... est ouvert",
-        "isClose": "le capteur ... est fermé"
-      }
-    },
-    "keycard-reader": {
-      "name": {
-        "singular": "Interrupteur à carte",
-        "plural": "Interrupteurs à carte"
-      },
-      "value": {
-        "inserted": "Carte insérée",
-        "not-inserted": "Pas de carte"
-      },
-	  "language" : {
-		"no-card-inserted" : "aucune carte n'est insérée dans __myVar__",
-		"card-inserted" : "une carte est insérée dans __myVar__"
-	  },
-	  "keyboard" : {
-		"no-card-inserted" : "aucune carte n'est insérée dans ...",
-		"card-inserted" : "une carte est insérée dans ..."
-	  }
-    },
-    "movement": {
-      "name": {
-        "singular": "Capteur de mouvement",
-        "plural": "Capteurs de mouvement"
-      }
-    },
-    "plug": {
-      "name": {
-        "singular": "Prise pilotable",
-        "plural": "Prises pilotables"
-      },
-      "status": {
-        "turnedOn": "Allumée",
-        "turnedOff": "Eteinte"
-      },
-      "action": {
-        "turnOn": "Allumer",
-        "turnOff": "Eteindre"
-      },
-      "language": {
-        "isOff": "__myVar__ est éteinte",
-        "isOn": "__myVar__ est allumée",
-        "isOff-keep": "__myVar__ éteinte",
-        "isOn-keep": "__myVar__ allumée",
-        "turnOn": "Allumer __myVar__",
-        "turnOff": "Allumer __myVar__"
-      },
-      "keyboard": {
-        "isOff": "la prise ... est éteinte",
-        "isOn": "la prise ... est allumée",
-        "isOff-keep": "la prise ... éteinte",
-        "isOn-keep": "la prise ... allumée",
-        "turnOn": "Allumer la prise ...",
-        "turnOff": "Eteindre la prise ..."
-      }
-    },
-    "lamp": {
-      "name": {
-        "singular": "Ampoule Philips Hue",
-        "plural": "Ampoules Philips Hue"
-      },
-      "status": {
-        "turnedOn": "Allumée",
-        "turnedOff": "Eteinte"
-      },
-      "action": {
-        "turnOn": "Allumer",
-        "turnOff": "Eteindre",
-        "blink": "Faire clignoter"
-      },
-      "language": {
-        "isOff": "__myVar__ est éteinte",
-        "isOn": "__myVar__ est allumée",
-        "isOff-keep": "__myVar__ éteinte",
-        "isOn-keep": "__myVar__ allumée",
-        "turnOnEvt": "on allume __myVar__",
-        "turnOffEvt": "on éteint __myVar__"
-      },
-      "keyboard": {
-        "isOff": "la lampe ... est éteinte",
-        "isOn": "la lampe ... est allumée",
-        "isOff-keep": "la lampe ... éteinte",
-        "isOn-keep": "la lampe ... allumée",
-        "turnOnEvt": "on allume la lampe ...",
-        "turnOffEvt": "on éteint la lampe ..."
-      }
-    },
-    "clock": {
-      "name": {
-        "singular": "Horloge système",
-        "no-name": "Horloge système sans nom"
-      },
-      "time-speed-label": "Vitesse d'écoulement du temps"
-    },
-    "mediaplayer": {
-      "name": {
-        "singular": "Lecteur multimédia",
-        "plural": "Lecteurs multimédia"
-      },
-      "status": {
-        "playing": "Lecture en cours",
-        "stopped": "Arrêté",
-        "selected": "Veuillez choisir un média"
-      },
-      "action": {
-        "play": "Lancer",
-        "resume": "Reprendre",
-        "pause": "Pause",
-        "stop": "Arrêter",
-        "volume": "Volume",
-        "browse": "Parcourir"
-      }
-    },
-    "domicube": {
-      "name": {
-        "singular": "DomiCube",
-        "plural": "DomiCubes"
-      },
-      "status": {
-        "inactive": "Inactif",
-        "unknown": "Inconnu"
-      }
-    },
-    "ard": {
-      "last-card": "Dernier badge passé",
-      "last-authorized": "Dernier badge accès autorisé",
-      "last-message": "Denier message",
-      "last-message-empty": "Pas des message",
-      "affirmative": "Oui",
-      "negative": "Non",
-      "name": {
-        "singular": "ARD",
-        "plural": "ARD"
-      },
-      "event": {
-        "authorized": "badge est autorisé sur",
-        "non_authorized": "badge n'est pas autorisé sur"
-      },
-      "state": {
-        "authorized": "badge est autorisé sur",
-        "non_authorized": "badge n'est pas autorisé sur"
-      }
-    }
-  },
-  "services": {
-    "unknown": "Inconnu",
-    "device-no-name": "Equipement sans nom",
-    "device-unlocated": "Non localisé",
-    "type-label": "Type",
-    "place-label": "Emplacement",
-    "state-label": "Etat",
-    "value-label": "Valeur",
-    "consumption-label": "Consommation",
-    "status-label": "Statut",
-    "status": {
-      "connected": "Connecté",
-      "waiting": "En attente",
-      "disconnected": "Déconnecté"
-    },
-    "mediaplayer": {
-      "name": {
-        "singular": "Lecteur multimédia",
-        "plural": "Lecteurs multimédia"
-      },
-      "status": {
-        "playing": "Lecture en cours",
-        "stopped": "Arrêté",
-        "selected": "Veuillez choisir un média"
-      },
-      "action": {
-        "play": "Lancer",
-        "resume": "Reprendre",
-        "pause": "Pause",
-        "stop": "Arrêter",
-        "volume": "Volume",
-        "browse": "Parcourir"
-      }
-    },
-    "mediabrowser": {
-      "name": {
-        "singular": "Serveur multimédia",
-        "plural": "Serveurs multimédia"
-      }
-    },
-    "mail": {
-      "name": {
-        "singular": "Serveur mail",
-        "plural": "Serveurs mail"
-      },
-	  "keyboard" : {
-		"sendMail" : "Envoyer un mail ..."
-	  },
-	  "language" : {
-		"sendMail" : "Envoyer un mail"
-	  }
-    },
-    "connectionManager": {
-      "name": {
-        "singular": "Connection Manager",
-        "plural": "Connection Managers"
-      }
-    },
-    "renderingControl": {
-      "name": {
-        "singular": "Rendering control",
-        "plural": "Rendering controls"
-      }
-    },
-    "avtransport": {
-      "name": {
-        "singular": "AV Transport",
-        "plural": "AV Transports"
-      }
-    },
-    "contentdirectory": {
-      "name": {
-        "singular": "Content Directory",
-        "plural": "Content Directories"
-      }
-    },
-    "weather": {
-      "name": {
-        "singular": "Service Meteo",
-        "plural": "Services Meteo"
-      },
-      "event": {
-        "sunrise": "le jour se lève à",
-        "sunset": "le jour se couche à"
-      }
-    }
-  },
-  "programs": {
-    "program-no-name": "Programme sans nom",
-    "edit-program": "Editer",
-    "end-edit-program": "Valider",
-    "delete-program": "Supprimer",
-    "warning-program-edition": "Attention, éditer le programme le désactivera",
-    "state": {
-      "deployed": "Déployé",
-      "started": "Démarré",
-      "stopped": "Arrêté",
-      "failed": "Erreur"
-    },
-    "action": {
-      "start": "Activer",
-      "stop": "Désactiver"
+    "form": {
+        "background-editor": "Fond",
+        "browse-button": "Parcourir",
+        "cancel-button": "Annuler",
+        "close-button": "Fermer",
+        "delete-button": "Supprimer",
+        "edit-button": "Editer",
+        "enter-button": "Entrer",
+        "rename-button": "Renommer",
+        "save-button": "Sauvegarder",
+        "saving-button": "En cours...",
+        "size-editor": "Taille",
+        "size-height": "Hauteur",
+        "size-width": "Largeur",
+        "valid-button": "Valider"
     },
     "keyboard": {
-      "eventStart": "on active le programme ...",
-      "eventStop": "on désactive le programme ...",
-      "stateStarted": "le programme ... est actif",
-      "stateStarted-keep": "le programme ... actif",
-      "stateStopped": "le programme ... est inactif",
-      "stateStopped-keep": "le programme ... inactif",
-      "actionDisactivate": "Déscativer le programme ...",
-      "actionDisactivate-self": "Désactiver ce programme",
-      "actionActivate": "Activer le programme ..."
+        "clock-event": "il est ",
+        "false": "Faux",
+        "if-keyword": "Si",
+        "keep-state": "Maintenir l'état ...",
+        "selector": {
+            "prefix-f": "Les ",
+            "prefix-m": "Les ",
+            "type": {
+                "1": "capteurs de temperature",
+                "2": "capteurs de luminosité",
+                "21": "horloges",
+                "210": "domicubes",
+                "3": "interrupteurs",
+                "4": "capteurs de contact",
+                "5": "lecteurs de carte",
+                "6": "prises",
+                "7": "lampes",
+                "8": "actionneurs"
+            }
+        },
+        "true": "Vrai",
+        "wait": "Attendre...",
+        "when-keyword": "Chaque fois que",
+        "whenImp-keyword": "Dès que",
+        "while-keyword": "Pendant que"
     },
     "language": {
-      "eventStart": "on active __myVar__",
-      "eventStop": "on désactive __myVar__",
-      "stateStarted": "__myVar__ est actif",
-      "stateStarted-keep": "__myVar__ actif",
-      "stateStopped": "__myVar__ est inactif",
-      "stateStopped-keep": "__myVar__ inactif",
-      "actionDisactivate": "Désactiver __myVar__",
-      "actionDisactivate-self": "Désactiver ce programme",
-      "actionActivate": "Activer __myVar__"
-    }
-  },
-  "editor": {
-    "title": "Editeur de programme",
-    "no-program-alert": "Aucun programme",
-    "valid-program-alert": "Programme valide",
-    "invalid-program-alert": "Programme invalide",
-    "undo-last-action": "Annuler"
-  },
-  "language": {
-    "rules": "Règles",
-    "repeated": "Répété",
-    "only-once": "Une seule fois",
-    "actions": "Actions",
-    "written-by": "ecrit par",
-    "when-keyword": "Chaque fois que",
-    "when-imp-keyword": "Dès que",
-    "end-when-block": ".",
-    "if-keyword": "Si",
-    "if-and": "Si ... et ...",
-    "if-or": "Si ... ou ...",
-    "if-equals": "indique",
-    "if-sup": "est supérieur à",
-    "if-inf": "est inférieur à",
-    "if-dif": "est différent de",
-    "else-keyword": "sinon",
-    "then-keyword": "Alors",
-    "while-keyword": "Pendant que",
-    "keep-keyword": "Maintenir",
-    "keep-then": "Ensuite",
-    "and-when": "Dès que",
-    "it-is-not-the-case": "ce n'est plus le cas",
-    "is-activated-program-event": "est activé",
-    "is-disactivated-program-event": "est desactivé",
-    "is-running-program-status": "est actif",
-    "is-stopped-program-status": "est inactif",
-    "op-event": "et",
-    "op-event-bool": "et",
-    "op-and-rule": "Et en même temps",
-    "op-then-rule": "Puis",
-    "op-or-bool": "ou",
-    "op-and-bool": "et",
-    "space": "espace",
-    "true": "vrai",
-    "false": "faux",
-    "op-more-than": "plus de",
-    "op-less-than": "moins de",
-    "change-temperature": "change",
-    "indicate-temperature": "indique",
-    "change-illumination": "change",
-    "indicate-illumination": "indique",
-    "pushed-switch-event": "on appuie sur",
-    "released-switch-event": "on relache",
-    "pushed-switch-up": "on appuie sur haut de",
-    "pushed-switch-bottom": "on appuie sur bas de",
-    "pushed-switch-B1": "on appuie sur B1 de",
-    "pushed-switch-B2": "on appuie sur B2 de",
-    "pushed-switch-B1-on": "on appuie sur B1-on de",
-    "pushed-switch-B2-on": "on appuie sur B2-on de",
-    "pushed-switch-B1-off": "on appuie sur B1-off de",
-    "pushed-switch-B2-off": "on appuie sur B2-off de",
-    "pushed-telec-event-up": "on appuie sur le bouton haut de",
-    "pushed-telec-event-bottom": "on appuie sur le bouton bas de",
-    "pushed-telec-event-left": "on appuie a gauche de",
-    "pushed-telec-event-right": "on appuie a droite de",
-    "opened-contact-event": "on ouvre",
-    "closed-contact-event": "on ferme",
-    "contact-sensor-keyword": "le capteur de contact de",
-    "contact-assembled-event": "s assemble",
-    "contact-disassembled-event": "se desassemble",
-    "is-closed-contact-status": "ferme",
-    "is-opened-contact-status": "ouvert",
-    "is-assembled-contact-status": "assemble",
-    "is-disassembled-contact-status": "desassemble",
-    "inserted-keycard-reader-event": "on insère une carte dans",
-    "removed-keycard-reader-event": "on retire une carte de",
-    "card-inserted-keycard-reader-status": "une carte est insérée dans",
-    "no-card-inserted-keycard-reader-status": "aucune carte n'est insérée dans",
-    "turned-on-plug-event": "on allume",
-    "turned-off-plug-event": "on éteint",
-    "is-turned-on-plug-status": "est allumée",
-    "is-turned-off-plug-status": "est éteinte",
-    "turned-on-plug-state": "allumée",
-    "turned-off-plug-state": "éteinte",
-    "turn-on-plug-action": "Allumer",
-    "turn-off-plug-action": "Eteindre",
-    "turned-on-actuator-event": "on allume",
-    "turned-off-actuator-event": "on eteint",
-    "is-turned-on-actuator-status": "est allumé",
-    "is-turned-off-actuator-status": "est éteint",
-    "turn-on-actuator-action": "Allumer",
-    "turn-off-actuator-action": "Eteindre",
-    "wait": "Attendre",
-    "seconds": "secondes",
-    "is-turned-on-lamp-status": "est allumée",
-    "is-turned-off-lamp-status": "est éteinte",
-    "turn-on-lamp-action": "Allumer",
-    "turn-off-lamp-action": "Eteindre",
-    "blink-lamp-action": "Faire clignoter",
-    "change-color-lamp-action": "Changer la couleur de",
-    "complement-change-color-lamp-action": "en",
-    "white-color": "blanc",
-    "red-color": "rouge",
-    "blue-color": "bleu",
-    "green-color": "vert",
-    "yellow-color": "jaune",
-    "orange-color": "orange",
-    "purple-color": "violet",
-    "pink-color": "rose",
-    "clock-event": "il est",
-    "clock-status": "il est",
-    "play-media-action": "Jouer",
-    "browse-media-button": "Parcourir",
-    "pause-media-action": "Mettre en pause le media",
-    "stop-media-action": "Stopper",
-    "set-volume-media-action": "Mettre le volume de",
-    "complement-media-action": "sur",
-    "alarm-music": "musique douce",
-    "music": "musique tonique",
-    "ring-bell-mail-arrived": "sonnerie nouveau mail arrive",
-    "radio": "radio",
-    "movie": "film",
-    "selectedMusic": "musique",
-    "img-table": "image a table",
-    "received-mail-event": "un mail arrive",
-    "mail-dest": "à",
-    "mail-subject": "dont le sujet est",
-    "mail-body": "objet",
-    "well-arrived-subject": "Bien arrivé!",
-    "mandatory-keyword": "Obligatoire",
-    "nothing-keyword": "Rien",
-    "is-turned-on-lamp-state": "allumée",
-    "is-turned-off-lamp-state": "éteinte",
-    "light-brightness": "l'intensité de ",
-    "state-verb": "est",
-    "getTemperature": "la température mesurée",
-    "getIllumination": "la luminosité mesurée",
-    "weather": {
-      "is-current-weather-code-state": "la météo actuelle",
-      "is-forecast-weather-code-state": "la météo prévue pour",
-      "current-temperature": "la température actuelle",
-      "getTemperature": "la température mesurée",
-      "current-weather-code-state": "la météo actuelle",
-      "forecast-weather-code-state": "la météo prévue pour",
-      "forecast-temperature-min": "la température minimale prévue pour",
-      "forecast-temperature-max": "la température maximale prévue pour",
-      "currently-daylight": "il fait jour",
-      "at": "à",
-      "weather-at": "la météo prévue à",
-      "weather-min-at": "la température minimale prévue à",
-      "weather-max-at": "la température maximale prévue à",
-      "weather-avg-at": "la température moyenne prévue à",
-      "weather-code-verb": "annonce",
-      "weather-for-0": "aujourd'hui",
-      "weather-for-1": "demain",
-      "weather-for-2": "après demain",
-      "weather-code-0": "du soleil",
-      "weather-code-1": "des nuages",
-      "weather-code-2": "de la pluie",
-      "weather-code-3": "de la neige",
-      "weather-code-4": "des orages",
-      "weather-code-5": "du brouillard",
-      "weather-code-6": "d'autres conditions",
-      "weather-code-7": "des conditions rares"
+        "actions": "Actions",
+        "and-when": "Dès que",
+        "browse-media-button": "Parcourir",
+		"color" : {
+			"blue": "bleu",
+			"green": "vert",
+			"orange": "orange",
+			"pink": "rose",
+			"purple": "violet",
+			"red": "rouge",
+			"white": "blanc",
+			"yellow": "jaune"
+		},
+        "clock-event": "il est",
+        "clock-status": "il est",
+        "contact-assembled-event": "s assemble",
+        "contact-disassembled-event": "se desassemble",
+        "else-keyword": "sinon",
+        "false": "faux",
+        "if-and": "Si ... et ...",
+        "if-dif": "est différent de",
+        "if-equals": "indique",
+        "if-inf": "est inférieur à",
+        "if-keyword": "Si",
+        "if-or": "Si ... ou ...",
+        "if-sup": "est supérieur à",
+        "is-assembled-contact-status": "assemble",
+        "is-disassembled-contact-status": "desassemble",
+        "it-is-not-the-case": "ce n'est plus le cas",
+        "keep-keyword": "Maintenir",
+        "keep-then": "Ensuite",
+        "mandatory-keyword": "Obligatoire",
+        "nothing-keyword": "Rien",
+        "only-once": "Une seule fois",
+        "op-and-bool": "et",
+        "op-and-rule": "Et en même temps",
+        "op-event": "et",
+        "op-event-bool": "et",
+        "op-less-than": "moins de",
+        "op-more-than": "plus de",
+        "op-or-bool": "ou",
+        "op-then-rule": "Puis",
+        "repeated": "Répété",
+        "rules": "Règles",
+        "seconds": "secondes",
+        "selector": {
+            "all-places": "tous les lieux",
+            "complement-selection-target": "de",
+            "prefix-f": "toutes les ",
+            "prefix-m": "tous les ",
+            "type": {
+                "1": "capteurs de temperature",
+                "2": "capteurs de luminosité",
+                "21": "horloges",
+                "210": "domicubes",
+                "3": "interrupteurs",
+                "4": "capteurs de contact",
+                "5": "lecteurs de carte",
+                "6": "prises",
+                "7": "lampes",
+                "8": "actionneurs"
+            }
+        },
+        "then-keyword": "Alors",
+        "true": "vrai",
+        "wait": "Attendre",
+        "when-imp-keyword": "Dès que",
+        "when-keyword": "Chaque fois que",
+        "while-keyword": "Pendant que"
     },
-    "domicube-inactivated": "le domicube est désactivé",
-    "domicube-activated": "le domicube est activé",
-    "selector": {
-      "prefix-m": "tous les ",
-      "prefix-f": "toutes les ",
-      "all-places": "tous les lieux",
-      "complement-selection-target": "de",
-      "type": {
-        "1": "capteurs de temperature",
-        "2": "capteurs de luminosité",
-        "3": "interrupteurs",
-        "4": "capteurs de contact",
-        "5": "lecteurs de carte",
-        "6": "prises",
-        "7": "lampes",
-        "8": "actionneurs",
-        "21": "horloges",
-        "210": "domicubes"
-      }
-    }
-  },
-  "keyboard": {
-    "true": "Vrai",
-    "false": "Faux",
-    "is-open-contactSensor-state": "le capteur est ouvert",
-    "is-closed-contactSensor-state": "le capteur est fermé",
-    "is-turned-off-lamp-state": "l'ampoule est éteinte",
-    "is-turned-on-lamp-state": "l'ampoule est allumée",
-    "is-turned-on-lamp-event": "on allume l'ampoule",
-    "is-turned-off-lamp-event": "on éteint l'ampoule",
-    "turned-on-plug-state": "la prise est allumée",
-    "turned-off-plug-state": "la prise est éteinte",
-    "turn-on-lamp-action": "Allumer l'ampoule",
-    "turn-off-lamp-action": "Eteindre l'ampoule",
-    "turn-on-plug-action": "Allumer la prise",
-    "turn-off-plug-action": "Eteindre la prise",
-    "blink-lamp-action": "Faire clignoter",
-    "when-keyword": "Chaque fois que",
-    "whenImp-keyword": "Dès que",
-    "if-keyword": "Si",
-    "light-brightness": "l'intensité de l'ampoule",
-    "while-keyword": "Pendant que",
-    "keep-state": "Maintenir l'état ...",
-    "clock-event": "il est ",
-    "play-media-action": "Jouer un media",
-    "pause-media-action": "Mettre en pause le media",
-    "stop-media-action": "Stopper",
-    "set-volume-media-action": "Mettre le volume",
-    "wait": "Attendre...",
-    "weather": {
-      "weather-at": "à",
-      "is-current-weather-code-state": "la météo actuelle",
-      "is-forecast-weather-code-state": "la météo prévue pour",
-      "current-temperature": "la température actuelle",
-      "current-weather-code-state": "la météo actuelle",
-      "forecast-weather-code-state": "la météo prévue pour",
-      "forecast-temperature-min": "la température minimale prévue pour",
-      "forecast-temperature-max": "la température maximale prévue pour",
-      "currently-daylight": "il fait jour"
+    "login": {
+        "confirm-password": "Mot de passe de confirmation",
+        "password": "Mot de passe",
+        "username": "Nom d'identification"
     },
-    "selector": {
-      "prefix-m": "Les ",
-      "prefix-f": "Les ",
-      "type": {
-        "1": "capteurs de temperature",
-        "2": "capteurs de luminosité",
-        "3": "interrupteurs",
-        "4": "capteurs de contact",
-        "5": "lecteurs de carte",
-        "6": "prises",
-        "7": "lampes",
-        "8": "actionneurs",
-        "21": "horloges",
-        "210": "domicubes"
-      }
+    "modal-add-place": {
+        "place-already-existing": "Nom de la lieu de vie déjà existant.",
+        "place-name": "Nom du lieu de vie",
+        "place-name-empty": "Le nom du lieu de vie doit être renseigné.",
+        "title": "Ajouter lieu de vie"
+    },
+    "modal-add-program": {
+        "load-from-file": "Charger depuis un fichier",
+        "name-already-existing": "Nom de programme déjà existant",
+        "name-empty": "Le nom du programme doit être renseigné.",
+        "name-label": "Nom",
+        "name-placeholder": "Nom du programme",
+        "title": "Ajouter programme",
+        "unable-to-parse": "Impossible de lire ce fichier"
+    },
+    "modal-edit-device": {
+        "name-already-existing": "Nom de l'équipement déjà existant",
+        "name-label": "Nom",
+        "name-placeholder": "Nom de l'équipement",
+        "place-label": "Lieu de vie",
+        "reset-clock": "Reinitialisé horloge",
+        "time-label": "Heure",
+        "time-speed-label": "Vitesse"
+    },
+    "modal-edit-place": {
+        "place-already-existing": "Nom du lieu de vie déjà existant.",
+        "place-name": "Nom du lieu de vie",
+        "place-name-empty": "Le nom du lieu de vie doit être renseigné.",
+        "title": "Renommer lieu de vie"
+    },
+    "modal-edit-program": {
+        "program-already-existing": "Nom du programme déjà existant.",
+        "program-name": "Nom du programme",
+        "program-name-empty": "Le nom du programme doit être renseigné.",
+        "title": "Renommer programme"
+    },
+    "modal-edit-service": {
+        "name-already-existing": "Nom de service déjà existant",
+        "name-label": "Nom",
+        "name-placeholder": "Nom du service",
+        "place-label": "Lieu de vie"
+    },
+    "modal-lost-connection": {
+        "change-server-button": "Changer serveur",
+        "connection": "Connexion...",
+        "interrupted-connection": "La connexion a été interrompue.",
+        "reconnection-button": "Se reconnecter",
+        "title": "Problème de connexion"
+    },
+    "modal-settings": {
+        "addr-server": "Adresse du serveur",
+        "connection": "Connexion...",
+        "language-en": "Anglais",
+        "language-fr": "Français",
+        "language-label": "Langue",
+        "server-unreachable": "Serveur indisponible...",
+        "title": "Préférences"
+    },
+    "navbar": {
+        "button-settings": "Préférences",
+        "debugger": "Comprendre",
+        "devices": "Equipements",
+        "edit": "Editer",
+        "emergency-stop": "Tout stopper",
+        "home": "Chez nous",
+        "places": "Lieux de vie",
+        "programs": "Programmes",
+        "services": "Services",
+        "stop-edit": "Fin edition",
+        "users": "Utilisateurs"
+    },
+    "places-details": {
+        "body": {
+            "device-no-name": "Equipement sans nom",
+            "no-device-in-place": "Aucun equipement n'est assigné dans ce lieu de vie."
+        },
+        "header": {
+            "consumption-label": "Consommation",
+            "device-number-title": "Nombre d'équipements",
+            "illumination-label": "Luminosité",
+            "temperature-label": "Température"
+        },
+        "no-plugs": "Pas de prise",
+        "place-no-name": "Lieu de vie sans nom",
+        "undefined": "Non défini"
+    },
+    "places-menu": {
+        "add-button": "Ajouter lieu de vie",
+        "place-no-name": "Lieu de vie sans nom",
+        "unlocated-devices": "Equipements non localisés"
+    },
+    "programs": {
+        "action": {
+            "start": "Activer",
+            "stop": "Désactiver"
+        },
+        "delete-program": "Supprimer",
+        "edit-program": "Editer",
+        "end-edit-program": "Valider",
+        "keyboard": {
+            "actionActivate": "Activer le programme ...",
+            "actionDisactivate": "Désactiver le programme ...",
+            "actionDisactivate-self": "Désactiver ce programme",
+            "eventStart": "on active le programme ...",
+            "eventStop": "on désactive le programme ...",
+            "stateStarted": "le programme ... est actif",
+            "stateStarted-keep": "le programme ... actif",
+            "stateStopped": "le programme ... est inactif",
+            "stateStopped-keep": "le programme ... inactif"
+        },
+        "language": {
+            "actionActivate": "Activer __myVar__",
+            "actionDisactivate": "Désactiver __myVar__",
+            "actionDisactivate-self": "Désactiver ce programme",
+            "eventStart": "on active __myVar__",
+            "eventStop": "on désactive __myVar__",
+            "stateStarted": "__myVar__ est actif",
+            "stateStarted-keep": "__myVar__ actif",
+            "stateStopped": "__myVar__ est inactif",
+            "stateStopped-keep": "__myVar__ inactif"
+        },
+        "program-no-name": "Programme sans nom",
+        "state": {
+            "deployed": "Déployé",
+            "failed": "Erreur",
+            "started": "Démarré",
+            "stopped": "Arrêté"
+        },
+        "warning-program-edition": "Attention, éditer le programme le désactivera"
+    },
+    "programs-menu": {
+        "add-button": "Ajouter programme"
+    },
+    "services": {
+        "avtransport": {
+            "name": {
+                "plural": "AV Transports",
+                "singular": "AV Transport"
+            }
+        },
+        "connectionManager": {
+            "name": {
+                "plural": "Connection Managers",
+                "singular": "Connection Manager"
+            }
+        },
+        "consumption-label": "Consommation",
+        "contentdirectory": {
+            "name": {
+                "plural": "Content Directories",
+                "singular": "Content Directory"
+            }
+        },
+        "device-no-name": "Equipement sans nom",
+        "device-unlocated": "Non localisé",
+        "mail": {
+            "keyboard": {
+                "sendMail": "Envoyer un mail ..."
+            },
+            "language": {
+				"body": "objet",
+				"dest": "à",
+				"subject": "dont le sujet est",
+                "sendMail": "Envoyer un mail"
+            },
+            "name": {
+                "plural": "Serveurs mail",
+                "singular": "Serveur mail"
+            }
+        },
+        "mediabrowser": {
+            "name": {
+                "plural": "Serveurs multimédia",
+                "singular": "Serveur multimédia"
+            }
+        },
+        "mediaplayer": {
+            "action": {
+                "browse": "Parcourir",
+                "pause": "Pause",
+                "play": "Lancer",
+                "resume": "Reprendre",
+                "stop": "Arrêter",
+                "volume": "Volume"
+            },
+            "name": {
+                "plural": "Lecteurs multimédia",
+                "singular": "Lecteur multimédia"
+            },
+            "status": {
+                "playing": "Lecture en cours",
+                "selected": "Veuillez choisir un média",
+                "stopped": "Arrêté"
+            },
+            "language" : {
+			    "pause-media-action": "Mettre en pause le media",
+				"play-media-action": "Jouer",
+				"set-volume-media-action": "Mettre le volume de",
+				"stop-media-action": "Stopper"
+            },
+            "keyboard" : {
+			    "pause-media-action": "Mettre en pause le media ...",
+				"play-media-action": "Jouer ...",
+				"set-volume-media-action": "Mettre le volume de ...",
+				"stop-media-action": "Stopper"
+			}
+
+        },
+        "place-label": "Emplacement",
+        "renderingControl": {
+            "name": {
+                "plural": "Rendering controls",
+                "singular": "Rendering control"
+            }
+        },
+        "state-label": "Etat",
+        "status": {
+            "connected": "Connecté",
+            "disconnected": "Déconnecté",
+            "waiting": "En attente"
+        },
+        "status-label": "Statut",
+        "type-label": "Type",
+        "unknown": "Inconnu",
+        "value-label": "Valeur",
+        "weather": {
+            "event": {
+                "sunrise": "le jour se lève à",
+                "sunset": "le jour se couche à"
+            },
+            "name": {
+                "plural": "Services Meteo",
+                "singular": "Service Meteo"
+            },
+			"keyboard": {
+				"current-temperature": "la température actuelle",
+				"current-weather-code-state": "la météo actuelle",
+				"currently-daylight": "il fait jour",
+				"forecast-temperature-max": "la température maximale prévue pour",
+				"forecast-temperature-min": "la température minimale prévue pour",
+				"forecast-weather-code-state": "la météo prévue pour",
+				"is-current-weather-code-state": "la météo actuelle",
+				"is-forecast-weather-code-state": "la météo prévue pour",
+				"weather-at": "à"
+			},
+			"language": {
+				"current-temperature": "la température actuelle",
+				"current-weather-code-state": "la météo actuelle",
+				"currently-daylight": "il fait jour",
+				"forecast-temperature-max": "la température maximale prévue pour",
+				"forecast-temperature-min": "la température minimale prévue pour",
+				"forecast-weather-code-state": "la météo prévue pour",
+				"is-current-weather-code-state": "la météo actuelle",
+				"is-forecast-weather-code-state": "la météo prévue pour",
+				"weather-at": "la météo prévue à",
+				"weather-avg-at": "la température moyenne prévue à",
+				"weather-code-0": "du soleil",
+				"weather-code-1": "des nuages",
+				"weather-code-2": "de la pluie",
+				"weather-code-3": "de la neige",
+				"weather-code-4": "des orages",
+				"weather-code-5": "du brouillard",
+				"weather-code-6": "d'autres conditions",
+				"weather-code-7": "des conditions rares",
+				"weather-code-verb": "annonce",
+				"weather-for-0": "aujourd'hui",
+				"weather-for-1": "demain",
+				"weather-for-2": "après demain",
+				"weather-max-at": "la température maximale prévue à",
+				"weather-min-at": "la température minimale prévue à"
+			}
+
+        }
     }
-  },
-  "debugger": {
-    "all": "Tous",
-    "times": "fois"
-  }
 }
