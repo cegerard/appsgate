@@ -2,9 +2,6 @@ package appsgate.lig.ehmi.trace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +15,7 @@ import appsgate.lig.ehmi.spec.GrammarDescription;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.ehmi.spec.trace.TraceManSpec;
 import appsgate.lig.ehmi.trace.listener.TraceCmdListener;
+import appsgate.lig.ehmi.trace.queue.TraceQueue;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
@@ -91,7 +89,7 @@ public class TraceMan implements TraceManSpec {
     /**
      * The buffer queue for AppsGate simple traces
      */
-    private TraceQueue<JSONObject> traceQueue;
+    private TraceQueue traceQueue;
 
     /**
      * Last trace time stamp
@@ -151,7 +149,7 @@ public class TraceMan implements TraceManSpec {
         }
 
         //TraceQueue initialization with no aggregation
-        traceQueue = new TraceQueue<JSONObject>(0);
+        traceQueue = new TraceQueue(this, 0);
     }
 
     /**
@@ -229,7 +227,7 @@ public class TraceMan implements TraceManSpec {
      * 
      * @param traceArray the event array to write
      */
-    private synchronized void sendTraces(JSONArray traceArray) {
+    public synchronized void sendTraces(JSONArray traceArray) {
     	int nbTraces = traceArray.length();
     	
     	for(int i=0; i < nbTraces; i++ ){
@@ -983,453 +981,6 @@ public class TraceMan implements TraceManSpec {
         
         return fileTraceActivated;
 	}
-	
-    
-    /*****************************/
-    /** Trace Queue inner class **/
-    /*****************************/
-
-	/**
-     * TraceQueue is a dedicated queue for AppsGate
-     * JSON formatted traces.
-     * 
-     * @author Cedric Gerard
-     * @since August 06, 2014
-     * @version 0.5.0
-     */
-    private class TraceQueue<E> extends ArrayBlockingQueue<E>{
-
-    	
-		private static final long serialVersionUID = 1L;
-		
-	    /**
-	     * Thread to manage trace writing and aggregation
-	     */
-	    private TraceExecutor traceExec;
-
-        /**
-         * Timer to wake up the thread each deltaT time interval
-         */
-        private Timer timer;
-
-        /**
-         * The next time to log
-         */
-        private long logTime;
-	    
-	    /**
-	     * Define the trace time width in milliseconds
-	     * value to 0 means no aggregation interval and each change
-	     * is trace when it appear
-	     */
-	    private long deltaTinMillis;
-	    
-	    /**
-	     * Is the trace executor thread initiated or not
-	     */
-	    private boolean initiated = false;
-
-		/**
-    	 * Default TraceQueue constructor with max capacity
-    	 * set to 50000 elements
-    	 * @param deltaT time interval size of packet
-    	 */
-		public TraceQueue(long deltaT) {
-			super(50000);
-			
-			this.deltaTinMillis = deltaT;
-			traceExec = new TraceExecutor();
-		}
-		
-		/**
-    	 * TraceQueue constructor with max capacity
-    	 * @param capacity the max queue capacity
-    	 * @param deltaT time interval size of packet
-    	 */
-		public TraceQueue(int capacity, long deltaT) {
-			super(capacity);
-			
-			this.deltaTinMillis = deltaT;
-			traceExec = new TraceExecutor();
-		}
-
-        /**
-         * Initiate the trace executor thread/service
-         */
-        public void initTraceExec() {
-            new Thread(traceExec).start();
-            timer = new Timer();
-            if(deltaTinMillis > 0) {
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        synchronized(traceExec) {
-                            if(traceQueue != null && !traceQueue.isEmpty() && traceExec.isSleeping()){
-                                logTime = EHMIProxy.getCurrentTimeInMillis();
-                                traceExec.notify();
-                            }
-                        }
-                    }
-                }, deltaTinMillis, deltaTinMillis);
-            }
-            initiated = true;
-        }
-		
-    	@Override
-		public boolean offer(E e) {
-			boolean res = super.offer(e);
-			
-			synchronized(traceExec) {
-				if(deltaTinMillis == 0 && traceExec.isSleeping()) {
-	    			traceExec.notify();
-	    		}
-	    	}
-			
-			return res;
-		}
-
-		/**
-    	 * Stop the trace queue thread execution
-    	 */
-    	public void stop() {
-    		if(timer != null) {
-    			timer.cancel();
-    			timer.purge();
-    		}
-			traceExec.stop();
-			synchronized(traceExec) {
-				traceExec.notify();
-			}
-		}
-		
-		/**
-		 * Load the Queue with a collection of traces
-		 * @param traces the collection to load
-		 * @throws JSONException 
-		 */
-		@SuppressWarnings("unchecked")
-		public synchronized void loadTraces (JSONArray traces) throws JSONException {
-			
-			ArrayList<E> traceCollection = new ArrayList<E>();
-			int nbTrace = traces.length();
-			
-			for(int i =0; i < nbTrace; i++){
-				traceCollection.add((E) traces.getJSONObject(i));
-			}
-
-			this.clear();
-			this.addAll(traceCollection);
-		}
-		
-		/**
-	     * Get the current delta time for trace aggregation
-	     * @return the delta time in milliseconds
-	     */
-	    public long getDeltaTinMillis() {
-			return deltaTinMillis;
-		}
-	    
-	    /**
-	     * Set the delta time for traces aggregation
-	     * @param deltaTinMillis the new delta time value
-	     */
-		public void setDeltaTinMillis(long deltaTinMillis) {
-			if(deltaTinMillis != this.deltaTinMillis) {
-				this.deltaTinMillis = deltaTinMillis;
-				reScheduledTraceTimer(deltaTinMillis);
-			}
-		}
-
-        /**
-         * Schedule the trace timer for aggregation
-         * @param time the time interval
-         */
-        public void reScheduledTraceTimer(long time){
-        	if(isInitiated()){
-        		timer.cancel();
-        		timer.purge();
-
-        		timer = new Timer();
-        		if(deltaTinMillis > 0) {
-        			timer.scheduleAtFixedRate(new TimerTask() {
-        				@Override
-        				public void run() {
-        					synchronized (traceExec) {
-        						if (!traceQueue.isEmpty() && traceExec.isSleeping()) {
-        							logTime = EHMIProxy.getCurrentTimeInMillis();
-        							traceExec.notify();
-        						}
-        					}
-        				}
-        			}, deltaTinMillis, deltaTinMillis);
-        		}
-        	}
-        }
-		
-		/**
-		 * Aggregate traces with the specified policy
-		 * @param from the starting date
-		 * @param policy the policy to apply to traces
-		 * @return a JSONArray of aggregate traces
-		 * @throws JSONException 
-		 */
-		public synchronized JSONArray applyAggregationPolicy(long from, JSONObject policy) throws JSONException{
-			
-			JSONArray aggregateTraces = new JSONArray();
-			
-			if(policy == null){ //default aggregation (time and identifiers)
-
-				long beginInt = from;
-				long  endInt = from+deltaTinMillis;
-                JSONArray tracesPacket = new JSONArray();
-                
-                while(!traceQueue.isEmpty()) {
-
-                	JSONObject latestTrace = traceQueue.peek();
-                	long latestTraceTS = latestTrace.getLong("timestamp");
-                	
-                	if(latestTraceTS >= beginInt && latestTraceTS < endInt ){
-                		tracesPacket.put(traceQueue.poll());
-                	}else{
-                		beginInt = endInt;
-                		endInt +=  deltaTinMillis;
-                		
-                		if(tracesPacket.length() > 0){ //A packet is complete
-                			traceExec.aggregation(aggregateTraces, tracesPacket, beginInt);
-                			tracesPacket = new JSONArray();
-                		}
-                	}
-                }
-                
-                if(tracesPacket.length() > 0){ //A packet is complete
-        			traceExec.aggregation(aggregateTraces, tracesPacket, endInt);
-                }
-                
-			} else { //Apply specific aggregation policy
-				//generic aggregation mechanism
-				//aggregationWithPolicy(aggregateTraces, tracesPacket, logTime, policy)
-			}
-			return aggregateTraces;
-		}
-		
-		/**
-		 * Is the trace executor thread initiated
-		 * @return true if the trace executor thread is started, false otherwise
-		 */
-		public boolean isInitiated() {
-			return initiated;
-		}
-
-		/**
-	     * A thread class to trace all elements in the trace
-	     * queue
-	     * 
-	     * @author Cedric Gerard
-	     * @since August 06, 2014
-	     * @version 0.5.0
-	     */
-	    private class TraceExecutor implements Runnable {
-	    	
-	    	/**
-	    	 * Indicates if the thread is in infinite
-	    	 * waiting 
-	    	 */
-	    	private boolean sleeping;
-
-	    	/**
-	    	 * Use to manage thread loop execution
-	    	 */
-	    	private boolean start;
-	    	
-	    	/**
-	    	 * Default constructor
-	    	 */
-	    	public TraceExecutor() {
-	    		
-	    		start = false;
-	    		sleeping = false;
-	    	}
-	    	
-			public void stop() {
-				start = false;
-				initiated = false;
-			}
-
-			@Override
-			public void run() {
-				start = true;
-				while(start) {
-					try {
-						if( deltaTinMillis > 0 || traceQueue.isEmpty() ){
-							synchronized(this) {
-								sleeping = true;
-								wait();
-								sleeping = false;
-							}
-						}
-						if(start){
-							sendTraces(apply(null));
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}  catch (JSONException ex) {
-                        ex.printStackTrace();
-                    }
-				}
-			}
-			
-			/**
-			 * Apply a policy on the queue to aggregate traces
-			 * The default policy is the deltaTInMillis attribute
-			 * 
-			 * @param policy other policies to apply (e.g. type of device)
-			 * @return the aggregated traces as a JSONArray
-			 */
-			public JSONArray apply(JSONObject policy) throws JSONException {
-				synchronized(traceQueue) {
-					
-					JSONArray aggregateTraces = new JSONArray();
-					
-					//No aggregation
-					if(policy == null && deltaTinMillis == 0) {
-						
-						while(!traceQueue.isEmpty()) {
-							JSONObject trace = traceQueue.poll();
-							aggregateTraces.put(trace);
-						}
-					
-					}else {
-						if(policy == null){ //default aggregation (time and identifiers)
-                            //Get all traces from trace queue
-                            JSONArray tempTraces = new JSONArray();
-                            while(!traceQueue.isEmpty()) {
-                            	tempTraces.put(traceQueue.poll());
-                            }
-                            aggregation(aggregateTraces, tempTraces, logTime);
-
-						} else { //Apply specific aggregation policy
-							//generic aggregation mechanism
-							//aggregationWithPolicy(aggregateTraces, tracesPacket, logTime, policy)
-						}
-					}
-					
-					return aggregateTraces;
-				}
-			}
-			
-			/**
-			 * Aggregates traces from a packet and add the aggregate trace to an array
-			 * @param aggregateTraces result of all aggregations
-			 * @param tracesPacket traces to aggregates
-			 * @param logTime timestamp for this trace
-			 * @throws JSONException 
-			 */
-			public void aggregation(JSONArray aggregateTraces, JSONArray tracesPacket, long logTime) throws JSONException {
-				//Create new aggregate trace instance
-	            JSONObject jsonTrace = new JSONObject();
-	            jsonTrace.put("timestamp", logTime);
-	            HashMap<String,JSONObject> devicesToAgg = new HashMap<String, JSONObject>();
-	            HashMap<String,JSONObject> programsToAgg = new HashMap<String, JSONObject>();
-
-	            int nbTraces = tracesPacket.length();
-	            int i = 0;
-	            while(i < nbTraces){
-	                //Get a trace to aggregate from the array
-	                JSONObject tempObj = tracesPacket.getJSONObject(i);
-	                JSONArray tempDevices = tempObj.getJSONArray("devices");
-	                JSONArray tempPgms = tempObj.getJSONArray("programs");
-
-	                int tempDevicesSize = tempDevices.length();
-	                int tempPgmsSize = tempPgms.length();
-
-	                //If there is some device trace to merge
-	                if(tempDevicesSize > 0){
-	                    int x = 0;
-	                    while(x < tempDevicesSize){
-	                        //Merge the device trace
-	                        JSONObject tempDev = tempDevices.getJSONObject(x);
-	                        //tempDev.put("timestamp", tempObj.get("timestamp"));
-	                        String id = tempDev.getString("id");
-	                        
-	                        if(!devicesToAgg.containsKey(id)){ //No aggregation for now
-	      
-	                            devicesToAgg.put(id, tempDev);
-	                            
-	                        }else{ //Device id exist for this time stamp --> aggregation
-	                        	JSONObject existingDev = devicesToAgg.get(id);
-	                        	if(tempDev.has("event")){//replace the state by the last known state
-	                        		existingDev.put("event", tempDev.get("event")); 
-	                        	}
-	                        	//Aggregates the device trace has a decoration
-	                        	JSONArray existingDecorations = existingDev.getJSONArray("decorations");
-	                        	JSONArray tempDecs = tempDev.getJSONArray("decorations");
-	                        	int decSize = tempDecs.length();
-	                        	int x1 = 0;
-	                        	while(x1 < decSize){
-	                        		JSONObject tempDec = tempDecs.getJSONObject(x1);
-	                        		tempDec.put("order", existingDecorations.length());
-	                        		existingDecorations.put(tempDec);
-	                        		x1++;
-	                        	}
-	                        }
-	                        x++;
-	                    }
-	                }
-
-	                //If there is some program traces to merge
-	                if( tempPgmsSize > 0){
-	                    int y = 0;
-	                    while(y < tempPgmsSize){
-	                        //Merge program traces
-	                        JSONObject tempPgm = tempPgms.getJSONObject(y);
-	                        //tempPgm.put("timestamp", tempObj.get("timestamp"));
-	                        String id = tempPgm.getString("id");
-	                        
-	                        if(!programsToAgg.containsKey(id)){//No aggregation for now
-	                        	
-	                            programsToAgg.put(id, tempPgm);
-	                            
-	                        }else{ //program id exist for this time stamp --> aggregation
-	                        	
-	                        	JSONObject existingPgm = programsToAgg.get(id);
-	                        	if(tempPgm.has("event")){//replace the state by the last known state
-	                        		existingPgm.put("event", tempPgm.get("event")); 
-	                        	}
-	                        	
-	                        	//Aggregates the device trace has a decoration
-	                        	JSONArray existingDecorations = existingPgm.getJSONArray("decorations");
-	                        	JSONArray tempDecs = tempPgm.getJSONArray("decorations");
-	                        	int decSize = tempDecs.length();
-	                        	int y1 = 0;
-	                        	while(y1 < decSize){
-	                        		JSONObject tempDec = tempDecs.getJSONObject(y1);
-	                        		tempDec.put("order", existingDecorations.length());
-	                        		existingDecorations.put(tempDec);
-	                        		y1++;
-	                        	}
-	                        }
-	                        y++;
-	                    }
-	                }
-	                i++;
-	            }
-
-	            jsonTrace.put("devices", new JSONArray(devicesToAgg.values()));
-	            jsonTrace.put("programs", new JSONArray(programsToAgg.values()));
-				aggregateTraces.put(jsonTrace);
-			}
-
-			/**
-			 * Is this thread infinitely sleeping
-			 * @return true if the thread is waiting till the end of time, false otherwise
-			 */
-			public synchronized boolean isSleeping() {
-				return sleeping;
-			}
-			
-	    }
-		
-    }
 
 	@Override
 	public JSONObject getStatus() {
@@ -1455,6 +1006,14 @@ public class TraceMan implements TraceManSpec {
 		}
 		
 		return status;
+	}
+
+	/**
+	 * Get the systeme current time in milliseconds
+	 * @return the current time as a long
+	 */
+	public long getCurrentTimeInMillis() {
+		return EHMIProxy.getCurrentTimeInMillis();
 	}
 
 }
