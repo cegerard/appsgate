@@ -71,18 +71,18 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "inactivate":
-          $(btn).append("<span data-i18n='language.domicube-inactivated'></span>");
+          $(btn).append("<span data-i18n='devices.domicube.keyboard.inactivated'></span>");
           v.eventName = "newFace";
           v.eventValue = "2";
           //v.icon = "/app/img/music.png";
-          v.phrase = "language.domicube-inactivated";
+          v.phrase = "devices.domicube.language.inactivated";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "activate":
-          $(btn).append("<span data-i18n='language.domicube-activated'></span>");
+          $(btn).append("<span data-i18n='devices.domicube.keyboard.inactivated'></span>");
           v.eventName = "leaveFace";
           v.eventValue = "2";
-          v.phrase = "language.domicube-activated";
+          v.phrase = "devices.domicube.language.activated";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

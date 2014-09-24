@@ -31,17 +31,17 @@ define([
       var v = this.getJSONEvent("mandatory");
       switch(evt) {
         case "isOpen":
-          $(btn).append("<span data-i18n='devices.contact.event.opened'/>");
+          $(btn).append("<span data-i18n='devices.contact.keyboard.openEvent'/>");
           v.eventName = "contact";
           v.eventValue = "false";
-          v.phrase = "devices.contact.event.opened";
+          v.phrase = "devices.contact.language.openEvent";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "isClose":
-          $(btn).append("<span data-i18n='devices.contact.event.closed'/>");
+          $(btn).append("<span data-i18n='devices.contact.keyboard.closeEvent'/>");
           v.eventName = "contact";
           v.eventValue = "true";
-          v.phrase = "devices.contact.event.closed";
+          v.phrase = "devices.contact.language.closeEvent";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

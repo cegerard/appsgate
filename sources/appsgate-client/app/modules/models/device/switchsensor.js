@@ -35,80 +35,50 @@ define([
             var v = this.getJSONEvent("mandatory");
             switch (evt) {
             case "switch-up":
-                $(btn).append("<span data-i18n='language.pushed-switch-up'></span>");
+                $(btn).append("<span data-i18n='devices.switch.keyboard.pushed-up'></span>");
                 v.eventName = "switchNumber";
                 v.eventValue = "1";
-                v.phrase = "language.pushed-switch-up";
+                v.phrase = "devices.switch.language.pushed-up";
                 $(btn).attr("json", JSON.stringify(v));
                 break;
             case "switch-bottom":
-                $(btn).append("<span data-i18n='language.pushed-switch-bottom'></span>");
+                $(btn).append("<span data-i18n='devices.switch.keyboard.pushed-bottom'></span>");
                 v.eventName = "switchNumber";
                 v.eventValue = "3";
-                v.phrase = "language.pushed-switch-bottom";
+                v.phrase = "devices.switch.language.pushed-bottom";
                 $(btn).attr("json", JSON.stringify(v));
                 break;
 
                 // Two button cases
                 //            case "switchB1-on":
-                //                $(btn).append("<span data-i18n='language.pushed-switch-B1-on'></span>");
+                //                $(btn).append("<span data-i18n='devices.switch.keyboard.pushed-up-B1'></span>");
                 //                v.eventName = "switchNumber";
                 //                v.eventValue = "7";
-                //                v.phrase = "language.pushed-switch-B1-on";
+                //                v.phrase = "devices.switch.language.pushed-up-B1";
                 //                $(btn).attr("json", JSON.stringify(v));
                 //                break;
                 //            case "switchB2-on":
-                //                $(btn).append("<span data-i18n='language.pushed-switch-B2-on'></span>");
+                //                $(btn).append("<span data-i18n='devices.switch.keyboard.pushed-up-B2'></span>");
                 //                v.eventName = "switchNumber";
                 //                v.eventValue = "3";
-                //                v.phrase = "language.pushed-switch-B2-on";
+                //                v.phrase = "devices.switch.language.pushed-up-B2";
                 //                $(btn).attr("json", JSON.stringify(v));
                 //                break;
                 //            case "switchB1-off":
-                //                $(btn).append("<span data-i18n='language.pushed-switch-B1-off'></span>");
+                //                $(btn).append("<span data-i18n='devices.switch.keyboard.pushed-bottom-B1'></span>");
                 //                v.eventName = "switchNumber";
                 //                v.eventValue = "5";
-                //                v.phrase = "language.pushed-switch-B1-off";
+                //                v.phrase = "devices.switch.language.pushed-bottom-B1";
                 //                $(btn).attr("json", JSON.stringify(v));
                 //                break;
                 //            case "switchB2-off":
-                //                $(btn).append("<span data-i18n='language.pushed-switch-B2-off'></span>");
+                //                $(btn).append("<span data-i18n='devices.switch.keyboard.pushed-bottom-B2'></span>");
                 //                v.eventName = "switchNumber";
                 //                v.eventValue = "1";
-                //                v.phrase = "language.pushed-switch-B2-off";
+                //                v.phrase = "devices.switch.language.pushed-bottom-B2";
                 //                $(btn).attr("json", JSON.stringify(v));
                 //                break;
 
-                /*
-        case "switchUp":
-          $(btn).append("<span data-i18n='language.pushed-switch-event'></span>");
-          v.eventName = "switchNumber";
-          v.eventValue = "1";
-          v.phrase = "language.pushed-telec-event-up";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "switchBottom":
-          $(btn).append("<span data-i18n='language.pushed-switch-event'></span>");
-          v.eventName = "switchNumber";
-          v.eventValue = "0";
-          v.phrase = "language.pushed-telec-event-bottom";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "switchLeft":
-          $(btn).append("<span data-i18n='language.pushed-switch-event'></span>");
-          v.eventName = "buttonStatus";
-          v.eventValue = "false";
-          v.phrase = "language.pushed-telec-event-left";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "switchRight":
-          $(btn).append("<span data-i18n='language.pushed-switch-event'></span>");
-          v.eventName = "buttonStatus";
-          v.eventValue = "false";
-          v.phrase = "language.pushed-telec-event-right";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-          */
             default:
                 console.error("unexpected event found for SwitchSensor: " + evt);
                 btn = null;
