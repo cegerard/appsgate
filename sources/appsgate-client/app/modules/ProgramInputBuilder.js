@@ -46,10 +46,12 @@ define([
         },
         buildInputFromObjectOrTarget: function(node, currentNode) {
             if (typeof node.object !== 'undefined') {
-                this.buildInputFromNode(node.object, currentNode)
+                return this.buildInputFromNode(node.object, currentNode)
             } else if (typeof node.target !== 'undefined') {
-                this.buildInputFromNode(node.target, currentNode)
+                return this.buildInputFromNode(node.target, currentNode)
             }
+            console.warn("Node Invalid: " + node);
+            return "Unkwown";
         },
         buildInputFromNodeOrMandatory: function(jsonNode, currentNode, test) {
             if (test) {
