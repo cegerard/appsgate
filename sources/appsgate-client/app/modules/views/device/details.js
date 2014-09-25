@@ -47,6 +47,7 @@ define([
             "click button.btn-media-stop": "onStopMedia",
             "click button.btn-media-volume": "onSetVolumeMedia",
             "click button.btn-media-browse": "onBrowseMedia",
+            "show.bs.modal #edit-device-modal": "beforeInitializeModal",
             "shown.bs.modal #edit-device-modal": "initializeModal",
             "hidden.bs.modal #edit-device-modal": "toggleModalValue",
             "click #edit-device-modal button.valid-button": "validEditDevice",
@@ -215,6 +216,18 @@ define([
 
             this.model.onBrowseMedia($("#selectedMedia"));
         },
+        beforeInitializeModal: function() {
+
+          // initialize the field to edit the core clock if needed
+          if (this.model.get("type") === "21" || this.model.get("type") === 21) {
+              $("#edit-device-modal select#hour").val(this.model.get("moment").hour());
+              $("#edit-device-modal select#minute").val(this.model.get("moment").minute());
+              $("#edit-device-modal input#time-flow-rate").val(this.model.get("flowRate"));
+          }
+
+          // tell the router that there is a modal
+          appRouter.isModalShown = true;
+        },
         /**
          * Clear the input text, hide the error message and disable the valid button by default
          */
@@ -223,16 +236,6 @@ define([
             $("#edit-device-modal input#device-name").focus();
             $("#edit-device-modal .text-danger").addClass("hide");
             $("#edit-device-modal .valid-button").addClass("disabled");
-
-            // initialize the field to edit the core clock if needed
-            if (this.model.get("type") === "21" || this.model.get("type") === 21) {
-                $("#edit-device-modal select#hour").val(this.model.get("moment").hour());
-                $("#edit-device-modal select#minute").val(this.model.get("moment").minute());
-                $("#edit-device-modal input#time-flow-rate").val(this.model.get("flowRate"));
-            }
-
-            // tell the router that there is a modal
-            appRouter.isModalShown = true;
         },
         /**
          * Tell the router there is no modal anymore
