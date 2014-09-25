@@ -62,9 +62,12 @@ define([
 
           return false;
         }
-
+        var currentProgramID=this.model.get("id");
+        var programsWithSameName=programs.where({name: $(".programNameInput").val()}).filter(function(prog){
+              return prog.id != null && prog.id!=currentProgramID;
+          });
         // name already existing
-        if (programs.where({name: $(".programNameInput").val()}).length > 0) {
+        if (programsWithSameName.length > 0) {
           $(".text-danger").removeClass("hide");
           $(".text-danger").text($.i18n.t("modal-edit-program.program-already-existing"));
           $("#end-edit-button").addClass("disabled");
