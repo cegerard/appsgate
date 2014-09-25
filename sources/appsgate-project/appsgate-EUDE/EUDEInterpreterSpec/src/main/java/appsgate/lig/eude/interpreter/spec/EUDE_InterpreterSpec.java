@@ -87,4 +87,6 @@ public interface EUDE_InterpreterSpec {
          */
         public void newDeviceStatus(String deviceId, Boolean statusOK);
 
+    public void checkReferences();
+
 }

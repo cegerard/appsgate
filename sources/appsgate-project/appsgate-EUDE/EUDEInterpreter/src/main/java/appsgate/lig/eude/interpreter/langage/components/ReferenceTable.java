@@ -7,6 +7,8 @@ package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import org.json.JSONException;
@@ -40,14 +42,15 @@ public class ReferenceTable {
     private STATUS state;
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public STATUS getStatus() {
         return this.state;
     }
 
     public enum STATUS {
+
         OK,
         UNSTABLE,
         INVALID,
@@ -66,12 +69,18 @@ public class ReferenceTable {
 
     /**
      *
+     */
+    private final ArrayList<NodeSelect> nodes;
+
+    /**
+     *
      * @param interpreter
      * @param pid
      */
     public ReferenceTable(EUDEInterpreter interpreter, String pid) {
         devices = new HashMap<String, STATUS>();
         programs = new HashMap<String, STATUS>();
+        nodes = new ArrayList<NodeSelect>();
         this.interpreter = interpreter;
         this.state = STATUS.UNKNOWN;
         this.myProgId = pid;
@@ -95,6 +104,13 @@ public class ReferenceTable {
      */
     public void addDevice(String deviceId) {
         devices.put(deviceId, STATUS.UNKNOWN);
+    }
+
+    /**
+     * @param aThis
+     */
+    public void addNodeSelect(NodeSelect aThis) {
+        nodes.add(aThis);
     }
 
     /**
@@ -126,7 +142,7 @@ public class ReferenceTable {
     }
 
     /**
-     * 
+     *
      * @return true if something has change false otherwise
      */
     public Boolean checkStatus() {
@@ -168,7 +184,7 @@ public class ReferenceTable {
     private void retrieveReferences() {
         for (String k : programs.keySet()) {
             NodeProgram prog = interpreter.getNodeProgram(k);
-        	LOGGER.trace("retrieveReferences(), program "+k+", status "+devices.get(k));        	            
+            LOGGER.trace("retrieveReferences(), program " + k + ", status " + devices.get(k));
             if (prog != null) {
                 if (!prog.isValid()) {
                     LOGGER.error("The program {} is not valid.", k);
@@ -184,7 +200,7 @@ public class ReferenceTable {
         }
         // Services && devices are treated the same way
         for (String k : devices.keySet()) {
-        	LOGGER.trace("retrieveReferences(), device "+k+", status "+devices.get(k));        	
+            LOGGER.trace("retrieveReferences(), device " + k + ", status " + devices.get(k));
             JSONObject device = interpreter.getContext().getDevice(k);
             try {
                 if (device == null || !device.has("status") || !device.getString("status").equals("2")) {
@@ -204,7 +220,7 @@ public class ReferenceTable {
     private STATUS computeStatus() {
         this.state = STATUS.OK;
         for (String k : programs.keySet()) {
-        	LOGGER.trace("computeStatus(), program "+k+", status :"+programs.get(k));
+            LOGGER.trace("computeStatus(), program " + k + ", status :" + programs.get(k));
             switch (programs.get(k)) {
                 case MISSING:
                 case INVALID:
@@ -217,11 +233,17 @@ public class ReferenceTable {
         }
         // Services && devices are treated the same way
         for (String k : devices.keySet()) {
-        	LOGGER.trace("computeStatus(), device "+k+", status "+devices.get(k));
+            LOGGER.trace("computeStatus(), device " + k + ", status " + devices.get(k));
             switch (devices.get(k)) {
                 case MISSING:
                     setState(STATUS.UNSTABLE);
                     break;
+            }
+        }
+        for (NodeSelect s : nodes) {
+            if (s.isEmptySelection()) {
+                LOGGER.warn("Select node {} is empty.", s);
+                setState(STATUS.UNSTABLE);
             }
         }
         return this.state;
