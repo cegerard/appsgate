@@ -1,0 +1,17 @@
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>"> 
+    <select id="scale-selector-<%= node.idd %>" class="scale-selector" target-id="<%= node.iid %>">
+        <% node.scale.forEach( function(scale) { %>
+            <option <% if (node.value === scale.value) { %>selected<% } %> value="<%= scale.value %>" data-i18n="<%= scale.label %>"></option>
+        <% }) %>
+<!--
+        < FOR option .....
+        <option <% if (node.methodName === "setRed") { %>selected<% } %> value="lowest" data-i18n="devices.illumination.scale.lowest"></option>
+        <option <% if (node.methodName === "setBlue") { %>selected<% } %> value="veryLow" data-i18n="devices.illumination.scale.veryLow"></option>
+        <option <% if (node.methodName === "setGreen") { %>selected<% } %> value="low" data-i18n="devices.illumination.scale.low"></option>
+        <option <% if (node.methodName === "setYellow") { %>selected<% } %> value="medium" data-i18n="devices.illumination.scale.medium"></option>
+        <option <% if (node.methodName === "setOrange") { %>selected<% } %> value="high" data-i18n="devices.illumination.scale.high"></option>
+        <option <% if (node.methodName === "setPurple") { %>selected<% } %> value="veryHigh" data-i18n="devices.illumination.scale.veryHigh"></option>
+        <option <% if (node.methodName === "setPink") { %>selected<% } %> value="highest" data-i18n="devices.illumination.scale.highest"></option>
+-->
+    </select>
+</div>

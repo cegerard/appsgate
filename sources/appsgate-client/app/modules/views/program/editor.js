@@ -19,8 +19,9 @@ define([
         "change .selector-place-picker": "onChangeSeletorPlaceNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
         "change .code-forecast-picker": "onChangeCodeForecastNode",
+        "change .scale-selector": "onChangeValue",
         "change .comparator-select": "onChangeComparatorNode",
-        "change .number-input": "onChangeNumberValue",
+        "change .number-input": "onChangeValue",
         "change .arg-input": "onChangeArgValue",
         "change .volume-input": "onChangeMediaVolume",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
@@ -296,7 +297,7 @@ define([
         // // clearing selection
         this.resetSelection();
       },
-      onChangeNumberValue: function(e) {
+      onChangeValue: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
         var value = e.currentTarget.value;

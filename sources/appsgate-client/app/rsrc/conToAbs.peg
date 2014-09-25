@@ -54,6 +54,7 @@ BOOLEAN  =  ID "comparator" _"(" _ NUMERIC_VALUE _ ")" _ "(" _ NUMERIC_VALUE _ "
 NUMERIC_VALUE = ID "number"
 			/ ID "boolean"
             / PROPERTY
+            / ID "scale"
 
 ACTION = ID "action" _ "(" _ TARGET _ ")"
 

@@ -18,8 +18,9 @@ define([
     "text!templates/program/nodes/waitNode.html",
     "text!templates/program/nodes/programNode.html",
     "text!templates/program/nodes/defaultPropertyNode.html",
-    "text!templates/program/nodes/selectNode.html"
-], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl) {
+    "text!templates/program/nodes/selectNode.html",
+    "text!templates/program/nodes/scaleTemplate.html"
+], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl, scaleTpl) {
     var ProgramInputBuilder = {};
     // router
     ProgramInputBuilder = Backbone.Model.extend({
@@ -40,6 +41,7 @@ define([
         tplProgramNode: _.template(programTpl),
         tplDefaultPropertyNode: _.template(dfltPropertyTpl),
         tplSelectNode: _.template(selectNodeTpl),
+        tplScale: _.template(scaleTpl),
 
 
         initialize: function() {
@@ -179,6 +181,9 @@ define([
                 case "programCall":
                     input += "<button class='btn btn-prog btn-prog-prog' id='" + jsonNode.iid + "'><span>" + jsonNode.name + "</span></button>";
                     break;
+                case "scale":
+                    input += this.tplScale(param);
+                    break;
                 default:
                     input += "<button class='btn btn-prog btn-primary' id='" + jsonNode.iid + "'><span>" + jsonNode.type + "</span></button>";
                     break;
@@ -245,16 +250,32 @@ define([
         },
         // Hack for a simple prestenation when X == true, we only show X
         buildComparatorNode: function(param, currentNode) {
-            try {
-                if(param.node.comparator === "==" && param.node.rightOperand.type === "boolean" && param.node.rightOperand.value === "true") {
-                    return this.buildInputFromNode(param.node.leftOperand, currentNode);
-                } else {
-                    return this.tplComparatorNode(param);
-                }
-            } catch (e) {
-                return this.tplComparatorNode(param);
+//            try {
+//                if(param.node.comparator === "==" && param.node.rightOperand.type === "boolean" && param.node.rightOperand.value === "true") {
+//                    return this.buildInputFromNode(param.node.leftOperand, currentNode);
+//                } else {
+//                    return this.tplComparatorNode(param);
+//                }
+//            } catch (e) {
+//                return this.tplComparatorNode(param);
+//            }
+            var leftOp = this.buildInputFromNode(param.node.leftOperand, currentNode);
+            
+            if (param.node.leftOperand.target.deviceType) {
+                var deviceOfNode = devices.where({type:param.node.leftOperand.target.deviceType})[0];
+                param.node.rightOperand.scale = deviceOfNode.getScale();
+                param.node.rightOperand.type = param.node.leftOperand.returnType;
+                param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+            } 
+            if (param.node.leftOperand.target.serviceType) {
+                var serviceOfNode = services.where({type:param.node.leftOperand.target.serviceType})[0];
+                param.node.rightOperand.scale = serviceOfNode.getScale();
+                param.node.rightOperand.type = param.node.leftOperand.returnType;
+                param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
             }
-
+            
+            var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);
+            return leftOp + this.tplComparatorNode(param) + rightOp;
         },
 
         getDeviceName: function(id) {

@@ -105,6 +105,7 @@ define([
                                     console.log("empty program");
                                     break;
                                 case '"number"':
+                                case '"scale"':
                                     //$(".expected-events").append("<button class='btn btn-default btn-keyboard number-node'><span>valeur<span></button>");
                                     break;
                                 case '"wait"':
@@ -323,8 +324,8 @@ define([
                             "rightOperand": {
                                 "iid" : "X",
                                 "value" : "0",
-                                "type": "number",
-                                "unit": json.unit
+                                "type": json.returnType,
+                                "unit": json.unit,
                             }
                         };
                         v.leftOperand = json;
