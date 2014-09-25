@@ -276,11 +276,12 @@ define([
         var newCode = e.currentTarget.selectedOptions[0].value;
         var value = {"type": "int", "value": newCode};
         var i = 0;
-        for(var elt in $(".day-forecast-picker")) {
-           if(elt.attr() === iid) {
-              i = 1;
-           }
-        }
+          $(".day-forecast-picker").each(function(){
+              if (this.getAttribute("target-id") === iid) {
+                  i = 1;
+              }
+          });
+
         this.Mediator.setNodeArg(iid, i, value);
 
         // // clearing selection

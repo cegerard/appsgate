@@ -708,6 +708,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
     @Override
     public boolean removeProperty(String placeId, String key) {
+        interpreter.checkReferences();
         return placeManager.removeProperty(placeId, key);
     }
 

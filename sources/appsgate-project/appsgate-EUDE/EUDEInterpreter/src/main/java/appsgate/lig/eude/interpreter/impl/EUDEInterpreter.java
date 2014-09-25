@@ -715,4 +715,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
     }
 
+    @Override
+    public void checkReferences() {
+        for (NodeProgram p : mapPrograms.values()) {
+            p.getReferences().checkStatus();
+        }
+    }
 }
