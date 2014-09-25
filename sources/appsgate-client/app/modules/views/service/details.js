@@ -180,13 +180,16 @@ define([
         if (!appRouter.isModalShown) {
           switch (this.model.get("type")) {
           case 31: // media player
+              var player = this.model;
           this.$el.html(this.template({
-            service: this.model,
+            service: player,
             sensorImg: "app/img/services/media_player.png",
             sensorType: $.i18n.t("services.mediaplayer.name.singular"),
             places: places,
             serviceDetails: this.tplMediaPlayer
           }));
+
+              player.requestVolume();
 
           // initialize the volume slider
           _.defer(function() {
@@ -194,15 +197,16 @@ define([
               range: "min",
               min: 0,
               max: 100,
-              value: 100,
+              value: player.get("volume"),
               stop: function(event, ui) {
                 self.model.sendVolume($(".volume-slider").slider("value"));
               }
             });
+            self.model.save();
           });
 
           // requesting current volume level
-          this.model.remoteCall("getVolume", [], this.model.get("id") + ":volume");
+//          this.model.remoteCall("getVolume", [], this.model.get("id") );
           break;
         case 36: // media browser
         this.$el.html(this.template({

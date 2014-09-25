@@ -91,6 +91,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
 		descr.put("friendlyName", deviceName);
+		descr.put("volume", getVolume());
+
 
 		return descr;
 	}

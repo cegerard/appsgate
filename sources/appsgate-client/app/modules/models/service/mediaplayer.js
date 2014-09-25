@@ -30,7 +30,8 @@ define([
             this.requestVolume();
 
             // listening for volume value
-            dispatcher.on(this.get("ref") + ":volume", function(volume) {
+            dispatcher.on(this.get("ref") , function(volume) {
+            console.log("received volume : "+volume);
                 self.set("volume", volume);
             });
         },
@@ -120,7 +121,7 @@ define([
          * Sends a request to the server for the current volume level
          */
         requestVolume: function() {
-            this.remoteControl("getVolume", [], this.id + ":volume");
+            this.remoteControl("getVolume", [], this.id );
         },
         // Displays a tree of items the player can read
         onBrowseMedia: function(selectedMedia) {
