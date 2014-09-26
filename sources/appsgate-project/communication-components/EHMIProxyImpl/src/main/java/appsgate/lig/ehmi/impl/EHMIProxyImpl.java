@@ -244,7 +244,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		logger.trace("synchroCoreProxy()...");
 		if (synchroCoreProxy)
 			return;		
-		if (coreProxy != null) {
+		if (coreProxy != null && devicePropertiesTable!=null) {
 			logger.trace("... coreProxy is there");
 			synchroCoreProxy = true;
 
