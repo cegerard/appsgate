@@ -255,15 +255,18 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				JSONArray devicesArray = coreProxy.getDevices();
 				for (int i = 0; i < devicesArray.length(); i++) {
 					try {
-						logger.trace("adding device : "+devicesArray.getJSONObject(i));
-						String type = devicesArray.getJSONObject(i).getString(
+						if(devicesArray.getJSONObject(i).has("type")
+								&& devicesArray.getJSONObject(i).has("id")) {
+							logger.trace("adding device : "+devicesArray.getJSONObject(i));
+							String type = devicesArray.getJSONObject(i).getString(
 								"type");
-						String id = devicesArray.getJSONObject(i).getString(
+							String id = devicesArray.getJSONObject(i).getString(
 								"id");
 
-						if (type != "21" && getGrammarFromType(type) == null) {
+							if (type != "21" && getGrammarFromType(type) == null) {
 							addGrammar(id, type, new GrammarDescription(
 									coreProxy.getDeviceBehavior(type)));
+							}
 						}
 					} catch (JSONException e) {
 						logger.error(e.getMessage());
@@ -844,9 +847,13 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			JSONObject coreObject;
 			while (i < nbObjects) {
 				coreObject = objects.getJSONObject(i);
-				contextArray.put(addContextData(coreObject,
+				logger.trace("Trying to add : "+coreObject+"...");
+				if(coreObject != null && coreObject.has("id")) {
+					contextArray.put(addContextData(coreObject,
 						coreObject.getString("id")));
-				i++;
+					logger.trace("... successfully added. With context : "+contextArray.getJSONObject(i));
+					i++;
+				}
 			}
 		} catch (JSONException e) {
 			logger.error(e.getMessage());
