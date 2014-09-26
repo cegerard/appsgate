@@ -92,7 +92,13 @@
 				<td>
 				<%= place.getName() %>
 				<% if (type === "0") { %>
-					<span class="label-value"><%= place.getAverageTemperature() %>&deg;C</span>
+
+                    <% if(place.getAverageTemperature()=="999") { %>
+                    <span class="label-value">---&deg;C</span>
+                    <% } else { %>
+                    <span class="label-value"><%= Math.round(place.getAverageTemperature()) %>&deg;C</span>
+                    <% } %>
+
 				<% } else if (type === "1") { %>
 					<span class="label-value"><%= place.getAverageIllumination() %> Lux</span>
 				<% } else if (type === "6") { %>
@@ -114,7 +120,13 @@
 				<td>
                 <%= place.getName() %>
 				<% if (type === "0") { %>
-					<span class="label-value"><%= place.getAverageTemperature() %>&deg;C</span>
+
+                    <% if(place.getAverageTemperature()=="999") { %>
+                    <span class="label-value">---&deg;C</span>
+                    <% } else { %>
+                    <span class="label-value"><%= place.getAverageTemperature() %>&deg;C</span>
+                    <% } %>
+
 				<% } else if (type === "1") { %>
 					<span class="label-value"><%= place.getAverageIllumination() %> Lux</span>
 				<% } else if (type === "6") { %>
