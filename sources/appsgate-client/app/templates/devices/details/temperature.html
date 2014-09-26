@@ -1,6 +1,10 @@
 <li class="list-group-item">
 	<strong data-i18n="devices.value-label"></strong>
 	<div class="pull-right label-value">
-		<%= Math.round(device.get("value")) %> &deg;C
-	</div>
+        <% if(device.get("value")=="999") { %>
+		    --- &deg;C
+        <% } else { %>
+            <%= Math.round(device.get("value")) %> &deg;C
+        <% } %>
+    </div>
 </li>
