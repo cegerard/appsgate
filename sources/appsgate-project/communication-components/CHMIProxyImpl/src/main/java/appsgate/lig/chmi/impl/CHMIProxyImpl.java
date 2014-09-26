@@ -396,11 +396,13 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      * @return the complete contextual description of an object
      */
     private JSONObject getObjectDescription(CoreObjectSpec obj) {
+    	
         JSONObject JSONDescription = null;
         try {
             // Get object auto description
             JSONDescription = obj.getDescription();
-
+    		logger.trace("getObjectDescription(CoreObjectSpec obj), description : "
+    				+JSONDescription);	
         } catch (JSONException e) {
             logger.error(e.getMessage());
         } catch (Exception e) {
@@ -412,21 +414,29 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 
 	@Override
 	public boolean CoreUpdatesSubscribe(CoreUpdatesListener coreUpdatesListener) {
+		logger.trace("CoreUpdatesSubscribe(CoreUpdatesListener coreUpdatesListener : "
+				+coreUpdatesListener+")");		
 		return updatesListenerList.add(coreUpdatesListener);
 	}
 
 	@Override
 	public boolean CoreUpdatesUnsubscribe(CoreUpdatesListener coreUpdatesListener) {
+		logger.trace("CoreUpdatesUnsubscribe(CoreUpdatesListener coreUpdatesListener : "
+				+coreUpdatesListener+")");		
 		return updatesListenerList.remove(coreUpdatesListener);
 	}
 
 	@Override
 	public boolean CoreEventsSubscribe(CoreEventsListener coreEventsListener) {
+		logger.trace("CoreEventsSubscribe(CoreEventsListener coreEventsListener : "
+				+coreEventsListener+")");
 		return eventsListenerList.add(coreEventsListener);
 	}
 
 	@Override
 	public boolean CoreEventsUnsubscribe(CoreEventsListener coreEventsListener) {
+		logger.trace("CoreEventsUnsubscribe(CoreEventsListener coreEventsListener : "
+				+coreEventsListener+")");
 		return eventsListenerList.add(coreEventsListener);
 	}
 	
@@ -461,7 +471,8 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 		CoreObjectSpec obj = getCoreDevice(getCoreClockObjectId());
 		if(obj != null) {
 			CoreClockSpec clock = (CoreClockSpec)obj;
-			return clock.registerAlarm(calendar, new TimeObserver(message));
+			
+			return clock.registerPeriodicAlarm(calendar, 1000+60*60+24 ,new TimeObserver(message));
 		}
 		return -1;
 	}

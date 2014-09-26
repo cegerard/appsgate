@@ -248,16 +248,14 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			logger.trace("... coreProxy is there");
 			synchroCoreProxy = true;
 
-			((ObjectEventListener) this.objectEventsListener)
-					.setTraceManager(traceManager);
-			((ObjectUpdateListener) this.objectUpdatesListener)
-					.setTraceManager(traceManager);
+
 			try {
 				// before subscribing to new Core Device, synchronize the
 				// existing ones
 				JSONArray devicesArray = coreProxy.getDevices();
 				for (int i = 0; i < devicesArray.length(); i++) {
 					try {
+						logger.trace("adding device : "+devicesArray.getJSONObject(i));
 						String type = devicesArray.getJSONObject(i).getString(
 								"type");
 						String id = devicesArray.getJSONObject(i).getString(
@@ -297,6 +295,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 	}
 
+	private void traceManBound() {
+		logger.trace("traceManBound()");
+		((ObjectEventListener) this.objectEventsListener).setTraceManager(traceManager);
+		((ObjectUpdateListener) this.objectUpdatesListener).setTraceManager(traceManager);
+	}
+	
 	/**
 	 * Called by APAM when an instance of this implementation is removed
 	 */
@@ -981,7 +985,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	public appsgate.lig.chmi.spec.GenericCommand executeRemoteCommand(
 			String objIdentifier, String method, ArrayList<Object> arguments,
 			ArrayList<Class> types, int clientId, String callId) {
-		traceManager.commandHasBeenPassed(objIdentifier, method, "EHMI");
+		if(traceManager!= null)
+			traceManager.commandHasBeenPassed(objIdentifier, method, "EHMI");
 		return coreProxy.executeCommand(clientId, objIdentifier, method,
 				arguments, types, callId);
 	}
@@ -1213,12 +1218,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public int startDebugger() {
-		return traceManager.startDebugger();
+		if(traceManager!= null)
+			return traceManager.startDebugger();
+		else return 0;
 	}
 
 	@Override
 	public boolean stopDebugger() {
-		return traceManager.stopDebugger();
+		if(traceManager!= null)
+			return traceManager.stopDebugger();
+		else return false;
 	}
 
 	@Override
