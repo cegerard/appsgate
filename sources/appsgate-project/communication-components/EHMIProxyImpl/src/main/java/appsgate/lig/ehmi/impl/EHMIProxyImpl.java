@@ -240,18 +240,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	boolean synchroCoreProxy = false;
 
-	private void synchroCoreProxy() {
-		logger.debug("synchroCoreProxy()...");
-		synchronized (lock) {
-			if (synchroCoreProxy)
-				return;
-			if (coreProxy != null) {
-				synchroCoreProxy = true;
-			}
-		}
-		
+	private synchronized void synchroCoreProxy() {
+		logger.trace("synchroCoreProxy()...");
+		if (synchroCoreProxy)
+			return;		
 		if (coreProxy != null) {
-			logger.debug("... coreProxy is there");
+			logger.trace("... coreProxy is there");
 			synchroCoreProxy = true;
 
 			((ObjectEventListener) this.objectEventsListener)
@@ -280,13 +274,13 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				}
 
 				if (coreProxy.CoreEventsSubscribe(objectEventsListener)) {
-					logger.info("Core event listener deployed.");
+					logger.debug("Core event listener deployed.");
 					systemClock.startRemoteSync(coreProxy);
 				} else {
 					logger.error("Core event deployement failed.");
 				}
 				if (coreProxy.CoreUpdatesSubscribe(objectUpdatesListener)) {
-					logger.info("Core updates listener deployed.");
+					logger.debug("Core updates listener deployed.");
 				} else {
 					logger.error("Core updates listener deployement failed.");
 				}
@@ -299,7 +293,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			}
 
 		} else {
-			logger.debug("... coreProxy is not (yet) there");
+			logger.trace("... coreProxy is not (yet) there");
 		}
 	}
 
@@ -379,7 +373,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		try {
 			return addContextData(coreProxy.getDevices(type));
 		} catch (CoreDependencyException coreException) {
-			logger.debug("Resolution failled for core dependency, no device can be found.");
+			logger.debug("Resolution failed for core dependency, no device can be found.");
 			if (systemClock.isRemote()) {
 				systemClock.stopRemoteSync(coreProxy);
 			}
@@ -929,7 +923,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		try {
 			sendToClientService.send(notif.JSONize().toString());
 		} catch (ExternalComDependencyException comException) {
-			logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
+			logger.debug("Resolution failed for send to client service dependency, no message will be sent.");
 		}
 	}
 

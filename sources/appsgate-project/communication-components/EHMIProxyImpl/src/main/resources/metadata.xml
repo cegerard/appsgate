@@ -8,7 +8,7 @@
 		
 		<callback onInit="newInst" onRemove="deleteInst" />
 		
-		<relation field="coreProxy" resolve="exist" added="synchroCoreProxy"/>
+		<relation field="coreProxy" resolve="exist" creation="eager" added="synchroCoreProxy"/>
 		
 		<relation field="devicePropertiesTable" resolve="exist"/>
 		<relation field="placeManager" resolve="exist" />
