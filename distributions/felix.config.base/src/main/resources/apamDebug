@@ -1,1 +1,2 @@
-java -Dlogback.configurationFile=conf/logback.xml -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 -jar bin/felix.jar
+natives=-Djava.library.path=natives/jni/Linux/x86_64/
+java ${natives} -Dlogback.configurationFile=conf/logback.xml -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 -jar bin/felix.jar
