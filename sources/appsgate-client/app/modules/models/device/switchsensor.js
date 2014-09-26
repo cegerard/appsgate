@@ -37,14 +37,14 @@ define([
             case "switch-up":
                 $(btn).append("<span data-i18n='devices.switch.keyboard.pushed-up'></span>");
                 v.eventName = "switchNumber";
-                v.eventValue = "1";
+                v.eventValue = "7";
                 v.phrase = "devices.switch.language.pushed-up";
                 $(btn).attr("json", JSON.stringify(v));
                 break;
             case "switch-bottom":
                 $(btn).append("<span data-i18n='devices.switch.keyboard.pushed-bottom'></span>");
                 v.eventName = "switchNumber";
-                v.eventValue = "3";
+                v.eventValue = "5";
                 v.phrase = "devices.switch.language.pushed-bottom";
                 $(btn).attr("json", JSON.stringify(v));
                 break;
