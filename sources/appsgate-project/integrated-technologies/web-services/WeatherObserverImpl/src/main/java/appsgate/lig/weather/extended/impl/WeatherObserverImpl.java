@@ -76,6 +76,9 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     public void start() throws WeatherForecastException {
         if(currentLocation != null
                 && currentLocation.length()> 0) {
+        	if( weatherService == null) {
+        		throw new WeatherForecastException("No weather service available, aborting");
+        	}
             weatherService.addLocation(currentLocation);
         } else {
             throw new WeatherForecastException("Trying to create a WeatherObserver with an empty or null location");
@@ -168,6 +171,9 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
 
     @Override
     public boolean isCurrentlyDaylight()throws WeatherForecastException  {
+    	if(clock == null) {
+    		throw new WeatherForecastException("No clock service bound, cannot determine daylight");
+    	}
         Calendar current = clock.getCurrentDate();
         refresh();
 
@@ -237,6 +243,11 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
 
     public void refresh() throws WeatherForecastException {
         synchronized (lock) {
+        	
+        	if(clock == null) {
+        		throw new WeatherForecastException("No clock service bound, cannot refresh");
+        	}
+
 
             if (weatherService != null
                     && (lastFetch < 0 || System.currentTimeMillis() - lastFetch > 10000)
