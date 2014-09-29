@@ -659,26 +659,26 @@
         "unknown": "Inconnu",
         "value-label": "Valeur",
         "weather": {
-            "event": {
-                "sunrise": "le jour se lève à",
-                "sunset": "le jour se couche à"
-            },
             "name": {
                 "plural": "Services Meteo",
                 "singular": "Service Meteo"
             },
 			"keyboard": {
+                "sunrise": "le jour se lève à ...",
+                "sunset": "le jour se couche à ...",
 				"current-temperature": "la température actuelle",
 				"current-weather-code-state": "la météo actuelle",
 				"currently-daylight": "il fait jour",
-				"forecast-temperature-max": "la température maximale prévue pour",
-				"forecast-temperature-min": "la température minimale prévue pour",
-				"forecast-weather-code-state": "la météo prévue pour",
+				"forecast-temperature-max": "la température maximale prévue pour ...",
+				"forecast-temperature-min": "la température minimale prévue pour ...",
+				"forecast-weather-code-state": "la météo prévue pour ...",
 				"is-current-weather-code-state": "la météo actuelle",
 				"is-forecast-weather-code-state": "la météo prévue pour",
 				"weather-at": "à"
 			},
 			"language": {
+                "sunrise": "le jour se lève à __myVar__",
+                "sunset": "le jour se couche à __myVar__",
 				"current-temperature": "la température actuelle",
 				"current-weather-code-state": "la météo actuelle",
 				"currently-daylight": "il fait jour",
