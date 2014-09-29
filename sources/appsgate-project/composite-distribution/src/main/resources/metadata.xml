@@ -79,11 +79,17 @@
     </composite>
 
     <composite name="KNXServices" singleton="true">
-        <relation specification="KNXDummySpec" creation="eager" targetKind="specification"></relation>
+        <contentMngt>
+            <start implementation="KNXDummyImplem" name="KNXDymmyImplemInst">
+            </start>
+        </contentMngt>
     </composite>
 
     <composite name="FuchsiaServices" singleton="true">
-        <relation specification="FuchsiaSetupDummySpec" creation="eager" targetKind="specification"></relation>
+        <contentMngt>
+            <start implementation="FuchsiaSetupDummyImpl" name="FuchsiaSetupDummyImplInst" >
+            </start>
+        </contentMngt>
     </composite>
 
     <composite name="ARDServices" singleton="true">

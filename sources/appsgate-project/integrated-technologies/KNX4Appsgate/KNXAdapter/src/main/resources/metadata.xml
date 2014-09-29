@@ -3,7 +3,9 @@
       xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
 	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd org.apache.felix.ipojo.handlers.event http://felix.apache.org/ipojo/schemas/CURRENT/event-admin.xsd">
 
-    <specification name="KNXDummySpec"></specification>
+    <implementation name="KNXDymmyImplem"
+                    classname="appsgate.lig.proxy.knx.DummyImpl">
+    </implementation>
 
     <implementation name="KNXLightImpl"
                     classname="appsgate.lig.proxy.knx.device.lamp.AppsgateLightKNXDevice"

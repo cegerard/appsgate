@@ -3,6 +3,8 @@
       xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
 	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd org.apache.felix.ipojo.handlers.event http://felix.apache.org/ipojo/schemas/CURRENT/event-admin.xsd">
 
-    <specification name="FuchsiaSetupDummySpec" />
+    <implementation name="FuchsiaSetupDummyImpl"
+                    classname="appsgate.lig.fuchsia.FuchsiaSetupDummyImpl">
+    </implementation>
 
 </apam>
