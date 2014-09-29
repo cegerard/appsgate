@@ -235,6 +235,12 @@ define([
             }
           }
         }
+		if (curNode.type == "if" && curNode.seqRulesTrue.rules.length == 1) {
+			curNode.seqRulesTrue.rules[0].type="mandatory";
+		}
+		if ((curNode.type == "when" || curNode.type == "whenImp") && curNode.seqRulesThen.rules.length == 1) {
+			curNode.seqRulesThen.rules[0].type="mandatory";
+		}
         return curNode;
       },
       /**
