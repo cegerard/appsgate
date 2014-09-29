@@ -112,9 +112,13 @@ public class DomiCubeImporter extends AbstractImporterComponent {
     @Override
     protected void denyImportDeclaration(ImportDeclaration importDeclaration) throws BinderException {
 
+        logger.info("Domicube has been removed.");
+
         unhandleImportDeclaration(importDeclaration);
 
         final DomiCubeWrapper dto=DomiCubeWrapper.create(importDeclaration);
+
+        logger.info("Removing domicube instance {}",dto.getId());
 
         Runnable destroyApamInstance=new Runnable(){
 
