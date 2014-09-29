@@ -2,6 +2,7 @@
  * Created by thibaud on 19/05/2014.
  */
 define([
+    "app",
     "text!templates/program/nodes/defaultActionNode.html",
     "text!templates/program/nodes/deviceNode.html",
     "text!templates/program/nodes/serviceNode.html",
@@ -20,7 +21,7 @@ define([
     "text!templates/program/nodes/defaultPropertyNode.html",
     "text!templates/program/nodes/selectNode.html",
     "text!templates/program/nodes/scaleTemplate.html"
-], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl, scaleTpl) {
+], function(App, dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl, scaleTpl) {
     var ProgramInputBuilder = {};
     // router
     ProgramInputBuilder = Backbone.Model.extend({
@@ -260,20 +261,20 @@ define([
 //                return this.tplComparatorNode(param);
 //            }
             var leftOp = this.buildInputFromNode(param.node.leftOperand, currentNode);
-            
+
             if (param.node.leftOperand.target.deviceType) {
                 var deviceOfNode = devices.where({type:param.node.leftOperand.target.deviceType})[0];
                 param.node.rightOperand.scale = deviceOfNode.getScale();
                 param.node.rightOperand.type = param.node.leftOperand.returnType;
                 param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
-            } 
+            }
             if (param.node.leftOperand.target.serviceType) {
                 var serviceOfNode = services.where({type:param.node.leftOperand.target.serviceType})[0];
                 param.node.rightOperand.scale = serviceOfNode.getScale();
                 param.node.rightOperand.type = param.node.leftOperand.returnType;
                 param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
             }
-            
+
             var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);
             return leftOp + this.tplComparatorNode(param) + rightOp;
         },
