@@ -40,17 +40,17 @@ define([
             var v = this.getJSONEvent("mandatory");
             switch(evt) {
                 case "sunrise":
-                    $(btn).append("<span data-i18n='services.weather.event.sunrise'/>");
+                    $(btn).append("<span data-i18n='services.weather.keyboard.sunrise'/>");
                     v.eventName = "daylightEvent";
                     v.eventValue = "sunrise";
-                    v.phrase = "services.weather.event.sunrise";
+                    v.phrase = "services.weather.language.sunrise";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "sunset":
-                    $(btn).append("<span data-i18n='services.weather.event.sunset'/>");
+                    $(btn).append("<span data-i18n='services.weather.keyboard.sunset'/>");
                     v.eventName = "daylightEvent";
                     v.eventValue = "sunset";
-                    v.phrase = "services.weather.event.sunset";
+                    v.phrase = "services.weather.language.sunset";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 default:

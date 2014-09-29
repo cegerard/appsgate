@@ -3,8 +3,9 @@
  * This "class" focuses on building the Keyboard part of the Program Editor
  */
 define([
+    "app",
     "text!templates/program/editor/expectedInput.html"
-], function( expectedInputTemplate) {
+], function(App, expectedInputTemplate) {
     var ProgramKeyboardBuilder = {};
     // router
     ProgramKeyboardBuilder = Backbone.Model.extend({
@@ -204,10 +205,10 @@ define([
                     }
                 }
             }
-            
-            
+
+
         },
-        
+
         buildStateProgramKeys: function(which) {
             var keep = "";
             if (which != "stateProgram") {
@@ -227,7 +228,7 @@ define([
             v2.name = "isStopped";
             $(btn2).attr("json", JSON.stringify(v2));
             $(".expected-links").append(btn2);
-  
+
         },
         buildDevices: function() {
             devices.forEach(function(device) {
@@ -455,7 +456,7 @@ define([
             $(btn).attr("json", JSON.stringify(v));
 
             $(".expected-events").append(btn);
-            
+
             var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.keyboard.eventStop'/></button>");
             var w = {
                 "type": "eventProgram",

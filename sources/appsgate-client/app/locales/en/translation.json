@@ -660,15 +660,13 @@
         "unknown": "Unknown",
         "value-label": "Value",
         "weather": {
-            "event": {
-                "sunrise": "the sun rise in",
-                "sunset": "the sun set in"
-            },
             "name": {
                 "plural": "Weather",
                 "singular": "Weather"
             },
             "keyboard": {
+                "sunrise": "the sun rise in ...",
+                "sunset": "the sun set in ...",
                 "current-temperature": "the temperature for",
                 "current-weather-code-state": "current weather",
                 "currently-daylight": "il fait jour",
@@ -680,6 +678,8 @@
                 "weather-at": "at"
             },
             "language": {
+                "sunrise": "the sun rise in __myVar__",
+                "sunset": "the sun set in __myVar__",
                 "current-temperature": "the temperature for",
                 "current-weather-code-state": "current weather",
                 "currently-daylight": "il fait jour",
