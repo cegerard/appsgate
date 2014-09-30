@@ -333,6 +333,15 @@ public interface EHMIProxySpec {
     /**  Weather Observers management   */
     /************************************/
 
+    /**
+     * Check a location upon it place Name
+     *
+     * @param location
+     *            A human place name : a town, a country, a particular place or point of interest (poi)
+     * @return A JSON object describing the location
+     * {"locality1":"Grenoble","woeid":"593720","name":"Grenoble","placeTypeName":"Town","country":"France"}
+     */
+    public JSONObject checkLocation(String location);	
 
     /**
      * Try to create an Observer with an human friendly name to fetch Weather conditions

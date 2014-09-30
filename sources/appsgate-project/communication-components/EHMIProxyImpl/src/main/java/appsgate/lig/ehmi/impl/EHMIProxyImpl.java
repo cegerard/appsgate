@@ -1258,4 +1258,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			}
 		}
 	}
+
+	@Override
+	public JSONObject checkLocation(String location) {
+		if(weatherAdapter != null) {
+			return weatherAdapter.checkLocation(location);
+		}
+		return new JSONObject();
+	}
 }

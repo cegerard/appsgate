@@ -16,6 +16,8 @@
  */
 package appsgate.lig.yahoo.geoplanet;
 
+import org.json.JSONObject;
+
 /**
  * Java Interface to use Yahoo GeoPlanet WebService API
  * @see <a href="http://developer.yahoo.com/geo/geoplanet/">Geo Planet</a>
@@ -32,5 +34,15 @@ public interface YahooGeoPlanet {
      * @return the most likely valid WOEID (Where On Earth ID) - to be used by Yahoo services 
      */
     public String getWOEIDFromPlaceName(String placeName);
+    
+    /**
+     * Retrieving Information about the Most Likely Place for a Given Place Name :
+     * "http://where.yahooapis.com/v1/places.q(placeName)?format=json&appid=[YahooAppID]"
+     * @see <a href="http://developer.yahoo.com/geo/geoplanet/guide/api-reference.html">GeoPlanet API</a>
+     * @param placeName is a Human friendly place name
+     * @return JSON Description of the place name 
+     */
+    public JSONObject getDescriptionFromPlaceName(String placeName);
+    
 
 }
