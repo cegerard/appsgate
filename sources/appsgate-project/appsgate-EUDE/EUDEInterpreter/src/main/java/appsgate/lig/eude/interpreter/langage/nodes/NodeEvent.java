@@ -233,4 +233,25 @@ public class NodeEvent extends Node implements INodeEvent {
         return source.getType().equalsIgnoreCase("programCall");
     }
 
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof NodeEvent)) {
+            return false;
+        }
+        NodeEvent e = (NodeEvent) o;
+        return this.eventName.equals(e.eventName) && this.eventValue.equals(e.eventValue) & this.source.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
 }
