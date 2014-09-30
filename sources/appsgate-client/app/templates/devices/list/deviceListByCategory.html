@@ -140,7 +140,7 @@
                     <span class="label label-success" data-i18n="devices.status.connected"></span>
                     <% } %>
                     <% if (type === "0") { %>
-                        <% if(device.get("value")=="999") { %>
+                        <% if(s.get("value")=="999") { %>
                         <span class="label-value">--- &deg;C</span>
                         <% } else { %>
                         <span class="label-value"><%= Math.round(device.get("value")) %> &deg;C</span>
