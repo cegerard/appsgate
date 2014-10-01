@@ -150,9 +150,9 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "inactivate":
-          $(btn).append("<span data-i18n='language.domicube-inactivated'></span>");
+          $(btn).append("<span data-i18n='devices.domicube.keyboard.inactivated'></span>");
           v.name = "inactivate";
-          v.phrase = "language.domicube-inactivated";
+          v.phrase = "devices.domicube.language.inactivated";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
