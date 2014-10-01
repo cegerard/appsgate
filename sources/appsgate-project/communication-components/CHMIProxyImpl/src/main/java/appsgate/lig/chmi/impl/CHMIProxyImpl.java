@@ -472,7 +472,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 		if(obj != null) {
 			CoreClockSpec clock = (CoreClockSpec)obj;
 			
-			return clock.registerPeriodicAlarm(calendar, 1000+60*60+24 ,new TimeObserver(message));
+			return clock.registerPeriodicAlarm(calendar, 1000*60*60*24 ,new TimeObserver(message));
 		}
 		return -1;
 	}

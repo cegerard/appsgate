@@ -1,6 +1,8 @@
 package appsgate.lig.clock.sensor.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -93,6 +95,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 	Object lock;
 	boolean runningArmTimer;
+	
+	SimpleDateFormat dateFormat;
 
 	/**
 	 * Static class member uses to log what happened in each instances
@@ -102,6 +106,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 	public ConfigurableClockImpl() {
 		lock = new Object();
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		resetClock();
 	}
 
@@ -133,6 +138,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void resetClock() {
+		logger.trace("resetClock()");
         Calendar oldCalendar;
         double oldRate;
 		synchronized (lock) {
@@ -194,8 +200,9 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 			simulatedTime += timeFlowBreakPoint + elapsedTime;
 		} else
 			simulatedTime += systemTime;
-		logger.debug("getCurrentTimeInMillis(), simulated time : "
-				+ simulatedTime);
+		logger.debug("getCurrentTimeInMillis(), (simulated) time : "
+				+ simulatedTime
+				+ " (representing "+dateFormat.format(new Date(simulatedTime))+")");
 		return simulatedTime;
 	}
 
@@ -213,6 +220,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void setCurrentDate(Calendar calendar) {
+		logger.trace("setCurrentDate(Calendar calendar : " + dateFormat.format(calendar.getTime()) + ")");
+
 		setCurrentTimeInMillis(calendar.getTimeInMillis());
 	}
 
@@ -224,7 +233,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void setCurrentTimeInMillis(long millis) {
-		logger.debug("setCurrentTimeInMillis(long millis : " + millis + ")");
+		logger.trace("setCurrentTimeInMillis(long millis : " + millis + " (representing "+dateFormat.format(new Date(millis))+"))");
 
         Calendar oldCalendar = getCurrentDate();
 
@@ -335,7 +344,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void goAlongUntil(long millis) {
-		logger.debug("goAlongUntil(long millis : " + millis + ")");
+		logger.trace("goAlongUntil(long millis : " + millis + ")");
 		synchronized (lock) {
 			Long currentTime = getCurrentTimeInMillis();
 			long futureTime = currentTime + millis;
@@ -386,6 +395,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public int registerAlarm(Calendar calendar, AlarmEventObserver observer) {
+		logger.trace("registerAlarm(Calendar calendar : "+dateFormat.format(calendar.getTime())
+				+ ", AlarmEventObserver observer : "+observer);		
 		if (calendar != null && observer != null) {
 			synchronized (lock) {
 				Long time = calendar.getTimeInMillis();
@@ -425,7 +436,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void unregisterAlarm(int alarmEventId) {
-		logger.debug("unregisterAlarm(...), start " +alarmEventId);
+		logger.trace("unregisterAlarm(int alarmEventId : " +alarmEventId+")");
 		synchronized (lock) {
 			if (periodicAlarmObservers.containsKey(alarmEventId)) {
 				periodicAlarmObservers.remove(alarmEventId);
@@ -451,6 +462,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public double setTimeFlowRate(double rate) {
+		logger.trace("setTimeFlowRate(double rate : " +rate+")");
+
         double oldRate = flowRate;
 		if (rate > 0 && rate != 1) {
 			// avoid value that could lead to strange behavior
@@ -507,19 +520,23 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 		for (Integer i : alarmPeriods.keySet())
 			if (!disarmedAlarms.contains(i)) {
-				Long nextPeriodic = (time - reverseAlarmMap.get(i))
-						% alarmPeriods.get(i);
-				if (nextPeriodic >= 0) {
-					nextPeriodic = alarmPeriods.get(i) - nextPeriodic;
-
-					logger.debug("next periodic : " + nextPeriodic);
+				
+				long nextPeriodic;
+		
+				if(reverseAlarmMap.get(i)-time>alarmLagTolerance
+						&& (reverseAlarmMap.get(i)-time)< alarmPeriods.get(i)) {
+					nextPeriodic = reverseAlarmMap.get(i)-time;
+				} else {
+					nextPeriodic = Math.abs(alarmPeriods.get(i)-Math.abs(time%alarmPeriods.get(i)-reverseAlarmMap.get(i)% alarmPeriods.get(i)));
+				}
+				
+					logger.trace("next periodic : " + nextPeriodic);
 					if (!initMin || nextPeriodic < minPeriodValue) {
 						initMin = true;
 						minPeriodValue = nextPeriodic;
 						nextAlarmId = i;
 					}
 				}
-			}
 		return minPeriodValue;
 	}
 
@@ -573,6 +590,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	}
 
 	public void fireClockAlarms(Map<Integer, AlarmEventObserver> observers) {
+		logger.trace("fireClockAlarms(Map<Integer, AlarmEventObserver> observers)");
+		
 		if (observers != null && !observers.isEmpty()) {
 			Set<Integer> removableObservers = new HashSet<Integer>(); // Observers
 
@@ -606,6 +625,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	class AlarmFiringTask extends TimerTask {
 		@Override
 		public void run() {
+			logger.trace("AlarmFiringTask starting");
+
 			if (nextAlarmTime > 0) {
 				logger.debug("Firing current clock alarms to all single clock observers");
 				long nextAlarmTimeClone = nextAlarmTime;
@@ -639,7 +660,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	class RearmingPeriodicAlarmTask extends TimerTask {
 		@Override
 		public void run() {
-			logger.debug("trying to rearm periodic clock alarms");
+			logger.trace("trying to rearm periodic clock alarms");
 			runningArmTimer = false;
 			rearmPeriodicAlarms(null);
 			calculateNextTimer();
@@ -656,6 +677,9 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	@Override
 	public int registerPeriodicAlarm(Calendar calendar, long millis,
 			AlarmEventObserver observer) {
+		logger.trace("registerPeriodicAlarm(Calendar calendar : "+dateFormat.format(calendar==null?Calendar.getInstance().getTime():calendar.getTime())
+				+", long millis : "+millis
+				+ ", AlarmEventObserver observer : "+observer);
 
 		if (millis > 0 && observer != null) {
 			synchronized (lock) {
