@@ -79,7 +79,7 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "activate":
-          $(btn).append("<span data-i18n='devices.domicube.keyboard.inactivated'></span>");
+          $(btn).append("<span data-i18n='devices.domicube.keyboard.activated'></span>");
           v.eventName = "leaveFace";
           v.eventValue = "2";
           v.phrase = "devices.domicube.language.activated";
