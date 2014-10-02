@@ -23,7 +23,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate"];
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate","east","west"];
     },
     /**
      * return the keyboard code for a given event
@@ -85,6 +85,24 @@ define([
           v.phrase = "devices.domicube.language.activated";
           $(btn).attr("json", JSON.stringify(v));
           break;
+        case "west":
+              //$(btn).append("<span data-i18n='devices.domicube.keyboard.west'></span>");
+              $(btn).append("<img src='/app/img/cube-turn-left.png' width='36px'>");
+              v.eventName = "newDirection";
+              v.eventValue = "west";
+              //v.phrase = "devices.domicube.language.west";
+              v.icon = "/app/img/cube-turn-left.png";
+              $(btn).attr("json", JSON.stringify(v));
+              break;
+        case "east":
+              //$(btn).append("<span data-i18n='devices.domicube.keyboard.east'></span>");
+              $(btn).append("<img src='/app/img/cube-turn-right.png' width='36px'>");
+              v.eventName = "newDirection";
+              v.eventValue = "east";
+              //v.phrase = "devices.domicube.language.east";
+              v.icon = "/app/img/cube-turn-right.png";
+              $(btn).attr("json", JSON.stringify(v));
+          break;
         default:
           console.error("unexpected event found for DomiCube: " + evt);
           btn = null;
@@ -99,7 +117,7 @@ define([
       switch (which) {
         //case
         case "state":
-      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate","dimDirection"];
         default:
           return [];
       }

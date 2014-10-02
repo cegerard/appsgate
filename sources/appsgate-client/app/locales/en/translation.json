@@ -86,11 +86,15 @@
             },
             "language" : {
                "activated": "domicube is activated",
-               "inactivated": "domicube is idle"
+               "inactivated": "domicube is idle",
+                "west": "West",
+                "east": "East"
             },
             "keyboard" : {
                "activated": "domicube is activated",
-               "inactivated": "domicube is idle"
+               "inactivated": "domicube is idle",
+                "west": "West",
+                "east": "East"
                
             }
         },
