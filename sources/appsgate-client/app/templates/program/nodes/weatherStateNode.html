@@ -3,7 +3,7 @@
     <span data-i18n="<%= node.phrase %>"/>
 
     <% } %>
-    <%if (node.phrase === 'services.weather.language.forecast-temperature-min' || node.phrase === 'services.weather.language.forecast-temperature-max' || node.phrase === 'services.weather.language.is-forecast-weather-code-state' ) { %>
+    <%if (node.phrase === 'services.weather.language.forecast-temperature-min' || node.phrase === 'services.weather.language.forecast-temperature-max' || node.phrase === 'services.weather.language.is-forecast-weather-code-state' || node.phrase === 'services.weather.language.forecast-weather-code-state') { %>
 
     <select id="day-forecast-<%= node.iid %>" class="day-forecast-picker" target-id="<%= node.iid %>">
         <option <% if (node.args[0].value === "0") { %>selected<% } %> value="0" data-i18n="services.weather.language.weather-for-0"></option>

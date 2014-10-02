@@ -86,11 +86,15 @@
             },
 			"language" : {
 				"activated": "le domicube est activé",
-				"inactivated": "le domicube est désactivé"
+				"inactivated": "le domicube est désactivé",
+                "west": "l'Ouest",
+                "east": "l'Est"
 			},
 			"keyboard" : {
 				"activated": "le domicube est activé",
-				"inactivated": "le domicube est désactivé"
+				"inactivated": "le domicube est désactivé",
+                "west": "l'Ouest",
+                "east": "l'Est"
 			}
         },
         "illumination": {
