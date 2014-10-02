@@ -236,6 +236,7 @@ define([
             $("#edit-device-modal input#device-name").focus();
             $("#edit-device-modal .text-danger").addClass("hide");
             $("#edit-device-modal .valid-button").addClass("disabled");
+            $("#edit-device-modal .valid-button").addClass("valid-disabled");
         },
         /**
          * Tell the router there is no modal anymore
@@ -264,13 +265,15 @@ define([
             if (devices.where({name: $("#edit-device-modal input").val()}).length > 0) {
                 if (devices.where({name: $("#edit-device-modal input").val()})[0].get("id") !== this.model.get("id")) {
                     $("#edit-device-modal .text-danger").removeClass("hide");
-                    $("#edit-device-modal .text-danger").text("Nom déjà existant");
+                    $("#edit-device-modal .text-danger").text($.i18n.t("modal-edit-device.name-already-existing"));
                     $("#edit-device-modal .valid-button").addClass("disabled");
+                    $("#edit-device-modal .valid-button").addClass("valid-disabled");
 
                     return false;
                 } else {
                     $("#edit-device-modal .text-danger").addClass("hide");
                     $("#edit-device-modal .valid-button").removeClass("disabled");
+                    $("#edit-device-modal .valid-button").removeClass("valid-disabled");
 
                     return true;
                 }
@@ -279,8 +282,7 @@ define([
             // ok
             $("#edit-device-modal .text-danger").addClass("hide");
             $("#edit-device-modal .valid-button").removeClass("disabled");
-
-
+            $("#edit-device-modal .valid-button").removeClass("valid-disabled");
 
             return true;
         },

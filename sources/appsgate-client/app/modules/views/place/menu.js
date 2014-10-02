@@ -90,6 +90,7 @@ define([
             $("#add-place-modal input").val("");
             $("#add-place-modal .text-danger").addClass("hide");
             $("#add-place-modal .valid-button").addClass("disabled");
+            $("#add-place-modal .valid-button").addClass("valid-disabled");
 
             // the router that there is a modal
             appRouter.isModalShown = true;
@@ -112,6 +113,7 @@ define([
                         .text($.i18n.t("modal-add-place.place-name-empty"))
                         .removeClass("hide");
                 $("#add-place-modal .valid-button").addClass("disabled");
+                $("#add-place-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -122,6 +124,7 @@ define([
                         .text($.i18n.t("modal-add-place.place-already-existing"))
                         .removeClass("hide");
                 $("#add-place-modal .valid-button").addClass("disabled");
+                $("#add-place-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -129,6 +132,7 @@ define([
             // ok
             $("#add-place-modal .text-danger").addClass("hide");
             $("#add-place-modal .valid-button").removeClass("disabled");
+            $("#add-place-modal .valid-button").removeClass("valid-disabled");
 
             return true;
         },

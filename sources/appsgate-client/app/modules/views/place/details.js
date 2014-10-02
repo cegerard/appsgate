@@ -65,6 +65,7 @@ define([
             $("#edit-name-place-modal input").focus();
             $("#edit-name-place-modal .text-danger").addClass("hide");
             $("#edit-name-place-modal .valid-button").addClass("disabled");
+            $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
         },
         /**
          * Check the current value of the input text and show a message error if needed
@@ -77,6 +78,7 @@ define([
                 $("#edit-name-place-modal .text-danger").removeClass("hide");
                 $("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-name-empty"));
                 $("#edit-name-place-modal .valid-button").addClass("disabled");
+                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -86,6 +88,7 @@ define([
                 $("#edit-name-place-modal .text-danger").removeClass("hide");
                 $("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-already-existing"));
                 $("#edit-name-place-modal .valid-button").addClass("disabled");
+                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -93,7 +96,8 @@ define([
             //ok
             $("#edit-name-place-modal .text-danger").addClass("hide");
             $("#edit-name-place-modal .valid-button").removeClass("disabled");
-
+            $("#edit-name-place-modal .valid-button").removeClass("valid-disabled");
+            
             return true;
         },
         /**

@@ -60,6 +60,7 @@ define([
           $(".text-danger").removeClass("hide");
           $(".text-danger").text($.i18n.t("modal-edit-program.program-name-empty"));
           $("#end-edit-button").addClass("disabled");
+          $("#end-edit-button").addClass("valid-disabled");
 
           return false;
         }
@@ -72,6 +73,7 @@ define([
           $(".text-danger").removeClass("hide");
           $(".text-danger").text($.i18n.t("modal-edit-program.program-already-existing"));
           $("#end-edit-button").addClass("disabled");
+          $("#end-edit-button").addClass("valid-disabled");
 
           return false;
         }
