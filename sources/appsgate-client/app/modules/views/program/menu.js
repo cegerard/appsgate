@@ -76,6 +76,7 @@ define([
             $("#add-program-modal .text-danger").addClass("hide");
             $("#add-program-modal input:checkbox").prop("checked", true);
             $("#add-program-modal .valid-button").addClass("disabled");
+            $("#add-program-modal .valid-button").addClass("valid-disabled");
 
             // tell the router that there is a modal
             appRouter.isModalShown = true;
@@ -98,6 +99,7 @@ define([
                         .text($.i18n.t("modal-add-program.name-empty"))
                         .removeClass("hide");
                 $("#add-program-modal .valid-button").addClass("disabled");
+                $("#add-program-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -108,6 +110,7 @@ define([
                         .text($.i18n.t("modal-add-program.name-already-existing"))
                         .removeClass("hide");
                 $("#add-program-modal .valid-button").addClass("disabled");
+                $("#add-program-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -115,6 +118,7 @@ define([
             // ok
             $("#add-program-modal .text-danger").addClass("hide");
             $("#add-program-modal .valid-button").removeClass("disabled");
+            $("#add-program-modal .valid-button").removeClass("valid-disabled");
 
             return true;
         },

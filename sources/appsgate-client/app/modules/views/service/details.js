@@ -89,6 +89,7 @@ define([
         $("#edit-service-modal input#service-name").focus();
         $("#edit-service-modal .text-danger").addClass("hide");
         $("#edit-service-modal .valid-button").addClass("disabled");
+        $("#edit-service-modal .valid-button").addClass("valid-disabled");
 
         // initialize the field to edit the core clock if needed
         if (this.model.get("type") === "21" || this.model.get("type") === 21) {
@@ -119,13 +120,15 @@ define([
         if (services.where({name: $("#edit-service-modal input").val()}).length > 0) {
           if (services.where({name: $("#edit-service-modal input").val()})[0].get("id") !== this.model.get("id")) {
             $("#edit-service-modal .text-danger").removeClass("hide");
-            $("#edit-service-modal .text-danger").text("Nom déjà existant");
+            $("#edit-service-modal .text-danger").text($.i18n.t("modal-edit-service.name-already-existing"));
             $("#edit-service-modal .valid-button").addClass("disabled");
+            $("#edit-service-modal .valid-button").addClass("valid-disabled");
 
             return false;
           } else {
             $("#edit-service-modal .text-danger").addClass("hide");
             $("#edit-service-modal .valid-button").removeClass("disabled");
+            $("#edit-service-modal .valid-button").removeClass("valid-disabled");
 
             return true;
           }
@@ -134,6 +137,7 @@ define([
         // ok
         $("#edit-service-modal .text-danger").addClass("hide");
         $("#edit-service-modal .valid-button").removeClass("disabled");
+        $("#edit-service-modal .valid-button").removeClass("valid-disabled");
 
         return true;
       },
