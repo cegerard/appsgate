@@ -10,6 +10,8 @@ import java.util.Timer;
 
 import appsgate.lig.yahoo.geoplanet.YahooGeoPlanet;
 import appsgate.lig.yahoo.weather.YahooWeather;
+
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -380,6 +382,11 @@ public class YahooWeatherImpl  implements YahooWeather {
 		if (!woeidFromePlaceName.containsKey(placeName))
 			addLocation(placeName);
     }
+
+	@Override
+	public JSONObject checkLocation(String location) {
+		return geoPlanet.getDescriptionFromPlaceName(location);
+	}
 
 
 

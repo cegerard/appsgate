@@ -534,7 +534,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
                         }
                         if (np.isRunning()) {
                             //TODO:Restore complete interpreter and programs state
-                            this.callProgram(np.getId());
+                            //this.callProgram(np.getId());
+                            np.setDeployed();
                         }
                     }
                     LOGGER.debug("program list successfully synchronized with database");

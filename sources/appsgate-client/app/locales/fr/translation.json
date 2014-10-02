@@ -155,7 +155,7 @@
                 "change-color": "en"
             },
             "keyboard": {
-                "blink": "Fait clignoter ...",
+                "blink": "Faire clignoter ...",
                 "brightness": "l'intensité de la lampe ...",
                 "isOff": "la lampe ... est éteinte",
                 "isOff-keep": "la lampe ... éteinte",
@@ -167,7 +167,7 @@
                 "turnOnEvt": "on allume la lampe ..."
             },
             "language": {
-                "blink": "Fait clignoter __myVar__",
+                "blink": "Faire clignoter __myVar__",
                 "brightness": "l'intensité de __myVar__",
                 "isOff": "__myVar__ est éteinte",
                 "isOff-keep": "__myVar__ éteinte",
@@ -382,12 +382,12 @@
         "else-keyword": "sinon",
         "false": "faux",
         "if-and": "Si ... et ...",
-        "if-dif": "est différent de",
+        "if-dif": "est différent(e) de",
         "if-equals": "indique",
-        "if-inf": "est inférieur à",
+        "if-inf": "est inférieur(e) à",
         "if-keyword": "Si",
         "if-or": "Si ... ou ...",
-        "if-sup": "est supérieur à",
+        "if-sup": "est supérieur(e) à",
         "is-assembled-contact-status": "assemble",
         "is-disassembled-contact-status": "desassemble",
         "it-is-not-the-case": "ce n'est plus le cas",

@@ -5,11 +5,13 @@ import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.weather.exception.WeatherForecastException;
 import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
 import appsgate.lig.weather.spec.WeatherAdapterSpec;
+import appsgate.lig.yahoo.weather.YahooWeather;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 import fr.imag.adele.apam.util.Util;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,6 +108,19 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
      * Context history push service to save the current state
      */
     private DataBasePushService contextHistory_push;
+    
+    private YahooWeather weatherService;
+
+    
+    @Override
+    public JSONObject checkLocation(String location) {
+        if(location!= null && location.length()>0 && weatherService != null) {
+        	return weatherService.checkLocation(location);
+        }
+        else {
+        	return new JSONObject();
+        }
+    }
 
 
     @Override

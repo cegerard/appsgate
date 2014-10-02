@@ -85,7 +85,7 @@ public class NodeWait extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
-        if ((Node) e.getSource() == event) {
+        if (event != null && event.equals(e.getSource())) {
             event = null;
             stopWaiting();
             return;
@@ -133,6 +133,7 @@ public class NodeWait extends Node {
         setProgramProcessing();
         fireEndEvent(new EndEvent(this));
     }
+
     @Override
     protected void buildReferences(ReferenceTable table) {
         if (this.event != null) {

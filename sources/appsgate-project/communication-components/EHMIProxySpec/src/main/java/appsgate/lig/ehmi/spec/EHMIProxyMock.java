@@ -558,4 +558,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		
 	}
 
+
+	@Override
+	public JSONObject checkLocation(String location) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
