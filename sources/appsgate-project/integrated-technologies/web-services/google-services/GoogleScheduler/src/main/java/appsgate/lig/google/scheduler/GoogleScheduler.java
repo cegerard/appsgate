@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
@@ -85,7 +86,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 */
 	String calendarId = "primary";
 
-	static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
 	@Override
 	public String getCalendarId() {
@@ -169,25 +170,42 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 	}
 
-
-	private Set <GoogleEvent> getEvents(long startTime) throws SchedulingException{
-		logger.trace("getEvents(long startTime : "+startTime+")");
+	private Set <GoogleEvent> getEvents(long startTime, long endTime) throws SchedulingException{
+		logger.trace("getEvents(long startTime : "+startTime
+				+"long endTime : "+endTime+")");
 
 		if(serviceAdapter==null) {
 			logger.error("No GoogleAdapter service registered, unavailable to get events");
 			throw new SchedulingException("No GoogleAdapter service registered, unavailable to get events");
 		}
 
+		Map<String, String> requestParameters=new HashMap<String, String>();
+		if(startTime != -1) {
+			requestParameters.put(GoogleCalendarReader.PARAM_TIMEMIN, dateFormat.format(new Date(startTime)));
+		}
+		if(endTime != -1) {		
+			requestParameters.put(GoogleCalendarReader.PARAM_TIMEMAX, dateFormat.format(new Date(endTime)));
+		}
+		
+		// if request has an open period, we do have to check specifically reccuring events (only the first one is considered)
+		if(startTime == -1 || endTime == -1) {
+			return serviceAdapter.getEvents(calendarId, requestParameters);
+		} else {
+			// else all events are retruning, including multple occurence of recuring events
+			requestParameters.put(GoogleCalendarReader.PARAM_SINGLE_EVENTS, Boolean.TRUE.toString());
+			return serviceAdapter.getEvents(calendarId, requestParameters);			
+		}
+		
+
+	}
+	
+
+	private Set <GoogleEvent> getEvents(long startTime) throws SchedulingException{
+		logger.trace("getEvents(long startTime : "+startTime+")");
+
 		long endPeriod = startTime + observationInterval;
 
-		Map<String, String> requestParameters=new HashMap<String, String>();			
-		requestParameters.put(GoogleCalendarReader.PARAM_TIMEMIN, dateFormat.format(new Date(startTime)));
-		requestParameters.put(GoogleCalendarReader.PARAM_TIMEMAX, dateFormat.format(new Date(endPeriod)));
-		
-		requestParameters.put(GoogleCalendarReader.PARAM_SINGLE_EVENTS, Boolean.TRUE.toString());
-		
-
-		return serviceAdapter.getEvents(calendarId, requestParameters);
+		return getEvents(startTime, endPeriod);
 
 	}
 
@@ -216,6 +234,11 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 	}
 
+	/**
+	 * Deprecated test
+	 * @param args
+	 */
+	@Deprecated
 	public static void main(String[] args) {
 		try {
 			//dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
@@ -462,5 +485,76 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		logger.trace("String createEvent(...), event created successfully, returning eventId : "+event.getId());
 
 		return event.getId();
+	}
+
+	@Override
+	public Set<?> listEventsSchedulingProgramId(String programId,
+			String startPeriod, String endPeriod) throws SchedulingException {
+		logger.trace("listEventsSchedulingProgramId(String programId : "+programId
+				+",String startPeriod : "+startPeriod
+				+",String endPeriod : "+endPeriod				
+				+")");
+		
+		if(programId==null ||programId.length()==0) {
+			logger.warn("listEventsSchedulingProgramId(...), no programId specified");
+			return null;
+		}
+		
+		long starting;
+		try {		
+			starting = dateFormat.parse(GoogleEvent.hackDateTimeZone(startPeriod)).getTime();
+		}catch (Exception exc ) {
+			logger.debug("Cannot Parse startPeriod : "+exc.getMessage());
+			starting = -1;
+		}
+		long stopping;
+		try {		 	
+			stopping = dateFormat.parse(GoogleEvent.hackDateTimeZone(endPeriod)).getTime();
+		}catch (Exception exc ) {
+			logger.debug("Cannot Parse endPeriod : "+exc.getMessage());
+			stopping = -1;
+		}
+
+		Set <GoogleEvent> bigList = getEvents(starting, stopping);
+		Set <GoogleEvent> results = new HashSet<GoogleEvent>();
+
+		for(GoogleEvent event : bigList) {
+			if (event.isSchedulingProgram(programId)) {
+				logger.trace("checkProgramIdScheduled(...), adding event : "+event.getName());
+				results.add(event);
+			}
+		}
+		
+		return results;
+	}
+
+	
+	// The check implementation stop at first scheduling (optimization)
+	@Override
+	public boolean checkProgramIdScheduled(String programId) throws SchedulingException {
+		logger.trace("checkProgramIdScheduled(String programId : "+programId+")");
+		
+		if(programId==null ||programId.length()==0) {
+			logger.warn("checkProgramIdScheduled(...), no programId specified");
+			return false;
+		}
+
+		long time;
+		if(clock==null) {
+			logger.debug("No clock service registered, using system time");
+			time = System.currentTimeMillis();
+		} else {
+			time = clock.getCurrentTimeInMillis();
+		}
+
+		Set <GoogleEvent> bigList = getEvents(time, -1);
+		for(GoogleEvent event : bigList) {
+			if (event.isSchedulingProgram(programId)) {
+				logger.trace("checkProgramIdScheduled(...), first found on event : "+event.getName());
+				return true;
+			}
+		}
+		logger.trace("checkProgramIdScheduled(...), program id not found in events");
+		return false;
 	}	
 }

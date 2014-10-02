@@ -1,5 +1,8 @@
 package appsgate.lig.scheduler;
 
+
+import java.util.Set;
+
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
 import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
@@ -25,6 +28,28 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	 * @return
 	 */
 	public String getCalendarId();
+	
+	/**
+	 * List a set of Events referencing the programId (might be on begin/end or start/stop)
+	 * @param programId the program-id (not the program name)
+	 *  (we do not check if the program-id really exist as we parse Google Calendar events)
+	 * @param startPeriod the starting period to observe, if -1 we start from the beginning of the calendar
+	 * (formatted according to RFC 3339 : 2014-09-16T12:45:23+0200) 
+	 * @param endPeriod the ending of the period to observe, if -1 we parse until no more events left
+	 * (formatted according to RFC 3339 : 2014-09-16T12:45:23+0200) 
+	 * @return The set of Events (events format depends on a particular implementation, such as google event)
+	 */
+	public Set<?> listEventsSchedulingProgramId(String programId, String startPeriod, String endPeriod)
+			throws SchedulingException;
+	
+	/**
+	 * Check if a particular program Id is scheduled in the future (on start or on ending)
+	 * @param progamId the program-id (not the program name)
+	 * @return true if the program is scheduled in the future
+	 *  (we do not check if the program-id really exist as we parse Google Calendar events)
+	 */
+	public boolean checkProgramIdScheduled(String programId)
+			throws SchedulingException;
 
 	/**
 	 * A single scheduler monitor a single calendar, this is the setter

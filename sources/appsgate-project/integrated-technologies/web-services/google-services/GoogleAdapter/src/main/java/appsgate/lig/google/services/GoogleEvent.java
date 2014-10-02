@@ -3,6 +3,7 @@ package appsgate.lig.google.services;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +35,8 @@ public class GoogleEvent {
 	public static final String PARAM_DATETIME="dateTime";
 	
 	public static final String PARAM_UNPARSED="unparsedJSON";
+	
+	public final static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	
 	/**
 	 * Reserved keyword for AppsGate in the description,
@@ -172,7 +175,7 @@ public class GoogleEvent {
 	 * @param inputDate
 	 * @return
 	 */
-	private static String hackDateTimeZone(String inputDate) {
+	public static String hackDateTimeZone(String inputDate) {
 		//  first check the separator between Date and Time
 		int index = inputDate.indexOf('T');
 		
@@ -197,6 +200,13 @@ public class GoogleEvent {
 		
 	}
 	
+	/**
+	 * @return a JSON representation of the GoogleEvent.
+	 * (Please note that this is the full information about the Event coming initially from google Calendar)
+	 */
+	public JSONObject toJSON() {
+		return new JSONObject(unparsedJSON);
+	}
 	
 	@Override
 	public String toString() {
@@ -251,6 +261,31 @@ public class GoogleEvent {
 			}
 		}
 		return instructions;
+	}
+	
+	
+	public boolean isSchedulingProgram(String programId) {
+		logger.trace("isSchedulingProgram(String programId : "+programId+")");
+		
+		for (ScheduledInstruction inst : getOnBeginInstructions() ) {
+			if(programId.equals(inst.getTarget())) {
+				logger.trace("isSchedulingProgram(...), found on begin event"
+						+", instruction : "+inst);
+					return true;
+			}
+		}
+		
+		for (ScheduledInstruction inst : getOnEndInstructions() ) {
+			if(programId.equals(inst.getTarget())) {
+				logger.trace("isSchedulingProgram(...), found on end event"
+						+", instruction : "+inst);
+					return true;
+			}
+		}
+		
+		logger.trace("isSchedulingProgram(...), program id not found in event");
+		return false;
+		
 	}
 
 }
