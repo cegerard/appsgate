@@ -22,7 +22,7 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.google.helpers.GoogleCalendarReader;
 import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
-import appsgate.lig.google.services.ScheduledInstruction;
+import appsgate.lig.scheduler.ScheduledInstruction;
 import appsgate.lig.scheduler.SchedulerSpec;
 import appsgate.lig.scheduler.SchedulingException;
 
@@ -186,7 +186,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		if(endTime != -1) {		
 			requestParameters.put(GoogleCalendarReader.PARAM_TIMEMAX, dateFormat.format(new Date(endTime)));
 		}
-		
+
 		// if request has an open period, we do have to check specifically reccuring events (only the first one is considered)
 		if(startTime == -1 || endTime == -1) {
 			return serviceAdapter.getEvents(calendarId, requestParameters);
@@ -195,10 +195,10 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			requestParameters.put(GoogleCalendarReader.PARAM_SINGLE_EVENTS, Boolean.TRUE.toString());
 			return serviceAdapter.getEvents(calendarId, requestParameters);			
 		}
-		
+
 
 	}
-	
+
 
 	private Set <GoogleEvent> getEvents(long startTime) throws SchedulingException{
 		logger.trace("getEvents(long startTime : "+startTime+")");
@@ -419,6 +419,76 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 	}
 
+	public String createEvent(String eventName, 
+			Set<ScheduledInstruction> onBeginInstructions,
+			Set<ScheduledInstruction> onEndInstructions,
+			String dateStart, String dateEnd ) throws SchedulingException {
+		logger.trace("String createEvent(String eventName : "+eventName 
+				+ ", Set<ScheduledInstruction> onBeginInstructions : "+onBeginInstructions
+				+ ", Set<ScheduledInstruction> onEndInstructions : "+onEndInstructions
+				+",String dateStart : "+dateStart
+				+",String dateEnd : "+dateEnd	
+				+")");
+		if(serviceAdapter==null) {
+			logger.error("No GoogleAdapter service registered, unable to add events");
+			throw new SchedulingException("No GoogleAdapter service registered, unable to add events");
+		}
+		try {		
+			dateFormat.parse(GoogleEvent.hackDateTimeZone(dateStart)).getTime();
+		}catch (Exception exc ) {
+			logger.error("Cannot Parse dateStart : "+exc.getMessage());
+			throw new SchedulingException("Cannot Parse dateStart : "+exc.getMessage());			
+		}
+		try {		 	
+			dateFormat.parse(GoogleEvent.hackDateTimeZone(dateEnd)).getTime();
+		}catch (Exception exc ) {
+			logger.error("Cannot Parse dateEnd : "+exc.getMessage());
+			throw new SchedulingException("Cannot Parse dateEnd : "+exc.getMessage());			
+		}
+
+		String requestContent;
+
+		JSONObject content = new JSONObject();
+		content.put("start", new JSONObject().put("dateTime",  dateStart));
+		content.put("end", new JSONObject().put("dateTime",  dateEnd));
+
+		content.put("summary", eventName);
+
+		String description="";
+		if(onBeginInstructions != null ) {
+			for(ScheduledInstruction inst : onBeginInstructions) {
+				description += GoogleEvent.ON_BEGIN
+						+ ScheduledInstruction.SEPARATOR;			
+				description+=inst.toString();
+				description+="\n";
+			}		
+		}
+
+		if(onEndInstructions != null ) {		
+			for(ScheduledInstruction inst : onEndInstructions) {
+				description += GoogleEvent.ON_END
+						+ ScheduledInstruction.SEPARATOR;			
+				description+=inst.toString();
+				description+="\n";
+			}
+		}
+
+		content.put("description", description);
+
+		requestContent=content.toString();
+
+		GoogleEvent event = serviceAdapter.addEvent(calendarId, requestContent);
+
+		if( event == null) {
+			throw new SchedulingException("Error during creation of the Calender Event, returned null event");
+		}
+		logger.trace("String createEvent(...), event created successfully, returning eventId : "+event.getId());
+
+		return event.getId();
+
+
+	}
+
 	@Override
 	public String createEvent(String eventName, String programId, boolean startOnBegin,
 			boolean stopOnEnd) throws SchedulingException {
@@ -432,7 +502,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			logger.error("No GoogleAdapter service registered, unable to add events");
 			throw new SchedulingException("No GoogleAdapter service registered, unable to add events");
 		}
-		
+
 		long currentTime;
 		if (clock==null) {
 			logger.info("No CoreClock service registered, using system time to create the Event");
@@ -440,21 +510,21 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		} else {
 			currentTime = clock.getCurrentTimeInMillis();
 		}
-		
+
 		String requestContent;
-		
+
 		//Creating an event starting one hour before
 		Date startDate = new Date(currentTime - (60*60*1000));
-		
+
 		//The event should end half an hour before current Time
 		Date endDate = new Date(currentTime - (30*60*1000));
-		
+
 		JSONObject content = new JSONObject();
 		content.put("start", new JSONObject().put("dateTime",  dateFormat.format(startDate)));
 		content.put("end", new JSONObject().put("dateTime",  dateFormat.format(endDate)));
-		
+
 		content.put("summary", eventName);
-		
+
 		String description="";
 		if(startOnBegin) {
 			description += GoogleEvent.ON_BEGIN
@@ -472,13 +542,13 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 					+ programId
 					+ "\n";
 		}
-		
+
 		content.put("description", description);
-		
+
 		requestContent=content.toString();
-		
+
 		GoogleEvent event = serviceAdapter.addEvent(calendarId, requestContent);
-		
+
 		if( event == null) {
 			throw new SchedulingException("Error during creation of the Calender Event, returned null event");
 		}
@@ -494,12 +564,12 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 				+",String startPeriod : "+startPeriod
 				+",String endPeriod : "+endPeriod				
 				+")");
-		
+
 		if(programId==null ||programId.length()==0) {
 			logger.warn("listEventsSchedulingProgramId(...), no programId specified");
 			return null;
 		}
-		
+
 		long starting;
 		try {		
 			starting = dateFormat.parse(GoogleEvent.hackDateTimeZone(startPeriod)).getTime();
@@ -524,16 +594,16 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 				results.add(event);
 			}
 		}
-		
+
 		return results;
 	}
 
-	
+
 	// The check implementation stop at first scheduling (optimization)
 	@Override
 	public boolean checkProgramIdScheduled(String programId) throws SchedulingException {
 		logger.trace("checkProgramIdScheduled(String programId : "+programId+")");
-		
+
 		if(programId==null ||programId.length()==0) {
 			logger.warn("checkProgramIdScheduled(...), no programId specified");
 			return false;

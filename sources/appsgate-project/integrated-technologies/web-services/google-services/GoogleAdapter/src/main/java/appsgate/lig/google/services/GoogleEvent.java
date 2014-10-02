@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import appsgate.lig.google.helpers.GoogleHTTPRequest;
+import appsgate.lig.scheduler.ScheduledInstruction;
 
 /**
  * Helper Class to build an Object from an Event of the GoogleCalendar (api v3),

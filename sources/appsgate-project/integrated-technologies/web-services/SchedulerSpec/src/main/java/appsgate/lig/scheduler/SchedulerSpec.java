@@ -74,13 +74,29 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	 * The Event is created just one hour before current Time, and last for 30 minutes  
 	 * @param eventName is the name as it will appear in the Calendar
 	 * @param programId is not checked, but should be a VALID program ID referenced by EUDE Inteprpreter
-	 * @param startOnBegin if program should start when Google Event begin
-	 * @param stopOnEnd if program should start when Google Event end
-	 * @return the Google Event ID
+	 * @param startOnBegin if program should start when Event begin
+	 * @param stopOnEnd if program should start when Event end
+	 * @return the Event ID
 	 * @throws SchedulingException
 	 */
 	public String createEvent(String eventName, String programId, boolean startOnBegin, boolean stopOnEnd) throws SchedulingException;
 	
+	/**
+	 * Create a basic Calendar Event, with specified instructions
+	 * @param eventName is the name as it will appear in the Calendar
+	 * @param onBeginInstructions instruction to be triggered when event start
+	 * @param onEndInstructions instruction to be triggered when event stops
+	 * @param dateStart the starting date of the event
+	 * (formatted according to RFC 3339 : 2014-09-16T12:45:23+0200) 
+	 * @param dateEnd the ending date of the event
+	 * (formatted according to RFC 3339 : 2014-09-16T12:45:23+0200) 
+	 * @return the Event ID
+	 * @throws SchedulingException
+	 */
+	public String createEvent(String eventName,
+			Set<ScheduledInstruction> onBeginInstructions,
+			Set<ScheduledInstruction> onEndInstructions,
+			String dateStart, String dateEnd ) throws SchedulingException;
 
 	/**
 	 * The method implements what to do when a registered events occurs
