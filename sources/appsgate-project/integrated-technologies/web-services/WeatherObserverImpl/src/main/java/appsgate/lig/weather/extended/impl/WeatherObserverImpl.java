@@ -203,6 +203,11 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
         return SimplifiedWeatherCodesHelper.getSimplified(currentWeather.getWeatherCode());
     }
 
+    public String getCurrentWeatherString() throws WeatherForecastException{
+        refresh();
+        return SimplifiedWeatherCodesHelper.getDescription(getCurrentWeatherCode());
+    }
+    
     @Override
     public int getCurrentTemperature()throws WeatherForecastException {
         refresh();
@@ -225,6 +230,11 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
         refresh();
         testDayForecast(dayForecast); // might throw exception
         return forecasts.get(dayForecast).getCode();
+    }
+    
+    public String getForecastWeatherString(int dayForecast) throws WeatherForecastException{
+        refresh();
+        return SimplifiedWeatherCodesHelper.getDescription(SimplifiedWeatherCodesHelper.getSimplified(getForecastWeatherCode(dayForecast)));
     }
 
     @Override

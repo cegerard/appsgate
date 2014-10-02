@@ -352,7 +352,7 @@ define([
                             "rightOperand": {
                                 "iid": "X",
                                 "value" : "0",
-                                "type": "number",
+                                "type": json.returnType,
                                 "unit": json.unit
                             }
                         };
