@@ -36,7 +36,7 @@ public class MailAdapter {
 
     public void start() {
         createMailInst(GMailConstants.PROVIDER,"smarthome.inria@gmail.com", "smarthome2014");
-        createMailInst(GMailConstants.PROVIDER,"smarthome.adele@gmail.com", "smarthome2014");
+        //createMailInst(GMailConstants.PROVIDER,"smarthome.adele@gmail.com", "smarthome2014");
     }
     
     public void stop() {

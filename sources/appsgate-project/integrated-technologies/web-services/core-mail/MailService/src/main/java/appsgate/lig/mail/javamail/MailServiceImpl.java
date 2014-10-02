@@ -4,12 +4,16 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.mail.Mail;
+
 import com.sun.mail.imap.IMAPFolder;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
+
 import java.util.*;
 
 /**
@@ -478,6 +482,9 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
         descr.put("status", status);
         descr.put("user", properties.getProperty(MailConfiguration.USER));
         descr.put("refreshRate", refreshRate);
+        
+        JSONArray array = new JSONArray(recipients);
+        descr.put("favorite-recipients", array);
 
         return descr;
     }
@@ -490,6 +497,45 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
     public CORE_TYPE getCoreType() {
         return CORE_TYPE.SERVICE;
     }
+    
+    Set<String> recipients = new HashSet<String>();
+
+	@Override
+	public boolean addFavoriteRecipient(String recipientMail) {
+		logger.trace("addFavoriteRecipient(String recipientMail : "+recipientMail+")");
+		if(!recipients.contains(recipientMail)) {
+			recipients.remove(recipientMail);
+			logger.trace("addFavoriteRecipient(...), recipient successfully added");
+			// TODO Synchronize with BDD
+			// TODO : send apam notif ?
+			return true;
+		} else {
+			logger.trace("addFavoriteRecipient(...), recipient already in the favorites");
+			return false;
+		}
+		
+	}
+
+	@Override
+	public boolean removeFavoriteRecipient(String recipientMail) {
+		logger.trace("removeFavoriteRecipient(String recipientMail : "+recipientMail+")");
+		if(recipients.contains(recipientMail)) {
+			recipients.remove(recipientMail);
+			logger.trace("removeFavoriteRecipient(...), recipient successfully removed");
+			// TODO Synchronize with BDD
+			// TODO : send apam notif ?
+			return true;
+		} else {
+			logger.trace("removeFavoriteRecipient(...), recipient not existing in the favorites");
+			return false;
+		}
+	}
+
+	@Override
+	public Set<String> getFavoriteRecipients() {
+		logger.trace("getFavoriteRecipients()");
+		return recipients;
+	}
 
 
 

@@ -2,6 +2,7 @@ package appsgate.lig.mail;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -77,5 +78,25 @@ public interface Mail {
 	 * @throws MessagingException
 	 */
 	public IMAPFolder getMailBox(String boxname) throws MessagingException;
+	
+	/**
+	 * Add a mail of recipient to our favorites
+	 * @param recipientMail a valid mail
+	 * @return true if the mail was successfully added
+	 */
+	public boolean addFavoriteRecipient(String recipientMail);
+
+	/**
+	 * Try to remove a mail of recipient from our favorites
+	 * @param recipientMail a valid mail
+	 * @return true if the mail was existing and successfully removed
+	 */
+	public boolean removeFavoriteRecipient(String recipientMail);
+	
+	/**
+	 * Retrieves the full list of recipients
+	 * @return the current list of recipients
+	 */	
+	public Set<String> getFavoriteRecipients();
 	
 }
