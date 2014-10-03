@@ -783,6 +783,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		return programList;
 	}
+        
+        @Override
+        public JSONObject getGraph() {
+            return interpreter.getGraph();
+        }
 
 	@Override
 	public boolean isProgramActive(String programId) {

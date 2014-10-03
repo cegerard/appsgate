@@ -124,6 +124,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
         return null;
     }
 
+    @Override
+    public JSONObject getGraph() {
+        return null;
+     }
+
     public final class Library {
 
         /**
