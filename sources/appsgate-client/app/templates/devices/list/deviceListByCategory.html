@@ -171,7 +171,11 @@
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                     <% } %>
-                    <span class="label-value"><%= s.get("consumption") %> W</span>
+                            <% if(s.get("consumption")=="-1") { %>
+                            <span class="label-value">--- W</span>
+                            <% } else { %>
+                            <span class="label-value"><%= s.get("consumption") %> W</span>
+                            <% } %>
                     <% } else if (type === "7") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
@@ -268,9 +272,9 @@
                     <% if (type === "0") { %>
 
                         <% if(s.get("value")=="999") { %>
-                            <span class="label-value">---&deg;C</span>
+                            <span class="label-value">--- &deg;C</span>
                         <% } else { %>
-                            <span class="label-value"><%= Math.round(s.get("value")) %>&deg;C</span>
+                            <span class="label-value"><%= Math.round(s.get("value")) %> &deg;C</span>
                         <% } %>
 
                     <% } else if (type === "1") { %>
@@ -299,7 +303,13 @@
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                     <% } %>
-                    <span class="label-value"><%= s.get("consumption") %> W</span>
+
+                        <% if(s.get("consumption")=="-1") { %>
+                        <span class="label-value">--- W</span>
+                        <% } else { %>
+                        <span class="label-value"><%= s.get("consumption") %> W</span>
+                        <% } %>
+
                     <% } else if (type === "7") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>

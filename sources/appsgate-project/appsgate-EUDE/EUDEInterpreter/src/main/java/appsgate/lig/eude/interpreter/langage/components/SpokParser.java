@@ -27,6 +27,10 @@ public class SpokParser {
      * @throws SpokTypeException if the object is not a boolean
      */
     public static Boolean getBooleanResult(SpokObject result) throws SpokTypeException {
+        if (result == null) {
+            LOGGER.error("Null argument passed to getBooleanResult");
+            throw new SpokTypeException("Null argument", null);
+        }
         if (result.getType().equalsIgnoreCase("boolean")) {
             return Boolean.parseBoolean(result.getValue());
         }
