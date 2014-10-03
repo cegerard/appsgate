@@ -185,6 +185,10 @@
             "status": {
                 "turnedOff": "Eteinte",
                 "turnedOn": "Allumée"
+            },
+            "color-information": {
+                "lastColor" : "Dernière couleur de l'ampoule ",
+                "currentColor" : "Couleur de l'ampoule "
             }
         },
         "mediaplayer": {

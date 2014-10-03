@@ -204,6 +204,14 @@ body {
   text-decoration:underline;
 }
 
+.label-color-information {
+  background: none;
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  color: black;
+}
+
 .lamp-color-led{
   color:transparent;
 }
