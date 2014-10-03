@@ -16,14 +16,16 @@ import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 
 import appsgate.lig.mail.Mail;
+import appsgate.lig.mail.javamail.MailConfiguration;
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Instance;
+
 import org.apache.felix.service.command.Descriptor;
 
 /**
  * Gogo command that helps show retrieve information from the service without having to implement a client
- * @author jnascimento
+ * @author thibaud
  */
 @Instantiate
 @org.apache.felix.ipojo.annotations.Component(public_factory = false, immediate = true)
@@ -38,6 +40,7 @@ public class MailCommand {
 
 	@ServiceProperty(name = "osgi.command.function", value = "{}")
 	String[] universalShell_groupCommands = new String[] {
+        "addMail",		
             "mailShow",
             "mailSend",
             "mailFetch",
@@ -45,6 +48,25 @@ public class MailCommand {
     };
 
     PrintStream out = System.out;
+    
+    @Descriptor("create a new mail instance using configuration property file")
+    public void addMail(@Descriptor("[fileName]") String... args) throws  MessagingException{
+
+		String fileName=null;
+    	
+		if(args != null && args.length == 1) {
+			fileName=args[0];
+		}
+		
+		if(fileName==null) {
+			out.println("No configuration file to open, aborting !");
+		} else {
+			out.println("Trying to create mail account using "+fileName);
+			MailAdapter.loadAndCreateMail(fileName);
+		}
+		
+	}
+    
 
     @Descriptor("show last 5 mails")
     public void mailShow(@Descriptor("none") String... args) throws  MessagingException{
