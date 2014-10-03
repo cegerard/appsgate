@@ -668,6 +668,9 @@
                 "plural": "Weather",
                 "singular": "Weather"
             },
+			"modal" : {
+				"title" : "Adding a meteo place"
+			},
             "keyboard": {
                 "sunrise": "the sun rise in ...",
                 "sunset": "the sun set in ...",

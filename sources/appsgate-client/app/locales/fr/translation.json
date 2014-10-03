@@ -667,6 +667,10 @@
                 "plural": "Services Meteo",
                 "singular": "Service Meteo"
             },
+			"modal" : {
+				"title" : "Nouveau lieu favori",
+				"add" : "Ajouter un lieu favori"
+			},
 			"keyboard": {
                 "sunrise": "le jour se lève à ...",
                 "sunset": "le jour se couche à ...",
