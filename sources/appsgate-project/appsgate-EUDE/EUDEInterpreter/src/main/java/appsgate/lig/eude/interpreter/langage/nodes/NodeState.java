@@ -223,6 +223,10 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
 
     @Override
     public NodeValue getResult() {
+        Boolean state = isOfState();
+        if (state == null) {
+            return null;
+        }
         if (isOfState()) {
             return new NodeValue("boolean", "true", this);
         } else {
