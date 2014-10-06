@@ -89,19 +89,23 @@ public class TestCoreAppsgate extends PaxedDistribution {
 		
 		MongoDBConfiguration mongoConfig = (MongoDBConfiguration) mongoConfInst.getServiceObject();
 		Assert.assertTrue("Java MongoConfiguration is null", mongoConfig!= null);
+
+		mongoConfig.dropDB("TestingDB");
 		
-		System.out.println("DataBases before : "+mongoConfig.getDatabases());
+		logger.trace("DataBases before : "+mongoConfig.getDatabases());
 		mongoConfig.getDB("TestingDB");
 		DBHelper dbHelp = mongoConfig.getDBHelper("TestingDB", "TestingCollection");
 		dbHelp.insertSimpleObject("toto");
 		dbHelp.insertSimpleObject("titi");
 		dbHelp.insertSimpleObject("tutu");
-		System.out.println("Entries : "+dbHelp.getJSONEntries());
-		System.out.println("DataBases inside : "+mongoConfig.getDatabases());
-		mongoConfig.dropDB("TestingDB");	
-		System.out.println("DataBases after : "+mongoConfig.getDatabases());
+		Assert.assertEquals("new DB colection should only contains the three entries added",3, dbHelp.getJSONEntries().size());
+		logger.trace("Entries : "+dbHelp.getJSONEntries());
 		
-		//ApAMHelper.waitForIt(10000);
+		dbHelp.remove("tutu");
+		logger.trace("Entries (after removal): "+dbHelp.getJSONEntries());
+		Assert.assertEquals("new DB collection should only contains the two entries (one removed)",2, dbHelp.getJSONEntries().size());
+		
+		logger.trace("DataBases after : "+mongoConfig.getDatabases());
 	}	
 
 	

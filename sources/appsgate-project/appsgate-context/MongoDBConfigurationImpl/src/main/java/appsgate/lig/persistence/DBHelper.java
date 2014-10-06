@@ -137,5 +137,19 @@ public class DBHelper {
 		}
 	}
 	
+	public boolean remove(String entryID) {
+		logger.trace("remove(String entryID : "+entryID+")");
+		try {
+			BasicDBObject document = new BasicDBObject();
+			document.put(ENTRY_ID, entryID);
+			dbCollection.remove(document);
+			return true;
+		} catch(Exception exc) {
+			logger.error("Exception while inserting object, "+exc.getMessage());
+			return false;
+		}
+	}
+	
+	
 	
 }
