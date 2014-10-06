@@ -186,6 +186,10 @@
             "status": {
                 "turnedOff": "Off",
                 "turnedOn": "On"
+            },
+            "color-information": {
+                "lastColor" : "Last lamp's color ",
+                "currentColor" : "Current lamp's color "
             }
         },
         "mediaplayer": {

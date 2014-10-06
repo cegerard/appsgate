@@ -55,9 +55,9 @@ define([
             var total = 0;
             sensors.forEach(function(s) {
                 if (typeof s.get("value") !== "undefined") {
-                    total += parseInt(s.get("value"));
+                    total += s.get("value");
                 } else {
-                    total += parseInt(s.get("consumption"));
+                    total += s.get("consumption");
                 }
             });
 
@@ -79,9 +79,9 @@ define([
             var total = 0;
             sensors.forEach(function(s) {
                 if (typeof s.get("value") !== "undefined") {
-                    total += parseInt(s.get("value"));
+                    total += s.get("value");
                 } else {
-                    total += parseInt(s.get("consumption"));
+                    total += s.get("consumption");
                 }
             });
 

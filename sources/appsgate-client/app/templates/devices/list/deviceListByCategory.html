@@ -179,10 +179,17 @@
                     <% } else if (type === "7") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.currentColor"></span>
+                        <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.lastColor"></span>
+                        <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
                     <% } %>
-                    <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                     <% } else if (type === "8") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.actuator.status.turnedOn"></span>
@@ -313,10 +320,17 @@
                     <% } else if (type === "7") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.currentColor"></span>
+                        <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.lastColor"></span>
+                        <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
                     <% } %>
-                    <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                     <% } else if (type === "8") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.actuator.status.turnedOn"></span>

@@ -523,9 +523,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				}
 			}
 		} else {
-			for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
-				coreObjectInPlace.addAll(symbolicPlace.getDevices());
-			}
+                    //for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
+                    //	coreObjectInPlace.addAll(symbolicPlace.getDevices());
+                    //}
+                    JSONArray devices = coreProxy.getDevices();
+                    for (int i = 0; i < devices.length(); i++) {
+                        JSONObject o = devices.optJSONObject(i);
+                        if (o != null) {
+                            coreObjectInPlace.add(o.optString("id"));
+                        }
+                    }
 		}
 
 		// Now we get all identifier of device that match one types of the type
