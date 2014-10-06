@@ -201,6 +201,7 @@ public class NodeIf extends Node {
     private void evaluateResult() {
         Boolean booleanResult;
         try {
+            setProgramProcessing();
             if (expBool instanceof ICanBeEvaluated) {
                 booleanResult = SpokParser.getBooleanResult(((ICanBeEvaluated) expBool).getResult());
             } else {
