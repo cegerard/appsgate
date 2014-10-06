@@ -47,6 +47,41 @@ define([
       return btn;
     },
     /**
+     * return the list of available events
+     */
+    getEvents: function() {
+      return ["switchOn", "switchOff"];
+    },
+    /**
+     * return the keyboard code for a given event
+    */
+    getKeyboardForEvent: function(evt){
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var v = this.getJSONEvent("mandatory");
+      switch(evt) {
+        case "switchOn":
+          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOnEvt'><span>");
+          v.eventName = "plugState";
+          v.eventValue = "true";
+          v.phrase = "devices.plug.language.turnOnEvt";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "switchOff":
+          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOffEvt'><span>");
+          v.eventName = "plugState";
+          v.eventValue = "false";
+          v.phrase = "devices.plug.language.turnOffEvt";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected event found for plug: " + evt);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
+
+    /**
      * Return the list of states
      */
     getStates: function(which) {

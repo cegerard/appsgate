@@ -231,6 +231,8 @@
                 "isOff-keep": "la prise ... éteinte",
                 "isOn": "la prise ... est allumée",
                 "isOn-keep": "la prise ... allumée",
+                "turnOffEvt": "on éteint la prise ...",
+                "turnOnEvt": "on allume la prise ...",
                 "turnOff": "Eteindre la prise ...",
                 "turnOn": "Allumer la prise ..."
             },
@@ -239,6 +241,8 @@
                 "isOff-keep": "__myVar__ éteinte",
                 "isOn": "__myVar__ est allumée",
                 "isOn-keep": "__myVar__ allumée",
+                "turnOffEvt": "on éteint __myVar__",
+                "turnOnEvt": "on allume __myVar__",
                 "turnOff": "Eteindre __myVar__",
                 "turnOn": "Allumer __myVar__"
             },
