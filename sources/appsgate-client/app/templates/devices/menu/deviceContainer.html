@@ -124,7 +124,7 @@
                     <% if(place.getAverageTemperature()=="999") { %>
                     <span class="label-value">---&deg;C</span>
                     <% } else { %>
-                    <span class="label-value"><%= place.getAverageTemperature() %>&deg;C</span>
+                    <span class="label-value"><%= Math.round(place.getAverageTemperature()) %>&deg;C</span>
                     <% } %>
 
 				<% } else if (type === "1") { %>
