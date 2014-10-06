@@ -97,7 +97,31 @@ public class ApAMHelper {
 		}
 
 		return comp;
-	}	
+	}
+	
+	public static Instance waitForInstanceByImplemName(Component client,
+			String implemName, long timeout) {
+		waitForApam(RESOLVE_TIMEOUT);
+		
+		Implementation implem = (Implementation)waitForComponentByName(client,
+				implemName, timeout);
+		long sleep = 0;
+		Instance inst = null;
+
+		while (sleep < timeout && inst == null) {
+			try {
+				Thread.sleep(waitPeriod);
+			} catch (Exception exc) {
+				exc.printStackTrace();
+			}
+			sleep += waitPeriod;
+			if (CST.apamResolver != null) {
+				inst = implem.getInst();				
+			}
+		}
+
+		return inst;
+	}		
 
 	public static void listSpecs() {
 		System.out.println(String.format(

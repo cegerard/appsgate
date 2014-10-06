@@ -20,13 +20,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.imag.adele.apam.CST;
+import fr.imag.adele.apam.Component;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
-import fr.imag.adele.apam.Specification;
+import appsgate.lig.persistence.DBHelper;
+import appsgate.lig.persistence.MongoDBConfigFactory;
+import appsgate.lig.persistence.MongoDBConfiguration;
 import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
-import appsgate.lig.weather.exception.WeatherForecastException;
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
+
 
 
 /**
@@ -60,9 +62,44 @@ public class TestCoreAppsgate extends PaxedDistribution {
 		
 		logger.debug("This test just load the core Appsgate Bundles (EHMIProxyImpl and dependencies)");
 		ApAMHelper.waitForComponentByName(null,
-				"AppsGateImpl", ApAMHelper.RESOLVE_TIMEOUT);
+				"AppsGate-Application", ApAMHelper.RESOLVE_TIMEOUT);
 		Assert.assertTrue(CST.componentBroker.getImpls("EHMIProxyImpl")!= null);
 
+		
+		//ApAMHelper.waitForIt(10000);
+	}	
+	
+	@Ignore
+	@Test // This one is not an automated test, but it allows testings of Mongo and helper classes 
+	public void testMongo() {
+		testEmptyAppsgate();
+		
+		logger.debug("This test just load the core Appsgate Bundles (EHMIProxyImpl and dependencies)");
+		Implementation mongoFactoryImplem = (Implementation) ApAMHelper.waitForComponentByName(null,
+				"MongoDBConfigFactory", ApAMHelper.RESOLVE_TIMEOUT);
+		Assert.assertTrue("ApAM Implementation of MongoDBConfigFactory is null",mongoFactoryImplem!= null);
+		
+		Instance mongoFactoryInst = mongoFactoryImplem.createInstance(null, null);
+		Assert.assertTrue("ApAM Instance of MongoDBConfigFactory is null", mongoFactoryInst!= null);
+			
+		Instance mongoConfInst = ApAMHelper.waitForInstanceByImplemName(null,
+				"MongoDBConfiguration", ApAMHelper.RESOLVE_TIMEOUT);
+		Assert.assertTrue("ApAM Implementation of MongoDBConfiguration is null",mongoConfInst!= null);
+		
+		
+		MongoDBConfiguration mongoConfig = (MongoDBConfiguration) mongoConfInst.getServiceObject();
+		Assert.assertTrue("Java MongoConfiguration is null", mongoConfig!= null);
+		
+		System.out.println("DataBases before : "+mongoConfig.getDatabases());
+		mongoConfig.getDB("TestingDB");
+		DBHelper dbHelp = mongoConfig.getDBHelper("TestingDB", "TestingCollection");
+		dbHelp.insertSimpleObject("toto");
+		dbHelp.insertSimpleObject("titi");
+		dbHelp.insertSimpleObject("tutu");
+		System.out.println("Entries : "+dbHelp.getJSONEntries());
+		System.out.println("DataBases inside : "+mongoConfig.getDatabases());
+		mongoConfig.dropDB("TestingDB");	
+		System.out.println("DataBases after : "+mongoConfig.getDatabases());
 		
 		//ApAMHelper.waitForIt(10000);
 	}	
