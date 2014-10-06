@@ -96,6 +96,10 @@
                 "west": "West",
                 "east": "East"
                
+            },
+            "white-face": {
+                "first-elem": "White",
+                "second-elem": "Face"
             }
         },
         "illumination": {

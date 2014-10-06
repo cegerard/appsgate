@@ -95,7 +95,11 @@
 				"inactivated": "le domicube est désactivé",
                 "west": "l'Ouest",
                 "east": "l'Est"
-			}
+			},
+            "white-face": {
+                "first-elem": "Face",
+                "second-elem": "Blanche"
+            }
         },
         "illumination": {
             "caption": {
