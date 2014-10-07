@@ -264,7 +264,7 @@ final public class NodeProgram extends Node {
         activeNodes = new JSONObject();
         nodesCounter = new JSONObject();
         if (runningState == RUNNING_STATE.DEPLOYED) {
-            //setProcessing(this.body.getIID());
+            setProcessing("0");
             fireStartEvent(new StartEvent(this));
             body.addStartEventListener(this);
             body.addEndEventListener(this);
@@ -303,7 +303,7 @@ final public class NodeProgram extends Node {
             setStopping(true);
             body.stop();
             body.removeEndEventListener(this);
-            //setDeployed();
+            setDeployed();
             fireEndEvent(new EndEvent(this));
             setStopping(false);
         } else {
