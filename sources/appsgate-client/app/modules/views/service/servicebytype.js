@@ -108,6 +108,12 @@ define([
                 id:"addLocationObserver"
                 }
             );
+            _.defer(function() {
+                appRouter.isModalShown = false;
+                appRouter.currentView.render();
+            });
+            
+            $("#edit-weather-modal").modal("hide");
         },
         /**
          *
@@ -120,6 +126,9 @@ define([
                 TARGET: "EHMI",
                 id:"removeLocationObserver"
             });
+            
+            appRouter.navigate("#services", {trigger: true});
+
         },
         /**
          *
