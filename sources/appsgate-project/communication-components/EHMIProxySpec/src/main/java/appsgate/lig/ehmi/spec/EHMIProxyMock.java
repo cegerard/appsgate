@@ -577,4 +577,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		return null;
 	}
 
+
+	@Override
+	public void addLocationObserverFromWOEID(String woeid) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -28,6 +28,13 @@ public interface WeatherAdapterSpec {
     public void addLocationObserver(String location);
     
     /**
+     * Try add the place with an human friendly name to fetch Weather conditions
+     * 
+     * @param woeid
+     */
+    public void addLocationObserverFromWOEID(String woeid);    
+    
+    /**
      * Try to remove a place previously added
      * 
      * @param location the placeName as it was previously added

@@ -80,7 +80,18 @@ public interface YahooWeather {
     *
     * @return a the WOEID (Where On Earth Identifier) associated with a placeName
     */
-    String getWOEID(String placeName) throws WeatherForecastException;     
+    String getWOEID(String placeName) throws WeatherForecastException; 
+    
+    /**
+    * Little hack to force a particular location upon its unique WOEID
+    * (note that the location is a pivot key, so we cannot have multiple location registered at the same time
+    * return the placeName associated
+    */
+    String addWOEID(String woeid) throws WeatherForecastException;   
+    
+    /**
+    */
+    String getPlaceName(String woeid) throws WeatherForecastException;       
 
     /**
      * @param unit US or EU

@@ -1286,4 +1286,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		return new JSONArray();
 	}
+
+	@Override
+	public void addLocationObserverFromWOEID(String woeid) {
+		weatherAdapter.addLocationObserverFromWOEID(woeid);		
+	}
 }

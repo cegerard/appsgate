@@ -366,6 +366,13 @@ public interface EHMIProxySpec {
      *            A human place name : a town, a country, a particular place or point of interest (poi)
      */
     public void addLocationObserver(String location);
+    
+    /**
+     * Try to create an Observer with the explicit Yahoo WOEID (Where On Earth IDentifier)
+     *
+     */
+    public void addLocationObserverFromWOEID(String woeid);
+    
 
     /**
      * Try to remove a weather observer previously added

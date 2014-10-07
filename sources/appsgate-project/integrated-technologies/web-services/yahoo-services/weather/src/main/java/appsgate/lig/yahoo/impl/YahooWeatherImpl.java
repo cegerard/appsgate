@@ -410,6 +410,45 @@ public class YahooWeatherImpl  implements YahooWeather {
 		return presentationURLs.get(getWOEID(placeName));
 	}
 
+	@Override
+	public String addWOEID(String woeid) throws WeatherForecastException {
+		logger.trace("addWOEID(String woeid : "+woeid+")");
+		if (woeidFromePlaceName.containsValue(woeid))
+			throw new WeatherForecastException(
+					"Already monitoring this location");
+
+		synchronized(lock) {
+			JSONObject obj = geoPlanet.getDescriptionFromWOEID(woeid);
+			if(obj == null)
+				throw new WeatherForecastException(
+						"Cannot retrieve the location from woeid");
+            String placeName = obj.optString("name");
+			if(placeName == null)
+				throw new WeatherForecastException(
+						"no place name associated with woeid");
+			
+            String okPlaceName = placeName.replace(" ", "%20");
+            logger.info("addLocation(String placeName: " + okPlaceName + " )");
+
+            if (woeid != null && woeid.length() > 0) {
+                woeidFromePlaceName.put(placeName, woeid);
+                lastPublicationDates.put(woeid, null);
+                presentationURLs.put(woeid, null);
+                
+                currentWeathers.put(woeid, null);
+                forecasts.put(woeid, null);
+                fetch(placeName);
+            } else
+                throw new WeatherForecastException("Place was not found");
+        }		return null;
+	}
+
+	@Override
+	public String getPlaceName(String woeid) throws WeatherForecastException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 
