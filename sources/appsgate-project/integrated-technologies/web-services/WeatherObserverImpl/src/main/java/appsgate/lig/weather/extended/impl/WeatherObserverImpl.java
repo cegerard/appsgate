@@ -12,6 +12,7 @@ import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
 import appsgate.lig.weather.utils.SimplifiedWeatherCodesHelper;
 import appsgate.lig.yahoo.weather.YahooWeather;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -48,6 +49,9 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
     private List<DayForecast> forecasts;
 
     private Calendar lastPublicationdate;
+    
+    private String currentPresentationURL;
+    private String currentWoeid;
 
 
     private long lastFetch = -1;
@@ -111,6 +115,8 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
         descr.put("id", appsgateObjectId);
         descr.put("type", appsgateUserType);
         descr.put("status", appsgateDeviceStatus);
+        descr.put("woeid", currentWoeid);
+        descr.put("presentationURL", currentPresentationURL);
 
         descr.put("pictureId", appsgatePictureId);
         try {
@@ -287,6 +293,12 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
                 lastFetch = System.currentTimeMillis();
 
                 lastPublicationdate = weatherService.getPublicationDate(currentLocation);
+                if(currentWoeid == null ) { // should not change, so we get it only once
+                	currentWoeid = weatherService.getWOEID(currentLocation);
+                }
+                
+                currentPresentationURL = weatherService.getPresentationURL(currentLocation);
+                
             }
 
             WeatherRefreshTask nextRefresh = new WeatherRefreshTask(this);
@@ -357,4 +369,17 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements ExtendedW
             logger.warn("Exception occured following alarm event "+exc.getStackTrace());
         }
     }
+
+	@Override
+	public String getCurrentWOEID() {
+        logger.trace("getCurrentWOEID()"+currentWoeid);
+		return currentWoeid;
+	}
+
+	@Override
+	public String getPresentationURL() {
+        logger.trace("getPresentationURL(), returning "+currentPresentationURL);
+
+		return currentPresentationURL;
+	}
 }

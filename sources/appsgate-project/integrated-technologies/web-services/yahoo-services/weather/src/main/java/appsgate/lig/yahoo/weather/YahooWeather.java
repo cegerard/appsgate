@@ -69,6 +69,18 @@ public interface YahooWeather {
      * @throws appsgate.lig.weather.exception.WeatherForecastException If place name in incorrect, misspelled, or cannot be found (as a valid location)
      */
     boolean containLocation(String placeName) throws WeatherForecastException;
+    
+    /**
+    *
+    * @return a convenient Yahoo Presentation URL for the weather
+    */
+    String getPresentationURL(String placeName) throws WeatherForecastException;    
+    
+    /**
+    *
+    * @return a the WOEID (Where On Earth Identifier) associated with a placeName
+    */
+    String getWOEID(String placeName) throws WeatherForecastException;     
 
     /**
      * @param unit US or EU

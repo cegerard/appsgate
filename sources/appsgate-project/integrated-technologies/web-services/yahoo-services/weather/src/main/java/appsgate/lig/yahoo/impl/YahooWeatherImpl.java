@@ -81,6 +81,7 @@ public class YahooWeatherImpl  implements YahooWeather {
 	// and some information about this location WOEID always comes as key and
 	// the information as value
 	private Map<String, Calendar> lastPublicationDates;
+	private Map<String, String> presentationURLs;	
 	private Map<String, CurrentWeather> currentWeathers;
 	private Map<String, List<DayForecast>> forecasts;
 
@@ -88,6 +89,7 @@ public class YahooWeatherImpl  implements YahooWeather {
 
 		woeidFromePlaceName = new HashMap<String, String>();
 		lastPublicationDates = new HashMap<String, Calendar>();
+		presentationURLs = new HashMap<String, String>();
 		currentWeathers = new HashMap<String, CurrentWeather>();
 		forecasts = new HashMap<String, List<DayForecast>>();
 
@@ -104,7 +106,8 @@ public class YahooWeatherImpl  implements YahooWeather {
 		return lastFetchDate;
 	}
 
-	private String getWOEID(String placeName) throws WeatherForecastException {
+	@Override
+	public String getWOEID(String placeName) throws WeatherForecastException {
 		if (!woeidFromePlaceName.containsKey(placeName))
 			throw new WeatherForecastException(
 					"Place Name is not monitored (Not spelled as previously added ?)");
@@ -180,6 +183,8 @@ public class YahooWeatherImpl  implements YahooWeather {
             if (newWOEID != null && newWOEID.length() > 0) {
                 woeidFromePlaceName.put(placeName, newWOEID);
                 lastPublicationDates.put(newWOEID, null);
+                presentationURLs.put(newWOEID, null);
+                
                 currentWeathers.put(newWOEID, null);
                 forecasts.put(newWOEID, null);
                 // Special case of fetch that override the timeStamp (because a new location must be polled one time)
@@ -205,6 +210,8 @@ public class YahooWeatherImpl  implements YahooWeather {
 			if (woeid == null)
 				return false;
 			lastPublicationDates.remove(woeid);
+			presentationURLs.remove(woeid);
+            
 			currentWeathers.remove(woeid);
 			forecasts.remove(woeid);
 
@@ -334,6 +341,8 @@ public class YahooWeatherImpl  implements YahooWeather {
                             YahooWeatherParser.parseCurrentConditions(doc));
                     forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
                     lastPublicationDates.put(woeid, newPubDate);
+                    presentationURLs.put(woeid, YahooWeatherParser
+                            .parsePresentationURL(doc));
                 } else
                     logger.info("Publication date for " + placeName
                             + " is NOT newer, does nothing");
@@ -394,6 +403,11 @@ public class YahooWeatherImpl  implements YahooWeather {
 	public JSONArray checkLocationsStartingWith(String firstLetters) {
 		return geoPlanet.getLocationsStartingWith(firstLetters);
 
+	}
+
+	@Override
+	public String getPresentationURL(String placeName) throws WeatherForecastException {
+		return presentationURLs.get(getWOEID(placeName));
 	}
 
 
