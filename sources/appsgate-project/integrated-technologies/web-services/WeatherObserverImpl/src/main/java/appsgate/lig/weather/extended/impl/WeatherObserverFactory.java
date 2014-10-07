@@ -181,6 +181,12 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 			removeDBEntry(WeatherObserverImpl.getFakeObjectId(location),
 					location);
 			checkRunningLocations(); // this should destroy the instance
+			try {
+				weatherService.removeLocation(location);
+			} catch (Exception e) {
+				logger.warn("Cannot remove location from weather service (unavailable ?), "
+						+ e.getMessage());
+			}
 		}
 	}
 
@@ -267,39 +273,33 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 		// Step 1 getting all reals instances of observers
 		for (Instance inst : observerImpl.getInsts()) {
 			String loc = null;
+
+			ExtendedWeatherObserver service = (ExtendedWeatherObserver) inst
+					.getServiceObject();
 			try {
-
-				ExtendedWeatherObserver service = (ExtendedWeatherObserver) inst
-						.getServiceObject();
 				service.getCurrentWeatherCode();
-				loc = service.getCurrentLocation();
-				workingLocations.add(loc);
+			} catch (WeatherForecastException e) {
+				logger.warn("Weather service not running, or Yahoo weather not working : "
+						+ e.getMessage());
 
-				if (!pendingLocations.contains(loc)) {
-					throw new Exception(
-							"this working location should be removed");
-				}
+			}
+			loc = service.getCurrentLocation();
+			workingLocations.add(loc);
 
-				if (!runningLocations.contains(loc)) {
-					if (pendingLocations.contains(loc)) {
-						runningLocations.add(loc);
-					} else {
-						throw new Exception(
-								"this working location should not be there");
-					}
-				}
-			} catch (Exception exc) {
-				logger.warn("Removing an instance. Exception : "
-						+ exc.getMessage());
-				exc.printStackTrace();
-				if (inst != null) {
-					((ComponentBrokerImpl) CST.componentBroker)
-							.disappearedComponent(inst);
-				}
-				if (loc != null) {
+			if (!pendingLocations.contains(loc)) {
+				removeApAMInstance(inst);
+				runningLocations.remove(loc);
+			}
+
+			if (!runningLocations.contains(loc)) {
+				if (pendingLocations.contains(loc)) {
+					runningLocations.add(loc);
+				} else {
+					removeApAMInstance(inst);
 					runningLocations.remove(loc);
 				}
 			}
+
 		}
 
 		// Step 2 removing the instances that does not exist anymore
@@ -310,6 +310,14 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 		}
 		for (String loc : toRemove) {
 			runningLocations.remove(loc);
+		}
+	}
+
+	private void removeApAMInstance(Instance inst) {
+		logger.trace("removeApAMInstance(Instance inst : " + inst.getName());
+		if (inst != null) {
+			((ComponentBrokerImpl) CST.componentBroker)
+					.disappearedComponent(inst);
 		}
 	}
 
@@ -377,7 +385,8 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 				location = weatherService.addWOEID(woeid);
 			} catch (WeatherForecastException e) {
 				location = null;
-				logger.warn("addLocationObserverFromWOEID(...), exception occured "+e.getMessage());
+				logger.warn("addLocationObserverFromWOEID(...), exception occured "
+						+ e.getMessage());
 			}
 			if (location != null && location.length() > 0) {
 				pendingLocations.add(location);

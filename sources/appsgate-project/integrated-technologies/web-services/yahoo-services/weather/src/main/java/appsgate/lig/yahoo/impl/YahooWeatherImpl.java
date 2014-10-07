@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
 
 import appsgate.lig.yahoo.geoplanet.YahooGeoPlanet;
 import appsgate.lig.yahoo.weather.YahooWeather;
