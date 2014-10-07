@@ -127,7 +127,7 @@ define([
                 id:"removeLocationObserver"
             });
             
-            appRouter.navigate("#services", {trigger: true});
+            appRouter.navigate("#services/types/103", {trigger: true});
 
         },
         /**
