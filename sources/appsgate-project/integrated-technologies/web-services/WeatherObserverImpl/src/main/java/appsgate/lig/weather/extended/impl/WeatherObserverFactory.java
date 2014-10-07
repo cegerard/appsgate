@@ -339,5 +339,15 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
         }
     }
 
+	@Override
+	public JSONArray checkLocationsStartingWith(String firstLetters) {
+        if(firstLetters!= null && firstLetters.length()>0 && weatherService != null) {
+        	return weatherService.checkLocationsStartingWith(firstLetters);
+        }
+        else {
+        	return new JSONArray();
+        }
+	}
+
 
 }

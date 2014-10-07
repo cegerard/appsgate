@@ -1278,4 +1278,12 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		return new JSONObject();
 	}
+
+	@Override
+	public JSONArray checkLocationsStartingWith(String firstLetters) {
+		if(weatherAdapter != null) {
+			return weatherAdapter.checkLocationsStartingWith(firstLetters);
+		}
+		return new JSONArray();
+	}
 }

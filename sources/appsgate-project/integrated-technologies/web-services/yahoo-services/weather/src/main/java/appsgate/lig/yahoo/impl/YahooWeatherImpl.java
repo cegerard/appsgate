@@ -11,6 +11,7 @@ import java.util.Timer;
 import appsgate.lig.yahoo.geoplanet.YahooGeoPlanet;
 import appsgate.lig.yahoo.weather.YahooWeather;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -388,6 +389,12 @@ public class YahooWeatherImpl  implements YahooWeather {
 		return geoPlanet.getDescriptionFromPlaceName(location);
 	}
 
+
+	@Override
+	public JSONArray checkLocationsStartingWith(String firstLetters) {
+		return geoPlanet.getLocationsStartingWith(firstLetters);
+
+	}
 
 
 

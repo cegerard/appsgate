@@ -570,4 +570,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		return null;
 	}
 
+
+	@Override
+	public JSONArray checkLocationsStartingWith(String firstLetters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

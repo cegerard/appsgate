@@ -342,6 +342,22 @@ public interface EHMIProxySpec {
      * {"locality1":"Grenoble","woeid":"593720","name":"Grenoble","placeTypeName":"Town","country":"France"}
      */
     public JSONObject checkLocation(String location);	
+    
+    /**
+     * Check a location upon the first letters of its place name
+     *
+     * @param location
+     *            A human place name : a town, a country, a particular place or point of interest (poi)
+     * @return A JSONArray with 0..5  objects describing the location (formatted as follow), example starting with Gre
+     * [
+     * {"locality1":"Grenoble","woeid":"593720","name":"Grenoble","placeTypeName":"Town","country":"France"},
+     * {"locality1":"Green Bay","woeid":"2413753","name":"Green Bay","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greenville","woeid":"2414583","name":"Greenville","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greensboro","woeid":"2414469","name":"Greensboro","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greifswald","woeid":"654035","name":"Greifswald","placeTypeName":"Town","country":"Allemagne"}
+     * ]
+     */
+    public JSONArray checkLocationsStartingWith(String firstLetters);	    
 
     /**
      * Try to create an Observer with an human friendly name to fetch Weather conditions
