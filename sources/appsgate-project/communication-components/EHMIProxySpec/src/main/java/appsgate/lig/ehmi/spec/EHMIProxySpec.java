@@ -365,13 +365,13 @@ public interface EHMIProxySpec {
      * @param location
      *            A human place name : a town, a country, a particular place or point of interest (poi)
      */
-    public void addLocationObserver(String location);
+    public JSONArray addLocationObserver(String location);
     
     /**
      * Try to create an Observer with the explicit Yahoo WOEID (Where On Earth IDentifier)
      *
      */
-    public void addLocationObserverFromWOEID(String woeid);
+    public JSONArray addLocationObserverFromWOEID(String woeid);
     
 
     /**
@@ -380,7 +380,7 @@ public interface EHMIProxySpec {
      * @param location the placeName as it was previously added
      * @return true if the place was found and was successfully removed
      */
-    public void removeLocationObserver(String location);
+    public JSONArray removeLocationObserver(String location);
 
     /**
      * Retrieves the Location Observers currently running

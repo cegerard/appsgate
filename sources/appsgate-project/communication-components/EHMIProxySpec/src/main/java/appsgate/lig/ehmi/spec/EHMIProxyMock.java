@@ -429,12 +429,14 @@ public class EHMIProxyMock implements EHMIProxySpec {
 	}
 
     @Override
-    public void addLocationObserver(String location) {
+    public JSONArray addLocationObserver(String location) {
+		return null; 
 
     }
 
     @Override
-    public void removeLocationObserver(String location) {
+    public JSONArray removeLocationObserver(String location) {
+		return null; 
 
     }
 
@@ -579,8 +581,9 @@ public class EHMIProxyMock implements EHMIProxySpec {
 
 
 	@Override
-	public void addLocationObserverFromWOEID(String woeid) {
+	public JSONArray addLocationObserverFromWOEID(String woeid) {
 		// TODO Auto-generated method stub
+		return null; 
 		
 	}
 
