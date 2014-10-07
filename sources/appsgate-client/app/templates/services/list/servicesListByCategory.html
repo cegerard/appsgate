@@ -39,11 +39,9 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-xs-9">
-						<input type="text" class="form-control" name="inputValue">
-					</div>
-					<div class="col-xs-9">
-						<input type="text" class="form-control" name="name">
-						<input type="text" class="form-control" name="country">
+						<input type="text" class="form-control" name="inputValue" id="weatherInput">
+						<input type="hidden" class="form-control" name="woeid" id="WOEID">
+						<input type="hidden" class="form-control" name="name" id="NAME">
 					</div>
 				</div>
 			</div>
@@ -73,7 +71,7 @@
 			<button type="button" class="btn btn-default delete-popover" rel="popover" id="<%= s.get('id') %>">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="form.delete-button"></span>
 			</button>
-			<button type="button" class="btn btn-default" id="<%= s.get('id') %>">
+			<button type="button" class="btn btn-default see-meteo" id="<%= s.get('id') %>">
 				<span data-i18n="weather.weblink">Voir météo</span>
 			</button>
         </div>

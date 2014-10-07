@@ -12,7 +12,8 @@ define([
         events: {
             "click button.delete-meteo-button": "onDeleteMeteoButton",
             "keyup #add-weather-modal input": "validWeatherName",
-            "click #add-weather-modal button.valid-button": "addWeatherName"
+            "click #add-weather-modal button.valid-button": "addWeatherName",
+            "click button.see-meteo": "openMeteo"
         },
         /**
          * Listen to the updates on the services of the category and refresh if any
@@ -27,14 +28,26 @@ define([
                 self.listenTo(service, "remove", self.render);
             });
             dispatcher.on("checkLocation", function(l) {
-                if (l!= undefined && l.locality1 != undefined) {
-                    $("#add-weather-modal input[name='name']").val(l.locality1);
-                    $("#add-weather-modal input[name='country']").val(l.country);
-                    $("#add-weather-modal .valid-button").removeClass("disabled");
-                    $("#add-weather-modal .valid-button").removeClass("valid-disabled");
-                } else {
-                    $("#add-weather-modal .valid-button").addClass("disabled");
-                    $("#add-weather-modal .valid-button").addClass("valid-disabled");
+
+                if (l!= undefined ) {
+                    for (var i = 0; i < l.length ; i++) {
+                        l[i].label = l[i].name + " / " + l[i].country;
+                    }
+                    $( "#weatherInput" ).autocomplete(
+                        {
+                            source:l,
+                            select: function( event, ui ) {
+                                $("#add-weather-modal .valid-button").removeClass("disabled");
+                                $("#add-weather-modal .valid-button").removeClass("valid-disabled");
+                                $( "#WOEID" ).val( ui.item.woeid );
+                                $( "#NAME" ).val( ui.item.name );
+                                return false;
+                            }
+                        }
+                    );
+
+            } else {
+                    console.warn(l);
                 }
             });
         },
@@ -72,22 +85,24 @@ define([
             if (loc != undefined && loc.length > 2) {
                 //code
                 communicator.sendMessage({
-                    "method":"checkLocation",
+                    "method":"checkLocationsStartingWith",
                     "args":[{"type":"String","value":loc}],
                     "callId":"checkLocation",
                     "TARGET":"EHMI"
                     });
             } else {
+                $( "#WOEID" ).val( "" );
                 $("#add-weather-modal .valid-button").addClass("disabled");
                 $("#add-weather-modal .valid-button").addClass("valid-disabled");
             }
         },
 
         addWeatherName: function() {
+            //var loc = $("#add-weather-modal input[name='woeid']").val();
             var loc = $("#add-weather-modal input[name='name']").val();
-            console.log(loc);
             communicator.sendMessage({
                 method: "addLocationObserver",
+                //method: "addLocationObserverFromWOEID",
                 args: [{type:"String", value:loc}],
                 TARGET: "EHMI",
                 id:"addLocationObserver"
@@ -105,8 +120,14 @@ define([
                 TARGET: "EHMI",
                 id:"removeLocationObserver"
             });
+        },
+        /**
+         *
+         */
+        openMeteo: function(e) {
+            var actuator = services.get($(e.currentTarget).attr("id"));
+            window.open(actuator.attributes.presentationURL);
         }
-        
     });
     return ServiceByTypeView;
 });

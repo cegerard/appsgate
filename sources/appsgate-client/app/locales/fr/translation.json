@@ -723,7 +723,8 @@
 				"weather-for-2": "après demain",
 				"weather-max-at": "la température maximale prévue à",
 				"weather-min-at": "la température minimale prévue à"
-			}
+			},
+			"weblink" : "Voir météo"
 
         }
     }
