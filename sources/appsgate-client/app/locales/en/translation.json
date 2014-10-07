@@ -96,6 +96,10 @@
                 "west": "West",
                 "east": "East"
                
+            },
+            "white-face": {
+                "first-elem": "White",
+                "second-elem": "Face"
             }
         },
         "illumination": {
@@ -232,6 +236,8 @@
                 "isOff-keep": "plug ... off",
                 "isOn": "plug ... is on",
                 "isOn-keep": "plug ... on",
+                "turnOffEvt": "plug ... is turned off",
+                "turnOnEvt": "plug ... is turned on",
                 "turnOff": "Switch off plug ...",
                 "turnOn": "Switch on plug ..."
             },
@@ -240,6 +246,8 @@
                 "isOff-keep": "__myVar__ off",
                 "isOn": "__myVar__ is on",
                 "isOn-keep": "__myVar__ on",
+                "turnOffEvt": "__myVar__ is turned off",
+                "turnOnEvt": "__myVar__ is turned on",
                 "turnOff": "Switch on __myVar__",
                 "turnOn": "Switch off __myVar__"
             },

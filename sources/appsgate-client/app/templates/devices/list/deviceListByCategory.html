@@ -200,7 +200,11 @@
                     <% if(s.get("activeFace") === "1") { %>
                       <img src='/app/img/lan.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "2") { %>
-                      <span data-i18n='devices.domicube.status.unknown'></span>
+                      <svg class="white-face-svg-domus img-responsive">
+                        <rect class="white-face-rect-domus" x="10" y="10" rx="25" ry="25" width="95%" height="90%"/>
+                        <text class="white-face-text-domus" x="50%" y="47%"><%= $.i18n.t("devices.domicube.white-face.first-elem") %></text>
+                        <text class="white-face-text-domus" x="50%" y="54%"><%= $.i18n.t("devices.domicube.white-face.second-elem") %></text>
+                      </svg>
                     <% } else if(s.get("activeFace") === "3") { %>
                       <img src='/app/img/music.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "4") { %>
@@ -210,6 +214,9 @@
                     <% } else if(s.get("activeFace") === "6") { %>
                       <img src='/app/img/meal.png' width='18px' class="img-responsive">
                     <% } else { %>
+                        <svg width="18px" height="18px">
+                        <rect x="0" y="0" width="100%" height="100%" style="fill:none"/>
+                        </svg>
                       <span data-i18n='devices.domicube.status.unknown'></span>
                     <% } %>
                     <% } %>
@@ -341,7 +348,11 @@
                     <% if(s.get("activeFace") === "1") { %>
                       <img src='/app/img/lan.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "2") { %>
-                      <span data-i18n='devices.domicube.status.unknown'></span>
+                      <svg class="white-face-svg-domus img-responsive">
+                        <rect class="white-face-rect-domus" x="10" y="10" rx="25" ry="25" width="95%" height="90%"/>
+                        <text class="white-face-text-domus" x="50%" y="47%"><%= $.i18n.t("devices.domicube.white-face.first-elem") %></text>
+                        <text class="white-face-text-domus" x="50%" y="54%"><%= $.i18n.t("devices.domicube.white-face.second-elem") %></text>
+                      </svg>
                     <% } else if(s.get("activeFace") === "3") { %>
                       <img src='/app/img/music.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "4") { %>
