@@ -11,7 +11,9 @@
         "actuator": {
             "action": {
                 "turnOff": "Eteindre",
-                "turnOn": "Allumer"
+                "turnOn": "Allumer",
+				"turnAllOff" : "Tout éteindre",
+                "turnAllOn": "Tout allumer"
             },
             "name": {
                 "plural": "Actionneurs",
@@ -153,7 +155,9 @@
             "action": {
                 "blink": "Faire clignoter",
                 "turnOff": "Eteindre",
-                "turnOn": "Allumer"
+                "turnOn": "Allumer",
+				"turnAllOff" : "Tout éteindre",
+                "turnAllOn": "Tout allumer"
             },
             "complement": {
                 "change-color": "en"
@@ -228,7 +232,9 @@
         "plug": {
             "action": {
                 "turnOff": "Eteindre",
-                "turnOn": "Allumer"
+                "turnOn": "Allumer",
+				"turnAllOff" : "Tout éteindre",
+                "turnAllOn": "Tout allumer"
             },
             "keyboard": {
                 "isOff": "la prise ... est éteinte",

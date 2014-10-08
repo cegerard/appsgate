@@ -11,7 +11,9 @@
         "actuator": {
             "action": {
                 "turnOff": "Turn off",
-                "turnOn": "Turn on"
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
             },
             "name": {
                 "plural": "Actuators",
@@ -154,7 +156,9 @@
             "action": {
                 "blink": "Blink",
                 "turnOff": "Turn off",
-                "turnOn": "Turn on"
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
             },
             "complement": {
                 "change-color": "to"
@@ -229,7 +233,9 @@
         "plug": {
             "action": {
                 "turnOff": "Turn off",
-                "turnOn": "Turn on"
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
             },
             "keyboard": {
                 "isOff": "plug ... is off",
