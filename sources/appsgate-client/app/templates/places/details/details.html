@@ -226,9 +226,9 @@
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			<% if (place.getKeyCardReaders().length === 1) { %>
-				<span data-i18n="devices.keycard-reader.name.singular"></span>
+				<span data-i18n="devices.cardswitch.name.singular"></span>
 			<% } else { %>
-				<span data-i18n="devices.keycard-reader.name.plural"></span>
+				<span data-i18n="devices.cardswitch.name.plural"></span>
 			<% } %>
 			<span class="badge pull-right">
 				<%= place.getKeyCardReaders().length %>
@@ -255,9 +255,9 @@
 					<span class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
 				<% if (s.get("inserted") === "true") { %>
-					<span class="label label-yellow" data-i18n="devices.keycard-reader.value.inserted"></span>
+					<span class="label label-yellow" data-i18n="devices.cardswitch.value.inserted"></span>
 				<% } else { %>
-					<span class="label label-default" data-i18n="devices.keycard-reader.value.not-inserted"></span>
+					<span class="label label-default" data-i18n="devices.cardswitch.value.not-inserted"></span>
 				<% } %>
 			</a>
 		<% }) %>

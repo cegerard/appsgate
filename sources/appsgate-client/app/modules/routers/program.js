@@ -28,8 +28,9 @@ define([
                 appRouter.navigate("#programs/" + programs.at(0).get("id"));
             }
 
-            $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-            $(".breadcrumb").append("<li class='active'><span data-i18n='navbar.programs'/></li>");
+            $(".nav-item").removeClass("active");
+            $("#programs-nav").addClass("active");
+
             appRouter.translateNavbar();
         },
         reader: function(id) {
@@ -44,8 +45,9 @@ define([
 
             appRouter.currentMenuView.updateSideMenu();
 
-            $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-            $(".breadcrumb").append("<li class='active'><span data-i18n='navbar.programs'/></li>");
+            $(".nav-item").removeClass("active");
+            $("#programs-nav").addClass("active");
+
             appRouter.translateNavbar();
         },
         editor: function(id) {
@@ -68,22 +70,15 @@ define([
             $(".controlmenu").circleMenu({
                 trigger: "click",
                 item_diameter: 50,
-                circle_radius: 150,
+                circle_radius: 75,
                 direction: 'top-right'
-            });
-
-            $(".navmenu").circleMenu({
-                trigger: "click",
-                item_diameter: 50,
-                circle_radius: 150,
-                direction: 'top'
             });
 
             appRouter.navigate("#programs/editor/" + id);
 
-            $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-            $(".breadcrumb").append("<li><a href='#programs'><span data-i18n='navbar.programs'/></a></li>");
-            $(".breadcrumb").append("<li class='active'><span>" + programs.get(id).get("name") + "</span></li>");
+            $(".nav-item").removeClass("active");
+            $("#programs-nav").addClass("active");
+
             appRouter.translateNavbar();
         }
 

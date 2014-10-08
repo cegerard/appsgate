@@ -1,18 +1,20 @@
 <li class="list-group-item">
     <strong data-i18n="devices.ard.last-card"></strong>
-    <div class="pull-right label label-default">
+    <div id="ard-last-card" class="pull-right label label-default">
         <%= device.get('lastCard') %>
     </div>
 </li>
 <li class="list-group-item">
     <strong data-i18n="devices.ard.last-authorized"></strong>
+    <div id="ard-last-authorized">
     <% if ( device.get("authorized") === true || device.get("authorized") === "true") { %>
-        <div class="pull-right label label-success" data-i18n="devices.ard.affirmative">
-        </div>
+        <span class="pull-right label label-success" data-i18n="devices.ard.affirmative">
+        </span>
     <% } else { %>
-        <div class="pull-right label label-default" data-i18n="devices.ard.negative">
-        </div>
+        <span class="pull-right label label-default" data-i18n="devices.ard.negative">
+        </span>
     <% } %>
+    </div>
 </li>
 
 <%
@@ -24,14 +26,14 @@ var containsMessage=device.get("lastMessage")!=="";
 
 <li class="list-group-item">
     <strong data-i18n="devices.ard.last-message"></strong>
+    <div id="ard-last-message">
 
-
-    <div class="pull-right label label-<% if(isAuthorized) print('success'); else print('default'); %>">
+      <span class="pull-right label label-<% if(isAuthorized) { %><%='success'%>< } else { %><%='default'%><% } %>">
         <% if ( containsMessage ) { %>
-            <%=device.get("lastMessage")%>
+          <%=device.get("lastMessage")%>
         <% } else { %>
-            <div data-i18n="devices.ard.last-message-empty">
-            </div>
+          <%=$.i18n.t("devices.ard.last-message-empty") %>
         <% } %>
+      </span>
     </div>
 </li>
