@@ -16,8 +16,6 @@ import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
-import javax.swing.DebugGraphics;
-
 import java.util.*;
 
 /**
