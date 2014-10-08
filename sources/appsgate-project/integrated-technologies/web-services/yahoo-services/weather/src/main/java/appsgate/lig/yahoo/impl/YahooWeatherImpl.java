@@ -172,7 +172,7 @@ public class YahooWeatherImpl implements YahooWeather {
 
 		synchronized (lock) {
 			String okPlaceName = placeName.replace(" ", "%20");
-			logger.info("addLocation(String placeName: " + okPlaceName + " )");
+			logger.info("addLocation(String placeName: " + placeName + " )");
 
 			String newWOEID = geoPlanet.getWOEIDFromPlaceName(okPlaceName);
 			if (newWOEID != null && newWOEID.length() > 0) {
@@ -391,12 +391,16 @@ public class YahooWeatherImpl implements YahooWeather {
 
 	@Override
 	public JSONObject checkLocation(String location) {
-		return geoPlanet.getDescriptionFromPlaceName(location);
+		String okLocation = location.replace(" ", "%20");
+
+		return geoPlanet.getDescriptionFromPlaceName(okLocation);
 	}
 
 	@Override
 	public JSONArray checkLocationsStartingWith(String firstLetters) {
-		return geoPlanet.getLocationsStartingWith(firstLetters);
+		String okLocation = firstLetters.replace(" ", "%20");
+
+		return geoPlanet.getLocationsStartingWith(okLocation);
 
 	}
 
@@ -423,21 +427,10 @@ public class YahooWeatherImpl implements YahooWeather {
 				throw new WeatherForecastException(
 						"no place name associated with woeid");
 
-			String okPlaceName = placeName.replace(" ", "%20");
-			logger.info("addLocation(String placeName: " + okPlaceName + " )");
-
-			if (woeid != null && woeid.length() > 0) {
-				woeidFromePlaceName.put(okPlaceName, woeid);
-				lastPublicationDates.put(woeid, null);
-				presentationURLs.put(woeid, null);
-
-				currentWeathers.put(woeid, null);
-				forecasts.put(woeid, null);
-				fetch(okPlaceName);
-				return okPlaceName;
-			} else
-				throw new WeatherForecastException("Place was not found");
+			addLocation(placeName);
+			return placeName;
 		}
+		
 	}
 
 	@Override
