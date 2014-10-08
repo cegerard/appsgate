@@ -90,6 +90,9 @@ define([
                                 case '"action"':
                                     this.buildActionKeys();
                                     break;
+                                case '"stopMyself"':
+                                    this.buildStopMeButton();
+                                    break;
                                 case '"event"':
                                     this.buildEventKeys();
                                     break;
@@ -274,10 +277,16 @@ define([
                 "phrase": "programs.language.actionDisactivate"
             };
             $(btnStop).attr("json", JSON.stringify(w));
+
+            $(".expected-actions").append(btnCall);
+            $(".expected-actions").append(btnStop);
+        },
+        
+        buildStopMeButton: function() {
             var btnStopMe = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
             $(btnStopMe).append("<span data-i18n='programs.keyboard.actionDisactivate-self'/>");
             var w = {
-                "type": "action",
+                "type": "stopMyself",
                 "methodName": "stopProgram",
                 "target": {
                     "iid": "X",
@@ -289,10 +298,8 @@ define([
                 "phrase": "programs.language.actionDisactivate-self"
             };
             $(btnStopMe).attr("json", JSON.stringify(w));
-
-            $(".expected-actions").append(btnCall);
-            $(".expected-actions").append(btnStop);
             $(".expected-actions").append(btnStopMe);
+
         },
 
 

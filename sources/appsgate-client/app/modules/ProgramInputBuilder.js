@@ -85,6 +85,7 @@ define([
             var input = "";
             switch (jsonNode.type) {
                 case "action":
+                case "stopMyself":
                     deletable = true;
                     input += this.buildActionNode(param);
                     break;
