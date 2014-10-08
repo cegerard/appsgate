@@ -103,6 +103,16 @@ define([
 
                 return false;
             }
+            // name contains html code
+            if (/(&|>|<)/.test($("#add-program-modal input:text").val())) {
+                $("#add-program-modal .text-danger")
+                        .text($.i18n.t("edit-name-modal.contains-html"))
+                        .removeClass("hide");
+                $("#add-program-modal .valid-button").addClass("disabled");
+                $("#add-program-modal .valid-button").addClass("valid-disabled");
+
+                return false;
+            }
 
             // name already exists
             if (programs.where({name: $("#add-program-modal input:text").val()}).length > 0) {

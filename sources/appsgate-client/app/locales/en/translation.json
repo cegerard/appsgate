@@ -316,7 +316,8 @@
         "already-existing": "Name already exists.",
         "name": "Name",
         "name-empty": "The name must be specified.",
-        "title": "Rename"
+        "title": "Rename",
+		"contains-html" : "Name cannot contains html code"
     },
     "editbar": {
         "add": "Add",

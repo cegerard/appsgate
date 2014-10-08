@@ -82,6 +82,16 @@ define([
 
                 return false;
             }
+            // name contains html code
+            if (/(&|>|<)/.test($("#edit-name-place-modal input:text").val())) {
+                $("#edit-name-place-modal .text-danger")
+                        .text($.i18n.t("edit-name-modal.contains-html"))
+                        .removeClass("hide");
+                $("#edit-name-place-modal .valid-button").addClass("disabled");
+                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
+
+                return false;
+            }
 
             // name already existing
             if (places.where({name: $("#edit-name-place-modal input").val()}).length > 0) {

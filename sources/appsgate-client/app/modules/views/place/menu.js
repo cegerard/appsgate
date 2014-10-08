@@ -117,6 +117,16 @@ define([
 
                 return false;
             }
+            // name contains html code
+            if (/(&|>|<)/.test($("#add-place-modal input:text").val())) {
+                $("#add-place-modal .text-danger")
+                        .text($.i18n.t("edit-name-modal.contains-html"))
+                        .removeClass("hide");
+                $("#add-place-modal .valid-button").addClass("disabled");
+                $("#add-place-modal .valid-button").addClass("valid-disabled");
+
+                return false;
+            }
 
             // name already exists
             if (places.where({name: $("#add-place-modal input").val()}).length > 0) {

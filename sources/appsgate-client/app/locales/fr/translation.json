@@ -315,7 +315,8 @@
         "already-existing": "Nom déjà existant.",
         "name": "Nom",
         "name-empty": "Le nom doit être renseigné.",
-        "title": "Renommer"
+        "title": "Renommer",
+		"contains-html" : "Le nom ne peut pas contenir de code html"
     },
     "editbar": {
         "add": "Ajouter",
