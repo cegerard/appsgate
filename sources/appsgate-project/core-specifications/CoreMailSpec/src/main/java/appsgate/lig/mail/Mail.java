@@ -8,6 +8,8 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 
+import org.json.JSONArray;
+
 import com.sun.mail.imap.IMAPFolder;
 
 /**
@@ -97,6 +99,6 @@ public interface Mail {
 	 * Retrieves the full list of recipients
 	 * @return the current list of recipients
 	 */	
-	public Set<String> getFavoriteRecipients();
+	public JSONArray getFavoriteRecipients();
 	
 }

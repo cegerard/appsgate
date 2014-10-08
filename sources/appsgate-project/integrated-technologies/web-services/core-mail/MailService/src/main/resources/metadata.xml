@@ -6,6 +6,11 @@
                     push="mailReceivedNotification">
 	    
 		<callback onRemove="stop" />
+		
+        <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist">
+
+        </relation>
+				
 
         <definition name="user" type="string" field="user" injected="internal"/>
 
