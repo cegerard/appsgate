@@ -68,9 +68,11 @@
           <% } %>
           <%if (type === "103") { %>
         <div class="pull-right">
+            <% if (services.getServicesByType()[type].length > 1) { %>
 			<button type="button" class="btn btn-default delete-popover" rel="popover" id="<%= s.get('id') %>">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="form.delete-button"></span>
 			</button>
+            <%}%>
 			<button type="button" class="btn btn-default see-meteo" id="<%= s.get('id') %>">
 				<span data-i18n="weather.weblink">Voir météo</span>
 			</button>

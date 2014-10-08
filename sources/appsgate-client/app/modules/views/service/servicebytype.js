@@ -1,7 +1,8 @@
 define([
     "app",
     "text!templates/services/list/servicesListByCategory.html",
-], function(App, serviceListByCategoryTemplate) {
+    "models/service/weather"
+], function(App, serviceListByCategoryTemplate, Weather) {
 
     var ServiceByTypeView = {};
     /**
@@ -99,34 +100,29 @@ define([
 
         addWeatherName: function() {
             //var loc = $("#add-weather-modal input[name='woeid']").val();
-            var loc = $("#add-weather-modal input[name='name']").val();
-            communicator.sendMessage({
-                method: "addLocationObserver",
-                //method: "addLocationObserverFromWOEID",
-                args: [{type:"String", value:loc}],
-                TARGET: "EHMI",
-                id:"addLocationObserver"
-                }
-            );
-            _.defer(function() {
+            // instantiate the place and add it to the collection after the modal has been hidden
+            $("#add-weather-modal").on("hidden.bs.modal", function() {
+                // instantiate a model for the new location observer
+                var loc = $("#add-weather-modal input[name='name']").val();
+                var weather = new Weather({location	: loc, id	: 'Weather-Observer-'+loc, name : loc});
+
+                weather.save();
+
+                // tell the router that there is no modal any more
                 appRouter.isModalShown = false;
-                appRouter.currentView.render();
+                appRouter.navigate("#services/types/103", {trigger: true});
             });
+
+            // hide the modal
             
-            $("#edit-weather-modal").modal("hide");
+            $("#add-weather-modal").modal("hide");
         },
         /**
          *
          */
         onDeleteMeteoButton: function(e) {
-            var actuator = services.get($(e.currentTarget).parents(".pull-right").children(".delete-popover").attr("id"));
-            communicator.sendMessage({
-                method: "removeLocationObserver",
-                args: [{type:"String", value:actuator.attributes.location}],
-                TARGET: "EHMI",
-                id:"removeLocationObserver"
-            });
-            
+            var weatherObserver = services.get($(e.currentTarget).parents(".pull-right").children(".delete-popover").attr("id"));
+            weatherObserver.destroy();
             appRouter.navigate("#services/types/103", {trigger: true});
 
         },

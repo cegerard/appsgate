@@ -278,6 +278,35 @@ define([
             return arrayScale;
 
         },
+        /**
+         * Override its synchronization method to send a notification on the network
+         */
+        sync: function(method, model) {
+            switch (method) {
+                case "create":
+                case "update":
+                    // create an id to the place
+                communicator.sendMessage({
+                    method: "addLocationObserver",
+                    //method: "addLocationObserverFromWOEID",
+                    args: [{type:"String", value:model.attributes.location}],
+                    TARGET: "EHMI",
+                    id:"addLocationObserver"
+                    }
+                );
+                    break;
+                case "delete":
+				  communicator.sendMessage({
+					method: "removeLocationObserver",
+					args: [{type:"String", value:model.attributes.location}],
+					TARGET: "EHMI",
+					id:"removeLocationObserver"
+				  });
+				  break;
+                default:
+                  break;
+            }
+        },
 
         /**
          * @returns the default template state
