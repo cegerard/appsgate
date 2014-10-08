@@ -691,10 +691,13 @@ public class Device implements org.cybergarage.http.HTTPRequestListener,
 	// //////////////////////////////////////////////
 	boolean overridenLease = false;
 	public void overrideLeaseTime(int value) {
-		if(value==-1)
+		if(value==-1) {
 			overridenLease=false;
-		overridenLease=true;
-		setLeaseTime(value);
+		}
+		else {
+			overridenLease=true;
+			setLeaseTime(value);
+		}
 	}
 	
 	public void setLeaseTime(int value) {

@@ -4,18 +4,16 @@
 	 org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
 	<implementation name="AppsgateUPnPAdapter"
-		classname="appsgate.lig.upnp.adapter.ProxyDiscovery" singleton="true">
+		classname="appsgate.lig.upnp.adapter.UPnPAdapter" singleton="true">
 
-		<callback onInit="apamBound" onRemove="apamUnbound" />
+		<callback onInit="start" onRemove="dispose" />
 
-		<ipojo:requires id="UPnPDevice.ID" aggregate="true"
-			optional="true">
+		<ipojo:requires id="UPnPDevice.ID" specification="org.osgi.service.upnp.UPnPDevice" aggregate="true"	optional="true">
 			<ipojo:callback type="bind" method="boundDevice" />
 			<ipojo:callback type="unbind" method="unboundDevice" />
 		</ipojo:requires>
 
-        <relation specification="AppsgateClientCommunicationManagerSpec"
-            creation="eager"  resolve="external" >
+        <relation specification="AppsgateClientCommunicationManagerSpec" creation="eager"  resolve="external" >
             <interface field="listenerService"/>
             <interface field="sendToClientService"/>
         </relation>     

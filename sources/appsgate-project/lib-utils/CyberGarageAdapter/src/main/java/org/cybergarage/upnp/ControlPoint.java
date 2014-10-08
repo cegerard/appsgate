@@ -814,7 +814,7 @@ public class ControlPoint implements HTTPRequestListener
 
 	public boolean start(String target, int mx)
 	{
-		stop();
+		stop(true);
 		
 		////////////////////////////////////////
 		// HTTP Server
@@ -896,10 +896,15 @@ public class ControlPoint implements HTTPRequestListener
 	{
 		return start(ST.ROOT_DEVICE, SSDP.DEFAULT_MSEARCH_MX);
 	}
-	
-	public boolean stop()
+
+	public boolean stop() {
+		return stop(false);
+	}
+
+	public boolean stop(boolean isRestart)
 	{ 
-		unsubscribe();
+		if (! isRestart)
+			unsubscribe();
 		
 		SSDPNotifySocketList ssdpNotifySocketList = getSSDPNotifySocketList();
 		ssdpNotifySocketList.stop();
