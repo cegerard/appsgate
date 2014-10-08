@@ -37,8 +37,8 @@ public class DBHelper {
 	
 	public Set<JSONObject> getJSONEntries() {
 		logger.trace("Set<JSONObject> getJSONEntries()");
+		Set<JSONObject> result = new HashSet<JSONObject>();
 		try {
-			Set<JSONObject> result = new HashSet<JSONObject>();
 			DBCursor cursor = dbCollection.find();
 			while(cursor != null && cursor.hasNext()) {
 				result.add(new JSONObject(JSON.serialize(cursor.next())));
@@ -47,7 +47,24 @@ public class DBHelper {
 			return result;
 		} catch(Exception exc) {
 			logger.error("Exception while inserting object, "+exc.getMessage());
-			return null;
+			return result;
+		}
+	}
+	
+	public Set<Object> getSimpleObjectEntries() {
+		logger.trace("Set<Object> getSimpleObjectEntries()");
+		Set<Object> result = new HashSet<Object>();
+
+		try {
+			DBCursor cursor = dbCollection.find();
+			while(cursor != null && cursor.hasNext()) {
+				result.add(cursor.next().get(ENTRY_ID));
+			}
+			logger.trace("Set<Object> getSimpleObjectEntries(), returning "+result);
+			return result;
+		} catch(Exception exc) {
+			logger.error("Exception while inserting object, "+exc.getMessage());
+			return result;
 		}
 	}
 	
@@ -107,12 +124,12 @@ public class DBHelper {
 		}
 	}
 	
-	public boolean dropAndInsertListSimpleObject(List<Object> list) {
-		logger.trace("removeAndInsertList(List<Object> list : "+list+")");
+	public boolean dropAndInsertSetSimpleObject(Set<Object> set) {
+		logger.trace("removeAndInsertList(Set<Object> list : "+set+")");
 		try {
 			dbCollection.drop();
-			if(list != null && list.size()>0) {
-				for(Object obj : list) {
+			if(set != null && set.size()>0) {
+				for(Object obj : set) {
 					insertSimpleObject(obj);
 				}
 			}
@@ -122,6 +139,22 @@ public class DBHelper {
 			return false;
 		}
 	}
+	
+	public boolean dropAndInsertSetString(Set<String> set) {
+		logger.trace("dropAndInsertSetString(Set<String> set : "+set+")");
+		try {
+			dbCollection.drop();
+			if(set != null && set.size()>0) {
+				for(String obj : set) {
+					insertSimpleObject(obj);
+				}
+			}
+			return true;
+		} catch(Exception exc) {
+			logger.error("Exception while inserting object, "+exc.getMessage());
+			return false;
+		}
+	}	
 	
 	public boolean dropAndInsertJSONArray(JSONArray array) {
 		logger.trace("dropAndInsertJSONArray(JSONArray array : "+array.toString()+")");
