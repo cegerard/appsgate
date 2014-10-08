@@ -376,19 +376,22 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 
 	@Override
 	public void addLocationObserverFromWOEID(String woeid) {
+		logger.trace("addLocationObserverFromWOEID(String woeid : "+woeid+")");
 		if (woeid != null && woeid.length() > 0 && weatherService != null) {
 			// One annoying thing, if the location is incorrect
 			// (i.e: the place does not exist, we cannot check it util the
 			// WeatherAdapter is bound indirectly using the instance)
 			String location;
 			try {
-				location = weatherService.addWOEID(woeid);
+				location = weatherService.getPlaceName(woeid);
 			} catch (WeatherForecastException e) {
 				location = null;
 				logger.warn("addLocationObserverFromWOEID(...), exception occured "
 						+ e.getMessage());
 			}
 			if (location != null && location.length() > 0) {
+				logger.trace("addLocationObserverFromWOEID(...), location : "+location);
+
 				pendingLocations.add(location);
 				WeatherObserverImpl service = createObserver(location);
 				String objectId;
@@ -403,7 +406,6 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 			}
 
 		}
-
 	}
 
 }

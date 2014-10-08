@@ -148,7 +148,7 @@ public class YahooGeoPlanetImpl implements YahooGeoPlanet {
 			Document doc = db.parse(url.openStream());
 			
 			XPath xPath = XPathFactory.newInstance().newXPath();
-			NodeList nodeList = (NodeList) xPath.evaluate(PLACE_ELT, doc, XPathConstants.NODESET);
+			NodeList nodeList = (NodeList) xPath.evaluate(xPathSep+PLACE_ELT, doc, XPathConstants.NODESET);
 			
 			
 			JSONObject obj = parseLocationResponse(nodeList.item(0));
