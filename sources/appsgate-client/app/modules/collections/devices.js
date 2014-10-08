@@ -12,8 +12,9 @@ define([
     "models/device/phillipshue",
     "models/device/actuator",
     "models/device/domicube",
+    "models/device/mediaplayer",
     "models/device/coreclock"
-], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, CoreClock) {
+], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, CoreClock) {
 
     var Devices = {};
 
@@ -95,7 +96,10 @@ define([
                     device = new Actuator(brick);
                     break;
                 case 21:
-                    device = new CoreClock(brick);
+                    window.coreClock = new CoreClock(brick);
+                    break;
+                case 31:
+                    device = new MediaPlayer(brick);
                     break;
                 case 210:
                     device = new DomiCube(brick);
@@ -199,6 +203,12 @@ define([
          */
         getCoreClock: function() {
             return devices.findWhere({type: 21});
+        },
+        /**
+         * @return Array of UPnP media players
+         */
+        getMediaPlayers: function() {
+            return services.where({type: 31});
         },
         /**
          * @return Array of the unlocated devices

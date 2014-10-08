@@ -2,11 +2,10 @@ define([
     "app",
     "models/service/service",
     "text!templates/program/nodes/defaultActionNode.html",
-    "models/service/mediaplayer",
     "models/service/mediabrowser",
     "models/service/mail",
     "models/service/weather"
-], function(App, Service, ActionTemplate, MediaPlayer, MediaBrowser, Mail, Weather) {
+], function(App, Service, ActionTemplate, MediaBrowser, Mail, Weather) {
 
     var Services = {};
 
@@ -54,9 +53,6 @@ define([
             brick.type = parseInt(brick.type);
             var service = null;
             switch (brick.type) {
-                case 31:
-                    service = new MediaPlayer(brick);
-                    break;
                 case 36:
                     service = new MediaBrowser(brick);
                     break;
@@ -97,12 +93,6 @@ define([
          */
         getCoreWeather: function() {
             return services.findWhere({type: 103});
-        },
-        /**
-         * @return Array of UPnP media players
-         */
-        getMediaPlayers: function() {
-            return services.where({type: 31});
         },
         /**
          * @return Array of UPnP media browsers

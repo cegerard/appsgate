@@ -11,6 +11,8 @@ define([
       initialize: function() {
         var self = this;
         SmartPlugView.__super__.initialize.apply(this, arguments);
+
+        $.extend(self.__proto__.events, SmartPlugView.__super__.events);
       },
       /**
       * Callback to toggle a plug - used when the displayed device is a plug (!)

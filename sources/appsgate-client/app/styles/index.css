@@ -23,7 +23,6 @@ body {
   height: 100%
 }
 
-
 .background-editor-img {
   width:250px;
   display:block;
@@ -316,6 +315,23 @@ body {
 
 .table-scale tr td:nth-child(7) {
     background: #ffffff;
+}
+
+.white-face-rect-domus {
+    fill: none;
+    stroke: black;
+    stroke-width: 10px;
+}
+
+.white-face-svg-domus {
+    width: 50%;
+    margin-left: 25%;
+    height: 20em;
+}
+
+.white-face-text-domus {
+    text-anchor: middle;
+    font-weight: bold;
 }
 
 /* --------------------- Editor styles ----------------------------------*/

@@ -11,6 +11,8 @@ define([
       initialize: function() {
         var self = this;
         LightSensorView.__super__.initialize.apply(this, arguments);
+
+        $.extend(self.__proto__.events, LightSensorView.__super__.events);
       },
       autoupdate: function() {
         LightSensorView.__super__.autoupdate.apply(this);

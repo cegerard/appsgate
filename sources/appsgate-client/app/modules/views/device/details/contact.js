@@ -12,6 +12,8 @@ define([
       initialize: function() {
         var self = this;
         ContactSensorView.__super__.initialize.apply(this, arguments);
+
+        $.extend(self.__proto__.events, ContactSensorView.__super__.events);
       },
       autoupdate: function() {
         ContactSensorView.__super__.autoupdate.apply(this);

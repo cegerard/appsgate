@@ -174,12 +174,6 @@ define([
                 // initialize the content
                 this.$el.html(this.tpl());
 
-                // put the time on the top of the menu
-                $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                    device: devices.getCoreClock(),
-                    active: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-                }));
-
                 // "add program" button to the side menu
                 this.$el.append(this.tplAddProgramButton());
 

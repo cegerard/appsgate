@@ -11,6 +11,8 @@ define([
       initialize: function() {
         var self = this;
         TemperatureSensorView.__super__.initialize.apply(this, arguments);
+
+        $.extend(self.__proto__.events, TemperatureSensorView.__super__.events);
       },
       autoupdate: function() {
         TemperatureSensorView.__super__.autoupdate.apply(this);

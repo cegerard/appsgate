@@ -83,18 +83,12 @@ define([
           // initialize the content
           this.$el.html(this.tpl());
 
-          // display the clock
-          $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-            device: devices.getCoreClock(),
-            active: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-          }));
-
           // for each category of devices, add a menu item
           this.$el.append(this.tpl());
           var types = devices.getDevicesByType();
           var container = document.createDocumentFragment();
           _.forEach(_.keys(types), function(type) {
-            if (type !== "21" && type !== "36" && type !== "102" && type !== "103") {
+            if (type !== "21" && type !== "102" && type !== "103") {
               $(container).append(self.tplDeviceContainer({
                 type: type,
                 devices: types[type],

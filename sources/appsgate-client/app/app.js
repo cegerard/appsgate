@@ -31,7 +31,7 @@ define(function(require, exports, module) {
         //Parser the URL called to generate the server provider.
         var serverAddr=document.URL.replace(/http:\/\//i,"").replace(/\/.*/i,"").replace(/:.*/i,"");
         //DO NOT change the IP anymore, its not necessary
-        window.communicator = new Communicator('ws://'+serverAddr+':8087');
+        window.communicator = new Communicator('ws://192.168.1.11:8087');
         window.addEventListener("click", onFocusOutCircleMenu, false);
 
         // Wait for the socket to be opened

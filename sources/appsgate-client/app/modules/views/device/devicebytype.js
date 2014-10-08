@@ -204,10 +204,9 @@ define([
               $("#device-" + device.cid + "-value").attr("data-i18n", "devices.plug.status.turnedOff");
               $("#device-" + device.cid + "-value").attr("class","label label-default");
             }
-            $("#device-" + device.cid + "-consumption").text(device.get("consumption"));
+            $("#device-" + device.cid + "-consumption").text(device.get("consumption") + " W");
             break;
           case 7:
-            var test = this.$el.find("#device-" + device.cid + "-value");
             if (device.get("value") === "true" || device.get("value") === true) {
               $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOff");
               $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOn");
@@ -231,29 +230,34 @@ define([
             }
             break;
           case 210:
+            var activeFace = "";
             switch (device.get("activeFace")) {
               case "1":
-                $("#device-" + device.cid + "-value").attr("src","/app/img/lan.svg");
+                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-work.svg' width='18px' class='img-responsive'>";
                 break;
               case "2":
-                $("#device-" + device.cid + "-value").attr("src","/app/img/lan.svg");
+                activeFace = "<svg id='device-" + device.cid + "-value' class='white-face-svg-domus img-responsive'>" +
+                  "<rect class='white-face-rect-domus' x='10' y='10' rx='25' ry='25' width='95%' height='90%'/>" +
+                  "<text class='white-face-text-domus' x='50%' y='47%'>" + $.i18n.t('devices.domicube.white-face.first-elem') +
+                  "</text><text class='white-face-text-domus' x='50%' y='54%'>" + $.i18n.t('devices.domicube.white-face.second-elem') + "</text></svg>";
                 break;
               case "3":
-                $("#device-" + device.cid + "-value").attr("src","/app/img/music.png");
+                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-music.png' width='18px' class='img-responsive'>";
                 break;
               case "4":
-                $("#device-" + device.cid + "-value").attr("src","/app/img/question.svg");
+                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-question.svg' width='18px' class='img-responsive'>";
                 break;
               case "5":
-                $("#device-" + device.cid + "-value").attr("src","/app/img/night.png");
+                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-night.png' width='18px' class='img-responsive'>";
                 break;
               case "6":
-                $("#device-" + device.cid + "-value").attr("src","/app/img/meal.png");
+                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-meal.png' width='18px' class='img-responsive'>";
                 break;
               default:
                 //TODO
                 break;
             }
+            this.$el.find("#device-" + device.cid + "-value").replaceWith(activeFace);
             break;
           }
           if (device.get("status") === "0") {
