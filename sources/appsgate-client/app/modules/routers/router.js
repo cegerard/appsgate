@@ -2,9 +2,6 @@ define(function(require, exports, module) {
   "use strict";
 
   // External dependencies.
-  var LoginView = require("views/login/loginview");
-  var HomeView = require("views/homeview");
-
   var PlacesRouter = require("routers/place");
   var DevicesRouter = require("routers/device");
   var ServicesRouter = require("routers/service");
@@ -29,26 +26,16 @@ define(function(require, exports, module) {
     circlemenutemplate : _.template(circleMenuTemplate),
 
     routes: {
-      "": "login",
-      "login": "login",
-      "reset": "home",
-      "home": "home",
-      "places": "habitat",
+      "": "places",
+      "reset": "places",
+      "home": "places",
+      "places": "places",
       "devices": "devices",
       "services": "services",
-      "programs": "programs",
-      "debugger": "debugger"
+      "programs": "programs"
     },
     // default route of the application
-    login: function() {
-      this.showView(new LoginView());
-    },
-    home: function() {
-      this.showView(new HomeView());
-      $(".breadcrumb").html("<li class='active'><span data-i18n='navbar.home'/></li>");
-      this.translateNavbar();
-    },
-    habitat: function() {
+    places: function() {
       this.placesRouter.list();
     },
     devices: function() {
@@ -86,17 +73,7 @@ define(function(require, exports, module) {
         direction: 'top-right'
       });
 
-      $(".navmenu").circleMenu({
-        trigger: "click",
-        item_diameter: 50,
-        circle_radius: 150,
-        direction: 'top'
-      });
-
-
       $("body").i18n();
-
-
     },
     showDetailsView: function(view) {
       // remove and unbind the current view

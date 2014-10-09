@@ -3,9 +3,8 @@ define([
     "models/place",
     "text!templates/places/menu/menu.html",
     "text!templates/places/menu/placeContainer.html",
-    "text!templates/devices/menu/coreClockContainer.html",
     "text!templates/places/menu/addButton.html"
-], function(App, Place, placeMenuTemplate, placeContainerMenuTemplate, coreClockContainerMenuTemplate, addPlaceButtonTemplate) {
+], function(App, Place, placeMenuTemplate, placeContainerMenuTemplate, addPlaceButtonTemplate) {
 
     var PlaceMenuView = {};
     /**
@@ -14,7 +13,6 @@ define([
     PlaceMenuView = Backbone.View.extend({
         tpl: _.template(placeMenuTemplate),
         tplPlaceContainer: _.template(placeContainerMenuTemplate),
-        tplCoreClockContainer: _.template(coreClockContainerMenuTemplate),
         tplAddPlaceButton: _.template(addPlaceButtonTemplate),
         /**
          * Bind events of the DOM elements from the view to their callback
@@ -35,8 +33,8 @@ define([
             this.listenTo(places, "add", this.render);
             this.listenTo(places, "change", this.render);
             this.listenTo(places, "remove", this.render);
-            this.listenTo(devices, "change", this.onChangedDevice);
-            this.listenTo(devices, "remove", this.render);
+            this.listenTo(devices, "change", this.autoupdate);
+            this.listenTo(devices, "remove", this.autoupdate);
         },
         /**
          * Method called when a device has changed
@@ -44,32 +42,15 @@ define([
          * @param collection Collection that holds the changed model
          * @param options Options given with the change event
          */
-        onChangedDevice: function(model, options) {
-            // a device has changed
-            // if it's the clock, we refresh the clock only
-            if (typeof options !== "undefined" && options.clockRefresh) {
-                this.refreshClockDisplay();
-            }
-            // otherwise we rerender the whole view
-            else {
-                this.render();
-            }
-        },
-        /**
-         * Refreshes the time display without rerendering the whole screen
-         */
-        refreshClockDisplay: function() {
+        autoupdate: function(model) {
+            var place = places.get(model.get("placeId"));
+            this.$el.find("#place-" + place.get("id")).replaceWith(this.tplPlaceContainer({
+                place: place,
+                active: Backbone.history.fragment.split("/")[1] === place.get("id") ? true : false
+            }));
 
-            if (typeof devices.getCoreClock() !== "undefined") { // dirty hack to avoid a bug when reconnecting - TODO
-                //remove existing node
-                $(this.$el.find(".list-group")[0]).children().remove();
-
-                //refresh the clock
-                $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                    device: devices.getCoreClock(),
-                    active: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-                }));
-            }
+            // translate the view
+            this.$el.i18n();
         },
         /**
          * Update the side menu to set the correct active element
@@ -185,14 +166,6 @@ define([
 
                 // initialize the content
                 this.$el.html(this.tpl());
-
-                // put the time on the top of the menu
-                if (typeof devices.getCoreClock() !== "undefined") { // dirty hack to avoid a bug when reconnecting - TODO
-                    $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                        device: devices.getCoreClock(),
-                        active: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-                    }));
-                }
 
                 // "add place" button to the side menu
                 this.$el.append(this.tplAddPlaceButton());

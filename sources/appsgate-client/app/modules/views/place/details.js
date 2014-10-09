@@ -40,22 +40,134 @@ define([
 
                 // if the device has been found in the collection
                 if (typeof device !== "undefined") {
-                    self.listenTo(devices.get(deviceId), "change", self.onChangedDevice);
+                    self.listenTo(device, "change", self.autoupdate);
                 }
             });
         },
         /**
          * Method called when a device has changed
-         * @param model Model that changed, Device in that cas
+         * @param device Model that changed, Device in that case
          * @param collection Collection that holds the changed model
          * @param options Options given with the change event
          */
-        onChangedDevice: function(model, options) {
-            // a device has changed
-            // if it's the clock, we refresh the clock only
-            if (typeof options === "undefined" || (typeof options !== "undefined") && !options.clockRefresh) {
-                this.render();
-            }
+        autoupdate: function(device, options) {
+            var type = device.get("type");
+            var place = places.get(device.get("placeId"));
+
+            this.$el.find("#device-" + device.cid + "-name").html(device.get("name") !== "" ?device.get("name") : $.i18n.t(places-details.body.device-no-name));
+
+            switch (type) {
+              case 0:
+                $("#device-" + device.cid + "-value").text(Math.round(device.get("value")) + "&deg;C");
+                break;
+              case 1:
+                $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + s.get("label"));
+                break;
+              case 2:
+                if (device.get("buttonStatus") === "true") {
+                  $("#device-" + device.cid + "-value").attr("class","label label-yellow");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.switch.value.opened");
+                } else {
+                  $("#device-" + device.cid + "-value").attr("class","label label-default");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.switch.value.closed");
+                }
+                break;
+              case 3:
+                if (device.get("contact") !== "true") {
+                  $("#device-" + device.cid + "-value").attr("class","label label-yellow");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.contact.value.opened");
+                } else {
+                  $("#device-" + device.cid + "-value").attr("class","label label-default");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.contact.value.closed");
+                }
+                break;
+              case 4:
+                if (device.get("inserted") === "true") {
+                  $("#device-" + device.cid + "-value").attr("class","label label-yellow");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.cardswitch.value.inserted");
+                } else {
+                  $("#device-" + device.cid + "-value").attr("class","label label-default");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.cardswitch.value.not-inserted");
+                }
+                break;
+              case 6:
+                if (device.get("plugState") === "true" || device.get("plugState") === true) {
+                  $("#device-" + device.cid + "-button").attr("data-i18n", "devices.plug.action.turnOff");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.plug.status.turnedOn");
+                  $("#device-" + device.cid + "-value").attr("class","label label-yellow");
+                } else {
+                  $("#device-" + device.cid + "-button").attr("data-i18n", "devices.plug.action.turnOn");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.plug.status.turnedOff");
+                  $("#device-" + device.cid + "-value").attr("class","label label-default");
+                }
+                $("#device-" + device.cid + "-consumption").text(device.get("consumption") + " W");
+                break;
+              case 7:
+                if (device.get("value") === "true" || device.get("value") === true) {
+                  $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOff");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOn");
+                  $("#device-" + device.cid + "-value").attr("class", "label label-yellow");
+                } else {
+                  $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOn");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOff");
+                  $("#device-" + device.cid + "-value").attr("class", "label label-default");
+                }
+                $("#device-" + device.cid + "-color").attr("style", "background-color:" + device.getCurrentColor());
+                break;
+              case 8:
+                if (device.get("value") === "true" || device.get("value") === true) {
+                  $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOff");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOn");
+                  $("#device-" + device.cid + "-value").attr("class","label label-yellow");
+                } else {
+                  $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOn");
+                  $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOff");
+                  $("#device-" + device.cid + "-value").attr("class","label label-default");
+                }
+                break;
+              case 210:
+                var activeFace = "";
+                switch (device.get("activeFace")) {
+                  case "1":
+                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-work.svg' width='18px' class='img-responsive'>";
+                    break;
+                  case "2":
+                    activeFace = "<svg id='device-" + device.cid + "-value' class='white-face-svg-domus img-responsive'>" +
+                      "<rect class='white-face-rect-domus' x='10' y='10' rx='25' ry='25' width='95%' height='90%'/>" +
+                      "<text class='white-face-text-domus' x='50%' y='47%'>" + $.i18n.t('devices.domicube.white-face.first-elem') +
+                      "</text><text class='white-face-text-domus' x='50%' y='54%'>" + $.i18n.t('devices.domicube.white-face.second-elem') + "</text></svg>";
+                    break;
+                  case "3":
+                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-music.png' width='18px' class='img-responsive'>";
+                    break;
+                  case "4":
+                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-question.svg' width='18px' class='img-responsive'>";
+                    break;
+                  case "5":
+                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-night.png' width='18px' class='img-responsive'>";
+                    break;
+                  case "6":
+                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-meal.png' width='18px' class='img-responsive'>";
+                    break;
+                  default:
+                    //TODO
+                    break;
+                }
+                this.$el.find("#device-" + device.cid + "-value").replaceWith(activeFace);
+                break;
+              }
+              if (device.get("status") === "0") {
+                $("#device-" + device.cid + "-status").attr("class","label label-danger");
+                $("#device-" + device.cid + "-status").attr("data-i18n", "devices.status.disconnected");
+              } else if (device.get("status" === "1")) {
+                $("#device-" + device.cid + "-status").attr("class","label label-warning");
+                $("#device-" + device.cid + "-status").attr("data-i18n", "devices.status.waiting");
+              } else {
+                $("#device-" + device.cid + "-status").attr("class","label label-success");
+                $("#device-" + device.cid + "-status").attr("data-i18n", "devices.status.connected");
+              }
+              // translate the view
+              this.$el.i18n();
         },
         /**
          * Clear the input text, hide the error message and disable the valid button by default
@@ -157,7 +269,7 @@ define([
         onTogglePlugButton: function(e) {
             e.preventDefault();
 
-            var plug = devices.get($(e.currentTarget).attr("id"));
+            var plug = devices.get($(e.currentTarget).attr("device-id"));
             // value can be string or boolean
             // string
             if (typeof plug.get("plugState") === "string") {
@@ -188,7 +300,7 @@ define([
         onToggleLampButton: function(e) {
             e.preventDefault();
 
-            var lamp = devices.get($(e.currentTarget).attr("id"));
+            var lamp = devices.get($(e.currentTarget).attr("device-id"));
             // value can be string or boolean
             // string
             if (typeof lamp.get("value") === "string") {
@@ -219,7 +331,7 @@ define([
         onBlinkLampButton: function(e) {
             e.preventDefault();
 
-            var lamp = devices.get($(e.currentTarget).attr("id"));
+            var lamp = devices.get($(e.currentTarget).attr("device-id"));
             // send the message to the backend
             lamp.remoteControl("blink30", []);
 

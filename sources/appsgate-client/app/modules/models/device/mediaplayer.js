@@ -1,9 +1,9 @@
 define([
     "app",
-    "models/service/service",
+    "models/device/device",
     "text!templates/program/nodes/mediaPlayerActionNode.html",
     "jstree"
-], function(App, Service, ActionTemplate) {
+], function(App, Device, ActionTemplate) {
 
     var MediaPlayer = {};
 
@@ -12,7 +12,7 @@ define([
      *
      * @class Device.MediaPlayer
      */
-    MediaPlayer = Service.extend({
+    MediaPlayer = Device.extend({
         /**
          * @constructor
          */

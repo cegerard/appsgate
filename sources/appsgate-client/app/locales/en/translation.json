@@ -130,7 +130,7 @@
             },
             "scale-label": "Scale"
         },
-        "keycard-reader": {
+        "cardswitch": {
             "keyboard": {
                 "card-inserted": "a card is inserted in ...",
                 "insertedEvent": "someone insert a card in ...",

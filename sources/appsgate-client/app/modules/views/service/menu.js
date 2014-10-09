@@ -70,21 +70,6 @@ define([
             }
         },
         /**
-         * Refreshes the time display without rerendering the whole screen
-         */
-        refreshClockDisplay: function() {
-
-            //remove existing node
-            $(this.$el.find(".list-group")[0]).children().remove();
-
-            //refresh the clock
-            $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                service: services.getCoreClock(),
-                active: Backbone.history.fragment === "services/" + services.getCoreClock().get("id") ? true : false
-            }));
-
-        },
-        /**
          * Render the side menu
          */
         render: function() {

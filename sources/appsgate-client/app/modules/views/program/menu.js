@@ -2,9 +2,8 @@ define([
     "app",
     "text!templates/program/menu/menu.html",
     "text!templates/program/menu/programContainer.html",
-    "text!templates/program/menu/addbutton.html",
-    "text!templates/devices/menu/coreClockContainer.html"
-], function(App, programMenuTemplate, programContainerMenuTemplate, addProgramButtonTemplate, coreClockContainerMenuTemplate) {
+    "text!templates/program/menu/addbutton.html"
+], function(App, programMenuTemplate, programContainerMenuTemplate, addProgramButtonTemplate) {
 
     var ProgramMenuView = {};
     /**
@@ -14,7 +13,6 @@ define([
         tpl: _.template(programMenuTemplate),
         tplProgramContainer: _.template(programContainerMenuTemplate),
         tplAddProgramButton: _.template(addProgramButtonTemplate),
-        tplCoreClockContainer: _.template(coreClockContainerMenuTemplate),
         /**
          * Bind events of the DOM elements from the view to their callback
          */
@@ -34,7 +32,6 @@ define([
             this.listenTo(programs, "add", this.render);
             this.listenTo(programs, "remove", this.render);
             this.listenTo(programs, "change", this.render);
-            this.listenTo(devices.getCoreClock(), "change", this.refreshClockDisplay);
         },
         /**
          * Update the side menu to set the correct active element
@@ -51,21 +48,6 @@ define([
             } else {
                 $("#side-" + Backbone.history.fragment.split("/")[1]).addClass("active");
             }
-        },
-        /**
-         * Refreshes the time display without rerendering the whole screen
-         */
-        refreshClockDisplay: function() {
-
-            //remove existing node
-            $(this.$el.find(".list-group")[0]).children().remove();
-
-            //refresh the clock
-            $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                device: devices.getCoreClock(),
-                active: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-            }));
-
         },
         /**
          * Clear the input text, hide the error message, check the checkbox and disable the valid button by default
@@ -187,12 +169,6 @@ define([
 
                 // initialize the content
                 this.$el.html(this.tpl());
-
-                // put the time on the top of the menu
-                $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                    device: devices.getCoreClock(),
-                    active: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-                }));
 
                 // "add program" button to the side menu
                 this.$el.append(this.tplAddProgramButton());
