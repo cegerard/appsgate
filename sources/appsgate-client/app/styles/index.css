@@ -791,6 +791,17 @@ font-size: smaller;
    padding: 3px;
 }
 
+.main-block-node>h2 {
+   margin: -10px 0px 0 20px ;
+font-size: smaller;
+  color: #428bca;
+}
+
+.main-block-node>h2 span {
+   background-color: white;
+   padding: 3px;
+}
+
 .seq-block-node {
   border:1px solid #428bca;
   padding:2px;
@@ -950,7 +961,11 @@ font-size: smaller;
     width: 960px;
 }
 
+<<<<<<< HEAD
 .debugger .container {
    padding: 0px;
 }
 .ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}  
+=======
+.ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}  
+>>>>>>> 8723575caa6c55cf149c1b70c9a916c8baad0c06
