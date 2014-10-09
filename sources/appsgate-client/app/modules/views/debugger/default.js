@@ -14,7 +14,7 @@ define([
 
     initialize: function() {
         this.connector = new Debugger.Connector({
-            address: 'localhost',
+            address: document.URL.replace(/http:\/\//i,"").replace(/\/.*/i,"").replace(/:.*/i,""),
             port: '8090'
         });
     },
