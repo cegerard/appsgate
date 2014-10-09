@@ -23,16 +23,21 @@ public class MongoDBConfiguration {
 	private Integer dbTimeOut;
 
 	private MongoClient mongoClient;
+	MongoDBConfigFactory factory;
+	String myName;
 
 	public MongoDBConfiguration() {
 	}
 
 	public void setConfiguration(String dbHost, int dbPort, int dbTimeOut,
-			MongoClient mongoClient) {
+			MongoClient mongoClient, MongoDBConfigFactory factory, String instanceName) {
 		this.dbHost = dbHost;
 		this.dbPort = dbPort;
 		this.dbTimeOut = dbTimeOut;
 		this.mongoClient = mongoClient;
+		this.factory=factory;
+		this.myName = instanceName;
+		
 	}
 
 	public DB getDB(String dbName) throws MongoException {
@@ -63,7 +68,7 @@ public class MongoDBConfiguration {
 			}
 			return true;
 		} else {
-			logger.error("Could not retrieve mongo client, returning null");
+			logger.error("Could not retrieve mongo client");
 			return false;
 		}
 	}	
@@ -171,7 +176,14 @@ public class MongoDBConfiguration {
 	}	
 
 	public boolean isValid() {
-		return checkMongoClient(mongoClient);
+		boolean valid = checkMongoClient(mongoClient);
+		if(!valid) {
+			logger.info("isValid(), not valid anymore, call the facotry to destroy ourself");
+			if(factory != null) {
+				factory.destroyconfig(myName);
+			}
+		}
+		return valid;
 	}
 
 	static public boolean checkMongoClient(MongoClient mongoClient) {

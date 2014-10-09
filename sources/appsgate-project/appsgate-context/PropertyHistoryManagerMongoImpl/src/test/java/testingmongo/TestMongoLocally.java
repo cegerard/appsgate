@@ -72,7 +72,7 @@ public class TestMongoLocally {
                 options.build());
 
 		myConfig = new MongoDBConfiguration();
-        myConfig.setConfiguration(DBHOST, DBPORT, DBTIMEOUT, mongoClient );
+        myConfig.setConfiguration(DBHOST, DBPORT, DBTIMEOUT, mongoClient, null, null);
 
 		dbImpl = new PropertyHistoryManagerMongoImpl();
 		dbImpl.setMyConfiguration(myConfig);
