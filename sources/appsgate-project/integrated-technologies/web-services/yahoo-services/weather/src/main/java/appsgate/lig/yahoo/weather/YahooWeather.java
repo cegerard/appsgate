@@ -7,6 +7,7 @@ import appsgate.lig.weather.utils.DayForecast;
 import java.util.Calendar;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -68,6 +69,29 @@ public interface YahooWeather {
      * @throws appsgate.lig.weather.exception.WeatherForecastException If place name in incorrect, misspelled, or cannot be found (as a valid location)
      */
     boolean containLocation(String placeName) throws WeatherForecastException;
+    
+    /**
+    *
+    * @return a convenient Yahoo Presentation URL for the weather
+    */
+    String getPresentationURL(String placeName) throws WeatherForecastException;    
+    
+    /**
+    *
+    * @return a the WOEID (Where On Earth Identifier) associated with a placeName
+    */
+    String getWOEID(String placeName) throws WeatherForecastException; 
+    
+    /**
+    * Little hack to force a particular location upon its unique WOEID
+    * (note that the location is a pivot key, so we cannot have multiple location registered at the same time
+    * return the placeName associated
+    */
+    String addWOEID(String woeid) throws WeatherForecastException;   
+    
+    /**
+    */
+    String getPlaceName(String woeid) throws WeatherForecastException;       
 
     /**
      * @param unit US or EU
@@ -119,6 +143,22 @@ public interface YahooWeather {
      * {"locality1":"Grenoble","woeid":"593720","name":"Grenoble","placeTypeName":"Town","country":"France"}
      */
     public JSONObject checkLocation(String location);	    
+    
+    /**
+     * Check a location upon the first letters of its place name
+     *
+     * @param location
+     *            A human place name : a town, a country, a particular place or point of interest (poi)
+     * @return A JSONArray with 0..5  objects describing the location (formatted as follow), example starting with Gre
+     * [
+     * {"locality1":"Grenoble","woeid":"593720","name":"Grenoble","placeTypeName":"Town","country":"France"},
+     * {"locality1":"Green Bay","woeid":"2413753","name":"Green Bay","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greenville","woeid":"2414583","name":"Greenville","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greensboro","woeid":"2414469","name":"Greensboro","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greifswald","woeid":"654035","name":"Greifswald","placeTypeName":"Town","country":"Allemagne"}
+     * ]
+     */
+    public JSONArray checkLocationsStartingWith(String firstLetters);    
 
 
 } 

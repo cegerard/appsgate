@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.felix.ipojo.annotations.Ignore;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,20 +22,12 @@ import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.imag.adele.apam.CST;
-import fr.imag.adele.apam.Implementation;
-import fr.imag.adele.apam.Instance;
-import appsgate.lig.calendar.service.spec.CoreCalendarSpec;
 import appsgate.lig.clock.sensor.spec.CoreClockSpec;
-import appsgate.lig.google.impl.GoogleAdapterImpl;
 import appsgate.lig.google.scheduler.GoogleScheduler;
 import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.mail.Mail;
-import appsgate.lig.scheduler.SchedulingException;
-import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
-import appsgate.lig.test.pax.helpers.PaxedDistribution.resolveFrom;
 import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 
 /**
@@ -130,7 +121,19 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		GoogleScheduler toto = (GoogleScheduler) initGoogleScheduler();
 		logger.debug("init Google Scheduler OK");
 
-		//toto.resetScheduler();
+		try {
+			toto.refreshScheduler();
+			
+			logger.debug("Scheduler refreshed");
+			
+			//toto.listEventsSchedulingProgramId("barnabee", "2014-10-02T14:17:25.423+02:00", "2014-10-03T14:17:25.423+02:00");
+			//toto.listEventsSchedulingProgramId("barnabee", null, "2014-10-03T14:17:25.423+02:00");
+			//toto.listEventsSchedulingProgramId("barnabee", "2014-10-02T14:17:25.423+02:00", null);
+			//toto.listEventsSchedulingProgramId("barnabee", null, null);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		logger.debug("Scheduler reset OK");
 	}
 

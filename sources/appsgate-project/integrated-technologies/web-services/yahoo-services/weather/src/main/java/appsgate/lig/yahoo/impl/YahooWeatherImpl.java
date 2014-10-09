@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
 
 import appsgate.lig.yahoo.geoplanet.YahooGeoPlanet;
 import appsgate.lig.yahoo.weather.YahooWeather;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,51 +35,48 @@ import appsgate.lig.weather.exception.WeatherForecastException;
  * @author thibaud
  * 
  */
-public class YahooWeatherImpl  implements YahooWeather {
+public class YahooWeatherImpl implements YahooWeather {
 
-    private static Logger logger = LoggerFactory
-            .getLogger(YahooWeatherImpl.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(YahooWeatherImpl.class);
 
 	URL url;
 
-    protected String feedUrl;
-    protected char currentUnit;
+	protected String feedUrl;
+	protected char currentUnit;
 
-    private Object lock = new Object();
-    
-    
-    /**
-     * In order to avoid massive pooling of the webService, two request must be separated by this minimal interval (5 minutes)
-     */
-    private long intervalBetweenRefresh = 1000*60*5;    
-    private long timeStamp=0;
+	private Object lock = new Object();
 
+	/**
+	 * In order to avoid massive pooling of the webService, two request must be
+	 * separated by this minimal interval (5 minutes)
+	 */
+	private long intervalBetweenRefresh = 1000 * 60 * 5;
+	private long timeStamp = 0;
 
-    /*
-     * For each human place Name, as the user entered it (the key), associate a
-     * WOEID (the value)
-     */
-    protected Map<String, String> woeidFromePlaceName;
+	/*
+	 * For each human place Name, as the user entered it (the key), associate a
+	 * WOEID (the value)
+	 */
+	protected Map<String, String> woeidFromePlaceName;
 
-    protected Calendar lastFetchDate;
+	protected Calendar lastFetchDate;
 
-
-    /**
-     * Feed URL that returns an XML with the forecast (e.g.
-     * http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
-     */
-    protected String feedUrlTemplate = "http://weather.yahooapis.com/forecastrss?w=%s&u=%c";
-
+	/**
+	 * Feed URL that returns an XML with the forecast (e.g.
+	 * http://weather.yahooapis.com/forecastrss?w=12724717&u=c)
+	 */
+	protected String feedUrlTemplate = "http://weather.yahooapis.com/forecastrss?w=%s&u=%c";
 
 	boolean noFetch;
 	private YahooGeoPlanet geoPlanet;
-
 
 	// Set of map defining combination between a WOEID (Where on Earth
 	// IDentifier)
 	// and some information about this location WOEID always comes as key and
 	// the information as value
 	private Map<String, Calendar> lastPublicationDates;
+	private Map<String, String> presentationURLs;
 	private Map<String, CurrentWeather> currentWeathers;
 	private Map<String, List<DayForecast>> forecasts;
 
@@ -87,6 +84,7 @@ public class YahooWeatherImpl  implements YahooWeather {
 
 		woeidFromePlaceName = new HashMap<String, String>();
 		lastPublicationDates = new HashMap<String, Calendar>();
+		presentationURLs = new HashMap<String, String>();
 		currentWeathers = new HashMap<String, CurrentWeather>();
 		forecasts = new HashMap<String, List<DayForecast>>();
 
@@ -103,7 +101,8 @@ public class YahooWeatherImpl  implements YahooWeather {
 		return lastFetchDate;
 	}
 
-	private String getWOEID(String placeName) throws WeatherForecastException {
+	@Override
+	public String getWOEID(String placeName) throws WeatherForecastException {
 		if (!woeidFromePlaceName.containsKey(placeName))
 			throw new WeatherForecastException(
 					"Place Name is not monitored (Not spelled as previously added ?)");
@@ -118,9 +117,9 @@ public class YahooWeatherImpl  implements YahooWeather {
 	@Override
 	public List<DayForecast> getForecast(String placeName)
 			throws WeatherForecastException {
-        fetchAtLocation(placeName);
+		fetchAtLocation(placeName);
 
-        return forecasts.get(getWOEID(placeName));
+		return forecasts.get(getWOEID(placeName));
 	}
 
 	/*
@@ -145,9 +144,9 @@ public class YahooWeatherImpl  implements YahooWeather {
 	@Override
 	public CurrentWeather getCurrentWeather(String placeName)
 			throws WeatherForecastException {
-        fetchAtLocation(placeName);
+		fetchAtLocation(placeName);
 
-        return currentWeathers.get(getWOEID(placeName));
+		return currentWeathers.get(getWOEID(placeName));
 	}
 
 	/*
@@ -171,21 +170,24 @@ public class YahooWeatherImpl  implements YahooWeather {
 			throw new WeatherForecastException(
 					"Already monitoring this location");
 
-		synchronized(lock) {
-            String okPlaceName = placeName.replace(" ", "%20");
-            logger.info("addLocation(String placeName: " + okPlaceName + " )");
+		synchronized (lock) {
+			String okPlaceName = placeName.replace(" ", "%20");
+			logger.info("addLocation(String placeName: " + placeName + " )");
 
-            String newWOEID = geoPlanet.getWOEIDFromPlaceName(okPlaceName);
-            if (newWOEID != null && newWOEID.length() > 0) {
-                woeidFromePlaceName.put(placeName, newWOEID);
-                lastPublicationDates.put(newWOEID, null);
-                currentWeathers.put(newWOEID, null);
-                forecasts.put(newWOEID, null);
-                // Special case of fetch that override the timeStamp (because a new location must be polled one time)
-                fetch(placeName);
-            } else
-                throw new WeatherForecastException("Place was not found");
-        }
+			String newWOEID = geoPlanet.getWOEIDFromPlaceName(okPlaceName);
+			if (newWOEID != null && newWOEID.length() > 0) {
+				woeidFromePlaceName.put(placeName, newWOEID);
+				lastPublicationDates.put(newWOEID, null);
+				presentationURLs.put(newWOEID, null);
+
+				currentWeathers.put(newWOEID, null);
+				forecasts.put(newWOEID, null);
+				// Special case of fetch that override the timeStamp (because a
+				// new location must be polled one time)
+				fetch(placeName);
+			} else
+				throw new WeatherForecastException("Place was not found");
+		}
 	}
 
 	/*
@@ -204,6 +206,8 @@ public class YahooWeatherImpl  implements YahooWeather {
 			if (woeid == null)
 				return false;
 			lastPublicationDates.remove(woeid);
+			presentationURLs.remove(woeid);
+
 			currentWeathers.remove(woeid);
 			forecasts.remove(woeid);
 
@@ -289,66 +293,67 @@ public class YahooWeatherImpl  implements YahooWeather {
 	 * @see appsgate.lig.weather.WeatherForecast#fetch()
 	 */
 	public void fetch() throws WeatherForecastException {
-		if(System.currentTimeMillis()> (timeStamp+intervalBetweenRefresh)) {
+		if (System.currentTimeMillis() > (timeStamp + intervalBetweenRefresh)) {
 			timeStamp = System.currentTimeMillis();
 
 			for (String placeName : woeidFromePlaceName.keySet()) {
 				fetch(placeName);
 			}
 
-
-		lastFetchDate = Calendar.getInstance();
+			lastFetchDate = Calendar.getInstance();
 		}
-		
+
 	}
-	
+
 	/**
-	 * This method is private because only the YahooWeatherImpl service can choose to send a request to the web service
-	 * (to avoid pooling)
+	 * This method is private because only the YahooWeatherImpl service can
+	 * choose to send a request to the web service (to avoid pooling)
+	 * 
 	 * @param placeName
 	 * @throws WeatherForecastException
 	 */
 	private void fetch(String placeName) throws WeatherForecastException {
 		try {
-            synchronized (lock) {
+			synchronized (lock) {
 				String woeid = woeidFromePlaceName.get(placeName);
-				logger.trace("Fetching Weather for " + placeName+", WOEID : "+woeid);
+				logger.trace("Fetching Weather for " + placeName + ", WOEID : "
+						+ woeid);
 
-                feedUrl = String.format(feedUrlTemplate, woeid, currentUnit);
+				feedUrl = String.format(feedUrlTemplate, woeid, currentUnit);
 
-                this.url = new URL(feedUrl);
+				this.url = new URL(feedUrl);
 
-                DocumentBuilder db = null;
-                db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                Document doc = db.parse(url.openStream());
-                Calendar newPubDate = YahooWeatherParser
-                        .parsePublicationDate(doc);
+				DocumentBuilder db = null;
+				db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+				Document doc = db.parse(url.openStream());
+				Calendar newPubDate = YahooWeatherParser
+						.parsePublicationDate(doc);
 
-                if (newPubDate != null
-                        && (newPubDate.after(lastPublicationDates.get(woeid)) || lastPublicationDates
-                        .get(woeid) == null)) {
-                    logger.info("Publication date for " + placeName
-                            + " is newer, parsing new Weather Data !");
-                    currentWeathers.put(woeid,
-                            YahooWeatherParser.parseCurrentConditions(doc));
-                    forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
-                    lastPublicationDates.put(woeid, newPubDate);
-                } else
-                    logger.info("Publication date for " + placeName
-                            + " is NOT newer, does nothing");
-            }
+				if (newPubDate != null
+						&& (newPubDate.after(lastPublicationDates.get(woeid)) || lastPublicationDates
+								.get(woeid) == null)) {
+					logger.info("Publication date for " + placeName
+							+ " is newer, parsing new Weather Data !");
+					currentWeathers.put(woeid,
+							YahooWeatherParser.parseCurrentConditions(doc));
+					forecasts.put(woeid, YahooWeatherParser.parseForecast(doc));
+					lastPublicationDates.put(woeid, newPubDate);
+					presentationURLs.put(woeid,
+							YahooWeatherParser.parsePresentationURL(doc));
+				} else
+					logger.info("Publication date for " + placeName
+							+ " is NOT newer, does nothing");
+			}
 		} catch (Exception e) {
-		throw new WeatherForecastException(
-				"Impossible to fetch to weather forecast service, "
-						+ e.getMessage());
+			throw new WeatherForecastException(
+					"Impossible to fetch to weather forecast service, "
+							+ e.getMessage());
 		}
 	}
 
-	
-
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see appsgate.lig.weather.WeatherForecast#setUnit(appsgate.lig.weather.
 	 * WeatherForecast.Unit)
 	 */
@@ -364,6 +369,7 @@ public class YahooWeatherImpl  implements YahooWeather {
 	}
 
 	private String getNameFromWOEID(String WOEID) {
+
 		Set<String> nameList = woeidFromePlaceName.keySet();
 		String nameLoc = "";
 		for (String name : nameList) {
@@ -377,19 +383,63 @@ public class YahooWeatherImpl  implements YahooWeather {
 		return nameLoc;
 	}
 
-    
-    private void fetchAtLocation(String placeName) throws WeatherForecastException {
+	private void fetchAtLocation(String placeName)
+			throws WeatherForecastException {
 		if (!woeidFromePlaceName.containsKey(placeName))
 			addLocation(placeName);
-    }
+	}
 
 	@Override
 	public JSONObject checkLocation(String location) {
-		return geoPlanet.getDescriptionFromPlaceName(location);
+		String okLocation = location.replace(" ", "%20");
+
+		return geoPlanet.getDescriptionFromPlaceName(okLocation);
 	}
 
+	@Override
+	public JSONArray checkLocationsStartingWith(String firstLetters) {
+		String okLocation = firstLetters.replace(" ", "%20");
 
+		return geoPlanet.getLocationsStartingWith(okLocation);
 
+	}
 
+	@Override
+	public String getPresentationURL(String placeName)
+			throws WeatherForecastException {
+		return presentationURLs.get(getWOEID(placeName));
+	}
+
+	@Override
+	public String addWOEID(String woeid) throws WeatherForecastException {
+		logger.trace("addWOEID(String woeid : " + woeid + ")");
+		if (woeidFromePlaceName.containsValue(woeid))
+			throw new WeatherForecastException(
+					"Already monitoring this location");
+
+		synchronized (lock) {
+			JSONObject obj = geoPlanet.getDescriptionFromWOEID(woeid);
+			if (obj == null)
+				throw new WeatherForecastException(
+						"Cannot retrieve the location from woeid");
+			String placeName = obj.optString("name");
+			if (placeName == null)
+				throw new WeatherForecastException(
+						"no place name associated with woeid");
+
+			addLocation(placeName);
+			return placeName;
+		}
+		
+	}
+
+	@Override
+	public String getPlaceName(String woeid) throws WeatherForecastException {
+		JSONObject obj = geoPlanet.getDescriptionFromWOEID(woeid);
+		if(obj!=null && obj.has("name")) {
+			return obj.getString("name");
+		}
+		return null;	
+	}
 
 }

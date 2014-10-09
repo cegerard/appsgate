@@ -1,20 +1,16 @@
 package appsGate.lig.manager.client.communication;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

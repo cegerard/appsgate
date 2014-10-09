@@ -37,10 +37,10 @@ define([
             });
 
             dispatcher.on("removeService", function(serviceId) {
-                var service = self.findWhere({id: serviceId});
+
+                var service = self.findWhere({id: serviceId.objectId});
                 self.remove(service);
 
-                console.log(service);
             });
 
         },

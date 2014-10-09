@@ -15,7 +15,18 @@ public interface ExtendedWeatherObserver {
 
     public final String SPEC_NAME = "ExtendedWeatherObserverSpec";
 
+    /**
+    *
+    * @return the Where On Earth IDdentifier of the location from Yahoo
+    */
+    String getCurrentWOEID();
 
+    /**
+    *
+    * @return a convenient Presentation URL for the weather
+    */
+    String getPresentationURL();    
+    
     /**
      *
      * @return true is current Time is day for the location, false if night

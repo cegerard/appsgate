@@ -11,7 +11,9 @@
         "actuator": {
             "action": {
                 "turnOff": "Eteindre",
-                "turnOn": "Allumer"
+                "turnOn": "Allumer",
+				"turnAllOff" : "Tout éteindre",
+                "turnAllOn": "Tout allumer"
             },
             "name": {
                 "plural": "Actionneurs",
@@ -86,12 +88,20 @@
             },
 			"language" : {
 				"activated": "le domicube est activé",
-				"inactivated": "le domicube est désactivé"
+				"inactivated": "le domicube est désactivé",
+                "west": "l'Ouest",
+                "east": "l'Est"
 			},
 			"keyboard" : {
 				"activated": "le domicube est activé",
-				"inactivated": "le domicube est désactivé"
-			}
+				"inactivated": "le domicube est désactivé",
+                "west": "l'Ouest",
+                "east": "l'Est"
+			},
+            "white-face": {
+                "first-elem": "Face",
+                "second-elem": "Blanche"
+            }
         },
         "illumination": {
             "caption": {
@@ -145,7 +155,9 @@
             "action": {
                 "blink": "Faire clignoter",
                 "turnOff": "Eteindre",
-                "turnOn": "Allumer"
+                "turnOn": "Allumer",
+				"turnAllOff" : "Tout éteindre",
+                "turnAllOn": "Tout allumer"
             },
             "complement": {
                 "change-color": "en"
@@ -181,6 +193,10 @@
             "status": {
                 "turnedOff": "Eteinte",
                 "turnedOn": "Allumée"
+            },
+            "color-information": {
+                "lastColor" : "Dernière couleur de l'ampoule ",
+                "currentColor" : "Couleur de l'ampoule "
             }
         },
         "mediaplayer": {
@@ -216,13 +232,17 @@
         "plug": {
             "action": {
                 "turnOff": "Eteindre",
-                "turnOn": "Allumer"
+                "turnOn": "Allumer",
+				"turnAllOff" : "Tout éteindre",
+                "turnAllOn": "Tout allumer"
             },
             "keyboard": {
                 "isOff": "la prise ... est éteinte",
                 "isOff-keep": "la prise ... éteinte",
                 "isOn": "la prise ... est allumée",
                 "isOn-keep": "la prise ... allumée",
+                "turnOffEvt": "on éteint la prise ...",
+                "turnOnEvt": "on allume la prise ...",
                 "turnOff": "Eteindre la prise ...",
                 "turnOn": "Allumer la prise ..."
             },
@@ -231,6 +251,8 @@
                 "isOff-keep": "__myVar__ éteinte",
                 "isOn": "__myVar__ est allumée",
                 "isOn-keep": "__myVar__ allumée",
+                "turnOffEvt": "on éteint __myVar__",
+                "turnOnEvt": "on allume __myVar__",
                 "turnOff": "Eteindre __myVar__",
                 "turnOn": "Allumer __myVar__"
             },
@@ -299,7 +321,8 @@
         "already-existing": "Nom déjà existant.",
         "name": "Nom",
         "name-empty": "Le nom doit être renseigné.",
-        "title": "Renommer"
+        "title": "Renommer",
+		"contains-html" : "Le nom ne peut pas contenir de code html"
     },
     "editbar": {
         "add": "Ajouter",
@@ -663,6 +686,10 @@
                 "plural": "Services Meteo",
                 "singular": "Service Meteo"
             },
+			"modal" : {
+				"title" : "Nouveau lieu favori",
+				"add" : "Ajouter un lieu favori"
+			},
 			"keyboard": {
                 "sunrise": "le jour se lève à ...",
                 "sunset": "le jour se couche à ...",
@@ -703,7 +730,8 @@
 				"weather-for-2": "après demain",
 				"weather-max-at": "la température maximale prévue à",
 				"weather-min-at": "la température minimale prévue à"
-			}
+			},
+			"weblink" : "Voir météo"
 
         }
     }

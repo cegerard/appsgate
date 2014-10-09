@@ -35,6 +35,13 @@
             <artifactId>mail</artifactId>
             <version>1.4.7</version>
         </dependency>
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>MongoDBConfigurationImpl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+                
     </dependencies>
 
 	<!-- Build Description -->

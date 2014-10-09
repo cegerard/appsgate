@@ -42,8 +42,8 @@
     <span data-i18n="devices.plug.name.plural"></span>
     <% } %>
     <div class="pull-right">
-      <button type="button" class="btn btn-info btn-sm group-off-button plugs-off-button" data-i18n="devices.plug.action.turnOff"></button>
-      <button type="button" class="btn btn-info btn-sm group-on-button plugs-on-button" data-i18n="devices.plug.action.turnOn"></button>
+      <button type="button" class="btn btn-info btn-sm group-off-button plugs-off-button" data-i18n="devices.plug.action.turnAllOff"></button>
+      <button type="button" class="btn btn-info btn-sm group-on-button plugs-on-button" data-i18n="devices.plug.action.turnAllOn"></button>
     </div>
     <% } else if (type === "7") { %>
     <% if (devices.where({type : 7}).length === 1) { %>
@@ -52,8 +52,8 @@
     <span data-i18n="devices.lamp.name.plural"></span>
     <% } %>
     <div class="pull-right">
-      <button type="button" class="btn btn-info btn-sm group-off-button lamps-off-button" data-i18n="devices.lamp.action.turnOff"></button>
-      <button type="button" class="btn btn-info btn-sm group-on-button lamps-on-button" data-i18n="devices.lamp.action.turnOn"></button>
+      <button type="button" class="btn btn-info btn-sm group-off-button lamps-off-button" data-i18n="devices.lamp.action.turnAllOff"></button>
+      <button type="button" class="btn btn-info btn-sm group-on-button lamps-on-button" data-i18n="devices.lamp.action.turnAllOn"></button>
     </div>
     <% } else if (type === "8") { %>
     <% if (devices.where({type : 8}).length === 1) { %>
@@ -62,8 +62,8 @@
     <span data-i18n="devices.actuator.name.plural"></span>
     <% } %>
     <div class="pull-right">
-      <button type="button" class="btn btn-info btn-sm group-off-button actuator-off-button" data-i18n="devices.actuator.action.turnOff"></button>
-      <button type="button" class="btn btn-info btn-sm group-on-button actuator-on-button" data-i18n="devices.actuator.action.turnOn"></button>
+      <button type="button" class="btn btn-info btn-sm group-off-button actuator-off-button" data-i18n="devices.actuator.action.turnAllOff"></button>
+      <button type="button" class="btn btn-info btn-sm group-on-button actuator-on-button" data-i18n="devices.actuator.action.turnAllOn"></button>
     </div>
     <% } else if (type === "31") { %>
     <% if (devices.where({type : 31}).length === 1) { %>
@@ -171,14 +171,25 @@
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                     <% } %>
-                    <span class="label-value"><%= s.get("consumption") %> W</span>
+                            <% if(s.get("consumption")=="-1") { %>
+                            <span class="label-value">--- W</span>
+                            <% } else { %>
+                            <span class="label-value"><%= s.get("consumption") %> W</span>
+                            <% } %>
                     <% } else if (type === "7") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.currentColor"></span>
+                        <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.lastColor"></span>
+                        <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
                     <% } %>
-                    <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                     <% } else if (type === "8") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.actuator.status.turnedOn"></span>
@@ -189,7 +200,11 @@
                     <% if(s.get("activeFace") === "1") { %>
                       <img src='/app/img/lan.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "2") { %>
-                      <span data-i18n='devices.domicube.status.unknown'></span>
+                      <svg class="white-face-svg-domus img-responsive">
+                        <rect class="white-face-rect-domus" x="10" y="10" rx="25" ry="25" width="95%" height="90%"/>
+                        <text class="white-face-text-domus" x="50%" y="47%"><%= $.i18n.t("devices.domicube.white-face.first-elem") %></text>
+                        <text class="white-face-text-domus" x="50%" y="54%"><%= $.i18n.t("devices.domicube.white-face.second-elem") %></text>
+                      </svg>
                     <% } else if(s.get("activeFace") === "3") { %>
                       <img src='/app/img/music.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "4") { %>
@@ -199,6 +214,9 @@
                     <% } else if(s.get("activeFace") === "6") { %>
                       <img src='/app/img/meal.png' width='18px' class="img-responsive">
                     <% } else { %>
+                        <svg width="18px" height="18px">
+                        <rect x="0" y="0" width="100%" height="100%" style="fill:none"/>
+                        </svg>
                       <span data-i18n='devices.domicube.status.unknown'></span>
                     <% } %>
                     <% } %>
@@ -268,9 +286,9 @@
                     <% if (type === "0") { %>
 
                         <% if(s.get("value")=="999") { %>
-                            <span class="label-value">---&deg;C</span>
+                            <span class="label-value">--- &deg;C</span>
                         <% } else { %>
-                            <span class="label-value"><%= Math.round(s.get("value")) %>&deg;C</span>
+                            <span class="label-value"><%= Math.round(s.get("value")) %> &deg;C</span>
                         <% } %>
 
                     <% } else if (type === "1") { %>
@@ -299,14 +317,27 @@
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                     <% } %>
-                    <span class="label-value"><%= s.get("consumption") %> W</span>
+
+                        <% if(s.get("consumption")=="-1") { %>
+                        <span class="label-value">--- W</span>
+                        <% } else { %>
+                        <span class="label-value"><%= s.get("consumption") %> W</span>
+                        <% } %>
+
                     <% } else if (type === "7") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.currentColor"></span>
+                        <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.lastColor"></span>
+                        <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
                     <% } %>
-                    <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                     <% } else if (type === "8") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span class="label label-yellow" data-i18n="devices.actuator.status.turnedOn"></span>
@@ -317,7 +348,11 @@
                     <% if(s.get("activeFace") === "1") { %>
                       <img src='/app/img/lan.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "2") { %>
-                      <span data-i18n='devices.domicube.status.unknown'></span>
+                      <svg class="white-face-svg-domus img-responsive">
+                        <rect class="white-face-rect-domus" x="10" y="10" rx="25" ry="25" width="95%" height="90%"/>
+                        <text class="white-face-text-domus" x="50%" y="47%"><%= $.i18n.t("devices.domicube.white-face.first-elem") %></text>
+                        <text class="white-face-text-domus" x="50%" y="54%"><%= $.i18n.t("devices.domicube.white-face.second-elem") %></text>
+                      </svg>
                     <% } else if(s.get("activeFace") === "3") { %>
                       <img src='/app/img/music.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "4") { %>

@@ -35,20 +35,40 @@ public class YahooGeoPlanetImplTest {
 
 
     @Test
-    public void test1() {
+    public void testgetWOEIDFromPlaceName() {
+        logger.debug("testgetWOEIDFromPlaceName");    	
+
 	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
 	assertEquals("593720", planet.getWOEIDFromPlaceName("Grenoble"));
     }
     
     @Test
-    public void test2() {
-    logger.warn("coucou");
+    public void testgetDescriptionFromWOEID() {
+        logger.debug("getDescriptionFromWOEID");    	
+	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
+	
+	planet.getDescriptionFromWOEID("593720");
+
+    }
+    
+    @Test
+    public void testgetDescriptionFromPlaceName() {
+        logger.debug("testgetDescriptionFromPlaceName");    	
 	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
 	
 	planet.getDescriptionFromPlaceName("Grenoble");
 	planet.getDescriptionFromPlaceName("France");
 	planet.getDescriptionFromPlaceName("Par");
 
-    }
+    }    
+    
+    @Test
+    public void testcheckLocationStartingWith() {
+    logger.debug("checkLocationStartingWith");
+	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
+	
+	planet.getLocationsStartingWith("Gre");
+    }    
 
+    
 }

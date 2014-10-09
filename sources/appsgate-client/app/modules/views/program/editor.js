@@ -60,9 +60,23 @@ define([
           $(".text-danger").removeClass("hide");
           $(".text-danger").text($.i18n.t("modal-edit-program.program-name-empty"));
           $("#end-edit-button").addClass("disabled");
+          $("#end-edit-button").addClass("valid-disabled");
 
           return false;
         }
+        
+        // name contains html code
+        if (/(&|>|<)/.test($(".programNameInput").val())) {
+          $(".text-danger")
+                  .text($.i18n.t("edit-name-modal.contains-html"))
+                  .removeClass("hide");
+          $("#end-edit-button").addClass("disabled");
+          $("#end-edit-button").addClass("valid-disabled");
+
+          return false;
+        }
+
+        
         var currentProgramID=this.model.get("id");
         var programsWithSameName=programs.where({name: $(".programNameInput").val()}).filter(function(prog){
               return prog.id != null && prog.id!=currentProgramID;
@@ -72,6 +86,7 @@ define([
           $(".text-danger").removeClass("hide");
           $(".text-danger").text($.i18n.t("modal-edit-program.program-already-existing"));
           $("#end-edit-button").addClass("disabled");
+          $("#end-edit-button").addClass("valid-disabled");
 
           return false;
         }

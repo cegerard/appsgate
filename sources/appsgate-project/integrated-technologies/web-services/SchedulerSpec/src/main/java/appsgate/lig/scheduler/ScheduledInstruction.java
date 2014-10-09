@@ -1,6 +1,5 @@
-package appsgate.lig.google.services;
+package appsgate.lig.scheduler;
 
-import org.omg.CORBA.COMM_FAILURE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -57,6 +57,9 @@ public class Builder {
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
+        if (type.equalsIgnoreCase("stopMyself")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
         if (type.equalsIgnoreCase("booleanExpression")) {
             return NODE_TYPE.NODE_BOOLEAN_EXPRESSION;
         }

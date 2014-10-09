@@ -74,6 +74,13 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 * The current face of the DomiCube
 	 */
 	private String dimValue;
+
+    /**
+     * The current face of the DomiCube
+     */
+    private String dimDirection;
+
+    private Integer dimDirectionDetectableRate;
 	
 	/**
 	 * boolean to know if the device has received a MQTT message 
@@ -145,6 +152,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 		descr.put("activeFace", activeFace);
 		descr.put("batteryLevel", batteryLevel);
 		descr.put("dimValue", dimValue);
+        descr.put("dimDirection", dimDirection);
 		descr.put("deviceType", deviceType);
 		descr.put("systemName", deviceName);
 		
@@ -203,12 +211,32 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 * its a string the represent a float value for the angular value of the DomiCube.
 	 */
 	public void dimValueChanged(String newDim) {
+
 		logger.info("The DomiCube, "+ deviceId+" angle changed to "+newDim);
+
 		notifyChanges("newDimValue", newDim);
 
+        try {
+            Float value=Float.parseFloat(newDim);
+            if(value<(-1*dimDirectionDetectableRate)){
+                notifyChanges("newDirection", "west");
+            }else if(value>(dimDirectionDetectableRate)) {
+                notifyChanges("newDirection", "east");
+            }
+
+        }catch(NumberFormatException e){
+            logger.warn("Value returned as dim value is not a number. Value given {}",dimValue);
+        }
+
 	}
-	
-	/**
+
+    public void dimDirectionChanged(String newDimDirection){
+
+        logger.info("Direction {}",newDimDirection);
+
+    }
+
+    /**
 	 * Called to notify that the cube leave its older face
 	 */
 	private void faceLeaved() {

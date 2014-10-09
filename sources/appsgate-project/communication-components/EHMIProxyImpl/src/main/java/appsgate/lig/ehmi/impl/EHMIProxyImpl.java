@@ -523,9 +523,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				}
 			}
 		} else {
-			for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
-				coreObjectInPlace.addAll(symbolicPlace.getDevices());
-			}
+                    //for (SymbolicPlace symbolicPlace : placeManager.getPlaces()) {
+                    //	coreObjectInPlace.addAll(symbolicPlace.getDevices());
+                    //}
+                    JSONArray devices = coreProxy.getDevices();
+                    for (int i = 0; i < devices.length(); i++) {
+                        JSONObject o = devices.optJSONObject(i);
+                        if (o != null) {
+                            coreObjectInPlace.add(o.optString("id"));
+                        }
+                    }
 		}
 
 		// Now we get all identifier of device that match one types of the type
@@ -624,13 +631,15 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
 
 	@Override
-	public void addLocationObserver(String location) {
+	public JSONArray addLocationObserver(String location) {
 		weatherAdapter.addLocationObserver(location);
+		return getAllLocationsObservers();
 	}
 
 	@Override
-	public void removeLocationObserver(String location) {
+	public JSONArray removeLocationObserver(String location) {
 		weatherAdapter.removeLocationObserver(location);
+		return getAllLocationsObservers();		
 	}
 
 	@Override
@@ -642,6 +651,28 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	public JSONArray getAllLocationsObservers() {
 		return new JSONArray(weatherAdapter.getAllLocationsObservers());
 	}
+	
+	@Override
+	public JSONObject checkLocation(String location) {
+		if(weatherAdapter != null) {
+			return weatherAdapter.checkLocation(location);
+		}
+		return new JSONObject();
+	}
+
+	@Override
+	public JSONArray checkLocationsStartingWith(String firstLetters) {
+		if(weatherAdapter != null) {
+			return weatherAdapter.checkLocationsStartingWith(firstLetters);
+		}
+		return new JSONArray();
+	}
+
+	@Override
+	public JSONArray addLocationObserverFromWOEID(String woeid) {
+		weatherAdapter.addLocationObserverFromWOEID(woeid);
+		return getAllLocationsObservers();		
+	}	
 
 	@Override
 	public JSONArray getPlacesByName(String name) {
@@ -783,6 +814,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		return programList;
 	}
+        
+        @Override
+        public JSONObject getGraph() {
+            return interpreter.getGraph();
+        }
 
 	@Override
 	public boolean isProgramActive(String programId) {
@@ -1259,11 +1295,4 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 	}
 
-	@Override
-	public JSONObject checkLocation(String location) {
-		if(weatherAdapter != null) {
-			return weatherAdapter.checkLocation(location);
-		}
-		return new JSONObject();
-	}
 }

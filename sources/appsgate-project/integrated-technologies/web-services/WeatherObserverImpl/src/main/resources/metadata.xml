@@ -34,7 +34,7 @@
         <callback onInit="start" />
         <relation specification="YahooWeatherSpec" field="weatherService" resolve="exist" />
         
-        <relation specification="ContextHistorySpec" fail="wait" resolve="exist">
+        <relation specification="ContextHistorySpec" resolve="exist">
             <interface field="contextHistory_pull"/>
             <interface field="contextHistory_push"/>
         </relation>

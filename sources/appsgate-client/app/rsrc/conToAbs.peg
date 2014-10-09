@@ -9,11 +9,13 @@ SEQ = ID "seqRules" _ "[" _ INSTS _ "]"
 
 BLOC = SEQ
 
-INSTS  = _ (INST _)+ / "(" INSTS ")"
+INSTS  = _ (INST _)* STOP _ EMPTY /  _ (INST _)+ / "(" INSTS ")"
+
+STOP = ID "stopMyself" _ "(" _ TARGET _ ")"
 
 INST  = IF / ACTION / EMPTY / WAIT / SEQ / WHEN_IMP
 
-RULES  = _ (RULE _)+ / "(" RULES ")"
+RULES  = _ (RULE _)+ / "(" RULES ")" 
 
 RULE = WHEN / WHILE / SET / SEQ / EMPTY
 

@@ -18,6 +18,7 @@ import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.EndEventListener;
+import appsgate.lig.eude.interpreter.langage.components.GraphManager;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
@@ -116,23 +117,23 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public void deleteInst() {
         LOGGER.debug("The router interpreter components has been stopped");
-        boolean bdFound=restorePrograms();
+        boolean bdFound = restorePrograms();
         // delete the event listeners from the context
-        if(ehmiProxy != null) {
-        	for (CoreEventListener listener : mapCoreNodeEvent) {
-        		ehmiProxy.deleteCoreListener(listener);
-        	}
+        if (ehmiProxy != null) {
+            for (CoreEventListener listener : mapCoreNodeEvent) {
+                ehmiProxy.deleteCoreListener(listener);
+            }
         }
         //save program map state
-        if(bdFound) {
+        if (bdFound) {
             contextHistory_push.pushData_change(this.getClass().getSimpleName(), "interpreter", "start", "stop", getProgramsDesc());
         }
     }
 
     @Override
     public boolean addProgram(JSONObject programJSON) {
-        if(!restorePrograms()) {
-        	return false;
+        if (!restorePrograms()) {
+            return false;
         }
         NodeProgram p = putProgram(programJSON);
         if (p == null) {
@@ -153,8 +154,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean removeProgram(String programId) {
-        if(!restorePrograms()) {
-        	return false;
+        if (!restorePrograms()) {
+            return false;
         }
         NodeProgram p = mapPrograms.get(programId);
 
@@ -189,8 +190,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean update(JSONObject jsonProgram) {
-        if(!restorePrograms()) {
-        	return false;
+        if (!restorePrograms()) {
+            return false;
         }
         String prog_id;
         try {
@@ -237,8 +238,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     @Override
     public boolean callProgram(String programId, JSONArray args) {
-        if(!restorePrograms()) {
-        	return false;
+        if (!restorePrograms()) {
+            return false;
         }
 
         NodeProgram p = mapPrograms.get(programId);
@@ -254,8 +255,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean stopProgram(String programId) {
-        if(!restorePrograms()) {
-        	return false;
+        if (!restorePrograms()) {
+            return false;
         }
 
         NodeProgram p = mapPrograms.get(programId);
@@ -274,8 +275,11 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the list of id that contains a program
      */
     public List<String> getListProgramIds(NodeProgram node) {
-        if(!restorePrograms()) {
-        	return null;
+        if (!restorePrograms()) {
+            return null;
+        }
+        if (node == null) {
+            node = root;
         }
 
         List<String> list = new ArrayList<String>();
@@ -288,8 +292,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public HashMap<String, JSONObject> getListPrograms() {
-        if(!restorePrograms()) {
-        	return null;
+        if (!restorePrograms()) {
+            return null;
         }
 
         HashMap<String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
@@ -302,8 +306,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public boolean isProgramActive(String programId) {
-        if(!restorePrograms()) {
-        	return false;
+        if (!restorePrograms()) {
+            return false;
         }
 
         NodeProgram p = mapPrograms.get(programId);
@@ -322,8 +326,8 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return Node of the program if found, null otherwise
      */
     public NodeProgram getNodeProgram(String programId) {
-        if(!restorePrograms()) {
-        	return null;
+        if (!restorePrograms()) {
+            return null;
         }
 
         return mapPrograms.get(programId);
@@ -338,11 +342,11 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the command to be executed
      */
     public GenericCommand executeCommand(String objectId, String methodName, JSONArray args, ProgramCommandNotification notif) {
-    	if(ehmiProxy==null) {
-    		LOGGER.warn("No EHMI Proxy bound");
-    		return null;
-    	}
-    	
+        if (ehmiProxy == null) {
+            LOGGER.warn("No EHMI Proxy bound");
+            return null;
+        }
+
         GenericCommand command = ehmiProxy.executeRemoteCommand(objectId, methodName, args);
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, objectId);
@@ -352,16 +356,17 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
         return command;
 
-    }    
+    }
+
     /**
      * @return the current time in milliseconds
      */
     public Long getTime() {
         LOGGER.trace("getTime called");
-    	if(ehmiProxy==null) {
-    		LOGGER.warn("No EHMI Proxy bound");
-    		return null;
-    	}        
+        if (ehmiProxy == null) {
+            LOGGER.warn("No EHMI Proxy bound");
+            return null;
+        }
         Long time = ehmiProxy.getCurrentTimeInMillis();
         LOGGER.info("Time is: " + time);
         return time;
@@ -375,10 +380,10 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public synchronized void addNodeListening(NodeEvent nodeEvent) {
         // instantiate a core listener
-    	if(ehmiProxy==null) {
-    		LOGGER.warn("No EHMI Proxy bound");
-    		return;
-    	}
+        if (ehmiProxy == null) {
+            LOGGER.warn("No EHMI Proxy bound");
+            return;
+        }
 
         CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
 
@@ -392,7 +397,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         }
         listener.addNodeEvent(nodeEvent);
         mapCoreNodeEvent.add(listener);
-        if (! nodeEvent.isProgramEvent()) {
+        if (!nodeEvent.isProgramEvent()) {
             ehmiProxy.addCoreListener(listener);
         }
         LOGGER.debug("Add node event listener list.{}", nodeEvent.getEventName());
@@ -444,6 +449,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     private void notifyAddProgram(String id, String runningState, String name, JSONObject source) {
         notifyChanges(new ProgramNotification("newProgram", id, runningState, name, source, null));
     }
+
     /**
      *
      * @param id
@@ -471,7 +477,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the clock proxy
      */
     public ClockProxy getClock() {
-        if (clock == null && ehmiProxy!= null) {
+        if (clock == null && ehmiProxy != null) {
             JSONArray devices = ehmiProxy.getDevices();
             for (int i = 0; i < devices.length(); i++) {
                 try {
@@ -492,10 +498,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @return the description of the programs for internal use
      */
     private ArrayList<Entry<String, Object>> getProgramsDesc() {
-        if(!restorePrograms()) {
+        if (!restorePrograms()) {
             return null;
         }
-
 
         ArrayList<Entry<String, Object>> properties = new ArrayList<Entry<String, Object>>();
         for (NodeProgram subProgram : root.getSubPrograms()) {
@@ -506,15 +511,16 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         return properties;
     }
 
-    boolean synchro=false;
+    boolean synchro = false;
+
     /**
      * Retrieve the programs from database and put them in the interpreter
      */
     private synchronized boolean restorePrograms() {
         //restore places from data base
-        if(synchro) {
+        if (synchro) {
             return true;
-        } else if(contextHistory_pull!= null && contextHistory_pull.testDB()) {
+        } else if (contextHistory_pull != null && contextHistory_pull.testDB()) {
             synchro = true;
 
             LOGGER.debug("Restore interpreter program list from database");
@@ -523,7 +529,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
                 try {
                     JSONArray state = userbase.getJSONArray("state");
                     for (int i = 0; i < state.length(); i++) {
-                    	LOGGER.trace("Restoring : "+state.getJSONObject(i));
+                        LOGGER.trace("Restoring : " + state.getJSONObject(i));
                         JSONObject obj = state.getJSONObject(i);
                         String key = (String) obj.keys().next();
                         NodeProgram np;
@@ -705,10 +711,11 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             p.setDeviceStatus(deviceId, s);
         }
     }
+
     /**
-     * 
+     *
      * @param deviceId
-     * @param status 
+     * @param status
      */
     public void newProgramStatus(String deviceId, ReferenceTable.STATUS status) {
         for (NodeProgram p : mapPrograms.values()) {
@@ -721,5 +728,12 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         for (NodeProgram p : mapPrograms.values()) {
             p.getReferences().checkStatus();
         }
+    }
+
+    @Override
+    public JSONObject getGraph() {
+        GraphManager gm = new GraphManager(this);
+        gm.buildGraph();
+        return gm.getGraph();
     }
 }

@@ -29,7 +29,7 @@
                         <div class="device-div-img">
                             <img src="<%= img %>" class="img-responsive device-img">
                              <% if (typeof sensorCaption !== "undefined" && sensorCaption[sensorImg.indexOf(img)] !== "undefined") { %>
-                                <span><%= sensorCaption[sensorImg.indexOf(img)] %></%></span>
+                                <span><%= sensorCaption[sensorImg.indexOf(img)] %></span>
                              <% } %>
                         </div>
                     <% } else if (sensorImg.length === 2) { %>
@@ -37,7 +37,7 @@
                         <div class=" col-xs-6 device-div-img">
                             <img src="<%= img %>" class="img-responsive device-img">
                             <% if (typeof sensorCaption !== "undefined" && sensorCaption[sensorImg.indexOf(img)] !== "undefined") { %>
-                                <span><%= sensorCaption[sensorImg.indexOf(img)] %></%></span>
+                                <span><%= sensorCaption[sensorImg.indexOf(img)] %></span>
                              <% } %>
                         </div>
                     <% } %>

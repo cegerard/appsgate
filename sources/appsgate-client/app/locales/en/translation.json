@@ -11,7 +11,9 @@
         "actuator": {
             "action": {
                 "turnOff": "Turn off",
-                "turnOn": "Turn on"
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
             },
             "name": {
                 "plural": "Actuators",
@@ -86,12 +88,20 @@
             },
             "language" : {
                "activated": "domicube is activated",
-               "inactivated": "domicube is idle"
+               "inactivated": "domicube is idle",
+                "west": "West",
+                "east": "East"
             },
             "keyboard" : {
                "activated": "domicube is activated",
-               "inactivated": "domicube is idle"
+               "inactivated": "domicube is idle",
+                "west": "West",
+                "east": "East"
                
+            },
+            "white-face": {
+                "first-elem": "White",
+                "second-elem": "Face"
             }
         },
         "illumination": {
@@ -146,7 +156,9 @@
             "action": {
                 "blink": "Blink",
                 "turnOff": "Turn off",
-                "turnOn": "Turn on"
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
             },
             "complement": {
                 "change-color": "to"
@@ -182,6 +194,10 @@
             "status": {
                 "turnedOff": "Off",
                 "turnedOn": "On"
+            },
+            "color-information": {
+                "lastColor" : "Last lamp's color ",
+                "currentColor" : "Current lamp's color "
             }
         },
         "mediaplayer": {
@@ -217,13 +233,17 @@
         "plug": {
             "action": {
                 "turnOff": "Turn off",
-                "turnOn": "Turn on"
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
             },
             "keyboard": {
                 "isOff": "plug ... is off",
                 "isOff-keep": "plug ... off",
                 "isOn": "plug ... is on",
                 "isOn-keep": "plug ... on",
+                "turnOffEvt": "plug ... is turned off",
+                "turnOnEvt": "plug ... is turned on",
                 "turnOff": "Switch off plug ...",
                 "turnOn": "Switch on plug ..."
             },
@@ -232,6 +252,8 @@
                 "isOff-keep": "__myVar__ off",
                 "isOn": "__myVar__ is on",
                 "isOn-keep": "__myVar__ on",
+                "turnOffEvt": "__myVar__ is turned off",
+                "turnOnEvt": "__myVar__ is turned on",
                 "turnOff": "Switch on __myVar__",
                 "turnOn": "Switch off __myVar__"
             },
@@ -300,7 +322,8 @@
         "already-existing": "Name already exists.",
         "name": "Name",
         "name-empty": "The name must be specified.",
-        "title": "Rename"
+        "title": "Rename",
+		"contains-html" : "Name cannot contains html code"
     },
     "editbar": {
         "add": "Add",
@@ -664,6 +687,9 @@
                 "plural": "Weather",
                 "singular": "Weather"
             },
+			"modal" : {
+				"title" : "Adding a meteo place"
+			},
             "keyboard": {
                 "sunrise": "the sun rise in ...",
                 "sunset": "the sun set in ...",
@@ -704,7 +730,8 @@
                 "weather-for-2": "after tomorrow",
                 "weather-max-at": "the maximum temperature expected for",
                 "weather-min-at": "the minimum temperature expected for"
-            }
+            },
+			"weblink" : "See meteo"
         }
     }
 }

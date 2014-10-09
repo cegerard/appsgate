@@ -56,17 +56,6 @@ public class GoogleAdapterImpl extends GooglePropertiesHolder implements GoogleA
 		} catch (Exception exc) {
 			logger.error(" Exception occured when reading the configuration file : "+exc.getMessage());
 		}
-		//        SynchroObserverTask nextRefresh = new SynchroObserverTask(this);
-		//        timer = new Timer();
-		// Next refresh will in 30secs (DB and web service should be available by then)
-		//        timer.schedule(nextRefresh, 30 * 1000);
-		//        logger.trace("started successfully, waiting for SynchroObserverTask to wake up");
-	}
-
-	@Override
-	public void setRefreshToken(String refreshToken) {
-		// TODO Auto-generated method stub
-
 	}
 	
 	

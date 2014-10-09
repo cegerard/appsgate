@@ -85,6 +85,7 @@ define([
             var input = "";
             switch (jsonNode.type) {
                 case "action":
+                case "stopMyself":
                     deletable = true;
                     input += this.buildActionNode(param);
                     break;
@@ -249,30 +250,24 @@ define([
         buildEventProgramNode: function(param) {
             return this.tplEventProgramNode(param);
         },
-        // Hack for a simple prestenation when X == true, we only show X
         buildComparatorNode: function(param, currentNode) {
-//            try {
-//                if(param.node.comparator === "==" && param.node.rightOperand.type === "boolean" && param.node.rightOperand.value === "true") {
-//                    return this.buildInputFromNode(param.node.leftOperand, currentNode);
-//                } else {
-//                    return this.tplComparatorNode(param);
-//                }
-//            } catch (e) {
-//                return this.tplComparatorNode(param);
-//            }
             var leftOp = this.buildInputFromNode(param.node.leftOperand, currentNode);
 
             if (param.node.leftOperand.target.deviceType) {
                 var deviceOfNode = devices.where({type:param.node.leftOperand.target.deviceType})[0];
-                param.node.rightOperand.scale = deviceOfNode.getScale();
-                param.node.rightOperand.type = param.node.leftOperand.returnType;
-                param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                if (deviceOfNode != undefined) {
+                    param.node.rightOperand.scale = deviceOfNode.getScale();
+                    param.node.rightOperand.type = param.node.leftOperand.returnType;
+                    param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                }
             }
             if (param.node.leftOperand.target.serviceType) {
                 var serviceOfNode = services.where({type:param.node.leftOperand.target.serviceType})[0];
-                param.node.rightOperand.scale = serviceOfNode.getScale();
-                param.node.rightOperand.type = param.node.leftOperand.returnType;
-                param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                if (serviceOfNode != undefined) {
+                    param.node.rightOperand.scale = serviceOfNode.getScale();
+                    param.node.rightOperand.type = param.node.leftOperand.returnType;
+                    param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                }
             }
 
             var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);

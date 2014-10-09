@@ -124,6 +124,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
         return null;
     }
 
+    @Override
+    public JSONObject getGraph() {
+        return null;
+     }
+
     public final class Library {
 
         /**
@@ -424,12 +429,14 @@ public class EHMIProxyMock implements EHMIProxySpec {
 	}
 
     @Override
-    public void addLocationObserver(String location) {
+    public JSONArray addLocationObserver(String location) {
+		return null; 
 
     }
 
     @Override
-    public void removeLocationObserver(String location) {
+    public JSONArray removeLocationObserver(String location) {
+		return null; 
 
     }
 
@@ -563,6 +570,21 @@ public class EHMIProxyMock implements EHMIProxySpec {
 	public JSONObject checkLocation(String location) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public JSONArray checkLocationsStartingWith(String firstLetters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public JSONArray addLocationObserverFromWOEID(String woeid) {
+		// TODO Auto-generated method stub
+		return null; 
+		
 	}
 
 }
