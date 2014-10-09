@@ -13,10 +13,13 @@ define([
       events: {
         "click button.start-program-button": "onStartProgramButton",
         "click button.stop-program-button": "onStopProgramButton",
-        "click button.delete-program-button": "onDeleteProgramButton",
         "click button.cancel-edit-program-button": "onCancelEditProgram",
         "click button.launch-edit-program-button": "onLaunchEditProgram",
         "click button.edit-popover-button": "onClickEditProgram",
+        "click button.delete-program-button": "onDeleteProgramButton",
+        "click button.delete-popover-button": "onClickDeleteProgram",
+        "click button.cancel-delete-program-button": "onCancelDeleteProgram",
+          
       },
       /**
       * @constructor
@@ -71,6 +74,13 @@ define([
         return false;
       },
       /**
+      * Callback when the user has clicked on the button to cancel the deleting. Return to the program
+      */
+      onCancelDeleteProgram : function() {
+        // destroy the popover
+        this.$el.find("#delete-program-popover").popover('destroy');
+      },
+      /**
       * Callback when the user has clicked on the button to remove a program. Remove the program
       */
       onDeleteProgramButton: function() {
@@ -79,6 +89,25 @@ define([
 
         // navigate to the list of programs
         appRouter.navigate("#programs", {trigger: true});
+      },
+      /**
+      * Callback when the user has clicked on the button delete.
+      */
+      onClickDeleteProgram : function(e) {
+        var self = this;
+        // create the popover
+        this.$el.find("#delete-program-popover").popover({
+            html: true,
+            title: $.i18n.t("programs.warning-program-delete"),
+            content: "<div class='popover-div'><button type='button' class='btn btn-default cancel-delete-program-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-danger delete-program-button'>" + $.i18n.t("form.delete-button") + "</button></div>",
+            placement: "bottom"
+        });
+        // listen the hide event to destroy the popup, because it is created to every click on Edit
+        this.$el.find("#delete-program-popover").on('hidden.bs.popover', function () {
+            self.onCancelDeleteProgram();
+        });
+        // show the popup
+        this.$el.find("#delete-program-popover").popover('show');
       },
       /**
       * Callback when the user has clicked on the button to cancel the launching of edition. Return to the program
@@ -103,15 +132,15 @@ define([
         if (this.model.get('runningState') === "WAITING") {
             // create the popover
             this.$el.find("#edit-program-popover").popover({
-            html: true,
-            title: $.i18n.t("programs.warning-program-edition"),
-            content: "<div><button type='button' class='btn btn-default cancel-edit-program-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-primary launch-edit-program-button'>" + $.i18n.t("programs.edit-program") + "</button></div>",
-            placement: "bottom"
+                html: true,
+                title: $.i18n.t("programs.warning-program-edition"),
+                content: "<div class='popover-div'><button type='button' class='btn btn-default cancel-edit-program-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-primary launch-edit-program-button'>" + $.i18n.t("programs.edit-program") + "</button></div>",
+                placement: "bottom"
             });
             // listen the hide event to destroy the popup, because create to every click on Edit
             this.$el.find("#edit-program-popover").on('hidden.bs.popover', function () {
                 self.onCancelEditProgram();
-            })
+            });
             // show the popup
             this.$el.find("#edit-program-popover").popover('show');
         } else {
@@ -229,13 +258,6 @@ define([
         }));
 
         if (this.model) {
-          // initialize the popover
-          this.$el.find("#delete-popover").popover({
-            html: true,
-            content: "<button type='button' class='btn btn-danger delete-program-button'>" + $.i18n.t("form.delete-button") + "</button>",
-            placement: "bottom"
-          });
-
           // put the name of the place by default in the modal to edit
           if (typeof this.model !== 'undefined') {
             $("#edit-program-name-modal .program-name").val(this.model.get("name"));

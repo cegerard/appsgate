@@ -22,19 +22,14 @@
         <button type="button" id="<%= program.get('id') %>" class="btn btn-default btn-info start-program-button" data-i18n="programs.action.start"></button>
 
 
-			<button id="delete-popover" class="btn btn-default" rel="popover">
+			<button id="delete-program-popover" class="btn btn-default delete-popover-button" rel="popover" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="programs.delete-program"></span>
 			</button>
 
             <button id="edit-program-popover" class="btn btn-default edit-popover-button" rel="popover" data-trigger="focus">
                 <i class="glyphicon glyphicon-edit"></i><span data-i18n="programs.edit-program"></span>
             </button>
-
-<!--
-            <a href="#programs/editor/<%= program.get('id') %>" class="btn btn-default">
-				<i class="glyphicon glyphicon-edit"></i><span data-i18n="programs.edit-program"></span>
-    	   </a>
--->
+            
   	</div>
 	</div>
 
