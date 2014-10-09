@@ -23,7 +23,7 @@
     "Snap.svg": null,
     "raphael": "latest",
     "d3": "~3.4.11",
-    "appsgate.debugger": "https://github.com/yeastlab/appsgate.debugger.git#~0.0.1"
+    "appsgate.debugger": "https://github.com/yeastlab/appsgate.debugger.git#~1.0.0"
   },
   "version": "1",
   "homepage": "https://github.com/kpetouk/appsgate-client",

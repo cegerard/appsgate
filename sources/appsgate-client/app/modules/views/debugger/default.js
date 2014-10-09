@@ -15,7 +15,7 @@ define([
     initialize: function() {
         this.connector = new Debugger.Connector({
             address: 'localhost',
-            port: '3000'
+            port: '8090'
         });
     },
 
@@ -26,8 +26,21 @@ define([
         this.$el.append(this.template({}));
 
         // initialize debugger
-        this.dashboard = new Debugger.Dashboard(this.$('.debugger .canvas'));
-        this.dashboard.connect(this.connector);
+        var dashboard = this.dashboard = new Debugger.Dashboard(this.$('.debugger .canvas'));
+        dashboard.connect(this.connector);
+
+        // listen to zoom request from dashboard
+        dashboard.on('zoom:request', function (context) {
+            dashboard.requestHistoryTrace(context);
+        });
+
+        // listen to marker click event from dashboard
+        dashboard.on('marker:click', function (decorations, textContent, htmlContent) {
+            alert(textContent);
+        });
+
+        // prompt server for initial history trace
+        dashboard.requestInitialHistoryTrace();
     },
 
     destroy: function() {

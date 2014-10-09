@@ -1,7 +1,7 @@
 {
   "name": "appsgate.debugger",
   "description": "Debugger for AppsGate",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": "ISC",
   "private": true,
   "author": {
@@ -11,6 +11,7 @@
   },
   "main": [
     "LICENSE",
+    "README.md",
     "lib/appsgate.debugger.js",
     "lib/appsgate.debugger.dev.js",
     "lib/appsgate.debugger.min.js",
@@ -19,6 +20,7 @@
     "lib/themes/basic/pictograms/*.png"
   ],
   "ignore": [
+    "package.json",
     "server.js",
     "bower",
     "Gruntfile.js",
@@ -36,14 +38,13 @@
     "jqueryui": "~1.11.0"
   },
   "homepage": "https://github.com/yeastlab/appsgate.debugger",
-  "_release": "0.0.1",
+  "_release": "1.0.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.1",
-    "commit": "bf754ad9b25b6c9a1300ce0014882c744186150a"
+    "tag": "v1.0.0",
+    "commit": "b4c30075f1214029f37665d8cb013f8615080d81"
   },
   "_source": "https://github.com/yeastlab/appsgate.debugger.git",
-  "_target": "~0.0.1",
-  "_originalSource": "https://github.com/yeastlab/appsgate.debugger.git",
-  "_direct": true
+  "_target": "~1.0.0",
+  "_originalSource": "https://github.com/yeastlab/appsgate.debugger.git"
 }

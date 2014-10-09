@@ -792,3 +792,7 @@ div {
     margin-left: auto;
     width: 960px;
 }
+
+.debugger .container {
+   padding: 0px;
+}
