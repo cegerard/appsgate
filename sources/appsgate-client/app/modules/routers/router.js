@@ -26,9 +26,9 @@ define(function(require, exports, module) {
     circlemenutemplate : _.template(circleMenuTemplate),
 
     routes: {
-      "": "places",
-      "reset": "places",
-      "home": "places",
+      "": "debugger",
+      "reset": "debugger",
+      "home": "debugger",
       "places": "places",
       "devices": "devices",
       "services": "services",

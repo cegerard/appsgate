@@ -37,6 +37,10 @@ define(function(require, exports, module) {
 
     // Wait for the socket to be opened
     dispatcher.on("WebSocketOpen", function() {
+
+      // start the debugger if it is not
+      communicator.sendMessage({"method":"startDebugger", "args":[], "TARGET":"EHMI"});
+
       // delete the current collections if any - in case of a reconnection
       if (typeof devices !== "undefined") {
         devices.getCoreClock().unsynchronize();
