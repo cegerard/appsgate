@@ -143,17 +143,14 @@ body {
 }
 
 .progress-indicator-group {
-  margin-left:5px;
-  display: table;
-  height:50px;
-  text-align:center;
+  background-color: greenyellow;
+  border-radius: 1000px;
+  border: 1px solid black;
+  width:30px;
+  height:20px;
 }
 
 .progress-indicator {
-  height: 50px;
-  display: table-cell;
-  vertical-align: middle;
-  padding:3px;
 }
 
 .label-yellow{
