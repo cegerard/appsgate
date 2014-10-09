@@ -85,9 +85,9 @@ public class MyCtrlPoint extends ControlPoint
 	public static final String FORCE_RESEARCH_RENEWAL = "felix.upnpbase.importer.research.renewal";
 	public static final String OVERRIDE_LEASE = "felix.upnpbase.importer.device.lease";
 	
-	private int researchRenewal = -1;
-	private int overrideLease = -1;
-	private long timeStamp = -1;
+	private int researchRenewal 		= -1;
+	private int overrideLease 			= -1;
+    private boolean skipVerification	= true;
     
     private final String UPNP_EVENT_LISTENER_FLTR =
         "(" + Constants.OBJECTCLASS + "=" + UPnPEventListener.class.getName() + ")";
@@ -107,12 +107,28 @@ public class MyCtrlPoint extends ControlPoint
 		if(context.getProperty(FORCE_RESEARCH_RENEWAL) != null) {
 			researchRenewal = Integer.parseInt(context.getProperty(FORCE_RESEARCH_RENEWAL));
 			Activator.logger.DEBUG("[Importer] MyCtrlPoint(...), force research renewal set : "+researchRenewal);
-			System.out.println("MyCtrlPoint(...), force research renewal set : "+researchRenewal);
+			
 		}
 		if(context.getProperty(OVERRIDE_LEASE) != null) {
 			overrideLease = Integer.parseInt(context.getProperty(OVERRIDE_LEASE));
 			Activator.logger.DEBUG("[Importer] MyCtrlPoint(...), force lease of expiration for devices : "+overrideLease);
-			System.out.println("MyCtrlPoint(...), force lease of expiration for devices : "+overrideLease);
+		}
+
+		/*
+		 * if lease time is overridden, we force a device search at half the lease interval to give device a chance to renew
+		 * its lease
+		 */
+		if ( overrideLease > 0 && (researchRenewal < 0 || researchRenewal > overrideLease) ) {
+			researchRenewal 	= overrideLease / 2;
+			skipVerification	= true;
+			Activator.logger.WARNING("[Importer] MyCtrlPoint(...), force research renewal automatically set to : "+researchRenewal);
+		}
+
+		/*
+		 * adapt verification interval depending on specified parameters
+		 */
+		if ( researchRenewal > 0 && researchRenewal < getExpiredDeviceMonitoringInterval()) {
+			setExpiredDeviceMonitoringInterval(researchRenewal);
 		}
 		
         devices = new Hashtable();
@@ -156,28 +172,6 @@ public class MyCtrlPoint extends ControlPoint
 	}
 
 
-	/**
-	 * Hack by Thibaud to force research of root device after control point is started
-	 */
-	public void researchRenewal() {
-		System.out.println("researchRenewal()");
-		if(researchRenewal < 0) {
-			return;
-		}
-		
-		long currentTime = System.currentTimeMillis();
-		if(timeStamp <0) {
-			timeStamp =currentTime;
-			System.out.println("researchRenewal(), Setting time stamp "+timeStamp);
-		}
-
-		if(currentTime > timeStamp+researchRenewal) {
-			System.out.println("researchRenewal(), renewal beginning with lease "+researchRenewal);
-			timeStamp = -1;
-			this.start();
-		}
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -185,26 +179,47 @@ public class MyCtrlPoint extends ControlPoint
 	 *  
 	 */
 	public void removeExpiredDevices() {
-		Activator.logger.DEBUG("[Importer] removeExpiredDevices()");
 		
-		researchRenewal();
+		Activator.logger.DEBUG("[Importer] removeExpiredDevices()");
+
+		/*
+		 * Trigger network scan if necessary. Hack by Thibaud to force research of root device
+		 * after control point is started
+		 */
+		if (researchRenewal > 0) {
+			Activator.logger.DEBUG("[Importer] renewing research "+researchRenewal);
+			start();
+		}
+
+		/*
+		 * If we have overridden lease time, just give the device the time to answer the research
+		 * request. We force the network scan and we verify only every two researchRenewal periods. 
+		 */
+		if (overrideLease > 0 && skipVerification) {
+			skipVerification = false;
+			return;
+		}
+		
 		
 		DeviceList devList = getDeviceList();
 		int devCnt = devList.size();
 		for (int n = 0; n < devCnt; n++) {
 			Device dev = devList.getDevice(n);
-			if(overrideLease >0) {
+			
+			if(overrideLease > 0) {
+				int leaseTime = dev.getLeaseTime();
 				dev.overrideLeaseTime(overrideLease);
-				System.out.println("removeExpiredDevices(), overriding lease for "+dev.getFriendlyName()
-						+"with lease : "+overrideLease);
+				Activator.logger.DEBUG("removeExpiredDevices(), overriding lease for "+dev.getFriendlyName()+": was "+leaseTime+" becomes "+overrideLease);
 			}
-			Activator.logger.DEBUG("[Importer] removeExpiredDevices()");
+			
 			if (dev.isExpired() == true) {
                 Activator.logger.DEBUG("[Importer] Expired device:"+ dev.getFriendlyName());
 				removeDevice(dev);
 				removeOSGiExpireDevice(dev);
 			}			
 		}
+		
+		skipVerification = true;
 	}
 
 	/*
@@ -369,16 +384,20 @@ public class MyCtrlPoint extends ControlPoint
 	}
 
 	public synchronized void removeOSGiExpireDevice(Device dev) {
+
+		/*
+		 * Skip all non imported devices
+		 */
+		OSGiDeviceInfo deviceInfo = (OSGiDeviceInfo) devices.get(dev.getUDN());
+		if(deviceInfo == null)
+			return;
+
 		/*
 		 * unregistering root device with all its children device from OSGi 
 		 * deleting root device and all its children from struct that conatin 
 		 * a list of local device
 		 */
-		if(devices==null || dev ==null ||dev.getUDN()== null)
-			return;
-		
-		removeOSGiandUPnPDeviceHierarchy(((OSGiDeviceInfo) devices.get(dev
-				.getUDN())).getOSGiDevice());
+		removeOSGiandUPnPDeviceHierarchy(deviceInfo.getOSGiDevice());
 	}
 
 	public void registerUPnPDevice(Device dev, UPnPDeviceImpl upnpDev,
