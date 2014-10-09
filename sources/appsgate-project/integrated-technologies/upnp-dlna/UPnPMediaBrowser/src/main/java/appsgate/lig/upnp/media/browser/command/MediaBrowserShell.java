@@ -11,6 +11,7 @@ import org.osgi.service.upnp.UPnPDevice;
 
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.upnp.media.browser.MediaBrowser;
+import appsgate.lig.upnp.media.player.MediaPlayer;
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
@@ -42,11 +43,20 @@ public class MediaBrowserShell {
 
 
 
-    private MediaBrowser retrieveMediaBrowserInstance(String player) {
-        Implementation implementation = CST.apamResolver.findImplByName(null,
-                "MediaBrowser");
-        return (MediaBrowser) implementation.getInst(player).getServiceObject();
-
+    private MediaBrowser retrieveMediaBrowserInstance(String browser) {
+		Implementation implementation = CST.apamResolver.findImplByName(null,
+				"MediaBrowser");
+			if(implementation == null) {
+				System.out.println("Media Browser Implementation not found");
+				return null;
+			}
+			Instance inst = implementation.getInst(browser);
+			if(inst == null) {
+				System.out.println("No Media Browser Instance with name : "+browser+" found");
+				return null;
+			}
+			
+			return (MediaBrowser) inst.getServiceObject();    	
     }
 
 
@@ -54,6 +64,10 @@ public class MediaBrowserShell {
     public void browsers(@Descriptor("none") String... args) {
 
         Implementation implementation = CST.apamResolver.findImplByName(null, "MediaBrowser");
+		if(implementation == null) {
+			System.out.println("Media Browser Implementation not found");
+			return ;
+		}
 
         StringBuilder browsers = new StringBuilder();
 

@@ -23,13 +23,15 @@ define([
             // setting default friendly name if none exists
             if (this.get("name") === "") {
                 this.set("name", this.get("friendlyName"));
+                this.sendName();
             }
 
             // request current volume level
             this.requestVolume();
 
             // listening for volume value
-            dispatcher.on(this.get("ref") + ":volume", function(volume) {
+            dispatcher.on(this.get("ref") , function(volume) {
+            console.log("received volume : "+volume);
                 self.set("volume", volume);
             });
         },
@@ -48,27 +50,27 @@ define([
 
             switch (act) {
                 case "play":
-                    $(btn).append("<span data-i18n='keyboard.play-media-action'/>");
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.play-media-action'/>");
                     v.methodName = "play";
-                    v.phrase = "language.play-media-action";
+                    v.phrase = "services.mediaplayer.language.play-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "pause":
-                    $(btn).append("<span data-i18n='keyboard.pause-media-action'/>");
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.pause-media-action'/>");
                     v.methodName = "pause";
-                    v.phrase = "language.pause-media-action";
+                    v.phrase = "services.mediaplayer.language.pause-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "stop":
-                    $(btn).append("<span data-i18n='keyboard.stop-media-action'/>");
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.stop-media-action'/>");
                     v.methodName = "stop";
-                    v.phrase = "language.stop-media-action";
+                    v.phrase = "services.mediaplayer.language.stop-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "setVolume":
-                    $(btn).append("<span data-i18n='keyboard.set-volume-media-action'/>");
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.set-volume-media-action'/>");
                     v.methodName = "setVolume";
-                    v.phrase = "language.set-volume-media-action";
+                    v.phrase = "services.mediaplayer.language.set-volume-media-action";
           			v.args = [ {"type":"int", "value": "0"}];
 
                     $(btn).attr("json", JSON.stringify(v));
@@ -119,7 +121,7 @@ define([
          * Sends a request to the server for the current volume level
          */
         requestVolume: function() {
-            this.remoteControl("getVolume", [], this.id + ":volume");
+            this.remoteControl("getVolume", [], this.id );
         },
         // Displays a tree of items the player can read
         onBrowseMedia: function(selectedMedia) {

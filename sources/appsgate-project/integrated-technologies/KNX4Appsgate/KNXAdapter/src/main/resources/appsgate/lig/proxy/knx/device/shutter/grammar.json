@@ -1,0 +1,8 @@
+{
+    "friendlyName": "shutter",
+    "typename": "knxshutter",
+    "traceDesc": ["isOn"],
+    "properties": ["isOn"],
+    "states": [
+    ]
+}

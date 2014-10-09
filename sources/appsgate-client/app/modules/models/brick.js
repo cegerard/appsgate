@@ -131,6 +131,12 @@ define([
         getTemplateProperty: function() {
             return _.template(PropertyTemplate); 
         },
+        /**
+         * @returns the default template scale
+         */
+        getScale: function() {
+            return {}; 
+        },
 		/**
          * Override its synchronization method to send a notification on the network
          */

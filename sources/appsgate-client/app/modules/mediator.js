@@ -12,8 +12,8 @@ define([
         this.ProgramInputBuilder = new ProgramInputBuilder();
 
         this.resetProgramJSON();
-        this.currentNode = 3;
-        this.maxNodeId = 3;
+        this.currentNode = 2;
+        this.maxNodeId = 4;
         this.lastAddedNode = null;
         this.Grammar = new Grammar();
       },
@@ -24,30 +24,36 @@ define([
         this.programJSON = {
           iid: 0,
           type: "setOfRules",
-          rules: [{
-            iid: 1,
-            type: "seqRules",
-			rules: [{
-			  iid: 2,
-			  type: "empty",
-			}]
-			},{
-			iid: 3,
-			type: "empty"
-          }]
+          rules: [
+               {iid: 1,
+               type: "seqRules",
+               rules: [{
+                  iid: 2,
+                  type: "empty",
+               }]
+               },
+               {iid: 3,
+			         type: "setOfRules",
+			         rules: [{
+				          iid: 4,
+				          type: "empty",
+				          }]
+			         }
+		      ]
         };
       },
       /**
       * method that loads a program and set the max id
       */
-      loadProgramJSON: function(programJSON) {
-		if (programJSON === undefined || programJSON.rules === undefined) {
-		  this.resetProgramJSON();
-		} else {
-		  this.programJSON = programJSON;
-		}
-        this.maxNodeId = this.findMaxId(this.programJSON);
-        this.currentNode = -1;
+      loadProgramJSON: function(programJSON, pid) {
+    		if (programJSON === undefined || programJSON.rules === undefined) {
+    		  this.resetProgramJSON();
+    		} else {
+    		  this.programJSON = programJSON;
+    		  this.ProgramKeyboardBuilder.setProgramId(pid);
+          this.maxNodeId = this.findMaxId(this.programJSON);
+          this.currentNode = -1;
+    		}
       },
       /**
       * Method that recursively retrieve the max node id of the program
@@ -68,19 +74,20 @@ define([
       */
       setCurrentPos: function(id) {
         if (id) {
-		  var n = this.Grammar.parse(this.programJSON, id);
+		      var n = this.Grammar.parse(this.programJSON, id);
           if (n != null) {
             console.debug("Setting current_pos to: " + n.id);
            this.currentNode = n.id;
           } else {
             console.debug("Setting current_pos to: " + id);
-			this.currentNode = id;
-		  }
+			      this.currentNode = id;
+		      }
         } else {
           this.currentNode = -1;
           console.error("A non valid pos has been passed to setCurrent pos: " + id);
+		  return;
         }
-
+        dispatcher.trigger("refreshDisplay");
       },
       /**
       * method that set the cursor and build keyboard
@@ -124,6 +131,17 @@ define([
         } else if ($(button).hasClass("when-node")) {
           n = {
             "type": "when",
+            "iid": "X",
+            "events": this.getEmptyJSON("mandatory"),
+            "seqRulesThen": {
+              "iid": "X",
+              "type": "seqRules",
+              "rules": [this.getEmptyJSON("mandatory")]
+            }
+          };
+        } else if ($(button).hasClass("whenImp-node")) {
+          n = {
+            "type": "whenImp",
             "iid": "X",
             "events": this.getEmptyJSON("mandatory"),
             "seqRulesThen": {
@@ -201,9 +219,10 @@ define([
       */
       recursivelyRemove: function(pos, curNode, parentNode) {
         if (parseInt(curNode.iid) === parseInt(pos)) {
+          var nodeType = Array.isArray(parentNode)?"empty":"mandatory";
           curNode = {
             iid: curNode.iid,
-            type: "empty"
+            type: nodeType
           };
         } else {
           for (var o in curNode) {
@@ -216,6 +235,12 @@ define([
             }
           }
         }
+		if (curNode.type == "if" && curNode.seqRulesTrue.rules.length == 1) {
+			curNode.seqRulesTrue.rules[0].type="mandatory";
+		}
+		if ((curNode.type == "when" || curNode.type == "whenImp") && curNode.seqRulesThen.rules.length == 1) {
+			curNode.seqRulesThen.rules[0].type="mandatory";
+		}
         return curNode;
       },
       /**
@@ -391,8 +416,11 @@ define([
       */
       findNextInput: function(selected) {
         //
+		if (selected.length == 0) {
+		  console.error("Unable to find next input on an empty selector : ", selected.selector);
+		  return selected;
+		}
         while(typeof selected != "undefined") {
-          console.log("selected(inside) : "+selected.nextAll(".input-spot").attr("id"));
           if(selected.nextAll(".input-spot").length != 0) {
             return selected;
           }

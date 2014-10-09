@@ -3,7 +3,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
-import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import java.util.Collection;
 import org.jmock.Expectations;
 import org.jmock.States;

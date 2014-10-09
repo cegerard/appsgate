@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,6 +123,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
     public GrammarDescription getGrammarFromDevice(String deviceId) {
         return null;
     }
+
+    @Override
+    public JSONObject getGraph() {
+        return null;
+     }
 
     public final class Library {
 
@@ -423,12 +429,14 @@ public class EHMIProxyMock implements EHMIProxySpec {
 	}
 
     @Override
-    public void addLocationObserver(String location) {
+    public JSONArray addLocationObserver(String location) {
+		return null; 
 
     }
 
     @Override
-    public void removeLocationObserver(String location) {
+    public JSONArray removeLocationObserver(String location) {
+		return null; 
 
     }
 
@@ -554,6 +562,35 @@ public class EHMIProxyMock implements EHMIProxySpec {
 	public JSONObject getTraceManStatus() {
 		// TODO Auto-generated method stub
 		return new JSONObject();
+
+        }
+        @Override
+        public void scheduleProgram(String eventName, String programId,
+			boolean startOnBegin, boolean stopOnEnd) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public JSONObject checkLocation(String location) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public JSONArray checkLocationsStartingWith(String firstLetters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public JSONArray addLocationObserverFromWOEID(String woeid) {
+		// TODO Auto-generated method stub
+		return null; 
+		
 	}
 
 }

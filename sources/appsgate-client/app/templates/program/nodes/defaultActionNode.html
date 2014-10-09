@@ -1,7 +1,9 @@
 <div id="progress-<%= node.iid %>" class="progress-indicator-group">
   <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
-  <span id="progress-counter-<%=node.iid %>">0</span>
+  <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
+  <span class="progress-indicator" data-i18n='debugger.times'/>
 </div>
+<!--
 <div class="btn btn-default btn-prog btn-prog-action " id="<%= node.iid %>">
         <% if (typeof node.phrase !== 'undefined') { %>
             <span data-i18n='<%=node.phrase%>'></span>
@@ -13,4 +15,12 @@
     <%=engine.buildInputFromNode(node.target, currentNode) %>
     <% } %>
 
+</div>
+-->
+<div class="btn btn-default btn-prog btn-prog-action " id="<%= node.iid %>">
+        <% if (typeof node.phrase !== 'undefined') { %>
+                <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+        <% } else { %>
+        Uknown
+        <% } %>
 </div>

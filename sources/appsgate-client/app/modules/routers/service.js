@@ -26,14 +26,16 @@ ServiceRouter = Backbone.Router.extend({
         appRouter.showMenuView(new ServiceMenuView());
 
         // set active the first element - displayed by default
-        $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
-
-        // display the first category of services
-        var typeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("side-")[1];
-        appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
-
-        // update the url
-        appRouter.navigate("#services/types/" + typeId);
+        if ($($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).length > 0) {
+            $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
+    
+            // display the first category of services
+            var typeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("side-")[1];
+            appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
+    
+            // update the url
+            appRouter.navigate("#services/types/" + typeId);
+        }
 
         $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
         $(".breadcrumb").append("<li class='active'><span data-i18n='navbar.services'/></li>");

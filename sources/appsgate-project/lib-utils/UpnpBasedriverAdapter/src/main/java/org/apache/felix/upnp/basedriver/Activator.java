@@ -114,6 +114,7 @@ public class Activator implements BundleActivator {
 			String name = (String) e.nextElement();
 			String systemValue = Activator.bc.getProperty(name);
 			if(systemValue!=null){
+				System.out.println("Adding configuration property, "+name+" = " +systemValue);
 				configuration.setProperty(name, systemValue);
 			}
 		}

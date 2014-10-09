@@ -659,10 +659,12 @@ public class SimpleClockTest implements AlarmEventObserver {
 	public void testSimplePeriodicAlarms() {
 		System.out
 				.println("testSimplePeriodicAlarms(), adding a periodic events for each seconds");
-		clock.registerPeriodicAlarm(null, 1000, this);
+		Calendar cali = Calendar.getInstance();
+		cali.setTimeInMillis(System.currentTimeMillis()-500);
+		clock.registerPeriodicAlarm(cali, 2000, this);
 
 		try {
-			Thread.sleep(4321);
+			Thread.sleep(9321);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -682,13 +684,13 @@ public class SimpleClockTest implements AlarmEventObserver {
 		clock.registerAlarm(cal, this);
 
 		try {
-			Thread.sleep(4321);
+			Thread.sleep(8321);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
 
 		Assert.assertEquals(
-				"received alarm set should contain 2 element (1 for all periodics + une for single alarm)",
+				"received alarm set should contain 2 element (1 for all periodics + 1 for single alarm)",
 				2, receivedAlarm.size());
 		Assert.assertEquals("should have received 9 elements (total)", 9,
 				receivedAlarmCounter);

@@ -1,14 +1,7 @@
-<% if (typeof node.object !== 'undefined') { %>
-<%=engine.buildInputFromNode(node.object, currentNode) %>
-<% } else if (typeof node.target !== 'undefined') { %>
-<%=engine.buildInputFromNode(node.target, currentNode) %>
-<% } %>
-<button class="btn btn-prog btn-prog-action" id="<%= node.iid %>">
+<div class="btn btn-prog btn-prog-action" id="<%= node.iid %>">
         <% if (typeof node.phrase !== 'undefined') { %>
-            <span data-i18n='language.state-verb'></span>
-            <span data-i18n='<%=node.phrase%>'></span>
+            <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.object, currentNode)}) %>
     <% } else { %>
         UNKNOWN STATE
     <% } %>
-</button>
-
+</div>

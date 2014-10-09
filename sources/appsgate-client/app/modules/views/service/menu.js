@@ -105,6 +105,7 @@ define([
                 var types = services.getServicesByType();
                 var container = document.createDocumentFragment();
                 _.forEach(_.keys(types), function(type) {
+                  if (type !== "36") {
                     $(container).append(self.tplServiceContainer({
                         type: type,
                         services: types[type],
@@ -114,6 +115,7 @@ define([
                         }),
                         active: Backbone.history.fragment.split("services/types/")[1] === type ? true : false
                     }));
+                  }
                 });
 
                 var serviceGroups = $(container).children();
@@ -126,6 +128,8 @@ define([
                     $(self.$el.find(".list-group")[1]).append(itm);
                 });
 
+                $(self.$el.find(".list-group")[1]).addClass("scrollable-menu");
+
                 // set active the current item menu
                 this.updateSideMenu();
 
@@ -133,7 +137,7 @@ define([
                 this.$el.i18n();
 
                 // resize the menu
-                this.resizeDiv($(self.$el.find(".list-group")[1]));
+                this.resize(self.$el.find(".scrollable-menu"));
 
                 return this;
             }

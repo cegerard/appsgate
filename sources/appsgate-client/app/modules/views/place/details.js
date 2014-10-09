@@ -14,7 +14,7 @@ define([
          * Bind events of the DOM elements from the view to their callback
          */
         events: {
-            "show.bs.modal #edit-name-place-modal": "initializeModal",
+            "shown.bs.modal #edit-name-place-modal": "initializeModal",
             "click #edit-name-place-modal button.valid-button": "validEditName",
             "keyup #edit-name-place-modal input": "validEditName",
             "click button.delete-place-button": "deletePlace",
@@ -62,8 +62,10 @@ define([
          */
         initializeModal: function() {
             $("#edit-name-place-modal input").val(this.model.getName());
+            $("#edit-name-place-modal input").focus();
             $("#edit-name-place-modal .text-danger").addClass("hide");
             $("#edit-name-place-modal .valid-button").addClass("disabled");
+            $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
         },
         /**
          * Check the current value of the input text and show a message error if needed
@@ -76,6 +78,17 @@ define([
                 $("#edit-name-place-modal .text-danger").removeClass("hide");
                 $("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-name-empty"));
                 $("#edit-name-place-modal .valid-button").addClass("disabled");
+                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
+
+                return false;
+            }
+            // name contains html code
+            if (/(&|>|<)/.test($("#edit-name-place-modal input:text").val())) {
+                $("#edit-name-place-modal .text-danger")
+                        .text($.i18n.t("edit-name-modal.contains-html"))
+                        .removeClass("hide");
+                $("#edit-name-place-modal .valid-button").addClass("disabled");
+                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -85,6 +98,7 @@ define([
                 $("#edit-name-place-modal .text-danger").removeClass("hide");
                 $("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-already-existing"));
                 $("#edit-name-place-modal .valid-button").addClass("disabled");
+                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -92,7 +106,8 @@ define([
             //ok
             $("#edit-name-place-modal .text-danger").addClass("hide");
             $("#edit-name-place-modal .valid-button").removeClass("disabled");
-
+            $("#edit-name-place-modal .valid-button").removeClass("valid-disabled");
+            
             return true;
         },
         /**
@@ -237,7 +252,7 @@ define([
                 this.$el.i18n();
 
                 // resize the devices list in the selected place
-                this.resizeDiv($(".contents-list"));
+                this.resize($(".scrollable"));
 
                 return this;
             }

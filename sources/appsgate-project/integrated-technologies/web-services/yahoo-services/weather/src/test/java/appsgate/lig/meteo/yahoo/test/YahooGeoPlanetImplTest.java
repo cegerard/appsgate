@@ -17,9 +17,10 @@
 package appsgate.lig.meteo.yahoo.test;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.junit.Assert.*;
-
-
 import appsgate.lig.yahoo.geoplanet.YahooGeoPlanet;
 import appsgate.lig.yahoo.impl.YahooGeoPlanetImpl;
 
@@ -28,11 +29,46 @@ import appsgate.lig.yahoo.impl.YahooGeoPlanetImpl;
  *
  */
 public class YahooGeoPlanetImplTest {
+	
+	private static Logger logger = LoggerFactory
+			.getLogger(YahooGeoPlanetImplTest.class);	
+
 
     @Test
-    public void test() {
+    public void testgetWOEIDFromPlaceName() {
+        logger.debug("testgetWOEIDFromPlaceName");    	
+
 	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
 	assertEquals("593720", planet.getWOEIDFromPlaceName("Grenoble"));
     }
+    
+    @Test
+    public void testgetDescriptionFromWOEID() {
+        logger.debug("getDescriptionFromWOEID");    	
+	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
+	
+	planet.getDescriptionFromWOEID("593720");
 
+    }
+    
+    @Test
+    public void testgetDescriptionFromPlaceName() {
+        logger.debug("testgetDescriptionFromPlaceName");    	
+	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
+	
+	planet.getDescriptionFromPlaceName("Grenoble");
+	planet.getDescriptionFromPlaceName("France");
+	planet.getDescriptionFromPlaceName("Par");
+
+    }    
+    
+    @Test
+    public void testcheckLocationStartingWith() {
+    logger.debug("checkLocationStartingWith");
+	YahooGeoPlanet planet = new YahooGeoPlanetImpl();
+	
+	planet.getLocationsStartingWith("Gre");
+    }    
+
+    
 }

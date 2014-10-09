@@ -28,10 +28,10 @@ define(function(require, exports, module) {
         window.dispatcher = _.clone(Backbone.Events);
 
         // Setting the connection with the box
-        //window.communicator = new Communicator('ws://192.168.1.12:8087');
-        //window.communicator = new Communicator('ws://localhost:8087');
-        window.communicator = new Communicator('ws://192.168.1.99:8087');
-
+        //Parser the URL called to generate the server provider.
+        var serverAddr=document.URL.replace(/http:\/\//i,"").replace(/\/.*/i,"").replace(/:.*/i,"");
+        //DO NOT change the IP anymore, its not necessary
+        window.communicator = new Communicator('ws://'+serverAddr+':8087');
         window.addEventListener("click", onFocusOutCircleMenu, false);
 
         // Wait for the socket to be opened
@@ -39,54 +39,36 @@ define(function(require, exports, module) {
             // delete the current collections if any - in case of a reconnection
             if (typeof devices !== "undefined") {
                 devices.getCoreClock().unsynchronize();
-                devices.reset();
+                //devices.reset();
             }
             if (typeof places !== "undefined") {
-                places.reset();
+                //places.reset();
             }
             if (typeof services !== "undefined") {
-                services.reset();
+                //services.reset();
             }
             if (typeof programs !== "undefined") {
-                programs.reset();
+                //programs.reset();
             }
-
-            // wait for the data before launching the user interface
-            var placesReady = false;
-            var devicesReady = false;
-            var servicesReady = false;
-            var programsReady = false;
 
             // places
             dispatcher.on("placesReady", function() {
-                placesReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
-                    dispatcher.trigger("dataReady");
-                }
+                dispatcher.trigger("dataReady");
             });
 
             // devices
             dispatcher.on("devicesReady", function() {
-                devicesReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
-                    dispatcher.trigger("dataReady");
-                }
+                dispatcher.trigger("dataReady");
             });
 
             // services
             dispatcher.on("servicesReady", function() {
-                servicesReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
-                    dispatcher.trigger("dataReady");
-                }
+                dispatcher.trigger("dataReady");
             });
 
             // programs
             dispatcher.on("programsReady", function() {
-                programsReady = true;
-                if (placesReady && devicesReady && servicesReady && programsReady) {
-                    dispatcher.trigger("dataReady");
-                }
+                dispatcher.trigger("dataReady");
             });
 
             // all data have been received, launch the user interface

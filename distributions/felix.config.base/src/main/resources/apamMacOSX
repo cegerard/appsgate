@@ -15,4 +15,4 @@
 
 natives=-Djava.library.path=natives/jni/MacOSX/
 
-java -Dlogback.configurationFile=conf/logback.xml ${natives} -jar bin/felix.jar
+java -Djava.util.logging.config.file=conf/logging.properties -Dlogback.configurationFile=conf/logback.xml ${natives} -jar bin/felix.jar

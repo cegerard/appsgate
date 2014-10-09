@@ -77,7 +77,9 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
             if (userType.contentEquals("21") && !EHMIProxy.getSystemClock().isRemote()) { //The new device is a clock and no remote clock
                 EHMIProxy.startRemoteClockSync();										//Is already used.
             }
-            traceManager.coreUpdateNotify(EHMIProxy.getCurrentTimeInMillis(), objectId, coreType, userType, name, description, "new");
+            if(traceManager != null) {
+            	traceManager.coreUpdateNotify(EHMIProxy.getCurrentTimeInMillis(), objectId, coreType, userType, name, description, "new");
+            }
             EHMIProxy.newDeviceStatus(objectId, Boolean.TRUE);
 
         } else if (coreType.contains("remove")) { //A device has been removed

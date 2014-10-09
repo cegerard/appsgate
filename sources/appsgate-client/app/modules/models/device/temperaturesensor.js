@@ -33,10 +33,11 @@ define([
       var v = this.getJSONProperty("mandatory");
       switch(property) {
         case "value":
-          $(btn).append("<span data-i18n='keyboard.getTemperature'><span>");
+          $(btn).append("<span data-i18n='devices.temperature.keyboard.get'><span>");
           v.methodName = "getTemperature";
           v.returnType = "number";
-          v.phrase = "language.getTemperature";
+          v.phrase = "devices.temperature.language.get";
+          v.unit = "&deg; C";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

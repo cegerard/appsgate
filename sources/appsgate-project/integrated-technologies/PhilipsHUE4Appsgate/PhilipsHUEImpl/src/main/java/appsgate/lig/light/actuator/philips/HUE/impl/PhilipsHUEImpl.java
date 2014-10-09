@@ -78,7 +78,18 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	
 	@Override
 	public JSONObject getLightStatus() {
-		return PhilipsBridge.getLightState(lightBridgeIP, lightBridgeId);
+		try{
+			
+			JSONObject obj = PhilipsBridge.getLightState(lightBridgeIP, lightBridgeId);
+			status = "2";
+
+			return obj;
+		} catch(Exception exc) {
+			logger.error("PhilipsBridge.getLightState(....), not available : "+exc.getMessage());
+			status = "1";
+
+			return null;			
+		}
 	}
 
 	@Override
@@ -554,13 +565,17 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 		JSONObject descr = new JSONObject();
 		descr.put("id", actuatorId);
 		descr.put("type", userType); // 7 for color light
+		descr.put("deviceType", actuatorType);
+		if(getLightStatus() == null ) {
+			descr.put("status", status);
+			return descr;
+		}
 		descr.put("status", status);
 		descr.put("value", getCurrentState());
 		descr.put("color", getLightColor());
 		descr.put("saturation", getLightColorSaturation());
 		descr.put("brightness", getLightBrightness());
 		//Entry added for configuration GUI
-		descr.put("deviceType", actuatorType);
 		
 		return descr;
 	}

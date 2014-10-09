@@ -10,7 +10,7 @@
 
 		<!-- device kernel meta data -->
 		<definition name="deviceName" type="string" default="DomiCube"   field="deviceName" />
-		<definition name="deviceId"   type="string" default="DomiCube-1" field="deviceId" />
+		<definition name="deviceId"   type="string" default="domicube" field="deviceId" />
 		<definition name="deviceType" type="string" default="domicube"   field="deviceType" />
 
 		<!-- device client meta data -->
@@ -19,9 +19,15 @@
 		<definition name="status"    type="string" default="2"   field="status" method="statusChanged" />
 
 		<!-- device meta data -->
-		<definition name="activeFace"   type="string" field="activeFace" method="faceChanged"/>
+		<definition name="activeFace"   type="string" field="activeFace" method="faceChanged" />
 		<definition name="batteryLevel" type="string" field="batteryLevel" method="batteryChanged"/>
-		<definition name="dimValue"     type="string" field="dimValue" method="dimValueChanged"/>
+		<definition name="dimValue"     type="string" field="dimValue" method="dimValueChanged" />
+        <definition name="dimDirection"     type="string" field="dimDirection" method="dimDirectionChanged" />
+
+        <definition name="dimDirectionDetectableRate"   type="int" field="dimDirectionDetectableRate" default="6"></definition>
+
+
+
 		
 	</implementation>
 

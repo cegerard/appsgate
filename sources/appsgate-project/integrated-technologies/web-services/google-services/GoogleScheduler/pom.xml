@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>appsgate.components</groupId>
+    <artifactId>google-services</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <artifactId>GoogleScheduler</artifactId>
+    <packaging>bundle</packaging>
+    <name>Google Scheduler</name>
+    <description>Starts/Stops End-User Programs upon google Agenda and the CoreClock</description>
+    
+    <properties>
+    </properties>
+
+    <!-- Dependencies Description -->
+    <dependencies>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${json.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.imag.adele.apam</groupId>
+            <artifactId>apam-core</artifactId>
+            <version>${apam.current.version}</version>
+        </dependency>
+        
+        <dependency>
+            <artifactId>CoreClockSpec</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <artifactId>GoogleAdapter</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <artifactId>EHMIProxySpec</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
+            
+        <dependency>
+            <artifactId>ConfigurableClockImpl</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
+                    
+        <dependency>
+            <artifactId>SchedulerSpec</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
+            <artifactId>org.osgi.core</artifactId>
+            <groupId>org.osgi</groupId>
+            <version>${osgi.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+            <version>${ipojo.annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.runtime</artifactId>
+            <version>${felix.gogo.runtime.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.eclipse.osgi</artifactId>
+                    <groupId>org.eclipse.osgi</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>          
+
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+    </dependencies>
+
+  <!-- Dependencies Instructions -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>fr.imag.adele.apam</groupId>
+                <artifactId>apam-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+  
+</project>

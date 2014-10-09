@@ -5,7 +5,8 @@
 
     <implementation name="ConfigurableClockImpl"
         classname="appsgate.lig.clock.sensor.impl.ConfigurableClockImpl"
-        specification="CoreClockSpec" push="fireClockSetNotificationMsg, fireClockAlarmNotificationMsg, fireFlowRateSetNotificationMsg" singleton="true">
+        specification="CoreClockSpec" push="fireClockSetNotificationMsg, fireClockAlarmNotificationMsg, fireFlowRateSetNotificationMsg"        
+        singleton="true">
         <callback onInit="start" onRemove="stop"/>
 
 

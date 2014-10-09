@@ -34,7 +34,7 @@ public class Builder {
         NODE_EVENT, NODE_EVENTS_OR, NODE_EVENTS_AND, NODE_EVENTS_SEQUENCE,
         NODE_FUNCTION, NODE_FUNCTION_DEFINITION, NODE_IF,
         NODE_KEEP_STATE, NODE_LISTS, NODE_PROGRAM, NODE_RETURN,
-        NODE_SELECT, NODE_SELECT_STATE, NODE_STATE, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
+        NODE_SELECT, NODE_SELECT_STATE, NODE_STATE, NODE_STATE_PROGRAM, NODE_SEQ_RULES, NODE_SET_OF_RULES, NODE_VALUE,
         NODE_VARIABLE_ASSIGNATION, NODE_WAIT, NODE_VARIABLE_DEFINITION, NODE_WHEN, NODE_WHILE;
     }
 
@@ -57,6 +57,9 @@ public class Builder {
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
+        if (type.equalsIgnoreCase("stopMyself")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
         if (type.equalsIgnoreCase("booleanExpression")) {
             return NODE_TYPE.NODE_BOOLEAN_EXPRESSION;
         }
@@ -64,6 +67,9 @@ public class Builder {
             return NODE_TYPE.NODE_COMPARATOR;
         }
         if (type.equalsIgnoreCase("event")) {
+            return NODE_TYPE.NODE_EVENT;
+        }
+        if (type.equalsIgnoreCase("eventProgram")) {
             return NODE_TYPE.NODE_EVENT;
         }
         if (type.equalsIgnoreCase("eventsOr")) {
@@ -111,6 +117,12 @@ public class Builder {
         if (type.equalsIgnoreCase("state")) {
             return NODE_TYPE.NODE_STATE;
         }
+        if (type.equalsIgnoreCase("keepStateProgram")) {
+            return NODE_TYPE.NODE_STATE_PROGRAM;
+        }
+        if (type.equalsIgnoreCase("stateProgram")) {
+            return NODE_TYPE.NODE_STATE_PROGRAM;
+        }
         if (type.equalsIgnoreCase("number")) {
             return NODE_TYPE.NODE_VALUE;
         }
@@ -135,10 +147,16 @@ public class Builder {
         if (type.equalsIgnoreCase("programCall")) {
             return NODE_TYPE.NODE_VALUE;
         }
+        if (type.equalsIgnoreCase("scale")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
         if (type.equalsIgnoreCase("assignation")) {
             return NODE_TYPE.NODE_VARIABLE_ASSIGNATION;
         }
         if (type.equalsIgnoreCase("when")) {
+            return NODE_TYPE.NODE_WHEN;
+        }
+        if (type.equalsIgnoreCase("whenImp")) {
             return NODE_TYPE.NODE_WHEN;
         }
         if (type.equalsIgnoreCase("while")) {
@@ -221,7 +239,9 @@ public class Builder {
                 case NODE_SELECT_STATE:
                     return new NodeSelectState(o, parent);
                 case NODE_STATE:
-                    return new NodeState(o, parent);
+                    return new NodeStateDevice(o, parent);
+                case NODE_STATE_PROGRAM:
+                    return new NodeStateProgram(o, parent);
                 case NODE_VALUE:
                     return new NodeValue(o, parent);
                 case NODE_VARIABLE_ASSIGNATION:
@@ -243,7 +263,7 @@ public class Builder {
                 case NODE_COMPARATOR:
                     return new NodeComparator(o, parent);
                 default:
-                    LOGGER.debug("No such type found : {}", o.toString());
+                    LOGGER.error("No such type found : {}", o.toString());
                     throw new SpokNodeException("NodeBuilder", "type", null);
             }
         } catch (SpokNodeException ex) {

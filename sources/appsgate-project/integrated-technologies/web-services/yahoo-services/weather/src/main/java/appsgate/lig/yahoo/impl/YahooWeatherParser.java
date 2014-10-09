@@ -41,6 +41,8 @@ public class YahooWeatherParser {
     static final String xPathAstronomy = "//astronomy";
     static final String xPathForecast = "/rss/channel/item/forecast";
     static final String xPathPubDate = "//pubDate";
+    static final String xPathPresentationURL = "//link";
+
     static final String xPathTitle = "/rss/channel/item/title";
 
     static public CurrentWeather parseCurrentConditions(Document xmlDocument)
@@ -127,6 +129,15 @@ public class YahooWeatherParser {
         XPath xPath = XPathFactory.newInstance().newXPath();
 
         String location = xPath.evaluate(xPathTitle, xmlDocument);
+        logger.info("Current location : " + location);
+
+        return location;
+    }
+    
+    static public String parsePresentationURL(Document xmlDocument) throws Exception {
+        XPath xPath = XPathFactory.newInstance().newXPath();
+
+        String location = xPath.evaluate(xPathPresentationURL, xmlDocument);
         logger.info("Current location : " + location);
 
         return location;

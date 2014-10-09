@@ -2,7 +2,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +98,13 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
         }
     }
 
+    /**
+     * @return true if the selection is an empty one
+     */
+    public Boolean isEmptySelection() {
+        return getDevicesInSpaces(what, where).length() == 0;
+    }
+
     @Override
     public JSONObject call() {
         setStarted(true);
@@ -159,8 +165,11 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
 
     @Override
     protected void buildReferences(ReferenceTable table) {
-        // For now, do nothing
-        // TODO: implement reference for select
+        table.addNodeSelect(this);
     }
 
+    @Override
+    public String toString() {
+        return "[Node Select: " + what.toString() + ", from: " + where.toString() + "]";
+    }
 }

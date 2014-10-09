@@ -1,669 +1,737 @@
 {
-   "app":{
-      "name":"AppsGate",
-      "signin":"Identification"
-   },
-   "form":{
-      "enter-button":"Enter",
-      "cancel-button":"Cancel",
-      "valid-button":"Done",
-      "close-button":"Close",
-      "rename-button":"Rename",
-      "delete-button":"Delete",
-      "edit-button":"Edit",
-      "save-button":"Save",
-      "saving-button":"Saving ...",
-      "browse-button":"Browse",
-      "background-editor":"Background",
-      "size-editor":"Size",
-      "size-width":"Width",
-      "size-height":"Height"
-   },
-   "navbar":{
-      "home":"Sweet Home",
-      "edit":"Edit",
-      "stop-edit":"Done",
-      "users":"Users",
-      "places":"Places",
-      "devices":"Devices",
-      "services":"Services",
-      "programs":"Programs",
-      "debugger":"Debugger",
-      "button-settings":"Preferences",
-      "emergency-stop":"Emergency stop"
-   },
-   "editbar":{
-      "undo":"Undo",
-      "redo":"Redo",
-      "add":"Add",
-      "trashbin":"Trash"
-   },
-   "login":{
-      "username":"ID Name",
-      "password":"Password",
-      "confirm-password":"Password confirmation"
-   },
-   "modal-lost-connection":{
-      "title":"Connection problem",
-      "interrupted-connection":"The connection has been lost.",
-      "connection":"Connecting ...",
-      "change-server-button":"Change Server",
-      "reconnection-button":"Reconnect"
-   },
-   "modal-settings":{
-      "title":"Preferences",
-      "addr-server":"Server Address",
-      "language-label":"Language",
-      "language-fr":"French",
-      "language-en":"English",
-      "server-unreachable":"Server unavailable ...",
-      "connection":"Connecting ..."
-   },
-   "edit-name-modal":{
-      "title":"Rename",
-      "name":"Name",
-      "name-empty":"The name must be specified.",
-      "already-existing":"Name already exists."
-   },
-   "places-menu":{
-      "add-button":"Add item",
-      "place-no-name":"Item unnamed",
-      "unlocated-devices":"Devices not assigned to places"
-   },
-   "modal-add-place":{
-      "title":"Add item",
-      "place-name":"Place Name",
-      "place-name-empty":"The name of the place must be filled.",
-      "place-already-existing":"Name of the existing room."
-   },
-   "modal-edit-place":{
-      "title":"Rename item",
-      "place-name":"Part Name",
-      "place-name-empty":"The name of the place must be filled.",
-      "place-already-existing":"Name of the existing room."
-   },
-   "places-details":{
-      "place-no-name":"Item unnamed",
-      "undefined":"Undefined",
-      "no-plugs":"No plugs",
-      "header":{
-         "device-number-title":"Number of devices",
-         "temperature-label":"Temperature",
-         "illumination-label":"Brightness",
-         "consumption-label":"Consumption"
-      },
-      "body":{
-         "device-no-name":"Device unnamed",
-         "no-device-in-place":"No device assigned to this room."
-      }
-   },
-   "modal-edit-device":{
-      "name-label":"Name",
-      "name-placeholder":"Device Name",
-      "name-already-existing":"Name of existing device",
-      "place-label":"Place",
-      "time-label":"Time",
-      "time-speed-label":"Speed",
-      "reset-clock":"Reset Clock"
-   },
-   "modal-edit-service":{
-      "name-label":"Name",
-      "name-placeholder":"Service Name",
-      "name-already-existing":"Name of existing service",
-      "place-label":"Room"
-   },
-   "programs-menu":{
-      "add-button":"Add Program"
-   },
-   "modal-add-program":{
-      "title":"Add Program",
-      "name-label":"Name",
-      "name-placeholder":"Program Name",
-      "name-empty":"The program name must be entered.",
-      "name-already-existing":"Name of existing program",
-      "load-from-file":"Load from file",
-      "unable-to-parse":"Unable to read file"
-   },
-   "modal-edit-program":{
-      "title":"Rename program",
-      "program-name":"Program name",
-      "program-name-empty":"The program name must be entered.",
-      "program-already-existing":"Program name already existing."
-   },
-   "devices":{
-      "device-no-name":"Device unnamed",
-      "device-unlocated":"Not located",
-      "type-label":"Type",
-      "place-label":"Location",
-      "state-label":"State",
-      "value-label":"Value",
-      "consumption-label":"Consumption",
-      "status-label":"Status",
-      "controls-label":"Controls",
-      "status":{
-         "connected":"Connected",
-         "waiting":"Waiting",
-         "disconnected":"Disconnected"
-      },
-      "temperature":{
-         "name":{
-            "singular":"Temperature sensor",
-            "plural":"Temperature sensors"
-         }
-      },
-      "illumination":{
-         "name":{
-            "singular":"Light sensor",
-            "plural":"Brightness sensors"
-         }
-      },
-      "switch":{
-         "name":{
-            "singular":"Switch",
-            "plural":"Switches"
-         },
-         "value":{
-            "opened":"Open",
-            "closed":"Closed"
-         }
-      },
-      "actuator":{
-         "name":{
-            "singular":"Actuator",
-            "plural":"Actuators"
-         },
-         "status":{
-            "turnedOn":"On",
-            "turnedOff":"Off"
-         },
-         "action":{
-            "turnOn":"Turn on",
-            "turnOff":"Turn off"
-         }
-      },
-      "contact":{
-         "name":{
-            "singular":"Contact sensor",
-            "plural":"Contact sensors"
-         },
-         "value":{
-            "opened":"Open",
-            "closed":"Closed"
-         },
-         "event":{
-            "opened":"is opened",
-            "closed":"is closed"
-         },
-         "state":{
-            "opened":"open",
-            "closed":"closed"
-         }
-      },
-      "keycard-reader":{
-         "name":{
-            "singular":"Card switch",
-            "plural":"Card switches"
-         },
-         "value":{
-            "inserted":"card inserted",
-            "not-inserted":"no card inserted"
-         }
-      },
-      "movement":{
-         "name":{
-            "singular":"Motion sensor",
-            "plural":"Motion sensors"
-         }
-      },
-      "plug":{
-         "name":{
-            "singular":"Power socket",
-            "plural":"Power sockets"
-         },
-         "status":{
-            "turnedOn":"On",
-            "turnedOff":"Off"
-         },
-         "action":{
-            "turnOn":"Turn on",
-            "turnOff":"Turn off"
-         }
-      },
-      "lamp":{
-         "name":{
-            "singular":"Philips Hue lamp",
-            "plural":"Philips Hue lamps"
-         },
-         "status":{
-            "turnedOn":"On",
-            "turnedOff":"Off"
-         },
-         "action":{
-            "turnOn":"Turn on",
-            "turnOff":"Turn off",
-            "blink":"Blink"
-         }
-      },
-      "clock":{
-         "name":{
-            "singular":"System Clock",
-            "no-name":"System clock unnamed"
-         },
-         "time-speed-label":"Speed ​​of flow of time"
-      },
-      "mediaplayer":{
-         "name":{
-            "singular":"Media Player",
-            "plural":"Media Players"
-         },
-         "status":{
-            "playing":"Playing",
-            "stopped":"Stopped",
-            "selected":"Please select a media"
-         },
-         "action":{
-            "play":"Start",
-            "resume":"Resume",
-            "pause":"Pause",
-            "stop":"Stop",
-            "volume":"Volume",
-            "browse":"Browse"
-         }
-      },
-      "domicube":{
-         "name":{
-            "singular":"DomiCube",
-            "plural":"DomiCubes"
-         },
-         "status":{
-            "inactive":"Inactive",
-            "unknown":"Unknown"
-         }
-      },
-      "ard":{
-          "last-card":"Last badge passed",
-          "last-authorized":"Last badge access granted",
-          "affirmative":"Yes",
-          "negative":"No",
-          "name":{
-              "singular":"ARD",
-              "plural":"ARD"
-          },
-          "event":{
-              "authorized":"badge is authorized on",
-              "non_authorized":"badge is NOT authorized on"
-          },
-          "state":{
-              "authorized":"badge is authorized on",
-              "non_authorized":"badge is NOT authorized on"
-          }
-       }
-   },
-   "services":{
-      "unknown":"Unknown",
-      "device-no-name":"Device unnamed",
-      "device-unlocated":"Not located",
-      "type-label":"Type",
-      "place-label":"Location",
-      "state-label":"State",
-      "value-label":"Value",
-      "consumption-label":"Consumption",
-      "status-label":"Status",
-      "status":{
-         "connected":"Connected",
-         "waiting":"Waiting",
-         "disconnected":"Disconnected"
-      },
-      "mediaplayer":{
-         "name":{
-            "singular":"Media Player",
-            "plural":"Media Players"
-         },
-         "status":{
-            "playing":"Now Playing",
-            "stopped":"Stopped",
-            "selected":"Please select a media"
-         },
-         "action":{
-            "play":"Start",
-            "resume":"Resume",
-            "pause":"Pause",
-            "stop":"Stop",
-            "volume":"Volume",
-            "browse":"Browse"
-         }
-      },
-      "mediabrowser":{
-         "name":{
-            "singular":"Media Server",
-            "plural":"Media Servers"
-         }
-      },
-      "mail":{
-         "name":{
-            "singular":"Mail",
-            "plural":"Mail"
-         }
-      },
-      "connectionManager":{
-         "name":{
-            "singular":"Connection Manager",
-            "plural":"Connection Managers"
-         }
-      },
-      "renderingControl":{
-         "name":{
-            "singular":"Rendering Control",
-            "plural":"Rendering controls"
-         }
-      },
-      "avtransport":{
-         "name":{
-            "singular":"AV Transport",
-            "plural":"AV Transport"
-         }
-      },
-      "contentdirectory":{
-         "name":{
-            "singular":"Content Directory",
-            "plural":"Content Directories"
-         }
-      },
-      "weather":{
-         "name":{
-            "singular":"Weather",
-            "plural":"Weather"
-         },
-          "event":{
-              "sunrise":"the sun rise in",
-              "sunset":"the sun set in"
-          }
-      }
-   },
-   "programs":{
-      "program-no-name":"Program with no name",
-      "edit-program":"Edit",
-      "end-edit-program":"Done",
-      "delete-program":"Delete",
-      "state":{
-         "deployed":"Deployed",
-         "started":"Started",
-         "stopped":"Stopped",
-         "failed":"Error"
-      },
-      "action":{
-         "start":"Start",
-         "stop":"Stop"
-      }
-   },
-   "editor":{
-      "title":"Program Editor",
-      "no-program-alert":"No program",
-      "valid-program-alert":"invalid program",
-      "invalid-program-alert":"invalid program",
-      "undo-last-action":"Cancel"
-   },
-   "language":{
-      "written-by":"written by",
-      "when-keyword":"when",
-      "end-when-block":".",
-      "if-keyword":"if",
-      "if-and":"if ... and ...",
-      "if-or":"if ... or ...",
-      "if-equals":"is",
-      "if-sup":"is greater than",
-      "if-inf":"is less than",
-      "if-dif":"is different from",
-      "if-not":"if ... is not true",
-      "else-keyword":"otherwise",
-      "end-if-block":".",
-      "then-keyword":"then",
-      "while-keyword":"while",
-      "while-keep":"while ... keep ...",
-      "keep-state":"state",
-      "keep-keyword":"Keep",
-      "and-when":"and when",
-      "it-is-not-the-case":"it is not true anymore",
-      "activate-program-action":"Start program",
-      "disactivate-program-action":"Stop program",
-      "activate":"Start",
-      "disactivate":"Stop",
-      "is-activated-program-event":"enabled",
-      "is-disactivated-program-event":"is disabled",
-      "is-running-program-status":"is active",
-      "is-stopped-program-status":"inactive",
-      "op-event":"and",
-      "op-event-bool":"and",
-      "op-and-rule":"and",
-      "op-then-rule":"then",
-      "op-or-bool":"or",
-      "op-and-bool":"and",
-      "space":"space",
-      "true":"true",
-      "false":"false",
-      "op-more-than":"more",
-      "op-less-than":"less",
-      "change-temperature":"change",
-      "indicate-temperature":"indicates",
-      "change-illumination":"change",
-      "indicate-illumination":"indicates",
-      "pushed-switch-event":"pressing",
-      "released-switch-event":"releasing it",
-      "pushed-switch-B1-on":"pressing B1-on",
-      "pushed-switch-B2-on":"pressing B2-on",
-      "pushed-switch-B1-off":"pressing B1-off",
-      "pushed-switch-B2-off":"pressing B2-off",
-      "pushed-telec-event-up":"pressing the top button",
-      "pushed-telec-event-bottom":"pressing the bottom button",
-      "pushed-telec-event-left":"left of is pressed",
-      "pushed-telec-event-right":"right of is pressed",
-      "opened-contact-event":"is opened",
-      "closed-contact-event":"is closed",
-      "contact-sensor-keyword":"sensor contact",
-      "contact-assembled-event":"together",
-      "contact-disassembled-event":"is disassembles",
-      "is-closed-contact-status":"close",
-      "is-opened-contact-status":"open",
-      "is-assembled-contact-status":"closed",
-      "is-disassembled-contact-status":"opened",
-      "inserted-keycard-reader-event":"a card is inserted in",
-      "removed-keycard-reader-event":"a card is removed",
-      "card-inserted-keycard-reader-status":"a card is inserted in",
-      "no-card-inserted-keycard-reader-status":"no card is inserted in ",
-      "turned-on-plug-event":"is on",
-      "turned-off-plug-event":"is off",
-      "is-turned-on-plug-status":"is on",
-      "is-turned-off-plug-status":"is off",
-      "turned-on-plug-state":"on",
-      "turned-off-plug-state":"off",
-      "turn-on-plug-action":"Turn on plug",
-      "turn-off-plug-action":"Turn off plug",
-      "turned-on-actuator-event":"is on",
-      "turned-off-actuator-event":"is off",
-      "is-turned-on-actuator-status":"lights",
-      "is-turned-off-actuator-status":"is off",
-      "turn-on-actuator-action":"Turn on",
-      "turn-off-actuator-action":"Turn off",
-      "wait":"wait",
-      "seconds":"seconds",
-      "turned-on-lamp-event":"is on",
-      "turned-off-lamp-event":"is off",
-      "is-turned-on-lamp-status":"is on",
-      "is-turned-off-lamp-status":"is off",
-      "turn-on-lamp-action":"Turn on",
-      "turn-off-lamp-action":"Turn off",
-      "blink-lamp-action":"Blink",
-      "change-color-lamp-Action":"Change color",
-      "complement-change-color-lamp-action":"to",
-      "white-color":"white",
-      "red-color":"red",
-      "blue-color":"blue",
-      "green-color":"green",
-      "yellow-color":"yellow",
-      "orange-color":"orange",
-      "purple-color":"purple",
-      "pink-color":"Pink",
-      "clock-event":"it is",
-      "clock-status":"it is",
-      "play-media-action":"Play",
-      "browse-media-button":"Browse",
-      "pause-media-action":"Pause the media",
-      "stop-media-action":"Stop",
-      "set-volume-media-action":"Set the volume",
-      "complement-media-action":"on",
-      "alarm-music":"sweet music",
-      "music":"music",
-      "ring-bell-mail-arrived":"new mail arrived sound",
-      "radio":"radio",
-      "movie":"film",
-      "selectedMusic":"music",
-      "img-table":"table image",
-      "received-email-event":"a mail arrived",
-      "send-mail-action":"Send email",
-      "mail-dest":"to",
-      "mail-subject":"whose subject is",
-      "mail-body":"Content",
-      "well-arrived-subject":"Just arrived!",
-      "mandatory-keyword":"Required",
-      "nothing-keyword":"Nothing",
-      "is-turned-on-lamp-state":"on",
-      "is-turned-off-lamp-state":"off",
-      "light-brightness":"the intensity of",
-      "state-verb":"is",
-
-      "getTemperature": "the temperature from sensor",
-      "getIllumination": "the illumination from sensor",  
-
-       "weather" : {
-           "is-current-weather-code-state": "current weather",
-           "is-forecast-weather-code-state": "current weather for",
-
-           "current-temperature": "the temperature for",
-           "getTemperature": "the temperature from sensor",
-
-           "current-weather-code-state": "current weather",
-           "forecast-weather-code-state": "current weather for",
-
-           "forecast-temperature-min": "the minimum temperature expected for",
-           "forecast-temperature-max": "the maximum temperature expected for",
-           "currently-daylight": "il fait jour",
-           "at":"at",
-
-
-           "weather-at": "current weather",
-           "weather-min-at": "the minimum temperature expected for",
-           "weather-max-at": "the maximum temperature expected for",
-           "weather-avg-at": "the average temperature expected for",
-           "weather-code-verb": "announcement",
-           "weather-for-0": "today",
-           "weather-for-1": "tomorrow",
-           "weather-for-2": "after tomorrow",
-           "weather-code-0": "sun",
-           "weather-code-1": "clouds",
-           "weather-code-2": "rain",
-           "weather-code-3": "snow",
-           "weather-code-4": "storms",
-           "weather-code-5": "fog",
-           "weather-code-6": "other conditions",
-           "weather-code-7": "unusual conditions"
-       },
-
-      "domicube-inactivated":"domicube is idle",
-      "domicube-activated":"domicube is activated",
-      "selector":{
-        "prefix-m":"every ",
-        "prefix-f":"every ",
-        "all-places":"everywhere",
-        "complement-selection-target":"of",
-        "type":{
-          "1":"temperature sensors",
-          "2":"light sensors",
-          "3":"switches",
-          "4":"contact sensors",
-          "5":"key card readers",
-          "6":"plugs",
-          "7":"lamps",
-          "8":"actuators",
-          "21":"clocks",
-          "210":"domicubes"
+    "app": {
+        "name": "AppsGate",
+        "signin": "Identification"
+    },
+    "debugger": {
+        "all": "All",
+        "times": "times"
+    },
+    "devices": {
+        "actuator": {
+            "action": {
+                "turnOff": "Turn off",
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
+            },
+            "name": {
+                "plural": "Actuators",
+                "singular": "Actuator"
+            },
+            "status": {
+                "turnedOff": "Off",
+                "turnedOn": "On"
+            }
+        },
+        "ard": {
+            "affirmative": "Yes",
+            "event": {
+                "authorized": "badge is authorized on",
+                "non_authorized": "badge is NOT authorized on"
+            },
+            "last-authorized": "Last badge access granted",
+            "last-card": "Last badge passed",
+            "last-message": "Last message",
+            "last-message-empty": "No message",
+            "name": {
+                "plural": "ARD",
+                "singular": "ARD"
+            },
+            "negative": "No",
+            "state": {
+                "authorized": "badge is authorized on",
+                "non_authorized": "badge is NOT authorized on"
+            }
+        },
+        "clock": {
+            "name": {
+                "no-name": "System clock unnamed",
+                "singular": "System Clock"
+            },
+            "time-speed-label": "Speed ​​of flow of time"
+        },
+        "consumption-label": "Consumption",
+        "contact": {
+            "keyboard": {
+                "closeEvent": "closing ...",
+                "isClose": "contact sensor ... is closed",
+                "isOpen": "contact sensor ... is open",
+                "openEvent": "opening ..."
+            },
+            "language": {
+                "closeEvent": "closing __myVar__",
+                "isClose": "__myVar__ is closed",
+                "isOpen": "__myVar__ is open",
+                "openEvent": "opening __myVar__"
+            },
+            "name": {
+                "plural": "Contact sensors",
+                "singular": "Contact sensor"
+            },
+            "value": {
+                "closed": "Closed",
+                "opened": "Open"
+            }
+        },
+        "controls-label": "Controls",
+        "device-no-name": "Device unnamed",
+        "device-unlocated": "Not located",
+        "domicube": {
+            "name": {
+                "plural": "DomiCubes",
+                "singular": "DomiCube"
+            },
+            "status": {
+                "inactive": "Inactive",
+                "unknown": "Unknown"
+            },
+            "language" : {
+               "activated": "domicube is activated",
+               "inactivated": "domicube is idle",
+                "west": "West",
+                "east": "East"
+            },
+            "keyboard" : {
+               "activated": "domicube is activated",
+               "inactivated": "domicube is idle",
+                "west": "West",
+                "east": "East"
+               
+            },
+            "white-face": {
+                "first-elem": "White",
+                "second-elem": "Face"
+            }
+        },
+        "illumination": {
+            "caption": {
+                "extern": "External Light sensor",
+                "intern": "Internal Light sensor"
+            },
+            "keyboard": {
+                "get": "luminosity of ..."
+            },
+            "language": {
+                "get": "luminosity of __myVar__"
+            },
+            "name": {
+                "plural": "Brightness sensors",
+                "singular": "Light sensor"
+            },
+            "scale": {
+                "high": "High luminosity",
+                "highest": "Sunlight",
+                "low": "Low luminosity",
+                "lowest": "Night",
+                "medium": "Medium luminosity",
+                "veryHigh": "Very high lunimosity",
+                "veryLow": "Very low luminosity"
+            },
+            "scale-label": "Scale"
+        },
+        "keycard-reader": {
+            "keyboard": {
+                "card-inserted": "a card is inserted in ...",
+                "insertedEvent": "someone insert a card in ...",
+                "no-card-inserted": "no card in ...",
+                "removedEvent": "someone remove a card from ..."
+            },
+            "language": {
+                "card-inserted": "a card is inserted in __myVar__",
+                "insertedEvent": "someone insert a card in __myVar__",
+                "no-card-inserted": "no card in __myVar__",
+                "removedEvent": "someone remove a card from __myVar__"
+            },
+            "name": {
+                "plural": "Card switches",
+                "singular": "Card switch"
+            },
+            "value": {
+                "inserted": "card inserted",
+                "not-inserted": "no card inserted"
+            }
+        },
+        "lamp": {
+            "action": {
+                "blink": "Blink",
+                "turnOff": "Turn off",
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
+            },
+            "complement": {
+                "change-color": "to"
+            },
+            "keyboard": {
+                "blink": "Blink ...",
+                "brightness": "brightness of lamp ...",
+                "isOff": "lamp ... is off",
+                "isOff-keep": "lamp ... off",
+                "isOn": "lamp ... is on",
+                "isOn-keep": "lamp ... on",
+                "turnOff": "Switch off lamp ...",
+                "turnOffEvt": "someone switches lamp ... off",
+                "turnOn": "Switch on lamp ...",
+                "turnOnEvt": "someone switch lamp ... on"
+            },
+            "language": {
+                "blink": "Blink __myVar__",
+                "brightness": "brightness of lamp __myVar__",
+                "isOff": "__myVar__ is off",
+                "isOff-keep": "__myVar__ off",
+                "isOn": "__myVar__ is on",
+                "isOn-keep": "__myVar__ on",
+                "turnOff": "Switch off __myVar__",
+                "turnOffEvt": "someone switches __myVar__ off",
+                "turnOn": "Switch on lamp __myVar__",
+                "turnOnEvt": "someone switch __myVar__ on"
+            },
+            "name": {
+                "plural": "Philips Hue lamps",
+                "singular": "Philips Hue lamp"
+            },
+            "status": {
+                "turnedOff": "Off",
+                "turnedOn": "On"
+            },
+            "color-information": {
+                "lastColor" : "Last lamp's color ",
+                "currentColor" : "Current lamp's color "
+            }
+        },
+        "mediaplayer": {
+            "action": {
+                "browse": "Browse",
+                "pause": "Pause",
+                "play": "Start",
+                "resume": "Resume",
+                "stop": "Stop",
+                "volume": "Volume"
+            },
+            "name": {
+                "plural": "Media Players",
+                "singular": "Media Player"
+            },
+            "status": {
+                "playing": "Playing",
+                "selected": "Please select a media",
+                "stopped": "Stopped"
+            }
+        },
+        "movement": {
+            "name": {
+                "plural": "Motion sensors",
+                "singular": "Motion sensor"
+            }
+        },
+        "photo-label": {
+            "plural": "Photos",
+            "singular": "Photo"
+        },
+        "place-label": "Location",
+        "plug": {
+            "action": {
+                "turnOff": "Turn off",
+                "turnOn": "Turn on",
+                "turnAllOff": "Turn all off",
+                "turnAllOn": "Turn all on"
+            },
+            "keyboard": {
+                "isOff": "plug ... is off",
+                "isOff-keep": "plug ... off",
+                "isOn": "plug ... is on",
+                "isOn-keep": "plug ... on",
+                "turnOffEvt": "plug ... is turned off",
+                "turnOnEvt": "plug ... is turned on",
+                "turnOff": "Switch off plug ...",
+                "turnOn": "Switch on plug ..."
+            },
+            "language": {
+                "isOff": "__myVar__ is off",
+                "isOff-keep": "__myVar__ off",
+                "isOn": "__myVar__ is on",
+                "isOn-keep": "__myVar__ on",
+                "turnOffEvt": "__myVar__ is turned off",
+                "turnOnEvt": "__myVar__ is turned on",
+                "turnOff": "Switch on __myVar__",
+                "turnOn": "Switch off __myVar__"
+            },
+            "name": {
+                "plural": "Power sockets",
+                "singular": "Power socket"
+            },
+            "status": {
+                "turnedOff": "Off",
+                "turnedOn": "On"
+            }
+        },
+        "state-label": "State",
+        "status": {
+            "connected": "Connected",
+            "disconnected": "Disconnected",
+            "waiting": "Waiting"
+        },
+        "status-label": "Status",
+        "switch": {
+            "keyboard": {
+                "pushed-bottom": "push bottom button of ...",
+                "pushed-bottom-B1": "push B1-off of ...",
+                "pushed-bottom-B2": "push B2-off of ...",
+                "pushed-up": "push top button of ...",
+                "pushed-up-B1": "push B1-on of ...",
+                "pushed-up-B2": "push B2-on of ..."
+            },
+            "language": {
+                "pushed-bottom": "push bottom button of __myVar__",
+                "pushed-bottom-B1": "push B1-off of __myVar__",
+                "pushed-bottom-B2": "push B2-off of __myVar__",
+                "pushed-up": "push top button of __myVar__",
+                "pushed-up-B1": "push B1-on of __myVar__",
+                "pushed-up-B2": "push B2-on of __myVar__"
+            },
+            "name": {
+                "plural": "Switches",
+                "singular": "Switch"
+            },
+            "value": {
+                "closed": "Closed",
+                "opened": "Open"
+            }
+        },
+        "temperature": {
+            "caption": {
+                "extern": "External temperature sensor",
+                "intern": "Internal temperature sensor"
+            },
+            "keyboard": {
+                "get": "temperetaure measured by ..."
+            },
+            "language": {
+                "get": "temperetaure measured by __myVar__"
+            },
+            "name": {
+                "plural": "Temperature sensors",
+                "singular": "Temperature sensor"
+            }
+        },
+        "type-label": "Type",
+        "value-label": "Value"
+    },
+    "edit-name-modal": {
+        "already-existing": "Name already exists.",
+        "name": "Name",
+        "name-empty": "The name must be specified.",
+        "title": "Rename",
+		"contains-html" : "Name cannot contains html code"
+    },
+    "editbar": {
+        "add": "Add",
+        "redo": "Redo",
+        "trashbin": "Trash",
+        "undo": "Undo"
+    },
+    "editor": {
+        "invalid-program-alert": "invalid program",
+        "no-program-alert": "No program",
+        "title": "Program Editor",
+        "undo-last-action": "Cancel",
+        "valid-program-alert": "invalid program"
+    },
+    "form": {
+        "background-editor": "Background",
+        "browse-button": "Browse",
+        "cancel-button": "Cancel",
+        "close-button": "Close",
+        "delete-button": "Delete",
+        "edit-button": "Edit",
+        "enter-button": "Enter",
+        "rename-button": "Rename",
+        "save-button": "Save",
+        "saving-button": "Saving ...",
+        "size-editor": "Size",
+        "size-height": "Height",
+        "size-width": "Width",
+        "valid-button": "Done"
+    },
+    "keyboard": {
+        "clock-event": "it is",
+        "false": "False",
+        "if-keyword": "If",
+        "keep-state": "Keep state ...",
+        "selector": {
+            "prefix-f": "every ",
+            "prefix-m": "every ",
+            "type": {
+                "1": "temperature sensors",
+                "2": "light sensors",
+                "21": "clocks",
+                "210": "domicubes",
+                "3": "switches",
+                "4": "contact sensors",
+                "5": "key card readers",
+                "6": "plugs",
+                "7": "lamps",
+                "8": "actuators"
+            }
+        },
+        "true": "True",
+        "wait": "Wait ...",
+        "when-keyword": "When",
+        "whenImp-keyword": "As soon as",
+        "while-keyword": "While"
+    },
+    "language": {
+        "actions": "Actions",
+        "and-when": "As soon as",
+        "browse-media-button": "Browse",
+        "clock-event": "it is",
+        "clock-status": "it is",
+        "color" : {
+            "blue": "blue",
+            "green": "green",
+            "orange": "orange",
+            "pink": "Pink",
+            "purple": "purple",
+            "red": "red",
+            "white": "white",
+            "yellow": "yellow"
+        },
+        "complement-media-action": "on",
+        "contact-assembled-event": "together",
+        "contact-disassembled-event": "is disassembles",
+        "else-keyword": "otherwise",
+        "false": "false",
+        "if-and": "if ... and ...",
+        "if-dif": "is different from",
+        "if-equals": "is",
+        "if-inf": "is less than",
+        "if-keyword": "if",
+        "if-or": "if ... or ...",
+        "if-sup": "is greater than",
+        "is-assembled-contact-status": "closed",
+        "is-disassembled-contact-status": "opened",
+        "it-is-not-the-case": "it is not true anymore",
+        "keep-keyword": "Keep",
+        "keep-then": "Then",
+        "mandatory-keyword": "Required",
+        "nothing-keyword": "Nothing",
+        "only-once": "Only once",
+        "op-and-bool": "and",
+        "op-and-rule": "and",
+        "op-event": "and",
+        "op-event-bool": "and",
+        "op-less-than": "less",
+        "op-more-than": "more",
+        "op-or-bool": "or",
+        "op-then-rule": "then",
+        "repeated": "Repeated",
+        "rules": "Rules",
+        "seconds": "seconds",
+        "selector": {
+            "all-places": "everywhere",
+            "complement-selection-target": "of",
+            "prefix-f": "every ",
+            "prefix-m": "every ",
+            "type": {
+                "1": "temperature sensors",
+                "2": "light sensors",
+                "21": "clocks",
+                "210": "domicubes",
+                "3": "switches",
+                "4": "contact sensors",
+                "5": "key card readers",
+                "6": "plugs",
+                "7": "lamps",
+                "8": "actuators"
+            }
+        },
+        "then-keyword": "then",
+        "true": "true",
+        "wait": "wait",
+        "when-imp-keyword": "As soon as",
+        "when-keyword": "Every time",
+        "while-keyword": "while"
+    },
+    "login": {
+        "confirm-password": "Password confirmation",
+        "password": "Password",
+        "username": "ID Name"
+    },
+    "modal-add-place": {
+        "place-already-existing": "Name of the existing room.",
+        "place-name": "Place Name",
+        "place-name-empty": "The name of the place must be filled.",
+        "title": "Add item"
+    },
+    "modal-add-program": {
+        "load-from-file": "Load from file",
+        "name-already-existing": "Name of existing program",
+        "name-empty": "The program name must be entered.",
+        "name-label": "Name",
+        "name-placeholder": "Program Name",
+        "title": "Add Program",
+        "unable-to-parse": "Unable to read file"
+    },
+    "modal-edit-device": {
+        "name-already-existing": "Name of existing device",
+        "name-label": "Name",
+        "name-placeholder": "Device Name",
+        "place-label": "Place",
+        "reset-clock": "Reset Clock",
+        "time-label": "Time",
+        "time-speed-label": "Speed"
+    },
+    "modal-edit-place": {
+        "place-already-existing": "Name of the existing room.",
+        "place-name": "Part Name",
+        "place-name-empty": "The name of the place must be filled.",
+        "title": "Rename item"
+    },
+    "modal-edit-program": {
+        "program-already-existing": "Program name already existing.",
+        "program-name": "Program name",
+        "program-name-empty": "The program name must be entered.",
+        "title": "Rename program"
+    },
+    "modal-edit-service": {
+        "name-already-existing": "Name of existing service",
+        "name-label": "Name",
+        "name-placeholder": "Service Name",
+        "place-label": "Room"
+    },
+    "modal-lost-connection": {
+        "change-server-button": "Change Server",
+        "connection": "Connecting ...",
+        "interrupted-connection": "The connection has been lost.",
+        "reconnection-button": "Reconnect",
+        "title": "Connection problem"
+    },
+    "modal-settings": {
+        "addr-server": "Server Address",
+        "connection": "Connecting ...",
+        "language-en": "English",
+        "language-fr": "French",
+        "language-label": "Language",
+        "server-unreachable": "Server unavailable ...",
+        "title": "Preferences"
+    },
+    "navbar": {
+        "button-settings": "Preferences",
+        "debugger": "Debugger",
+        "devices": "Devices",
+        "edit": "Edit",
+        "emergency-stop": "Emergency stop",
+        "home": "Sweet Home",
+        "places": "Places",
+        "programs": "Programs",
+        "services": "Services",
+        "stop-edit": "Done",
+        "users": "Users"
+    },
+    "places-details": {
+        "body": {
+            "device-no-name": "Device unnamed",
+            "no-device-in-place": "No device assigned to this room."
+        },
+        "header": {
+            "consumption-label": "Consumption",
+            "device-number-title": "Number of devices",
+            "illumination-label": "Brightness",
+            "temperature-label": "Temperature"
+        },
+        "no-plugs": "No plugs",
+        "place-no-name": "Item unnamed",
+        "undefined": "Undefined"
+    },
+    "places-menu": {
+        "add-button": "Add item",
+        "place-no-name": "Item unnamed",
+        "unlocated-devices": "Devices not assigned to places"
+    },
+    "programs": {
+        "action": {
+            "start": "Start",
+            "stop": "Stop"
+        },
+        "delete-program": "Delete",
+        "edit-program": "Edit",
+        "end-edit-program": "Done",
+        "keyboard": {
+            "actionActivate": "Start program ...",
+            "actionDisactivate": "Stop program ...",
+            "actionDisactivate-self": "Stop myself",
+            "eventStart": "program is being started",
+            "eventStop": "program is being stopped",
+            "stateStarted": "program is started",
+            "stateStarted-keep": "program ... started",
+            "stateStopped": "program is stopped",
+            "stateStopped-keep": "program ... stopped"
+        },
+        "language": {
+            "actionActivate": "start __myVar__",
+            "actionDisactivate": "stop __myVar__",
+            "actionDisactivate-self": "stop myself",
+            "eventStart": "__myVar__ is being started",
+            "eventStop": "__myVar__ is being stopped",
+            "stateStarted": "__myVar__ is started",
+            "stateStarted-keep": "__myVar__ started",
+            "stateStopped": "__myVar__ is stopped",
+            "stateStopped-keep": "__myVar__ stopped"
+        },
+        "program-no-name": "Program with no name",
+        "state": {
+            "deployed": "Deployed",
+            "failed": "Error",
+            "started": "Started",
+            "stopped": "Stopped"
+        },
+        "warning-program-edition": "Warning, edit program will deactivate it"
+    },
+    "programs-menu": {
+        "add-button": "Add Program"
+    },
+    "services": {
+        "avtransport": {
+            "name": {
+                "plural": "AV Transport",
+                "singular": "AV Transport"
+            }
+        },
+        "connectionManager": {
+            "name": {
+                "plural": "Connection Managers",
+                "singular": "Connection Manager"
+            }
+        },
+        "consumption-label": "Consumption",
+        "contentdirectory": {
+            "name": {
+                "plural": "Content Directories",
+                "singular": "Content Directory"
+            }
+        },
+        "device-no-name": "Device unnamed",
+        "device-unlocated": "Not located",
+        "mail": {
+            "keyboard": {
+                "sendMail": "Send mail ..."
+            },
+            "language": {
+               "body": "Content",
+               "dest": "to",
+               "subject": "whose subject is",
+                "sendMail": "Send mail"
+            },
+            "name": {
+                "plural": "Mail",
+                "singular": "Mail"
+            }
+        },
+        "mediabrowser": {
+            "name": {
+                "plural": "Media Servers",
+                "singular": "Media Server"
+            }
+        },
+        "mediaplayer": {
+            "action": {
+                "browse": "Browse",
+                "pause": "Pause",
+                "play": "Start",
+                "resume": "Resume",
+                "stop": "Stop",
+                "volume": "Volume"
+            },
+            "name": {
+                "plural": "Media Players",
+                "singular": "Media Player"
+            },
+            "status": {
+                "playing": "Now Playing",
+                "selected": "Please select a media",
+                "stopped": "Stopped"
+            },
+            "language" : {
+               "pause-media-action": "Pause the media",
+               "play-media-action": "Play",
+               "set-volume-media-action": "Set the volume",
+               "stop-media-action": "Stop"
+            },
+            "keyboard" : {
+               "pause-media-action": "Pause the media ...",
+               "play-media-action": "Play ...",
+               "set-volume-media-action": "Set the volume ...",
+               "stop-media-action": "Stop"
+            }
+        },
+        "place-label": "Location",
+        "renderingControl": {
+            "name": {
+                "plural": "Rendering controls",
+                "singular": "Rendering Control"
+            }
+        },
+        "state-label": "State",
+        "status": {
+            "connected": "Connected",
+            "disconnected": "Disconnected",
+            "waiting": "Waiting"
+        },
+        "status-label": "Status",
+        "type-label": "Type",
+        "unknown": "Unknown",
+        "value-label": "Value",
+        "weather": {
+            "name": {
+                "plural": "Weather",
+                "singular": "Weather"
+            },
+			"modal" : {
+				"title" : "Adding a meteo place"
+			},
+            "keyboard": {
+                "sunrise": "the sun rise in ...",
+                "sunset": "the sun set in ...",
+                "current-temperature": "the temperature for",
+                "current-weather-code-state": "current weather",
+                "currently-daylight": "il fait jour",
+                "forecast-temperature-max": "the maximum temperature expected for",
+                "forecast-temperature-min": "the minimum temperature expected for",
+                "forecast-weather-code-state": "current weather for",
+                "is-current-weather-code-state": "current weather",
+                "is-forecast-weather-code-state": "current weather for",
+                "weather-at": "at"
+            },
+            "language": {
+                "sunrise": "the sun rise in __myVar__",
+                "sunset": "the sun set in __myVar__",
+                "current-temperature": "the temperature for",
+                "current-weather-code-state": "current weather",
+                "currently-daylight": "il fait jour",
+                "forecast-temperature-max": "the maximum temperature expected for",
+                "forecast-temperature-min": "the minimum temperature expected for",
+                "forecast-weather-code-state": "current weather for",
+                "is-current-weather-code-state": "current weather",
+                "is-forecast-weather-code-state": "current weather for",
+                "weather-at": "current weather",
+                "weather-avg-at": "the average temperature expected for",
+                "weather-code-0": "sun",
+                "weather-code-1": "clouds",
+                "weather-code-2": "rain",
+                "weather-code-3": "snow",
+                "weather-code-4": "storms",
+                "weather-code-5": "fog",
+                "weather-code-6": "other conditions",
+                "weather-code-7": "unusual conditions",
+                "weather-code-verb": "announcement",
+                "weather-for-0": "today",
+                "weather-for-1": "tomorrow",
+                "weather-for-2": "after tomorrow",
+                "weather-max-at": "the maximum temperature expected for",
+                "weather-min-at": "the minimum temperature expected for"
+            },
+			"weblink" : "See meteo"
         }
-      }
-   },
-   "keyboard":{
-      "true":"True",
-      "false":"False",
-      "is-open-contactSensor-state":"sensor is open",
-      "is-closed-contactSensor-state":"sensor is closed",
-      "is-turned-on-lamp-state":"light is on",
-      "is-turned-off-lamp-state":"light is off",
-      "is-turned-on-lamp-event":"light is on",
-      "is-turned-off-lamp-event":"light is turned off",
-      "turned-on-plug-state" : "plug is on",
-      "turned-off-plug-state":"plug is off",
-      "turn-on-lamp-action":"Turn on light",
-      "turn-off-lamp-action":"Turn off light",
-      "turn-on-plug-action":"Turn on",
-      "turn-off-plug-action":"Turn off",
-      "blink-lamp-action":"Blink",
-      "when-keyword":"When",
-      "if-keyword":"If",
-      "if-and":"if ... and ...",
-      "if-or":"If ... or ...",
-      "if-equals":"... says ...",
-      "if-sup":"... is greater than ...",
-      "if-inf":"... is less than ...",
-      "if-dif":"... is different from ...",
-      "if-not":"If ... is not true ...",
-      "light-brightness":"the intensity of the bulb",
-      "while-keyword":"While",
-      "while-keep":"While ... keep ...",
-      "keep-state":"Keep state ...",
-      "clock-event":"it is",
-      "play-media-action":"Play a media",
-      "pause-media-action":"Pause the media",
-      "stop-media-action":"Stop",
-      "set-volume-media-action":"Set the volume",
-      "getTemperature": "the temperature from sensor",
-      "getIllumination": "the illumination from sensor",
-
-       "weather" : {
-
-           "is-current-weather-code-state": "current weather",
-           "is-forecast-weather-code-state": "current weather for",
-
-           "current-temperature": "the temperature for",
-
-           "current-weather-code-state": "current weather",
-           "forecast-weather-code-state": "current weather for",
-
-           "forecast-temperature-min": "the minimum temperature expected for",
-           "forecast-temperature-max": "the maximum temperature expected for",
-           "currently-daylight": "il fait jour",
-           "at":"at",
-
-           "weather-at": "at"
-       },
-
-      "selector":{
-        "prefix-m":"every ",
-        "prefix-f":"every ",
-        "all-places":"everywhere",
-        "complement-selection-target":"of",
-        "type":{
-          "1":"temperature sensors",
-          "2":"light sensors",
-          "3":"switches",
-          "4":"contact sensors",
-          "5":"key card readers",
-          "6":"plugs",
-          "7":"lamps",
-          "8":"actuators",
-          "21":"clocks",
-          "210":"domicubes"
-        }
-      }
-   },
-   "debugger": {
-     "all": "All"
-   }
+    }
 }

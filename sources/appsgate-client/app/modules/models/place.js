@@ -30,6 +30,16 @@ define([
             return this.get("name");
         },
         /**
+         * Returns the number of devices the place contains
+         */
+        getDevicesNumber: function() {
+          if(this.get("id") == "-1") {
+            // ignoring the domicube
+            return this.get("devices").length - 1;
+          }
+          return this.get("devices").length;
+        },
+        /**
          * Compute the average value of given sensors
          *
          * @param sensors Array of sensors
@@ -45,9 +55,9 @@ define([
             var total = 0;
             sensors.forEach(function(s) {
                 if (typeof s.get("value") !== "undefined") {
-                    total += parseInt(s.get("value"));
+                    total += s.get("value");
                 } else {
-                    total += parseInt(s.get("consumption"));
+                    total += s.get("consumption");
                 }
             });
 
@@ -68,9 +78,12 @@ define([
             // compute the average value of the sensors
             var total = 0;
             sensors.forEach(function(s) {
+                console.log("Getting total consumption value:"+s.get("value")+" consumption:"+s.get("consumption"));
                 if (typeof s.get("value") !== "undefined") {
+                    console.log("summing "+total+" and "+s.get("value"));
                     total += parseInt(s.get("value"));
                 } else {
+                    console.log("summing "+total+" and "+s.get("consumption"));
                     total += parseInt(s.get("consumption"));
                 }
             });

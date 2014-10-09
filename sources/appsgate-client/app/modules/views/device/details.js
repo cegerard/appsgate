@@ -47,7 +47,8 @@ define([
             "click button.btn-media-stop": "onStopMedia",
             "click button.btn-media-volume": "onSetVolumeMedia",
             "click button.btn-media-browse": "onBrowseMedia",
-            "show.bs.modal #edit-device-modal": "initializeModal",
+            "show.bs.modal #edit-device-modal": "beforeInitializeModal",
+            "shown.bs.modal #edit-device-modal": "initializeModal",
             "hidden.bs.modal #edit-device-modal": "toggleModalValue",
             "click #edit-device-modal button.valid-button": "validEditDevice",
             "keyup #edit-device-modal input": "validEditDevice",
@@ -215,23 +216,27 @@ define([
 
             this.model.onBrowseMedia($("#selectedMedia"));
         },
+        beforeInitializeModal: function() {
+
+          // initialize the field to edit the core clock if needed
+          if (this.model.get("type") === "21" || this.model.get("type") === 21) {
+              $("#edit-device-modal select#hour").val(this.model.get("moment").hour());
+              $("#edit-device-modal select#minute").val(this.model.get("moment").minute());
+              $("#edit-device-modal input#time-flow-rate").val(this.model.get("flowRate"));
+          }
+
+          // tell the router that there is a modal
+          appRouter.isModalShown = true;
+        },
         /**
          * Clear the input text, hide the error message and disable the valid button by default
          */
         initializeModal: function() {
             $("#edit-device-modal input#device-name").val(this.model.get("name").replace(/&eacute;/g, "é").replace(/&egrave;/g, "è"));
+            $("#edit-device-modal input#device-name").focus();
             $("#edit-device-modal .text-danger").addClass("hide");
             $("#edit-device-modal .valid-button").addClass("disabled");
-
-            // initialize the field to edit the core clock if needed
-            if (this.model.get("type") === "21" || this.model.get("type") === 21) {
-                $("#edit-device-modal select#hour").val(this.model.get("moment").hour());
-                $("#edit-device-modal select#minute").val(this.model.get("moment").minute());
-                $("#edit-device-modal input#time-flow-rate").val(this.model.get("flowRate"));
-            }
-
-            // tell the router that there is a modal
-            appRouter.isModalShown = true;
+            $("#edit-device-modal .valid-button").addClass("valid-disabled");
         },
         /**
          * Tell the router there is no modal anymore
@@ -260,13 +265,15 @@ define([
             if (devices.where({name: $("#edit-device-modal input").val()}).length > 0) {
                 if (devices.where({name: $("#edit-device-modal input").val()})[0].get("id") !== this.model.get("id")) {
                     $("#edit-device-modal .text-danger").removeClass("hide");
-                    $("#edit-device-modal .text-danger").text("Nom déjà existant");
+                    $("#edit-device-modal .text-danger").text($.i18n.t("modal-edit-device.name-already-existing"));
                     $("#edit-device-modal .valid-button").addClass("disabled");
+                    $("#edit-device-modal .valid-button").addClass("valid-disabled");
 
                     return false;
                 } else {
                     $("#edit-device-modal .text-danger").addClass("hide");
                     $("#edit-device-modal .valid-button").removeClass("disabled");
+                    $("#edit-device-modal .valid-button").removeClass("valid-disabled");
 
                     return true;
                 }
@@ -275,8 +282,7 @@ define([
             // ok
             $("#edit-device-modal .text-danger").addClass("hide");
             $("#edit-device-modal .valid-button").removeClass("disabled");
-
-
+            $("#edit-device-modal .valid-button").removeClass("valid-disabled");
 
             return true;
         },
@@ -379,7 +385,8 @@ define([
                     case 0: // temperature sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/temperature.jpg",
+                            sensorImg: ["app/img/sensors/temperature_intern.png", "app/img/sensors/temperature_extern.png"],
+                            sensorCaption: [$.i18n.t("devices.temperature.caption.intern"), $.i18n.t("devices.temperature.caption.extern")],
                             sensorType: $.i18n.t("devices.temperature.name.singular"),
                             places: places,
                             deviceDetails: this.tplTemperature
@@ -389,7 +396,8 @@ define([
                     case 1: // illumination sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/illumination.jpg",
+                            sensorImg: ["app/img/sensors/illumination_intern.png", "app/img/sensors/illumination_extern.png"],
+                            sensorCaption: [$.i18n.t("devices.illumination.caption.intern"), $.i18n.t("devices.illumination.caption.extern")],
                             sensorType: $.i18n.t("devices.illumination.name.singular"),
                             places: places,
                             deviceDetails: this.tplIllumination
@@ -399,7 +407,7 @@ define([
                     case 2: // switch sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/doubleSwitch.jpg",
+                            sensorImg: ["app/img/sensors/switch.png"],
                             sensorType: $.i18n.t("devices.switch.name.singular"),
                             places: places,
                             deviceDetails: this.tplSwitch
@@ -409,7 +417,7 @@ define([
                     case 3: // contact sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/contact.jpg",
+                            sensorImg: ["app/img/sensors/contact.png"],
                             sensorType: $.i18n.t("devices.contact.name.singular"),
                             places: places,
                             deviceDetails: this.tplContact
@@ -419,7 +427,7 @@ define([
                     case 4: // key card sensor
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/keycard.jpg",
+                            sensorImg: ["app/img/sensors/keycard.png"],
                             sensorType: $.i18n.t("devices.keycard-reader.name.singular"),
                             places: places,
                             deviceDetails: this.tplKeyCard
@@ -428,7 +436,7 @@ define([
                     case 5: // ARD lock
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/ard-logo.png",
+                            sensorImg: ["app/img/sensors/ard-logo.png"],
                             sensorType: $.i18n.t("devices.ard.name.singular"),
                             places: places,
                             deviceDetails: this.tplARD
@@ -438,7 +446,7 @@ define([
                     case 6: // plug
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/plug.jpg",
+                            sensorImg: ["app/img/sensors/plug.png"],
                             sensorType: $.i18n.t("devices.plug.name.singular"),
                             places: places,
                             deviceDetails: this.tplPlug
@@ -450,7 +458,7 @@ define([
 
                         this.$el.html(this.template({
                             device: lamp,
-                            sensorImg: "app/img/sensors/philips-hue.jpg",
+                            sensorImg: ["app/img/sensors/philips-hue.jpg"],
                             sensorType: $.i18n.t("devices.lamp.name.singular"),
                             places: places,
                             deviceDetails: this.tplPhillipsHue
@@ -465,14 +473,11 @@ define([
                         // if the lamp is on, we allow the user to pick a color
                         this.renderColorWheel(enabled, color);
 
-                        // update the size of the color picker container
-                        this.$el.find(".color-picker").height(colorWheel.size2 * 2);
-
                         break;
                     case 8: // switch actuator
                         this.$el.html(this.template({
                             device: this.model,
-                            sensorImg: "app/img/sensors/doubleSwitch.jpg",
+                            sensorImg: ["app/img/sensors/doubleSwitch.jpg"],
                             sensorType: $.i18n.t("devices.actuator.name.singular"),
                             places: places,
                             deviceDetails: this.tplActuator
@@ -500,7 +505,7 @@ define([
                     case 210: // domicube
                       this.$el.html(this.template({
                           device: this.model,
-                          sensorImg: "app/img/sensors/domicube.jpg",
+                          sensorImg: ["app/img/sensors/domicube.jpg"],
                           sensorType: $.i18n.t("devices.domicube.name.singular"),
                           places:places,
                           deviceDetails: this.tplDomiCube
@@ -508,10 +513,9 @@ define([
                       break;
 
                 }
-                // resize the panel
-                if (this.model.get("type") != 21) {
-                    this.resizeDiv($(this.$el.find(".list-group")[0]));
-                }
+
+                this.resize($(".scrollable"));
+
                 // translate the view
                 this.$el.i18n();
 
@@ -525,20 +529,30 @@ define([
             // create the color picker
             var wheelRadius = $(".body-content").outerWidth() / 10 + 80;
 
-            // instantiate the color wheel
-            window.colorWheel = Raphael.colorwheel($(".color-picker")[0], wheelRadius * 2).color(color);
+            var colorPickerDomElement=$(".color-picker")[0];
 
-            // bind the events
-            if (typeof enabled !== undefined && enabled === "true") {
-                // color change enabled
-                window.colorWheel.ondrag(null, this.onChangeColor);
+            if(colorPickerDomElement){
+
+                // instantiate the color wheel
+                window.colorWheel = Raphael.colorwheel(colorPickerDomElement, wheelRadius * 2).color(color);
+
+                // bind the events
+                if (typeof enabled !== undefined && enabled === "true") {
+                    // color change enabled
+                    window.colorWheel.ondrag(null, this.onChangeColor);
+                }
+                else {
+                    // color change disabled
+                    window.colorWheel.onchange(function() {
+                        window.colorWheel.color(color);
+                    });
+                }
+
+                // update the size of the color picker container
+                this.$el.find(".color-picker").height(colorWheel.size2 * 2);
             }
-            else {
-                // color change disabled
-                window.colorWheel.onchange(function() {
-                    window.colorWheel.color(color);
-                });
-            }
+
+
         }
     });
     return DeviceDetailsView

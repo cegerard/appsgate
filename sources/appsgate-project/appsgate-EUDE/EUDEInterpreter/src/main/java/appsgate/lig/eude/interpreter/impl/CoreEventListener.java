@@ -1,7 +1,11 @@
 package appsgate.lig.eude.interpreter.impl;
 
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
+import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import java.util.EventObject;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,6 +131,25 @@ public class CoreEventListener implements CoreListener {
         return (objectId.contentEquals(c.objectId) && varName.contentEquals(c.varName) && varValue.contentEquals(c.varValue));
     }
 
+    public boolean equals(EndEvent e){
+        NodeProgram p = getProgramNodeFromEvent(e);
+        if (p == null) {return false;}
+        return (objectId.contentEquals(p.getId()) && varName.contentEquals("runningState") && varValue.contentEquals("stop"));
+    }
+    public boolean equals(StartEvent e){
+        NodeProgram p = getProgramNodeFromEvent(e);
+        if (p == null) {return false;}
+        return (objectId.contentEquals(p.getId()) && varName.contentEquals("runningState") && varValue.contentEquals("start"));
+    }
+    
+    private NodeProgram getProgramNodeFromEvent(EventObject e) {
+        if (e.getSource() instanceof NodeProgram) {
+            return (NodeProgram) e.getSource();
+        } else {
+            return null;
+        }
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;

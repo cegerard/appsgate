@@ -23,6 +23,11 @@
 
     <artifactId>complete</artifactId>
     <packaging>pom</packaging>
+    
+    <properties>
+        <expected-managers></expected-managers>
+        <obrman-configuration></obrman-configuration>
+    </properties>    
 
     <!-- Project description -->
     <name>AppsGate Generated Distribution</name>
@@ -35,6 +40,12 @@
             <version>${project.version}</version>
             <type>zip</type>
         </dependency>
+        <dependency>
+            <groupId>appsgate.distributions</groupId>
+            <artifactId>felix.config.base</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+        </dependency>        
     </dependencies>
 
     <build>
@@ -161,12 +172,11 @@
                                     <artifactId>PropertyHistoryManagerSpec</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-                                <!-- Disabled while new version of agenda is released -->
-                                <!--<artifactItem>-->
-                                    <!--<groupId>appsgate.components</groupId>-->
-                                    <!--<artifactId>GoogleAdapter</artifactId>-->
-                                    <!--<version>${project.version}</version>-->
-                                <!--</artifactItem>-->
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>GoogleAdapter</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>PhilipsHUEAdapterSpec</artifactId>
@@ -251,6 +261,11 @@
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>CoreDomiCubeSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreShutterSpec</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
                                 <artifactItem>
@@ -359,8 +374,6 @@
                                     <artifactId>CoreUndefinedSensorSpec</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-
-
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
                                     <artifactId>CoreClockSpec</artifactId>
@@ -421,7 +434,6 @@
                                     <artifactId>MailAdapter</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
-
                                 <!-- AppsGate Instance -->
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
@@ -429,7 +441,39 @@
                                     <version>${project.version}</version>
                                 </artifactItem>
 
-
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>fuchsia</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>KNXAdapter</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                
+                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>SchedulerSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>GoogleScheduler</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>       
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreARDBadgeDoorSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>      
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>ARDBadgeDoorImpl</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>       
+                                
                             </artifactItems>
                             <outputDirectory>${basedir}/load</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
@@ -437,9 +481,8 @@
                         </configuration>
                     </execution>
 
-                    <!-- copy inherited config files -->
                     <execution>
-                        <id>unpack-inherited-config</id>
+                        <id>unpack-inherited-light</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
@@ -452,50 +495,128 @@
                             </outputDirectory>
                         </configuration>
                     </execution>
+                    
+                    <execution>
+                        <id>unpack-inherited-configbase</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>appsgate.distributions</includeGroupIds>
+                            <includeArtifactIds>felix.config.base</includeArtifactIds>
+                            <outputDirectory>
+                                ${project.build.directory}/distrib-temp/felix.config.base-${project.version}/
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                    
+                    
+                </executions>
+                
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>backup-config</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/backup/</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/conf</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                    <executions>
+                        <execution>
+                            <id>restore-config</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${basedir}/conf</outputDirectory>
+                                <overwrite>true</overwrite>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.directory}/backup/</directory>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+               </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.6</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
                 <executions>
-
-                    <!-- copy inherited config files -->
+                    <execution>
+                        <id>copy-and-filter-config</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/</outputDirectory>
+                            <overwrite>false</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/distrib-temp/felix.config.base-${project.version}/</directory>
+                                    <includes>
+                                        <include>conf/**/*</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>                                            
+                            </resources>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>copy-inherited-config</id>
                         <phase>compile</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <target>
-                                <copy failonerror="true" overwrite="true" todir="${basedir}/">
-                                    <fileset dir="${project.build.directory}/distrib-temp/light-${project.version}/">
-                                        <include name="*" />
-                                        <exclude name="*.txt" />
-                                        <exclude name="*.log" />
-                                        <exclude name="" />
-                                        <exclude name="log/*" />
-                                        <exclude name="neededBundles" />
-                                    </fileset>
-                                </copy>
-                                <copy failonerror="true" overwrite="false" todir="${basedir}/">
-                                    <fileset dir="${project.build.directory}/distrib-temp/light-${project.version}/">
-                                        <include name="*.txt" />
-                                        <include name="bin/**/*" />
-                                        <include name="bundle/**/*" />
-                                        <include name="load/*" />
-                                        <include name="natives/**/*" />
-                                        <include name="conf/**/*" />
-                                    </fileset>
-                                </copy>
-                            </target>
+                            <outputDirectory>${basedir}/</outputDirectory> 
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/distrib-temp/light-${project.version}/</directory>
+                                    <includes>
+                                        <include>*</include>
+                                        <include>bin/**/*</include>
+                                        <include>bundle/**/*</include>
+                                        <include>natives/**/*</include>
+                                        <include>load/*</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>pom.xml</exclude>
+                                        <exclude>bundle/obr*</exclude>
+                                    </excludes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
-
                 </executions>
-            </plugin>
+            </plugin>           
 
             <!-- clean implementation -->
             <plugin>
@@ -509,7 +630,7 @@
                                 <include>**/*</include>
                             </includes>
                             <excludes>
-                                <exclude>conf/*</exclude>
+                                <exclude>conf/**/*</exclude>
                                 <exclude>pom.xml</exclude>
                             </excludes>
                             <followSymlinks>false</followSymlinks>

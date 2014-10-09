@@ -80,6 +80,14 @@ public class MyCtrlPoint extends ControlPoint
     private Hashtable devices;//key UDN value OsgideviceInfo(Osgi)
 	private SubscriptionQueue subQueue;
 	private NotifierQueue notifierQueue;
+	
+
+	public static final String FORCE_RESEARCH_RENEWAL = "felix.upnpbase.importer.research.renewal";
+	public static final String OVERRIDE_LEASE = "felix.upnpbase.importer.device.lease";
+	
+	private int researchRenewal = -1;
+	private int overrideLease = -1;
+	private long timeStamp = -1;
     
     private final String UPNP_EVENT_LISTENER_FLTR =
         "(" + Constants.OBJECTCLASS + "=" + UPnPEventListener.class.getName() + ")";
@@ -95,6 +103,18 @@ public class MyCtrlPoint extends ControlPoint
 			NotifierQueue notifierQueue) {
 		super();
 		this.context = context;
+		
+		if(context.getProperty(FORCE_RESEARCH_RENEWAL) != null) {
+			researchRenewal = Integer.parseInt(context.getProperty(FORCE_RESEARCH_RENEWAL));
+			Activator.logger.DEBUG("[Importer] MyCtrlPoint(...), force research renewal set : "+researchRenewal);
+			System.out.println("MyCtrlPoint(...), force research renewal set : "+researchRenewal);
+		}
+		if(context.getProperty(OVERRIDE_LEASE) != null) {
+			overrideLease = Integer.parseInt(context.getProperty(OVERRIDE_LEASE));
+			Activator.logger.DEBUG("[Importer] MyCtrlPoint(...), force lease of expiration for devices : "+overrideLease);
+			System.out.println("MyCtrlPoint(...), force lease of expiration for devices : "+overrideLease);
+		}
+		
         devices = new Hashtable();
 		addNotifyListener(this);
 		addSearchResponseListener(this);
@@ -136,6 +156,28 @@ public class MyCtrlPoint extends ControlPoint
 	}
 
 
+	/**
+	 * Hack by Thibaud to force research of root device after control point is started
+	 */
+	public void researchRenewal() {
+		System.out.println("researchRenewal()");
+		if(researchRenewal < 0) {
+			return;
+		}
+		
+		long currentTime = System.currentTimeMillis();
+		if(timeStamp <0) {
+			timeStamp =currentTime;
+			System.out.println("researchRenewal(), Setting time stamp "+timeStamp);
+		}
+
+		if(currentTime > timeStamp+researchRenewal) {
+			System.out.println("researchRenewal(), renewal beginning with lease "+researchRenewal);
+			timeStamp = -1;
+			this.start();
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -143,15 +185,25 @@ public class MyCtrlPoint extends ControlPoint
 	 *  
 	 */
 	public void removeExpiredDevices() {
+		Activator.logger.DEBUG("[Importer] removeExpiredDevices()");
+		
+		researchRenewal();
+		
 		DeviceList devList = getDeviceList();
 		int devCnt = devList.size();
 		for (int n = 0; n < devCnt; n++) {
 			Device dev = devList.getDevice(n);
+			if(overrideLease >0) {
+				dev.overrideLeaseTime(overrideLease);
+				System.out.println("removeExpiredDevices(), overriding lease for "+dev.getFriendlyName()
+						+"with lease : "+overrideLease);
+			}
+			Activator.logger.DEBUG("[Importer] removeExpiredDevices()");
 			if (dev.isExpired() == true) {
                 Activator.logger.DEBUG("[Importer] Expired device:"+ dev.getFriendlyName());
 				removeDevice(dev);
 				removeOSGiExpireDevice(dev);
-			}
+			}			
 		}
 	}
 
@@ -190,6 +242,7 @@ public class MyCtrlPoint extends ControlPoint
 			for (int i = 0; i < refs.length; i++) {
 				UPnPDevice dev = (UPnPDevice) context.getService(refs[i]);
 				Dictionary dic = dev.getDescriptions(null);
+				Activator.logger.DEBUG("[Importer] dev.getDescriptions() : "+dev.getDescriptions(null));
 				if (((String) dic.get(UPnPDevice.UDN)).equals(udn)) {
 					return;
 				}
@@ -321,6 +374,9 @@ public class MyCtrlPoint extends ControlPoint
 		 * deleting root device and all its children from struct that conatin 
 		 * a list of local device
 		 */
+		if(devices==null || dev ==null ||dev.getUDN()== null)
+			return;
+		
 		removeOSGiandUPnPDeviceHierarchy(((OSGiDeviceInfo) devices.get(dev
 				.getUDN())).getOSGiDevice());
 	}
@@ -354,7 +410,12 @@ public class MyCtrlPoint extends ControlPoint
     
     
 	public void unregisterUPnPDevice(ServiceRegistration registration) {
-		registration.unregister();
+		if(registration != null && registration.getReference()!=null)
+			try {
+				registration.unregister();
+			} catch (Exception exc) {
+				Activator.logger.ERROR("Error occured during unregister");
+			}
 
 	}
 

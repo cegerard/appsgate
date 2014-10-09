@@ -31,7 +31,7 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
 
     public enum TYPE {
 
-        DEVICE, LIST, PROGRAMCALL, VARIABLE, STRING, BOOLEAN, NUMBER, SERVICE;
+        DEVICE, LIST, PROGRAMCALL, VARIABLE, STRING, BOOLEAN, NUMBER, SERVICE, SCALE;
     }
 
     /**

@@ -1,14 +1,3 @@
 <div class="btn btn-default btn-prog btn-prog-action " id="<%= node.iid %>">
-        <% if (typeof node.phrase !== 'undefined') { %>
-            <span data-i18n='<%=node.phrase%>'></span>
-        <% } else { %>
-        Uknown
-        <% } %>
-<% if (typeof node.target.value !== 'undefined') { %>
-    <%=engine.buildInputFromNode(node.target, currentNode) %>
-<%} else { %>
-<div class='btn btn-default btn-prog input-spot mandatory-spot' id="<%= node.target.iid %>">
-    <span data-i18n='language.mandatory-keyword'/>
-</div>
-<%}%>
+        <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNodeOrMandatory(node.target, currentNode, typeof node.target.value !== 'undefined')}) %>
 </div>

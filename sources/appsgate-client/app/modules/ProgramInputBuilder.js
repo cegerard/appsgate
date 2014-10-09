@@ -2,12 +2,14 @@
  * Created by thibaud on 19/05/2014.
  */
 define([
+    "app",
     "text!templates/program/nodes/defaultActionNode.html",
     "text!templates/program/nodes/deviceNode.html",
     "text!templates/program/nodes/serviceNode.html",
     "text!templates/program/nodes/ifNode.html",
     "text!templates/program/nodes/whenNode.html",
     "text!templates/program/nodes/defaultEventNode.html",
+    "text!templates/program/nodes/programEventNode.html",
     "text!templates/program/nodes/stateNode.html",
     "text!templates/program/nodes/keepStateNode.html",
     "text!templates/program/nodes/whileNode.html",
@@ -17,8 +19,9 @@ define([
     "text!templates/program/nodes/waitNode.html",
     "text!templates/program/nodes/programNode.html",
     "text!templates/program/nodes/defaultPropertyNode.html",
-    "text!templates/program/nodes/selectNode.html"
-], function(dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl) {
+    "text!templates/program/nodes/selectNode.html",
+    "text!templates/program/nodes/scaleTemplate.html"
+], function(App, dfltActionTpl, deviceTpl, serviceTpl, ifTpl, whenTpl, dfltEventTpl, programEventTpl, stateTpl, keepStateTpl, whileTpl, booleanExpressionTpl, comparatorTpl, numberTpl, waitTpl, programTpl, dfltPropertyTpl, selectNodeTpl, scaleTpl) {
     var ProgramInputBuilder = {};
     // router
     ProgramInputBuilder = Backbone.Model.extend({
@@ -28,6 +31,7 @@ define([
         tplIfNode: _.template(ifTpl),
         tplWhenNode: _.template(whenTpl),
         tplEventNode: _.template(dfltEventTpl),
+        tplEventProgramNode: _.template(programEventTpl),
         tplStateNode: _.template(stateTpl),
         tplKeepStateNode: _.template(keepStateTpl),
         tplWhileNode: _.template(whileTpl),
@@ -38,11 +42,29 @@ define([
         tplProgramNode: _.template(programTpl),
         tplDefaultPropertyNode: _.template(dfltPropertyTpl),
         tplSelectNode: _.template(selectNodeTpl),
+        tplScale: _.template(scaleTpl),
 
 
         initialize: function() {
         },
-
+        buildInputFromObjectOrTarget: function(node, currentNode) {
+            if (typeof node.object !== 'undefined') {
+                return this.buildInputFromNode(node.object, currentNode)
+            } else if (typeof node.target !== 'undefined') {
+                return this.buildInputFromNode(node.target, currentNode)
+            }
+            console.warn("Node Invalid: " + node);
+            return "Unkwown";
+        },
+        buildInputFromNodeOrMandatory: function(jsonNode, currentNode, test) {
+            if (test) {
+                return this.buildInputFromNode(jsonNode, currentNode);
+            } else {
+                input = "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'>";
+                input += "<span data-i18n='language.mandatory-keyword'/></div>";
+                return input;
+            }
+        },
         /**
          * buildInputFromNode is the only 'public' method, it takes as input
          * the json representation of a SPOK program and build the corresponding representation in HTML
@@ -63,6 +85,7 @@ define([
             var input = "";
             switch (jsonNode.type) {
                 case "action":
+                case "stopMyself":
                     deletable = true;
                     input += this.buildActionNode(param);
                     break;
@@ -78,6 +101,7 @@ define([
                     input += this.buildComparatorNode(param, currentNode);
                     break;
                 case "when":
+                case "whenImp":
                     deletable = true;
                     input += this.tplWhenNode(param);
                     break;
@@ -96,10 +120,15 @@ define([
                     deletable = true;
                     input += this.buildEventNode(param);
                     break;
-                case "state":
-                case "maintanableState":
+                case "eventProgram":
                     deletable = true;
-//                    input += this.tplStateNode(param);
+                    input += this.buildEventProgramNode(param);
+                    break;
+                case "state":
+                case "stateProgram":
+                case "keepStateProgram":
+                case "maintainableState":
+                    deletable = true;
                     input = this.buildStateNode(param);
                     break;
                 case "property":
@@ -120,22 +149,26 @@ define([
                     input += "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></div>";
                     break;
                 case "seqRules":
-                    input += "<div class='seq-block-node'><h2><span>Actions</span></h2>";
-                    jsonNode.rules.forEach(function(rule) {
-                        if (rule !== jsonNode.rules[0]) {
-                            input += "<div class='row'><div class='btn btn-default btn-prog btn-then btn-primary'><span data-i18n='language.op-then-rule'/></div></div>";
-                        }
-                        input += self.buildInputFromNode(rule, currentNode);
-                    });
-                    input += "</div>";
+                      input+="<div class='seq-block-node'>";
+                      input+= jsonNode.iid == 1 || jsonNode.iid == 3?"<h2 class='seq-block-header'><span data-i18n='language.only-once'/></h2>":"";
+                      jsonNode.rules.forEach(function(rule) {
+                          if (rule !== jsonNode.rules[0]) {
+                              input += "<div class='separator'><span class='link-span' data-i18n='language.op-then-rule'/></div>";
+                          }
+                          input += self.buildInputFromNode(rule, currentNode);
+                      });
+                      input+="</div>";
                     break;
                 case "setOfRules":
-                    jsonNode.rules.forEach(function(rule) {
+                      input+= jsonNode.iid != 0?"<div class='set-block-node'>":"";
+                      input+= jsonNode.iid == 1 || jsonNode.iid == 3?"<h2 class='set-block-header'><span data-i18n='language.repeated'/></h2>":"";
+                      jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
-                            input += "<div class='row'><div class='btn btn-default btn-prog btn-and btn-primary'><span data-i18n='language.op-and-rule'/></div></div>";
+                          input += "<div class='separator'><span class='link-span' data-i18n='language.op-and-rule'/></div>";
                         }
                         input += self.buildInputFromNode(rule, currentNode);
-                    });
+                      });
+                      input+= jsonNode.iid != 0?"</div>":"";
                     break;
                 case "boolean":
                     input += "<button class='btn btn-prog btn-primary' id='" + jsonNode.iid + "'><span>" + jsonNode.value + "</span></button>";
@@ -149,6 +182,9 @@ define([
                     break;
                 case "programCall":
                     input += "<button class='btn btn-prog btn-prog-prog' id='" + jsonNode.iid + "'><span>" + jsonNode.name + "</span></button>";
+                    break;
+                case "scale":
+                    input += this.tplScale(param);
                     break;
                 default:
                     input += "<button class='btn btn-prog btn-primary' id='" + jsonNode.iid + "'><span>" + jsonNode.type + "</span></button>";
@@ -211,18 +247,31 @@ define([
             }
             return this.tplEventNode(param);
         },
-        // Hack for a simple prestenation when X == true, we only show X
+        buildEventProgramNode: function(param) {
+            return this.tplEventProgramNode(param);
+        },
         buildComparatorNode: function(param, currentNode) {
-            try {
-                if(param.node.comparator === "==" && param.node.rightOperand.type === "boolean" && param.node.rightOperand.value === "true") {
-                    return this.buildInputFromNode(param.node.leftOperand, currentNode);
-                } else {
-                    return this.tplComparatorNode(param);
+            var leftOp = this.buildInputFromNode(param.node.leftOperand, currentNode);
+
+            if (param.node.leftOperand.target.deviceType) {
+                var deviceOfNode = devices.where({type:param.node.leftOperand.target.deviceType})[0];
+                if (deviceOfNode != undefined) {
+                    param.node.rightOperand.scale = deviceOfNode.getScale();
+                    param.node.rightOperand.type = param.node.leftOperand.returnType;
+                    param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
                 }
-            } catch (e) {
-                return this.tplComparatorNode(param);
+            }
+            if (param.node.leftOperand.target.serviceType) {
+                var serviceOfNode = services.where({type:param.node.leftOperand.target.serviceType})[0];
+                if (serviceOfNode != undefined) {
+                    param.node.rightOperand.scale = serviceOfNode.getScale();
+                    param.node.rightOperand.type = param.node.leftOperand.returnType;
+                    param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                }
             }
 
+            var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);
+            return leftOp + this.tplComparatorNode(param) + rightOp;
         },
 
         getDeviceName: function(id) {

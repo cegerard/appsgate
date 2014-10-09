@@ -1,29 +1,26 @@
 <div id="progress-<%= node.iid %>" class="progress-indicator-group">
   <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
-  <span id="progress-counter-<%=node.iid %>">0</span>
+  <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
+  <span class="progress-indicator" data-i18n='debugger.times'/>
 </div>
 <div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
-        <% if (typeof node.phrase !== 'undefined') { %>
-            <span data-i18n='<%=node.phrase%>'></span>
-        <% } else { %>
+        <% if (typeof node.phrase !== 'undefined') {%>
+                <%=$.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+        <%} else { %>
         Uknown
         <% } %>
 
-    <% if (typeof node.target !== 'undefined') { %>
-    <%=engine.buildInputFromNode(node.target, currentNode) %>
-    <% } %>
-
     <% if (node.methodName.search("set") === 0 ) { %>
-    <span data-i18n="language.complement-change-color-lamp-action"></span>
+    <span data-i18n="devices.lamp.complement.change-color"></span>
     <select id="lamp-color-<%= node.idd %>" class="lamp-color-picker" target-id="<%= node.iid %>">
-        <option <% if (node.methodName === "setRed") { %>selected<% } %> value="setRed" data-i18n="language.red-color"></option>
-        <option <% if (node.methodName === "setBlue") { %>selected<% } %> value="setBlue" data-i18n="language.blue-color"></option>
-        <option <% if (node.methodName === "setGreen") { %>selected<% } %> value="setGreen" data-i18n="language.green-color"></option>
-        <option <% if (node.methodName === "setYellow") { %>selected<% } %> value="setYellow" data-i18n="language.yellow-color"></option>
-        <option <% if (node.methodName === "setOrange") { %>selected<% } %> value="setOrange" data-i18n="language.orange-color"></option>
-        <option <% if (node.methodName === "setPurple") { %>selected<% } %> value="setPurple" data-i18n="language.purple-color"></option>
-        <option <% if (node.methodName === "setPink") { %>selected<% } %> value="setPink" data-i18n="language.pink-color"></option>
-        <option <% if (node.methodName === "setWhite") { %>selected<% } %> value="setWhite" data-i18n="language.white-color"></option>
+        <option <% if (node.methodName === "setRed") { %>selected<% } %> value="setRed" data-i18n="language.color.red"></option>
+        <option <% if (node.methodName === "setBlue") { %>selected<% } %> value="setBlue" data-i18n="language.color.blue"></option>
+        <option <% if (node.methodName === "setGreen") { %>selected<% } %> value="setGreen" data-i18n="language.color.green"></option>
+        <option <% if (node.methodName === "setYellow") { %>selected<% } %> value="setYellow" data-i18n="language.color.yellow"></option>
+        <option <% if (node.methodName === "setOrange") { %>selected<% } %> value="setOrange" data-i18n="language.color.orange"></option>
+        <option <% if (node.methodName === "setPurple") { %>selected<% } %> value="setPurple" data-i18n="language.color.purple"></option>
+        <option <% if (node.methodName === "setPink") { %>selected<% } %> value="setPink" data-i18n="language.color.pink"></option>
+        <option <% if (node.methodName === "setWhite") { %>selected<% } %> value="setWhite" data-i18n="language.color.white"></option>
     </select>
     <% }%>
 </div>

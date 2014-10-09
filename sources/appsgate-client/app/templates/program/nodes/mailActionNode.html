@@ -1,6 +1,7 @@
 <div id="progress-<%= node.iid %>" class="progress-indicator-group">
   <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
-  <span id="progress-counter-<%=node.iid %>">0</span>
+  <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
+  <span class="progress-indicator" data-i18n='debugger.times'/>
 </div>
 <div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
     <% if (node.methodName == "sendMailSimple" ) { %>
@@ -16,7 +17,7 @@
             </tr>
             <tr>
                 <td align="right">
-                    <span data-i18n='language.mail-dest'/>:&nbsp;
+                    <span data-i18n='services.mail.language.dest'/>:&nbsp;
                 </td>
                 <td align="left">
                     <input type="email" target-id="<%= node.iid %>" value="<%= node.args[0].value %>" size="40" class="arg-input" target-index="0"/>
@@ -24,7 +25,7 @@
             </tr>
             <tr>
                 <td align="right">
-                    <span data-i18n='language.mail-subject'/>:&nbsp;
+                    <span data-i18n='services.mail.language.subject'/>:&nbsp;
                 </td>
                 <td align="left">
                     <input type="email" target-id="<%= node.iid %>" value="<%= node.args[1].value %>" size="40" class="arg-input" target-index="1"/>
@@ -32,7 +33,7 @@
             </tr>
             <tr valign="top">
                 <td align="right">
-                    <span data-i18n='language.mail-body'/>:&nbsp;
+                    <span data-i18n='services.mail.language.body'/>:&nbsp;
                 </td>
                 <td align="left">
                     <textarea target-id="<%= node.iid %>" class="arg-input" target-index="2" cols="40" rows="3"><%= node.args[2].value %></textarea>

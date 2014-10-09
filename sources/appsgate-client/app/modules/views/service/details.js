@@ -24,7 +24,7 @@ define([
         "click button.btn-media-stop": "onStopMedia",
         "click button.btn-media-volume": "onSetVolumeMedia",
         "click button.btn-media-browse": "onBrowseMedia",
-        "show.bs.modal #edit-service-modal": "initializeModal",
+        "shown.bs.modal #edit-service-modal": "initializeModal",
         "hidden.bs.modal #edit-service-modal": "toggleModalValue",
         "click #edit-service-modal button.valid-button": "validEditService",
         "keyup #edit-service-modal input": "validEditService",
@@ -86,8 +86,10 @@ define([
       */
       initializeModal: function() {
         $("#edit-service-modal input#service-name").val(this.model.get("name").replace(/&eacute;/g, "é").replace(/&egrave;/g, "è"));
+        $("#edit-service-modal input#service-name").focus();
         $("#edit-service-modal .text-danger").addClass("hide");
         $("#edit-service-modal .valid-button").addClass("disabled");
+        $("#edit-service-modal .valid-button").addClass("valid-disabled");
 
         // initialize the field to edit the core clock if needed
         if (this.model.get("type") === "21" || this.model.get("type") === 21) {
@@ -118,13 +120,15 @@ define([
         if (services.where({name: $("#edit-service-modal input").val()}).length > 0) {
           if (services.where({name: $("#edit-service-modal input").val()})[0].get("id") !== this.model.get("id")) {
             $("#edit-service-modal .text-danger").removeClass("hide");
-            $("#edit-service-modal .text-danger").text("Nom déjà existant");
+            $("#edit-service-modal .text-danger").text($.i18n.t("modal-edit-service.name-already-existing"));
             $("#edit-service-modal .valid-button").addClass("disabled");
+            $("#edit-service-modal .valid-button").addClass("valid-disabled");
 
             return false;
           } else {
             $("#edit-service-modal .text-danger").addClass("hide");
             $("#edit-service-modal .valid-button").removeClass("disabled");
+            $("#edit-service-modal .valid-button").removeClass("valid-disabled");
 
             return true;
           }
@@ -133,6 +137,7 @@ define([
         // ok
         $("#edit-service-modal .text-danger").addClass("hide");
         $("#edit-service-modal .valid-button").removeClass("disabled");
+        $("#edit-service-modal .valid-button").removeClass("valid-disabled");
 
         return true;
       },
@@ -179,12 +184,16 @@ define([
         if (!appRouter.isModalShown) {
           switch (this.model.get("type")) {
           case 31: // media player
+              var player = this.model;
           this.$el.html(this.template({
-            service: this.model,
+            service: player,
+            sensorImg: "app/img/services/media_player.png",
             sensorType: $.i18n.t("services.mediaplayer.name.singular"),
             places: places,
             serviceDetails: this.tplMediaPlayer
           }));
+
+              player.requestVolume();
 
           // initialize the volume slider
           _.defer(function() {
@@ -192,15 +201,16 @@ define([
               range: "min",
               min: 0,
               max: 100,
-              value: 100,
+              value: player.get("volume"),
               stop: function(event, ui) {
                 self.model.sendVolume($(".volume-slider").slider("value"));
               }
             });
+            self.model.save();
           });
 
           // requesting current volume level
-          this.model.remoteCall("getVolume", [], this.model.get("id") + ":volume");
+//          this.model.remoteCall("getVolume", [], this.model.get("id") );
           break;
         case 36: // media browser
         this.$el.html(this.template({
@@ -228,7 +238,7 @@ define([
     break;
   }
   // resize the panel
-  this.resizeDiv($(this.$el.find(".list-group")[0]));
+  this.resize($(".scrollable"));
 
   // translate the view
   this.$el.i18n();

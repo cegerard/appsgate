@@ -14,3 +14,24 @@
         </div>
     <% } %>
 </li>
+
+<%
+
+var isAuthorized=device.get("authorized") === true || device.get("authorized") === "true";
+var containsMessage=device.get("lastMessage")!=="";
+
+%>
+
+<li class="list-group-item">
+    <strong data-i18n="devices.ard.last-message"></strong>
+
+
+    <div class="pull-right label label-<% if(isAuthorized) print('success'); else print('default'); %>">
+        <% if ( containsMessage ) { %>
+            <%=device.get("lastMessage")%>
+        <% } else { %>
+            <div data-i18n="devices.ard.last-message-empty">
+            </div>
+        <% } %>
+    </div>
+</li>

@@ -7,6 +7,7 @@ import java.util.Properties;
  */
 public class MailConfiguration extends Properties {
 
+    public final static String PROVIDER_PARAM = "mail.provider";
     public static String PROVIDER="";
 
     // Those constants are compatible with JavaMail API

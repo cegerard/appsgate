@@ -1,0 +1,7 @@
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>"> 
+    <select id="scale-selector-<%= node.idd %>" class="scale-selector" target-id="<%= node.iid %>">
+        <% node.scale.forEach( function(scale) { %>
+            <option <% if (node.value === scale.value) { %>selected<% } %> value="<%= scale.value %>" data-i18n="<%= scale.label %>"></option>
+        <% }) %>
+    </select>
+</div>

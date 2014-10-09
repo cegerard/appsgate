@@ -42,7 +42,7 @@ public class DomiCubeImporter extends AbstractImporterComponent {
 
     private ServiceReference serviceReference;
 
-    @ServiceProperty(mandatory = false,value = "(&(id=*)(domicube.host=*)(domicube.port=*)(domicube.topic.face=*)(domicube.topic.battery=*)(domicube.topic.dim=*))")//(name = "target", value = "(&(discovery.knx.device.object=*)(appsgate.type=lamp))")
+    @ServiceProperty(mandatory = false,value = "(&(id=*)(discovery.mdns.device.host=*)(discovery.mdns.device.port=*))")//(name = "target", value = "(&(discovery.knx.device.object=*)(appsgate.type=lamp))")
     private String target;
 
     @ServiceProperty(name = INSTANCE_NAME_PROPERTY)
@@ -72,14 +72,18 @@ public class DomiCubeImporter extends AbstractImporterComponent {
 
                     Map propertiesAdaptor = new HashMap<String, String>();
 
+                    logger.info("MQTT Instance adapter host {} port {}",dto.getHost(),dto.getPort().toString());
+
                     propertiesAdaptor.put(Factory.INSTANCE_NAME_PROPERTY, dto.getId()+"-adaptor");
                     propertiesAdaptor.put("host", dto.getHost());
                     propertiesAdaptor.put("port", dto.getPort().toString());
-                    propertiesAdaptor.put("faceTopic", dto.getTopicFace());
-                    propertiesAdaptor.put("batteryTopic", dto.getTopicBattery());
-                    propertiesAdaptor.put("dimTopic", dto.getTopicDim());
+                    //propertiesAdaptor.put("faceTopic", dto.getTopicFace());
+                    //propertiesAdaptor.put("batteryTopic", dto.getTopicBattery());
+                    //propertiesAdaptor.put("dimTopic", dto.getTopicDim());
 
                     Instance apamInstance = apamImpl.createInstance(null, propertiesAdaptor);
+                    //apamInstance.setProperty("host", dto.getHost());
+                    //apamInstance.setProperty("port", dto.getPort().toString());
 
                     Map propertiesDomicube = new HashMap<String, String>();
 
@@ -91,6 +95,8 @@ public class DomiCubeImporter extends AbstractImporterComponent {
                     Instance apamDomiCubeInstance = apamDomicubeImpl.createInstance(null,propertiesDomicube);
 
                     logger.info("Appsgate instance for domicube {} created", dto.getId());
+
+                    DomiCubeImporter.this.handleImportDeclaration(importDeclaration);
 
                 }catch(BinderException e){
                     e.printStackTrace();
@@ -106,7 +112,13 @@ public class DomiCubeImporter extends AbstractImporterComponent {
     @Override
     protected void denyImportDeclaration(ImportDeclaration importDeclaration) throws BinderException {
 
+        logger.info("Domicube has been removed.");
+
+        unhandleImportDeclaration(importDeclaration);
+
         final DomiCubeWrapper dto=DomiCubeWrapper.create(importDeclaration);
+
+        logger.info("Removing domicube instance {}",dto.getId());
 
         Runnable destroyApamInstance=new Runnable(){
 

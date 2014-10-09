@@ -12,9 +12,10 @@
 	</div>
 </div>
 
-<ul class="list-group">
+<ul class="list-group scrollable">
 	<% if (typeof sensorImg !== "undefined") { %>
 		<li class="list-group-item">
+            <strong data-i18n="devices.photo-label.singular"></strong>
 			<img src="<%= sensorImg %>" class="img-responsive">
 		</li>
 	<% } %>

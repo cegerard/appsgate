@@ -65,10 +65,10 @@ public class MongoDBConfigFactory {
         this.dbPort = dbPort;
         this.dbTimeOut = dbTimeOut;
 
-        if (getConfigurationProperties()) {
-            configThread = new MongoClientCreationThread(this.dbHost,this.dbPort,this.dbTimeOut);
-            new Thread(configThread).start();
-        }
+        getConfigurationProperties();
+        configThread = new MongoClientCreationThread(this.dbHost,this.dbPort,this.dbTimeOut);
+        new Thread(configThread).start();
+        
     }
 
     public void setFactoryParameters(Properties props) {
@@ -122,7 +122,7 @@ public class MongoDBConfigFactory {
                 return false;
             }
         } else {
-            logger.info("Cannot load configuration from properties" );
+            logger.info("Cannot load configuration from properties, the defaults ones will be used" );
             return false;
         }
     }

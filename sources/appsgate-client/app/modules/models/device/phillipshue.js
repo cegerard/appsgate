@@ -34,21 +34,21 @@ define([
 
       switch(act) {
         case "switchOn":
-          $(btn).append("<span data-i18n='keyboard.turn-on-lamp-action'/>");
+          $(btn).append("<span data-i18n='devices.lamp.keyboard.turnOn'/>");
           v.methodName = "setWhite";
-          v.phrase = "language.turn-on-lamp-action";
+          v.phrase = "devices.lamp.language.turnOn";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchOff":
-          $(btn).append("<span data-i18n='keyboard.turn-off-lamp-action'/>");
+          $(btn).append("<span data-i18n='devices.lamp.keyboard.turnOff'/>");
           v.methodName = "off";
-          v.phrase = "language.turn-off-lamp-action";
+          v.phrase = "devices.lamp.language.turnOff";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "blink":
-          $(btn).append("<span data-i18n='devices.lamp.action.blink'/>");
+          $(btn).append("<span data-i18n='devices.lamp.keyboard.blink'/>");
           v.methodName = "blink30";
-          v.phrase = "devices.lamp.action.blink";
+          v.phrase = "devices.lamp.language.blink";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
@@ -72,17 +72,17 @@ define([
       var v = this.getJSONEvent("mandatory");
       switch(evt) {
         case "switchOn":
-          $(btn).append("<span data-i18n='keyboard.is-turned-on-lamp-event'><span>");
+          $(btn).append("<span data-i18n='devices.lamp.keyboard.turnOnEvt'><span>");
           v.eventName = "state";
           v.eventValue = "true";
-          v.phrase = "language.turned-on-lamp-event";
+          v.phrase = "devices.lamp.language.turnOnEvt";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchOff":
-          $(btn).append("<span data-i18n='keyboard.is-turned-off-lamp-event'><span>");
+          $(btn).append("<span data-i18n='devices.lamp.keyboard.turnOffEvt'><span>");
           v.eventName = "state";
           v.eventValue = "false";
-          v.phrase = "language.turned-off-lamp-event";
+          v.phrase = "devices.lamp.language.turnOffEvt";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
@@ -106,25 +106,22 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONState("mandatory");
       v.type = which;
+      var keep = "";
+      if (which == "maintainableState") {
+        keep = "-keep";
+      }
       switch(state) {
         case "isOn":
-          $(btn).append("<span data-i18n='keyboard.is-turned-on-lamp-state'><span>");
-          v.name = "isOn";
-          v.phrase = "language.is-turned-on-lamp-state";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
         case "isOff":
-          $(btn).append("<span data-i18n='keyboard.is-turned-off-lamp-state'><span>");
-          v.name = "isOff";
-          v.phrase = "language.is-turned-off-lamp-state";
+          $(btn).append("<span data-i18n='devices.lamp.keyboard." + state + keep + "'><span>");
+          v.name = state;
+          v.phrase = "devices.lamp.language." + state + keep;
           $(btn).attr("json", JSON.stringify(v));
-          break;
+        return btn;
         default:
           console.error("unexpected state found for PhilipsHue: " + state);
-          btn = null;
-          break;
+          return null;
       }
-      return btn;
     },
 
     /**
@@ -141,10 +138,10 @@ define([
       var v = this.getJSONProperty("mandatory");
       switch(property) {
         case "getBrightness":
-          $(btn).append("<span data-i18n='keyboard.light-brightness'><span>");
+          $(btn).append("<span data-i18n='devices.lamp.keyboard.brightness'><span>");
           v.methodName = "getLightBrightness";
           v.returnType = "number";
-          v.phrase = "language.light-brightness";
+          v.phrase = "devices.lamp.language.brightness";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

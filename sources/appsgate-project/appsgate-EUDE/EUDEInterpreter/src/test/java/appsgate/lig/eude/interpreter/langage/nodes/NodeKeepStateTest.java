@@ -47,7 +47,7 @@ public class NodeKeepStateTest extends NodeTest {
                 then(tested.is("no"));
             }
         });
-        NodeStateTest s = new NodeStateTest();
+        NodeStateDeviceTest s = new NodeStateDeviceTest();
 
         ruleJSON.put("type", "keepstate");
         ruleJSON.put("state", s.getRuleJSON());

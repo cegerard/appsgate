@@ -95,7 +95,7 @@ public class NodeEvent extends Node implements INodeEvent {
         }
 
         // if the source of the event is a program
-        if (source.getType().equals("programCall")) {
+        if (isProgramEvent()) {
             // get the node of the program
             NodeProgram p;
             p = mediator.getNodeProgram(source.getValue());
@@ -131,7 +131,7 @@ public class NodeEvent extends Node implements INodeEvent {
             LOGGER.error("Unable to stop this node cause the mediator has not been found");
             return;
         }
-        if (source.getType().equals("programCall")) {
+        if (isProgramEvent()) {
             NodeProgram p = mediator.getNodeProgram(source.getValue());
             if (eventName.equals("start")) {
                 p.removeStartEventListener(this);
@@ -229,4 +229,29 @@ public class NodeEvent extends Node implements INodeEvent {
         }
     }
 
+    public boolean isProgramEvent() {
+        return source.getType().equalsIgnoreCase("programCall");
+    }
+
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof NodeEvent)) {
+            return false;
+        }
+        NodeEvent e = (NodeEvent) o;
+        return this.eventName.equals(e.eventName) && this.eventValue.equals(e.eventValue) & this.source.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
 }

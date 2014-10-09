@@ -1,40 +1,35 @@
 <div class="main-block-node" id="<%= node.iid %>">
-    <div id="progress-<%= node.rules.state.iid %>" class="progress-indicator-group">
-      <img src="/app/img/locked-node.svg" class="progress-indicator locked-node-indicator hidden"/>
-      <img src="/app/img/unlocked-node.svg" class="progress-indicator unlocked-node-indicator hidden"/>
-      <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
-      <span id="progress-counter-<%=node.rules.state.iid %>">0</span>
+  <div id="progress-<%= node.rules.state.iid %>" class="progress-indicator-group">
+    <img src="/app/img/locked-node.svg" class="progress-indicator locked-node-indicator hidden"/>
+    <img src="/app/img/unlocked-node.svg" class="progress-indicator unlocked-node-indicator hidden"/>
+    <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
+    <span id="progress-counter-<%=node.rules.state.iid %>" class="progress-indicator">0</span>
+    <span class="progress-indicator" data-i18n='debugger.times'/>
+  </div>
+  <div class="row">
+    <button class="btn btn-prog btn-primary btn-then">
+      <span data-i18n="language.while-keyword"></span>
+    </button>
+    <%=engine.buildInputFromNode(node.state, currentNode)%>
+    <span  class='link-span' data-i18n="language.then-keyword"/>
+  </div>
+  <div class="row indent-level-1">
+    <span class='link-span' name="keep" data-i18n="language.keep-keyword"></span>
+      <%=engine.buildInputFromNode(node.rules, currentNode) %>
+    <span class='link-span' name="keep" data-i18n="language.keep-then"></span>
+  </div>
+  <% if ( node.rulesThen != undefined) { %>
+  <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node seq-block-node"<% } else { %> class="main-block-node seq-block-node" <% } %>>
+    <div>
+      <button class="btn btn-prog btn-primary disabled read-only btn-then">
+        <span data-i18n="language.and-when"></span>
+      </button>
+      <span class='link-span' data-i18n="language.it-is-not-the-case"></span>
+      <span class='link-span' data-i18n="language.then-keyword"></span>
     </div>
-        <div class="row">
-            <button class="btn btn-prog btn-primary btn-then">
-                <span data-i18n="language.while-keyword"></span>
-            </button>
-            <%=engine.buildInputFromNode(node.state, currentNode)%>
-        </div>
-        <div class="row indent-level-1">
-            <div class="btn btn-prog btn-primary">
-                <span name="keep" data-i18n="language.keep-keyword"></span>
-            </div>
-
-            <%=engine.buildInputFromNode(node.rules, currentNode) %>
-        </div>
+    <div class="row indent-level-1">
+      <%=engine.buildInputFromNode(node.rulesThen, currentNode) %>
     </div>
-    <% if ( node.rulesThen != undefined) { %>
-    <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node"<% } %>>
-      <div class="row">
-        <button class="btn btn-prog btn-primary btn-then">
-          <span data-i18n="language.and-when"></span>
-        </button>
-        <span data-i18n="language.it-is-not-the-case"></span>
-      </div>
-      <div class="row indent-level-1">
-            <div class="btn btn-prog btn-primary">
-                <span data-i18n="language.then-keyword"></span>
-            </div>
-            <%=engine.buildInputFromNode(node.rulesThen, currentNode) %>
-      </div>
-    </div>
-    <%}%>
-</div>
-
+  </div>
+  <%}%>
 </div>

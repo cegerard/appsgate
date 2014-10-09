@@ -9,8 +9,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.component.VEvent;
 
 /**
  * Helper class to read data from a google calendar
@@ -28,7 +26,12 @@ public class GoogleCalendarReader {
 	public final static String URL_CALENDARLIST = "https://www.googleapis.com/calendar/v3/users/me/calendarList";
 	public final static String URL_CALENDARS = "https://www.googleapis.com/calendar/v3/calendars";
 	
-	public final static String PARAM_EVENTS = "events";
+	public final static String PARAM_SINGLE_EVENTS = "singleEvents";	
+	public final static String PARAM_EVENTS = "events";	
+	public final static String PARAM_TIMEMIN = "timeMin";
+	public final static String PARAM_TIMEMAX = "timeMax";
+
+	public final static String RESP_ITEMS = "items";
 
 	
 	/**
@@ -129,26 +132,6 @@ public class GoogleCalendarReader {
 		return GoogleHTTPRequest.httpsGet(serviceURL,
 				requestProperties,
 				urlParameters);
-	}
-
-	
-	
-	/**
-	 * Get the remote google calendar corresponding to "calendar" with "account" and "password" google account connection
-	 * 
-	 * If start date is null the getCalendar method return the whole remote calendar, if not it will return the calendar from
-	 * startDate to the last register event. It is possible to specify a end date to get the calendar between startDate and endDate.
-	 * If startDate is null the endDate will not be consider.
-	 * 
-	 * @param calendarName the remote calendar you want to get
-	 * @param account the remote service account
-	 * @param password the password corresponding to the account
-	 * @param startDate the date from when you want to get events
-	 * @param endDate the date to when you want to get events
-	 * @return the google calendar convert to iCalendar standard format
-	 */
-	public synchronized Calendar getCalendar(String calendarName, String account, String password, java.util.Date startDate, java.util.Date endDate) {
-		return null;//TODO
 	}
 	
 }

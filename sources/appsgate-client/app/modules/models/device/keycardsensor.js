@@ -32,17 +32,17 @@ define([
       v.source.value = this.get("id");
       switch(evt) {
         case "insertCard":
-          $(btn).append("<span data-i18n='language.inserted-keycard-reader-event'></span>");
+          $(btn).append("<span data-i18n='devices.keycard-reader.keyboard.insertedEvent'></span>");
           v.eventName = "inserted";
           v.eventValue = "true";
-          v.phrase = "language.inserted-keycard-reader-event";
+          v.phrase = "devices.keycard-reader.language.insertedEvent";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "removeCard":
-          $(btn).append("<span data-i18n='language.removed-keycard-reader-event'></span>");
+          $(btn).append("<span data-i18n='devices.keycard-reader.keyboard.removedEvent'></span>");
           v.eventName = "inserted";
           v.eventValue = "false";
-          v.phrase = "language.removed-keycard-reader-event";
+          v.phrase = "devices.keycard-reader.language.removedEvent";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
@@ -75,15 +75,15 @@ define([
       var v = this.getJSONState("mandatory");
       switch(state) {
         case "inserted":
-          $(btn).append("<span data-i18n='language.card-inserted-keycard-reader-status'></span>");
-          v.phrase = "language.card-inserted-keycard-reader-status";
+          $(btn).append("<span data-i18n='devices.keycard-reader.keyboard.card-inserted'></span>");
+          v.phrase = "devices.keycard-reader.language.card-inserted";
           v.name = "inserted";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "empty":
-          $(btn).append("<span data-i18n='language.no-card-inserted-keycard-reader-status'/>");
+          $(btn).append("<span data-i18n='devices.keycard-reader.keyboard.no-card-inserted'/>");
           v.name = "empty";
-          v.phrase = "language.no-card-inserted-keycard-reader-status";
+          v.phrase = "devices.keycard-reader.language.no-card-inserted";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

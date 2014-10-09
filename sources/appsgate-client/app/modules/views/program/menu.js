@@ -20,7 +20,7 @@ define([
          */
         events: {
             "click a.list-group-item": "updateSideMenu",
-            "show.bs.modal #add-program-modal": "initializeModal",
+            "shown.bs.modal #add-program-modal": "initializeModal",
             "hidden.bs.modal #add-program-modal": "toggleModalValue",
             "click #add-program-modal button.valid-button": "validAddProgram",
             "keyup #add-program-modal input:text": "validAddProgram"
@@ -72,9 +72,11 @@ define([
          */
         initializeModal: function() {
             $("#add-program-modal input").val("");
+            $("#add-program-modal input").focus();
             $("#add-program-modal .text-danger").addClass("hide");
             $("#add-program-modal input:checkbox").prop("checked", true);
             $("#add-program-modal .valid-button").addClass("disabled");
+            $("#add-program-modal .valid-button").addClass("valid-disabled");
 
             // tell the router that there is a modal
             appRouter.isModalShown = true;
@@ -97,6 +99,17 @@ define([
                         .text($.i18n.t("modal-add-program.name-empty"))
                         .removeClass("hide");
                 $("#add-program-modal .valid-button").addClass("disabled");
+                $("#add-program-modal .valid-button").addClass("valid-disabled");
+
+                return false;
+            }
+            // name contains html code
+            if (/(&|>|<)/.test($("#add-program-modal input:text").val())) {
+                $("#add-program-modal .text-danger")
+                        .text($.i18n.t("edit-name-modal.contains-html"))
+                        .removeClass("hide");
+                $("#add-program-modal .valid-button").addClass("disabled");
+                $("#add-program-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -107,6 +120,7 @@ define([
                         .text($.i18n.t("modal-add-program.name-already-existing"))
                         .removeClass("hide");
                 $("#add-program-modal .valid-button").addClass("disabled");
+                $("#add-program-modal .valid-button").addClass("valid-disabled");
 
                 return false;
             }
@@ -114,6 +128,7 @@ define([
             // ok
             $("#add-program-modal .text-danger").addClass("hide");
             $("#add-program-modal .valid-button").removeClass("disabled");
+            $("#add-program-modal .valid-button").removeClass("valid-disabled");
 
             return true;
         },
@@ -134,7 +149,8 @@ define([
                     // instantiate a model for the new program
                     program = programs.create({
                         name: $("#add-program-modal input:text").val(),
-                        daemon: "false"
+                        daemon: "false",
+                        isNew: "true"
                     });
 
                     // hide the modal
@@ -150,17 +166,6 @@ define([
 
                         // display the new program
                         appRouter.programsRouter.editor(program.get("id"));
-
-                        // set the current program active
-                        _.forEach($("a.list-group-item"), function(item) {
-                            if (item.id === "side-" + program.id) {
-                                $(item).addClass("active");
-                                $(self.$el.find(".list-group")[1]).scrollTop(1000);
-                            }
-                            else {
-                                $(item).removeClass("active");
-                            }
-                        });
                     });
                 }
             } else if (e.type === "keyup") {
@@ -210,6 +215,8 @@ define([
                     }));
                 });
 
+                programsDiv.addClass("scrollable-menu");
+
                 // we add all elements all at once to avoid rendering them individually and thus reflowing the dom several times
                 programsDiv.append(container);
 
@@ -220,7 +227,7 @@ define([
                 this.$el.i18n();
 
                 // fix the programs list size to be able to scroll through it
-                this.resizeDiv(programsDiv);
+                this.resize(self.$el.find(".scrollable-menu"));
 
                 return this;
             }

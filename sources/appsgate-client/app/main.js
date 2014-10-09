@@ -22,7 +22,7 @@ require(["config"], function() {
 
         /**
          * Bind an event on a dom element that is not contained in the view
-         * 
+         *
          * @param callback Callback to invoke when the event has been triggered
          * @param domElement dom element that will trigger the event
          * @param event Event to bind
@@ -39,25 +39,22 @@ require(["config"], function() {
         /**
          * Resizes the div to the maximum displayable size on the screen
          */
-        Backbone.View.prototype.resizeDiv = function(jqNode, fullScreen) {
-            if (typeof jqNode !== "undefined" && typeof jqNode[0] !== "undefined") {
-                jqNode[0].classList.add("div-scrollable");
+        Backbone.View.prototype.resize = function(region) {
+            if (typeof region !== "undefined" && typeof region[0] !== "undefined") {
+                region[0].classList.add("div-scrollable");
                 setTimeout(function() {
-                    var divSize = window.innerHeight - (jqNode.offset().top + jqNode.outerHeight(true) - jqNode.innerHeight());
+                    var divSize = window.innerHeight - (region.offset().top + region.outerHeight(true) - region.innerHeight());
 
-                    // if there isn't enough space to display the whole div, we adjust its size to the screen
-                    if (divSize < jqNode.outerHeight(true) || fullScreen) {
-                        jqNode.height(divSize);
-                    }
+                    region.height(divSize);
 
                     // if there is an active element, make it visible
-                    var activeItem = jqNode.children(".list-group-item.active")[0];
+                    var activeItem = region.children(".list-group-item.active")[0];
                     if (typeof activeItem !== "undefined" && typeof $(".list-group-item")[1] !== "undefined") {
-                        jqNode.scrollTop((activeItem.offsetTop) - ($(".list-group-item")[1].offsetTop));
+                        region.scrollTop((activeItem.offsetTop) - ($(".list-group-item")[1].offsetTop));
                     }
                     // otherwise display the top of the list
                     else {
-                        jqNode.scrollTop(0);
+                        region.scrollTop(0);
                     }
                 }, 0);
             }
@@ -70,6 +67,11 @@ require(["config"], function() {
                 // initialise localisation
                 $.i18n.init({resGetPath: 'app/locales/__lng__/__ns__.json', lng: 'fr', fallbackLng: 'fr'}).done(function() {
                     app.initialize();
+                });
+
+                $(window).resize(function(){
+                  Backbone.View.prototype.resize($(".scrollable"));
+                  Backbone.View.prototype.resize($(".scrollable-menu"));
                 });
 
                 // Hiding splash screen when app is loaded
@@ -89,5 +91,3 @@ require(["config"], function() {
         });
     });
 });
-
-

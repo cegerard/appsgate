@@ -1,16 +1,15 @@
 <div class="main-block-node">
     <div id="progress-<%= node.iid %>" class="progress-indicator-group">
       <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
-      <span id="progress-counter-<%=node.iid %>">0</span>
+      <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
+      <span class="progress-indicator" data-i18n='debugger.times'/>
     </div>
     <div>
         <button class="btn btn-prog btn-primary" id="<%= node.iid %>">
             <span data-i18n="language.if-keyword"/>
         </button>
         <%=engine.buildInputFromNode(node.expBool, currentNode) %>
-        <button class="btn btn-prog btn-primary"
-            <span data-i18n="language.then-keyword"/>
-        </button>
+        <span class='link-span' data-i18n="language.then-keyword"/>
 
 
         <div class="row indent-level-1">
@@ -19,10 +18,8 @@
     </div>
     <% if ( node.seqRulesFalse != undefined) { %>
     <div <% if(node.seqRulesFalse.rules.length < 2 ) { %>class="secondary-block-node"<% } %>>
+        <span class='link-span' data-i18n="language.else-keyword"/>
         <div class="row">
-            <button class="btn btn-prog btn-primary btn-then"
-                <span data-i18n="language.else-keyword"/>
-            </button>
             <div class="indent-level-1 fix-row">
             <%=engine.buildInputFromNode(node.seqRulesFalse, currentNode) %>
           </div>

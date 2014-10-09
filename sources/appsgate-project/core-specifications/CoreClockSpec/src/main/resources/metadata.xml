@@ -5,7 +5,9 @@
 
 	<specification name="CoreClockSpec"
 		interfaces="appsgate.lig.clock.sensor.spec.CoreClockSpec, appsgate.lig.core.object.spec.CoreObjectSpec"
-        messages="appsgate.lig.core.object.messages.NotificationMsg">
+        messages="appsgate.lig.core.object.messages.NotificationMsg,
+        appsgate.lig.clock.sensor.messages.FlowRateSetNotification,
+        appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg">
         
         <!-- device kernel meta data -->
         <definition name="deviceName" 	type="string"  />

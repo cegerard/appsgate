@@ -23,7 +23,7 @@
 		<definition name="pictureId" type="string" field="pictureId" />
 		<definition name="userType" type="string" default="7"
 			field="userType" />
-		<definition name="status" type="string" default="2" field="status"
+		<definition name="status" type="string" field="status"
 			method="statusChanged" />
 
 		<!-- device meta data -->

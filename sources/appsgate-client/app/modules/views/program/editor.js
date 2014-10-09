@@ -14,12 +14,14 @@ define([
         "mouseup .btn-keyboard": "onClickKeyboard",
         "mouseup .btn-prog": "onClickProg",
         "click #end-edit-button": "onClickEndEdit",
+        "click #cancel-edit-button": "onClickCancelEdit",
         "change .lamp-color-picker": "onChangeLampColorNode",
         "change .selector-place-picker": "onChangeSeletorPlaceNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
         "change .code-forecast-picker": "onChangeCodeForecastNode",
+        "change .scale-selector": "onChangeValue",
         "change .comparator-select": "onChangeComparatorNode",
-        "change .number-input": "onChangeNumberValue",
+        "change .number-input": "onChangeValue",
         "change .arg-input": "onChangeArgValue",
         "change .volume-input": "onChangeMediaVolume",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
@@ -31,7 +33,7 @@ define([
       */
       initialize: function() {
         this.Mediator = new Mediator();
-        this.Mediator.loadProgramJSON(this.model.get("body"));
+        this.Mediator.loadProgramJSON(this.model.get("body"), this.model.get("id"));
 
         this.listenTo(this.model, "change", this.refreshDisplay);
         this.listenTo(devices, "change", this.refreshDisplay);
@@ -58,15 +60,33 @@ define([
           $(".text-danger").removeClass("hide");
           $(".text-danger").text($.i18n.t("modal-edit-program.program-name-empty"));
           $("#end-edit-button").addClass("disabled");
+          $("#end-edit-button").addClass("valid-disabled");
+
+          return false;
+        }
+        
+        // name contains html code
+        if (/(&|>|<)/.test($(".programNameInput").val())) {
+          $(".text-danger")
+                  .text($.i18n.t("edit-name-modal.contains-html"))
+                  .removeClass("hide");
+          $("#end-edit-button").addClass("disabled");
+          $("#end-edit-button").addClass("valid-disabled");
 
           return false;
         }
 
+        
+        var currentProgramID=this.model.get("id");
+        var programsWithSameName=programs.where({name: $(".programNameInput").val()}).filter(function(prog){
+              return prog.id != null && prog.id!=currentProgramID;
+          });
         // name already existing
-        if (programs.where({name: $(".programNameInput").val()}).length > 0) {
+        if (programsWithSameName.length > 0) {
           $(".text-danger").removeClass("hide");
           $(".text-danger").text($.i18n.t("modal-edit-program.program-already-existing"));
           $("#end-edit-button").addClass("disabled");
+          $("#end-edit-button").addClass("valid-disabled");
 
           return false;
         }
@@ -80,6 +100,7 @@ define([
       onClickEndEdit: function(e) {
         this.model.set("body", this.Mediator.programJSON);
         this.model.set("modified", false);
+        this.model.set("isNew", "false");
         if (this.Mediator.isValid) {
           this.model.set("runningState", "DEPLOYED");
         } else {
@@ -87,6 +108,14 @@ define([
         }
         this.model.save();
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
+      },
+      onClickCancelEdit: function(e) {
+        if(this.model.get("isNew") === "true"){
+          this.model.destroy();
+          appRouter.navigate("#programs", {trigger: true});
+        } else{
+          appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
+        }
       },
       /**
        * Method to handle event on a button on the keyboard
@@ -100,9 +129,10 @@ define([
         this.Mediator.addNodeFromButton(button);
       },
       /**
-       *
+       * Method to handle event on a button click in the input area
        */
       onClickProg: function(e) {
+        // checking what kind of button was clicked
         button = e.target;
         if (button !== null && typeof button.classList !== 'undefined' && (button.classList.contains('btn-media-choice') || button.classList.contains('default-media-choice'))) {
           e.stopPropagation();
@@ -117,11 +147,11 @@ define([
             // do nothing
             return;
           }
+          // checking if the node has to be deleted or selected
           if ($(button).hasClass("glyphicon-trash")) {
             this.Mediator.removeNode(button.id);
           } else {
             this.Mediator.setCurrentPos(button.id);
-            this.refreshDisplay();
           }
         }
       },
@@ -262,11 +292,12 @@ define([
         var newCode = e.currentTarget.selectedOptions[0].value;
         var value = {"type": "int", "value": newCode};
         var i = 0;
-        for(var elt in $(".day-forecast-picker")) {
-           if(elt.attr() === iid) {
-              i = 1;
-           }
-        }
+          $(".day-forecast-picker").each(function(){
+              if (this.getAttribute("target-id") === iid) {
+                  i = 1;
+              }
+          });
+
         this.Mediator.setNodeArg(iid, i, value);
 
         // // clearing selection
@@ -281,7 +312,7 @@ define([
         // // clearing selection
         this.resetSelection();
       },
-      onChangeNumberValue: function(e) {
+      onChangeValue: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
         var value = e.currentTarget.value;
@@ -332,6 +363,7 @@ define([
           if (this.Mediator.isValid) {
             this.model.set("runningState", "DEPLOYED");
             $(".led").addClass("led-default").removeClass("led-orange");
+            $(".led").addClass("led-default").removeClass("led-yellow");
             $(".programNameInput").addClass("valid-program");
           } else {
             this.model.set("runningState", "INVALID");
@@ -342,7 +374,7 @@ define([
       },
       applyEditMode: function() {
         if (this.Mediator.currentNode === -1 && this.Mediator.lastAddedNode !== null) {
-          var nextInput = this.Mediator.findNextInput($(".programInput").find("#" + this.Mediator.lastAddedNode.iid).parent());
+          var nextInput = this.Mediator.findNextInput($(".programInput").find("#" + this.Mediator.lastAddedNode.iid));
 
           this.Mediator.setCursorAndBuildKeyboard(parseInt(nextInput.nextAll(".input-spot").attr("id")));
           console.log("nextInput : "+nextInput.nextAll(".input-spot").attr("id"));
@@ -361,6 +393,12 @@ define([
         $(".input-spot").prev().children(".btn-and, .btn-then").addClass("input-spot-then");
 
         $(".programInput").find(".progress-indicator-group").addClass("hidden");
+
+        //disabling not clickable buttons
+        if($(".programInput").find(".mandatory-spot").length > 0){
+            $(".input-spot:not(.mandatory-spot:first)").addClass("disabled");
+        }
+
       },
       /**
       * Render the editor view
@@ -378,7 +416,7 @@ define([
           this.refreshDisplay();
 
           // fix the programs list size to be able to scroll through it
-          this.resizeDiv($(self.$el.find(".editorWorkspace")[0]), true);
+          this.resize($(".scrollable"));
         }
 
         return this;

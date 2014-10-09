@@ -332,6 +332,31 @@ public interface EHMIProxySpec {
     /**  Weather Observers management   */
     /************************************/
 
+    /**
+     * Check a location upon it place Name
+     *
+     * @param location
+     *            A human place name : a town, a country, a particular place or point of interest (poi)
+     * @return A JSON object describing the location
+     * {"locality1":"Grenoble","woeid":"593720","name":"Grenoble","placeTypeName":"Town","country":"France"}
+     */
+    public JSONObject checkLocation(String location);	
+    
+    /**
+     * Check a location upon the first letters of its place name
+     *
+     * @param location
+     *            A human place name : a town, a country, a particular place or point of interest (poi)
+     * @return A JSONArray with 0..5  objects describing the location (formatted as follow), example starting with Gre
+     * [
+     * {"locality1":"Grenoble","woeid":"593720","name":"Grenoble","placeTypeName":"Town","country":"France"},
+     * {"locality1":"Green Bay","woeid":"2413753","name":"Green Bay","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greenville","woeid":"2414583","name":"Greenville","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greensboro","woeid":"2414469","name":"Greensboro","placeTypeName":"Town","country":"États-Unis"},
+     * {"locality1":"Greifswald","woeid":"654035","name":"Greifswald","placeTypeName":"Town","country":"Allemagne"}
+     * ]
+     */
+    public JSONArray checkLocationsStartingWith(String firstLetters);	    
 
     /**
      * Try to create an Observer with an human friendly name to fetch Weather conditions
@@ -339,7 +364,14 @@ public interface EHMIProxySpec {
      * @param location
      *            A human place name : a town, a country, a particular place or point of interest (poi)
      */
-    public void addLocationObserver(String location);
+    public JSONArray addLocationObserver(String location);
+    
+    /**
+     * Try to create an Observer with the explicit Yahoo WOEID (Where On Earth IDentifier)
+     *
+     */
+    public JSONArray addLocationObserverFromWOEID(String woeid);
+    
 
     /**
      * Try to remove a weather observer previously added
@@ -347,7 +379,7 @@ public interface EHMIProxySpec {
      * @param location the placeName as it was previously added
      * @return true if the place was found and was successfully removed
      */
-    public void removeLocationObserver(String location);
+    public JSONArray removeLocationObserver(String location);
 
     /**
      * Retrieves the Location Observers currently running
@@ -361,6 +393,24 @@ public interface EHMIProxySpec {
      */
     public JSONArray getAllLocationsObservers();
 
+    
+    /************************************/
+    /**  Scheduling service management  */
+    /************************************/
+
+
+	/**
+	 * Try to schedule the start or stop of a program
+	 * The Event is created just one hour before current Time, and last for 30 minutes
+	 * (it up to the end user to modify this event according to its need)
+	 * @param eventName is the name as it will appear in the Calendar
+	 * @param programId should be a VALID program ID referenced by EUDE Interpreter
+	 * @param startOnBegin if program should start when Google Event begin
+	 * @param stopOnEnd if program should start when Google Event end
+	 */
+	public void scheduleProgram(String eventName, String programId, boolean startOnBegin, boolean stopOnEnd);
+    
+    
 
 	/************************************/
 	/**   End User programs management  */
@@ -408,7 +458,8 @@ public interface EHMIProxySpec {
 	 * @return the programs list as a JSONArray
 	 */
 	public JSONArray getPrograms();
-	
+	        public JSONObject getGraph() ;
+
 	/**
 	 * Check if a program is active or not
 	 * 

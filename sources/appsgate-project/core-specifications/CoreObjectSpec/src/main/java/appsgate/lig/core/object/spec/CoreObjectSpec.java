@@ -15,6 +15,11 @@ import org.json.JSONObject;
 public interface CoreObjectSpec {
 	
 	/**
+	 * Constant, define a DataBase name that can be used for persistence of object states
+	 */
+	public static final String DBNAME_DEFAULT = "AppsGate-CoreObject";
+	
+	/**
 	 * This generic method allow caller to get the object id,
 	 * whatever the real object type.
 	 * 

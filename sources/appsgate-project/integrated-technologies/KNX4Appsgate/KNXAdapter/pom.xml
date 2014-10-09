@@ -71,6 +71,11 @@
         </dependency>
         <dependency>
             <groupId>appsgate.components</groupId>
+            <artifactId>CoreShutterSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>appsgate.components</groupId>
             <artifactId>CoreObjectSpec</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -83,29 +88,26 @@
 
 	<!-- Dependencies Instructions -->
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+	    <pluginManagement>
+	        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Import-Package>appsgate.lig.core.object.spec,*</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>
+                    </instructions>
+                </configuration>
+            </plugin>
+            </plugins>
+	    </pluginManagement>
+	    
+		<plugins>
             <plugin>
                 <groupId>fr.imag.adele.apam</groupId>
                 <artifactId>apam-maven-plugin</artifactId>
-                <version>${apam.current.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>apam-bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 		</plugins>
 	</build>

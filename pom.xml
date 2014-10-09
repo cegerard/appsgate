@@ -33,7 +33,7 @@
 		<!-- Dependencies version -->
 		<osgi.version>4.2.0</osgi.version>
 		<org.apache.felix.log.version>1.0.1</org.apache.felix.log.version>
-		<fuchsia.version>0.0.3</fuchsia.version>
+		<fuchsia.version>0.0.4-SNAPSHOT</fuchsia.version>
 		<ipojo.version>1.11.2</ipojo.version>
 		<ipojo.annotations.version>1.11.2</ipojo.annotations.version>
 		<org.apache.felix.ipojo.arch.gogo.version>1.1.0</org.apache.felix.ipojo.arch.gogo.version>
@@ -87,18 +87,11 @@
 
 	</properties>
 	<repositories>
-<repository>
-    <id>local-repo</id>
-    <name>local-repo</name>
-    <releases>
-        <enabled>true</enabled>
-        <checksumPolicy>ignore</checksumPolicy>
-    </releases>
-    <snapshots>
-        <enabled>false</enabled>
-    </snapshots>
-    <url>file://${project.basedir}/local-repo</url>
-</repository>	    
+        <repository>
+            <id>Maven Central repository</id>
+            <url>http://repo.maven.apache.org/maven2</url>
+        </repository>
+        
 	    <repository>	    
             <!-- Apache snapshot Repository -->
             <id>apache.snapshots</id>
@@ -116,10 +109,7 @@
             <url>https://repository.apache.org/content/groups/public</url>
         </repository>
 
-        <repository>
-            <id>Maven Central repository</id>
-            <url>http://repo.maven.apache.org/maven2</url>
-        </repository>
+
         <repository>
             <id>apam-repo-snapshot</id> 
             <url>https://repository-apam.forge.cloudbees.com/snapshot/repository</url> 
