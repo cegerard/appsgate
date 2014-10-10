@@ -733,7 +733,8 @@
 				"weather-max-at": "la température maximale prévue à",
 				"weather-min-at": "la température minimale prévue à"
 			},
-			"weblink" : "Voir météo"
+			"weblink" : "Voir météo",
+            "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
 
         }
     }

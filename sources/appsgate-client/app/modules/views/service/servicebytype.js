@@ -11,10 +11,12 @@ define([
     ServiceByTypeView = Backbone.View.extend({
         tpl: _.template(serviceListByCategoryTemplate),
         events: {
-            "click button.delete-meteo-button": "onDeleteMeteoButton",
             "keyup #add-weather-modal input": "validWeatherName",
             "click #add-weather-modal button.valid-button": "addWeatherName",
-            "click button.see-meteo": "openMeteo"
+            "click button.see-meteo": "openMeteo",
+            "click button.delete-weather-button": "onDeleteWeatherButton",
+            "click button.delete-popover": "onClickDeleteWeather",
+            "click button.cancel-delete-weather-button": "onCancelDeleteWeather"
         },
         /**
          * Listen to the updates on the services of the category and refresh if any
@@ -61,11 +63,11 @@ define([
                     type: this.id,
                     places: places
                 }));
-                this.$(".delete-popover").popover({
-                    html: true,
-                    content: "<button type='button' class='btn btn-danger delete-meteo-button'>" + $.i18n.t("form.delete-button") + "</button>",
-                    placement: "bottom"
-                });
+//                this.$(".delete-popover").popover({
+//                    html: true,
+//                    content: "<button type='button' class='btn btn-danger delete-meteo-button'>" + $.i18n.t("form.delete-button") + "</button>",
+//                    placement: "bottom"
+//                });
 
 
                 // translate the view
@@ -118,13 +120,43 @@ define([
             $("#add-weather-modal").modal("hide");
         },
         /**
-         *
+         * Callback to delete the weather place
          */
-        onDeleteMeteoButton: function(e) {
+        onDeleteWeatherButton: function(e) {
             var weatherObserver = services.get($(e.currentTarget).parents(".pull-right").children(".delete-popover").attr("id"));
             weatherObserver.destroy();
             appRouter.navigate("#services/types/103", {trigger: true});
 
+        },
+        /**
+          * Callback when the user has clicked on the button to cancel the deleting or click out of the popover.
+          */
+        onCancelDeleteWeather : function() {
+            console.log("cancel");
+            // destroy the popover
+            this.$el.find(".delete-popover").popover('destroy');
+        },
+        /**
+          * Callback when the user has clicked on the button delete.
+          */
+        onClickDeleteWeather : function(e) {
+            console.log("click delete");
+            var self = this;
+            // create the popover
+            var weatherObserverID = $(e.currentTarget).parents(".pull-right").children(".delete-popover").attr("id");
+            this.$el.find("#" + weatherObserverID).popover({
+                html: true,
+                title: $.i18n.t("services.weather.warning-weather-delete"),
+                content: "<div class='popover-div'><button type='button' class='btn btn-default cancel-delete-weather-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-danger delete-weather-button'>" + $.i18n.t("form.delete-button") + "</button></div>",
+                placement: "bottom"
+            });
+            // listen the hide event to destroy the popup, because it is created to every click on Edit
+            this.$el.find("#" + weatherObserverID).on('hidden.bs.popover', function () {
+                self.onCancelDeleteWeather();
+            });
+            console.log("show");
+            // show the popup
+            this.$el.find("#" + weatherObserverID).popover('show');
         },
         /**
          *

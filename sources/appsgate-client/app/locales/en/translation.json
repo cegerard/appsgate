@@ -733,7 +733,8 @@
                 "weather-max-at": "the maximum temperature expected for",
                 "weather-min-at": "the minimum temperature expected for"
             },
-			"weblink" : "See meteo"
+			"weblink" : "See meteo",
+            "warning-weather-delete": "Do you really want to delete this meteo place ?"
         }
     }
 }

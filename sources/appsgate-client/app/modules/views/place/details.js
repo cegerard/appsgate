@@ -22,7 +22,7 @@ define([
             "click button.toggle-lamp-button": "onToggleLampButton",
             "click button.delete-place-button": "deletePlace",
             "click button.delete-popover-button": "onClickDeletePlace",
-            "click button.cancel-delete-place-button": "onCancelDeleteProgram"
+            "click button.cancel-delete-place-button": "onCancelDeletePlace"
         },
         /**
          * Listen to the model update and refresh if any
