@@ -183,6 +183,10 @@ body {
   background: palegreen;
 }
 
+.popover-div{
+    text-align: center;
+}
+
 .row {
   margin-right:0px;
 }

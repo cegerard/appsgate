@@ -1,21 +1,16 @@
 package appsgate.lig.persistence;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
+import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.ManagerModel;
+import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 import fr.imag.adele.apam.impl.CompositeTypeImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientOptions.Builder;
-import com.mongodb.MongoException;
-import com.mongodb.ServerAddress;
 
 public class MongoDBConfigFactory {
 
@@ -66,9 +61,15 @@ public class MongoDBConfigFactory {
         this.dbTimeOut = dbTimeOut;
 
         getConfigurationProperties();
-        configThread = new MongoClientCreationThread(this.dbHost,this.dbPort,this.dbTimeOut);
-        new Thread(configThread).start();
-        
+        launchMongoClientCreationThread();
+
+    }
+    
+    private void launchMongoClientCreationThread() {
+    	if(configThread==null) {
+    		configThread = new MongoClientCreationThread(this.dbHost,this.dbPort,this.dbTimeOut, this);
+    		new Thread(configThread).start();
+    	}
     }
 
     public void setFactoryParameters(Properties props) {
@@ -94,6 +95,17 @@ public class MongoDBConfigFactory {
 
     }
 
+    public void destroyconfig(String instanceName) {
+    	logger.debug("destroyconfig(String instanceName : " + instanceName+")");
+        if (instanceName != null) {
+            ((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(instanceName);
+            logger.debug("Instance of MongoDBConfiguration destroyed");
+            configThread=null;
+            launchMongoClientCreationThread();
+        }
+    }
+    
+    
     public void configValueChanged(Object newValue) {
         // Warning the new value should be injected automatically, do not make
         // affectation

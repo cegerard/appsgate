@@ -5,7 +5,7 @@ public interface MediaPlayer {
 	
 	public void play(String mediaURL);
 	
-	public void play();
+	public void resume();
 	public void pause();
 	public void stop();
 	

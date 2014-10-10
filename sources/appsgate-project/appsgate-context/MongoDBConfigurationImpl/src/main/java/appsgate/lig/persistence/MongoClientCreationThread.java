@@ -27,31 +27,27 @@ public class MongoClientCreationThread implements Runnable {
     private Integer dbPort;
     private Integer dbTimeOut;
 
-    private boolean isAlive = true;
 
-    private MongoDBConfiguration myConfiguration = null;
+    private MongoDBConfigFactory factory = null;
 
 
-    public MongoClientCreationThread(String dbHost, int dbPort, int dbTimeOut) {
+    public MongoClientCreationThread(String dbHost, int dbPort, int dbTimeOut, MongoDBConfigFactory factory) {
         this.dbHost = dbHost;
         this.dbPort = dbPort;
         this.dbTimeOut = dbTimeOut;
+        this.factory = factory;
     }
 
 
     @Override
     public void run() {
         String instName = null;
-        while(isAlive) {
-            if(myConfiguration == null || !myConfiguration.isValid()) {
-                destroyInstance(instName);
-                instName = null;
-                instName = createInstance(null);
-            }
+        while(instName == null) {
+            instName = createInstance(null);
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.warn("MongoClientCreationThread.run(), exception "+e.getMessage());
             }
         }
     }
@@ -91,7 +87,6 @@ public class MongoClientCreationThread implements Runnable {
         logger.debug("createInstance(String name = "+name+" )");
         if (name == null) {
             // no instance exists, create all, the configuration and the instance
-            myConfiguration = null;
 
             MongoClient mongoClient = createMongoClient();
 
@@ -100,8 +95,8 @@ public class MongoClientCreationThread implements Runnable {
                 Implementation impl = CST.apamResolver.findImplByName(null, MongoDBConfiguration.IMPL_NAME);
 
                 Instance inst = impl.createInstance(null, null);
-                myConfiguration = (MongoDBConfiguration) inst.getServiceObject();
-                myConfiguration.setConfiguration(dbHost, dbPort, dbTimeOut, mongoClient);
+                MongoDBConfiguration myConfiguration = (MongoDBConfiguration) inst.getServiceObject();
+                myConfiguration.setConfiguration(dbHost, dbPort, dbTimeOut, mongoClient, factory, inst.getName());
                 logger.debug("Instance and MongoDBConfiguration created : "+inst.getName());
 
                 return inst.getName();
@@ -113,22 +108,11 @@ public class MongoClientCreationThread implements Runnable {
         } else if (CST.componentBroker.getInst(name) != null) {
             // An instance with this name exists, check if it works properly
            // if not we destroy it
-            Instance inst = CST.componentBroker.getInst(name);
-            myConfiguration = (MongoDBConfiguration) CST.componentBroker.getInst(name).getServiceObject();
+            MongoDBConfiguration myConfiguration = (MongoDBConfiguration) CST.componentBroker.getInst(name).getServiceObject();
             if (!myConfiguration.isValid()) {
                 logger.debug("Error during creation, removing the Instance and the configuration");
-                destroyInstance(inst.getName());
-                myConfiguration = null;
             }
         }
         return null;
-    }
-
-    private void destroyInstance(String name) {
-        if (name != null) {
-            ((ComponentBrokerImpl) CST.componentBroker).disappearedComponent(name);
-            myConfiguration = null;
-            logger.debug("Instance of MongoDBConfiguration destroyed");
-        }
     }
 }

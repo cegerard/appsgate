@@ -103,7 +103,7 @@ public class MediaPlayerShell {
 	public void resume(@Descriptor("none") String... args) {
 	    MediaPlayer myPlayer=retrieveMediaPlayerInstance(args[0]);
 	    if(myPlayer!= null) {
-	    	myPlayer.play();
+	    	myPlayer.resume();
 	    }
 		
 	}

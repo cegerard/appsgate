@@ -421,11 +421,18 @@
 					<span id="device-<%= s.cid %>-status" class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
 				<% if (s.get("value") === "true" || s.get("value") === true) { %>
-					<span id="device-<%= s.cid %>-value" class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
-				<% } else { %>
-					<span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
+				    <span id="device-<%= s.cid %>-value" class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.currentColor"></span>
+                        <span id="device-<%= s.cid %>-color" class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
+                    <% } else { %>
+                    <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
+                    <div class="label label-color-information">
+                        <span data-i18n="devices.lamp.color-information.lastColor"></span>
+                        <span id="device-<%= s.cid %>-color" class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
+                    </div>
 				<% } %>
-				<span id="device-<%= s.cid %>-color" class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
 			</a>
 		<% }) %>
 	</div>
