@@ -542,7 +542,8 @@
         },
         "no-plugs": "No plugs",
         "place-no-name": "Item unnamed",
-        "undefined": "Undefined"
+        "undefined": "Undefined",
+        "warning-place-delete": "Do you really want to delete this place ?"
     },
     "places-menu": {
         "add-button": "Add item",

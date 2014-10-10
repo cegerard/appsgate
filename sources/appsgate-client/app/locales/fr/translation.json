@@ -540,7 +540,8 @@
         },
         "no-plugs": "Pas de prise",
         "place-no-name": "Lieu de vie sans nom",
-        "undefined": "Non défini"
+        "undefined": "Non défini",
+        "warning-place-delete": "Voulez-vous vraiment supprimer ce lieu de vie ?"
     },
     "places-menu": {
         "add-button": "Ajouter lieu de vie",
