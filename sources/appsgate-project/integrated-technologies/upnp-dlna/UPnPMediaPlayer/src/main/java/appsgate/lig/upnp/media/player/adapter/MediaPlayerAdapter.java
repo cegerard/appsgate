@@ -156,7 +156,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	}
 
 	@Override
-	public void play() {
+	public void resume() {
 		if(aVTransport == null) {
 			logger.error("No avTransport service available");
 		}

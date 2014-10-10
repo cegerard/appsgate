@@ -654,12 +654,14 @@
             "language" : {
 			    "pause-media-action": "Mettre en pause le media",
 				"play-media-action": "Jouer",
+				"resume-media-action": "Reprendre la lecture",
 				"set-volume-media-action": "Mettre le volume de",
 				"stop-media-action": "Stopper"
             },
             "keyboard" : {
 			    "pause-media-action": "Mettre en pause le media ...",
 				"play-media-action": "Jouer ...",
+				"resume-media-action": "Reprendre la lecture de ...",				
 				"set-volume-media-action": "Mettre le volume de ...",
 				"stop-media-action": "Stopper"
 			}

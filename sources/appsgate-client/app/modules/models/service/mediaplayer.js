@@ -39,7 +39,7 @@ define([
          *return the list of available actions
          */
         getActions: function() {
-            return ["play", "pause", "stop", "setVolume"];
+            return ["play", "pause", "resume", "stop", "setVolume"];
         },
         /**
          * return the keyboard code for a given action
@@ -55,6 +55,12 @@ define([
                     v.phrase = "services.mediaplayer.language.play-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
+                case "resume":
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.resume-media-action'/>");
+                    v.methodName = "resume";
+                    v.phrase = "services.mediaplayer.language.resume-media-action";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;                    
                 case "pause":
                     $(btn).append("<span data-i18n='services.mediaplayer.keyboard.pause-media-action'/>");
                     v.methodName = "pause";
