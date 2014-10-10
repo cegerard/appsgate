@@ -586,7 +586,8 @@
             "started": "Started",
             "stopped": "Stopped"
         },
-        "warning-program-edition": "Warning, edit program will deactivate it"
+        "warning-program-edition": "Warning, edit program will deactivate it",
+        "warning-program-delete": "Do you really want to delete this program ?"
     },
     "programs-menu": {
         "add-button": "Add Program"

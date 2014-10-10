@@ -584,7 +584,8 @@
             "started": "Démarré",
             "stopped": "Arrêté"
         },
-        "warning-program-edition": "Attention, éditer le programme le désactivera"
+        "warning-program-edition": "Attention, éditer le programme le désactivera",
+        "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?"
     },
     "programs-menu": {
         "add-button": "Ajouter programme"
