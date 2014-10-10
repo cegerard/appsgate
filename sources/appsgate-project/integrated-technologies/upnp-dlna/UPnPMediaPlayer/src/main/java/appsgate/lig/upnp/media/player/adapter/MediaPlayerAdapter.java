@@ -9,23 +9,33 @@ import appsgate.lig.upnp.media.AVTransport;
 import appsgate.lig.upnp.media.ConnectionManager;
 import appsgate.lig.upnp.media.RenderingControl;
 import appsgate.lig.upnp.media.player.MediaPlayer;
-
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 
 import org.osgi.service.upnp.UPnPDevice;
 import org.osgi.service.upnp.UPnPException;
 import org.apache.felix.upnp.devicegen.holder.IntegerHolder;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.imag.adele.apam.Instance;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 import java.util.Dictionary;
 import java.util.Enumeration;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlayer, CoreObjectSpec {	
 
@@ -54,6 +64,9 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	 * The currently playing media
 	 */
 	private String		currentMedia;
+	
+	private String currentVolume;
+	private String currentStatus;
 
 
 	@SuppressWarnings("unused")
@@ -92,6 +105,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		descr.put("sysName", appsgateServiceName);
 		descr.put("friendlyName", deviceName);
 		descr.put("volume", getVolume());
+		descr.put("playerStatus", currentStatus);
 
 
 		return descr;
@@ -148,7 +162,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		try {
 			aVTransport.setAVTransportURI(0,media,"");
 			aVTransport.play(0,"1");
-			currentMedia = media;
+			currentMedia = media;			
 		} catch (UPnPException ignored) {
 			logger.error("Cannot Play, cause : "+ignored.getMessage()
 					+"UPnP error code : "+ignored.getUPnPError_Code());
@@ -204,6 +218,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		try {
 			IntegerHolder result = new IntegerHolder();
 			renderingControl.getVolume(0,"Master",result);
+			currentVolume = String.valueOf(result.getValue());
+
 			return result.getValue();
 
 		} catch (UPnPException ignored) {
@@ -221,6 +237,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		}		
 		try {
 			renderingControl.setVolume(0, "Master", level);
+			currentVolume = String.valueOf(level);
 		} catch (UPnPException ignored) {
 			logger.error("Cannot setVolume, cause : "+ignored.getMessage()
 					+"UPnP error code : "+ignored.getUPnPError_Code());
@@ -247,15 +264,70 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 
 				String variable = variables.nextElement();
 				Object value = events.get(variable);
-
-				stateChanged(variable, "", value.toString());
+				
+				checkVolumeEvent(value.toString());
+				checkChangeStateEvent(value.toString());
 			}
 		} else {
 			logger.debug("No events to send");
 		}
 
 	}
+	
+    static final String xPathVolume = "//Volume";
+    static final String xPathTransportState = "//TransportState";
+    static final String VAL = "val";
 
+	
+	/**
+	 * Check if the upnp event is related to volume
+	 * if it is the case send the new volume as event
+	 */
+	private void checkVolumeEvent(String event) {
+		logger.trace("checkVolumeEvent(String event : "+event+")");
+		DocumentBuilder db = null;
+		try {
+			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = db.parse(new InputSource(new StringReader(event)));
+			XPath xPath = XPathFactory.newInstance().newXPath();			
+			
+			Node node = (Node)xPath.evaluate(xPathVolume, doc, XPathConstants.NODE);
+			String newVolume = node.getAttributes().getNamedItem(VAL).getNodeValue();
+			logger.trace("checkChangeStateEvent(...), new Volume = "+newVolume);
+
+			stateChanged("volume", currentVolume, newVolume);
+			currentVolume = newVolume;
+
+		} catch (Exception exc) {
+			logger.debug("Cannot parse volume event : "+exc.getMessage());
+		}
+	}
+
+	/**
+	 * Check if the upnp event is related to status
+	 * if it is the case send the new status as event
+	 */
+	private void checkChangeStateEvent(String event) {
+		logger.trace("checkChangeStateEvent(String event : "+event+")");
+		DocumentBuilder db = null;
+		try {
+			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = db.parse(new InputSource(new StringReader(event)));
+			XPath xPath = XPathFactory.newInstance().newXPath();
+			
+			Node node = (Node)xPath.evaluate(xPathTransportState, doc, XPathConstants.NODE);
+			String newStatus = node.getAttributes().getNamedItem(VAL).getNodeValue();
+			logger.trace("checkChangeStateEvent(...), new Status = "+newStatus);
+
+			stateChanged("volume", currentStatus, newStatus);
+			currentStatus = newStatus;
+
+		} catch (Exception exc) {
+			logger.debug("Cannot parse status event : "+exc.getMessage());
+		}
+	}
+		
+	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this);
 	}
