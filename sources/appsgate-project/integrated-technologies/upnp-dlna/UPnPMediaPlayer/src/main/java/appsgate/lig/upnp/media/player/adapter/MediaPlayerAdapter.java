@@ -26,7 +26,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -63,7 +62,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	/**
 	 * The currently playing media
 	 */
-	private String		currentMedia;
+	private String		currentMediaURL;
+	private String		currentMediaName;
 	
 	private String currentVolume;
 	private String currentStatus;
@@ -106,6 +106,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		descr.put("friendlyName", deviceName);
 		descr.put("volume", getVolume());
 		descr.put("playerStatus", currentStatus);
+		descr.put("mediaName", currentMediaName);
+		descr.put("mediaURL", currentMediaURL);
 
 
 		return descr;
@@ -153,16 +155,28 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		this.appsgatePictureId = pictureId;
 	}
 
+	@Override
+	public void play(String mediaURL) {
+		play(mediaURL, null);
+	}
+
 
 	@Override
-	public void play(String media) {
+	public void play(String mediaURL, String mediaName) {
 		if(aVTransport == null) {
 			logger.error("No avTransport service available");
 		}		
 		try {
-			aVTransport.setAVTransportURI(0,media,"");
+			aVTransport.setAVTransportURI(0,mediaURL,"");
 			aVTransport.play(0,"1");
-			currentMedia = media;			
+			stateChanged("mediaURL", currentMediaURL, mediaURL);
+			currentMediaURL = mediaURL;			
+			if(mediaName != null) {
+				stateChanged("mediaName", currentMediaName, mediaName);
+				currentMediaName = mediaName;
+			}
+
+				
 		} catch (UPnPException ignored) {
 			logger.error("Cannot Play, cause : "+ignored.getMessage()
 					+"UPnP error code : "+ignored.getUPnPError_Code());
@@ -202,7 +216,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		}
 		try {
 			aVTransport.stop(0);
-			currentMedia = null;
+			currentMediaURL = null;
+			currentMediaName = null;
 		} catch (UPnPException ignored) {
 			logger.error("Cannot Stop, cause : "+ignored.getMessage()
 					+"UPnP error code : "+ignored.getUPnPError_Code());
@@ -330,6 +345,16 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this);
+	}
+
+	@Override
+	public String getPlayerStatus() {
+		return currentStatus;
+	}
+
+	@Override
+	public String getCurrentMediaName() {
+		return currentMediaName;
 	}
 
 

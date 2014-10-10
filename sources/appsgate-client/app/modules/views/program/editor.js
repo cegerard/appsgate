@@ -206,7 +206,7 @@ define([
           }
           else {
             $("#media-browser-modal .media-button").removeClass("disabled");
-            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.textContent}]);
+            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.textContent},{type: "String", value: event.currentTarget.parentNode.attributes.title.textContent}]);
             self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "fileName", event.currentTarget.parentNode.attributes.title.textContent);
           }
         });
