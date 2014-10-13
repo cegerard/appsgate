@@ -327,14 +327,21 @@ public class TraceMan implements TraceManSpec {
             objectNotif.put("name", devicePropTable.getName(srcId, ""));
             GrammarDescription g =  EHMIProxy.getGrammarFromDevice(srcId);
             if (g != null) {
-            objectNotif.put("type", g.getType());
+                objectNotif.put("type", g.getType());
+            } else {
+                LOGGER.error("Unable to build a trace on an unknown type for {}", srcId);
+                LOGGER.debug("No trace have been produced for {} with cause: {}", event.toString(), cause.toString());
+                return null;
             }
             JSONObject location = new JSONObject();
             location.put("id", placeManager.getCoreObjectPlaceId(srcId));
             SymbolicPlace place = placeManager.getPlaceWithDevice(srcId);
             if (place != null) {
                 location.put("name", place.getName());
+            } else {
+                LOGGER.warn("Place not found for this device {}", srcId);
             }
+            
             objectNotif.put("location", location);
             objectNotif.put("decorations", new JSONArray().put(cause));
 

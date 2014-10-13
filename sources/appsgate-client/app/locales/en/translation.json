@@ -542,7 +542,8 @@
         },
         "no-plugs": "No plugs",
         "place-no-name": "Item unnamed",
-        "undefined": "Undefined"
+        "undefined": "Undefined",
+        "warning-place-delete": "Do you really want to delete this place ?"
     },
     "places-menu": {
         "add-button": "Add item",
@@ -656,12 +657,14 @@
             "language" : {
                "pause-media-action": "Pause the media",
                "play-media-action": "Play",
+			   "resume-media-action": "Resume play",               
                "set-volume-media-action": "Set the volume",
                "stop-media-action": "Stop"
             },
             "keyboard" : {
                "pause-media-action": "Pause the media ...",
                "play-media-action": "Play ...",
+               "resume-media-action": "Resume play ...",               
                "set-volume-media-action": "Set the volume ...",
                "stop-media-action": "Stop"
             }
@@ -732,7 +735,8 @@
                 "weather-max-at": "the maximum temperature expected for",
                 "weather-min-at": "the minimum temperature expected for"
             },
-			"weblink" : "See meteo"
+			"weblink" : "See meteo",
+            "warning-weather-delete": "Do you really want to delete this meteo place ?"
         }
     }
 }

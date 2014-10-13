@@ -17,10 +17,12 @@ define([
             "shown.bs.modal #edit-name-place-modal": "initializeModal",
             "click #edit-name-place-modal button.valid-button": "validEditName",
             "keyup #edit-name-place-modal input": "validEditName",
-            "click button.delete-place-button": "deletePlace",
             "click button.toggle-plug-button": "onTogglePlugButton",
             "click button.blink-lamp-button": "onBlinkLampButton",
-            "click button.toggle-lamp-button": "onToggleLampButton"
+            "click button.toggle-lamp-button": "onToggleLampButton",
+            "click button.delete-place-button": "deletePlace",
+            "click button.delete-popover-button": "onClickDeletePlace",
+            "click button.cancel-delete-place-button": "onCancelDeletePlace"
         },
         /**
          * Listen to the model update and refresh if any
@@ -150,6 +152,32 @@ define([
             appRouter.navigate("#places", {trigger: true});
         },
         /**
+          * Callback when the user has clicked on the button to cancel the deleting or click out of the popover.
+          */
+        onCancelDeletePlace : function() {
+            // destroy the popover
+            this.$el.find("#delete-popover").popover('destroy');
+        },
+        /**
+          * Callback when the user has clicked on the button delete.
+          */
+        onClickDeletePlace : function(e) {
+            var self = this;
+            // create the popover
+            this.$el.find("#delete-popover").popover({
+                html: true,
+                title: $.i18n.t("places-details.warning-place-delete"),
+                content: "<div class='popover-div'><button type='button' class='btn btn-default cancel-delete-place-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-danger delete-place-button'>" + $.i18n.t("form.delete-button") + "</button></div>",
+                placement: "bottom"
+            });
+            // listen the hide event to destroy the popup, because it is created to every click on Edit
+            this.$el.find("#delete-popover").on('hidden.bs.popover', function () {
+                self.onCancelDeletePlace();
+            });
+            // show the popup
+            this.$el.find("#delete-popover").popover('show');
+        },
+        /**
          * Callback to toggle a plug
          *
          * @param e JS mouse event
@@ -240,13 +268,6 @@ define([
 
                 // hide the error message
                 $("#edit-name-place-modal .text-error").hide();
-
-                // initialize the popover
-                this.$el.find("#delete-popover").popover({
-                    html: true,
-                    content: "<button type='button' class='btn btn-danger delete-place-button'>" + $.i18n.t("form.delete-button") + "</button>",
-                    placement: "bottom"
-                });
 
                 // translate the view
                 this.$el.i18n();
