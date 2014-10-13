@@ -15,13 +15,13 @@
         <% if(typeof node.fileName !== 'undefined') { %>
         <span class="default-media-choice" target-iid="<%= node.iid %>"><%= node.fileName %></span>
         <% } else { %>
-        <span class="default-media-choice" data-i18n='language.browse-media-button' target-iid="<%= node.iid %>"/>
+        <span class="default-media-choice" data-i18n='services.mediaplayer.keyboard.browse' target-iid="<%= node.iid %>"/>
         <% } %>
     </button>
     <% } %>
 
     <% if (node.methodName == "play" ) { %>
-    <span data-i18n='language.complement-media-action' />
+    <span data-i18n='services.mediaplayer.keyboard.complement' />
     <% } %>
 
     <% if (typeof node.target !== 'undefined') { %>
@@ -29,7 +29,7 @@
     <% } %>
 
     <% if (node.methodName == "setVolume" ) { %>
-    <span data-i18n='language.complement-media-action' />
+    <span data-i18n='services.mediaplayer.keyboard.complement' />
     <input type="number" min="0" max="100" class="volume-input" id="media-volume-<%=node.iid%>" value="<%=node.args[0].value%>" target-id="<%=node.iid%>"/>
     <span>%</span>
     <% } %>

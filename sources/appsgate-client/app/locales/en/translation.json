@@ -268,7 +268,7 @@
         },
         "state-label": "State",
         "status": {
-            "connected": "Connected",
+            "connected": "Paired",
             "disconnected": "Disconnected",
             "waiting": "Waiting"
         },
@@ -384,7 +384,6 @@
     "language": {
         "actions": "Actions",
         "and-when": "As soon as",
-        "browse-media-button": "Browse",
         "clock-event": "it is",
         "clock-status": "it is",
         "color" : {
@@ -397,7 +396,6 @@
             "white": "white",
             "yellow": "yellow"
         },
-        "complement-media-action": "on",
         "contact-assembled-event": "together",
         "contact-disassembled-event": "is disassembles",
         "else-keyword": "otherwise",
@@ -662,6 +660,8 @@
                "stop-media-action": "Stop"
             },
             "keyboard" : {
+				"browse": "Browse",
+				"complement" : "on",
                "pause-media-action": "Pause the media ...",
                "play-media-action": "Play ...",
                "resume-media-action": "Resume play ...",               
