@@ -21,10 +21,10 @@
 			<version>${ipojo.annotations.version}</version>
 		</dependency>
 		<dependency>
-            <artifactId>enocean-driver</artifactId>
-            <groupId>ubikit</groupId>
-            <version>1.12.0</version>
-            <scope>provided</scope>
+		    <artifactId>enocean-driver</artifactId>
+		    <groupId>ubikit</groupId>
+		    <version>1.12.1</version>
+		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>fr.imag.adele.apam</groupId>
