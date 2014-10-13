@@ -16,32 +16,9 @@
 
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
             
-            <start implementation="TraceMan" name="TraceManInst"></start>
-
             <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
             <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
-
-            <start implementation="AppsGateHUEServices" name="AppsGateHUEServicesInst"></start>
-
-            <start implementation="ARDServices" name="ARDServicesInst"></start>
-
-            <start implementation="KNXServices" name="KNXServicesInst"></start>
-
-            <start implementation="FuchsiaServices" name="FuchsiaServicesInst"></start>
-
-            <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
-
-            <start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
-
-
-            <!-- Unused
-                        <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start>
-                        <start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start>
-            -->
-
-
-            <start implementation="AppsGateDomiCubeServices" name="DomiCubeCompo"></start>
 
             <start implementation="WeatherServices" name="WeatherAdapter"></start>
 
@@ -63,41 +40,6 @@
 
 
 
-    <composite name="AppsGateUPnPMediaServices" singleton="true"
-               main="AppsgateUPnPAdapter">
-        <contentMngt>
-            <start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
-            <start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
-        </contentMngt>
-    </composite>
-
-    <composite name="AppsGateHUEServices" singleton="true"
-               main="PhilipsHUEImplFactory">
-        <contentMngt>
-            <start implementation="PhilipsHUEAdapterImpl" name="AppsgatePhilipsHUEAdapter" />
-        </contentMngt>
-    </composite>
-
-    <composite name="KNXServices" singleton="true">
-        <contentMngt>
-            <start implementation="KNXDummyImplem" name="KNXDymmyImplemInst">
-            </start>
-        </contentMngt>
-    </composite>
-
-    <composite name="FuchsiaServices" singleton="true">
-        <contentMngt>
-            <start implementation="FuchsiaSetupDummyImpl" name="FuchsiaSetupDummyImplInst" >
-            </start>
-        </contentMngt>
-    </composite>
-
-    <composite name="ARDServices" singleton="true">
-        <contentMngt>
-            <start implementation="ARDMessageGreedyListener" name="ARDMessageGreedyListenerInst" >
-            </start>
-        </contentMngt>
-    </composite>
 
     <composite name="AppsGateGoogleServices" singleton="true"
                main="AppsgateGoogleAdapterImpl">
@@ -121,29 +63,6 @@
             <start implementation="AppsGateContextDevicePorpertiesTableImpl" name="Global-DevicePropertiesTableManager" />
             <start implementation="AppsGateContextUserBaseImpl" name="Global-UserBaseManager" />
         </contentMngt>
-    </composite>
-
-    <composite name="AppsGateUbikitServices" singleton="true"
-               main="UbikitAdapterImpl">
-        <contentMngt>
-            <!-- <start implementation="UbikitAdapterImpl" name="AppsgateUbikitAdapter" /> -->
-        </contentMngt>
-    </composite>
-
-    <composite name="AppsGateWattecoServices" singleton="true"
-               main="WattecoAdapterImpl">
-        <contentMngt>
-        </contentMngt>
-    </composite>
-
-    <composite name="AppsGateSimulatedServices" singleton="true"
-               main="SimulatedAdapterImpl">
-        <contentMngt>
-        </contentMngt>
-    </composite>
-
-    <composite name="AppsGateDomiCubeServices" singleton="true">
-
     </composite>
 
 </apam>
