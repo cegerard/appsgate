@@ -36,8 +36,8 @@ define([
         this.Mediator.loadProgramJSON(this.model.get("body"), this.model.get("id"));
 
         this.listenTo(this.model, "change", this.refreshDisplay);
-        this.listenTo(devices, "change", this.refreshDisplay);
-        this.listenTo(services, "change", this.refreshDisplay);
+        this.listenTo(devices, "remove", this.refreshDisplay);
+        this.listenTo(services, "remove", this.refreshDisplay);
         this.listenTo(dispatcher, "refreshDisplay", this.refreshDisplay);
       },
       validEditName: function(e) {
@@ -64,7 +64,7 @@ define([
 
           return false;
         }
-        
+
         // name contains html code
         if (/(&|>|<)/.test($(".programNameInput").val())) {
           $(".text-danger")
@@ -76,7 +76,7 @@ define([
           return false;
         }
 
-        
+
         var currentProgramID=this.model.get("id");
         var programsWithSameName=programs.where({name: $(".programNameInput").val()}).filter(function(prog){
               return prog.id != null && prog.id!=currentProgramID;

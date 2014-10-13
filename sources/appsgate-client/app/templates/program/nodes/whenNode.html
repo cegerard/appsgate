@@ -1,6 +1,7 @@
 <div class="main-block-node" id="<%= node.iid %>">
 
     <div class="row">
+        <div class="active-node-indicator hidden" id="active-<%= node.iid %>" target-node="<%= node.iid %>"><i class="glyphicon glyphicon-arrow-right"></i></div>
         <button class="btn btn-prog btn-primary btn-then">
           <% if(node.type === "whenImp") { %>
             <span data-i18n="language.when-imp-keyword"></span>
