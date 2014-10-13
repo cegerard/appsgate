@@ -129,8 +129,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
             specificStop();
             setStarted(false);
-            setStopping(false);
             fireEndEvent(new EndEvent(this));
+            setStopping(false);
         } else {
             LOGGER.debug("Trying to stop a not started node {}", this);
         }
@@ -141,8 +141,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     abstract protected void specificStop();
 
+    
     @Override
     abstract public JSONObject call();
+
 
     @Override
     public void startEventFired(StartEvent e) {
@@ -241,6 +243,9 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     public void addEndEventListener(EndEventListener listener) {
         LOGGER.trace("ADD:  {} listen EndEvent FROM {}", listener, this);
         endEventListeners.add(listener);
+        if (endEventListeners.size() > 1) {
+            LOGGER.warn("There should not be more than one listener to a node");
+        }
         LOGGER.debug("There is {} listeners to this node", endEventListeners.size());
     }
 

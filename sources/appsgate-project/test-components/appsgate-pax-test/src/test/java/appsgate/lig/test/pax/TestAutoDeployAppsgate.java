@@ -129,7 +129,7 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 		TestUpnPAppsgate.fillUpnpBundleList(testApps);
 		
 		List<File> bundles = new ArrayList<File>();
-		bundles.add(new File(PathUtils.getBaseDir(), "bundle/enocean-driver-1.12.0.jar"));
+		bundles.add(new File(PathUtils.getBaseDir(), "bundle/enocean-driver-1.12.1.jar"));
 		bundles.add(new File(PathUtils.getBaseDir(), "bundle/rxtx4osgi-1.0.3.jar"));
 		bundles.add(new File(PathUtils.getBaseDir(), "bundle/ubikit-1.11.0.jar"));
 		
