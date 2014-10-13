@@ -32,11 +32,6 @@ import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
 import appsgate.lig.ehmi.impl.listeners.ObjectEventListener;
 import appsgate.lig.ehmi.impl.listeners.ObjectUpdateListener;
 import appsgate.lig.ehmi.impl.listeners.TimeObserver;
-import appsgate.lig.ehmi.impl.upnp.AppsGateServerDevice;
-import appsgate.lig.ehmi.impl.upnp.ServerInfoService;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerIP;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerURL;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
@@ -126,11 +121,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	private final BundleContext context;
 
-	private final AppsGateServerDevice upnpDevice;
-	private ServerInfoService upnpService;
-	private StateVariableServerIP serverIP;
-	private StateVariableServerURL serverURL;
-	private StateVariableServerWebsocket serverWebsocket;
 
 	private SchedulerSpec schedulerService;
 
@@ -177,30 +167,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		this.commandListener = new EHMICommandListener(this);
 		this.objectEventsListener = new ObjectEventListener(this);
 		this.objectUpdatesListener = new ObjectUpdateListener(this);
-		this.upnpDevice = new AppsGateServerDevice(context);
 		logger.debug("UPnP Device instanciated");
-		registerUpnpDevice();
 		retrieveLocalAdress();
 		logger.info("EHMI instanciated");
-	}
-
-	/**
-	 * Method that register the Upnp service.
-	 */
-	private void registerUpnpDevice() {
-		Dictionary<String, Object> dict = upnpDevice.getDescriptions(null);
-		ServiceRegistration serviceRegistration = context.registerService(
-				UPnPDevice.class.getName(), upnpDevice, dict);
-		logger.debug("UPnP Device registered");
-
-		upnpService = (ServerInfoService) upnpDevice
-				.getService(ServerInfoService.SERVICE_ID);
-		serverIP = (StateVariableServerIP) upnpService
-				.getStateVariable(StateVariableServerIP.VAR_NAME);
-		serverURL = (StateVariableServerURL) upnpService
-				.getStateVariable(StateVariableServerURL.VAR_NAME);
-		serverWebsocket = (StateVariableServerWebsocket) upnpService
-				.getStateVariable(StateVariableServerWebsocket.VAR_NAME);
 	}
 
 	/**
@@ -929,17 +898,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				}
 			}
 
-			serverIP.setStringValue(localAddress.getHostAddress());
-			logger.debug("State Variable name : " + serverIP.getName()
-					+ ", value : " + serverIP.getCurrentStringValue());
-			serverURL.setStringValue("http://"
-					+ serverIP.getCurrentStringValue() + "/index.html");
-			logger.debug("State Variable name : " + serverURL.getName()
-					+ ", value : " + serverURL.getCurrentStringValue());
-			serverWebsocket.setStringValue("http://"
-					+ serverIP.getCurrentStringValue() + ":" + wsPort + "/");
-			logger.debug("State Variable name : " + serverWebsocket.getName()
-					+ ", value : " + serverWebsocket.getCurrentStringValue());
 
 		} catch (UnknownHostException e) {
 			logger.debug("Unknown host: {}", e.getMessage());
