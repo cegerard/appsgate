@@ -171,7 +171,7 @@
                     <% } else { %>
                     <span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                     <% } %>
-                            <% if(s.get("consumption")=="-1") { %>
+                            <% if(s.get("consumption")==="-1") { %>
                             <span class="label-value">--- W</span>
                             <% } else { %>
                             <span class="label-value"><%= s.get("consumption") %> W</span>
@@ -318,7 +318,7 @@
                     <span class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                     <% } %>
 
-                        <% if(s.get("consumption")=="-1") { %>
+                        <% if(s.get("consumption")==="-1") { %>
                         <span class="label-value">--- W</span>
                         <% } else { %>
                         <span class="label-value"><%= s.get("consumption") %> W</span>

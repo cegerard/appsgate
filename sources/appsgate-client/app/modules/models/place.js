@@ -57,7 +57,13 @@ define([
                 if (typeof s.get("value") !== "undefined") {
                     total += s.get("value");
                 } else {
-                    total += s.get("consumption");
+
+                    conso=s.get("consumption");
+
+                    if(parseInt(conso)>0){
+                        total += parseInt(s.get("consumption"));
+                    }
+
                 }
             });
 
@@ -77,16 +83,35 @@ define([
 
             // compute the average value of the sensors
             var total = 0;
+            var invalidValue = 0;
+
             sensors.forEach(function(s) {
-                console.log("Getting total consumption value:"+s.get("value")+" consumption:"+s.get("consumption"));
+                console.log("Getting total consumption value:"+s.get("value")+" consumption:"+s.get("consumption")+" typeof "+typeof s.get("value"));
                 if (typeof s.get("value") !== "undefined") {
                     console.log("summing "+total+" and "+s.get("value"));
                     total += parseInt(s.get("value"));
                 } else {
                     console.log("summing "+total+" and "+s.get("consumption"));
-                    total += parseInt(s.get("consumption"));
+
+                    conso=s.get("consumption");
+
+                    console.log("consumption:"+conso);
+
+                    if(parseInt(conso)>=0){
+                        total += parseInt(s.get("consumption"));
+                    }else {
+                        invalidValue+=1;
+                    }
+
                 }
             });
+
+            /**
+             * Case all sensors DO NOT provide valid values, -1 is returned
+             */
+            if(sensors.length==invalidValue){
+                return "---";
+            }
 
             return total;
         },
