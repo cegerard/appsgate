@@ -383,7 +383,6 @@
     "language": {
         "actions": "Actions",
         "and-when": "Dès que",
-        "browse-media-button": "Parcourir",
 		"color" : {
 			"blue": "bleu",
 			"green": "vert",
@@ -660,6 +659,8 @@
 				"stop-media-action": "Stopper"
             },
             "keyboard" : {
+				"browse": "Parcourir",
+				"complement" : "sur",
 			    "pause-media-action": "Mettre en pause le media ...",
 				"play-media-action": "Jouer ...",
 				"resume-media-action": "Reprendre la lecture de ...",				
