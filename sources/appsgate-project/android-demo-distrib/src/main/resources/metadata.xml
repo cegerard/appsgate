@@ -3,6 +3,7 @@
       xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
+    <apam-instance implementation="AppsGate-Android-Application" name="demo-android"></apam-instance>
     <composite name="AppsGate-Android-Application" singleton="true">
         <contentMngt>
             
@@ -21,10 +22,7 @@
             <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 
             <start implementation="WeatherServices" name="WeatherAdapter"></start>
-
-
         </contentMngt>
-
     </composite>
 
     <composite name="WeatherServices" singleton="true">
@@ -36,10 +34,6 @@
             <start implementation="WeatherObserverFactory" name="WeatherObserverFactoryInst"/>
         </contentMngt>
     </composite>
-
-
-
-
 
     <composite name="AppsGateGoogleServices" singleton="true"
                main="AppsgateGoogleAdapterImpl">
