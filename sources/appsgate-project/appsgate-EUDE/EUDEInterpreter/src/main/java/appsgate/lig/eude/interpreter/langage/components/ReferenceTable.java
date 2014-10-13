@@ -92,7 +92,7 @@ public class ReferenceTable {
      */
     public void addProgram(String programId) {
         if (programId.equalsIgnoreCase(myProgId)) {
-            LOGGER.debug("Trying to self reference the program");
+            LOGGER.debug("The program is self referenced (do not need to add it in the reference table.");
             return;
         }
         programs.put(programId, STATUS.UNKNOWN);

@@ -99,6 +99,9 @@ public class NodeSetOfRules extends Node implements INodeSet {
     @Override
     public void endEventFired(EndEvent e) {
         Node source = (Node) e.getSource();
+        if (isStopping()) {
+            return;
+        }
         if (source instanceof INodeRule) {
             LOGGER.debug("A rule has ended, it will restart automatically");
             source.addEndEventListener(this);
@@ -112,7 +115,7 @@ public class NodeSetOfRules extends Node implements INodeSet {
             LOGGER.trace("Another rule has ended");
         } else {
             LOGGER.debug("###### All rules of the set have ended...");
-            setStarted(false);
+//            setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
     }
