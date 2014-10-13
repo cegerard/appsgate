@@ -140,6 +140,7 @@ define([
           * Callback when the user has clicked on the button delete.
           */
         onClickDeleteWeather : function(e) {
+            e.preventDefault();
             console.log("click delete");
             var self = this;
             // create the popover
@@ -162,6 +163,7 @@ define([
          *
          */
         openMeteo: function(e) {
+            e.preventDefault();
             var actuator = services.get($(e.currentTarget).attr("id"));
             window.open(actuator.attributes.presentationURL);
         }
