@@ -60,7 +60,7 @@
   <div class="panel panel-default">
     <div class="list-group">
       <%services.getServicesByType()[type].forEach(function(s) { %>
-        <a class="list-group-item">
+        <a href="#services/<%= s.get('id') %>" class="list-group-item">
           <% if (s.get("name") !== "") { %>
             <%= s.get("name") %>
           <% } else { %>

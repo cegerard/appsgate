@@ -39,7 +39,7 @@ define([
          *return the list of available actions
          */
         getActions: function() {
-            return ["play", "pause", "stop", "setVolume"];
+            return ["play", "pause", "resume", "stop", "setVolume"];
         },
         /**
          * return the keyboard code for a given action
@@ -55,6 +55,12 @@ define([
                     v.phrase = "services.mediaplayer.language.play-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
+                case "resume":
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.resume-media-action'/>");
+                    v.methodName = "resume";
+                    v.phrase = "services.mediaplayer.language.resume-media-action";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;                    
                 case "pause":
                     $(btn).append("<span data-i18n='services.mediaplayer.keyboard.pause-media-action'/>");
                     v.methodName = "pause";
@@ -88,16 +94,18 @@ define([
         sendPlay: function() {
             var selectedMedia = $("#selectedMedia");
             var url = selectedMedia.attr("url");
+            var title = selectedMedia.attr("title");
+
             if (typeof url !== 'undefined') {
-                console.log("sending play with " + url);
-                this.remoteControl("play", [{"type": "String", "value": url}], this.id);
+                console.log("sending play with url : " + url + ", and title : " + title);
+                this.remoteControl("play", [{"type": "String", "value": url},{"type": "String", "value": title}], this.id);
             }
         },
         /**
          * Send a message to the backend to play the current media
          */
         sendResume: function() {
-            this.remoteControl("play", [], this.id);
+            this.remoteControl("resume", [], this.id);
         },
         /**
          * Send a message to the backend to pause the current media
