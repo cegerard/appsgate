@@ -542,7 +542,8 @@
         },
         "no-plugs": "No plugs",
         "place-no-name": "Item unnamed",
-        "undefined": "Undefined"
+        "undefined": "Undefined",
+        "warning-place-delete": "Do you really want to delete this place ?"
     },
     "places-menu": {
         "add-button": "Add item",
@@ -734,7 +735,8 @@
                 "weather-max-at": "the maximum temperature expected for",
                 "weather-min-at": "the minimum temperature expected for"
             },
-			"weblink" : "See meteo"
+			"weblink" : "See meteo",
+            "warning-weather-delete": "Do you really want to delete this meteo place ?"
         }
     }
 }
