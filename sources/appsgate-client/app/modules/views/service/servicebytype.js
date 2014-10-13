@@ -63,12 +63,6 @@ define([
                     type: this.id,
                     places: places
                 }));
-//                this.$(".delete-popover").popover({
-//                    html: true,
-//                    content: "<button type='button' class='btn btn-danger delete-meteo-button'>" + $.i18n.t("form.delete-button") + "</button>",
-//                    placement: "bottom"
-//                });
-
 
                 // translate the view
                 this.$el.i18n();
@@ -132,7 +126,6 @@ define([
           * Callback when the user has clicked on the button to cancel the deleting or click out of the popover.
           */
         onCancelDeleteWeather : function() {
-            console.log("cancel");
             // destroy the popover
             this.$el.find(".delete-popover").popover('destroy');
         },
@@ -141,7 +134,6 @@ define([
           */
         onClickDeleteWeather : function(e) {
             e.preventDefault();
-            console.log("click delete");
             var self = this;
             // create the popover
             var weatherObserverID = $(e.currentTarget).parents(".pull-right").children(".delete-popover").attr("id");
@@ -155,7 +147,6 @@ define([
             this.$el.find("#" + weatherObserverID).on('hidden.bs.popover', function () {
                 self.onCancelDeleteWeather();
             });
-            console.log("show");
             // show the popup
             this.$el.find("#" + weatherObserverID).popover('show');
         },

@@ -268,7 +268,7 @@
         },
         "state-label": "State",
         "status": {
-            "connected": "Connected",
+            "connected": "Paired",
             "disconnected": "Disconnected",
             "waiting": "Waiting"
         },

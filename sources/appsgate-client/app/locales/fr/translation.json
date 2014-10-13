@@ -267,7 +267,7 @@
         },
         "state-label": "Etat",
         "status": {
-            "connected": "Connecté",
+            "connected": "Appairé(e)",
             "disconnected": "Déconnecté",
             "waiting": "En attente"
         },
