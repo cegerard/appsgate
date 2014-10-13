@@ -1,0 +1,149 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+    <composite name="AppsGate-Android-Application" singleton="true">
+        <contentMngt>
+            
+            <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
+            
+            <start  implementation="EHMIProxyImpl" name="EHMIProxyImplInst" ></start>
+            
+            <start  implementation="CHMIProxyImpl" name="CHMIProxyImplInst" ></start>
+            
+            <start  implementation="EUDEInterpreter" name="EUDEInterpreterInst" ></start>
+
+            <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
+            
+            <start implementation="TraceMan" name="TraceManInst"></start>
+
+            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
+
+            <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
+
+            <start implementation="AppsGateHUEServices" name="AppsGateHUEServicesInst"></start>
+
+            <start implementation="ARDServices" name="ARDServicesInst"></start>
+
+            <start implementation="KNXServices" name="KNXServicesInst"></start>
+
+            <start implementation="FuchsiaServices" name="FuchsiaServicesInst"></start>
+
+            <start implementation="AppsGateUPnPMediaServices" name="UPnPMediaAdapter"></start>
+
+            <start implementation="AppsGateUbikitServices" name="UbikitAdapter"></start>
+
+
+            <!-- Unused
+                        <start implementation="AppsGateWattecoServices" name="WattecoAdapter"></start>
+                        <start implementation="AppsGateSimulatedServices" name="SimulationAdapter"></start>
+            -->
+
+
+            <start implementation="AppsGateDomiCubeServices" name="DomiCubeCompo"></start>
+
+            <start implementation="WeatherServices" name="WeatherAdapter"></start>
+
+
+        </contentMngt>
+
+    </composite>
+
+    <composite name="WeatherServices" singleton="true">
+        <contentMngt>
+
+            <start implementation="YahooWeatherImpl" name="YahooWeather">
+            </start>
+
+            <start implementation="WeatherObserverFactory" name="WeatherObserverFactoryInst"/>
+        </contentMngt>
+    </composite>
+
+
+
+
+    <composite name="AppsGateUPnPMediaServices" singleton="true"
+               main="AppsgateUPnPAdapter">
+        <contentMngt>
+            <start implementation="MediaPlayerFactory" name="Global-MediaPlayerFactory"></start>
+            <start implementation="MediaBrowserFactory" name="Global-MediaBrowserFactory"></start>
+        </contentMngt>
+    </composite>
+
+    <composite name="AppsGateHUEServices" singleton="true"
+               main="PhilipsHUEImplFactory">
+        <contentMngt>
+            <start implementation="PhilipsHUEAdapterImpl" name="AppsgatePhilipsHUEAdapter" />
+        </contentMngt>
+    </composite>
+
+    <composite name="KNXServices" singleton="true">
+        <contentMngt>
+            <start implementation="KNXDummyImplem" name="KNXDymmyImplemInst">
+            </start>
+        </contentMngt>
+    </composite>
+
+    <composite name="FuchsiaServices" singleton="true">
+        <contentMngt>
+            <start implementation="FuchsiaSetupDummyImpl" name="FuchsiaSetupDummyImplInst" >
+            </start>
+        </contentMngt>
+    </composite>
+
+    <composite name="ARDServices" singleton="true">
+        <contentMngt>
+            <start implementation="ARDMessageGreedyListener" name="ARDMessageGreedyListenerInst" >
+            </start>
+        </contentMngt>
+    </composite>
+
+    <composite name="AppsGateGoogleServices" singleton="true"
+               main="AppsgateGoogleAdapterImpl">
+        <contentMngt>
+            <!-- <start implementation="GoogleCalendarImpl" name="GoogleCalendarInst"></start> -->
+            <start implementation="GoogleScheduler" name="GoogleSchedulerInst">
+                </start>
+            <start implementation="MailAdapter" name="MailAdapterInst">
+
+            </start>
+
+        </contentMngt>
+    </composite>
+
+    <composite name="AppsGatePersistency" singleton="true">
+        <contentMngt>
+            <start implementation="MongoDBConfigFactory" name="Global-MongoDBConfigFactory" />
+            <start implementation="PropertyHistoryManagerMongoImpl" name="Global-PropertyHistoryManager" />
+            <start implementation="ContextHistoryMongoImpl" name="Global-ContextHistoryManager" />
+            <start implementation="PlaceManagerImpl" name="Global-PlaceManager" />
+            <start implementation="AppsGateContextDevicePorpertiesTableImpl" name="Global-DevicePropertiesTableManager" />
+            <start implementation="AppsGateContextUserBaseImpl" name="Global-UserBaseManager" />
+        </contentMngt>
+    </composite>
+
+    <composite name="AppsGateUbikitServices" singleton="true"
+               main="UbikitAdapterImpl">
+        <contentMngt>
+            <!-- <start implementation="UbikitAdapterImpl" name="AppsgateUbikitAdapter" /> -->
+        </contentMngt>
+    </composite>
+
+    <composite name="AppsGateWattecoServices" singleton="true"
+               main="WattecoAdapterImpl">
+        <contentMngt>
+        </contentMngt>
+    </composite>
+
+    <composite name="AppsGateSimulatedServices" singleton="true"
+               main="SimulatedAdapterImpl">
+        <contentMngt>
+        </contentMngt>
+    </composite>
+
+    <composite name="AppsGateDomiCubeServices" singleton="true">
+
+    </composite>
+
+</apam>
