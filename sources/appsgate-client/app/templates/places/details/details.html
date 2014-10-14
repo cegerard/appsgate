@@ -6,7 +6,7 @@
 	<% } %>
 	<% if (place.get("id") !== "-1") { %>
 		<div class="pull-right">
-			<button id="delete-popover" class="btn btn-default" rel="popover">
+			<button id="delete-popover" class="btn btn-default delete-popover-button" rel="popover" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="form.delete-button"></span>
 			</button>
 			<button type="button" data-target="#edit-name-place-modal" data-toggle="modal" class="btn btn-default">
@@ -104,8 +104,8 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<% if (place.getIlluminationSensors().length === 1) { %>
-				<span data-i18n="devices.illumination.name.singular"></<span>
+            <% if (place.getIlluminationSensors().length === 1) { %>
+				<span data-i18n="devices.illumination.name.singular"></span>
 			<% } else { %>
 				<span data-i18n="devices.illumination.name.plural"></span>
 			<% } %>

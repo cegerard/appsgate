@@ -69,7 +69,7 @@
           <%if (type === "103") { %>
         <div class="pull-right">
             <% if (services.getServicesByType()[type].length > 1) { %>
-			<button type="button" class="btn btn-default delete-popover" rel="popover" id="<%= s.get('id') %>">
+			<button type="button" class="btn btn-default delete-popover" rel="popover" id="<%= s.get('id') %>" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="form.delete-button"></span>
 			</button>
             <%}%>

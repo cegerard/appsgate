@@ -267,7 +267,7 @@
         },
         "state-label": "Etat",
         "status": {
-            "connected": "Connecté",
+            "connected": "Appairé(e)",
             "disconnected": "Déconnecté",
             "waiting": "En attente"
         },
@@ -383,7 +383,6 @@
     "language": {
         "actions": "Actions",
         "and-when": "Dès que",
-        "browse-media-button": "Parcourir",
 		"color" : {
 			"blue": "bleu",
 			"green": "vert",
@@ -540,7 +539,8 @@
         },
         "no-plugs": "Pas de prise",
         "place-no-name": "Lieu de vie sans nom",
-        "undefined": "Non défini"
+        "undefined": "Non défini",
+        "warning-place-delete": "Voulez-vous vraiment supprimer ce lieu de vie ?"
     },
     "places-menu": {
         "add-button": "Ajouter lieu de vie",
@@ -659,6 +659,8 @@
 				"stop-media-action": "Stopper"
             },
             "keyboard" : {
+				"browse": "Parcourir",
+				"complement" : "sur",
 			    "pause-media-action": "Mettre en pause le media ...",
 				"play-media-action": "Jouer ...",
 				"resume-media-action": "Reprendre la lecture de ...",				
@@ -734,7 +736,8 @@
 				"weather-max-at": "la température maximale prévue à",
 				"weather-min-at": "la température minimale prévue à"
 			},
-			"weblink" : "Voir météo"
+			"weblink" : "Voir météo",
+            "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
 
         }
     }

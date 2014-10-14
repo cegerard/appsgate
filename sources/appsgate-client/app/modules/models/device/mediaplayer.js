@@ -94,16 +94,18 @@ define([
         sendPlay: function() {
             var selectedMedia = $("#selectedMedia");
             var url = selectedMedia.attr("url");
+            var title = selectedMedia.attr("title");
+
             if (typeof url !== 'undefined') {
-                console.log("sending play with " + url);
-                this.remoteControl("play", [{"type": "String", "value": url}], this.id);
+                console.log("sending play with url : " + url + ", and title : " + title);
+                this.remoteControl("play", [{"type": "String", "value": url},{"type": "String", "value": title}], this.id);
             }
         },
         /**
          * Send a message to the backend to play the current media
          */
         sendResume: function() {
-            this.remoteControl("play", [], this.id);
+            this.remoteControl("resume", [], this.id);
         },
         /**
          * Send a message to the backend to pause the current media
