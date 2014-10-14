@@ -8,10 +8,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -139,7 +137,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 				+", String sender : "+sender
 				+", String message : "+message
 				+")");
-		Map<String,String> urlParameters = new HashMap<String, String>();
+		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_NOTIFY);
 		urlParameters.put(SENDER_PARAM_NAME, sender);
 		urlParameters.put(MESSAGE_PARAM_NAME, message);
@@ -150,7 +148,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	@Override
 	public void channelUp(int id) {
 		logger.trace("channelUp(int id : "+id+")");
-		Map<String,String> urlParameters = new HashMap<String, String>();
+		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_CHANNELUP);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
 		sendHttpGet(serviceUrl, null, urlParameters);
@@ -159,7 +157,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	@Override
 	public void channelDown(int id) {
 		logger.trace("channelDown(int id : "+id+")");
-		Map<String,String> urlParameters = new HashMap<String, String>();
+		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_CHANNELDOWN);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
 		sendHttpGet(serviceUrl, null, urlParameters);
@@ -168,7 +166,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	@Override
 	public void resume(int id) {
 		logger.trace("resume(int id : "+id+")");
-		Map<String,String> urlParameters = new HashMap<String, String>();
+		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RESUME);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
 		sendHttpGet(serviceUrl, null, urlParameters);
@@ -177,7 +175,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	@Override
 	public void stop(int id) {
 		logger.trace("stop(int id : "+id+")");
-		Map<String,String> urlParameters = new HashMap<String, String>();
+		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_STOP);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
 		sendHttpGet(serviceUrl, null, urlParameters);
@@ -186,7 +184,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	@Override
 	public void pause(int id) {
 		logger.trace("pause(int id : "+id+")");
-		Map<String,String> urlParameters = new HashMap<String, String>();
+		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_PAUSE);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
 		sendHttpGet(serviceUrl, null, urlParameters);
@@ -200,7 +198,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 				+", int width : "+width
 				+", int height : "+height
 				+")");
-		Map<String,String> urlParameters = new HashMap<String, String>();
+		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RESIZE);
 		urlParameters.put(SCREEN_PARAM_NAME,
 				String.valueOf(x)+COMMA_SEPARATOR
@@ -274,7 +272,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 			
 			logger.debug("httpRequest(URL url: " + url + ", ...)");
 			HttpURLConnection httpConnection = null;
-			httpConnection = (HttpsURLConnection) new URL(url).openConnection();
+			httpConnection = (HttpURLConnection) new URL(url).openConnection();
 			logger.debug("httpRequest(...), url connection opened successfully");
 
 			httpConnection.setRequestMethod(Method);
