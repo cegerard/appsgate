@@ -58,7 +58,7 @@ public class FuchsiaSetup {
          */
 
         Instance knxImporter = instance()
-                .of("org.ow2.chameleon.fuchsia.importer.knx.KNXDeviceLightImporter")
+                .of("org.ow2.chameleon.fuchsia.importer.knx.KNXDeviceImporter")
                 .with("target").setto("(&(discovery.knx.device.addr=*)(!(discovery.knx.device.object=*)))");
 
         Instance knxLinker = instance()
