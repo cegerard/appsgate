@@ -14,7 +14,6 @@ import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
 import fr.imag.adele.apam.Instance;
 import fr.imag.adele.apam.impl.ComponentBrokerImpl;
-import fr.imag.adele.apam.util.Util;
 import appsgate.lig.tv.spec.TVFactory;
 
 /**
@@ -32,8 +31,8 @@ public class PaceTVFactoryImpl implements TVFactory{
 	public final static String DEFAULT_HOSTNAME = "localhost";
 	public final static int DEFAULT_HTTPPORT = 80;
 	
-	public String hostname;
-	public int port;
+	String hostname;
+	int port;
 	
 
 	private static Logger logger = LoggerFactory

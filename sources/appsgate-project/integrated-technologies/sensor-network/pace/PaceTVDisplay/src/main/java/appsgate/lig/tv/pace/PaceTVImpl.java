@@ -3,8 +3,20 @@
  */
 package appsgate.lig.tv.pace;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import appsgate.lig.core.object.messages.CoreNotificationMsg;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -19,6 +31,8 @@ import appsgate.lig.tv.spec.TVFactory;
  */
 public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreObjectSpec{
 	
+	static Logger logger = LoggerFactory.getLogger(PaceTVImpl.class);
+
 	/*
 	 * Object information
 	 */
@@ -27,8 +41,11 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	private String status;
 	private String pictureId;	
 	
+	public final static String IMPL_NAME = "PaceTVImpl";
+	
 
 	public PaceTVImpl() {
+		serviceUrl = PROTOCOL+DEFAULT_HOSTNAME+PORT_SEPARATOR+DEFAULT_HTTPPORT+VIDEO_SERVICE;
 	}
 	
 	@Override
@@ -72,12 +89,21 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		return CORE_TYPE.DEVICE;
 	}
 	
+	public final static String DEFAULT_HOSTNAME = "localhost";
+	public final static int DEFAULT_HTTPPORT = 80;
+	String hostname;
+	int port;
+	TVFactory factory;
+	String serviceUrl;
 	
-	
+	public static final String DEFAULT_ENCODING = "UTF-8";	
+	final static String PROTOCOL = "http://";
+	final static String PORT_SEPARATOR = ":";
+
 	/**
 	 * WebService Name
 	 */
-	final static String VIDEO_SERVICE = "video?";
+	final static String VIDEO_SERVICE = "/video?";
 	
 	/**
 	 * TV Web service command, first parameter of the REST Command
@@ -98,6 +124,10 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	final static String COMMAND_NOTIFY = "notify";
 	
 	final static String COMMA_SEPARATOR = ",";
+	
+	public static final String GET = "GET";
+	public static final int RESP_200 = 200;
+	
 
 	public NotificationMsg fireNotificationMessage(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this);
@@ -105,51 +135,159 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 
 	@Override
 	public void notify(int id, String sender, String message) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("notify(int id : "+id
+				+", String sender : "+sender
+				+", String message : "+message
+				+")");
+		Map<String,String> urlParameters = new HashMap<String, String>();
+		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_NOTIFY);
+		urlParameters.put(SENDER_PARAM_NAME, sender);
+		urlParameters.put(MESSAGE_PARAM_NAME, message);
+		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
+		sendHttpGet(serviceUrl, null, urlParameters);
 	}
 
 	@Override
 	public void channelUp(int id) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("channelUp(int id : "+id+")");
+		Map<String,String> urlParameters = new HashMap<String, String>();
+		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_CHANNELUP);
+		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
+		sendHttpGet(serviceUrl, null, urlParameters);
 	}
 
 	@Override
 	public void channelDown(int id) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("channelDown(int id : "+id+")");
+		Map<String,String> urlParameters = new HashMap<String, String>();
+		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_CHANNELDOWN);
+		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
+		sendHttpGet(serviceUrl, null, urlParameters);
 	}
 
 	@Override
 	public void resume(int id) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("resume(int id : "+id+")");
+		Map<String,String> urlParameters = new HashMap<String, String>();
+		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RESUME);
+		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
+		sendHttpGet(serviceUrl, null, urlParameters);
 	}
 
 	@Override
 	public void stop(int id) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("stop(int id : "+id+")");
+		Map<String,String> urlParameters = new HashMap<String, String>();
+		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_STOP);
+		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
+		sendHttpGet(serviceUrl, null, urlParameters);
 	}
 
 	@Override
 	public void pause(int id) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("pause(int id : "+id+")");
+		Map<String,String> urlParameters = new HashMap<String, String>();
+		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_PAUSE);
+		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
+		sendHttpGet(serviceUrl, null, urlParameters);
 	}
 
 	@Override
 	public void resize(int id, int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
-		
+		logger.trace("resize(int id : "+id
+				+", int x : "+x
+				+", int y : "+y
+				+", int width : "+width
+				+", int height : "+height
+				+")");
+		Map<String,String> urlParameters = new HashMap<String, String>();
+		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RESIZE);
+		urlParameters.put(SCREEN_PARAM_NAME,
+				String.valueOf(x)+COMMA_SEPARATOR
+				+String.valueOf(y)+COMMA_SEPARATOR
+				+String.valueOf(width)+COMMA_SEPARATOR
+				+String.valueOf(height)				
+				);
+		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
+		sendHttpGet(serviceUrl, null, urlParameters);		
 	}
 
 	@Override
 	public void setConfiguration(String hostname, int port, TVFactory factory) {
-		// TODO Auto-generated method stub
-		
+		this.hostname = hostname;
+		this.port = port;
+		this.factory = factory;
+		serviceUrl = PROTOCOL+hostname+PORT_SEPARATOR+port+VIDEO_SERVICE;
 	}
 	
+	
+	/**
+	 * Send an http GET to a REST webservice,
+	 * @param url is a valid URL of a REST service using http protocol
+	 * @param requestProperties additional parameters name=value to send in the request
+	 * @param urlParameters parameters to add in the URL (those will be re-encoded)
+	 * @return the response if the connection with the webservice was successfull
+	 */
+	public static String sendHttpGet(String url, 
+			Map<String,String> requestProperties, Map<String,String> urlParameters)  {
+
+		try {
+			HttpURLConnection httpConnection = httpRequest(url, requestProperties, GET, urlParameters);
+
+			logger.debug("\nSending 'GET' request to URL : " + url);
+			int responseCode = httpConnection.getResponseCode();
+			logger.debug("Response Code : " + responseCode);
+			if(responseCode != RESP_200) {
+				logger.warn("HTPP Response not 200 OK, returning null. Response was : "+responseCode);
+				return null;
+			}
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(httpConnection.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+			logger.debug("sendHttpGet(...) successfull, returning "+response);
+			return response.toString();
+		} catch (Exception exc) {
+			logger.error("Exception occured during http get : "+exc.getMessage());
+			return null;
+		}
+	}	
+	
+	/**
+	 * Helper method to build an HTTP Connection
+	 */
+	private static HttpURLConnection httpRequest(String url, 
+			Map<String,String> requestProperties, String Method, Map<String,String> urlParameters ) {
+		try {
+			
+			if(urlParameters != null && urlParameters.size()>0) {
+				for (String key:urlParameters.keySet()) {
+					url+=key+URLEncoder.encode(urlParameters.get(key),DEFAULT_ENCODING);
+				}
+			}
+			
+			logger.debug("httpRequest(URL url: " + url + ", ...)");
+			HttpURLConnection httpConnection = null;
+			httpConnection = (HttpsURLConnection) new URL(url).openConnection();
+			logger.debug("httpRequest(...), url connection opened successfully");
+
+			httpConnection.setRequestMethod(Method);
+			if(requestProperties!= null) {
+				for(String key:requestProperties.keySet()) {
+					httpConnection.addRequestProperty(key, requestProperties.get(key));
+				}
+			}
+			return httpConnection;
+		}catch (Exception exc) {
+			logger.error("Exception occured during creation of http connection : "+exc.getMessage());
+			return null;
+		}
+	}
 
 }
