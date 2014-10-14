@@ -142,17 +142,6 @@ body {
   background: #ffff00;
 }
 
-.progress-indicator-group {
-  background-color: greenyellow;
-  border-radius: 1000px;
-  border: 1px solid black;
-  width:30px;
-  height:20px;
-}
-
-.progress-indicator {
-}
-
 .label-yellow{
   background: #ffff00;
   color:black;
@@ -372,6 +361,7 @@ body {
 
 .editorWorkspace {
   border:0;
+  position:relative;
 }
 
 .programInput {
@@ -546,9 +536,9 @@ font-size: smaller;
 
 .seq-block-node>h2 {
    margin: -10px 0px 0 20px ;
-   
+
 }
- 
+
 .seq-block-node>h2>span {
    background-color: white;
    padding: 2px;
@@ -686,7 +676,7 @@ font-size: smaller;
 .valid-disabled.disabled {
   opacity: 0.5;
   background-color: #85BAE7;
-  border-color: #85BAE7;   
+  border-color: #85BAE7;
 }
 
 /* --------------------- Debugger styles ----------------------------------*/
@@ -697,11 +687,27 @@ font-size: smaller;
     width: 960px;
 }
 
-<<<<<<< HEAD
 .debugger .container {
    padding: 0px;
 }
-.ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}  
-=======
-.ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}  
->>>>>>> 8723575caa6c55cf149c1b70c9a916c8baad0c06
+.ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}
+
+.active-node-indicator {
+  width:100%;
+  position:absolute;
+  background-color:#5bc0de;
+  opacity:0.3;
+  height:32px;
+}
+
+.progress-indicator-group {
+  background-color: greenyellow;
+  border-radius: 1000px;
+  border: 1px solid black;
+  width:auto;
+  height:20px;
+}
+
+.progress-indicator {
+  padding:1px;
+}
