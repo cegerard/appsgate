@@ -14,6 +14,8 @@
             <start  implementation="CHMIProxyImpl" name="CHMIProxyImplInst" ></start>
             
             <start  implementation="EUDEInterpreter" name="EUDEInterpreterInst" ></start>
+            
+            <start implementation="PaceTV" name="PaceTVInst"></start>
 
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
             
@@ -47,7 +49,14 @@
 
         </contentMngt>
     </composite>
+    
+    <composite name="PaceTV" singleton="true"
+               main="PaceTVFactoryImpl">
+        <contentMngt>
 
+        </contentMngt>
+    </composite>
+    
     <composite name="AppsGatePersistency" singleton="true">
         <contentMngt>
             <start implementation="MongoDBConfigFactory" name="Global-MongoDBConfigFactory" />

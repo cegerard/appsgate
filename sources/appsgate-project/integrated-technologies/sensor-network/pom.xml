@@ -19,5 +19,6 @@
 		<module>watteco</module>
 		<module>simulation</module>
         <module>ard</module>
+        <module>pace</module>
 	</modules>
 </project>

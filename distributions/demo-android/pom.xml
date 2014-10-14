@@ -294,7 +294,17 @@
 									<artifactId>android-demo-distrib</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
-
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreTVSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                             
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>PaceTVDisplay</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                             
+                                
 
 								<artifactItem>
 									<groupId>appsgate.components</groupId>

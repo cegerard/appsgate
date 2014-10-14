@@ -1,0 +1,26 @@
+<apam xmlns="fr.imag.adele.apam" xmlns:ipojo="org.apache.felix.ipojo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="fr.imag.adele.apam http://repository-apam.forge.cloudbees.com/release/schema/ApamCore.xsd
+                          org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
+
+    <implementation name="PaceTVImpl" specification="CoreTVSpec"
+                    classname="appsgate.lig.tv.pace.PaceTVImpl"
+                    push="fireNotificationMessage">
+
+        <!-- device kernel meta data -->
+        <definition name="serviceId" type="string"
+                    field="serviceId" />
+
+        <!-- device client meta data -->
+        <definition name="pictureId" type="string" field="pictureId" />
+        <definition name="userType" type="string" default="124"
+                    field="userType" />
+        <definition name="status" type="string" default="2" field="status"/>
+
+    </implementation>
+    
+    <implementation name="PaceTVFactoryImpl" classname="appsgate.lig.tv.pace.PaceTVFactoryImpl">
+        <callback onInit="start" />
+    </implementation>
+
+</apam>
