@@ -20,7 +20,8 @@ public interface TVFactory {
 	/**
 	 * Destroy an existing TV instance 
 	 * @param serviceId of the corresponding instance (ObjectID of the AppsGate service)
+	 * if null, it will remove all TV services
 	 */
-	public void destroyTVInstance(String serviceId);
+	public void removeTVInstance(String serviceId);
 	
 }
