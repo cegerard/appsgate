@@ -533,7 +533,7 @@
         },
         "header": {
             "consumption-label": "Consommation",
-            "device-number-title": "Nombre d'équipements",
+            "device-number-title": "Nombre total d'équipements dans le lieu de vie",
             "illumination-label": "Luminosité",
             "temperature-label": "Température"
         },
