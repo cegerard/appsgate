@@ -161,7 +161,6 @@ define([
         _.defer(function() {
           input = self.applyReadMode(input);
           $(".programInput").html(input).addClass("read-only");
-          self.updateProgressIndicators();
           $(".secondary-block-node").addClass("hidden");
           if($(".input-spot").next().find(".btn-and").length > 0 || $(".input-spot").next().find(".btn-then").length > 0){
             $(".input-spot").next()[0].remove();
@@ -197,6 +196,9 @@ define([
           }
         }
         $("body").i18n();
+
+        // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
+        self.updateProgressIndicators();
       },
       applyReadMode: function(input) {
         // setting selects in read mode

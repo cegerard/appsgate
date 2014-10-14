@@ -35,8 +35,8 @@ define([
         },
         autoupdate: function(model) {
           this.$el.find("#side-" + model.get("id")).replaceWith(this.tplProgramContainer({
-              program: program,
-              active: Backbone.history.fragment.split("/programs")[1] === program.get("name") ? true : false
+              program: model,
+              active: Backbone.history.fragment.split("/programs")[1] === model.get("name") ? true : false
           }));
 
           // translate the view
@@ -176,25 +176,26 @@ define([
             if (!appRouter.isModalShown) {
                 var self = this;
 
-                // initialize the content
-                this.$el.html(this.tpl());
-
-                // "add program" button to the side menu
-                this.$el.append(this.tplAddProgramButton());
-
-                // for each program, add a menu item
-                this.$el.append(this.tpl());
-                var programsDiv = $(self.$el.find(".list-group")[1]);
-
                 // we build a temporary container with each model
                 var container = document.createDocumentFragment();
+
+                // initialize the content
+                $(container).html(this.tpl());
+
+                // "add program" button to the side menu
+                $(container).append(this.tplAddProgramButton());
+
+                // for each program, add a menu item
+                $(container).append(this.tpl());
+                var programsDiv = $(container).children(".list-group");
+
                 programs.forEach(function(program) {
                     // hack to make empty programs to appear as invalid
                     if(self.isProgramEmpty(program)){
                       program.set("runningState", "INVALID");
                     }
 
-                    $(container).append(self.tplProgramContainer({
+                    programsDiv.append(self.tplProgramContainer({
                         program: program,
                         active: Backbone.history.fragment.split("/programs")[1] === program.get("name") ? true : false
                     }));
@@ -203,7 +204,7 @@ define([
                 programsDiv.addClass("scrollable-menu");
 
                 // we add all elements all at once to avoid rendering them individually and thus reflowing the dom several times
-                programsDiv.append(container);
+                this.$el.html(container);
 
                 // set active the current menu item
                 this.updateSideMenu();
