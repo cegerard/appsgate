@@ -534,7 +534,7 @@
         },
         "header": {
             "consumption-label": "Consumption",
-            "device-number-title": "Number of devices",
+            "device-number-title": "Total number of devices in the place",
             "illumination-label": "Brightness",
             "temperature-label": "Temperature"
         },
