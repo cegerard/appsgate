@@ -19,7 +19,7 @@ define([
         "click button.delete-program-button": "onDeleteProgramButton",
         "click button.delete-popover-button": "onClickDeleteProgram",
         "click button.cancel-delete-program-button": "onCancelDeleteProgram",
-          
+
       },
       /**
       * @constructor
@@ -160,8 +160,8 @@ define([
         var self = this;
         _.defer(function() {
           input = self.applyReadMode(input);
-          self.updateProgressIndicators();
           $(".programInput").html(input).addClass("read-only");
+          self.updateProgressIndicators();
           $(".secondary-block-node").addClass("hidden");
           if($(".input-spot").next().find(".btn-and").length > 0 || $(".input-spot").next().find(".btn-then").length > 0){
             $(".input-spot").next()[0].remove();
@@ -213,6 +213,7 @@ define([
         return input;
       },
       updateProgressIndicators: function() {
+        var self = this;
         var input = $(".programInput");
         var activeSet = $.map(this.model.get("activeNodes"), function(value,index){return [[index, value]];});
 
@@ -225,7 +226,7 @@ define([
                 var activeIndicator = $(input).find("#active-" + activeNodes[0]);
                 var editorWidth = workspace.width();
                 $(activeIndicator).width(editorWidth);
-                
+
                 activeIndicator = activeIndicator.detach();
                 $(activeIndicator.first()).appendTo(workspace);
 
@@ -254,6 +255,33 @@ define([
             $(input).find("#progress-counter-" + nodeCounter[0]).text(nodeCounter[1]);
           });
         }
+
+        // update true/false nodes
+        $(".progress-true-false-indicator").each(function(index) {
+          var span = $(this);
+          var nodeCounter = self.model.get("nodesCounter");
+          var test =  nodeCounter[span.attr("true-node")];
+          var test2 = nodeCounter[span.attr("false-node")];
+          if(typeof nodeCounter[span.attr("true-node")] !== "undefined" && typeof nodeCounter[span.attr("false-node")] !== "undefined") {
+            if(nodeCounter[span.attr("true-node")] > nodeCounter[span.attr("false-node")]){
+              span.text($.i18n.t("debugger.yes"));
+              span.addClass("progress-true-indicator");
+            } else {
+              span.text($.i18n.t("debugger.no"));
+              span.addClass("progress-false-indicator");
+            }
+            span.removeClass("hidden");
+          } else if ( typeof nodeCounter[span.attr("true-node")] !== "undefined" && typeof nodeCounter[span.attr("false-node")] === "undefined" ) {
+            span.text($.i18n.t("debugger.yes"));
+            span.addClass("progress-true-indicator");
+            span.removeClass("hidden");
+          } else if ( typeof nodeCounter[span.attr("true-node")] === "undefined" && typeof nodeCounter[span.attr("false-node")] !== "undefined" ) {
+            span.text($.i18n.t("debugger.no"));
+            span.addClass("progress-false-indicator");
+            span.removeClass("hidden");
+          }
+          console.log( index + " : " + span.attr("id") + " true: " + span.attr("true-node") + " false: " + span.attr("false-node"));
+        });
 
         return input;
       },

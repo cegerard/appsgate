@@ -5,7 +5,9 @@
     },
     "debugger": {
         "all": "All",
-        "times": "times"
+        "times": "times",
+        "yes": "YES",
+        "no": "NO"
     },
     "devices": {
         "actuator": {
@@ -97,7 +99,7 @@
                "inactivated": "domicube is idle",
                 "west": "West",
                 "east": "East"
-               
+
             },
             "white-face": {
                 "first-elem": "White",
@@ -655,7 +657,7 @@
             "language" : {
                "pause-media-action": "Pause the media",
                "play-media-action": "Play",
-			   "resume-media-action": "Resume play",               
+			   "resume-media-action": "Resume play",
                "set-volume-media-action": "Set the volume",
                "stop-media-action": "Stop"
             },
@@ -664,7 +666,7 @@
 				"complement" : "on",
                "pause-media-action": "Pause the media ...",
                "play-media-action": "Play ...",
-               "resume-media-action": "Resume play ...",               
+               "resume-media-action": "Resume play ...",
                "set-volume-media-action": "Set the volume ...",
                "stop-media-action": "Stop"
             }

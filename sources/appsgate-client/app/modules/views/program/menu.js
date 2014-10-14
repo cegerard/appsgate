@@ -31,7 +31,16 @@ define([
         initialize: function() {
             this.listenTo(programs, "add", this.render);
             this.listenTo(programs, "remove", this.render);
-            this.listenTo(programs, "change", this.render);
+            this.listenTo(programs, "change", this.autoupdate);
+        },
+        autoupdate: function(model) {
+          this.$el.find("#side-" + model.get("id")).replaceWith(this.tplProgramContainer({
+              program: program,
+              active: Backbone.history.fragment.split("/programs")[1] === program.get("name") ? true : false
+          }));
+
+          // translate the view
+          this.$el.i18n();
         },
         /**
          * Update the side menu to set the correct active element

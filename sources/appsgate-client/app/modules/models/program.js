@@ -44,6 +44,7 @@ define([
             // each program listens to the event whose id corresponds to its own id
             dispatcher.on(this.get("id"), function(updatedVariableJSON) {
               if(typeof updatedVariableJSON.activeNodes !== 'undefined' &&  typeof updatedVariableJSON.nodesCounter !== 'undefined'){
+                console.log("####DEBUG-ACTIVE-NODES#### " + JSON.stringify(updatedVariableJSON.activeNodes));
                 self.set('activeNodes',updatedVariableJSON.activeNodes);
                 self.set('nodesCounter',updatedVariableJSON.nodesCounter);
               } else {

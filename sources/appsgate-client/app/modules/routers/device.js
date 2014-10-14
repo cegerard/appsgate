@@ -11,9 +11,10 @@ define([
   "views/device/details/phillipshue",
   "views/device/details/plug",
   "views/device/details/switch",
-  "views/device/details/temperature"
+  "views/device/details/temperature",
+  "views/device/details/mediaplayer"
   ], function(App, DeviceMenuView, DevicesByTypeView, ActuatorView, ArdView, ContactSensorView,
-    DomiCubeView, LightSensorView, CardSwitchView, PhillipsHueView, SmartPlugView, SwitchView, TemperatureSensorView) {
+    DomiCubeView, LightSensorView, CardSwitchView, PhillipsHueView, SmartPlugView, SwitchView, TemperatureSensorView, MediaPlayerView) {
 
       var DeviceRouter = {};
       /**
@@ -98,6 +99,9 @@ define([
             break;
             case 8: // switch actuator
             appRouter.showDetailsView(new SwitchView({model:device}));
+            break;
+            case 31: // media player
+            appRouter.showDetailsView(new MediaPlayerView({model:device}));
             break;
             case 210: // domicube
             appRouter.showDetailsView(new DomiCubeView({model:device}));

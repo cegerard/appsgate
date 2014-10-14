@@ -540,9 +540,9 @@ font-size: smaller;
 }
 
 .seq-block-node>h2>span {
-   background-color: white;
+   background-color: #428bca;
    padding: 2px;
-   color:#428bca;
+   color:white;
    font-size: smaller;
 }
 
@@ -710,4 +710,20 @@ font-size: smaller;
 
 .progress-indicator {
   padding:1px;
+}
+
+.progress-true-false-indicator {
+  padding:5px;
+  border-radius: 0px 10px 0px 0px;
+  background: white;
+}
+
+.progress-true-indicator {
+  border: 2px solid green;
+  color: green;
+}
+
+.progress-false-indicator {
+  border: 2px solid red;
+  color: red;
 }

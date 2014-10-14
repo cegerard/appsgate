@@ -16,7 +16,6 @@ define([
       "click #edit-device-modal button.valid-button": "validEditDevice",
       "keyup #edit-device-modal input": "validEditDevice",
       "change #edit-device-modal select": "checkDevice",
-      //"click .clockReset": "clockReset",
       "change .clockReset": "checkDevice"
     },
     initialize: function() {
