@@ -1,9 +1,8 @@
 define([
     "app",
     "text!templates/services/menu/menu.html",
-    "text!templates/services/menu/serviceContainer.html",
-    "text!templates/devices/menu/coreClockContainer.html"
-], function(App, serviceMenuTemplate, serviceContainerMenuTemplate, coreClockContainerMenuTemplate) {
+    "text!templates/services/menu/serviceContainer.html"
+], function(App, serviceMenuTemplate, serviceContainerMenuTemplate) {
 
     var ServiceMenuView = {};
     /**
@@ -12,7 +11,6 @@ define([
     ServiceMenuView = Backbone.View.extend({
         tpl: _.template(serviceMenuTemplate),
         tplServiceContainer: _.template(serviceContainerMenuTemplate),
-        tplCoreClockContainer: _.template(coreClockContainerMenuTemplate),
         /**
          * Bind events of the DOM elements from the view to their callback
          */
@@ -36,15 +34,7 @@ define([
          * @param options Options given with the change event
          */
         onChangedService: function(model, options) {
-            // a service has changed
-            // if it's the clock, we refresh the clock only
-            if (typeof options !== "undefined" && options.clockRefresh) {
-                this.refreshClockDisplay();
-            }
-            // otherwise we rerender the whole view
-            else {
-                this.render();
-            }
+            this.render();
         },
         /**
          * Update the side menu to set the correct active element
@@ -70,21 +60,6 @@ define([
             }
         },
         /**
-         * Refreshes the time display without rerendering the whole screen
-         */
-        refreshClockDisplay: function() {
-
-            //remove existing node
-            $(this.$el.find(".list-group")[0]).children().remove();
-
-            //refresh the clock
-            $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                service: services.getCoreClock(),
-                active: Backbone.history.fragment === "services/" + services.getCoreClock().get("id") ? true : false
-            }));
-
-        },
-        /**
          * Render the side menu
          */
         render: function() {
@@ -93,13 +68,7 @@ define([
 
                 // initialize the content
                 this.$el.html(this.tpl());
-
-                // display the clock
-                $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                    device: devices.getCoreClock(),
-                    active: Backbone.history.fragment === "services/" + devices.getCoreClock().get("id") ? true : false
-                }));
-
+                
                 // for each category of services, add a menu item
                 this.$el.append(this.tpl());
                 var types = services.getServicesByType();

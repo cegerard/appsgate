@@ -1,4 +1,4 @@
-<a href="#places/<%= place.get('id') %>" class="list-group-item <% if (active) { %> active <% } %>">
+<a id="place-<%= place.get('id') %>" href="#places/<%= place.get('id') %>" class="list-group-item <% if (active) { %> active <% } %>">
 	<!-- header -->
 	<p class="list-group-item-heading lead">
 		<% if (place.getName() !== "") { %>
@@ -98,9 +98,9 @@
 			<tr>
 				<td>
 				<% if (place.getKeyCardReaders().length === 1) { %>
-					<span data-i18n="devices.keycard-reader.name.singular"></span>
+					<span data-i18n="devices.cardswitch.name.singular"></span>
 				<% } else { %>
-					<span data-i18n="devices.keycard-reader.name.plural"></span>
+					<span data-i18n="devices.cardswitch.name.plural"></span>
 				<% } %>
 			</td>
 			<td>
