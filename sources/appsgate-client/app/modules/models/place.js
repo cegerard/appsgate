@@ -52,29 +52,34 @@ define([
          * @param sensors Array of sensors
          * @return Average value of the sensors if any, undefined otherwise
          */
-        getAverageValue: function(sensors) {
-            // return null if there is no temperature sensors in the room
-            if (sensors.length === 0) {
-                return undefined;
-            }
+        getAverageValue: function(sensors,invalidReturn) {
 
-            // compute the average value of the sensors
+            var total=this.getTotalValue(sensors,invalidReturn);
+
+            if(isNaN(total)) return total;
+
+            var valid=this.getCountCallback(sensors,function(a){ if(a!=invalidReturn) return true; else return false;});
+
+            return Math.round(total / valid);
+
+        },
+        getCountCallback: function(sensors,callb){
             var total = 0;
             sensors.forEach(function(s) {
                 if (typeof s.get("value") !== "undefined") {
-                    total += parseInt(s.get("value"));
+                    value=parseInt(s.get("value"));
+                    if(callb(value)){
+                        total += 1;
+                    }
                 } else {
-
-                    conso=s.get("consumption");
-
-                    if(parseInt(conso)>0){
-                        total += parseInt(s.get("consumption"));
+                    value=parseInt(s.get("consumption"));
+                    if(callb(value)){
+                        total += 1;
                     }
 
                 }
             });
-
-            return total / sensors.length;
+            return total;
         },
         /**
          * Compute the average value of given sensors
@@ -82,43 +87,25 @@ define([
          * @param sensors Array of sensors
          * @return Average value of the sensors if any, undefined otherwise
          */
-        getTotalValue: function(sensors) {
-            // return null if there is no temperature sensors in the room
-            if (sensors.length === 0) {
-                return undefined;
-            }
+        getTotalValue: function(sensors,invalidReturn) {
 
-            // compute the average value of the sensors
-            var total = 0;
-            var invalidValue = 0;
+            var valid=this.getCountCallback(sensors,function(a){if(a!=invalidReturn) return true; else return false;});
 
-            sensors.forEach(function(s) {
-                console.log("Getting total consumption value:"+s.get("value")+" consumption:"+s.get("consumption")+" typeof "+typeof s.get("value"));
-                if (typeof s.get("value") !== "undefined") {
-                    console.log("summing "+total+" and "+s.get("value"));
-                    total += parseInt(s.get("value"));
-                } else {
-                    console.log("summing "+total+" and "+s.get("consumption"));
-
-                    conso=s.get("consumption");
-
-                    console.log("consumption:"+conso);
-
-                    if(parseInt(conso)>=0){
-                        total += parseInt(s.get("consumption"));
-                    }else {
-                        invalidValue+=1;
-                    }
-
-                }
-            });
-
-            /**
-             * Case all sensors DO NOT provide valid values, -1 is returned
-             */
-            if(sensors.length==invalidValue){
+            //If there are only invalid values (not yet fetched) OR there are no sensors return default display value
+            if(valid==0 || sensors.length === 0 ){
                 return "---";
             }
+
+            var total = 0;
+            sensors.forEach(function(s) {
+                if (typeof s.get("value") !== "undefined") {
+                    value=parseFloat(s.get("value"));
+                    total += value;
+                } else {
+                    value=parseFloat(s.get("consumption"));
+                    total += value;
+                }
+            });
 
             return total;
         },
@@ -129,7 +116,7 @@ define([
          * @return Average temperature of the place if any temperature sensor, undefined otherwise
          */
         getAverageTemperature: function() {
-            return this.getAverageValue(this.getTemperatureSensors());
+            return this.getAverageValue(this.getTemperatureSensors(),999);
         },
         /**
          * Compute the average illumination of the place from the illumination sensors in the place
@@ -137,7 +124,7 @@ define([
          * @return Average illumination of the place if any illumination sensor, undefined otherwise
          */
         getAverageIllumination: function() {
-            return this.getAverageValue(this.getIlluminationSensors());
+            return this.getAverageValue(this.getIlluminationSensors(),-1);
         },
         /**
          * Compute the average consumption of the place from the plugs in the place
@@ -145,7 +132,7 @@ define([
          * @return Average consumption of the place if any consumption sensor, undefined otherwise
          */
         getAverageConsumption: function() {
-            return this.getAverageValue(this.getPlugs());
+            return this.getAverageValue(this.getPlugs(),-1);
         },
         /**
          * Compute the total consumption of the place from the plugs in the place
@@ -153,7 +140,7 @@ define([
          * @return total consumption of the place if any consumption sensor, undefined otherwise
          */
         getTotalConsumption: function() {
-            return this.getTotalValue(this.getPlugs());
+            return this.getTotalValue(this.getPlugs(),-1);
         },
         /**
          * Return all the devices of the place that matches a given type

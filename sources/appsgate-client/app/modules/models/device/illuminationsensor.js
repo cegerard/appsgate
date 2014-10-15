@@ -85,6 +85,15 @@ define([
         return arrayScale;
             
     },
+    getValue: function () {
+          value=parseInt(this.get("value"));
+
+          if (value != 9999){
+              return value;
+          }
+
+          return $.i18n.t("devices.no-value");
+      }
   });
   return IlluminationSensor;
 });

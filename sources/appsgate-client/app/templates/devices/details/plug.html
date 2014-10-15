@@ -1,11 +1,7 @@
 <li class="list-group-item">
 	<strong data-i18n="devices.consumption-label"></strong>
 	<div id="plug-consumption" class="pull-right label-value">
-        <% if(device.get("consumption")=="-1") { %>
-            --- W
-        <% } else { %>
-            <%= device.get("consumption") %> W
-        <% } %>
+        <%= device.getValue() %>
 
 	</div>
 </li>

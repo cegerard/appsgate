@@ -10,6 +10,7 @@
         "no": "NON"
     },
     "devices": {
+        "no-value":"---",
         "actuator": {
             "action": {
                 "turnOff": "Eteindre",
