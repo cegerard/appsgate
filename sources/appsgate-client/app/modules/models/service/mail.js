@@ -54,6 +54,39 @@ define([
       return _.template(ActionTemplate);  
     },
     
+    /**
+     * @returns the list of favorites mail
+     */
+    getFavorites: function() {
+      this.remoteControl("getFavoriteRecipients", []);
+      return ["Essai", "Coucou"];
+    },
+    
+    /**
+     * Add a favorite mail
+     */
+    addFavorite: function(which) {
+      this.remoteControl("addFavorite", [{"type": "string", "value": which}]);
+      this.remoteControl("getFavoriteRecipients", []);
+    },
+    /**
+     * remove a favorite mail
+     */
+    removeFavorite: function(which) {
+      this.remoteControl("removeFavorite", [{"type": "string", "value": which}]);
+      this.remoteControl("getFavoriteRecipients", []);
+    },
+    
+    /**
+     * update a favorite mail
+     */
+    updateFavorite: function(old, which) {
+      console.log("UPD_MAIL: Not implemented yet");  
+      this.remoteControl("removeFavorite", [{"type": "string", "value": old}]);
+      this.remoteControl("addFavorite", [{"type": "string", "value": which}]);
+      this.remoteControl("getFavoriteRecipients", []);
+    }    
+    
   });
   return Mail;
 });
