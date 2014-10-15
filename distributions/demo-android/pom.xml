@@ -568,7 +568,7 @@
 							<overwrite>false</overwrite>
 							<resources>
 								<resource>
-									<directory>${project.build.directory}/distrib-temp/felix.config.base-${project.version}/</directory>
+									<directory>${project.build.directory}/distrib-temp/</directory>
 									<includes>
 										<include>conf/**/*</include>
 									</includes>
