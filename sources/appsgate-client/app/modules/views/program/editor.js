@@ -107,6 +107,7 @@ define([
           this.model.set("runningState", "INVALID");
         }
         this.model.save();
+        appRouter.navigate("#programs", {trigger: true});
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
       },
       onClickCancelEdit: function(e) {
@@ -114,6 +115,7 @@ define([
           this.model.destroy();
           appRouter.navigate("#programs", {trigger: true});
         } else{
+          appRouter.navigate("#programs", {trigger: true});
           appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
         }
       },
