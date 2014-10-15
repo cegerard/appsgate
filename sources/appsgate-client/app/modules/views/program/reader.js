@@ -19,7 +19,7 @@ define([
         "click button.delete-program-button": "onDeleteProgramButton",
         "click button.delete-popover-button": "onClickDeleteProgram",
         "click button.cancel-delete-program-button": "onCancelDeleteProgram",
-          
+
       },
       /**
       * @constructor
@@ -160,7 +160,6 @@ define([
         var self = this;
         _.defer(function() {
           input = self.applyReadMode(input);
-          input = self.updateProgressIndicators(input);
           $(".programInput").html(input).addClass("read-only");
           $(".secondary-block-node").addClass("hidden");
           if($(".input-spot").next().find(".btn-and").length > 0 || $(".input-spot").next().find(".btn-then").length > 0){
@@ -169,7 +168,6 @@ define([
           $(".input-spot").prev().remove();
           $(".input-spot").remove();
 
-          var test = $(".programInput").children(".seq-block-node");
           if($(".programInput").children(".seq-block-node").children().length < 1){
             $(".programInput").children(".separator").addClass("hidden");
             $(".programInput").children(".seq-block-node").addClass("hidden");
@@ -178,25 +176,31 @@ define([
             $(".programInput").children(".separator").addClass("hidden");
             $(".programInput").children(".set-block-node").addClass("hidden");
           }
-        });
-        if(typeof this.model !== "undefined"){
-          if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "KEEPING" || this.model.get("runningState") === "WAITING") {
-            $("#led-" + this.model.get("id")).addClass("led-yellow").removeClass("led-orange").removeClass("led-default");
-            $(".start-program-button").hide();
-            $(".stop-program-button").show();
-          } else if (this.model.get("runningState") === "INVALID"){
-            $("#led-" + this.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
-            $(".start-program-button").show();
-            //$(".start-program-button").hide(); Now we don't hide it just disable it
-            $(".start-program-button").prop('disabled', true);
-            $(".stop-program-button").hide();
-          } else{
-            $("#led-" + this.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");
-            $(".start-program-button").show();
-            $(".stop-program-button").hide();
+
+          if(typeof this.model !== "undefined"){
+            if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "KEEPING" || this.model.get("runningState") === "WAITING") {
+              $("#led-" + this.model.get("id")).addClass("led-yellow").removeClass("led-orange").removeClass("led-default");
+              $(".start-program-button").hide();
+              $(".stop-program-button").show();
+            } else if (this.model.get("runningState") === "INVALID"){
+              $("#led-" + this.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
+              $(".start-program-button").show();
+              //$(".start-program-button").hide(); Now we don't hide it just disable it
+              $(".start-program-button").prop('disabled', true);
+              $(".stop-program-button").hide();
+            } else{
+              $("#led-" + this.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");
+              $(".start-program-button").show();
+              $(".stop-program-button").hide();
+            }
           }
-        }
-        $("body").i18n();
+          $("body").i18n();
+
+          // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
+          self.updateProgressIndicators();
+
+        });
+
       },
       applyReadMode: function(input) {
         // setting selects in read mode
@@ -212,26 +216,39 @@ define([
 
         return input;
       },
-      updateProgressIndicators: function(input) {
+      updateProgressIndicators: function() {
+        var self = this;
+        var input = $(".programInput");
         var activeSet = $.map(this.model.get("activeNodes"), function(value,index){return [[index, value]];});
 
         // mark active nodes as locked
         if(activeSet.length > 0){
           activeSet.forEach(function(activeNodes) {
-            var t = $(input).find("#progress-" + activeNodes[0]);
-            if(activeNodes[1] == true) {
-              $(t.find(".locked-node-indicator")[0]).addClass("hidden");
-              $(t.find(".unlocked-node-indicator")[0]).removeClass("hidden");
+            if($(input).find("#active-" + activeNodes[0]).length > 0 && activeNodes[1] == true) {
+                var workspace = $(".editorWorkspace");
+                workspace.children("#active-" + activeNodes[0]).remove();
+                var activeIndicator = $(input).find("#active-" + activeNodes[0]);
+                var editorWidth = workspace.width();
+                $(activeIndicator).width(editorWidth);
+
+                activeIndicator = activeIndicator.detach();
+                $(activeIndicator.first()).appendTo(workspace);
+
+                var targetPosition = $("#" + activeIndicator.attr("target-node")).offset();
+                if(targetPosition){
+                  $(activeIndicator).offset({top:targetPosition.top - workspace.offset().top, left:0});
+                }
+
+                $(".editorWorkspace").find("#active-" + activeNodes[0]).removeClass("hidden");
+
+                if(activeIndicator.attr("parent-node") !== null) {
+                  $(".editorWorkspace").children("#active-" + activeIndicator.attr("parent-node")).addClass("hidden");
+                }
             }
-            else{
-              $(t.find(".unlocked-node-indicator")[0]).addClass("hidden");
-              $(t.find(".locked-node-indicator")[0]).removeClass("hidden");
+            else if($(input).find("#active-" + activeNodes[0]).length > 0 && activeNodes[1] == false){
+              $(".editorWorkspace").children("#active-" + activeNodes[0]).addClass("hidden");
             }
           });
-        }
-        if(this.model.get("runningState") === "DEPLOYED" || this.model.get("runningState") === "INVALID"){
-          $(input).find(".unlocked-node-indicator").addClass("hidden");
-          $(input).find(".locked-node-indicator").addClass("hidden");
         }
 
         // updated counters
@@ -242,6 +259,33 @@ define([
             $(input).find("#progress-counter-" + nodeCounter[0]).text(nodeCounter[1]);
           });
         }
+
+        // update true/false nodes
+        $(".progress-true-false-indicator").each(function(index) {
+          var span = $(this);
+          var nodeCounter = self.model.get("nodesCounter");
+          var test =  nodeCounter[span.attr("true-node")];
+          var test2 = nodeCounter[span.attr("false-node")];
+          if(typeof nodeCounter[span.attr("true-node")] !== "undefined" && typeof nodeCounter[span.attr("false-node")] !== "undefined") {
+            if(nodeCounter[span.attr("true-node")] > nodeCounter[span.attr("false-node")]){
+              span.text($.i18n.t("debugger.yes"));
+              span.addClass("progress-true-indicator");
+            } else {
+              span.text($.i18n.t("debugger.no"));
+              span.addClass("progress-false-indicator");
+            }
+            span.removeClass("hidden");
+          } else if ( typeof nodeCounter[span.attr("true-node")] !== "undefined" && typeof nodeCounter[span.attr("false-node")] === "undefined" ) {
+            span.text($.i18n.t("debugger.yes"));
+            span.addClass("progress-true-indicator");
+            span.removeClass("hidden");
+          } else if ( typeof nodeCounter[span.attr("true-node")] === "undefined" && typeof nodeCounter[span.attr("false-node")] !== "undefined" ) {
+            span.text($.i18n.t("debugger.no"));
+            span.addClass("progress-false-indicator");
+            span.removeClass("hidden");
+          }
+          console.log( index + " : " + span.attr("id") + " true: " + span.attr("true-node") + " false: " + span.attr("false-node"));
+        });
 
         return input;
       },

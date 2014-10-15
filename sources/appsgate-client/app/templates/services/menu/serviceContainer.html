@@ -14,7 +14,7 @@
                 <span data-i18n="services.mediabrowser.name.plural"></span>
             <% } %>
         <% } else if (type === "102") { %>
-            <% if (services.length === 1) { %>
+            <% if (services[0].getFavorites().length === 1) { %>
                 <span data-i18n="services.mail.name.singular"></span>
                 <% } else { %>
                 <span data-i18n="services.mail.name.plural"></span>
@@ -27,7 +27,11 @@
             <% } %>
         <% } %>        
         <span class="pull-right badge">
+            <% if (type === "102") { %>
+            <%= services[0].getFavorites().length %>
+            <% } else { %>
             <%= services.length %>
+            <% } %>
         </span>
     </p>
 

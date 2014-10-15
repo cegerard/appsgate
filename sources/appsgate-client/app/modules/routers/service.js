@@ -37,8 +37,9 @@ ServiceRouter = Backbone.Router.extend({
             appRouter.navigate("#services/types/" + typeId);
         }
 
-        $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-        $(".breadcrumb").append("<li class='active'><span data-i18n='navbar.services'/></li>");
+        $(".nav-item").removeClass("active");
+        $("#services-nav").addClass("active");
+
         appRouter.translateNavbar();
     },
     /**
@@ -49,8 +50,9 @@ ServiceRouter = Backbone.Router.extend({
     serviceByType: function(typeId) {
         appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
 
-        $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-        $(".breadcrumb").append("<li class='active'><span data-i18n='navbar.services'/></li>");
+        $(".nav-item").removeClass("active");
+        $("#services-nav").addClass("active");
+
         appRouter.translateNavbar();
     },
     /**
@@ -62,9 +64,9 @@ ServiceRouter = Backbone.Router.extend({
     details: function(id) {
         appRouter.showDetailsView(new ServiceDetailsView({model: services.get(id)}));
 
-        $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-        $(".breadcrumb").append("<li><a href='#services'><span data-i18n='navbar.services'/></a></li>");
-        $(".breadcrumb").append("<li class='active'><span>" + services.get(id).get("name") + "</span></li>");
+        $(".nav-item").removeClass("active");
+        $("#services-nav").addClass("active");
+
         appRouter.translateNavbar();
     }
 });

@@ -5,7 +5,9 @@
     },
     "debugger": {
         "all": "Tous",
-        "times": "fois"
+        "times": "fois",
+        "yes": "OUI",
+        "no": "NON"
     },
     "devices": {
         "actuator": {
@@ -129,7 +131,7 @@
             },
             "scale-label": "Echelle"
         },
-        "keycard-reader": {
+        "cardswitch": {
             "keyboard": {
                 "card-inserted": "une carte est insérée dans ...",
                 "insertedEvent": "on insère une carte dans ...",
@@ -533,7 +535,7 @@
         },
         "header": {
             "consumption-label": "Consommation",
-            "device-number-title": "Nombre d'équipements",
+            "device-number-title": "Nombre total d'équipements dans le lieu de vie",
             "illumination-label": "Luminosité",
             "temperature-label": "Température"
         },
@@ -623,9 +625,13 @@
                 "sendMail": "Envoyer un mail"
             },
             "name": {
-                "plural": "Serveurs mail",
-                "singular": "Serveur mail"
-            }
+                "plural": "Destinataires mail favoris",
+                "singular": "Destinataire mail favori"
+            },
+            "modal" : {
+              "add" : "Ajouter destinataire favori" 
+            },
+			"warning-delete" : "Etes vous sûr de vouloir supprimer cette adresse ?"
         },
         "mediabrowser": {
             "name": {
@@ -663,11 +669,10 @@
 				"complement" : "sur",
 			    "pause-media-action": "Mettre en pause le media ...",
 				"play-media-action": "Jouer ...",
-				"resume-media-action": "Reprendre la lecture de ...",				
+				"resume-media-action": "Reprendre la lecture de ...",
 				"set-volume-media-action": "Mettre le volume de ...",
 				"stop-media-action": "Stopper"
 			}
-
         },
         "place-label": "Emplacement",
         "renderingControl": {
@@ -688,8 +693,8 @@
         "value-label": "Valeur",
         "weather": {
             "name": {
-                "plural": "Services Meteo",
-                "singular": "Service Meteo"
+                "plural": "Lieux météo favoris",
+                "singular": "Lieu météo favori"
             },
 			"modal" : {
 				"title" : "Nouveau lieu favori",
@@ -738,7 +743,6 @@
 			},
 			"weblink" : "Voir météo",
             "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
-
         }
     }
 }

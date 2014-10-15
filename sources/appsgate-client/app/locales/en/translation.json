@@ -5,7 +5,9 @@
     },
     "debugger": {
         "all": "All",
-        "times": "times"
+        "times": "times",
+        "yes": "YES",
+        "no": "NO"
     },
     "devices": {
         "actuator": {
@@ -97,7 +99,6 @@
                "inactivated": "domicube is idle",
                 "west": "West",
                 "east": "East"
-               
             },
             "white-face": {
                 "first-elem": "White",
@@ -130,7 +131,7 @@
             },
             "scale-label": "Scale"
         },
-        "keycard-reader": {
+        "cardswitch": {
             "keyboard": {
                 "card-inserted": "a card is inserted in ...",
                 "insertedEvent": "someone insert a card in ...",
@@ -534,7 +535,7 @@
         },
         "header": {
             "consumption-label": "Consumption",
-            "device-number-title": "Number of devices",
+            "device-number-title": "Total number of devices in the place",
             "illumination-label": "Brightness",
             "temperature-label": "Temperature"
         },
@@ -626,7 +627,11 @@
             "name": {
                 "plural": "Mail",
                 "singular": "Mail"
-            }
+            },
+            "modal" : {
+              "add" : "Add a favorite mail" 
+            },
+            "warning-delete" : "Do you really want to delete this mail address ?"
         },
         "mediabrowser": {
             "name": {
@@ -655,7 +660,7 @@
             "language" : {
                "pause-media-action": "Pause the media",
                "play-media-action": "Play",
-			   "resume-media-action": "Resume play",               
+			   "resume-media-action": "Resume play",
                "set-volume-media-action": "Set the volume",
                "stop-media-action": "Stop"
             },
@@ -664,7 +669,7 @@
 				"complement" : "on",
                "pause-media-action": "Pause the media ...",
                "play-media-action": "Play ...",
-               "resume-media-action": "Resume play ...",               
+               "resume-media-action": "Resume play ...",
                "set-volume-media-action": "Set the volume ...",
                "stop-media-action": "Stop"
             }
@@ -692,7 +697,8 @@
                 "singular": "Weather"
             },
 			"modal" : {
-				"title" : "Adding a meteo place"
+			   "title" : "Adding a meteo place",
+               "add" : "Add a meteo place"
 			},
             "keyboard": {
                 "sunrise": "the sun rise in ...",
