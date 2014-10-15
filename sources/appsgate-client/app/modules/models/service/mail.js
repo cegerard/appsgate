@@ -16,7 +16,15 @@ define([
      * @constructor
      */
     initialize: function() {
+      this.set("favorites", []);
       Mail.__super__.initialize.apply(this, arguments);
+      dispatcher.on(this.get("id"), function(json) {
+        t = JSON.parse(json.value);
+        if (Array.isArray(t)) {
+          this.setFavorites(t);
+        }
+      });
+
     },
     /**
      * return the list of available actions
@@ -55,26 +63,35 @@ define([
     },
     
     /**
+     */
+    setFavorites: function(array) {
+      this.set("favorite-recipients", array);
+    },
+    /**
      * @returns the list of favorites mail
      */
     getFavorites: function() {
-      this.remoteControl("getFavoriteRecipients", []);
-      return ["Essai", "Coucou"];
+      return this.get("favorite-recipients");
     },
     
-    /**
-     * Add a favorite mail
-     */
-    addFavorite: function(which) {
-      this.remoteControl("addFavorite", [{"type": "string", "value": which}]);
-      this.remoteControl("getFavoriteRecipients", []);
-    },
     /**
      * remove a favorite mail
      */
     removeFavorite: function(which) {
-      this.remoteControl("removeFavorite", [{"type": "string", "value": which}]);
-      this.remoteControl("getFavoriteRecipients", []);
+      this.remoteControl("removeFavoriteRecipient", [{"type": "String", "value": which}]);
+      v = this.getFavorites();
+      var c, found=false;
+      for(c in v) {
+          if(obj[c].mail == val) {
+              found=true;
+              break;
+          }
+      }
+      if(found){
+          delete v[c];
+      }
+      this.setFavorites(v);
+
     },
     
     /**
@@ -82,9 +99,17 @@ define([
      */
     updateFavorite: function(old, which) {
       console.log("UPD_MAIL: Not implemented yet");  
-      this.remoteControl("removeFavorite", [{"type": "string", "value": old}]);
-      this.remoteControl("addFavorite", [{"type": "string", "value": which}]);
-      this.remoteControl("getFavoriteRecipients", []);
+      this.remoteControl("removeFavoriteRecipient", [{"type": "String", "value": old}]);
+      this.remoteControl("addFavoriteRecipient", [{"type": "String", "value": which}]);
+      v = this.getFavorites();
+      for (t in v) {
+        if (v[t].mail === old) {
+            v[t].mail = which;
+            this.setFavorites(v);
+            return;
+        }
+      }
+
     }    
     
   });

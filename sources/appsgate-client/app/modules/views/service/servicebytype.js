@@ -114,7 +114,7 @@ define([
             $("#add-weather-modal").on("hidden.bs.modal", function() {
                 // instantiate a model for the new location observer
                 var loc = $("#add-weather-modal input[name='name']").val();
-                var weather = new Weather({location	: loc, id	: 'Weather-Observer-'+loc, name : loc});
+                var weather = new Weather({location	: loc, id	: 'Weather-Observer-'+Math.round(Math.random() * 10000).toString(), name : loc});
 
                 weather.save();
 
@@ -207,8 +207,13 @@ define([
          */
         updateMailButton : function(e) {
             var m = $(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email");
+            console.log(m);
+            $("#edit-mail-modal input[name='oldValue']").val(m);
+            $("#edit-mail-modal input[name='inputValue']").val(m);
+            $("#edit-mail-modal").modal("show");
+
         },
-                /**
+        /**
          *
          */
         validMail: function(e) {
@@ -222,24 +227,24 @@ define([
             }
         },
 
-        addMail: function() {
-            //var loc = $("#add-weather-modal input[name='woeid']").val();
-            // instantiate the place and add it to the collection after the modal has been hidden
-            $("#add-weather-modal").on("hidden.bs.modal", function() {
+        updateMail: function() {
+            mail = services.getServicesByType()["102"][0];
+
+            $("#edit-mail-modal").on("hidden.bs.modal", function() {
                 // instantiate a model for the new location observer
-                var loc = $("#add-weather-modal input[name='name']").val();
-                var weather = new Weather({location	: loc, id	: 'Weather-Observer-'+loc, name : loc});
+                var oldMail = $("#edit-mail-modal input[name='oldValue']").val();
+                var newMail = $("#edit-mail-modal input[name='inputValue']").val();
+                $("#edit-mail-modal input[name='oldValue']").val("");
 
-                weather.save();
-
+                mail.updateFavorite(oldMail, newMail);
                 // tell the router that there is no modal any more
                 appRouter.isModalShown = false;
-                appRouter.navigate("#services/types/103", {trigger: true});
+                appRouter.navigate("#services/types/102", {trigger: true});
             });
 
             // hide the modal
             
-            $("#add-weather-modal").modal("hide");
+            $("#edit-mail-modal").modal("hide");
         }
 
     });

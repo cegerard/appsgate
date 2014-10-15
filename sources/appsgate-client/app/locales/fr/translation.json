@@ -625,11 +625,11 @@
                 "sendMail": "Envoyer un mail"
             },
             "name": {
-                "plural": "Serveurs mail",
-                "singular": "Serveur mail"
+                "plural": "Destinataires mail favoris",
+                "singular": "Destinataire mail favori"
             },
             "modal" : {
-              "add" : "Ajout d'une adresse mail" 
+              "add" : "Ajouter destinataire favori" 
             },
 			"warning-delete" : "Etes vous sûr de vouloir supprimer cette adresse ?"
         },
@@ -693,8 +693,8 @@
         "value-label": "Valeur",
         "weather": {
             "name": {
-                "plural": "Services Meteo",
-                "singular": "Service Meteo"
+                "plural": "Lieux météo favoris",
+                "singular": "Lieu météo favori"
             },
 			"modal" : {
 				"title" : "Nouveau lieu favori",
