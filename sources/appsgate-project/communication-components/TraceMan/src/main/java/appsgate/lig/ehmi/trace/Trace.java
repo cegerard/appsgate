@@ -88,9 +88,9 @@ public class Trace {
     		
     	} else if (type.equalsIgnoreCase("Switch")){
     		if(varName.equalsIgnoreCase("switchNumber")){
-    			picto = PICTO_TABLE.SWITCH_STATE_.stringify()+value;
+    			picto = PICTO_TABLE.SINGLE_SWITCH_STATE_.stringify()+value;
     		} else {
-    			picto = PICTO_TABLE.SWITCH_TYPE.stringify();
+    			picto = PICTO_TABLE.SINGLE_SWITCH_TYPE.stringify();
     		}
     		
     	} else if (type.equalsIgnoreCase("Contact")){
@@ -133,7 +133,7 @@ public class Trace {
     		}
     		
     	} else if (type.equalsIgnoreCase("SmartPlug")){
-    		if(varName.equalsIgnoreCase("state")){
+    		if(varName.equalsIgnoreCase("plugState")){
     			if(value.equalsIgnoreCase("true")){
     				picto = PICTO_TABLE.SMARTPLUG_STATE_ON.stringify();
     			} else {
@@ -167,6 +167,9 @@ public class Trace {
     	SWITCH_STATE_3,
     	SWITCH_STATE_5,
     	SWITCH_STATE_7,
+    	SINGLE_SWITCH_STATE_,
+    	SINGLE_SWITCH_STATE_5,
+    	SINGLE_SWITCH_STATE_7,
     	CONTACT_STATE_ON,
     	CONTACT_STATE_OFF,
     	KEYCARDSWITCH_STATE_IN,
@@ -183,6 +186,7 @@ public class Trace {
     	ILLUMINATION_TYPE,
     	CO2_TYPE,
     	SWITCH_TYPE,
+    	SINGLE_SWITCH_TYPE,
     	CONTACT_TYPE,
     	KEYCARDSWITCH_TYPE,
     	OCCUPANCY_TYPE,
