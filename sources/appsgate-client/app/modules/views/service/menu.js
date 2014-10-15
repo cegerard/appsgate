@@ -55,7 +55,9 @@ define([
                     $("#side-" + Backbone.history.fragment.split("/")[2]).addClass("active");
                 } else {
                     var serviceId = Backbone.history.fragment.split("/")[1];
-                    $("#side-" + services.get(serviceId).get("type")).addClass("active");
+                    if (services.get(serviceId)) {
+                        $("#side-" + services.get(serviceId).get("type")).addClass("active");
+                    }
                 }
             }
         },

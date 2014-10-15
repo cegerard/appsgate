@@ -40,11 +40,13 @@ define([
           $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
 
           // display the first category of devices
-          var typeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("side-")[1];
-          appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
-
-          // update the url
-          appRouter.navigate("#devices/types/" + typeId);
+          var id = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id");
+          if (id) {
+            var typeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("side-")[1];
+            appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
+            // update the url
+            appRouter.navigate("#devices/types/" + typeId);
+          }
 
           $(".nav-item").removeClass("active");
           $("#devices-nav").addClass("active");
