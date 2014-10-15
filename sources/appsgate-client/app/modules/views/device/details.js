@@ -13,11 +13,12 @@ define([
     "text!templates/devices/details/phillipsHue.html",
     "text!templates/devices/details/domicube.html",
     "text!templates/devices/details/coreClock.html",
+    "text!templates/devices/details/coreTV.html",
     "colorwheel"
 
 ], function(App, Raphael, deviceDetailsTemplate, contactDetailTemplate, illuminationDetailTemplate, keyCardDetailTemplate,
         ARDDetailTemplate, switchDetailTemplate, actuatorDetailTemplate, temperatureDetailTemplate,
-        plugDetailTemplate, phillipsHueDetailTemplate, domicubeDetailTemplate, coreClockDetailTemplate) {
+        plugDetailTemplate, phillipsHueDetailTemplate, domicubeDetailTemplate, coreClockDetailTemplate,coreTVDetailTemplate) {
 
     var DeviceDetailsView = {};
     // detailled view of a device
@@ -34,6 +35,8 @@ define([
         tplPhillipsHue: _.template(phillipsHueDetailTemplate),
         tplDomiCube: _.template(domicubeDetailTemplate),
         tplCoreClock: _.template(coreClockDetailTemplate),
+        tplCoreTV: _.template(coreTVDetailTemplate),
+
         // map the events and their callback
         events: {
             "click button.back-button": "onBackButton",
@@ -47,6 +50,12 @@ define([
             "click button.btn-media-stop": "onStopMedia",
             "click button.btn-media-volume": "onSetVolumeMedia",
             "click button.btn-media-browse": "onBrowseMedia",
+            "click button.btn-tv-channelup": "onTVChannelUp",
+            "click button.btn-tv-channeldown": "onTVChannelDown",
+            "click button.btn-tv-resume": "onTVResume",
+            "click button.btn-tv-pause": "onTVPause",
+            "click button.btn-tv-stop": "onTVStop",
+            "click button.btn-tv-notify": "onTVNotify",
             "show.bs.modal #edit-device-modal": "beforeInitializeModal",
             "shown.bs.modal #edit-device-modal": "initializeModal",
             "hidden.bs.modal #edit-device-modal": "toggleModalValue",
@@ -216,6 +225,26 @@ define([
 
             this.model.onBrowseMedia($("#selectedMedia"));
         },
+        onTVChannelUp: function() {
+            this.model.channelUp();
+        },
+        onTVChannelDown: function() {
+            this.model.channelDown();
+        },
+        onTVResume: function() {
+            this.model.resume();
+        },
+        onTVPause: function() {
+            this.model.pause();
+        },
+        onTVStop: function() {
+            this.model.stop();
+        },
+        onTVNotify: function() {
+            this.model.notify();
+        },
+
+
         beforeInitializeModal: function() {
 
           // initialize the field to edit the core clock if needed
@@ -500,6 +529,15 @@ define([
                             hours: hours,
                             minutes: minutes,
                             deviceDetails: this.tplCoreClock
+                        }));
+                        break;
+                    case 124: // core TV
+                        this.$el.html(this.template({
+                            device: this.model,
+                            sensorImg: ["app/img/tv.gif"],
+                            sensorType: $.i18n.t("devices.actuator.name.singular"),
+                            places: places,
+                            deviceDetails: this.tplCoreTV
                         }));
                         break;
                     case 210: // domicube

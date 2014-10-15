@@ -12,8 +12,9 @@ define([
     "models/device/phillipshue",
     "models/device/actuator",
     "models/device/domicube",
-    "models/device/coreclock"
-], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, CoreClock) {
+    "models/device/coreclock",
+    "models/device/coretv"
+], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, CoreClock, CoreTV) {
 
     var Devices = {};
 
@@ -96,6 +97,9 @@ define([
                     break;
                 case 21:
                     device = new CoreClock(brick);
+                    break;
+                case 124:
+                    device = new CoreTV(brick);
                     break;
                 case 210:
                     device = new DomiCube(brick);

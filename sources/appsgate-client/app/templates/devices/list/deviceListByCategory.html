@@ -71,6 +71,13 @@
     <% } else { %>
     <span data-i18n="devices.mediaplayer.name.plural"></span>
     <% } %>
+    <% } else if (type === "124") { %>
+    <% if (devices.where({type : 124}).length === 1) { %>
+    <span data-i18n="devices.tv.name.singular"></span>
+    <% } else { %>
+    <span data-i18n="devices.tv.name.plural"></span>
+    <% } %>
+
     <% } else if (type === "210") { %>
     <% if (devices.where({type : 210}).length === 1) { %>
     <span data-i18n="devices.domicube.name.singular"></span>

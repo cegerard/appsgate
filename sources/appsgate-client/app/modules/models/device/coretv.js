@@ -3,22 +3,22 @@ define([
   "models/device/device"
 ], function(App, Device) {
 
-  var Plug = {};
+  var TV = {};
   /**
-   * @class Device.Plug
+   * @class Device.TV
    */
-  Plug = Device.extend({
+  TV = Device.extend({
     /**
      * @constructor
      */
     initialize:function() {
-      Plug.__super__.initialize.apply(this, arguments);
+      TV.__super__.initialize.apply(this, arguments);
     },
     /**
      *return the list of available actions
      */
     getActions: function() {
-      return ["switchOn", "switchOff"];
+      return ["resume", "pause", "stop", "notify", "channelup", "channeldown"];
     },
     /**
      * return the keyboard code for a given action
@@ -27,104 +27,74 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONAction("mandatory");
       switch(act) {
-        case "switchOn":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOn'></span>");
-          v.methodName = "on";
-          v.phrase = "devices.plug.language.turnOn";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "switchOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOff'></span>");
-          v.methodName = "off";
-          v.phrase = "devices.plug.language.turnOff";
+          case "notify":
+              $(btn).append("<span data-i18n='devices.tv.keyboard.notify'></span>");
+              v.methodName = "notify";
+              v.args = [ {"type":"int", "value": "0"},{"type":"String", "value": "spok-sender"},{"type":"String", "value": "test message"}
+              ];
+              v.phrase = "devices.tv.language.notify";
+              $(btn).attr("json", JSON.stringify(v));
+              break;
+          case "channeldown":
+              $(btn).append("<span data-i18n='devices.tv.keyboard.channeldown'></span>");
+              v.methodName = "channelDown";
+              v.args = [ {"type":"int", "value": "0"}];
+              v.phrase = "devices.tv.language.channeldown";
+              $(btn).attr("json", JSON.stringify(v));
+              break;
+          case "channelup":
+              $(btn).append("<span data-i18n='devices.tv.keyboard.channelup'></span>");
+              v.methodName = "channelUp";
+              v.args = [ {"type":"int", "value": "0"}];
+              v.phrase = "devices.tv.language.channelup";
+              $(btn).attr("json", JSON.stringify(v));
+              break;
+          case "stop":
+              $(btn).append("<span data-i18n='devices.tv.keyboard.stop'></span>");
+              v.methodName = "stop";
+              v.args = [ {"type":"int", "value": "0"}];
+              v.phrase = "devices.tv.language.stop";
+              $(btn).attr("json", JSON.stringify(v));
+              break;
+          case "pause":
+              $(btn).append("<span data-i18n='devices.tv.keyboard.pause'></span>");
+              v.methodName = "pause";
+              v.args = [ {"type":"int", "value": "0"}];
+              v.phrase = "devices.tv.language.pause";
+              $(btn).attr("json", JSON.stringify(v));
+              break;
+        case "resume":
+          $(btn).append("<span data-i18n='devices.tv.keyboard.resume'></span>");
+          v.methodName = "resume";
+          v.args = [ {"type":"int", "value": "0"}];
+          v.phrase = "devices.tv.language.resume";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
-          console.error("unexpected action found for Plug: " + act);
+          console.error("unexpected action found for TV: " + act);
           btn = null;
           break;
       }
       return btn;
     },
-    /**
-     * return the list of available events
-     */
-    getEvents: function() {
-      return ["switchOn", "switchOff"];
-    },
-    /**
-     * return the keyboard code for a given event
-    */
-    getKeyboardForEvent: function(evt){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
-      var v = this.getJSONEvent("mandatory");
-      switch(evt) {
-        case "switchOn":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOnEvt'><span>");
-          v.eventName = "plugState";
-          v.eventValue = "true";
-          v.phrase = "devices.plug.language.turnOnEvt";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "switchOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOffEvt'><span>");
-          v.eventName = "plugState";
-          v.eventValue = "false";
-          v.phrase = "devices.plug.language.turnOffEvt";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        default:
-          console.error("unexpected event found for plug: " + evt);
-          btn = null;
-          break;
+      channelUp: function() {
+          this.remoteControl("channelUp", [{"type":"int", "value": "0"}]);
+      },
+      channelDown: function() {
+          this.remoteControl("channelDown", [{"type":"int", "value": "0"}]);
+      },
+      pause: function() {
+          this.remoteControl("pause", [{"type":"int", "value": "0"}]);
+      },
+      stop: function() {
+          this.remoteControl("stop", [{"type":"int", "value": "0"}]);
+      },
+      resume: function() {
+          this.remoteControl("resume", [{"type":"int", "value": "0"}]);
+      },
+      notify: function() {
+          this.remoteControl("notify", [{"type":"int", "value": "0"},{"type":"String", "value": "spok-sender"},{"type":"String", "value": "test message"}]);
       }
-      return btn;
-    },
-
-    /**
-     * Return the list of states
-     */
-    getStates: function(which) {
-      return ["isOn", "isOff"];
-    },
-    /**
-     * return the keyboard code for a given state
-     */
-    getKeyboardForState: function(state, which){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
-      var v = this.getJSONState("mandatory");
-      var keep = "";
-      v.type = which;
-      if (which == "maintainableState") {
-        keep = "-keep";
-      }
-      switch(state) {
-        case "isOn":
-        case "isOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard." + state + keep + "'><span>");
-          v.name = state;
-          v.phrase = "devices.plug.language." + state + keep;
-          $(btn).attr("json", JSON.stringify(v));
-        return btn;
-
-        default:
-          console.error("unexpected state found for Contact Sensor: " + state);
-          return null;
-      }
-    },
-
-    
-
-    /**
-     * Send a message to the backend to update the attribute plugState
-     */
-    sendPlugState:function() {
-      if (this.get("plugState") === "true") {
-        this.remoteControl("on", []);
-      } else {
-        this.remoteControl("off", []);
-      }
-    }
   });
-  return Plug;
+  return TV;
 });
