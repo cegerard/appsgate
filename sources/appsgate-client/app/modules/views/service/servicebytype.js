@@ -50,6 +50,15 @@ define([
                             select: function( event, ui ) {
                                 $("#add-weather-modal .valid-button").removeClass("disabled");
                                 $("#add-weather-modal .valid-button").removeClass("valid-disabled");
+                                $( "#weatherInput" ).val( ui.item.label );
+                                $( "#WOEID" ).val( ui.item.woeid );
+                                $( "#NAME" ).val( ui.item.name );
+                                return false;
+                            },
+                            focus: function( event, ui ) {
+                                $("#add-weather-modal .valid-button").removeClass("disabled");
+                                $("#add-weather-modal .valid-button").removeClass("valid-disabled");
+                                $( "#weatherInput" ).val( ui.item.label );
                                 $( "#WOEID" ).val( ui.item.woeid );
                                 $( "#NAME" ).val( ui.item.name );
                                 return false;
