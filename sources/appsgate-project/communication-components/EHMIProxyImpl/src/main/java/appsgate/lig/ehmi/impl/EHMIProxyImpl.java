@@ -13,7 +13,6 @@ import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
-import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,10 +184,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			final Dictionary<String, String> initParams = new Hashtable<String, String>();
 			initParams.put("from", "HttpService");
 			try {
-				httpService.registerResources("/spok", "/WEB/client",
+				httpService.registerResources("/spok", "/WEB/spok",
 						httpContext);
 				logger.debug("Registered URL : "
-						+ httpContext.getResource("/WEB/client"));
+						+ httpContext.getResource("/WEB/spok"));
 				logger.info("SPOK HTML pages registered.");
 			} catch (NamespaceException ex) {
 				logger.error("NameSpace exception");
@@ -845,6 +844,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * @return a enrich from contextual data JSONArray
 	 */
 	private JSONArray addContextData(JSONArray objects) {
+		logger.trace("addContextData(JSONArray objects :"+objects.toString());
 		JSONArray contextArray = new JSONArray();
 		try {
 			int nbObjects = objects.length();
@@ -857,7 +857,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 					contextArray.put(addContextData(coreObject,
 						coreObject.getString("id")));
 					logger.trace("... successfully added. With context : "+contextArray.getJSONObject(i));
-					i++;
+					i++;	
 				}
 			}
 		} catch (JSONException e) {

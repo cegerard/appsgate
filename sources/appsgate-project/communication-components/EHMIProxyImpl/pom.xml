@@ -83,6 +83,15 @@
 			<artifactId>org.osgi.core</artifactId>
 			<version>${osgi.version}</version>
 		</dependency>
+		
+    <!--    <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>appsgate-client</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <type>zip</type>
+        </dependency>        -->
+        
 	</dependencies>
 
 
@@ -101,8 +110,8 @@
 						</goals>
 						<phase>generate-resources</phase>
 						<configuration>
-							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
-							<includeArtifactIds>TestingWebArchiveDependency</includeArtifactIds>
+							<outputDirectory>${basedir}/src/main/resources/WEB/spok</outputDirectory>
+							<includeArtifactIds>appsgate-client</includeArtifactIds>
 							<excludeTransitive>true</excludeTransitive>
 						</configuration>
 					</execution>
@@ -110,34 +119,8 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>				    
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Private-Package>
-							appsgate.lig.ehmi.impl,
-							appsgate.lig.ehmi.impl.upnp,
-							appsgate.lig.ehmi.impl.listeners
-						</Private-Package>
-						<Import-Package>
-							*
-						</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>fr.imag.adele.apam</groupId>
 				<artifactId>apam-maven-plugin</artifactId>
-				<version>${apam.current.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>apam-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
