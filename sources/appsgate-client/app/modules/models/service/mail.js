@@ -42,7 +42,7 @@ define([
         case "sendMail":
           $(btn).append("<span data-i18n='services.mail.keyboard.sendMail'></span>");
           v.methodName = "sendMailSimple";
-          v.args = [ {"type":"String", "value": "mail@example.com"},
+          v.args = [ {"type":"String", "value": this.getFavoriteMail()},
                     {"type":"String", "value": "Test"},
                     {"type":"String", "value": "..."}];
           v.phrase = "services.mail.language.sendMail";
@@ -73,7 +73,20 @@ define([
     getFavorites: function() {
       return this.get("favorite-recipients");
     },
-    
+    getFavoriteMail: function() {
+      if (this.getFavorites().length > 0) {
+        return this.getFavorites()[0].mail;
+      }
+      return "mail@example.com";
+    },
+    getFavoriteArray: function() {
+      var a = [];
+      v = this.getFavorites();
+      for (c in v) {
+        a.push(v[c].mail);
+      }
+      return a;
+    },
     /**
      * remove a favorite mail
      */

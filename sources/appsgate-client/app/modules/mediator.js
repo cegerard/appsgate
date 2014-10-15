@@ -407,6 +407,11 @@ define([
         $(input).find(".btn").css("padding", "3px 6px");
 
         $(input).i18n();
+	    $(input).find(".mailInput").autocomplete({
+		  source: services.getCoreMail().getFavoriteArray(),
+		  minLength: 0
+		});
+
 
         return input;
       },
