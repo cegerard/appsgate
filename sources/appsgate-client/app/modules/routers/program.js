@@ -34,9 +34,7 @@ define([
             appRouter.translateNavbar();
         },
         reader: function(id) {
-            // display the side menu
-            appRouter.showMenuView(new ProgramMenuView());
-
+            
             // display the requested program
             appRouter.showDetailsView(new ProgramReaderView({model: programs.get(id)}));
 
