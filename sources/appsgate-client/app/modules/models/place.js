@@ -62,7 +62,7 @@ define([
             var total = 0;
             sensors.forEach(function(s) {
                 if (typeof s.get("value") !== "undefined") {
-                    total += s.get("value");
+                    total += parseInt(s.get("value"));
                 } else {
 
                     conso=s.get("consumption");
