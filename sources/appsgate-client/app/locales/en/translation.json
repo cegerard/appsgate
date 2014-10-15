@@ -99,7 +99,6 @@
                "inactivated": "domicube is idle",
                 "west": "West",
                 "east": "East"
-
             },
             "white-face": {
                 "first-elem": "White",
@@ -536,7 +535,7 @@
         },
         "header": {
             "consumption-label": "Consumption",
-            "device-number-title": "Number of devices",
+            "device-number-title": "Total number of devices in the place",
             "illumination-label": "Brightness",
             "temperature-label": "Temperature"
         },
@@ -628,7 +627,11 @@
             "name": {
                 "plural": "Mail",
                 "singular": "Mail"
-            }
+            },
+            "modal" : {
+              "add" : "Add a favorite mail" 
+            },
+            "warning-delete" : "Do you really want to delete this mail address ?"
         },
         "mediabrowser": {
             "name": {
@@ -694,7 +697,8 @@
                 "singular": "Weather"
             },
 			"modal" : {
-				"title" : "Adding a meteo place"
+			   "title" : "Adding a meteo place",
+               "add" : "Add a meteo place"
 			},
             "keyboard": {
                 "sunrise": "the sun rise in ...",

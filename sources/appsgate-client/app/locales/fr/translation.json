@@ -535,7 +535,7 @@
         },
         "header": {
             "consumption-label": "Consommation",
-            "device-number-title": "Nombre d'équipements",
+            "device-number-title": "Nombre total d'équipements dans le lieu de vie",
             "illumination-label": "Luminosité",
             "temperature-label": "Température"
         },
@@ -627,7 +627,11 @@
             "name": {
                 "plural": "Serveurs mail",
                 "singular": "Serveur mail"
-            }
+            },
+            "modal" : {
+              "add" : "Ajout d'une adresse mail" 
+            },
+			"warning-delete" : "Etes vous sûr de vouloir supprimer cette adresse ?"
         },
         "mediabrowser": {
             "name": {
@@ -669,7 +673,6 @@
 				"set-volume-media-action": "Mettre le volume de ...",
 				"stop-media-action": "Stopper"
 			}
-
         },
         "place-label": "Emplacement",
         "renderingControl": {
@@ -740,7 +743,6 @@
 			},
 			"weblink" : "Voir météo",
             "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
-
         }
     }
 }

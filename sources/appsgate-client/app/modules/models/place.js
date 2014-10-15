@@ -33,11 +33,18 @@ define([
          * Returns the number of devices the place contains
          */
         getDevicesNumber: function() {
-          if(this.get("id") == "-1") {
-            // ignoring the domicube
-            return this.get("devices").length - 1;
-          }
-          return this.get("devices").length;
+            var devicesPlace = this.get("devices");
+            
+            // get all the devices that match the place
+            var resultDevices = devices.filter(function(device) {
+                return (devicesPlace.indexOf(device.get("id").toString()) !== -1);
+            });
+            
+            if(this.get("id") == "-1") {
+                // ignoring clock which is in unlocated devices
+                return resultDevices.length - 1;
+             }
+          return resultDevices.length;
         },
         /**
          * Compute the average value of given sensors
