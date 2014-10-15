@@ -534,19 +534,6 @@ font-size: smaller;
   margin-top: 5px;
 }
 
-.seq-block-node>h2 {
-   margin: -10px 0px 0 20px ;
-
-}
-
-.seq-block-node>h2>span {
-   background-color: #428bca;
-   padding: 2px;
-   color:white;
-   font-size: smaller;
-}
-
-
 .secondary-block-node {
   border: 1px dashed #428bca;
   padding:2px;

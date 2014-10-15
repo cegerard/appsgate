@@ -177,28 +177,30 @@ define([
             $(".programInput").children(".set-block-node").addClass("hidden");
           }
 
-        });
-        if(typeof this.model !== "undefined"){
-          if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "KEEPING" || this.model.get("runningState") === "WAITING") {
-            $("#led-" + this.model.get("id")).addClass("led-yellow").removeClass("led-orange").removeClass("led-default");
-            $(".start-program-button").hide();
-            $(".stop-program-button").show();
-          } else if (this.model.get("runningState") === "INVALID"){
-            $("#led-" + this.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
-            $(".start-program-button").show();
-            //$(".start-program-button").hide(); Now we don't hide it just disable it
-            $(".start-program-button").prop('disabled', true);
-            $(".stop-program-button").hide();
-          } else{
-            $("#led-" + this.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");
-            $(".start-program-button").show();
-            $(".stop-program-button").hide();
+          if(typeof this.model !== "undefined"){
+            if (this.model.get("runningState") === "PROCESSING" || this.model.get("runningState") === "KEEPING" || this.model.get("runningState") === "WAITING") {
+              $("#led-" + this.model.get("id")).addClass("led-yellow").removeClass("led-orange").removeClass("led-default");
+              $(".start-program-button").hide();
+              $(".stop-program-button").show();
+            } else if (this.model.get("runningState") === "INVALID"){
+              $("#led-" + this.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
+              $(".start-program-button").show();
+              //$(".start-program-button").hide(); Now we don't hide it just disable it
+              $(".start-program-button").prop('disabled', true);
+              $(".stop-program-button").hide();
+            } else{
+              $("#led-" + this.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");
+              $(".start-program-button").show();
+              $(".stop-program-button").hide();
+            }
           }
-        }
-        $("body").i18n();
+          $("body").i18n();
 
-        // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
-        self.updateProgressIndicators();
+          // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
+          self.updateProgressIndicators();
+
+        });
+
       },
       applyReadMode: function(input) {
         // setting selects in read mode
