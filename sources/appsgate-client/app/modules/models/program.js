@@ -52,6 +52,10 @@ define([
               }
             });
         },
+        scheduleProgram: function(start, stop) {
+          var eventName = $.i18n.t("programs.scheduled-event") + " " + this.get("name");
+          this.remoteCall("scheduleProgram", [{type: "String", value: eventName },{type: "String", value: this.get("id")},{type: "boolean", value: start},{type: "boolean", value: stop}]);
+        },
         /**
          * Send a message to the server to perform a remote call
          *

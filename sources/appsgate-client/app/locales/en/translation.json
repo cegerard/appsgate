@@ -494,6 +494,12 @@
         "program-name-empty": "The program name must be entered.",
         "title": "Rename program"
     },
+    "modal-schedule-program": {
+        "title":"Schedule the program in AppsGate's Google Calendar",
+        "schedule-activation":"Planifier l'activation du programme",
+        "schedule-deactivation":"Planifier la désactivation du programme",
+        "schedule-both":"Planifier l'activation et la désactivation du programme"
+    },
     "modal-edit-service": {
         "name-already-existing": "Name of existing service",
         "name-label": "Name",
@@ -553,7 +559,9 @@
     "programs": {
         "action": {
             "start": "Start",
-            "stop": "Stop"
+            "stop": "Stop",
+            "schedule": "Schedule",
+            "open-calendar":"Go to Calendar"
         },
         "delete-program": "Delete",
         "edit-program": "Edit",
@@ -588,7 +596,8 @@
             "stopped": "Stopped"
         },
         "warning-program-edition": "Warning, edit program will deactivate it",
-        "warning-program-delete": "Do you really want to delete this program ?"
+        "warning-program-delete": "Do you really want to delete this program ?",
+        "scheduled-event": "Scheduled program "
     },
     "programs-menu": {
         "add-button": "Add Program"
@@ -630,7 +639,7 @@
                 "singular": "Mail"
             },
             "modal" : {
-              "add" : "Add a favorite mail" 
+              "add" : "Add a favorite mail"
             },
             "warning-delete" : "Do you really want to delete this mail address ?"
         },
