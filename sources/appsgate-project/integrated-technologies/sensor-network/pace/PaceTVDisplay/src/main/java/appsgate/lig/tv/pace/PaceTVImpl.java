@@ -44,6 +44,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 
 	public PaceTVImpl() {
 		serviceUrl = PROTOCOL+DEFAULT_HOSTNAME+PORT_SEPARATOR+DEFAULT_HTTPPORT+VIDEO_SERVICE;
+		serviceId = IMPL_NAME+"-"+DEFAULT_HOSTNAME;
 	}
 	
 	@Override
@@ -216,6 +217,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		this.port = port;
 		this.factory = factory;
 		serviceUrl = PROTOCOL+hostname+PORT_SEPARATOR+port+VIDEO_SERVICE;
+		serviceId = IMPL_NAME+"-"+hostname;
 	}
 	
 	

@@ -9,7 +9,7 @@
 
         <!-- device kernel meta data -->
         <definition name="serviceId" type="string"
-                    field="serviceId" />
+                    field="serviceId" default=""/>
 
         <!-- device client meta data -->
         <definition name="pictureId" type="string" field="pictureId" />
