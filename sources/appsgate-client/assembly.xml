@@ -1,7 +1,7 @@
 <assembly>
-    <id>distribution.config.base</id>
+    <id>appsgate-client</id>
     <formats>
-        <format>zip</format>
+        <format>jar</format>
     </formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
@@ -11,6 +11,11 @@
 			<includes>
 				<include>**/*</include>
 			</includes>
+                <excludes>
+                    <exclude>**/*.zip</exclude>
+                    <exclude>target/**/*</exclude>
+                    
+                </excludes>			
 		</fileSet>
     </fileSets>
 </assembly>

@@ -23,12 +23,20 @@ deployToAppsGateDistribution.sh
 target
 
 felix-cache
-
+distributions/demo-android/apam*
+distributions/demo-android/bin/**/*
+distributions/demo-android/bundle/**/*
+distributions/demo-android/conf/**/*
+distributions/demo-android/log/**/*
+distributions/demo-android/natives/**/*
+distributions/demo-android/assem*
+distributions/demo-android/load/**/*
 nbaction.xml
 distributions/Appsgate-distribution-light/enocean.db.json
 sources/appsgate-project/communication-components/AppsGate/src/main/resources/WEB/index-TER.html
 sources/appsgate-project/communication-components/AppsGate/src/main/resources/readme.txt
 sources/PhilipsHUE4Appsgate/PhilipsHUEAdapter/.classpath
+sources/appsgate-project/communication-components/EHMIProxyImpl/src/main/resources/WEB/spok/**/*
 
 sources/UPnPMediaServices/.classpath
 

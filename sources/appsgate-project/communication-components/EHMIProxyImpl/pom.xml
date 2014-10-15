@@ -20,15 +20,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>TestingWebArchiveDependency</artifactId>
-			<version>${project.version}</version>
-			<classifier>resources</classifier>
-			<type>zip</type>
-			<!-- Make sure this isn't included on any classpath -->
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>appsgate.components</groupId>
 			<artifactId>EHMIProxySpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -84,13 +75,12 @@
 			<version>${osgi.version}</version>
 		</dependency>
 		
-    <!--    <dependency>
+        <dependency>
             <groupId>appsgate.components</groupId>
             <artifactId>appsgate-client</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
-            <type>zip</type>
-        </dependency>        -->
+            <type>jar</type>
+        </dependency>        
         
 	</dependencies>
 
