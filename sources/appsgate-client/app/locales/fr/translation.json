@@ -229,6 +229,36 @@
             "singular": "Photo"
         },
         "place-label": "Emplacement",
+        "tv": {
+            "action": {
+                "channelup": "TV, Chaine suivante",
+                "channeldown": "TV, Chaine précédente",
+                "resume": "Reprendre lecture sur la TV",
+                "pause": "Mettre en pause la TV",
+                "stop": "Arrêter la lecture sur la TV",
+                "notify": "Afficher un message sur la TV"
+            },
+            "keyboard": {
+                "channelup": "TV, Chaine suivante",
+                "channeldown": "TV, Chaine précédente",
+                "resume": "Reprendre lecture sur la TV",
+                "pause": "Mettre en pause la TV",
+                "stop": "Arrêter la lecture sur la TV",
+                "notify": "Afficher un message sur la TV"
+            },
+            "language": {
+                "channelup": "TV, Chaine suivante",
+                "channeldown": "TV, Chaine précédente",
+                "resume": "Reprendre lecture sur la TV",
+                "pause": "Mettre en pause la TV",
+                "stop": "Arrêter la lecture sur la TV",
+                "notify": "Afficher un message sur la TV"
+            },
+            "name": {
+                "plural": "Les TV",
+                "singular": "TV"
+            }
+        },
         "plug": {
             "action": {
                 "turnOff": "Eteindre",
