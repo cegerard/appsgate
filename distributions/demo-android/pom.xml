@@ -245,16 +245,6 @@
                                     <artifactId>guava-osgi</artifactId>
                                     <version>${guava-osgi.version}</version>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.mnode.ical4j</groupId>
-                                    <artifactId>ical4j</artifactId>
-                                    <version>${ical-version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.knowhowlab.osgi.shell</groupId>
-                                    <artifactId>felix-gogo</artifactId>
-                                    <version>${org.knowhowlab.osgi.shell.felix-gogo.version}</version>
-                                </artifactItem>
                                 
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
@@ -590,7 +580,6 @@
 									<directory>${project.build.directory}/distrib-temp/</directory>
 									<includes>
 										<include>*</include>
-										<include>natives/**/*</include>
 										<include>load/*</include>
 									</includes>
 									<excludes>
@@ -617,6 +606,10 @@
                                     <includes>
                                         <include>*</include>
                                     </includes>
+                                    <excludes>
+                                        <exclude>rxtx*</exclude>
+                                        <exclude>enocean*</exclude>
+                                        </excludes>                                    
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
