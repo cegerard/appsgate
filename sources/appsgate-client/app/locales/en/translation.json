@@ -642,7 +642,9 @@
                 "singular": "Mail"
             },
             "modal" : {
-              "add" : "Add a favorite mail"
+              "add" : "Add a favorite mail",
+              "valid-mail" : "Please choose a valid mail address",
+			  "title" : "Favorite mail"
             },
             "warning-delete" : "Do you really want to delete this mail address ?"
         },

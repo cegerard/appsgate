@@ -642,7 +642,9 @@
                 "singular": "Destinataire mail favori"
             },
             "modal" : {
-              "add" : "Ajouter destinataire favori"
+              "add" : "Ajouter destinataire favori",
+              "valid-mail" : "Merci d'entrer une adresse valide",
+			  "title" : "Destinataire favori"
             },
 			"warning-delete" : "Etes vous sûr de vouloir supprimer cette adresse ?"
         },

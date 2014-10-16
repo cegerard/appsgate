@@ -95,7 +95,7 @@ define([
       v = this.getFavorites();
       var c, found=false;
       for(c in v) {
-          if(obj[c].mail == val) {
+          if(v[c].mail == which) {
               found=true;
               break;
           }
