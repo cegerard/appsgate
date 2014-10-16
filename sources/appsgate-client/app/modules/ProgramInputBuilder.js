@@ -269,8 +269,11 @@ define([
                     param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
                 }
             }
-
+            
             var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);
+            // enabling sup/ing comparator if returnType not a scale
+            param.node.comparatorEnabled = (param.node.leftOperand.returnType !== "scale");
+            
             return leftOp + this.tplComparatorNode(param) + rightOp;
         },
 

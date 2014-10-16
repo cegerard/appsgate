@@ -1,6 +1,8 @@
 <select id="comparator-<%= node.iid %>" class="comparator-select" target-id="<%= node.iid %>">
     <option <% if (node.comparator === '==') { %>selected<% } %> value="==" data-i18n="language.if-equals"></option>
-    <option <% if (node.comparator === '>') { %>selected<% } %> value=">" data-i18n="language.if-sup"></option>
-    <option <% if (node.comparator === '<') { %>selected<% } %> value="<" data-i18n="language.if-inf"></option>
+    <% if (node.comparatorEnabled) {%>
+        <option <% if (node.comparator === '>') { %>selected<% } %> value=">" data-i18n="language.if-sup"></option>
+        <option <% if (node.comparator === '<') { %>selected<% } %> value="<" data-i18n="language.if-inf"></option>
+    <%}%>
     <option <% if (node.comparator === '!=') { %>selected<% } %> value="!=" data-i18n="language.if-dif"></option>
 </select>
