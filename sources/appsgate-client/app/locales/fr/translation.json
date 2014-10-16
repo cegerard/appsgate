@@ -315,6 +315,9 @@
             "name": {
                 "plural": "Capteurs de température",
                 "singular": "Capteur de température"
+            },
+            "event": {
+                "change": "temperature change"
             }
         },
         "type-label": "Type",
