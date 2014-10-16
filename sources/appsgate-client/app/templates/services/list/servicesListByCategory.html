@@ -60,11 +60,11 @@
   <div class="panel panel-default">
     <div class="list-group">
       <%services.getServicesByType()[type].forEach(function(s) { %>
-        <a href="#services/<%= s.get('id') %>" class="list-group-item">
+        <a class="list-group-item">
           <% if (s.get("name") !== "") { %>
             <%= s.get("name") %>
           <% } else { %>
-            <%= s.get("friendlyName") %>
+            <%= s.get("location") %>
           <% } %>
           <%if (type === "103") { %>
         <div class="pull-right">

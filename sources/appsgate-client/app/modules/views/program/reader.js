@@ -11,6 +11,9 @@ define([
     ProgramReaderView = Backbone.View.extend({
       tplEditor: _.template(programEditorTemplate),
       events: {
+        "shown.bs.modal #schedule-program-modal": "initializeModal",
+        "hidden.bs.modal #schedule-program-modal": "toggleModalValue",
+        "click #schedule-program-modal button.valid-button": "validScheduleProgram",
         "click button.start-program-button": "onStartProgramButton",
         "click button.stop-program-button": "onStopProgramButton",
         "click button.cancel-edit-program-button": "onCancelEditProgram",
@@ -35,6 +38,45 @@ define([
         this.listenTo(devices, "change", this.refreshDisplay);
         this.listenTo(services, "change", this.refreshDisplay);
         this.listenTo(dispatcher, "refreshDisplay", this.refreshDisplay);
+      },
+      /**
+       * Clear the input text, hide the error message, check the checkbox and disable the valid button by default
+       */
+      initializeModal: function() {
+          // tell the router that there is a modal
+          appRouter.isModalShown = true;
+      },
+      /**
+       * Tell the router there is no modal anymore
+       */
+      toggleModalValue: function() {
+          appRouter.isModalShown = false;
+      },
+      /**
+       * Check if the name of the program does not already exist. If not, create the program
+       * Hide the modal when done
+       *
+       * @param e JS event
+       */
+      validScheduleProgram: function(e) {
+          var self = this;
+
+          // hide the modal
+          $("#schedule-program-modal").modal("hide");
+
+          if($("input[name='schedule-program']:checked").val() == 'activate') {
+            this.model.scheduleProgram(true,false);
+          } else if ($("input[name='schedule-program']:checked").val() == 'deactivate') {
+            this.model.scheduleProgram(false,true);
+          } else {
+            this.model.scheduleProgram(true,true);
+          }
+
+          // instantiate the program and add it to the collection after the modal has been hidden
+          $("#schedule-program-modal").on("hidden.bs.modal", function() {
+            // tell the router there is no modal any more
+            appRouter.isModalShown = false;
+          });
       },
       /**
       * Callback to start a program

@@ -50,6 +50,15 @@ define([
                             select: function( event, ui ) {
                                 $("#add-weather-modal .valid-button").removeClass("disabled");
                                 $("#add-weather-modal .valid-button").removeClass("valid-disabled");
+                                $( "#weatherInput" ).val( ui.item.label );
+                                $( "#WOEID" ).val( ui.item.woeid );
+                                $( "#NAME" ).val( ui.item.name );
+                                return false;
+                            },
+                            focus: function( event, ui ) {
+                                $("#add-weather-modal .valid-button").removeClass("disabled");
+                                $("#add-weather-modal .valid-button").removeClass("valid-disabled");
+                                $( "#weatherInput" ).val( ui.item.label );
                                 $( "#WOEID" ).val( ui.item.woeid );
                                 $( "#NAME" ).val( ui.item.name );
                                 return false;
@@ -109,13 +118,13 @@ define([
         },
 
         addWeatherName: function() {
-            //var loc = $("#add-weather-modal input[name='woeid']").val();
             // instantiate the place and add it to the collection after the modal has been hidden
             $("#add-weather-modal").on("hidden.bs.modal", function() {
                 // instantiate a model for the new location observer
                 var loc = $("#add-weather-modal input[name='name']").val();
-                var weather = new Weather({location	: loc, id	: 'Weather-Observer-'+Math.round(Math.random() * 10000).toString(), name : loc});
-
+//                var weather = new Weather({location	: loc, id	: 'WeatherObserver-'+Math.round(Math.random() * 10000).toString(), name : loc, type :"103"});
+                var weather = new Weather({location	: loc, id	: 'WeatherObserver-'+loc, name : loc, type :"103"});
+                services.create(weather);
                 weather.save();
 
                 // tell the router that there is no modal any more
@@ -147,7 +156,6 @@ define([
           * Callback when the user has clicked on the button delete.
           */
         onClickDeleteWeather : function(e) {
-            e.preventDefault();
             var self = this;
             // create the popover
             var weatherObserverID = $(e.currentTarget).parents(".pull-right").children(".delete-weather").attr("id");

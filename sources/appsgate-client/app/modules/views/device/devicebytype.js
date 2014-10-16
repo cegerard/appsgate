@@ -270,6 +270,24 @@ define([
             $("#device-" + device.cid + "-status").attr("class","label label-success");
             $("#device-" + device.cid + "-status").attr("data-i18n", "devices.status.connected");
           }
+
+          var allOn = true;
+          var allOff = true;
+          var state = "value";
+          if (this.id == 6) {
+            state = "plugState";
+          }
+          devices.getDevicesByType()[this.id].forEach(function(device) {
+            if (device.get(state) === "true") {
+              allOff = false;
+            } else {
+              allOn = false;
+            }
+          });
+
+          $(".group-on-button").prop("disabled", allOn);
+          $(".group-off-button").prop("disabled", allOff);
+
           // translate the view
           this.$el.i18n();
       },

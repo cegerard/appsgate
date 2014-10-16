@@ -2,42 +2,72 @@
 	<div class="lead" data-i18n="editor.title"></div>
 	<div class="alert alert-info" data-i18n="editor.no-program-alert"></div>
 <% } else { %>
-
 	<div class="lead">
-        <% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "KEEPING" || program.get("runningState") === "PROCESSING") { %>
-        <div id="led-<%= program.get('id') %>" class="led led-yellow pull-left"></div>
-        <% } else if (program.get("runningState") === "DEPLOYED") { %>
-        <div id="led-<%= program.get('id') %>" class="led led-default pull-left"></div>
-        <% } else if (program.get("runningState") === "INVALID") { %>
-        <div id="led-<%= program.get('id') %>" class="led led-orange pull-left"></div>
-        <% } %>
-		<% if (program.get("name") !== "") { %>
-			<%= program.get("name") %>
-		<% } else { %>
-			<em>Programme sans nom</em>
+		<% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "KEEPING" || program.get("runningState") === "PROCESSING") { %>
+			<div id="led-<%= program.get('id') %>" class="led led-yellow pull-left"></div>
+		<% } else if (program.get("runningState") === "DEPLOYED") { %>
+			<div id="led-<%= program.get('id') %>" class="led led-default pull-left"></div>
+		<% } else if (program.get("runningState") === "INVALID") { %>
+			<div id="led-<%= program.get('id') %>" class="led led-orange pull-left"></div>
 		<% } %>
+		<span id="program-name">
+			&nbsp;
+			<% if (program.get("name") !== "") { %>
+				<%= program.get("name") %>
+			<% } else { %>
+				<%= $.i18n.t("programs.program-no-name") %>
+			<% } %>
+		</span>
 
-		<div class="pull-right">
-        <button type="button" id="<%= program.get('id') %>" class="btn btn-default btn-info stop-program-button" data-i18n="programs.action.stop"></button>
-        <button type="button" id="<%= program.get('id') %>" class="btn btn-default btn-info start-program-button" data-i18n="programs.action.start"></button>
+		<div class="alert alert-success hide" data-i18n="editor.valid-program-alert"></div>
+		<div class="alert alert-danger hide" data-i18n="editor.invalid-program-alert"></div>
 
-
+	<div class="btn-toolbar" role="toolbar">
+		<div class="btn-group">
+			<button type="button" id="<%= program.get('id') %>" class="btn btn-default btn-info stop-program-button" data-i18n="programs.action.stop"></button>
+			<button type="button" id="<%= program.get('id') %>" class="btn btn-default btn-info start-program-button" data-i18n="programs.action.start"></button>
+			<button type="button" data-toggle="modal" href="#schedule-program-modal" class="btn btn-default schedule-program-button">
+				<i class="glyphicon glyphicon-calendar"></i><span data-i18n="programs.action.schedule"></span>
+			</button>
+			<button type="button" class="btn btn-default open-calendar-button" data-i18n="programs.action.open-calendar"></button>
+		</div>
+		<div class="btn-group pull-right">
 			<button id="delete-program-popover" class="btn btn-default delete-popover-button" rel="popover" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="programs.delete-program"></span>
 			</button>
 
-            <button id="edit-program-popover" class="btn btn-default edit-popover-button" rel="popover" data-trigger="focus">
-                <i class="glyphicon glyphicon-edit"></i><span data-i18n="programs.edit-program"></span>
-            </button>
-            
-  	</div>
+			<button id="edit-program-popover" class="btn btn-default edit-popover-button" rel="popover" data-trigger="focus">
+				<i class="glyphicon glyphicon-edit"></i><span data-i18n="programs.edit-program"></span>
+			</button>
+		</div>
+	</div>
 	</div>
 
-	<div class="alert alert-success hide" data-i18n="editor.valid-program-alert"></div>
 
-	<div class="alert alert-danger hide" data-i18n="editor.invalid-program-alert"></div>
-
-	<div class="editorWorkspace scrollable">
+	<div class="editorWorkspace scrollable clear">
 		<div class="programInput container"><%= program.get("userInputSource") %></div>
+	</div>
+
+	<!-- modal to add a new place -->
+	<div id="schedule-program-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalScheduleProgram" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button btn" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" data-i18n="modal-schedule-program.title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<input type="radio" name="schedule-radio" value="activate" checked><span data-i18n="modal-schedule-program.schedule-activation"/>&nbsp;<%= program.get("name") %></input><br>
+						<input type="radio" name="schedule-radio" value="deactivate"><span data-i18n="modal-schedule-program.schedule-deactivation"/>&nbsp;<%= program.get("name") %></input><br>
+						<input type="radio" name="schedule-radio" value="both"><span data-i18n="modal-schedule-program.schedule-both"/>&nbsp;<%= program.get("name") %></input>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+					<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+				</div>
+			</div>
+		</div>
 	</div>
 <% } %>
