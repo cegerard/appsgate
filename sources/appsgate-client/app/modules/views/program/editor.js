@@ -39,6 +39,7 @@ define([
         this.listenTo(devices, "remove", this.refreshDisplay);
         this.listenTo(services, "remove", this.refreshDisplay);
         this.listenTo(dispatcher, "refreshDisplay", this.refreshDisplay);
+        this.listenTo(dispatcher, "changeArgValue", this.onChangeArgValue2);
       },
       validEditName: function(e) {
         e.preventDefault();
@@ -330,6 +331,10 @@ define([
         this.Mediator.setNodeArg(iid, index, value);
         // clearing selection
         this.resetSelection();
+      },
+      onChangeArgValue2: function(iid, index, v) {
+        var value = {"type": "String", "value": v};
+        this.Mediator.setNodeArg(iid, index, value);
       },
       onChangeClockValue: function(e) {
         e.stopPropagation();
