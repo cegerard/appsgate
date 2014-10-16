@@ -10,6 +10,7 @@
         "no": "NON"
     },
     "devices": {
+        "no-value":"---",
         "actuator": {
             "action": {
                 "turnOff": "Eteindre",
@@ -493,6 +494,12 @@
         "program-name-empty": "Le nom du programme doit être renseigné.",
         "title": "Renommer programme"
     },
+    "modal-schedule-program": {
+        "title":"Planifier le programme dans l'agenda AppsGate de Google",
+        "schedule-activation":"Planifier l'activation du programme",
+        "schedule-deactivation":"Planifier la désactivation du programme",
+        "schedule-both":"Planifier l'activation et la désactivation du programme"
+    },
     "modal-edit-service": {
         "name-already-existing": "Nom de service déjà existant",
         "name-label": "Nom",
@@ -552,7 +559,9 @@
     "programs": {
         "action": {
             "start": "Activer",
-            "stop": "Désactiver"
+            "stop": "Désactiver",
+            "schedule": "Planifier",
+            "open-calendar":"Voir planification"
         },
         "delete-program": "Supprimer",
         "edit-program": "Editer",
@@ -587,7 +596,8 @@
             "stopped": "Arrêté"
         },
         "warning-program-edition": "Attention, éditer le programme le désactivera",
-        "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?"
+        "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
+        "scheduled-event": "Programme planifié "
     },
     "programs-menu": {
         "add-button": "Ajouter programme"
@@ -629,7 +639,7 @@
                 "singular": "Destinataire mail favori"
             },
             "modal" : {
-              "add" : "Ajouter destinataire favori" 
+              "add" : "Ajouter destinataire favori"
             },
 			"warning-delete" : "Etes vous sûr de vouloir supprimer cette adresse ?"
         },

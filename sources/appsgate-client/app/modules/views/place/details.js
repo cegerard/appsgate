@@ -60,7 +60,7 @@ define([
 
             switch (type) {
               case 0:
-                $("#device-" + device.cid + "-value").text(Math.round(device.get("value")) + "&deg;C");
+                $("#device-" + device.cid + "-value").text(device.getValue() + " &deg;C");
                 break;
               case 1:
                 $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + s.get("label"));
@@ -102,7 +102,7 @@ define([
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.plug.status.turnedOff");
                   $("#device-" + device.cid + "-value").attr("class","label label-default");
                 }
-                $("#device-" + device.cid + "-consumption").text(device.get("consumption") + " W");
+                $("#device-" + device.cid + "-consumption").text(device.getValue() + " W");
                 break;
               case 7:
                 if (device.get("value") === "true" || device.get("value") === true) {

@@ -45,7 +45,7 @@
 				<span data-i18n="places-details.header.consumption-label"></span>
 			</td>
 			<td id="place-energy-consumption">
-				<% if (typeof place.getTotalConsumption() !== "undefined") { %>
+				<% if (place.getTotalConsumption() !== "---") { %>
 					<span class="label-value pull-right"><%= place.getTotalConsumption() %> W</span>
 				<% } else { %>
 					<span class="label label-default pull-right" data-i18n="places-details.no-plugs"></span>
@@ -92,7 +92,7 @@
 				<% } else { %>
 					<span id="device-<%= s.cid %>-status" class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
-				<span id="device-<%= s.cid %>-value" class="label-value"><%= Math.round(s.get("value")) %>&deg;C</span>
+				<span id="device-<%= s.cid %>-value" class="label-value"><%= s.getValue() %> &deg;C</span>
 			</a>
 		<% }) %>
 	</div>

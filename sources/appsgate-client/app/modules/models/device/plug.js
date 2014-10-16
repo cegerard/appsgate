@@ -124,7 +124,16 @@ define([
       } else {
         this.remoteControl("off", []);
       }
-    }
+    },
+    getValue: function () {
+          value=parseInt(this.get("consumption"));
+
+          if (value != -1 ){
+              return value;
+          }
+
+          return $.i18n.t("devices.no-value");
+      }
   });
   return Plug;
 });

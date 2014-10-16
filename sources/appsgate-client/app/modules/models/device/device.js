@@ -126,8 +126,10 @@ define([
         },
         emergencyStop:function(method,model) {
           this.remoteControl("off", []);
+        },
+        getValue: function () {
+            return "[No Value]";
         }
-
     });
     return Device;
 });
