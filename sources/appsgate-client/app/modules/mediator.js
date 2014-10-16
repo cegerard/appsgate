@@ -412,7 +412,7 @@ define([
 			source: services.getCoreMail().getFavoriteArray(),
 			minLength: 0,
 			close: function(event, ui) {
-			  dispatcher.trigger("changeArgValue", $(this).attr("target-id"), $(this).attr("target-index"), event.currentTarget.innerText);
+			  dispatcher.trigger("changeArgValue", $(this).attr("target-id"), $(this).attr("target-index"), $(this).val());
 			  
 			}
 		  });
