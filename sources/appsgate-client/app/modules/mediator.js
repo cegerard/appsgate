@@ -410,7 +410,11 @@ define([
 		if (services.getCoreMail() != undefined) {
 		  $(input).find(".mailInput").autocomplete({
 			source: services.getCoreMail().getFavoriteArray(),
-			minLength: 0
+			minLength: 0,
+			close: function(event, ui) {
+			  dispatcher.trigger("changeArgValue", $(this).attr("target-id"), $(this).attr("target-index"), event.currentTarget.innerText);
+			  
+			}
 		  });
 		}
 
