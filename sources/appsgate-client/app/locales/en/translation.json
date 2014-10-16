@@ -600,7 +600,7 @@
         },
         "warning-program-edition": "Warning, edit program will deactivate it",
         "warning-program-delete": "Do you really want to delete this program ?",
-        "scheduled-event": "Scheduled program "
+        "scheduled-event": "Appsgate program "
     },
     "programs-menu": {
         "add-button": "Add Program"
