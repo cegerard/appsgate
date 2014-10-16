@@ -63,7 +63,7 @@ define([
                 $("#device-" + device.cid + "-value").text(device.getValue() + " &deg;C");
                 break;
               case 1:
-                $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + s.get("label"));
+                $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + device.get("label"));
                 break;
               case 2:
                 if (device.get("buttonStatus") === "true") {
