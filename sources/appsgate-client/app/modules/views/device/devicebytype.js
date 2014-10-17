@@ -211,10 +211,12 @@ define([
               $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOff");
               $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOn");
               $("#device-" + device.cid + "-value").attr("class", "label label-yellow");
+              $("#device-" + device.cid + "-color-information").attr("data-i18n", "devices.lamp.color-information.currentColor");
             } else {
               $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOn");
               $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOff");
               $("#device-" + device.cid + "-value").attr("class", "label label-default");
+              $("#device-" + device.cid + "-color-information").attr("data-i18n", "devices.lamp.color-information.lastColor");
             }
             $("#device-" + device.cid + "-color").attr("style", "background-color:" + device.getCurrentColor());
             break;
