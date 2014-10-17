@@ -124,7 +124,7 @@ define([
          * @return Average illumination of the place if any illumination sensor, undefined otherwise
          */
         getAverageIllumination: function() {
-            return this.getAverageValue(this.getIlluminationSensors(),-1);
+            return this.getAverageValue(this.getIlluminationSensors(),9999);
         },
         /**
          * Compute the average consumption of the place from the plugs in the place
