@@ -176,6 +176,11 @@ body {
     text-align: center;
 }
 
+.img-service-title {
+    height: 2em;
+    vertical-align: middle;
+}
+
 .row {
   margin-right:0px;
 }
