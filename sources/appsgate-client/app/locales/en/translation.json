@@ -307,7 +307,8 @@
                 "intern": "Internal temperature sensor"
             },
             "keyboard": {
-                "get": "temperetaure measured by ..."
+                "get": "temperetaure measured by ...",
+                "change": "temperature of ... changes"
             },
             "language": {
                 "get": "temperetaure measured by __myVar__"
@@ -317,7 +318,7 @@
                 "singular": "Temperature sensor"
             },
             "event": {
-                "change": "temperature changes"
+                "change": "temperature of __myVar__ changes"
             }
         },
         "type-label": "Type",

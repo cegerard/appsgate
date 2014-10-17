@@ -307,7 +307,8 @@
                 "intern": "Capteur de température intérieur"
             },
             "keyboard": {
-                "get": "la température mesurée par ..."
+                "get": "la température mesurée par ...",
+                "change": "la température de ... change"
             },
             "language": {
                 "get": "la température de __myVar__"
@@ -317,7 +318,7 @@
                 "singular": "Capteur de température"
             },
             "event": {
-                "change": "temperature change"
+                "change": "la température de __myVar__ change"
             }
         },
         "type-label": "Type",
