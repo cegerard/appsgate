@@ -371,7 +371,7 @@
 				<% } else { %>
 					<span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
 				<% } %>
-				<span id="device-<%= s.cid %>-consumption" class="label-value"><%= s.get("consumption") %> W</span>
+				<span id="device-<%= s.cid %>-consumption" class="label-value"><%= s.getValue() %> W</span>
 			</a>
 		<% }) %>
 	</div>

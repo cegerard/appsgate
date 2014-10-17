@@ -58,28 +58,28 @@ define([
 
             if(isNaN(total)) return total;
 
-            var valid=this.getCountCallback(sensors,function(a){ if(a!=invalidReturn) return true; else return false;});
+            var valid=this.getCountCallback(sensors,function(a){ if(a!=invalidReturn) return true; else return false;}).length;
 
             return Math.round(total / valid);
 
         },
         getCountCallback: function(sensors,callb){
-            var total = 0;
-            sensors.forEach(function(s) {
+            var devs = [];
+                sensors.forEach(function(s) {
                 if (typeof s.get("value") !== "undefined") {
                     value=parseInt(s.get("value"));
                     if(callb(value)){
-                        total += 1;
+                        devs.push(s);
                     }
                 } else {
                     value=parseInt(s.get("consumption"));
                     if(callb(value)){
-                        total += 1;
+                        devs.push(s);
                     }
 
                 }
             });
-            return total;
+            return devs;
         },
         /**
          * Compute the average value of given sensors
@@ -92,20 +92,21 @@ define([
             var valid=this.getCountCallback(sensors,function(a){if(a!=invalidReturn) return true; else return false;});
 
             //If there are only invalid values (not yet fetched) OR there are no sensors return default display value
-            if(valid==0 || sensors.length === 0 ){
+            if(valid.length==0){
                 return "---";
             }
 
             var total = 0;
-            sensors.forEach(function(s) {
+
+            valid.forEach(function(s) {
                 if (typeof s.get("value") !== "undefined") {
                     value=parseFloat(s.get("value"));
-                    total += value;
                 } else {
                     value=parseFloat(s.get("consumption"));
-                    total += value;
                 }
+                total += value;
             });
+
 
             return total;
         },
