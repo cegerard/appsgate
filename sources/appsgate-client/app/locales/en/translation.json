@@ -541,7 +541,7 @@
     "places-details": {
         "body": {
             "device-no-name": "Device unnamed",
-            "no-device-in-place": "No device assigned to this room."
+            "no-device-in-place": "No device in this room."
         },
         "header": {
             "consumption-label": "Consumption",

@@ -541,7 +541,7 @@
     "places-details": {
         "body": {
             "device-no-name": "Equipement sans nom",
-            "no-device-in-place": "Aucun equipement n'est assigné dans ce lieu de vie."
+            "no-device-in-place": "Aucun équipement ne se trouve dans ce lieu de vie"
         },
         "header": {
             "consumption-label": "Consommation",
