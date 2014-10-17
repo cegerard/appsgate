@@ -226,12 +226,15 @@ define([
          */
         validMail: function(e) {
             var mail = $("#edit-mail-modal input[name='inputValue']").val();
-            if (mail.length > 9) {
+            var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (regex.test(mail)) {
                 $("#edit-mail-modal .valid-button").removeClass("disabled");
                 $("#edit-mail-modal .valid-button").removeClass("valid-disabled");
+                $("#edit-mail-modal .text-danger").addClass("hide");
             } else {
                 $("#edit-mail-modal .valid-button").addClass("disabled");
                 $("#edit-mail-modal .valid-button").addClass("valid-disabled");
+                $("#edit-mail-modal .text-danger").removeClass("hide");
             }
         },
 

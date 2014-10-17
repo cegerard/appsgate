@@ -40,6 +40,7 @@ define([
           $(btn).append("<span data-i18n='devices.illumination.keyboard.get'><span>");
           v.methodName = "getCurrentIlluminationLabel";
           v.returnType = "scale";
+          v.unit = "lux";
           v.phrase = "devices.illumination.language.get";
           $(btn).attr("json", JSON.stringify(v));
           break;
@@ -55,31 +56,45 @@ define([
             [
                     {
                         "value" : "lowest",
-                        "label" : "devices.illumination.scale.lowest"
+                        "label" : "devices.illumination.scale.lowest",
+                        "minValue": 0,
+                        "maxValue": 49,
                     },
                     {
                         "value" : "veryLow", 
-                        "label" : "devices.illumination.scale.veryLow"
+                        "label" : "devices.illumination.scale.veryLow",
+                        "minValue": 50,
+                        "maxValue": 149,
                     },
                     {
                         "value" : "low",
-                        "label" : "devices.illumination.scale.low"
+                        "label" : "devices.illumination.scale.low",
+                        "minValue": 150,
+                        "maxValue": 249,
                     },
                     {
                         "value" : "medium",
-                        "label" : "devices.illumination.scale.medium"
+                        "label" : "devices.illumination.scale.medium",
+                        "minValue": 250,
+                        "maxValue": 499,
                     },
                     {
                         "value" : "high",
-                        "label" : "devices.illumination.scale.high"
+                        "label" : "devices.illumination.scale.high",
+                        "minValue": 500,
+                        "maxValue": 999,
                     },
                     {
                         "value" : "veryHigh",
-                        "label" : "devices.illumination.scale.veryHigh"
+                        "label" : "devices.illumination.scale.veryHigh",
+                        "minValue": 1000,
+                        "maxValue": 1999,
                     },
                     {
                         "value" : "highest",
-                        "label" : "devices.illumination.scale.highest"
+                        "label" : "devices.illumination.scale.highest",
+                        "minValue": 2000,
+                        "maxValue": 30000,
                     }
                 ];
         return arrayScale;

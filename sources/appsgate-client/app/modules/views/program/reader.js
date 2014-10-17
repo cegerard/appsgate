@@ -22,7 +22,7 @@ define([
         "click button.delete-program-button": "onDeleteProgramButton",
         "click button.delete-popover-button": "onClickDeleteProgram",
         "click button.cancel-delete-program-button": "onCancelDeleteProgram",
-
+        "click button.open-calendar-button":"openCalendar",
       },
       /**
       * @constructor
@@ -76,7 +76,13 @@ define([
           $("#schedule-program-modal").on("hidden.bs.modal", function() {
             // tell the router there is no modal any more
             appRouter.isModalShown = false;
+
+            window.open("https://www.google.com/calendar");
+
           });
+      },
+      openCalendar: function(e) {
+          window.open("https://www.google.com/calendar");
       },
       /**
       * Callback to start a program
