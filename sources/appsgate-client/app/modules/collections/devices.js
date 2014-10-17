@@ -34,7 +34,7 @@ define([
             dispatcher.on("listDevices", function(devices) {
                 _.each(devices, function(device) {
                     if (device) {
-                        self.addDevice(device);
+                        self.addDevice(device, true);
                     }
                 });
                 dispatcher.trigger("devicesReady");
@@ -42,7 +42,7 @@ define([
 
             // listen to the backend notifying when a device appears and add it
             dispatcher.on("newDevice", function(device) {
-                self.addDevice(device);
+                self.addDevice(device, false);
             });
 
             dispatcher.on("removeDevice", function(device) {
@@ -63,7 +63,7 @@ define([
          *
          * @param device
          */
-        addDevice: function(brick) {
+        addDevice: function(brick, list) {
             var self = this;
             var device = null;
             brick.type = parseInt(brick.type);
@@ -113,16 +113,20 @@ define([
                 self.templates['event'][brick.type] = device.getTemplateEvent();
                 self.templates['state'][brick.type] = device.getTemplateState();
                 self.templates['property'][brick.type] = device.getTemplateProperty();
-                self.add(device);
+
                 //code
-                if(typeof brick.placeId !== "undefined"){
-                  places.get(brick.placeId).get("devices").push(brick.id);
-                  places.get(brick.placeId).trigger('change');
+                if(list){
+                  if(typeof brick.placeId !== "undefined"){
+                    places.get(brick.placeId).get("devices").push(brick.id);
+                    places.get(brick.placeId).trigger('change');
+                  }
+                  else{
+                    places.get("-1").get("devices").push(brick.id);
+                    places.get("-1").trigger('change');
+                  }
                 }
-                else{
-                  places.get("-1").get("devices").push(brick.id);
-                  places.get("-1").trigger('change');
-                }
+
+                self.add(device);
             }
         },
         /**

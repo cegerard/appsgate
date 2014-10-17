@@ -528,7 +528,7 @@
     },
     "navbar": {
         "button-settings": "Preferences",
-        "debugger": "Debugger",
+        "debugger": "History",
         "devices": "Devices",
         "edit": "Edit",
         "emergency-stop": "Emergency stop",

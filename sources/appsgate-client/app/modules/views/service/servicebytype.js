@@ -38,6 +38,9 @@ define([
                 self.listenTo(service, "change", self.render);
                 self.listenTo(service, "remove", self.render);
             });
+
+            self.listenTo(services, "add", self.reload);
+
             dispatcher.on("checkLocation", function(l) {
 
                 if (l!= undefined ) {
@@ -70,6 +73,14 @@ define([
                     console.warn(l);
                 }
             });
+        },
+        reload: function() {
+          services.getServicesByType()[this.id].forEach(function(service) {
+              self.listenTo(service, "change", self.render);
+              self.listenTo(service, "remove", self.render);
+          });
+
+          this.render();
         },
         /**
          * Render the list
@@ -133,7 +144,7 @@ define([
             });
 
             // hide the modal
-            
+
             $("#add-weather-modal").modal("hide");
         },
         /**
@@ -209,9 +220,9 @@ define([
             mail.removeFavorite($(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email"))
             appRouter.navigate("#services/types/102", {trigger: true});
         },
-        
+
         /**
-         * 
+         *
          */
         updateMailButton : function(e) {
             var m = $(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email");
@@ -254,7 +265,7 @@ define([
             });
 
             // hide the modal
-            
+
             $("#edit-mail-modal").modal("hide");
         }
 

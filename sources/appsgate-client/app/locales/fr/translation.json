@@ -528,7 +528,7 @@
     },
     "navbar": {
         "button-settings": "Préférences",
-        "debugger": "Comprendre",
+        "debugger": "Historique",
         "devices": "Equipements",
         "edit": "Editer",
         "emergency-stop": "Tout stopper",

@@ -110,7 +110,7 @@
             </div>
             <div class="list-group">
                 <% place.getTypeSensors(type).forEach(function(s) { %>
-                <a href="#devices/<%= s.get('id') %>" class="list-group-item">
+                <a id="<%= s.get('id') %>" href="#devices/<%= s.get('id') %>" class="list-group-item">
                     <span id="device-<%= s.cid %>-name">
                     <% if (s.get("name") !== "") { %>
                     <%= s.get("name") %>
@@ -250,7 +250,7 @@
             </div>
             <div class="list-group">
                 <% place.getTypeSensors(type).forEach(function(s) { %>
-                <a href="#devices/<%= s.get('id') %>" class="list-group-item">
+                <a id="<%= s.cid %>" href="#devices/<%= s.get('id') %>" class="list-group-item">
                     <% if (s.get("name") !== "") { %>
                     <%= s.get("name") %>
                     <% } else { %>
