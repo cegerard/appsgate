@@ -150,7 +150,7 @@ define([
           */
         onCancelDeletePopover : function() {
             // destroy the popover
-            this.$el.find(".delete-popover").popover('destroy');
+            this.$el.find(".delete-weather").popover('destroy');
         },
         /**
           * Callback when the user has clicked on the button delete.
