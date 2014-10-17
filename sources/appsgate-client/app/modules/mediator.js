@@ -74,20 +74,13 @@ define([
       */
       setCurrentPos: function(id) {
         if (id) {
-		      var n = this.Grammar.parse(this.programJSON, id);
-          if (n != null) {
-            console.debug("Setting current_pos to: " + n.id);
-           this.currentNode = n.id;
-          } else {
-            console.debug("Setting current_pos to: " + id);
-			      this.currentNode = id;
-		      }
+		  this.currentNode = this.Grammar.getCurrentNode(this.programJSON, id);
         } else {
           this.currentNode = -1;
           console.error("A non valid pos has been passed to setCurrent pos: " + id);
 		  return;
         }
-        dispatcher.trigger("refreshDisplay");
+        //dispatcher.trigger("refreshDisplay");
       },
       /**
       * method that set the cursor and build keyboard
@@ -176,7 +169,7 @@ define([
 
         // reset the selection because a node was added
         this.setCurrentPos(-1);
-        dispatcher.trigger("refreshDisplay");
+        //dispatcher.trigger("refreshDisplay"); // Non necessaire, setCurrentPos fait déjà un trigger
       },
       /**
       * Method to append a node to the program
@@ -444,7 +437,6 @@ define([
        *
        */
       buildKeyboard: function() {
-        console.debug("buildKeyboard")
         var n = this.Grammar.parse(this.programJSON, this.currentNode);
 		if (n === null) {
 		  console.error("Unable to parse the program");
@@ -474,8 +466,8 @@ define([
 	  /**
 	   * Return whether the program is empty
 	   */
-      isProgramEmpty:function(){
-        return (this.programJSON.rules.length === 1 && this.programJSON.rules[0].type === "empty");
+	  isProgramEmpty:function(){
+		return this.Grammar.isProgramEmpty(this.programJSON);
       }
     });
     return ProgramMediator;

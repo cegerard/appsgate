@@ -23,6 +23,7 @@ define([
          * @param ex
          */
         buildKeyboard: function(ex) {
+            console.debug("Build the Keyboard !!!");
             $(".expected-elements").html(this.tplExpectedInput());
 
             nodes = ex.expected;

@@ -34,6 +34,7 @@ define([
       initialize: function() {
         this.Mediator = new Mediator();
         this.Mediator.loadProgramJSON(this.model.get("body"), this.model.get("id"));
+        this.refreshing = false;
 
         this.listenTo(this.model, "change", this.refreshDisplay);
         this.listenTo(devices, "remove", this.refreshDisplay);
@@ -130,6 +131,7 @@ define([
           button = button.parentNode;
         }
         this.Mediator.addNodeFromButton(button);
+        dispatcher.trigger("refreshDisplay");
       },
       /**
        * Method to handle event on a button click in the input area
@@ -155,6 +157,7 @@ define([
             this.Mediator.removeNode(button.id);
           } else {
             this.Mediator.setCurrentPos(button.id);
+            dispatcher.trigger("refreshDisplay");
           }
         }
       },
@@ -358,7 +361,11 @@ define([
         this.refreshDisplay();
       },
       refreshDisplay: function(e) {
+        if (this.refreshing) {
+          return;
+        }
         if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
+          this.refreshing = true;
           this.Mediator.buildInputFromJSON();
           this.Mediator.buildKeyboard();
           if (!this.Mediator.isValid) {
@@ -377,6 +384,7 @@ define([
             $(".led").addClass("led-orange").removeClass("led-default");
             $(".programNameInput").removeClass("valid-program");
           }
+          this.refreshing = false;
         }
       },
       applyEditMode: function() {
