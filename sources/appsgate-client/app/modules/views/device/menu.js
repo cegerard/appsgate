@@ -33,9 +33,8 @@ define([
       * Method called when a device has changed
       * @param model Model that changed, Device in that cas
       * @param collection Collection that holds the changed model
-      * @param options Options given with the change event
       */
-      onChangedDevice: function(model, options) {
+      onChangedDevice: function(model) {
         var types = devices.getDevicesByType();
         this.$el.find("#side-" + model.get("type")).replaceWith(this.tplDeviceContainer({
           type: "" + model.get("type"),

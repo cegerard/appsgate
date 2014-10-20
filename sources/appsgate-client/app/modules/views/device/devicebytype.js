@@ -24,6 +24,7 @@ define([
       */
       initialize: function() {
         var self = this;
+        self.listenTo(devices, "add", self.reload);
         devices.getDevicesByType()[this.id].forEach(function(device) {
           self.listenTo(device, "change", self.autoupdate);
           self.listenTo(device, "remove", self.render);
@@ -156,6 +157,7 @@ define([
       },
       autoupdate: function(device) {
         var type = device.get("type");
+        if($("#"+type).find(".list-group-item #"+device.cid).length > 0){
         var place = places.get(device.get("placeId"));
 
         this.$el.find("#place-name-span").html(place.getName() !== "" ?place.getName() : $.i18n.t(places-details.place-no-name));
@@ -211,10 +213,12 @@ define([
               $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOff");
               $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOn");
               $("#device-" + device.cid + "-value").attr("class", "label label-yellow");
+              $("#device-" + device.cid + "-color-information").attr("data-i18n", "devices.lamp.color-information.currentColor");
             } else {
               $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOn");
               $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOff");
               $("#device-" + device.cid + "-value").attr("class", "label label-default");
+              $("#device-" + device.cid + "-color-information").attr("data-i18n", "devices.lamp.color-information.lastColor");
             }
             $("#device-" + device.cid + "-color").attr("style", "background-color:" + device.getCurrentColor());
             break;
@@ -254,7 +258,6 @@ define([
                 activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-meal.png' width='18px' class='img-responsive'>";
                 break;
               default:
-                //TODO
                 break;
             }
             this.$el.find("#device-" + device.cid + "-value").replaceWith(activeFace);
@@ -290,6 +293,18 @@ define([
 
           // translate the view
           this.$el.i18n();
+        } else {
+          this.render();
+        }
+      },
+      reload: function() {
+        var self = this;
+        devices.getDevicesByType()[this.id].forEach(function(device) {
+          self.listenTo(device, "change", self.autoupdate);
+          self.listenTo(device, "remove", self.render);
+        });
+
+        this.render();
       },
       /**
       * Render the list

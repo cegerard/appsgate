@@ -124,7 +124,7 @@
             "scale": {
                 "high": "High luminosity",
                 "highest": "Sunlight",
-                "low": "Low luminosity",
+                "low": "Absent or low luminosity",
                 "lowest": "Night",
                 "medium": "Medium luminosity",
                 "veryHigh": "Very high lunimosity",
@@ -307,7 +307,8 @@
                 "intern": "Internal temperature sensor"
             },
             "keyboard": {
-                "get": "temperetaure measured by ..."
+                "get": "temperetaure measured by ...",
+                "change": "temperature of ... changes"
             },
             "language": {
                 "get": "temperetaure measured by __myVar__"
@@ -317,7 +318,7 @@
                 "singular": "Temperature sensor"
             },
             "event": {
-                "change": "temperature changes"
+                "change": "temperature of __myVar__ changes"
             }
         },
         "type-label": "Type",
@@ -527,7 +528,7 @@
     },
     "navbar": {
         "button-settings": "Preferences",
-        "debugger": "Debugger",
+        "debugger": "History",
         "devices": "Devices",
         "edit": "Edit",
         "emergency-stop": "Emergency stop",
@@ -541,7 +542,7 @@
     "places-details": {
         "body": {
             "device-no-name": "Device unnamed",
-            "no-device-in-place": "No device assigned to this room."
+            "no-device-in-place": "No device in this room."
         },
         "header": {
             "consumption-label": "Consumption",

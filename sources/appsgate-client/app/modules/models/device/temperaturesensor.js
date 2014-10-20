@@ -52,7 +52,7 @@ define([
           var v = this.getJSONEvent("mandatory");
           switch (evt) {
               case "value-changed":
-                  $(btn).append("<span data-i18n='devices.temperature.event.change'></span>");
+                  $(btn).append("<span data-i18n='devices.temperature.keyboard.change'></span>");
                   v.eventName = "change";
                   v.eventValue = "true";
                   v.phrase = "devices.temperature.event.change";
