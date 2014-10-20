@@ -96,9 +96,6 @@ define(function(require, exports, module) {
       this.currentView = view;
       this.currentView.render();
     },
-    translateNavbar:function(){
-      $(".navbar").i18n();
-    },
     updateLocale:function(locale) {
       this.locale = locale;
 

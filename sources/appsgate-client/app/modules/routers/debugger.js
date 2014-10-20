@@ -39,8 +39,6 @@ define([
 
             $(".nav-item").removeClass("active");
             $("#home-nav").addClass("active");
-
-            appRouter.translateNavbar();
         }
     });
     return DebuggerRouter;

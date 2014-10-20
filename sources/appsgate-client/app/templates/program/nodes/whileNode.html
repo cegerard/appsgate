@@ -23,7 +23,9 @@
     <div class="active-node-indicator hidden" id="active-<%= node.rules.state.iid %>" target-node="<%= node.rules.state.iid %>" parent-node="<%= node.iid %>"><i class="glyphicon glyphicon-arrow-right"></i></div>
     <span class='link-span' name="keep" data-i18n="language.keep-keyword"></span>
       <%=engine.buildInputFromNode(node.rules, currentNode) %>
-    <span class='link-span' name="keep" data-i18n="language.keep-then"></span>
+    <% if ( node.rulesThen != undefined) { %>
+    <span class='link-span while-keep-then' name="keep" data-i18n="language.keep-then"></span>
+    <% } %>
   </div>
   <% if ( node.rulesThen != undefined) { %>
   <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node seq-block-node"<% } else { %> class="main-block-node seq-block-node" <% } %>>

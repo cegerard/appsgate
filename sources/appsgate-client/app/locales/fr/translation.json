@@ -419,6 +419,7 @@
         "keep-keyword": "Maintenir",
         "keep-then": "Ensuite",
         "mandatory-keyword": "Obligatoire",
+        "mandatory-readonly": "...",
         "nothing-keyword": "Rien",
         "only-once": "Une seule fois",
         "op-and-bool": "et",

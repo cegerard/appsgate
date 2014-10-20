@@ -50,8 +50,6 @@ define([
 
           $(".nav-item").removeClass("active");
           $("#devices-nav").addClass("active");
-
-          appRouter.translateNavbar();
         },
         /**
         * Display all the devices of a given type
@@ -60,11 +58,6 @@ define([
         */
         deviceByType: function(typeId) {
           appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
-
-          $(".nav-item").removeClass("active");
-          $("#devices-nav").addClass("active");
-
-          appRouter.translateNavbar();
         },
         /**
         * Show the details of a device
@@ -109,11 +102,6 @@ define([
             appRouter.showDetailsView(new DomiCubeView({model:device}));
             break;
           }
-
-          $(".nav-item").removeClass("active");
-          $("#devices-nav").addClass("active");
-
-          appRouter.translateNavbar();
         }
       });
       return DeviceRouter;

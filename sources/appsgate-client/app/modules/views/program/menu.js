@@ -39,6 +39,8 @@ define([
               active: Backbone.history.fragment.split("/programs")[1] === model.get("name") ? true : false
           }));
 
+          this.updateSideMenu();
+
           // translate the view
           this.$el.i18n();
         },
@@ -54,8 +56,10 @@ define([
 
             if (typeof e !== "undefined") {
                 $(e.currentTarget).addClass("active");
-            } else {
+            } else if(Backbone.history.fragment.split("/")[1] !== ""){
                 $("#side-" + Backbone.history.fragment.split("/")[1]).addClass("active");
+            } else {
+                this.$el.find(".list-group .list-group-item:first").addClass("active");
             }
         },
         /**
@@ -205,9 +209,6 @@ define([
 
                 // we add all elements all at once to avoid rendering them individually and thus reflowing the dom several times
                 this.$el.html(container);
-
-                // set active the current menu item
-                this.updateSideMenu();
 
                 // translate the view
                 this.$el.i18n();
