@@ -60,8 +60,7 @@ define([
 
             var valid=this.getCountCallback(sensors,function(a){ if(a!=invalidReturn) return true; else return false;}).length;
 
-            return Math.round(total / valid);
-
+            return sensors[0].getFormatAverage(Math.round(total / valid));
         },
         getCountCallback: function(sensors,callb){
             var devs = [];

@@ -129,6 +129,9 @@ define([
         },
         getValue: function () {
             return "[No Value]";
+        },
+        getFormatAverage: function (value) {
+            return value;
         }
     });
     return Device;

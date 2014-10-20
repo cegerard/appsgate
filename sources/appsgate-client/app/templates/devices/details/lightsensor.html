@@ -2,9 +2,6 @@
     <strong data-i18n="devices.value-label"></strong>
     <div id="light-sensor-value" class="pull-right label-value">
          <%= $.i18n.t("devices.illumination.scale." + device.get("label")) %>&nbsp;:&nbsp; 
-         <% if (device.get( "value") === "300") { %>
-             &lt;=
-         <% } %>
          <%= device.getValue() %>&nbsp;Lux
     </div>
 </li>

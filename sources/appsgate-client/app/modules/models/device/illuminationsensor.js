@@ -96,7 +96,14 @@ define([
           }
 
           return $.i18n.t("devices.no-value");
-      }
+      },
+    getFormatAverage: function(value) {
+          if (value === 300) {
+              return " <= " + value;
+          } else {
+              return value;
+          }
+    }
   });
   return IlluminationSensor;
 });
