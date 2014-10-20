@@ -211,7 +211,7 @@ define([
           $(".programInput").html(input).addClass("read-only");
           $(".input-spot:not(.mandatory-spot)").remove();
           $(".mandatory-spot").text($.i18n.t("language.mandatory-readonly"));
-          $(".rules-node").find(".separator").remove();
+          $(".rules-node").find(".separator").addClass("separator-hidden");
 
           var test = $(".while-keep-then").parent().next();
 

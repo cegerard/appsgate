@@ -47,6 +47,7 @@
                 "non_authorized": "badge is NOT authorized on"
             }
         },
+        "avg" : "Avg : ",
         "clock": {
             "name": {
                 "no-name": "System clock unnamed",
@@ -275,6 +276,7 @@
             "waiting": "Waiting"
         },
         "status-label": "Status",
+        "sum" : "Sum : ",
         "switch": {
             "keyboard": {
                 "pushed-bottom": "push bottom button of ...",
@@ -546,8 +548,8 @@
             "no-device-in-place": "No device in this room."
         },
         "header": {
-            "consumption-label": "Consumption",
-            "device-number-title": "Total number of devices in the place",
+            "consumption-label": "Total current consumption :",
+            "device-number-title": "Total number of devices in the place :",
             "illumination-label": "Brightness",
             "temperature-label": "Temperature"
         },
