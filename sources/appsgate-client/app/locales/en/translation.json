@@ -124,7 +124,7 @@
             "scale": {
                 "high": "High luminosity",
                 "highest": "Sunlight",
-                "low": "Low luminosity",
+                "low": "Absent or low luminosity",
                 "lowest": "Night",
                 "medium": "Medium luminosity",
                 "veryHigh": "Very high lunimosity",

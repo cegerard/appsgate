@@ -46,6 +46,9 @@
 					<span data-i18n="devices.illumination.name.plural"></span>
 				<% } %>
 				<span class="label-value">
+                    <% if (place.getAverageIllumination() === 300) { %>
+                             &lt;=
+                        <% } %>
 					<%= place.getAverageIllumination() %> Lux
 				</span>
 			</td>

@@ -124,7 +124,7 @@
             "scale": {
                 "high": "Luminosité forte",
                 "highest": "Plein soleil",
-                "low": "Luminosité faible",
+                "low": "Luminosité nulle à faible",
                 "lowest": "Nuit",
                 "medium": "Luminosité moyenne",
                 "veryHigh": "Luminosité très forte",

@@ -88,13 +88,11 @@ public class EnoceanLuminositySensorImpl extends CoreObjectBehavior implements C
 
     public enum ScaleLuminosity {
 
-        lowest("lowest", 0, 49),
-        veryLow("veryLow", 50, 149),
-        low("low", 150, 249),
-        medium("medium", 250, 499),
-        high("high", 500, 999),
-        veryHigh("veryHigh", 1000, 1999),
-        highest("highest", 2000, 30000);
+        low("low", 0, 300),
+        medium("medium", 301, 500),
+        high("high", 501, 1000),
+        veryHigh("veryHigh", 1001, 2000),
+        highest("highest", 2001, 30000);
 
         public String label;
         public int minValue;
