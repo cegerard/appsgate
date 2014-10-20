@@ -121,7 +121,12 @@
 				<% if (type === "0") { %>
                     <span class="label-value"><%= place.getAverageTemperature() %> &deg;C</span>
 				<% } else if (type === "1") { %>
-					<span class="label-value"><%= place.getAverageIllumination() %> Lux</span>
+					<span class="label-value">
+                        <% if (place.getAverageIllumination() === 300) { %>
+                             &lt;=
+                        <% } %>
+                        <%= place.getAverageIllumination() %> Lux
+                    </span>
 				<% } else if (type === "6") { %>
                         <span class="label-value"><%= place.getTotalConsumption() %> W</span>
 				<% } %>
