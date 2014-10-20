@@ -133,14 +133,10 @@ public class Trace {
     		}
     		
     	} else if (type.equalsIgnoreCase("SmartPlug")){
-    		if(varName.equalsIgnoreCase("plugState")){
-    			if(value.equalsIgnoreCase("true")){
-    				picto = PICTO_TABLE.SMARTPLUG_STATE_ON.stringify();
-    			} else {
-    				picto = PICTO_TABLE.SMARTPLUG_STATE_OFF.stringify();
-    			}
-    		} else {
-    			picto = PICTO_TABLE.SMARTPLUG_TYPE.stringify();
+    		if(fullState.getString("plugState").equalsIgnoreCase("true")){
+    			picto = PICTO_TABLE.SMARTPLUG_STATE_ON.stringify();
+    		}else{
+    			picto = PICTO_TABLE.SMARTPLUG_STATE_OFF.stringify();
     		}
     	}
     	
