@@ -459,6 +459,11 @@ fieldset[disabled] .btn {
   margin-left:15px !important;
 }
 
+.separator-hidden {
+  opacity:0 !important;
+  height:0px !important;
+}
+
 .link-span {
   color:#428BCA;
   font-size:14px;
