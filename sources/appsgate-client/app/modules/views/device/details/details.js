@@ -23,12 +23,20 @@ define([
       DeviceDetailsView.__super__.initialize.apply(this, arguments);
 
       this.listenTo(this.model, "change", this.autoupdate);
+      this.listenTo(this.model, "remove", this.onRemove);
     },
     /**
      * Return to the previous view
      */
     onBackButton: function() {
       window.history.back();
+    },
+    /**
+     * Called when the model is removed from the collection
+     */
+    onRemove: function() {
+      var type = this.model.get("type");
+      appRouter.navigate("#devices/types/" + type, {trigger: true});
     },
     /**
      * Clear the input text, hide the error message and disable the valid button by default
