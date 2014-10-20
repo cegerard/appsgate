@@ -91,7 +91,14 @@ define([
     getValue: function () {
           value=parseInt(this.get("value"));
 
+          //Means that its a valid value
           if (value != 9999){
+
+              //If the sensor returns 300 it means that the number of Lux may be 300 or less
+              if(value == 300){
+                  return "<= "+value;
+              }
+
               return value;
           }
 
