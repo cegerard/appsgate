@@ -90,7 +90,7 @@ public class Trace {
     		if(varName.equalsIgnoreCase("switchNumber")){
     			picto = PICTO_TABLE.SINGLE_SWITCH_STATE_.stringify()+value;
     		} else {
-    			picto = PICTO_TABLE.SINGLE_SWITCH_TYPE.stringify();
+    			picto = PICTO_TABLE.SWITCH_TYPE.stringify();
     		}
     		
     	} else if (type.equalsIgnoreCase("Contact")){
