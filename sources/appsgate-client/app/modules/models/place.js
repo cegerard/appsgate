@@ -60,7 +60,7 @@ define([
 
             var valid=this.getCountCallback(sensors,function(a){ if(a!=invalidReturn) return true; else return false;}).length;
 
-            return sensors[0].getFormatAverage(Math.round(total / valid));
+            return getFormatAverage(Math.round(total / valid));
         },
         getCountCallback: function(sensors,callb){
             var devs = [];
@@ -109,7 +109,13 @@ define([
 
             return total;
         },
-
+        getFormatAverage: function(value) {
+            if (value == 300) {
+                return " <= " + value;
+            } else {
+                return value;
+            }
+        },
         /**
          * Compute the average temperature of the place from the temperature sensors in the place
          *

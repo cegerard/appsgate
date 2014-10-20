@@ -127,11 +127,12 @@ define([
         emergencyStop:function(method,model) {
           this.remoteControl("off", []);
         },
+        /**
+         * Return the get('value') formatted to be used on the View
+         * @returns {string}
+         */
         getValue: function () {
             return "[No Value]";
-        },
-        getFormatAverage: function (value) {
-            return value;
         }
     });
     return Device;
