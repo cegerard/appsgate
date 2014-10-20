@@ -419,6 +419,7 @@
         "keep-keyword": "Keep",
         "keep-then": "Then",
         "mandatory-keyword": "Required",
+        "mandatory-readonly": "...",
         "nothing-keyword": "Nothing",
         "only-once": "Only once",
         "op-and-bool": "and",

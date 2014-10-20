@@ -101,6 +101,8 @@ define(function(require, exports, module) {
         appRouter.navigate("reset", {
           trigger: true
         });
+
+        $(".navbar").i18n();
       });
 
       // Initialize the collection of places

@@ -209,20 +209,24 @@ define([
         _.defer(function() {
           input = self.applyReadMode(input);
           $(".programInput").html(input).addClass("read-only");
-          $(".secondary-block-node").addClass("hidden");
-          if($(".input-spot").next().find(".btn-and").length > 0 || $(".input-spot").next().find(".btn-then").length > 0){
-            $(".input-spot").next()[0].remove();
-          }
-          $(".input-spot").prev().remove();
-          $(".input-spot").remove();
+          $(".input-spot:not(.mandatory-spot)").remove();
+          $(".mandatory-spot").text($.i18n.t("language.mandatory-readonly"));
+          $(".rules-node").find(".separator").remove();
 
-          if($(".programInput").children(".seq-block-node").children().length < 1){
-            $(".programInput").children(".separator").addClass("hidden");
-            $(".programInput").children(".seq-block-node").addClass("hidden");
+          var test = $(".while-keep-then").parent().next();
+
+          if($(".while-keep-then").parent().next().hasClass("secondary-block-node")) {
+            $(".while-keep-then").remove();
           }
-          if($(".programInput").children(".set-block-node").children().length < 1){
-            $(".programInput").children(".separator").addClass("hidden");
-            $(".programInput").children(".set-block-node").addClass("hidden");
+          $(".secondary-block-node").remove();
+
+          if($(".programInput").children(".seq-block-node").children().length <= 1){
+            $(".programInput").children(".seq-block-node").remove();
+            $(".programInput").children(".separator").remove();
+          }
+          if($(".programInput").children(".set-block-node").children().length <= 1){
+            $(".programInput").children(".set-block-node").remove();
+            $(".programInput").children(".separator").remove();
           }
 
           if(typeof self.model !== "undefined"){
@@ -233,7 +237,6 @@ define([
             } else if (self.model.get("runningState") === "INVALID"){
               $("#led-" + self.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
               $(".start-program-button").show();
-              //$(".start-program-button").hide(); Now we don't hide it just disable it
               $(".start-program-button").prop('disabled', true);
               $(".stop-program-button").hide();
             } else{
@@ -361,9 +364,9 @@ define([
           this.refreshDisplay();
 
           // fix the programs list size to be able to scroll through it
-          this.resize($(".scrollable"));
+          this.resize($(".programInput"));
 
-          $(".programInput").height("auto");
+          //$(".programInput").height("100%");
         }
         return this;
       }
