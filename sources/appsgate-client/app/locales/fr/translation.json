@@ -47,6 +47,7 @@
                 "non_authorized": "badge n'est pas autorisé sur"
             }
         },
+        "avg" : "Moy : ",
         "clock": {
             "name": {
                 "no-name": "Horloge système sans nom",
@@ -275,6 +276,7 @@
             "waiting": "En attente"
         },
         "status-label": "Statut",
+        "sum" : "Somme : ",
         "switch": {
             "keyboard": {
                 "pushed-bottom": "on appuie sur bas de ...",
@@ -546,8 +548,8 @@
             "no-device-in-place": "Aucun équipement ne se trouve dans ce lieu de vie"
         },
         "header": {
-            "consumption-label": "Consommation",
-            "device-number-title": "Nombre total d'équipements dans le lieu de vie",
+            "consumption-label": "Consommation totale actuelle :",
+            "device-number-title": "Nombre total d'équipements dans le lieu de vie :",
             "illumination-label": "Luminosité",
             "temperature-label": "Température"
         },
