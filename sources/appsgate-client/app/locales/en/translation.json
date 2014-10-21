@@ -380,7 +380,8 @@
                 "5": "key card readers",
                 "6": "plugs",
                 "7": "lamps",
-                "8": "actuators"
+                "8": "actuators",
+                "31" : "media players"
             }
         },
         "true": "True",
@@ -450,7 +451,8 @@
                 "5": "key card readers",
                 "6": "plugs",
                 "7": "lamps",
-                "8": "actuators"
+                "8": "actuators",
+                "31" : "media players"
             }
         },
         "then-keyword": "then",
@@ -684,8 +686,8 @@
                "stop-media-action": "Stop"
             },
             "keyboard" : {
-				"browse": "Browse",
-				"complement" : "on",
+			   "browse": "Browse",
+			   "complement" : "on",
                "pause-media-action": "Pause the media ...",
                "play-media-action": "Play ...",
                "resume-media-action": "Resume play ...",

@@ -212,7 +212,7 @@ define([
          * @return Array of UPnP media players
          */
         getMediaPlayers: function() {
-            return services.where({type: 31});
+            return devices.where({type: 31});
         },
         /**
          * @return Array of the unlocated devices
