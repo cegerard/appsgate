@@ -261,6 +261,12 @@ define([
             return this.getTypeSensors(210);
         },
         /**
+         * @return Array of the MediaPlayers in the place
+         */
+        getMediaPlayers: function() {
+            return this.getTypeSensors(31);
+        },
+        /**
          * Send a message to the server to perform a remote call
          *
          * @param method Remote method name to call
