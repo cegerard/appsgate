@@ -39,6 +39,8 @@ define([
 
             $(".nav-item").removeClass("active");
             $("#home-nav").addClass("active");
+
+            $("body").i18n();
         }
     });
     return DebuggerRouter;
