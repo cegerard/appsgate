@@ -111,9 +111,9 @@ define([
         },
         getFormatAverage: function(value) {
             if (value == 300) {
-                return " <= " + value;
+                return $.i18n.t("devices.avg") + " <= " + value;
             } else {
-                return value;
+                return $.i18n.t("devices.avg") + value;
             }
         },
         /**
@@ -146,7 +146,7 @@ define([
          * @return total consumption of the place if any consumption sensor, undefined otherwise
          */
         getTotalConsumption: function() {
-            return this.getTotalValue(this.getPlugs(),-1);
+            return $.i18n.t("devices.sum") + this.getTotalValue(this.getPlugs(),-1);
         },
         /**
          * Return all the devices of the place that matches a given type
