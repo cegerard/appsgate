@@ -376,14 +376,19 @@ define([
           this.$el.i18n();
           if (this.Mediator.isValid) {
             this.model.set("runningState", "DEPLOYED");
+            $(".led").attr("title", $.i18n.t('programs.state.stopped'));
             $(".led").addClass("led-default").removeClass("led-orange");
             $(".led").addClass("led-default").removeClass("led-yellow");
             $(".programNameInput").addClass("valid-program");
           } else {
             this.model.set("runningState", "INVALID");
+            $(".led").attr("title", $.i18n.t('programs.state.failed'));
             $(".led").addClass("led-orange").removeClass("led-default");
             $(".programNameInput").removeClass("valid-program");
           }
+
+          $( document ).tooltip();
+
           this.refreshing = false;
         }
       },
