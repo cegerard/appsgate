@@ -365,8 +365,6 @@ define([
 
           // fix the programs list size to be able to scroll through it
           this.resize($(".programInput"));
-
-          //$(".programInput").height("100%");
         }
         return this;
       }

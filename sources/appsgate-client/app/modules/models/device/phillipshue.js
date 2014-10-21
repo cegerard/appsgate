@@ -18,6 +18,11 @@ define([
      */
     initialize: function() {
       PhillipsHue.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+          this.generateDefaultName($.i18n.t("devices.lamp.name.singular"));
+      }
     },
     /**
      *return the list of available actions
