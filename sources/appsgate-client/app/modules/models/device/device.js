@@ -24,6 +24,17 @@ define([
                 self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
             });
         },
+        generateDefaultName: function(typeName) {
+          var name;
+          var counter = 1;
+          do {
+              name = typeName + "-" + counter;
+              counter += 1;
+          } while (devices.where({name: name}).length > 0);
+
+          this.set("name", name);
+          this.sendName();
+        },
         /**
          * Send the name of the device to the server
          */

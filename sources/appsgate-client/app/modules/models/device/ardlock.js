@@ -14,6 +14,11 @@ define([
      */
     initialize: function() {
       ARDLock.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+            this.generateDefaultName($.i18n.t("devices.ard.name.singular"));
+      }
     },
     getEvents: function() {
           return ["isAuthorized","isNotAuthorized"];

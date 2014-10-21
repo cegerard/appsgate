@@ -18,6 +18,11 @@ define([
      */
     initialize: function() {
       DomiCube.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+          this.generateDefaultName($.i18n.t("devices.domicube.name.singular"));
+      }
     },
         /**
      * return the list of available events
@@ -185,17 +190,17 @@ define([
      * @returns the event template specific for domicube
      */
     getTemplateEvent: function() {
-      return _.template(EventTemplate);  
+      return _.template(EventTemplate);
     },
     /**
      * @returns the state template specific for domicube
      * @note this is the same template as the event template
      */
     getTemplateState: function() {
-      return _.template(EventTemplate);  
+      return _.template(EventTemplate);
     }
-      
+
   });
-  
+
   return DomiCube;
 });

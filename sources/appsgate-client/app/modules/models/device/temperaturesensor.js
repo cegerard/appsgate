@@ -7,7 +7,7 @@ define([
 
   /**
    * Implementation of temperature sensor
-   * Specific attribute is: 
+   * Specific attribute is:
    *      value, containing the last temperature sent by the backend, in degree Celsius
    *
    * @class Device.TemperatureSensor
@@ -18,6 +18,11 @@ define([
      */
     initialize: function() {
       TemperatureSensor.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+          this.generateDefaultName($.i18n.t("devices.temperature.name.singular"));
+      }
     },
     /**
      * return the list of available properties

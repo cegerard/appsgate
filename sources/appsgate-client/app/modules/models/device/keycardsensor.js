@@ -15,6 +15,11 @@ define([
      */
     initialize: function() {
       KeyCardSensor.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+          this.generateDefaultName($.i18n.t("devices.cardswitch.name.singular"));
+      }
     },
     /**
      * return the list of available events
@@ -97,7 +102,7 @@ define([
 	 * @returns state template for keycard sensor
 	 */
 	getTemplateState: function() {
-	  return _.template(StateTemplate); 
+	  return _.template(StateTemplate);
 	},
 
   });
