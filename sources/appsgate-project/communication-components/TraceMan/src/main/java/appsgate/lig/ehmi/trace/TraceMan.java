@@ -490,7 +490,7 @@ public class TraceMan implements TraceManSpec {
     	    		
     	    		for(JSONObject trace : innerTraces){
     	    			String type = "program"; //Defaut is a program
-    	    			if (trace.has("type")){ //in fact is an equipment
+    	    			if (trace.has("type")){ //in fact it is an equipment
     	    				type = trace.getString("type");
     	    			}        			
     	    			if(!groupFollower.containsKey(type)){
@@ -536,14 +536,28 @@ public class TraceMan implements TraceManSpec {
             	    	for(JSONObject trace : innerTraces){
             	    		JSONArray objs = null;
             	    		
-            	    		if(!trace.getString("id").equalsIgnoreCase(focus) && trace.toString().contains(focus)) { //dep
-            	    			objs = groupFollower.get("dependencies");
-            	    		} else { //others
-            	    			objs = groupFollower.get("others");
-            	    		}
-            	    		
-            	    		if(!objs.toString().contains(trace.getString("id"))){
-            	    			objs.put(trace.get("id"));
+            	    		if(!trace.getString("id").equalsIgnoreCase(focus)){//Not a trace from the focused id
+            	    			if(trace.toString().contains(focus)) { //dep
+            	    				objs = groupFollower.get("dependencies");
+            	    				//Remove dependency id from others array
+            	    				JSONArray others = new JSONArray();
+            	    				for(int j=0; j<groupFollower.get("others").length(); j++){
+            	    					String id = groupFollower.get("others").getString(j);
+            	    					if(!id.equalsIgnoreCase(trace.getString("id")))
+            	    						others.put(id);
+            	    				}
+            	    				groupFollower.put("others", others);
+            	    			} else { //others
+            	    				if(!groupFollower.get("dependencies").toString().contains(trace.getString("id"))) 
+            	    					objs = groupFollower.get("others");
+            	    				else{
+            	    					objs = groupFollower.get("dependencies");
+            	    				}
+            	    			}
+            	    			
+            	    			if(!objs.toString().contains(trace.getString("id"))){ //Check if the id is already in the array
+                	    			objs.put(trace.get("id"));
+                	    		}
             	    		}
             	    	}
         			}
@@ -555,7 +569,7 @@ public class TraceMan implements TraceManSpec {
             	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
             	    	
             	    	for(JSONObject trace : innerTraces){
-            	    		if(!objs.toString().contains(trace.getString("id"))){
+            	    		if(!trace.getString("id").equalsIgnoreCase(focus) && !objs.toString().contains(trace.getString("id"))){
             	    			objs.put(trace.get("id"));
             	    		}
             	    	}
@@ -633,7 +647,7 @@ public class TraceMan implements TraceManSpec {
     		obj.put("members", groupFollower.get(key));
     		groups.put(obj);
     	}
-    	
+
 		return groups;
 	}
     
@@ -748,7 +762,7 @@ public class TraceMan implements TraceManSpec {
     	
 		String firstChar = key.substring(0, 1).toUpperCase();
 		
-		displayableName = firstChar + key.substring(1) + "s";
+		displayableName = firstChar + key.substring(1) /*+ "s"*/;
 		
 		return displayableName;
 	}
