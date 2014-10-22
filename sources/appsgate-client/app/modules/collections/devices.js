@@ -96,7 +96,7 @@ define([
                     device = new Actuator(brick);
                     break;
                 case 21:
-                    window.coreClock = new CoreClock(brick);
+                    device = new CoreClock(brick);
                     break;
                 case 31:
                     device = new MediaPlayer(brick);
