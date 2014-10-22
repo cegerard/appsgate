@@ -30,6 +30,10 @@ define([
         initialize: function() {
             var self = this;
 
+            this.comparator = function(device) {
+                return device.get("name").toUpperCase();
+            };
+
             // listen to the event when the list of devices is received
             dispatcher.on("listDevices", function(devices) {
                 _.each(devices, function(device) {

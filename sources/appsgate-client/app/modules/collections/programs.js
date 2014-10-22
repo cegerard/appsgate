@@ -12,7 +12,7 @@ define([
 
             // sort the programs alphabetically
             this.comparator = function(program) {
-                return program.get("name");
+                return program.get("name").toUpperCase();
             };
 
             // listen to the event when the list of programs is received
