@@ -26,8 +26,10 @@ define([
         var self = this;
         self.listenTo(devices, "add", self.reload);
         devices.getDevicesByType()[this.id].forEach(function(device) {
-          self.listenTo(device, "change", self.autoupdate);
-          self.listenTo(device, "remove", self.render);
+          if(device.get("type") != 21) {
+            self.listenTo(device, "change", self.autoupdate);
+            self.listenTo(device, "remove", self.render);
+          }
         });
       },
       /**

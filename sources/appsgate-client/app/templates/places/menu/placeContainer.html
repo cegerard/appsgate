@@ -203,6 +203,23 @@
 			</td>
 			</tr>
 			<% } %>
+			<!-- MediaPlayer -->
+			<% if (place.getMediaPlayers().length > 0) { %>
+			<tr>
+				<td>
+				<% if (place.getMediaPlayers().length === 1) { %>
+					<span data-i18n="services.mediaplayer.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="services.mediaplayer.name.plural"></span>
+				<% } %>
+			</td>
+			<td>
+				<span class="badge">
+					<%= place.getMediaPlayers().length %>
+				</span>
+			</td>
+			</tr>
+			<% } %>
 		</ul>
 	<!--/p-->
 </a>

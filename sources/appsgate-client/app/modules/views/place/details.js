@@ -41,7 +41,7 @@ define([
                 var device = devices.get(deviceId);
 
                 // if the device has been found in the collection
-                if (typeof device !== "undefined") {
+                if (typeof device !== "undefined" && device.get("type") != 21) {
                     self.listenTo(device, "change", self.autoupdate);
                 }
             });
@@ -223,7 +223,7 @@ define([
             $("#edit-name-place-modal .text-danger").addClass("hide");
             $("#edit-name-place-modal .valid-button").removeClass("disabled");
             $("#edit-name-place-modal .valid-button").removeClass("valid-disabled");
-            
+
             return true;
         },
         /**

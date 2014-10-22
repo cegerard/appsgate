@@ -28,6 +28,8 @@ define([
         this.listenTo(devices, "add", this.render);
         this.listenTo(devices, "change", this.onChangedDevice);
         this.listenTo(devices, "remove", this.render);
+
+        this.stopListening(devices.getCoreClock());
       },
       /**
       * Method called when a device has changed

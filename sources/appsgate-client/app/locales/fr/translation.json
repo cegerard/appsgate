@@ -380,7 +380,8 @@
                 "5": "lecteurs de carte",
                 "6": "prises",
                 "7": "lampes",
-                "8": "actionneurs"
+                "8": "actionneurs",
+				"31": "lecteurs de média"
             }
         },
         "true": "Vrai",
@@ -450,7 +451,8 @@
                 "5": "lecteurs de carte",
                 "6": "prises",
                 "7": "lampes",
-                "8": "actionneurs"
+                "8": "actionneurs",
+				"31": "lecteurs de média"
             }
         },
         "then-keyword": "Alors",

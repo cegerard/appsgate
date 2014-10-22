@@ -50,10 +50,11 @@ define([
     		  this.resetProgramJSON();
     		} else {
     		  this.programJSON = programJSON;
-    		  this.ProgramKeyboardBuilder.setProgramId(pid);
-          this.maxNodeId = this.findMaxId(this.programJSON);
-          this.currentNode = -1;
+			  this.maxNodeId = this.findMaxId(this.programJSON);
+			  this.currentNode = -1;
     		}
+			this.ProgramKeyboardBuilder.setProgramId(pid);
+
       },
       /**
       * Method that recursively retrieve the max node id of the program

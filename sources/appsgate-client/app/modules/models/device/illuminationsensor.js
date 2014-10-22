@@ -15,6 +15,11 @@ define([
      */
     initialize: function() {
       IlluminationSensor.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+          this.generateDefaultName($.i18n.t("devices.illumination.name.singular"));
+      }
     },
     /**
      * return the list of available properties
@@ -52,7 +57,7 @@ define([
       return btn;
     },
     getScale: function() {
-        var arrayScale = 
+        var arrayScale =
             [
                     {
                         "value" : "low",
@@ -86,7 +91,7 @@ define([
                     }
                 ];
         return arrayScale;
-            
+
     },
     getValue: function () {
           value=parseInt(this.get("value"));
