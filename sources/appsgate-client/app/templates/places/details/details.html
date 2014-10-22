@@ -46,7 +46,7 @@
 			</td>
 			<td id="place-energy-consumption">
 				<% if (place.getTotalConsumption() !== "---") { %>
-					<span class="label-value pull-right"><%= place.getTotalConsumption() %> W</span>
+					<span class="label-value pull-right"><%= $.i18n.t("devices.sum") + place.getTotalConsumption() %> W</span>
 				<% } else { %>
 					<span class="label label-default pull-right" data-i18n="places-details.no-plugs"></span>
 				<% } %>
