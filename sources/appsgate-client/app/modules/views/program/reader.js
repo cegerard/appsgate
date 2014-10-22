@@ -38,6 +38,8 @@ define([
         this.listenTo(devices, "change", this.refreshDisplay);
         this.listenTo(services, "change", this.refreshDisplay);
         this.listenTo(dispatcher, "refreshDisplay", this.refreshDisplay);
+
+        this.stopListening(devices.getCoreClock());
       },
       /**
        * Clear the input text, hide the error message, check the checkbox and disable the valid button by default

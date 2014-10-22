@@ -23,7 +23,19 @@ define([
             // setting default friendly name if none exists
             if (typeof this.get("name") === "undefined" || this.get("name") === "") {
                 this.generateDefaultName($.i18n.t("devices.switch.name.singular"));
+                this.set("switchNumber", "");
             }
+            this.on("change", function() {
+              self = this;
+              if (this.changed.buttonStatus == undefined) {
+                self.set("buttonStatus", "true");
+                self.set("switchNumber", "");
+                setTimeout(function () {
+                  self.set("buttonStatus", "false");
+                }, 600);
+              }
+          
+            });
         },
         /**
          * return the list of available events

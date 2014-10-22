@@ -28,6 +28,8 @@ define([
         this.listenTo(devices, "add", this.render);
         this.listenTo(devices, "change", this.onChangedDevice);
         this.listenTo(devices, "remove", this.render);
+
+        this.stopListening(devices.getCoreClock());
       },
       /**
       * Method called when a device has changed
@@ -84,15 +86,19 @@ define([
 
           // for each category of devices, add a menu item
           this.$el.append(this.tpl());
-          var types = devices.getDevicesByType();
+
           var container = document.createDocumentFragment();
-          _.forEach(_.keys(types), function(type) {
-            if (type !== "21" && type !== "102" && type !== "103") {
+          _.forEach(devices.getTypes(), function(type) {
+            devs=devices.getDevicesFilterByType(type);
+            if (type !== "21" && type !== "102" && type !== "103" && devs.length>0) {
+              var postfix= "singular";
+              if(devs.length>1) postfix="plural";
               $(container).append(self.tplDeviceContainer({
-                type: type,
-                devices: types[type],
+                type: String(type),
+                typeLabel: devices.getTypeLabelPrefix(type)+postfix,
+                devices: devs,
                 places: places,
-                unlocatedDevices: devices.filter(function(d) {
+                unlocatedDevices: devs.filter(function(d) {
                   return (d.get("placeId") === "-1" && d.get("type") === type);
                 }),
                 active: Backbone.history.fragment.split("devices/types/")[1] === type ? true : false

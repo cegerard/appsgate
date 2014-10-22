@@ -130,6 +130,7 @@ define([
         while (button !== null && typeof button.classList === 'undefined' || !button.classList.contains('btn-keyboard')) {
           button = button.parentNode;
         }
+
         this.Mediator.addNodeFromButton(button);
         dispatcher.trigger("refreshDisplay");
       },
@@ -364,6 +365,7 @@ define([
         if (this.refreshing) {
           return;
         }
+        $(".programInput").clearQueue();
         if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
           this.refreshing = true;
           this.Mediator.buildInputFromJSON();
@@ -386,6 +388,13 @@ define([
             $(".led").addClass("led-orange").removeClass("led-default");
             $(".programNameInput").removeClass("valid-program");
           }
+
+          // scrolling to the selected node
+          var focusPosition = $(".selected-node").offset().top + $(".programInput").scrollTop() - $(".programInput").offset().top;
+          if($(".programInput").height() > $(".selected-node").height()) {
+            focusPosition -= $(".programInput").height()/2 - $(".selected-node").height()/2;
+          }
+          $(".programInput").animate({scrollTop: focusPosition}, 1000);
 
           $( document ).tooltip();
 

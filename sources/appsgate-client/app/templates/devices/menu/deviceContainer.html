@@ -9,73 +9,7 @@
 		<tr>
 			<td>
 			<p class="list-group-item-heading lead">
-			<% if (type === "0") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.temperature.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.temperature.name.plural"></span>
-				<% } %>
-			<% } else if (type === "1") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.illumination.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.illumination.name.plural"></span>
-				<% } %>
-			<% } else if (type === "2") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.switch.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.switch.name.plural"></span>
-				<% } %>
-			<% } else if (type === "3") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.contact.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.contact.name.plural"></span>
-				<% } %>
-			<% } else if (type === "4") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.cardswitch.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.cardswitch.name.plural"></span>
-				<% } %>
-			<% } else if (type === "5") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.ard.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.ard.name.plural"></span>
-				<% } %>
-			<% } else if (type === "6") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.plug.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.plug.name.plural"></span>
-				<% } %>
-			<% } else if (type === "7") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.lamp.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.lamp.name.plural"></span>
-				<% } %>
-			<% } else if (type === "8") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.actuator.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.actuator.name.plural"></span>
-				<% } %>
-			<% } else if (type === "31") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.mediaplayer.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.mediaplayer.name.plural"></span>
-				<% } %>
-			<% } else if (type === "210") { %>
-				<% if (devices.length === 1) { %>
-					<span data-i18n="devices.domicube.name.singular"></span>
-				<% } else { %>
-					<span data-i18n="devices.domicube.name.plural"></span>
-				<% } %>
-			<% } %>
+					<span data-i18n="<%= typeLabel %>"></span>
 			</p>
 	</td>
 	<td>
