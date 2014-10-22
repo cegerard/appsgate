@@ -59,6 +59,9 @@ define([
                 direction: 'top-right'
             });
 
+            $(".nav-item").removeClass("active");
+            $("#programs-nav").addClass("active");
+
             appRouter.navigate("#programs/editor/" + id);
         }
 
