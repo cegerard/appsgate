@@ -93,7 +93,7 @@ define([
           var container = document.createDocumentFragment();
           _.forEach(devices.getTypes(), function(type) {
             devs=devices.getDevicesFilterByType(type);
-            if (devs.length>0) {
+            if (type != "21" && type != "102" && type != "103" && devs.length>0) {
               var postfix= "singular";
               if(devs.length>1) postfix="plural";
               $(container).append(self.tplDeviceContainer({
@@ -102,9 +102,9 @@ define([
                 devices: devs,
                 places: places,
                 unlocatedDevices: devs.filter(function(d) {
-                  return (d.get("placeId") === "-1" && d.get("type") === type);
+                  return (d.get("placeId") == "-1" && d.get("type") == type);
                 }),
-                active: Backbone.history.fragment.split("devices/types/")[1] === type ? true : false
+                active: Backbone.history.fragment.split("devices/types/")[1] == type ? true : false
               }));
             }
           });

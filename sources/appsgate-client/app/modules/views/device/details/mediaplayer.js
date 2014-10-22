@@ -45,10 +45,10 @@ define([
             max: 100,
             value: player.get("volume"),
             stop: function(event, ui) {
-              self.model.sendVolume($(".volume-slider").slider("value"));
+              player.sendVolume($(".volume-slider").slider("value"));
             }
           });
-          self.model.save();
+          player.save();
         });
 
         // translate the view

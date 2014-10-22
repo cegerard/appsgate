@@ -609,7 +609,8 @@
         "scheduled-event": "Appsgate program "
     },
     "programs-menu": {
-        "add-button": "Add Program"
+        "add-button": "Add Program",
+        "deactivate-all-programs": "Désactiver tous les programmes"
     },
     "services": {
         "avtransport": {
