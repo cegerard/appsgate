@@ -40,7 +40,6 @@
     <div class="list-group">
       <%i=0;	mail.getFavorites().forEach(function(s) { i+=1;%>
         <a  class="list-group-item">
-            <%= s.mail%>
         <div class="pull-right">
 			<button type="button" class="btn btn-default delete-mail" rel="popover" id="del-mail-<%= i %>" email="<%= s.mail %>" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i> <span data-i18n="form.delete-button"></span>
@@ -49,6 +48,8 @@
 				<i class="glyphicon glyphicon-edit"></i> <span data-i18n="form.edit-button">Editer</span>
 			</button>
         </div>
+		<div style="padding:0.5em 0 0.5em"><%= s.mail%></div>
+
         </a>
       <% }) %>
     </div>

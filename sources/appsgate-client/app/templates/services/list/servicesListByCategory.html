@@ -62,11 +62,6 @@
     <div class="list-group">
       <%services.getServicesByType()[type].forEach(function(s) { %>
         <a class="list-group-item">
-          <% if (s.get("name") !== "") { %>
-            <%= s.get("name") %>
-          <% } else { %>
-            <%= s.get("location") %>
-          <% } %>
           <%if (type === "103") { %>
         <div class="pull-right">
             <% if (services.getServicesByType()[type].length > 1) { %>
@@ -79,6 +74,13 @@
 			</button>
         </div>
         <%}%>
+            <div style="padding:0.5em 0 0.5em">
+          <% if (s.get("name") !== "") { %>
+            <%= s.get("name") %>
+          <% } else { %>
+            <%= s.get("location") %>
+          <% } %>
+          </div>
         </a>
       <% }) %>
     </div>
