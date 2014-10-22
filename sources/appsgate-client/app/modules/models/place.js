@@ -146,7 +146,7 @@ define([
          * @return total consumption of the place if any consumption sensor, undefined otherwise
          */
         getTotalConsumption: function() {
-            return $.i18n.t("devices.sum") + this.getTotalValue(this.getPlugs(),-1);
+            return this.getTotalValue(this.getPlugs(),-1);
         },
         /**
          * Return all the devices of the place that matches a given type
