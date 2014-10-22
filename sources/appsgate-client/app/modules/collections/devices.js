@@ -149,6 +149,74 @@ define([
             });
         },
         /**
+         * Retrieves all devices of a given type
+         * @param type
+         * @returns {*|Array}
+         */
+        getDevicesFilterByType: function(type) {
+
+            return devices.where({type: type});
+
+        },
+        /**
+         * Get list of the device types sorted by its i18n key
+         * @returns {Array|*}
+         */
+        getTypes: function() {
+
+            var types=[];
+
+            allavailabletypes=this.groupBy(function(device) {
+                return device.get("type");
+            });
+
+            _.each(allavailabletypes,function(box){
+                types[types.length]=box[0].get("type");
+            });
+
+            sortedTypes= _.sortBy(types,
+                function(type){
+                    var i18=this.getTypeLabelPrefix(type);
+                    return $.i18n.t(i18+"singular").toLowerCase();
+                },this);
+
+
+            return sortedTypes;
+
+        },
+        /**
+         * Retrieved the i18n key for the device name (without the the postfix plural / singular)
+         * @param type
+         * @returns String with the i18n key for the device type
+         */
+        getTypeLabelPrefix:function(type){
+            var i18;
+            if (type == "0") {
+                i18="devices.temperature.name.";
+            } else if (type == "1") {
+                i18="devices.illumination.name.";
+            } else if (type == "2") {
+                i18="devices.switch.name.";
+            } else if (type == "3") {
+                i18="devices.contact.name.";
+            } else if (type == "4") {
+                i18="devices.cardswitch.name.";
+            } else if (type == "5") {
+                i18="devices.ard.name.";
+            } else if (type == "6") {
+                i18="devices.plug.name.";
+            } else if (type == "7") {
+                i18="devices.lamp.name.";
+            } else if (type == "8") {
+                i18="devices.actuator.name.";
+            } else if (type == "31") {
+                i18="devices.mediaplayer.name.";
+            } else if (type == "210") {
+                i18="devices.domicube.name.";
+            }
+            return i18;
+        },
+        /**
          * @return Array of the temperature sensors
          */
         getTemperatureSensors: function() {
