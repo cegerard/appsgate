@@ -489,7 +489,7 @@ public class TraceMan implements TraceManSpec {
     	    		ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
     	    		
     	    		for(JSONObject trace : innerTraces){
-    	    			String type = "program"; //Defaut is a program
+    	    			String type = "program"; //Defaut it is a program
     	    			if (trace.has("type")){ //in fact it is an equipment
     	    				type = trace.getString("type");
     	    			}        			
@@ -520,7 +520,7 @@ public class TraceMan implements TraceManSpec {
     			}
     		}
     			
-    	}else { //Focus required check the kind of focus
+    	} else { //Focus required check the kind of focus
     		
     		if(focusType.equalsIgnoreCase("id")){ //Focus on something (equipment or program)
     			groupFollower.put("focus", new JSONArray().put(focus));
@@ -587,17 +587,30 @@ public class TraceMan implements TraceManSpec {
         	    	
         	    	for(JSONObject trace : innerTraces){
         	    		JSONArray objs = null;
-        	    	
         	    		if(trace.has("location")){ //Equipment
         	    			JSONObject loc = trace.getJSONObject("location");
         	    			
         	    			if(loc.getString("id").equalsIgnoreCase("-1")){
-        	    				objs = groupFollower.get("others");
+        	    				if(!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
+        	    					objs = groupFollower.get("others");
+        	    				else
+        	    					objs = groupFollower.get("focus");
         	    			}else{
         	    				if(loc.getString("name").equalsIgnoreCase(focus)){
         	    					objs = groupFollower.get(focus);
+        	    					//Remove dependency id from others array
+            	    				JSONArray others = new JSONArray();
+            	    				for(int j=0; j<groupFollower.get("others").length(); j++){
+            	    					String id = groupFollower.get("others").getString(j);
+            	    					if(!id.equalsIgnoreCase(trace.getString("id")))
+            	    						others.put(id);
+            	    				}
+            	    				groupFollower.put("others", others);
         	    				}else{
-        	    					objs = groupFollower.get("others");
+        	    					if(!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
+            	    					objs = groupFollower.get("others");
+            	    				else
+            	    					objs = groupFollower.get("focus");
         	    				}	
         	    			}
         	    		}else{ //Program
@@ -621,8 +634,8 @@ public class TraceMan implements TraceManSpec {
         	    	for(JSONObject trace : innerTraces){
         	    		JSONArray objs = null;
         	    	
-        	    		String type = "program"; //Defaut is a program
-        	    		if (trace.has("type")){ //in fact is an equipment
+        	    		String type = "program"; //Defaut it is a program
+        	    		if (trace.has("type")){ //in fact it is an equipment
         	    			type = trace.getString("type");
         	    		}
             			
@@ -647,7 +660,6 @@ public class TraceMan implements TraceManSpec {
     		obj.put("members", groupFollower.get(key));
     		groups.put(obj);
     	}
-
 		return groups;
 	}
     
