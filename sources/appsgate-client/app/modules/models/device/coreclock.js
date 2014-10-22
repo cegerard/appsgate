@@ -25,6 +25,7 @@ define([
       }
 
       self.set("reset", false);
+      self.set("hidden", true);
 
       // when the flow rate changes, update the interval that controls the local time
       this.on("change:flowRate", function() {

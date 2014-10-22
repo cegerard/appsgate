@@ -33,6 +33,7 @@ define([
           } while (devices.where({name: name}).length > 0);
 
           this.set("name", name);
+          this.set("hidden", false);
           this.sendName();
         },
         /**

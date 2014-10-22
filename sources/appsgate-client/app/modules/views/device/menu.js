@@ -38,8 +38,11 @@ define([
       */
       onChangedDevice: function(model) {
         var types = devices.getDevicesByType();
+        var postfix= "singular";
+        if(types.length>1) postfix="plural";
         this.$el.find("#side-" + model.get("type")).replaceWith(this.tplDeviceContainer({
           type: "" + model.get("type"),
+          typeLabel: devices.getTypeLabelPrefix(model.get("type"))+postfix,
           devices: types[model.get("type")],
           places: places,
           unlocatedDevices: devices.filter(function(d) {
@@ -90,7 +93,7 @@ define([
           var container = document.createDocumentFragment();
           _.forEach(devices.getTypes(), function(type) {
             devs=devices.getDevicesFilterByType(type);
-            if (type !== "21" && type !== "102" && type !== "103" && devs.length>0) {
+            if (devs.length>0) {
               var postfix= "singular";
               if(devs.length>1) postfix="plural";
               $(container).append(self.tplDeviceContainer({

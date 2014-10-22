@@ -149,13 +149,17 @@ define([
             });
         },
         /**
-         * Retrieves all devices of a given type
+         * Retrieves all devices of a given type (excludes the clock, mail and weather)
          * @param type
          * @returns {*|Array}
          */
         getDevicesFilterByType: function(type) {
 
-            return devices.where({type: type});
+            devAll=devices.where({type: type});
+
+            devs=_.reject(devAll,function(device){ return !$.inArray(device.get("type"), [21,102,103]) });
+
+            return devs;
 
         },
         /**
