@@ -663,6 +663,7 @@ public class TraceMan implements TraceManSpec {
         return groups;
     }
 
+
     /**
      * Compute the event line for debugger
      *
