@@ -212,8 +212,17 @@ define([], function () {
 		/** Get the selected profile and trigger the validation command  */
 		this.validateProfile = function (id) {
 			var profile_prf = $("#profile-list-"+id+" option:selected");
-			call = eval({"sensorValidation":{"id":id, "nbchoice":"1", "capabilities":[profile_prf[0].value]}, "CONFIGURATION":"sensorValidation", "TARGET":"ENOCEAN"});
-			chmi.sendJSONCmd(call);
+            if(profile_prf[0].text.toUpperCase() === "UNKNOWN"){
+                //Push warning message
+				var httpRequest=new XMLHttpRequest();
+				httpRequest.open("GET","./html/enocean/enoceanToastAlert.html",false);
+				httpRequest.send();
+				var element = document.getElementById("alerts-container");
+				element.innerHTML = httpRequest.responseText;
+            } else {
+                call = eval({"sensorValidation":{"id":id, "nbchoice":"1", "capabilities":[profile_prf[0].value]}, "CONFIGURATION":"sensorValidation", "TARGET":"ENOCEAN"});
+                chmi.sendJSONCmd(call);
+            }
 		}
 		
 		/** Set the tile of the device with the current status */
