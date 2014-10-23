@@ -570,7 +570,9 @@
             "start": "Start",
             "stop": "Stop",
             "schedule": "Schedule",
-            "open-calendar":"Go to Calendar"
+            "open-calendar":"Go to Calendar",
+            "test":"Test",
+            "end-test":"Stop testing"
         },
         "delete-program": "Delete",
         "edit-program": "Edit",

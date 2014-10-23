@@ -211,9 +211,30 @@ define([
         _.defer(function() {
           input = self.applyReadMode(input);
           $(".programInput").html(input).addClass("read-only");
+
+          if($(".programInput").children(".seq-block-node").children().length <= 1){
+            $(".programInput").children(".seq-block-node").remove();
+            $(".programInput").children(".separator").remove();
+          }
+          else {
+            if($(".seq-block-node").find(".input-spot").next(".separator").length > 0){
+              $(".seq-block-node").find(".input-spot").next(".separator")[0].remove();
+            }
+            $(".seq-block-node").find(".input-spot").prev(".separator").remove();
+          }
+          if($(".programInput").children(".set-block-node").children().length <= 1){
+            $(".programInput").children(".set-block-node").remove();
+            $(".programInput").children(".separator").remove();
+          }
+          else {
+            if($(".set-block-node").find(".input-spot").next(".separator").length > 0){
+              $(".set-block-node").find(".input-spot").next(".separator")[0].remove();
+            }
+            $(".set-block-node").find(".input-spot").prev(".separator").remove();
+          }
+
           $(".input-spot:not(.mandatory-spot)").remove();
           $(".mandatory-spot").text($.i18n.t("language.mandatory-readonly"));
-          $(".rules-node").find(".separator").addClass("separator-hidden");
 
           var test = $(".while-keep-then").parent().next();
 
@@ -221,15 +242,6 @@ define([
             $(".while-keep-then").remove();
           }
           $(".secondary-block-node").remove();
-
-          if($(".programInput").children(".seq-block-node").children().length <= 1){
-            $(".programInput").children(".seq-block-node").remove();
-            $(".programInput").children(".separator").remove();
-          }
-          if($(".programInput").children(".set-block-node").children().length <= 1){
-            $(".programInput").children(".set-block-node").remove();
-            $(".programInput").children(".separator").remove();
-          }
 
           if(typeof self.model !== "undefined"){
             if (self.model.get("runningState") === "PROCESSING" || self.model.get("runningState") === "KEEPING" || self.model.get("runningState") === "WAITING") {

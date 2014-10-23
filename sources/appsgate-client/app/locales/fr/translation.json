@@ -570,7 +570,9 @@
             "start": "Activer",
             "stop": "Désactiver",
             "schedule": "Planifier",
-            "open-calendar":"Voir planification"
+            "open-calendar":"Voir calendrier",
+            "test":"Tester",
+            "end-test":"Fin tester"
         },
         "delete-program": "Supprimer",
         "edit-program": "Editer",
