@@ -183,7 +183,7 @@ public class TraceMan implements TraceManSpec {
                 //Simple trace always save in data base
                 dbTracer.trace(o);
             } catch (JSONException e) {
-                //This is not thrown
+                e.printStackTrace();
             }
         }
     }
@@ -195,22 +195,26 @@ public class TraceMan implements TraceManSpec {
      * greater than one deltaTinMilis + previous written time stamp value
      */
     private synchronized void sendTrace(JSONObject trace) {
-        long timeStamp = trace.optLong("timestamp");
+        try {
+            long timeStamp = trace.getLong("timestamp");
 
-        if (timeStamp > lastTimeStamp) {
-            lastTimeStamp = timeStamp;
+            if (timeStamp > lastTimeStamp) {
+                lastTimeStamp = timeStamp;
 
-            if (liveTraceActivated) {
-                liveTracer.trace(trace); //Send trace packet to client side
+                if (liveTraceActivated) {
+                    liveTracer.trace(trace); //Send trace packet to client side
+                }
+
+                if (fileTraceActivated) {
+                    fileTracer.trace(trace); //Save into local file
+                }
+
+            } else {
+                LOGGER.error("Multiple trace request with the same time stamp value: " + timeStamp + ". Entry are skipped.");
+                throw new Error("Multiple trace request with the same time stamp value. Entry with time stamp " + timeStamp + " are skipped.");
             }
-
-            if (fileTraceActivated) {
-                fileTracer.trace(trace); //Save into local file
-            }
-
-        } else {
-            LOGGER.error("Multiple trace request with the same time stamp value: " + timeStamp + ". Entry are skipped.");
-            throw new Error("Multiple trace request with the same time stamp value. Entry with time stamp " + timeStamp + " are skipped.");
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -223,7 +227,11 @@ public class TraceMan implements TraceManSpec {
         int nbTraces = traceArray.length();
 
         for (int i = 0; i < nbTraces; i++) {
-            sendTrace(traceArray.optJSONObject(i));
+            try {
+                sendTrace(traceArray.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -241,8 +249,7 @@ public class TraceMan implements TraceManSpec {
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
         GrammarDescription desc = EHMIProxy.getGrammarFromDevice(srcId);
-        if (desc != null && desc.generateTrace()) { 
-            //if the equipment has been instantiated from ApAM spec before
+        if (desc != null && desc.generateTrace()) {
             //Create the event description device entry
             JSONObject event = new JSONObject();
             JSONObject JDecoration = null;
@@ -478,8 +485,8 @@ public class TraceMan implements TraceManSpec {
                     ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
 
                     for (JSONObject trace : innerTraces) {
-                        String type = "program"; //Defaut is a program
-                        if (trace.has("type")) { //in fact is an equipment
+                        String type = "program"; //Defaut it is a program
+                        if (trace.has("type")) { //in fact it is an equipment
                             type = trace.getString("type");
                         }
                         if (!groupFollower.containsKey(type)) {
@@ -523,16 +530,31 @@ public class TraceMan implements TraceManSpec {
                         ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
 
                         for (JSONObject trace : innerTraces) {
-                            JSONArray objs;
+                            JSONArray objs = null;
 
-                            if (!trace.getString("id").equalsIgnoreCase(focus) && trace.toString().contains(focus)) { //dep
-                                objs = groupFollower.get("dependencies");
-                            } else { //others
-                                objs = groupFollower.get("others");
-                            }
+                            if (!trace.getString("id").equalsIgnoreCase(focus)) {//Not a trace from the focused id
+                                if (trace.toString().contains(focus)) { //dep
+                                    objs = groupFollower.get("dependencies");
+                                    //Remove dependency id from others array
+                                    JSONArray others = new JSONArray();
+                                    for (int j = 0; j < groupFollower.get("others").length(); j++) {
+                                        String id = groupFollower.get("others").getString(j);
+                                        if (!id.equalsIgnoreCase(trace.getString("id"))) {
+                                            others.put(id);
+                                        }
+                                    }
+                                    groupFollower.put("others", others);
+                                } else { //others
+                                    if (!groupFollower.get("dependencies").toString().contains(trace.getString("id"))) {
+                                        objs = groupFollower.get("others");
+                                    } else {
+                                        objs = groupFollower.get("dependencies");
+                                    }
+                                }
 
-                            if (!objs.toString().contains(trace.getString("id"))) {
-                                objs.put(trace.get("id"));
+                                if (!objs.toString().contains(trace.getString("id"))) { //Check if the id is already in the array
+                                    objs.put(trace.get("id"));
+                                }
                             }
                         }
                     }
@@ -544,7 +566,7 @@ public class TraceMan implements TraceManSpec {
                         ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
 
                         for (JSONObject trace : innerTraces) {
-                            if (!objs.toString().contains(trace.getString("id"))) {
+                            if (!trace.getString("id").equalsIgnoreCase(focus) && !objs.toString().contains(trace.getString("id"))) {
                                 objs.put(trace.get("id"));
                             }
                         }
@@ -561,18 +583,34 @@ public class TraceMan implements TraceManSpec {
                     ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
 
                     for (JSONObject trace : innerTraces) {
-                        JSONArray objs;
-
+                        JSONArray objs = null;
                         if (trace.has("location")) { //Equipment
                             JSONObject loc = trace.getJSONObject("location");
 
                             if (loc.getString("id").equalsIgnoreCase("-1")) {
-                                objs = groupFollower.get("others");
+                                if (!groupFollower.get(focus).toString().contains(trace.getString("id"))) {
+                                    objs = groupFollower.get("others");
+                                } else {
+                                    objs = groupFollower.get("focus");
+                                }
                             } else {
                                 if (loc.getString("name").equalsIgnoreCase(focus)) {
                                     objs = groupFollower.get(focus);
+                                    //Remove dependency id from others array
+                                    JSONArray others = new JSONArray();
+                                    for (int j = 0; j < groupFollower.get("others").length(); j++) {
+                                        String id = groupFollower.get("others").getString(j);
+                                        if (!id.equalsIgnoreCase(trace.getString("id"))) {
+                                            others.put(id);
+                                        }
+                                    }
+                                    groupFollower.put("others", others);
                                 } else {
-                                    objs = groupFollower.get("others");
+                                    if (!groupFollower.get(focus).toString().contains(trace.getString("id"))) {
+                                        objs = groupFollower.get("others");
+                                    } else {
+                                        objs = groupFollower.get("focus");
+                                    }
                                 }
                             }
                         } else { //Program
@@ -594,10 +632,10 @@ public class TraceMan implements TraceManSpec {
                     ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
 
                     for (JSONObject trace : innerTraces) {
-                        JSONArray objs;
+                        JSONArray objs = null;
 
-                        String type = "program"; //Defaut is a program
-                        if (trace.has("type")) { //in fact is an equipment
+                        String type = "program"; //Defaut it is a program
+                        if (trace.has("type")) { //in fact it is an equipment
                             type = trace.getString("type");
                         }
 
@@ -622,7 +660,6 @@ public class TraceMan implements TraceManSpec {
             obj.put("members", groupFollower.get(key));
             groups.put(obj);
         }
-
         return groups;
     }
 
@@ -734,11 +771,12 @@ public class TraceMan implements TraceManSpec {
      * @return the morph name from key name
      */
     private String getDiplayableName(String key) {
-        String displayableName;
+        String displayableName = "Unkown";
+        if (key.length() > 1) {
+            String firstChar = key.substring(0, 1).toUpperCase();
 
-        String firstChar = key.substring(0, 1).toUpperCase();
-
-        displayableName = firstChar + key.substring(1) + "s";
+            displayableName = firstChar + key.substring(1) /*+ "s"*/;
+        }
 
         return displayableName;
     }
