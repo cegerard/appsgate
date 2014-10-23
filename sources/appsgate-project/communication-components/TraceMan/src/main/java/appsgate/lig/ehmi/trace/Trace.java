@@ -90,7 +90,7 @@ public class Trace {
     		if(varName.equalsIgnoreCase("switchNumber")){
     			picto = PICTO_TABLE.SINGLE_SWITCH_STATE_.stringify()+value;
     		} else {
-    			picto = PICTO_TABLE.SINGLE_SWITCH_TYPE.stringify();
+    			picto = PICTO_TABLE.SWITCH_TYPE.stringify();
     		}
     		
     	} else if (type.equalsIgnoreCase("Contact")){
@@ -133,14 +133,10 @@ public class Trace {
     		}
     		
     	} else if (type.equalsIgnoreCase("SmartPlug")){
-    		if(varName.equalsIgnoreCase("plugState")){
-    			if(value.equalsIgnoreCase("true")){
-    				picto = PICTO_TABLE.SMARTPLUG_STATE_ON.stringify();
-    			} else {
-    				picto = PICTO_TABLE.SMARTPLUG_STATE_OFF.stringify();
-    			}
-    		} else {
-    			picto = PICTO_TABLE.SMARTPLUG_TYPE.stringify();
+    		if(fullState.getString("plugState").equalsIgnoreCase("true")){
+    			picto = PICTO_TABLE.SMARTPLUG_STATE_ON.stringify();
+    		}else{
+    			picto = PICTO_TABLE.SMARTPLUG_STATE_OFF.stringify();
     		}
     	}
     	

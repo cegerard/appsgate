@@ -676,12 +676,17 @@ font-size: smaller;
 .debugger {
     margin-right: auto;
     margin-left: auto;
-    width: 960px;
+    width: 980px;
 }
 
-.debugger .container {
-   padding: 0px;
+.debugger.scrollable {
+    border: none;
 }
+
+/*.debugger .dashboard > header {*/
+    /*position: fixed;*/
+/*}*/
+
 .ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}
 
 .active-node-indicator {
