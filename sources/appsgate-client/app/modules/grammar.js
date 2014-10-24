@@ -126,7 +126,7 @@ define([
 		 */
 		isProgramEmpty: function (jsonObj) {
 			var s = this.parseNode(jsonObj, -1);
-			return ! /action|keepState/.test(s);
+			return ! /stopMyself|action|keepState/.test(s);
 		}
 
     });
