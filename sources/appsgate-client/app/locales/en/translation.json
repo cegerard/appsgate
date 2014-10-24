@@ -487,7 +487,9 @@
         "name-label": "Name",
         "name-placeholder": "Device Name",
         "place-label": "Place",
-        "reset-clock": "Reset Clock",
+        "reset-clock": "Reset Clock"
+    },
+    "modal-test-program": {
         "time-label": "Time",
         "time-speed-label": "Speed"
     },

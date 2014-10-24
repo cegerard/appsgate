@@ -487,7 +487,9 @@
         "name-label": "Nom",
         "name-placeholder": "Nom de l'équipement",
         "place-label": "Lieu de vie",
-        "reset-clock": "Reinitialisé horloge",
+        "reset-clock": "Reinitialisé horloge"
+    },
+    "modal-test-program": {
         "time-label": "Heure",
         "time-speed-label": "Vitesse"
     },
