@@ -75,6 +75,7 @@ define([
             });
         },
         reload: function() {
+            self = this;
           services.getServicesByType()[this.id].forEach(function(service) {
               self.listenTo(service, "change", self.render);
               self.listenTo(service, "remove", self.render);
@@ -151,7 +152,7 @@ define([
          * Callback to delete the weather place
          */
         onDeleteWeatherButton: function(e) {
-            var weatherObserver = services.get($(e.currentTarget).parents(".pull-right").children(".delete-weather").attr("id"));
+            var weatherObserver = services.get($(e.currentTarget).parents(".pull-right").children(".delete-weather").attr("brickid"));
             weatherObserver.destroy();
             appRouter.navigate("#services/types/103", {trigger: true});
 
@@ -188,7 +189,7 @@ define([
          */
         openMeteo: function(e) {
             e.preventDefault();
-            var actuator = services.get($(e.currentTarget).attr("id"));
+            var actuator = services.get($(e.currentTarget).attr("brickid"));
             window.open(actuator.attributes.presentationURL);
         },
                 /**

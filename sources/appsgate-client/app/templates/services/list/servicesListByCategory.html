@@ -60,16 +60,16 @@
 <div class="contents-list scrollable">
   <div class="panel panel-default">
     <div class="list-group">
-      <%services.getServicesByType()[type].forEach(function(s) { %>
+      <%i=0;services.getServicesByType()[type].forEach(function(s) { i++;%>
         <a class="list-group-item">
           <%if (type === "103") { %>
         <div class="pull-right">
             <% if (services.getServicesByType()[type].length > 1) { %>
-			<button type="button" class="btn btn-default delete-weather" rel="popover" id="<%= s.get('id') %>" data-trigger="focus">
+			<button type="button" class="btn btn-default delete-weather" rel="popover" brickid="<%= s.get('id') %>" id="DelBtn<%= i%>" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="form.delete-button"></span>
 			</button>
             <%}%>
-			<button type="button" class="btn btn-default see-meteo" id="<%= s.get('id') %>">
+			<button type="button" class="btn btn-default see-meteo" brickid="<%= s.get('id') %>">
 				<span data-i18n="weather.weblink">Voir météo</span>
 			</button>
         </div>
