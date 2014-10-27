@@ -1,41 +1,22 @@
 define([
     "app",
-], function (App) {
+    "models/brick",
+], function (App, Brick) {
 
     var Dependancy = {};
 
     /**
      * Dependancies Model class extending the Backbone model class and an abstract class for all the bricks in the application (universes, places, devices, services, programs...)
      */
-    Dependancy = Backbone.Model.extend({
+    Dependancy = Brick.extend({
         initialize: function () {
-            var self = this;
-            Dependancy.__super__.initialize.apply(this, arguments);
-
-            var arrayEntity = [{
-                    "id": "1",
-                    "type": "truc",
-                    "name": "toto"
-            },
-                {
-                    "id": "2",
-                    "type": "truc",
-                    "name": "toto"
-            }];
-
-            this.set({
-                entities: arrayEntity
-            });
         },
-        test: function () {
-            bidule();
-            console.log("test");
+        loadData: function(jsonData) {
+            this.set({
+                entities: jsonData.nodes;
+            });
         }
     });
-
-    function bidule() {
-        console.log("bidule");
-    }
 
     // Return the reference to the Dependancies constructor
     return Dependancy;

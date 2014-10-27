@@ -8,7 +8,6 @@ define([
         template: _.template(GraphTemplate),
 
         initialize: function () {
-            var self = this;
             var svg, force;
         },
 
@@ -42,7 +41,6 @@ define([
 
 
     function update(nodes, model) {
-        model.test();
         force.nodes(nodes);
 
         node = svg.select("#groupNode").selectAll(".ANODE").data(nodes, function (d) {
