@@ -334,7 +334,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 			String newStatus = node.getAttributes().getNamedItem(VAL).getNodeValue();
 			logger.trace("checkChangeStateEvent(...), new Status = "+newStatus);
 
-			stateChanged("volume", currentStatus, newStatus);
+			stateChanged("playerStatus", currentStatus, newStatus);
 			currentStatus = newStatus;
 
 		} catch (Exception exc) {
