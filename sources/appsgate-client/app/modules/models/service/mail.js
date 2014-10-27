@@ -74,8 +74,9 @@ define([
       return this.get("favorite-recipients");
     },
     getFavoriteMail: function() {
-      if (this.getFavorites().length > 0) {
-        return this.getFavorites()[0].mail;
+      v = this.getFavorites();
+      for (c in v) {
+        return v[c].mail;
       }
       return "mail@example.com";
     },
