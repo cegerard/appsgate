@@ -13,7 +13,7 @@ define([
         },
         loadData: function(jsonData) {
             this.set({
-                entities: jsonData.nodes;
+                entities: jsonData.nodes
             });
         }
     });
