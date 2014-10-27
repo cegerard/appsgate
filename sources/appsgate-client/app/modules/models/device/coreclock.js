@@ -90,7 +90,7 @@ define([
       if(this.anchorSysTime){
         var delta_ms = ((new Date()).getTime() - this.anchorSysTime) * parseInt(this.get("flowRate"));
         var ms = this.anchorTime + delta_ms;
-        this.set("moment", moment(ms), {clockRefresh:true});
+        this.set("moment", moment(ms));
         this.updateClockDisplay();
       }
     },
@@ -172,7 +172,7 @@ define([
 	 * @returns event template for clock
 	 */
 	getTemplateEvent: function() {
-	  return _.template(EventTemplate); 
+	  return _.template(EventTemplate);
 	},
 
     /**

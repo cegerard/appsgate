@@ -574,7 +574,8 @@
             "schedule": "Schedule",
             "open-calendar":"Go to Calendar",
             "test":"Test",
-            "end-test":"Stop testing"
+            "end-test":"Stop testing",
+            "simulated-time":"Simulated-time"
         },
         "delete-program": "Delete",
         "edit-program": "Edit",
@@ -610,7 +611,8 @@
         },
         "warning-program-edition": "Warning, edit program will deactivate it",
         "warning-program-delete": "Do you really want to delete this program ?",
-        "scheduled-event": "Appsgate program "
+        "scheduled-event": "Appsgate program ",
+        "simulated-time":"Simulated-time"
     },
     "programs-menu": {
         "add-button": "Add Program",

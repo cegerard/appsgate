@@ -15,6 +15,8 @@ define([
         "shown.bs.modal #test-program-modal": "initializeProgramTestModal",
         "hidden.bs.modal": "toggleModalValue",
         "click #schedule-program-modal button.valid-button": "validScheduleProgram",
+        "click #test-program-modal button.valid-button": "launchProgramTest",
+        "click #stop-testing-button": "cancelTesting",
         "click button.start-program-button": "onStartProgramButton",
         "click button.stop-program-button": "onStopProgramButton",
         "click button.cancel-edit-program-button": "onCancelEditProgram",
@@ -41,6 +43,12 @@ define([
         this.listenTo(dispatcher, "refreshDisplay", this.refreshDisplay);
 
         this.stopListening(devices.getCoreClock());
+        this.listenTo(devices.getCoreClock(), "change", this.displayClockPopover);
+      },
+      close:function() {
+        ProgramReaderView.__super__.close.apply(this, arguments);
+
+        $(".popover").remove();
       },
       /**
        * Clear the input text, hide the error message, check the checkbox and disable the valid button by default
@@ -93,6 +101,91 @@ define([
             window.open("https://www.google.com/calendar");
 
           });
+      },
+      launchProgramTest: function(e) {
+        var self = this;
+
+        // hide the modal
+        $("#test-program-modal").modal("hide");
+
+        var coreClock = devices.getCoreClock();
+        coreClock.set("simulated",true);
+
+        coreClock.get("moment").set("hour", parseInt($("#test-program-modal select#hour").val()));
+        coreClock.get("moment").set("minute", parseInt($("#test-program-modal select#minute").val()));
+        // retrieve the value of the flow rate set by the user
+        var timeFlowRate = $("#test-program-modal input#time-flow-rate").val();
+
+        // update the attributes hour and minute
+        coreClock.set("hour", coreClock.get("moment").hour());
+        coreClock.set("minute", coreClock.get("moment").minute());
+
+        //send the update to the server
+        coreClock.save();
+
+        // update the attribute time flow rate
+        coreClock.set("flowRate", timeFlowRate);
+
+        //send the update to the server
+        coreClock.save();
+
+        // instantiate the program and add it to the collection after the modal has been hidden
+        $("#test-program-modal").on("hidden.bs.modal", function() {
+          // tell the router there is no modal any more
+          appRouter.isModalShown = false;
+
+          // starting the program
+          self.model.set("runningState", "PROCESSING");
+          self.model.remoteCall("callProgram", [{type: "String", value: self.model.get("id")}]);
+
+          // setting the clock to reset once the program stops
+          self.listenToOnce(self.model, "change:runningState", self.cancelTesting);
+
+          // refresh the menu
+          self.render();
+
+          $("#test-program-button").addClass("hidden");
+          $("#stop-testing-button").removeClass("hidden");
+
+        });
+      },
+      cancelTesting: function() {
+
+        $("#test-program-button").removeClass("hidden");
+        $("#stop-testing-button").addClass("hidden");
+
+        var coreClock = devices.getCoreClock();
+        if(coreClock.get("simulated")){
+          coreClock.resetClock();
+          coreClock.set("simulated", false);
+        }
+      },
+      displayClockPopover: function() {
+        var self = this;
+        var coreClock = devices.getCoreClock();
+        if(coreClock.get("simulated") == true && (typeof this.testPopoverShown == "undefined" || this.testPopoverShown == false)) {
+          this.testPopoverShown = true;
+
+          _.defer(function(){
+            // create the test popover
+            self.$el.find("#test-button-popover").popover({
+                content: $.i18n.t("programs.simulated-time"),
+                template: "<div class='popover' role='tooltip'><div class='arrow'></div><div id='popover-clock' class='popover-content'></div></div>",
+                placement: "top",
+            });
+
+            // show the popup
+            self.$el.find("#test-button-popover").popover('show');
+          });
+        }
+        else if(coreClock.get("simulated") == false && this.testPopoverShown == true){
+          this.testPopoverShown = false;
+          // hide the popup
+          this.$el.find("#test-button-popover").popover('destroy');
+          $("#popover-clock").parent().remove();
+        }
+
+        $("#popover-clock").html("<i class='glyphicon glyphicon-time'></i><span>" + coreClock.get('hour') + ":" + coreClock.get('minute') + ":" + coreClock.get('second') + "</span>");
       },
       openCalendar: function(e) {
           window.open("https://www.google.com/calendar");
@@ -387,11 +480,22 @@ define([
           // hide the error message
           $("#edit-program-name-modal .text-error").hide();
 
+          // initialize test button
+          if(devices.getCoreClock().get("simulated") == true){
+            $("#test-program-button").addClass("hidden");
+            $("#stop-testing-button").removeClass("hidden");
+          } else {
+            $("#test-program-button").removeClass("hidden");
+            $("#stop-testing-button").addClass("hidden");
+          }
+
           this.refreshDisplay();
 
           // fix the programs list size to be able to scroll through it
           this.resize($(".programInput"));
+
         }
+
         return this;
       }
 

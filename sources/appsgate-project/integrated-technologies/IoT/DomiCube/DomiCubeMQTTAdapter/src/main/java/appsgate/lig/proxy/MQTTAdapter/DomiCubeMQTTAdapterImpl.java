@@ -69,6 +69,8 @@ public class DomiCubeMQTTAdapterImpl {
      */
     private ExecutorService listenningService = Executors.newCachedThreadPool();
 
+    private List<MQTTListeningThread> listenningThreads=new ArrayList<MQTTListeningThread>();
+
     /**
      * All schedule task for MQTT broker reception
      */
@@ -77,7 +79,7 @@ public class DomiCubeMQTTAdapterImpl {
     /**
      * Connection member for MQTT broker
      */
-    private List<FutureConnection> MQTTConnections =new ArrayList<FutureConnection>();
+    private List<FutureConnection> mqttConnections =new ArrayList<FutureConnection>();
 
     private static Logger logger = LoggerFactory.getLogger(DomiCubeMQTTAdapterImpl.class);
 
@@ -118,13 +120,20 @@ public class DomiCubeMQTTAdapterImpl {
             FutureConnection battery=connectMQTT(batteryTopic);
             FutureConnection dim=connectMQTT(dimTopic);
 
-            MQTTConnections.add(face);
-            MQTTConnections.add(battery);
-            MQTTConnections.add(dim);
+            mqttConnections.add(face);
+            mqttConnections.add(battery);
+            mqttConnections.add(dim);
 
-            listenningService.execute(new MQTTListeningThread(face,"activeFace"));
-            listenningService.execute(new MQTTListeningThread(battery,"batteryLevel"));
-            listenningService.execute(new MQTTListeningThread(dim,"dimValue"));
+            MQTTListeningThread t1=new MQTTListeningThread(face,"activeFace");
+            listenningService.execute(t1);
+            MQTTListeningThread t2=new MQTTListeningThread(battery,"batteryLevel");
+            listenningService.execute(t2);
+            MQTTListeningThread t3=new MQTTListeningThread(dim,"dimValue");
+            listenningService.execute(t3);
+
+            listenningThreads.add(t1);
+            listenningThreads.add(t2);
+            listenningThreads.add(t3);
 
             logger.debug("Thread initialized.");
 
@@ -141,9 +150,14 @@ public class DomiCubeMQTTAdapterImpl {
 
         try {
             logger.debug("Closing MQTT connection...");
-            for(FutureConnection con: MQTTConnections){
+            for(FutureConnection con: mqttConnections){
                 con.disconnect();
             }
+
+            for(MQTTListeningThread thread:listenningThreads){
+                thread.setListening(false);
+            }
+
             logger.debug("MQTT brocker connection closed.");
         } catch (Exception e) {
             logger.error("MQTT brocker disconnection failed.");
