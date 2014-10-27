@@ -100,6 +100,11 @@ define(function(require, exports, module) {
                     dispatcher.trigger("dataReady");
                 }
             });
+        
+            // dependancies
+            require(['collections/dependancies'], function(Dependancies) {
+                window.dependancies = new Dependancies();
+            });
 
       // all data have been received, launch the user interface
       dispatcher.on("dataReady", function() {
