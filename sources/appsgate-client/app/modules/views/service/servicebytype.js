@@ -75,6 +75,7 @@ define([
             });
         },
         reload: function() {
+            self = this;
           services.getServicesByType()[this.id].forEach(function(service) {
               self.listenTo(service, "change", self.render);
               self.listenTo(service, "remove", self.render);
@@ -151,7 +152,7 @@ define([
          * Callback to delete the weather place
          */
         onDeleteWeatherButton: function(e) {
-            var weatherObserver = services.get($(e.currentTarget).parents(".pull-right").children(".delete-weather").attr("id"));
+            var weatherObserver = services.get($(e.currentTarget).parents(".pull-right").children(".delete-weather").attr("brickid"));
             weatherObserver.destroy();
             appRouter.navigate("#services/types/103", {trigger: true});
 
@@ -188,7 +189,7 @@ define([
          */
         openMeteo: function(e) {
             e.preventDefault();
-            var actuator = services.get($(e.currentTarget).attr("id"));
+            var actuator = services.get($(e.currentTarget).attr("brickid"));
             window.open(actuator.attributes.presentationURL);
         },
                 /**
@@ -217,8 +218,10 @@ define([
          */
         onDeleteMailButton: function(e) {
             mail = services.getServicesByType()["102"][0];
-            mail.removeFavorite($(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email"))
-            appRouter.navigate("#services/types/102", {trigger: true});
+            mail.removeFavorite($(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email"));
+            $("#mailFavCnt").html(mail.getNumberOfFavorites());
+            this.reload();
+
         },
 
         /**
@@ -226,7 +229,6 @@ define([
          */
         updateMailButton : function(e) {
             var m = $(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email");
-            console.log(m);
             $("#edit-mail-modal input[name='oldValue']").val(m);
             $("#edit-mail-modal input[name='inputValue']").val(m);
             $("#edit-mail-modal").modal("show");
@@ -251,6 +253,7 @@ define([
 
         updateMail: function() {
             mail = services.getServicesByType()["102"][0];
+            self = this;
 
             $("#edit-mail-modal").on("hidden.bs.modal", function() {
                 // instantiate a model for the new location observer
@@ -259,9 +262,12 @@ define([
                 $("#edit-mail-modal input[name='oldValue']").val("");
 
                 mail.updateFavorite(oldMail, newMail);
+
+                
                 // tell the router that there is no modal any more
                 appRouter.isModalShown = false;
-                appRouter.navigate("#services/types/102", {trigger: true});
+                $("#mailFavCnt").html(mail.getNumberOfFavorites());
+                self.reload();
             });
 
             // hide the modal

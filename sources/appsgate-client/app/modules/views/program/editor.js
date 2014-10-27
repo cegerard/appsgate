@@ -390,11 +390,13 @@ define([
           }
 
           // scrolling to the selected node
-          var focusPosition = $(".selected-node").offset().top + $(".programInput").scrollTop() - $(".programInput").offset().top;
-          if($(".programInput").height() > $(".selected-node").height()) {
-            focusPosition -= $(".programInput").height()/2 - $(".selected-node").height()/2;
+          if($(".selected-node").length > 0) {
+            var focusPosition = $(".selected-node").offset().top + $(".programInput").scrollTop() - $(".programInput").offset().top;
+            if($(".programInput").height() > $(".selected-node").height()) {
+              focusPosition -= $(".programInput").height()/2 - $(".selected-node").height()/2;
+            }
+            $(".programInput").animate({scrollTop: focusPosition}, 1000);
           }
-          $(".programInput").animate({scrollTop: focusPosition}, 1000);
 
           $( document ).tooltip();
 

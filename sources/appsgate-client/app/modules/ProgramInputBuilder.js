@@ -252,21 +252,22 @@ define([
         },
         buildComparatorNode: function(param, currentNode) {
             var leftOp = this.buildInputFromNode(param.node.leftOperand, currentNode);
-
-            if (param.node.leftOperand.target.deviceType) {
-                var deviceOfNode = devices.where({type:param.node.leftOperand.target.deviceType})[0];
-                if (deviceOfNode != undefined) {
-                    param.node.rightOperand.scale = deviceOfNode.getScale();
-                    param.node.rightOperand.type = param.node.leftOperand.returnType;
-                    param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+            if (param.node.leftOperand.target) {
+                if (param.node.leftOperand.target.deviceType) {
+                    var deviceOfNode = devices.where({type:param.node.leftOperand.target.deviceType})[0];
+                    if (deviceOfNode != undefined) {
+                        param.node.rightOperand.scale = deviceOfNode.getScale();
+                        param.node.rightOperand.type = param.node.leftOperand.returnType;
+                        param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                    }
                 }
-            }
-            if (param.node.leftOperand.target.serviceType) {
-                var serviceOfNode = services.where({type:param.node.leftOperand.target.serviceType})[0];
-                if (serviceOfNode != undefined) {
-                    param.node.rightOperand.scale = serviceOfNode.getScale();
-                    param.node.rightOperand.type = param.node.leftOperand.returnType;
-                    param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                if (param.node.leftOperand.target.serviceType) {
+                    var serviceOfNode = services.where({type:param.node.leftOperand.target.serviceType})[0];
+                    if (serviceOfNode != undefined) {
+                        param.node.rightOperand.scale = serviceOfNode.getScale();
+                        param.node.rightOperand.type = param.node.leftOperand.returnType;
+                        param.node.rightOperand.unit = (param.node.leftOperand.unit) ? param.node.leftOperand.unit: "";
+                    }
                 }
             }
 

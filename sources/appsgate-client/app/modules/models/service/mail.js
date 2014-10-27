@@ -74,8 +74,9 @@ define([
       return this.get("favorite-recipients");
     },
     getFavoriteMail: function() {
-      if (this.getFavorites().length > 0) {
-        return this.getFavorites()[0].mail;
+      v = this.getFavorites();
+      for (c in v) {
+        return v[c].mail;
       }
       return "mail@example.com";
     },
@@ -107,21 +108,34 @@ define([
 
     },
     
+    getNumberOfFavorites: function () {
+      var i = 0;
+      for (val in this.getFavorites()) {
+        i++;
+      }
+      return i;
+    },
+    
     /**
      * update a favorite mail
      */
     updateFavorite: function(old, which) {
-      console.log("UPD_MAIL: Not implemented yet");  
-      this.remoteControl("removeFavoriteRecipient", [{"type": "String", "value": old}]);
-      this.remoteControl("addFavoriteRecipient", [{"type": "String", "value": which}]);
       v = this.getFavorites();
-      for (t in v) {
-        if (v[t].mail === old) {
-            v[t].mail = which;
-            this.setFavorites(v);
-            return;
+      if (old == "") {
+        v.push({mail:which});
+        this.setFavorites(v);
+        //code
+      } else {
+        this.remoteControl("removeFavoriteRecipient", [{"type": "String", "value": old}]);
+        for (t in v) {
+          if (v[t].mail === old) {
+              v[t].mail = which;
+              this.setFavorites(v);
+              return;
+          }
         }
       }
+      this.remoteControl("addFavoriteRecipient", [{"type": "String", "value": which}]);
 
     }    
     

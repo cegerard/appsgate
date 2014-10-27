@@ -12,7 +12,8 @@ define([
       tplEditor: _.template(programEditorTemplate),
       events: {
         "shown.bs.modal #schedule-program-modal": "initializeModal",
-        "hidden.bs.modal #schedule-program-modal": "toggleModalValue",
+        "shown.bs.modal #test-program-modal": "initializeProgramTestModal",
+        "hidden.bs.modal": "toggleModalValue",
         "click #schedule-program-modal button.valid-button": "validScheduleProgram",
         "click button.start-program-button": "onStartProgramButton",
         "click button.stop-program-button": "onStopProgramButton",
@@ -53,6 +54,16 @@ define([
        */
       toggleModalValue: function() {
           appRouter.isModalShown = false;
+      },
+      initializeProgramTestModal: function() {
+        var coreClock = devices.getCoreClock();
+
+        // initialize the field to edit the core clock
+        $("#test-program-modal select#hour").val(coreClock.get("moment").hour());
+        $("#test-program-modal select#minute").val(coreClock.get("moment").minute());
+        $("#test-program-modal input#time-flow-rate").val(coreClock.get("flowRate"));
+
+        this.initializeModal();
       },
       /**
        * Check if the name of the program does not already exist. If not, create the program
@@ -212,7 +223,7 @@ define([
           input = self.applyReadMode(input);
           $(".programInput").html(input).addClass("read-only");
 
-          if($(".programInput").children(".seq-block-node").children().length <= 1){
+          if($(".programInput").children(".seq-block-node").children(":not(.input-spot):not(.seq-block-header)").length < 1){
             $(".programInput").children(".seq-block-node").remove();
             $(".programInput").children(".separator").remove();
           }
@@ -222,7 +233,7 @@ define([
             }
             $(".seq-block-node").find(".input-spot").prev(".separator").remove();
           }
-          if($(".programInput").children(".set-block-node").children().length <= 1){
+          if($(".programInput").children(".set-block-node").children(":not(.input-spot):not(.set-block-header)").length < 1){
             $(".programInput").children(".set-block-node").remove();
             $(".programInput").children(".separator").remove();
           }
@@ -333,8 +344,6 @@ define([
         $(".progress-true-false-indicator").each(function(index) {
           var span = $(this);
           var nodeCounter = self.model.get("nodesCounter");
-          var test =  nodeCounter[span.attr("true-node")];
-          var test2 = nodeCounter[span.attr("false-node")];
           if(typeof nodeCounter[span.attr("true-node")] !== "undefined" && typeof nodeCounter[span.attr("false-node")] !== "undefined") {
             if(nodeCounter[span.attr("true-node")] > nodeCounter[span.attr("false-node")]){
               span.text($.i18n.t("debugger.yes"));
@@ -353,7 +362,6 @@ define([
             span.addClass("progress-false-indicator");
             span.removeClass("hidden");
           }
-          console.log( index + " : " + span.attr("id") + " true: " + span.attr("true-node") + " false: " + span.attr("false-node"));
         });
 
         return input;
