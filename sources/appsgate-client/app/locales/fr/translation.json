@@ -610,7 +610,8 @@
         },
         "warning-program-edition": "Attention, éditer le programme le désactivera",
         "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
-        "scheduled-event": "Programme Appsgate "
+        "scheduled-event": "Programme Appsgate ",
+        "simulated-time":"Heure simulée"
     },
     "programs-menu": {
         "add-button": "Ajouter programme",

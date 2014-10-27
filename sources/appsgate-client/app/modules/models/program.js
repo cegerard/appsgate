@@ -40,7 +40,6 @@ define([
                 this.set("body", this.get("source").body);
             });
 
-
             // each program listens to the event whose id corresponds to its own id
             dispatcher.on(this.get("id"), function(updatedVariableJSON) {
               if(typeof updatedVariableJSON.activeNodes !== 'undefined' &&  typeof updatedVariableJSON.nodesCounter !== 'undefined'){

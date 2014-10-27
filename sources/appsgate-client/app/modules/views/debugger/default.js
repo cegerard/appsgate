@@ -41,6 +41,8 @@ define([
 
         // prompt server for initial history trace
         dashboard.requestInitialHistoryTrace();
+
+        this.resize($(".scrollable"));
     },
 
     destroy: function() {
