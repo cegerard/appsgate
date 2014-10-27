@@ -44,7 +44,7 @@ define([
       },
       autoupdate: function() {
         SmartPlugView.__super__.autoupdate.apply(this);
-
+        device = this.model;
         this.$el.find("#plug-consumption").html(device.get("consumption") + "Watt");
 
         var plugState = ""
