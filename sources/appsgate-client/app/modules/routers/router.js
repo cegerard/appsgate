@@ -7,6 +7,7 @@ define(function(require, exports, module) {
   var ServicesRouter = require("routers/service");
   var ProgramsRouter = require("routers/program");
   var DebuggerRouter = require("routers/debugger");
+  var DependanciesRouter = require("routers/dependancies");
 
   var mainTemplate = require("text!templates/home/main.html");
   var navbarTemplate = require("text!templates/home/navbar.html");
@@ -20,6 +21,7 @@ define(function(require, exports, module) {
     servicesRouter: new ServicesRouter(),
     programsRouter: new ProgramsRouter(),
     debuggerRouter: new DebuggerRouter(),
+    dependanciesRouter: new DependanciesRouter(),
 
     maintemplate : _.template(mainTemplate),
     navbartemplate : _.template(navbarTemplate),
@@ -27,12 +29,15 @@ define(function(require, exports, module) {
 
     routes: {
       "": "debugger",
-      "reset": "debugger",
+      "reset": "dependancies",
+//      "reset": "debugger",
       "home": "debugger",
       "places": "places",
       "devices": "devices",
       "services": "services",
-      "programs": "programs"
+      "programs": "programs",
+      "dependancies": "dependancies",
+//      "dependancies/:id": "dependanciesId"
     },
     // default route of the application
     places: function() {
@@ -50,6 +55,12 @@ define(function(require, exports, module) {
     debugger: function() {
       this.debuggerRouter.all();
     },
+    dependancies: function() {
+      this.dependanciesRouter.all();
+    },
+//    dependanciesId: function(id) {
+//      this.dependanciesRouter.selected(id);
+//    },
     // update the side menu w/ new content
     showMenuView: function(menuView) {
       // remove and unbind the current view for the menu

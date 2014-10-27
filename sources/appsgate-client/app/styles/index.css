@@ -725,3 +725,9 @@ font-size: smaller;
   border: 2px solid red;
   color: red;
 }
+
+/* --------------------- Dependancy styles ----------------------------------*/
+
+#graph svg {
+    background: beige;  
+}
