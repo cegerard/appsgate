@@ -90,8 +90,24 @@ public interface CoreClockSpec {
 
     /**
      * Reset the clock to the current local System Time and default speed frequency (1),
-     * remove all alarm registered
+     * remove all alarm registered (periodic and single alarms)
      */
-    void resetClock();
+    void fullResetClock();
+    
+    /**
+     * Reset the clock to the current local System Time and default speed frequency (1),
+     * but DO NOT remove any alarm registered (periodic and single alarms)
+     */
+    void resetSystemTime();
+    
+    /**
+     * remove all single alarm registered (not periodic)
+     */
+    void resetSingleAlarms();    
+    
+    /**
+     * remove all periodic alarm registered (single alarms untouched)
+     */
+    void resetPeriodicAlarms();    
 
 }
