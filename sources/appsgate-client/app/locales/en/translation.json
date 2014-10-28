@@ -1,7 +1,8 @@
 {
     "app": {
         "name": "AppsGate",
-        "signin": "Identification"
+        "signin": "Identification",
+        "loading": "Loading..."
     },
     "debugger": {
         "all": "All",
@@ -536,6 +537,7 @@
     "navbar": {
         "button-settings": "Preferences",
         "debugger": "History",
+        "dashboard": "Dashboard",
         "devices": "Devices",
         "edit": "Edit",
         "emergency-stop": "Emergency stop",

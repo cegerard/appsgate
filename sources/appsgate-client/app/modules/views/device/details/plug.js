@@ -8,6 +8,10 @@ define([
     // detailled view of a device
     SmartPlugView = DeviceDetailsView.extend({
       tplPlug: _.template(plugDetailTemplate),
+      // map the events and their callback
+      events: {
+        "click button.toggle-plug-button": "onTogglePlugButton",
+      },
       initialize: function() {
         var self = this;
         SmartPlugView.__super__.initialize.apply(this, arguments);
@@ -45,7 +49,7 @@ define([
       autoupdate: function() {
         SmartPlugView.__super__.autoupdate.apply(this);
         device = this.model;
-        this.$el.find("#plug-consumption").html(device.get("consumption") + "Watt");
+        this.$el.find("#plug-consumption").html(device.get("consumption") + " W");
 
         var plugState = ""
         if (this.model.get("plugState")==="true") {
@@ -61,7 +65,7 @@ define([
         } else {
             plugButton = "<span data-i18n='devices.plug.action.turnOn'></span>";
         }
-        this.$el.find("#plug-button").html(plugState);
+        this.$el.find("#plug-button").html(plugButton);
 
         // translate the view
         this.$el.i18n();
