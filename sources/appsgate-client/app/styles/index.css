@@ -9,278 +9,235 @@
 /*-- Application stylesheets. -----------------------------------------------*/
 
 html {
-  height: 100%;
-  display: block;
+    height: 100%;
+    display: block;
 }
-
 body {
-  height: 100%;
-  padding-top: 100px;
-  overflow: hidden;
+    height: 100%;
+    padding-top: 100px;
+    overflow: hidden;
 }
-
 #main {
-  height: 100%
+    height: 100%
 }
-
 .background-editor-img {
-  width:250px;
-  display:block;
-  margin: 0 auto;
+    width: 250px;
+    display: block;
+    margin: 0 auto;
 }
-
 .center-div {
-  display:block;
-  margin: 0 auto;
+    display: block;
+    margin: 0 auto;
 }
-
 .clock-font {
-  font-size: 72px;
+    font-size: 72px;
 }
-
 .clock-seconds {
-  font-size: 10px;
+    font-size: 10px;
 }
-
 .div-scrollable {
-  overflow-y: auto;
-  margin-bottom: 20px;
-  border: 1px solid #999999;
-  border-radius: 4px;
-  -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border: 1px solid #999999;
+    border-radius: 4px;
+    -webkit-overflow-scrolling: touch;
 }
-
 .browser-container {
-  height:250px;
-  overflow-y: auto;
+    height: 250px;
+    overflow-y: auto;
 }
-
 .slider-container {
-  height:14px;
-  width:150px;
+    height: 14px;
+    width: 150px;
 }
-
 .center {
-  margin:auto !important;
+    margin: auto !important;
 }
-
 .list-group-item > img {
-  width: 50%;
-  height: auto;
-  margin-left: 25%;
+    width: 50%;
+    height: auto;
+    margin-left: 25%;
 }
-
 .programInput > span:hover {
-  background-color: lightgrey;
+    background-color: lightgrey;
 }
-
 .keyword {
-  color: #31b0d5;
+    color: #31b0d5;
 }
-
 .action-name {
-  color: red;
+    color: red;
 }
-
 .status {
-  color: darkseagreen;
+    color: darkseagreen;
 }
-
 .prev-seqrules:after {
-  content: "\A";
-  white-space: pre;
+    content: "\A";
+ white-space: pre;
 }
-
 .prev-seqrules + span {
-  margin-left: 10px;
+    margin-left: 10px;
 }
-
 .end-of-block:before {
-  content: "\A";
-  white-space: pre;
+    content: "\A";
+ white-space: pre;
 }
-
 .deleted-elements {
-  font-style: italic;
-  text-decoration: line-through;
+    font-style: italic;
+    text-decoration: line-through;
 }
-
 .programInput > .popover .popover-content {
-  max-height: 200px;
-  overflow-y: scroll;
+    max-height: 200px;
+    overflow-y: scroll;
 }
-
 .programInput > .popover button {
-  width: 100%;
-  margin: auto;
-  margin-bottom: 5px;
+    width: 100%;
+    margin: auto;
+    margin-bottom: 5px;
 }
-
 .programInput > .popover button.valid-value-popover-button {
-  margin-top: 5px;
+    margin-top: 5px;
 }
-
 .programInput > .popover button.delete-popover-button {
-  margin-top: 10px;
+    margin-top: 10px;
 }
-
 .led {
-  width: 27px; height:27px;
-  margin-right: 10px;
-  border: 1px solid #999999; border-radius: 20px;
+    width: 27px;
+    height: 27px;
+    margin-right: 10px;
+    border: 1px solid #999999;
+    border-radius: 20px;
 }
-
-.led-default{
-  background: #999999;
+.led-default {
+    background: #999999;
 }
-
-.led-orange{
-  background: #f0ad4e;
+.led-orange {
+    background: #f0ad4e;
 }
-
-.led-yellow{
-  background: #ffff00;
+.led-yellow {
+    background: #ffff00;
 }
-
-.label-yellow{
-  background: #ffff00;
-  color:black;
-  border: 1px solid #999999;
+.label-yellow {
+    background: #ffff00;
+    color: black;
+    border: 1px solid #999999;
 }
-
-.label-value{
-  padding: .2em .6em .3em;
-  font-size:75%;
-  line-height:1;
-  font-weight:bold;
-  text-decoration:underline;
+.label-value {
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    line-height: 1;
+    font-weight: bold;
+    text-decoration: underline;
 }
-
 .label-color-information {
-  background: none;
-  border-color: black;
-  border-style: solid;
-  border-width: 1px;
-  color: black;
+    background: none;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    color: black;
 }
-
-.lamp-color-led{
-  color:transparent;
+.lamp-color-led {
+    color: transparent;
 }
-
-.valid-program{
-  background: palegreen;
+.valid-program {
+    background: palegreen;
 }
-
-.popover-div{
+.popover-div {
     text-align: center;
 }
-
 .img-service-title {
     height: 2em;
     vertical-align: middle;
 }
-
 .row {
-  margin-right:0px;
+    margin-right: 0px;
 }
-
 ::-webkit-scrollbar {
-  width: 8px;
-  background-color: rgba(0,0,0,0);
-  -webkit-border-radius: 100px;
+    width: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    -webkit-border-radius: 100px;
 }
-
 ::-webkit-scrollbar:hover {
-  background-color: rgba(0, 0, 0, 0.09);
+    background-color: rgba(0, 0, 0, 0.09);
 }
-
 ::-webkit-scrollbar-thumb:vertical {
-  background: rgba(0,0,0,0.05);
-  -webkit-border-radius: 100px;
+    background: rgba(0, 0, 0, 0.05);
+    -webkit-border-radius: 100px;
 }
 ::-webkit-scrollbar-thumb:vertical:active {
-  background: rgba(0,0,0,0.61); /* Some darker color when you click it */
-  -webkit-border-radius: 100px;
+    background: rgba(0, 0, 0, 0.61);
+    /* Some darker color when you click it */
+    -webkit-border-radius: 100px;
 }
-
 /* --------------------- Home styles -----------------------------------*/
-.circlemenu {
-  position:absolute;
-  bottom:50px;
-  left:0px;
-}
 
+.circlemenu {
+    position: absolute;
+    bottom: 50px;
+    left: 0px;
+}
 .circlemenu li:first-child {
-  background:#fff;
-  border-top-left-radius:0px !important;
-  border-bottom-right-radius:0px !important;
-  border-bottom-left-radius:0px !important;
-  font-weight:bold;
-  font-family:arial black;
-  font-size:200%;
-  border-color: #47A347;
-  border-width: 2px;
-  border-style: solid;
-  box-shadow: 0 0 2px 1px #aaa;
+    background: #fff;
+    border-top-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    font-weight: bold;
+    font-family: arial black;
+    font-size: 200%;
+    border-color: #47A347;
+    border-width: 2px;
+    border-style: solid;
+    box-shadow: 0 0 2px 1px #aaa;
 }
 .circlemenu li {
-  background:#fff;
-  color:black;
-  border-color: #47A347;
-  border-width: 2px;
-  border-style: solid;
-  font-size:25px;
-  display:none;
-  cursor:pointer;
+    background: #fff;
+    color: black;
+    border-color: #47A347;
+    border-width: 2px;
+    border-style: solid;
+    font-size: 25px;
+    display: none;
+    cursor: pointer;
 }
 .circlemenu li.disabled {
-  background:#E6E6E6;
+    background: #E6E6E6;
 }
-.circlemenu a{
-  background:#fff;
-  color:black;
-  text-decoration: none;
-  cursor:pointer;
+.circlemenu a {
+    background: #fff;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
-
 /* --------------------- Places styles ---------------------------------*/
 
 .place-details {
-  font-size:5pt;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  color: #333333;
-  background-color: #ffffff;
-  border-color: #cccccc;
+    font-size: 5pt;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #333333;
+    background-color: #ffffff;
+    border-color: #cccccc;
 }
-
 /* --------------------- Devices styles --------------------------------*/
 
 .device-title {
-  font-size:2pt;
+    font-size: 2pt;
 }
-
 .device-img {
     max-height: 200px;
     margin-left: auto;
     margin-right: auto;
 }
-
 .device-div-img {
     text-align: center;
     text-decoration: underline;
     color: grey;
 }
-
 .devices-list {
-  width:100%;
+    width: 100%;
 }
-
 .table-scale {
     margin-top: 10px;
 }
-
 .table-scale tr td {
     padding: 3px;
     width: 150px;
@@ -291,387 +248,312 @@ body {
     background: #4C4C4C;
     color: #ffffff;
 }
-
 .table-scale tr td:nth-child(2) {
-    background: #808080 ;
+    background: #808080;
     color: #ffffff;
 }
-
 .table-scale tr td:nth-child(3) {
     background: #999999;
     color: #ffffff;
 }
-
 .table-scale tr td:nth-child(4) {
     background: #CCCCCC;
 }
-
 .table-scale tr td:nth-child(5) {
     background: #ffffff;
 }
-
 .white-face-rect-domus {
     fill: none;
     stroke: black;
     stroke-width: 10px;
 }
-
 .white-face-svg-domus {
     width: 50%;
     margin-left: 25%;
     height: 20em;
 }
-
 .white-face-text-domus {
     text-anchor: middle;
     font-weight: bold;
 }
-
 /* --------------------- Editor styles ----------------------------------*/
 
 .action-node-input {
-  background:gray;
-  border: 1px solid;
+    background: gray;
+    border: 1px solid;
 }
-
 .method-input {
-  background:blueviolet;
+    background: blueviolet;
 }
-
 .target-input {
-  background:green;
+    background: green;
 }
-
 .indent-level-1 {
-  margin-left:30px !important;
+    margin-left: 30px !important;
 }
-
 .indent-level-2 {
-  margin-left:60px !important;
+    margin-left: 60px !important;
 }
-
 .indent-level-3 {
-  margin-left:90px !important;
+    margin-left: 90px !important;
 }
-
 .editorWorkspace {
-  border:0;
-  position:relative;
+    border: 0;
+    position: relative;
 }
-
 .programInput {
-  height:70%;
-  width: 100%;
-  overflow-y: auto;
-  border: 1px solid #999999;
-  margin-bottom: 20px;
+    height: 70%;
+    width: 100%;
+    overflow-y: auto;
+    border: 1px solid #999999;
+    margin-bottom: 20px;
 }
-
 .read-only .btn-primary {
-  color:#428bca !important;
-  background: transparent !important;
-  border: none !important;
+    color: #428bca !important;
+    background: transparent !important;
+    border: none !important;
 }
-
 .btn-prog-action {
-  color:black;
-  background:white !important;
+    color: black;
+    background: white !important;
 }
-
 .read-only .btn-prog-action {
-  color:black !important;
-  background: transparent !important;
-  border: none !important;
+    color: black !important;
+    background: transparent !important;
+    border: none !important;
 }
-
 .btn-prog-device {
-  color:white;
-  background: #9999FF !important;
+    color: white;
+    background: #9999FF !important;
 }
-
 .read-only .btn-prog-device {
-  color: #9999FF !important;
-  background: transparent !important;
-  border: none !important;
+    color: #9999FF !important;
+    background: transparent !important;
+    border: none !important;
 }
-
 .btn-prog-service {
-  color:white;
-  background: #9999FF !important;
+    color: white;
+    background: #9999FF !important;
 }
-
 .read-only .btn-prog-service {
-  color: #9999FF !important;
-  background: transparent !important;
-  border: none !important;
+    color: #9999FF !important;
+    background: transparent !important;
+    border: none !important;
 }
-
 .btn-prog-prog {
-  color:white;
-  background: #9999FF !important;
+    color: white;
+    background: #9999FF !important;
 }
-
 .read-only .btn-prog-prog {
-  color: #9999FF !important;
-  background: transparent !important;
-  border: none !important;
+    color: #9999FF !important;
+    background: transparent !important;
+    border: none !important;
 }
-
 .btn {
-  box-shadow: 2px 2px 1px #888888;
+    box-shadow: 2px 2px 1px #888888;
 }
-
 .btn.disabled,
 .btn[disabled],
 fieldset[disabled] .btn {
-  opacity: 1;
-  filter: alpha(opacity=100);
+    opacity: 1;
+    filter: alpha(opacity=100);
 }
-
 .read-only .btn {
-  color: black;
-  background: transparent;
-  border: none !important;
-  box-shadow: none;
+    color: black;
+    background: transparent;
+    border: none !important;
+    box-shadow: none;
 }
-
 .read-only .btn:hover,
 .read-only .btn:focus {
-  color: black;
-  background: transparent !important;
-  border: none !important;
+    color: black;
+    background: transparent !important;
+    border: none !important;
 }
-
 .read-only .glyphicon-trash {
-  display:none;
+    display: none;
 }
-
 .btn-backspace {
-  position:absolute;
-  right:10px;
+    position: absolute;
+    right: 10px;
 }
-
 .btn-and {
-  margin-left:15px !important;
+    margin-left: 15px !important;
 }
-
 .btn-then {
-  margin-left:15px !important;
+    margin-left: 15px !important;
 }
-
 .separator-hidden {
-  opacity:0 !important;
-  height:0px !important;
+    opacity: 0 !important;
+    height: 0px !important;
 }
-
 .link-span {
-  color:#428BCA;
-  font-size:14px;
-
+    color: #428BCA;
+    font-size: 14px;
 }
-.mandatory-spot{
-  color:transparent;
-  border:2px solid black !important;
+.mandatory-spot {
+    color: transparent;
+    border: 2px solid black !important;
 }
-
 .set-block-node {
-  background-color: #F5F5F5;
-  padding:2px;
-  margin-top:7px;
+    background-color: #F5F5F5;
+    padding: 2px;
+    margin-top: 7px;
 }
-
 .seq-block-node {
-  background-color: #F1EFE7;
-  padding:2px;
-  margin-top:7px;
+    background-color: #F1EFE7;
+    padding: 2px;
+    margin-top: 7px;
 }
-
 .set-block-header {
-  background-color:#757583;
-  padding-bottom:3px;
-  color:white;
-  text-align:center;
+    background-color: #757583;
+    padding-bottom: 3px;
+    color: white;
+    text-align: center;
 }
-
 .seq-block-header {
-  background-color:#997A5C;
-  padding-bottom:3px;
-  color:white;
-  text-align:center;
+    background-color: #997A5C;
+    padding-bottom: 3px;
+    color: white;
+    text-align: center;
 }
-
 .main-block-node {
-  border:1px solid #428bca;
-  padding:2px;
-  margin-top:7px;
+    border: 1px solid #428bca;
+    padding: 2px;
+    margin-top: 7px;
 }
-
 .main-block-node>h2 {
-   margin: -10px 0px 0 20px ;
-font-size: smaller;
-  color: #428bca;
+    margin: -10px 0px 0 20px;
+    font-size: smaller;
+    color: #428bca;
 }
-
 .main-block-node>h2 span {
-   background-color: white;
-   padding: 3px;
+    background-color: white;
+    padding: 3px;
 }
-
 .main-block-node>h2 {
-   margin: -10px 0px 0 20px ;
-font-size: smaller;
-  color: #428bca;
+    margin: -10px 0px 0 20px;
+    font-size: smaller;
+    color: #428bca;
 }
-
 .main-block-node>h2 span {
-   background-color: white;
-   padding: 3px;
+    background-color: white;
+    padding: 3px;
 }
-
 .seq-block-node {
-  border:1px solid #428bca;
-  padding:2px;
-  margin-top: 5px;
+    border: 1px solid #428bca;
+    padding: 2px;
+    margin-top: 5px;
 }
-
 .secondary-block-node {
-  border: 1px dashed #428bca;
-  padding:2px;
-  margin-top: 15px;
+    border: 1px dashed #428bca;
+    padding: 2px;
+    margin-top: 15px;
 }
-
 .secondary-block-node button {
-  border: 1px dashed;
+    border: 1px dashed;
 }
-
 .secondary-block-node .btn {
-  border: 1px dashed;
+    border: 1px dashed;
 }
-
 .secondary-block-node .btn.disabled {
-  border: 1px dashed #ccc;
+    border: 1px dashed #ccc;
 }
-
 .secondary-block-node .btn-primary {
-  background-color:85BAE7#;
+    background-color: 85BAE7#;
 }
-
 .secondary-block-node .btn-then.disabled {
-  opacity:0.5;
+    opacity: 0.5;
 }
-
 .input-spot {
-  border: 1px dashed black;
+    border: 1px dashed black;
 }
-
 .input-spot-then {
-  border: 1px dashed white;
-  background-color:#85BAE7;
+    border: 1px dashed white;
+    background-color: #85BAE7;
 }
-
 .selected-node {
-  border:4px solid black !important;
+    border: 4px solid black !important;
 }
-
 .expected-elements {
-  position:relative;
-  height:25%;
-  width: 100%;
-  border: 1px solid #999999;
-  border-radius: 15px;
+    position: relative;
+    height: 25%;
+    width: 100%;
+    border: 1px solid #999999;
+    border-radius: 15px;
 }
-
 .expected-input {
-  padding: 10px;
-  background: #999999;
+    padding: 10px;
+    background: #999999;
 }
-
 .expected-actions {
-  padding:5px;
+    padding: 5px;
 }
-
-.expected-actions > button{
-  background:white;
+.expected-actions > button {
+    background: white;
 }
-
 .expected-events {
-  padding:5px;
+    padding: 5px;
 }
-
-.expected-events > button{
-  color:white;
-  background:#428bca;
+.expected-events > button {
+    color: white;
+    background: #428bca;
 }
-
 .expected-links {
-  padding:5px;
+    padding: 5px;
 }
-
-.expected-links > button{
-  color:white;
-  background:#428bca;
+.expected-links > button {
+    color: white;
+    background: #428bca;
 }
-
 .expected-devices {
-  padding:5px;
+    padding: 5px;
 }
-
-.expected-devices > button{
-  color:white;
-  background:#9999FF;
+.expected-devices > button {
+    color: white;
+    background: #9999FF;
 }
-
 .expected-services {
-  padding:5px;
+    padding: 5px;
 }
-
-.expected-services > button{
-  color:white;
-  background:#9999FF;
+.expected-services > button {
+    color: white;
+    background: #9999FF;
 }
-
 .expected-programs {
-  padding:5px;
+    padding: 5px;
 }
-
-.expected-programs > button{
-  color:white;
-  background:#9999FF;
+.expected-programs > button {
+    color: white;
+    background: #9999FF;
 }
-
 .btn-current {
-  position:relative;
-  border:0px;
-  padding-right: 20px;
-  display: inline-block;
-  vertical-align:middle;
+    position: relative;
+    border: 0px;
+    padding-right: 20px;
+    display: inline-block;
+    vertical-align: middle;
 }
-
 .btn-trash {
-  cursor:pointer;
+    cursor: pointer;
 }
-
 .fix-row {
-  margin-left:15px;
+    margin-left: 15px;
 }
-
 .fix-row-right {
-  margin-right: -30px;
+    margin-right: -30px;
 }
-
 .deactivate-all-programs-button {
-  width: 100%;
-  margin-bottom: 15px;
+    width: 100%;
+    margin-bottom: 15px;
 }
-
 /* --------------------- Modal styles ----------------------------------*/
 
 .valid-disabled.disabled {
-  opacity: 0.5;
-  background-color: #85BAE7;
-  border-color: #85BAE7;
+    opacity: 0.5;
+    background-color: #85BAE7;
+    border-color: #85BAE7;
 }
-
 /* --------------------- Debugger styles ----------------------------------*/
 
 .debugger {
@@ -679,55 +561,57 @@ font-size: smaller;
     margin-left: auto;
     width: 980px;
 }
-
 .debugger.scrollable {
     border: none;
 }
-
 /*.debugger .dashboard > header {*/
-    /*position: fixed;*/
+
+/*position: fixed;*/
+
 /*}*/
 
-.ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}
-
+.ui-autocomplete {
+    position: absolute;
+    cursor: default;
+    z-index: 1300 !important;
+}
 .active-node-indicator {
-  width:100%;
-  position:absolute;
-  background-color:#5bc0de;
-  opacity:0.3;
-  height:32px;
+    width: 100%;
+    position: absolute;
+    background-color: #5bc0de;
+    opacity: 0.3;
+    height: 32px;
 }
-
 .progress-indicator-group {
-  background-color: greenyellow;
-  border-radius: 1000px;
-  border: 1px solid black;
-  width:auto;
-  height:20px;
+    background-color: greenyellow;
+    border-radius: 1000px;
+    border: 1px solid black;
+    width: auto;
+    height: 20px;
 }
-
 .progress-indicator {
-  padding:1px;
+    padding: 1px;
 }
-
 .progress-true-false-indicator {
-  padding:5px;
-  border-radius: 0px 10px 0px 0px;
-  background: white;
+    padding: 5px;
+    border-radius: 0px 10px 0px 0px;
+    background: white;
 }
-
 .progress-true-indicator {
-  border: 2px solid green;
-  color: green;
+    border: 2px solid green;
+    color: green;
 }
-
 .progress-false-indicator {
-  border: 2px solid red;
-  color: red;
+    border: 2px solid red;
+    color: red;
 }
-
 /* --------------------- Dependancy styles ----------------------------------*/
 
 #graph svg {
-    background: beige;  
+    background: beige;
+}
+#graph path.link {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.25px;
 }
