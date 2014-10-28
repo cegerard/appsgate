@@ -8,6 +8,10 @@ define([
     // detailled view of a device
     SmartPlugView = DeviceDetailsView.extend({
       tplPlug: _.template(plugDetailTemplate),
+      // map the events and their callback
+      events: {
+        "click button.toggle-plug-button": "onTogglePlugButton",
+      },
       initialize: function() {
         var self = this;
         SmartPlugView.__super__.initialize.apply(this, arguments);
@@ -61,7 +65,7 @@ define([
         } else {
             plugButton = "<span data-i18n='devices.plug.action.turnOn'></span>";
         }
-        this.$el.find("#plug-button").html(plugState);
+        this.$el.find("#plug-button").html(plugButton);
 
         // translate the view
         this.$el.i18n();
