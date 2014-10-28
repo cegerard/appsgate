@@ -127,9 +127,9 @@ define([
      */
     autoupdate: function() {
       // update the name
-      this.$el.find("#device-name").html(this.model.get("name") !==
-        "" ? this.model.get("name") : $.i18n.t(
-          "devices.device-no-name"));
+      var deviceName = "&nbsp;&nbsp;"
+      deviceName += this.model.get("name") !== "" ? this.model.get("name") : $.i18n.t("devices.device-no-name");
+      this.$el.find("#device-name").html(deviceName);
 
       // update the status
       var deviceStatus = "";

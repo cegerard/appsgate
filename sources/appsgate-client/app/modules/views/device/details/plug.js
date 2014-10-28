@@ -49,7 +49,7 @@ define([
       autoupdate: function() {
         SmartPlugView.__super__.autoupdate.apply(this);
         device = this.model;
-        this.$el.find("#plug-consumption").html(device.get("consumption") + "Watt");
+        this.$el.find("#plug-consumption").html(device.get("consumption") + " W");
 
         var plugState = ""
         if (this.model.get("plugState")==="true") {
