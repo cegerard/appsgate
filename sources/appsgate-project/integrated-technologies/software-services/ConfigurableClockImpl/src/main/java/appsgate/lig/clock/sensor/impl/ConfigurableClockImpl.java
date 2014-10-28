@@ -95,7 +95,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 	Object lock;
 	boolean runningArmTimer;
-	
+		
 	SimpleDateFormat dateFormat;
 
 	/**
@@ -107,7 +107,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	public ConfigurableClockImpl() {
 		lock = new Object();
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-		resetClock();
+		fullResetClock();
 	}
 
 	/**
@@ -131,41 +131,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 				.toString());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#resetClock()
-	 */
-	@Override
-	public void resetClock() {
-		logger.trace("resetClock()");
-        Calendar oldCalendar;
-        double oldRate;
-		synchronized (lock) {
-            oldCalendar = getCurrentDate();
-            oldRate = flowRate;
-			currentLag = 0;
-			flowRate = 1;
-			currentAlarmId = 0;
-			alarms = new TreeMap<Long, Map<Integer, AlarmEventObserver>>();
-			reverseAlarmMap = new HashMap<Integer, Long>();
-			periodicAlarmObservers = new HashMap<Integer, AlarmEventObserver>();
-			alarmPeriods = new HashMap<Integer, Long>();
-			disarmedAlarms = new HashSet<Integer>();
 
-			nextAlarmId = -1;
-			nextAlarmTime = -1;
-			runningArmTimer = false;
-			if (timer != null) {
-				timer.cancel();
-				timer = null;
-			}
-
-			timeFlowBreakPoint = -1;
-		}
-		fireClockSetNotificationMsg(oldCalendar, Calendar.getInstance());
-		fireFlowRateSetNotificationMsg(oldRate, flowRate);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -284,6 +250,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
 		descr.put("remote", true);
+
 
 		Calendar cal = Calendar.getInstance();
 		long time = cal.getTimeInMillis() + currentLag;
@@ -449,8 +416,11 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 				if (observers.size() < 1)
 					alarms.remove(time);
 			}
+			
+			if(reverseAlarmMap.containsKey(alarmEventId)) {
+				reverseAlarmMap.remove(alarmEventId);				
+			}
 
-			reverseAlarmMap.remove(alarmEventId);
 			calculateNextTimer();
 		}
 	}
@@ -487,19 +457,30 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	}
 
 	void rearmPeriodicAlarms(Long time) {
+		logger.trace("rearmPeriodicAlarms(Long time : "+(time==null?null:dateFormat.format(new Date(time)))
+				+")");
+
 		if (time == null)
 			time = getCurrentTimeInMillis();
+		
 		if (disarmedAlarms != null && !disarmedAlarms.isEmpty()
 				&& reverseAlarmMap != null && !reverseAlarmMap.isEmpty()
 				&& alarmPeriods != null && !alarmPeriods.isEmpty())
 			for (Integer i : disarmedAlarms) {
-				if (Math.abs((reverseAlarmMap.get(i).longValue() - time
-						.longValue()) % alarmPeriods.get(i).longValue()) > alarmLagTolerance)
+				
+				logger.trace("rearmPeriodicAlarms(...), checking alarmId :  "+i);
+				long time_from_epoch = time % alarmPeriods.get(i).longValue();
+
+				if (Math.abs(reverseAlarmMap.get(i).longValue() - time_from_epoch) > alarmLagTolerance) {
+					logger.trace("rearmPeriodicAlarms(...), re-arming alarm id : "+i);
 					disarmedAlarms.remove(i);
+				}
 			}
 	}
 
 	long nearestSingleAlarmDelay(long time) {
+		logger.trace("nearestSingleAlarmDelay(long time : "+dateFormat.format(new Date(time))
+				+")");
 		nextAlarmTime = -1;
 		if (time < 0)
 			time = getCurrentTimeInMillis();
@@ -513,30 +494,32 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	}
 
 	long nearestPeriodicAlarmDelay(long time) {
+		logger.trace("nearestPeriodicAlarmDelay(long time : "+dateFormat.format(new Date(time))
+				+")");
 		if (time < 0)
 			time = getCurrentTimeInMillis();
 		boolean initMin = false;
 		long minPeriodValue = -1;
 
-		for (Integer i : alarmPeriods.keySet())
+		for (Integer i : alarmPeriods.keySet()) {
+			long time_from_epoch = time % alarmPeriods.get(i); 
 			if (!disarmedAlarms.contains(i)) {
 				
 				long nextPeriodic;
-		
-				if(reverseAlarmMap.get(i)-time>alarmLagTolerance
-						&& (reverseAlarmMap.get(i)-time)< alarmPeriods.get(i)) {
-					nextPeriodic = reverseAlarmMap.get(i)-time;
+				if(reverseAlarmMap.get(i) > time_from_epoch) {
+					nextPeriodic = reverseAlarmMap.get(i)-time_from_epoch;
 				} else {
-					nextPeriodic = Math.abs(alarmPeriods.get(i)-Math.abs(time%alarmPeriods.get(i)-reverseAlarmMap.get(i)% alarmPeriods.get(i)));
+					nextPeriodic = (reverseAlarmMap.get(i)+alarmPeriods.get(i))-time_from_epoch;
 				}
 				
-					logger.trace("next periodic : " + nextPeriodic);
+					logger.trace("nearestPeriodicAlarmDelay(...), next periodic : " + nextPeriodic);
 					if (!initMin || nextPeriodic < minPeriodValue) {
 						initMin = true;
 						minPeriodValue = nextPeriodic;
 						nextAlarmId = i;
 					}
 				}
+		}
 		return minPeriodValue;
 	}
 
@@ -613,7 +596,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 				logger.trace("fireClockAlarms(...), removing alarmEventId : "
 						+ i);
 				observers.remove(i);
-				reverseAlarmMap.remove(i);
 			}
 		}
 	}
@@ -691,7 +673,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 				logger.debug("registerPeriodicAlarm(...), creating a new one");
 				periodicAlarmObservers.put(++currentAlarmId, observer);
-				reverseAlarmMap.put(currentAlarmId, time);
+				reverseAlarmMap.put(currentAlarmId, time.longValue()%millis);
 				alarmPeriods.put(currentAlarmId, millis);
 
 				logger.debug("registerPeriodicAlarm(...), alarm events id created : "
@@ -708,6 +690,62 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	@Override
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.SERVICE;
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#fullResetClock()
+	 */
+	@Override
+	public void fullResetClock() {
+		logger.trace("fullResetClock()");
+        Calendar oldCalendar;
+        double oldRate;
+		synchronized (lock) {
+            oldCalendar = getCurrentDate();
+            oldRate = flowRate;
+			currentLag = 0;
+			flowRate = 1;
+			currentAlarmId = 0;
+			alarms = new TreeMap<Long, Map<Integer, AlarmEventObserver>>();
+			reverseAlarmMap = new HashMap<Integer, Long>();
+			periodicAlarmObservers = new HashMap<Integer, AlarmEventObserver>();
+			alarmPeriods = new HashMap<Integer, Long>();
+			disarmedAlarms = new HashSet<Integer>();
+
+			nextAlarmId = -1;
+			nextAlarmTime = -1;
+			runningArmTimer = false;
+			if (timer != null) {
+				timer.cancel();
+				timer = null;
+			}
+
+			timeFlowBreakPoint = -1;
+		}
+		fireClockSetNotificationMsg(oldCalendar, Calendar.getInstance());
+		fireFlowRateSetNotificationMsg(oldRate, flowRate);
+	}	
+
+
+	@Override
+	public void resetSystemTime() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetSingleAlarms() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetPeriodicAlarms() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
