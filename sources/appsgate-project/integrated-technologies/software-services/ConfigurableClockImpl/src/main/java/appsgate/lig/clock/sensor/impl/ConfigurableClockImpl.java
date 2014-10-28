@@ -250,7 +250,14 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
 		descr.put("remote", true);
-
+		
+		if(currentLag == 0
+				&& flowRate == 1
+				&& timeFlowBreakPoint ==-1) {
+			descr.put("simulated", false);			
+		} else {
+			descr.put("simulated", true);
+		}
 
 		Calendar cal = Calendar.getInstance();
 		long time = cal.getTimeInMillis() + currentLag;
