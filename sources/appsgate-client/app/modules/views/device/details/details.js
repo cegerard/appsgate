@@ -12,11 +12,9 @@ define([
     events: {
       "click button.back-button": "onBackButton",
       "shown.bs.modal #edit-device-modal": "initializeModal",
-      "hidden.bs.modal #edit-device-modal": "toggleModalValue",
       "click #edit-device-modal button.valid-button": "validEditDevice",
       "keyup #edit-device-modal input": "validEditDevice",
-      "change #edit-device-modal select": "checkDevice",
-      "change .clockReset": "checkDevice"
+      "change #edit-device-modal select": "checkDevice"
     },
     initialize: function() {
       var self = this;
@@ -50,15 +48,6 @@ define([
       $("#edit-device-modal .valid-button").addClass("disabled");
       // tell the router that there is a modal
       appRouter.isModalShown = true;
-    },
-    /**
-     * Tell the router there is no modal anymore
-     */
-    toggleModalValue: function() {
-      _.defer(function() {
-        appRouter.isModalShown = false;
-        appRouter.currentView.render();
-      });
     },
     /**
      * Check the current value given by the user - show an error message if needed
@@ -106,29 +95,23 @@ define([
 
         // update if information are ok
         if (this.checkDevice()) {
-          var destPlaceId;
+          var destPlaceId = $("#edit-device-modal select option:selected").val();
 
-          if (this.model.get("type") !== "21" && this.model.get(
-              "type") !== 21) {
-            destPlaceId = $(
-              "#edit-device-modal select option:selected").val();
-          }
+          var deviceName = $("#edit-device-modal input#device-name").val();
 
-          // save the name now to prevent the reset of the modal after the render called in "moveDevice"
-          self.model.set("name",$("#edit-device-modal input#device-name").val());
-          self.model.sendName();
-
-          this.$el.find("#edit-device-modal").on("hidden.bs.modal",
+          $("#edit-device-modal").on("hidden.bs.modal",
             function() {
-
               // tell the router that there is no modal any more
               appRouter.isModalShown = false;
 
-              // move the device if this is not the core clock
-              if (self.model.get("type") !== "21" && self.model.get("type") !== 21) {
-                places.moveDevice(self.model.get("placeId"),
-                  destPlaceId, self.model.get("id"), true);
+              // save the name now to prevent the reset of the modal after the render called in "moveDevice"
+              self.model.set("name",deviceName);
+              self.model.sendName();
+
+              if(typeof destPlaceId != "undefined" && destPlaceId != ""){
+                places.moveDevice(self.model.get("placeId"), destPlaceId, self.model.get("id"), true);
               }
+
 
             });
 
