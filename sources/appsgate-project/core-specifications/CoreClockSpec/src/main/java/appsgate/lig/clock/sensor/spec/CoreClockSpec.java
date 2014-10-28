@@ -108,6 +108,12 @@ public interface CoreClockSpec {
     /**
      * remove all periodic alarm registered (single alarms untouched)
      */
-    void resetPeriodicAlarms();    
+    void resetPeriodicAlarms(); 
+    
+	/**
+	 * Force the evaluation of the next timer and returns the time (in ms) to wait for it 
+	 */
+    long calculateNextTimer();
+
 
 }
