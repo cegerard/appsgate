@@ -483,6 +483,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 		if(obj != null) {
 			CoreClockSpec clock = (CoreClockSpec)obj;
 			clock.unregisterAlarm(alarmId);
+			clock.calculateNextTimer();
 		}
 	}
 

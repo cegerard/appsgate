@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author thibaud
  * 
  */
-@Ignore
+//@Ignore
 public class SimpleClockTest implements AlarmEventObserver {
 
 	long errorTolerance = 100;
@@ -214,6 +214,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 
 		System.out.println("unregistering the alarm then wait for 4 secs");
 		clock.unregisterAlarm(alarmID.intValue());
+		clock.calculateNextTimer();
 		try {
 			Thread.sleep(4321);
 		} catch (Exception exc) {
