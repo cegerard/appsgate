@@ -683,7 +683,10 @@
             "status": {
                 "playing": "Now Playing",
                 "selected": "Please select a media",
-                "stopped": "Stopped"
+                "stopped": "Stopped",
+                "PLAYING": "Now Playing : ",
+                "PAUSED_PLAYBACK": "Paused : ",
+                "STOPPED": "Stopped : "
             },
             "language" : {
                "pause-media-action": "Pause the media",

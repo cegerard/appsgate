@@ -219,7 +219,10 @@
             "status": {
                 "playing": "Lecture en cours",
                 "selected": "Veuillez choisir un média",
-                "stopped": "Arrêté"
+                "stopped": "Arrêté : ",
+                "PLAYING": "Lecture en cours : ",
+                "PAUSED_PLAYBACK": "En pause : ",
+                "STOPPED": "Arrêté : "
             }
         },
         "movement": {

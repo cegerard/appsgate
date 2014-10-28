@@ -2,12 +2,11 @@
 	<div>
 		<div class="pull-right label label-success">
             <% if ( device.get('mediaName')!=undefined ) { %>
-                <span id="playerStatus"><%= device.get('playerStatus') %> : </span>
+                <span id="playerStatus" data-i18n="devices.mediaplayer.status.<%= device.get('playerStatus') %>" ></span>
                 <span id="selectedMedia" title=" <%= device.get('mediaName') %>" url=" <%= device.get('mediaURL') %>" ><%= device.get('mediaName') %></span>
             <% } else { %>
                 <span id="selectedMedia" data-i18n="devices.mediaplayer.status.selected">Select a media</span>
             <% } %>
-
 		</div>
 		<div>
 			<button type="button" class="btn btn-default btn-sm btn-media-browse" data-target="#media-browser-modal" data-toggle="modal" data-i18n="devices.mediaplayer.action.browse"></button>
