@@ -38,8 +38,8 @@ define([
 
             self.on("change:rootNode", function (model) {
                 model.set({
-                    mapDepthNeighbors: buildDepthNeighborsMap(model.get("rootNode"),
-                    model.get("currentEntities"))
+                    mapDepthNeighbors: self.buildDepthNeighborsMap(model.get("rootNode"),
+                        model.get("currentEntities"))
                 });
             });
         },
@@ -65,6 +65,7 @@ define([
          * @return: map depth:neighbors
          */
         buildDepthNeighborsMap: function (rootNode, entities) {
+            var self = this;
             resetCheckMark(entities);
 
             /*
@@ -109,7 +110,7 @@ define([
                 var nbNeighbors = 0;
                 // Add the children of this node, to nodes queue, and mark them
                 entities.forEach(function (node) {
-                    if (this.neighboring(currentNode, node) && !node.checkedNeighbor) {
+                    if (self.neighboring(currentNode, node) && !node.checkedNeighbor) {
                         // node is a child because neighbor and not checked
                         queueNode.push(node);
                         node.checkedNeighbor = true;
@@ -137,6 +138,41 @@ define([
         neighboring: function (a, b) {
             var neighbors = this.get("neighbors");
             return neighbors[a.id + "," + b.id] || neighbors[b.id + "," + a.id];
+        },
+
+        /**
+         * Return the depth from the node root of a node.
+         * @param: Node target
+         */
+        getDepthNeighbor: function (node) {
+            var mapDepthNeighbors = this.get("mapDepthNeighbors");
+            for (var i = 0; i < mapDepthNeighbors.length; i++) {
+                for (var j = 0; j < mapDepthNeighbors[i].length; j++) {
+                    if (mapDepthNeighbors[i][j].index === node.index) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        },
+
+        /**
+        * Return a distance according to the depth of the param node
+        * @param: Node whose we return the distance
+        */
+        getLinkDistance: function (node) {
+            switch (this.getDepthNeighbor(node)) {
+            case 0:
+                return 150;
+            case 1:
+                return 100;
+            case 2:
+                return 50;
+            case 3:
+                return 40;
+            default:
+                return 20;
+            }
         }
 
     });

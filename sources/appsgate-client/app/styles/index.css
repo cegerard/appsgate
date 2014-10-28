@@ -615,3 +615,42 @@ fieldset[disabled] .btn {
     stroke: #666;
     stroke-width: 1.25px;
 }
+#graph text.label-name {
+    text-anchor: middle;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+#graph g>circle {
+    fill: rgba(219, 219, 219, 0.96);
+    stroke: black;
+    stroke-width: 1px;
+}
+#graph g>circle.neighborNodeOver {
+    fill: #7fb725;
+    stroke-width: 2px;
+}
+#graph g>circle.nodeOver {
+    fill: #cfff30;
+    stroke-width: 2px;
+}
+#graph g>image.nodeOver {
+    cursor: pointer;
+}
+.node-0 {
+    opacity: 1;
+}
+.node-1 {
+    opacity: 1;
+}
+.node-2 {
+    opacity: 0.5;
+}
+.node-more {
+    opacity: 0.2;
+}
+.node-more.nodeOver {
+    opacity: 0.5;
+}
+.node-more.neighborNodeOver {
+    opacity: 0.5;
+}
