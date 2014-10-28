@@ -8,18 +8,57 @@
 	<% } %>
 	</div>
 </li>
-<li class="list-group-item">
-	<strong data-i18n="devices.controls-label"></strong>
-	<div class="pull-right">
+<li class="list-group-item" style="padding-top:10px;height:50px;">
+    <strong data-i18n="devices.controls-label"></strong>
+    <div class="pull-right">
         <button type="button" id="<%= device.get('id') %>" class="btn btn-info btn-sm blink-lamp-button" data-i18n="devices.lamp.action.blink"></button>
 
-		<button id="lamp-button" type="button" class="btn btn-info btn-sm toggle-lamp-button">
-			<% if (device.get("value") === "true" || device.get("value") === true) { %>
-				<span data-i18n="devices.lamp.action.turnOff"></span>
-			<% } else { %>
-				<span data-i18n="devices.lamp.action.turnOn"></span>
-			<% } %>
-		</button>
-	</div>
-    <div class="color-picker center"></div>
+        <button id="lamp-button" type="button" class="btn btn-info btn-sm toggle-lamp-button">
+            <% if (device.get("value") === "true" || device.get("value") === true) { %>
+            <span data-i18n="devices.lamp.action.turnOff"></span>
+            <% } else { %>
+            <span data-i18n="devices.lamp.action.turnOn"></span>
+            <% } %>
+        </button>
+    </div>
 </li>
+<script>
+    function colorchanged(){
+        var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
+        var rgb = $(".picker_h").css("background-color");//Raphael.getRGB(10,10,10); //colorWheel.color()
+        var hsl = Raphael.rgb2hsl(rgb);
+        lamp.set({"color": Math.round(hsl.h * 65535), "saturation": Math.round(hsl.s * 255), "brightness": Math.round(hsl.l * 255)});
+        lamp.sendColor(Math.round(hsl.h * 65535));//hsl.h);
+        lamp.sendSaturation(Math.round(hsl.s * 255));//hsl.s);
+        lamp.sendBrightness(Math.round(hsl.l * 255));//hsl.l);
+    }
+</script>
+<li class="list-group-item" style="height:400px;">
+    <strong>Color</strong>
+    <div style="position: absolute;" >
+        <div>
+            <div class="picker-colors" style="background-color: rgb(0, 238, 255);">
+                <div class="picker-colorPicker" onmouseup="colorchanged();"  style="left: -5px; top: 354px;"></div>
+            </div>
+            <div class="picker-hues">
+                <div class="picker-huePicker" onmouseup="colorchanged();" style="top: 175px;"></div>
+            </div>
+            <div class="picker_h" id="colorbg" style="background-color: rgb(0, 0, 0);"></div>
+            <!--
+            <div class="picker_color_rgb">
+                <div align="center" class="picker_t_rgb"><span>R</span><br><input type="text" value="14" id="colorR"
+                                                                                  maxlength="3"></div>
+                <div align="center" class="picker_t_rgb"><span>G</span><br><input type="text" value="71" id="colorG"
+                                                                                  maxlength="3"></div>
+                <div align="center" class="picker_t_rgb"><span>B</span><br><input type="text" value="9" id="colorB"
+                                                                                  maxlength="3"></div>
+            </div>
+            -->
+
+        </div>
+    </div>
+    <!--
+        <div class="color-picker center"></div>
+        -->
+</li>
+
