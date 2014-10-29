@@ -336,7 +336,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 
 			// firing periodic alarms
 			if (alarmPeriods != null && !alarmPeriods.isEmpty())
-				for (Integer i : alarmPeriods.keySet()) {
+				for (Integer i : new ArrayList<Integer>(alarmPeriods.keySet()) ) {
 					long time = currentTime;
 					if (disarmedAlarms.contains(i))
 						time += alarmLagTolerance + 1;
@@ -478,7 +478,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 		if (disarmedAlarms != null && !disarmedAlarms.isEmpty()
 				&& reverseAlarmMap != null && !reverseAlarmMap.isEmpty()
 				&& alarmPeriods != null && !alarmPeriods.isEmpty())
-			for (Integer i : disarmedAlarms) {
+			for (Integer i : new ArrayList<Integer>(disarmedAlarms) ) {
 
 				logger.trace("rearmPeriodicAlarms(...), checking alarmId :  "
 						+ i);
@@ -613,7 +613,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 				}
 
 			}
-			for (Integer i : removableObservers) {
+			for (Integer i : new ArrayList<Integer>(removableObservers)) {
 				logger.trace("fireClockAlarms(...), removing alarmEventId : "
 						+ i);
 				observers.remove(i);
