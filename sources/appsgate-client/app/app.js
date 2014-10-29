@@ -33,6 +33,7 @@ define(function(require, exports, module) {
       /\/.*/i, "").replace(/:.*/i, "");
       //DO NOT change the IP anymore, its not necessary
       window.communicator = new Communicator('ws://' + serverAddr + ':8087');
+
       window.addEventListener("click", onFocusOutCircleMenu, false);
 
       // initialize the history management
@@ -150,10 +151,10 @@ define(function(require, exports, module) {
         });
 
         // set current server address and port in the modal for settings
-        $("#settings-modal .addr-server").val(communicator.getServerAddr().split(
-          "://")[1].split(":")[0]);
-          $("#settings-modal .port-server").val(communicator.getServerAddr().split(
-            ":")[2]);
+        if(typeof communicator.getServerAddr() !== "undefined") {
+          $("#settings-modal .addr-server").val(communicator.getServerAddr().split("://")[1].split(":")[0]);
+          $("#settings-modal .port-server").val(communicator.getServerAddr().split(":")[2]);
+        }
 
             // Initialize the communication layer
             communicator.initialize();

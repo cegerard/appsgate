@@ -13,7 +13,8 @@
 	<name>Mail Services</name>
 	
 	<modules>
-		<module>MailService</module>
+        <module>Javamail</module>
+	    <module>MailService</module>
 		<module>MailAdapter</module>
 	</modules>
 	

@@ -4,9 +4,7 @@
                               
 	<implementation name="MailService" classname="appsgate.lig.mail.javamail.MailServiceImpl" specification="CoreMailSpec"
                     push="mailReceivedNotification">
-	    
-		<callback onRemove="stop" />
-		
+	    		
         <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist">
 
         </relation>
