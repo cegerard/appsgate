@@ -1,7 +1,8 @@
 {
     "app": {
         "name": "AppsGate",
-        "signin": "Identification"
+        "signin": "Identification",
+        "loading": "Loading..."
     },
     "debugger": {
         "all": "All",
@@ -536,6 +537,7 @@
     "navbar": {
         "button-settings": "Preferences",
         "debugger": "History",
+        "dashboard": "Dashboard",
         "devices": "Devices",
         "edit": "Edit",
         "emergency-stop": "Emergency stop",
@@ -574,7 +576,8 @@
             "schedule": "Schedule",
             "open-calendar":"Go to Calendar",
             "test":"Test",
-            "end-test":"Stop testing"
+            "end-test":"Stop testing",
+            "simulated-time":"Simulated-time"
         },
         "delete-program": "Delete",
         "edit-program": "Edit",
@@ -610,7 +613,8 @@
         },
         "warning-program-edition": "Warning, edit program will deactivate it",
         "warning-program-delete": "Do you really want to delete this program ?",
-        "scheduled-event": "Appsgate program "
+        "scheduled-event": "Appsgate program ",
+        "simulated-time":"Simulated-time"
     },
     "programs-menu": {
         "add-button": "Add Program",
@@ -681,7 +685,10 @@
             "status": {
                 "playing": "Now Playing",
                 "selected": "Please select a media",
-                "stopped": "Stopped"
+                "stopped": "Stopped",
+                "PLAYING": "Now Playing : ",
+                "PAUSED_PLAYBACK": "Paused : ",
+                "STOPPED": "Stopped : "
             },
             "language" : {
                "pause-media-action": "Pause the media",

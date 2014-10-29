@@ -31,8 +31,13 @@
 			</button>
 			<button type="button" class="btn btn-default open-calendar-button" data-i18n="programs.action.open-calendar"></button>
 		</div>
-		<div class="btn-group">
-			<button data-toggle="modal" href="#test-program-modal" class="btn btn-info test-program-button"><span data-i18n="programs.action.test"></span></button>
+		<div id="test-button-popover" data-toggle="popover" data-container="body" data-trigger="manual" class="btn-group">
+			<button id="test-program-button" data-toggle="modal" href="#test-program-modal" class="btn btn-info test-program-button">
+				<i class="glyphicon glyphicon-expand"></i><span data-i18n="programs.action.test"></span>
+			</button>
+			<button id="stop-testing-button" class="btn btn-info">
+				<i class="glyphicon glyphicon-expand"></i><span data-i18n="programs.action.end-test"></span>
+			</button>
 		</div>
 		<div class="btn-group pull-right">
 			<button id="delete-program-popover" class="btn btn-default delete-popover-button" rel="popover" data-trigger="focus">

@@ -225,6 +225,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			for(Integer i : onEndAlarms.keySet()) {
 				clock.unregisterAlarm(i.intValue());
 			}
+			clock.calculateNextTimer();
 			onBeginAlarms.clear();
 			onEndAlarms.clear();
 			eventMap.clear();

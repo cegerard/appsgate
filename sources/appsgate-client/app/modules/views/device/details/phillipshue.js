@@ -13,7 +13,6 @@ define([
        events: {
             "click button.toggle-lamp-button": "onToggleLampButton",
             "click button.blink-lamp-button": "onBlinkLampButton",
-            "click button.toggle-plug-button": "onTogglePlugButton",
             "click button.toggle-actuator-button": "onToggleActuatorButton",
         },
       initialize: function() {

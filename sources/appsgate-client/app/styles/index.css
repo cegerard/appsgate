@@ -244,6 +244,148 @@ body {
   cursor:pointer;
 }
 
+.fundamental-universe {
+  position:relative;
+  background:white;
+  width: 100%;
+  padding: 0.5em;
+  display: inline-block;
+  /* border: solid #404040;
+  border-radius: 100%; */
+  margin: 2px 2px 2px 0;
+}
+
+.fundamental-universe:before {
+  padding-top: 100%;
+  content: "";
+  display: block;
+
+
+  background-repeat:no-repeat;
+}
+
+.fundamental-universe.configured {
+  border: solid #404040;
+}
+
+.fundamental-universe.disabled {
+  background-color:#E6E6E6;
+}
+
+#universeList {
+  height:100%;
+}
+
+.fundamental-block {
+	float: left;
+	position:relative;
+	width:20%;
+}
+
+.places-icon {
+	background-image: url("../img/home/place1.svg");
+	background-size:100% 100%;
+  height:100%;
+  width:100%;
+}
+
+.devices-icon {
+	background-image: url("../img/home/device1.svg");
+	background-size:100% 100%;
+  height:100%;
+  width:100%;
+}
+
+.services-icon {
+	background-image: url("../img/home/service1.svg");
+	background-size:100% 100%;
+  height:100%;
+  width:100%;
+}
+
+.programs-icon {
+	background-image: url("../img/home/program2.svg");
+	background-size:100% 100%;
+  height:100%;
+  width:100%;
+}
+
+.dashboard-icon {
+	background-image: url("../img/home/history.svg");
+	background-size:100% 100%;
+  height:100%;
+  width:100%;
+}
+
+.universe-name {
+  position:absolute;
+  bottom:0px;
+  width:100%;
+  text-align:center;
+}
+
+.local-universes {
+  white-space: nowrap;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.loading-widget {
+    font-size: 100px;
+    width: 1em;
+    height: 1em;
+    position: relative;
+    margin: 100px auto;
+    border-radius: 50%;
+    background: #FF4F72;
+    background: linear-gradient(#000 50%, #fff 50%), linear-gradient(#fff 50%, #000 50%);
+    background-position: 0 0, 100% 0;
+    background-size: 50% 100%;
+    background-repeat: no-repeat;
+    box-shadow: inset 0 0 0 .12em rgba(0,0,0,0.2), 0 0 0 .12em rgba(255,255,255,0.1);
+    opacity: 0.7;
+    animation: rota 1s infinite;
+    -webkit-animation: rota 1s infinite;
+}
+
+.loading-widget:after {
+    content: "";
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    border: .12em solid rgba(255,255,255,0.3);
+    border-radius: inherit;
+}
+
+@-webkit-keyframes rota {
+    10%  { transform: rotate(36deg); }
+    20%  { transform: rotate(72deg); }
+    30%  { transform: rotate(108deg); }
+    40%  { transform: rotate(144deg); }
+    50%  { transform: rotate(180deg); }
+    60%  { transform: rotate(216deg); }
+    70%  { transform: rotate(252deg); }
+    80%  { transform: rotate(288deg); }
+    90%  { transform: rotate(324deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes rota {
+    10%  { transform: rotate(36deg); }
+    20%  { transform: rotate(72deg); }
+    30%  { transform: rotate(108deg); }
+    40%  { transform: rotate(144deg); }
+    50%  { transform: rotate(180deg); }
+    60%  { transform: rotate(216deg); }
+    70%  { transform: rotate(252deg); }
+    80%  { transform: rotate(288deg); }
+    90%  { transform: rotate(324deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* --------------------- Places styles ---------------------------------*/
 
 .place-details {
