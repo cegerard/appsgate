@@ -607,35 +607,37 @@ fieldset[disabled] .btn {
 }
 /* --------------------- Dependancy styles ----------------------------------*/
 
+#graph {
+    text-align: center;
+}
 #graph svg {
     background: beige;
 }
+/* Links */
 #graph path.link {
     fill: none;
     stroke: #666;
     stroke-width: 1.25px;
 }
+#graph path.targeting {
+    stroke: red;
+}
+#graph marker#targeting {
+    fill: red;
+}
+/* Default text */
 #graph text.label-name {
     text-anchor: middle;
     font-family: sans-serif;
     font-size: 12px;
 }
+/* Default circle */
 #graph g>circle {
     fill: rgba(219, 219, 219, 0.96);
     stroke: black;
     stroke-width: 1px;
 }
-#graph g>circle.neighborNodeOver {
-    fill: #7fb725;
-    stroke-width: 2px;
-}
-#graph g>circle.nodeOver {
-    fill: #cfff30;
-    stroke-width: 2px;
-}
-#graph g>image.nodeOver {
-    cursor: pointer;
-}
+/* Opacity */
 .node-0 {
     opacity: 1;
 }
@@ -653,4 +655,28 @@ fieldset[disabled] .btn {
 }
 .node-more.neighborNodeOver {
     opacity: 0.5;
+}
+/* MouseOver */
+#graph g>.nodeGroup.nodeOver>circle {
+    fill: #cfff30;
+    stroke-width: 2px;
+}
+#graph g>.nodeGroup.nodeOver>text {
+    font-weight: bold;
+}
+#graph g>.nodeGroup.nodeOver>image {
+    cursor: pointer;
+}
+/* MouseOver Neighbors */
+#graph g>.nodeGroup.neighborNodeOver>circle {
+    fill: #7fb725;
+    stroke-width: 2px;
+}
+#graph g>.nodeGroup.neighborNodeOver>text {
+    font-weight: bold;
+}
+/* Root */
+#graph g>.nodeGroup.nodeRoot>text {
+    font-weight: bold;
+    font-size: 100%;
 }

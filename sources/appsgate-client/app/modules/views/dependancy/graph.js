@@ -61,45 +61,6 @@ define([
 
         },
 
-        tick: function (e) {
-            var self = this;
-
-            node
-                .attr("transform", function (d) {
-                    return "translate(" + (d.x) + "," + (d.y) + ")";
-                })
-                .classed("node-0", function (d) {
-                    return d === self.model.get("rootNode");
-                })
-                .classed("node-1", function (d) {
-                    return self.model.neighboring(d, self.model.get("rootNode"));
-                })
-                .classed("node-2", function (d) {
-                    return self.model.getDepthNeighbor(d) === 2;
-                })
-                .classed("node-more", function (d) {
-                    return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
-                });
-
-            node.selectAll("text")
-                .attr("transform", function (d) {
-                    if (d === self.model.get("rootNode")) {
-                        return "translate(0,-18)";
-                    } else {
-                        return "translate(0,-15)";
-                    }
-                });
-
-
-            pathLink.select("path")
-                .attr("d", function (d) {
-                    var dx = d.target.x - d.source.x,
-                        dy = d.target.y - d.source.y,
-                        dr = 150 / d.linknum; //linknum is defined above
-                    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
-                });
-        },
-
         update: function (model) {
             force.nodes(model.get("currentEntities"));
             force.links(model.get("currentRelations"));
@@ -117,6 +78,18 @@ define([
                 .attr("class", "nodeGroup")
                 .call(force.drag)
                 .on("dblclick", this.click.bind(this))
+                .on("mouseover", function (d) {
+                    node.classed("nodeOver", function (d2) {
+                        return d2 === d;
+                    });
+                    node.classed("neighborNodeOver", function (d2) {
+                        return model.neighboring(d, d2);
+                    });
+                })
+                .on("mouseout", function (d) {
+                    node.classed("nodeOver", false);
+                    node.classed("neighborNodeOver", false);
+                })
                 .each(function (a) {
                     // CIRCLE
                     d3.select(this).append("circle")
@@ -194,10 +167,12 @@ define([
                         .attr("x", "50")
                         .attr("y", "20 ")
                         .attr("text-anchor", "middle ")
-                })
+                });
 
 
             pathLink.exit().remove();
+
+            /******* FORCE *******/
 
             force
                 .linkDistance(function (d) {
@@ -220,6 +195,73 @@ define([
                     } else {
                         return -100;
                     }
+                });
+        },
+
+
+        tick: function (e) {
+            var self = this;
+
+            node
+                .attr("transform", function (d) {
+                    var transf = "";
+                    transf += "translate(" + (d.x) + "," + (d.y) + ")";
+                    if (d === self.model.get("rootNode")) {
+                        transf += "scale(1.5)";
+                    } else {
+                        transf += "scale(1)";
+                    }
+                    return transf;
+                })
+                .classed("node-0", function (d) {
+                    return d === self.model.get("rootNode");
+                })
+                .classed("node-1", function (d) {
+                    return self.model.neighboring(d, self.model.get("rootNode"));
+                })
+                .classed("node-2", function (d) {
+                    return self.model.getDepthNeighbor(d) === 2;
+                })
+                .classed("node-more", function (d) {
+                    return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
+                });
+
+            node.selectAll("text")
+                .attr("transform", function (d) {
+                    if (d === self.model.get("rootNode")) {
+                        return "translate(0,-18)";
+                    } else {
+                        return "translate(0,-15)";
+                    }
+                });
+
+
+            pathLink.select("path")
+                .attr("d", function (d) {
+                    var dx = d.target.x - d.source.x,
+                        dy = d.target.y - d.source.y,
+                        dr = 150 / d.linknum; //linknum is defined above
+                    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+                })
+                .classed("node-1", function (d) {
+                    return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+                })
+                .classed("node-2", function (d) {
+                    return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+                })
+                .classed("node-more", function (d) {
+                    var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+                    var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+                    return !isNode1 && !isNode2;
+                })
+                .attr("marker-end", function (d) {
+                    if (d.target === self.model.get("rootNode"))
+                        return "url(#targeting)";
+                    else
+                        return "url(#" + d.type + ")";
+                })
+                .classed("targeting", function (d) {
+                    return d.target === self.model.get("rootNode");
                 });
         },
 
@@ -266,23 +308,8 @@ define([
             // The nodeRoot has been moved, we can restart the force
             force.start();
 
-            //            node.classed("nodeOver", false);
-            //node.classed("neighborNodeOver", false);
-            //    texts.classed("nodeOver", false);
-            //    texts.classed("neighborNodeOver", false);
-            //    texts.classed("nodeRoot", function (d) {
-            //        return d === nodeRoot;
-            //    });
-            //    circleNode.classed("nodeOver", false);
-            //    circleNode.classed("neighborNodeOver", false);
-            //            node.select("circle").classed("nodeOver", false);
-            //            node.select("circle").classed("neighborNodeOver", false);
-            //
-            //            node.select("text").classed("nodeOver", false);
-            //            node.select("text").classed("neighborNodeOver", false);
-            //            node.select("text").classed("nodeRoot", function (d) {
-            //                return d === nodeRoot;
-            //            });
+            node.classed("nodeOver", false);
+            node.classed("neighborNodeOver", false);
         }
 
 
