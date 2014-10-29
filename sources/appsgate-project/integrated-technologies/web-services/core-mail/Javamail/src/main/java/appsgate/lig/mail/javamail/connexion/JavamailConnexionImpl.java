@@ -59,7 +59,7 @@ public class JavamailConnexionImpl implements JavamailConnexion {
 				connexionAvailable=false;
 			}
 			logger.trace("testConnexion(), returning "+connexionAvailable);
-			
+
 			return connexionAvailable;
 	}
 	
@@ -96,8 +96,11 @@ public class JavamailConnexionImpl implements JavamailConnexion {
 	}
 	
 	private void configureAutoRefreshTask() {
-
+		if(refreshTimer != null) {
+			refreshTimer.cancel();
+		}
 		refreshTimer = new Timer();
+
 
 		refreshtask = new TimerTask() {
 
@@ -108,17 +111,17 @@ public class JavamailConnexionImpl implements JavamailConnexion {
 
 		};
 
-		if (refreshRate != null && refreshRate != -1) {
+		if (refreshRate != -1) {
 			logger.trace("Configuring auto-refresh to: {} ms", refreshRate);
 			refreshTimer.scheduleAtFixedRate(refreshtask, 0,
-					refreshRate.longValue());
+					refreshRate);
 		}
 
 	}	
 	
 	private TimerTask refreshtask;	
 	
-	private final Integer refreshRate = 1000*60*2;
+	private final long refreshRate = 1000*60*2;
 
 	public void release() {
 

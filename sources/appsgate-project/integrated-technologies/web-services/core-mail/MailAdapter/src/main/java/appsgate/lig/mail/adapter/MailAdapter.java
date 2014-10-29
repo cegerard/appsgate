@@ -2,6 +2,8 @@ package appsgate.lig.mail.adapter;
 
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Implementation;
+import fr.imag.adele.apam.Instance;
+import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 
 import java.io.File;
 import java.io.FileReader;
@@ -22,7 +24,7 @@ import appsgate.lig.mail.javamail.connexion.MailConnexionListener;
 
 public class MailAdapter implements MailConnexionListener{
 	
-	
+	// Seems useless as it should be used by the listener and the connexion is already provided
 	Map<String, JavamailConnexion> mailConnexions = new HashMap<String, JavamailConnexion>();
 
 	private static Logger logger = LoggerFactory.getLogger(MailAdapter.class);
@@ -121,10 +123,10 @@ public class MailAdapter implements MailConnexionListener{
 
             Map<String,String> configuration = new Hashtable<String,String>();
 
-
-            MailService impl = (MailService) mailImpl.createInstance(null, configuration).getServiceObject();
+            Instance inst = mailImpl.createInstance(null, configuration);
+            MailService impl = (MailService) inst.getServiceObject();
             impl.setConnexion(connexion);
-            
+    		logger.trace("connexionAvailable(...), removing apam instance : "+inst.getName());
         } catch( Exception exc) {
             logger.error("Exception when creating Mail for "+" : "+exc.getMessage());
         }
@@ -133,10 +135,22 @@ public class MailAdapter implements MailConnexionListener{
 
 	@Override
 	public void connexionBroken(JavamailConnexion connexion) {
-		logger.trace("connexionAvailable(JavamailConnexion connexion (hashcode) : "+(connexion==null?null:connexion.hashCode()) +")");
+		logger.trace("connexionBroken(JavamailConnexion connexion (hashcode) : "+(connexion==null?null:connexion.hashCode()) +")");
+        try {
+            Implementation mailImpl = CST.apamResolver.findImplByName(null,"MailService");
+            for(Instance inst : mailImpl.getInsts()) {
+            	if(inst != null
+            			&& inst.getProperty("deviceId") != null
+            			&& inst.getProperty("deviceId").equals(String.valueOf(connexion.hashCode())) ) {
+            		logger.trace("connexionBroken(...), removing apam instance : "+inst.getName());
 
-		// TODO Remove the instance with the corresponding hashcode
-		
+        			((ComponentBrokerImpl) CST.componentBroker)
+					.disappearedComponent(inst);            		
+            	}
+            }
+        } catch( Exception exc) {
+            logger.error("Exception when removing instance Mail for "+" : "+exc.getMessage());
+        }
 	}
 			
 }
