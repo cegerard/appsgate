@@ -109,7 +109,7 @@ textarea {
 .miniColors-trigger {
     height: 22px;
     width: 22px;
-    background: url(http://ww.colorcodehex.com/color.png) center no-repeat;
+    background: url(img/color.png) center no-repeat;
     vertical-align: middle;
     margin: 0 .25em;
     display: inline-block;
@@ -144,7 +144,7 @@ textarea {
     left: 5px;
     width: 150px;
     height: 150px;
-    background: url(http://ww.colorcodehex.com/color.png) center no-repeat;
+    background: url(img/color.png) center no-repeat;
     background-position: 0 -2px;
     cursor: crosshair
 }
@@ -155,7 +155,7 @@ textarea {
     left: 160px;
     width: 20px;
     height: 150px;
-    background: url(http://ww.colorcodehex.com/color.png) center no-repeat;
+    background: url(img/color.png) center no-repeat;
     cursor: crosshair;
     background-position: -151px -2px
 }
@@ -164,7 +164,7 @@ textarea {
     position: absolute;
     width: 11px;
     height: 11px;
-    background: url(http://ww.colorcodehex.com/color.png) center no-repeat;
+    background: url(img/color.png) center no-repeat;
     background-position: -175px -31px
 }
 
@@ -173,7 +173,7 @@ textarea {
     left: -3px;
     width: 26px;
     height: 3px;
-    background: url(http://ww.colorcodehex.com/color.png) center no-repeat;
+    background: url(img/color.png) center no-repeat;
     background-position: -176px -2px
 }
 
@@ -1073,7 +1073,7 @@ a:hover {
     left: 5px;
     width: 360px;
     height: 360px;
-    background: url(http://ww.colorcodehex.com/cx.png) center no-repeat;
+    background: url(img/cx.png) center no-repeat;
     cursor: crosshair;
     background-position: -1px -1px
 }
@@ -1085,7 +1085,7 @@ a:hover {
     width: 24px;
     height: 358px;
     border: 1px solid #000;
-    background: url(http://ww.colorcodehex.com/cx.png) center no-repeat;
+    background: url(img/cx.png) center no-repeat;
     background-position: -363px -1px;
     cursor: crosshair;
 }
@@ -1105,7 +1105,7 @@ a:hover {
     position: relative;
     width: 11px;
     height: 11px;
-    background: url(http://ww.colorcodehex.com/color.png) center no-repeat;
+    background: url(img/color.png) center no-repeat;
     background-position: -175px -31px;
 }
 
@@ -1114,7 +1114,7 @@ a:hover {
     left: -1px;
     width: 26px;
     height: 3px;
-    background: url(http://ww.colorcodehex.com/color.png) center no-repeat;
+    background: url(img/color.png) center no-repeat;
     background-position: -176px -2px;
 }
 
