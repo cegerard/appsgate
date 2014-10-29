@@ -558,3 +558,19 @@ $(document).ready(function () {
         insertColorByHex($("#colorhex").val());
     });
 });
+
+
+function colorchanged(){
+    var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
+    var rgb = $(".picker_h").css("background-color");
+    var hsl = Raphael.rgb2hsl(rgb);
+    lamp.set({"color": Math.round(hsl.h * 65535), "saturation": Math.round(hsl.s * 255), "brightness": Math.round(hsl.l * 255)});
+    lamp.sendColor(Math.round(hsl.h * 65535));
+    lamp.sendSaturation(Math.round(hsl.s * 255));
+    lamp.sendBrightness(Math.round(hsl.l * 255));
+}
+
+$(document).ready(function () {
+    var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
+    moveColorByHex(expandHex(lamp.getCurrentColor()));
+});
