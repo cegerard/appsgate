@@ -134,7 +134,6 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
             LOGGER.trace("the end event of the state {} has been thrown", stateName);
             isOnRules = false;
             fireEndEvent(new EndEvent(this));
-            setStarted(false);
         }
     }
 
