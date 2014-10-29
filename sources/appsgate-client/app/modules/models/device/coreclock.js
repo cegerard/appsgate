@@ -182,7 +182,7 @@ define([
       this.remoteControl("setCurrentTimeInMillis", [{ type : "long", value : this.get("moment").valueOf() }]);
     },
     resetClock:function() {
-          this.remoteControl("resetClock", []);
+          this.remoteControl("resetSystemTime", []);
     },
 
     /**

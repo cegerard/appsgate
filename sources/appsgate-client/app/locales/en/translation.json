@@ -165,7 +165,8 @@
                 "turnAllOn": "Turn all on"
             },
             "complement": {
-                "change-color": "to"
+                "change-color": "to",
+                "color": "Color"
             },
             "keyboard": {
                 "blink": "Blink ...",

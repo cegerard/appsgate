@@ -69,13 +69,13 @@ define([
       * @param e JS mouse event
       */
       onChangeColor: function(e) {
-        var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
-        var rgb = Raphael.getRGB(colorWheel.color());
-        var hsl = Raphael.rgb2hsl(rgb);
+        //var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
+        //var rgb = $(".picker_h").css("background-color");//var rgb = Raphael.getRGB(10,10,10); //colorWheel.color()
+        //var hsl = Raphael.rgb2hsl(rgb);
 
-        lamp.set({color: Math.floor(hsl.h * 65535), "saturation": Math.floor(hsl.s * 255), "brightness": Math.floor(hsl.l * 255)});
+        //lamp.set({color: Math.floor(hsl.h * 65535), "saturation": Math.floor(hsl.s * 255), "brightness": Math.floor(hsl.l * 255)});
 
-        var result = lamp.save();
+        //var result = lamp.save();
 
       },
       autoupdate: function() {

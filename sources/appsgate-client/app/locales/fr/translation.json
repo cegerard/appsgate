@@ -165,7 +165,8 @@
                 "turnAllOn": "Tout allumer"
             },
             "complement": {
-                "change-color": "en"
+                "change-color": "en",
+                "color": "Couleur"
             },
             "keyboard": {
                 "blink": "Faire clignoter ...",
