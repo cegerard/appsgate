@@ -1092,11 +1092,13 @@ a:hover {
 
 .picker_h {
     position: absolute;
-    left: 410px;
-    top: 10px;
+    left: 95%;
+    right: 0px;
+    top: -50px;
     background-color: #0C0;
-    height: 150px;
-    width: 150px;
+    height: 30px;
+    width: 100px;
+    border-radius: 3px;
 }
 
 .picker-colorPicker {
