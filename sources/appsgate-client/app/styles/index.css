@@ -680,3 +680,7 @@ fieldset[disabled] .btn {
     font-weight: bold;
     font-size: 100%;
 }
+.checkbox-container {
+    display: inline;
+    margin-left: 10px;
+}

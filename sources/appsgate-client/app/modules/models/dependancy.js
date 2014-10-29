@@ -157,9 +157,9 @@ define([
         },
 
         /**
-        * Return a distance according to the depth of the param node
-        * @param: Node whose we return the distance
-        */
+         * Return a distance according to the depth of the param node
+         * @param: Node whose we return the distance
+         */
         getLinkDistance: function (node) {
             switch (this.getDepthNeighbor(node)) {
             case 0:
@@ -172,6 +172,40 @@ define([
                 return 40;
             default:
                 return 20;
+            }
+        },
+
+        updateEntitiesShown: function () {
+            var self = this;
+
+            var newEntities = self.get("entities").filter(function (e) {
+                return _.contains(self.get("entitiesTypes"), e.type);
+            });
+            self.set({
+                currentEntities: newEntities
+            });
+            
+            var newLinks = buildLinksFromNodesShown.bind(this)();
+            self.set({
+                currentRelations: newLinks
+            });
+
+        },
+
+        updateRelationsShown: function ()  {
+            var newLinks = buildLinksFromNodesShown();
+            self.set({
+                currentRelations: newLinks
+            });
+        },
+
+        updateArrayTypes: function (array, type, checked) {
+            var arrayUpdated = (array === "entities") ? this.get("entitiesTypes") : this.get("relationsTypes");
+            if (checked) {
+                arrayUpdated.push(type);
+            } else {
+                if (arrayUpdated.indexOf(type) !== -1)
+                    arrayUpdated.splice(arrayUpdated.indexOf(type), 1);
             }
         }
 
@@ -247,13 +281,6 @@ define([
             };
         };
 
-        // Mise à jour de la map qui nous donne les voisins : linkedByIndex
-        //        buildNeighborsMap(relations);
-        // Mise à jour de la map qui nous donne les voisins du noeud racine par rapport à leur profondeur
-        //        mapNeighborDeepth = makeDeepthNeighborsMapBreadthFirst(nodeRoot);
-
-        //        console.log("nodesArray : %o", nodesArray);
-        //        console.log("linksArray : %o", linksArray);
         return relations;
     };
 
@@ -264,6 +291,64 @@ define([
         entities.forEach(function (node) {
             node.checkedNeighbor = false;
         });
+    };
+
+    function buildLinksFromNodesShown() {
+        var self = this;
+        var newLinks = [];
+
+        self.get("relations").forEach(function (e) {
+            var sourceNode = self.get("currentEntities").filter(function (n) {
+                    return n === e.source;
+                })[0],
+                targetNode = self.get("currentEntities").filter(function (n) {
+                    return n === e.target;
+                })[0];
+
+            if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("relationsTypes"), e.type)) {
+                newLinks.push({
+                    source: sourceNode,
+                    target: targetNode,
+                    type: e.type
+                });
+            }
+        });
+
+        // Traitement pour pouvoir avoir plusieurs liens orienté pareil entre deux entités
+        //sort links by source, then target
+        newLinks.sort(function (a, b) {
+            if (a.source.id > b.source.id) {
+                return 1;
+            } else if (a.source.id < b.source.id) {
+                return -1;
+            } else {
+                if (a.target.id > b.target.id) {
+                    return 1;
+                }
+                if (a.target.id < b.target.id) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        //any links with duplicate source and target get an incremented 'linknum'
+        for (var i = 0; i < newLinks.length; i++) {
+            if (i != 0 &&
+                newLinks[i].source == newLinks[i - 1].source &&
+                newLinks[i].target == newLinks[i - 1].target) {
+                newLinks[i].linknum = newLinks[i - 1].linknum + 1;
+            } else {
+                newLinks[i].linknum = 1;
+            };
+        };
+
+        // Mise à jour de la map qui nous donne les voisins
+        self.set({
+            neighors: buildNeighborsMap(newLinks)
+        });
+
+        return newLinks;
     };
 
     // Return the reference to the Dependancy constructor

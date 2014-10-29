@@ -18,6 +18,8 @@ define([
             var width = this.model.get("width"),
                 height = this.model.get("height");
 
+            this.createFilters(this.model);
+
             // Add the svg to html
             svg = d3.select("#graph").append("svg")
                 .attr("width", width)
@@ -69,26 +71,26 @@ define([
             /******* NODES (=Entities) *******/
 
             // Bind node to the currentEntities, a node is represented by her ID 
-            node = svg.select("#groupNode").selectAll(".nodeGroup").data(force.nodes(), function (d) {
+            nodeEntity = svg.select("#groupNode").selectAll(".nodeGroup").data(force.nodes(), function (d) {
                 return d.id;
             });
 
             // New nodes
-            var nEnter = node.enter().append("svg:g")
+            var nEnter = nodeEntity.enter().append("svg:g")
                 .attr("class", "nodeGroup")
                 .call(force.drag)
                 .on("dblclick", this.click.bind(this))
                 .on("mouseover", function (d) {
-                    node.classed("nodeOver", function (d2) {
+                    nodeEntity.classed("nodeOver", function (d2) {
                         return d2 === d;
                     });
-                    node.classed("neighborNodeOver", function (d2) {
+                    nodeEntity.classed("neighborNodeOver", function (d2) {
                         return model.neighboring(d, d2);
                     });
                 })
                 .on("mouseout", function (d) {
-                    node.classed("nodeOver", false);
-                    node.classed("neighborNodeOver", false);
+                    nodeEntity.classed("nodeOver", false);
+                    nodeEntity.classed("neighborNodeOver", false);
                 })
                 .each(function (a) {
                     // CIRCLE
@@ -133,8 +135,11 @@ define([
             nEnter.select("circle")
                 .transition().duration(800).attr("r", 14);
 
-            node.exit().select("circle").transition().duration(800).attr("r", 0);
-            node.exit().transition().duration(800).remove();
+            nodeEntity.exit().select("image").transition().duration(600).style("opacity", 0);
+            nodeEntity.exit().select("text").transition().duration(700).style("opacity", 0);
+            nodeEntity.exit().select("circle").transition().duration(700).attr("r", 0);
+            nodeEntity.exit().transition().duration(800).remove();
+
 
 
             /******* LINKS (=Relations) *******/
@@ -187,7 +192,6 @@ define([
                     } else {
                         return 0.3;
                     }
-                    //            return 1;
                 })
                 .charge(function (d) {
                     if (d === model.get("rootNode")) {
@@ -202,7 +206,7 @@ define([
         tick: function (e) {
             var self = this;
 
-            node
+            nodeEntity
                 .attr("transform", function (d) {
                     var transf = "";
                     transf += "translate(" + (d.x) + "," + (d.y) + ")";
@@ -226,7 +230,7 @@ define([
                     return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
                 });
 
-            node.selectAll("text")
+            nodeEntity.selectAll("text")
                 .attr("transform", function (d) {
                     if (d === self.model.get("rootNode")) {
                         return "translate(0,-18)";
@@ -308,8 +312,70 @@ define([
             // The nodeRoot has been moved, we can restart the force
             force.start();
 
-            node.classed("nodeOver", false);
-            node.classed("neighborNodeOver", false);
+            nodeEntity.classed("nodeOver", false);
+            nodeEntity.classed("neighborNodeOver", false);
+        },
+
+        createFilters: function (model) {
+            var self = this;
+            d3.select("#filterContainerNodes").selectAll("div")
+                .data(model.get("entitiesTypes"))
+                .enter()
+                .append("div")
+                .attr("class", "checkbox-container")
+                .append("label")
+                .each(function (d) {
+                    // create checkbox for each data
+                    d3.select(this).append("input")
+                        .attr("type", "checkbox")
+                        .attr("id", function (d) {
+                            return "chk_node_" + d;
+                        })
+                        .attr("checked", true)
+                        .on("click", function (d, i) {
+                            // register on click event
+                            self.applyFilter("entities", d, this.checked);
+                        })
+                    d3.select(this).append("span")
+                        .text(function (d) {
+                            return d;
+                        });
+                });
+
+            d3.select("#filterContainerLinks").selectAll("div")
+                .data(model.get("relationsTypes"))
+                .enter()
+                .append("div")
+                .attr("class", "checkbox-container")
+                .append("label")
+                .each(function (d) {
+                    // create checkbox for each data
+                    d3.select(this).append("input")
+                        .attr("type", "checkbox")
+                        .attr("id", function (d) {
+                            return "chk_link_" + d;
+                        })
+                        .attr("checked", true)
+                        .on("click", function (d, i) {
+                            // register on click event
+                            //                            applyFilterLinks(d, this.checked);
+                        })
+                    d3.select(this).append("span")
+                        .text(function (d) {
+                            return d;
+                        });
+                });
+        },
+
+        applyFilter: function (arrayUpdated, type, checked) {
+            force.stop();
+            this.model.updateArrayTypes(arrayUpdated, type, checked);
+            this.model.updateEntitiesShown();
+            if (this.model.get("entities").indexOf(this.model.get("rootNode")) !== -1) {
+                this.selectAndMoveRootNode(this.model.get("entities")[0]);
+            }
+            this.update(this.model);
+            force.start();
         }
 
 
