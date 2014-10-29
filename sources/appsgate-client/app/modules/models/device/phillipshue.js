@@ -178,6 +178,9 @@ define([
     sendValue:function() {
       if (this.get("value") === "true") {
         this.remoteControl("on", []);
+        this.sendColor();
+        this.sendSaturation();
+        this.sendBrightness();
       } else {
         this.remoteControl("off", []);
       }
