@@ -26,6 +26,11 @@
 			<version>${project.version}</version>
 	    </dependency>
         <dependency>
+            <artifactId>Javamail</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>	    
+        <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.ipojo</artifactId>
             <version>${ipojo.version}</version>

@@ -1,4 +1,4 @@
-package appsgate.lig.mail.javamail;
+package appsgate.lig.mail.javamail.connexion;
 
 import java.util.Properties;
 
