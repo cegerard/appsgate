@@ -330,6 +330,13 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices() {
+		while(devicePropertiesTable == null ||placeManager == null) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				logger.debug("waiting for DB connextion");
+			}
+		}
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
