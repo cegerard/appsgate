@@ -43,7 +43,7 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 	private String serviceId;
 	private String userType;
 	private String status;
-	private String user;
+	private String user=null;
 
 
 	/*
@@ -388,10 +388,13 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 		descr.put("id", serviceId);
 		descr.put("type", userType); // 102 for mail
 		descr.put("status", status);
-		if(mailConnexion == null ) {
-			descr.put("user", "unknown");
+		
+		if(user!= null && !user.isEmpty()) {
+			descr.put("user", user);
+		} else 	if(mailConnexion != null  ) {
+				descr.put("user", mailConnexion.getCurrentUser());
 		} else {
-			descr.put("user", mailConnexion.getCurrentUser());
+			descr.put("user", "unknown");
 		}
 
 		descr.put("favorite-recipients", getFavoriteRecipients());
