@@ -153,7 +153,7 @@ public class NodeIf extends Node {
     }
 
     @Override
-    public String toString() {
+    public String getTypeSpec() {
         if (seqRulesFalse != null) {
             return "[node If:" + expBool.toString() + " THEN " + seqRulesTrue.toString() + " ELSE " + seqRulesFalse.toString() + "]";
         }

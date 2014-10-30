@@ -169,7 +169,7 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    public String toString() {
-        return "[Node Select: " + what.toString() + ", from: " + where.toString() + "]";
+    public String getTypeSpec() {
+        return "Select: " + what.toString() + ", from: " + where.toString();
     }
 }

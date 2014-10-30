@@ -468,8 +468,8 @@ final public class NodeProgram extends Node {
     }
 
     @Override
-    public String toString() {
-        return "[Node Program : " + name + "]";
+    public String getTypeSpec() {
+        return "Program : " + name;
     }
 
     @Override

@@ -8,6 +8,10 @@ define([
     // detailled view of a device
     SmartPlugView = DeviceDetailsView.extend({
       tplPlug: _.template(plugDetailTemplate),
+      // map the events and their callback
+      events: {
+        "click button.toggle-plug-button": "onTogglePlugButton",
+      },
       initialize: function() {
         var self = this;
         SmartPlugView.__super__.initialize.apply(this, arguments);
@@ -18,34 +22,16 @@ define([
       * Callback to toggle a plug - used when the displayed device is a plug (!)
       */
       onTogglePlugButton: function() {
-        // value can be string or boolean
-        // string
-        if (typeof this.model.get("plugState") === "string") {
-          if (this.model.get("plugState") === "true") {
-            this.model.set("plugState", "false");
-            this.$el.find(".toggle-plug-button").text("Allumer");
-          } else {
-            this.model.set("plugState", "true");
-            this.$el.find(".toggle-plug-button").text("Eteindre");
-          }
-          // boolean
+        if (this.model.get("plugState") == "true") {
+          this.model.switchOff();
         } else {
-          if (this.model.get("plugState")) {
-            this.model.set("plugState", "false");
-            this.$el.find(".toggle-plug-button").text("Allumer");
-          } else {
-            this.model.set("plugState", "true");
-            this.$el.find(".toggle-plug-button").text("Eteindre");
-          }
+          this.model.switchOn();
         }
-
-        // send the message to the backend
-        this.model.save();
       },
       autoupdate: function() {
         SmartPlugView.__super__.autoupdate.apply(this);
         device = this.model;
-        this.$el.find("#plug-consumption").html(device.get("consumption") + "Watt");
+        this.$el.find("#plug-consumption").html(device.get("consumption") + " W");
 
         var plugState = ""
         if (this.model.get("plugState")==="true") {
@@ -61,7 +47,7 @@ define([
         } else {
             plugButton = "<span data-i18n='devices.plug.action.turnOn'></span>";
         }
-        this.$el.find("#plug-button").html(plugState);
+        this.$el.find("#plug-button").html(plugButton);
 
         // translate the view
         this.$el.i18n();

@@ -145,4 +145,9 @@ public class NodeWait extends Node {
             waitFor.buildReferences(table);
         }
     }
+
+    @Override
+    public String getTypeSpec() {
+        return "Wait";
+    }
 }

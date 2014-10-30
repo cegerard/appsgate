@@ -102,4 +102,9 @@ public class NodeEventsOr extends NodeEvents {
             startClockEvent(getDuration());
         }
     }
+
+    @Override
+    public String getTypeSpec() {
+        return "Events OR";
+    }
 }

@@ -1,7 +1,8 @@
 {
     "app": {
         "name": "AppsGate",
-        "signin": "Identification"
+        "signin": "Identification",
+        "loading": "Loading..."
     },
     "debugger": {
         "all": "All",
@@ -164,7 +165,8 @@
                 "turnAllOn": "Turn all on"
             },
             "complement": {
-                "change-color": "to"
+                "change-color": "to",
+                "color": "Color"
             },
             "keyboard": {
                 "blink": "Blink ...",
@@ -536,6 +538,7 @@
     "navbar": {
         "button-settings": "Preferences",
         "debugger": "History",
+        "dashboard": "Dashboard",
         "devices": "Devices",
         "edit": "Edit",
         "emergency-stop": "Emergency stop",
@@ -683,7 +686,10 @@
             "status": {
                 "playing": "Now Playing",
                 "selected": "Please select a media",
-                "stopped": "Stopped"
+                "stopped": "Stopped",
+                "PLAYING": "Now Playing : ",
+                "PAUSED_PLAYBACK": "Paused : ",
+                "STOPPED": "Stopped : "
             },
             "language" : {
                "pause-media-action": "Pause the media",

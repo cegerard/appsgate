@@ -126,8 +126,8 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    public String toString() {
-        return "[Var " + this.name + "=" + this.value + "]";
+    public String getTypeSpec() {
+        return "Var " + this.name + "=" + this.value;
 
     }
 

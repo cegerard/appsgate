@@ -64,4 +64,9 @@ public class NodeEmpty extends Node {
         return o;
 
     }
+
+    @Override
+    public String getTypeSpec() {
+        return "Empty";
+    }
 }

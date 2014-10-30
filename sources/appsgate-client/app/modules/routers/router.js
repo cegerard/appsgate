@@ -2,6 +2,7 @@ define(function(require, exports, module) {
   "use strict";
 
   // External dependencies.
+  var HomeView = require("views/home/home");
   var PlacesRouter = require("routers/place");
   var DevicesRouter = require("routers/device");
   var ServicesRouter = require("routers/service");
@@ -28,10 +29,10 @@ define(function(require, exports, module) {
     circlemenutemplate : _.template(circleMenuTemplate),
 
     routes: {
-      "": "debugger",
+      "": "home",
       "reset": "dependancies",
-//      "reset": "debugger",
-      "home": "debugger",
+      "home": "home",
+      "dashboard": "debugger",
       "places": "places",
       "devices": "devices",
       "services": "services",
@@ -58,9 +59,35 @@ define(function(require, exports, module) {
     dependancies: function() {
       this.dependanciesRouter.all();
     },
-//    dependanciesId: function(id) {
-//      this.dependanciesRouter.selected(id);
-//    },
+    home: function() {
+      // remove and unbind the current view for the menu
+      if (this.currentMenuView) {
+          this.currentMenuView.close();
+      }
+      if (this.currentView) {
+          this.currentView.close();
+      }
+
+      //$("#main").html(appRouter.navbartemplate());
+
+      appRouter.currentMenuView = new HomeView({el:$("#main")});
+      appRouter.currentMenuView.render();
+
+      $("#main").append(appRouter.circlemenutemplate());
+
+      // initialize the circle menu
+      $(".controlmenu").circleMenu({
+          trigger: "click",
+          item_diameter: 50,
+          circle_radius: 75,
+          direction: 'top-right'
+      });
+
+      //$(".nav-item").removeClass("active");
+      //$("#programs-nav").addClass("active");
+
+      //appRouter.navigate("#programs/editor/" + id);
+    },
     // update the side menu w/ new content
     showMenuView: function(menuView) {
       // remove and unbind the current view for the menu

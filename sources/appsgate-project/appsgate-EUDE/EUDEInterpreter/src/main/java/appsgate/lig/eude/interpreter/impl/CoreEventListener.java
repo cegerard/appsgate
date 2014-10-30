@@ -103,7 +103,7 @@ public class CoreEventListener implements CoreListener {
 
     @Override
     public void notifyEvent() {
-        LOGGER.debug("Event notified");
+        LOGGER.trace("Event notified: {}", this);
         // transmit the core event to the concerned nodes
         if (nodeEventList == null) {
             LOGGER.warn("No CoreEvent found");
@@ -131,17 +131,22 @@ public class CoreEventListener implements CoreListener {
         return (objectId.contentEquals(c.objectId) && varName.contentEquals(c.varName) && varValue.contentEquals(c.varValue));
     }
 
-    public boolean equals(EndEvent e){
+    public boolean equals(EndEvent e) {
         NodeProgram p = getProgramNodeFromEvent(e);
-        if (p == null) {return false;}
+        if (p == null) {
+            return false;
+        }
         return (objectId.contentEquals(p.getId()) && varName.contentEquals("runningState") && varValue.contentEquals("stop"));
     }
-    public boolean equals(StartEvent e){
+
+    public boolean equals(StartEvent e) {
         NodeProgram p = getProgramNodeFromEvent(e);
-        if (p == null) {return false;}
+        if (p == null) {
+            return false;
+        }
         return (objectId.contentEquals(p.getId()) && varName.contentEquals("runningState") && varValue.contentEquals("start"));
     }
-    
+
     private NodeProgram getProgramNodeFromEvent(EventObject e) {
         if (e.getSource() instanceof NodeProgram) {
             return (NodeProgram) e.getSource();
@@ -149,7 +154,7 @@ public class CoreEventListener implements CoreListener {
             return null;
         }
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -159,4 +164,8 @@ public class CoreEventListener implements CoreListener {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        return "[Event: " + this.objectId + ", " + this.varName + "/" + this.varValue + "]";
+    }
 }

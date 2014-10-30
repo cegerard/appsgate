@@ -5,6 +5,8 @@ import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
 import appsgate.lig.mail.Mail;
+import appsgate.lig.mail.javamail.connexion.GMailConstants;
+import appsgate.lig.mail.javamail.connexion.JavamailConnexion;
 import appsgate.lig.persistence.DBHelper;
 import appsgate.lig.persistence.MongoDBConfiguration;
 
@@ -16,6 +18,7 @@ import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
+
 import java.util.*;
 
 /**
@@ -24,15 +27,13 @@ import java.util.*;
  * 
  * 
  */
-public class MailServiceImpl extends CoreObjectBehavior implements Mail,
-		MailService, CoreObjectSpec {
+public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailService, CoreObjectSpec {
 
 	/**
 	 * Static class member uses to log what happened in each instances
 	 */
 	private final static org.slf4j.Logger logger = LoggerFactory
 			.getLogger(MailServiceImpl.class);
-	private Timer refreshTimer;
 
 	private MailSender mailSender = null;
 
@@ -42,127 +43,46 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 	private String serviceId;
 	private String userType;
 	private String status;
+	private String user=null;
 
-	private String user;
 
 	/*
 	 * State variables
 	 */
 	private Calendar lastFetchDateTime = null;
-	private final Integer refreshRate = -1;
-	private MailConfiguration properties;
 	private final HashMap<String, Message> messagesCached = new HashMap<String, Message>();
+	
+	
+	private JavamailConnexion mailConnexion;
 
-	/*
-	 * IMAP variables
-	 */
-	private Store store = null;
-	private Session session = null;
-	private IMAPFolder lastIMAPFolder = null;
-
-	private TimerTask refreshtask;
 
 	public MailServiceImpl() {
-		properties = new MailConfiguration();
 	}
 
 	@Override
-	public void setConfiguration(MailConfiguration config) {
-		properties = new MailConfiguration();
-		properties.putAll(config);
-	}
-
-	@Override
-	public void setAccount(String user, String password) {
-		this.user = user;
-		properties.put(MailConfiguration.USER, user);
-		properties.put(MailConfiguration.FROM, user);
-		properties.put(MailConfiguration.PASSWORD, password);
-	}
-
-	@Override
-	public void start() {
-
-		try {
-			String target = properties.getProperty(MailConfiguration.USER)
-					+ properties.getProperty(MailConfiguration.PASSWORD);
-			serviceId = String.valueOf(target.hashCode());
-			fetch();
-		} catch (MessagingException e) {
-			throw new RuntimeException("unable to start component. Message "
-					+ e.getMessage());
+	public void setConnexion(JavamailConnexion mailConnexion) {
+		
+		if(mailConnexion == null ||mailConnexion.getCurrentUser() == null) {
+			logger.error("javamail connexion is null or does not configure an user");
+			return;
 		}
-
-		configureAutoRefreshTask();
-
+		
+		this.mailConnexion = mailConnexion;
+		user=mailConnexion.getCurrentUser();
+		serviceId = String.valueOf(mailConnexion.hashCode());
 	}
-
-	@Override
-	public void stop() {
-
-		refreshtask.cancel();
-
-		release();
-
-		if (lastIMAPFolder != null) {
-			try {
-				lastIMAPFolder.close(false);
-			} catch (MessagingException e) {
-				// Error closing the mail, nothing you can do about it, sorry
-			}
-		}
-	}
-
+	
 	@Override
 	public void release() {
-
-		try {
-			getStore().close();
-		} catch (MessagingException e) {
-			logger.warn("failed to release store with the message: {}",
-					e.getMessage());
-		}
-
-		session = null;
-		store = null;
-
+			mailConnexion.stop();
 	}
+	
+	@Override
+	public void autoRefreshValueChanged(Object newValue) {
+		refreshtask.cancel();
+		logger.trace("Auto-refresh changed to: {}", refreshRate);
+		configureAutoRefreshTask();
 
-	/*
-	 * Established the mail connection with the provider
-	 */
-	private Store getStore() throws MessagingException {
-
-		if (store == null || !store.isConnected()) {
-
-			try {
-				// Set the socket factory to trust all hosts
-
-				// Get the store
-				store = getSession().getStore(
-						properties
-								.getProperty(MailConfiguration.STORE_PROTOCOL));
-				logger.debug("Establishing connection with IMAP server.");
-
-				store.connect(
-						properties.getProperty(MailConfiguration.STORE_HOST),
-						properties.getProperty(MailConfiguration.USER),
-						properties.getProperty(MailConfiguration.PASSWORD));
-				logger.debug("Connection established with IMAP server, "
-						+ "store : " + store);
-
-			} catch (Exception exc) {
-				logger.error("Exception when connecting to IMAP Server "
-						+ exc.getStackTrace());
-			}
-
-			// store = getSession().getStore(GMailConstants.PROTOCOL_VALUE);
-
-			// store.connect(GMailConstants.IMAP_SERVER,GMailConstants.IMAP_PORT,
-			// USER, PASSWORD);
-		}
-
-		return store;
 	}
 
 	private void configureAutoRefreshTask() {
@@ -176,7 +96,7 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 
 				try {
 					logger.trace("Refreshing mail data");
-					MailServiceImpl.this.fetch();
+					fetch();
 				} catch (MessagingException e) {
 					logger.warn(
 							"Refreshing mail data FAILED with the message: {}",
@@ -192,36 +112,14 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 					refreshRate.longValue());
 		}
 
-	}
-
-	@Override
-	public Session getSession() {
-
-		if (session == null) {
-
-			// This method will openup a browser (pc/mobile) to verify the user
-			// auth in case of auth3
-			// session=Session.getDefaultInstance(properties, null);
-			// create the properties for the Session
-			properties.setProperty("mail.imaps.socketFactory.class",
-					"appsgate.lig.mail.gmail.utils.AppsGateSSLSocketFactory");
-
-			session = Session.getInstance(properties,
-					new javax.mail.Authenticator() {
-
-						@Override
-						protected PasswordAuthentication getPasswordAuthentication() {
-							return new PasswordAuthentication(
-									properties
-											.getProperty(MailConfiguration.USER),
-									properties
-											.getProperty(MailConfiguration.PASSWORD));
-						}
-					});
-		}
-
-		return session;
-	}
+	}	
+	
+	private TimerTask refreshtask;	
+	
+	private final Integer refreshRate = -1;
+	private Timer refreshTimer;
+	
+	
 
 	/*
 	 * Check for possible updates in the assigned mail box
@@ -230,13 +128,16 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 	 */
 	@Override
 	public void fetch() throws MessagingException {
+		
+		if(mailConnexion == null ||!mailConnexion.testConnexion()) {
+			throw new MessagingException("No valid javamail connexion available");
+		}
 
 		boolean firstTime = messagesCached.isEmpty();
 
 		try {
 
-			IMAPFolder box = getMailBox(properties
-					.getProperty(GMailConstants.DEFAULT_FOLDER));
+			IMAPFolder box = mailConnexion.getMailBox();
 
 			for (Message message : box.getMessages()) {
 
@@ -291,7 +192,7 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 					message.getSubject(), message.getContent().toString());
 		} catch (Exception exc) {
 			logger.error("Impossible to send mail from account {} due to '{}'",
-					properties.getProperty(MailConfiguration.USER),
+					mailConnexion.getCurrentUser(),
 					exc.getStackTrace());
 
 			return false;
@@ -308,22 +209,26 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 	 */
 	@Override
 	public boolean sendMailSimple(String to, String subject, String body) {
+		
+		if(mailConnexion == null ||!mailConnexion.testConnexion()) {
+			return false;
+		}
 
 		try {
 			if (mailSender == null) {
-				mailSender = new MailSender(getSession());
+				mailSender = new MailSender(mailConnexion.getSession());
 			}
 
 			logger.info("Sending mail to: {}", to);
 
 			mailSender.sendMail(subject, body,
-					properties.getProperty(MailConfiguration.USER), to);
+					mailConnexion.getCurrentUser(), to);
 
 			return true;
 
 		} catch (Exception e) {
 			logger.error("Impossible to send mail from account {} due to '{}'",
-					properties.getProperty(MailConfiguration.USER),
+					mailConnexion.getCurrentUser(),
 					e.getStackTrace());
 			return false;
 		}
@@ -342,9 +247,13 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 
 	@Override
 	public List<Message> getMails(int size) {
+		if(mailConnexion == null ||!mailConnexion.testConnexion()) {
+			new ArrayList<Message>();
+		}
+		
 		try {
 
-			IMAPFolder folder = getMailBox(GMailConstants.DEFAULT_INBOX);
+			IMAPFolder folder = mailConnexion.getMailBox(GMailConstants.DEFAULT_INBOX);
 
 			Message[] messages;
 			int totalSize = folder.getMessageCount();
@@ -376,26 +285,6 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 	public List<Message> getMails() {
 
 		return getMails(0);
-
-	}
-
-	@Override
-	public IMAPFolder getMailBox(String storeString) throws MessagingException {
-
-		if (lastIMAPFolder != null
-				&& lastIMAPFolder.getName().equals(storeString)) {
-			return lastIMAPFolder;
-		} else if (lastIMAPFolder != null) {
-			lastIMAPFolder.close(false);
-		}
-
-		logger.debug("storeString : " + storeString);
-		lastIMAPFolder = (IMAPFolder) getStore().getFolder(storeString);
-
-		if (!lastIMAPFolder.isOpen()) {
-			lastIMAPFolder.open(Folder.READ_ONLY);// READ_WRITE
-		}
-		return lastIMAPFolder;
 
 	}
 
@@ -432,7 +321,12 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 
 					result.put("objectId", serviceId);
 					result.put("varName", "newMail");
-					result.put("value", properties.get(MailConfiguration.USER));
+					if(mailConnexion == null ) {
+						result.put("value", "unknown");
+					} else {
+						result.put("value", mailConnexion.getCurrentUser());
+					}
+					
 
 					result.put("subject", msg.getSubject());
 					result.put("from", msg.getFrom());
@@ -466,13 +360,6 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 		return lastFetchDateTime;
 	}
 
-	@Override
-	public void autoRefreshValueChanged(Object newValue) {
-		refreshtask.cancel();
-		logger.trace("Auto-refresh changed to: {}", refreshRate);
-		configureAutoRefreshTask();
-
-	}
 
 	@Override
 	public String getAbstractObjectId() {
@@ -501,8 +388,14 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail,
 		descr.put("id", serviceId);
 		descr.put("type", userType); // 102 for mail
 		descr.put("status", status);
-		descr.put("user", properties.getProperty(MailConfiguration.USER));
-		descr.put("refreshRate", refreshRate);
+		
+		if(user!= null && !user.isEmpty()) {
+			descr.put("user", user);
+		} else 	if(mailConnexion != null  ) {
+				descr.put("user", mailConnexion.getCurrentUser());
+		} else {
+			descr.put("user", "unknown");
+		}
 
 		descr.put("favorite-recipients", getFavoriteRecipients());
 

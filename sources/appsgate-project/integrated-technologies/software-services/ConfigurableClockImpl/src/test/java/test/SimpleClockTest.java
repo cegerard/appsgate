@@ -39,10 +39,10 @@ import org.slf4j.LoggerFactory;
  * @author thibaud
  * 
  */
-@Ignore
+//@Ignore
 public class SimpleClockTest implements AlarmEventObserver {
 
-	long errorTolerance = 10;
+	long errorTolerance = 100;
 	long systemTime;
 	long clockTime;
 	ConfigurableClockImpl clock;
@@ -78,32 +78,6 @@ public class SimpleClockTest implements AlarmEventObserver {
 
 		System.out.println("Description " + clock.getDescription().toString());
 
-		// System.out.println("Testing basic system time");
-		// systemTime = System.currentTimeMillis();
-		// clockTime = clock.getCurrentTimeInMillis();
-		// testTimeEqual(systemTime, clockTime);
-		//
-		// System.out.println("Wait for 4 secs");
-		// try{
-		// Thread.sleep(4321);
-		// }catch (Exception exc) {
-		// exc.printStackTrace();
-		// }
-		// systemTime = System.currentTimeMillis();
-		// clockTime = clock.getCurrentTimeInMillis();
-		// testTimeEqual(systemTime, clockTime);
-		//
-		// System.out.println("Set a particular Time");
-		// Calendar cal = Calendar.getInstance();
-		// cal.set(1977, 4, 1, 9, 54, 10);
-		//
-		// clock.setCurrentDate(cal);
-		// testTimeEqual(cal.getTimeInMillis(),clock.getCurrentTimeInMillis());
-		//
-		// System.out.println("Test the reset");
-		// clock.resetClock();
-		// systemTime = System.currentTimeMillis();
-		// testTimeEqual(systemTime, clock.getCurrentTimeInMillis());
 	}
 
 	@Test
@@ -138,11 +112,11 @@ public class SimpleClockTest implements AlarmEventObserver {
 		System.out
 				.println("Wait for 4 secs, 8 should have been elapsed in virtual");
 		try {
-			Thread.sleep(4321);
+			Thread.sleep(4000);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-		systemTime += 4321 * 2;
+		systemTime += 4000 * 2;
 		clockTime = clock.getCurrentTimeInMillis();
 		testTimeEqual(systemTime, clockTime);
 
@@ -184,51 +158,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 		systemTime += 4321 * 2;
 		clockTime = clock.getCurrentTimeInMillis();
 		testTimeEqual(systemTime, clockTime);
-//
-//<<<<<<< HEAD
-//	cal.setTimeInMillis(currentTime+80000);
-//	int alarmID2=clock.registerAlarm(cal, this);
-//	
-//	cal.setTimeInMillis(currentTime+120000);
-//	int alarmID3=clock.registerAlarm(cal, this);	
-//	
-//	cal.setTimeInMillis(System.currentTimeMillis()+160000);
-//	int alarmID4=clock.registerAlarm(cal, this);
-//	
-//	cal.setTimeInMillis(System.currentTimeMillis()+200000);
-//	int alarmID5=clock.registerAlarm(cal, this);
-//	
-//	
-//	System.out.println("1° Jumping nearly exact time the first one");
-//	clock.setCurrentTimeInMillis(currentTime+40000);
-//	try{
-//	    Thread.sleep(errorTolerance*10);
-//	}catch (Exception exc) {
-//	    exc.printStackTrace();
-//	}
-//	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
-//	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID1));
-//	
-//	
-//	System.out.println("2° jumping just before exact time");
-//	clock.setCurrentTimeInMillis(currentTime+(80000-errorTolerance));
-//	try{
-//	    Thread.sleep(errorTolerance*20);
-//	}catch (Exception exc) {
-//	    exc.printStackTrace();
-//	}
-//	Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
-//	Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID2));
-//	
-//	
-//	System.out.println("3° Jumping just after exact time");
-//	clock.setCurrentTimeInMillis(currentTime+(120000+errorTolerance));
-//	try{
-//	    Thread.sleep(errorTolerance*10);
-//	}catch (Exception exc) {
-//	    exc.printStackTrace();
-//=======
-//>>>>>>> 2bf9d1cd7d927acb21c47e9dfd6d18bb3743a896
+
 	}
 
 	void testTimeEqual(long systemTime, long clockTime) {
@@ -253,7 +183,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 		cal.setTimeInMillis(System.currentTimeMillis() + 4321);
 		Integer alarmID = clock.registerAlarm(cal, this);
 		try {
-			Thread.sleep(4321 + errorTolerance * 10);
+			Thread.sleep(4321 + errorTolerance );
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -284,6 +214,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 
 		System.out.println("unregistering the alarm then wait for 4 secs");
 		clock.unregisterAlarm(alarmID.intValue());
+		clock.calculateNextTimer();
 		try {
 			Thread.sleep(4321);
 		} catch (Exception exc) {
@@ -315,7 +246,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 		Integer alarmID = clock.registerAlarm(cal, this);
 
 		try {
-			Thread.sleep(4321 + errorTolerance * 10);
+			Thread.sleep(4321 + errorTolerance );
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -393,9 +324,9 @@ public class SimpleClockTest implements AlarmEventObserver {
 		int alarmID5 = clock.registerAlarm(cal, this);
 
 		System.out.println("1° Jumping nearly exact time the first one");
-		clock.setCurrentTimeInMillis(currentTime + 40000);
+		clock.setCurrentTimeInMillis(currentTime + 40000 - errorTolerance);
 		try {
-			Thread.sleep(errorTolerance * 10);
+			Thread.sleep(errorTolerance*2 );
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -408,7 +339,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 		System.out.println("2° jumping just before exact time");
 		clock.setCurrentTimeInMillis(currentTime + (80000 - errorTolerance));
 		try {
-			Thread.sleep(errorTolerance * 10);
+			Thread.sleep(errorTolerance*2 );
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -419,9 +350,9 @@ public class SimpleClockTest implements AlarmEventObserver {
 				receivedAlarm.contains(alarmID2));
 
 		System.out.println("3° Jumping just after exact time");
-		clock.setCurrentTimeInMillis(currentTime + (120000 + errorTolerance));
+		clock.setCurrentTimeInMillis(currentTime + (120000 - errorTolerance));
 		try {
-			Thread.sleep(errorTolerance * 10);
+			Thread.sleep(errorTolerance *2);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -434,7 +365,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 		System.out.println("4° Jumping 1 sec before exact time");
 		clock.setCurrentTimeInMillis(currentTime + 159000);
 		try {
-			Thread.sleep(1000 + errorTolerance * 10);
+			Thread.sleep(1000 + errorTolerance );
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -448,7 +379,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 		clock.setCurrentTimeInMillis(System.currentTimeMillis() + 201000);
 
 		try {
-			Thread.sleep(1000 + errorTolerance * 10);
+			Thread.sleep(1000 + errorTolerance*2 );
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -546,7 +477,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 				.println("Now, waiting for 0,1 more sec (should be 1 sec in simulated time)");
 
 		try {
-			Thread.sleep(100 + errorTolerance);
+			Thread.sleep(100);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -560,29 +491,6 @@ public class SimpleClockTest implements AlarmEventObserver {
 				"received alarm set should contain the same event id as registered",
 				receivedAlarm.contains(alarmID));
 
-		// This test is too long !
-		// System.out.println("Time flow should go 10 times slower");
-		// clock.setTimeFlowRate(0.1);
-		// System.out.println("Waiting for 9 secs (real)");
-		//
-		// try{
-		// Thread.sleep(9000);
-		// }catch (Exception exc) {
-		// exc.printStackTrace();
-		// }
-		//
-		// Assert.assertTrue("received alarm set should be empty",receivedAlarm.isEmpty());
-		// System.out.println("Now, waiting for 1 more sec (real)");
-		//
-		// try{
-		// Thread.sleep(1000+errorTolerance);
-		// }catch (Exception exc) {
-		// exc.printStackTrace();
-		// }
-		//
-		// Assert.assertFalse("received alarm set should not be empty",receivedAlarm.isEmpty());
-		// Assert.assertEquals("received alarm set should contain only one element",1,receivedAlarm.size());
-		// Assert.assertTrue("received alarm set should contain the same event id as registered",receivedAlarm.contains(alarmID));
 	}
 
 	@Test
@@ -658,7 +566,7 @@ public class SimpleClockTest implements AlarmEventObserver {
 	@Test
 	public void testSimplePeriodicAlarms() {
 		System.out
-				.println("testSimplePeriodicAlarms(), adding a periodic events for each seconds");
+				.println("testSimplePeriodicAlarms(), adding a periodic events for each 2 seconds");
 		Calendar cali = Calendar.getInstance();
 		cali.setTimeInMillis(System.currentTimeMillis()-500);
 		clock.registerPeriodicAlarm(cali, 2000, this);
@@ -679,6 +587,9 @@ public class SimpleClockTest implements AlarmEventObserver {
 
 		System.out
 				.println("registering a single alarm in 1 sec, then waiting for 4 secs more");
+		receivedAlarm.clear();
+		receivedAlarmCounter = 0;
+		
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(System.currentTimeMillis() + 1000);
 		clock.registerAlarm(cal, this);
@@ -692,10 +603,74 @@ public class SimpleClockTest implements AlarmEventObserver {
 		Assert.assertEquals(
 				"received alarm set should contain 2 element (1 for all periodics + 1 for single alarm)",
 				2, receivedAlarm.size());
-		Assert.assertEquals("should have received 9 elements (total)", 9,
+		Assert.assertEquals("should have received 6 elements (total)", 6,
 				receivedAlarmCounter);
 
 	}
+	
+	@Test
+	public void testPeriodicAlarmsWithJumpsInTime() {
+		System.out
+				.println("testPeriodicAlarmsWithJumpsInTime(), adding a periodic events for each day");
+		long now = System.currentTimeMillis();
+		Calendar today = Calendar.getInstance();
+		today.setTimeInMillis(now);
+		
+		Calendar baseAlarm = Calendar.getInstance();
+		baseAlarm.setTimeInMillis(now+500);
+		
+		clock.registerPeriodicAlarm(baseAlarm, 1000*60*60*24 , this);
+
+		try {
+			Thread.sleep(221);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		Assert.assertTrue("received alarm set should be empty a day (next one in 500 ms)",
+				receivedAlarm.isEmpty());
+		
+		try {
+			Thread.sleep(321);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		
+		Assert.assertFalse("received alarm set should not be empty",
+				receivedAlarm.isEmpty());
+		Assert.assertEquals(
+				"received alarm set should contain 1 element (same id for all events)",
+				1, receivedAlarm.size());
+		Assert.assertEquals("should receive 1 elements",1,
+				receivedAlarmCounter);
+		
+		
+		
+		System.out
+		.println("testPeriodicAlarmsWithJumpsInTime(), jumping tomorrow, 500 ms before the alarm");
+		receivedAlarm.clear();
+		receivedAlarmCounter=0;
+		
+		clock.setCurrentTimeInMillis(today.getTimeInMillis()+(1000*60*60*24));
+		
+		Assert.assertTrue("received alarm set should be empty",
+				receivedAlarm.isEmpty());	
+		
+		try {
+			Thread.sleep(521);
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		
+		Assert.assertFalse("received alarm set should not be empty",
+				receivedAlarm.isEmpty());
+		Assert.assertEquals(
+				"received alarm set should contain 1 element (same id for all events)",
+				1, receivedAlarm.size());
+		Assert.assertEquals("should receive 1 elements",1,
+				receivedAlarmCounter);
+				
+		
+	}	
 
 	/*
 	 * (non-Javadoc)

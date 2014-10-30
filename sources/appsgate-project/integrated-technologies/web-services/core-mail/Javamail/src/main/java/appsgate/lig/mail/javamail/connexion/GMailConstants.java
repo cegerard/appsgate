@@ -1,4 +1,5 @@
-package appsgate.lig.mail.javamail;
+package appsgate.lig.mail.javamail.connexion;
+
 
 
 public class GMailConstants extends MailConfiguration{

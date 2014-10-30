@@ -261,7 +261,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 
 	@Override
 	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.SERVICE;
+		return CORE_TYPE.DEVICE;
 	}
 
 

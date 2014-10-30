@@ -60,11 +60,6 @@ public class DomiCubeMQTTAdapterImpl {
     private String oldDimTopic;
 
     /**
-     * MQTT attribute to initiate the connection
-     */
-    private MQTT mqtt;
-
-    /**
      * Executor scheduler for MQTT message reception
      */
     private ExecutorService listenningService = Executors.newCachedThreadPool();
@@ -76,35 +71,7 @@ public class DomiCubeMQTTAdapterImpl {
      */
     private Future<?> scheduledTasks;
 
-    /**
-     * Connection member for MQTT broker
-     */
-    private List<FutureConnection> mqttConnections =new ArrayList<FutureConnection>();
-
     private static Logger logger = LoggerFactory.getLogger(DomiCubeMQTTAdapterImpl.class);
-
-    private FutureConnection connectMQTT(String topic){
-
-        FutureConnection connection=null;
-
-        try {
-            ArrayList<Topic> localTopicFace = new ArrayList<Topic>();
-            localTopicFace.add(new Topic(topic, QoS.AT_LEAST_ONCE));
-            Object[] objectArray = localTopicFace.toArray();
-            mqtt = new MQTT();
-            logger.info("Connecting to broker {}:{} on topic {} ...",host,port,topic);
-            mqtt.setHost(host, Integer.valueOf(port));
-            connection = mqtt.futureConnection();
-            connection.connect();
-            connection.subscribe(Arrays.copyOf(objectArray, objectArray.length, Topic[].class));
-            logger.info("Connected to broker {}:{} on topic {}",host,port,topic);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        return connection;
-
-    }
 
     public void newInst() {
         System.out.println("initializing MQTT DomiCube adapter.");
@@ -116,19 +83,11 @@ public class DomiCubeMQTTAdapterImpl {
             oldDimTopic = dimTopic;
             oldBatteryTopic = batteryTopic;
 
-            FutureConnection face=connectMQTT(faceTopic);
-            FutureConnection battery=connectMQTT(batteryTopic);
-            FutureConnection dim=connectMQTT(dimTopic);
-
-            mqttConnections.add(face);
-            mqttConnections.add(battery);
-            mqttConnections.add(dim);
-
-            MQTTListeningThread t1=new MQTTListeningThread(face,"activeFace");
+            MQTTListeningThread t1=new MQTTListeningThread(host,port,faceTopic,"activeFace");
             listenningService.execute(t1);
-            MQTTListeningThread t2=new MQTTListeningThread(battery,"batteryLevel");
+            MQTTListeningThread t2=new MQTTListeningThread(host,port,batteryTopic,"batteryLevel");
             listenningService.execute(t2);
-            MQTTListeningThread t3=new MQTTListeningThread(dim,"dimValue");
+            MQTTListeningThread t3=new MQTTListeningThread(host,port,dimTopic,"dimValue");
             listenningService.execute(t3);
 
             listenningThreads.add(t1);
@@ -150,12 +109,9 @@ public class DomiCubeMQTTAdapterImpl {
 
         try {
             logger.debug("Closing MQTT connection...");
-            for(FutureConnection con: mqttConnections){
-                con.disconnect();
-            }
 
             for(MQTTListeningThread thread:listenningThreads){
-                thread.setListening(false);
+                thread.stopMQTT();
             }
 
             logger.debug("MQTT brocker connection closed.");

@@ -13,7 +13,6 @@ define([
        events: {
             "click button.toggle-lamp-button": "onToggleLampButton",
             "click button.blink-lamp-button": "onBlinkLampButton",
-            "click button.toggle-plug-button": "onTogglePlugButton",
             "click button.toggle-actuator-button": "onToggleActuatorButton",
         },
       initialize: function() {
@@ -26,29 +25,11 @@ define([
       * Callback to toggle a lamp - used when the displayed device is a lamp (!)
       */
       onToggleLampButton: function() {
-        // value can be string or boolean
-        // string
-        if (typeof this.model.get("value") === "string") {
-          if (this.model.get("value") === "true") {
-            this.model.set("value", "false");
-            this.$el.find(".toggle-lamp-button").text("Allumer");
-          } else {
-            this.model.set("value", "true");
-            this.$el.find(".toggle-lamp-button").text("Eteindre");
-          }
-          // boolean
+        if (this.model.get("value") == "true") {
+          this.model.switchOff();
         } else {
-          if (this.model.get("value")) {
-            this.model.set("value", "false");
-            this.$el.find(".toggle-lamp-button").text("Allumer");
-          } else {
-            this.model.set("value", "true");
-            this.$el.find(".toggle-lamp-button").text("Eteindre");
-          }
+          this.model.switchOn();
         }
-
-        // send the message to the backend
-        this.model.save();
       },
       /**
       * Callback to blink a lamp
@@ -70,13 +51,13 @@ define([
       * @param e JS mouse event
       */
       onChangeColor: function(e) {
-        var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
-        var rgb = Raphael.getRGB(colorWheel.color());
-        var hsl = Raphael.rgb2hsl(rgb);
+        //var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
+        //var rgb = $(".picker_h").css("background-color");//var rgb = Raphael.getRGB(10,10,10); //colorWheel.color()
+        //var hsl = Raphael.rgb2hsl(rgb);
 
-        lamp.set({color: Math.floor(hsl.h * 65535), "saturation": Math.floor(hsl.s * 255), "brightness": Math.floor(hsl.l * 255)});
+        //lamp.set({color: Math.floor(hsl.h * 65535), "saturation": Math.floor(hsl.s * 255), "brightness": Math.floor(hsl.l * 255)});
 
-        var result = lamp.save();
+        //var result = lamp.save();
 
       },
       autoupdate: function() {

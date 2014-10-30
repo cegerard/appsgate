@@ -138,9 +138,6 @@ define([
           self.model.set("runningState", "PROCESSING");
           self.model.remoteCall("callProgram", [{type: "String", value: self.model.get("id")}]);
 
-          // setting the clock to reset once the program stops
-          self.listenToOnce(self.model, "change:runningState", self.cancelTesting);
-
           // refresh the menu
           self.render();
 

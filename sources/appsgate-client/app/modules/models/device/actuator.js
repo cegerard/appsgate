@@ -22,7 +22,6 @@ define([
           this.generateDefaultName($.i18n.t("devices.actuator.name.singular"));
       }
     },
-
     /**
      * Send a message to the backend to update the attribute value
      */
