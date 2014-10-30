@@ -10,6 +10,7 @@
         "no": "NON"
     },
     "devices": {
+        "no-value":"---",
         "actuator": {
             "action": {
                 "turnOff": "Eteindre",
@@ -46,6 +47,7 @@
                 "non_authorized": "badge n'est pas autorisé sur"
             }
         },
+        "avg" : "Moy : ",
         "clock": {
             "name": {
                 "no-name": "Horloge système sans nom",
@@ -123,7 +125,7 @@
             "scale": {
                 "high": "Luminosité forte",
                 "highest": "Plein soleil",
-                "low": "Luminosité faible",
+                "low": "Luminosité nulle à faible",
                 "lowest": "Nuit",
                 "medium": "Luminosité moyenne",
                 "veryHigh": "Luminosité très forte",
@@ -274,6 +276,7 @@
             "waiting": "En attente"
         },
         "status-label": "Statut",
+        "sum" : "Somme : ",
         "switch": {
             "keyboard": {
                 "pushed-bottom": "on appuie sur bas de ...",
@@ -306,7 +309,8 @@
                 "intern": "Capteur de température intérieur"
             },
             "keyboard": {
-                "get": "la température mesurée par ..."
+                "get": "la température mesurée par ...",
+                "change": "la température de ... change"
             },
             "language": {
                 "get": "la température de __myVar__"
@@ -314,6 +318,9 @@
             "name": {
                 "plural": "Capteurs de température",
                 "singular": "Capteur de température"
+            },
+            "event": {
+                "change": "la température de __myVar__ change"
             }
         },
         "type-label": "Type",
@@ -373,7 +380,8 @@
                 "5": "lecteurs de carte",
                 "6": "prises",
                 "7": "lampes",
-                "8": "actionneurs"
+                "8": "actionneurs",
+				"31": "lecteurs de média"
             }
         },
         "true": "Vrai",
@@ -414,6 +422,7 @@
         "keep-keyword": "Maintenir",
         "keep-then": "Ensuite",
         "mandatory-keyword": "Obligatoire",
+        "mandatory-readonly": "...",
         "nothing-keyword": "Rien",
         "only-once": "Une seule fois",
         "op-and-bool": "et",
@@ -442,7 +451,8 @@
                 "5": "lecteurs de carte",
                 "6": "prises",
                 "7": "lampes",
-                "8": "actionneurs"
+                "8": "actionneurs",
+				"31": "lecteurs de média"
             }
         },
         "then-keyword": "Alors",
@@ -493,6 +503,12 @@
         "program-name-empty": "Le nom du programme doit être renseigné.",
         "title": "Renommer programme"
     },
+    "modal-schedule-program": {
+        "title":"Planifier le programme dans l'agenda AppsGate de Google",
+        "schedule-activation":"Planifier l'activation du programme",
+        "schedule-deactivation":"Planifier la désactivation du programme",
+        "schedule-both":"Planifier l'activation et la désactivation du programme"
+    },
     "modal-edit-service": {
         "name-already-existing": "Nom de service déjà existant",
         "name-label": "Nom",
@@ -517,7 +533,7 @@
     },
     "navbar": {
         "button-settings": "Préférences",
-        "debugger": "Comprendre",
+        "debugger": "Historique",
         "devices": "Equipements",
         "edit": "Editer",
         "emergency-stop": "Tout stopper",
@@ -531,11 +547,11 @@
     "places-details": {
         "body": {
             "device-no-name": "Equipement sans nom",
-            "no-device-in-place": "Aucun equipement n'est assigné dans ce lieu de vie."
+            "no-device-in-place": "Aucun équipement ne se trouve dans ce lieu de vie"
         },
         "header": {
-            "consumption-label": "Consommation",
-            "device-number-title": "Nombre total d'équipements dans le lieu de vie",
+            "consumption-label": "Consommation totale actuelle :",
+            "device-number-title": "Nombre total d'équipements dans le lieu de vie :",
             "illumination-label": "Luminosité",
             "temperature-label": "Température"
         },
@@ -552,7 +568,9 @@
     "programs": {
         "action": {
             "start": "Activer",
-            "stop": "Désactiver"
+            "stop": "Désactiver",
+            "schedule": "Planifier",
+            "open-calendar":"Voir planification"
         },
         "delete-program": "Supprimer",
         "edit-program": "Editer",
@@ -587,10 +605,12 @@
             "stopped": "Arrêté"
         },
         "warning-program-edition": "Attention, éditer le programme le désactivera",
-        "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?"
+        "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
+        "scheduled-event": "Programme Appsgate "
     },
     "programs-menu": {
-        "add-button": "Ajouter programme"
+        "add-button": "Ajouter programme",
+        "deactivate-all-programs": "Désactiver tous les programmes"
     },
     "services": {
         "avtransport": {
@@ -629,7 +649,9 @@
                 "singular": "Destinataire mail favori"
             },
             "modal" : {
-              "add" : "Ajouter destinataire favori" 
+              "add" : "Ajouter destinataire favori",
+              "valid-mail" : "Merci d'entrer une adresse valide",
+			  "title" : "Destinataire favori"
             },
 			"warning-delete" : "Etes vous sûr de vouloir supprimer cette adresse ?"
         },

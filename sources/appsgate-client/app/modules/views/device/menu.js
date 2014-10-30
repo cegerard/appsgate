@@ -28,17 +28,21 @@ define([
         this.listenTo(devices, "add", this.render);
         this.listenTo(devices, "change", this.onChangedDevice);
         this.listenTo(devices, "remove", this.render);
+
+        this.stopListening(devices.getCoreClock());
       },
       /**
       * Method called when a device has changed
       * @param model Model that changed, Device in that cas
       * @param collection Collection that holds the changed model
-      * @param options Options given with the change event
       */
-      onChangedDevice: function(model, options) {
+      onChangedDevice: function(model) {
         var types = devices.getDevicesByType();
+        var postfix= "singular";
+        if(types.length>1) postfix="plural";
         this.$el.find("#side-" + model.get("type")).replaceWith(this.tplDeviceContainer({
           type: "" + model.get("type"),
+          typeLabel: devices.getTypeLabelPrefix(model.get("type"))+postfix,
           devices: types[model.get("type")],
           places: places,
           unlocatedDevices: devices.filter(function(d) {
@@ -85,18 +89,22 @@ define([
 
           // for each category of devices, add a menu item
           this.$el.append(this.tpl());
-          var types = devices.getDevicesByType();
+
           var container = document.createDocumentFragment();
-          _.forEach(_.keys(types), function(type) {
-            if (type !== "21" && type !== "102" && type !== "103") {
+          _.forEach(devices.getTypes(), function(type) {
+            devs=devices.getDevicesFilterByType(type);
+            if (type != "21" && type != "102" && type != "103" && devs.length>0) {
+              var postfix= "singular";
+              if(devs.length>1) postfix="plural";
               $(container).append(self.tplDeviceContainer({
-                type: type,
-                devices: types[type],
+                type: String(type),
+                typeLabel: devices.getTypeLabelPrefix(type)+postfix,
+                devices: devs,
                 places: places,
-                unlocatedDevices: devices.filter(function(d) {
-                  return (d.get("placeId") === "-1" && d.get("type") === type);
+                unlocatedDevices: devs.filter(function(d) {
+                  return (d.get("placeId") == "-1" && d.get("type") == type);
                 }),
-                active: Backbone.history.fragment.split("devices/types/")[1] === type ? true : false
+                active: Backbone.history.fragment.split("devices/types/")[1] == type ? true : false
               }));
             }
           });

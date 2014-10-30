@@ -38,6 +38,9 @@ define([
                 self.listenTo(service, "change", self.render);
                 self.listenTo(service, "remove", self.render);
             });
+
+            self.listenTo(services, "add", self.reload);
+
             dispatcher.on("checkLocation", function(l) {
 
                 if (l!= undefined ) {
@@ -70,6 +73,14 @@ define([
                     console.warn(l);
                 }
             });
+        },
+        reload: function() {
+          services.getServicesByType()[this.id].forEach(function(service) {
+              self.listenTo(service, "change", self.render);
+              self.listenTo(service, "remove", self.render);
+          });
+
+          this.render();
         },
         /**
          * Render the list
@@ -133,7 +144,7 @@ define([
             });
 
             // hide the modal
-            
+
             $("#add-weather-modal").modal("hide");
         },
         /**
@@ -150,7 +161,7 @@ define([
           */
         onCancelDeletePopover : function() {
             // destroy the popover
-            this.$el.find(".delete-popover").popover('destroy');
+            this.$el.find(".delete-weather").popover('destroy');
         },
         /**
           * Callback when the user has clicked on the button delete.
@@ -209,9 +220,9 @@ define([
             mail.removeFavorite($(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email"))
             appRouter.navigate("#services/types/102", {trigger: true});
         },
-        
+
         /**
-         * 
+         *
          */
         updateMailButton : function(e) {
             var m = $(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email");
@@ -226,12 +237,15 @@ define([
          */
         validMail: function(e) {
             var mail = $("#edit-mail-modal input[name='inputValue']").val();
-            if (mail.length > 9) {
+            var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (regex.test(mail)) {
                 $("#edit-mail-modal .valid-button").removeClass("disabled");
                 $("#edit-mail-modal .valid-button").removeClass("valid-disabled");
+                $("#edit-mail-modal .text-danger").addClass("hide");
             } else {
                 $("#edit-mail-modal .valid-button").addClass("disabled");
                 $("#edit-mail-modal .valid-button").addClass("valid-disabled");
+                $("#edit-mail-modal .text-danger").removeClass("hide");
             }
         },
 
@@ -251,7 +265,7 @@ define([
             });
 
             // hide the modal
-            
+
             $("#edit-mail-modal").modal("hide");
         }
 

@@ -44,7 +44,7 @@ public class MoveObjectNotification implements NotificationMsg {
 	 */
 	public MoveObjectNotification(String oldLocationId, String newLocationId,
 			String objId, int moveType) {
-		super();
+		//super();
 		this.oldLocationId = oldLocationId;
 		this.newLocationId = newLocationId;
 		this.objId = objId;

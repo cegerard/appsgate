@@ -41,7 +41,7 @@ define([
                 var device = devices.get(deviceId);
 
                 // if the device has been found in the collection
-                if (typeof device !== "undefined") {
+                if (typeof device !== "undefined" && device.get("type") != 21) {
                     self.listenTo(device, "change", self.autoupdate);
                 }
             });
@@ -60,10 +60,10 @@ define([
 
             switch (type) {
               case 0:
-                $("#device-" + device.cid + "-value").text(Math.round(device.get("value")) + "&deg;C");
+                $("#device-" + device.cid + "-value").text(device.getValue() + " &deg;C");
                 break;
               case 1:
-                $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + s.get("label"));
+                $("#device-" + device.cid + "-value").attr("data-i18n", "devices.illumination.scale." + device.get("label"));
                 break;
               case 2:
                 if (device.get("buttonStatus") === "true") {
@@ -102,17 +102,19 @@ define([
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.plug.status.turnedOff");
                   $("#device-" + device.cid + "-value").attr("class","label label-default");
                 }
-                $("#device-" + device.cid + "-consumption").text(device.get("consumption") + " W");
+                $("#device-" + device.cid + "-consumption").text(device.getValue() + " W");
                 break;
               case 7:
                 if (device.get("value") === "true" || device.get("value") === true) {
                   $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOff");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOn");
                   $("#device-" + device.cid + "-value").attr("class", "label label-yellow");
+                  $("#device-" + device.cid + "-color-information").attr("data-i18n", "devices.lamp.color-information.currentColor");
                 } else {
                   $("#device-" + device.cid + "-button").attr("data-i18n", "devices.lamp.action.turnOn");
                   $("#device-" + device.cid + "-value").attr("data-i18n", "devices.lamp.status.turnedOff");
                   $("#device-" + device.cid + "-value").attr("class", "label label-default");
+                  $("#device-" + device.cid + "-color-information").attr("data-i18n", "devices.lamp.color-information.lastColor");
                 }
                 $("#device-" + device.cid + "-color").attr("style", "background-color:" + device.getCurrentColor());
                 break;
@@ -221,7 +223,7 @@ define([
             $("#edit-name-place-modal .text-danger").addClass("hide");
             $("#edit-name-place-modal .valid-button").removeClass("disabled");
             $("#edit-name-place-modal .valid-button").removeClass("valid-disabled");
-            
+
             return true;
         },
         /**

@@ -56,25 +56,50 @@ define(function(require, exports, module) {
         //programs.reset();
       }
 
-      // places
-      dispatcher.on("placesReady", function() {
-        dispatcher.trigger("dataReady");
-      });
 
-      // devices
-      dispatcher.on("devicesReady", function() {
-        dispatcher.trigger("dataReady");
-      });
+            // wait for the data before launching the user interface
+            var placesReady = false;
+            var devicesReady = false;
+            var servicesReady = false;
+            var programsReady = false;
 
-      // services
-      dispatcher.on("servicesReady", function() {
-        dispatcher.trigger("dataReady");
-      });
+            // places
+            dispatcher.on("placesReady", function() {
+                placesReady = true;
+                // Initialize the collection of devices
+                require(['collections/devices'], function(Devices) {
+                  window.devices = new Devices();
+                });
 
-      // programs
-      dispatcher.on("programsReady", function() {
-        dispatcher.trigger("dataReady");
-      });
+                // Initialize the collection of devices
+                require(['collections/services'], function(Services) {
+                  window.services = new Services();
+                });
+            });
+
+            // devices
+            dispatcher.on("devicesReady", function() {
+                devicesReady = true;
+                if (placesReady && devicesReady && servicesReady && programsReady) {
+                    dispatcher.trigger("dataReady");
+                }
+            });
+
+            // services
+            dispatcher.on("servicesReady", function() {
+                servicesReady = true;
+                if (placesReady && devicesReady && servicesReady && programsReady) {
+                    dispatcher.trigger("dataReady");
+                }
+            });
+
+            // programs
+            dispatcher.on("programsReady", function() {
+                programsReady = true;
+                if (placesReady && devicesReady && servicesReady && programsReady) {
+                    dispatcher.trigger("dataReady");
+                }
+            });
 
       // all data have been received, launch the user interface
       dispatcher.on("dataReady", function() {
@@ -101,21 +126,13 @@ define(function(require, exports, module) {
         appRouter.navigate("reset", {
           trigger: true
         });
+
+        $(".navbar").i18n();
       });
 
       // Initialize the collection of places
       require(['collections/places'], function(Places) {
         window.places = new Places();
-      });
-
-      // Initialize the collection of devices
-      require(['collections/devices'], function(Devices) {
-        window.devices = new Devices();
-      });
-
-      // Initialize the collection of devices
-      require(['collections/services'], function(Services) {
-        window.services = new Services();
       });
 
       // Initialize the collection of programs

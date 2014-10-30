@@ -235,10 +235,13 @@ public class WeatherObserverFactory implements WeatherAdapterSpec {
 
 			inst = observerImpl.createInstance(mySelf.getComposite(),
 					configuration);
+                        if (inst == null) {
+                            logger.warn("Unable to create WeatherObserver for {}", location);
+                            return null;
+                        }
 			WeatherObserverImpl service = (WeatherObserverImpl) inst
 					.getServiceObject();
-			service.getCurrentWeatherCode(); // If no Exception, service should
-												// be OK
+			service.getCurrentWeatherCode(); // If no Exception, service should  be OK
 			runningLocations.add(location);
 
 			return service;

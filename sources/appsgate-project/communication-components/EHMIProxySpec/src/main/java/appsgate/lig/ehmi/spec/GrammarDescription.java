@@ -61,7 +61,7 @@ public class GrammarDescription {
             }
         } catch (JSONException ex) {
         }
-        return "unknown";
+        return "";
     }
 
     /**
@@ -139,6 +139,10 @@ public class GrammarDescription {
         } catch (JSONException ex) {
         }
         return ret;
+    }
+
+    public boolean generateTrace() {
+        return this.json.has("traceDesc");
     }
 
 }

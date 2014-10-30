@@ -7,7 +7,7 @@ define([
 
   /**
    * Implementation of temperature sensor
-   * Specific attribute is: 
+   * Specific attribute is:
    *      value, containing the last temperature sent by the backend, in degree Celsius
    *
    * @class Device.TemperatureSensor
@@ -18,6 +18,11 @@ define([
      */
     initialize: function() {
       TemperatureSensor.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+          this.generateDefaultName($.i18n.t("devices.temperature.name.singular"));
+      }
     },
     /**
      * return the list of available properties
@@ -25,9 +30,9 @@ define([
     getProperties: function() {
       return ["value"];
     },
-    /**
-     * return the keyboard code for a property
-     */
+    getEvents: function () {
+          return ["value-changed"];
+      },
     getKeyboardForProperty: function(property) {
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONProperty("mandatory");
@@ -47,6 +52,33 @@ define([
       }
       return btn;
     },
+      getKeyboardForEvent: function (evt) {
+          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+          var v = this.getJSONEvent("mandatory");
+          switch (evt) {
+              case "value-changed":
+                  $(btn).append("<span data-i18n='devices.temperature.keyboard.change'></span>");
+                  v.eventName = "change";
+                  v.eventValue = "true";
+                  v.phrase = "devices.temperature.event.change";
+                  $(btn).attr("json", JSON.stringify(v));
+                  break;
+              default:
+                  console.error("unexpected event found for TemperatureSensor: " + evt);
+                  btn = null;
+                  break;
+          }
+          return btn;
+      },
+    getValue: function () {
+          value=parseFloat(this.get("value"));
+
+          if (value != parseFloat(999)){
+              return Math.round(value);
+          }
+
+          return $.i18n.t("devices.no-value");
+      }
   });
   return TemperatureSensor;
 });

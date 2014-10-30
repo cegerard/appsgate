@@ -146,10 +146,10 @@ define([
                     input += "<div class='btn btn-default btn-prog input-spot' id='" + jsonNode.iid + "'><span data-i18n='language.nothing-keyword'/></div>";
                     break;
                 case "mandatory":
-                    input += "<div class='btn btn-default btn-prog input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></div>";
+                    input += "<div class='btn btn-default input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></div>";
                     break;
                 case "seqRules":
-                      input+="<div class='seq-block-node'>";
+                      input+="<div class='rules-node seq-block-node'>";
                       input+= jsonNode.iid == 1 || jsonNode.iid == 3?"<h2 class='seq-block-header'><span data-i18n='language.only-once'/></h2>":"";
                       jsonNode.rules.forEach(function(rule) {
                           if (rule !== jsonNode.rules[0]) {
@@ -160,7 +160,7 @@ define([
                       input+="</div>";
                     break;
                 case "setOfRules":
-                      input+= jsonNode.iid != 0?"<div class='set-block-node'>":"";
+                      input+= jsonNode.iid != 0?"<div class='rules-node set-block-node'>":"";
                       input+= jsonNode.iid == 1 || jsonNode.iid == 3?"<h2 class='set-block-header'><span data-i18n='language.repeated'/></h2>":"";
                       jsonNode.rules.forEach(function(rule) {
                         if (rule !== jsonNode.rules[0]) {
@@ -271,6 +271,9 @@ define([
             }
 
             var rightOp = this.buildInputFromNode(param.node.rightOperand, currentNode);
+            // enabling sup/ing comparator if returnType not a scale
+            param.node.comparatorEnabled = (param.node.leftOperand.returnType !== "scale");
+
             return leftOp + this.tplComparatorNode(param) + rightOp;
         },
 

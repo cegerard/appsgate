@@ -40,7 +40,7 @@ define([
             $(".nav-item").removeClass("active");
             $("#home-nav").addClass("active");
 
-            appRouter.translateNavbar();
+            $("body").i18n();
         }
     });
     return DebuggerRouter;

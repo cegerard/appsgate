@@ -25,7 +25,7 @@
 					<span data-i18n="devices.temperature.name.plural"></span>
 				<% } %>
 				<span class="label-value">
-					<%= Math.round(place.getAverageTemperature()) %>&deg;C
+					<%= place.getAverageTemperature() %> &deg;C
 				</span>
 			</td>
 			<td>
@@ -45,9 +45,9 @@
 				<% } else { %>
 					<span data-i18n="devices.illumination.name.plural"></span>
 				<% } %>
-				<div class="label-value">
+				<span class="label-value">
 					<%= place.getAverageIllumination() %> Lux
-				</div>
+				</span>
 			</td>
 			<td>
 				<span class="badge">
@@ -199,6 +199,23 @@
 			<td>
 				<span class="badge">
 					<%= place.getDomiCubes().length %>
+				</span>
+			</td>
+			</tr>
+			<% } %>
+			<!-- MediaPlayer -->
+			<% if (place.getMediaPlayers().length > 0) { %>
+			<tr>
+				<td>
+				<% if (place.getMediaPlayers().length === 1) { %>
+					<span data-i18n="services.mediaplayer.name.singular"></span>
+				<% } else { %>
+					<span data-i18n="services.mediaplayer.name.plural"></span>
+				<% } %>
+			</td>
+			<td>
+				<span class="badge">
+					<%= place.getMediaPlayers().length %>
 				</span>
 			</td>
 			</tr>

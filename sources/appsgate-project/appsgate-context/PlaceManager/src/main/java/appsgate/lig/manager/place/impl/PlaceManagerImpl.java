@@ -471,7 +471,7 @@ public class PlaceManagerImpl implements PlaceManagerSpec {
 	 * @return nothing it just notify ApAM.
 	 */
 	public NotificationMsg notifyChanged (NotificationMsg notif) {
-		logger.debug("Place Notify: "+ notif);
+		//logger.debug("Place Notify: "+ notif);
 		return notif;
 	}
 

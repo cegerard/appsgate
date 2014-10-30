@@ -18,6 +18,7 @@
             <span data-i18n="services.mail.name.plural"></span>
         <% } %>
     <% } else if (type === "103") { %>
+        <img src='/app/img/yahoo_weather.png' class="img-service-title">
         <% if (services.where({type:103}).length === 1) { %>
             <span data-i18n="services.weather.name.singular"></span>
         <% } else { %>
@@ -61,11 +62,6 @@
     <div class="list-group">
       <%services.getServicesByType()[type].forEach(function(s) { %>
         <a class="list-group-item">
-          <% if (s.get("name") !== "") { %>
-            <%= s.get("name") %>
-          <% } else { %>
-            <%= s.get("location") %>
-          <% } %>
           <%if (type === "103") { %>
         <div class="pull-right">
             <% if (services.getServicesByType()[type].length > 1) { %>
@@ -78,6 +74,13 @@
 			</button>
         </div>
         <%}%>
+            <div style="padding:0.5em 0 0.5em">
+          <% if (s.get("name") !== "") { %>
+            <%= s.get("name") %>
+          <% } else { %>
+            <%= s.get("location") %>
+          <% } %>
+          </div>
         </a>
       <% }) %>
     </div>

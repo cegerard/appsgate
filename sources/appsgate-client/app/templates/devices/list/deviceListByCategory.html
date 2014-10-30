@@ -110,7 +110,7 @@
             </div>
             <div class="list-group">
                 <% place.getTypeSensors(type).forEach(function(s) { %>
-                <a href="#devices/<%= s.get('id') %>" class="list-group-item">
+                <a id="<%= s.get('id') %>" href="#devices/<%= s.get('id') %>" class="list-group-item">
                     <span id="device-<%= s.cid %>-name">
                     <% if (s.get("name") !== "") { %>
                     <%= s.get("name") %>
@@ -151,11 +151,7 @@
                     <span id="device-<%= s.cid %>-status" class="label label-success" data-i18n="devices.status.connected"></span>
                     <% } %>
                     <% if (type === "0") { %>
-                        <% if(s.get("value")=="999") { %>
-                        <span id="device-<%= s.cid %>-value" class="label-value">--- &deg;C</span>
-                        <% } else { %>
-                        <span id="device-<%= s.cid %>-value" class="label-value"><%= Math.round(s.get("value")) %> &deg;C</span>
-                        <% } %>
+                        <span id="device-<%= s.cid %>-value" class="label-value"><%= s.getValue() %> &deg;C</span>
                     <% } else if (type === "1") { %>
                     <span id="device-<%= s.cid %>-value" class="label-value"><%= $.i18n.t("devices.illumination.scale." + s.get("label")) %></span>
                     <% } else if (type === "2") { %>
@@ -182,22 +178,18 @@
                     <% } else { %>
                     <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                     <% } %>
-                            <% if(s.get("consumption")==="-1") { %>
-                            <span id="device-<%= s.cid %>-consumption" class="label-value">--- W</span>
-                            <% } else { %>
-                            <span id="device-<%= s.cid %>-consumption" class="label-value"><%= s.get("consumption") %> W</span>
-                            <% } %>
+                            <span id="device-<%= s.cid %>-consumption" class="label-value"><%= s.getValue() %> W</span>
                     <% } else if (type === "7") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span id="device-<%= s.cid %>-value" class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
                     <div class="label label-color-information">
-                        <span data-i18n="devices.lamp.color-information.currentColor"></span>
+                        <span id="device-<%= s.cid %>-color-information" data-i18n="devices.lamp.color-information.currentColor"></span>
                         <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                     </div>
                     <% } else { %>
                     <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
                     <div class="label label-color-information">
-                        <span data-i18n="devices.lamp.color-information.lastColor"></span>
+                        <span id="device-<%= s.cid %>-color-information" data-i18n="devices.lamp.color-information.lastColor"></span>
                         <span class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                     </div>
                     <% } %>
@@ -258,7 +250,7 @@
             </div>
             <div class="list-group">
                 <% place.getTypeSensors(type).forEach(function(s) { %>
-                <a href="#devices/<%= s.get('id') %>" class="list-group-item">
+                <a id="<%= s.cid %>" href="#devices/<%= s.get('id') %>" class="list-group-item">
                     <% if (s.get("name") !== "") { %>
                     <%= s.get("name") %>
                     <% } else { %>
@@ -296,11 +288,7 @@
                     <span id="device-<%= s.cid %>-status" class="label label-success" data-i18n="devices.status.connected"></span>
                     <% } %>
                     <% if (type === "0") { %>
-                        <% if(s.get("value")=="999") { %>
-                            <span id="device-<%= s.cid %>-value" class="label-value">---&deg;C</span>
-                        <% } else { %>
-                            <span id="device-<%= s.cid %>-value" class="label-value"><%= Math.round(s.get("value")) %>&deg;C</span>
-                        <% } %>
+                            <span id="device-<%= s.cid %>-value" class="label-value"><%= s.getValue() %> &deg;C</span>
                     <% } else if (type === "1") { %>
                     <span id="device-<%= s.cid %>-value" class="label-value"><%= $.i18n.t("devices.illumination.scale." + s.get("label")) %></span>
                     <% } else if (type === "2") { %>
@@ -327,23 +315,20 @@
                     <% } else { %>
                     <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.plug.status.turnedOff"></span>
                     <% } %>
-                        <% if(s.get("consumption")==="-1") { %>
-                        <span id="device-<%= s.cid %>-consumption" class="label-value">--- W</span>
-                        <% } else { %>
-                        <span id="device-<%= s.cid %>-consumption" class="label-value"><%= s.get("consumption") %> W</span>
-                        <% } %>
+
+                        <span id="device-<%= s.cid %>-consumption" class="label-value"><%= s.getValue() %> W</span>
 
                     <% } else if (type === "7") { %>
                     <% if (s.get("value") === "true" || s.get("value") === true) { %>
                     <span id="device-<%= s.cid %>-value" class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
                     <div class="label label-color-information">
-                        <span data-i18n="devices.lamp.color-information.currentColor"></span>
+                        <span id="device-<%= s.cid %>-color-information" data-i18n="devices.lamp.color-information.currentColor"></span>
                         <span id="device-<%= s.cid %>-color" class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                     </div>
                     <% } else { %>
                     <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.lamp.status.turnedOff"></span>
                     <div class="label label-color-information">
-                        <span data-i18n="devices.lamp.color-information.lastColor"></span>
+                        <span id="device-<%= s.cid %>-color-information" data-i18n="devices.lamp.color-information.lastColor"></span>
                         <span id="device-<%= s.cid %>-color" class="label lamp-color-led" style="background-color:<%= s.getCurrentColor() %>">ph</span>
                     </div>
                     <% } %>

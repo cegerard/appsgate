@@ -27,17 +27,10 @@ define([
 
             $(".nav-item").removeClass("active");
             $("#places-nav").addClass("active");
-            
-            appRouter.translateNavbar();
         },
         // show the details of a places (i.e. list of devices in this place)
         details: function(id) {
             appRouter.showDetailsView(new PlaceDetailsView({model: places.get(id)}));
-
-            $(".nav-item").removeClass("active");
-            $("#places-nav").addClass("active");
-
-            appRouter.translateNavbar();
         }
     });
     return PlaceRouter;

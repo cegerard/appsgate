@@ -28,19 +28,17 @@ ServiceRouter = Backbone.Router.extend({
         // set active the first element - displayed by default
         if ($($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).length > 0) {
             $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
-    
+
             // display the first category of services
             var typeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("side-")[1];
             appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
-    
+
             // update the url
             appRouter.navigate("#services/types/" + typeId);
         }
 
         $(".nav-item").removeClass("active");
         $("#services-nav").addClass("active");
-
-        appRouter.translateNavbar();
     },
     /**
      * Display all the services of a given type
@@ -52,8 +50,6 @@ ServiceRouter = Backbone.Router.extend({
 
         $(".nav-item").removeClass("active");
         $("#services-nav").addClass("active");
-
-        appRouter.translateNavbar();
     },
     /**
      * Show the details of a service
@@ -63,11 +59,6 @@ ServiceRouter = Backbone.Router.extend({
      */
     details: function(id) {
         appRouter.showDetailsView(new ServiceDetailsView({model: services.get(id)}));
-
-        $(".nav-item").removeClass("active");
-        $("#services-nav").addClass("active");
-
-        appRouter.translateNavbar();
     }
 });
 return ServiceRouter;

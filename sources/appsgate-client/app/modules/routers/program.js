@@ -17,24 +17,16 @@ define([
             // display the side menu
             appRouter.showMenuView(new ProgramMenuView());
 
-            // set active the first element - displayed by default
-            $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
-
-            // display the first program
-            appRouter.showDetailsView(new ProgramReaderView({model: programs.at(0)}));
-
             // update the url if there is at least one program
             if (programs.length > 0) {
-                appRouter.navigate("#programs/" + programs.at(0).get("id"));
+              this.reader(programs.at(0).get("id"));
             }
 
             $(".nav-item").removeClass("active");
             $("#programs-nav").addClass("active");
-
-            appRouter.translateNavbar();
         },
         reader: function(id) {
-            
+
             // display the requested program
             appRouter.showDetailsView(new ProgramReaderView({model: programs.get(id)}));
 
@@ -42,11 +34,6 @@ define([
             appRouter.navigate("#programs/" + id);
 
             appRouter.currentMenuView.updateSideMenu();
-
-            $(".nav-item").removeClass("active");
-            $("#programs-nav").addClass("active");
-
-            appRouter.translateNavbar();
         },
         editor: function(id) {
             // remove and unbind the current view for the menu
@@ -72,12 +59,10 @@ define([
                 direction: 'top-right'
             });
 
-            appRouter.navigate("#programs/editor/" + id);
-
             $(".nav-item").removeClass("active");
             $("#programs-nav").addClass("active");
 
-            appRouter.translateNavbar();
+            appRouter.navigate("#programs/editor/" + id);
         }
 
     });

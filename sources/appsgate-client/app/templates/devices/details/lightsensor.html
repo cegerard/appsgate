@@ -1,7 +1,7 @@
 <li class="list-group-item">
     <strong data-i18n="devices.value-label"></strong>
     <div id="light-sensor-value" class="pull-right label-value">
-         <%= $.i18n.t("devices.illumination.scale." + device.get("label")) %> : <%= device.get( "value") %> Lux
+         <%= $.i18n.t("devices.illumination.scale." + device.get("label")) %> : <%= device.getValue() %> Lux
     </div>
 </li>
 
@@ -9,13 +9,11 @@
     <strong data-i18n="devices.illumination.scale-label"></strong>
     <table class="table-scale">
         <tr>
-            <td><span data-i18n="devices.illumination.scale.lowest"></span></br>0 - 49 Lux</td>
-            <td><span data-i18n="devices.illumination.scale.veryLow"></span></br>50 - 149 Lux</td>
-            <td><span data-i18n="devices.illumination.scale.low"></span></br>150 - 249 Lux</td>
-            <td><span data-i18n="devices.illumination.scale.medium"></span></br>250 - 499 Lux</td>
-            <td><span data-i18n="devices.illumination.scale.high"></span></br>500 - 999 Lux</td>
-            <td><span data-i18n="devices.illumination.scale.veryHigh"></span></br>1000 - 1999 Lux</td>
-            <td><span data-i18n="devices.illumination.scale.highest"></span></br>2000 - 30 000 Lux</td>
+            <td><span data-i18n="devices.illumination.scale.low"></span></br>0 - 300 Lux</td>
+            <td><span data-i18n="devices.illumination.scale.medium"></span></br>301 - 500 Lux</td>
+            <td><span data-i18n="devices.illumination.scale.high"></span></br>501 - 1000 Lux</td>
+            <td><span data-i18n="devices.illumination.scale.veryHigh"></span></br>1001 - 2000 Lux</td>
+            <td><span data-i18n="devices.illumination.scale.highest"></span></br>2001 - 30 000 Lux</td>
         </tr>
     </table>
 </li>

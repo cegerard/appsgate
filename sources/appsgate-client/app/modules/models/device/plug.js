@@ -13,6 +13,11 @@ define([
      */
     initialize:function() {
       Plug.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+          this.generateDefaultName($.i18n.t("devices.plug.name.singular"));
+      }
     },
     /**
      *return the list of available actions
@@ -113,7 +118,7 @@ define([
       }
     },
 
-    
+
 
     /**
      * Send a message to the backend to update the attribute plugState
@@ -124,7 +129,16 @@ define([
       } else {
         this.remoteControl("off", []);
       }
-    }
+    },
+    getValue: function () {
+          value=parseInt(this.get("consumption"));
+
+          if (value != -1 ){
+              return value;
+          }
+
+          return $.i18n.t("devices.no-value");
+      }
   });
   return Plug;
 });

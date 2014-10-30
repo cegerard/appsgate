@@ -35,6 +35,8 @@ define([
             this.listenTo(places, "remove", this.render);
             this.listenTo(devices, "change", this.autoupdate);
             this.listenTo(devices, "remove", this.autoupdate);
+
+            this.stopListening(devices.getCoreClock());
         },
         /**
          * Method called when a device has changed

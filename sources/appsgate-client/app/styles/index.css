@@ -176,6 +176,11 @@ body {
     text-align: center;
 }
 
+.img-service-title {
+    height: 2em;
+    vertical-align: middle;
+}
+
 .row {
   margin-right:0px;
 }
@@ -283,35 +288,25 @@ body {
     font-size: small;
 }
 .table-scale tr td:nth-child(1) {
-    background: #333333;
+    background: #4C4C4C;
     color: #ffffff;
 }
 
 .table-scale tr td:nth-child(2) {
-    background: #4C4C4C ;
+    background: #808080 ;
     color: #ffffff;
 }
 
 .table-scale tr td:nth-child(3) {
-    background: #666666;
-    color: #ffffff;
-}
-
-.table-scale tr td:nth-child(4) {
-    background: #808080;
-    color: #ffffff;
-}
-
-.table-scale tr td:nth-child(5) {
     background: #999999;
     color: #ffffff;
 }
 
-.table-scale tr td:nth-child(6) {
+.table-scale tr td:nth-child(4) {
     background: #CCCCCC;
 }
 
-.table-scale tr td:nth-child(7) {
+.table-scale tr td:nth-child(5) {
     background: #ffffff;
 }
 
@@ -462,6 +457,11 @@ fieldset[disabled] .btn {
 
 .btn-then {
   margin-left:15px !important;
+}
+
+.separator-hidden {
+  opacity:0 !important;
+  height:0px !important;
 }
 
 .link-span {
@@ -658,6 +658,11 @@ font-size: smaller;
   margin-right: -30px;
 }
 
+.deactivate-all-programs-button {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
 /* --------------------- Modal styles ----------------------------------*/
 
 .valid-disabled.disabled {
@@ -671,12 +676,17 @@ font-size: smaller;
 .debugger {
     margin-right: auto;
     margin-left: auto;
-    width: 960px;
+    width: 980px;
 }
 
-.debugger .container {
-   padding: 0px;
+.debugger.scrollable {
+    border: none;
 }
+
+/*.debugger .dashboard > header {*/
+    /*position: fixed;*/
+/*}*/
+
 .ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}
 
 .active-node-indicator {

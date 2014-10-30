@@ -15,6 +15,11 @@ define([
      */
     initialize: function() {
       IlluminationSensor.__super__.initialize.apply(this, arguments);
+
+      // setting default friendly name if none exists
+      if (typeof this.get("name") === "undefined" || this.get("name") === "") {
+          this.generateDefaultName($.i18n.t("devices.illumination.name.singular"));
+      }
     },
     /**
      * return the list of available properties
@@ -40,6 +45,7 @@ define([
           $(btn).append("<span data-i18n='devices.illumination.keyboard.get'><span>");
           v.methodName = "getCurrentIlluminationLabel";
           v.returnType = "scale";
+          v.unit = "lux";
           v.phrase = "devices.illumination.language.get";
           $(btn).attr("json", JSON.stringify(v));
           break;
@@ -51,40 +57,58 @@ define([
       return btn;
     },
     getScale: function() {
-        var arrayScale = 
+        var arrayScale =
             [
                     {
-                        "value" : "lowest",
-                        "label" : "devices.illumination.scale.lowest"
-                    },
-                    {
-                        "value" : "veryLow", 
-                        "label" : "devices.illumination.scale.veryLow"
-                    },
-                    {
                         "value" : "low",
-                        "label" : "devices.illumination.scale.low"
+                        "label" : "devices.illumination.scale.low",
+                        "minValue": 0,
+                        "maxValue": 300,
                     },
                     {
                         "value" : "medium",
-                        "label" : "devices.illumination.scale.medium"
+                        "label" : "devices.illumination.scale.medium",
+                        "minValue": 301,
+                        "maxValue": 500,
                     },
                     {
                         "value" : "high",
-                        "label" : "devices.illumination.scale.high"
+                        "label" : "devices.illumination.scale.high",
+                        "minValue": 501,
+                        "maxValue": 1000,
                     },
                     {
                         "value" : "veryHigh",
-                        "label" : "devices.illumination.scale.veryHigh"
+                        "label" : "devices.illumination.scale.veryHigh",
+                        "minValue": 1001,
+                        "maxValue": 2000,
                     },
                     {
                         "value" : "highest",
-                        "label" : "devices.illumination.scale.highest"
+                        "label" : "devices.illumination.scale.highest",
+                        "minValue": 2001,
+                        "maxValue": 30000,
                     }
                 ];
         return arrayScale;
-            
+
     },
+    getValue: function () {
+          value=parseInt(this.get("value"));
+
+          //Means that its a valid value
+          if (value != 9999){
+
+              //If the sensor returns 300 it means that the number of Lux may be 300 or less
+              if(value == 300){
+                  return "<= "+value;
+              }
+
+              return value;
+          }
+
+          return $.i18n.t("devices.no-value");
+      }
   });
   return IlluminationSensor;
 });

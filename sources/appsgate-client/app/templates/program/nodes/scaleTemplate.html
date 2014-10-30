@@ -1,7 +1,14 @@
 <div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>"> 
     <select id="scale-selector-<%= node.idd %>" class="scale-selector" target-id="<%= node.iid %>">
         <% node.scale.forEach( function(scale) { %>
-            <option <% if (node.value === scale.value) { %>selected<% } %> value="<%= scale.value %>" data-i18n="<%= scale.label %>"></option>
+            <option <% if (node.value === scale.value) { %>selected<% } %> value="<%= scale.value %>">
+                <!-- Show label of the scale -->
+                <%= $.i18n.t(scale.label)%>
+                <!-- Show the range of the scale, if there is one -->
+                <% if (typeof scale.minValue !== 'undefined') { %>
+                   (<%= scale.minValue %>  - <%= scale.maxValue %> <%= node.unit %>)
+                <%}%>
+            </option>
         <% }) %>
     </select>
 </div>

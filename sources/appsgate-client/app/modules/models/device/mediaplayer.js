@@ -60,7 +60,7 @@ define([
                     v.methodName = "resume";
                     v.phrase = "services.mediaplayer.language.resume-media-action";
                     $(btn).attr("json", JSON.stringify(v));
-                    break;                    
+                    break;
                 case "pause":
                     $(btn).append("<span data-i18n='services.mediaplayer.keyboard.pause-media-action'/>");
                     v.methodName = "pause";
@@ -181,8 +181,8 @@ define([
                 }
                 else {
                     $("#media-browser-modal .media-button").removeClass("disabled");
-                    selectedMedia.text(event.currentTarget.parentNode.attributes.title.textContent);
-                    selectedMedia.attr("title", event.currentTarget.parentNode.attributes.title.textContent);
+                    selectedMedia.text(event.currentTarget.textContent);
+                    selectedMedia.attr("title", event.currentTarget.textContent);
                     selectedMedia.attr("url", event.currentTarget.parentNode.attributes.res.textContent);
                 }
             });

@@ -21,7 +21,8 @@ define([
             "shown.bs.modal #add-program-modal": "initializeModal",
             "hidden.bs.modal #add-program-modal": "toggleModalValue",
             "click #add-program-modal button.valid-button": "validAddProgram",
-            "keyup #add-program-modal input:text": "validAddProgram"
+            "keyup #add-program-modal input:text": "validAddProgram",
+            "click .deactivate-all-programs-button": "onStopAllPrograms"
         },
         /**
          * Listen to the programs collection updates and refresh if any
@@ -39,6 +40,10 @@ define([
               active: Backbone.history.fragment.split("/programs")[1] === model.get("name") ? true : false
           }));
 
+          this.updateSideMenu();
+
+          $(".deactivate-all-programs-button").prop("disabled",programs.allProgramsStopped());
+
           // translate the view
           this.$el.i18n();
         },
@@ -54,8 +59,10 @@ define([
 
             if (typeof e !== "undefined") {
                 $(e.currentTarget).addClass("active");
-            } else {
+            } else if(Backbone.history.fragment.split("/")[1] !== ""){
                 $("#side-" + Backbone.history.fragment.split("/")[1]).addClass("active");
+            } else {
+                this.$el.find(".list-group .list-group-item:first").addClass("active");
             }
         },
         /**
@@ -169,6 +176,9 @@ define([
             }
           return (program.get("body").rules.length === 1 && program.get("body").rules[0].type === "empty");
         },
+        onStopAllPrograms:function() {
+          programs.stopAllPrograms();
+        },
         /**
          * Render the side menu
          */
@@ -181,6 +191,9 @@ define([
 
                 // initialize the content
                 $(container).html(this.tpl());
+
+                $(container).append("<button type='button' class='btn btn-info deactivate-all-programs-button'><span data-i18n='programs-menu.deactivate-all-programs'></span></div><br>");
+
 
                 // "add program" button to the side menu
                 $(container).append(this.tplAddProgramButton());
@@ -206,11 +219,10 @@ define([
                 // we add all elements all at once to avoid rendering them individually and thus reflowing the dom several times
                 this.$el.html(container);
 
-                // set active the current menu item
-                this.updateSideMenu();
-
                 // translate the view
                 this.$el.i18n();
+
+                this.$el.find(".deactivate-all-programs-button").prop("disabled",programs.allProgramsStopped());
 
                 // fix the programs list size to be able to scroll through it
                 this.resize(self.$el.find(".scrollable-menu"));
