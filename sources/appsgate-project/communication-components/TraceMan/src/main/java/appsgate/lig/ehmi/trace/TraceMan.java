@@ -656,7 +656,7 @@ public class TraceMan implements TraceManSpec {
     	//Fill the JSONArray with HashMap
     	for(String key : groupFollower.keySet()){
     		JSONObject obj = new JSONObject();
-    		obj.put("name", getDiplayableName(key));
+    		obj.put("name", getIntKey(key));
     		obj.put("members", groupFollower.get(key));
     		groups.put(obj);
     	}
@@ -765,18 +765,14 @@ public class TraceMan implements TraceManSpec {
 //	}
 
     /**
-     * Moph name with more diplayable string
-     * @param key the group name
-     * @return the morph name from key name
+     * Get the key use for internationalization from a type
+     * @param type the group name
+     * @return the morph name from type to internationalization key
      */
-    private String getDiplayableName(String key) {
-		String displayableName;
-    	
-		String firstChar = key.substring(0, 1).toUpperCase();
-		
-		displayableName = firstChar + key.substring(1) /*+ "s"*/;
-		
-		return displayableName;
+    private String getIntKey(String type) {
+		String intKey;
+		intKey = "groups."+type;
+		return intKey;
 	}
 
 	/**
