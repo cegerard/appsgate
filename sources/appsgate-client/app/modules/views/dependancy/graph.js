@@ -372,8 +372,11 @@ define([
             this.model.updateArrayTypes(arrayUpdated, type, checked);
             this.model.updateEntitiesShown();
             if (arrayUpdated === "entities") {
-                if (this.model.get("entities").indexOf(this.model.get("rootNode")) !== -1) {
-                    this.selectAndMoveRootNode(this.model.get("entities")[0]);
+                if (!_.contains(this.model.get("currentEntities"), this.model.get("rootNode"))) {
+                    // Vu que si on a plus rien d'afficher, on ne fait pas le move, on a toujours l'ancienne valeur pour la root node. Risque de Bug.
+                    if (this.model.get("currentEntities").length > 0) {
+                        this.selectAndMoveRootNode(this.model.get("currentEntities")[0]);
+                    }
                 }
             } else {
                 this.model.updateRelationsShown();
