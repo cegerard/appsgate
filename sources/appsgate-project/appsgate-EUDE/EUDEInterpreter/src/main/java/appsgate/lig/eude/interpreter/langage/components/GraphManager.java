@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.components;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import java.util.List;
+import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +77,9 @@ public class GraphManager {
         JSONArray devices = this.interpreter.getContext().getDevices();
         for (int i = 0; i < devices.length(); i++) {
             try {
-                addDevice(devices.getJSONObject(i));
+                JSONObject o = devices.getJSONObject(i);
+                addDevice(o);
+                addLink("isLocatedIn", o.getString("id"), o.getString("placeId"));
             } catch (JSONException ex) {
             }
 
@@ -89,6 +92,15 @@ public class GraphManager {
             }
 
         }
+        JSONObject unLocatedPlace = new JSONObject();
+        try {
+            unLocatedPlace.put("id", "-1");
+            unLocatedPlace.put("name", "Unlocated");
+            addPlace(unLocatedPlace);
+        } catch (JSONException ex) {
+            java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
 
     }
 
