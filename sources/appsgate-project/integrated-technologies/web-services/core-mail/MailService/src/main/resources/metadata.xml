@@ -10,7 +10,7 @@
         </relation>
 				
 
-        <definition name="user" type="string" field="user" injected="internal"/>
+        <definition name="user" type="string" field="user" />
 
         <definition name="auto-refresh" type="int" field="refreshRate" injected="both" method="autoRefreshValueChanged"/>
 		

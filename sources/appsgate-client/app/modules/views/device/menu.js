@@ -51,6 +51,8 @@ define([
           active: Backbone.history.fragment.split("devices/types/")[1] == model.get("type") ? true : false
         }));
 
+        this.updateSideMenu();
+
         // translate the view
         this.$el.i18n();
       },

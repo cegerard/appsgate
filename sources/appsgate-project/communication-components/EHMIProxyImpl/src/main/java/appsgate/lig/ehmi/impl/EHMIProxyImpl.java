@@ -330,6 +330,13 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices() {
+		while(devicePropertiesTable == null ||placeManager == null) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				logger.debug("waiting for DB connextion");
+			}
+		}
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
@@ -858,7 +865,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 *            the identifier of this object
 	 * @return the new contextual enrich JSONObject
 	 */
-	private JSONObject addContextData(JSONObject object, String objectId) {
+	public JSONObject addContextData(JSONObject object, String objectId) {
 		try {
 			object.put("placeId", getCoreObjectPlaceId(objectId));
 			object.put("name", getUserObjectName(objectId, ""));
@@ -875,7 +882,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 *            the objects JSONArray
 	 * @return a enrich from contextual data JSONArray
 	 */
-	private JSONArray addContextData(JSONArray objects) {
+	public JSONArray addContextData(JSONArray objects) {
 		JSONArray contextArray = new JSONArray();
 		try {
 			int nbObjects = objects.length();

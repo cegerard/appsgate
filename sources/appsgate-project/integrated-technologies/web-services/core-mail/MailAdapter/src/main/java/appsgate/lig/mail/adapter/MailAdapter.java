@@ -122,6 +122,8 @@ public class MailAdapter implements MailConnexionListener{
             Implementation mailImpl = CST.apamResolver.findImplByName(null,"MailService");
 
             Map<String,String> configuration = new Hashtable<String,String>();
+            configuration.put("deviceId", String.valueOf(connexion.hashCode()));
+            configuration.put("user", connexion.getCurrentUser());
 
             Instance inst = mailImpl.createInstance(null, configuration);
             MailService impl = (MailService) inst.getServiceObject();
