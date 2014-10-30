@@ -60,25 +60,11 @@ define([
 
         var plug = devices.get($(e.currentTarget).attr("device-id"));
 
-        // value can be string or boolean
-        // string
-        if (typeof plug.get("plugState") === "string") {
-          if (plug.get("plugState") === "true") {
-            plug.set("plugState", "false");
-          } else {
-            plug.set("plugState", "true");
-          }
-          // boolean
+        if (plug.get("plugState") == "true") {
+          plug.switchOff();
         } else {
-          if (plug.get("plugState")) {
-            plug.set("plugState", "false");
-          } else {
-            plug.set("plugState", "true");
-          }
+          plug.switchOn();
         }
-
-        // send the message to the backend
-        plug.save();
 
         return false;
       },
@@ -91,25 +77,12 @@ define([
         e.preventDefault();
 
         var lamp = devices.get($(e.currentTarget).attr("device-id"));
-        // value can be string or boolean
-        // string
-        if (typeof lamp.get("value") === "string") {
-          if (lamp.get("value") === "true") {
-            lamp.set("value", "false");
-          } else {
-            lamp.set("value", "true");
-          }
-          // boolean
-        } else {
-          if (lamp.get("value")) {
-            lamp.set("value", "false");
-          } else {
-            lamp.set("value", "true");
-          }
-        }
 
-        // send the message to the backend
-        lamp.save();
+        if (lamp.get("value") == "true") {
+          lamp.switchOff();
+        } else {
+          lamp.switchOn();
+        }
 
         return false;
       },
@@ -135,25 +108,12 @@ define([
         e.preventDefault();
 
         var actuator = devices.get($(e.currentTarget).attr("device-id"));
-        // value can be string or boolean
-        // string
-        if (typeof actuator.get("value") === "string") {
-          if (actuator.get("value") === "true") {
-            actuator.set("value", "false");
-          } else {
-            actuator.set("value", "true");
-          }
-          // boolean
-        } else {
-          if (actuator.get("value")) {
-            actuator.set("value", "false");
-          } else {
-            actuator.set("value", "true");
-          }
-        }
 
-        // send the message to the backend
-        actuator.save();
+        if (actuator.get("value") == "true") {
+          actuator.switchOff();
+        } else {
+          actuator.switchOn();
+        }
 
         return false;
       },
