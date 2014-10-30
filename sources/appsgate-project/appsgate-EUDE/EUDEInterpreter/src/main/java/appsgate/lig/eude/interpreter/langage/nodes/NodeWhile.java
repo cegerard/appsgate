@@ -68,12 +68,14 @@ public class NodeWhile extends Node implements INodeRule {
                 throw new SpokNodeException("NodeWhile", "state", null);
             }
         } catch (SpokTypeException ex) {
+            LOGGER.warn("There is no state to node {}", this);
             throw new SpokNodeException("NodeWhile", "state", ex);
         }
         JSONObject rulesJSON = o.optJSONObject("rules");
         try {
             this.rules = Builder.buildFromJSON(rulesJSON, this);
         } catch (SpokTypeException ex) {
+            LOGGER.warn("There is no rules to node {}", this);
             throw new SpokNodeException("NodeWhile", "rules", ex);
         }
         JSONObject thenJSON = o.optJSONObject("rulesThen");
@@ -104,7 +106,8 @@ public class NodeWhile extends Node implements INodeRule {
         setStarted(true);
         fireStartEvent(new StartEvent(this));
         state.addStartEventListener(this);
-        return state.call();
+        JSONObject ret = state.call();
+        return ret;
     }
 
     @Override
@@ -177,8 +180,6 @@ public class NodeWhile extends Node implements INodeRule {
             o.put("rules", rules.getJSONDescription());
             if (rulesThen != null) {
                 o.put("rulesThen", rulesThen.getJSONDescription());
-//            } else {
-//                o.put("rulesThen", new JSONObject());
             }
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -198,8 +199,8 @@ public class NodeWhile extends Node implements INodeRule {
     }
 
     @Override
-    public String toString() {
-        return "[Node While " + state.toString() + "]";
+    public String getTypeSpec() {
+        return "While " + state.getName();
 
     }
     @Override

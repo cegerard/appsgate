@@ -107,4 +107,9 @@ public class NodeEventsSequence extends NodeEvents {
         nextEvent++;
     }
 
+    @Override
+    public String getTypeSpec() {
+        return "EVENTS Seq";
+    }
+
 }

@@ -8,7 +8,6 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import java.util.List;
 import org.apache.commons.collections4.ListUtils;
@@ -215,8 +214,8 @@ public class NodeLists extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    public String toString() {
-        return "[Node lists (" + left + ") " + op + " (" + right + ")]";
+    public String getTypeSpec() {
+        return "lists (" + left + ") " + op + " (" + right + ")";
     }
 
     @Override

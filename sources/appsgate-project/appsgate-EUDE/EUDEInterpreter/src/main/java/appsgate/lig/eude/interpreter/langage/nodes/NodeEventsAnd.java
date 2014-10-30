@@ -111,7 +111,7 @@ public class NodeEventsAnd extends NodeEvents {
     }
 
     @Override
-    public String toString() {
-        return "[NodeEvents AND]";
+    public String getTypeSpec() {
+        return "Events AND";
     }
 }

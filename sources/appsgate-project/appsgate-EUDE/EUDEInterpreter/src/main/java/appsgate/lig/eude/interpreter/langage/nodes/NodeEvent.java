@@ -147,8 +147,10 @@ public class NodeEvent extends Node implements INodeEvent {
      * Once the event is fired, transmit the fact that the event has been fired
      */
     public void coreEventFired() {
-        setStarted(false);
-        fireEndEvent(new EndEvent(this));
+        if (isStarted()) {
+            setStarted(false);
+            fireEndEvent(new EndEvent(this));
+        }
     }
 
     @Override
@@ -157,8 +159,8 @@ public class NodeEvent extends Node implements INodeEvent {
     }
 
     @Override
-    public String toString() {
-        return "[Node Event on " + source.getValue() + "]";
+    public String getTypeSpec() {
+        return "Event on " + source.getValue();
     }
 
     @Override

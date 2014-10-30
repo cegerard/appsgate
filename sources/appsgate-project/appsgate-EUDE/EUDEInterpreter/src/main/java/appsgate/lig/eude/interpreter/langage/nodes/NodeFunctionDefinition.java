@@ -137,4 +137,9 @@ public class NodeFunctionDefinition extends Node {
         return getJSONDescription();
     }
 
+    @Override
+    public String getTypeSpec() {
+        return "FunctionDef";
+    }
+
 }

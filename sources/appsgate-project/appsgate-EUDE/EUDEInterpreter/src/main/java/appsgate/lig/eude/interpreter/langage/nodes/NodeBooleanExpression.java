@@ -295,5 +295,9 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
             rightNode.buildReferences(table);
         }
     }
-
+    
+    @Override
+    public String getTypeSpec() {
+        return "BooleanExpression";
+    }
 }

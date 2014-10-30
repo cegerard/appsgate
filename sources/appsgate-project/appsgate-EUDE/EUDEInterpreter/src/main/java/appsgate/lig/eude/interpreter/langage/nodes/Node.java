@@ -112,14 +112,26 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         this.parent = n;
     }
 
+    /**
+     * @return the parent node
+     */
     public Node getParent() {
         return parent;
     }
 
+    /**
+     * @return the iid
+     */
     public final String getIID() {
         return this.iid;
     }
 
+    /**
+     * @param id the iid to set;
+     */
+    public final void setIID(String id) {
+        this.iid = id;
+    }
     /**
      * Stop the interpretation of the node. Check if the node is not started
      */
@@ -156,6 +168,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     protected void fireStartEvent(StartEvent e) {
         int nbListeners = startEventListeners.size();
+        LOGGER.trace("fire endEvent {} for {} nodes", e.getSource(), nbListeners);
         for (int i = 0; i < nbListeners; i++) {
             StartEventListener l = startEventListeners.poll();
             l.startEventFired(e);
@@ -228,9 +241,8 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         LOGGER.trace("ADD:  {} listen EndEvent FROM {}", listener, this);
         endEventListeners.add(listener);
         if (endEventListeners.size() > 1) {
-            LOGGER.warn("There should not be more than one listener to a node");
+            LOGGER.warn("Too much listener ({}) for this node: {}", endEventListeners.size(), this);
         }
-        LOGGER.debug("There is {} listeners to this node", endEventListeners.size());
     }
 
     /**
@@ -721,4 +733,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         // Do nothing for leaf if no Device or no Program is referenced 
     }
 
+    abstract public String getTypeSpec();
+    
+    @Override
+    final public String toString() {
+        return "[Node("+ this.iid+ ") " + getTypeSpec() + "]";
+    }
 }
