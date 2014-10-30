@@ -184,7 +184,7 @@ define([
             self.set({
                 currentEntities: newEntities
             });
-            
+
             var newLinks = buildLinksFromNodesShown.bind(this)();
             self.set({
                 currentRelations: newLinks
@@ -193,9 +193,10 @@ define([
         },
 
         updateRelationsShown: function ()  {
-            var newLinks = buildLinksFromNodesShown();
-            self.set({
-                currentRelations: newLinks
+            var newLinks = buildLinksFromNodesShown.bind(this)();
+            this.set({
+                currentRelations: newLinks,
+//                neighbors: buildNeighborsMap(newLinks)
             });
         },
 
@@ -344,9 +345,9 @@ define([
         };
 
         // Mise à jour de la map qui nous donne les voisins
-        self.set({
-            neighors: buildNeighborsMap(newLinks)
-        });
+//        self.set({
+//            neighbors: buildNeighborsMap(newLinks)
+//        });
 
         return newLinks;
     };

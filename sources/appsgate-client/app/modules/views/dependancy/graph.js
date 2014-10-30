@@ -358,7 +358,7 @@ define([
                         .attr("checked", true)
                         .on("click", function (d, i) {
                             // register on click event
-                            //                            applyFilterLinks(d, this.checked);
+                            self.applyFilter("relations", d, this.checked);
                         })
                     d3.select(this).append("span")
                         .text(function (d) {
@@ -371,9 +371,14 @@ define([
             force.stop();
             this.model.updateArrayTypes(arrayUpdated, type, checked);
             this.model.updateEntitiesShown();
-            if (this.model.get("entities").indexOf(this.model.get("rootNode")) !== -1) {
-                this.selectAndMoveRootNode(this.model.get("entities")[0]);
+            if (arrayUpdated === "entities") {
+                if (this.model.get("entities").indexOf(this.model.get("rootNode")) !== -1) {
+                    this.selectAndMoveRootNode(this.model.get("entities")[0]);
+                }
+            } else {
+                this.model.updateRelationsShown();
             }
+
             this.update(this.model);
             force.start();
         }
