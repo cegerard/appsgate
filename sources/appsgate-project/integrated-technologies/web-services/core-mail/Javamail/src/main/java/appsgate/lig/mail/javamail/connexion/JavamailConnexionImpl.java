@@ -52,7 +52,8 @@ public class JavamailConnexionImpl implements JavamailConnexion {
 				connexionAvailable=true;				
 
 			} catch (Exception e) {
-				logger.error("Exception during testConnexion, " + e.getStackTrace());
+				logger.error("Exception during testConnexion, " + e.getMessage());
+				release();
 				if(connexionAvailable && listener!=null) {
 					listener.connexionBroken(this);
 				}
@@ -134,6 +135,7 @@ public class JavamailConnexionImpl implements JavamailConnexion {
 
 		session = null;
 		store = null;
+		lastIMAPFolder = null;
 
 	}
 
