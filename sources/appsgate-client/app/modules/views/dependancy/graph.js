@@ -331,7 +331,9 @@ define([
                         .attr("id", function (d) {
                             return "chk_node_" + d;
                         })
-                        .attr("checked", true)
+                        .property("checked", function (d) {
+                            return _.contains(self.model.get("currentEntitiesTypes"), d);
+                        })
                         .on("click", function (d, i) {
                             // register on click event
                             self.applyFilter("entities", d, this.checked);
@@ -355,7 +357,9 @@ define([
                         .attr("id", function (d) {
                             return "chk_link_" + d;
                         })
-                        .attr("checked", true)
+                        .property("checked", function (d) {
+                            return _.contains(self.model.get("currentRelationsTypes"), d);
+                        })
                         .on("click", function (d, i) {
                             // register on click event
                             self.applyFilter("relations", d, this.checked);
@@ -365,6 +369,7 @@ define([
                             return d;
                         });
                 });
+
         },
 
         applyFilter: function (arrayUpdated, type, checked) {

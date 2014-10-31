@@ -19,8 +19,10 @@ define([
                 width: 960,
                 mapDepthNeighbors: {},
                 entitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-                relationsTypes: ["reference", "isLocatedIn", "isPlanified"]
+                relationsTypes: ["reference", "isLocatedIn", "isPlanified"],
                 //                relationsTypes: ["listenTo", "actsOn", "isPlanified", "isLocatedIn", "denotes"]
+                currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
+                currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified"]
             });
 
             // listen to the event when the data are received
@@ -180,7 +182,7 @@ define([
             var self = this;
 
             var newEntities = self.get("entities").filter(function (e) {
-                return _.contains(self.get("entitiesTypes"), e.type);
+                                return _.contains(self.get("currentEntitiesTypes"), e.type);
             });
             self.set({
                 currentEntities: newEntities
@@ -202,7 +204,7 @@ define([
         },
 
         updateArrayTypes: function (array, type, checked) {
-            var arrayUpdated = (array === "entities") ? this.get("entitiesTypes") : this.get("relationsTypes");
+            var arrayUpdated = (array === "entities") ? this.get("currentEntitiesTypes") : this.get("currentRelationsTypes");
             if (checked) {
                 arrayUpdated.push(type);
             } else {
@@ -228,7 +230,7 @@ define([
 
     function identifyService(entities) {
         entities.forEach(function (e) {
-            
+
             if (e.deviceType !== undefined) {
                 var type = parseInt(e.deviceType);
                 switch (type) {
@@ -340,7 +342,7 @@ define([
                     return n === e.target;
                 })[0];
 
-            if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("relationsTypes"), e.type)) {
+                        if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
                 newLinks.push({
                     source: sourceNode,
                     target: targetNode,
