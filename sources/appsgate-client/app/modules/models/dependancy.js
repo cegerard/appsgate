@@ -33,7 +33,6 @@ define([
                     currentRelations: event.relations
                 });
 
-                console.log(event.relations);
             });
 
             self.on("change:rootNode", function (model) {
@@ -47,9 +46,11 @@ define([
         loadData: function (jsonData) {
             // Creation of the data structure : relations / entities / neighbors
             var relationsNotSorted = jsonData.links,
-                entities = jsonData.nodes,
+                entities = identifyService(jsonData.nodes),
                 relations = processRelationsID(relationsNotSorted, entities),
                 neighbors = buildNeighborsMap(relations);
+
+            console.log("entities : %o", entities);
 
             dispatcher.trigger("dataGraphReady", {
                 entities: entities,
@@ -196,7 +197,7 @@ define([
             var newLinks = buildLinksFromNodesShown.bind(this)();
             this.set({
                 currentRelations: newLinks,
-//                neighbors: buildNeighborsMap(newLinks)
+                //                neighbors: buildNeighborsMap(newLinks)
             });
         },
 
@@ -224,6 +225,39 @@ define([
 
         return neighbors;
     }
+
+    function identifyService(entities) {
+        entities.forEach(function (e) {
+            
+            if (e.deviceType !== undefined) {
+                var type = parseInt(e.deviceType);
+                switch (type) {
+                case 36:
+                    // Leave the media server because it does not appears in IHM
+                    entities.splice(entities.indexOf(e), 1);
+                    break;
+                case 102:
+                    // Service mail a no attribute for the name, so take this in the client
+                    e.type = "service";
+                    e.name = $.i18n.t("services.mail.name.singular");
+                    break;
+                case 103:
+                    // Weather case, show the location
+                    e.type = "service";
+                    e.name = e.location;
+                    break
+                default:
+                    break;
+                }
+            }
+
+            // Special case of the unlocated place. Set his name.
+            if (e.id === "-1" && e.type === "place") {
+                e.name = $.i18n.t("places-details.place-no-name");
+            }
+        });
+        return entities;
+    };
 
     /**
      * Method to process relations and make an array of relations with a reference of entities. Done the first time of loading data. After this, the process of relations will be differents.
@@ -345,9 +379,9 @@ define([
         };
 
         // Mise à jour de la map qui nous donne les voisins
-//        self.set({
-//            neighbors: buildNeighborsMap(newLinks)
-//        });
+        //        self.set({
+        //            neighbors: buildNeighborsMap(newLinks)
+        //        });
 
         return newLinks;
     };

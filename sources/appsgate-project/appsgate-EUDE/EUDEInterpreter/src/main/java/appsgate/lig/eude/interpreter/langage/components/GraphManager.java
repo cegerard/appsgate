@@ -7,7 +7,9 @@ package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,6 +81,7 @@ public class GraphManager {
             try {
                 JSONObject o = devices.getJSONObject(i);
                 addDevice(o);
+                // Adding location link
                 addLink("isLocatedIn", o.getString("id"), o.getString("placeId"));
             } catch (JSONException ex) {
             }
@@ -100,7 +103,6 @@ public class GraphManager {
         } catch (JSONException ex) {
             java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }
 
@@ -110,7 +112,18 @@ public class GraphManager {
      */
     private void addDevice(JSONObject o) {
         try {
-            addNode("device", o.getString("id"), o.getString("name"));
+            HashMap<String, String> optArg = new HashMap<String, String>();
+            try {
+                // send the deviceType to be able to recognize services
+                optArg.put("deviceType", o.getString("type"));
+            } catch (JSONException ex) {
+            }
+            try {
+                // if it is a weather device, it will have a location, which will be used as a name
+                optArg.put("location", o.getString("location"));
+            } catch (JSONException ex) {
+            }
+            addNode("device", o.getString("id"), o.getString("name"), optArg);
         } catch (JSONException ex) {
             LOGGER.error("A node is malformated missing {}", ex.getCause());
             LOGGER.debug("Node: {}", o.toString());
@@ -143,6 +156,29 @@ public class GraphManager {
             o.put("type", type);
             o.put("id", id);
             o.put("name", name);
+            returnJSONObject.getJSONArray("nodes").put(o);
+        } catch (JSONException ex) {
+            // Nothing will be raised since there is no null value
+        }
+    }
+
+    /**
+     * Method that adds a node to the json object
+     *
+     * @param type the type of node (program, device, place)
+     * @param id the id of the node (id of program or device, or plae)
+     * @param name the name which will be rendered
+     * @param optArgs arguments for some exceptions : deviceType, location,..
+     */
+    private void addNode(String type, String id, String name, HashMap<String, String> optArgs) {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("type", type);
+            o.put("id", id);
+            o.put("name", name);
+            for (Entry<String, String> arg : optArgs.entrySet()) {
+                o.put(arg.getKey(), arg.getValue());
+            }
             returnJSONObject.getJSONArray("nodes").put(o);
         } catch (JSONException ex) {
             // Nothing will be raised since there is no null value
