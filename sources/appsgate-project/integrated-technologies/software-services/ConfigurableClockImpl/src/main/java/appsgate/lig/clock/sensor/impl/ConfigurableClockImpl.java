@@ -110,6 +110,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	public ConfigurableClockImpl() {
 		lock = new Object();
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		initAppsgateFields();
 		fullResetClock();
 	}
 
@@ -118,7 +119,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	 */
 	public void start() {
 		logger.debug("New Configurable clock created");
-		initAppsgateFields();
 	}
 
 	public void stop() {
