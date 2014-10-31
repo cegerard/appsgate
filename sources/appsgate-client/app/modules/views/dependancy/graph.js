@@ -372,7 +372,7 @@ define([
             this.model.updateArrayTypes(arrayUpdated, type, checked);
             this.model.updateEntitiesShown();
             if (arrayUpdated === "entities") {
-                if (!_.contains(this.model.get("currentEntities"), this.model.get("rootNode"))) {
+                if (this.model.get("rootNode") !== "" && !_.contains(this.model.get("currentEntities"), this.model.get("rootNode"))) {
                     // Vu que si on a plus rien d'afficher, on ne fait pas le move, on a toujours l'ancienne valeur pour la root node. Risque de Bug.
                     if (this.model.get("currentEntities").length > 0) {
                         this.selectAndMoveRootNode(this.model.get("currentEntities")[0]);

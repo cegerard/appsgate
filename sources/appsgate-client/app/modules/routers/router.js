@@ -30,7 +30,7 @@ define(function(require, exports, module) {
 
     routes: {
       "": "home",
-      "reset": "dependancies",
+      "reset": "home",
       "home": "home",
       "dashboard": "debugger",
       "places": "places",
