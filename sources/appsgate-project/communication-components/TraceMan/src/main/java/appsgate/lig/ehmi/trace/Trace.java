@@ -62,8 +62,8 @@ public class Trace {
     			pictoID = PICTO_TABLE.WRITE.stringify();
     		} else if (type.equalsIgnoreCase("connection")){
     			pictoID = PICTO_TABLE.CONNECTION.stringify();
-    		} else if (type.equalsIgnoreCase("deconnection")){
-    			pictoID = PICTO_TABLE.DECONNECTION.stringify();
+    		} else if (type.equalsIgnoreCase("disconnection")){
+    			pictoID = PICTO_TABLE.DISCONNECTION.stringify();
     		}
     	}
     	
@@ -155,7 +155,7 @@ public class Trace {
     	//TODO add write maintain 
     	USER,
     	CONNECTION,
-    	DECONNECTION,
+    	DISCONNECTION,
     	
     	//Device state icon identifier
     	SWITCH_STATE_,
@@ -200,7 +200,7 @@ public class Trace {
 		return PICTO_TABLE.CONNECTION.stringify();
 	}
 
-	public static String getDeconnectionPicto() {
-		return PICTO_TABLE.DECONNECTION.stringify();
+	public static String getDisconnectionPicto() {
+		return PICTO_TABLE.DISCONNECTION.stringify();
 	}
 }
