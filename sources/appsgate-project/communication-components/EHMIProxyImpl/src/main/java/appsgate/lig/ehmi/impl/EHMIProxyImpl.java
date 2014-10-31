@@ -238,14 +238,20 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	}
 
+	boolean synchroContext = false;
 	boolean synchroCoreProxy = false;
+
+	private long TIMEOUT = 1000*60;
 
 	private synchronized void synchroCoreProxy() {
 		logger.trace("synchroCoreProxy()...");
-		if (synchroCoreProxy)
-			return;		
-		if (coreProxy != null && devicePropertiesTable!=null) {
+		
+		if (synchroCoreProxy && synchroContext)
+			return;	
+		
+		if (coreProxy != null) {
 			logger.trace("... coreProxy is there");
+			
 			synchroCoreProxy = true;
 
 
@@ -330,13 +336,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices() {
-		while(devicePropertiesTable == null ||placeManager == null) {
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				logger.debug("waiting for DB connextion");
-			}
-		}
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
@@ -355,16 +356,40 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		return devices;
 	}
+	
+	
+	private void waitForContext() {
+		logger.trace("waitForContext()");
+		long timeStamp =System.currentTimeMillis();
+		while(!synchroContext && ((System.currentTimeMillis()- timeStamp) < TIMEOUT)
+				) {
+			try {
+				if (devicePropertiesTable == null ||placeManager == null) {
+					Thread.sleep(500);
+				} else {
+					synchroContext = true;
+				}
+			} catch (InterruptedException e) {
+				logger.trace("waiting context DB Connexion");
+			}
+		}
+		
+		if(!synchroContext) {
+			logger.trace("waitForContext(), context DB for name and places not found (research timeout)");
+		}
+	}
 
 	@Override
 	public JSONObject getDevice(String deviceId) {
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONObject devices = new JSONObject();
 		try {
 			JSONObject coreObject = coreProxy.getDevice(deviceId);
 			return addContextData(coreObject, deviceId);
 		} catch (CoreDependencyException coreException) {
-			logger.debug("Resolution failled for core dependency, no device can be found.");
+			logger.debug("Resolution failed for core dependency, no device can be found.");
 			if (systemClock.isRemote()) {
 				systemClock.stopRemoteSync(coreProxy);
 			}
@@ -382,6 +407,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices(String type) {
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
@@ -883,25 +910,19 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * @return a enrich from contextual data JSONArray
 	 */
 	public JSONArray addContextData(JSONArray objects) {
-		JSONArray contextArray = new JSONArray();
 		try {
-			int nbObjects = objects.length();
-			int i = 0;
-			JSONObject coreObject;
-			while (i < nbObjects) {
-				coreObject = objects.getJSONObject(i);
-				logger.trace("Trying to add : "+coreObject+"...");
-				if(coreObject != null && coreObject.has("id")) {
-					contextArray.put(addContextData(coreObject,
-						coreObject.getString("id")));
-					logger.trace("... successfully added. With context : "+contextArray.getJSONObject(i));
-					i++;
+			for(int i = 0; i< objects.length() && objects.optJSONObject(i)!=null; i++) {
+				logger.trace("Trying to add : "+objects.optJSONObject(i)+"...");
+				if( objects.optJSONObject(i).has("id")) {
+					addContextData(objects.optJSONObject(i),
+							objects.optJSONObject(i).getString("id"));
+					logger.trace("... successfully added. With context : "+objects.optJSONObject(i));;
 				}
 			}
 		} catch (JSONException e) {
 			logger.error(e.getMessage());
 		}
-		return contextArray;
+		return objects;
 	}
 
 	/**
