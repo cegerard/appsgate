@@ -82,21 +82,23 @@ define([
       validScheduleProgram: function(e) {
           var self = this;
 
-          // hide the modal
-          $("#schedule-program-modal").modal("hide");
-
-          if($("input[name='schedule-program']:checked").val() == 'activate') {
+          if($("input[name='schedule-radio']:checked").val() == 'activate') {
             this.model.scheduleProgram(true,false);
-          } else if ($("input[name='schedule-program']:checked").val() == 'deactivate') {
+          } else if ($("input[name='schedule-radio']:checked").val() == 'deactivate') {
             this.model.scheduleProgram(false,true);
           } else {
             this.model.scheduleProgram(true,true);
           }
 
+          // hide the modal
+          $("#schedule-program-modal").modal("hide");
+
           // instantiate the program and add it to the collection after the modal has been hidden
           $("#schedule-program-modal").on("hidden.bs.modal", function() {
             // tell the router there is no modal any more
             appRouter.isModalShown = false;
+
+            $("#schedule-program-modal").off("hidden.bs.modal");
 
             window.open("https://www.google.com/calendar");
 
