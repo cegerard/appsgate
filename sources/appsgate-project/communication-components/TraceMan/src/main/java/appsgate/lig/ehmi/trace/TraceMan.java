@@ -261,9 +261,9 @@ public class TraceMan implements TraceManSpec {
                         event.put("picto", Trace.getConnectionPicto());
                         JDecoration = Trace.getJSONDecoration("connection", "technical", srcId, null, "Connection");
                     } else if (value.equalsIgnoreCase("0")) {
-                        event.put("type", "deconnection");
-                        event.put("picto", Trace.getDeconnectionPicto());
-                        JDecoration = Trace.getJSONDecoration("deconnection", "technical", srcId, null, "Deconnection");
+                        event.put("type", "disconnection");
+                        event.put("picto", Trace.getDisconnectionPicto());
+                        JDecoration = Trace.getJSONDecoration("disconnection", "technical", srcId, null, "Disconnection");
                     } else {
                         event.put("type", "update");
                         JDecoration = Trace.getJSONDecoration("error", "technical", srcId, null, "Error dectected");
