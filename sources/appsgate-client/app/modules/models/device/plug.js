@@ -117,17 +117,20 @@ define([
           return null;
       }
     },
-
-
-
+    switchOn:function() {
+      this.remoteControl(("on"), []);
+    },
+    switchOff:function() {
+      this.remoteControl(("off"), []);
+    },
     /**
      * Send a message to the backend to update the attribute plugState
      */
     sendPlugState:function() {
       if (this.get("plugState") === "true") {
-        this.remoteControl("on", []);
+        this.switchOn();
       } else {
-        this.remoteControl("off", []);
+        this.switchOff();
       }
     },
     getValue: function () {

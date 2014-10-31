@@ -38,7 +38,7 @@ define([
             dispatcher.on("listDevices", function(devices) {
                 _.each(devices, function(device) {
                     if (device) {
-                        self.addDevice(device, true);
+                        self.addDevice(device);
                     }
                 });
                 dispatcher.trigger("devicesReady");
@@ -46,7 +46,7 @@ define([
 
             // listen to the backend notifying when a device appears and add it
             dispatcher.on("newDevice", function(device) {
-                self.addDevice(device, false);
+                self.addDevice(device);
             });
 
             dispatcher.on("removeDevice", function(device) {
@@ -67,7 +67,7 @@ define([
          *
          * @param device
          */
-        addDevice: function(brick, list) {
+        addDevice: function(brick) {
             var self = this;
             var device = null;
             brick.type = parseInt(brick.type);
@@ -118,18 +118,14 @@ define([
                 self.templates['state'][brick.type] = device.getTemplateState();
                 self.templates['property'][brick.type] = device.getTemplateProperty();
 
-                //code
-                if(list){
-                  if(typeof brick.placeId !== "undefined"){
-                    places.get(brick.placeId).get("devices").push(brick.id);
-                    places.get(brick.placeId).trigger('change');
-                  }
-                  else{
-                    places.get("-1").get("devices").push(brick.id);
-                    places.get("-1").trigger('change');
-                  }
+                if(typeof brick.placeId !== "undefined"){
+                  places.get(brick.placeId).get("devices").push(brick.id);
+                  places.get(brick.placeId).trigger('change');
                 }
-
+                else{
+                  places.get("-1").get("devices").push(brick.id);
+                  places.get("-1").trigger('change');
+                }
                 self.add(device);
             }
         },

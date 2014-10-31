@@ -187,12 +187,12 @@ public class NodeVariableDefinition extends Node implements INodeList, ICanBeEva
     }
 
     @Override
-    public String toString() {
+    public String getTypeSpec() {
         if (isUndefined()) {
-            return "[var -> " + this.id + " (UNDEF)]";
+            return "var -> " + this.id + " (UNDEF)";
 
         } else {
-            return "[var " + this.id + "[" + getType() + "]: " + value.toString() + "]";
+            return "var " + this.id + "[" + getType() + "]: " + value.toString();
         }
     }
 

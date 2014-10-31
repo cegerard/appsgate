@@ -146,4 +146,9 @@ public class NodeReturn extends Node implements ICanBeEvaluated {
         return returnValue.getResultType();
     }
 
+    @Override
+    public String getTypeSpec() {
+        return "Ret";
+    }
+
 }

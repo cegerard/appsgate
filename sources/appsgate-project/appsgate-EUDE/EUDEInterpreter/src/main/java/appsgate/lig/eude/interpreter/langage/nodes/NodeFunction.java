@@ -144,8 +144,8 @@ public class NodeFunction extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    public String toString() {
-        return "[Node Function : " + name + "]";
+    public String getTypeSpec() {
+        return "Function : " + name;
     }
 
     @Override

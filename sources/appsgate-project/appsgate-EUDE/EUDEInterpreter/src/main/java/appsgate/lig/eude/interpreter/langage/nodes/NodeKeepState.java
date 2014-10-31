@@ -126,7 +126,7 @@ public class NodeKeepState extends Node {
     private void listenEndEvents() {
         setProgramKeeping();
         state.addEndEventListener(this);
-        state.call();
+        //state.call();
     }
 
     /**
@@ -144,6 +144,11 @@ public class NodeKeepState extends Node {
         if (this.setter != null) {
             this.setter.buildReferences(table);
         }
+    }
+
+    @Override
+    public String getTypeSpec() {
+        return "KeepState: " + state.getName();
     }
 
 }

@@ -25,29 +25,11 @@ define([
       * Callback to toggle a lamp - used when the displayed device is a lamp (!)
       */
       onToggleLampButton: function() {
-        // value can be string or boolean
-        // string
-        if (typeof this.model.get("value") === "string") {
-          if (this.model.get("value") === "true") {
-            this.model.set("value", "false");
-            this.$el.find(".toggle-lamp-button").text("Allumer");
-          } else {
-            this.model.set("value", "true");
-            this.$el.find(".toggle-lamp-button").text("Eteindre");
-          }
-          // boolean
+        if (this.model.get("value") == "true") {
+          this.model.switchOff();
         } else {
-          if (this.model.get("value")) {
-            this.model.set("value", "false");
-            this.$el.find(".toggle-lamp-button").text("Allumer");
-          } else {
-            this.model.set("value", "true");
-            this.$el.find(".toggle-lamp-button").text("Eteindre");
-          }
+          this.model.switchOn();
         }
-
-        // send the message to the backend
-        this.model.save();
       },
       /**
       * Callback to blink a lamp

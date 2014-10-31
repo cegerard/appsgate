@@ -27,40 +27,22 @@ define([
       * Callback to toggle a plug - used when the displayed device is a plug (!)
       */
       onToggleActuatorButton: function() {
-        // value can be string or boolean
-        // string
-        if (typeof this.model.get("value") === "string") {
-          if (this.model.get("value") === "true") {
-            this.model.set("value", "false");
-            this.$el.find(".toggle-actuator-button").text("Allumer");
-          } else {
-            this.model.set("value", "true");
-            this.$el.find(".toggle-actuator-button").text("Eteindre");
-          }
-          // boolean
+        if (this.model.get("value") == "true") {
+          this.model.switchOff();
         } else {
-          if (this.model.get("value")) {
-            this.model.set("value", "false");
-            this.$el.find(".toggle-actuator-button").text("Allumer");
-          } else {
-            this.model.set("value", "true");
-            this.$el.find(".toggle-actuator-button").text("Eteindre");
-          }
+          this.model.switchOn();
         }
-
-        // send the message to the backend
-        this.model.save();
       },
       autoupdate: function() {
         ActuatorView.__super__.autoupdate.apply(this);
 
         var actuatorValue = ";"
-        if (device.get("inserted")==="true") {
+        if (this.model.get("inserted")==="true") {
             actuatorValue = "<span class='label label-yellow' data-i18n='devices.switch.value.opened'></span>";
         } else {
             actuatorValue = "<span class='label label-default' data-i18n='devices.switch.value.closed'></span>";
         }
-        this.$el.find("#actuator-value").html(cardSwitchStatus);
+        this.$el.find("#actuator-value").html(actuatorValue);
 
         // translate the view
         this.$el.i18n();

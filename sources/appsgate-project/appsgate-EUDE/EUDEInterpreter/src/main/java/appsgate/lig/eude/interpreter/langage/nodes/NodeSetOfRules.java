@@ -103,7 +103,7 @@ public class NodeSetOfRules extends Node implements INodeSet {
             return;
         }
         if (source instanceof INodeRule) {
-            LOGGER.debug("A rule has ended, it will restart automatically");
+            LOGGER.trace("Rule {} has ended => restart", source);
             source.addEndEventListener(this);
             source.call();
             return;
@@ -111,11 +111,10 @@ public class NodeSetOfRules extends Node implements INodeSet {
         synchronized (this) {
             nbEndedRules++;
         }
-        if (nbEndedRules < instructions.size()) {
-            LOGGER.trace("Another rule has ended");
-        } else {
-            LOGGER.debug("###### All rules of the set have ended...");
-//            setStarted(false);
+        LOGGER.trace("{} ended", source);
+        if (nbEndedRules >= instructions.size()) {
+            LOGGER.warn("All rules of the set {} have ended, should stop", this);
+            setStarted(false); // TO PUT BACK
             fireEndEvent(new EndEvent(this));
         }
     }
@@ -129,8 +128,8 @@ public class NodeSetOfRules extends Node implements INodeSet {
     }
 
     @Override
-    public String toString() {
-        return "[Node SetOfRules: [" + instructions.size() + "]]";
+    public String getTypeSpec() {
+        return "SetOfRules: (" + instructions.size() + ")";
     }
 
     @Override
@@ -189,6 +188,7 @@ public class NodeSetOfRules extends Node implements INodeSet {
         return ret;
 
     }
+
     @Override
     protected void buildReferences(ReferenceTable table) {
         for (Node n : this.instructions) {
