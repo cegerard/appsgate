@@ -43,13 +43,15 @@ define([
           var id = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id");
           if (id) {
             var typeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("side-")[1];
-            appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
             // update the url
             appRouter.navigate("#devices/types/" + typeId);
+            $(".nav-item").removeClass("active");
+            $("#devices-nav").addClass("active");
+
+            appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
           }
 
-          $(".nav-item").removeClass("active");
-          $("#devices-nav").addClass("active");
+          dispatcher.trigger("router:loaded");
         },
         /**
         * Display all the devices of a given type

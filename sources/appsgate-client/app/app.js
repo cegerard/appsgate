@@ -20,12 +20,12 @@ define(function(require, exports, module) {
   // Initialization of the application
   app.initialize = function() {
 
+    // Initialize the application-wide event dispatcher
+    window.dispatcher = _.clone(Backbone.Events);
+
     // Define your master router on the application namespace and trigger all
     // navigation from this instance.
     window.appRouter = new Router();
-
-    // Initialize the application-wide event dispatcher
-    window.dispatcher = _.clone(Backbone.Events);
 
     // Setting the connection with the box
     //Parser the URL called to generate the server provider.

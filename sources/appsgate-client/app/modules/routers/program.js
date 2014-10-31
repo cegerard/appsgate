@@ -14,16 +14,19 @@ define([
             "programs/editor/:id": "editor",
         },
         list: function() {
+
             // display the side menu
             appRouter.showMenuView(new ProgramMenuView());
+
+            $(".nav-item").removeClass("active");
+            $("#programs-nav").addClass("active");
 
             // update the url if there is at least one program
             if (programs.length > 0) {
               this.reader(programs.at(0).get("id"));
             }
 
-            $(".nav-item").removeClass("active");
-            $("#programs-nav").addClass("active");
+            dispatcher.trigger("router:loaded");
         },
         reader: function(id) {
 
@@ -46,6 +49,11 @@ define([
 
             $("#main").html(appRouter.navbartemplate());
 
+            $(".nav-item").removeClass("active");
+            $("#programs-nav").addClass("active");
+
+            appRouter.navigate("#programs/editor/" + id);
+
             appRouter.currentMenuView = new ProgramEditorView({el:$("#main"),model: programs.get(id)});
             appRouter.currentMenuView.render();
 
@@ -58,11 +66,6 @@ define([
                 circle_radius: 75,
                 direction: 'top-right'
             });
-
-            $(".nav-item").removeClass("active");
-            $("#programs-nav").addClass("active");
-
-            appRouter.navigate("#programs/editor/" + id);
         }
 
     });
