@@ -59,6 +59,7 @@ define(function(require, exports, module) {
         var devicesReady = false;
         var servicesReady = false;
         var programsReady = false;
+        var dependanciesReady = false;
 
         // places
         dispatcher.on("placesReady", function() {
@@ -77,7 +78,7 @@ define(function(require, exports, module) {
         // devices
         dispatcher.on("devicesReady", function() {
           devicesReady = true;
-          if (placesReady && devicesReady && servicesReady && programsReady) {
+          if (placesReady && devicesReady && servicesReady && programsReady && dependanciesReady) {
             dispatcher.trigger("dataReady");
           }
         });
@@ -85,7 +86,7 @@ define(function(require, exports, module) {
         // services
         dispatcher.on("servicesReady", function() {
           servicesReady = true;
-          if (placesReady && devicesReady && servicesReady && programsReady) {
+          if (placesReady && devicesReady && servicesReady && programsReady && dependanciesReady) {
             dispatcher.trigger("dataReady");
           }
         });
@@ -93,9 +94,17 @@ define(function(require, exports, module) {
         // programs
         dispatcher.on("programsReady", function() {
           programsReady = true;
-          if (placesReady && devicesReady && servicesReady && programsReady) {
+          if (placesReady && devicesReady && servicesReady && programsReady && dependanciesReady) {
             dispatcher.trigger("dataReady");
           }
+        });
+        
+        // dependancies
+        dispatcher.on("dependanciesReady", function() {
+            dependanciesReady = true;
+            if (placesReady && devicesReady && servicesReady && programsReady && dependanciesReady) {
+                dispatcher.trigger("dataReady");
+            }
         });
 
         // all data have been received, launch the user interface
@@ -111,9 +120,6 @@ define(function(require, exports, module) {
             });
           });
 
-          if (navigator.splashscreen !== undefined) {
-            navigator.splashscreen.hide();
-          }
 
         });
 
@@ -125,6 +131,11 @@ define(function(require, exports, module) {
         // Initialize the collection of programs
         require(['collections/programs'], function(Programs) {
           window.programs = new Programs();
+        });
+        
+        // Initialize the collection dependancies
+        require(['collections/dependancies'], function(Dependancies) {
+            window.dependancies = new Dependancies();
         });
 
       });
