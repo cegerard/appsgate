@@ -40,7 +40,7 @@ define([
             self.on("change:rootNode", function (model) {
                 model.set({
                     mapDepthNeighbors: self.buildDepthNeighborsMap(model.get("rootNode"),
-                        model.get("currentEntities"))
+                        model.get("entities"))
                 });
             });
         },
