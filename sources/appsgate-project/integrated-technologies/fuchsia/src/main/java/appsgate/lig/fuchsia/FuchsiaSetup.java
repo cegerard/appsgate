@@ -17,7 +17,8 @@ public class FuchsiaSetup {
             .of("org.ow2.chameleon.fuchsia.discovery.mdns.DNSSDDiscovery")
                 .with("dnssd.service.type").setto("_http._tcp.local.")
                 .with("dnssd.service.marker").setto("domicube")
-                .with("dnssd.service.name").setto("domicube");
+                .with("dnssd.service.name").setto("domicube")
+                .with("options").setto("{localhostonly}");
 
         /**
          * Domicube
@@ -58,7 +59,7 @@ public class FuchsiaSetup {
          */
 
         Instance knxImporter = instance()
-                .of("org.ow2.chameleon.fuchsia.importer.knx.KNXDeviceLightImporter")
+                .of("org.ow2.chameleon.fuchsia.importer.knx.KNXDeviceImporter")
                 .with("target").setto("(&(discovery.knx.device.addr=*)(!(discovery.knx.device.object=*)))");
 
         Instance knxLinker = instance()

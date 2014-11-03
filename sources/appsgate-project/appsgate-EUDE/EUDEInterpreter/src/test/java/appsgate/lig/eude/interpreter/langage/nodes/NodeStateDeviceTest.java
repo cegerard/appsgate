@@ -89,4 +89,11 @@ public class NodeStateDeviceTest extends NodeTest {
         }
         Assert.assertNull(state.call());
     }
+    
+    @Test
+    public void testEvents() {
+        state.call();
+        Assert.assertNotNull("Start event should not be null", state.getStartEvent());
+        Assert.assertNotNull("End event should not be null", state.getEndEvent());
+    }
 }

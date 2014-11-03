@@ -1,29 +1,19 @@
 define([
   "app",
   "text!templates/services/details/serviceContainer.html",
-  "text!templates/services/details/mediaplayer.html",
-  "text!templates/services/details/mediabrowser.html",
   "text!templates/services/details/mail.html",
   "text!templates/services/details/weather.html"
-  ], function(App, serviceDetailsTemplate, mediaPlayerDetailTemplate, mediaBrowserDetailTemplate, mailDetailTemplate, weatherDetailTemplate) {
+  ], function(App, serviceDetailsTemplate, mediaPlayerDetailTemplate, mailDetailTemplate, weatherDetailTemplate) {
 
     var ServiceDetailsView = {};
     // detailled view of a service
     ServiceDetailsView = Backbone.View.extend({
       template: _.template(serviceDetailsTemplate),
-      tplMediaPlayer: _.template(mediaPlayerDetailTemplate),
-      tplMediaBrowser: _.template(mediaBrowserDetailTemplate),
       tplMail: _.template(mailDetailTemplate),
       tplWeather: _.template(weatherDetailTemplate),
       // map the events and their callback
       events: {
         "click button.back-button": "onBackButton",
-        "click button.btn-media-play": "onPlayMedia",
-        "click button.btn-media-resume": "onResumeMedia",
-        "click button.btn-media-pause": "onPauseMedia",
-        "click button.btn-media-stop": "onStopMedia",
-        "click button.btn-media-volume": "onSetVolumeMedia",
-        "click button.btn-media-browse": "onBrowseMedia",
         "shown.bs.modal #edit-service-modal": "initializeModal",
         "hidden.bs.modal #edit-service-modal": "toggleModalValue",
         "click #edit-service-modal button.valid-button": "validEditService",
@@ -43,43 +33,6 @@ define([
       */
       onBackButton: function() {
         window.history.back();
-      },
-      /**
-      * Called when resume button is pressed and the displayed service is a media player
-      */
-      onPlayMedia: function() {
-        this.model.sendPlay();
-      },
-      /**
-      * Called when resume button is pressed and the displayed service is a media player
-      */
-      onResumeMedia: function() {
-        this.model.sendResume();
-      },
-      /**
-      * Called when pause button is pressed and the displayed service is a media player
-      */
-      onPauseMedia: function() {
-        this.model.sendPause();
-      },
-      /**
-      * Called when stop button is pressed and the displayed service is a media player
-      */
-      onStopMedia: function() {
-        this.model.sendStop();
-      },
-      /**
-      * Called when volume is chosen and the displayed service is a media player
-      */
-      onSetVolumeMedia: function() {
-        this.model.setVolume();
-      },
-      /**
-      * Called when browse button is pressed, displays a tree of available media
-      */
-      onBrowseMedia: function(e) {
-
-        this.model.onBrowseMedia($("#selectedMedia"));
       },
       /**
       * Clear the input text, hide the error message and disable the valid button by default
@@ -183,69 +136,32 @@ define([
 
         if (!appRouter.isModalShown) {
           switch (this.model.get("type")) {
-          case 31: // media player
-              var player = this.model;
-          this.$el.html(this.template({
-            service: player,
-            sensorImg: "app/img/services/media_player.png",
-            sensorType: $.i18n.t("services.mediaplayer.name.singular"),
-            places: places,
-            serviceDetails: this.tplMediaPlayer
-          }));
+            case 102: // mail
+            this.$el.html(this.template({
+              service: this.model,
+              sensorType: $.i18n.t("services.mail.name.singular"),
+              places: places,
+              serviceDetails: this.tplMail
+            }));
+            break;
+            case 103: // weather
+            this.$el.html(this.template({
+              service: this.model,
+              sensorType: $.i18n.t("services.weather.name.singular"),
+              places: places,
+              serviceDetails: this.tplWeather
+            }));
+            break;
+          }
+          // resize the panel
+          this.resize($(".scrollable"));
 
-              player.requestVolume();
+          // translate the view
+          this.$el.i18n();
 
-          // initialize the volume slider
-          _.defer(function() {
-            $(".volume-slider").slider({
-              range: "min",
-              min: 0,
-              max: 100,
-              value: player.get("volume"),
-              stop: function(event, ui) {
-                self.model.sendVolume($(".volume-slider").slider("value"));
-              }
-            });
-            self.model.save();
-          });
-
-          // requesting current volume level
-//          this.model.remoteCall("getVolume", [], this.model.get("id") );
-          break;
-        case 36: // media browser
-        this.$el.html(this.template({
-          service: this.model,
-          sensorType: $.i18n.t("services.mediabrowser.name.singular"),
-          places: places,
-          serviceDetails: this.tplMediaBrowser
-        }));
-        break;
-      case 102: // mail
-      this.$el.html(this.template({
-        service: this.model,
-        sensorType: $.i18n.t("services.mail.name.singular"),
-        places: places,
-        serviceDetails: this.tplMail
-      }));
-      break;
-    case 103: // weather
-    this.$el.html(this.template({
-      service: this.model,
-      sensorType: $.i18n.t("services.weather.name.singular"),
-      places: places,
-      serviceDetails: this.tplWeather
-    }));
-    break;
-  }
-  // resize the panel
-  this.resize($(".scrollable"));
-
-  // translate the view
-  this.$el.i18n();
-
-  return this;
-}
-}
-});
-return ServiceDetailsView;
-});
+          return this;
+        }
+      }
+    });
+    return ServiceDetailsView;
+  });

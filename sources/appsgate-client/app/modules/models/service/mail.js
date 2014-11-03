@@ -16,7 +16,15 @@ define([
      * @constructor
      */
     initialize: function() {
+      this.set("favorites", []);
       Mail.__super__.initialize.apply(this, arguments);
+      dispatcher.on(this.get("id"), function(json) {
+        t = JSON.parse(json.value);
+        if (Array.isArray(t)) {
+          this.setFavorites(t);
+        }
+      });
+
     },
     /**
      * return the list of available actions
@@ -34,7 +42,7 @@ define([
         case "sendMail":
           $(btn).append("<span data-i18n='services.mail.keyboard.sendMail'></span>");
           v.methodName = "sendMailSimple";
-          v.args = [ {"type":"String", "value": "mail@example.com"},
+          v.args = [ {"type":"String", "value": this.getFavoriteMail()},
                     {"type":"String", "value": "Test"},
                     {"type":"String", "value": "..."}];
           v.phrase = "services.mail.language.sendMail";
@@ -53,6 +61,83 @@ define([
     getTemplateAction: function() {
       return _.template(ActionTemplate);  
     },
+    
+    /**
+     */
+    setFavorites: function(array) {
+      this.set("favorite-recipients", array);
+    },
+    /**
+     * @returns the list of favorites mail
+     */
+    getFavorites: function() {
+      return this.get("favorite-recipients");
+    },
+    getFavoriteMail: function() {
+      v = this.getFavorites();
+      for (c in v) {
+        return v[c].mail;
+      }
+      return "mail@example.com";
+    },
+    getFavoriteArray: function() {
+      var a = [];
+      v = this.getFavorites();
+      for (c in v) {
+        a.push(v[c].mail);
+      }
+      return a;
+    },
+    /**
+     * remove a favorite mail
+     */
+    removeFavorite: function(which) {
+      this.remoteControl("removeFavoriteRecipient", [{"type": "String", "value": which}]);
+      v = this.getFavorites();
+      var c, found=false;
+      for(c in v) {
+          if(v[c].mail == which) {
+              found=true;
+              break;
+          }
+      }
+      if(found){
+          delete v[c];
+      }
+      this.setFavorites(v);
+
+    },
+    
+    getNumberOfFavorites: function () {
+      var i = 0;
+      for (val in this.getFavorites()) {
+        i++;
+      }
+      return i;
+    },
+    
+    /**
+     * update a favorite mail
+     */
+    updateFavorite: function(old, which) {
+      v = this.getFavorites();
+      if (old == "") {
+        v.push({mail:which});
+        this.setFavorites(v);
+        //code
+      } else {
+        this.remoteControl("removeFavoriteRecipient", [{"type": "String", "value": old}]);
+        for (t in v) {
+          if (v[t].mail === old) {
+              v[t].mail = which;
+              this.setFavorites(v);
+              return;
+          }
+        }
+      }
+      this.remoteControl("addFavoriteRecipient", [{"type": "String", "value": which}]);
+
+    }    
     
   });
   return Mail;

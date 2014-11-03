@@ -1,13 +1,17 @@
 {
     "app": {
         "name": "AppsGate",
-        "signin": "Identification"
+        "signin": "Identification",
+        "loading": "Chargement..."
     },
     "debugger": {
         "all": "Tous",
-        "times": "fois"
+        "times": "fois",
+        "yes": "OUI",
+        "no": "NON"
     },
     "devices": {
+        "no-value":"---",
         "actuator": {
             "action": {
                 "turnOff": "Eteindre",
@@ -44,6 +48,7 @@
                 "non_authorized": "badge n'est pas autorisé sur"
             }
         },
+        "avg" : "Moy : ",
         "clock": {
             "name": {
                 "no-name": "Horloge système sans nom",
@@ -121,7 +126,7 @@
             "scale": {
                 "high": "Luminosité forte",
                 "highest": "Plein soleil",
-                "low": "Luminosité faible",
+                "low": "Luminosité nulle à faible",
                 "lowest": "Nuit",
                 "medium": "Luminosité moyenne",
                 "veryHigh": "Luminosité très forte",
@@ -129,7 +134,7 @@
             },
             "scale-label": "Echelle"
         },
-        "keycard-reader": {
+        "cardswitch": {
             "keyboard": {
                 "card-inserted": "une carte est insérée dans ...",
                 "insertedEvent": "on insère une carte dans ...",
@@ -160,7 +165,8 @@
                 "turnAllOn": "Tout allumer"
             },
             "complement": {
-                "change-color": "en"
+                "change-color": "en",
+                "color": "Couleur"
             },
             "keyboard": {
                 "blink": "Faire clignoter ...",
@@ -215,7 +221,10 @@
             "status": {
                 "playing": "Lecture en cours",
                 "selected": "Veuillez choisir un média",
-                "stopped": "Arrêté"
+                "stopped": "Arrêté : ",
+                "PLAYING": "Lecture en cours : ",
+                "PAUSED_PLAYBACK": "En pause : ",
+                "STOPPED": "Arrêté : "
             }
         },
         "movement": {
@@ -297,11 +306,12 @@
         },
         "state-label": "Etat",
         "status": {
-            "connected": "Connecté",
+            "connected": "Appairé(e)",
             "disconnected": "Déconnecté",
             "waiting": "En attente"
         },
         "status-label": "Statut",
+        "sum" : "Somme : ",
         "switch": {
             "keyboard": {
                 "pushed-bottom": "on appuie sur bas de ...",
@@ -334,7 +344,8 @@
                 "intern": "Capteur de température intérieur"
             },
             "keyboard": {
-                "get": "la température mesurée par ..."
+                "get": "la température mesurée par ...",
+                "change": "la température de ... change"
             },
             "language": {
                 "get": "la température de __myVar__"
@@ -342,6 +353,9 @@
             "name": {
                 "plural": "Capteurs de température",
                 "singular": "Capteur de température"
+            },
+            "event": {
+                "change": "la température de __myVar__ change"
             }
         },
         "type-label": "Type",
@@ -401,7 +415,8 @@
                 "5": "lecteurs de carte",
                 "6": "prises",
                 "7": "lampes",
-                "8": "actionneurs"
+                "8": "actionneurs",
+				"31": "lecteurs de média"
             }
         },
         "true": "Vrai",
@@ -413,7 +428,6 @@
     "language": {
         "actions": "Actions",
         "and-when": "Dès que",
-        "browse-media-button": "Parcourir",
 		"color" : {
 			"blue": "bleu",
 			"green": "vert",
@@ -443,6 +457,7 @@
         "keep-keyword": "Maintenir",
         "keep-then": "Ensuite",
         "mandatory-keyword": "Obligatoire",
+        "mandatory-readonly": "...",
         "nothing-keyword": "Rien",
         "only-once": "Une seule fois",
         "op-and-bool": "et",
@@ -471,7 +486,8 @@
                 "5": "lecteurs de carte",
                 "6": "prises",
                 "7": "lampes",
-                "8": "actionneurs"
+                "8": "actionneurs",
+				"31": "lecteurs de média"
             }
         },
         "then-keyword": "Alors",
@@ -506,7 +522,9 @@
         "name-label": "Nom",
         "name-placeholder": "Nom de l'équipement",
         "place-label": "Lieu de vie",
-        "reset-clock": "Reinitialisé horloge",
+        "reset-clock": "Reinitialisé horloge"
+    },
+    "modal-test-program": {
         "time-label": "Heure",
         "time-speed-label": "Vitesse"
     },
@@ -521,6 +539,12 @@
         "program-name": "Nom du programme",
         "program-name-empty": "Le nom du programme doit être renseigné.",
         "title": "Renommer programme"
+    },
+    "modal-schedule-program": {
+        "title":"Planifier le programme dans l'agenda AppsGate de Google",
+        "schedule-activation":"Planifier l'activation du programme",
+        "schedule-deactivation":"Planifier la désactivation du programme",
+        "schedule-both":"Planifier l'activation et la désactivation du programme"
     },
     "modal-edit-service": {
         "name-already-existing": "Nom de service déjà existant",
@@ -546,7 +570,8 @@
     },
     "navbar": {
         "button-settings": "Préférences",
-        "debugger": "Comprendre",
+        "debugger": "Historique",
+        "dashboard": "Tableau de bord",
         "devices": "Equipements",
         "edit": "Editer",
         "emergency-stop": "Tout stopper",
@@ -560,11 +585,11 @@
     "places-details": {
         "body": {
             "device-no-name": "Equipement sans nom",
-            "no-device-in-place": "Aucun equipement n'est assigné dans ce lieu de vie."
+            "no-device-in-place": "Aucun équipement ne se trouve dans ce lieu de vie"
         },
         "header": {
-            "consumption-label": "Consommation",
-            "device-number-title": "Nombre d'équipements",
+            "consumption-label": "Consommation totale actuelle :",
+            "device-number-title": "Nombre total d'équipements dans le lieu de vie :",
             "illumination-label": "Luminosité",
             "temperature-label": "Température"
         },
@@ -581,7 +606,11 @@
     "programs": {
         "action": {
             "start": "Activer",
-            "stop": "Désactiver"
+            "stop": "Désactiver",
+            "schedule": "Planifier",
+            "open-calendar":"Voir calendrier",
+            "test":"Tester",
+            "end-test":"Fin tester"
         },
         "delete-program": "Supprimer",
         "edit-program": "Editer",
@@ -616,10 +645,13 @@
             "stopped": "Arrêté"
         },
         "warning-program-edition": "Attention, éditer le programme le désactivera",
-        "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?"
+        "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
+        "scheduled-event": "Programme Appsgate ",
+        "simulated-time":"Heure simulée"
     },
     "programs-menu": {
-        "add-button": "Ajouter programme"
+        "add-button": "Ajouter programme",
+        "deactivate-all-programs": "Désactiver tous les programmes"
     },
     "services": {
         "avtransport": {
@@ -654,9 +686,15 @@
                 "sendMail": "Envoyer un mail"
             },
             "name": {
-                "plural": "Serveurs mail",
-                "singular": "Serveur mail"
-            }
+                "plural": "Destinataires mail favoris",
+                "singular": "Destinataire mail favori"
+            },
+            "modal" : {
+              "add" : "Ajouter destinataire favori",
+              "valid-mail" : "Merci d'entrer une adresse valide",
+			  "title" : "Destinataire favori"
+            },
+			"warning-delete" : "Etes vous sûr de vouloir supprimer cette adresse ?"
         },
         "mediabrowser": {
             "name": {
@@ -690,13 +728,14 @@
 				"stop-media-action": "Stopper"
             },
             "keyboard" : {
+				"browse": "Parcourir",
+				"complement" : "sur",
 			    "pause-media-action": "Mettre en pause le media ...",
 				"play-media-action": "Jouer ...",
-				"resume-media-action": "Reprendre la lecture de ...",				
+				"resume-media-action": "Reprendre la lecture de ...",
 				"set-volume-media-action": "Mettre le volume de ...",
 				"stop-media-action": "Stopper"
 			}
-
         },
         "place-label": "Emplacement",
         "renderingControl": {
@@ -717,8 +756,8 @@
         "value-label": "Valeur",
         "weather": {
             "name": {
-                "plural": "Services Meteo",
-                "singular": "Service Meteo"
+                "plural": "Lieux météo favoris",
+                "singular": "Lieu météo favori"
             },
 			"modal" : {
 				"title" : "Nouveau lieu favori",
@@ -767,7 +806,6 @@
 			},
 			"weblink" : "Voir météo",
             "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
-
         }
     }
 }

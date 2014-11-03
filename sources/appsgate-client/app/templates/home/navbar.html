@@ -1,14 +1,11 @@
 <div class="navbar navbar-fixed-top navbar-default" role="navigation">
-	<div class="container">
 		<div class="navbar-header">
-			<ol class="breadcrumb navbar-brand">
-			</ol>
+			<ul class="nav nav-tabs nav-justified" role="tablist">
+				<li id="home-nav" class="nav-item active"><a href="#dashboard"><span data-i18n="navbar.debugger"/></a></li>
+				<li id="places-nav" class="nav-item"><a href="#places"><span data-i18n="navbar.places"/></a></li>
+				<li id="devices-nav" class="nav-item"><a href="#devices"><span data-i18n="navbar.devices"/></a></li>
+				<li id="services-nav" class="nav-item"><a href="#services"><span data-i18n="navbar.services"/></a></li>
+				<li id="programs-nav" class="nav-item"><a href="#programs"><span data-i18n="navbar.programs"/></a></li>
+			</ul>
 		</div>
-		<div class="emergency-stop" onclick="devices.emergencyStop();programs.stopAllPrograms()">
-			<img src="app/img/signal-stop.png" class="img-responsive">
-		</div>
-        <div class="nav navbar-nav pull-right">
-            <a href="#debugger/all" class="btn btn-default"><i class="glyphicon glyphicon-eye-open"/> <span data-i18n="navbar.debugger"/></a>
-        </div>
-	</div>
 </div>

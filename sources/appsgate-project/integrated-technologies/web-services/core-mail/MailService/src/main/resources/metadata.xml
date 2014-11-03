@@ -4,15 +4,13 @@
                               
 	<implementation name="MailService" classname="appsgate.lig.mail.javamail.MailServiceImpl" specification="CoreMailSpec"
                     push="mailReceivedNotification">
-	    
-		<callback onRemove="stop" />
-		
+	    		
         <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist">
 
         </relation>
 				
 
-        <definition name="user" type="string" field="user" injected="internal"/>
+        <definition name="user" type="string" field="user" />
 
         <definition name="auto-refresh" type="int" field="refreshRate" injected="both" method="autoRefreshValueChanged"/>
 		

@@ -261,7 +261,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 
 	@Override
 	public CORE_TYPE getCoreType() {
-		return CORE_TYPE.SERVICE;
+		return CORE_TYPE.DEVICE;
 	}
 
 
@@ -334,7 +334,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 			String newStatus = node.getAttributes().getNamedItem(VAL).getNodeValue();
 			logger.trace("checkChangeStateEvent(...), new Status = "+newStatus);
 
-			stateChanged("volume", currentStatus, newStatus);
+			stateChanged("playerStatus", currentStatus, newStatus);
 			currentStatus = newStatus;
 
 		} catch (Exception exc) {

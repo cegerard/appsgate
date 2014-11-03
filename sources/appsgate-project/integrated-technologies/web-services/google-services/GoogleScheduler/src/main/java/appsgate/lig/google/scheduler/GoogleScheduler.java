@@ -86,7 +86,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 */
 	String calendarId = "primary";
 
-	public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	@Override
 	public String getCalendarId() {
@@ -225,6 +225,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			for(Integer i : onEndAlarms.keySet()) {
 				clock.unregisterAlarm(i.intValue());
 			}
+			clock.calculateNextTimer();
 			onBeginAlarms.clear();
 			onEndAlarms.clear();
 			eventMap.clear();

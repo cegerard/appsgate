@@ -1,12 +1,6 @@
 <div class="main-block-node" id="<%= node.iid %>">
-  <div id="progress-<%= node.rules.state.iid %>" class="progress-indicator-group">
-    <img src="/app/img/locked-node.svg" class="progress-indicator locked-node-indicator hidden"/>
-    <img src="/app/img/unlocked-node.svg" class="progress-indicator unlocked-node-indicator hidden"/>
-    <img src="/app/img/flash.svg" class="progress-indicator progress-indicator-counter" />
-    <span id="progress-counter-<%=node.rules.state.iid %>" class="progress-indicator">0</span>
-    <span class="progress-indicator" data-i18n='debugger.times'/>
-  </div>
   <div class="row">
+    <div class="active-node-indicator hidden" id="active-<%= node.iid %>" target-node="<%= node.iid %>"><i class="glyphicon glyphicon-arrow-right"></i></div>
     <button class="btn btn-prog btn-primary btn-then">
       <span data-i18n="language.while-keyword"></span>
     </button>
@@ -14,9 +8,24 @@
     <span  class='link-span' data-i18n="language.then-keyword"/>
   </div>
   <div class="row indent-level-1">
+    <div id="progress-<%= node.rules.iid %>" class="progress-indicator-group pull-left">
+      <table>
+        <tr>
+          <td>
+            <i class="glyphicon glyphicon-flash pull-left"></i>
+          </td>
+          <td>
+            <span id="progress-counter-<%=node.rules.iid %>" class="progress-indicator">0</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="active-node-indicator hidden" id="active-<%= node.rules.state.iid %>" target-node="<%= node.rules.state.iid %>" parent-node="<%= node.iid %>"><i class="glyphicon glyphicon-arrow-right"></i></div>
     <span class='link-span' name="keep" data-i18n="language.keep-keyword"></span>
       <%=engine.buildInputFromNode(node.rules, currentNode) %>
-    <span class='link-span' name="keep" data-i18n="language.keep-then"></span>
+    <% if ( node.rulesThen != undefined) { %>
+    <span class='link-span while-keep-then' name="keep" data-i18n="language.keep-then"></span>
+    <% } %>
   </div>
   <% if ( node.rulesThen != undefined) { %>
   <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node seq-block-node"<% } else { %> class="main-block-node seq-block-node" <% } %>>

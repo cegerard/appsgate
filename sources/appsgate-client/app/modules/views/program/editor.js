@@ -34,11 +34,13 @@ define([
       initialize: function() {
         this.Mediator = new Mediator();
         this.Mediator.loadProgramJSON(this.model.get("body"), this.model.get("id"));
+        this.refreshing = false;
 
         this.listenTo(this.model, "change", this.refreshDisplay);
-        this.listenTo(devices, "change", this.refreshDisplay);
-        this.listenTo(services, "change", this.refreshDisplay);
+        this.listenTo(devices, "remove", this.refreshDisplay);
+        this.listenTo(services, "remove", this.refreshDisplay);
         this.listenTo(dispatcher, "refreshDisplay", this.refreshDisplay);
+        this.listenTo(dispatcher, "changeArgValue", this.onChangeArgValue2);
       },
       validEditName: function(e) {
         e.preventDefault();
@@ -64,7 +66,7 @@ define([
 
           return false;
         }
-        
+
         // name contains html code
         if (/(&|>|<)/.test($(".programNameInput").val())) {
           $(".text-danger")
@@ -76,7 +78,7 @@ define([
           return false;
         }
 
-        
+
         var currentProgramID=this.model.get("id");
         var programsWithSameName=programs.where({name: $(".programNameInput").val()}).filter(function(prog){
               return prog.id != null && prog.id!=currentProgramID;
@@ -107,6 +109,7 @@ define([
           this.model.set("runningState", "INVALID");
         }
         this.model.save();
+        appRouter.navigate("#programs", {trigger: true});
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
       },
       onClickCancelEdit: function(e) {
@@ -114,6 +117,7 @@ define([
           this.model.destroy();
           appRouter.navigate("#programs", {trigger: true});
         } else{
+          appRouter.navigate("#programs", {trigger: true});
           appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
         }
       },
@@ -126,7 +130,9 @@ define([
         while (button !== null && typeof button.classList === 'undefined' || !button.classList.contains('btn-keyboard')) {
           button = button.parentNode;
         }
+
         this.Mediator.addNodeFromButton(button);
+        dispatcher.trigger("refreshDisplay");
       },
       /**
        * Method to handle event on a button click in the input area
@@ -152,6 +158,7 @@ define([
             this.Mediator.removeNode(button.id);
           } else {
             this.Mediator.setCurrentPos(button.id);
+            dispatcher.trigger("refreshDisplay");
           }
         }
       },
@@ -206,8 +213,8 @@ define([
           }
           else {
             $("#media-browser-modal .media-button").removeClass("disabled");
-            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.textContent},{type: "String", value: event.currentTarget.parentNode.attributes.title.textContent}]);
-            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "fileName", event.currentTarget.parentNode.attributes.title.textContent);
+            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "args", [{type: "String", value: event.currentTarget.parentNode.attributes.res.value},{type: "String", value: event.currentTarget.textContent}]);
+            self.Mediator.setNodeAttribute($("#media-browser-modal").attr("target-iid"), "fileName", event.currentTarget.textContent);
           }
         });
 
@@ -329,6 +336,10 @@ define([
         // clearing selection
         this.resetSelection();
       },
+      onChangeArgValue2: function(iid, index, v) {
+        var value = {"type": "String", "value": v};
+        this.Mediator.setNodeArg(iid, index, value);
+      },
       onChangeClockValue: function(e) {
         e.stopPropagation();
 
@@ -351,7 +362,12 @@ define([
         this.refreshDisplay();
       },
       refreshDisplay: function(e) {
+        if (this.refreshing) {
+          return;
+        }
+        $(".programInput").clearQueue();
         if (typeof e === "undefined" || ((typeof e.attributes != "undefined") && e.attributes["type"] !== 21)) {
+          this.refreshing = true;
           this.Mediator.buildInputFromJSON();
           this.Mediator.buildKeyboard();
           if (!this.Mediator.isValid) {
@@ -362,14 +378,29 @@ define([
           this.$el.i18n();
           if (this.Mediator.isValid) {
             this.model.set("runningState", "DEPLOYED");
+            $(".led").attr("title", $.i18n.t('programs.state.stopped'));
             $(".led").addClass("led-default").removeClass("led-orange");
             $(".led").addClass("led-default").removeClass("led-yellow");
             $(".programNameInput").addClass("valid-program");
           } else {
             this.model.set("runningState", "INVALID");
+            $(".led").attr("title", $.i18n.t('programs.state.failed'));
             $(".led").addClass("led-orange").removeClass("led-default");
             $(".programNameInput").removeClass("valid-program");
           }
+
+          // scrolling to the selected node
+          if($(".selected-node").length > 0) {
+            var focusPosition = $(".selected-node").offset().top + $(".programInput").scrollTop() - $(".programInput").offset().top;
+            if($(".programInput").height() > $(".selected-node").height()) {
+              focusPosition -= $(".programInput").height()/2 - $(".selected-node").height()/2;
+            }
+            $(".programInput").animate({scrollTop: focusPosition}, 1000);
+          }
+
+          $( document ).tooltip();
+
+          this.refreshing = false;
         }
       },
       applyEditMode: function() {

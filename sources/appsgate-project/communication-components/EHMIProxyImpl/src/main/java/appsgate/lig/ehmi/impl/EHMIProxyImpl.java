@@ -206,14 +206,20 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	}
 
+	boolean synchroContext = false;
 	boolean synchroCoreProxy = false;
+
+	private long TIMEOUT = 1000*60;
 
 	private synchronized void synchroCoreProxy() {
 		logger.trace("synchroCoreProxy()...");
-		if (synchroCoreProxy)
-			return;		
-		if (coreProxy != null && devicePropertiesTable!=null) {
+		
+		if (synchroCoreProxy && synchroContext)
+			return;	
+		
+		if (coreProxy != null) {
 			logger.trace("... coreProxy is there");
+			
 			synchroCoreProxy = true;
 
 
@@ -223,6 +229,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				JSONArray devicesArray = coreProxy.getDevices();
 				for (int i = 0; i < devicesArray.length(); i++) {
 					try {
+						logger.trace("synchroCoreProxy(), synchro for : "+devicesArray.getJSONObject(i).toString());
 						if(devicesArray.getJSONObject(i).has("type")
 								&& devicesArray.getJSONObject(i).has("id")) {
 							logger.trace("adding device : "+devicesArray.getJSONObject(i));
@@ -244,7 +251,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 				if (coreProxy.CoreEventsSubscribe(objectEventsListener)) {
 					logger.debug("Core event listener deployed.");
-					systemClock.startRemoteSync(coreProxy);
 				} else {
 					logger.error("Core event deployement failed.");
 				}
@@ -253,6 +259,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				} else {
 					logger.error("Core updates listener deployement failed.");
 				}
+				systemClock.startRemoteSync(coreProxy);
+
 
 			} catch (CoreDependencyException coreException) {
 				logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
@@ -298,6 +306,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices() {
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
@@ -316,16 +326,40 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		return devices;
 	}
+	
+	
+	private void waitForContext() {
+		logger.trace("waitForContext()");
+		long timeStamp =System.currentTimeMillis();
+		while(!synchroContext && ((System.currentTimeMillis()- timeStamp) < TIMEOUT)
+				) {
+			try {
+				if (devicePropertiesTable == null ||placeManager == null) {
+					Thread.sleep(500);
+				} else {
+					synchroContext = true;
+				}
+			} catch (InterruptedException e) {
+				logger.trace("waiting context DB Connexion");
+			}
+		}
+		
+		if(!synchroContext) {
+			logger.trace("waitForContext(), context DB for name and places not found (research timeout)");
+		}
+	}
 
 	@Override
 	public JSONObject getDevice(String deviceId) {
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONObject devices = new JSONObject();
 		try {
 			JSONObject coreObject = coreProxy.getDevice(deviceId);
 			return addContextData(coreObject, deviceId);
 		} catch (CoreDependencyException coreException) {
-			logger.debug("Resolution failled for core dependency, no device can be found.");
+			logger.debug("Resolution failed for core dependency, no device can be found.");
 			if (systemClock.isRemote()) {
 				systemClock.stopRemoteSync(coreProxy);
 			}
@@ -343,6 +377,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices(String type) {
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
@@ -397,6 +433,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public boolean addGrammar(String deviceId, String deviceType,
 			GrammarDescription grammarDescription) {
+		logger.trace("addGrammar(String deviceId : {}, String deviceType : {},"+
+			"GrammarDescription grammarDescription : {})",
+			deviceId, deviceType, grammarDescription);
 		return devicePropertiesTable.addGrammarForDevice(deviceId, deviceType,
 				grammarDescription);
 	}
@@ -826,7 +865,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 *            the identifier of this object
 	 * @return the new contextual enrich JSONObject
 	 */
-	private JSONObject addContextData(JSONObject object, String objectId) {
+	public JSONObject addContextData(JSONObject object, String objectId) {
+		logger.trace("addContextData(JSONObject object : {}, String objectId : {})", object,objectId);
 		try {
 			object.put("placeId", getCoreObjectPlaceId(objectId));
 			object.put("name", getUserObjectName(objectId, ""));
@@ -843,6 +883,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 *            the objects JSONArray
 	 * @return a enrich from contextual data JSONArray
 	 */
+<<<<<<< HEAD
 	private JSONArray addContextData(JSONArray objects) {
 		logger.trace("addContextData(JSONArray objects :"+objects.toString());
 		JSONArray contextArray = new JSONArray();
@@ -858,12 +899,22 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 						coreObject.getString("id")));
 					logger.trace("... successfully added. With context : "+contextArray.getJSONObject(i));
 					i++;	
+=======
+	public JSONArray addContextData(JSONArray objects) {
+		try {
+			for(int i = 0; i< objects.length() && objects.optJSONObject(i)!=null; i++) {
+				logger.trace("addContextData((JSONArray objects), trying to add) : "+objects.optJSONObject(i)+"...");
+				if( objects.optJSONObject(i).has("id")) {
+					addContextData(objects.optJSONObject(i),
+							objects.optJSONObject(i).getString("id"));
+					logger.trace("... successfully added. With context : "+objects.optJSONObject(i));;
+>>>>>>> master
 				}
 			}
 		} catch (JSONException e) {
 			logger.error(e.getMessage());
 		}
-		return contextArray;
+		return objects;
 	}
 
 	/**

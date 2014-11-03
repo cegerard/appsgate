@@ -12,7 +12,7 @@ define([
 
             // sort the programs alphabetically
             this.comparator = function(program) {
-                return program.get("name");
+                return program.get("name").toUpperCase();
             };
 
             // listen to the event when the list of programs is received
@@ -53,9 +53,17 @@ define([
                 TARGET: "EHMI"
             });
         },
+        allProgramsStopped:function() {
+          var result = true;
+          _.each(programs.models, function(program) {
+            if(program.get("runningState") != "DEPLOYED" && program.get("runningState") != "INVALID") {
+              result = false;
+            }
+          });
+          return result;
+        },
         stopAllPrograms:function() {
           _.each(programs.models, function(program) {
-            program.set("runningState", "DEPLOYED");
             program.remoteCall("stopProgram", [{type: "String", value: program.get("id")}]);
           });
         }

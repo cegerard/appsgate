@@ -59,7 +59,9 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 
     @Override
     public void notifyUpdate(String coreType, String objectId, String userType, JSONObject description, JSONObject behavior) {
-        logger.debug("Update core notification received for: " + objectId);
+        logger.trace("notifyUpdate(String coreType : {}, String objectId : {}"
+        		+ ", String userType: {}, JSONObject description: {}, JSONObject behavior: {})",
+        		coreType, objectId, userType, description, behavior);
         this.coreType = coreType;
         this.userType = userType;
         this.behavior = behavior;
@@ -71,8 +73,20 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
         if (coreType.contains("new")) { //New device added
             EHMIProxy.addGrammar(objectId, userType, new GrammarDescription(behavior));
             
-            sendObjectPlace(coreType, objectId, placeId);
-            sendObjectName(objectId, name);
+            EHMIProxy.addContextData(description, objectId);
+            
+    		JSONObject jsonResponse =  new JSONObject();
+    		try {
+    			jsonResponse.put(coreType, description);
+                EHMIProxy.sendToClients(jsonResponse);
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		}
+            
+            //sendToClientService.send(coreType, description);
+            
+            //sendObjectPlace(coreType, objectId, placeId);
+            //sendObjectName(objectId, name);
 
             if (userType.contentEquals("21") && !EHMIProxy.getSystemClock().isRemote()) { //The new device is a clock and no remote clock
                 EHMIProxy.startRemoteClockSync();										//Is already used.

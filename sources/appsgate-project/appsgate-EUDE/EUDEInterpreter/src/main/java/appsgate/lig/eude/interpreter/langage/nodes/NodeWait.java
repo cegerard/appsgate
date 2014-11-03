@@ -8,6 +8,7 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
+import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
@@ -58,6 +59,7 @@ public class NodeWait extends Node {
     public JSONObject call() {
         setProgramWaiting();
         setStarted(true);
+        fireStartEvent(new StartEvent(this));
         if (waitFor == null) {
             stopWaiting();
             return null;
@@ -142,5 +144,10 @@ public class NodeWait extends Node {
         if (this.waitFor != null) {
             waitFor.buildReferences(table);
         }
+    }
+
+    @Override
+    public String getTypeSpec() {
+        return "Wait";
     }
 }

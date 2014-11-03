@@ -62,8 +62,8 @@ public class Trace {
     			pictoID = PICTO_TABLE.WRITE.stringify();
     		} else if (type.equalsIgnoreCase("connection")){
     			pictoID = PICTO_TABLE.CONNECTION.stringify();
-    		} else if (type.equalsIgnoreCase("deconnection")){
-    			pictoID = PICTO_TABLE.DECONNECTION.stringify();
+    		} else if (type.equalsIgnoreCase("disconnection")){
+    			pictoID = PICTO_TABLE.DISCONNECTION.stringify();
     		}
     	}
     	
@@ -88,7 +88,7 @@ public class Trace {
     		
     	} else if (type.equalsIgnoreCase("Switch")){
     		if(varName.equalsIgnoreCase("switchNumber")){
-    			picto = PICTO_TABLE.SWITCH_STATE_.stringify()+value;
+    			picto = PICTO_TABLE.SINGLE_SWITCH_STATE_.stringify()+value;
     		} else {
     			picto = PICTO_TABLE.SWITCH_TYPE.stringify();
     		}
@@ -133,14 +133,10 @@ public class Trace {
     		}
     		
     	} else if (type.equalsIgnoreCase("SmartPlug")){
-    		if(varName.equalsIgnoreCase("state")){
-    			if(value.equalsIgnoreCase("true")){
-    				picto = PICTO_TABLE.SMARTPLUG_STATE_ON.stringify();
-    			} else {
-    				picto = PICTO_TABLE.SMARTPLUG_STATE_OFF.stringify();
-    			}
-    		} else {
-    			picto = PICTO_TABLE.SMARTPLUG_TYPE.stringify();
+    		if(fullState.getString("plugState").equalsIgnoreCase("true")){
+    			picto = PICTO_TABLE.SMARTPLUG_STATE_ON.stringify();
+    		}else{
+    			picto = PICTO_TABLE.SMARTPLUG_STATE_OFF.stringify();
     		}
     	}
     	
@@ -159,7 +155,7 @@ public class Trace {
     	//TODO add write maintain 
     	USER,
     	CONNECTION,
-    	DECONNECTION,
+    	DISCONNECTION,
     	
     	//Device state icon identifier
     	SWITCH_STATE_,
@@ -167,6 +163,9 @@ public class Trace {
     	SWITCH_STATE_3,
     	SWITCH_STATE_5,
     	SWITCH_STATE_7,
+    	SINGLE_SWITCH_STATE_,
+    	SINGLE_SWITCH_STATE_5,
+    	SINGLE_SWITCH_STATE_7,
     	CONTACT_STATE_ON,
     	CONTACT_STATE_OFF,
     	KEYCARDSWITCH_STATE_IN,
@@ -183,6 +182,7 @@ public class Trace {
     	ILLUMINATION_TYPE,
     	CO2_TYPE,
     	SWITCH_TYPE,
+    	SINGLE_SWITCH_TYPE,
     	CONTACT_TYPE,
     	KEYCARDSWITCH_TYPE,
     	OCCUPANCY_TYPE,
@@ -200,7 +200,7 @@ public class Trace {
 		return PICTO_TABLE.CONNECTION.stringify();
 	}
 
-	public static String getDeconnectionPicto() {
-		return PICTO_TABLE.DECONNECTION.stringify();
+	public static String getDisconnectionPicto() {
+		return PICTO_TABLE.DISCONNECTION.stringify();
 	}
 }

@@ -1,7 +1,12 @@
 <li class="list-group-item">
 	<div>
 		<div class="pull-right label label-success">
-			<span id="selectedMedia" data-i18n="devices.mediaplayer.status.selected">Select a media</span>
+            <% if ( device.get('mediaName')!=undefined ) { %>
+                <span id="playerStatus" data-i18n="devices.mediaplayer.status.<%= device.get('playerStatus') %>" ></span>
+                <span id="selectedMedia" title=" <%= device.get('mediaName') %>" url=" <%= device.get('mediaURL') %>" ><%= device.get('mediaName') %></span>
+            <% } else { %>
+                <span id="selectedMedia" data-i18n="devices.mediaplayer.status.selected">Select a media</span>
+            <% } %>
 		</div>
 		<div>
 			<button type="button" class="btn btn-default btn-sm btn-media-browse" data-target="#media-browser-modal" data-toggle="modal" data-i18n="devices.mediaplayer.action.browse"></button>
@@ -18,3 +23,21 @@
 		</div>
 	</div>
 </li>
+
+<div id="media-browser-modal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>Media Server</h3>
+			</div>
+			<div class="modal-body browser-container">
+				<span>[placeholder]Filebrowser area</span>
+			</div>
+			<div class="modal-footer">
+				<button class="btn cancel-media-browser" data-dismiss="modal" data-i18n="form.cancel-button">Annuler</button>
+				<button class="btn btn-primary media-button valid-media disabled" data-dismiss="modal" data-i18n="form.valid-button">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>

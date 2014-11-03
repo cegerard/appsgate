@@ -89,7 +89,6 @@ public class NodeSeqRules extends Node implements INodeSet {
 
     @Override
     public JSONObject call() {
-        LOGGER.debug("iterator reinited for {}", getProgramName());
         currentNode = null;
         iterator = instructions.iterator();
         setStarted(true);
@@ -107,14 +106,13 @@ public class NodeSeqRules extends Node implements INodeSet {
     @Override
     public void endEventFired(EndEvent e) {
         if (iterator.hasNext()) {
-            LOGGER.trace("###### launching the next sequence of rules...");
             try {
                 launchNextSeqAndRules();
             } catch (Exception ex) {
                 LOGGER.error("Exception caught: {}", ex.getMessage());
             }
         } else {
-            LOGGER.debug("###### SeqThenRules ended...");
+            LOGGER.trace("## No more rule for {}", this);
             setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
@@ -125,12 +123,9 @@ public class NodeSeqRules extends Node implements INodeSet {
      */
     private void launchNextSeqAndRules() {
 
-        LOGGER.debug("CurrentNode : {}", currentNode);
-        LOGGER.debug("Iterator has next: {}", iterator.hasNext());
-
         // get the next sequence of rules to launch
         currentNode = iterator.next();
-        LOGGER.debug("CurrentNode After next : {}", currentNode);
+        LOGGER.trace("Launch rule : {}", currentNode);
 
         if (!isStopping()) {
             // launch the sequence of rules
@@ -156,8 +151,8 @@ public class NodeSeqRules extends Node implements INodeSet {
     }
 
     @Override
-    public String toString() {
-        return "[Node SeqRules: [" + instructions.size() + "]]";
+    public String getTypeSpec() {
+        return "SeqRules: (" + instructions.size() + ")";
     }
 
     @Override

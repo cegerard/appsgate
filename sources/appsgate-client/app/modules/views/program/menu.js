@@ -2,9 +2,8 @@ define([
     "app",
     "text!templates/program/menu/menu.html",
     "text!templates/program/menu/programContainer.html",
-    "text!templates/program/menu/addbutton.html",
-    "text!templates/devices/menu/coreClockContainer.html"
-], function(App, programMenuTemplate, programContainerMenuTemplate, addProgramButtonTemplate, coreClockContainerMenuTemplate) {
+    "text!templates/program/menu/addbutton.html"
+], function(App, programMenuTemplate, programContainerMenuTemplate, addProgramButtonTemplate) {
 
     var ProgramMenuView = {};
     /**
@@ -14,7 +13,6 @@ define([
         tpl: _.template(programMenuTemplate),
         tplProgramContainer: _.template(programContainerMenuTemplate),
         tplAddProgramButton: _.template(addProgramButtonTemplate),
-        tplCoreClockContainer: _.template(coreClockContainerMenuTemplate),
         /**
          * Bind events of the DOM elements from the view to their callback
          */
@@ -23,7 +21,8 @@ define([
             "shown.bs.modal #add-program-modal": "initializeModal",
             "hidden.bs.modal #add-program-modal": "toggleModalValue",
             "click #add-program-modal button.valid-button": "validAddProgram",
-            "keyup #add-program-modal input:text": "validAddProgram"
+            "keyup #add-program-modal input:text": "validAddProgram",
+            "click .deactivate-all-programs-button": "onStopAllPrograms"
         },
         /**
          * Listen to the programs collection updates and refresh if any
@@ -33,8 +32,20 @@ define([
         initialize: function() {
             this.listenTo(programs, "add", this.render);
             this.listenTo(programs, "remove", this.render);
-            this.listenTo(programs, "change", this.render);
-            this.listenTo(devices.getCoreClock(), "change", this.refreshClockDisplay);
+            this.listenTo(programs, "change", this.autoupdate);
+        },
+        autoupdate: function(model) {
+          this.$el.find("#side-" + model.get("id")).replaceWith(this.tplProgramContainer({
+              program: model,
+              active: Backbone.history.fragment.split("/programs")[1] === model.get("name") ? true : false
+          }));
+
+          this.updateSideMenu();
+
+          $(".deactivate-all-programs-button").prop("disabled",programs.allProgramsStopped());
+
+          // translate the view
+          this.$el.i18n();
         },
         /**
          * Update the side menu to set the correct active element
@@ -48,24 +59,11 @@ define([
 
             if (typeof e !== "undefined") {
                 $(e.currentTarget).addClass("active");
-            } else {
+            } else if(Backbone.history.fragment.split("/")[1] !== ""){
                 $("#side-" + Backbone.history.fragment.split("/")[1]).addClass("active");
+            } else {
+                this.$el.find(".list-group .list-group-item:first").addClass("active");
             }
-        },
-        /**
-         * Refreshes the time display without rerendering the whole screen
-         */
-        refreshClockDisplay: function() {
-
-            //remove existing node
-            $(this.$el.find(".list-group")[0]).children().remove();
-
-            //refresh the clock
-            $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                device: devices.getCoreClock(),
-                active: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-            }));
-
         },
         /**
          * Clear the input text, hide the error message, check the checkbox and disable the valid button by default
@@ -178,6 +176,9 @@ define([
             }
           return (program.get("body").rules.length === 1 && program.get("body").rules[0].type === "empty");
         },
+        onStopAllPrograms:function() {
+          programs.stopAllPrograms();
+        },
         /**
          * Render the side menu
          */
@@ -185,31 +186,29 @@ define([
             if (!appRouter.isModalShown) {
                 var self = this;
 
-                // initialize the content
-                this.$el.html(this.tpl());
-
-                // put the time on the top of the menu
-                $(this.$el.find(".list-group")[0]).append(this.tplCoreClockContainer({
-                    device: devices.getCoreClock(),
-                    active: Backbone.history.fragment === "devices/" + devices.getCoreClock().get("id") ? true : false
-                }));
-
-                // "add program" button to the side menu
-                this.$el.append(this.tplAddProgramButton());
-
-                // for each program, add a menu item
-                this.$el.append(this.tpl());
-                var programsDiv = $(self.$el.find(".list-group")[1]);
-
                 // we build a temporary container with each model
                 var container = document.createDocumentFragment();
+
+                // initialize the content
+                $(container).html(this.tpl());
+
+                $(container).append("<button type='button' class='btn btn-info deactivate-all-programs-button'><span data-i18n='programs-menu.deactivate-all-programs'></span></div><br>");
+
+
+                // "add program" button to the side menu
+                $(container).append(this.tplAddProgramButton());
+
+                // for each program, add a menu item
+                $(container).append(this.tpl());
+                var programsDiv = $(container).children(".list-group");
+
                 programs.forEach(function(program) {
                     // hack to make empty programs to appear as invalid
                     if(self.isProgramEmpty(program)){
                       program.set("runningState", "INVALID");
                     }
 
-                    $(container).append(self.tplProgramContainer({
+                    programsDiv.append(self.tplProgramContainer({
                         program: program,
                         active: Backbone.history.fragment.split("/programs")[1] === program.get("name") ? true : false
                     }));
@@ -218,13 +217,12 @@ define([
                 programsDiv.addClass("scrollable-menu");
 
                 // we add all elements all at once to avoid rendering them individually and thus reflowing the dom several times
-                programsDiv.append(container);
-
-                // set active the current menu item
-                this.updateSideMenu();
+                this.$el.html(container);
 
                 // translate the view
                 this.$el.i18n();
+
+                this.$el.find(".deactivate-all-programs-button").prop("disabled",programs.allProgramsStopped());
 
                 // fix the programs list size to be able to scroll through it
                 this.resize(self.$el.find(".scrollable-menu"));

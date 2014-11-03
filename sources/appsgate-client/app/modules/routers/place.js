@@ -1,42 +1,39 @@
 define([
-    "app",
-    "views/place/menu",
-    "views/place/details"
-], function(App, PlaceMenuView, PlaceDetailsView) {
+  "app",
+  "views/place/menu",
+  "views/place/details"
+  ], function(App, PlaceMenuView, PlaceDetailsView) {
 
     var PlaceRouter = {};
     // router
     PlaceRouter = Backbone.Router.extend({
-        routes: {
-            "places": "list",
-            "places/:id": "details"
-        },
-        // list all the places
-        list: function() {
-            // display the side menu
-            appRouter.showMenuView(new PlaceMenuView());
+      routes: {
+        "places": "list",
+        "places/:id": "details"
+      },
+      // list all the places
+      list: function() {
+        // display the side menu
+        appRouter.showMenuView(new PlaceMenuView());
 
-            // set active the first element - displayed by default
-            $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
+        // update the url
+        appRouter.navigate("#places/" + places.at(0).get("id"));
 
-            // display the first place
-            appRouter.showDetailsView(new PlaceDetailsView({model: places.at(0)}));
+        $(".nav-item").removeClass("active");
+        $("#places-nav").addClass("active");
 
-            // update the url
-            appRouter.navigate("#places/" + places.at(0).get("id"));
+        // set active the first element - displayed by default
+        $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
 
-            $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-            $(".breadcrumb").append("<li class='active'><span data-i18n='navbar.places'/></li>");
-            appRouter.translateNavbar();
-        },
-        // show the details of a places (i.e. list of devices in this place)
-        details: function(id) {
-            appRouter.showDetailsView(new PlaceDetailsView({model: places.get(id)}));
-            $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-            $(".breadcrumb").append("<li><a href='#places'><span data-i18n='navbar.places'/></a></li>");
-            $(".breadcrumb").append("<li class='active'><span>" + places.get(id).getName() + "</span></li>");
-            appRouter.translateNavbar();
-        }
+        // display the first place
+        appRouter.showDetailsView(new PlaceDetailsView({model: places.at(0)}));
+
+        dispatcher.trigger("router:loaded");
+      },
+      // show the details of a places (i.e. list of devices in this place)
+      details: function(id) {
+        appRouter.showDetailsView(new PlaceDetailsView({model: places.get(id)}));
+      }
     });
     return PlaceRouter;
-});
+  });

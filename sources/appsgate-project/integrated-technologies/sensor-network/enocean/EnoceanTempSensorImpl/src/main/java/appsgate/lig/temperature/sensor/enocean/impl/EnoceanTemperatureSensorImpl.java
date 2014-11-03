@@ -160,6 +160,7 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 		descr.put("type", userType); //O for temperature sensor
 		descr.put("status", status);
 		descr.put("value", currentTemperature);
+        descr.put("change", "true");
 		descr.put("deviceType", sensorType);
 		
 		return descr;
@@ -199,6 +200,7 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 	public void currentTemperatureChanged (String newTemperatureValue) {
 		logger.info("New temperature value from "+sensorId+"/"+sensorName+", "+newTemperatureValue);
 		notifyChanges("value", newTemperatureValue);
+        notifyChanges("change", "true");
 	}
 	
 	/**

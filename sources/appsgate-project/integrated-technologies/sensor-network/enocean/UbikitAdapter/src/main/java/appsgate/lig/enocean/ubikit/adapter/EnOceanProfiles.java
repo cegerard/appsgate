@@ -73,7 +73,7 @@ public enum EnOceanProfiles {
 	//######## ENOCEAN TEMPERATURE & HYDROMETRA PROFILE
 	
 	EEP_07_04_01("Temperature & hydrometra (0-40°C, 0-100%)", "EnoceanUndefinedSensorImpl"), //NOT SUPPORTED
-	EEP_07_04_02("Temperature & hydrometra (-20-60°C, 0-100%)", "EnoceanUndefinedSensorImpl"), //NOT SUPPORTED
+	EEP_07_04_02("Temperature & hydrometra (-20-60°C, 0-100%)", "EnoceanTemperatureSensorImpl"), //PARTIALLY SUPPORTED (Temperature but not hydrometra)
 	
 	//######## ENOCEAN ENVIRONMENT CONTROLLER PROFILE
 

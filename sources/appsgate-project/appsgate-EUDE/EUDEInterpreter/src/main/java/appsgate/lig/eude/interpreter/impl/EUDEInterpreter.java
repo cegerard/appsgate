@@ -389,7 +389,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         for (CoreEventListener l : mapCoreNodeEvent) {
             if (l.equals(listener)) {
-                LOGGER.debug("Add node event to listener list.");
+                LOGGER.debug("Add node event to listener list: {}", nodeEvent.getEventName());
                 l.addNodeEvent(nodeEvent);
                 return;
             }
@@ -400,7 +400,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         if (!nodeEvent.isProgramEvent()) {
             ehmiProxy.addCoreListener(listener);
         }
-        LOGGER.debug("Add node event listener list.{}", nodeEvent.getEventName());
+        LOGGER.debug("Add node event listener list: {}", nodeEvent.getEventName());
 
     }
 
@@ -417,7 +417,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         for (CoreEventListener l : mapCoreNodeEvent) {
             if (l.equals(listener)) {
-                LOGGER.debug("Add node event to listener list.");
+                LOGGER.trace("Remove node event from listener list: {}", nodeEvent.getEventName());
                 l.removeNodeEvent(nodeEvent);
                 return;
             }

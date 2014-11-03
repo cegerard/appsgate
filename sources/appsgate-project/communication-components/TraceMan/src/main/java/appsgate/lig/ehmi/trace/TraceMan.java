@@ -29,7 +29,7 @@ import appsgate.lig.persistence.MongoDBConfiguration;
  * @author Cedric Gerard
  * @since July 13, 2014
  * @version 1.1.0
- * 
+ *
  * Compliant with the version 4 of trace specification
  */
 public class TraceMan implements TraceManSpec {
@@ -59,90 +59,87 @@ public class TraceMan implements TraceManSpec {
      */
     private MongoDBConfiguration myConfiguration;
 
-
-   /**
-    * Default tracer use to have complete trace history
-    * Only simple trace (no aggregation) are log in.
-    */
-   private TraceHistory dbTracer;
-    
-   /**
-    * Boolean for file tracer activation
-    */
-   private boolean fileTraceActivated = false;
-   
-   /**
-    * Trace log in file use to inspect trace
-    */
-   private TraceHistory fileTracer;
-    
     /**
-     *Boolean for live tracer activation
+     * Default tracer use to have complete trace history Only simple trace (no
+     * aggregation) are log in.
+     */
+    private TraceHistory dbTracer;
+
+    /**
+     * Boolean for file tracer activation
+     */
+    private boolean fileTraceActivated = false;
+
+    /**
+     * Trace log in file use to inspect trace
+     */
+    private TraceHistory fileTracer;
+
+    /**
+     * Boolean for live tracer activation
      */
     private boolean liveTraceActivated = false;
-    
+
     /**
      * Trace log in real time
      */
     private TraceRT liveTracer;
-    
+
     /**
      * The buffer queue for AppsGate simple traces
      */
     private TraceQueue traceQueue;
 
     /**
-     * Last trace time stamp
-     * use to avoid collisions
+     * Last trace time stamp use to avoid collisions
      */
-	private long lastTimeStamp;
-	
-	/**
-	 * Debugger connection name
-	 */
-	private final String DEBUGGER_COX_NAME = "debugger";
-	
-	/**
-	 * Debugger default port connection
-	 */
-	private final int DEBUGGER_DEFAULT_PORT = 8090;
-	
+    private long lastTimeStamp;
+
+    /**
+     * Debugger connection name
+     */
+    private final String DEBUGGER_COX_NAME = "debugger";
+
+    /**
+     * Debugger default port connection
+     */
+    private final int DEBUGGER_DEFAULT_PORT = 8090;
+
     /**
      * The grouping policy
      */
-	private String grouping = "type";
+    private String grouping = "type";
 
-	/**
-	 * The focus identifier
-	 */
-	private String focus = NOFOCUS;
+    /**
+     * The focus identifier
+     */
+    private String focus = NOFOCUS;
 
-	/**
-	 * The focus type
-	 */
-	private String focusType;
+    /**
+     * The focus type
+     */
+    private String focusType;
 
-	/**
-	 * time line delta value for aggregation
-	 */
-	private long timeLineDelta;
+    /**
+     * time line delta value for aggregation
+     */
+    private long timeLineDelta;
 
-	/**
-	 * TraceMan socket state
-	 */
-	private boolean state;
-	
-	/**
-	 * No filtering for traces
-	 * (i.e. all trace are returned)
-	 */
-	public static final String NOFOCUS = "NONE";
+    /**
+     * TraceMan socket state
+     */
+    private boolean state;
+
+    /**
+     * No filtering for traces (i.e. all trace are returned)
+     */
+    public static final String NOFOCUS = "NONE";
 
     /**
      * Called by APAM when an instance of this implementation is created
      */
     public void newInst() {
-        
+
         dbTracer = new TraceMongo(myConfiguration);
         if (!dbTracer.init()) {
             LOGGER.warn("Unable to start the tracer");
@@ -156,93 +153,92 @@ public class TraceMan implements TraceManSpec {
      * Called by APAM when an instance of this implementation is removed
      */
     public void deleteInst() {
-    	
-    	if(traceQueue != null)
-    		traceQueue.stop();
-    	if(fileTracer != null)
-    		fileTracer.close();
-    	
-    	EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
+
+        if (traceQueue != null) {
+            traceQueue.stop();
+        }
+        if (fileTracer != null) {
+            fileTracer.close();
+        }
+
+        EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME);
         dbTracer.close();
     }
 
     /**
-     * Request the trace man instance to trace event.
-     * Add the time stamp to the trace and put it in the queue
-     * 
+     * Request the trace man instance to trace event. Add the time stamp to the
+     * trace and put it in the queue
+     *
      * @param o the event to trace
      */
     private void trace(JSONObject o) {
-    	synchronized(traceQueue) {
-    		try {
-    			o.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
-    			
-    			//Delayed in queue to by aggregate by policy if real time tracing is actived
-    			if(liveTraceActivated || fileTraceActivated) {
-    				traceQueue.offer(o);
-    			}
-    	    	//Simple trace always save in data base
-    	    	dbTracer.trace(o);
-    		} catch (JSONException e) {
-    			e.printStackTrace();
-    		}
-    	}
+        synchronized (traceQueue) {
+            try {
+                o.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
+
+                //Delayed in queue to by aggregate by policy if real time tracing is actived
+                if (liveTraceActivated || fileTraceActivated) {
+                    traceQueue.offer(o);
+                }
+                //Simple trace always save in data base
+                dbTracer.trace(o);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
-    
+
     /**
-     * Send the trace into destinations
-     * Destination can not be dbTracer
-     * 
-     * @param trace the event to write
-     * exception trace time stamp must be greater than
-     * one deltaTinMilis + previous written time stamp value
+     * Send the trace into destinations Destination can not be dbTracer
+     *
+     * @param trace the event to write exception trace time stamp must be
+     * greater than one deltaTinMilis + previous written time stamp value
      */
-    private synchronized void sendTrace(JSONObject trace){
-		try {
-			long timeStamp = trace.getLong("timestamp");
-			
-			if(timeStamp > lastTimeStamp){
-	    		lastTimeStamp = timeStamp;
-	   
-	    		if(liveTraceActivated) {
-	    			liveTracer.trace(trace); //Send trace packet to client side
-	    		}
-	    		
-	    		if(fileTraceActivated) {
-	    			fileTracer.trace(trace); //Save into local file
-	    		}
-	    		
-	    	} else {
-	    		LOGGER.error("Multiple trace request with the same time stamp value: "+timeStamp+". Entry are skipped.");
-	    		throw new Error("Multiple trace request with the same time stamp value. Entry with time stamp "+timeStamp+" are skipped.");
-	    	}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+    private synchronized void sendTrace(JSONObject trace) {
+        try {
+            long timeStamp = trace.getLong("timestamp");
+
+            if (timeStamp > lastTimeStamp) {
+                lastTimeStamp = timeStamp;
+
+                if (liveTraceActivated) {
+                    liveTracer.trace(trace); //Send trace packet to client side
+                }
+
+                if (fileTraceActivated) {
+                    fileTracer.trace(trace); //Save into local file
+                }
+
+            } else {
+                LOGGER.error("Multiple trace request with the same time stamp value: " + timeStamp + ". Entry are skipped.");
+                throw new Error("Multiple trace request with the same time stamp value. Entry with time stamp " + timeStamp + " are skipped.");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
-    
+
     /**
-     * Send an array of traces into the destinations
-     * using sendTrace method
-     * 
+     * Send an array of traces into the destinations using sendTrace method
+     *
      * @param traceArray the event array to write
      */
     public synchronized void sendTraces(JSONArray traceArray) {
-    	int nbTraces = traceArray.length();
-    	
-    	for(int i=0; i < nbTraces; i++ ){
-    		try {
-				sendTrace(traceArray.getJSONObject(i));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-    	}
+        int nbTraces = traceArray.length();
+
+        for (int i = 0; i < nbTraces; i++) {
+            try {
+                sendTrace(traceArray.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
         if (EHMIProxy.getGrammarFromDevice(objectID) != null) { //if the equipment has been instantiated from ApAM spec before
-            JSONObject deviceJson = getJSONDevice(objectID, null, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action ("+command+") using HMI"));
+            JSONObject deviceJson = getJSONDevice(objectID, null, Trace.getJSONDecoration("write", "user", null, objectID, "User trigger this action (" + command + ") using HMI"));
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
@@ -252,41 +248,42 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
-        if (EHMIProxy.getGrammarFromDevice(srcId) != null) { //if the equipment has been instantiated from ApAM spec before
+        GrammarDescription desc = EHMIProxy.getGrammarFromDevice(srcId);
+        if (desc != null && desc.generateTrace()) {
             //Create the event description device entry
             JSONObject event = new JSONObject();
             JSONObject JDecoration = null;
             try {
-            	
-            	if(varName.equalsIgnoreCase("status")) {
-            		if(value.equalsIgnoreCase("2")){
-            			event.put("type", "connection");
-            			event.put("picto", Trace.getConnectionPicto());
-                		JDecoration = Trace.getJSONDecoration("connection", "technical", srcId, null, "Connection");
-                	}else if (value.equalsIgnoreCase("0")) {
-                		event.put("type", "deconnection");
-                		event.put("picto", Trace.getDeconnectionPicto());
-                		JDecoration = Trace.getJSONDecoration("deconnection", "technical", srcId, null, "Deconnection");
-                	} else {
-                		event.put("type", "update");
-                		JDecoration = Trace.getJSONDecoration("error", "technical", srcId, null, "Error dectected");
-                	}
-            	}else{
-            		 event.put("type", "update");
-            		 JDecoration = Trace.getJSONDecoration("update", "technical", srcId, null, "update of "+varName+" to "+ value);
-            	}
-            	
-            	JSONObject jsonState = getDeviceState(srcId, varName, value);
-            	
-            	if(event.getString("type").equalsIgnoreCase("update")){
-            		event.put("picto", Trace.getPictoState(EHMIProxy.getGrammarFromDevice(srcId).getType(), varName, value, jsonState));
-            	}
-            	
+
+                if (varName.equalsIgnoreCase("status")) {
+                    if (value.equalsIgnoreCase("2")) {
+                        event.put("type", "connection");
+                        event.put("picto", Trace.getConnectionPicto());
+                        JDecoration = Trace.getJSONDecoration("connection", "technical", srcId, null, "Connection");
+                    } else if (value.equalsIgnoreCase("0")) {
+                        event.put("type", "disconnection");
+                        event.put("picto", Trace.getDisconnectionPicto());
+                        JDecoration = Trace.getJSONDecoration("disconnection", "technical", srcId, null, "Disconnection");
+                    } else {
+                        event.put("type", "update");
+                        JDecoration = Trace.getJSONDecoration("error", "technical", srcId, null, "Error dectected");
+                    }
+                } else {
+                    event.put("type", "update");
+                    JDecoration = Trace.getJSONDecoration("update", "technical", srcId, null, "update of " + varName + " to " + value);
+                }
+
+                JSONObject jsonState = getDeviceState(srcId, varName, value);
+
+                if (event.getString("type").equalsIgnoreCase("update")) {
+                    event.put("picto", Trace.getPictoState(desc.getType(), varName, value, jsonState));
+                }
+
                 event.put("state", jsonState);
-               
+
             } catch (JSONException e) {
             }
-            
+
             JSONObject deviceJson = getJSONDevice(srcId, event, JDecoration);
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
@@ -295,7 +292,7 @@ public class TraceMan implements TraceManSpec {
         }
     }
 
-	private JSONObject getCoreNotif(JSONObject device, JSONObject program) {
+    private JSONObject getCoreNotif(JSONObject device, JSONObject program) {
         JSONObject coreNotif = new JSONObject();
         try {
             //Create the device tab JSON entry
@@ -325,7 +322,7 @@ public class TraceMan implements TraceManSpec {
         try {
             objectNotif.put("id", srcId);
             objectNotif.put("name", devicePropTable.getName(srcId, ""));
-            GrammarDescription g =  EHMIProxy.getGrammarFromDevice(srcId);
+            GrammarDescription g = EHMIProxy.getGrammarFromDevice(srcId);
             if (g != null) {
                 objectNotif.put("type", g.getType());
             } else {
@@ -341,14 +338,14 @@ public class TraceMan implements TraceManSpec {
             } else {
                 LOGGER.warn("Place not found for this device {}", srcId);
             }
-            
+
             objectNotif.put("location", location);
             objectNotif.put("decorations", new JSONArray().put(cause));
 
-            if(event != null) {
-            	objectNotif.put("event", event);
+            if (event != null) {
+                objectNotif.put("event", event);
             }
-            
+
         } catch (JSONException e) {
 
         }
@@ -365,12 +362,12 @@ public class TraceMan implements TraceManSpec {
         try {
             if (eventType.contentEquals("new")) {
                 event.put("type", "appear");
-                cause = Trace.getJSONDecoration("appear", "technical", srcId, null, "Equipment ("+ name +") appear");
+                cause = Trace.getJSONDecoration("appear", "technical", srcId, null, "Equipment (" + name + ") appear");
                 event.put("state", getDeviceState(srcId, "", ""));
 
             } else if (eventType.contentEquals("remove")) {
                 event.put("type", "disappear");
-                cause = Trace.getJSONDecoration("disappear", "technical", srcId, null, "Equipment ("+name+") disappear");
+                cause = Trace.getJSONDecoration("disappear", "technical", srcId, null, "Equipment (" + name + ") disappear");
             }
 
         } catch (JSONException e) {
@@ -408,69 +405,68 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public JSONArray getTraces(Long timestamp, Integer number) {
-    	JSONArray tracesTab = dbTracer.get(timestamp, number);
-    	if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
-    		return tracesTab;
-    	} else { // Apply aggregation policy
-    		try {
-    			//filteringOnFocus(tracesTab);
-    			traceQueue.stop();
-    			traceQueue.loadTraces(tracesTab);
-				return traceQueue.applyAggregationPolicy(timestamp, null); //Call with default aggregation policy (id and time)
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-    	}
-    	
-    	return tracesTab;
+        JSONArray tracesTab = dbTracer.get(timestamp, number);
+        if (traceQueue.getDeltaTinMillis() == 0) { //No aggregation
+            return tracesTab;
+        } else { // Apply aggregation policy
+            try {
+                //filteringOnFocus(tracesTab);
+                traceQueue.stop();
+                traceQueue.loadTraces(tracesTab);
+                return traceQueue.applyAggregationPolicy(timestamp, null); //Call with default aggregation policy (id and time)
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return tracesTab;
     }
 
     @Override
     public void getTracesBetweenInterval(Long from, Long to, boolean withEventLine, JSONObject request) {
-    	JSONObject requestResult = new JSONObject();
-    	JSONArray tracesTab = dbTracer.getInterval(from, to);
-    	JSONObject result = new JSONObject();
-		try {
-			if(traceQueue.getDeltaTinMillis() == 0){ //No aggregation
-    		
-				result.put("data", tracesTab);
-    			result.put("groups", computeGroupsFromPolicy(tracesTab)); 
-    			if(withEventLine){
-    				result.put("eventline", eventLineComputation(tracesTab, from, to));
-    			}
-				requestResult.put("result", result);
-				requestResult.put("request", request);
-    		
-				EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
-				
-			} else { // Apply aggregation policy
+        JSONObject requestResult = new JSONObject();
+        JSONArray tracesTab = dbTracer.getInterval(from, to);
+        JSONObject result = new JSONObject();
+        try {
+            if (traceQueue.getDeltaTinMillis() == 0) { //No aggregation
 
-    			//filteringOnFocus(tracesTab);
-    			result.put("groups", computeGroupsFromPolicy(tracesTab));
-    			if(withEventLine){
-    				result.put("eventline", eventLineComputation(tracesTab, from, to));
-    			}
-    			traceQueue.stop();
-    			traceQueue.loadTraces(tracesTab);
-    			tracesTab = traceQueue.applyAggregationPolicy(from, null); //Call with default aggregation policy (id and time)
+                result.put("data", tracesTab);
+                result.put("groups", computeGroupsFromPolicy(tracesTab));
+                if (withEventLine) {
+                    result.put("eventline", eventLineComputation(tracesTab, from, to));
+                }
+                requestResult.put("result", result);
+                requestResult.put("request", request);
 
-    			result.put("data", tracesTab);
-    			
-    			requestResult.put("result", result);
-    			requestResult.put("request", request);
-    			
-    			EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+                EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
+
+            } else { // Apply aggregation policy
+
+                //filteringOnFocus(tracesTab);
+                result.put("groups", computeGroupsFromPolicy(tracesTab));
+                if (withEventLine) {
+                    result.put("eventline", eventLineComputation(tracesTab, from, to));
+                }
+                traceQueue.stop();
+                traceQueue.loadTraces(tracesTab);
+                tracesTab = traceQueue.applyAggregationPolicy(from, null); //Call with default aggregation policy (id and time)
+
+                result.put("data", tracesTab);
+
+                requestResult.put("result", result);
+                requestResult.put("request", request);
+
+                EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-	/**
-     * Compute groups to display
-     * By default the type is to make group.
-     * If a focus is define, the gourping policy can be type of dep
-     *  
+    /**
+     * Compute groups to display By default the type is to make group. If a
+     * focus is define, the gourping policy can be type of dep
+     *
      * @param tracesTab the trace tab use to compute group from
      * @return a JSONArray containing each group
      * @throws JSONException
@@ -489,8 +485,8 @@ public class TraceMan implements TraceManSpec {
     	    		ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
     	    		
     	    		for(JSONObject trace : innerTraces){
-    	    			String type = "program"; //Defaut is a program
-    	    			if (trace.has("type")){ //in fact is an equipment
+    	    			String type = "program"; //Defaut it is a program
+    	    			if (trace.has("type")){ //in fact it is an equipment
     	    				type = trace.getString("type");
     	    			}        			
     	    			if(!groupFollower.containsKey(type)){
@@ -520,7 +516,7 @@ public class TraceMan implements TraceManSpec {
     			}
     		}
     			
-    	}else { //Focus required check the kind of focus
+    	} else { //Focus required check the kind of focus
     		
     		if(focusType.equalsIgnoreCase("id")){ //Focus on something (equipment or program)
     			groupFollower.put("focus", new JSONArray().put(focus));
@@ -536,14 +532,28 @@ public class TraceMan implements TraceManSpec {
             	    	for(JSONObject trace : innerTraces){
             	    		JSONArray objs = null;
             	    		
-            	    		if(!trace.getString("id").equalsIgnoreCase(focus) && trace.toString().contains(focus)) { //dep
-            	    			objs = groupFollower.get("dependencies");
-            	    		} else { //others
-            	    			objs = groupFollower.get("others");
-            	    		}
-            	    		
-            	    		if(!objs.toString().contains(trace.getString("id"))){
-            	    			objs.put(trace.get("id"));
+            	    		if(!trace.getString("id").equalsIgnoreCase(focus)){//Not a trace from the focused id
+            	    			if(trace.toString().contains(focus)) { //dep
+            	    				objs = groupFollower.get("dependencies");
+            	    				//Remove dependency id from others array
+            	    				JSONArray others = new JSONArray();
+            	    				for(int j=0; j<groupFollower.get("others").length(); j++){
+            	    					String id = groupFollower.get("others").getString(j);
+            	    					if(!id.equalsIgnoreCase(trace.getString("id")))
+            	    						others.put(id);
+            	    				}
+            	    				groupFollower.put("others", others);
+            	    			} else { //others
+            	    				if(!groupFollower.get("dependencies").toString().contains(trace.getString("id"))) 
+            	    					objs = groupFollower.get("others");
+            	    				else{
+            	    					objs = groupFollower.get("dependencies");
+            	    				}
+            	    			}
+            	    			
+            	    			if(!objs.toString().contains(trace.getString("id"))){ //Check if the id is already in the array
+                	    			objs.put(trace.get("id"));
+                	    		}
             	    		}
             	    	}
         			}
@@ -555,7 +565,7 @@ public class TraceMan implements TraceManSpec {
             	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
             	    	
             	    	for(JSONObject trace : innerTraces){
-            	    		if(!objs.toString().contains(trace.getString("id"))){
+            	    		if(!trace.getString("id").equalsIgnoreCase(focus) && !objs.toString().contains(trace.getString("id"))){
             	    			objs.put(trace.get("id"));
             	    		}
             	    	}
@@ -573,17 +583,30 @@ public class TraceMan implements TraceManSpec {
         	    	
         	    	for(JSONObject trace : innerTraces){
         	    		JSONArray objs = null;
-        	    	
         	    		if(trace.has("location")){ //Equipment
         	    			JSONObject loc = trace.getJSONObject("location");
         	    			
         	    			if(loc.getString("id").equalsIgnoreCase("-1")){
-        	    				objs = groupFollower.get("others");
+        	    				if(!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
+        	    					objs = groupFollower.get("others");
+        	    				else
+        	    					objs = groupFollower.get("focus");
         	    			}else{
         	    				if(loc.getString("name").equalsIgnoreCase(focus)){
         	    					objs = groupFollower.get(focus);
+        	    					//Remove dependency id from others array
+            	    				JSONArray others = new JSONArray();
+            	    				for(int j=0; j<groupFollower.get("others").length(); j++){
+            	    					String id = groupFollower.get("others").getString(j);
+            	    					if(!id.equalsIgnoreCase(trace.getString("id")))
+            	    						others.put(id);
+            	    				}
+            	    				groupFollower.put("others", others);
         	    				}else{
-        	    					objs = groupFollower.get("others");
+        	    					if(!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
+            	    					objs = groupFollower.get("others");
+            	    				else
+            	    					objs = groupFollower.get("focus");
         	    				}	
         	    			}
         	    		}else{ //Program
@@ -607,8 +630,8 @@ public class TraceMan implements TraceManSpec {
         	    	for(JSONObject trace : innerTraces){
         	    		JSONArray objs = null;
         	    	
-        	    		String type = "program"; //Defaut is a program
-        	    		if (trace.has("type")){ //in fact is an equipment
+        	    		String type = "program"; //Defaut it is a program
+        	    		if (trace.has("type")){ //in fact it is an equipment
         	    			type = trace.getString("type");
         	    		}
             			
@@ -629,90 +652,90 @@ public class TraceMan implements TraceManSpec {
     	//Fill the JSONArray with HashMap
     	for(String key : groupFollower.keySet()){
     		JSONObject obj = new JSONObject();
-    		obj.put("name", getDiplayableName(key));
+    		obj.put("name", getIntKey(key));
     		obj.put("members", groupFollower.get(key));
     		groups.put(obj);
     	}
-    	
 		return groups;
 	}
     
     /**
      * Compute the event line for debugger
+     *
      * @param traces default traces tab
      * @param from start time stamp
      * @param to end time stamp
      * @return the event line as a JSONArray
-     * @throws JSONException 
+     * @throws JSONException
      */
     private JSONArray eventLineComputation(JSONArray traces, long from, long to) throws JSONException {
-    	
-    	JSONArray eventLine = new JSONArray();
-    	int size = traces.length();
-    	JSONObject trace;
-    	long beg = from;
-    	long end = from+timeLineDelta;
-    	ArrayList<JSONObject> interval = new ArrayList<JSONObject>();
 
-    	if(size > 0) {
-    	
-    		if(traces.getJSONObject(0).getLong("timestamp") > from){
-    			JSONObject firstEntry = new JSONObject();
-    			firstEntry.put("timestamp", from);
-    			firstEntry.put("value", 0);
-    			eventLine.put(firstEntry);
-    		}
-    		
-    		for(int i=0; i<size; i++){
-    		
-    			trace = traces.getJSONObject(i);
-    			long ts = trace.getLong("timestamp");
-    		
-    			if(ts >= beg && ts < end){
-    				interval.add(trace);
-    			}else{
-    				if(!interval.isEmpty()){
-    					JSONObject entry = new JSONObject();
-    					entry.put("timestamp", beg);
-    					int nbEvent = 0;
-    					for(JSONObject tr : interval){
-    						nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
-    					}
-    					entry.put("value", nbEvent);
-    					eventLine.put(entry);
-    					interval.clear();
-    				}
-    				i--; //Ensure that all trace are placed in time stamp interval
-    				beg = end;
-    				end += timeLineDelta;
-    			}
-    		}
-    	
-    		if(!interval.isEmpty()){
-    			JSONObject entry = new JSONObject();
-    			entry.put("timestamp", beg);
-    			int nbEvent = 0;
-    			for(JSONObject tr : interval){
-    				nbEvent += tr.getJSONArray("programs").length()+tr.getJSONArray("devices").length();
-    			}
-    			entry.put("value", nbEvent);
-    			eventLine.put(entry);
-    		}
-    		
-    	} else {
-    		JSONObject firstEntry = new JSONObject();
-			firstEntry.put("timestamp", from);
-			firstEntry.put("value", 0);
-			eventLine.put(firstEntry);
-    	}
-    	
-    	JSONObject lastEntry = new JSONObject();
-    	lastEntry.put("timestamp", to);
-    	lastEntry.put("value", 0);
-		eventLine.put(lastEntry);
-    	
-    	return eventLine;
-	}
+        JSONArray eventLine = new JSONArray();
+        int size = traces.length();
+        JSONObject trace;
+        long beg = from;
+        long end = from + timeLineDelta;
+        ArrayList<JSONObject> interval = new ArrayList<JSONObject>();
+
+        if (size > 0) {
+
+            if (traces.getJSONObject(0).getLong("timestamp") > from) {
+                JSONObject firstEntry = new JSONObject();
+                firstEntry.put("timestamp", from);
+                firstEntry.put("value", 0);
+                eventLine.put(firstEntry);
+            }
+
+            for (int i = 0; i < size; i++) {
+
+                trace = traces.getJSONObject(i);
+                long ts = trace.getLong("timestamp");
+
+                if (ts >= beg && ts < end) {
+                    interval.add(trace);
+                } else {
+                    if (!interval.isEmpty()) {
+                        JSONObject entry = new JSONObject();
+                        entry.put("timestamp", beg);
+                        int nbEvent = 0;
+                        for (JSONObject tr : interval) {
+                            nbEvent += tr.getJSONArray("programs").length() + tr.getJSONArray("devices").length();
+                        }
+                        entry.put("value", nbEvent);
+                        eventLine.put(entry);
+                        interval.clear();
+                    }
+                    i--; //Ensure that all trace are placed in time stamp interval
+                    beg = end;
+                    end += timeLineDelta;
+                }
+            }
+
+            if (!interval.isEmpty()) {
+                JSONObject entry = new JSONObject();
+                entry.put("timestamp", beg);
+                int nbEvent = 0;
+                for (JSONObject tr : interval) {
+                    nbEvent += tr.getJSONArray("programs").length() + tr.getJSONArray("devices").length();
+                }
+                entry.put("value", nbEvent);
+                eventLine.put(entry);
+            }
+
+        } else {
+            JSONObject firstEntry = new JSONObject();
+            firstEntry.put("timestamp", from);
+            firstEntry.put("value", 0);
+            eventLine.put(firstEntry);
+        }
+
+        JSONObject lastEntry = new JSONObject();
+        lastEntry.put("timestamp", to);
+        lastEntry.put("value", 0);
+        eventLine.put(lastEntry);
+
+        return eventLine;
+    }
 
 //	/**
 //     * Filter trace on focus identifier
@@ -737,20 +760,13 @@ public class TraceMan implements TraceManSpec {
 //    		tracesTab = filteredArray;
 //    	}
 //	}
-
     /**
-     * Moph name with more diplayable string
-     * @param key the group name
-     * @return the morph name from key name
+     * Get the key use for internationalization from a type
+     * @param type the group name
+     * @return the morph name from type to internationalization key
      */
-    private String getDiplayableName(String key) {
-		String displayableName;
-    	
-		String firstChar = key.substring(0, 1).toUpperCase();
-		
-		displayableName = firstChar + key.substring(1) + "s";
-		
-		return displayableName;
+    private String getIntKey(String type) {
+		return "groups."+type;
 	}
 
 	/**
@@ -758,29 +774,29 @@ public class TraceMan implements TraceManSpec {
      * a simple arraylist of JSONbject
      * @param superTrace the super traces from any sources
      * @return an ArrayList<JSONObject> of all inner traces
-     * @throws JSONException 
+     * @throws JSONException
      */
-	private ArrayList<JSONObject> mergeInnerTraces(JSONObject superTrace) throws JSONException {
-		ArrayList<JSONObject> innerTraces = new ArrayList<JSONObject>(); 
-		
-		JSONArray pgms    = superTrace.getJSONArray("programs");
-		JSONArray devices = superTrace.getJSONArray("devices");
-		
-		int nbPgms = pgms.length();
-		int nbDev  = devices.length();
-		
-		for(int i=0; i<nbPgms; i++ ){
-			innerTraces.add(pgms.getJSONObject(i));
-		}
-		
-		for(int j=0; j<nbDev; j++){
-			innerTraces.add(devices.getJSONObject(j));
-		}
-		
-		return innerTraces;
-	}
+    private ArrayList<JSONObject> mergeInnerTraces(JSONObject superTrace) throws JSONException {
+        ArrayList<JSONObject> innerTraces = new ArrayList<JSONObject>();
 
-	private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
+        JSONArray pgms = superTrace.getJSONArray("programs");
+        JSONArray devices = superTrace.getJSONArray("devices");
+
+        int nbPgms = pgms.length();
+        int nbDev = devices.length();
+
+        for (int i = 0; i < nbPgms; i++) {
+            innerTraces.add(pgms.getJSONObject(i));
+        }
+
+        for (int j = 0; j < nbDev; j++) {
+            innerTraces.add(devices.getJSONObject(j));
+        }
+
+        return innerTraces;
+    }
+
+    private JSONObject getJSONProgram(String id, String name, String change, String state, String iid) {
         JSONObject progNotif = new JSONObject();
         try {
             progNotif.put("id", id);
@@ -791,29 +807,28 @@ public class TraceMan implements TraceManSpec {
             JSONObject cause = null;
             {
                 JSONObject s = new JSONObject();
-                
-                if(state.equalsIgnoreCase("deployed")){
-                	 s.put("name", "disabled");
+
+                if (state.equalsIgnoreCase("deployed")) {
+                    s.put("name", "disabled");
                 } else if (state.equalsIgnoreCase("invalid")) {
-                	 s.put("name", state.toLowerCase());
+                    s.put("name", state.toLowerCase());
                 } else {
-                	 s.put("name", "enabled");
+                    s.put("name", "enabled");
                 }
-                
-               
+
                 s.put("instruction_id", iid);
                 event.put("state", s);
                 if (change != null) {
                     if (change.contentEquals("newProgram")) {
                         event.put("type", "appear");
-                        cause = Trace.getJSONDecoration("newProgram", "user", name, null, "Program "+name+" has been added");
+                        cause = Trace.getJSONDecoration("newProgram", "user", name, null, "Program " + name + " has been added");
                     } else if (change.contentEquals("removeProgram")) {
                         event.put("type", "disappear");
-                        cause = Trace.getJSONDecoration("removeProgram", "user", name, null, "Program "+name+" has been deleted");
+                        cause = Trace.getJSONDecoration("removeProgram", "user", name, null, "Program " + name + " has been deleted");
 
                     } else { //change == "updateProgram"
                         event.put("type", "update");
-                        cause = Trace.getJSONDecoration("updateProgram", "user", name, null, "Program "+name+" has been updated");
+                        cause = Trace.getJSONDecoration("updateProgram", "user", name, null, "Program " + name + " has been updated");
                     }
                 }
 
@@ -845,12 +860,12 @@ public class TraceMan implements TraceManSpec {
             }
         }
         try {
-        	if(varName.equalsIgnoreCase("status")){
-        		 deviceState.put("status", value);
-        	} else {
-        		deviceState.put("status", "2");
-        	}
-          
+            if (varName.equalsIgnoreCase("status")) {
+                deviceState.put("status", value);
+            } else {
+                deviceState.put("status", "2");
+            }
+
         } catch (JSONException ex) {
         }
         return deviceState;
@@ -865,162 +880,170 @@ public class TraceMan implements TraceManSpec {
         }
         return getCoreNotif(d, p);
     }
-    
+
     /**
      * Get the current delta time for trace aggregation
+     *
      * @return the delta time in milliseconds
      */
     public long getDeltaT() {
-		return traceQueue.getDeltaTinMillis();
-	}
+        return traceQueue.getDeltaTinMillis();
+    }
 
     /**
      * Set the delta time for traces aggregation
+     *
      * @param deltaTinMillis the new delta time value
      */
-	public void setDeltaT(long deltaTinMillis) {
-		traceQueue.setDeltaTinMillis(deltaTinMillis);
-	}
-	
-	/**
-	 * Set the current time line delta value
-	 * @param timeLineDelta the new time line delta value
-	 */
-	public void setTimeLineDelta(long timeLineDelta) {
-		this.timeLineDelta = timeLineDelta;
-	}
-	
+    public void setDeltaT(long deltaTinMillis) {
+        traceQueue.setDeltaTinMillis(deltaTinMillis);
+    }
+
+    /**
+     * Set the current time line delta value
+     *
+     * @param timeLineDelta the new time line delta value
+     */
+    public void setTimeLineDelta(long timeLineDelta) {
+        this.timeLineDelta = timeLineDelta;
+    }
+
     /**
      * Get the current time line delta time for trace aggregation
+     *
      * @return the delta time in milliseconds
      */
     public long getTimeLineDelta() {
-		return timeLineDelta;
-	}
-	
-	
+        return timeLineDelta;
+    }
+
     /**
      * set the grouping policy
+     *
      * @param order the policy to make group from
      */
-	public void setGroupingOrder(String order) {
-		this.grouping = order;
-	}
+    public void setGroupingOrder(String order) {
+        this.grouping = order;
+    }
 
-	/**
-	 * Set the filtering identifier for trace
-	 * @param focus the identifier use to filter trace
-	 * @param focusType the type of focus (location, type, equipment)
-	 */
-	public void setFocusEquipment(String focus, String focusType) {
-		this.focus = focus;
-		this.focusType = focusType;
-	}
-		
-	@Override
-	public int startDebugger(){
-		//Socket and live trace initialization
-	    if(EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGER_COX_NAME, DEBUGGER_DEFAULT_PORT)){
-	    	this.state = true;
-	        return DEBUGGER_DEFAULT_PORT;
-	    }else {
-	    	if(this.state){
-	    		return DEBUGGER_DEFAULT_PORT;
-	    	}else{
-	    		return 0;
-	    	}
-		}
-	}
+    /**
+     * Set the filtering identifier for trace
+     *
+     * @param focus the identifier use to filter trace
+     * @param focusType the type of focus (location, type, equipment)
+     */
+    public void setFocusEquipment(String focus, String focusType) {
+        this.focus = focus;
+        this.focusType = focusType;
+    }
 
-	@Override
-	public boolean stopDebugger() {
-		if(liveTracer != null){
-			liveTraceActivated = false;
-			liveTracer.close();
-			liveTracer = null;
-		}
-		
-		if(fileTracer != null){
-			fileTraceActivated = false;
-			fileTracer.close();
-			fileTracer = null;
-		}
-		traceQueue.stop();
-		
-		if(EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME)){
-			state = false;
-		}
-		
-		return !state;
-	}
-	
-	/**
-	 * Initiate the live tracer
-	 * @return true if the live tracer is ready, false otherwise
-	 */
-	public boolean initLiveTracer() {
-		liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
-        liveTraceActivated = true;
-        
-        if(!traceQueue.isInitiated()){
-        	traceQueue.initTraceExec();
+    @Override
+    public int startDebugger() {
+        //Socket and live trace initialization
+        if (EHMIProxy.addClientConnexion(new TraceCmdListener(this), DEBUGGER_COX_NAME, DEBUGGER_DEFAULT_PORT)) {
+            this.state = true;
+            return DEBUGGER_DEFAULT_PORT;
+        } else {
+            if (this.state) {
+                return DEBUGGER_DEFAULT_PORT;
+            } else {
+                return 0;
+            }
         }
-        
+    }
+
+    @Override
+    public boolean stopDebugger() {
+        if (liveTracer != null) {
+            liveTraceActivated = false;
+            liveTracer.close();
+            liveTracer = null;
+        }
+
+        if (fileTracer != null) {
+            fileTraceActivated = false;
+            fileTracer.close();
+            fileTracer = null;
+        }
+        traceQueue.stop();
+
+        if (EHMIProxy.removeClientConnexion(DEBUGGER_COX_NAME)) {
+            state = false;
+        }
+
+        return !state;
+    }
+
+    /**
+     * Initiate the live tracer
+     *
+     * @return true if the live tracer is ready, false otherwise
+     */
+    public boolean initLiveTracer() {
+        liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
+        liveTraceActivated = true;
+
+        if (!traceQueue.isInitiated()) {
+            traceQueue.initTraceExec();
+        }
+
         return liveTraceActivated;
-	}
-	
-	/**
-	 * Initiate the file tracer
-	 * @return true if the file tracer is initiated, false otherwise
-	 */
-	public boolean initFileTracer() {
-		fileTracer = new TraceFile();
+    }
+
+    /**
+     * Initiate the file tracer
+     *
+     * @return true if the file tracer is initiated, false otherwise
+     */
+    public boolean initFileTracer() {
+        fileTracer = new TraceFile();
         if (!fileTracer.init()) {
             LOGGER.warn("Unable to start the tracer");
             fileTraceActivated = false;
-        }else{
-        	fileTraceActivated = true;
+        } else {
+            fileTraceActivated = true;
         }
-        
-        if(!traceQueue.isInitiated()){
-        	traceQueue.initTraceExec();
+
+        if (!traceQueue.isInitiated()) {
+            traceQueue.initTraceExec();
         }
-        
+
         return fileTraceActivated;
-	}
+    }
 
-	@Override
-	public JSONObject getStatus() {
-		JSONObject status = new JSONObject();
-		
-		try {
-			status.put("port", DEBUGGER_DEFAULT_PORT);
-			status.put("state", this.state);
-			
-			String mode = "history";
-			if(fileTraceActivated){
-				mode += "file ";
-			}
-			
-			if(liveTraceActivated){
-				mode += "live ";
-			}
-			
-			status.put("mode", mode);
-			
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-		return status;
-	}
+    @Override
+    public JSONObject getStatus() {
+        JSONObject status = new JSONObject();
 
-	/**
-	 * Get the systeme current time in milliseconds
-	 * @return the current time as a long
-	 */
-	public long getCurrentTimeInMillis() {
-		return EHMIProxy.getCurrentTimeInMillis();
-	}
+        try {
+            status.put("port", DEBUGGER_DEFAULT_PORT);
+            status.put("state", this.state);
+
+            String mode = "history";
+            if (fileTraceActivated) {
+                mode += "file ";
+            }
+
+            if (liveTraceActivated) {
+                mode += "live ";
+            }
+
+            status.put("mode", mode);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return status;
+    }
+
+    /**
+     * Get the systeme current time in milliseconds
+     *
+     * @return the current time as a long
+     */
+    public long getCurrentTimeInMillis() {
+        return EHMIProxy.getCurrentTimeInMillis();
+    }
 
 }

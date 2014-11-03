@@ -25,6 +25,7 @@ define([
       }
 
       self.set("reset", false);
+      self.set("hidden", true);
 
       // when the flow rate changes, update the interval that controls the local time
       this.on("change:flowRate", function() {
@@ -89,7 +90,7 @@ define([
       if(this.anchorSysTime){
         var delta_ms = ((new Date()).getTime() - this.anchorSysTime) * parseInt(this.get("flowRate"));
         var ms = this.anchorTime + delta_ms;
-        this.set("moment", moment(ms), {clockRefresh:true});
+        this.set("moment", moment(ms));
         this.updateClockDisplay();
       }
     },
@@ -171,7 +172,7 @@ define([
 	 * @returns event template for clock
 	 */
 	getTemplateEvent: function() {
-	  return _.template(EventTemplate); 
+	  return _.template(EventTemplate);
 	},
 
     /**
@@ -181,7 +182,7 @@ define([
       this.remoteControl("setCurrentTimeInMillis", [{ type : "long", value : this.get("moment").valueOf() }]);
     },
     resetClock:function() {
-          this.remoteControl("resetClock", []);
+          this.remoteControl("resetSystemTime", []);
     },
 
     /**

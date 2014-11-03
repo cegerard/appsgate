@@ -12,7 +12,6 @@ define([
             this.grammar = this.build(grammar);
         },
         build: function(g) {
-            console.log("Building the parser...");
             try {
                 this.parser = PEG.buildParser(g, {
                     cache: false,
@@ -24,6 +23,20 @@ define([
             }
             return null;
         },
+		
+		/**
+		 * Method that return the id selected depending whether the program is correct or not
+		 */
+		getCurrentNode: function(jsonObj, id) {
+			var n = this.parse(jsonObj, id);
+			if (n != null) {
+				return n.id;
+			} else {
+				return id;
+			}
+
+		},
+		
         parse: function(jsonObj, currentNode) {
             try {
                 if (jsonObj) {
@@ -52,6 +65,9 @@ define([
             }
             return e;
         },
+		/**
+		 *
+		 */
 		parseNode: function(obj, currentNode) {
             if (typeof obj == "string") {
                 console.log("String found");
@@ -104,9 +120,14 @@ define([
                   }
             }
             return type + args;
-        }
-
-
+        },
+		/**
+		 * Function that returns true if the program is empty, false otherwise
+		 */
+		isProgramEmpty: function (jsonObj) {
+			var s = this.parseNode(jsonObj, -1);
+			return ! /stopMyself|action|keepState/.test(s);
+		}
 
     });
     return ProgramGrammar;

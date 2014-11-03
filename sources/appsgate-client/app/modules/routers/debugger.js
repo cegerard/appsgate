@@ -22,6 +22,10 @@ define([
 
             $("#main").html(appRouter.navbartemplate());
 
+            appRouter.navigate("#debugger/all");
+            $(".nav-item").removeClass("active");
+            $("#home-nav").addClass("active");
+
             appRouter.currentMenuView = new DebuggerView({el:$("#main")});
             appRouter.currentMenuView.render();
 
@@ -31,23 +35,13 @@ define([
             $(".controlmenu").circleMenu({
                 trigger: "click",
                 item_diameter: 50,
-                circle_radius: 150,
+                circle_radius: 75,
                 direction: 'top-right'
             });
 
-            $(".navmenu").circleMenu({
-                trigger: "click",
-                item_diameter: 50,
-                circle_radius: 150,
-                direction: 'top'
-            });
+            $("body").i18n();
 
-            appRouter.navigate("#debugger/all");
-
-            $(".breadcrumb").html("<li><a href='#home'><span data-i18n='navbar.home'/></a></li>");
-            $(".breadcrumb").append("<li><a href='#debugger'><span data-i18n='navbar.debugger'/></a></li>");
-            $(".breadcrumb").append("<li class='active'><span data-i18n='debugger.all'/></li>");
-            appRouter.translateNavbar();
+            dispatcher.trigger("router:loaded");
         }
     });
     return DebuggerRouter;

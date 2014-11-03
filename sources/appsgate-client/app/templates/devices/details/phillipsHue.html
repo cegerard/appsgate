@@ -1,6 +1,9 @@
+<head>
+    <script type="text/javascript" src="./vendor/colorwidget/loadcolor.js"></script>
+</head>
 <li class="list-group-item">
 	<strong data-i18n="devices.state-label"></strong>
-	<div class="pull-right">
+	<div id="lamp-status" class="pull-right">
 	<% if (device.get("value") === "true" || device.get("value") === true) { %>
 	<span class="label label-yellow" data-i18n="devices.lamp.status.turnedOn"></span>
 	<% } else { %>
@@ -8,18 +11,36 @@
 	<% } %>
 	</div>
 </li>
-<li class="list-group-item">
-	<strong data-i18n="devices.controls-label"></strong>
-	<div class="pull-right">
+
+<li class="list-group-item" style="padding-top:10px;height:50px;">
+    <strong data-i18n="devices.controls-label"></strong>
+    <div class="pull-right">
         <button type="button" id="<%= device.get('id') %>" class="btn btn-info btn-sm blink-lamp-button" data-i18n="devices.lamp.action.blink"></button>
 
-		<button type="button" class="btn btn-info btn-sm toggle-lamp-button">
-			<% if (device.get("value") === "true" || device.get("value") === true) { %>
-				<span data-i18n="devices.lamp.action.turnOff"></span>
-			<% } else { %>
-				<span data-i18n="devices.lamp.action.turnOn"></span>
-			<% } %>
-		</button>
-	</div>
-    <div class="color-picker center"></div>
+        <button id="lamp-button" type="button" class="btn btn-info btn-sm toggle-lamp-button">
+            <% if (device.get("value") === "true" || device.get("value") === true) { %>
+            <span data-i18n="devices.lamp.action.turnOff"></span>
+            <% } else { %>
+            <span data-i18n="devices.lamp.action.turnOn"></span>
+            <% } %>
+        </button>
+    </div>
 </li>
+<li class="list-group-item" style="height:450px;">
+    <span data-i18n="devices.lamp.complement.color"></span>
+    <div style="position: relative; width: 60%; margin-left: auto;margin-right: auto;" >
+        <style scoped>
+            @import "./vendor/colorwidget/style.css";
+        </style>
+        <div style="margin-top:30px;">
+                <div class="picker-colors" style="background-color: rgb(0, 238, 255);">
+                    <div class="picker-colorPicker" onmouseup="colorchanged();"  style="left: -5px; top: 354px;"></div>
+                </div>
+                <div class="picker-hues">
+                    <div class="picker-huePicker" onmouseup="colorchanged();" style="top: 175px;"></div>
+                </div>
+                <div class="picker_h" id="colorbg" style="background-color: rgb(0, 0, 0);"></div>
+        </div>
+    </div>
+</li>
+

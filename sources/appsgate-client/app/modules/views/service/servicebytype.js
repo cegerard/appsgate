@@ -1,8 +1,9 @@
 define([
     "app",
     "text!templates/services/list/servicesListByCategory.html",
+    "text!templates/services/list/mail.html",
     "models/service/weather"
-], function(App, serviceListByCategoryTemplate, Weather) {
+], function(App, serviceListByCategoryTemplate, mailTemplate, Weather) {
 
     var ServiceByTypeView = {};
     /**
@@ -10,13 +11,20 @@ define([
      */
     ServiceByTypeView = Backbone.View.extend({
         tpl: _.template(serviceListByCategoryTemplate),
+        mailTpl: _.template(mailTemplate),
         events: {
             "keyup #add-weather-modal input": "validWeatherName",
             "click #add-weather-modal button.valid-button": "addWeatherName",
+            "keyup #edit-mail-modal input": "validMail",
+            "click #edit-mail-modal button.valid-button": "updateMail",
             "click button.see-meteo": "openMeteo",
+            "click button.update-mail" : "updateMailButton",
             "click button.delete-weather-button": "onDeleteWeatherButton",
-            "click button.delete-popover": "onClickDeleteWeather",
-            "click button.cancel-delete-weather-button": "onCancelDeleteWeather"
+            "click button.delete-weather": "onClickDeleteWeather",
+            "click button.delete-mail": "onClickDeleteMail",
+            "click button.delete-mail-button": "onDeleteMailButton",
+            "click button.cancel-delete-mail-button": "onCancelDeletePopover",
+            "click button.cancel-delete-weather-button": "onCancelDeletePopover"
         },
         /**
          * Listen to the updates on the services of the category and refresh if any
@@ -30,6 +38,9 @@ define([
                 self.listenTo(service, "change", self.render);
                 self.listenTo(service, "remove", self.render);
             });
+
+            self.listenTo(services, "add", self.reload);
+
             dispatcher.on("checkLocation", function(l) {
 
                 if (l!= undefined ) {
@@ -42,6 +53,15 @@ define([
                             select: function( event, ui ) {
                                 $("#add-weather-modal .valid-button").removeClass("disabled");
                                 $("#add-weather-modal .valid-button").removeClass("valid-disabled");
+                                $( "#weatherInput" ).val( ui.item.label );
+                                $( "#WOEID" ).val( ui.item.woeid );
+                                $( "#NAME" ).val( ui.item.name );
+                                return false;
+                            },
+                            focus: function( event, ui ) {
+                                $("#add-weather-modal .valid-button").removeClass("disabled");
+                                $("#add-weather-modal .valid-button").removeClass("valid-disabled");
+                                $( "#weatherInput" ).val( ui.item.label );
                                 $( "#WOEID" ).val( ui.item.woeid );
                                 $( "#NAME" ).val( ui.item.name );
                                 return false;
@@ -54,21 +74,30 @@ define([
                 }
             });
         },
+        reload: function() {
+            self = this;
+          services.getServicesByType()[this.id].forEach(function(service) {
+              self.listenTo(service, "change", self.render);
+              self.listenTo(service, "remove", self.render);
+          });
+
+          this.render();
+        },
         /**
          * Render the list
          */
         render: function() {
             if (!appRouter.isModalShown) {
-                this.$el.html(this.tpl({
-                    type: this.id,
-                    places: places
-                }));
-//                this.$(".delete-popover").popover({
-//                    html: true,
-//                    content: "<button type='button' class='btn btn-danger delete-meteo-button'>" + $.i18n.t("form.delete-button") + "</button>",
-//                    placement: "bottom"
-//                });
-
+                if (this.id === "102") {
+                    this.$el.html(this.mailTpl({
+                        mail: services.getServicesByType()[this.id][0]
+                    }));
+                } else {
+                    this.$el.html(this.tpl({
+                        type: this.id,
+                        places: places
+                    }));
+                }
 
                 // translate the view
                 this.$el.i18n();
@@ -101,13 +130,13 @@ define([
         },
 
         addWeatherName: function() {
-            //var loc = $("#add-weather-modal input[name='woeid']").val();
             // instantiate the place and add it to the collection after the modal has been hidden
             $("#add-weather-modal").on("hidden.bs.modal", function() {
                 // instantiate a model for the new location observer
                 var loc = $("#add-weather-modal input[name='name']").val();
-                var weather = new Weather({location	: loc, id	: 'Weather-Observer-'+loc, name : loc});
-
+//                var weather = new Weather({location	: loc, id	: 'WeatherObserver-'+Math.round(Math.random() * 10000).toString(), name : loc, type :"103"});
+                var weather = new Weather({location	: loc, id	: 'WeatherObserver-'+loc, name : loc, type :"103"});
+                services.create(weather);
                 weather.save();
 
                 // tell the router that there is no modal any more
@@ -116,14 +145,14 @@ define([
             });
 
             // hide the modal
-            
+
             $("#add-weather-modal").modal("hide");
         },
         /**
          * Callback to delete the weather place
          */
         onDeleteWeatherButton: function(e) {
-            var weatherObserver = services.get($(e.currentTarget).parents(".pull-right").children(".delete-popover").attr("id"));
+            var weatherObserver = services.get($(e.currentTarget).parents(".pull-right").children(".delete-weather").attr("brickid"));
             weatherObserver.destroy();
             appRouter.navigate("#services/types/103", {trigger: true});
 
@@ -131,20 +160,17 @@ define([
         /**
           * Callback when the user has clicked on the button to cancel the deleting or click out of the popover.
           */
-        onCancelDeleteWeather : function() {
-            console.log("cancel");
+        onCancelDeletePopover : function() {
             // destroy the popover
-            this.$el.find(".delete-popover").popover('destroy');
+            this.$el.find(".delete-weather").popover('destroy');
         },
         /**
           * Callback when the user has clicked on the button delete.
           */
         onClickDeleteWeather : function(e) {
-            e.preventDefault();
-            console.log("click delete");
             var self = this;
             // create the popover
-            var weatherObserverID = $(e.currentTarget).parents(".pull-right").children(".delete-popover").attr("id");
+            var weatherObserverID = $(e.currentTarget).parents(".pull-right").children(".delete-weather").attr("id");
             this.$el.find("#" + weatherObserverID).popover({
                 html: true,
                 title: $.i18n.t("services.weather.warning-weather-delete"),
@@ -153,9 +179,8 @@ define([
             });
             // listen the hide event to destroy the popup, because it is created to every click on Edit
             this.$el.find("#" + weatherObserverID).on('hidden.bs.popover', function () {
-                self.onCancelDeleteWeather();
+                self.onCancelDeletePopover();
             });
-            console.log("show");
             // show the popup
             this.$el.find("#" + weatherObserverID).popover('show');
         },
@@ -164,9 +189,92 @@ define([
          */
         openMeteo: function(e) {
             e.preventDefault();
-            var actuator = services.get($(e.currentTarget).attr("id"));
+            var actuator = services.get($(e.currentTarget).attr("brickid"));
             window.open(actuator.attributes.presentationURL);
+        },
+                /**
+          * Callback when the user has clicked on the button delete.
+          */
+        onClickDeleteMail : function(e) {
+            e.preventDefault();
+            var self = this;
+            // create the popover
+            var id = $(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("id");
+            this.$el.find("#" + id).popover({
+                html: true,
+                title: $.i18n.t("services.mail.warning-delete"),
+                content: "<div class='popover-div'><button type='button' class='btn btn-default cancel-delete-mail-button'>" + $.i18n.t("form.cancel-button") + "</button><button type='button' class='btn btn-danger delete-mail-button'>" + $.i18n.t("form.delete-button") + "</button></div>",
+                placement: "bottom"
+            });
+            // listen the hide event to destroy the popup, because it is created to every click on Edit
+            this.$el.find("#" + id).on('hidden.bs.popover', function () {
+                self.onCancelDeletePopover();
+            });
+            // show the popup
+            this.$el.find("#" + id).popover('show');
+        },
+        /**
+         * Callback to delete favorite mail
+         */
+        onDeleteMailButton: function(e) {
+            mail = services.getServicesByType()["102"][0];
+            mail.removeFavorite($(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email"));
+            $("#mailFavCnt").html(mail.getNumberOfFavorites());
+            this.reload();
+
+        },
+
+        /**
+         *
+         */
+        updateMailButton : function(e) {
+            var m = $(e.currentTarget).parents(".pull-right").children(".delete-mail").attr("email");
+            $("#edit-mail-modal input[name='oldValue']").val(m);
+            $("#edit-mail-modal input[name='inputValue']").val(m);
+            $("#edit-mail-modal").modal("show");
+
+        },
+        /**
+         *
+         */
+        validMail: function(e) {
+            var mail = $("#edit-mail-modal input[name='inputValue']").val();
+            var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (regex.test(mail)) {
+                $("#edit-mail-modal .valid-button").removeClass("disabled");
+                $("#edit-mail-modal .valid-button").removeClass("valid-disabled");
+                $("#edit-mail-modal .text-danger").addClass("hide");
+            } else {
+                $("#edit-mail-modal .valid-button").addClass("disabled");
+                $("#edit-mail-modal .valid-button").addClass("valid-disabled");
+                $("#edit-mail-modal .text-danger").removeClass("hide");
+            }
+        },
+
+        updateMail: function() {
+            mail = services.getServicesByType()["102"][0];
+            self = this;
+
+            $("#edit-mail-modal").on("hidden.bs.modal", function() {
+                // instantiate a model for the new location observer
+                var oldMail = $("#edit-mail-modal input[name='oldValue']").val();
+                var newMail = $("#edit-mail-modal input[name='inputValue']").val();
+                $("#edit-mail-modal input[name='oldValue']").val("");
+
+                mail.updateFavorite(oldMail, newMail);
+
+                
+                // tell the router that there is no modal any more
+                appRouter.isModalShown = false;
+                $("#mailFavCnt").html(mail.getNumberOfFavorites());
+                self.reload();
+            });
+
+            // hide the modal
+
+            $("#edit-mail-modal").modal("hide");
         }
+
     });
     return ServiceByTypeView;
 });

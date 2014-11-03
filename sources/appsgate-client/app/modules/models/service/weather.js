@@ -21,7 +21,7 @@ define([
             Weather.__super__.initialize.apply(this, arguments);
 
             // setting default friendly name if none exists
-            if (this.get("name") === "") {
+            if (this.get("name") == undefined  || this.get("name") === "") {
                 this.set("name", this.get("location"));
             }
         },
