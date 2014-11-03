@@ -166,12 +166,9 @@ define([
                         .attr("refX", -30);
 
 
-                    d3.select(this).append("text")
-                        .attr("class", "linklabel")
-                        .style("font-size ", "13px ")
-                        .attr("x", "50")
-                        .attr("y", "20 ")
-                        .attr("text-anchor", "middle ")
+                    d3.select(this).append("circle")
+                        .attr("r", 3)
+                        .attr("fill", "red");
                 });
 
 
@@ -266,6 +263,14 @@ define([
                 })
                 .classed("targeting", function (d) {
                     return d.target === self.model.get("rootNode");
+                });
+
+            pathLink.select("circle")
+                .attr("cx", function (l) {
+                    return (l.source.x + l.target.x) / 2;
+                })
+                .attr("cy", function (l) {
+                    return (l.source.y + l.target.y) / 2;
                 });
         },
 
