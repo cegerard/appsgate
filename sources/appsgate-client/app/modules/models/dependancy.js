@@ -38,9 +38,10 @@ define([
             });
 
             self.on("change:rootNode", function (model) {
+                var reverseMap = self.buildReverseDepthNeigborsMap(self.buildDepthNeighborsMap(model.get("rootNode"),
+                    model.get("entities")));
                 model.set({
-                    mapDepthNeighbors: self.buildDepthNeighborsMap(model.get("rootNode"),
-                        model.get("entities"))
+                    mapDepthNeighbors: reverseMap
                 });
             });
         },
@@ -136,6 +137,20 @@ define([
         },
 
         /**
+         * Create a reverse map : <node:depth> to access directly to the depth of a node
+         */
+        buildReverseDepthNeigborsMap: function (mapDepthNeighbors) {
+            var newReverseMapDepthNeighbors = new Object();
+            for (var i = 0; i < mapDepthNeighbors.length; i++) {
+                for (var j = 0; j < mapDepthNeighbors[i].length; j++) {
+                    newReverseMapDepthNeighbors[mapDepthNeighbors[i][j].id] = new Object();
+                    newReverseMapDepthNeighbors[mapDepthNeighbors[i][j].id] = i;
+                }
+            }
+            return newReverseMapDepthNeighbors;
+        },
+
+        /**
          * Return true if the entities a & b are neighbors
          */
         neighboring: function (a, b) {
@@ -148,15 +163,7 @@ define([
          * @param: Node target
          */
         getDepthNeighbor: function (node) {
-            var mapDepthNeighbors = this.get("mapDepthNeighbors");
-            for (var i = 0; i < mapDepthNeighbors.length; i++) {
-                for (var j = 0; j < mapDepthNeighbors[i].length; j++) {
-                    if (mapDepthNeighbors[i][j].id === node.id) {
-                        return i;
-                    }
-                }
-            }
-            return -1;
+            return (this.get("mapDepthNeighbors")[node.id] !== undefined) ? this.get("mapDepthNeighbors")[node.id] : -1;
         },
 
         /**
