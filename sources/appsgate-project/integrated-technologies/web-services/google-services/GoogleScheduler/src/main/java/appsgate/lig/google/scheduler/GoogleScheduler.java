@@ -535,13 +535,20 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 					+ programId
 					+ "\n";
 		}
-		if(stopOnEnd) {
+		if(stopOnEnd && startOnBegin) {
 			description += GoogleEvent.ON_END
 					+ ScheduledInstruction.SEPARATOR
 					+ ScheduledInstruction.STOP_PROGRAM
 					+ ScheduledInstruction.SEPARATOR
 					+ programId
 					+ "\n";
+		}else if (stopOnEnd && !startOnBegin) {
+				description += GoogleEvent.ON_BEGIN
+						+ ScheduledInstruction.SEPARATOR
+						+ ScheduledInstruction.STOP_PROGRAM
+						+ ScheduledInstruction.SEPARATOR
+						+ programId
+						+ "\n";
 		}
 
 		content.put("description", description);

@@ -71,7 +71,8 @@ public interface SchedulerSpec extends AlarmEventObserver{
 
 	/**
 	 * Create a basic Calendar Event, at AppsGate Clock Time, to schedule the start or stop of a program
-	 * The Event is created just one hour before current Time, and last for 30 minutes  
+	 * The Event is created just one hour before current Time, and last for 30 minutes
+	 * Changed specification, if start is false AND stop is true, then the program should stop at the beginning of the event
 	 * @param eventName is the name as it will appear in the Calendar
 	 * @param programId is not checked, but should be a VALID program ID referenced by EUDE Inteprpreter
 	 * @param startOnBegin if program should start when Event begin
