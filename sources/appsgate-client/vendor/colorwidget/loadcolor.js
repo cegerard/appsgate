@@ -1,3 +1,6 @@
+var decLength = 1000;
+var colorHex = "ABCDEF";
+
 function insertColorByHex(c) {
     c = expandHex(c);
     if (c != null) {
@@ -501,76 +504,4 @@ function hsv2rgb(j) {
     }
     return{r: Math.round(a * 255), g: Math.round(k * 255), b: Math.round(m * 255)}
 }
-var decLength = 1000;
-var colorHex = "ABCDEF";
-var colorHSB = hex2hsb(colorHex);
-$(document).ready(function () {
-    moveColorByHex(colorHex);
-    $moving = "colors";
-    $mousebutton = 0;
-    $(document).bind("mousedown touchstart", function (a) {
-        if ($(a.target).parents().andSelf().hasClass("picker-colors")) {
-            a.preventDefault();
-            $mousebutton = 1;
-            $moving = "colors";
-            moveColor(a)
-        }
-        if ($(a.target).parents().andSelf().hasClass("picker-hues")) {
-            a.preventDefault();
-            $mousebutton = 1;
-            $moving = "hues";
-            moveHue(a)
-        }
-    }).bind("mouseup touchend", function (a) {
-        a.preventDefault();
-        $mousebutton = 0;
-        $moving = ""
-    }).bind("mousemove touchmove", function (a) {
-        a.preventDefault();
-        if ($mousebutton == 1) {
-            if ($moving == "colors") {
-                moveColor(a)
-            }
-            if ($moving == "hues") {
-                moveHue(a)
-            }
-        }
-    });
-    numeralHEX($("#colorhex"));
-    numeral($("#colorR"), 255, "RGB");
-    numeral($("#colorG"), 255, "RGB");
-    numeral($("#colorB"), 255, "RGB");
-    numeral($("#colorH"), 360, "HSV");
-    numeral($("#colorS"), 100, "HSV");
-    numeral($("#colorV"), 100, "HSV");
-    numeral($("#colorC"), 100, "CMYK");
-    numeral($("#colorM"), 100, "CMYK");
-    numeral($("#colorY"), 100, "CMYK");
-    numeral($("#colorK"), 100, "CMYK");
-    $("#go").bind("click", function (event) {
-        a = expandHex($("#insertHex").val());
-        if (a != null) {
-            moveColorByHex(a);
-            $("#insertHex").val("#" + a);
-        }
-    });
-    $("#btnList").bind("click", function (event) {
-        insertColorByHex($("#colorhex").val());
-    });
-});
 
-
-function colorchanged(){
-    var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
-    var rgb = $(".picker_h").css("background-color");
-    var hsl = Raphael.rgb2hsl(rgb);
-    lamp.set({"color": Math.round(hsl.h * 65535), "saturation": Math.round(hsl.s * 255), "brightness": Math.round(hsl.l * 255)});
-    lamp.sendColor(Math.round(hsl.h * 65535));
-    lamp.sendSaturation(Math.round(hsl.s * 255));
-    lamp.sendBrightness(Math.round(hsl.l * 255));
-}
-
-$(document).ready(function () {
-    var lamp = devices.get(Backbone.history.fragment.split("/")[1]);
-    moveColorByHex(expandHex(lamp.getCurrentColor()));
-});

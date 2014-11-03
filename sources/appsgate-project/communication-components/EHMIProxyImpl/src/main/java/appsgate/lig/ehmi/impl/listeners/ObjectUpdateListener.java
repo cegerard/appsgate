@@ -59,7 +59,9 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 
     @Override
     public void notifyUpdate(String coreType, String objectId, String userType, JSONObject description, JSONObject behavior) {
-        logger.debug("Update core notification received for: " + objectId);
+        logger.trace("notifyUpdate(String coreType : {}, String objectId : {}"
+        		+ ", String userType: {}, JSONObject description: {}, JSONObject behavior: {})",
+        		coreType, objectId, userType, description, behavior);
         this.coreType = coreType;
         this.userType = userType;
         this.behavior = behavior;

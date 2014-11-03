@@ -261,6 +261,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				JSONArray devicesArray = coreProxy.getDevices();
 				for (int i = 0; i < devicesArray.length(); i++) {
 					try {
+						logger.trace("synchroCoreProxy(), synchro for : "+devicesArray.getJSONObject(i).toString());
 						if(devicesArray.getJSONObject(i).has("type")
 								&& devicesArray.getJSONObject(i).has("id")) {
 							logger.trace("adding device : "+devicesArray.getJSONObject(i));
@@ -282,7 +283,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 				if (coreProxy.CoreEventsSubscribe(objectEventsListener)) {
 					logger.debug("Core event listener deployed.");
-					systemClock.startRemoteSync(coreProxy);
 				} else {
 					logger.error("Core event deployement failed.");
 				}
@@ -291,6 +291,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				} else {
 					logger.error("Core updates listener deployement failed.");
 				}
+				systemClock.startRemoteSync(coreProxy);
+
 
 			} catch (CoreDependencyException coreException) {
 				logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
@@ -463,6 +465,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public boolean addGrammar(String deviceId, String deviceType,
 			GrammarDescription grammarDescription) {
+		logger.trace("addGrammar(String deviceId : {}, String deviceType : {},"+
+			"GrammarDescription grammarDescription : {})",
+			deviceId, deviceType, grammarDescription);
 		return devicePropertiesTable.addGrammarForDevice(deviceId, deviceType,
 				grammarDescription);
 	}
@@ -893,6 +898,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * @return the new contextual enrich JSONObject
 	 */
 	public JSONObject addContextData(JSONObject object, String objectId) {
+		logger.trace("addContextData(JSONObject object : {}, String objectId : {})", object,objectId);
 		try {
 			object.put("placeId", getCoreObjectPlaceId(objectId));
 			object.put("name", getUserObjectName(objectId, ""));
@@ -912,7 +918,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	public JSONArray addContextData(JSONArray objects) {
 		try {
 			for(int i = 0; i< objects.length() && objects.optJSONObject(i)!=null; i++) {
-				logger.trace("Trying to add : "+objects.optJSONObject(i)+"...");
+				logger.trace("addContextData((JSONArray objects), trying to add) : "+objects.optJSONObject(i)+"...");
 				if( objects.optJSONObject(i).has("id")) {
 					addContextData(objects.optJSONObject(i),
 							objects.optJSONObject(i).getString("id"));

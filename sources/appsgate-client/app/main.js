@@ -59,7 +59,7 @@ require(["config"], function() {
                 }, 0);
             }
         };
-
+        
         domReady(function() {
             function onDeviceReady(desktop) {
                 console.log("device ready, initializing application...");
