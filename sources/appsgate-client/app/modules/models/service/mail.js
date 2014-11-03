@@ -131,7 +131,7 @@ define([
           if (v[t].mail === old) {
               v[t].mail = which;
               this.setFavorites(v);
-              return;
+              break;
           }
         }
       }
