@@ -151,7 +151,7 @@ define([
             var mapDepthNeighbors = this.get("mapDepthNeighbors");
             for (var i = 0; i < mapDepthNeighbors.length; i++) {
                 for (var j = 0; j < mapDepthNeighbors[i].length; j++) {
-                    if (mapDepthNeighbors[i][j].index === node.index) {
+                    if (mapDepthNeighbors[i][j].id === node.id) {
                         return i;
                     }
                 }
@@ -182,7 +182,7 @@ define([
             var self = this;
 
             var newEntities = self.get("entities").filter(function (e) {
-                                return _.contains(self.get("currentEntitiesTypes"), e.type);
+                return _.contains(self.get("currentEntitiesTypes"), e.type);
             });
             self.set({
                 currentEntities: newEntities
@@ -342,7 +342,7 @@ define([
                     return n === e.target;
                 })[0];
 
-                        if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
+            if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
                 newLinks.push({
                     source: sourceNode,
                     target: targetNode,
