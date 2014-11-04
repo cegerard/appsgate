@@ -521,7 +521,6 @@ body {
   border: 1px solid #999999;
   margin-bottom: 20px;
 }
-
 .read-only .btn-primary {
   color:#428bca !important;
   background: transparent !important;
@@ -564,6 +563,14 @@ body {
 .btn-prog-prog {
   color:white;
   background: #9999FF !important;
+}
+.btn-prog-absent {
+  color:white;
+  background-color: red;
+}
+.btn-prog-invalid {
+  color:white;
+  background-color: orange;
 }
 
 .read-only .btn-prog-prog {
