@@ -46,6 +46,7 @@ define([
 
 
         initialize: function() {
+            this.isValid = true;
         },
         buildInputFromObjectOrTarget: function(node, currentNode) {
             if (typeof node.object !== 'undefined') {
@@ -106,6 +107,7 @@ define([
                     input += this.tplWhenNode(param);
                     break;
                 case "device":
+                    param.node.validDevice = this.isDeviceValid(param.node.value);
                     param.node.name = this.getDeviceName(param.node.value);
                     input += this.tplDeviceNode(param);
                     break;
@@ -181,7 +183,8 @@ define([
                     input += this.tplWaitNode(param);
                     break;
                 case "programCall":
-                    input += "<button class='btn btn-prog btn-prog-prog' id='" + jsonNode.iid + "'><span>" + jsonNode.name + "</span></button>";
+                    c = this.getProgramState(jsonNode.value);
+                    input += "<button class='btn btn-prog btn-prog-" + c + "' id='" + jsonNode.iid + "'><span>" + jsonNode.name + "</span></button>";
                     break;
                 case "scale":
                     input += this.tplScale(param);
@@ -281,7 +284,7 @@ define([
         getDeviceName: function(id) {
             var deviceName;
             if (devices.get(id) == undefined) {
-                console.error("device not found: " + id);
+                console.warn("device not found: " + id);
                 deviceName = "UNKNOWN DEVICE";
             } else if (devices.get(id).get("name") !== "") {
                 deviceName = devices.get(id).get("name");
@@ -296,6 +299,22 @@ define([
                 return "UNKNOWN SERVICE";
             }
             return services.get(id).get("name");
+        },
+        isDeviceValid: function(id) {
+            this.isValid = false;
+            return devices.get(id) != undefined;
+        },
+        getProgramState: function(id) {
+            p = programs.get(id);
+            if (p == undefined) {
+                this.isValid = false;
+                return "absent";
+            }
+            if (p.get("runningState") == "INVALID") {
+                this.isValid = false;
+                return "invalid";
+            }
+            return "";
         }
 
     });
