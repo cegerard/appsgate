@@ -31,8 +31,8 @@
         "ard": {
             "affirmative": "Oui",
             "event": {
-                "authorized": "badge est autorisé sur",
-                "non_authorized": "badge n'est pas autorisé sur"
+                "authorized": "badge est autorisé sur ...",
+                "non_authorized": "badge n'est pas autorisé sur ..."
             },
             "last-authorized": "Dernier badge accès autorisé",
             "last-card": "Dernier badge passé",
@@ -44,8 +44,8 @@
             },
             "negative": "Non",
             "state": {
-                "authorized": "badge est autorisé sur",
-                "non_authorized": "badge n'est pas autorisé sur"
+                "authorized": "badge est autorisé __myVar__",
+                "non_authorized": "badge n'est pas autorisé __myVar__"
             }
         },
         "avg" : "Moy : ",

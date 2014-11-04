@@ -479,7 +479,14 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public GrammarDescription getGrammarFromType(String deviceType) {
-		return devicePropertiesTable.getGrammarFromType(deviceType);
+
+        if(devicePropertiesTable!=null){
+            return devicePropertiesTable.getGrammarFromType(deviceType);
+        }else {
+            logger.warn("DevicePropertiesTable unavailable, failed to add grammar for device tye {}",deviceType);
+        }
+
+		return null;
 	}
 
 	@Override

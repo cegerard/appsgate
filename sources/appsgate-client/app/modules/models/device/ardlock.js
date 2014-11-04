@@ -60,14 +60,14 @@ define([
                   $(btn).append("<span data-i18n='devices.ard.event.authorized'/>");
                   v.eventName = "authorized";
                   v.eventValue = "true";
-                  v.phrase = "devices.ard.event.authorized";
+                  v.phrase = "devices.ard.state.authorized";
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               case "isNotAuthorized":
                   $(btn).append("<span data-i18n='devices.ard.event.non_authorized'/>");
                   v.eventName = "authorized";
                   v.eventValue = "false";
-                  v.phrase = "devices.ard.event.non_authorized";
+                  v.phrase = "devices.ard.state.non_authorized";
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               default:
