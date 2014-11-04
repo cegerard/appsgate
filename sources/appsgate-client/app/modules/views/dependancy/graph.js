@@ -167,8 +167,30 @@ define([
 
 
                     d3.select(this).append("circle")
-                        .attr("r", 3)
-                        .attr("fill", "red");
+                        .attr("class", "circle-information hidden")
+                        .attr("r", 5)
+                        .attr("fill", "red")
+                        .on("mouseover", function (d) {
+                            d3.select(this.parentNode).select("text").classed("hidden", false);
+                        })
+                        .on("mouseout", function (d) {
+                            console.log("over");
+                            d3.select(this.parentNode).select("text").classed("hidden", true);
+                        });
+
+                    d3.select(this).append("text")
+                        .attr("class", "linklabel linklabelholder hidden")
+                        .style("font-size", "13px")
+                        .attr("x", "90")
+                        .attr("y", "-10")
+                        .attr("text-anchor", "middle")
+                        .append("textPath")
+                        .attr("xlink:href", function (d) {
+                            return "#linkID_" + i;
+                        })
+                        .text(function (d) {
+                            return d.type;
+                        });
                 });
 
 
@@ -266,11 +288,16 @@ define([
                 });
 
             pathLink.select("circle")
+                .classed("hidden", function (l) {
+                    return !(l.source === self.model.get("rootNode") || l.target === self.model.get("rootNode"));
+                })
                 .attr("cx", function (l) {
                     return (l.source.x + l.target.x) / 2;
+                    //                    return calculateXCircle(l);
                 })
                 .attr("cy", function (l) {
                     return (l.source.y + l.target.y) / 2;
+                    //                    return calculateXCircle(l);
                 });
         },
 
@@ -398,6 +425,32 @@ define([
 
 
     });
+
+    //    function calculateXCircle(link) {
+    //        var A = link.source;
+    //        var B = link.target;
+    //        var nAB = Math.sqrt(Math.pow((B.x - A.x), 2) + Math.pow((B.y - A.y), 2));
+    //        var nAM = nAB / 2;
+    //        var radius = 150 / link.linknum;
+    //        var sagitta = radius + Math.sqrt(Math.pow(radius, 2) - Math.pow(nAM, 2));
+    //        var nAS = Math.sqrt(Math.pow(nAM, 2) + Math.pow(sagitta, 2));
+    //        var theta = (B.y - A.y) / (B.x - A.x)
+    //
+    //        return nAS * Math.cos(theta);
+    //    };
+    //
+    //    function calculateYCircle(link) {
+    //        var A = link.source;
+    //        var B = link.target;
+    //        var nAB = Math.sqrt(Math.pow((B.x - A.x), 2) + Math.pow((B.y - A.y), 2));
+    //        var nAM = nAB / 2;
+    //        var radius = 150 / link.linknum;
+    //        var sagitta = radius + Math.sqrt(Math.pow(radius, 2) - Math.pow(nAB, 2));
+    //        var nAS = Math.sqrt(Math.pow(nAM, 2) + Math.pow(sagitta, 2));
+    //        var theta = (B.y - A.y) / (B.x - A.x)
+    //
+    //        return nAS * Math.sin(theta);
+    //    };
 
     return GraphView;
 });

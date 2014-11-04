@@ -804,6 +804,9 @@ fieldset[disabled] .btn {
 #graph g>.nodeGroup.nodeOver>image {
     cursor: pointer;
 }
+#graph g>.circle-information {
+    cursor: help;
+}
 /* MouseOver Neighbors */
 #graph g>.nodeGroup.neighborNodeOver>circle {
     fill: #7fb725;
