@@ -4,8 +4,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
     <composite name="AppsGate-Application" singleton="true">
-        <contentMngt>
-            
+        <contentMngt>            
             <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
             
             <start  implementation="EHMIProxyImpl" name="EHMIProxyImplInst" ></start>
@@ -13,6 +12,8 @@
             <start  implementation="CHMIProxyImpl" name="CHMIProxyImplInst" ></start>
             
             <start  implementation="EUDEInterpreter" name="EUDEInterpreterInst" ></start>
+            
+            <start implementation="PaceTV" name="PaceTVInst"></start>
 
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
             
@@ -61,7 +62,12 @@
     </composite>
 
 
-
+    <composite name="PaceTV" singleton="true"
+        main="PaceTVFactoryImpl">
+        <contentMngt>
+            
+        </contentMngt>
+    </composite>
 
     <composite name="AppsGateUPnPMediaServices" singleton="true"
                main="AppsgateUPnPAdapter">
