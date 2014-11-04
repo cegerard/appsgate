@@ -243,9 +243,9 @@ define([
             state = "plugState";
           }
           devices.getDevicesByType()[this.id].forEach(function(device) {
-            if (device.get(state) === "true") {
+            if (device.get(state) === "true" || device.get(state) === true) {
               allOff = false;
-            } else {
+            } else if (device.get(state) === "false" || device.get(state) === false) {
               allOn = false;
             }
           });
@@ -284,9 +284,9 @@ define([
             state = "plugState";
           }
           devices.getDevicesByType()[this.id].forEach(function(device) {
-            if (device.get(state) === "true") {
+            if (device.get(state) === "true" || device.get(state) === true) {
               allOff = false;
-            } else {
+            } else if (device.get(state) === "false" || device.get(state) === false) {
               allOn = false;
             }
           });

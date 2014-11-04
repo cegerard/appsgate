@@ -74,7 +74,7 @@ define([
           value=parseFloat(this.get("value"));
 
           if (value != parseFloat(999)){
-              return Math.round(value);
+              return value.toFixed(1);
           }
 
           return $.i18n.t("devices.no-value");
