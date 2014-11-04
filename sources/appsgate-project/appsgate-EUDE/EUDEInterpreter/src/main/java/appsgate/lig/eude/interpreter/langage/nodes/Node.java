@@ -168,7 +168,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     protected void fireStartEvent(StartEvent e) {
         int nbListeners = startEventListeners.size();
-        LOGGER.trace("fire endEvent {} for {} nodes", e.getSource(), nbListeners);
+        LOGGER.trace("fire startEvent {} for {} nodes", e.getSource(), nbListeners);
         for (int i = 0; i < nbListeners; i++) {
             StartEventListener l = startEventListeners.poll();
             l.startEventFired(e);

@@ -213,8 +213,7 @@ body {
   width: 100%;
   padding: 0.5em;
   display: inline-block;
-  /* border: solid #404040;
-  border-radius: 100%; */
+  cursor: pointer;
   margin: 2px 2px 2px 0;
 }
 .fundamental-universe:before {
@@ -228,6 +227,7 @@ body {
 }
 .fundamental-universe.disabled {
   background-color:#E6E6E6;
+  cursor: default;
 }
 #universeList {
   height:100%;
@@ -480,6 +480,14 @@ body {
 .btn-prog-prog {
     color: white;
     background: #9999FF !important;
+}
+.btn-prog-absent {
+  color:white;
+  background-color: red;
+}
+.btn-prog-invalid {
+  color:white;
+  background-color: orange;
 }
 .read-only .btn-prog-prog {
     color: #9999FF !important;
