@@ -628,7 +628,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void stateChanged(String newState) {
 		logger.info("The actuator, "+ actuatorId+" state changed to "+newState);
-		notifyChanges("state", on, newState);
+		notifyChanges("value", on, newState);
         on = newState;
 	}
 	
@@ -639,7 +639,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void hueChanged(String newHue) {
 		logger.info("The actuator, "+ actuatorId+" hue changed to "+newHue);
-		notifyChanges("hue", hue, newHue);
+		notifyChanges("color", hue, newHue);
         hue = newHue;
 	}
 	
@@ -650,7 +650,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void satChanged(String newSat) {
 		logger.info("The actuator, "+ actuatorId+" sat changed to "+newSat);
-		notifyChanges("sat", sat, newSat);
+		notifyChanges("saturation", sat, newSat);
         sat = newSat;
 	}
 	
@@ -661,7 +661,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 	 */
 	public void briChanged(String newBri) {
 		logger.info("The actuator, "+ actuatorId+" bri changed to "+newBri);
-		notifyChanges("bri", bri, newBri);
+		notifyChanges("brightness", bri, newBri);
         bri = newBri;
 	}
 	
