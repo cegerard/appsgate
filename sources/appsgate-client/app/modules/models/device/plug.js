@@ -127,7 +127,7 @@ define([
      * Send a message to the backend to update the attribute plugState
      */
     sendPlugState:function() {
-      if (this.get("plugState") === "true") {
+      if (this.get("plugState") === "true" || this.get("plugState") === true) {
         this.switchOn();
       } else {
         this.switchOff();

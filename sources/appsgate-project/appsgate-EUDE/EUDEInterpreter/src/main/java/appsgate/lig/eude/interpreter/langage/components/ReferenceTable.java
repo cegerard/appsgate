@@ -219,6 +219,10 @@ public class ReferenceTable {
      */
     private STATUS computeStatus() {
         this.state = STATUS.OK;
+        if (programs.size() + devices.size() + nodes.size() == 0) {
+            LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
+            this.state=STATUS.INVALID;
+        }
         for (String k : programs.keySet()) {
             LOGGER.trace("computeStatus(), program " + k + ", status :" + programs.get(k));
             switch (programs.get(k)) {

@@ -40,15 +40,24 @@ define([
                 this.set("body", this.get("source").body);
             });
 
-            // each program listens to the event whose id corresponds to its own id
-            dispatcher.on(this.get("id"), function(updatedVariableJSON) {
-              if(typeof updatedVariableJSON.activeNodes !== 'undefined' &&  typeof updatedVariableJSON.nodesCounter !== 'undefined'){
-                self.set('activeNodes',updatedVariableJSON.activeNodes);
-                self.set('nodesCounter',updatedVariableJSON.nodesCounter);
-              } else {
-                self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
-              }
-            });
+            if(typeof this.get("id") !== "undefined"){
+              this.attachChangeListener(this.get("id"));
+            }
+        },
+        /**
+         * Listens to messages related to changes of this program
+         */
+        attachChangeListener: function (id) {
+          var self = this;
+          // each program listens to the event whose id corresponds to its own id
+          dispatcher.on(id, function(updatedVariableJSON) {
+            if(typeof updatedVariableJSON.activeNodes !== 'undefined' &&  typeof updatedVariableJSON.nodesCounter !== 'undefined'){
+              self.set('activeNodes',updatedVariableJSON.activeNodes);
+              self.set('nodesCounter',updatedVariableJSON.nodesCounter);
+            } else {
+              self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
+            }
+          });
         },
         scheduleProgram: function(start, stop) {
           var eventName = $.i18n.t("programs.scheduled-event") + " " + this.get("name");
@@ -80,10 +89,7 @@ define([
                     } while (programs.where({id: id}).length > 0);
                     model.set("id", id);
 
-                    // each program listens to the event whose id corresponds to its own id
-                    dispatcher.on(this.get("id"), function(updatedVariableJSON) {
-                        self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
-                    });
+                    model.attachChangeListener(id);
 
                     this.remoteCall("addProgram", [{type: "JSONObject", value: model.toJSON()}]);
                     break;

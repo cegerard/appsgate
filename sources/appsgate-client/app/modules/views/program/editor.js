@@ -34,6 +34,8 @@ define([
       initialize: function() {
         this.Mediator = new Mediator();
         this.Mediator.loadProgramJSON(this.model.get("body"), this.model.get("id"));
+        this.bodyJson = $.extend(true, {}, this.model.get("body"));
+        this.oldState = this.model.get("runningState");
         this.refreshing = false;
 
         this.listenTo(this.model, "change", this.refreshDisplay);
@@ -117,6 +119,8 @@ define([
           this.model.destroy();
           appRouter.navigate("#programs", {trigger: true});
         } else{
+          this.model.set("body", this.bodyJson);
+          this.model.set("runningState", this.oldState);
           appRouter.navigate("#programs", {trigger: true});
           appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
         }

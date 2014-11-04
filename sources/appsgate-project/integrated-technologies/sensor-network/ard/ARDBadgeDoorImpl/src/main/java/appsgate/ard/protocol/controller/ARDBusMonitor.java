@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketException;
 
 public class ARDBusMonitor extends Thread {
 
@@ -63,7 +64,7 @@ public class ARDBusMonitor extends Thread {
 
 
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.warn("Socket is already closed.");
             }
 
         }while(keepMonitoring);
