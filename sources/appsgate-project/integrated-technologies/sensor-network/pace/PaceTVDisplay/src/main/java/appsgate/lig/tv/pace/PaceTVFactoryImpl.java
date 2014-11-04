@@ -27,11 +27,13 @@ public class PaceTVFactoryImpl implements TVFactory{
 	
 	public final static String TV_HOSTNAME = "pace.tv.hostname";
 	public final static String TV_PORT = "pace.tv.port";
+	public final static String TV_PATH = "pace.tv.servicepath";
 
 	public final static String DEFAULT_HOSTNAME = "localhost";
 	public final static int DEFAULT_HTTPPORT = 80;
 	
 	String hostname;
+	String path;
 	int port;
 	
 
@@ -71,13 +73,20 @@ public class PaceTVFactoryImpl implements TVFactory{
 			port=DEFAULT_HTTPPORT;
 		}
 		
-		createTVInstance(hostname, port);		
+		path = context.getProperty(TV_PATH);
+		if(path == null) {
+			logger.info("No path specified, using hostname:port as URL ");
+		}		
+		
+		createTVInstance(hostname, port, path);		
 	}
 
 	@Override
-	public String createTVInstance(String hostname, int port) {
+	public String createTVInstance(String hostname, int port,String path) {
 		logger.trace("createTVInstance(String hostname : "+hostname
-				+", int port ="+port+")");
+				+", int port ="+port
+				+", String path ="+path
+				+")");
 		Instance inst = null;
 
 		try {
@@ -90,7 +99,7 @@ public class PaceTVFactoryImpl implements TVFactory{
 					configuration);
 			PaceTVImpl service = (PaceTVImpl) inst
 					.getServiceObject();
-			service.setConfiguration(hostname, port, this);// If no Exception, service should
+			service.setConfiguration(hostname, port, path,  this);// If no Exception, service should
 												// be OK
 			logger.trace("createTVInstance(...), Instance should be created successfully");
 

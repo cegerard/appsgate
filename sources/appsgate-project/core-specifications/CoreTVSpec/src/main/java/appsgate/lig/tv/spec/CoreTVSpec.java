@@ -63,8 +63,9 @@ public interface CoreTVSpec {
 	 * calls the factory to destroy itself
 	 * @param hostname
 	 * @param port
+	 * @param path (optional)
 	 * @param factory
 	 */
-	public void setConfiguration(String hostname, int port, TVFactory factory);	
+	public void setConfiguration(String hostname, int port, String path, TVFactory factory);	
 	
 }

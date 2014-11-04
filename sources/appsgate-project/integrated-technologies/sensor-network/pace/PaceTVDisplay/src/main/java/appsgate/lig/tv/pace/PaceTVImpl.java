@@ -92,6 +92,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	public final static int DEFAULT_HTTPPORT = 80;
 	String hostname;
 	int port;
+	String path;
 	TVFactory factory;
 	String serviceUrl;
 	
@@ -102,27 +103,34 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	/**
 	 * WebService Name
 	 */
-	final static String VIDEO_SERVICE = "/video?";
+	public final static String VIDEO = "video";
+	public final static String VIDEO_SERVICE = "/"+VIDEO+"?";
 	
 	/**
 	 * TV Web service command, first parameter of the REST Command
 	 */
-	final static String COMMAND_PARAM_NAME = "command=";
+	public final static String COMMAND_PARAM = "command";
+	public final static String COMMAND_PARAM_NAME = COMMAND_PARAM+"=";
+
 	
-	final static String ID_PARAM_NAME = "&id=";
-	final static String SCREEN_PARAM_NAME = "&screen=";
-	final static String SENDER_PARAM_NAME = "&sender=";
-	final static String MESSAGE_PARAM_NAME = "&message=";
+	public final static String ID_PARAM = "id";
+	public final static String ID_PARAM_NAME = "&"+ID_PARAM+"=";
+	public final static String SCREEN_PARAM = "screen";
+	public final static String SCREEN_PARAM_NAME = "&"+SCREEN_PARAM+"=";
+	public final static String SENDER_PARAM = "sender";
+	public final static String SENDER_PARAM_NAME = "&"+SENDER_PARAM+"=";
+	public final static String MESSAGE_PARAM = "message";
+	public final static String MESSAGE_PARAM_NAME = "&"+MESSAGE_PARAM+"=";
 	
-	final static String COMMAND_CHANNELUP = "channelUp";
-	final static String COMMAND_CHANNELDOWN = "channelDown";
-	final static String COMMAND_RESUME = "resume";
-	final static String COMMAND_STOP = "stop";
-	final static String COMMAND_PAUSE = "pause";
-	final static String COMMAND_RESIZE = "resize";
-	final static String COMMAND_NOTIFY = "notify";
+	public final static String COMMAND_CHANNELUP = "channelUp";
+	public final static String COMMAND_CHANNELDOWN = "channelDown";
+	public final static String COMMAND_RESUME = "resume";
+	public final static String COMMAND_STOP = "stop";
+	public final static String COMMAND_PAUSE = "pause";
+	public final static String COMMAND_RESIZE = "resize";
+	public final static String COMMAND_NOTIFY = "notify";
 	
-	final static String COMMA_SEPARATOR = ",";
+	public final static String COMMA_SEPARATOR = ",";
 	
 	public static final String GET = "GET";
 	public static final int RESP_200 = 200;
@@ -212,11 +220,17 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	}
 
 	@Override
-	public void setConfiguration(String hostname, int port, TVFactory factory) {
+	public void setConfiguration(String hostname, int port, String path, TVFactory factory) {
 		this.hostname = hostname;
 		this.port = port;
 		this.factory = factory;
-		serviceUrl = PROTOCOL+hostname+PORT_SEPARATOR+port+VIDEO_SERVICE;
+		this.path = path;
+		
+		serviceUrl = PROTOCOL+hostname+PORT_SEPARATOR+port;
+		if(path!=null) {
+			serviceUrl+=path;
+		}
+		serviceUrl+=VIDEO_SERVICE;
 		serviceId = IMPL_NAME+"-"+hostname;
 	}
 	
