@@ -362,6 +362,7 @@ define([
               $("#led-" + self.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");
               $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.stopped'));
               $(".start-program-button").show();
+              $(".start-program-button").prop('disabled', false);
               $(".stop-program-button").hide();
             }
           }
