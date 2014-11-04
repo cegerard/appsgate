@@ -69,10 +69,10 @@ public class EUDEInterpreterTest {
     private EUDEInterpreter instance;
     private final JSONObject programJSON;
     private EHMIProxyMock ehmiProxy;
-    private final String programId = "test";
+    private final String programId = "pgm";
 
     public EUDEInterpreterTest() throws Exception {
-        programJSON = TestUtilities.loadFileJSON("src/test/resources/prog/testEmpty.json");
+        programJSON = TestUtilities.loadFileJSON("src/test/resources/prog/pgm.json");
     }
 
     @Before
@@ -194,17 +194,6 @@ public class EUDEInterpreterTest {
         boolean remove = instance.removeProgram(programId);
         Assert.assertTrue("Program should be removed", remove);
 
-    }
-
-    /**
-     * Test of update method, of class EUDEInterpreter.
-     */
-    @Test
-    public void testUpdate() {
-        System.out.println("update");
-        instance.addProgram(this.programJSON);
-        boolean result = instance.update(this.programJSON);
-        Assert.assertTrue("Update should work on a correct program", result);
     }
 
     /**

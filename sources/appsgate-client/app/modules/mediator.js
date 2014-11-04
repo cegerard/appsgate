@@ -458,8 +458,10 @@ define([
         } else if (n !== null && n.expected[0] === "ID") {
 		  console.log(this.programJSON)
           console.warn('Something unexpected happened');
+		  this.isValid=false;
 		  return false;
         } else {
+		  this.isValid=false;
 		  return false;
         }
       },
