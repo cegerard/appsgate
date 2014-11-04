@@ -227,7 +227,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 		appsgateServiceName = "SystemClock";
 		appsgateUserType = "21";
 		appsgateStatus = "2";
-		appsgateObjectId = appsgateServiceName
+		appsgateObjectId = appsgateUserType
 				+ String.valueOf(appsgateServiceName.hashCode());
 	}
 
