@@ -117,11 +117,11 @@ public class Entry {
 	 * Set the value
 	 * 
 	 * @param value
-	 */
+	 *
 	public void setValue(String value) {
 		this.value = value;
 	}
-
+*/
 	public String getEntryType() {
 		return entryType;
 	}
@@ -146,9 +146,9 @@ public class Entry {
 		if (eventEntry instanceof Entry) {
 			Entry entry = (Entry) eventEntry;
 			return (entry.getObjectId().contentEquals(objectId)
-					&& entry.getVarName().contentEquals(varName) && (entry
-					.getValue().contentEquals(value) || entry.getValue()
-					.contentEquals("")));
+                                && entry.getVarName().contentEquals(varName)
+                                && (entry.getValue().contentEquals(value)
+                                    || entry.getValue().contentEquals("")));
 		}
 		return false;
 	}

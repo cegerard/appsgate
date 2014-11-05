@@ -641,7 +641,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      *
      */
     protected void setProgramProcessing() {
-        LOGGER.trace("Program PROCESSING");
+        LOGGER.trace("Program PROCESSING from {}", this);
         NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
         if (p != null) {
             p.setProcessing(this.getIID());

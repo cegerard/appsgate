@@ -419,6 +419,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             if (l.equals(listener)) {
                 LOGGER.trace("Remove node event from listener list: {}", nodeEvent.getEventName());
                 l.removeNodeEvent(nodeEvent);
+                if (l.isEmpty()) {
+                    ehmiProxy.deleteCoreListener(listener);
+                }
                 return;
             }
 
