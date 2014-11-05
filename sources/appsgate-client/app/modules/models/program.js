@@ -64,6 +64,17 @@ define([
           this.remoteCall("scheduleProgram", [{type: "String", value: eventName },{type: "String", value: this.get("id")},{type: "boolean", value: start},{type: "boolean", value: stop}]);
         },
         /**
+         * Checks if a program is scheduled and enables/disables calendar button accordingly
+         */
+        isProgramScheduled: function() {
+          communicator.sendMessage({
+            method: "checkProgramIdScheduled",
+            args: [{type: "String", value: this.get("id") }],
+            TARGET: "EHMI",
+            callId:"isScheduled-" + this.get("id")
+          });
+        },
+        /**
          * Send a message to the server to perform a remote call
          *
          * @param method Remote method name to call
