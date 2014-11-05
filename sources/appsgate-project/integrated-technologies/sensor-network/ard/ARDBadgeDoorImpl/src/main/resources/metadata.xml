@@ -6,7 +6,9 @@
 	<implementation name="ARDBadgeDoor"
 		classname="appsgate.ard.protocol.adaptor.ARDBadgeDoor" specification="CoreARDBadgeDoorSpec" push="triggerApamMessage">
 		<callback onInit="newInst" onRemove="deleteInst" />
-		
+
+        <relation field="controller" resolve="exist" multiple="true" />
+
 		<!-- device kernel meta data -->
 		<definition name="deviceName"	 type="string" default="Unknown" 		  field="sensorName"/>
 		<definition name="deviceId" 	 type="string" default="000000" 		  field="sensorId"/>

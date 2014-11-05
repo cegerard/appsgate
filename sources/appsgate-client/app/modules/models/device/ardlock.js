@@ -31,6 +31,33 @@ define([
                   return [];
           }
       },
+    getActions: function() {
+          return ["zoneActivate", "zoneDesactivate"];
+      },
+      getKeyboardForAction: function(act){
+          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+          var v = this.getJSONAction("mandatory");
+
+          switch(act) {
+              case "zoneActivate":
+                  $(btn).append("<span data-i18n='devices.ard.keyboard.zone-activate'/>");
+                  v.methodName = "zoneActivate";
+                  v.phrase = "devices.ard.action.zone-activate";
+                  $(btn).attr("json", JSON.stringify(v));
+                  break;
+              case "zoneDesactivate":
+                  $(btn).append("<span data-i18n='devices.ard.keyboard.zone-desactivate'/>");
+                  v.methodName = "zoneDesactivate";
+                  v.phrase = "devices.ard.action.zone-desactivate";
+                  $(btn).attr("json", JSON.stringify(v));
+                  break;
+              default:
+                  console.error("unexpected action found for ARD: " + act);
+                  btn = null;
+                  break;
+          }
+          return btn;
+      },
     getKeyboardForState: function(state, which){
       if (which !== "state") {
           console.error('Unsupported type of state: ' + which);

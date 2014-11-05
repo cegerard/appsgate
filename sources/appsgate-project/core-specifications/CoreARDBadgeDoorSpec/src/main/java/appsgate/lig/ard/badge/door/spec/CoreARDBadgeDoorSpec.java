@@ -8,5 +8,7 @@ public interface CoreARDBadgeDoorSpec {
     public Integer getDoorID();
     public String getStatus();
     public String getLastMessage();
+    public void zoneActivate();
+    public void zoneDesactivate();
 
 }
