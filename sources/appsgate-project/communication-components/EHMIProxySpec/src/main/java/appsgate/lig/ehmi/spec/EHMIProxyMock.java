@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.json.JSONArray;
@@ -591,6 +592,21 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		// TODO Auto-generated method stub
 		return null; 
 		
+	}
+
+
+	@Override
+	public Set<?> listEventsSchedulingProgramId(String programId,
+			String startPeriod, String endPeriod) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean checkProgramIdScheduled(String programId) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

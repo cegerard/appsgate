@@ -391,12 +391,13 @@ define([
       * Method to get the JSON representation of the program.
       */
       getInputFromJSON: function() {
+        this.ProgramInputBuilder.isValid = true;
+        var input = $.parseHTML(this.ProgramInputBuilder.buildInputFromNode(this.programJSON, this.currentNode));
         if (this.checkProgram(this.programJSON)) {
-          this.isValid = true;
+          this.isValid = this.ProgramInputBuilder.isValid;
         } else {
           this.isValid = false;
         }
-        var input = $.parseHTML(this.ProgramInputBuilder.buildInputFromNode(this.programJSON, this.currentNode));
 
         $(input).find(".btn").css("padding", "3px 6px");
 

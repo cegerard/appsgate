@@ -44,6 +44,14 @@ define([
 
         this.stopListening(devices.getCoreClock());
         this.listenTo(devices.getCoreClock(), "change", this.displayClockPopover);
+
+        this.model.listenTo(dispatcher, "isScheduled-" + this.model.get("id"), function(isScheduled) {
+          if(isScheduled) {
+            $(".open-calendar-button").prop("disabled", false);
+          } else {
+            $(".open-calendar-button").prop("disabled", true);
+          }
+        });
       },
       close:function() {
         ProgramReaderView.__super__.close.apply(this, arguments);
@@ -352,21 +360,34 @@ define([
               $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.started'));
               $(".start-program-button").hide();
               $(".stop-program-button").show();
+              // make the visible button first in the div so the correct style applies
+              $(".stop-program-button").insertBefore($(".start-program-button"));
             } else if (self.model.get("runningState") === "INVALID"){
               $("#led-" + self.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
               $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.failed'));
               $(".start-program-button").show();
               $(".start-program-button").prop('disabled', true);
               $(".stop-program-button").hide();
+              // make the visible button first in the div so the correct style applies
+              $(".start-program-button").insertBefore($(".stop-program-button"));
             } else{
               $("#led-" + self.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");
               $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.stopped'));
               $(".start-program-button").show();
               $(".start-program-button").prop('disabled', false);
               $(".stop-program-button").hide();
+              // make the visible button first in the div so the correct style applies
+              $(".start-program-button").insertBefore($(".stop-program-button"));
             }
           }
+
+          // translate the view
           $("body").i18n();
+
+          // toggle calendar button depending on the program being scheduled or not
+          self.model.isProgramScheduled();
+
+          // using jqueryui tooltips
           $( document ).tooltip();
 
           // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
