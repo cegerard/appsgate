@@ -21,12 +21,18 @@ package appsgate.ard.protocol.main;
 
 import appsgate.ard.protocol.controller.ARDController;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
+import appsgate.ard.protocol.model.command.request.ActivateZoneRequest;
+import appsgate.ard.protocol.model.command.request.GetTimeRequest;
+import appsgate.ard.protocol.model.command.request.GetZoneRequest;
 import appsgate.ard.protocol.model.command.request.SubscriptionRequest;
 import appsgate.ard.protocol.model.Constraint;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Main for testing ARD protocol integration
@@ -34,7 +40,6 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException, JSONException {
-
 
         ARDController ard=new ARDController("192.168.3.110", 2001);
 
@@ -50,21 +55,31 @@ public class Main {
         //Listener that will be called if a valid message (message that respect the constraint defined later) is received
         ARDMessage listenerForARDMessages=new ARDMessage() {
             public void ardMessageReceived(JSONObject json) throws JSONException {
-                System.out.println("Routing "+json.toString());
+                System.out.println("Message Received "+json.toString());
+                //Date d=new Date(json.getLong("timestamp"));
+                //System.out.println(d);
             }
         };
 
         //Constraint that evaluates if a json messaged received from ARDBus should be notified for the higher layers
         Constraint constraint=new Constraint() {
             public boolean evaluate(JSONObject jsonObject) throws JSONException {
-                return jsonObject.getJSONObject("event").getString("class").equals("card");
+                return true;//jsonObject.getJSONObject("event").getString("class").equals("card");
             }
         };
 
         //Register
         ard.getMapRouter().put(constraint,listenerForARDMessages);
 
-        Thread.sleep(60000);
+        //ard.sendRequest(new GetTimeRequest());
+        //ard.sendRequest(new ActivateZoneRequest(0));
+
+
+        for(int i=0;i<3;i++){
+            ard.sendRequest(new GetZoneRequest(i));
+        }
+
+        Thread.sleep(10000);
 
         ard.disconnect();
 
