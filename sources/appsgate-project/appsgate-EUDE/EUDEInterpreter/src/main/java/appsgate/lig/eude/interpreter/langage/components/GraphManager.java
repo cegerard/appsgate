@@ -40,7 +40,17 @@ public class GraphManager {
      *
      */
     private JSONObject returnJSONObject;
-
+    
+    // Constants string for entity and relation JSON
+    private final String  REFERENCE_LINK = "reference";
+    private final String LOCATED_LINK = "isLocatedIn";
+    private final String PLANIFIED_LINK = "isPlanified";
+    private final String PROGRAM_ENTITY = "program";
+    private final String PLACE_ENTITY = "place";
+    private final String TIME_ENTITY = "time";
+    private final String SERVICE_ENTITY = "service";
+    private final String DEVICE_ENTITY = "device";
+    
     /**
      * @param interpreter
      */
@@ -65,13 +75,17 @@ public class GraphManager {
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
             if (p != null) {
-                addNode("program", pid, p.getProgramName());
+                addNode(PROGRAM_ENTITY, pid, p.getProgramName());
                 ReferenceTable references = p.getReferences();
                 for (String rdevice : references.getDevicesId()) {
-                    addLink("reference", pid, rdevice);
+                    if (rdevice.equals("21106637055")){
+                        addLink(PLANIFIED_LINK, pid, rdevice);
+                    } else {
+                        addLink(REFERENCE_LINK, pid, rdevice);
+                    }
                 }
                 for (String rProgram : references.getProgramsId()) {
-                    addLink("reference", pid, rProgram);
+                    addLink(REFERENCE_LINK, pid, rProgram);
                 }
             }
         }
@@ -82,7 +96,7 @@ public class GraphManager {
                 JSONObject o = devices.getJSONObject(i);
                 addDevice(o);
                 // Adding location link
-                addLink("isLocatedIn", o.getString("id"), o.getString("placeId"));
+                addLink(LOCATED_LINK, o.getString("id"), o.getString("placeId"));
             } catch (JSONException ex) {
             }
 
@@ -123,7 +137,14 @@ public class GraphManager {
                 optArg.put("location", o.getString("location"));
             } catch (JSONException ex) {
             }
-            addNode("device", o.getString("id"), o.getString("name"), optArg);
+            
+            // Time special case
+            if (o.getString("id").equals("21106637055")){
+                addNode(TIME_ENTITY, o.getString("id"), o.getString("name"), optArg);
+            } else {
+                addNode(DEVICE_ENTITY, o.getString("id"), o.getString("name"), optArg);
+            }
+            
         } catch (JSONException ex) {
             LOGGER.error("A node is malformated missing {}", ex.getCause());
             LOGGER.debug("Node: {}", o.toString());
@@ -136,7 +157,7 @@ public class GraphManager {
      */
     private void addPlace(JSONObject o) {
         try {
-            addNode("place", o.getString("id"), o.getString("name"));
+            addNode(PLACE_ENTITY, o.getString("id"), o.getString("name"));
         } catch (JSONException ex) {
             LOGGER.error("A node is malformated missing {}", ex.getCause());
             LOGGER.debug("Node: {}", o.toString());

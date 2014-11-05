@@ -174,7 +174,6 @@ define([
                             d3.select(this.parentNode).select("text").classed("hidden", false);
                         })
                         .on("mouseout", function (d) {
-                            console.log("over");
                             d3.select(this.parentNode).select("text").classed("hidden", true);
                         });
 
