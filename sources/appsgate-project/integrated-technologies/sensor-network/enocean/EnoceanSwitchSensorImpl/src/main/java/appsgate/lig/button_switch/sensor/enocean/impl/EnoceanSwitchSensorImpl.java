@@ -218,10 +218,10 @@ public class EnoceanSwitchSensorImpl extends CoreObjectBehavior implements CoreO
             if (buttonStatus.equalsIgnoreCase("false")) {
                 number += 2;
             }
-            this.switchNumber = number.toString();
 
-            notifyChanges("switchNumber", this.switchNumber);
-            //logger.info("New switch value from " + sensorId + "/" + sensorName + ", " + this.switchNumber);
+            notifyChanges("switchNumber", number.toString());
+            this.switchNumber = "-1";
+            this.buttonStatus = "none";
             switchState = "false";
         }
     }

@@ -44,6 +44,14 @@ define([
 
         this.stopListening(devices.getCoreClock());
         this.listenTo(devices.getCoreClock(), "change", this.displayClockPopover);
+
+        this.model.listenTo(dispatcher, "isScheduled-" + this.model.get("id"), function(isScheduled) {
+          if(isScheduled) {
+            $(".open-calendar-button").prop("disabled", false);
+          } else {
+            $(".open-calendar-button").prop("disabled", true);
+          }
+        });
       },
       close:function() {
         ProgramReaderView.__super__.close.apply(this, arguments);
@@ -188,24 +196,6 @@ define([
       },
       openCalendar: function(e) {
           window.open("https://www.google.com/calendar");
-      },
-      /**
-       * Checks if a program is scheduled and enables/disables calendar button accordingly
-       */
-      isProgramScheduled: function() {
-        communicator.sendMessage({
-            method: "checkProgramIdScheduled",
-            args: [{type: "String", value: this.model.get("id") }],
-            TARGET: "CHMI"
-        });
-
-        this.model.once("checkProgramIdScheduled", function(e) {
-          if(e.value) {
-            $(".open-calendar-button").prop("disabled", false);
-          } else {
-            $(".open-calendar-button").prop("disabled", true);
-          }
-        });
       },
       /**
       * Callback to start a program
@@ -394,6 +384,9 @@ define([
           // translate the view
           $("body").i18n();
 
+          // toggle calendar button depending on the program being scheduled or not
+          self.model.isProgramScheduled();
+
           // using jqueryui tooltips
           $( document ).tooltip();
 
@@ -518,9 +511,6 @@ define([
           }
 
           this.refreshDisplay();
-
-          // toggle calendar button depending on the program being scheduled or not
-          self.isProgramScheduled();
 
           // fix the programs list size to be able to scroll through it
           this.resize($(".programInput"));

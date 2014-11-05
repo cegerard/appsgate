@@ -428,36 +428,26 @@ public class TraceMan implements TraceManSpec {
         JSONArray tracesTab = dbTracer.getInterval(from, to);
         JSONObject result = new JSONObject();
         try {
-            if (traceQueue.getDeltaTinMillis() == 0) { //No aggregation
-
-                result.put("data", tracesTab);
-                result.put("groups", computeGroupsFromPolicy(tracesTab));
-                if (withEventLine) {
-                    result.put("eventline", eventLineComputation(tracesTab, from, to));
-                }
-                requestResult.put("result", result);
-                requestResult.put("request", request);
-
-                EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
-
-            } else { // Apply aggregation policy
-
-                //filteringOnFocus(tracesTab);
-                result.put("groups", computeGroupsFromPolicy(tracesTab));
-                if (withEventLine) {
-                    result.put("eventline", eventLineComputation(tracesTab, from, to));
-                }
-                traceQueue.stop();
-                traceQueue.loadTraces(tracesTab);
-                tracesTab = traceQueue.applyAggregationPolicy(from, null); //Call with default aggregation policy (id and time)
-
-                result.put("data", tracesTab);
-
-                requestResult.put("result", result);
-                requestResult.put("request", request);
-
-                EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
+        	
+            result.put("groups", computeGroupsFromPolicy(tracesTab)); //First whole traces tab browse
+            if (withEventLine) {
+                result.put("eventline", eventLineComputation(tracesTab, from, to));//Second whole traces tab browse
             }
+        	
+            if (traceQueue.getDeltaTinMillis() == 0) { //No aggregation
+                result.put("data", tracesTab);
+            } else { // Apply aggregation policy
+                //filteringOnFocus(tracesTab);
+                traceQueue.stop();
+                traceQueue.loadTraces(tracesTab);//Third whole traces tab browse
+                result.put("data", traceQueue.applyAggregationPolicy(from, null) /*Call with default aggregation policy (id and time)*/); //Fourth whole traces tab browse + in detail browsing
+            }
+            
+            requestResult.put("result", result);
+            requestResult.put("request", request);
+
+            EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
+            
         } catch (JSONException e) {
             e.printStackTrace();
         }
