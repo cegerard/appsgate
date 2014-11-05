@@ -595,6 +595,11 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 		Set <GoogleEvent> bigList = getEvents(starting, stopping);
 		Set <GoogleEvent> results = new HashSet<GoogleEvent>();
+		
+		if(bigList == null) {
+			logger.trace("checkProgramIdScheduled(...), no Events registered,");
+			return results;
+		}
 
 		for(GoogleEvent event : bigList) {
 			if (event.isSchedulingProgram(programId)) {
