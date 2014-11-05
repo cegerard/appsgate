@@ -31,7 +31,7 @@
 		<definition name="lightBridgeIP" type="string" field="lightBridgeIP" />
 		<definition name="reachable" 	 type="string" field="reachable"     method="reachableChanged"/>
 
-		<definition name="value"  type="string" method="stateChanged"/>
+		<definition name="state"  type="string" method="stateChanged"/>
 		<definition name="hue"    type="string" method="hueChanged"/>
 		<definition name="sat"    type="string" method="satChanged"/>
 		<definition name="bri"    type="string" method="briChanged"/>
