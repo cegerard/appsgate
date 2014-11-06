@@ -19,7 +19,7 @@ define([
          */
         events: {
             "click a.list-group-item": "updateSideMenu",
-            "show.bs.modal #add-place-modal": "initializeModal",
+            "shown.bs.modal #add-place-modal": "initializeModal",
             "hidden.bs.modal #add-place-modal": "toggleModalValue",
             "click #add-place-modal button.valid-button": "validEditName",
             "keyup #add-place-modal input": "validEditName"
@@ -71,6 +71,8 @@ define([
          */
         initializeModal: function() {
             $("#add-place-modal input").val("");
+            $("#add-place-modal input").focus();
+
             $("#add-place-modal .text-danger").addClass("hide");
             $("#add-place-modal .valid-button").addClass("disabled");
             $("#add-place-modal .valid-button").addClass("valid-disabled");
