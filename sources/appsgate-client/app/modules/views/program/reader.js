@@ -13,7 +13,7 @@ define([
       events: {
         "shown.bs.modal #schedule-program-modal": "initializeModal",
         "shown.bs.modal #test-program-modal": "initializeProgramTestModal",
-        "hidden.bs.modal": "toggleModalValue",
+        "hide.bs.modal": "toggleModalValue",
         "click #schedule-program-modal button.valid-button": "validScheduleProgram",
         "click #test-program-modal button.valid-button": "launchProgramTest",
         "click #stop-testing-button": "cancelTesting",

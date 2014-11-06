@@ -15,7 +15,7 @@ define([
       events: {
         "click button.back-button": "onBackButton",
         "shown.bs.modal #edit-service-modal": "initializeModal",
-        "hidden.bs.modal #edit-service-modal": "toggleModalValue",
+        "hide.bs.modal #edit-service-modal": "toggleModalValue",
         "click #edit-service-modal button.valid-button": "validEditService",
         "keyup #edit-service-modal input": "validEditService",
         "change #edit-service-modal select": "checkService"
@@ -58,10 +58,7 @@ define([
       * Tell the router there is no modal anymore
       */
       toggleModalValue: function() {
-        _.defer(function() {
-          appRouter.isModalShown = false;
-          appRouter.currentView.render();
-        });
+        appRouter.isModalShown = false;
       },
       /**
       * Check the current value given by the user - show an error message if needed
