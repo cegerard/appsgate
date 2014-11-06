@@ -119,7 +119,7 @@ public class EnoceanPlugAcuatorSensorImpl extends CoreObjectBehavior implements 
 	
 	public void activeEnergyChanged(String activeEnergy) {
 		logger.info("The sensor, "+ sensorId+" activeEnergy changed to "+activeEnergy);
-		notifyChanges("activeEnergy", activeEnergy);
+		//notifyChanges("activeEnergy", activeEnergy); //Delete active energy notifications cause they are not currently used
 		addValue(new Float(activeEnergy), new Long(lastRequest));
 	}
 
@@ -175,7 +175,7 @@ public class EnoceanPlugAcuatorSensorImpl extends CoreObjectBehavior implements 
 	 * add the value to a tab that allow the instance to calculate it's
 	 * real time consumption
 	 * 
-	 * @param activeenergy the consumption in Watt.s
+	 * @param activeEnergy the consumption in Watt.s
 	 * @param date the time stamp
 	 */
 	public void addValue(float activeEnergy, long newDate){

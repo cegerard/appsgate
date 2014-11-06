@@ -108,6 +108,7 @@ define([
                     break;
                 case "device":
                     param.node.validDevice = this.isDeviceValid(param.node.value);
+                    this.isValid = this.isValid && param.node.validDevice;
                     param.node.name = this.getDeviceName(param.node.value);
                     input += this.tplDeviceNode(param);
                     break;
@@ -301,7 +302,6 @@ define([
             return services.get(id).get("name");
         },
         isDeviceValid: function(id) {
-            this.isValid = false;
             return devices.get(id) != undefined;
         },
         getProgramState: function(id) {

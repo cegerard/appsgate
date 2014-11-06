@@ -1471,5 +1471,40 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			}
 		}
 	}
+    
+    	@Override
+        public Set<?> listEventsSchedulingProgramId(String programId, String startPeriod, String endPeriod) {
+    		logger.trace("listEventsSchedulingProgramId("
+    				+ "String programId : {},"
+    				+ "String startPeriod : {}"
+    				+ ", String endPeriod) : {}"
+    				,programId,startPeriod,endPeriod);
+    		if (schedulerService == null) {
+    			logger.error("No scheduling service, aborting)");
+    		} else {
+    			try {
+    				return schedulerService.listEventsSchedulingProgramId(programId, startPeriod, endPeriod);
+    			} catch (SchedulingException exc) {
+    				logger.error("Error when when checking the scheduler : "
+    						+ exc.getMessage());
+    			}
+    		}    		
+    		return null;
+    	}
+    	
+    	@Override
+    	public boolean checkProgramIdScheduled(String programId) {
+    		if (schedulerService == null) {
+    			logger.error("No scheduling service, aborting)");
+    		} else {
+    			try {
+    				return schedulerService.checkProgramIdScheduled(programId);
+    			} catch (SchedulingException exc) {
+    				logger.error("Error when checking the scheduler : "
+    						+ exc.getMessage());
+    			}
+    		}
+    		return false;
+    	}
 
 }

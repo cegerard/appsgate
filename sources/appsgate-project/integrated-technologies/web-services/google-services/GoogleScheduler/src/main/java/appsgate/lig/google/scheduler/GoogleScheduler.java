@@ -595,6 +595,11 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 		Set <GoogleEvent> bigList = getEvents(starting, stopping);
 		Set <GoogleEvent> results = new HashSet<GoogleEvent>();
+		
+		if(bigList == null) {
+			logger.trace("checkProgramIdScheduled(...), no Events registered,");
+			return results;
+		}
 
 		for(GoogleEvent event : bigList) {
 			if (event.isSchedulingProgram(programId)) {
@@ -626,6 +631,12 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 
 		Set <GoogleEvent> bigList = getEvents(time, -1);
+		
+		if(bigList == null) {
+			logger.trace("checkProgramIdScheduled(...), no Events registered,");
+			return false;
+		}
+		
 		for(GoogleEvent event : bigList) {
 			if (event.isSchedulingProgram(programId)) {
 				logger.trace("checkProgramIdScheduled(...), first found on event : "+event.getName());

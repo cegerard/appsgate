@@ -30,6 +30,14 @@
         },
         "ard": {
             "affirmative": "Yes",
+            "action": {
+                "zone-activate": "Activate all zones on __myVar__",
+                "zone-desactivate": "Desactivate all zones on __myVar__"
+            },
+            "keyboard": {
+                "zone-activate": "Activate all zones on ...",
+                "zone-desactivate": "Desactivate all zones on ..."
+            },
             "event": {
                 "authorized": "badge is authorized on ...",
                 "non_authorized": "badge is NOT authorized on ..."
