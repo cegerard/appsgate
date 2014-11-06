@@ -60,7 +60,7 @@ define([
 
         var plug = devices.get($(e.currentTarget).attr("device-id"));
 
-        if (plug.get("plugState") == "true") {
+        if (plug.get("plugState") === "true" || plug.get("plugState") === true) {
           plug.switchOff();
         } else {
           plug.switchOn();
@@ -78,7 +78,7 @@ define([
 
         var lamp = devices.get($(e.currentTarget).attr("device-id"));
 
-        if (lamp.get("value") == "true") {
+        if (lamp.get("value") === "true" || lamp.get("value") === true) {
           lamp.switchOff();
         } else {
           lamp.switchOn();
@@ -109,7 +109,7 @@ define([
 
         var actuator = devices.get($(e.currentTarget).attr("device-id"));
 
-        if (actuator.get("value") == "true") {
+        if (actuator.get("value") === "true" || actuator.get("value") === true) {
           actuator.switchOff();
         } else {
           actuator.switchOn();

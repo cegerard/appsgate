@@ -25,7 +25,7 @@ define([
       * Callback to toggle a lamp - used when the displayed device is a lamp (!)
       */
       onToggleLampButton: function() {
-        if (this.model.get("value") == "true") {
+        if (this.model.get("value") === "true" || this.model.get("value") === true) {
           this.model.switchOff();
         } else {
           this.model.switchOn();
