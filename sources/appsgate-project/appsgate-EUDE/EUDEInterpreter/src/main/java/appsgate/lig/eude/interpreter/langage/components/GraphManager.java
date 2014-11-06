@@ -88,6 +88,12 @@ public class GraphManager {
                     addLink(REFERENCE_LINK, pid, rProgram);
                 }
             }
+            
+            // Links program - scheduler
+            if (this.interpreter.getContext().checkProgramIdScheduled(pid)){
+                addLink(PLANIFIED_LINK, pid, "21106637055");
+                //@TODO: if planified more than one time, have more than one relation...
+            }
         }
         // Retrieving devices id
         JSONArray devices = this.interpreter.getContext().getDevices();
