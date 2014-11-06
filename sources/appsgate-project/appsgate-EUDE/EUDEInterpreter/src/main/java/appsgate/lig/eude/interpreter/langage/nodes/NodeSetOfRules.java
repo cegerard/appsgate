@@ -43,7 +43,7 @@ public class NodeSetOfRules extends Node implements INodeSet {
      *
      */
     private int nbEndedRules = 0;
-
+    
     /**
      * private Constructor to copy Nodes
      *
@@ -85,12 +85,15 @@ public class NodeSetOfRules extends Node implements INodeSet {
 
     @Override
     public JSONObject call() {
+        stopped = false;
         nbEndedRules = 0;
         setStarted(true);
         fireStartEvent(new StartEvent(this));
         for (Node n : instructions) {
-            n.addEndEventListener(this);
-            n.call();
+            if (!stopped) {
+                n.addEndEventListener(this);
+                n.call();
+            }
         }
 
         return null;

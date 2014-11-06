@@ -84,6 +84,11 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * the phrase available for the editor
      */
     private String phrase = null;
+    
+    /**
+     * 
+     */
+    protected Boolean stopped = false;
 
     /**
      * Default constructor
@@ -136,6 +141,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * Stop the interpretation of the node. Check if the node is not started
      */
     public void stop() {
+        stopped = true;
         if (isStarted()) {
             setStopping(true);
 
@@ -144,7 +150,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             fireEndEvent(new EndEvent(this));
             setStopping(false);
         } else {
-            LOGGER.debug("Trying to stop a not started node {}", this);
+            specificStop();
         }
     }
 
