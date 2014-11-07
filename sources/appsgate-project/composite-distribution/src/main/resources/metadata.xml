@@ -80,7 +80,7 @@
 
     <composite name="KNXServices" singleton="true">
         <contentMngt>
-            <start implementation="KNXDummyImplem" name="KNXDymmyImplemInst">
+            <start implementation="KNXDummyImplem" name="KNXDummyImplemInst">
             </start>
         </contentMngt>
     </composite>

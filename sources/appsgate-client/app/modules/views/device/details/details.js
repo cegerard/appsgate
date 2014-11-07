@@ -12,6 +12,7 @@ define([
     events: {
       "click button.back-button": "onBackButton",
       "shown.bs.modal #edit-device-modal": "initializeModal",
+      "hide.bs.modal #edit-device-modal": "toggleModalValue",
       "click #edit-device-modal button.valid-button": "validEditDevice",
       "keyup #edit-device-modal input": "validEditDevice",
       "change #edit-device-modal select": "checkDevice"
@@ -48,6 +49,9 @@ define([
       $("#edit-device-modal .valid-button").addClass("disabled");
       // tell the router that there is a modal
       appRouter.isModalShown = true;
+    },
+    toggleModalValue: function() {
+      appRouter.isModalShown = false;
     },
     /**
      * Check the current value given by the user - show an error message if needed

@@ -3,7 +3,7 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
                               
 	<implementation name="MailService" classname="appsgate.lig.mail.javamail.MailServiceImpl" specification="CoreMailSpec"
-                    push="mailReceivedNotification">
+                    push="mailReceivedNotification, fireMessageSentNotificationMsg">
 	    		
         <relation implementation="MongoDBConfiguration" field="dbConfig" resolve="exist">
 

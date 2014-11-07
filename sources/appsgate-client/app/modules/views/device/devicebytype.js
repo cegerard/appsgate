@@ -60,7 +60,7 @@ define([
 
         var plug = devices.get($(e.currentTarget).attr("device-id"));
 
-        if (plug.get("plugState") == "true") {
+        if (plug.get("plugState") === "true" || plug.get("plugState") === true) {
           plug.switchOff();
         } else {
           plug.switchOn();
@@ -78,7 +78,7 @@ define([
 
         var lamp = devices.get($(e.currentTarget).attr("device-id"));
 
-        if (lamp.get("value") == "true") {
+        if (lamp.get("value") === "true" || lamp.get("value") === true) {
           lamp.switchOff();
         } else {
           lamp.switchOn();
@@ -109,7 +109,7 @@ define([
 
         var actuator = devices.get($(e.currentTarget).attr("device-id"));
 
-        if (actuator.get("value") == "true") {
+        if (actuator.get("value") === "true" || actuator.get("value") === true) {
           actuator.switchOff();
         } else {
           actuator.switchOn();
@@ -184,18 +184,22 @@ define([
             }
             $("#device-" + device.cid + "-color").attr("style", "background-color:" + device.getCurrentColor());
             break;
-          case 8:
-            if (device.get("value") === "true" || device.get("value") === true) {
-              $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOff");
-              $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOn");
-              $("#device-" + device.cid + "-value").attr("class","label label-yellow");
-            } else {
-              $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOn");
-              $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOff");
-              $("#device-" + device.cid + "-value").attr("class","label label-default");
-            }
-            break;
-          case 210:
+            case 8:
+                if (device.get("value") === "true" || device.get("value") === true) {
+                    $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOff");
+                    $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOn");
+                    $("#device-" + device.cid + "-value").attr("class","label label-yellow");
+                } else {
+                    $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOn");
+                    $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOff");
+                    $("#device-" + device.cid + "-value").attr("class","label label-default");
+                }
+                break;
+            case 31: //Media Player : 31
+
+
+                break;
+            case 210:
             var activeFace = "";
             switch (device.get("activeFace")) {
               case "1":
