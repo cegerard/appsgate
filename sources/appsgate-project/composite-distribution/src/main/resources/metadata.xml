@@ -5,6 +5,7 @@
 
     <composite name="AppsGate-Application" singleton="true">
         <contentMngt>
+            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
             
             <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
             
@@ -17,8 +18,6 @@
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
             
             <start implementation="TraceMan" name="TraceManInst"></start>
-
-            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
             <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 
