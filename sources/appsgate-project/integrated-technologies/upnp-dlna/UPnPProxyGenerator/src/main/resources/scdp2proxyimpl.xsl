@@ -87,8 +87,14 @@ public class <xsl:value-of select="$classname"/> implements  <xsl:value-of selec
 	@SuppressWarnings("unchecked")
 	public void notifyUPnPEvent(String deviceId, String serviceId,	@SuppressWarnings("rawtypes") Dictionary events) {
 
-        UPnPEvent evt = new UPnPEvent(deviceId, serviceId, events);
-		stateChanged(evt);
+		try {
+	        UPnPEvent evt = new UPnPEvent(deviceId, serviceId, events);
+			stateChanged(evt);
+		}
+		catch(Exception exception) {
+			System.out.println("unexpected exception while handling UPnP notification "+deviceId+" "+serviceId+" "+events);
+			exception.printStackTrace();
+		}
 	}
 
 	private UPnPEvent stateChanged(UPnPEvent event) {
