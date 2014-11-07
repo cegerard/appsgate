@@ -231,7 +231,10 @@
             "status": {
                 "playing": "Playing",
                 "selected": "Please select a media",
-                "stopped": "Stopped"
+                "stopped": "Stopped",
+                "PLAYING": "Playing: ",
+                "PAUSED_PLAYBACK": "Paused: ",
+                "STOPPED": "Stopped: "
             }
         },
         "movement": {
@@ -253,6 +256,7 @@
                 "turnAllOn": "Turn all on"
             },
             "keyboard": {
+				"change": "consumption of plug changes",
                 "isOff": "plug ... is off",
                 "isOff-keep": "plug ... off",
                 "isOn": "plug ... is on",
@@ -263,6 +267,7 @@
                 "turnOn": "Switch on plug ..."
             },
             "language": {
+				"change": "consumption of __myVar__ changes",
                 "isOff": "__myVar__ is off",
                 "isOff-keep": "__myVar__ off",
                 "isOn": "__myVar__ is on",
@@ -322,7 +327,7 @@
             },
             "keyboard": {
                 "get": "temperetaure measured by ...",
-                "change": "temperature of ... changes"
+                "change": "temperature of temperature sensor changes"
             },
             "language": {
                 "get": "temperetaure measured by __myVar__",

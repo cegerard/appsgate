@@ -123,11 +123,11 @@
             },
             "keyboard": {
                 "get": "la luminosité mesurée par ...",
-				"change" : "la luminosité change"
+				"change" : "la luminosité mesurée par le capteur de luminosité change"
             },
             "language": {
-                "get": "la luminosité de __myVar__",
-				"change" : "la luminosité de __myVar__ change"
+                "get": "la luminosité mesurée par __myVar__",
+				"change" : "la luminosité mesurée par __myVar__ change"
             },
             "name": {
                 "plural": "Capteurs de luminosité",
@@ -256,6 +256,7 @@
                 "turnAllOn": "Tout allumer"
             },
             "keyboard": {
+				"change": "la consommation électrique mesurée par la prise change",
                 "isOff": "la prise ... est éteinte",
                 "isOff-keep": "la prise ... éteinte",
                 "isOn": "la prise ... est allumée",
@@ -266,6 +267,7 @@
                 "turnOn": "Allumer la prise ..."
             },
             "language": {
+				"change": "la consommation électrique mesurée par __myVar__ change",
                 "isOff": "__myVar__ est éteinte",
                 "isOff-keep": "__myVar__ éteinte",
                 "isOn": "__myVar__ est allumée",
@@ -325,11 +327,11 @@
             },
             "keyboard": {
                 "get": "la température mesurée par ...",
-                "change": "la température de ... change"
+                "change": "la température mesurée par le capteur de température change"
             },
             "language": {
                 "get": "la température de __myVar__",
-                "change": "la température de __myVar__ change"
+                "change": "la température mesurée par __myVar__ change"
             },
             "name": {
                 "plural": "Capteurs de température",
