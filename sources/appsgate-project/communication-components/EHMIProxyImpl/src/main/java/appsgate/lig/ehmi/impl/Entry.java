@@ -1,7 +1,10 @@
 package appsgate.lig.ehmi.impl;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import appsgate.lig.ehmi.impl.listeners.ObjectEventListener;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
 
 /**
@@ -12,6 +15,9 @@ import appsgate.lig.ehmi.spec.listeners.CoreListener;
  * @version 1.0.0
  */
 public class Entry {
+	
+    private final static Logger logger = LoggerFactory.getLogger(Entry.class);
+
 
 	/**
 	 * Identifier of the source f the event
@@ -162,6 +168,8 @@ public class Entry {
 		hash = 23 * hash + (this.value != null ? this.value.hashCode() : 0);
 		return hash;
 	}
+	
+	static final String WILDCARD="*";
 
 	/**
 	 * 
@@ -170,18 +178,26 @@ public class Entry {
 	 */
 	public boolean match(Entry key) {
 		// if value does not match
-		if (key.value == null ? this.value != null : !key.value
-				.equals(this.value)) {
+		if((key.value == null && this.value == null)
+				||WILDCARD.equals(key.value)
+				||WILDCARD.equals(this.value)
+				||key.value.equals(this.value) ) {
+			logger.trace("match(Entry key), values matches,"
+					+ " this.value : {}, key.value : {}",this.value, key.value);
+		} else {
 			return false;
 		}
-		// if var name does not match
-		if (key.varName == null ? this.varName != null : !key.varName
-				.equals(this.varName)) {
+		
+		if((key.varName == null && this.varName == null)
+				||WILDCARD.equals(key.varName)
+				||WILDCARD.equals(this.varName)
+				||key.varName.equals(this.varName) ) {
+			logger.trace("match(Entry key), keys matches,"
+					+ " this.varName : {}, key.varName : {}",this.varName, key.varName);
+		} else {
 			return false;
 		}
-		if (key.objectId == null || key.objectId.isEmpty()) {
-			return true;
-		}
+		
 		return key.objectId.equals(this.objectId);
 	}
 }

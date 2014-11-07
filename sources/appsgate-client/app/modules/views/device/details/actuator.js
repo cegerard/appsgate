@@ -27,7 +27,7 @@ define([
       * Callback to toggle a plug - used when the displayed device is a plug (!)
       */
       onToggleActuatorButton: function() {
-        if (this.model.get("value") == "true") {
+        if (this.model.get("value") === "true" || this.model.get("value") === true) {
           this.model.switchOff();
         } else {
           this.model.switchOn();

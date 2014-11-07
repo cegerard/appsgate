@@ -653,7 +653,8 @@
         "device-unlocated": "Not located",
         "mail": {
             "keyboard": {
-                "sendMail": "Send mail ..."
+                "sendMail": "Send mail ...",
+                "mailSent": "a mail have been sent"
             },
             "language": {
                "body": "Content",

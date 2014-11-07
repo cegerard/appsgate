@@ -655,7 +655,8 @@
         "device-unlocated": "Non localisé",
         "mail": {
             "keyboard": {
-                "sendMail": "Envoyer un mail ..."
+                "sendMail": "Envoyer un mail ...",
+                "mailSent": "un mail a été envoyé"
             },
             "language": {
 				"body": "objet",

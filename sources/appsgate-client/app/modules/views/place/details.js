@@ -331,25 +331,12 @@ define([
             e.preventDefault();
 
             var lamp = devices.get($(e.currentTarget).attr("device-id"));
-            // value can be string or boolean
-            // string
-            if (typeof lamp.get("value") === "string") {
-                if (lamp.get("value") === "true") {
-                    lamp.set("value", "false");
-                } else {
-                    lamp.set("value", "true");
-                }
-                // boolean
-            } else {
-                if (lamp.get("value")) {
-                    lamp.set("value", "false");
-                } else {
-                    lamp.set("value", "true");
-                }
-            }
 
-            // send the message to the backend
-            lamp.save();
+            if (lamp.get("value") === "true" || lamp.get("value") === true) {
+              lamp.switchOff();
+            } else {
+              lamp.switchOn();
+            }
 
             return false;
         },
