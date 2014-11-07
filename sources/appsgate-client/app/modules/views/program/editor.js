@@ -36,7 +36,9 @@ define([
         this.Mediator.loadProgramJSON(this.model.get("body"), this.model.get("id"));
         this.bodyJson = $.extend(true, {}, this.model.get("body"));
         this.oldState = this.model.get("runningState");
+        console.log(this.oldState);
         this.refreshing = false;
+        
 
         this.listenTo(this.model, "change", this.refreshDisplay);
         this.listenTo(devices, "remove", this.refreshDisplay);
