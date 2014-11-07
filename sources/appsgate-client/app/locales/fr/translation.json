@@ -122,10 +122,12 @@
                 "intern": "Capteur de luminosité intérieur"
             },
             "keyboard": {
-                "get": "la luminosité mesurée par ..."
+                "get": "la luminosité mesurée par ...",
+				"change" : "la luminosité change"
             },
             "language": {
-                "get": "la luminosité de __myVar__"
+                "get": "la luminosité de __myVar__",
+				"change" : "la luminosité de __myVar__ change"
             },
             "name": {
                 "plural": "Capteurs de luminosité",
@@ -326,14 +328,12 @@
                 "change": "la température de ... change"
             },
             "language": {
-                "get": "la température de __myVar__"
+                "get": "la température de __myVar__",
+                "change": "la température de __myVar__ change"
             },
             "name": {
                 "plural": "Capteurs de température",
                 "singular": "Capteur de température"
-            },
-            "event": {
-                "change": "la température de __myVar__ change"
             }
         },
         "type-label": "Type",

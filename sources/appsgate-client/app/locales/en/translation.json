@@ -122,10 +122,12 @@
                 "intern": "Internal Light sensor"
             },
             "keyboard": {
-                "get": "luminosity of ..."
+                "get": "luminosity of ...",
+                "change" : "luminosity changes"
             },
             "language": {
-                "get": "luminosity of __myVar__"
+                "get": "luminosity of __myVar__",
+                "change" : "luminosity of __myVar__ changes"
             },
             "name": {
                 "plural": "Brightness sensors",
@@ -323,14 +325,12 @@
                 "change": "temperature of ... changes"
             },
             "language": {
-                "get": "temperetaure measured by __myVar__"
+                "get": "temperetaure measured by __myVar__",
+                "change": "temperature of __myVar__ changes"
             },
             "name": {
                 "plural": "Temperature sensors",
                 "singular": "Temperature sensor"
-            },
-            "event": {
-                "change": "temperature of __myVar__ changes"
             }
         },
         "type-label": "Type",
