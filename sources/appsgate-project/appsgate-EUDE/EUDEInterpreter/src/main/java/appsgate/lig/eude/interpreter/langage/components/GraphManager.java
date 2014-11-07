@@ -7,8 +7,12 @@ package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeValue;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.json.JSONArray;
@@ -40,17 +44,21 @@ public class GraphManager {
      *
      */
     private JSONObject returnJSONObject;
-    
+
     // Constants string for entity and relation JSON
-    private final String  REFERENCE_LINK = "reference";
+    private final String REFERENCE_LINK = "reference";
     private final String LOCATED_LINK = "isLocatedIn";
     private final String PLANIFIED_LINK = "isPlanified";
     private final String PROGRAM_ENTITY = "program";
+    private final String DENOTES_LINKS = "denotes";
     private final String PLACE_ENTITY = "place";
     private final String TIME_ENTITY = "time";
     private final String SERVICE_ENTITY = "service";
     private final String DEVICE_ENTITY = "device";
+    private final String SELECTOR_ENTITY = "selector";
     
+    private final String CLOCK_ID = "21106637055";
+
     /**
      * @param interpreter
      */
@@ -72,13 +80,14 @@ public class GraphManager {
         initJSONObject();
         // Retrieving programs id
         this.programsId = interpreter.getListProgramIds(null);
+        int idSelector = -2;
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
             if (p != null) {
                 addNode(PROGRAM_ENTITY, pid, p.getProgramName());
                 ReferenceTable references = p.getReferences();
                 for (String rdevice : references.getDevicesId()) {
-                    if (rdevice.equals("21106637055")){
+                    if (rdevice.equals(CLOCK_ID)) {
                         addLink(PLANIFIED_LINK, pid, rdevice);
                     } else {
                         addLink(REFERENCE_LINK, pid, rdevice);
@@ -87,11 +96,15 @@ public class GraphManager {
                 for (String rProgram : references.getProgramsId()) {
                     addLink(REFERENCE_LINK, pid, rProgram);
                 }
+
+                if (addSelector(references, idSelector)) {
+                    idSelector--;
+                }
             }
-            
+
             // Links program - scheduler
-            if (this.interpreter.getContext().checkProgramIdScheduled(pid)){
-                addLink(PLANIFIED_LINK, pid, "21106637055");
+            if (this.interpreter.getContext().checkProgramIdScheduled(pid)) {
+                addLink(PLANIFIED_LINK, pid, CLOCK_ID);
                 //@TODO: if planified more than one time, have more than one relation...
             }
         }
@@ -143,14 +156,14 @@ public class GraphManager {
                 optArg.put("location", o.getString("location"));
             } catch (JSONException ex) {
             }
-            
+
             // Time special case
-            if (o.getString("id").equals("21106637055")){
+            if (o.getString("id").equals(CLOCK_ID)) {
                 addNode(TIME_ENTITY, o.getString("id"), o.getString("name"), optArg);
             } else {
                 addNode(DEVICE_ENTITY, o.getString("id"), o.getString("name"), optArg);
             }
-            
+
         } catch (JSONException ex) {
             LOGGER.error("A node is malformated missing {}", ex.getCause());
             LOGGER.debug("Node: {}", o.toString());
@@ -242,6 +255,31 @@ public class GraphManager {
         } catch (JSONException ex) {
             // Nothing will be raised since there is no null value
         }
+    }
+
+    private boolean addSelector(ReferenceTable ref, int idSelector) {
+        boolean ret = false;
+        ArrayList<NodeSelect> selectors = ref.getSelectors();
+        // For each selector present in the program...
+        for (NodeSelect selector : selectors) {
+            addNode(SELECTOR_ENTITY, "" + idSelector, "S" + idSelector);
+            ret = true;
+            
+            HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getPlaceDeviceSelector();
+
+            // Get the devices of the selector and link them to the selector
+            ArrayList<String> devicesSelector = elements.get("deviceSelector");
+            for (String deviceId : devicesSelector) {
+                addLink(DENOTES_LINKS, "" + idSelector, deviceId);
+            }
+
+            // Get the places of the selector and link them to the selector
+            ArrayList<String> placesSelector = elements.get("placeSelector");
+            for (String placeId : placesSelector) {
+                addLink(LOCATED_LINK, "" + idSelector, placeId);
+            }
+        }
+        return ret;
     }
 
 }

@@ -19,10 +19,9 @@ define([
                 width: 960,
                 mapDepthNeighbors: {},
                 entitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-                relationsTypes: ["reference", "isLocatedIn", "isPlanified"],
-                //                relationsTypes: ["listenTo", "actsOn", "isPlanified", "isLocatedIn", "denotes"]
+                relationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"],
                 currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
-                currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified"]
+                currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"]
             });
 
             // listen to the event when the data are received
