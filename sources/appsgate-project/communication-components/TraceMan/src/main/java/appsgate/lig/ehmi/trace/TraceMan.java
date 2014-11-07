@@ -446,7 +446,7 @@ public class TraceMan implements TraceManSpec {
             requestResult.put("result", result);
             requestResult.put("request", request);
 
-            EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, requestResult.toString());
+            EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, request.getInt("clientId"), requestResult.toString());
             
         } catch (JSONException e) {
             e.printStackTrace();
