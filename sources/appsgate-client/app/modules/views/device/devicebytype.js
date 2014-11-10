@@ -1,6 +1,6 @@
 define([
   "app",
-  "text!templates/devices/list/deviceListByCategory.html",
+  "text!templates/devices/list/deviceListByCategory.html"
   ], function(App, deviceListByCategoryTemplate) {
 
     var DeviceByTypeView = {};
@@ -199,6 +199,11 @@ define([
 
 
                 break;
+            case 124: //CoreTV : 124
+
+
+                break;
+
             case 210:
             var activeFace = "";
             switch (device.get("activeFace")) {

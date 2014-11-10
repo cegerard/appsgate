@@ -3,7 +3,7 @@ define([
     "text!templates/program/nodes/defaultActionNode.html",
     "text!templates/program/nodes/defaultEventNode.html",
     "text!templates/program/nodes/defaultPropertyNode.html",
-    "text!templates/program/nodes/stateNode.html",
+    "text!templates/program/nodes/stateNode.html"
 ], function(App, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate) {
 
     var Brick = {};

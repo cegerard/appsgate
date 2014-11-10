@@ -535,7 +535,7 @@ define([
                         this.$el.html(this.template({
                             device: this.model,
                             sensorImg: ["app/img/tv.gif"],
-                            sensorType: $.i18n.t("devices.actuator.name.singular"),
+                            sensorType: $.i18n.t("devices.tv.name.singular"),
                             places: places,
                             deviceDetails: this.tplCoreTV
                         }));
