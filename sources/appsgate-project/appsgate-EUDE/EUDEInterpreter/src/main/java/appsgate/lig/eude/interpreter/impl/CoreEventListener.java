@@ -155,6 +155,13 @@ public class CoreEventListener implements CoreListener {
         }
     }
 
+    /**
+     * @return true if the list is empty
+     */
+    public Boolean isEmpty() {
+        return nodeEventList.isEmpty();
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;

@@ -285,7 +285,7 @@ define([], function () {
 						currentDomObject.innerHTML = "not reachable";
 					}	
 				}else {
-					if(varName == "state"){
+					if(varName == "value"){
 						currentDomObject = document.getElementById("lightstate-on-value");
 						if(message.value == "true") {
 							document.getElementById("lightstate-on").className = "tile square text bg-color-yellow";
@@ -294,13 +294,13 @@ define([], function () {
 							currentDomObject.innerHTML = "OFF";
 							document.getElementById("lightstate-on").className = "tile square text bg-color-darken";
 						}
-					}else if(varName == "hue"){
+					}else if(varName == "color"){
 						currentDomObject = document.getElementById("lightstate-hue-value");
 						currentDomObject.value = message.value;
-					}else if(varName == "sat"){
+					}else if(varName == "saturation"){
 						currentDomObject = document.getElementById("lightstate-sat-value");
 						currentDomObject.value = message.value;
-					}else if(varName == "bri"){
+					}else if(varName == "brightness"){
 						currentDomObject = document.getElementById("lightstate-bri-value");
 						currentDomObject.value = message.value;
 					}else if(varName == "x"){

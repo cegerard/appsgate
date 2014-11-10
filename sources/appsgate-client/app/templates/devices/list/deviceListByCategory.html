@@ -206,6 +206,18 @@
                     <% } else { %>
                     <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.actuator.status.turnedOff"></span>
                     <% } %>
+
+                    <% } else if (type === "31") { %>
+                    <% if ( s.get('mediaName')!=undefined ) { %>
+                    <div class="label label-success">
+                    <span id="playerStatus" class="label label-success" data-i18n="devices.mediaplayer.status.<%= s.get('playerStatus') %>" ></span>
+                    <span id="selectedMedia" class="label label-success" title=" <%= s.get('mediaName') %>" url=" <%= s.get('mediaURL') %>" ><%= s.get('mediaName') %></span>
+                    </div>
+                    <% } else { %>
+                    <span id="selectedMedia" class="label label-default" data-i18n="devices.mediaplayer.status.selected">Select a media</span>
+                    <% } %>
+
+
                     <% } else if (type === "210") { %>
                     <% if(s.get("activeFace") === "1") { %>
                       <img id="device-<%= s.cid %>-value" src='/app/img/domicube-work.svg' width='18px' class="img-responsive">
@@ -345,6 +357,17 @@
                     <% } else { %>
                     <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.actuator.status.turnedOff"></span>
                     <% } %>
+
+                    <% } else if (type === "31") { %>
+                    <% if ( s.get('mediaName')!=undefined ) { %>
+                    <div class="label label-success">
+                    <span id="playerStatus" data-i18n="devices.mediaplayer.status.<%= s.get('playerStatus') %>" ></span>
+                    <span id="selectedMedia" title=" <%= s.get('mediaName') %>" url=" <%= s.get('mediaURL') %>" ><%= s.get('mediaName') %></span>
+                    </div>
+                    <% } else { %>
+                    <span id="selectedMedia" class="label label-default" data-i18n="devices.mediaplayer.status.selected">Select a media</span>
+                    <% } %>
+
                     <% } else if (type === "210") { %>
                     <% if(s.get("activeFace") === "1") { %>
                       <img id="device-<%= s.cid %>-value" src='/app/img/domicube-work.svg' width='18px' class="img-responsive">

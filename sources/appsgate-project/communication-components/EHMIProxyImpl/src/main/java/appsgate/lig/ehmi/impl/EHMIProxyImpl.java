@@ -1234,10 +1234,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(Long.valueOf(coreListener.getValue()));
 			// register the alarm
-			int alarmId = systemClock.registerAlarm(calendar, new TimeObserver(
-					"EHMI listener for clock event"));
+			int alarmId = systemClock.registerAlarm(calendar, new TimeObserver("EHMI listener for clock event"));
 			// change the event entry with the alarmId value
-			eventKey.setValue(String.valueOf(alarmId));
+			//eventKey.setValue(String.valueOf(alarmId));
+                        eventKey = new TimeEntry(eventKey, alarmId);
 			// save the alarm identifier
 			alarmListenerList.put(eventKey, alarmId);
 			logger.debug("Alarm listener added.");
@@ -1470,5 +1470,40 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			}
 		}
 	}
+    
+    	@Override
+        public Set<?> listEventsSchedulingProgramId(String programId, String startPeriod, String endPeriod) {
+    		logger.trace("listEventsSchedulingProgramId("
+    				+ "String programId : {},"
+    				+ "String startPeriod : {}"
+    				+ ", String endPeriod) : {}"
+    				,programId,startPeriod,endPeriod);
+    		if (schedulerService == null) {
+    			logger.error("No scheduling service, aborting)");
+    		} else {
+    			try {
+    				return schedulerService.listEventsSchedulingProgramId(programId, startPeriod, endPeriod);
+    			} catch (SchedulingException exc) {
+    				logger.error("Error when when checking the scheduler : "
+    						+ exc.getMessage());
+    			}
+    		}    		
+    		return null;
+    	}
+    	
+    	@Override
+    	public boolean checkProgramIdScheduled(String programId) {
+    		if (schedulerService == null) {
+    			logger.error("No scheduling service, aborting)");
+    		} else {
+    			try {
+    				return schedulerService.checkProgramIdScheduled(programId);
+    			} catch (SchedulingException exc) {
+    				logger.error("Error when checking the scheduler : "
+    						+ exc.getMessage());
+    			}
+    		}
+    		return false;
+    	}
 
 }

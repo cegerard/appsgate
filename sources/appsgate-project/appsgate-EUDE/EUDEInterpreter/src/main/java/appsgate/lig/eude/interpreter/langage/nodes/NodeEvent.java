@@ -146,8 +146,13 @@ public class NodeEvent extends Node implements INodeEvent {
     /**
      * Once the event is fired, transmit the fact that the event has been fired
      */
-    public void coreEventFired() {
+    public void coreEventFired()  {
         if (isStarted()) {
+            try {
+                getMediator().removeNodeListening(this);
+            } catch (SpokExecutionException ex) {
+                LOGGER.error("Unable to remove the node listening from {}", this );
+            }
             setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
@@ -155,7 +160,6 @@ public class NodeEvent extends Node implements INodeEvent {
 
     @Override
     public void endEventFired(EndEvent e) {
-        LOGGER.debug("EndEvent fired: {}", e.toString());
     }
 
     @Override

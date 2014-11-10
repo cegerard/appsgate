@@ -4,7 +4,9 @@
                           org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd">
 
     <composite name="AppsGate-Application" singleton="true">
-        <contentMngt>            
+        <contentMngt>
+            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
+            
             <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
             
             <start  implementation="EHMIProxyImpl" name="EHMIProxyImplInst" ></start>
@@ -18,8 +20,6 @@
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
             
             <start implementation="TraceMan" name="TraceManInst"></start>
-
-            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
             <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 
@@ -86,7 +86,7 @@
 
     <composite name="KNXServices" singleton="true">
         <contentMngt>
-            <start implementation="KNXDummyImplem" name="KNXDymmyImplemInst">
+            <start implementation="KNXDummyImplem" name="KNXDummyImplemInst">
             </start>
         </contentMngt>
     </composite>

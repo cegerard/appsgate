@@ -22,7 +22,7 @@ define([
       * Callback to toggle a plug - used when the displayed device is a plug (!)
       */
       onTogglePlugButton: function() {
-        if (this.model.get("plugState") == "true") {
+        if (this.model.get("plugState") === "true" || this.model.get("plugState") === true) {
           this.model.switchOff();
         } else {
           this.model.switchOn();

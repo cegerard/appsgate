@@ -25,11 +25,7 @@ import org.apache.felix.upnp.devicegen.holder.*;
 import <xsl:value-of select="$interfacePackage"/>.<xsl:value-of select="$interfaceName"/>;
 
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Hashtable;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import org.osgi.framework.Filter;
 
@@ -51,7 +47,6 @@ import appsgate.lig.upnp.adapter.event.UPnPEvent;
 
 public class <xsl:value-of select="$classname"/> implements  <xsl:value-of select="$interfaceName"/>, UPnPEventListener {
 
-	private String 		userObjectName;
 
 	private String 		serviceType ;
 	private String 		serviceId ;
@@ -84,11 +79,16 @@ public class <xsl:value-of select="$classname"/> implements  <xsl:value-of selec
 	private Filter upnpEventFilter;
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public void notifyUPnPEvent(String deviceId, String serviceId,	@SuppressWarnings("rawtypes") Dictionary events) {
 
-        UPnPEvent evt = new UPnPEvent(deviceId, serviceId, events);
-		stateChanged(evt);
+		try {
+	        UPnPEvent evt = new UPnPEvent(deviceId, serviceId, events);
+			stateChanged(evt);
+		}
+		catch(Exception exception) {
+			System.out.println("unexpected exception while handling UPnP notification "+deviceId+" "+serviceId+" "+events);
+			exception.printStackTrace();
+		}
 	}
 
 	private UPnPEvent stateChanged(UPnPEvent event) {

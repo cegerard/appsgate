@@ -19,7 +19,7 @@ define([
         events: {
             "click a.list-group-item": "updateSideMenu",
             "shown.bs.modal #add-program-modal": "initializeModal",
-            "hidden.bs.modal #add-program-modal": "toggleModalValue",
+            "hide.bs.modal #add-program-modal": "toggleModalValue",
             "click #add-program-modal button.valid-button": "validAddProgram",
             "keyup #add-program-modal input:text": "validAddProgram",
             "click .deactivate-all-programs-button": "onStopAllPrograms"

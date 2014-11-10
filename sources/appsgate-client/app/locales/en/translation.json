@@ -30,9 +30,17 @@
         },
         "ard": {
             "affirmative": "Yes",
+            "action": {
+                "zone-activate": "Activate all zones on __myVar__",
+                "zone-desactivate": "Desactivate all zones on __myVar__"
+            },
+            "keyboard": {
+                "zone-activate": "Activate all zones on ...",
+                "zone-desactivate": "Desactivate all zones on ..."
+            },
             "event": {
-                "authorized": "badge is authorized on",
-                "non_authorized": "badge is NOT authorized on"
+                "authorized": "badge is authorized on ...",
+                "non_authorized": "badge is NOT authorized on ..."
             },
             "last-authorized": "Last badge access granted",
             "last-card": "Last badge passed",
@@ -44,8 +52,8 @@
             },
             "negative": "No",
             "state": {
-                "authorized": "badge is authorized on",
-                "non_authorized": "badge is NOT authorized on"
+                "authorized": "badge is authorized on __myVar__",
+                "non_authorized": "badge is NOT authorized on __myVar__"
             }
         },
         "avg" : "Avg : ",
@@ -114,10 +122,12 @@
                 "intern": "Internal Light sensor"
             },
             "keyboard": {
-                "get": "luminosity of ..."
+                "get": "luminosity of ...",
+                "change" : "luminosity changes"
             },
             "language": {
-                "get": "luminosity of __myVar__"
+                "get": "luminosity of __myVar__",
+                "change" : "luminosity of __myVar__ changes"
             },
             "name": {
                 "plural": "Brightness sensors",
@@ -221,7 +231,10 @@
             "status": {
                 "playing": "Playing",
                 "selected": "Please select a media",
-                "stopped": "Stopped"
+                "stopped": "Stopped",
+                "PLAYING": "Playing: ",
+                "PAUSED_PLAYBACK": "Paused: ",
+                "STOPPED": "Stopped: "
             }
         },
         "movement": {
@@ -243,6 +256,7 @@
                 "turnAllOn": "Turn all on"
             },
             "keyboard": {
+				"change": "consumption of plug changes",
                 "isOff": "plug ... is off",
                 "isOff-keep": "plug ... off",
                 "isOn": "plug ... is on",
@@ -253,6 +267,7 @@
                 "turnOn": "Switch on plug ..."
             },
             "language": {
+				"change": "consumption of __myVar__ changes",
                 "isOff": "__myVar__ is off",
                 "isOff-keep": "__myVar__ off",
                 "isOn": "__myVar__ is on",
@@ -340,17 +355,15 @@
             },
             "keyboard": {
                 "get": "temperetaure measured by ...",
-                "change": "temperature of ... changes"
+                "change": "temperature of temperature sensor changes"
             },
             "language": {
-                "get": "temperetaure measured by __myVar__"
+                "get": "temperetaure measured by __myVar__",
+                "change": "temperature of __myVar__ changes"
             },
             "name": {
                 "plural": "Temperature sensors",
                 "singular": "Temperature sensor"
-            },
-            "event": {
-                "change": "temperature of __myVar__ changes"
             }
         },
         "type-label": "Type",
@@ -673,7 +686,8 @@
         "device-unlocated": "Not located",
         "mail": {
             "keyboard": {
-                "sendMail": "Send mail ..."
+                "sendMail": "Send mail ...",
+                "mailSent": "a mail have been sent"
             },
             "language": {
                "body": "Content",

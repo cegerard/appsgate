@@ -55,7 +55,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["switchOn", "switchOff"];
+      return ["switchOn", "switchOff", "value-changed"];
     },
     /**
      * return the keyboard code for a given event
@@ -64,6 +64,13 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONEvent("mandatory");
       switch(evt) {
+        case "value-changed":
+          $(btn).append("<span data-i18n='devices.plug.keyboard.change'><span>");
+          v.eventName = "consumption";
+          v.eventValue = "*";
+          v.phrase = "devices.plug.language.change";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
         case "switchOn":
           $(btn).append("<span data-i18n='devices.plug.keyboard.turnOnEvt'><span>");
           v.eventName = "plugState";

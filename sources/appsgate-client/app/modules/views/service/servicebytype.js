@@ -24,7 +24,10 @@ define([
             "click button.delete-mail": "onClickDeleteMail",
             "click button.delete-mail-button": "onDeleteMailButton",
             "click button.cancel-delete-mail-button": "onCancelDeletePopover",
-            "click button.cancel-delete-weather-button": "onCancelDeletePopover"
+            "click button.cancel-delete-weather-button": "onCancelDeletePopover",
+            "shown.bs.modal #edit-mail-modal": "initializeMailModal",
+            "shown.bs.modal #add-weather-modal": "initializeWeatherModal"
+
         },
         /**
          * Listen to the updates on the services of the category and refresh if any
@@ -73,6 +76,15 @@ define([
                     console.warn(l);
                 }
             });
+        },
+        /**
+        * Clear the input text, hide the error message and disable the valid button by default
+        */
+        initializeMailModal: function() {
+          $("#edit-mail-modal input#mailInput").focus();
+        },
+        initializeWeatherModal: function() {
+          $("#add-weather-modal input#weatherInput").focus();
         },
         reload: function() {
             self = this;
@@ -263,7 +275,7 @@ define([
 
                 mail.updateFavorite(oldMail, newMail);
 
-                
+
                 // tell the router that there is no modal any more
                 appRouter.isModalShown = false;
                 $("#mailFavCnt").html(mail.getNumberOfFavorites());

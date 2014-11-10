@@ -1,5 +1,6 @@
 package appsgate.ard.protocol.adaptor;
 
+import appsgate.ard.protocol.controller.ARDController;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.lig.ard.badge.door.messages.ARDBadgeDoorContactNotificationMsg;
 import appsgate.lig.ard.badge.door.spec.CoreARDBadgeDoorSpec;
@@ -34,6 +35,8 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     private Boolean authorized=false;
     private String ardClass="";
     private String lastMessage="";
+
+    private ARDController controller;
 
     public String getAbstractObjectId() {
         return sensorId;
@@ -108,6 +111,16 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     @Override
     public String getLastMessage() {
         return lastMessage;
+    }
+
+    @Override
+    public void zoneActivate() {
+        logger.warn("zoneActivate: This function is not implemented yet");
+    }
+
+    @Override
+    public void zoneDesactivate() {
+        logger.debug("zoneDesactivate: This function is not implemented yet");
     }
 
     public NotificationMsg triggerApamMessage(ARDBadgeDoorContactNotificationMsg apamMessage){

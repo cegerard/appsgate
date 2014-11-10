@@ -84,6 +84,11 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * the phrase available for the editor
      */
     private String phrase = null;
+    
+    /**
+     * 
+     */
+    protected Boolean stopped = false;
 
     /**
      * Default constructor
@@ -136,6 +141,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * Stop the interpretation of the node. Check if the node is not started
      */
     public void stop() {
+        stopped = true;
         if (isStarted()) {
             setStopping(true);
 
@@ -144,7 +150,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             fireEndEvent(new EndEvent(this));
             setStopping(false);
         } else {
-            LOGGER.debug("Trying to stop a not started node {}", this);
+            specificStop();
         }
     }
 
@@ -168,7 +174,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      */
     protected void fireStartEvent(StartEvent e) {
         int nbListeners = startEventListeners.size();
-        LOGGER.trace("fire endEvent {} for {} nodes", e.getSource(), nbListeners);
+        LOGGER.trace("fire startEvent {} for {} nodes", e.getSource(), nbListeners);
         for (int i = 0; i < nbListeners; i++) {
             StartEventListener l = startEventListeners.poll();
             l.startEventFired(e);
@@ -641,7 +647,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      *
      */
     protected void setProgramProcessing() {
-        LOGGER.trace("Program PROCESSING");
+        LOGGER.trace("Program PROCESSING from {}", this);
         NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
         if (p != null) {
             p.setProcessing(this.getIID());

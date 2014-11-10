@@ -144,7 +144,7 @@ public class ARDController {
 
     }
 
-    @Validate
+    //@Validate
     public void validate() throws JSONException {
 
         Thread t1=new Thread(){
