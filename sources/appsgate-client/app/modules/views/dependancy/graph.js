@@ -170,11 +170,15 @@ define([
                         .attr("marker-end", function (d) {
                             return "url(#" + d.type + ")";
                         })
-                        .attr("id", function (d) {
-                            return "linkID_" + i;
-                        })
                         .attr("refX", -30);
 
+                    d3.select(this).append("svg:path")
+                        .attr("class", function (d) {
+                            return "linkText";
+                        })
+                        .attr("id", function (d) {
+                            return "linkID_" + i;
+                        });
 
                     d3.select(this).append("circle")
                         .attr("class", "circle-information hidden")
@@ -268,12 +272,10 @@ define([
                 });
 
 
-            pathLink.select("path")
+            pathLink.select(".link")
                 .attr("d", function (d) {
-                    var dx = d.target.x - d.source.x,
-                        dy = d.target.y - d.source.y,
-                        dr = 150 / d.linknum; //linknum is defined above
-                    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+                    // don't look about the orientation, this is the link showed
+                    return arcPath(false, d);
                 })
                 .classed("node-1", function (d) {
                     return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
@@ -295,6 +297,14 @@ define([
                 .classed("targeting", function (d) {
                     return d.target === self.model.get("rootNode");
                 });
+
+
+            pathLink.select(".linkText")
+                .attr("d", function (d) {
+                    // Take care of the orientation of the link to have a label well placed
+                    return arcPath(d.source.x > d.target.x, d);
+                })
+
 
             pathLink.select("circle")
                 .classed("hidden", function (l) {
@@ -434,6 +444,19 @@ define([
 
 
     });
+    
+    function arcPath(turned, d) {
+        var dx = d.target.x - d.source.x,
+            dy = d.target.y - d.source.y,
+            dr = 150 / d.linknum; //linknum is defined above
+        
+        if (turned) {
+            // If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
+            return "M" + d.target.x + "," + d.target.y + "A" + dr + "," + dr + " 0 0,0" + d.source.x + "," + d.source.y;
+        } else {
+            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1" + d.target.x + "," + d.target.y;
+        }
+    };
 
     //    function calculateXCircle(link) {
     //        var A = link.source;
