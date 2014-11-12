@@ -10,6 +10,9 @@
         "yes": "YES",
         "no": "NO"
     },
+    "dependancy": {
+        "refresh-data" : "Refresh data"
+    },
     "devices": {
         "no-value":"---",
         "actuator": {

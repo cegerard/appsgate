@@ -78,7 +78,7 @@ define(function(require, exports, module) {
         // devices
         dispatcher.on("devicesReady", function() {
           devicesReady = true;
-          if (placesReady && devicesReady && servicesReady && programsReady && dependanciesReady) {
+          if (placesReady && devicesReady && servicesReady && programsReady) {
             dispatcher.trigger("dataReady");
           }
         });
@@ -86,7 +86,7 @@ define(function(require, exports, module) {
         // services
         dispatcher.on("servicesReady", function() {
           servicesReady = true;
-          if (placesReady && devicesReady && servicesReady && programsReady && dependanciesReady) {
+          if (placesReady && devicesReady && servicesReady && programsReady) {
             dispatcher.trigger("dataReady");
           }
         });
@@ -94,18 +94,11 @@ define(function(require, exports, module) {
         // programs
         dispatcher.on("programsReady", function() {
           programsReady = true;
-          if (placesReady && devicesReady && servicesReady && programsReady && dependanciesReady) {
+          if (placesReady && devicesReady && servicesReady && programsReady) {
             dispatcher.trigger("dataReady");
           }
         });
         
-        // dependancies
-        dispatcher.on("dependanciesReady", function() {
-            dependanciesReady = true;
-            if (placesReady && devicesReady && servicesReady && programsReady && dependanciesReady) {
-                dispatcher.trigger("dataReady");
-            }
-        });
 
         // all data have been received, launch the user interface
         dispatcher.on("dataReady", function() {
@@ -119,7 +112,6 @@ define(function(require, exports, module) {
               devices: _.uniq(l.get("devices"))
             });
           });
-
 
         });
 

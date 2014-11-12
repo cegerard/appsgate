@@ -10,22 +10,18 @@ define([
         initialize: function () {
             var self = this;
 
-            // listen to the event when the list of programs is received
-            dispatcher.on("graph", function (graph) {
-                
+            // listen to the event when the grpah is loaded
+            dispatcher.on("loadGraph", function (graph) {
+
+                // Create new dependancy object
                 var newDependancy = new Dependancy();
-                    newDependancy.loadData(graph);
-                    self.add(newDependancy);
+                newDependancy.loadData(graph);
+
+                // Replace the existing dependancy if it already exists or just add it
+                self.reset(newDependancy);
 
                 dispatcher.trigger("dependanciesReady");
-            });
-
-            // send the request to fetch the programs
-            communicator.sendMessage({
-                method: "getGraph",
-                args: [],
-                callId: "graph",
-                TARGET: "EHMI"
+                dispatcher.trigger("router:loaded");
             });
         },
     });

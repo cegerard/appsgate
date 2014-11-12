@@ -23,11 +23,13 @@ define([
 
             $("#main").html(appRouter.navbartemplate());
 
-            appRouter.currentMenuView = new GraphView({
-                el: $("#main"),
-                model: dependancies.at(0)
+            // Send the request to the server to get the graph
+            communicator.sendMessage({
+                method: "getGraph",
+                args: [],
+                callId: "loadGraph",
+                TARGET: "EHMI"
             });
-            appRouter.currentMenuView.render();
 
             $("#main").append(appRouter.circlemenutemplate());
 
@@ -45,6 +47,14 @@ define([
             $("#home-nav").addClass("active");
 
             $("body").i18n();
+
+            // Once the dependancies have been created and added to the collection, show the graph
+            dispatcher.once("dependanciesReady", function () {
+                appRouter.showView(new GraphView({
+                    el: $("#main"),
+                    model: dependancies.at(0)
+                }));
+            });
         },
         // One entity selected
         //        selected: function (id) {

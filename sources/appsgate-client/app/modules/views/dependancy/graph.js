@@ -3,14 +3,22 @@ define([
 ], function (GraphTemplate) {
 
     var GraphView = {};
-    // detailled view of a debugger
+
     GraphView = Backbone.View.extend({
         template: _.template(GraphTemplate),
 
+        events: {
+            "click button.refresh-button": "onRefreshButton"
+        },
+
         initialize: function () {},
 
+        onRefreshButton: function () {
+            // Reload this page to refresh data
+            appRouter.dependancies();
+        },
+
         render: function () {
-            // render the editor with the program
             this.$el.append(this.template({
                 dependancy: this.model,
             }));
@@ -61,6 +69,8 @@ define([
 
             force.start();
 
+            // translate the view
+            this.$el.i18n();
         },
 
         update: function (model) {
