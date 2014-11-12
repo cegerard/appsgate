@@ -41,45 +41,45 @@ define([
       v.source.value = this.get("id");
       switch(evt) {
         case "Music":
-          $(btn).append("<img src='/app/img/domicube-music.png' width='36px'>");
+          $(btn).append("<img src='app/img/domicube-music.png' width='36px'>");
           v.eventName = "newFace";
           v.eventValue = "3";
-          v.icon = "/app/img/domicube-music.png";
+          v.icon = "app/img/domicube-music.png";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "Meal":
-          $(btn).append("<img src='/app/img/domicube-meal.png' width='36px'>");
+          $(btn).append("<img src='app/img/domicube-meal.png' width='36px'>");
           v.eventName = "newFace";
           v.eventValue = "6";
-          v.icon = "/app/img/domicube-meal.png";
+          v.icon = "app/img/domicube-meal.png";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "Question":
-          $(btn).append("<img src='/app/img/domicube-question.svg' width='36px'>");
+          $(btn).append("<img src='app/img/domicube-question.svg' width='36px'>");
           v.eventName = "newFace";
           v.eventValue = "4";
-          v.icon = "/app/img/domicube-question.svg";
+          v.icon = "app/img/domicube-question.svg";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "Lan":
-          $(btn).append("<img src='/app/img/domicube-work.svg' width='36px'>");
+          $(btn).append("<img src='app/img/domicube-work.svg' width='36px'>");
           v.eventName = "newFace";
           v.eventValue = "1";
-          v.icon = "/app/img/domicube-work.svg";
+          v.icon = "app/img/domicube-work.svg";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "Night":
-          $(btn).append("<img src='/app/img/domicube-night.png' width='36px'>");
+          $(btn).append("<img src='app/img/domicube-night.png' width='36px'>");
           v.eventName = "newFace";
           v.eventValue = "5";
-          v.icon = "/app/img/domicube-night.png";
+          v.icon = "app/img/domicube-night.png";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "inactivate":
           $(btn).append("<span data-i18n='devices.domicube.keyboard.inactivated'></span>");
           v.eventName = "newFace";
           v.eventValue = "2";
-          //v.icon = "/app/img/domicube-music.png";
+          //v.icon = "app/img/domicube-music.png";
           v.phrase = "devices.domicube.language.inactivated";
           $(btn).attr("json", JSON.stringify(v));
           break;
@@ -92,20 +92,20 @@ define([
           break;
         case "west":
               //$(btn).append("<span data-i18n='devices.domicube.keyboard.west'></span>");
-              $(btn).append("<img src='/app/img/cube-turn-left.png' width='36px'>");
+              $(btn).append("<img src='app/img/cube-turn-left.png' width='36px'>");
               v.eventName = "newDirection";
               v.eventValue = "west";
               //v.phrase = "devices.domicube.language.west";
-              v.icon = "/app/img/cube-turn-left.png";
+              v.icon = "app/img/cube-turn-left.png";
               $(btn).attr("json", JSON.stringify(v));
               break;
         case "east":
               //$(btn).append("<span data-i18n='devices.domicube.keyboard.east'></span>");
-              $(btn).append("<img src='/app/img/cube-turn-right.png' width='36px'>");
+              $(btn).append("<img src='app/img/cube-turn-right.png' width='36px'>");
               v.eventName = "newDirection";
               v.eventValue = "east";
               //v.phrase = "devices.domicube.language.east";
-              v.icon = "/app/img/cube-turn-right.png";
+              v.icon = "app/img/cube-turn-right.png";
               $(btn).attr("json", JSON.stringify(v));
           break;
         default:
@@ -143,32 +143,32 @@ define([
       v.object.value = this.get("id");
       switch(state) {
         case "Music":
-          $(btn).append("<img src='/app/img/domicube-music.png' width='36px'>");
-          v.icon = "/app/img/domicube-music.png";
+          $(btn).append("<img src='app/img/domicube-music.png' width='36px'>");
+          v.icon = "app/img/domicube-music.png";
           v.name = "Music";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "Meal":
-          $(btn).append("<img src='/app/img/domicube-meal.png' width='36px'>");
-          v.icon = "/app/img/domicube-meal.png";
+          $(btn).append("<img src='app/img/domicube-meal.png' width='36px'>");
+          v.icon = "app/img/domicube-meal.png";
           v.name = "Meal";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "Question":
-          $(btn).append("<img src='/app/img/domicube-question.svg' width='36px'>");
-          v.icon = "/app/img/domicube-question.svg";
+          $(btn).append("<img src='app/img/domicube-question.svg' width='36px'>");
+          v.icon = "app/img/domicube-question.svg";
           v.name = "Question";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "Lan":
-          $(btn).append("<img src='/app/img/domicube-work.svg' width='36px'>");
-          v.icon = "/app/img/domicube-work.svg";
+          $(btn).append("<img src='app/img/domicube-work.svg' width='36px'>");
+          v.icon = "app/img/domicube-work.svg";
           v.name = "Lan";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "Night":
-          $(btn).append("<img src='/app/img/domicube-night.png' width='36px'>");
-          v.icon = "/app/img/domicube-night.png";
+          $(btn).append("<img src='app/img/domicube-night.png' width='36px'>");
+          v.icon = "app/img/domicube-night.png";
           v.name = "Night";
           $(btn).attr("json", JSON.stringify(v));
           break;

@@ -1,8 +1,9 @@
 define([
   "app",
   "models/service/service",
-  "text!templates/program/nodes/mailActionNode.html"  
-], function(App, Service, ActionTemplate) {
+  "text!templates/program/nodes/mailActionNode.html",
+    "text!templates/program/nodes/defaultEventNode.html"
+], function(App, Service, ActionTemplate, EventTemplate) {
 
   var Mail = {};
 
@@ -19,13 +20,52 @@ define([
       this.set("favorites", []);
       Mail.__super__.initialize.apply(this, arguments);
       dispatcher.on(this.get("id"), function(json) {
-        t = JSON.parse(json.value);
-        if (Array.isArray(t)) {
-          this.setFavorites(t);
-        }
+          try{
+              t = JSON.parse(json.value);
+              if (Array.isArray(t)) {
+                  this.setFavorites(t);
+              }
+          }catch(err) {}
       });
 
     },
+
+      getEvents: function() {
+          return ["mailSent"];
+      },
+      /**
+       * return the keyboard code for a given event
+       */
+      getKeyboardForEvent: function(evt){
+          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+          var v = this.getJSONEvent("mandatory");
+          switch(evt) {
+              case "mailSent":
+                  $(btn).append("<span data-i18n='services.mail.keyboard.mailSent'><span>");
+
+                  v.eventName = "mailSent";
+                  v.eventValue = "*";
+                  v.source.value = this.get("id");
+                  v.source.type = "service";
+                  v.phrase = "services.mail.keyboard.mailSent";
+                  $(btn).attr("json", JSON.stringify(v));
+                  break;
+              default:
+                  console.error("unexpected event found for Mail: " + evt);
+                  btn = null;
+                  break;
+          }
+          return btn;
+      },
+      /**
+       * @returns event template for clock
+       */
+      getTemplateEvent: function() {
+          return _.template(EventTemplate);
+      },
+
+
+
     /**
      * return the list of available actions
      */

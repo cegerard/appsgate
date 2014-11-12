@@ -223,7 +223,8 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 
 			mailSender.sendMail(subject, body,
 					mailConnexion.getCurrentUser(), to);
-
+			
+			fireMessageSentNotificationMsg(to);
 			return true;
 
 		} catch (Exception e) {
@@ -233,6 +234,10 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 			return false;
 		}
 
+	}
+	
+	private NotificationMsg fireMessageSentNotificationMsg(String recipient) {
+		return new CoreNotificationMsg("mailSent", null, recipient, this);
 	}
 
 	@Override

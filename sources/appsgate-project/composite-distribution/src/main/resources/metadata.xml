@@ -5,6 +5,7 @@
 
     <composite name="AppsGate-Application" singleton="true">
         <contentMngt>
+            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
             
             <start  implementation="AppsgateClientCommunicationManager" name="WebSocketCommunicationManagerInst" ></start>
             
@@ -13,12 +14,12 @@
             <start  implementation="CHMIProxyImpl" name="CHMIProxyImplInst" ></start>
             
             <start  implementation="EUDEInterpreter" name="EUDEInterpreterInst" ></start>
+            
+            <start implementation="PaceTV" name="PaceTVInst"></start>
 
             <start implementation="AppsGatePersistency" name="AppsGatePersistencyInst"></start>
             
             <start implementation="TraceMan" name="TraceManInst"></start>
-
-            <start implementation="ConfigurableClockImpl" name="ConfigurableClockInst"></start>
 
             <start implementation="AppsGateGoogleServices" name="AppsGateGoogleServicesInst"></start>
 
@@ -61,7 +62,12 @@
     </composite>
 
 
-
+    <composite name="PaceTV" singleton="true"
+        main="PaceTVFactoryImpl">
+        <contentMngt>
+            
+        </contentMngt>
+    </composite>
 
     <composite name="AppsGateUPnPMediaServices" singleton="true"
                main="AppsgateUPnPAdapter">
@@ -80,7 +86,7 @@
 
     <composite name="KNXServices" singleton="true">
         <contentMngt>
-            <start implementation="KNXDummyImplem" name="KNXDymmyImplemInst">
+            <start implementation="KNXDummyImplem" name="KNXDummyImplemInst">
             </start>
         </contentMngt>
     </composite>

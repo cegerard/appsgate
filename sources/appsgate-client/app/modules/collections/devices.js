@@ -13,8 +13,9 @@ define([
     "models/device/actuator",
     "models/device/domicube",
     "models/device/mediaplayer",
+    "models/device/coretv",
     "models/device/coreclock"
-], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, CoreClock) {
+], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, CoreTV, CoreClock) {
 
     var Devices = {};
 
@@ -102,6 +103,9 @@ define([
                 case 21:
                     device = new CoreClock(brick);
                     break;
+                case 124:
+                    device = new CoreTV(brick);
+                    break;
                 case 31:
                     device = new MediaPlayer(brick);
                     break;
@@ -109,7 +113,7 @@ define([
                     device = new DomiCube(brick);
                     break;
                 default:
-                    //console.log("unknown type", brick.type, brick);
+                    console.log("unknown type of DEVICE : ", brick.type, brick);
                     break;
             }
             if (device != null) {
@@ -215,6 +219,8 @@ define([
                 i18="devices.actuator.name.";
             } else if (type == "31") {
                 i18="devices.mediaplayer.name.";
+            } else if (type == "124") {
+                i18="devices.tv.name.";
             } else if (type == "210") {
                 i18="devices.domicube.name.";
             }

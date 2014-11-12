@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2010-2011 Université Joseph Fourier Licensed under the Apache 
+	License, Version 2.0 (the "License"); you may not use this file except in 
+	compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Project parent -->
+	<parent>
+		<groupId>appsgate.distributions</groupId>
+		<artifactId>distributions</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<!-- Project coordinates -->
+
+	<artifactId>demo-android</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+		<expected-managers></expected-managers>
+		<obrman-configuration></obrman-configuration>
+	</properties>
+
+	<!-- Project description -->
+	<name>AppsGate Generated Distribution for Android Demo</name>
+
+	<!-- Project dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>appsgate.distributions</groupId>
+			<artifactId>felix.config.base</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Copy dependencies -->
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+                    <!-- Copy felix in the 'bin' directory -->
+                    <execution>
+                        <id>copy-felix-binaries</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.main</artifactId>
+                                    <version>${felix.version}</version>
+                                    <destFileName>felix.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${basedir}/bin</outputDirectory>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <type>pom,jar,bundle</type>
+                        </configuration>
+                    </execution>
+				    				    
+				    
+                    <execution>
+                        <id>copy-platform-bundles</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+
+                                <!-- ApAM -->
+                                <artifactItem>
+                                    <groupId>fr.imag.adele.apam</groupId>
+                                    <artifactId>apam-bundle</artifactId>
+                                    <version>${apam.current.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>fr.imag.adele.apam</groupId>
+                                    <artifactId>apam-gogo-shell</artifactId>
+                                    <version>${apam.current.version}</version>
+                                </artifactItem>
+
+
+                                <!-- Felix Dependencies -->
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.bundlerepository</artifactId>
+                                    <version>${felix.bundlerepository.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.fileinstall</artifactId>
+                                    <version>${felix.fileinstall.version}</version>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.configadmin</artifactId>
+                                    <version>${felix.configadmin.version}</version>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>org.osgi</groupId>
+                                    <artifactId>org.osgi.compendium</artifactId>
+                                    <version>${osgi.version}</version>
+                                </artifactItem>
+
+                                <!--GOGO -->
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.gogo.command</artifactId>
+                                    <version>${felix.gogo.command.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.gogo.runtime</artifactId>
+                                    <version>${felix.gogo.runtime.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.gogo.shell</artifactId>
+                                    <version>${felix.gogo.shell.version}</version>
+                                </artifactItem>
+
+                                <!-- iPOJO -->
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.ipojo.arch.gogo</artifactId>
+                                    <version>${org.apache.felix.ipojo.arch.gogo.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.ipojo</artifactId>
+                                    <version>${ipojo.version}</version>
+                                </artifactItem>
+
+                                <!-- Logger -->
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.log</artifactId>
+                                    <version>${org.apache.felix.log.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-core</artifactId>
+                                    <version>${logback.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>${logback.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>slf4j-api</artifactId>
+                                    <version>${slf4j.version}</version>
+                                </artifactItem>
+
+
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.http.api</artifactId>
+                                    <version>${org.apache.felix.http.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.http.jetty</artifactId>
+                                    <version>${org.apache.felix.http.version}</version>
+                                </artifactItem>
+
+
+                                <!-- repackaged/patched dependencies (as osgi bundles, or apamcomponents) 
+                                    for appsgate -->
+                                <artifactItem>
+                                    <groupId>org.json</groupId>
+                                    <artifactId>json</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>org.mongodb</groupId>
+                                    <artifactId>mongo-java-driver</artifactId>
+                                    <version>2.12.0-PATCHED</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.libs</groupId>
+                                    <artifactId>JavaWebSocketAdapter</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.libs</groupId>
+                                    <artifactId>JavamailAndroidAdapter</artifactId>
+                                    <version>1.4.7</version>
+                                </artifactItem>
+
+                                <!-- legacy dependencies (already osgi bundles, or apamcomponents) 
+                                    for appsgate -->
+                                <artifactItem>
+                                    <groupId>commons-logging</groupId>
+                                    <artifactId>commons-logging</artifactId>
+                                    <version>1.1.3</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.commons</groupId>
+                                    <artifactId>commons-lang3</artifactId>
+                                    <version>3.2.1</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.commons</groupId>
+                                    <artifactId>commons-collections4</artifactId>
+                                    <version>4.0</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.servicemix.bundles</groupId>
+                                    <artifactId>org.apache.servicemix.bundles.kxml2</artifactId>
+                                    <version>2.3.0_3</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.servicemix.bundles</groupId>
+                                    <artifactId>org.apache.servicemix.bundles.xmlpull</artifactId>
+                                    <version>1.1.3.1_2</version>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>org.apache.servicemix.bundles</groupId>
+                                    <artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
+                                    <version>${org.apache.servicemix.bundles.xpp3.version}</version>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.googlecode.guava-osgi</groupId>
+                                    <artifactId>guava-osgi</artifactId>
+                                    <version>${guava-osgi.version}</version>
+                                </artifactItem>
+                                
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.eventadmin</artifactId>
+                                    <version>${org.apache.felix.eventadmin.version}</version>
+                                </artifactItem>
+
+
+   
+                                <artifactItem>
+                                    <groupId>commons-io</groupId>
+                                    <artifactId>commons-io</artifactId>
+                                    <version>2.4</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${basedir}/bundle</outputDirectory>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+				    				    
+				    
+				    
+					<!-- Copy bundles in , the 'load' directory -->
+					<execution>
+						<id>copy-autoload-bundles</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+
+						<configuration>
+							<artifactItems>
+
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>android-demo-distrib</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreTVSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                             
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>PaceTVDisplay</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                             
+                                
+
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CHMIProxySpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>EHMIProxyImpl</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>ClientCommunicationManager</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>DevicePropertiesTableSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>UserBaseSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>TraceManSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>								
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>EHMIProxySpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>EUDEInterpreterSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>PlaceManagerSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>PropertyHistoryManagerMongoImpl</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>MongoDBConfigurationImpl</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>PropertyHistoryManagerSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>GoogleAdapter</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>ContextHistoryMongoImpl</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>ContextHistorySpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>PlaceManager</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>DevicePropertiesTable</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>UserBaseImpl</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>ConfigurableClockImpl</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CHMIProxyImpl</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>MailService</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>YahooWeatherAdapter</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>EUDEInterpreter</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CoreObjectSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CoreClockSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CoreCalendarSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>WeatherAdapterSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>WeatherObserverImpl</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>ExtendedWeatherObserverSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>CoreMailSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>MailAdapter</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>SchedulerSpec</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>appsgate.components</groupId>
+									<artifactId>GoogleScheduler</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+
+							</artifactItems>
+							<outputDirectory>${basedir}/load</outputDirectory>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<excludeTransitive>true</excludeTransitive>
+						</configuration>
+					</execution>
+                    <!-- copy inherited config files -->
+                    <execution>
+                        <id>unpack-inherited-config</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>appsgate.distributions</includeGroupIds>
+                            <includeArtifactIds>felix.config.base</includeArtifactIds>
+                            <outputDirectory>
+                                ${project.build.directory}/distrib-temp/
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                    
+					<execution>
+						<id>unpack-inherited-configbase</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeGroupIds>appsgate.distributions</includeGroupIds>
+							<includeArtifactIds>felix.config.base</includeArtifactIds>
+							<outputDirectory>
+								${project.build.directory}/distrib-temp/felix.config.base-${project.version}/
+							</outputDirectory>
+						</configuration>
+					</execution>
+
+
+				</executions>
+
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>backup-config</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/backup/</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${basedir}/conf</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>restore-config</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/conf</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/backup/</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>copy-and-filter-config</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/</outputDirectory>
+							<overwrite>false</overwrite>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/distrib-temp/</directory>
+									<includes>
+										<include>conf/**/*</include>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-inherited-config</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/distrib-temp/</directory>
+									<includes>
+										<include>*</include>
+										<include>load/*</include>
+									</includes>
+									<excludes>
+										<exclude>pom.xml</exclude>
+										<exclude>bundle/obr*</exclude>
+									</excludes>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					
+                    <execution>
+                        <id>copy-needed-bundles</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/bundle/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/distrib-temp/neededBundles/</directory>
+                                    <includes>
+                                        <include>*</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>rxtx*</exclude>
+                                        <exclude>enocean*</exclude>
+                                        </excludes>                                    
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    					
+				</executions>
+			</plugin>
+
+			<!-- clean implementation -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>.</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+							<excludes>
+								<exclude>conf/**/*</exclude>
+								<exclude>pom.xml</exclude>
+							</excludes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+			<!-- generate distribution zip -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptors>
+								<descriptor>${project.build.directory}/distrib-temp/assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

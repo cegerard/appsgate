@@ -25,7 +25,7 @@ define([
       * Callback to toggle a lamp - used when the displayed device is a lamp (!)
       */
       onToggleLampButton: function() {
-        if (this.model.get("value") == "true") {
+        if (this.model.get("value") === "true" || this.model.get("value") === true) {
           this.model.switchOff();
         } else {
           this.model.switchOn();
@@ -54,9 +54,10 @@ define([
         var hS=Math.round(hsl.s* 255);
         var hB=Math.round(hsl.l* 255);
         lamp.set({"color": hH, "saturation": hS, "brightness": hB});
-        lamp.sendColor(hH);
-        lamp.sendSaturation(hS);
-        lamp.sendBrightness(hB);
+        lamp.sendFullColor();
+        //lamp.sendColor(hH);
+        //lamp.sendSaturation(hS);
+        //lamp.sendBrightness(hB);
         //lamp.set({"color": Math.round(hsl.h * 65535), "saturation": Math.round(hsl.s * 255), "brightness": Math.round(hsl.l * 255)});
         //lamp.sendColor(Math.round(hsl.h * 65535));
         //lamp.sendSaturation(Math.round(hsl.s * 255));
