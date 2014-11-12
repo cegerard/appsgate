@@ -191,7 +191,7 @@ public class EnoceanPlugAcuatorSensorImpl extends CoreObjectBehavior implements 
 			f = new Float(1000*(metering[0]-metering[1])/(date[0]-date[1]));
 		}
 		
-		consumption = String.valueOf(f.intValue());
+		consumption = String.valueOf(Math.round(f));
 	}
 
 	@Override
