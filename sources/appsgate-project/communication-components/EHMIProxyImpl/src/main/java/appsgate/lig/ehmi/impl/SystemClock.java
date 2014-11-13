@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -82,17 +83,27 @@ public class SystemClock {
 		this.nextAlarmTime = -1;
 	}
 
+	
+	boolean remoteSync = false;
 	/**
 	 * Start time synchronization from another service
 	 * @param coreProxy the core service use to synchronize time
 	 */
-	public void startRemoteSync(CHMIProxySpec coreProxy) {
+	public boolean startRemoteSync(CHMIProxySpec coreProxy) {
+		if(coreProxy == null) {
+			remoteSync=false;
+			return false;
+		}
+		
+		if(remoteSync) return true;
+		
 		this.coreProxy = coreProxy;
 		if(isRemote()){
 			objectID = coreProxy.getCoreClockObjectId();
 			if (timer != null)
 				timer.cancel();
 			timer = null;
+			remoteSync= true;
 //			Set<Long> times = alarms.keySet();
 //			TODO transfer alarm and their id to the remote alarm clock
 //			for(long time : times){
@@ -102,7 +113,9 @@ public class SystemClock {
 //			}
 		} else {
 			coreProxy = null;
+			remoteSync=false;
 		}
+		return remoteSync;
 	}
 
 	/**
@@ -111,6 +124,8 @@ public class SystemClock {
 	 */
 	public void stopRemoteSync(CHMIProxySpec coreProxy) {
 		this.coreProxy = null;
+		remoteSync=false;
+
 		objectID = systemClockType + String.valueOf(appsgateServiceName.hashCode());
 	}
 
@@ -119,6 +134,8 @@ public class SystemClock {
 	 * @return the object identifier as a String
 	 */
 	public String getAbstractObjectId() {
+		startRemoteSync(coreProxy);
+		logger.trace("getAbstractObjectId(), returning "+objectID);
 		return objectID;
 	}
 	
@@ -234,7 +251,9 @@ public class SystemClock {
 	 */
 	public boolean isRemote() {
 		if(coreProxy != null) {
-			return coreProxy.getDevices("21") != null;
+			JSONArray array = coreProxy.getDevices("21");
+			if(array != null && array.length()> 0)
+				return true;			
 		}
 		return false;
 	}

@@ -125,10 +125,12 @@
                 "intern": "Internal Light sensor"
             },
             "keyboard": {
-                "get": "luminosity of ..."
+                "get": "luminosity of ...",
+                "change" : "luminosity changes"
             },
             "language": {
-                "get": "luminosity of __myVar__"
+                "get": "luminosity of __myVar__",
+                "change" : "luminosity of __myVar__ changes"
             },
             "name": {
                 "plural": "Brightness sensors",
@@ -232,7 +234,10 @@
             "status": {
                 "playing": "Playing",
                 "selected": "Please select a media",
-                "stopped": "Stopped"
+                "stopped": "Stopped",
+                "PLAYING": "Playing: ",
+                "PAUSED_PLAYBACK": "Paused: ",
+                "STOPPED": "Stopped: "
             }
         },
         "movement": {
@@ -254,6 +259,7 @@
                 "turnAllOn": "Turn all on"
             },
             "keyboard": {
+				"change": "consumption of plug changes",
                 "isOff": "plug ... is off",
                 "isOff-keep": "plug ... off",
                 "isOn": "plug ... is on",
@@ -264,6 +270,7 @@
                 "turnOn": "Switch on plug ..."
             },
             "language": {
+				"change": "consumption of __myVar__ changes",
                 "isOff": "__myVar__ is off",
                 "isOff-keep": "__myVar__ off",
                 "isOn": "__myVar__ is on",
@@ -280,6 +287,34 @@
             "status": {
                 "turnedOff": "Off",
                 "turnedOn": "On"
+            }
+        },
+        "tv": {
+            "action": {
+                "channelup": "TV, next channel",
+                "channeldown": "TV, previous channel",
+                "resume": "Resume TV",
+                "pause": "Pause TV",
+                "stop": "Stop TV",
+                "notify": "Notify a message on TV"
+            },
+            "keyboard": {
+                "channelup": "TV, next channel",
+                "channeldown": "TV, previous channel",
+                "resume": "Resume TV",
+                "pause": "Pause TV",
+                "stop": "Stop TV",
+                "notify": "Notify a message on TV"            },
+            "language": {
+                "channelup": "TV, next channel",
+                "channeldown": "TV, previous channel",
+                "resume": "Resume TV",
+                "pause": "Pause TV",
+                "stop": "Stop TV",
+                "notify": "Notify a message on TV"            },
+            "name": {
+                "plural": "TVs",
+                "singular": "TV"
             }
         },
         "state-label": "State",
@@ -323,17 +358,15 @@
             },
             "keyboard": {
                 "get": "temperetaure measured by ...",
-                "change": "temperature of ... changes"
+                "change": "temperature of temperature sensor changes"
             },
             "language": {
-                "get": "temperetaure measured by __myVar__"
+                "get": "temperetaure measured by __myVar__",
+                "change": "temperature of __myVar__ changes"
             },
             "name": {
                 "plural": "Temperature sensors",
                 "singular": "Temperature sensor"
-            },
-            "event": {
-                "change": "temperature of __myVar__ changes"
             }
         },
         "type-label": "Type",

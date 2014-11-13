@@ -22,10 +22,10 @@ ANDROIDFELIXPATH=/data/ehmi-middleware
 
 ANDROIDADBDEVICE=xxxxxx
 
-COMPLETE=complete
+COMPLETE=demo-android
 TARGET=android-appsgate
 
-
+cd ..
 export PATH=$PATH:$ANDROIDPATH/build-tools/$ANDROIDVERSION:$ANDROIDPATH/tools:$ANDROIDPATH/platform-tools
 
 echo

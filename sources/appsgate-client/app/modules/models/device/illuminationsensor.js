@@ -56,6 +56,27 @@ define([
       }
       return btn;
     },
+    getEvents: function () {
+          return ["value-changed"];
+      },
+      getKeyboardForEvent: function (evt) {
+          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+          var v = this.getJSONEvent("mandatory");
+          switch (evt) {
+              case "value-changed":
+                  $(btn).append("<span data-i18n='devices.illumination.keyboard.change'></span>");
+                  v.eventName = "value";
+                  v.eventValue = "*";
+                  v.phrase = "devices.illumination.language.change";
+                  $(btn).attr("json", JSON.stringify(v));
+                  break;
+              default:
+                  console.error("unexpected event found for IlluminationSensor: " + evt);
+                  btn = null;
+                  break;
+          }
+          return btn;
+      },
     getScale: function() {
         var arrayScale =
             [

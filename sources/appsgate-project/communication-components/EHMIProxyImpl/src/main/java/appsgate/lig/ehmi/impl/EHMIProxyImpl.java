@@ -471,7 +471,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public GrammarDescription getGrammarFromType(String deviceType) {
-
 		if(devicePropertiesTable == null) {
 			logger.error("no context data available");
 			return null;

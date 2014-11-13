@@ -1,6 +1,6 @@
 define([
   "app",
-  "text!templates/devices/list/deviceListByCategory.html",
+  "text!templates/devices/list/deviceListByCategory.html"
   ], function(App, deviceListByCategoryTemplate) {
 
     var DeviceByTypeView = {};
@@ -199,11 +199,16 @@ define([
 
 
                 break;
+            case 124: //CoreTV : 124
+
+
+                break;
+
             case 210:
             var activeFace = "";
             switch (device.get("activeFace")) {
               case "1":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-work.svg' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-work.svg' width='18px' class='img-responsive'>";
                 break;
               case "2":
                 activeFace = "<svg id='device-" + device.cid + "-value' class='white-face-svg-domus img-responsive'>" +
@@ -212,16 +217,16 @@ define([
                   "</text><text class='white-face-text-domus' x='50%' y='54%'>" + $.i18n.t('devices.domicube.white-face.second-elem') + "</text></svg>";
                 break;
               case "3":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-music.png' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-music.png' width='18px' class='img-responsive'>";
                 break;
               case "4":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-question.svg' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-question.svg' width='18px' class='img-responsive'>";
                 break;
               case "5":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-night.png' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-night.png' width='18px' class='img-responsive'>";
                 break;
               case "6":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-meal.png' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-meal.png' width='18px' class='img-responsive'>";
                 break;
               default:
                 break;

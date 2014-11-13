@@ -125,10 +125,12 @@
                 "intern": "Capteur de luminosité intérieur"
             },
             "keyboard": {
-                "get": "la luminosité mesurée par ..."
+                "get": "la luminosité mesurée par ...",
+				"change" : "la luminosité mesurée par le capteur de luminosité change"
             },
             "language": {
-                "get": "la luminosité de __myVar__"
+                "get": "la luminosité mesurée par __myVar__",
+				"change" : "la luminosité mesurée par __myVar__ change"
             },
             "name": {
                 "plural": "Capteurs de luminosité",
@@ -249,6 +251,36 @@
             "singular": "Photo"
         },
         "place-label": "Emplacement",
+        "tv": {
+            "action": {
+                "channelup": "TV, Chaine suivante",
+                "channeldown": "TV, Chaine précédente",
+                "resume": "Reprendre lecture sur la TV",
+                "pause": "Mettre en pause la TV",
+                "stop": "Arrêter la lecture sur la TV",
+                "notify": "Afficher un message sur la TV"
+            },
+            "keyboard": {
+                "channelup": "TV, Chaine suivante",
+                "channeldown": "TV, Chaine précédente",
+                "resume": "Reprendre lecture sur la TV",
+                "pause": "Mettre en pause la TV",
+                "stop": "Arrêter la lecture sur la TV",
+                "notify": "Afficher un message sur la TV"
+            },
+            "language": {
+                "channelup": "TV, Chaine suivante",
+                "channeldown": "TV, Chaine précédente",
+                "resume": "Reprendre lecture sur la TV",
+                "pause": "Mettre en pause la TV",
+                "stop": "Arrêter la lecture sur la TV",
+                "notify": "Afficher un message sur la TV"
+            },
+            "name": {
+                "plural": "Les TV",
+                "singular": "TV"
+            }
+        },
         "plug": {
             "action": {
                 "turnOff": "Eteindre",
@@ -257,6 +289,7 @@
                 "turnAllOn": "Tout allumer"
             },
             "keyboard": {
+				"change": "la consommation électrique mesurée par la prise change",
                 "isOff": "la prise ... est éteinte",
                 "isOff-keep": "la prise ... éteinte",
                 "isOn": "la prise ... est allumée",
@@ -267,6 +300,7 @@
                 "turnOn": "Allumer la prise ..."
             },
             "language": {
+				"change": "la consommation électrique mesurée par __myVar__ change",
                 "isOff": "__myVar__ est éteinte",
                 "isOff-keep": "__myVar__ éteinte",
                 "isOn": "__myVar__ est allumée",
@@ -326,17 +360,15 @@
             },
             "keyboard": {
                 "get": "la température mesurée par ...",
-                "change": "la température de ... change"
+                "change": "la température mesurée par le capteur de température change"
             },
             "language": {
-                "get": "la température de __myVar__"
+                "get": "la température de __myVar__",
+                "change": "la température mesurée par __myVar__ change"
             },
             "name": {
                 "plural": "Capteurs de température",
                 "singular": "Capteur de température"
-            },
-            "event": {
-                "change": "la température de __myVar__ change"
             }
         },
         "type-label": "Type",

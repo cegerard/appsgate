@@ -15,9 +15,11 @@
 	<description>Mockups and Simulators for appsgate sensors and actuators</description>
 	
 	<modules>
-		<module>SwingSwitchSensor</module>
+        <module>CoreTVMockup</module>
+	    <!-- The following modules seems obsolete, deactivated by default
+	     <module>SwingSwitchSensor</module>
 		<module>SwingClock</module>
 		<module>SwingColorLight</module>
-    <module>SwingARD</module>
+    <module>SwingARD</module>  -->
   </modules>
 </project>

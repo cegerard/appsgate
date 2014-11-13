@@ -103,7 +103,8 @@
         <module>appsgate-instance</module>
 		<module>test-components</module>
 
-    </modules>
+		<module>android-demo-distrib</module>
+	</modules>
 
 	<profiles>
 

@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>appsgate.components</groupId>
+    <artifactId>pace</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <artifactId>PaceTVDisplay</artifactId>
+  
+    <packaging>bundle</packaging>
+    <name>Pace TV Adapter, Factory and Implementation</name>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>CoreObjectSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>org.osgi.core</artifactId>
+            <groupId>org.osgi</groupId>
+            <version>${osgi.version}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>CoreTVSpec</artifactId>
+            <groupId>appsgate.components</groupId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.imag.adele.apam</groupId>
+            <artifactId>apam-core</artifactId>
+            <version>${apam.current.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo</artifactId>
+            <version>${ipojo.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+            <version>${ipojo.annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.runtime</artifactId>
+            <version>${felix.gogo.runtime.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.eclipse.osgi</artifactId>
+                    <groupId>org.eclipse.osgi</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>                
+                
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>fr.imag.adele.apam</groupId>
+                <artifactId>apam-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+      
+</project>
