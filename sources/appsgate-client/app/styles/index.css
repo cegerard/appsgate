@@ -842,7 +842,7 @@ font-size: smaller;
     width: 980px;
 }
 
-.debugger.scrollable {
+.debugger .scrollable {
     border: none;
 }
 

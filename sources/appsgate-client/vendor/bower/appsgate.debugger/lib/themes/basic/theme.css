@@ -112,120 +112,150 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 /* line 17, grunticon/pictograms.scss */
+.picto-illumination_state_off {
+  background-image: url("pictograms/illumination_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 19, grunticon/pictograms.scss */
+.picto-illumination_state_on {
+  background-image: url("pictograms/illumination_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 21, grunticon/pictograms.scss */
+.picto-illumination_type {
+  background-image: url("pictograms/illumination_type.png");
+  background-repeat: no-repeat;
+}
+
+/* line 23, grunticon/pictograms.scss */
 .picto-keycardswitch_state_in {
   background-image: url("pictograms/keycardswitch_state_in.png");
   background-repeat: no-repeat;
 }
 
-/* line 19, grunticon/pictograms.scss */
+/* line 25, grunticon/pictograms.scss */
 .picto-keycardswitch_state_out {
   background-image: url("pictograms/keycardswitch_state_out.png");
   background-repeat: no-repeat;
 }
 
-/* line 21, grunticon/pictograms.scss */
+/* line 27, grunticon/pictograms.scss */
 .picto-keycardswitch_type {
   background-image: url("pictograms/keycardswitch_type.png");
   background-repeat: no-repeat;
 }
 
-/* line 23, grunticon/pictograms.scss */
+/* line 29, grunticon/pictograms.scss */
 .picto-magnify {
   background-image: url("pictograms/magnify.png");
   background-repeat: no-repeat;
 }
 
-/* line 25, grunticon/pictograms.scss */
+/* line 31, grunticon/pictograms.scss */
 .picto-program {
   background-image: url("pictograms/program.png");
   background-repeat: no-repeat;
 }
 
-/* line 27, grunticon/pictograms.scss */
+/* line 33, grunticon/pictograms.scss */
 .picto-programe {
   background-image: url("pictograms/programe.png");
   background-repeat: no-repeat;
 }
 
-/* line 29, grunticon/pictograms.scss */
+/* line 35, grunticon/pictograms.scss */
 .picto-read {
   background-image: url("pictograms/read.png");
   background-repeat: no-repeat;
 }
 
-/* line 31, grunticon/pictograms.scss */
+/* line 37, grunticon/pictograms.scss */
 .picto-single_switch_state_5 {
   background-image: url("pictograms/single_switch_state_5.png");
   background-repeat: no-repeat;
 }
 
-/* line 33, grunticon/pictograms.scss */
+/* line 39, grunticon/pictograms.scss */
 .picto-single_switch_state_7 {
   background-image: url("pictograms/single_switch_state_7.png");
   background-repeat: no-repeat;
 }
 
-/* line 35, grunticon/pictograms.scss */
+/* line 41, grunticon/pictograms.scss */
 .picto-smartplug_state_off {
   background-image: url("pictograms/smartplug_state_off.png");
   background-repeat: no-repeat;
 }
 
-/* line 37, grunticon/pictograms.scss */
+/* line 43, grunticon/pictograms.scss */
 .picto-smartplug_state_on {
   background-image: url("pictograms/smartplug_state_on.png");
   background-repeat: no-repeat;
 }
 
-/* line 39, grunticon/pictograms.scss */
+/* line 45, grunticon/pictograms.scss */
 .picto-smartplug_type {
   background-image: url("pictograms/smartplug_type.png");
   background-repeat: no-repeat;
 }
 
-/* line 41, grunticon/pictograms.scss */
+/* line 47, grunticon/pictograms.scss */
 .picto-switch_state_1 {
   background-image: url("pictograms/switch_state_1.png");
   background-repeat: no-repeat;
 }
 
-/* line 43, grunticon/pictograms.scss */
+/* line 49, grunticon/pictograms.scss */
 .picto-switch_state_3 {
   background-image: url("pictograms/switch_state_3.png");
   background-repeat: no-repeat;
 }
 
-/* line 45, grunticon/pictograms.scss */
+/* line 51, grunticon/pictograms.scss */
 .picto-switch_state_5 {
   background-image: url("pictograms/switch_state_5.png");
   background-repeat: no-repeat;
 }
 
-/* line 47, grunticon/pictograms.scss */
+/* line 53, grunticon/pictograms.scss */
 .picto-switch_state_7 {
   background-image: url("pictograms/switch_state_7.png");
   background-repeat: no-repeat;
 }
 
-/* line 49, grunticon/pictograms.scss */
+/* line 55, grunticon/pictograms.scss */
 .picto-switch_type {
   background-image: url("pictograms/switch_type.png");
   background-repeat: no-repeat;
 }
 
-/* line 51, grunticon/pictograms.scss */
+/* line 57, grunticon/pictograms.scss */
+.picto-temperature_state_off {
+  background-image: url("pictograms/temperature_state_off.png");
+  background-repeat: no-repeat;
+}
+
+/* line 59, grunticon/pictograms.scss */
+.picto-temperature_state_on {
+  background-image: url("pictograms/temperature_state_on.png");
+  background-repeat: no-repeat;
+}
+
+/* line 61, grunticon/pictograms.scss */
 .picto-temperature_type {
   background-image: url("pictograms/temperature_type.png");
   background-repeat: no-repeat;
 }
 
-/* line 53, grunticon/pictograms.scss */
+/* line 63, grunticon/pictograms.scss */
 .picto-user {
   background-image: url("pictograms/user.png");
   background-repeat: no-repeat;
 }
 
-/* line 55, grunticon/pictograms.scss */
+/* line 65, grunticon/pictograms.scss */
 .picto-write {
   background-image: url("pictograms/write.png");
   background-repeat: no-repeat;
@@ -319,66 +349,83 @@ html, body {
   font-weight: bold;
   text-transform: uppercase;
 }
-/* line 88, ../../../../src/themes/basic/theme.scss */
+/* line 87, ../../../../src/themes/basic/theme.scss */
+.dashboard .group-container header .element .title {
+  width: 190px;
+}
+/* line 92, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .element {
   position: relative;
   overflow: hidden;
 }
-/* line 92, ../../../../src/themes/basic/theme.scss */
+/* line 96, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .element .placeholder {
   float: left;
 }
-/* line 100, ../../../../src/themes/basic/theme.scss */
+/* line 104, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .element .title {
   padding-left: 10px;
+  width: 140px;
 }
-/* line 103, ../../../../src/themes/basic/theme.scss */
+/* line 108, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .element .picto {
-  padding-right: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
-/* line 106, ../../../../src/themes/basic/theme.scss */
+/* line 112, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .element:nth-child(odd) {
   background-color: #f6f6f6;
 }
-/* line 109, ../../../../src/themes/basic/theme.scss */
+/* line 115, ../../../../src/themes/basic/theme.scss */
 .dashboard .element-container .element:nth-child(even) {
   background-color: #fafafa;
 }
-/* line 115, ../../../../src/themes/basic/theme.scss */
+/* line 121, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container, .dashboard .element-container {
   position: relative;
 }
-/* line 118, ../../../../src/themes/basic/theme.scss */
+/* line 124, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.aside, .dashboard .element-container .placeholder.aside {
   position: absolute;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHJhZGlhbEdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwLjEiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQpIiAvPjwvc3ZnPiA=');
+  background-size: 100%;
+  background-image: -moz-radial-gradient(center center, ellipse cover, #ffffff, rgba(255, 255, 255, 0.1));
+  background-image: -webkit-radial-gradient(center center, ellipse cover, #ffffff, rgba(255, 255, 255, 0.1));
+  background-image: radial-gradient(ellipse cover at center center, #ffffff, rgba(255, 255, 255, 0.1));
+  padding-left: 5px;
+  padding-right: 5px;
   z-index: 500;
 }
-/* line 124, ../../../../src/themes/basic/theme.scss */
+/* line 133, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.sidebar .title, .dashboard .element-container .placeholder.sidebar .title {
   float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-/* line 127, ../../../../src/themes/basic/theme.scss */
+/* line 139, ../../../../src/themes/basic/theme.scss */
 .dashboard .group-container .placeholder.sidebar .picto, .dashboard .element-container .placeholder.sidebar .picto {
   display: block;
   float: right;
   text-align: center;
 }
 
-/* line 140, ../../../../src/themes/basic/theme.scss */
+/* line 152, ../../../../src/themes/basic/theme.scss */
 .axis path,
 .axis line,
 .grid line {
   fill: none;
+  stroke-width: 1px;
   stroke: rgba(0, 0, 0, 0.1);
   shape-rendering: crispEdges;
 }
 
-/* line 148, ../../../../src/themes/basic/theme.scss */
+/* line 161, ../../../../src/themes/basic/theme.scss */
 .grid path {
   display: none;
 }
 
-/* line 152, ../../../../src/themes/basic/theme.scss */
+/* line 165, ../../../../src/themes/basic/theme.scss */
 .axis.top {
   background-image: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
   background-image: -o-linear-gradient(top, #fff 0%, rgba(255, 255, 255, 0) 100%);
@@ -388,7 +435,7 @@ html, body {
   top: 16px;
 }
 
-/* line 162, ../../../../src/themes/basic/theme.scss */
+/* line 174, ../../../../src/themes/basic/theme.scss */
 .axis.bottom {
   background-image: linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
   background-image: -o-linear-gradient(bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
@@ -398,115 +445,143 @@ html, body {
   bottom: 0px;
 }
 
-/* line 172, ../../../../src/themes/basic/theme.scss */
+/* line 183, ../../../../src/themes/basic/theme.scss */
 .axis text {
   fill: #4c4c4c;
   font-family: sans-serif;
   font-size: 11px;
 }
 
-/* line 178, ../../../../src/themes/basic/theme.scss */
-.area {
+/* line 189, ../../../../src/themes/basic/theme.scss */
+.state.area {
   fill: rgba(154, 207, 7, 0.2);
   stroke-width: 0;
 }
-/* line 182, ../../../../src/themes/basic/theme.scss */
-.area .focused {
+/* line 193, ../../../../src/themes/basic/theme.scss */
+.state.area .focused {
   fill: rgba(154, 207, 7, 0.5);
 }
 
-/* line 188, ../../../../src/themes/basic/theme.scss */
-.program .disabled {
-  fill: rgba(207, 60, 0, 0.3);
-}
-/* line 191, ../../../../src/themes/basic/theme.scss */
-.program .disabled.focused {
-  fill: rgba(207, 60, 0, 0.6);
-}
-/* line 194, ../../../../src/themes/basic/theme.scss */
-.program .enabled {
-  fill: rgba(154, 207, 7, 0.3);
-}
-/* line 197, ../../../../src/themes/basic/theme.scss */
-.program .enabled.focused {
-  fill: rgba(154, 207, 7, 0.6);
-}
-/* line 200, ../../../../src/themes/basic/theme.scss */
-.program .invalid {
-  fill: rgba(105, 105, 105, 0.3);
-}
-/* line 203, ../../../../src/themes/basic/theme.scss */
-.program .invalid.focused {
-  fill: rgba(105, 105, 105, 0.6);
-}
-
-/* line 209, ../../../../src/themes/basic/theme.scss */
-.status line {
-  stroke-width: 2px;
-}
-/* line 213, ../../../../src/themes/basic/theme.scss */
-.status .connection {
-  stroke: rgba(154, 207, 7, 0.8);
-}
-/* line 216, ../../../../src/themes/basic/theme.scss */
-.status .connection.focused {
-  stroke: #9acf07;
-}
-/* line 219, ../../../../src/themes/basic/theme.scss */
-.status .problem {
-  stroke: rgba(206, 96, 39, 0.8);
-}
-/* line 222, ../../../../src/themes/basic/theme.scss */
-.status .problem.focused {
-  stroke: #ce6027;
-}
-/* line 225, ../../../../src/themes/basic/theme.scss */
-.status .disconnection {
-  stroke: rgba(206, 66, 66, 0.8);
-}
-/* line 228, ../../../../src/themes/basic/theme.scss */
-.status .disconnection.focused {
-  stroke: #ce4242;
-}
-
-/* line 233, ../../../../src/themes/basic/theme.scss */
-.focusline rect {
-  fill: rgba(105, 105, 105, 0.5);
-}
-
-/* line 237, ../../../../src/themes/basic/theme.scss */
-.border {
+/* line 198, ../../../../src/themes/basic/theme.scss */
+.state.border {
   stroke: rgba(154, 207, 7, 0.8);
   stroke-width: 2px;
   shape-rendering: crispEdges;
   fill: transparent;
 }
 
-/* line 244, ../../../../src/themes/basic/theme.scss */
-.border.pending {
+/* line 205, ../../../../src/themes/basic/theme.scss */
+.state.border.pending {
   stroke-linecap: 'square';
   stroke-dasharray: 1, 2;
 }
 
+/* line 211, ../../../../src/themes/basic/theme.scss */
+.program .disabled {
+  fill: rgba(105, 105, 105, 0.3);
+}
+/* line 214, ../../../../src/themes/basic/theme.scss */
+.program .disabled.focused {
+  fill: rgba(105, 105, 105, 0.6);
+}
+/* line 217, ../../../../src/themes/basic/theme.scss */
+.program .enabled {
+  fill: rgba(154, 207, 7, 0.3);
+}
+/* line 220, ../../../../src/themes/basic/theme.scss */
+.program .enabled.focused {
+  fill: rgba(154, 207, 7, 0.6);
+}
+/* line 223, ../../../../src/themes/basic/theme.scss */
+.program .invalid {
+  fill: rgba(207, 60, 0, 0.3);
+}
+/* line 226, ../../../../src/themes/basic/theme.scss */
+.program .invalid.focused {
+  fill: rgba(207, 60, 0, 0.6);
+}
+
+/* line 232, ../../../../src/themes/basic/theme.scss */
+.status line {
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-dasharray: 1, 5;
+}
+/* line 238, ../../../../src/themes/basic/theme.scss */
+.status .connection {
+  stroke: rgba(154, 207, 7, 0.8);
+}
+/* line 241, ../../../../src/themes/basic/theme.scss */
+.status .connection.focused {
+  stroke: #9acf07;
+}
+/* line 244, ../../../../src/themes/basic/theme.scss */
+.status .problem {
+  stroke: rgba(206, 96, 39, 0.8);
+}
+/* line 247, ../../../../src/themes/basic/theme.scss */
+.status .problem.focused {
+  stroke: #ce6027;
+}
 /* line 250, ../../../../src/themes/basic/theme.scss */
+.status .disconnection {
+  stroke: rgba(206, 66, 66, 0.8);
+}
+/* line 253, ../../../../src/themes/basic/theme.scss */
+.status .disconnection.focused {
+  stroke: #ce4242;
+}
+
+/* line 258, ../../../../src/themes/basic/theme.scss */
+.focusline .area,
+.focusline rect {
+  fill: rgba(105, 105, 105, 0.3);
+  stroke-width: 0;
+}
+
+/* line 264, ../../../../src/themes/basic/theme.scss */
+.focusline .border {
+  fill: none;
+  stroke: rgba(105, 0, 105, 0.5);
+}
+
+/* line 269, ../../../../src/themes/basic/theme.scss */
+.ruler-shadow {
+  fill: rgba(255, 0, 0, 0.3);
+}
+
+/* line 274, ../../../../src/themes/basic/theme.scss */
 .spikes line {
   stroke-width: 2px;
   stroke: rgba(154, 207, 7, 0.8);
 }
-/* line 255, ../../../../src/themes/basic/theme.scss */
+/* line 279, ../../../../src/themes/basic/theme.scss */
 .spikes .focused {
-  stroke-width: 3px;
-  stroke: rrgba(154, 207, 7, 1);
+  stroke-width: 2px;
+  stroke: #9acf07;
 }
 
-/* line 262, ../../../../src/themes/basic/theme.scss */
+/* line 286, ../../../../src/themes/basic/theme.scss */
 .brush .extent {
-  fill: rgba(144, 195, 191, 0.5);
+  fill: rgba(144, 195, 191, 0.1);
   stroke: #90c3bf;
+  stroke-width: 0px;
+  shape-rendering: crispEdges;
+}
+/* line 293, ../../../../src/themes/basic/theme.scss */
+.brush .resize rect.handle {
+  visibility: visible !important;
+  fill: rgba(105, 105, 105, 0.5);
+}
+/* line 298, ../../../../src/themes/basic/theme.scss */
+.brush .mask {
+  fill: rgba(255, 255, 255, 0.8);
+  stroke: transparent;
+  stroke-width: 0px;
   shape-rendering: crispEdges;
 }
 
-/* line 269, ../../../../src/themes/basic/theme.scss */
+/* line 306, ../../../../src/themes/basic/theme.scss */
 .decoration {
   cursor: pointer;
   stroke-width: 1;
