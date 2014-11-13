@@ -44,7 +44,7 @@ define([
             appRouter.navigate("#dependancies/all");
 
             $(".nav-item").removeClass("active");
-            $("#home-nav").addClass("active");
+            $("#dependancies-nav").addClass("active");
 
             $("body").i18n();
 

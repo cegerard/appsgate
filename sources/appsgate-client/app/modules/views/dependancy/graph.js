@@ -1,6 +1,7 @@
 define([
+    "app",
     "text!templates/dependancy/graph.html"
-], function (GraphTemplate) {
+], function (App, GraphTemplate) {
 
     var GraphView = {};
 

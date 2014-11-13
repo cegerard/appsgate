@@ -235,7 +235,7 @@ body {
 .fundamental-block {
 	float: left;
 	position:relative;
-	width:20%;
+	width:16.66%;
 }
 .places-icon {
 	background-image: url("../img/home/place1.svg");
@@ -263,6 +263,12 @@ body {
 }
 .dashboard-icon {
 	background-image: url("../img/home/history.svg");
+	background-size:100% 100%;
+  height:100%;
+  width:100%;
+}
+.dependancies-icon {
+	background-image: url("../img/home/dependancies.svg");
 	background-size:100% 100%;
   height:100%;
   width:100%;
