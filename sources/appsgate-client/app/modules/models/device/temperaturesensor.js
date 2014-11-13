@@ -58,9 +58,9 @@ define([
           switch (evt) {
               case "value-changed":
                   $(btn).append("<span data-i18n='devices.temperature.keyboard.change'></span>");
-                  v.eventName = "change";
-                  v.eventValue = "true";
-                  v.phrase = "devices.temperature.event.change";
+                  v.eventName = "value";
+                  v.eventValue = "*";
+                  v.phrase = "devices.temperature.language.change";
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               default:

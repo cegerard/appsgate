@@ -181,15 +181,19 @@ define([
         */
         switchOn: function() {
           this.remoteControl("on", []);
-          this.sendColor();
-          this.sendSaturation();
-          this.sendBrightness();
+//          this.sendColor();
+//          this.sendSaturation();
+//          this.sendBrightness();
+            this.sendFullColor();
         },
         /**
         * Send message to switch the lamp off
         */
         switchOff: function() {
           this.remoteControl("off", []);
+        },
+        sendFullColor: function() {
+          this.remoteControl("setColorJson", [{ type: "JSONObject", value : {hue: this.get("color"), sat: this.get("saturation"), bri : this.get("brightness")}}], this.id);
         },
         /**
         * Send a message to the backend to update the attribute color

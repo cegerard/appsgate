@@ -58,6 +58,11 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 	 * The current temperature = the last value received from this sensor
 	 */
 	private String currentTemperature;
+	
+	/**
+	 * The last temperature value;
+	 */
+	private float lastTempRounded;
 
 	/**
 	 * The type for user of this sensor
@@ -91,7 +96,7 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 
 	@Override
 	public float getTemperature() {
-		return Float.valueOf(currentTemperature);
+		return (float)Math.rint(Float.valueOf(currentTemperature)*10)/10;
 	}
 
 	public String getSensorName() {
@@ -171,6 +176,7 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 	 */
 	public void newInst() {
 		logger.info("New temperature sensor detected, "+sensorId);
+		this.lastTempRounded = Float.valueOf(currentTemperature);
 	}
 
 	/**
@@ -199,8 +205,12 @@ public class EnoceanTemperatureSensorImpl extends CoreObjectBehavior implements 
 	 */
 	public void currentTemperatureChanged (String newTemperatureValue) {
 		logger.info("New temperature value from "+sensorId+"/"+sensorName+", "+newTemperatureValue);
-		notifyChanges("value", newTemperatureValue);
-        notifyChanges("change", "true");
+		float curTemp = getTemperature();
+		if(curTemp != lastTempRounded){
+			lastTempRounded = curTemp;
+			notifyChanges("value", Float.toString(curTemp));
+			notifyChanges("change", "true");
+		}
 	}
 	
 	/**

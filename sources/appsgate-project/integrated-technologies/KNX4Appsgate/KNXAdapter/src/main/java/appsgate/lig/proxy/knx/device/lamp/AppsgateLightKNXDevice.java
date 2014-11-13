@@ -263,4 +263,9 @@ public class AppsgateLightKNXDevice extends CoreObjectBehavior implements CoreCo
 
     }
 
+    @Override
+    public boolean setColorJson(JSONObject color) {
+        return false;
+    }
+
 }
