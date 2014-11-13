@@ -26,57 +26,8 @@ define([
         this.$el.append(this.template({}));
 
         // initialize debugger
-        var dashboard = this.dashboard = new Debugger.Dashboard(this.$('.debugger .canvas'), {
-                d3: {
-                    // Define custom locale (based on http://www.localeplanet.com/icu/fr/)
-                    locale: {
-                        'decimal': ',',
-                        'thousands': ' ',
-                        'grouping': [3],
-                        'currency': ['€', ''],
-                        'dateTime': '%a %b %e %X %Y',
-                        'date': '%m/%d/%Y',
-                        'time': '%H:%M:%S',
-                        'periods': ['AM', 'PM'],
-                        'days': ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
-                        'shortDays': ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
-                        'months': ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-                        'shortMonths': ['Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Aout', 'Sept.', 'Oct.', 'Nov.', 'Déc.']
-                    },
-                    // Define custom multi-time format
-                    timeFormatMulti: [
-                        ['.%L', function (d) {
-                            return d.getMilliseconds();
-                        }],
-                        [':%S', function (d) {
-                            return d.getSeconds();
-                        }],
-                        ['%H:%M', function (d) {
-                            return d.getMinutes();
-                        }],
-                        ['%Hh', function (d) {
-                            return d.getHours();
-                        }],
-                        ['%a %d', function (d) {
-                            return d.getDay() && d.getDate() != 1;
-                        }],
-                        ['%b %d', function (d) {
-                            return d.getDate() != 1;
-                        }],
-                        ['%B', function (d) {
-                            return d.getMonth();
-                        }],
-                        ['%Y', function () {
-                            return true;
-                        }]
-                    ]
-                }
-            }
-        );
+        var dashboard = this.dashboard = new Debugger.Dashboard(this.$('.debugger .canvas'));
         dashboard.connect(this.connector);
-
-        // make it scrollable (override width for scrollable)
-        this.dashboard.$('.dashboard-container').addClass('scrollable div-scrollable');
 
         // listen to zoom request from dashboard
         dashboard.on('zoom:request', function (context) {
