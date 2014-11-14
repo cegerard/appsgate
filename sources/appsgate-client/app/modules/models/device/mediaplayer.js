@@ -1,9 +1,9 @@
 define([
     "app",
     "models/device/device",
-    "text!templates/program/nodes/mediaPlayerActionNode.html",
+    "text!templates/program/nodes/defaultEventNode.html",
     "jstree"
-], function(App, Device, ActionTemplate) {
+], function(App, Device, ActionTemplate, EventTemplate) {
 
     var MediaPlayer = {};
 
@@ -35,6 +35,57 @@ define([
                 self.set("volume", volume);
             });
         },
+
+        getEvents: function() {
+            return ["play", "pause", "stop", "volume"];
+        },
+        /**
+         * return the keyboard code for a given event
+         */
+        getKeyboardForEvent: function(evt){
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var v = this.getJSONEvent("mandatory");
+            switch(evt) {
+                case "play":
+                $(btn).append("<span data-i18n='services.mediaplayer.keyboard.play-event'><span>");
+                v.eventName = "playerStatus";
+                v.eventValue = "PLAYING";
+
+                v.phrase = "services.mediaplayer.language.play-event";
+                $(btn).attr("json", JSON.stringify(v));
+                break;
+                case "pause":
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.pause-event'><span>");
+                    v.eventName = "playerStatus";
+                    v.eventValue = "PAUSED_PLAYBACK";
+
+                    v.phrase = "services.mediaplayer.language.pause-event";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;
+                case "stop":
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.stop-event'><span>");
+                    v.eventName = "playerStatus";
+                    v.eventValue = "STOPPED";
+                    v.phrase = "services.mediaplayer.language.stop-event";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;
+                case "volume":
+                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.volume-event'><span>");
+
+                    v.eventName = "volume";
+                    v.eventValue = "*";
+                    v.phrase = "services.mediaplayer.language.volume-event";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;
+                default:
+                    console.error("unexpected event found for MediaPlayer: " + evt);
+                    btn = null;
+                    break;
+            }
+            return btn;
+        },
+
+
         /**
          *return the list of available actions
          */
@@ -150,7 +201,7 @@ define([
                     data: "<root>" + xml_data + "</root>"
                 },
                 "themes": {
-                    "theme": "apple",
+                    "theme": "apple"
                 },
                 "unique": {
                     "error_callback": function(n, p, f) {
@@ -164,8 +215,8 @@ define([
                             "icon": {
                                 "image": "app/img/drive.png"
                             }
-                        },
-                    },
+                        }
+                    }
                 },
                 "plugins": ["xml_data", "themes", "types", "crrm", "ui", "unique"]
             }).delegate("a", "click", function(event, data) {
@@ -223,7 +274,7 @@ define([
      */
     getTemplateAction: function() {
       return _.template(ActionTemplate);
-    },
+    }
     });
     return MediaPlayer;
 });

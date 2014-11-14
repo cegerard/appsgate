@@ -736,6 +736,10 @@
                 "stopped": "Arrêté"
             },
             "language" : {
+                "volume-event" : "Le volume a changé sur le lecteur multimedia sur __myVar__",
+                "play-event" : "La lecture commence sur __myVar__",
+                "stop-event" : "La lecture s'arrête sur __myVar__",
+                "pause-event" : "La lecture entre en pause sur __myVar__",
 			    "pause-media-action": "Mettre en pause le media",
 				"play-media-action": "Jouer",
 				"resume-media-action": "Reprendre la lecture",
@@ -743,6 +747,10 @@
 				"stop-media-action": "Stopper"
             },
             "keyboard" : {
+                "volume-event" : "Le volume a changé sur le lecteur multimedia",
+                "play-event" : "La lecture commence",
+                "stop-event" : "La lecture s'arrête",
+                "pause-event" : "La lecture entre en pause",
 				"browse": "Parcourir",
 				"complement" : "sur",
 			    "pause-media-action": "Mettre en pause le media ...",
