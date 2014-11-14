@@ -327,7 +327,7 @@ public class TraceMan implements TraceManSpec {
                 objectNotif.put("type", g.getType());
             } else {
                 LOGGER.error("Unable to build a trace on an unknown type for {}", srcId);
-                LOGGER.debug("No trace have been produced for {} with cause: {}", event, cause);
+                LOGGER.debug("No trace have been produced for {} with cause: {}", event.toString(), cause.toString());
                 return null;
             }
             JSONObject location = new JSONObject();

@@ -10,9 +10,6 @@
         "yes": "YES",
         "no": "NO"
     },
-    "dependancy": {
-        "refresh-data" : "Refresh data"
-    },
     "devices": {
         "no-value":"---",
         "actuator": {
@@ -584,7 +581,6 @@
         "debugger": "History",
         "dashboard": "Dashboard",
         "devices": "Devices",
-        "dependancies": "Dependancies",
         "edit": "Edit",
         "emergency-stop": "Emergency stop",
         "home": "Sweet Home",
@@ -785,8 +781,7 @@
                 "sunset": "the sun set in ...",
                 "current-temperature": "the temperature for",
                 "current-weather-code-state": "current weather",
-                "currently-daylight": "the sun is shining in",
-                "currently-moonlight": "this is the night in",
+                "currently-daylight": "il fait jour",
                 "forecast-temperature-max": "the maximum temperature expected for",
                 "forecast-temperature-min": "the minimum temperature expected for",
                 "forecast-weather-code-state": "current weather for",
@@ -799,8 +794,7 @@
                 "sunset": "the sun set in __myVar__",
                 "current-temperature": "the temperature for",
                 "current-weather-code-state": "current weather",
-                "currently-daylight": "the sun is shining in",
-                "currently-moonlight": "this is the night in",
+                "currently-daylight": "il fait jour",
                 "forecast-temperature-max": "the maximum temperature expected for",
                 "forecast-temperature-min": "the minimum temperature expected for",
                 "forecast-weather-code-state": "current weather for",

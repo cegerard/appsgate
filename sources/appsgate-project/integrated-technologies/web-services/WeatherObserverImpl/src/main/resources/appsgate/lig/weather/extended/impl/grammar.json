@@ -20,19 +20,14 @@
             }
         },
         {
-            "name": "moonlightState",
-            "stateName": "isCurrentlyDaylight",
-            "stateValue": "false",
-            "endEvent": {
-                "type": "event",
-                "eventName": "daylightEvent",
-                "eventValue": "sunrise"
-            },
-            "startEvent": {
-                "type": "event",
-                "eventName": "daylightEvent",
-                "eventValue": "sunset"
-            }
+            "name": "currentWeatherCodeState",
+            "stateName": "isCurrentWeatherCode",
+            "stateValue": "true"
+        },
+        {
+            "name": "forecastWeatherCodeState",
+            "stateName": "isForecastWeatherCode",
+            "stateValue": "true"
         }
 
     ]

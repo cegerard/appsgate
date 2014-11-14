@@ -68,7 +68,7 @@ define([
         getStates: function (which) {
             if (which == "state") {
                 //code
-                return ["daylightState", "moonlightState"];
+                //                return ["isCurrentlyDaylight", "isCurrentWeatherCode", "isForecastWeatherCode"];
             }
             return [];
         },
@@ -86,20 +86,46 @@ define([
                 "iid": "X"
             };
             switch (state) {
-            case "daylightState":
-                $(btn).append("<span data-i18n='services.weather.keyboard.currently-daylight'/>");
+            case "isCurrentWeatherCode":
+                $(btn).append("<span data-i18n='services.weather.keyboard.is-current-weather-code-state'/>");
 
-				v.name = state;
-
-                v.phrase = "services.weather.language.currently-daylight";
+                //                    v.methodName = "isWeatherSimplifiedCodeForecast";
+                v.methodName = "isCurrentWeatherCode";
+                v.returnType = "boolean";
+                v.name = "currentWeatherCodeState";
+                v.args = [{
+                    "type": "int",
+                    "value": "0"
+                }];
+                v.phrase = "services.weather.language.is-current-weather-code-state";
                 $(btn).attr("json", JSON.stringify(v));
                 break;
-            case "moonlightState":
-                $(btn).append("<span data-i18n='services.weather.keyboard.currently-moonlight'/>");
+            case "isForecastWeatherCode":
+                $(btn).append("<span data-i18n='services.weather.keyboard.is-forecast-weather-code-state'/>");
 
-				v.name = state;
+                v.methodName = "isWeatherSimplifiedCodeForecast";
+                v.returnType = "boolean";
+                v.name = "forecastWeatherCodeState";
+                v.args = [{
+                        "type": "int",
+                        "value": "0"
+                    },
+                    {
+                        "type": "int",
+                        "value": "0"
+                    }];
 
-                v.phrase = "services.weather.language.currently-moonlight";
+                v.phrase = "services.weather.language.is-forecast-weather-code-state";
+                $(btn).attr("json", JSON.stringify(v));
+                break;
+            case "isCurrentlyDaylight":
+                $(btn).append("<span data-i18n='services.weather.keyboard.currently-daylight'/>");
+
+                v.methodName = "isCurrentlyDaylight";
+                v.name = "daylightState";
+                v.returnType = "boolean";
+
+                v.phrase = "services.weather.language.currently-daylight";
                 $(btn).attr("json", JSON.stringify(v));
                 break;
             default:
