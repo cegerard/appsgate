@@ -136,6 +136,10 @@ public class NodeStateDevice extends NodeState {
 
     @Override
     protected Boolean isOfState() {
+        if (desc == null){
+            LOGGER.error("No state have been set");
+            return false;
+        }
         if (desc.getStateName() == null) {
             LOGGER.debug("No state name, so the result is false");
             return false;

@@ -68,7 +68,7 @@ define([
         getStates: function (which) {
             if (which == "state") {
                 //code
-                return ["isCurrentlyDaylight", "isCurrentlyMoonlight"];
+                return ["daylightState", "moonlightState"];
             }
             return [];
         },
@@ -86,7 +86,7 @@ define([
                 "iid": "X"
             };
             switch (state) {
-            case "isCurrentlyDaylight":
+            case "daylightState":
                 $(btn).append("<span data-i18n='services.weather.keyboard.currently-daylight'/>");
 
 				v.name = state;
@@ -94,7 +94,7 @@ define([
                 v.phrase = "services.weather.language.currently-daylight";
                 $(btn).attr("json", JSON.stringify(v));
                 break;
-            case "isCurrentlyMoonlight":
+            case "moonlightState":
                 $(btn).append("<span data-i18n='services.weather.keyboard.currently-moonlight'/>");
 
 				v.name = state;
