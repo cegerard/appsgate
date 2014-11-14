@@ -10,6 +10,9 @@
         "yes": "OUI",
         "no": "NON"
     },
+    "dependancy": {
+        "refresh-data" : "Actualiser les données"
+    },
     "devices": {
         "no-value":"---",
         "actuator": {
@@ -583,6 +586,7 @@
         "debugger": "Historique",
         "dashboard": "Tableau de bord",
         "devices": "Equipements",
+        "dependancies": "Dépendances",
         "edit": "Editer",
         "emergency-stop": "Tout stopper",
         "home": "Chez nous",
@@ -787,7 +791,8 @@
                 "sunset": "le jour se couche à ...",
 				"current-temperature": "la température actuelle",
 				"current-weather-code-state": "la météo actuelle",
-				"currently-daylight": "il fait jour",
+				"currently-daylight": "il fait jour à",
+                "currently-moonlight": "il fait nuit à",
 				"forecast-temperature-max": "la température maximale prévue pour ...",
 				"forecast-temperature-min": "la température minimale prévue pour ...",
 				"forecast-weather-code-state": "la météo prévue pour ...",
@@ -801,6 +806,7 @@
 				"current-temperature": "la température actuelle",
 				"current-weather-code-state": "la météo actuelle",
 				"currently-daylight": "il fait jour",
+                "currently-moonlight": "il fait nuit à",
 				"forecast-temperature-max": "la température maximale prévue pour",
 				"forecast-temperature-min": "la température minimale prévue pour",
 				"forecast-weather-code-state": "la météo prévue pour",
