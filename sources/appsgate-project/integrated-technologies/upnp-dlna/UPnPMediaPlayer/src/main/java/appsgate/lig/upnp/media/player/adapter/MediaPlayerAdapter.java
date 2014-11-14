@@ -310,10 +310,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 			String newVolume = node.getAttributes().getNamedItem(VAL).getNodeValue();
 			logger.trace("checkChangeStateEvent(...), new Volume = "+newVolume);
 
-			if(newVolume != currentVolume) {
-				stateChanged("volume", currentVolume, newVolume);
-				currentVolume = newVolume;
-			}
+			stateChanged("volume", currentVolume, newVolume);
+			currentVolume = newVolume;
 
 		} catch (Exception exc) {
 			logger.debug("Cannot parse volume event : "+exc.getMessage());
@@ -336,10 +334,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 			String newStatus = node.getAttributes().getNamedItem(VAL).getNodeValue();
 			logger.trace("checkChangeStateEvent(...), new Status = "+newStatus);
 
-			if(newStatus != currentStatus) {
-				stateChanged("playerStatus", currentStatus, newStatus);
-				currentStatus = newStatus;
-			}
+			stateChanged("playerStatus", currentStatus, newStatus);
+			currentStatus = newStatus;
 
 		} catch (Exception exc) {
 			logger.debug("Cannot parse status event : "+exc.getMessage());
