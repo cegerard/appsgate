@@ -11,7 +11,8 @@
         "no": "NON"
     },
     "dependancy": {
-        "refresh-data" : "Actualiser les données"
+        "refresh-data" : "Actualiser les données",
+        "search-label" : "Chercher : "
     },
     "devices": {
         "no-value":"---",

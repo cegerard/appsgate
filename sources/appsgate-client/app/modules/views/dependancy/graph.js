@@ -9,7 +9,9 @@ define([
         template: _.template(GraphTemplate),
 
         events: {
-            "click button.refresh-button": "onRefreshButton"
+            "click button.refresh-button": "onRefreshButton",
+            "click button.search-button": "onSearchButton",
+            "keyup .search-input-text": "onSearchButton",
         },
 
         initialize: function () {},
@@ -17,6 +19,40 @@ define([
         onRefreshButton: function () {
             // Reload this page to refresh data
             appRouter.dependancies();
+        },
+
+        onSearchButton: function (e) {
+            
+            if (e.type === "keyup") {
+                e.preventDefault();
+
+                var nameSearched = $(".search-input-text").val();
+                var nodesFound = [];
+                
+                // Comparing the string entered to the name of the entities
+                force.nodes().forEach(function (d) {
+                    if (d.name.toLowerCase().indexOf(nameSearched) >= 0) {
+                        nodesFound.push(d);
+                    }
+                });
+                
+                if (nodesFound.length === 0 || nodesFound.length === force.nodes().length) {
+                    nodeEntity.classed("neighborNodeOver", false);
+                } else {
+                    // If there is node containing the string searched, highlight them
+                    nodeEntity.classed("neighborNodeOver", function (d) {
+                        return nodesFound.indexOf(d) !== -1;
+                    });
+                    
+                    // There is only one result, typing enter select it
+                    if (e.keyCode === 13 && nodesFound.length === 1) {
+                        force.stop();
+                        this.selectAndMoveRootNode(nodesFound[0]);
+                        $(".search-input-text").select();
+                        force.start();
+                    }
+                }
+            }
         },
 
         render: function () {
@@ -445,12 +481,12 @@ define([
 
 
     });
-    
+
     function arcPath(turned, d) {
         var dx = d.target.x - d.source.x,
             dy = d.target.y - d.source.y,
             dr = 150 / d.linknum; //linknum is defined above
-        
+
         if (turned) {
             // If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
             return "M" + d.target.x + "," + d.target.y + "A" + dr + "," + dr + " 0 0,0" + d.source.x + "," + d.source.y;
