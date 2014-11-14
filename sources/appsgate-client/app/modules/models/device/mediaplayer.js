@@ -1,6 +1,7 @@
 define([
     "app",
     "models/device/device",
+    "text!templates/program/nodes/mediaPlayerActionNode.html",
     "text!templates/program/nodes/defaultEventNode.html",
     "jstree"
 ], function(App, Device, ActionTemplate, EventTemplate) {
