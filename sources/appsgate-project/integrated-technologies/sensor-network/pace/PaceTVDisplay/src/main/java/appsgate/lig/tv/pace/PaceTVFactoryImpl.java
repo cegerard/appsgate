@@ -5,6 +5,8 @@ package appsgate.lig.tv.pace;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -20,7 +22,7 @@ import appsgate.lig.tv.spec.TVFactory;
  * @author thibaud
  *
  */
-public class PaceTVFactoryImpl implements TVFactory{
+public class PaceTVFactoryImpl extends TimerTask implements TVFactory{
 	
 	BundleContext context;
 	Instance mySelf;
@@ -36,6 +38,8 @@ public class PaceTVFactoryImpl implements TVFactory{
 	String path;
 	int port;
 	
+	String currentServiceId = null;
+	
 
 	private static Logger logger = LoggerFactory
 			.getLogger(PaceTVFactoryImpl.class);
@@ -50,8 +54,6 @@ public class PaceTVFactoryImpl implements TVFactory{
 		this.mySelf = mySelf;
 		
 		
-		// First version, this one is not dynamic, the existing http service is not checked
-		// TODO , there should be a discovery Thread, checking with a basic HTTP Request
 		hostname = context.getProperty(TV_HOSTNAME);
 		if(hostname == null) {
 			logger.info("No hostname specified, using default value : "+DEFAULT_HOSTNAME);
@@ -77,8 +79,11 @@ public class PaceTVFactoryImpl implements TVFactory{
 		if(path == null) {
 			logger.info("No path specified, using hostname:port as URL ");
 		}		
-		
+
 		createTVInstance(hostname, port, path);		
+
+		Timer timer = new Timer();
+		timer.schedule(this, 10 * 60 * 1000, 10 * 60 * 1000); // Try to recreate the service each  10 minutes
 	}
 
 	@Override
@@ -88,6 +93,21 @@ public class PaceTVFactoryImpl implements TVFactory{
 				+", String path ="+path
 				+")");
 		Instance inst = null;
+		
+		if(!PaceTVImpl.checkConfiguration(hostname, port, path)) {
+			logger.trace("createTVInstance(...), TV not available");
+			if(currentServiceId != null) {
+				logger.trace("createTVInstance(...), removing apam service with service id : "+currentServiceId);
+				removeTVInstance(currentServiceId);
+			}
+			return null;
+		}
+		
+		if(currentServiceId != null) {
+			logger.trace("createTVInstance(...), already an instance, with service Id"
+					+currentServiceId+" must be removed prior to creating a new one");
+			return null;
+		}
 
 		try {
 			Implementation tvImpl = CST.apamResolver.findImplByName(null,
@@ -101,9 +121,12 @@ public class PaceTVFactoryImpl implements TVFactory{
 					.getServiceObject();
 			service.setConfiguration(hostname, port, path,  this);// If no Exception, service should
 												// be OK
-			logger.trace("createTVInstance(...), Instance should be created successfully");
+			currentServiceId = service.getAbstractObjectId();
+			logger.trace("createTVInstance(...), Instance should be created successfully,"
+					+ " with service Id : "+currentServiceId);
+			
 
-			return service.getAbstractObjectId();
+			return currentServiceId;
 
 		} catch (Exception exc) {
 			logger.warn("Exception when creating PaceTVImpl : " + exc.getMessage());
@@ -129,17 +152,24 @@ public class PaceTVFactoryImpl implements TVFactory{
 					logger.trace("destroyTVInstance(...), as serviceId is null"
 							+ " destroying all instances including this one with id "+service.getAbstractObjectId());
 					((ComponentBrokerImpl) CST.componentBroker)
-					.disappearedComponent(inst);
-					
+					.disappearedComponent(inst);	
 				} else if (serviceId.equals(service.getAbstractObjectId())) {
 					logger.trace("destroyTVInstance(...), found serviceId "+service.getAbstractObjectId()
 							+", removing it");
 					((ComponentBrokerImpl) CST.componentBroker)
 					.disappearedComponent(inst);
 				}
-
-			}
+			}	
 		}
+		if(currentServiceId != null
+				&& currentServiceId.equals(serviceId)) {
+			currentServiceId = serviceId;
+		}
+	}
+
+	@Override
+	public void run() {
+		createTVInstance(hostname, port, path);		
 	}
 
 	

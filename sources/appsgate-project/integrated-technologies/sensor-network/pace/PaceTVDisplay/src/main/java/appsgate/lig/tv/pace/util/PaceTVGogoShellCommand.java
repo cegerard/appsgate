@@ -8,6 +8,7 @@ import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 import org.apache.felix.service.command.Descriptor;
 
+import appsgate.lig.tv.pace.PaceTVImpl;
 import appsgate.lig.tv.spec.CoreTVSpec;
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
@@ -28,7 +29,7 @@ public class PaceTVGogoShellCommand {
 	@ServiceProperty(name = "osgi.command.function", value = "{}")
 	String[] gogoShell_groupCommands = new String[] { "channelUp",
 			"channelDown", "resume", "pause", "stop",
-			"resize", "notify", };
+			"resize", "notify", "checkConfiguration", };
 
 	@Requires
 	Apam apam;
@@ -163,6 +164,27 @@ public class PaceTVGogoShellCommand {
 		} else {
 			out.println("no Apam-Instance for CoreTVSpec");
 		}
-	}			
+	}
+	
+	@Descriptor("command: checkConfiguration, check if TV service is responding")
+	public void checkConfiguration(@Descriptor("hostname port path (optional, will use default hostname : localhost, port : 80 and no path) ") String... args) {
+		String hostname = PaceTVImpl.DEFAULT_HOSTNAME;
+		int port = PaceTVImpl.DEFAULT_HTTPPORT;
+		String path = null;
+		
+		if(args.length >= 2 ) {
+			hostname = args[0];
+			port = Integer.parseInt(args[1]);
+			if (args.length == 3) {
+				path = args[2];
+			}
+		}
+		
+		if (PaceTVImpl.checkConfiguration(hostname, port, path)) {
+			out.println("checkConfiguration returned true");
+		} else {
+			out.println("checkConfiguration returned false");
+		}
+	}	
 	
 }

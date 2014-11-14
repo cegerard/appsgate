@@ -59,12 +59,14 @@ public class TVMockupServlet extends HttpServlet {
 		  String id=req.getParameter(PaceTVImpl.ID_PARAM);
 		  
 		  for(Object param : req.getParameterMap().keySet()) {
-			  logger.trace("doGet(...), parameter  {} = {} ",param, req.getParameter(param.toString()));
+			  logger.trace("doGet(...), parameter  {} = {} ",param, req.getParameter(param.toString())
+					  +", req.getRequestURI() : "+req.getRequestURI());
 		  }
 		  
-		  if(!req.getRequestURI().endsWith(PaceTVImpl.VIDEO)
+		  if((!req.getRequestURI().endsWith(PaceTVImpl.VIDEO)
+				  &&!req.getRequestURI().endsWith(PaceTVImpl.SYSTEM))
 				 || currentCommand == null) {
-			  logger.warn("doGet(...), unrecognized request (missing video or command parameter)");
+			  logger.warn("doGet(...), unrecognized request (missing video/system or command parameter)");
 			  resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			  return;
 
@@ -108,6 +110,10 @@ public class TVMockupServlet extends HttpServlet {
 			  logger.trace("doGet(...), received a resize command,"
 						+ " screen = "+currentScreen
 						+ " with id ="+id);
+			  
+		  } else if (currentCommand.equals(PaceTVImpl.COMMAND_ISALIVE)){
+			  latestCommand=currentCommand;
+			  logger.trace("doGet(...), received a isAlive command");
 			  
 		  } else if (currentCommand.equals(CoreTVMockupAdapter.MOCKUP_REQUEST)){
 			  logger.trace("doGet(...), received a mockup status request (not part of Pace specification),"
