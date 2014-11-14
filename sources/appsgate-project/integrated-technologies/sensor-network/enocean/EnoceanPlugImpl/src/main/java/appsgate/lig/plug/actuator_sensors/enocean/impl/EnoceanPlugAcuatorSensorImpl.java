@@ -179,19 +179,22 @@ public class EnoceanPlugAcuatorSensorImpl extends CoreObjectBehavior implements 
 	 * @param date the time stamp
 	 */
 	public void addValue(float activeEnergy, long newDate){
-		Float f;
+		Float cons;
 		if(date[1] < date[0]) {
 			date[1] = newDate;
 			metering[1] = activeEnergy;
-			f = new Float(1000*(metering[1]-metering[0])/(date[1]-date[0]));
+			cons = new Float(1000*(metering[1]-metering[0])/(date[1]-date[0]));
 			
 		} else {
 			date[0] = newDate;
 			metering[0] = activeEnergy;
-			f = new Float(1000*(metering[0]-metering[1])/(date[0]-date[1]));
+			cons = new Float(1000*(metering[0]-metering[1])/(date[0]-date[1]));
 		}
 		
-		consumption = String.valueOf(Math.round(f));
+		float diff = cons-Float.valueOf(consumption);
+		if(diff > 0 || diff < -1.5){
+			consumption = String.valueOf(Math.round(cons));
+		} 		
 	}
 
 	@Override
