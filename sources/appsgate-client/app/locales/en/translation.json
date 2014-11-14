@@ -734,8 +734,8 @@
                 "STOPPED": "Stopped : "
             },
             "language" : {
-                "volume-event" : "volume has changed on media player __myVar__",
-                "play-event" : "__myVar__ has started playing",
+                "volume-event" : "volume has changed on player __myVar__",
+                "play-event" : "__myVar__ has started/resumed playing",
                 "stop-event" : "__myVar__ has stopped",
                 "pause-event" : "__myVar__ is paused",
 
@@ -746,10 +746,10 @@
                "stop-media-action": "Stop"
             },
             "keyboard" : {
-                "volume-event" : "volume has changed on media player",
-                "play-event" : "media player has started playing",
-                "stop-event" : "media player has stopped",
-                "pause-event" : "media player is paused",
+                "volume-event" : "volume has changed on player",
+                "play-event" : "player has started/resumed playing",
+                "stop-event" : "player has stopped",
+                "pause-event" : "player is paused",
 			   "browse": "Browse",
 			   "complement" : "on",
                "pause-media-action": "Pause the media ...",
