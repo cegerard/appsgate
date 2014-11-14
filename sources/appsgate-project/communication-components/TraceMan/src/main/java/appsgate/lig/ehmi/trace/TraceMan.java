@@ -248,8 +248,9 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
+    	
         GrammarDescription desc = EHMIProxy.getGrammarFromDevice(srcId);
-        if (desc != null && desc.generateTrace()) {
+        if (desc != null && applyFilters(desc, srcId, varName, value) && desc.generateTrace()) {
             //Create the event description device entry
             JSONObject event = new JSONObject();
             JSONObject JDecoration = null;
@@ -933,6 +934,36 @@ public class TraceMan implements TraceManSpec {
         this.focus = focus;
         this.focusType = focusType;
     }
+    
+    /**
+     * Filter trace that not need to be trace in EHMI point view
+     * @param descr the equipment details
+     * @param srcId the equipement identifier
+     * @param varName the vriable name thaht change
+     * @param value the new value to the variable
+     * @return true if the trace can be trace, false otherwise
+     */
+    private boolean applyFilters(GrammarDescription descr, String srcId, String varName, String value) {
+    	//Filter on those conditions
+    	if(
+    			descr.getType().equalsIgnoreCase("ColorLight") && (
+    			   varName.contentEquals("x")  	   ||
+    			   varName.contentEquals("y")  	   ||
+    			   varName.contentEquals("ct")	   ||
+    			   varName.contentEquals("speed")  ||
+    			   varName.contentEquals("mode")
+    			) ||
+    			descr.getType().equalsIgnoreCase("Temperature") && (
+    			   varName.contentEquals("change")
+    			) ||
+    			descr.getType().equalsIgnoreCase("Illumination") && (
+    			   varName.contentEquals("label")
+    			)
+    	 ) return false;
+    	
+    	//Trace no need to be filtered
+		return true;
+	}
 
     @Override
     public int startDebugger() {
