@@ -764,7 +764,7 @@ public class TraceMan implements TraceManSpec {
      * @return the morph name from type to internationalization key
      */
     private String getIntKey(String type) {
-		return "groups."+type;
+		return "groups."+type.toLowerCase();
 	}
 
 	/**
