@@ -7,16 +7,16 @@
 (function (root, factory) {
     // Setup AppsGate.Debugger appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
-        define(['backbone', 'jquery', 'underscore', 'd3', 'exports'], function(Backbone, $, _, d3, exports) {
+        define(['backbone', 'jquery', 'underscore', 'd3', 'i18n', 'exports'], function(Backbone, $, _, d3, i18n, exports) {
             // Export global even in AMD case in case this script is loaded with
             // others that may still expect a global AppsGateDebugger.
-            return (root.AppsGateDebugger = factory(root, exports, Backbone, $, _, d3));
+            return (root.AppsGateDebugger = factory(root, exports, Backbone, $, _, d3, i18n));
         });
     } else {
         // Else, as a browser global.
-        root.AppsGateDebugger = factory(root, {}, root.Backbone, root.$, root._, root.d3);
+        root.AppsGateDebugger = factory(root, {}, root.Backbone, root.$, root._, root.d3, root.i18n);
     }
-}(this, function(root, Debugger, Backbone, $, _, d3) {
+}(this, function(root, Debugger, Backbone, $, _, d3, i18n) {
     'use strict';
 
     // Initial Setup
@@ -900,17 +900,13 @@
         initialize: function (selector, options) {
             this.options = defaultsDeep(options || {}, {
                 theme: THEMES_BASIC,
+                i18n: {
+                    ns: 'debugger'
+                },
                 selector: {
                     resolution: 30
                 }
             });
-    
-            var kkeys = [], konami = "38,38,40,40,37,39,37,39,66,65";
-            window.addEventListener("keydown", function(e){
-                kkeys.push( e.keyCode );
-                if ( kkeys.toString().indexOf( konami ) >= 0 )
-                    alert('display kitten');
-            }, true);
     
             this._init_ui(selector);
             this._init_d3();
@@ -1067,6 +1063,18 @@
         },
     
         // **Private API**
+    
+        _init_konami: function() {
+            var kkeys = [], konami = "38,38,40,40,37,39,37,39,66,65";
+            window.addEventListener("keydown", function(e){
+                kkeys.push( e.keyCode );
+                if ( kkeys.toString().indexOf( konami ) >= 0 ) {
+                    alert('display kitten');
+                }
+    
+                kkeys = kkeys.slide(-konami.length);
+            }, true);
+        },
     
         // Initialize the UI within the container designated by the `selector`.
         _init_ui: function (selector) {
@@ -1395,10 +1403,10 @@
             if (attributes && attributes.func) {
                 switch (attributes.func) {
                     case 'type': return function(item) {
-                        return item.type? 'Devices' : 'Programs'
+                        return item.type? {name: 'Devices', order: 2} : {name: 'Programs', order: 4}
                     };
                     default: return function(item) {
-                        return 'Unknown'
+                        return { name: 'Unknown', order: 3 }
                     };
                 }
             } else if (attributes && attributes.grouping) {
@@ -1411,9 +1419,9 @@
                         });
     
                         if (group) {
-                            return group.name;
+                            return { name: group.name, order: group.order || 3};
                         } else {
-                            return 'Unknown';
+                            return { name: 'Unknown', order: 3};
                         }
                     };
                 })();
@@ -1473,7 +1481,7 @@
             // Setup timeline attributes
             var timeline_attributes = {
                 id: _.uniqueId('timeline'),
-                name: attributes.name,
+                name: i18n.t(attributes.name, {ns: this.options.i18n.ns}),
                 orientation: 'top',
                 timeFormat: this._d3_timeFormatMulti
             };
@@ -1490,13 +1498,20 @@
                 .attr({
                     id: _.uniqueId('group'),
                     class: 'group',
-                    'data-name': attributes.name
+                    'data-name': attributes.name,
+                    'data-order': attributes.order
                 })
                 .append('<header/>')
                 .append('<div class="element-container"></div>');
     
             // Attach group to the dashboard.
             this._$group_container.append(group);
+    
+            // Sort group by order then by name
+            this._$group_container.children().tsort(
+                {attr: 'data-order'},
+                {attr: 'data-name'}
+            );
     
             // Attach timeline to the group.
             this._attach_widget(timeline, group.find('header')[0]);
@@ -1604,7 +1619,6 @@
                 this.listenTo(widget, 'marker:click', this._onWidgetMarkerClick);
     
                 // Find and attach it to the group to which it belongs.
-                var groupName = this._demux(attributes);
                 this._attach_widget_to_group(widget);
             } else {
                 Debugger.logger.error('Unable to create device of type #{type}', attributes);
@@ -1615,21 +1629,19 @@
     
         // Attach a widget to a group within this dashboard.
         // If the group if not created then it creates the group first.
-        _attach_widget_to_group: function(widget, group) {
-            // If group is not provided then find it from widget attributes.
-            if (_.isUndefined(group)) {
-                group = this._demux(widget.attributes);
-            }
+        _attach_widget_to_group: function(widget) {
+            var group = this._demux(widget.attributes);
     
             // If group is not created then create it.
-            if (_.isUndefined(this._groups[group])) {
-                this._groups[group] = this._create_group({
-                    name: group
+            if (_.isUndefined(this._groups[group.name])) {
+                this._groups[group.name] = this._create_group({
+                    name: group.name,
+                    order: group.order
                 });
             }
     
             // Attach it to the group in the DOM.
-            this._attach_widget(widget, this._groups[group].$container);
+            this._attach_widget(widget, this._groups[group.name].$container);
         },
     
         // Attach a widget to a target element within this dashboard.
