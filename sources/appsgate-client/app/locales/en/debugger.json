@@ -1,0 +1,28 @@
+{
+  "groups": {
+    "temperature": "$t(translation:devices.temperature.name.singular)",
+    "temperature_plural": "$t(translation:devices.temperature.name.plural)",
+    "switch": "$t(translation:devices.switch.name.singular)",
+    "switch_plural": "$t(translation:devices.switch.name.plural)",
+    "contact": "$t(translation:devices.contact.name.singular)",
+    "contact_plural": "$t(translation:devices.contact.name.plural)",
+    "keycardswitch": "$t(translation:devices.cardswitch.name.singular)",
+    "keycardswitch_plural": "$t(translation:devices.cardswitch.name.plural)",
+    "smartplug": "$t(translation:devices.plug.name.singular)",
+    "smartplug_plural": "$t(translation:devices.plug.name.plural)",
+    "colorlight": "$t(translation:devices.lamp.name.singular)",
+    "colorlight_plural": "$t(translation:devices.lamp.name.plural)",
+    "illumination": "$t(translation:devices.illumination.name.singular)",
+    "illumination_plural": "$t(translation:devices.illumination.name.plural)",
+    "program": "Program",
+    "program_plural": "Programs",
+    "others": "Other",
+    "others_plural": "Others",
+    "focus": "Focus",
+    "focus_plural": "Focus",
+    "dependencie": "Dependencie",
+    "dependencie_plural": "Dependencies",
+    "all": "All",
+    "all_plural": "All"
+  }
+}
