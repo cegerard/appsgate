@@ -22,7 +22,7 @@ define([
     // collection
     Devices = Backbone.Collection.extend({
         model: Device,
-        templates: {'action' : {}, 'event' : {}, 'state': {}, 'property' : {}},
+        templates: {'action' : {}, 'action-parameter' : {}, 'event' : {},'event-parameter' : {}, 'state': {},'state-parameter': {}, 'property' : {},'property-parameter' : {}},
         /**
          * Fetch the devices from the server
          *
@@ -118,9 +118,13 @@ define([
             }
             if (device != null) {
                 self.templates['action'][brick.type] = device.getTemplateAction();
+                self.templates['action-parameter'][brick.type] = device.getTemplateParameter();
                 self.templates['event'][brick.type] = device.getTemplateEvent();
+                self.templates['event-parameter'][brick.type] = {};
                 self.templates['state'][brick.type] = device.getTemplateState();
+                self.templates['state-parameter'][brick.type] = {};
                 self.templates['property'][brick.type] = device.getTemplateProperty();
+                self.templates['property-parameter'][brick.type] = {};
 
                 if(typeof brick.placeId !== "undefined"){
                   places.get(brick.placeId).get("devices").push(brick.id);
@@ -305,7 +309,7 @@ define([
          */
         getTemplateByType: function(word,type,param) {
             if (this.templates[word][type]) {
-                return this.templates[word][type](param);
+                return this.templates[word][type]($.extend(param,this.templates[word+'-parameter'][type]));
             } else {
                 console.warn("No template is defined for type: " + type);
             }
