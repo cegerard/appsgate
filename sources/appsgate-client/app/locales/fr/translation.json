@@ -10,6 +10,9 @@
         "yes": "OUI",
         "no": "NON"
     },
+    "dependancy": {
+        "refresh-data" : "Actualiser les données"
+    },
     "devices": {
         "no-value":"---",
         "actuator": {
@@ -583,6 +586,7 @@
         "debugger": "Historique",
         "dashboard": "Tableau de bord",
         "devices": "Equipements",
+        "dependancies": "Dépendances",
         "edit": "Editer",
         "emergency-stop": "Tout stopper",
         "home": "Chez nous",
@@ -732,10 +736,10 @@
                 "stopped": "Arrêté"
             },
             "language" : {
-                "volume-event" : "Le volume a changé sur le lecteur multimedia sur __myVar__",
-                "play-event" : "La lecture commence sur __myVar__",
-                "stop-event" : "La lecture s'arrête sur __myVar__",
-                "pause-event" : "La lecture entre en pause sur __myVar__",
+                "volume-event" : "Le volume du lecteur change sur __myVar__",
+                "play-event" : "On lance/reprend la lecture sur le lecteur __myVar__",
+                "stop-event" : "On stoppe la lecture sur le lecteur __myVar__",
+                "pause-event" : "On met en pause la lecture sur le lecteur __myVar__",
 			    "pause-media-action": "Mettre en pause le media",
 				"play-media-action": "Jouer",
 				"resume-media-action": "Reprendre la lecture",
@@ -743,10 +747,10 @@
 				"stop-media-action": "Stopper"
             },
             "keyboard" : {
-                "volume-event" : "Le volume a changé sur le lecteur multimedia",
-                "play-event" : "La lecture commence",
-                "stop-event" : "La lecture s'arrête",
-                "pause-event" : "La lecture entre en pause",
+                "volume-event" : "Le volume du lecteur change",
+                "play-event" : "On lance/reprend la lecture sur le lecteur",
+                "stop-event" : "On stoppe la lecture sur le lecteur",
+                "pause-event" : "On met en pause la lecture sur le lecteur",
 				"browse": "Parcourir",
 				"complement" : "sur",
 			    "pause-media-action": "Mettre en pause le media ...",
@@ -787,7 +791,8 @@
                 "sunset": "le jour se couche à ...",
 				"current-temperature": "la température actuelle",
 				"current-weather-code-state": "la météo actuelle",
-				"currently-daylight": "il fait jour",
+				"currently-daylight": "il fait jour à",
+                "currently-moonlight": "il fait nuit à",
 				"forecast-temperature-max": "la température maximale prévue pour ...",
 				"forecast-temperature-min": "la température minimale prévue pour ...",
 				"forecast-weather-code-state": "la météo prévue pour ...",
@@ -801,6 +806,7 @@
 				"current-temperature": "la température actuelle",
 				"current-weather-code-state": "la météo actuelle",
 				"currently-daylight": "il fait jour",
+                "currently-moonlight": "il fait nuit à",
 				"forecast-temperature-max": "la température maximale prévue pour",
 				"forecast-temperature-min": "la température minimale prévue pour",
 				"forecast-weather-code-state": "la météo prévue pour",

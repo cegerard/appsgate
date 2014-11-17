@@ -79,13 +79,13 @@ public class NodeStateProgram extends NodeState {
 
         if (stateOn == true) {
             try {
-                o.put("methodName", "start");
+                o.put("methodName", "callProgram");
             } catch (JSONException ex) {
             }
             return new NodeAction(o, this);
         } else {
             try {
-                o.put("methodName", "stop");
+                o.put("methodName", "stopProgram");
             } catch (JSONException ex) {
             }
             return new NodeAction(o, this);

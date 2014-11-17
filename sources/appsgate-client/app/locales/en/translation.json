@@ -10,6 +10,9 @@
         "yes": "YES",
         "no": "NO"
     },
+    "dependancy": {
+        "refresh-data" : "Refresh data"
+    },
     "devices": {
         "no-value":"---",
         "actuator": {
@@ -581,6 +584,7 @@
         "debugger": "History",
         "dashboard": "Dashboard",
         "devices": "Devices",
+        "dependancies": "Dependancies",
         "edit": "Edit",
         "emergency-stop": "Emergency stop",
         "home": "Sweet Home",
@@ -734,8 +738,8 @@
                 "STOPPED": "Stopped : "
             },
             "language" : {
-                "volume-event" : "volume has changed on media player __myVar__",
-                "play-event" : "__myVar__ has started playing",
+                "volume-event" : "volume has changed on player __myVar__",
+                "play-event" : "__myVar__ has started/resumed playing",
                 "stop-event" : "__myVar__ has stopped",
                 "pause-event" : "__myVar__ is paused",
 
@@ -746,10 +750,10 @@
                "stop-media-action": "Stop"
             },
             "keyboard" : {
-                "volume-event" : "volume has changed on media player",
-                "play-event" : "media player has started playing",
-                "stop-event" : "media player has stopped",
-                "pause-event" : "media player is paused",
+                "volume-event" : "volume has changed on player",
+                "play-event" : "player has started/resumed playing",
+                "stop-event" : "player has stopped",
+                "pause-event" : "player is paused",
 			   "browse": "Browse",
 			   "complement" : "on",
                "pause-media-action": "Pause the media ...",
@@ -790,7 +794,8 @@
                 "sunset": "the sun set in ...",
                 "current-temperature": "the temperature for",
                 "current-weather-code-state": "current weather",
-                "currently-daylight": "il fait jour",
+                "currently-daylight": "the sun is shining in",
+                "currently-moonlight": "this is the night in",
                 "forecast-temperature-max": "the maximum temperature expected for",
                 "forecast-temperature-min": "the minimum temperature expected for",
                 "forecast-weather-code-state": "current weather for",
@@ -803,7 +808,8 @@
                 "sunset": "the sun set in __myVar__",
                 "current-temperature": "the temperature for",
                 "current-weather-code-state": "current weather",
-                "currently-daylight": "il fait jour",
+                "currently-daylight": "the sun is shining in",
+                "currently-moonlight": "this is the night in",
                 "forecast-temperature-max": "the maximum temperature expected for",
                 "forecast-temperature-min": "the minimum temperature expected for",
                 "forecast-weather-code-state": "current weather for",

@@ -691,7 +691,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      */
     public void xChanged(String newX) {
         logger.trace("The actuator, " + actuatorId + " x changed to " + newX);
-        //notifyChanges("x", x, newX);
+        notifyChanges("x", x, newX);
         x = newX;
     }
 
@@ -703,7 +703,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      */
     public void yChanged(String newY) {
         logger.trace("The actuator, " + actuatorId + " y changed to " + newY);
-        //notifyChanges("y", y, newY);
+        notifyChanges("y", y, newY);
         y = newY;
     }
 
@@ -715,7 +715,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      */
     public void ctChanged(String newCT) {
         logger.trace("The actuator, " + actuatorId + " ct changed to " + newCT);
-        //notifyChanges("ct", ct, newCT);
+        notifyChanges("ct", ct, newCT);
         ct = newCT;
     }
 
