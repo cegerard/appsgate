@@ -34,12 +34,12 @@
         "ard": {
             "affirmative": "Oui",
             "action": {
-                "zone-activate": "Activer toutes les zone sur __myVar__",
-                "zone-desactivate": "Desactiver toutes les zone sur __myVar__"
+                "zone-activate": "Activer surveillance __myVar__",
+                "zone-desactivate": "Desactiver surveillance __myVar__"
             },
             "keyboard": {
-                "zone-activate": "Activer toutes les zone sur ...",
-                "zone-desactivate": "Desactiver toutes les zone sur ..."
+                "zone-activate": "Activer surveillance sur ...",
+                "zone-desactivate": "Desactiver surveillance sur ..."
             },
             "event": {
                 "authorized": "badge est autorisé sur ...",
