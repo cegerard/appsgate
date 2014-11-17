@@ -809,6 +809,10 @@ font-size: smaller;
   vertical-align:middle;
 }
 
+.highlight-placeholder {
+  color: #CCC;
+}
+
 .btn-trash {
   cursor:pointer;
 }

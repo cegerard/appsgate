@@ -152,7 +152,6 @@ define(function(require, exports, module) {
       this.locale = locale;
 
       $.i18n.init({ lng : this.locale }).done(function() {
-        appRouter.navigate("reset", { trigger : true });
         $("body").i18n();
       });
     }
