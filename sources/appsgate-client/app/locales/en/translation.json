@@ -237,6 +237,7 @@
                 "stopped": "Stopped",
                 "PLAYING": "Playing: ",
                 "PAUSED_PLAYBACK": "Paused: ",
+                "NONE": "",
                 "STOPPED": "Stopped: "
             }
         },
@@ -735,6 +736,7 @@
                 "stopped": "Stopped",
                 "PLAYING": "Now Playing : ",
                 "PAUSED_PLAYBACK": "Paused : ",
+                "NONE": "",
                 "STOPPED": "Stopped : "
             },
             "language" : {

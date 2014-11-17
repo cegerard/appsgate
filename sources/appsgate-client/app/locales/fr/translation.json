@@ -236,6 +236,7 @@
                 "selected": "Veuillez choisir un média",
                 "stopped": "Arrêté : ",
                 "PLAYING": "Lecture en cours : ",
+                "NONE": "",
                 "PAUSED_PLAYBACK": "En pause : ",
                 "STOPPED": "Arrêté : "
             }
@@ -733,7 +734,11 @@
             "status": {
                 "playing": "Lecture en cours",
                 "selected": "Veuillez choisir un média",
-                "stopped": "Arrêté"
+                "stopped": "Arrêté : ",
+                "PLAYING": "Lecture en cours : ",
+                "NONE": "",
+                "PAUSED_PLAYBACK": "En pause : ",
+                "STOPPED": "Arrêté : "
             },
             "language" : {
                 "volume-event" : "Le volume du lecteur change sur __myVar__",
