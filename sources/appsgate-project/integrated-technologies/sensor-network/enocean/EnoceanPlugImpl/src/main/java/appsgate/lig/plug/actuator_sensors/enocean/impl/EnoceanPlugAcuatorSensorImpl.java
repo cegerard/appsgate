@@ -192,7 +192,7 @@ public class EnoceanPlugAcuatorSensorImpl extends CoreObjectBehavior implements 
 		}
 		
 		float diff = cons-Float.valueOf(consumption);
-		if(diff > 0 || diff < -1.5){
+		if(diff > 0 || Math.abs(diff) >= 1.5){
 			consumption = String.valueOf(Math.round(cons));
 		} 		
 	}
