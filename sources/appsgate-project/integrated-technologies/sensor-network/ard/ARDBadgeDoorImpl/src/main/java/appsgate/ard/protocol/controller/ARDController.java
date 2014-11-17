@@ -19,6 +19,7 @@
  */
 package appsgate.ard.protocol.controller;
 
+import appsgate.ard.protocol.model.ARDFutureResponse;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.ard.protocol.model.command.ARDRequest;
 import appsgate.ard.protocol.model.Constraint;
@@ -43,7 +44,7 @@ import java.util.Map;
 public class ARDController {
 
     private Logger logger = LoggerFactory.getLogger(ARDController.class);
-    private final Integer SOCKET_TIMEOUT=1000;
+    private final Integer SOCKET_TIMEOUT=5000;
     private final Integer STREAM_FLOW_RESTTIME=100;
 
 
@@ -119,35 +120,15 @@ public class ARDController {
 
     }
 
-    public void sendSyncRequest(ARDRequest command){
+    public ARDFutureResponse sendSyncRequest(ARDRequest command){
 
+        ARDFutureResponse a= null;
         try {
-            final int requestId=command.getRequestId();
-
-            final Constraint cons=new Constraint() {
-                @Override
-                public boolean evaluate(JSONObject jsonObject) throws JSONException {
-                    return jsonObject.getInt("request_id")==requestId;
-                }
-            };
-
-            final ARDMessage callback=new ARDMessage() {
-                @Override
-                public void ardMessageReceived(JSONObject json) throws JSONException {
-                    System.out.println("response received for "+json.getInt("request_id"));
-                    getMapRouter().remove(cons);
-                }
-            };
-
-            getMapRouter().put(cons,callback);
-
-            sendRequest(command);
-
+            a = new ARDFutureResponse(this,command);
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        return a;
 
     }
 
