@@ -21,7 +21,7 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	 * at this rate in ms
 	 * (it should be defined depends on the time flow rate, 10 minutes intervals in real time should be fine)
 	 */
-	public static final long BASE_REFRESH = 10*60*1000;
+	public static final long BASE_REFRESH = 2*60*1000;
 
 	/**
 	 * A single scheduler monitor a single calendar, this is the getter
