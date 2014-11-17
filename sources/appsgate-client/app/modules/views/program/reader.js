@@ -283,7 +283,7 @@ define([
       onClickEditProgram : function(e) {
         var self = this;
         // if program waiting, show the popup warning
-        if (this.model.get('runningState') === "WAITING") {
+        if (this.model.isWorking()) {
             // create the popover
             this.$el.find("#edit-program-popover").popover({
                 html: true,
