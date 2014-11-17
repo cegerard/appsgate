@@ -24,6 +24,7 @@ define([
         "change .number-input": "onChangeValue",
         "change .arg-input": "onChangeArgValue",
         "change .volume-input": "onChangeMediaVolume",
+        "change .ard-zone-selector": "onARDZoneSelector",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
         "click .valid-media": "onValidMediaButton",
         "keyup .programNameInput": "validEditName"
@@ -103,6 +104,14 @@ define([
 
         return true;
       },
+      //ARD
+      onARDZoneSelector: function(e) {
+            e.stopPropagation();
+            var iid = $(e.currentTarget).attr("target-id");
+            var valueInt = e.currentTarget.selectedOptions[0].value;
+            var value = {"type": "int", "value": valueInt};
+            this.Mediator.setNodeArg(iid, 0, value);
+        },
       onClickEndEdit: function(e) {
         this.model.set("body", this.Mediator.programJSON);
         this.model.set("modified", false);
