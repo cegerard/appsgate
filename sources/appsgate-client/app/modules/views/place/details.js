@@ -211,12 +211,20 @@ define([
 
             // name already existing
             if (places.where({name: $("#edit-name-place-modal input").val()}).length > 0) {
-                $("#edit-name-place-modal .text-danger").removeClass("hide");
-                $("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-already-existing"));
-                $("#edit-name-place-modal .valid-button").addClass("disabled");
-                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
+                if (places.where({name: $("#edit-name-place-modal input").val()})[0].get("id") !== this.model.get("id")) {
+                    $("#edit-name-place-modal .text-danger").removeClass("hide");
+                    $("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-already-existing"));
+                    $("#edit-name-place-modal .valid-button").addClass("disabled");
+                    $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
 
-                return false;
+                    return false;
+                } else {
+                    $("#edit-name-place-modal .text-danger").addClass("hide");
+                    $("#edit-name-place-modal .valid-button").removeClass("disabled");
+                    $("#edit-name-place-modal .valid-button").removeClass("valid-disabled");
+
+                    return true;
+                }
             }
 
             //ok

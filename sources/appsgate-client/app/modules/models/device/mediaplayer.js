@@ -2,9 +2,8 @@ define([
     "app",
     "models/device/device",
     "text!templates/program/nodes/mediaPlayerActionNode.html",
-    "text!templates/program/nodes/defaultEventNode.html",
     "jstree"
-], function(App, Device, ActionTemplate, EventTemplate) {
+], function(App, Device, ActionTemplate) {
 
     var MediaPlayer = {};
 
@@ -22,7 +21,7 @@ define([
             var self = this;
 
             // setting default friendly name if none exists
-            if (this.get("name") === "") {
+            if (this.get("name") === "" || this.get("name") == undefined) {
                 this.set("name", this.get("friendlyName"));
                 this.sendName();
             }
@@ -102,33 +101,42 @@ define([
 
             switch (act) {
                 case "play":
-                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.play-media-action'/>");
+                    $(btn).append("<span data-i18n='devices.mediaplayer.keyboard.play-action'/>&nbsp;"
+                    + "<span class='highlight-placeholder' data-i18n='devices.mediaplayer.keyboard.media'/>&nbsp;"
+                    + "<span data-i18n='devices.mediaplayer.keyboard.on-the'/>&nbsp;"
+                    + "<span class='highlight-placeholder' data-i18n='devices.mediaplayer.keyboard.player'/>");
                     v.methodName = "play";
-                    v.phrase = "services.mediaplayer.language.play-media-action";
+                    v.phrase = "devices.mediaplayer.language.play-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "resume":
-                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.resume-media-action'/>");
+                    $(btn).append("<span data-i18n='devices.mediaplayer.keyboard.resume-action'/>&nbsp;"
+                    + "<span class='highlight-placeholder' data-i18n='devices.mediaplayer.keyboard.player'/>");
                     v.methodName = "resume";
-                    v.phrase = "services.mediaplayer.language.resume-media-action";
+                    v.phrase = "devices.mediaplayer.language.resume-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "pause":
-                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.pause-media-action'/>");
+                    $(btn).append("<span data-i18n='devices.mediaplayer.keyboard.pause-action'/>&nbsp;"
+                    + "<span class='highlight-placeholder' data-i18n='devices.mediaplayer.keyboard.player'/>");
                     v.methodName = "pause";
-                    v.phrase = "services.mediaplayer.language.pause-media-action";
+                    v.phrase = "devices.mediaplayer.language.pause-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "stop":
-                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.stop-media-action'/>");
+                    $(btn).append("<span data-i18n='devices.mediaplayer.keyboard.stop-action'/>&nbsp;"
+                    + "<span class='highlight-placeholder' data-i18n='devices.mediaplayer.keyboard.player'/>");
                     v.methodName = "stop";
-                    v.phrase = "services.mediaplayer.language.stop-media-action";
+                    v.phrase = "devices.mediaplayer.language.stop-media-action";
                     $(btn).attr("json", JSON.stringify(v));
                     break;
                 case "setVolume":
-                    $(btn).append("<span data-i18n='services.mediaplayer.keyboard.set-volume-media-action'/>");
+                    $(btn).append("<span data-i18n='devices.mediaplayer.keyboard.set-volume-action'/>&nbsp;"
+                    + "<span class='highlight-placeholder' data-i18n='devices.mediaplayer.keyboard.player'/>&nbsp;"
+                    + "<span data-i18n='devices.mediaplayer.keyboard.at'/>&nbsp;"
+                    + "<span class='highlight-placeholder' data-i18n='devices.mediaplayer.keyboard.that-value'/>");
                     v.methodName = "setVolume";
-                    v.phrase = "services.mediaplayer.language.set-volume-media-action";
+                    v.phrase = "devices.mediaplayer.language.set-volume-media-action";
           			v.args = [ {"type":"int", "value": "0"}];
 
                     $(btn).attr("json", JSON.stringify(v));
