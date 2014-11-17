@@ -64,20 +64,43 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	 */
 	private String		currentMediaURL;
 	private String		currentMediaName;
-	
+
 	private String currentVolume;
-	private String currentStatus;
+	private String currentStatus="NONE";
 
 
 	@SuppressWarnings("unused")
 	private void initialize(Instance instance) {
 		deviceId 	= instance.getProperty(UPnPDevice.ID);
+		logger.trace("initialize(Instance instance), deviceId: "+deviceId);
 
 		appsgatePictureId = null;
 		appsgateServiceName = "Appsgate UPnP Media player";
 		appsgateUserType = "31";
-		appsgateStatus = "2";
+		appsgateStatus = "2";	
 
+		// TODO, check previous status of the player, and check the volume
+		// Note that metadata MUST have been set during the "play" method (this is not the case actually)
+//		if(aVTransport == null) {
+//			logger.info("No avTransport service available");
+//		} else {	
+//		try {
+//			aVTransport.g
+//			aVTransport.setAVTransportURI(0,mediaURL,"");
+//			aVTransport.play(0,"1");
+//			stateChanged("mediaURL", currentMediaURL, mediaURL);
+//			currentMediaURL = mediaURL;			
+//			if(mediaName != null) {
+//				stateChanged("mediaName", currentMediaName, mediaName);
+//				currentMediaName = mediaName;
+//			}
+//
+//
+//		} catch (UPnPException ignored) {
+//			logger.error("Cannot Play, cause : "+ignored.getMessage()
+//					+"UPnP error code : "+ignored.getUPnPError_Code());
+//		}
+//		}
 	}
 
 	/*
@@ -165,28 +188,31 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	public void play(String mediaURL, String mediaName) {
 		if(aVTransport == null) {
 			logger.error("No avTransport service available");
-		}		
-		try {
-			aVTransport.setAVTransportURI(0,mediaURL,"");
-			aVTransport.play(0,"1");
-			stateChanged("mediaURL", currentMediaURL, mediaURL);
-			currentMediaURL = mediaURL;			
-			if(mediaName != null) {
-				stateChanged("mediaName", currentMediaName, mediaName);
-				currentMediaName = mediaName;
-			}
+		} else {		
+			try {
+				aVTransport.setAVTransportURI(0,mediaURL,"");
+				aVTransport.play(0,"1");
+				stateChanged("mediaURL", currentMediaURL, mediaURL);
+				currentMediaURL = mediaURL;			
+				if(mediaName != null) {
+					stateChanged("mediaName", currentMediaName, mediaName);
+					currentMediaName = mediaName;
+				}
 
-				
-		} catch (UPnPException ignored) {
-			logger.error("Cannot Play, cause : "+ignored.getMessage()
-					+"UPnP error code : "+ignored.getUPnPError_Code());
+
+			} catch (UPnPException ignored) {
+				logger.error("Cannot Play, cause : "+ignored.getMessage()
+						+"UPnP error code : "+ignored.getUPnPError_Code());
+			}
 		}
+
 	}
 
 	@Override
 	public void resume() {
 		if(aVTransport == null) {
 			logger.error("No avTransport service available");
+			return;
 		}
 		try {
 			aVTransport.play(0,"1");
@@ -200,6 +226,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	public void pause() {
 		if(aVTransport == null) {
 			logger.error("No avTransport service available");
+			return;			
 		}
 		try {
 			aVTransport.pause(0);
@@ -213,11 +240,10 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	public void stop() {
 		if(aVTransport == null) {
 			logger.error("No avTransport service available");
+			return;			
 		}
 		try {
 			aVTransport.stop(0);
-			currentMediaURL = null;
-			currentMediaName = null;
 		} catch (UPnPException ignored) {
 			logger.error("Cannot Stop, cause : "+ignored.getMessage()
 					+"UPnP error code : "+ignored.getUPnPError_Code());
@@ -228,6 +254,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	public int getVolume() {
 		if(renderingControl == null) {
 			logger.error("No renderingControl service available");
+			return 0;			
 		}
 
 		try {
@@ -249,6 +276,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 	public void setVolume(int level) {
 		if(renderingControl == null) {
 			logger.error("No renderingControl service available");
+			return;
 		}		
 		try {
 			renderingControl.setVolume(0, "Master", level);
@@ -279,7 +307,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 
 				String variable = variables.nextElement();
 				Object value = events.get(variable);
-				
+
 				checkVolumeEvent(value.toString());
 				checkChangeStateEvent(value.toString());
 			}
@@ -288,12 +316,12 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 		}
 
 	}
-	
-    static final String xPathVolume = "//Volume";
-    static final String xPathTransportState = "//TransportState";
-    static final String VAL = "val";
 
-	
+	static final String xPathVolume = "//Volume";
+	static final String xPathTransportState = "//TransportState";
+	static final String VAL = "val";
+
+
 	/**
 	 * Check if the upnp event is related to volume
 	 * if it is the case send the new volume as event
@@ -305,7 +333,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = db.parse(new InputSource(new StringReader(event)));
 			XPath xPath = XPathFactory.newInstance().newXPath();			
-			
+
 			Node node = (Node)xPath.evaluate(xPathVolume, doc, XPathConstants.NODE);
 			String newVolume = node.getAttributes().getNamedItem(VAL).getNodeValue();
 			logger.trace("checkChangeStateEvent(...), new Volume = "+newVolume);
@@ -331,7 +359,7 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = db.parse(new InputSource(new StringReader(event)));
 			XPath xPath = XPathFactory.newInstance().newXPath();
-			
+
 			Node node = (Node)xPath.evaluate(xPathTransportState, doc, XPathConstants.NODE);
 			String newStatus = node.getAttributes().getNamedItem(VAL).getNodeValue();
 			logger.trace("checkChangeStateEvent(...), new Status = "+newStatus);
@@ -345,8 +373,8 @@ public class MediaPlayerAdapter extends CoreObjectBehavior implements MediaPlaye
 			logger.debug("Cannot parse status event : "+exc.getMessage());
 		}
 	}
-		
-	
+
+
 	private NotificationMsg stateChanged(String varName, String oldValue, String newValue) {
 		return new CoreNotificationMsg(varName, oldValue, newValue, this);
 	}
