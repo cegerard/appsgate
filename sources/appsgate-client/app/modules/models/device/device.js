@@ -145,6 +145,9 @@ define([
          */
         getValue: function () {
             return "[No Value]";
+        },
+        getTemplateParameter: function(){
+            return {};
         }
     });
     return Device;

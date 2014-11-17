@@ -34,12 +34,12 @@
         "ard": {
             "affirmative": "Yes",
             "action": {
-                "zone-activate": "Activate all zones on __myVar__",
-                "zone-desactivate": "Desactivate all zones on __myVar__"
+                "zone-activate": "Activate alarm __myVar__",
+                "zone-desactivate": "Desactivate alarm __myVar__"
             },
             "keyboard": {
-                "zone-activate": "Activate all zones on ...",
-                "zone-desactivate": "Desactivate all zones on ..."
+                "zone-activate": "Activate alarm on ...",
+                "zone-desactivate": "Desactivate alarm on ..."
             },
             "event": {
                 "authorized": "badge is authorized on ...",

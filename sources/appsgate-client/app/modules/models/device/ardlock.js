@@ -1,7 +1,8 @@
 define([
   "app",
-  "models/device/device"
-], function(App, Device) {
+  "models/device/device",
+  "text!templates/program/nodes/ardActionNode.html"
+], function(App, Device,ActionTemplate) {
 
   var ARDLock = {};
   /**
@@ -14,11 +15,19 @@ define([
      */
     initialize: function() {
       ARDLock.__super__.initialize.apply(this, arguments);
-
+        var self = this;
       // setting default friendly name if none exists
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
             this.generateDefaultName($.i18n.t("devices.ard.name.singular"));
       }
+
+      this.remoteControl("getZonesAvailable", [], "zonesavailable");
+
+      dispatcher.on('zonesavailable', function(zones) {
+            console.log("zones available received: "+JSON.stringify(zones,4,null));
+            self.set("zones",zones);
+      });
+
     },
     getEvents: function() {
           return ["isAuthorized","isNotAuthorized"];
@@ -43,12 +52,14 @@ define([
                   $(btn).append("<span data-i18n='devices.ard.keyboard.zone-activate'/>");
                   v.methodName = "zoneActivate";
                   v.phrase = "devices.ard.action.zone-activate";
+                  v.args = [ {"type":"int", "value": "0"}];
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               case "zoneDesactivate":
                   $(btn).append("<span data-i18n='devices.ard.keyboard.zone-desactivate'/>");
                   v.methodName = "zoneDesactivate";
                   v.phrase = "devices.ard.action.zone-desactivate";
+                  v.args = [ {"type":"int", "value": "0"}];
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               default:
@@ -73,7 +84,7 @@ define([
               $(btn).attr("json", JSON.stringify(v));
               break;
           default:
-              console.error("unexpected state found for Contact Sensor: " + state);
+              console.error("unexpected state found for ARD Lock: " + state);
               btn = null;
               break;
       }
@@ -103,7 +114,17 @@ define([
                   break;
           }
           return btn;
-      }
+      },
+    getTemplateAction: function() {
+      return _.template(ActionTemplate);
+    },
+    getTemplateParameter: function(){
+
+      console.log("Actual zones:"+JSON.stringify(this.get("zones"),4,null));
+      return {zones:this.get("zones")};//{zones:[{'zone_idx':1,'zone_name':"exterieur"}]};
+
+    }
+
   });
   return ARDLock;
 });

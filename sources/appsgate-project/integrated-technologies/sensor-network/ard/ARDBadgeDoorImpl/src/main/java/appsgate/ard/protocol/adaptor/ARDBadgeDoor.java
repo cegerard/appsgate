@@ -7,6 +7,7 @@ import appsgate.lig.ard.badge.door.spec.CoreARDBadgeDoorSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
 import appsgate.lig.core.object.spec.CoreObjectBehavior;
 import appsgate.lig.core.object.spec.CoreObjectSpec;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -55,7 +56,9 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     public JSONObject getDescription() throws JSONException {
+
         JSONObject descr = new JSONObject();
+
         descr.put("id", sensorId);
         descr.put("type", userType);
         descr.put("status", status);
@@ -64,6 +67,17 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         descr.put("lastCard", lastCard);
         descr.put("authorized", authorized);
         descr.put("lastMessage", lastMessage);
+
+        JSONObject zone1 = new JSONObject();
+        JSONObject zone2 = new JSONObject();
+        zone1.put("zone_idx",1);
+        zone1.put("zone_name","exterieur");
+        zone2.put("zone_idx",2);
+        zone2.put("zone_name","interieur");
+
+        descr.append("zones", zone1);
+        descr.append("zones", zone2);
+
         return descr;
     }
 
@@ -114,18 +128,38 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     @Override
-    public void zoneActivate() {
-        logger.warn("zoneActivate: This function is not implemented yet");
+    public void zoneActivate(int zone) {
+        logger.warn("zoneActivate: This function is not implemented yet. Zone to be activated {},",zone);
     }
 
     @Override
-    public void zoneDesactivate() {
-        logger.debug("zoneDesactivate: This function is not implemented yet");
+    public void zoneDesactivate(int zone) {
+        logger.debug("zoneDesactivate: This function is not implemented yet. Zone to be activated {},",zone);
     }
 
     public NotificationMsg triggerApamMessage(ARDBadgeDoorContactNotificationMsg apamMessage){
         logger.info("Forwarding ARDMessage as ApamMessage, {}:{})",apamMessage.getVarName(),apamMessage.getNewValue());
         return apamMessage;
+    }
+
+    public JSONObject getZonesAvailable(){
+
+        JSONObject descr = new JSONObject();
+        JSONObject zone1 = new JSONObject();
+        JSONObject zone2 = new JSONObject();
+
+        try {
+            zone1.put("zone_idx",1);
+            zone1.put("zone_name","exterieur");
+            zone2.put("zone_idx",2);
+            zone2.put("zone_name","interieur");
+            descr.append("zones", zone1);
+            descr.append("zones", zone2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return descr;
     }
 
     public void ardMessageReceived(JSONObject json)  {

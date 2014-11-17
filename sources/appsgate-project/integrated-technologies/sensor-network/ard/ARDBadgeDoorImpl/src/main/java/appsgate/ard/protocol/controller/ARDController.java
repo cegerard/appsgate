@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +75,7 @@ public class ARDController {
         globalMessageReceived =new ARDMessage() {
             public void ardMessageReceived(JSONObject json) throws JSONException {
                 logger.debug("Messages received {}", json.toString());
-                for(Constraint cons:mapRouter.keySet()){
+                for(Constraint cons:new ArrayList<Constraint>(mapRouter.keySet())){
                     Boolean checkResult=false;
                     try {
                         checkResult=cons.evaluate(json);
@@ -114,6 +115,38 @@ public class ARDController {
             monitor.start();
         }else {
             logger.info("Connection is not open with the host {}:{}, monitoring request ignored.",host,port);
+        }
+
+    }
+
+    public void sendSyncRequest(ARDRequest command){
+
+        try {
+            final int requestId=command.getRequestId();
+
+            final Constraint cons=new Constraint() {
+                @Override
+                public boolean evaluate(JSONObject jsonObject) throws JSONException {
+                    return jsonObject.getInt("request_id")==requestId;
+                }
+            };
+
+            final ARDMessage callback=new ARDMessage() {
+                @Override
+                public void ardMessageReceived(JSONObject json) throws JSONException {
+                    System.out.println("response received for "+json.getInt("request_id"));
+                    getMapRouter().remove(cons);
+                }
+            };
+
+            getMapRouter().put(cons,callback);
+
+            sendRequest(command);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
