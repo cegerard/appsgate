@@ -460,8 +460,7 @@
     "whenImp-keyword": "Dès que",
     "while-keyword": "Pendant que"
   },
-  "language": {
-    "actions": "Actions",
+  "language": {"actions": "Actions",
     "and-when": "Dès que",
     "color" : {
       "blue": "bleu",
@@ -608,6 +607,7 @@
     "debugger": "Historique",
     "dashboard": "Tableau de bord",
     "devices": "Equipements",
+    "dependancies": "Dépendances",
     "edit": "Editer",
     "emergency-stop": "Tout stopper",
     "home": "Chez nous",
@@ -651,12 +651,11 @@
     "edit-program": "Editer",
     "end-edit-program": "Valider",
     "keyboard": {
-      "actionActivate": "Activer",
-      "actionDisactivate": "Désactiver",
-      "program": "le programme",
+      "actionActivate": "Activer le programme ...",
+      "actionDisactivate": "Désactiver le programme ...",
       "actionDisactivate-self": "Désactiver ce programme",
-      "eventStart": "on active le programme",
-      "eventStop": "on désactive le programme",
+      "eventStart": "on active le programme ...",
+      "eventStop": "on désactive le programme ...",
       "stateStarted": "le programme ... est actif",
       "stateStarted-keep": "le programme ... actif",
       "stateStopped": "le programme ... est inactif",
