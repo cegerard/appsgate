@@ -10,10 +10,11 @@ import java.io.IOException;
 
 public class ARDFutureResponse extends Thread implements ARDMessage,Constraint {
 
-    ARDController ard;
-    ARDRequest command;
-    JSONObject response;
-    Integer requestId;
+    private static final Long RESPONSE_TIMEOUT=3000l;
+    private ARDController ard;
+    private ARDRequest command;
+    private JSONObject response;
+    private Integer requestId;
 
     public ARDFutureResponse(ARDController ard,ARDRequest command) throws JSONException {
         this.ard=ard;
@@ -29,7 +30,7 @@ public class ARDFutureResponse extends Thread implements ARDMessage,Constraint {
             ard.sendRequest(command);
 
             synchronized (this){
-                this.wait();
+                this.wait(RESPONSE_TIMEOUT);
             }
 
         } catch (JSONException e) {
