@@ -22,7 +22,7 @@ define([
             var self = this;
 
             // setting default friendly name if none exists
-            if (this.get("name") === "") {
+            if (this.get("name") === "" || this.get("name") == undefined) {
                 this.set("name", this.get("friendlyName"));
                 this.sendName();
             }
