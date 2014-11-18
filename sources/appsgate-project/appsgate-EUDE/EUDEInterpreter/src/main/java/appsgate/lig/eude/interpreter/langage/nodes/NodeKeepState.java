@@ -126,7 +126,7 @@ public class NodeKeepState extends Node {
     private void listenEndEvents() {
         setProgramKeeping();
         state.addEndEventListener(this);
-        //state.call();
+        state.call();
     }
 
     /**

@@ -127,6 +127,8 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
             LOGGER.trace("the start event of the state {} has been thrown", stateName);
             isOnRules = true;
             fireStartEvent(new StartEvent(this));
+            listenNextEvent();
+
         } else if (n == eventEnd) {
             LOGGER.trace("the end event of the state {} has been thrown", stateName);
             isOnRules = false;
@@ -135,7 +137,6 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
             LOGGER.error("An unexpected end event ({}) has been thrown for {}", e.getSource(), this);
             return;
         }
-        listenNextEvent();
     }
 
     @Override
@@ -171,9 +172,17 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
      */
     private void listenNextEvent() {
         if (isOnRules) {
+            if (eventEndNode == null) {
+                LOGGER.error("ListenNextEvent: No end event for {}", this);
+                return;
+            }
             eventEndNode.addEndEventListener(this);
             eventEndNode.call();
         } else {
+            if (eventStartNode == null) {
+                LOGGER.error("ListenNextEvent: No start event for {}", this);
+                return;
+            }
             eventStartNode.addEndEventListener(this);
             eventStartNode.call();
         }
@@ -260,13 +269,14 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
     }
 
     /**
-     * @return 
+     * @return
      */
     public INodeEvent getStartEvent() {
         return eventStart;
     }
+
     /**
-     * @return 
+     * @return
      */
     public INodeEvent getEndEvent() {
         return eventEnd;

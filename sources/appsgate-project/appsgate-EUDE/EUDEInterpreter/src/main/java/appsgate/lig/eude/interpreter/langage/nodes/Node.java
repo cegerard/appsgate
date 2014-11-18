@@ -245,10 +245,11 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     @Override
     public void addEndEventListener(EndEventListener listener) {
         LOGGER.trace("ADD:  {} listen EndEvent FROM {}", listener, this);
-        endEventListeners.add(listener);
-        if (endEventListeners.size() > 1) {
-            LOGGER.warn("Too much listener ({}) for this node: {}", endEventListeners.size(), this);
+        if(endEventListeners.contains(listener)) {
+            LOGGER.warn("{} is already listening to {}", listener, this);
+            return;
         }
+        endEventListeners.add(listener);
     }
 
     /**
