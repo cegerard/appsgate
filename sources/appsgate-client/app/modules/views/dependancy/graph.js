@@ -125,7 +125,7 @@ define([
             var nEnter = nodeEntity.enter().append("svg:g")
                 .attr("class", "nodeGroup")
                 .call(force.drag)
-                .on("click", this.click.bind(this))
+                //                .on("click", this.click.bind(this))
                 .on("dblclick", this.dblclick.bind(this))
                 .on("mouseover", function (d) {
                     nodeEntity.classed("nodeOver", function (d2) {
@@ -138,10 +138,14 @@ define([
                 .on("mouseout", function (d) {
                     nodeEntity.classed("nodeOver", false);
                     nodeEntity.classed("neighborNodeOver", false);
-                    nodeEntity.classed("fixedNode", function (d) 
+                    nodeEntity.classed("fixedNode", function (d) {
                         //Avoid to have a fixedNode class when mouseover until the end of force and no click
                         return d.fixed && d !== model.get("rootNode");
                     });
+                })
+                .on("mousedown", mousedown)
+                .on("mouseup", function(d) {
+                    mouseup(d, this ,model.get("rootNode"));
                 })
                 .each(function (a) {
                     // CIRCLE
@@ -304,7 +308,7 @@ define([
                     return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
                 })
                 .classed("fixedNode", function (d) {
-                    return d !== self.model.get("rootNode") && d.fixed;
+                    return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
                 });
 
             nodeEntity.selectAll("text")
@@ -406,9 +410,18 @@ define([
             if (d !== this.model.get("rootNode")) {
                 d.fixed = !d.fixed;
             }
-            //            if (force.alpha() === 0){
-            //                force.start();
-            //            }
+
+            //            console.log("binding move");
+            //            this.on("mousemove", function () {
+            //                console.log("MOVE");
+            //                d.fixed = true;
+            //                this.onmouseup(function () {
+            //                    this.off("mousemove");
+            //                });
+            //            });
+            if (force.alpha() === 0) {
+                force.start();
+            }
             // The nodeRoot has been moved, we can restart the force
             force.start();
         },
@@ -503,19 +516,43 @@ define([
 
     });
 
+    function mousedown(d) {
+        d.hasBeenMoved = false;
+        d3.select(this).on("mousemove", function () {
+            d.hasBeenMoved = true;
+        });
+    };
+
+    function mouseup(d, nodeElement, nodeRoot) {
+        // don't defix the nodeRoot
+        if (d !== nodeRoot) {
+            // if the node has been move fix it
+            if (d.hasBeenMoved) {
+                d.fixed = true;
+            } else {
+                d.fixed = !d.fixed;
+            }
+            // Unbind on the mousemove event
+            d3.select(nodeElement).on("mousemove", null);
+            if (force.alpha() === 0) {
+                force.start();
+            }
+        }
+    };
+
     function arcPath(turned, d) {
         var dx = d.target.x - d.source.x,
             dy = d.target.y - d.source.y,
             dr = 150 / d.linknum; //linknum is defined above
 
-//        if (turned) {
-//            // If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
-//            return "M" + d.target.x + "," + d.target.y + "A" + dr + "," + dr + " 0 0,0" + d.source.x + "," + d.source.y;
-//        } else {
-//            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1" + d.target.x + "," + d.target.y;
-//        }
-        
-         if (turned) {
+        //        if (turned) {
+        //            // If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
+        //            return "M" + d.target.x + "," + d.target.y + "A" + dr + "," + dr + " 0 0,0" + d.source.x + "," + d.source.y;
+        //        } else {
+        //            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1" + d.target.x + "," + d.target.y;
+        //        }
+
+        if (turned) {
             // If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
             return "M" + d.target.x + "," + d.target.y + "L" + d.source.x + "," + d.source.y;
         } else {
