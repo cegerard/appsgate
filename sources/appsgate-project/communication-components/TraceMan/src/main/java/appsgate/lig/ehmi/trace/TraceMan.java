@@ -248,8 +248,9 @@ public class TraceMan implements TraceManSpec {
 
     @Override
     public synchronized void coreEventNotify(long timeStamp, String srcId, String varName, String value) {
+    	
         GrammarDescription desc = EHMIProxy.getGrammarFromDevice(srcId);
-        if (desc != null && desc.generateTrace()) {
+        if (desc != null && applyFilters(desc, srcId, varName, value) && desc.generateTrace()) {
             //Create the event description device entry
             JSONObject event = new JSONObject();
             JSONObject JDecoration = null;
@@ -464,7 +465,7 @@ public class TraceMan implements TraceManSpec {
     private JSONArray computeGroupsFromPolicy(JSONArray tracesTab) throws JSONException {
     	
     	JSONArray groups = new JSONArray();
-    	HashMap<String, JSONArray> groupFollower = new HashMap<String, JSONArray>();
+    	HashMap<String, GroupTuple> groupFollower = new HashMap<String, GroupTuple>();
     	int l = tracesTab.length();
     	
     	if(focus.equalsIgnoreCase(TraceMan.NOFOCUS)){ //No specific focus required
@@ -476,15 +477,17 @@ public class TraceMan implements TraceManSpec {
     	    		
     	    		for(JSONObject trace : innerTraces){
     	    			String type = "program"; //Defaut it is a program
+    	    			int order = 4; //Programm order
     	    			if (trace.has("type")){ //in fact it is an equipment
     	    				type = trace.getString("type");
+    	    				order = 2; //Device order
     	    			}        			
     	    			if(!groupFollower.containsKey(type)){
     	    				JSONArray objs = new JSONArray();
     	    				objs.put(trace.get("id"));
-    	    				groupFollower.put(type, objs);
+    	    				groupFollower.put(type, new GroupTuple(order, objs));
     	    			}else{
-    	    				JSONArray objs = groupFollower.get(type);
+    	    				JSONArray objs = groupFollower.get(type).getMembers();
     	    				if(!objs.toString().contains(trace.getString("id"))){
     	    					objs.put(trace.get("id"));
     	    				}
@@ -492,13 +495,13 @@ public class TraceMan implements TraceManSpec {
     	    		}
     			}	
     		}else{ //just the all group
-    			groupFollower.put("all", new JSONArray());
+    			groupFollower.put("all", new GroupTuple(2, new JSONArray()));
     			for(int i=0; i<l; i++) {
         	    	JSONObject superTrace = tracesTab.getJSONObject(i);
         	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
         	    	
         	    	for(JSONObject trace : innerTraces){
-        	    		JSONArray objs = groupFollower.get("all");
+        	    		JSONArray objs = groupFollower.get("all").getMembers();
         	    		if(!objs.toString().contains(trace.getString("id"))){
         	    			objs.put(trace.get("id"));
         	    		}
@@ -509,11 +512,11 @@ public class TraceMan implements TraceManSpec {
     	} else { //Focus required check the kind of focus
     		
     		if(focusType.equalsIgnoreCase("id")){ //Focus on something (equipment or program)
-    			groupFollower.put("focus", new JSONArray().put(focus));
-    			groupFollower.put("others", new JSONArray());
+    			groupFollower.put("focus", new GroupTuple(1, new JSONArray().put(focus)));
+    			groupFollower.put("others",new GroupTuple(3, new JSONArray()));
     				
     			if(grouping.equalsIgnoreCase("dep")){//Group based on id dependency (focus, dependencies, others)
-    				groupFollower.put("dependencies", new JSONArray());
+    				groupFollower.put("dependencies", new GroupTuple(2, new JSONArray()));
 
     				for(int i=0; i<l; i++) {
             	    	JSONObject superTrace = tracesTab.getJSONObject(i);
@@ -524,20 +527,23 @@ public class TraceMan implements TraceManSpec {
             	    		
             	    		if(!trace.getString("id").equalsIgnoreCase(focus)){//Not a trace from the focused id
             	    			if(trace.toString().contains(focus)) { //dep
-            	    				objs = groupFollower.get("dependencies");
+            	    				objs = groupFollower.get("dependencies").getMembers();
             	    				//Remove dependency id from others array
             	    				JSONArray others = new JSONArray();
-            	    				for(int j=0; j<groupFollower.get("others").length(); j++){
-            	    					String id = groupFollower.get("others").getString(j);
+            	    				
+            	    				for(int j=0; j<groupFollower.get("others").getMembers().length(); j++){
+            	    					String id = groupFollower.get("others").getMembers().getString(j);
             	    					if(!id.equalsIgnoreCase(trace.getString("id")))
             	    						others.put(id);
             	    				}
-            	    				groupFollower.put("others", others);
+            	    				
+            	    				groupFollower.get("others").setMembers(others);
+            	    				
             	    			} else { //others
             	    				if(!groupFollower.get("dependencies").toString().contains(trace.getString("id"))) 
-            	    					objs = groupFollower.get("others");
+            	    					objs = groupFollower.get("others").getMembers();
             	    				else{
-            	    					objs = groupFollower.get("dependencies");
+            	    					objs = groupFollower.get("dependencies").getMembers();
             	    				}
             	    			}
             	    			
@@ -549,7 +555,7 @@ public class TraceMan implements TraceManSpec {
         			}
     					
     			} else { //One group focus and all in other
-    				JSONArray objs = groupFollower.get("others");
+    				JSONArray objs = groupFollower.get("others").getMembers();
     				for(int i=0; i<l; i++) {
             	    	JSONObject superTrace = tracesTab.getJSONObject(i);
             	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
@@ -564,8 +570,8 @@ public class TraceMan implements TraceManSpec {
     			
     		} else if (focusType.equalsIgnoreCase("location")){ //focus on location name (location name, others)
     				
-    			groupFollower.put(focus, new JSONArray());
-    			groupFollower.put("others", new JSONArray());
+    			groupFollower.put(focus, new GroupTuple(1, new JSONArray()));
+    			groupFollower.put("others", new GroupTuple(3, new JSONArray()));
     				
     			for(int i=0; i<l; i++) {
         	    	JSONObject superTrace = tracesTab.getJSONObject(i);
@@ -578,29 +584,29 @@ public class TraceMan implements TraceManSpec {
         	    			
         	    			if(loc.getString("id").equalsIgnoreCase("-1")){
         	    				if(!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
-        	    					objs = groupFollower.get("others");
+        	    					objs = groupFollower.get("others").getMembers();
         	    				else
-        	    					objs = groupFollower.get("focus");
+        	    					objs = groupFollower.get("focus").getMembers();
         	    			}else{
         	    				if(loc.getString("name").equalsIgnoreCase(focus)){
-        	    					objs = groupFollower.get(focus);
+        	    					objs = groupFollower.get(focus).getMembers();
         	    					//Remove dependency id from others array
             	    				JSONArray others = new JSONArray();
-            	    				for(int j=0; j<groupFollower.get("others").length(); j++){
-            	    					String id = groupFollower.get("others").getString(j);
+            	    				for(int j=0; j<groupFollower.get("others").getMembers().length(); j++){
+            	    					String id = groupFollower.get("others").getMembers().getString(j);
             	    					if(!id.equalsIgnoreCase(trace.getString("id")))
             	    						others.put(id);
             	    				}
-            	    				groupFollower.put("others", others);
+            	    				groupFollower.get("others").setMembers(others);
         	    				}else{
         	    					if(!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
-            	    					objs = groupFollower.get("others");
+            	    					objs = groupFollower.get("others").getMembers();
             	    				else
-            	    					objs = groupFollower.get("focus");
+            	    					objs = groupFollower.get("focus").getMembers();
         	    				}	
         	    			}
         	    		}else{ //Program
-        	    			objs = groupFollower.get("others");
+        	    			objs = groupFollower.get("others").getMembers();
         	    		}
         	    		
         	    		if(!objs.toString().contains(trace.getString("id"))){
@@ -610,8 +616,8 @@ public class TraceMan implements TraceManSpec {
 				}
     				
     		} else if (focusType.equalsIgnoreCase("type")){ //focus on type (type, others)
-    			groupFollower.put(focus, new JSONArray());
-    			groupFollower.put("others", new JSONArray());
+    			groupFollower.put(focus, new GroupTuple(1, new JSONArray()));
+    			groupFollower.put("others", new GroupTuple(3, new JSONArray()));
     				
     			for(int i=0; i<l; i++) {
         	    	JSONObject superTrace = tracesTab.getJSONObject(i);
@@ -626,9 +632,9 @@ public class TraceMan implements TraceManSpec {
         	    		}
             			
         	    		if(type.equalsIgnoreCase(focus)){
-        	    			objs = groupFollower.get(focus);
+        	    			objs = groupFollower.get(focus).getMembers();
         	    		} else {
-        	    			objs = groupFollower.get("others");
+        	    			objs = groupFollower.get("others").getMembers();
         	    		}
             			
         	    		if(!objs.toString().contains(trace.getString("id"))){
@@ -643,7 +649,9 @@ public class TraceMan implements TraceManSpec {
     	for(String key : groupFollower.keySet()){
     		JSONObject obj = new JSONObject();
     		obj.put("name", getIntKey(key));
-    		obj.put("members", groupFollower.get(key));
+    		GroupTuple group = groupFollower.get(key);
+    		obj.put("order", group.getOrder());
+    		obj.put("members", group.getMembers());
     		groups.put(obj);
     	}
 		return groups;
@@ -756,7 +764,7 @@ public class TraceMan implements TraceManSpec {
      * @return the morph name from type to internationalization key
      */
     private String getIntKey(String type) {
-		return "groups."+type;
+		return "groups."+type.toLowerCase();
 	}
 
 	/**
@@ -926,6 +934,36 @@ public class TraceMan implements TraceManSpec {
         this.focus = focus;
         this.focusType = focusType;
     }
+    
+    /**
+     * Filter trace that not need to be trace in EHMI point view
+     * @param descr the equipment details
+     * @param srcId the equipement identifier
+     * @param varName the vriable name thaht change
+     * @param value the new value to the variable
+     * @return true if the trace can be trace, false otherwise
+     */
+    private boolean applyFilters(GrammarDescription descr, String srcId, String varName, String value) {
+    	//Filter on those conditions
+    	if(
+    			descr.getType().equalsIgnoreCase("ColorLight") && (
+    			   varName.contentEquals("x")  	   ||
+    			   varName.contentEquals("y")  	   ||
+    			   varName.contentEquals("ct")	   ||
+    			   varName.contentEquals("speed")  ||
+    			   varName.contentEquals("mode")
+    			) ||
+    			descr.getType().equalsIgnoreCase("Temperature") && (
+    			   varName.contentEquals("change")
+    			) ||
+    			descr.getType().equalsIgnoreCase("Illumination") && (
+    			   varName.contentEquals("label")
+    			)
+    	 ) return false;
+    	
+    	//Trace no need to be filtered
+		return true;
+	}
 
     @Override
     public int startDebugger() {
