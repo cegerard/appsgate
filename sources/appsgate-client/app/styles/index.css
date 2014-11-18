@@ -834,6 +834,11 @@ fieldset[disabled] .btn {
 #graph g>.nodeGroup.neighborNodeOver>text {
     font-weight: bold;
 }
+/* Fixed nodes */
+#graph g>.nodeGroup.fixedNode>circle {
+    stroke-width: 2px;
+    stroke-dasharray: 3;
+}
 /* Root */
 #graph g>.nodeGroup.nodeRoot>text {
     font-weight: bold;
