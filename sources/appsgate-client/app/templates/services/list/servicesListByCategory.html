@@ -60,7 +60,13 @@
 <div class="contents-list scrollable">
   <div class="panel panel-default">
     <div class="list-group">
-      <%i=0;services.getServicesByType()[type].forEach(function(s) { i++;%>
+      <% i=0;
+      function byName(a,b) {
+        var aName = a.get("name").toLowerCase();
+        var bName = b.get("name").toLowerCase(); 
+        return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+      }
+      services.getServicesByType()[type].sort(byName).forEach(function(s) { i++;%>
         <a class="list-group-item">
           <%if (type === "103") { %>
         <div class="pull-right">
