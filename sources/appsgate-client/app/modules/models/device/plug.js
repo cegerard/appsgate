@@ -33,13 +33,15 @@ define([
       var v = this.getJSONAction("mandatory");
       switch(act) {
         case "switchOn":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOn'></span>");
+          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOn'/>&nbsp;"
+          + "<span class='highlight-placeholder' data-i18n='devices.plug.keyboard.plug'/>");
           v.methodName = "on";
           v.phrase = "devices.plug.language.turnOn";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOff'></span>");
+          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOff'/>&nbsp;"
+          + "<span class='highlight-placeholder' data-i18n='devices.plug.keyboard.plug'/>");
           v.methodName = "off";
           v.phrase = "devices.plug.language.turnOff";
           $(btn).attr("json", JSON.stringify(v));
@@ -55,7 +57,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["switchOn", "switchOff"];
+      return ["switchOn", "switchOff", "value-changed"];
     },
     /**
      * return the keyboard code for a given event
@@ -64,15 +66,24 @@ define([
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
       var v = this.getJSONEvent("mandatory");
       switch(evt) {
+        case "value-changed":
+          $(btn).append("<span data-i18n='devices.plug.keyboard.change'><span>");
+          v.eventName = "consumption";
+          v.eventValue = "*";
+          v.phrase = "devices.plug.language.change";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
         case "switchOn":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOnEvt'><span>");
+          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOnEvt'/>&nbsp;"
+          + "<span class='highlight-placeholder' data-i18n='devices.plug.keyboard.plug'/>");
           v.eventName = "plugState";
           v.eventValue = "true";
           v.phrase = "devices.plug.language.turnOnEvt";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOffEvt'><span>");
+          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOffEvt'/>&nbsp;"
+          + "<span class='highlight-placeholder' data-i18n='devices.plug.keyboard.plug'/>");
           v.eventName = "plugState";
           v.eventValue = "false";
           v.phrase = "devices.plug.language.turnOffEvt";
@@ -106,7 +117,8 @@ define([
       switch(state) {
         case "isOn":
         case "isOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard." + state + keep + "'><span>");
+          $(btn).append("<span class='highlight-placeholder' data-i18n='devices.plug.keyboard.plug'/>&nbsp;"
+          + "<span data-i18n='devices.plug.keyboard." + state + keep + "'/>");
           v.name = state;
           v.phrase = "devices.plug.language." + state + keep;
           $(btn).attr("json", JSON.stringify(v));

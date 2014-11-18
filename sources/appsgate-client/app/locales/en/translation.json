@@ -10,6 +10,9 @@
         "yes": "YES",
         "no": "NO"
     },
+    "dependancy": {
+        "refresh-data" : "Refresh data"
+    },
     "devices": {
         "no-value":"---",
         "actuator": {
@@ -31,12 +34,12 @@
         "ard": {
             "affirmative": "Yes",
             "action": {
-                "zone-activate": "Activate all zones on __myVar__",
-                "zone-desactivate": "Desactivate all zones on __myVar__"
+                "zone-activate": "Activate alarm __myVar__",
+                "zone-desactivate": "Desactivate alarm __myVar__"
             },
             "keyboard": {
-                "zone-activate": "Activate all zones on ...",
-                "zone-desactivate": "Desactivate all zones on ..."
+                "zone-activate": "Activate alarm on ...",
+                "zone-desactivate": "Desactivate alarm on ..."
             },
             "event": {
                 "authorized": "badge is authorized on ...",
@@ -122,10 +125,12 @@
                 "intern": "Internal Light sensor"
             },
             "keyboard": {
-                "get": "luminosity of ..."
+                "get": "luminosity of ...",
+                "change" : "luminosity changes"
             },
             "language": {
-                "get": "luminosity of __myVar__"
+                "get": "luminosity of __myVar__",
+                "change" : "luminosity of __myVar__ changes"
             },
             "name": {
                 "plural": "Brightness sensors",
@@ -229,7 +234,11 @@
             "status": {
                 "playing": "Playing",
                 "selected": "Please select a media",
-                "stopped": "Stopped"
+                "stopped": "Stopped",
+                "PLAYING": "Playing: ",
+                "PAUSED_PLAYBACK": "Paused: ",
+                "NONE": "",
+                "STOPPED": "Stopped: "
             }
         },
         "movement": {
@@ -251,6 +260,7 @@
                 "turnAllOn": "Turn all on"
             },
             "keyboard": {
+				"change": "consumption of plug changes",
                 "isOff": "plug ... is off",
                 "isOff-keep": "plug ... off",
                 "isOn": "plug ... is on",
@@ -261,6 +271,7 @@
                 "turnOn": "Switch on plug ..."
             },
             "language": {
+				"change": "consumption of __myVar__ changes",
                 "isOff": "__myVar__ is off",
                 "isOff-keep": "__myVar__ off",
                 "isOn": "__myVar__ is on",
@@ -277,6 +288,34 @@
             "status": {
                 "turnedOff": "Off",
                 "turnedOn": "On"
+            }
+        },
+        "tv": {
+            "action": {
+                "channelup": "TV, next channel",
+                "channeldown": "TV, previous channel",
+                "resume": "Resume TV",
+                "pause": "Pause TV",
+                "stop": "Stop TV",
+                "notify": "Notify a message on TV"
+            },
+            "keyboard": {
+                "channelup": "TV, next channel",
+                "channeldown": "TV, previous channel",
+                "resume": "Resume TV",
+                "pause": "Pause TV",
+                "stop": "Stop TV",
+                "notify": "Notify a message on TV"            },
+            "language": {
+                "channelup": "TV, next channel",
+                "channeldown": "TV, previous channel",
+                "resume": "Resume TV",
+                "pause": "Pause TV",
+                "stop": "Stop TV",
+                "notify": "Notify a message on TV"            },
+            "name": {
+                "plural": "TVs",
+                "singular": "TV"
             }
         },
         "state-label": "State",
@@ -320,17 +359,15 @@
             },
             "keyboard": {
                 "get": "temperetaure measured by ...",
-                "change": "temperature of ... changes"
+                "change": "temperature of temperature sensor changes"
             },
             "language": {
-                "get": "temperetaure measured by __myVar__"
+                "get": "temperetaure measured by __myVar__",
+                "change": "temperature of __myVar__ changes"
             },
             "name": {
                 "plural": "Temperature sensors",
                 "singular": "Temperature sensor"
-            },
-            "event": {
-                "change": "temperature of __myVar__ changes"
             }
         },
         "type-label": "Type",
@@ -548,6 +585,7 @@
         "debugger": "History",
         "dashboard": "Dashboard",
         "devices": "Devices",
+        "dependancies": "Dependancies",
         "edit": "Edit",
         "emergency-stop": "Emergency stop",
         "home": "Sweet Home",
@@ -698,9 +736,15 @@
                 "stopped": "Stopped",
                 "PLAYING": "Now Playing : ",
                 "PAUSED_PLAYBACK": "Paused : ",
+                "NONE": "",
                 "STOPPED": "Stopped : "
             },
             "language" : {
+                "volume-event" : "volume has changed on player __myVar__",
+                "play-event" : "__myVar__ has started/resumed playing",
+                "stop-event" : "__myVar__ has stopped",
+                "pause-event" : "__myVar__ is paused",
+
                "pause-media-action": "Pause the media",
                "play-media-action": "Play",
 			   "resume-media-action": "Resume play",
@@ -708,6 +752,10 @@
                "stop-media-action": "Stop"
             },
             "keyboard" : {
+                "volume-event" : "volume has changed on player",
+                "play-event" : "player has started/resumed playing",
+                "stop-event" : "player has stopped",
+                "pause-event" : "player is paused",
 			   "browse": "Browse",
 			   "complement" : "on",
                "pause-media-action": "Pause the media ...",
@@ -748,7 +796,8 @@
                 "sunset": "the sun set in ...",
                 "current-temperature": "the temperature for",
                 "current-weather-code-state": "current weather",
-                "currently-daylight": "il fait jour",
+                "currently-daylight": "the sun is shining in",
+                "currently-moonlight": "this is the night in",
                 "forecast-temperature-max": "the maximum temperature expected for",
                 "forecast-temperature-min": "the minimum temperature expected for",
                 "forecast-weather-code-state": "current weather for",
@@ -761,7 +810,8 @@
                 "sunset": "the sun set in __myVar__",
                 "current-temperature": "the temperature for",
                 "current-weather-code-state": "current weather",
-                "currently-daylight": "il fait jour",
+                "currently-daylight": "the sun is shining in",
+                "currently-moonlight": "this is the night in",
                 "forecast-temperature-max": "the maximum temperature expected for",
                 "forecast-temperature-min": "the minimum temperature expected for",
                 "forecast-weather-code-state": "current weather for",

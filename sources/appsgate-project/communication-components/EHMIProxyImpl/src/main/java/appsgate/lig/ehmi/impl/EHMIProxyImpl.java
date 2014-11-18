@@ -410,6 +410,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		try {
 			GrammarDescription grammar = devicePropertiesTable
 					.getGrammarFromType(deviceDetails.getString("type"));
+                        if (grammar == null) {
+                            logger.error("Unable to get grammar for device: {}", deviceDetails.getString("id"));
+                            return null;
+                        }
 			return new StateDescription(grammar.getStateDescription(stateName));
 		} catch (JSONException ex) {
 			logger.error("Grammar not well formatted for: {}", objectId);
@@ -471,7 +475,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public GrammarDescription getGrammarFromType(String deviceType) {
-
 		if(devicePropertiesTable == null) {
 			logger.error("no context data available");
 			return null;

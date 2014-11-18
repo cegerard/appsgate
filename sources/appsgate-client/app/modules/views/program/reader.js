@@ -45,13 +45,6 @@ define([
         this.stopListening(devices.getCoreClock());
         this.listenTo(devices.getCoreClock(), "change", this.displayClockPopover);
 
-        this.model.listenTo(dispatcher, "isScheduled-" + this.model.get("id"), function(isScheduled) {
-          if(isScheduled) {
-            $(".open-calendar-button").prop("disabled", false);
-          } else {
-            $(".open-calendar-button").prop("disabled", true);
-          }
-        });
       },
       close:function() {
         ProgramReaderView.__super__.close.apply(this, arguments);
@@ -290,7 +283,7 @@ define([
       onClickEditProgram : function(e) {
         var self = this;
         // if program waiting, show the popup warning
-        if (this.model.get('runningState') === "WAITING") {
+        if (this.model.isWorking()) {
             // create the popover
             this.$el.find("#edit-program-popover").popover({
                 html: true,
@@ -383,9 +376,6 @@ define([
 
           // translate the view
           $("body").i18n();
-
-          // toggle calendar button depending on the program being scheduled or not
-          self.model.isProgramScheduled();
 
           // using jqueryui tooltips
           $( document ).tooltip();

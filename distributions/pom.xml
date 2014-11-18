@@ -17,6 +17,7 @@
         <module>felix.config.base</module>
         <module>light</module>
         <module>complete</module>
+        <module>demo-android</module>
     </modules>
 
 </project>

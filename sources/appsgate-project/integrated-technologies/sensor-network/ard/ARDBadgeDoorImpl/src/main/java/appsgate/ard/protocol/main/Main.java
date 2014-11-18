@@ -71,15 +71,18 @@ public class Main {
         //Register
         ard.getMapRouter().put(constraint,listenerForARDMessages);
 
-        //ard.sendRequest(new GetTimeRequest());
+        ard.sendSyncRequest(new GetTimeRequest());
+        Thread.sleep(1000);
+        ard.sendSyncRequest(new GetTimeRequest());
         //ard.sendRequest(new ActivateZoneRequest(0));
 
-
+/*
         for(int i=0;i<3;i++){
             ard.sendRequest(new GetZoneRequest(i));
         }
+*/
 
-        Thread.sleep(10000);
+        Thread.sleep(20000);
 
         ard.disconnect();
 

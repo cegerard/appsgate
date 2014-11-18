@@ -19,6 +19,7 @@
  */
 package appsgate.ard.protocol.controller;
 
+import appsgate.ard.protocol.model.ARDFutureResponse;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.ard.protocol.model.command.ARDRequest;
 import appsgate.ard.protocol.model.Constraint;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +44,7 @@ import java.util.Map;
 public class ARDController {
 
     private Logger logger = LoggerFactory.getLogger(ARDController.class);
-    private final Integer SOCKET_TIMEOUT=1000;
+    private final Integer SOCKET_TIMEOUT=5000;
     private final Integer STREAM_FLOW_RESTTIME=100;
 
 
@@ -74,7 +76,7 @@ public class ARDController {
         globalMessageReceived =new ARDMessage() {
             public void ardMessageReceived(JSONObject json) throws JSONException {
                 logger.debug("Messages received {}", json.toString());
-                for(Constraint cons:mapRouter.keySet()){
+                for(Constraint cons:new ArrayList<Constraint>(mapRouter.keySet())){
                     Boolean checkResult=false;
                     try {
                         checkResult=cons.evaluate(json);
@@ -115,6 +117,18 @@ public class ARDController {
         }else {
             logger.info("Connection is not open with the host {}:{}, monitoring request ignored.",host,port);
         }
+
+    }
+
+    public ARDFutureResponse sendSyncRequest(ARDRequest command){
+
+        ARDFutureResponse a= null;
+        try {
+            a = new ARDFutureResponse(this,command);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return a;
 
     }
 
