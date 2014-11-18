@@ -244,7 +244,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
             }
             setStopping(false);
         } else {
-            LOGGER.warn("Trying to stop an action ({}) which is not a program", this);
+            LOGGER.debug("Trying to stop an action ({}) which is not a program", this);
         }
     }
 
