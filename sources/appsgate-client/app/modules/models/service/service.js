@@ -56,7 +56,7 @@ define([
       * default method to build a button with its name as the name of the button
       */
       buildButtonFromBrick: function() {
-        return "<button id='" + this.get("id") + "' class='btn btn-default btn-keyboard service-node'><span>" + this.get("name") + "<span></button>"
+        return "<button id='" + this.get("id") + "' class='btn btn-default btn-keyboard service-node' group-id='" + this.get("type") + "'><span>" + this.get("name") + "<span></button>"
       },
       getJSONAction: function (type) {
         return {"type": "action", "target": {"iid": "X", "type": 'mandatory', "serviceType":this.get("type")}, "args": [], "iid": "X"};

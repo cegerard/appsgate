@@ -34,7 +34,7 @@ define([
                   self.set("buttonStatus", "false");
                 }, 600);
               }
-          
+
             });
         },
         /**
@@ -48,7 +48,7 @@ define([
          * return the keyboard code for a given event
          */
         getKeyboardForEvent: function (evt) {
-            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
             var v = this.getJSONEvent("mandatory");
             switch (evt) {
             case "switch-up":

@@ -34,7 +34,7 @@ define([
       * return the keyboard code for a given action
       */
       getKeyboardForAction: function(act){
-        var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+        var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
         var v = this.getJSONAction("mandatory");
 
         switch(act) {
