@@ -44,7 +44,6 @@ public class ARDFutureResponse extends Thread implements ARDMessage,Constraint {
 
     @Override
     public void ardMessageReceived(JSONObject json) throws JSONException {
-        System.out.println("response received for " + json.getInt("request_id"));
         ard.getMapRouter().remove(this);
         response=json;
         synchronized (this){
