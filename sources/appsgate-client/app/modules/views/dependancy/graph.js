@@ -22,20 +22,20 @@ define([
         },
 
         onSearchButton: function (e) {
-            
+
             if (e.type === "keyup") {
                 e.preventDefault();
 
                 var nameSearched = $(".search-input-text").val();
                 var nodesFound = [];
-                
+
                 // Comparing the string entered to the name of the entities
                 force.nodes().forEach(function (d) {
-                    if (d.name.toLowerCase().indexOf(nameSearched) >= 0) {
+                    if (d.name.toLowerCase().indexOf(nameSearched.toLowerCase()) >= 0) {
                         nodesFound.push(d);
                     }
                 });
-                
+
                 if (nodesFound.length === 0 || nodesFound.length === force.nodes().length) {
                     nodeEntity.classed("neighborNodeOver", false);
                 } else {
@@ -43,7 +43,7 @@ define([
                     nodeEntity.classed("neighborNodeOver", function (d) {
                         return nodesFound.indexOf(d) !== -1;
                     });
-                    
+
                     // There is only one result, typing enter select it
                     if (e.keyCode === 13 && nodesFound.length === 1) {
                         force.stop();
@@ -88,7 +88,6 @@ define([
                         return 28;
                     }
                 })
-                .attr("refY", -2)
                 .attr("markerWidth", 6)
                 .attr("markerHeight", 6)
                 .attr("orient", "auto")
@@ -126,7 +125,8 @@ define([
             var nEnter = nodeEntity.enter().append("svg:g")
                 .attr("class", "nodeGroup")
                 .call(force.drag)
-                .on("dblclick", this.click.bind(this))
+                .on("click", this.click.bind(this))
+                .on("dblclick", this.dblclick.bind(this))
                 .on("mouseover", function (d) {
                     nodeEntity.classed("nodeOver", function (d2) {
                         return d2 === d;
@@ -138,6 +138,10 @@ define([
                 .on("mouseout", function (d) {
                     nodeEntity.classed("nodeOver", false);
                     nodeEntity.classed("neighborNodeOver", false);
+                    nodeEntity.classed("fixedNode", function (d) 
+                        //Avoid to have a fixedNode class when mouseover until the end of force and no click
+                        return d.fixed && d !== model.get("rootNode");
+                    });
                 })
                 .each(function (a) {
                     // CIRCLE
@@ -200,6 +204,7 @@ define([
                 .enter().append("svg:g")
                 .attr("class", "linkGroup")
                 .each(function (l, i) {
+                    // PATH RELATION
                     d3.select(this).append("svg:path")
                         .attr("class", function (d) {
                             return "link " + d.type;
@@ -208,7 +213,7 @@ define([
                             return "url(#" + d.type + ")";
                         })
                         .attr("refX", -30);
-
+                    // PATH TEXT
                     d3.select(this).append("svg:path")
                         .attr("class", function (d) {
                             return "linkText";
@@ -216,7 +221,7 @@ define([
                         .attr("id", function (d) {
                             return "linkID_" + i;
                         });
-
+                    // CIRCLE
                     d3.select(this).append("circle")
                         .attr("class", "circle-information hidden")
                         .attr("r", 5)
@@ -227,7 +232,7 @@ define([
                         .on("mouseout", function (d) {
                             d3.select(this.parentNode).select("text").classed("hidden", true);
                         });
-
+                    // TEXT
                     d3.select(this).append("text")
                         .attr("class", "linklabel linklabelholder hidden")
                         .style("font-size", "13px")
@@ -297,6 +302,9 @@ define([
                 })
                 .classed("node-more", function (d) {
                     return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
+                })
+                .classed("fixedNode", function (d) {
+                    return d !== self.model.get("rootNode") && d.fixed;
                 });
 
             nodeEntity.selectAll("text")
@@ -394,6 +402,19 @@ define([
 
         click: function (d) {
             // Stop the force to control manually the actions
+            //            force.stop();
+            if (d !== this.model.get("rootNode")) {
+                d.fixed = !d.fixed;
+            }
+            //            if (force.alpha() === 0){
+            //                force.start();
+            //            }
+            // The nodeRoot has been moved, we can restart the force
+            force.start();
+        },
+
+        dblclick: function (d) {
+            // Stop the force to control manually the actions
             force.stop();
             this.selectAndMoveRootNode(d);
 
@@ -487,11 +508,18 @@ define([
             dy = d.target.y - d.source.y,
             dr = 150 / d.linknum; //linknum is defined above
 
-        if (turned) {
+//        if (turned) {
+//            // If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
+//            return "M" + d.target.x + "," + d.target.y + "A" + dr + "," + dr + " 0 0,0" + d.source.x + "," + d.source.y;
+//        } else {
+//            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1" + d.target.x + "," + d.target.y;
+//        }
+        
+         if (turned) {
             // If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
-            return "M" + d.target.x + "," + d.target.y + "A" + dr + "," + dr + " 0 0,0" + d.source.x + "," + d.source.y;
+            return "M" + d.target.x + "," + d.target.y + "L" + d.source.x + "," + d.source.y;
         } else {
-            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1" + d.target.x + "," + d.target.y;
+            return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
         }
     };
 
