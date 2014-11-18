@@ -78,14 +78,14 @@ define([
         switch(evt) {
           case "switchOn":
             $(btn).append("<span data-i18n='devices.lamp.keyboard.turnOnEvt'><span>");
-            v.eventName = "state";
+            v.eventName = "value";
             v.eventValue = "true";
             v.phrase = "devices.lamp.language.turnOnEvt";
             $(btn).attr("json", JSON.stringify(v));
             break;
           case "switchOff":
             $(btn).append("<span data-i18n='devices.lamp.keyboard.turnOffEvt'><span>");
-            v.eventName = "state";
+            v.eventName = "value";
             v.eventValue = "false";
             v.phrase = "devices.lamp.language.turnOffEvt";
             $(btn).attr("json", JSON.stringify(v));
