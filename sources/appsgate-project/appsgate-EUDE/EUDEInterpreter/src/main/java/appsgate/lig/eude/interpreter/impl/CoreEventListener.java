@@ -58,6 +58,10 @@ public class CoreEventListener implements CoreListener {
      * @param e the node to add
      */
     public void addNodeEvent(NodeEvent e) {
+        if(nodeEventList.contains(e)) {
+            LOGGER.warn("{} is already listening to {}", e, this);
+            return;
+        }
         nodeEventList.add(e);
     }
 
@@ -65,10 +69,7 @@ public class CoreEventListener implements CoreListener {
      * @param e, the node to remove
      */
     public void removeNodeEvent(NodeEvent e) {
-        boolean goon = true;
-        while (goon) {
-            goon = nodeEventList.remove(e);
-        }
+        nodeEventList.remove(e);
     }
 
     @Override

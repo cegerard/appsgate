@@ -235,7 +235,11 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
             logger.debug("There is no type for device: {}", deviceId);
             return null;
         }
-        if (typesGrammarMap.get(type) == null) {
+        if (type.equalsIgnoreCase("21")) {
+            logger.trace("No grammar for clock");
+            return null;
+        }
+        if (typesGrammarMap.get(type) == null ) {
             logger.warn("There is no grammar associated with the type {} of device {}", type, deviceId);
         }
         return typesGrammarMap.get(type);
