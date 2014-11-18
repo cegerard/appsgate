@@ -122,11 +122,13 @@ define([
          * return the list of available properties
          */
         getProperties: function () {
-            return ["getCurrentTemperature",
-                "getCurrentWeatherCode", //disabled because, it is ambiguous with the STATE which is near
-                "getForecastWeatherCode", //disabled because, it is ambiguous with the STATE which is near
-                "getForecastMinTemperature",
-                "getForecastMaxTemperature"];
+            return [
+                //"getCurrentTemperature", // Removing those current weather states to remove some buttons on the HMI
+                //"getCurrentWeatherCode",
+                //"getForecastMinTemperature",
+                //"getForecastMaxTemperature",
+                "getForecastWeatherCode"
+            ];
         },
         /**
          * return the keyboard code for a given property
