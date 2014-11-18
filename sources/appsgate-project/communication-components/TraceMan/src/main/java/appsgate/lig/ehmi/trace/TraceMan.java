@@ -1005,14 +1005,18 @@ public class TraceMan implements TraceManSpec {
     /**
      * Initiate the live tracer
      *
+     * @param refreshRate use to set up auto notification intervall
      * @return true if the live tracer is ready, false otherwise
      */
-    public boolean initLiveTracer() {
+    public boolean initLiveTracer(long refreshRate) {
         liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
         liveTraceActivated = true;
 
         if (!traceQueue.isInitiated()) {
-            traceQueue.initTraceExec();
+        	if(refreshRate == 0)
+        		traceQueue.initTraceExec();
+        	else
+        		traceQueue.initTraceExec(refreshRate);
         }
 
         return liveTraceActivated;
