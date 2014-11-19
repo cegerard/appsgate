@@ -127,7 +127,8 @@ define([
                 //"getCurrentWeatherCode",
                 //"getForecastMinTemperature",
                 //"getForecastMaxTemperature",
-                "getForecastWeatherCode"
+                "getForecastWeatherCode",
+                "getForecastTemperature"
             ];
         },
         /**
@@ -147,24 +148,6 @@ define([
 
             //var v = this.getJSONProperty("mandatory");
             switch (property) {
-            case "getCurrentTemperature":
-                $(btn).append("<span data-i18n='services.weather.keyboard.current-temperature'><span>");
-
-                v.methodName = property;
-                v.returnType = "number";
-                v.phrase = "services.weather.language.current-temperature";
-                v.unit = "&deg;C";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
-
-            case "getCurrentWeatherCode":
-                $(btn).append("<span data-i18n='services.weather.keyboard.current-weather-code-state'><span>");
-
-                v.methodName = "getCurrentWeatherString";
-                v.returnType = "scale";
-                v.phrase = "services.weather.language.current-weather-code-state";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
 
             case "getForecastWeatherCode":
                 $(btn).append("<span data-i18n='services.weather.keyboard.forecast-weather-code-state'><span>");
@@ -180,35 +163,24 @@ define([
                 $(btn).attr("json", JSON.stringify(v));
                 break;
                 // TODO : Add the other properties
+            case "getForecastTemperature":
+                    $(btn).append("<span data-i18n='services.weather.keyboard.forecast-temperature'><span>");
 
-            case "getForecastMinTemperature":
-                $(btn).append("<span data-i18n='services.weather.keyboard.forecast-temperature-min'><span>");
-
-                v.methodName = property;
-                v.args = [
-                    {
-                        "type": "int",
-                        "value": "0"
-                    }];
+                    v.methodName = property;
+                    v.args = [
+                        {
+                            "type": "int",
+                            "value": "0"
+                        },
+                        {
+                            "type": "int",
+                            "value": "0"
+                        }];
                 v.returnType = "number";
-                v.phrase = "services.weather.language.forecast-temperature-min";
-                v.unit = "&deg;C";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
-            case "getForecastMaxTemperature":
-                $(btn).append("<span data-i18n='services.weather.keyboard.forecast-temperature-max'><span>");
-
-                v.methodName = property;
-                v.args = [
-                    {
-                        "type": "int",
-                        "value": "0"
-                    }];
-                v.returnType = "number";
-                v.phrase = "services.weather.language.forecast-temperature-max";
-                v.unit = "&deg;C";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
+                    v.phrase = "services.weather.language.forecast-temperature";
+                    v.unit = "&deg;C";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;
             default:
                 console.error("unexpected service state found for Weather : " + property);
                 btn = null;
