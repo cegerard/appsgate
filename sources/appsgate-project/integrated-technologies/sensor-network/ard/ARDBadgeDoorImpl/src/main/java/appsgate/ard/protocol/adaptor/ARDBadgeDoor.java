@@ -38,6 +38,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     private Boolean authorized=false;
     private String ardClass="";
     private String lastMessage="";
+    private JSONArray zonesCache=null;
 
     private ARDController controller;
 
@@ -191,22 +192,32 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     private void fillUpZones(final JSONObject descr){
-        for(int index=1;index<5;index++){
-            try {
-                JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
 
-                if(response!=null&&!response.getString("name").trim().equals("")){
-                    String zoneName=response.getString("name");
-                    JSONObject zone = new JSONObject();
-                    zone.put("zone_idx",index);
-                    zone.put("zone_name",zoneName);
-                    descr.append("zones",zone);
+        if(zonesCache==null){
+            zonesCache=new JSONArray();
+            for(int index=1;index<5;index++){
+                try {
+                    JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
+
+                    if(response!=null&&!response.getString("name").trim().equals("")){
+                        String zoneName=response.getString("name");
+                        JSONObject zone = new JSONObject();
+                        zone.put("zone_idx",index);
+                        zone.put("zone_name",zoneName);
+                        zonesCache.put(zone);
+                        //descr.append("zones",zone);
+                    }
+                } catch (JSONException e) {
+                    logger.error("Failed to recover zones recorded in the HUB ARD");
                 }
-            } catch (JSONException e) {
-                logger.error("Failed to recover zones recorded in the HUB ARD");
             }
-
         }
+        try {
+            descr.put("zones",zonesCache);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void fillUpInputs(final JSONObject descr){
