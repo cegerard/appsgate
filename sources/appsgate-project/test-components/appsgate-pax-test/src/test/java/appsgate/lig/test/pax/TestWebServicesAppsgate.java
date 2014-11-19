@@ -235,7 +235,7 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		TestCoreAppsgate.testEmptyAppsgate();
 		logger.debug("This test creates and runs an instance of Yahoo Weather");
 		
-		CoreWeatherServiceSpec service = (CoreWeatherServiceSpec) initWeather();
+		WeatherAdapterSpec service = (WeatherAdapterSpec) initWeather();
 		
 		try {
 			service.addLocation("Grenoble");
