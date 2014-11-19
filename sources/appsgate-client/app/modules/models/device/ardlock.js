@@ -30,7 +30,7 @@ define([
 
     },
     getEvents: function() {
-          return ["isAuthorized","isNotAuthorized"];
+          return ["isAuthorized","isNotAuthorized","alarmFired"];
       },
     getStates: function(which) {
           switch (which) {
@@ -106,6 +106,13 @@ define([
                   v.eventName = "authorized";
                   v.eventValue = "false";
                   v.phrase = "devices.ard.state.non_authorized";
+                  $(btn).attr("json", JSON.stringify(v));
+                  break;
+              case "alarmFired":
+                  $(btn).append("<span data-i18n='devices.ard.event.alarm_fired'/>");
+                  v.eventName = "alarmFired";
+                  v.eventValue = "*";
+                  v.phrase = "devices.ard.state.alarm_fired";
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               default:

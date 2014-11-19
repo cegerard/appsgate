@@ -1,6 +1,7 @@
 package appsgate.ard.protocol.adaptor;
 
 import appsgate.ard.protocol.controller.ARDController;
+import appsgate.ard.protocol.model.Constraint;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.ard.protocol.model.command.request.GetZoneRequest;
 import appsgate.lig.ard.badge.door.messages.ARDBadgeDoorContactNotificationMsg;
@@ -95,6 +96,25 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     public void newInst() {
         logger.info("New contact sensor detected, "+sensorId);
+        controller.getMapRouter().put(new Constraint() {
+                                          @Override
+                                          public boolean evaluate(JSONObject jsonObject) throws JSONException {
+                                              try {
+                                                  jsonObject.getJSONObject("event").getInt("input_idx");
+                                                  return true;
+
+                                              } catch (JSONException e){
+                                                  return false;
+                                              }
+                                          }
+                                      },
+                new ARDMessage() {
+                    @Override
+                    public void ardMessageReceived(JSONObject json) throws JSONException {
+                        triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("alarmFired", "false", "true", ARDBadgeDoor.this));
+                    }
+                }
+        );
     }
 
     public void deleteInst() {
@@ -150,8 +170,9 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         for(int index=1;index<11;index++){
             try {
                 JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
-                String zoneName=response.getString("name");
-                if(!zoneName.trim().equals("")){
+
+                if(response!=null&&!response.getString("name").trim().equals("")){
+                    String zoneName=response.getString("name");
                     JSONObject zone = new JSONObject();
                     zone.put("zone_idx",index);
                     zone.put("zone_name",zoneName);

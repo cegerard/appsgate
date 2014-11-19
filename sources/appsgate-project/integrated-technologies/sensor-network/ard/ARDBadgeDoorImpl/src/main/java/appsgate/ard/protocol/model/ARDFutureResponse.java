@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ARDFutureResponse extends Thread implements ARDMessage,Constraint {
 
-    private static final Long RESPONSE_TIMEOUT=3000l;
+    private static final Long RESPONSE_TIMEOUT=200l;
     private ARDController ard;
     private ARDRequest command;
     private JSONObject response;

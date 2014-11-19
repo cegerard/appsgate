@@ -356,7 +356,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		JSONObject devices = new JSONObject();
 		try {
 			JSONObject coreObject = coreProxy.getDevice(deviceId);
-			return addContextData(coreObject, deviceId);
+            return addContextData(coreObject, deviceId);
 		} catch (CoreDependencyException coreException) {
 			logger.debug("Resolution failed for core dependency, no device can be found.");
 			if (systemClock.isRemote()) {
@@ -1408,13 +1408,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		// Add the grammar to the table
 		JSONObject device = coreProxy.getDevice(deviceId);
+
 		try {
 			String type = device.getString("type");
 			devicePropertiesTable.setType(deviceId, type);
 			return devicePropertiesTable.getGrammarFromType(type);
 		} catch (JSONException ex) {
 			logger.error("Unable to get 'type' from {}", device.toString());
-		}
+		} catch (NullPointerException e){
+            logger.error("Device {} is not available, this is not normal, ask the matrix architect why",deviceId);
+        }
 		return null;
 	}
 
