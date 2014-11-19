@@ -34,7 +34,7 @@ define([
      * return the keyboard code for a given event
     */
     getKeyboardForEvent: function(evt){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONEvent("mandatory");
       v.source.type = "device";
       v.source.deviceType = "210";
@@ -136,8 +136,7 @@ define([
         console.error('Unsupported type of state: ' + which);
         return null;
       }
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
-      var v = this.getJSONState("mandatory");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       v.object.type = "device";
       v.object.deviceType = "210";
       v.object.value = this.get("id");

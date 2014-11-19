@@ -741,6 +741,7 @@ font-size: smaller;
   width: 100%;
   border: 1px solid #999999;
   border-radius: 15px;
+  overflow-y:auto;
 }
 
 .expected-input {
@@ -752,7 +753,7 @@ font-size: smaller;
   padding:5px;
 }
 
-.expected-actions > button{
+.expected-actions button{
   background:white;
 }
 
@@ -760,7 +761,7 @@ font-size: smaller;
   padding:5px;
 }
 
-.expected-events > button{
+.expected-events button{
   color:white;
   background:#428bca;
 }
@@ -769,7 +770,7 @@ font-size: smaller;
   padding:5px;
 }
 
-.expected-links > button{
+.expected-links button{
   color:white;
   background:#428bca;
 }
@@ -778,7 +779,7 @@ font-size: smaller;
   padding:5px;
 }
 
-.expected-devices > button{
+.expected-devices button{
   color:white;
   background:#9999FF;
 }
@@ -787,7 +788,7 @@ font-size: smaller;
   padding:5px;
 }
 
-.expected-services > button{
+.expected-services button{
   color:white;
   background:#9999FF;
 }
@@ -796,7 +797,7 @@ font-size: smaller;
   padding:5px;
 }
 
-.expected-programs > button{
+.expected-programs button{
   color:white;
   background:#9999FF;
 }

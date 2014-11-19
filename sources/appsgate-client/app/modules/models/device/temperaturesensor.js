@@ -34,7 +34,7 @@ define([
           return ["value-changed"];
       },
     getKeyboardForProperty: function(property) {
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONProperty("mandatory");
       switch(property) {
         case "value":
@@ -53,7 +53,7 @@ define([
       return btn;
     },
       getKeyboardForEvent: function (evt) {
-          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
           var v = this.getJSONEvent("mandatory");
           switch (evt) {
               case "value-changed":

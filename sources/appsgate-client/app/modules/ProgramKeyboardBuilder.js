@@ -170,7 +170,7 @@ define([
         },
         buildBooleanExpressionKeys: function() {
 
-            var btnAnd = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='language.if-and'/></button>");
+            var btnAnd = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='boolean'><span data-i18n='language.if-and'/></button>");
             var v = {
                 "type": "booleanExpression",
                 "iid": "X",
@@ -218,14 +218,14 @@ define([
             if (which != "stateProgram") {
                 keep = "-keep";
             }
-            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='program'></button>");
             var v = {"type": which, "object": {"iid": "X", "type": 'programs'}, "iid": "X"};
             $(btn).append("<span data-i18n='programs.keyboard.stateStarted"+keep+"'/>");
             v.phrase = "programs.language.stateStarted"+keep;
             v.name = "isStarted";
             $(btn).attr("json", JSON.stringify(v));
             $(".expected-links").append(btn);
-            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='program'></button>");
             var v2 = {"type": which, "object": {"iid": "X", "type": 'programs'}, "iid": "X"};
             $(btn2).append("<span data-i18n='programs.keyboard.stateStopped"+keep+"'/>");
             v2.phrase = "programs.language.stateStopped"+keep;
@@ -248,7 +248,7 @@ define([
 
 
         buildPrograms: function() {
-            var btnCall = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var btnCall = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='program'></button>");
 
             $(btnCall).append("<span data-i18n='programs.keyboard.actionActivate'/>");
             var v = {
@@ -264,7 +264,7 @@ define([
             };
             $(btnCall).attr("json", JSON.stringify(v));
 
-            var btnStop = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var btnStop = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='program'></button>");
             $(btnStop).append("<span data-i18n='programs.keyboard.actionDisactivate'/>");
             var w = {
                 "type": "action",
@@ -282,9 +282,9 @@ define([
             $(".expected-actions").append(btnCall);
             $(".expected-actions").append(btnStop);
         },
-        
+
         buildStopMeButton: function() {
-            var btnStopMe = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var btnStopMe = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='program'></button>");
             $(btnStopMe).append("<span data-i18n='programs.keyboard.actionDisactivate-self'/>");
             var w = {
                 "type": "stopMyself",
@@ -308,7 +308,7 @@ define([
             id = this.progId;
             programs.forEach(function(prg) {
                 if (id != prg.get("id")) {
-                    $(".expected-programs").append("<button id='" + prg.get("id") + "' class='btn btn-default btn-keyboard program-node' prg_name='" + prg.get("name") + "'><span>" + prg.get("name") + "<span></button>");
+                    $(".expected-programs").append("<button id='" + prg.get("id") + "' class='btn btn-default btn-keyboard program-node' prg_name='" + prg.get("name") + "' group-id='program'><span>" + prg.get("name") + "<span></button>");
                 }
             });
         },
@@ -448,7 +448,7 @@ define([
             }
         },
         buildEventProgramKeys: function() {
-            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.keyboard.eventStart'/></button>");
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='program'><span data-i18n='programs.keyboard.eventStart'/></button>");
             var v = {
                 "type": "eventProgram",
                 "iid": "X",
@@ -465,7 +465,7 @@ define([
 
             $(".expected-events").append(btn);
 
-            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='programs.keyboard.eventStop'/></button>");
+            var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='program'><span data-i18n='programs.keyboard.eventStop'/></button>");
             var w = {
                 "type": "eventProgram",
                 "iid": "X",
@@ -518,8 +518,8 @@ define([
                 "value": "false",
                 "iid": "X"
             };
-            var btn_v = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='keyboard.true'/></button>");
-            var btn_f = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ><span data-i18n='keyboard.false'/></button>");
+            var btn_v = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='boolean'><span data-i18n='keyboard.true'/></button>");
+            var btn_f = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='boolean'><span data-i18n='keyboard.false'/></button>");
             $(btn_v).attr("json", JSON.stringify(v));
             $(btn_f).attr("json", JSON.stringify(f));
             $(".expected-events").append(btn_v);
@@ -532,18 +532,26 @@ define([
         sortKeyband: function(keyband) {
             keyband = $(keyband);
             if (keyband.children().length < 1) {
-                keyband.hide();
+                keyband.remove();
             } else {
+                var groups = document.createDocumentFragment();
                 var buttons = keyband.children();
 
                 buttons.sort(function(a, b) {
                     return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
-
                 });
 
-                $.each(buttons, function(idx, itm) {
-                    keyband.append(itm);
-                });
+                $.each(buttons, function(idx,itm) {
+                  if(typeof $(itm).attr('group-id') === "undefined") {
+                    $(itm).attr('group-id','default');
+                  }
+                  if($(groups).children('.group-' + $(itm).attr('group-id')).length === 0) {
+                    $(groups).append("<span class='group-" + $(itm).attr('group-id') + "'></span>");
+                  }
+                  $(groups).children('.group-' + $(itm).attr('group-id')).append(itm);
+                })
+
+                keyband.html(groups);
             }
         }
 

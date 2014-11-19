@@ -84,7 +84,7 @@ define([
         // render the homepage of the application
         render: function() {
             var self = this;
-            this.$el.append(this.template());
+            this.$el.html(this.template());
 
             // translate the view
             $("body").i18n();

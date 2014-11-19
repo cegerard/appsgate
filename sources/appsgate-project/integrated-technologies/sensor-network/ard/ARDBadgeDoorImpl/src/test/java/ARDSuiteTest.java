@@ -20,7 +20,13 @@ public class ARDSuiteTest {
 
     @Before
     public void before() throws IOException, JSONException {
-        ard=new ARDController("192.168.3.110", 2001);
+
+        String host=System.getProperty("ard.host","192.168.3.110");
+        Integer port=Integer.parseInt(System.getProperty("ard.port","2001"));
+
+        logger.info("ARD, connecting to the host {}:{}",host,port);
+
+        ard=new ARDController(host, port);
 
         //Open the socket with ard box
         ard.connect();
@@ -63,6 +69,7 @@ public class ARDSuiteTest {
     }
 
     @Test
+    @Ignore
     public void unknownMethodCall() throws JSONException, InterruptedException {
         subscriptionTest();
         ARDRequest request=new ARDRequest(0,"noMethod"){};

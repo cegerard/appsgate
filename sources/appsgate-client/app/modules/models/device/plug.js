@@ -29,7 +29,7 @@ define([
      * return the keyboard code for a given action
      */
     getKeyboardForAction: function(act){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONAction("mandatory");
       switch(act) {
         case "switchOn":
@@ -63,7 +63,7 @@ define([
      * return the keyboard code for a given event
     */
     getKeyboardForEvent: function(evt){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONEvent("mandatory");
       switch(evt) {
         case "value-changed":
@@ -107,7 +107,7 @@ define([
      * return the keyboard code for a given state
      */
     getKeyboardForState: function(state, which){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONState("mandatory");
       var keep = "";
       v.type = which;
