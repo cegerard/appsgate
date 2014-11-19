@@ -1,9 +1,7 @@
 import appsgate.ard.protocol.controller.ARDController;
 import appsgate.ard.protocol.model.ARDFutureResponse;
 import appsgate.ard.protocol.model.command.ARDRequest;
-import appsgate.ard.protocol.model.command.request.GetTimeRequest;
-import appsgate.ard.protocol.model.command.request.GetZoneRequest;
-import appsgate.ard.protocol.model.command.request.SubscriptionRequest;
+import appsgate.ard.protocol.model.command.request.*;
 import org.json.JSONException;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -90,5 +88,28 @@ public class ARDSuiteTest {
 
     }
 
+    @Test
+    public void forceInputTest() throws JSONException, InterruptedException {
+        subscriptionTest();
+        ARDRequest request=new ForceInputRequest(1,false);
+        ARDFutureResponse response=ard.sendSyncRequest(request);
+
+        Assert.assertTrue(response.getResponse()!=null);
+        System.out.println("Response:"+response.getResponse().toString());
+        Assert.assertTrue(response.getResponse().getInt("request_id")==request.getRequestId());
+
+    }
+
+    @Test
+    public void getInputTest() throws JSONException, InterruptedException {
+        subscriptionTest();
+        ARDRequest request=new GetInputRequest(1);
+        ARDFutureResponse response=ard.sendSyncRequest(request);
+
+        Assert.assertTrue(response.getResponse()!=null);
+        System.out.println("Response:"+response.getResponse().toString());
+        Assert.assertTrue(response.getResponse().getInt("request_id")==request.getRequestId());
+
+    }
 
 }

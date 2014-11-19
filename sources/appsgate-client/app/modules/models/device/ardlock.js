@@ -22,10 +22,16 @@ define([
       }
 
       this.remoteControl("getZonesAvailable", [], "zonesavailable");
+      this.remoteControl("getInputsAvailable", [], "inputsavailable");
 
       dispatcher.on('zonesavailable', function(zones) {
             console.log("zones available received: "+JSON.stringify(zones,4,null));
             self.set("zones",zones);
+      });
+
+      dispatcher.on('inputsavailable', function(inputs) {
+            console.log("inputs available received: "+JSON.stringify(inputs,4,null));
+            self.set("inputs",inputs);
       });
     },
     getEvents: function() {
@@ -133,7 +139,7 @@ define([
     },
     getTemplateParameter: function(){
       console.log("Actual zones:"+JSON.stringify(this.get("zones"),4,null));
-      return {zones:this.get("zones"),inputs:[{input_idx:1,input_name:"porte1"},{input_idx:2,input_name:"porte2"}]};//{zones:[{'zone_idx':1,'zone_name':"exterieur"}]};
+      return {zones:this.get("zones"),inputs:this.get("inputs")}//inputs:[{input_idx:1,input_name:"porte1"},{input_idx:2,input_name:"porte2"}]};//{zones:[{'zone_idx':1,'zone_name':"exterieur"}]};
 
     }
 

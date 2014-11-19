@@ -3,6 +3,7 @@ package appsgate.ard.protocol.adaptor;
 import appsgate.ard.protocol.controller.ARDController;
 import appsgate.ard.protocol.model.Constraint;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
+import appsgate.ard.protocol.model.command.request.GetInputRequest;
 import appsgate.ard.protocol.model.command.request.GetZoneRequest;
 import appsgate.lig.ard.badge.door.messages.ARDBadgeDoorContactNotificationMsg;
 import appsgate.lig.ard.badge.door.spec.CoreARDBadgeDoorSpec;
@@ -82,7 +83,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         descr.append("zones", zone2);
         */
         fillUpZones(descr);
-
+        fillUpInputs(descr);
         return descr;
     }
 
@@ -163,11 +164,11 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     @Override
     public void zoneDesactivate(int zone) {
-        logger.debug("zoneDesactivate: This function is not implemented yet. Zone to be activated {},",zone);
+        logger.debug("zoneDesactivate: This function is not implemented yet. Zone to be activated {},", zone);
     }
 
     public NotificationMsg triggerApamMessage(ARDBadgeDoorContactNotificationMsg apamMessage){
-        logger.info("Forwarding ARDMessage as ApamMessage, {}:{})",apamMessage.getVarName(),apamMessage.getNewValue());
+        logger.info("Forwarding ARDMessage as ApamMessage, {}:{})", apamMessage.getVarName(), apamMessage.getNewValue());
         return apamMessage;
     }
 
@@ -188,6 +189,49 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
             }
 
         }
+    }
+
+    private void fillUpInputs(final JSONObject descr){
+
+        JSONObject input1 = new JSONObject();
+        JSONObject input2 = new JSONObject();
+        try {
+            input1.put("input_idx", 1);
+            input1.put("input_name", "input 1");
+            input2.put("input_idx", 2);
+            input2.put("input_name", "input 2");
+
+            descr.append("inputs", input1);
+            descr.append("inputs", input2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        /**
+        for(int index=1;index<11;index++){
+            try {
+                JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
+
+                if(response!=null&&!response.getString("name").trim().equals("")){
+                    String inputName=response.getString("name");
+                    JSONObject zone = new JSONObject();
+                    zone.put("input_idx",index);
+                    zone.put("input_name",inputName);
+                    descr.append("inputs",zone);
+                }
+            } catch (JSONException e) {
+                logger.error("Failed to recover zones recorded in the HUB ARD");
+            }
+
+        }**/
+    }
+
+    public JSONObject getInputsAvailable(){
+        JSONObject descr = new JSONObject();
+        fillUpInputs(descr);
+        return descr;
+
     }
 
     public JSONObject getZonesAvailable(){
