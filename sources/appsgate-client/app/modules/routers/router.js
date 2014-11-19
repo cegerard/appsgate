@@ -75,6 +75,9 @@ define(function(require, exports, module) {
       this.debuggerRouter.all();
     },
     home: function() {
+      // in case there is a loading widget present
+      this.hideLoadingWidget();
+
       // remove and unbind the current view for the menu
       if (this.currentMenuView) {
           this.currentMenuView.close();

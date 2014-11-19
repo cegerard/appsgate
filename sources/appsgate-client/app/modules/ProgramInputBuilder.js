@@ -187,6 +187,9 @@ define([
                     c = this.getProgramState(jsonNode.value);
                     input += "<button class='btn btn-prog btn-prog-" + c + "' id='" + jsonNode.iid + "'><span>" + jsonNode.name + "</span></button>";
                     break;
+                case "programs":
+                    input += "<button class='btn btn-default input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></button>";
+                    break;
                 case "scale":
                     input += this.tplScale(param);
                     break;

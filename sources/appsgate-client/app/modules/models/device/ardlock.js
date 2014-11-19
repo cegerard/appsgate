@@ -44,7 +44,7 @@ define([
           return ["zoneActivate", "zoneDesactivate"];
       },
       getKeyboardForAction: function(act){
-          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
           var v = this.getJSONAction("mandatory");
 
           switch(act) {
@@ -74,7 +74,7 @@ define([
           console.error('Unsupported type of state: ' + which);
           return null;
       }
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONState("mandatory");
       switch(state) {
           case "getLastCard":
@@ -91,7 +91,7 @@ define([
       return btn;
     },
     getKeyboardForEvent: function(evt){
-          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
           var v = this.getJSONEvent("mandatory");
           switch(evt) {
               case "isAuthorized":

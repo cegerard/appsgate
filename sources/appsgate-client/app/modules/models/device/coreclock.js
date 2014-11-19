@@ -145,11 +145,23 @@ define([
      * return the keyboard code for a given event
     */
     getKeyboardForEvent: function(evt){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       switch(evt) {
         case "ClockAlarm":
           $(btn).append("<span data-i18n='keyboard.clock-event'><span>");
-          o = {'type': 'event', 'eventName': 'ClockAlarm', 'source': {'type': 'device', 'value':this.get("id"), 'iid':'X', 'deviceType':this.get("type")}, 'eventValue': this.getClockAlarm(11,0), 'iid': 'X', 'phrase': "language.clock-event"};
+          o = {
+            'type': 'event',
+            'eventName': 'ClockAlarm',
+            'source': {
+              'type': 'device',
+              'value':this.get("id"),
+              'iid':'X',
+              'deviceType':this.get("type")
+            },
+            'eventValue': this.getClockAlarm(11,0),
+            'iid': 'X',
+            'phrase': "language.clock-event"
+          };
           $(btn).attr("json", JSON.stringify(o));
           break;
         default:

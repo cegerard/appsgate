@@ -34,7 +34,7 @@ define([
       * return the keyboard code for a given action
       */
       getKeyboardForAction: function(act){
-        var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+        var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
         var v = this.getJSONAction("mandatory");
 
         switch(act) {
@@ -78,14 +78,14 @@ define([
         switch(evt) {
           case "switchOn":
             $(btn).append("<span data-i18n='devices.lamp.keyboard.turnOnEvt'><span>");
-            v.eventName = "state";
+            v.eventName = "value";
             v.eventValue = "true";
             v.phrase = "devices.lamp.language.turnOnEvt";
             $(btn).attr("json", JSON.stringify(v));
             break;
           case "switchOff":
             $(btn).append("<span data-i18n='devices.lamp.keyboard.turnOffEvt'><span>");
-            v.eventName = "state";
+            v.eventName = "value";
             v.eventValue = "false";
             v.phrase = "devices.lamp.language.turnOffEvt";
             $(btn).attr("json", JSON.stringify(v));

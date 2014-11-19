@@ -37,7 +37,7 @@ define([
        * return the keyboard code for a given event
        */
       getKeyboardForEvent: function(evt){
-          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
           var v = this.getJSONEvent("mandatory");
           switch(evt) {
               case "mailSent":
@@ -76,7 +76,7 @@ define([
      * return the keyboard code for a given action
     */
     getKeyboardForAction: function(act){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = {"type": "action", "target": {"iid": "X", "type": "service", "serviceType":this.get("type"), "value":this.get("id")}, "iid": "X"};
       switch(act) {
         case "sendMail":
@@ -99,9 +99,9 @@ define([
      * @returns the action template specific for mail
      */
     getTemplateAction: function() {
-      return _.template(ActionTemplate);  
+      return _.template(ActionTemplate);
     },
-    
+
     /**
      */
     setFavorites: function(array) {
@@ -147,7 +147,7 @@ define([
       this.setFavorites(v);
 
     },
-    
+
     getNumberOfFavorites: function () {
       var i = 0;
       for (val in this.getFavorites()) {
@@ -155,7 +155,7 @@ define([
       }
       return i;
     },
-    
+
     /**
      * update a favorite mail
      */
@@ -177,8 +177,8 @@ define([
       }
       this.remoteControl("addFavoriteRecipient", [{"type": "String", "value": which}]);
 
-    }    
-    
+    }
+
   });
   return Mail;
 });

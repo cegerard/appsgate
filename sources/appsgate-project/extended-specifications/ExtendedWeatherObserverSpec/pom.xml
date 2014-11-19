@@ -22,7 +22,7 @@
         </dependency>
 
         <dependency>
-            <artifactId>CoreWeatherServiceSpec</artifactId>
+            <artifactId>WeatherAdapterSpec</artifactId>
             <groupId>appsgate.components</groupId>
             <version>${project.version}</version>
         </dependency>
