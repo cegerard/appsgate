@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Ignore
 public class ARDSuiteTest {
@@ -109,6 +110,23 @@ public class ARDSuiteTest {
         Assert.assertTrue(response.getResponse()!=null);
         System.out.println("Response:"+response.getResponse().toString());
         Assert.assertTrue(response.getResponse().getInt("request_id")==request.getRequestId());
+
+    }
+
+    @Test
+    public void getMultipleZoneTest() throws JSONException, InterruptedException, IOException {
+
+        subscriptionTest();
+
+        for(int x=1;x<2;x++){
+            ard.sendRequest(new GetZoneRequest(5));
+            ard.sendRequest(new GetZoneRequest(5));
+            ard.sendRequest(new GetZoneRequest(5));
+            ARDFutureResponse response=ard.sendSyncRequest(new GetZoneRequest(x));
+            Assert.assertTrue(response.getResponse()!=null);
+            System.out.println("Response:"+response.getResponse().toString());
+
+        }
 
     }
 
