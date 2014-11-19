@@ -121,6 +121,9 @@ public class NodeStateDevice extends NodeState {
 
     @Override
     public NodeAction getSetter() throws SpokExecutionException, SpokNodeException {
+        if (desc == null) {
+            throw new SpokExecutionException("No description exist for this device: " + this.getObjectId());
+        }
         JSONObject action = desc.getSetter();
         if (action == null) {
             throw new SpokExecutionException("No setter has been found for this state: " + desc.getStateName());

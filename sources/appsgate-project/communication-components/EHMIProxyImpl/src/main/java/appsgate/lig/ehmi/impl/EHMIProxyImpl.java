@@ -407,8 +407,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		JSONObject deviceDetails = coreProxy.getDevice(objectId);
 		try {
-			GrammarDescription grammar = devicePropertiesTable
-					.getGrammarFromType(deviceDetails.getString("type"));
+			GrammarDescription grammar = getGrammarFromType(deviceDetails.getString("type"));
                         if (grammar == null) {
                             logger.error("Unable to get grammar for device: {}", deviceDetails.getString("id"));
                             return null;
