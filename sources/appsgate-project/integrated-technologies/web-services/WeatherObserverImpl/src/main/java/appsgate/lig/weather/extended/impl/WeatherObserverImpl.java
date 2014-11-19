@@ -11,6 +11,7 @@ import appsgate.lig.weather.extended.spec.ExtendedWeatherObserver;
 import appsgate.lig.weather.utils.CurrentWeather;
 import appsgate.lig.weather.utils.DayForecast;
 import appsgate.lig.weather.utils.SimplifiedWeatherCodesHelper;
+import appsgate.lig.weather.utils.TypicalTemperature;
 import appsgate.lig.yahoo.weather.YahooWeather;
 
 import org.json.JSONException;
@@ -264,6 +265,7 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 	@Override
 	public int getForecastWeatherCode(int dayForecast)
 			throws WeatherForecastException {
+		logger.trace("getForecastWeatherCode(int dayForecast : {})",dayForecast);		
 		refresh();
 		testDayForecast(dayForecast); // might throw exception
 		return forecasts.get(dayForecast).getCode();
@@ -271,6 +273,8 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 
 	public String getForecastWeatherString(int dayForecast)
 			throws WeatherForecastException {
+		logger.trace("getForecastWeatherString(int dayForecast : {})",dayForecast);
+		
 		refresh();
 		return SimplifiedWeatherCodesHelper
 				.getDescription(SimplifiedWeatherCodesHelper
@@ -280,6 +284,7 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 	@Override
 	public int getForecastMinTemperature(int dayForecast)
 			throws WeatherForecastException {
+		logger.trace("getForecastMinTemperature(int dayForecast : {})",dayForecast);
 		refresh();
 		testDayForecast(dayForecast); // might throw exception
 		return forecasts.get(dayForecast).getMin();
@@ -288,6 +293,8 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 	@Override
 	public int getForecastMaxTemperature(int dayForecast)
 			throws WeatherForecastException {
+		logger.trace("getForecastMaxTemperature(int dayForecast : {})",dayForecast);
+		
 		refresh();
 		testDayForecast(dayForecast); // might throw exception
 		return forecasts.get(dayForecast).getMax();
@@ -468,4 +475,20 @@ public class WeatherObserverImpl extends AbstractObjectSpec implements
 
 		return currentPresentationURL;
 	}
+	
+	@Override
+	public int getForecastTemperature(int dayForecast, int typical) throws WeatherForecastException
+    {
+		switch (typical) {
+			case 0:
+				return getForecastMinTemperature(dayForecast);
+			case 1:
+				return getForecastMaxTemperature(dayForecast);
+			case 2:
+				return (getForecastMinTemperature(dayForecast)+getForecastMaxTemperature(dayForecast))/2;
+			default:
+				throw new WeatherForecastException("Typical unknown");
+		}
+    }
+
 }

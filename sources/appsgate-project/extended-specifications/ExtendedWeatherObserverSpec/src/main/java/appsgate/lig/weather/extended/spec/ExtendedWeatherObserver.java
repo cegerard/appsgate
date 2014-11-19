@@ -1,6 +1,7 @@
 package appsgate.lig.weather.extended.spec;
 
 import appsgate.lig.weather.exception.WeatherForecastException;
+import appsgate.lig.weather.utils.TypicalTemperature;
 
 /**
  * Created by thibaud on 01/07/2014.
@@ -101,5 +102,15 @@ public interface ExtendedWeatherObserver {
      * the remote weather service not working ...
      */
     int getForecastMaxTemperature(int dayForecast) throws WeatherForecastException;
+    
+    /**
+     * Get temperature forecast for a particular day
+     * @param dayForecast O is for today, 1 for tomorrow, 2 for the day after and so on
+     * @param typical refers to typical values for the temperature : MIN for minimal, MAX for maximal, AVG for average
+     * @return the temperature as an int
+     * @throws WeatherForecastException the forecast day is not supported,
+     * the remote weather service not working ...
+     */
+    int getForecastTemperature(int dayForecast, int typical) throws WeatherForecastException;
 
 }
