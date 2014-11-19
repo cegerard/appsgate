@@ -27,7 +27,6 @@ define([
             console.log("zones available received: "+JSON.stringify(zones,4,null));
             self.set("zones",zones);
       });
-
     },
     getEvents: function() {
           return ["isAuthorized","isNotAuthorized","alarmFired"];
@@ -41,7 +40,7 @@ define([
           }
       },
     getActions: function() {
-          return ["zoneActivate", "zoneDesactivate"];
+          return ["zoneActivate", "zoneDesactivate", "forceInput"];
       },
       getKeyboardForAction: function(act){
           var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
@@ -59,6 +58,13 @@ define([
                   $(btn).append("<span data-i18n='devices.ard.keyboard.zone-desactivate'/>");
                   v.methodName = "zoneDesactivate";
                   v.phrase = "devices.ard.action.zone-desactivate";
+                  v.args = [ {"type":"int", "value": "0"}];
+                  $(btn).attr("json", JSON.stringify(v));
+                  break;
+              case "forceInput":
+                  $(btn).append("<span data-i18n='devices.ard.keyboard.force-input'/>");
+                  v.methodName = "forceInput";
+                  v.phrase = "devices.ard.action.force-input";
                   v.args = [ {"type":"int", "value": "0"}];
                   $(btn).attr("json", JSON.stringify(v));
                   break;
@@ -126,9 +132,8 @@ define([
       return _.template(ActionTemplate);
     },
     getTemplateParameter: function(){
-
       console.log("Actual zones:"+JSON.stringify(this.get("zones"),4,null));
-      return {zones:this.get("zones")};//{zones:[{'zone_idx':1,'zone_name':"exterieur"}]};
+      return {zones:this.get("zones"),inputs:[{input_idx:1,input_name:"porte1"},{input_idx:2,input_name:"porte2"}]};//{zones:[{'zone_idx':1,'zone_name':"exterieur"}]};
 
     }
 

@@ -157,6 +157,11 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     @Override
+    public void forceInput(int input) {
+        logger.warn("forceInput: This function is not implemented yet. Input to be forced {},",input);
+    }
+
+    @Override
     public void zoneDesactivate(int zone) {
         logger.debug("zoneDesactivate: This function is not implemented yet. Zone to be activated {},",zone);
     }

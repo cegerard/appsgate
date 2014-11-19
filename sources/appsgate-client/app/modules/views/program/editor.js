@@ -25,6 +25,7 @@ define([
         "change .arg-input": "onChangeArgValue",
         "change .volume-input": "onChangeMediaVolume",
         "change .ard-zone-selector": "onARDZoneSelector",
+        "change .ard-input-selector": "onARDZoneSelector",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
         "click .valid-media": "onValidMediaButton",
         "keyup .programNameInput": "validEditName"
