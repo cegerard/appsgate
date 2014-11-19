@@ -108,6 +108,9 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 	
 	public final static String SYSTEM = "system";
 	public final static String SYSTEM_SERVICE = "/"+SYSTEM+"?";
+
+	public final static String OSD = "osd";
+	public final static String OSD_SERVICE = "/"+OSD+"?";	
 	
 	/**
 	 * TV Web service command, first parameter of the REST Command
@@ -162,7 +165,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		urlParameters.put(SENDER_PARAM_NAME, sender);
 		urlParameters.put(MESSAGE_PARAM_NAME, message);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl, null, urlParameters);
+		sendHttpGet(serviceUrl+OSD_SERVICE, null, urlParameters);
 	}
 
 	@Override
@@ -176,7 +179,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_CHANNELUP);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl, null, urlParameters);
+		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
 	}
 
 	@Override
@@ -190,7 +193,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_CHANNELDOWN);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl, null, urlParameters);
+		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
 	}
 
 	@Override
@@ -204,7 +207,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_RESUME);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl, null, urlParameters);
+		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
 	}
 
 	@Override
@@ -218,7 +221,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_STOP);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl, null, urlParameters);
+		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
 	}
 
 	@Override
@@ -232,7 +235,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		Map<String,String> urlParameters = new LinkedHashMap<String, String>();
 		urlParameters.put(COMMAND_PARAM_NAME, COMMAND_PAUSE);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl, null, urlParameters);
+		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);
 	}
 
 	@Override
@@ -257,7 +260,7 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 				+String.valueOf(height)				
 				);
 		urlParameters.put(ID_PARAM_NAME, String.valueOf(id));
-		sendHttpGet(serviceUrl, null, urlParameters);		
+		sendHttpGet(serviceUrl+VIDEO_SERVICE, null, urlParameters);		
 	}
 
 	@Override
@@ -271,7 +274,6 @@ public class PaceTVImpl extends CoreObjectBehavior implements CoreTVSpec, CoreOb
 		if(path!=null) {
 			serviceUrl+=path;
 		}
-		serviceUrl+=VIDEO_SERVICE;
 		serviceId = IMPL_NAME+"-"+hostname;
 	}
 	
