@@ -35,11 +35,13 @@
       "affirmative": "Oui",
       "action": {
         "zone-activate": "Activer surveillance __myVar__",
-        "zone-desactivate": "Desactiver surveillance __myVar__"
+        "zone-desactivate": "Desactiver surveillance __myVar__",
+        "force-input": "Forcer entrée __myVar__"
       },
       "keyboard": {
         "zone-activate": "Activer surveillance sur ...",
-        "zone-desactivate": "Desactiver surveillance sur ..."
+        "zone-desactivate": "Desactiver surveillance sur ...",
+        "force-input": "Forcer entrée ..."
       },
       "event": {
         "authorized": "badge est autorisé sur ...",
@@ -462,7 +464,8 @@
     "whenImp-keyword": "Dès que",
     "while-keyword": "Pendant que"
   },
-  "language": {"actions": "Actions",
+  "language": {
+	"actions": "Actions",
     "and-when": "Dès que",
     "color" : {
       "blue": "bleu",
