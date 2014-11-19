@@ -60,6 +60,7 @@ define(function(require, exports, module) {
         var devicesReady = false;
         var servicesReady = false;
         var programsReady = false;
+        var dependanciesReady = false;
 
         // places
         dispatcher.on("placesReady", function() {
@@ -98,6 +99,7 @@ define(function(require, exports, module) {
             dispatcher.trigger("dataReady");
           }
         });
+        
 
         // all data have been received, launch the user interface
         dispatcher.on("dataReady", function() {
@@ -112,10 +114,6 @@ define(function(require, exports, module) {
             });
           });
 
-          if (navigator.splashscreen !== undefined) {
-            navigator.splashscreen.hide();
-          }
-
         });
 
         // Initialize the collection of places
@@ -126,6 +124,11 @@ define(function(require, exports, module) {
         // Initialize the collection of programs
         require(['collections/programs'], function(Programs) {
           window.programs = new Programs();
+        });
+        
+        // Initialize the collection dependancies
+        require(['collections/dependancies'], function(Dependancies) {
+            window.dependancies = new Dependancies();
         });
 
       });

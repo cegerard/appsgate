@@ -160,6 +160,11 @@ public class ReferenceTable {
         return devices.keySet();
     }
 
+    public ArrayList<NodeSelect> getSelectors() {
+        return nodes;
+    }
+
+    
     /**
      *
      * @param status

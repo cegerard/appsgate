@@ -8,6 +8,7 @@ define(function(require, exports, module) {
   var ServicesRouter = require("routers/service");
   var ProgramsRouter = require("routers/program");
   var DebuggerRouter = require("routers/debugger");
+  var DependanciesRouter = require("routers/dependancies");
 
   var mainTemplate = require("text!templates/home/main.html");
   var navbarTemplate = require("text!templates/home/navbar.html");
@@ -22,6 +23,7 @@ define(function(require, exports, module) {
     servicesRouter: new ServicesRouter(),
     programsRouter: new ProgramsRouter(),
     debuggerRouter: new DebuggerRouter(),
+    dependanciesRouter: new DependanciesRouter(),
 
     maintemplate : _.template(mainTemplate),
     navbartemplate : _.template(navbarTemplate),
@@ -35,7 +37,9 @@ define(function(require, exports, module) {
       "places": "places",
       "devices": "devices",
       "services": "services",
-      "programs": "programs"
+      "programs": "programs",
+      "dependancies": "dependancies",
+//      "dependancies/:id": "dependanciesId"
     },
     initialize: function() {
       dispatcher.on("router:loading", function() {
@@ -73,6 +77,10 @@ define(function(require, exports, module) {
     debugger: function() {
       dispatcher.trigger("router:loading");
       this.debuggerRouter.all();
+    },
+    dependancies: function() {
+      dispatcher.trigger("router:loading");
+      this.dependanciesRouter.all();
     },
     home: function() {
       // in case there is a loading widget present
