@@ -464,7 +464,8 @@
     "whenImp-keyword": "Dès que",
     "while-keyword": "Pendant que"
   },
-  "language": {"actions": "Actions",
+  "language": {
+	"actions": "Actions",
     "and-when": "Dès que",
     "color" : {
       "blue": "bleu",
