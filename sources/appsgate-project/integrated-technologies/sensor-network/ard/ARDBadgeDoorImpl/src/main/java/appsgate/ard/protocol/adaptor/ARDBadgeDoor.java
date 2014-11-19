@@ -3,8 +3,7 @@ package appsgate.ard.protocol.adaptor;
 import appsgate.ard.protocol.controller.ARDController;
 import appsgate.ard.protocol.model.Constraint;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
-import appsgate.ard.protocol.model.command.request.GetInputRequest;
-import appsgate.ard.protocol.model.command.request.GetZoneRequest;
+import appsgate.ard.protocol.model.command.request.*;
 import appsgate.lig.ard.badge.door.messages.ARDBadgeDoorContactNotificationMsg;
 import appsgate.lig.ard.badge.door.spec.CoreARDBadgeDoorSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -154,17 +153,36 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     @Override
     public void zoneActivate(int zone) {
-        logger.warn("zoneActivate: This function is not implemented yet. Zone to be activated {},",zone);
+        logger.info("zoneActivate invoked: Zone to be activated {},", zone);
+        try {
+            JSONObject result=controller.sendSyncRequest(new ActivateZoneRequest(zone)).getResponse();
+            logger.info("Response: {}",result);
+        } catch (JSONException e) {
+            logger.error("Failed invoking zoneActivate for zone {}", zone);
+        }
     }
 
     @Override
     public void forceInput(int input) {
-        logger.warn("forceInput: This function is not implemented yet. Input to be forced {},",input);
+        logger.info("forceInput invoked: Input to be forced {},", input);
+        try {
+            JSONObject request1=controller.sendSyncRequest(new ForceInputRequest(input,false)).getResponse();
+            JSONObject request2=controller.sendSyncRequest(new ForceInputRequest(input,true)).getResponse();
+            logger.info("Response1: {}, Response2: {}",request1,request2);
+        } catch (JSONException e) {
+            logger.error("Failed invoking zoneActivate for zone {}",input);
+        }
     }
 
     @Override
     public void zoneDesactivate(int zone) {
-        logger.debug("zoneDesactivate: This function is not implemented yet. Zone to be activated {},", zone);
+        logger.info("zoneDesactivate invoked: Zone to be desactivated {},", zone);
+        try {
+            JSONObject result=controller.sendSyncRequest(new DeactivateZoneRequest(zone)).getResponse();
+            logger.info("Response: {}",result);
+        } catch (JSONException e) {
+            logger.error("Failed invoking zoneDesactivate for zone {}",zone);
+        }
     }
 
     public NotificationMsg triggerApamMessage(ARDBadgeDoorContactNotificationMsg apamMessage){
@@ -173,7 +191,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     private void fillUpZones(final JSONObject descr){
-        for(int index=1;index<11;index++){
+        for(int index=1;index<5;index++){
             try {
                 JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
 
