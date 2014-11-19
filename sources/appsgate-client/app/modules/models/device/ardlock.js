@@ -57,21 +57,21 @@ define([
                   $(btn).append("<span data-i18n='devices.ard.keyboard.zone-activate'/>");
                   v.methodName = "zoneActivate";
                   v.phrase = "devices.ard.action.zone-activate";
-                  v.args = [ {"type":"int", "value": "0"}];
+                  v.args = [ {"type":"int", "value": "1"}];
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               case "zoneDesactivate":
                   $(btn).append("<span data-i18n='devices.ard.keyboard.zone-desactivate'/>");
                   v.methodName = "zoneDesactivate";
                   v.phrase = "devices.ard.action.zone-desactivate";
-                  v.args = [ {"type":"int", "value": "0"}];
+                  v.args = [ {"type":"int", "value": "1"}];
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               case "forceInput":
                   $(btn).append("<span data-i18n='devices.ard.keyboard.force-input'/>");
                   v.methodName = "forceInput";
                   v.phrase = "devices.ard.action.force-input";
-                  v.args = [ {"type":"int", "value": "0"}];
+                  v.args = [ {"type":"int", "value": "1"}];
                   $(btn).attr("json", JSON.stringify(v));
                   break;
               default:

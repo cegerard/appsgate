@@ -21,7 +21,7 @@
 
     <% if (node.methodName == "zoneActivate" || node.methodName == "zoneDesactivate"  ) { %>
 
-    <select id="ard-color-<%= node.idd %>" class="ard-zone-selector" target-id="<%= node.iid %>" >
+    <select id="ard-zone-<%= node.iid %>" class="ard-zone-selector" target-id="<%= node.iid %>" >
         <% _.each(zones,function(zonex){ %>
             <option value="<%= zonex.zone_idx %>" <% if (node.args[0].value == zonex.zone_idx) { print('selected'); } %> ><%= zonex.zone_name %></option>
         <% }); %>
@@ -29,7 +29,7 @@
 
     <% } else if (node.methodName == "forceInput" ) { %>
 
-    <select id="ard-input-<%= node.idd %>" class="ard-input-selector" target-id="<%= node.iid %>" >
+    <select id="ard-input-<%= node.iid %>" class="ard-input-selector" target-id="<%= node.iid %>" >
         <% _.each(inputs,function(inputx){ %>
         <option value="<%= inputx.input_idx %>" <% if (node.args[0].value == inputx.input_idx) { print('selected'); } %> ><%= inputx.input_name %></option>
         <% }); %>
