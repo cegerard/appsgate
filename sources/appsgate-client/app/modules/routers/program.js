@@ -29,6 +29,14 @@ define([
             dispatcher.trigger("router:loaded");
         },
         reader: function(id) {
+			// Direct access to a program, need to add the menu
+			if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined || appRouter.currentMenuView.attributes.class !== "ProgramMenuView") {
+				// display the side menu
+				appRouter.showMenuView(new ProgramMenuView());
+				// update tab
+				$(".nav-item").removeClass("active");
+				$("#programs-nav").addClass("active");
+			}	
 
             // display the requested program
             appRouter.showDetailsView(new ProgramReaderView({model: programs.get(id)}));

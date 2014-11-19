@@ -69,6 +69,16 @@ define([
         * @param id Id of the device to show
         */
         details: function(id) {
+		  // Direct access device, need to add the menu
+		  if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined || appRouter.currentMenuView.attributes.class !== "DeviceMenuView") {
+			  // display the side menu
+			  appRouter.showMenuView(new DeviceMenuView());
+			  appRouter.currentMenuView.updateSideMenu();
+			  // update tab
+			  $(".nav-item").removeClass("active");
+			  $("#devices-nav").addClass("active");
+		  }	
+				
           var device = devices.get(id);
           switch (device.get("type")) {
             case 0: // temperature sensor

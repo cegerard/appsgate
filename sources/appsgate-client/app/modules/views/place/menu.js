@@ -24,6 +24,12 @@ define([
             "click #add-place-modal button.valid-button": "validEditName",
             "keyup #add-place-modal input": "validEditName"
         },
+		/**
+		* Attributes to know the type of this menu
+		*/
+		attributes: {
+			"class": "PlaceMenuView"
+		},
         /**
          * Listen to the places collection update and refresh if any
          *
@@ -64,7 +70,11 @@ define([
                 $(item).removeClass("active");
             });
 
-            $(e.currentTarget).addClass("active");
+			if (typeof e !== "undefined") {
+                $(e.currentTarget).addClass("active");
+            } else if(Backbone.history.fragment.split("/")[1] !== ""){
+                $("#place-" + Backbone.history.fragment.split("/")[1]).addClass("active");
+            } 
         },
         /**
          * Clear the input text, hide the error message and disable the valid button by default

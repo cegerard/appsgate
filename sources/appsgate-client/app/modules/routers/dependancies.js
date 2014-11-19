@@ -50,6 +50,7 @@ define([
 
             // Once the dependancies have been created and added to the collection, show the graph
             dispatcher.once("dependanciesReady", function () {
+				appRouter.currentMenuView = null;
                 appRouter.showView(new GraphView({
                     el: $("#main"),
                     model: dependancies.at(0)
