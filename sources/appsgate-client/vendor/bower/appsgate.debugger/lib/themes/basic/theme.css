@@ -602,3 +602,12 @@ html, body {
   -webkit-filter: drop-shadow(-5px -5px 5px #000);
   filter: drop-shadow(-5px -5px 5px #000);
 }
+
+/* line 330, ../../../../src/themes/basic/theme.scss */
+.konami-background {
+  background: url(icons/konami.gif) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
