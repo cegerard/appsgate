@@ -578,13 +578,6 @@ define([
 			dy = d.target.y - d.source.y,
 			dr = 150 / d.linknum; //linknum is defined above
 
-		//        if (turned) {
-		//            // If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
-		//            return "M" + d.target.x + "," + d.target.y + "A" + dr + "," + dr + " 0 0,0" + d.source.x + "," + d.source.y;
-		//        } else {
-		//            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1" + d.target.x + "," + d.target.y;
-		//        }
-
 		if (turned) {
 			// If source.x > source.y, have to return the link by sweeping target and source, but also sweep it or it angle will be opposed
 			return "M" + d.target.x + "," + d.target.y + "L" + d.source.x + "," + d.source.y;
@@ -592,32 +585,6 @@ define([
 			return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
 		}
 	};
-
-	//    function calculateXCircle(link) {
-	//        var A = link.source;
-	//        var B = link.target;
-	//        var nAB = Math.sqrt(Math.pow((B.x - A.x), 2) + Math.pow((B.y - A.y), 2));
-	//        var nAM = nAB / 2;
-	//        var radius = 150 / link.linknum;
-	//        var sagitta = radius + Math.sqrt(Math.pow(radius, 2) - Math.pow(nAM, 2));
-	//        var nAS = Math.sqrt(Math.pow(nAM, 2) + Math.pow(sagitta, 2));
-	//        var theta = (B.y - A.y) / (B.x - A.x)
-	//
-	//        return nAS * Math.cos(theta);
-	//    };
-	//
-	//    function calculateYCircle(link) {
-	//        var A = link.source;
-	//        var B = link.target;
-	//        var nAB = Math.sqrt(Math.pow((B.x - A.x), 2) + Math.pow((B.y - A.y), 2));
-	//        var nAM = nAB / 2;
-	//        var radius = 150 / link.linknum;
-	//        var sagitta = radius + Math.sqrt(Math.pow(radius, 2) - Math.pow(nAB, 2));
-	//        var nAS = Math.sqrt(Math.pow(nAM, 2) + Math.pow(sagitta, 2));
-	//        var theta = (B.y - A.y) / (B.x - A.x)
-	//
-	//        return nAS * Math.sin(theta);
-	//    };
 
 	return GraphView;
 });
