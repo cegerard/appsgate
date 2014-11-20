@@ -128,14 +128,14 @@ public class GraphManager {
             }
 
         }
-        JSONObject unLocatedPlace = new JSONObject();
-        try {
-            unLocatedPlace.put("id", "-1");
-            unLocatedPlace.put("name", "Unlocated");
-            addPlace(unLocatedPlace);
-        } catch (JSONException ex) {
-            java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        JSONObject unLocatedPlace = new JSONObject();
+//        try {
+//            unLocatedPlace.put("id", "-1");
+//            unLocatedPlace.put("name", "Unlocated");
+//            addPlace(unLocatedPlace);
+//        } catch (JSONException ex) {
+//            java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
     }
 
