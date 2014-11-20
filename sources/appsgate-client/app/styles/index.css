@@ -774,10 +774,10 @@ fieldset[disabled] .btn {
     fill: none;
     stroke: none;
 }
-#graph path.targeting {
+#graph path.important-path {
     stroke: red;
 }
-#graph marker#targeting {
+#graph marker#targetingRefFocus, #graph marker#reference {
     fill: red;
 }
 /* Default text */

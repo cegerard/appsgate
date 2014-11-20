@@ -77,12 +77,12 @@ define([
 			// Build the directional arrows for the links/edges
 			// Per-type markers, as they don't inherit styles.
 			svg.append("svg:defs").selectAll("marker")
-				.data(["targeting", "reference", "isLocatedIn", "isPlanified", "denotes"])
+				.data(["targetingFocus", "targetingRefFocus", "reference", "isLocatedIn", "isPlanified", "denotes"])
 				.enter().append("svg:marker")
 				.attr("id", String)
 				.attr("viewBox", "0 -5 10 10")
 				.attr("refX", function (t) {
-					if (t === "targeting") {
+					if (t === "targetingFocus" || t === "targetingRefFocus") {
 						return 38
 					} else {
 						return 28;
@@ -338,15 +338,16 @@ define([
 					return !isNode1 && !isNode2;
 				})
 				.attr("marker-end", function (d) {
-					if (d.target === self.model.get("rootNode"))
-						return "url(#targeting)";
+					if (d.target === self.model.get("rootNode") && d.type === "reference")
+						return "url(#targetingRefFocus)";
+					else if (d.target === self.model.get("rootNode"))
+						return "url(#targetingFocus)";
 					else
 						return "url(#" + d.type + ")";
 				})
-				.classed("targeting", function (d) {
-					return d.target === self.model.get("rootNode");
+				.classed("important-path", function (d) {
+					return d.type === "reference";
 				});
-
 
 			pathLink.select(".linkText")
 				.attr("d", function (d) {
@@ -472,7 +473,7 @@ define([
 				}
 				// The nodeRoot has been moved, we can restart the force
 				force.start();
-				
+
 				nodeEntity.classed("nodeOver", false);
 				nodeEntity.classed("neighborNodeOver", false);
 			}
