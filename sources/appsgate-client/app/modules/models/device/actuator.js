@@ -19,7 +19,7 @@ define([
 
       // setting default friendly name if none exists
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
-          this.generateDefaultName($.i18n.t("devices.actuator.name.singular"));
+        this.generateDefaultName($.i18n.t("devices.actuator.name.singular"));
       }
     },
     /**

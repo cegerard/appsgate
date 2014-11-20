@@ -155,7 +155,9 @@ define(function(require, exports, module) {
       this.locale = locale;
 
       $.i18n.init({ lng : this.locale }).done(function() {
-        $("body").i18n();
+        var currentRoute = Backbone.history.fragment;
+        Backbone.history.fragment = null;
+        appRouter.navigate(currentRoute, {trigger: true});
       });
     }
   });

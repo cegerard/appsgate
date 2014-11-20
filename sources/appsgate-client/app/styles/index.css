@@ -631,7 +631,13 @@ fieldset[disabled] .btn {
 .expected-input {
     padding: 10px;
     background: #999999;
+    overflow-y:auto;
 }
+
+.expected-input .row {
+  margin: 0px;
+}
+
 .expected-actions {
     padding: 5px;
 }
