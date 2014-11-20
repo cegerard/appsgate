@@ -361,11 +361,9 @@ define([
 				})
 				.attr("cx", function (l) {
 					return (l.source.x + l.target.x) / 2;
-					//                    return calculateXCircle(l);
 				})
 				.attr("cy", function (l) {
 					return (l.source.y + l.target.y) / 2;
-					//                    return calculateXCircle(l);
 				});
 		},
 
