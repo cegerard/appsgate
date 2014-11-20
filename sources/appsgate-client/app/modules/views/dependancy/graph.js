@@ -427,7 +427,7 @@ define([
 		},
 
 		dblclick: function (d) {
-		  	// ZoomIn manage
+			// ZoomIn manage
 			if (d3.event.shiftKey) {
 				switch (d.type) {
 				case "place":
@@ -457,15 +457,24 @@ define([
 
 				}
 			} 
+			// Focus / Unfocus
 			else {
-
 				// Stop the force to control manually the actions
 				force.stop();
-				this.selectAndMoveRootNode(d);
-
+				// If the node selected is the root node, defocus it
+				if (d === this.model.get("rootNode")) {
+					this.model.set({
+						rootNode: ""
+					});
+					// Don't use the selectAndMove function so unfix manually
+					d.fixed = false;
+				} else {
+					// Focus and move new root node
+					this.selectAndMoveRootNode(d);
+				}
 				// The nodeRoot has been moved, we can restart the force
 				force.start();
-
+				
 				nodeEntity.classed("nodeOver", false);
 				nodeEntity.classed("neighborNodeOver", false);
 			}
