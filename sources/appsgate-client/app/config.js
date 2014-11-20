@@ -36,6 +36,8 @@ require.config({
         jstree: "../vendor/jstree/jquery.jstree",
         // d3 library
         d3: "../vendor/bower/d3/d3",
+        // tinysort library
+        tinysort: '../vendor/bower/tinysort/dist/jquery.tinysort',
         // APPSGATE
         // Modules
         "modules": "../app/modules",
@@ -91,8 +93,9 @@ require.config({
         "d3": {
             exports: "d3"
         },
+
         "appsgate.debugger": {
-            deps: ['jquery', 'jqueryui', 'backbone', 'underscore', 'd3']
+            deps: ['jquery', 'jqueryui', 'backbone', 'underscore', 'd3', 'tinysort']
         }
     }
 });
