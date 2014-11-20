@@ -78,7 +78,9 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "forceInput":
-          $(btn).append("<span data-i18n='devices.ard.keyboard.force-input'/>");
+          $(btn).append("<span>" + $.i18n.t('devices.ard.keyboard.force-input', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.ard.name.singular') + "</span>",
+          }));
           v.methodName = "forceInput";
           v.phrase = "devices.ard.action.force-input";
           v.args = [{
