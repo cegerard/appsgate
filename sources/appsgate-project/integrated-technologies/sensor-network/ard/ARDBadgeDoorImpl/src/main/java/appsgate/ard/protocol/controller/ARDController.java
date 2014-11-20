@@ -102,6 +102,7 @@ public class ARDController {
     }
 
     public void disconnect() throws IOException {
+        logger.info("Controller is closing the socket");
         monitor.kill();
         socket.close();
     }

@@ -40,9 +40,25 @@ public class ARDBusMonitor extends Thread {
                 while (keepMonitoring && (l = is.read()) != -1) {
 
                     //System.out.println("Adding:"+l+"(int) "+Integer.toHexString(l)+"(hex)"+(char)l+"(char) " + new String(new byte[]{new Integer(l).byteValue()}, "UTF-8")+"(utf)");
-                    System.out.print((char)l);
+                    //System.out.print((char) l);
                     //0 is the marker at the end of JSON messages
                     //10 the new line feed in case of BUSY response
+
+                    /**
+                     * Replace this implem by a buffer
+                    try {
+                        JSONObject json = new JSONObject(sb.toString());
+                        if(json.getString("request")!=null && json.getString("request").equals("BUZY")){
+                            System.err.println("Waiting..");
+                            Thread.sleep(20);
+                        }
+                    } catch (JSONException e) {
+                        //e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    **/
+
                     if (l == 0 || l == 10) { //NULL marks the end of the response message
                         state=ARDBusState.IDLE;
                         //System.out.println("End of the response message");
@@ -52,7 +68,7 @@ public class ARDBusMonitor extends Thread {
                             json = new JSONObject(sb.toString());
                             responseListener.ardMessageReceived(json);
                         } catch (JSONException e) {
-                            logger.warn("ARD Router returned an invalid JSON",e);
+                            logger.warn("ARD Router returned an invalid JSON", e);
                             //e.printStackTrace();
                         } finally {
                             sb = new StringBuffer();
@@ -67,7 +83,7 @@ public class ARDBusMonitor extends Thread {
 
 
             } catch (IOException e) {
-                logger.warn("Socket is already closed.");
+                e.printStackTrace();
             }
 
         }while(keepMonitoring);
