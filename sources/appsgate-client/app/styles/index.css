@@ -715,12 +715,6 @@ fieldset[disabled] .btn {
 .debugger.scrollable {
     border: none;
 }
-/*.debugger .dashboard > header {*/
-
-/*position: fixed;*/
-
-/*}*/
-
 .ui-autocomplete {
     position: absolute;
     cursor: default;

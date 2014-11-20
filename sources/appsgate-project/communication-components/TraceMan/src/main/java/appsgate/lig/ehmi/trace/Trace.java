@@ -86,6 +86,9 @@ public class Trace {
     	if(type.equalsIgnoreCase("Temperature")){
     		picto = PICTO_TABLE.TEMPERATURE_TYPE.stringify();
     		
+    	} else if (type.equalsIgnoreCase("Illumination")){
+    		picto = PICTO_TABLE.ILLUMINATION_TYPE.stringify();
+    	
     	} else if (type.equalsIgnoreCase("Switch")){
     		if(varName.equalsIgnoreCase("switchNumber")){
     			picto = PICTO_TABLE.SINGLE_SWITCH_STATE_.stringify()+value;

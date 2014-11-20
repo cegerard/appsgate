@@ -260,7 +260,7 @@ define([
          * @returns the default template state
          */
         getTemplateProperty: function () {
-            return _.template(StateTemplate);
+            return _.template(PropertyTemplate);
         }
     });
     return Weather;

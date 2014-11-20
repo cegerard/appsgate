@@ -237,4 +237,14 @@ public class TraceExecutor implements Runnable {
 		return sleeping;
 	}
 
+	/**
+	 * Get the parent trace queue
+	 * @return the traceQueue instance associated to this TraceExecutor
+	 */
+	public TraceQueue getTraceQueue() {
+		return traceQueue;
+	}
+	
+	
+
 }
