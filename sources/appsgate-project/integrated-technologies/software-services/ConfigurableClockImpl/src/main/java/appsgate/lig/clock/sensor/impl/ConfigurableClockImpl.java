@@ -1,10 +1,12 @@
 package appsgate.lig.clock.sensor.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -30,7 +32,8 @@ import appsgate.lig.core.object.spec.CoreObjectSpec;
  * This java interface is an ApAM specification shared by all ApAM AppsGate
  * application to provide current Time and Date information
  */
-public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClockSpec, CoreObjectSpec {
+public class ConfigurableClockImpl extends CoreObjectBehavior implements
+		CoreClockSpec, CoreObjectSpec {
 
 	/**
 	 * Lag between the real current Date and the one set
@@ -66,36 +69,36 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 * A sorted map between the times in millis at which are registered alarms
 	 * and the corresponding alarm Id and observers
 	 */
-	SortedMap<Long, Map<Integer, AlarmEventObserver>> alarms;
+	SortedMap<Long, Map<Integer, AlarmEventObserver>> alarms = new TreeMap<Long, Map<Integer,AlarmEventObserver>>();
 
 	/**
 	 * A map between the periodic alarms, matches the same alarm id as an alarm
 	 * registered at current time
 	 */
-	Map<Integer, AlarmEventObserver> periodicAlarmObservers;
+	Map<Integer, AlarmEventObserver> periodicAlarmObservers = new HashMap<Integer, AlarmEventObserver>();
 
 	/**
 	 * A map between the periods in millis of periodic alarms, matches the same
 	 * alarm id as an alarm registered at current time
 	 */
-	Map<Integer, Long> alarmPeriods;
+	Map<Integer, Long> alarmPeriods = new HashMap<Integer, Long>();
 
 	/**
 	 * As single time alarms are removed from the list they do not fire events
 	 * two times But periodic events aren't removed, so we need to disarm them
 	 */
-	Set<Integer> disarmedAlarms;
+	Set<Integer> disarmedAlarms = new HashSet<Integer>();
 
 	/**
 	 * Convenient to unregister alarms (avoid complexity)
 	 */
-	Map<Integer, Long> reverseAlarmMap;
+	Map<Integer, Long> reverseAlarmMap = new HashMap<Integer, Long>();
 
 	Timer timer;
 
 	Object lock;
 	boolean runningArmTimer;
-	
+
 	SimpleDateFormat dateFormat;
 
 	/**
@@ -107,7 +110,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	public ConfigurableClockImpl() {
 		lock = new Object();
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-		resetClock();
+		initAppsgateFields();
+		fullResetClock();
 	}
 
 	/**
@@ -115,7 +119,6 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	public void start() {
 		logger.debug("New Configurable clock created");
-		initAppsgateFields();
 	}
 
 	public void stop() {
@@ -126,45 +129,10 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 	}
 
-	public ClockSetNotificationMsg fireClockSetNotificationMsg(Calendar oldTime, Calendar newTime) {
-		return new ClockSetNotificationMsg(this, oldTime.getTime().toString(), newTime.getTime()
-				.toString());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#resetClock()
-	 */
-	@Override
-	public void resetClock() {
-		logger.trace("resetClock()");
-        Calendar oldCalendar;
-        double oldRate;
-		synchronized (lock) {
-            oldCalendar = getCurrentDate();
-            oldRate = flowRate;
-			currentLag = 0;
-			flowRate = 1;
-			currentAlarmId = 0;
-			alarms = new TreeMap<Long, Map<Integer, AlarmEventObserver>>();
-			reverseAlarmMap = new HashMap<Integer, Long>();
-			periodicAlarmObservers = new HashMap<Integer, AlarmEventObserver>();
-			alarmPeriods = new HashMap<Integer, Long>();
-			disarmedAlarms = new HashSet<Integer>();
-
-			nextAlarmId = -1;
-			nextAlarmTime = -1;
-			runningArmTimer = false;
-			if (timer != null) {
-				timer.cancel();
-				timer = null;
-			}
-
-			timeFlowBreakPoint = -1;
-		}
-		fireClockSetNotificationMsg(oldCalendar, Calendar.getInstance());
-		fireFlowRateSetNotificationMsg(oldRate, flowRate);
+	public ClockSetNotificationMsg fireClockSetNotificationMsg(
+			Calendar oldTime, Calendar newTime) {
+		return new ClockSetNotificationMsg(this, oldTime.getTime().toString(),
+				newTime.getTime().toString());
 	}
 
 	/*
@@ -201,8 +169,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		} else
 			simulatedTime += systemTime;
 		logger.debug("getCurrentTimeInMillis(), (simulated) time : "
-				+ simulatedTime
-				+ " (representing "+dateFormat.format(new Date(simulatedTime))+")");
+				+ simulatedTime + " (representing "
+				+ dateFormat.format(new Date(simulatedTime)) + ")");
 		return simulatedTime;
 	}
 
@@ -220,7 +188,8 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void setCurrentDate(Calendar calendar) {
-		logger.trace("setCurrentDate(Calendar calendar : " + dateFormat.format(calendar.getTime()) + ")");
+		logger.trace("setCurrentDate(Calendar calendar : "
+				+ dateFormat.format(calendar.getTime()) + ")");
 
 		setCurrentTimeInMillis(calendar.getTimeInMillis());
 	}
@@ -233,9 +202,11 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void setCurrentTimeInMillis(long millis) {
-		logger.trace("setCurrentTimeInMillis(long millis : " + millis + " (representing "+dateFormat.format(new Date(millis))+"))");
+		logger.trace("setCurrentTimeInMillis(long millis : " + millis
+				+ " (representing " + dateFormat.format(new Date(millis))
+				+ "))");
 
-        Calendar oldCalendar = getCurrentDate();
+		Calendar oldCalendar = getCurrentDate();
 
 		currentLag = millis - Calendar.getInstance().getTimeInMillis();
 		setTimeFlowRate(flowRate);
@@ -284,6 +255,12 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		descr.put("status", appsgateStatus);
 		descr.put("sysName", appsgateServiceName);
 		descr.put("remote", true);
+
+		if (currentLag == 0 && flowRate == 1 && timeFlowBreakPoint == -1) {
+			descr.put("simulated", false);
+		} else {
+			descr.put("simulated", true);
+		}
 
 		Calendar cal = Calendar.getInstance();
 		long time = cal.getTimeInMillis() + currentLag;
@@ -359,7 +336,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 			// firing periodic alarms
 			if (alarmPeriods != null && !alarmPeriods.isEmpty())
-				for (Integer i : alarmPeriods.keySet()) {
+				for (Integer i : new ArrayList<Integer>(alarmPeriods.keySet()) ) {
 					long time = currentTime;
 					if (disarmedAlarms.contains(i))
 						time += alarmLagTolerance + 1;
@@ -395,8 +372,9 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public int registerAlarm(Calendar calendar, AlarmEventObserver observer) {
-		logger.trace("registerAlarm(Calendar calendar : "+dateFormat.format(calendar.getTime())
-				+ ", AlarmEventObserver observer : "+observer);		
+		logger.trace("registerAlarm(Calendar calendar : "
+				+ dateFormat.format(calendar.getTime())
+				+ ", AlarmEventObserver observer : " + observer);
 		if (calendar != null && observer != null) {
 			synchronized (lock) {
 				Long time = calendar.getTimeInMillis();
@@ -436,7 +414,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public void unregisterAlarm(int alarmEventId) {
-		logger.trace("unregisterAlarm(int alarmEventId : " +alarmEventId+")");
+		logger.trace("unregisterAlarm(int alarmEventId : " + alarmEventId + ")");
 		synchronized (lock) {
 			if (periodicAlarmObservers.containsKey(alarmEventId)) {
 				periodicAlarmObservers.remove(alarmEventId);
@@ -450,8 +428,9 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 					alarms.remove(time);
 			}
 
-			reverseAlarmMap.remove(alarmEventId);
-			calculateNextTimer();
+			if (reverseAlarmMap.containsKey(alarmEventId)) {
+				reverseAlarmMap.remove(alarmEventId);
+			}
 		}
 	}
 
@@ -462,9 +441,9 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	 */
 	@Override
 	public double setTimeFlowRate(double rate) {
-		logger.trace("setTimeFlowRate(double rate : " +rate+")");
+		logger.trace("setTimeFlowRate(double rate : " + rate + ")");
 
-        double oldRate = flowRate;
+		double oldRate = flowRate;
 		if (rate > 0 && rate != 1) {
 			// avoid value that could lead to strange behavior
 			timeFlowBreakPoint = System.currentTimeMillis();
@@ -480,26 +459,43 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		}
 		logger.debug("setTimeFlowRate(double rate), new time flow rate : "
 				+ flowRate);
-		fireFlowRateSetNotificationMsg(oldRate, flowRate);
+		if (oldRate != flowRate) {
+			fireFlowRateSetNotificationMsg(oldRate, flowRate);
+		}
 		calculateNextTimer();
 		return flowRate;
 
 	}
 
 	void rearmPeriodicAlarms(Long time) {
+		logger.trace("rearmPeriodicAlarms(Long time : "
+				+ (time == null ? null : dateFormat.format(new Date(time)))
+				+ ")");
+
 		if (time == null)
 			time = getCurrentTimeInMillis();
+
 		if (disarmedAlarms != null && !disarmedAlarms.isEmpty()
 				&& reverseAlarmMap != null && !reverseAlarmMap.isEmpty()
 				&& alarmPeriods != null && !alarmPeriods.isEmpty())
-			for (Integer i : disarmedAlarms) {
-				if (Math.abs((reverseAlarmMap.get(i).longValue() - time
-						.longValue()) % alarmPeriods.get(i).longValue()) > alarmLagTolerance)
+			for (Integer i : new ArrayList<Integer>(disarmedAlarms) ) {
+
+				logger.trace("rearmPeriodicAlarms(...), checking alarmId :  "
+						+ i);
+				long time_from_epoch = time % alarmPeriods.get(i).longValue();
+
+				if (Math.abs(reverseAlarmMap.get(i).longValue()
+						- time_from_epoch) > alarmLagTolerance) {
+					logger.trace("rearmPeriodicAlarms(...), re-arming alarm id : "
+							+ i);
 					disarmedAlarms.remove(i);
+				}
 			}
 	}
 
 	long nearestSingleAlarmDelay(long time) {
+		logger.trace("nearestSingleAlarmDelay(long time : "
+				+ dateFormat.format(new Date(time)) + ")");
 		nextAlarmTime = -1;
 		if (time < 0)
 			time = getCurrentTimeInMillis();
@@ -513,34 +509,43 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	}
 
 	long nearestPeriodicAlarmDelay(long time) {
+		logger.trace("nearestPeriodicAlarmDelay(long time : "
+				+ dateFormat.format(new Date(time)) + ")");
+		if(alarmPeriods==null || alarmPeriods.isEmpty()) {
+			return -1;
+		}
+		
 		if (time < 0)
 			time = getCurrentTimeInMillis();
 		boolean initMin = false;
 		long minPeriodValue = -1;
 
-		for (Integer i : alarmPeriods.keySet())
+		for (Integer i : alarmPeriods.keySet()) {
+			long time_from_epoch = time % alarmPeriods.get(i);
 			if (!disarmedAlarms.contains(i)) {
-				
+
 				long nextPeriodic;
-		
-				if(reverseAlarmMap.get(i)-time>alarmLagTolerance
-						&& (reverseAlarmMap.get(i)-time)< alarmPeriods.get(i)) {
-					nextPeriodic = reverseAlarmMap.get(i)-time;
+				if (reverseAlarmMap.get(i) > time_from_epoch) {
+					nextPeriodic = reverseAlarmMap.get(i) - time_from_epoch;
 				} else {
-					nextPeriodic = Math.abs(alarmPeriods.get(i)-Math.abs(time%alarmPeriods.get(i)-reverseAlarmMap.get(i)% alarmPeriods.get(i)));
+					nextPeriodic = (reverseAlarmMap.get(i) + alarmPeriods
+							.get(i)) - time_from_epoch;
 				}
-				
-					logger.trace("next periodic : " + nextPeriodic);
-					if (!initMin || nextPeriodic < minPeriodValue) {
-						initMin = true;
-						minPeriodValue = nextPeriodic;
-						nextAlarmId = i;
-					}
+
+				logger.trace("nearestPeriodicAlarmDelay(...), next periodic : "
+						+ nextPeriodic);
+				if (!initMin || nextPeriodic < minPeriodValue) {
+					initMin = true;
+					minPeriodValue = nextPeriodic;
+					nextAlarmId = i;
 				}
+			}
+		}
 		return minPeriodValue;
 	}
 
-	long calculateNextTimer() {
+	@Override
+	public long calculateNextTimer() {
 		synchronized (lock) {
 			Long currentTime = getCurrentTimeInMillis();
 			rearmPeriodicAlarms(currentTime);
@@ -591,10 +596,9 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 	public void fireClockAlarms(Map<Integer, AlarmEventObserver> observers) {
 		logger.trace("fireClockAlarms(Map<Integer, AlarmEventObserver> observers)");
-		
+
 		if (observers != null && !observers.isEmpty()) {
 			Set<Integer> removableObservers = new HashSet<Integer>(); // Observers
-
 
 			for (Integer i : observers.keySet()) {
 				logger.trace("fireClockAlarms(...), AlarmEventId : " + i);
@@ -609,11 +613,10 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 				}
 
 			}
-			for (Integer i : removableObservers) {
+			for (Integer i : new ArrayList<Integer>(removableObservers)) {
 				logger.trace("fireClockAlarms(...), removing alarmEventId : "
 						+ i);
 				observers.remove(i);
-				reverseAlarmMap.remove(i);
 			}
 		}
 	}
@@ -630,12 +633,13 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 			if (nextAlarmTime > 0) {
 				logger.debug("Firing current clock alarms to all single clock observers");
 				long nextAlarmTimeClone = nextAlarmTime;
-				Map<Integer, AlarmEventObserver> observers = alarms.get(nextAlarmTimeClone);
+				Map<Integer, AlarmEventObserver> observers = alarms
+						.get(nextAlarmTimeClone);
 				synchronized (lock) {
 					timer.cancel();
 					timer = null;
 					fireClockAlarms(observers);
-						if (observers.isEmpty()){
+					if (observers.isEmpty()) {
 						alarms.remove(nextAlarmTimeClone);
 					}
 					nextAlarmTime = -1;
@@ -653,8 +657,10 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 		}
 	}
 
-	public FlowRateSetNotification fireFlowRateSetNotificationMsg(double oldFlowRate, double newFlowRate) {
-		return new FlowRateSetNotification(this, String.valueOf(oldFlowRate), String.valueOf(newFlowRate));
+	public FlowRateSetNotification fireFlowRateSetNotificationMsg(
+			double oldFlowRate, double newFlowRate) {
+		return new FlowRateSetNotification(this, String.valueOf(oldFlowRate),
+				String.valueOf(newFlowRate));
 	}
 
 	class RearmingPeriodicAlarmTask extends TimerTask {
@@ -677,9 +683,10 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	@Override
 	public int registerPeriodicAlarm(Calendar calendar, long millis,
 			AlarmEventObserver observer) {
-		logger.trace("registerPeriodicAlarm(Calendar calendar : "+dateFormat.format(calendar==null?Calendar.getInstance().getTime():calendar.getTime())
-				+", long millis : "+millis
-				+ ", AlarmEventObserver observer : "+observer);
+		logger.trace("registerPeriodicAlarm(Calendar calendar : "
+				+ dateFormat.format(calendar == null ? Calendar.getInstance()
+						.getTime() : calendar.getTime()) + ", long millis : "
+				+ millis + ", AlarmEventObserver observer : " + observer);
 
 		if (millis > 0 && observer != null) {
 			synchronized (lock) {
@@ -691,7 +698,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 
 				logger.debug("registerPeriodicAlarm(...), creating a new one");
 				periodicAlarmObservers.put(++currentAlarmId, observer);
-				reverseAlarmMap.put(currentAlarmId, time);
+				reverseAlarmMap.put(currentAlarmId, time.longValue() % millis);
 				alarmPeriods.put(currentAlarmId, millis);
 
 				logger.debug("registerPeriodicAlarm(...), alarm events id created : "
@@ -708,6 +715,61 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements CoreClo
 	@Override
 	public CORE_TYPE getCoreType() {
 		return CORE_TYPE.SERVICE;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see appsgate.lig.clock.sensor.spec.CoreClockSpec#fullResetClock()
+	 */
+	@Override
+	public void fullResetClock() {
+		logger.trace("fullResetClock()");
+		
+		resetSystemTime();
+		resetSingleAlarms();
+		resetPeriodicAlarms();
+		currentAlarmId = 0;
+	}
+
+	@Override
+	public void resetSystemTime() {
+		logger.trace("resetSystemTime()");
+
+		Calendar oldCalendar;
+		synchronized (lock) {
+			oldCalendar = getCurrentDate();
+
+			currentLag = 0;
+			timeFlowBreakPoint = -1;
+			setTimeFlowRate(1);
+		}
+		fireClockSetNotificationMsg(oldCalendar, Calendar.getInstance());
+	}
+
+	@Override
+	public void resetSingleAlarms() {
+		logger.trace("resetSingleAlarms()");
+
+		synchronized (lock) {
+			for (Integer i : new ArrayList<Integer>(reverseAlarmMap.keySet())) {
+				unregisterAlarm(i);
+				
+			}
+			calculateNextTimer();
+		}
+	}
+
+	@Override
+	public void resetPeriodicAlarms() {
+		logger.trace("resetPeriodicAlarms()");
+
+		synchronized (lock) {
+			for (Integer i : new ArrayList<Integer>(alarmPeriods.keySet())) {
+				unregisterAlarm(i);
+			}
+			calculateNextTimer();
+		}
 	}
 
 }

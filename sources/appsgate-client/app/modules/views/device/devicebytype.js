@@ -1,6 +1,6 @@
 define([
   "app",
-  "text!templates/devices/list/deviceListByCategory.html",
+  "text!templates/devices/list/deviceListByCategory.html"
   ], function(App, deviceListByCategoryTemplate) {
 
     var DeviceByTypeView = {};
@@ -60,25 +60,11 @@ define([
 
         var plug = devices.get($(e.currentTarget).attr("device-id"));
 
-        // value can be string or boolean
-        // string
-        if (typeof plug.get("plugState") === "string") {
-          if (plug.get("plugState") === "true") {
-            plug.set("plugState", "false");
-          } else {
-            plug.set("plugState", "true");
-          }
-          // boolean
+        if (plug.get("plugState") === "true" || plug.get("plugState") === true) {
+          plug.switchOff();
         } else {
-          if (plug.get("plugState")) {
-            plug.set("plugState", "false");
-          } else {
-            plug.set("plugState", "true");
-          }
+          plug.switchOn();
         }
-
-        // send the message to the backend
-        plug.save();
 
         return false;
       },
@@ -91,25 +77,12 @@ define([
         e.preventDefault();
 
         var lamp = devices.get($(e.currentTarget).attr("device-id"));
-        // value can be string or boolean
-        // string
-        if (typeof lamp.get("value") === "string") {
-          if (lamp.get("value") === "true") {
-            lamp.set("value", "false");
-          } else {
-            lamp.set("value", "true");
-          }
-          // boolean
-        } else {
-          if (lamp.get("value")) {
-            lamp.set("value", "false");
-          } else {
-            lamp.set("value", "true");
-          }
-        }
 
-        // send the message to the backend
-        lamp.save();
+        if (lamp.get("value") === "true" || lamp.get("value") === true) {
+          lamp.switchOff();
+        } else {
+          lamp.switchOn();
+        }
 
         return false;
       },
@@ -135,25 +108,12 @@ define([
         e.preventDefault();
 
         var actuator = devices.get($(e.currentTarget).attr("device-id"));
-        // value can be string or boolean
-        // string
-        if (typeof actuator.get("value") === "string") {
-          if (actuator.get("value") === "true") {
-            actuator.set("value", "false");
-          } else {
-            actuator.set("value", "true");
-          }
-          // boolean
-        } else {
-          if (actuator.get("value")) {
-            actuator.set("value", "false");
-          } else {
-            actuator.set("value", "true");
-          }
-        }
 
-        // send the message to the backend
-        actuator.save();
+        if (actuator.get("value") === "true" || actuator.get("value") === true) {
+          actuator.switchOff();
+        } else {
+          actuator.switchOn();
+        }
 
         return false;
       },
@@ -224,22 +184,31 @@ define([
             }
             $("#device-" + device.cid + "-color").attr("style", "background-color:" + device.getCurrentColor());
             break;
-          case 8:
-            if (device.get("value") === "true" || device.get("value") === true) {
-              $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOff");
-              $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOn");
-              $("#device-" + device.cid + "-value").attr("class","label label-yellow");
-            } else {
-              $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOn");
-              $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOff");
-              $("#device-" + device.cid + "-value").attr("class","label label-default");
-            }
-            break;
-          case 210:
+            case 8:
+                if (device.get("value") === "true" || device.get("value") === true) {
+                    $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOff");
+                    $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOn");
+                    $("#device-" + device.cid + "-value").attr("class","label label-yellow");
+                } else {
+                    $("#device-" + device.cid + "-button").attr("data-i18n", "devices.actuator.action.turnOn");
+                    $("#device-" + device.cid + "-value").attr("data-i18n", "devices.actuator.status.turnedOff");
+                    $("#device-" + device.cid + "-value").attr("class","label label-default");
+                }
+                break;
+            case 31: //Media Player : 31
+
+
+                break;
+            case 124: //CoreTV : 124
+
+
+                break;
+
+            case 210:
             var activeFace = "";
             switch (device.get("activeFace")) {
               case "1":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-work.svg' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-work.svg' width='18px' class='img-responsive'>";
                 break;
               case "2":
                 activeFace = "<svg id='device-" + device.cid + "-value' class='white-face-svg-domus img-responsive'>" +
@@ -248,16 +217,16 @@ define([
                   "</text><text class='white-face-text-domus' x='50%' y='54%'>" + $.i18n.t('devices.domicube.white-face.second-elem') + "</text></svg>";
                 break;
               case "3":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-music.png' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-music.png' width='18px' class='img-responsive'>";
                 break;
               case "4":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-question.svg' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-question.svg' width='18px' class='img-responsive'>";
                 break;
               case "5":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-night.png' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-night.png' width='18px' class='img-responsive'>";
                 break;
               case "6":
-                activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-meal.png' width='18px' class='img-responsive'>";
+                activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-meal.png' width='18px' class='img-responsive'>";
                 break;
               default:
                 break;
@@ -283,9 +252,9 @@ define([
             state = "plugState";
           }
           devices.getDevicesByType()[this.id].forEach(function(device) {
-            if (device.get(state) === "true") {
+            if (device.get(state) === "true" || device.get(state) === true) {
               allOff = false;
-            } else {
+            } else if (device.get(state) === "false" || device.get(state) === false) {
               allOn = false;
             }
           });
@@ -324,9 +293,9 @@ define([
             state = "plugState";
           }
           devices.getDevicesByType()[this.id].forEach(function(device) {
-            if (device.get(state) === "true") {
+            if (device.get(state) === "true" || device.get(state) === true) {
               allOff = false;
-            } else {
+            } else if (device.get(state) === "false" || device.get(state) === false) {
               allOn = false;
             }
           });

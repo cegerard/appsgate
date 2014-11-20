@@ -20,7 +20,7 @@ define([
 
       CoreClock.__super__.initialize.apply(this, arguments);
       // setting default friendly name if none exists
-      if (this.get("name") === "") {
+      if (this.get("name") === "" || this.get("name") == undefined) {
           this.set("name", $.i18n.t("devices.clock.name.singular"));
       }
 
@@ -90,7 +90,7 @@ define([
       if(this.anchorSysTime){
         var delta_ms = ((new Date()).getTime() - this.anchorSysTime) * parseInt(this.get("flowRate"));
         var ms = this.anchorTime + delta_ms;
-        this.set("moment", moment(ms), {clockRefresh:true});
+        this.set("moment", moment(ms));
         this.updateClockDisplay();
       }
     },
@@ -145,11 +145,23 @@ define([
      * return the keyboard code for a given event
     */
     getKeyboardForEvent: function(evt){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       switch(evt) {
         case "ClockAlarm":
           $(btn).append("<span data-i18n='keyboard.clock-event'><span>");
-          o = {'type': 'event', 'eventName': 'ClockAlarm', 'source': {'type': 'device', 'value':this.get("id"), 'iid':'X', 'deviceType':this.get("type")}, 'eventValue': this.getClockAlarm(11,0), 'iid': 'X', 'phrase': "language.clock-event"};
+          o = {
+            'type': 'event',
+            'eventName': 'ClockAlarm',
+            'source': {
+              'type': 'device',
+              'value':this.get("id"),
+              'iid':'X',
+              'deviceType':this.get("type")
+            },
+            'eventValue': this.getClockAlarm(11,0),
+            'iid': 'X',
+            'phrase': "language.clock-event"
+          };
           $(btn).attr("json", JSON.stringify(o));
           break;
         default:
@@ -172,7 +184,7 @@ define([
 	 * @returns event template for clock
 	 */
 	getTemplateEvent: function() {
-	  return _.template(EventTemplate); 
+	  return _.template(EventTemplate);
 	},
 
     /**
@@ -182,7 +194,7 @@ define([
       this.remoteControl("setCurrentTimeInMillis", [{ type : "long", value : this.get("moment").valueOf() }]);
     },
     resetClock:function() {
-          this.remoteControl("resetClock", []);
+          this.remoteControl("resetSystemTime", []);
     },
 
     /**

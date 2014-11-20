@@ -15,6 +15,7 @@
 	<description>This sub project contain all component for all supported technologies in Appsgate</description>
 	
 	<modules>
+	    <module>device-mockups</module>	    
 		<module>PhilipsHUE4Appsgate</module>
 		<module>KNX4Appsgate</module>
 		<module>sensor-network</module>

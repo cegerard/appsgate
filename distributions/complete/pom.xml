@@ -65,6 +65,24 @@
 
                         <configuration>
                             <artifactItems>
+                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreTVSpec</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>   
+                                                                
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>PaceTVDisplay</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem> 
+
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>CoreTVMockup</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                                
 
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>
@@ -434,6 +452,11 @@
                                     <artifactId>MailAdapter</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>appsgate.components</groupId>
+                                    <artifactId>Javamail</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>                                
                                 <!-- AppsGate Instance -->
                                 <artifactItem>
                                     <groupId>appsgate.components</groupId>

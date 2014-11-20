@@ -76,7 +76,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     /**
      * Hash map containing the nodes and the events they are listening
      */
-    private final List<CoreEventListener> mapCoreNodeEvent;
+    private final List<CoreEventListener> listCoreNodeEvent;
 
     /**
      * HashMap that contains all the existing programs under a JSON format
@@ -99,7 +99,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      */
     public EUDEInterpreter() {
         mapPrograms = new HashMap<String, NodeProgram>();
-        mapCoreNodeEvent = new ArrayList<CoreEventListener>();
+        listCoreNodeEvent = new ArrayList<CoreEventListener>();
         root = initRootProgram();
     }
 
@@ -120,7 +120,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         boolean bdFound = restorePrograms();
         // delete the event listeners from the context
         if (ehmiProxy != null) {
-            for (CoreEventListener listener : mapCoreNodeEvent) {
+            for (CoreEventListener listener : listCoreNodeEvent) {
                 ehmiProxy.deleteCoreListener(listener);
             }
         }
@@ -387,20 +387,20 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         CoreEventListener listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
 
-        for (CoreEventListener l : mapCoreNodeEvent) {
+        for (CoreEventListener l : listCoreNodeEvent) {
             if (l.equals(listener)) {
-                LOGGER.debug("Add node event to listener list.");
+                LOGGER.debug("Add node event to listener list: {}", nodeEvent.getEventName());
                 l.addNodeEvent(nodeEvent);
                 return;
             }
 
         }
         listener.addNodeEvent(nodeEvent);
-        mapCoreNodeEvent.add(listener);
+        listCoreNodeEvent.add(listener);
         if (!nodeEvent.isProgramEvent()) {
             ehmiProxy.addCoreListener(listener);
         }
-        LOGGER.debug("Add node event listener list.{}", nodeEvent.getEventName());
+        LOGGER.debug("Add node event listener list: {}", nodeEvent.getEventName());
 
     }
 
@@ -415,10 +415,14 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         listener = new CoreEventListener(nodeEvent.getSourceId(), nodeEvent.getEventName(), nodeEvent.getEventValue());
 
-        for (CoreEventListener l : mapCoreNodeEvent) {
+        for (CoreEventListener l : listCoreNodeEvent) {
             if (l.equals(listener)) {
-                LOGGER.debug("Add node event to listener list.");
+                LOGGER.trace("Remove node event from listener list: {}", nodeEvent.getEventName());
                 l.removeNodeEvent(nodeEvent);
+                if (l.isEmpty()) {
+                    ehmiProxy.deleteCoreListener(listener);
+                    listCoreNodeEvent.remove(l);
+                }
                 return;
             }
 
@@ -660,7 +664,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
     public void endEventFired(EndEvent e) {
         NodeProgram p = (NodeProgram) e.getSource();
         LOGGER.info("Program " + p.getProgramName() + " ended.");
-        for (CoreEventListener l : mapCoreNodeEvent) {
+        for (CoreEventListener l : listCoreNodeEvent) {
             if (l.equals(e)) {
                 l.notifyEvent();
                 return;
@@ -673,7 +677,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
     @Override
     public void startEventFired(StartEvent e) {
-        for (CoreEventListener l : mapCoreNodeEvent) {
+        for (CoreEventListener l : listCoreNodeEvent) {
             if (l.equals(e)) {
                 l.notifyEvent();
                 return;

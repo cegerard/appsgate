@@ -24,6 +24,8 @@ define([
         "change .number-input": "onChangeValue",
         "change .arg-input": "onChangeArgValue",
         "change .volume-input": "onChangeMediaVolume",
+        "change .ard-zone-selector": "onARDZoneSelector",
+        "change .ard-input-selector": "onARDInputSelector",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
         "click .valid-media": "onValidMediaButton",
         "keyup .programNameInput": "validEditName"
@@ -34,7 +36,11 @@ define([
       initialize: function() {
         this.Mediator = new Mediator();
         this.Mediator.loadProgramJSON(this.model.get("body"), this.model.get("id"));
+        this.bodyJson = $.extend(true, {}, this.model.get("body"));
+        this.oldState = this.model.get("runningState");
+        console.log(this.oldState);
         this.refreshing = false;
+        
 
         this.listenTo(this.model, "change", this.refreshDisplay);
         this.listenTo(devices, "remove", this.refreshDisplay);
@@ -99,6 +105,21 @@ define([
 
         return true;
       },
+      //ARD
+      onARDInputSelector: function(e) {
+            e.stopPropagation();
+            var iid = $(e.currentTarget).attr("target-id");
+            var valueInt = $("#ard-input-" + iid)[0].selectedOptions[0].value;
+            var value = {"type": "int", "value": valueInt};
+            this.Mediator.setNodeArg(iid, 0, value);
+        },
+      onARDZoneSelector: function(e) {
+            e.stopPropagation();
+            var iid = $(e.currentTarget).attr("target-id");
+            var valueInt = $("#ard-zone-" + iid)[0].selectedOptions[0].value;
+            var value = {"type": "int", "value": valueInt};
+            this.Mediator.setNodeArg(iid, 0, value);
+        },
       onClickEndEdit: function(e) {
         this.model.set("body", this.Mediator.programJSON);
         this.model.set("modified", false);
@@ -117,6 +138,8 @@ define([
           this.model.destroy();
           appRouter.navigate("#programs", {trigger: true});
         } else{
+          this.model.set("body", this.bodyJson);
+          this.model.set("runningState", this.oldState);
           appRouter.navigate("#programs", {trigger: true});
           appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
         }
@@ -390,11 +413,13 @@ define([
           }
 
           // scrolling to the selected node
-          var focusPosition = $(".selected-node").offset().top + $(".programInput").scrollTop() - $(".programInput").offset().top;
-          if($(".programInput").height() > $(".selected-node").height()) {
-            focusPosition -= $(".programInput").height()/2 - $(".selected-node").height()/2;
+          if($(".selected-node").length > 0) {
+            var focusPosition = $(".selected-node").offset().top + $(".programInput").scrollTop() - $(".programInput").offset().top;
+            if($(".programInput").height() > $(".selected-node").height()) {
+              focusPosition -= $(".programInput").height()/2 - $(".selected-node").height()/2;
+            }
+            $(".programInput").animate({scrollTop: focusPosition}, 1000);
           }
-          $(".programInput").animate({scrollTop: focusPosition}, 1000);
 
           $( document ).tooltip();
 

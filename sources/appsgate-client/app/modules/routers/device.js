@@ -12,9 +12,10 @@ define([
   "views/device/details/plug",
   "views/device/details/switch",
   "views/device/details/temperature",
-  "views/device/details/mediaplayer"
+  "views/device/details/mediaplayer",
+    "views/device/details/coretv"
   ], function(App, DeviceMenuView, DevicesByTypeView, ActuatorView, ArdView, ContactSensorView,
-    DomiCubeView, LightSensorView, CardSwitchView, PhillipsHueView, SmartPlugView, SwitchView, TemperatureSensorView, MediaPlayerView) {
+    DomiCubeView, LightSensorView, CardSwitchView, PhillipsHueView, SmartPlugView, SwitchView, TemperatureSensorView, MediaPlayerView, CoreTVView) {
 
       var DeviceRouter = {};
       /**
@@ -43,13 +44,15 @@ define([
           var id = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id");
           if (id) {
             var typeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("side-")[1];
-            appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
             // update the url
             appRouter.navigate("#devices/types/" + typeId);
+            $(".nav-item").removeClass("active");
+            $("#devices-nav").addClass("active");
+
+            appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
           }
 
-          $(".nav-item").removeClass("active");
-          $("#devices-nav").addClass("active");
+          dispatcher.trigger("router:loaded");
         },
         /**
         * Display all the devices of a given type
@@ -98,6 +101,9 @@ define([
             case 31: // media player
             appRouter.showDetailsView(new MediaPlayerView({model:device}));
             break;
+            case 124: // CoreTV
+                  appRouter.showDetailsView(new CoreTVView({model:device}));
+                  break;
             case 210: // domicube
             appRouter.showDetailsView(new DomiCubeView({model:device}));
             break;

@@ -30,8 +30,6 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
 
     private final BundleContext context;
 
-    private ServiceReference serviceReference;
-
     private Map<String,ServiceRegistration> lamps=new HashMap<String, ServiceRegistration>();
     private Map<String,String> lampsApamInstance=new HashMap<String, String>();
 
@@ -102,11 +100,9 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
                 lamps.put(pojo.getId(),lampService);
 
                 //This is done in a different thread duo to an Apam blockage
-                PhilipsHueFactoryExecutor pfe=new PhilipsHueFactoryExecutor(bridges.get(0), pojo.getLight(),this,importDeclaration);
+                PhilipsHueFactoryExecutor pfe=new PhilipsHueFactoryExecutor(pojo.getBridge(), pojo.getLight(),this,importDeclaration);
                 lampsApamInstance.put(pojo.getId(),pfe.getDeviceID());
                 new Thread(pfe).start();
-
-                handleImportDeclaration(importDeclaration);
 
             } catch (ClassNotFoundException e) {
                 LOG.error("Failed to load type {}, importing process aborted.", pojo.getType(), e);
@@ -116,14 +112,10 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
             LOG.warn("Importer notified without a bridge present, this might be a bug");
         }
 
-
-
     }
 
     @Override
     protected void denyImportDeclaration(final ImportDeclaration importDeclaration) throws BinderException {
-
-        System.out.println("Removing Lamp:"+importDeclaration.getMetadata().get("ID"));
 
         PhilipsHueLightDeclarationWrapper pojo= PhilipsHueLightDeclarationWrapper.create(importDeclaration);
 
@@ -142,7 +134,6 @@ public class PhilipsHueImporter extends AbstractImporterComponent {
         }catch(IllegalStateException e){
             LOG.error("failed unregistering lamp", e);
         }
-
 
     }
 

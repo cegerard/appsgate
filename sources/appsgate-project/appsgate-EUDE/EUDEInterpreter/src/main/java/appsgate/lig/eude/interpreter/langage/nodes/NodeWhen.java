@@ -119,8 +119,8 @@ public class NodeWhen extends Node implements INodeRule{
     }
 
     @Override
-    public String toString() {
-        return "[Node When: events(" + seqEvent.toString() + "), rules(" + seqRules + ")]";
+    public String getTypeSpec() {
+        return "When: events(" + seqEvent.toString() + "), rules(" + seqRules + ")";
     }
 
     @Override

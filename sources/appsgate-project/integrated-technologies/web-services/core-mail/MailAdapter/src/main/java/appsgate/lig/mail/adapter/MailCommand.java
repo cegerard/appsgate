@@ -16,7 +16,6 @@ import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.ServiceProperty;
 
 import appsgate.lig.mail.Mail;
-import appsgate.lig.mail.javamail.MailConfiguration;
 import fr.imag.adele.apam.Apam;
 import fr.imag.adele.apam.CST;
 import fr.imag.adele.apam.Instance;

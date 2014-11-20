@@ -71,6 +71,13 @@
     <% } else { %>
     <span data-i18n="devices.mediaplayer.name.plural"></span>
     <% } %>
+    <% } else if (type === "124") { %>
+    <% if (devices.where({type : 124}).length === 1) { %>
+    <span data-i18n="devices.tv.name.singular"></span>
+    <% } else { %>
+    <span data-i18n="devices.tv.name.plural"></span>
+    <% } %>
+
     <% } else if (type === "210") { %>
     <% if (devices.where({type : 210}).length === 1) { %>
     <span data-i18n="devices.domicube.name.singular"></span>
@@ -81,11 +88,11 @@
 </div>
 
 <div class="image-preload hidden">
-    <img src='/app/img/domicube-work.svg'>
-    <img src='/app/img/domicube-music.png'>
-    <img src='/app/img/domicube-question.svg'>
-    <img src='/app/img/domicube-night.png'>
-    <img src='/app/img/domicube-meal.png'>
+    <img src='app/img/domicube-work.svg'>
+    <img src='app/img/domicube-music.png'>
+    <img src='app/img/domicube-question.svg'>
+    <img src='app/img/domicube-night.png'>
+    <img src='app/img/domicube-meal.png'>
 </div>
 
 <!-- render located devices -->
@@ -199,9 +206,21 @@
                     <% } else { %>
                     <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.actuator.status.turnedOff"></span>
                     <% } %>
+
+                    <% } else if (type === "31") { %>
+                    <% if ( s.get('mediaName')!=undefined ) { %>
+                    <div class="label label-success">
+                    <span id="playerStatus" class="label label-success" data-i18n="devices.mediaplayer.status.<%= s.get('playerStatus') %>" ></span>
+                    <span id="selectedMedia" class="label label-success" title=" <%= s.get('mediaName') %>" url=" <%= s.get('mediaURL') %>" ><%= s.get('mediaName') %></span>
+                    </div>
+                    <% } else { %>
+                    <span id="selectedMedia" class="label label-default" data-i18n="devices.mediaplayer.status.selected">Select a media</span>
+                    <% } %>
+
+
                     <% } else if (type === "210") { %>
                     <% if(s.get("activeFace") === "1") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-work.svg' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-work.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "2") { %>
                       <svg id="device-<%= s.cid %>-value" class="white-face-svg-domus img-responsive">
                         <rect class="white-face-rect-domus" x="10" y="10" rx="25" ry="25" width="95%" height="90%"/>
@@ -209,13 +228,13 @@
                         <text class="white-face-text-domus" x="50%" y="54%"><%= $.i18n.t("devices.domicube.white-face.second-elem") %></text>
                       </svg>
                     <% } else if(s.get("activeFace") === "3") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-music.png' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-music.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "4") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-question.svg' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-question.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "5") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-night.png' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-night.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "6") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-meal.png' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-meal.png' width='18px' class="img-responsive">
                     <% } else { %>
                         <svg width="18px" height="18px">
                         <rect x="0" y="0" width="100%" height="100%" style="fill:none"/>
@@ -338,9 +357,20 @@
                     <% } else { %>
                     <span id="device-<%= s.cid %>-value" class="label label-default" data-i18n="devices.actuator.status.turnedOff"></span>
                     <% } %>
+
+                    <% } else if (type === "31") { %>
+                    <% if ( s.get('mediaName')!=undefined ) { %>
+                    <div class="label label-success">
+                    <span id="playerStatus" data-i18n="devices.mediaplayer.status.<%= s.get('playerStatus') %>" ></span>
+                    <span id="selectedMedia" title=" <%= s.get('mediaName') %>" url=" <%= s.get('mediaURL') %>" ><%= s.get('mediaName') %></span>
+                    </div>
+                    <% } else { %>
+                    <span id="selectedMedia" class="label label-default" data-i18n="devices.mediaplayer.status.selected">Select a media</span>
+                    <% } %>
+
                     <% } else if (type === "210") { %>
                     <% if(s.get("activeFace") === "1") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-work.svg' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-work.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "2") { %>
                       <svg id="device-<% s.cid %>-value" class="white-face-svg-domus img-responsive">
                         <rect class="white-face-rect-domus" x="10" y="10" rx="25" ry="25" width="95%" height="90%"/>
@@ -348,13 +378,13 @@
                         <text class="white-face-text-domus" x="50%" y="54%"><%= $.i18n.t("devices.domicube.white-face.second-elem") %></text>
                       </svg>
                     <% } else if(s.get("activeFace") === "3") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-music.png' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-music.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "4") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-question.svg' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-question.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "5") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-night.png' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-night.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "6") { %>
-                      <img id="device-<%= s.cid %>-value" src='/app/img/domicube-meal.png' width='18px' class="img-responsive">
+                      <img id="device-<%= s.cid %>-value" src='app/img/domicube-meal.png' width='18px' class="img-responsive">
                     <% } else { %>
                       <span id="device-<%= s.cid %>-value" data-i18n='devices.domicube.status.unknown'></span>
                     <% } %>

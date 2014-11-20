@@ -215,4 +215,9 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
         }
     }
 
+    @Override
+    public String getTypeSpec() {
+        return "Comparator";
+    }
+    
 }

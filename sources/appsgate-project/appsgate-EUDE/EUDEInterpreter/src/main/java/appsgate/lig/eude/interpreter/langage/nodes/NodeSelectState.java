@@ -259,8 +259,8 @@ public class NodeSelectState extends Node implements INodeList, ICanBeEvaluated 
     }
 
     @Override
-    public String toString() {
-        return "[SelectSate]";
+    public String getTypeSpec() {
+        return "SelectSate";
     }
     @Override
     protected void buildReferences(ReferenceTable table) {

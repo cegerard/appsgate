@@ -117,28 +117,22 @@ public class ReferenceTable {
      *
      * @param deviceId
      * @param newStatus
-     * @return true if something changed in the status, false otherwise
      */
-    public Boolean setDeviceStatus(String deviceId, STATUS newStatus) {
+    public void setDeviceStatus(String deviceId, STATUS newStatus) {
         if (devices.containsKey(deviceId)) {
             devices.put(deviceId, newStatus);
-            return checkStatus();
         }
-        return false;
     }
 
     /**
      *
      * @param programId
      * @param newStatus
-     * @return true if something changed in the status, false otherwise
      */
-    public Boolean setProgramStatus(String programId, STATUS newStatus) {
+    public void setProgramStatus(String programId, STATUS newStatus) { // VOID
         if (programs.containsKey(programId)) {
             programs.put(programId, newStatus);
-            return checkStatus();
         }
-        return false;
     }
 
     /**
@@ -219,6 +213,10 @@ public class ReferenceTable {
      */
     private STATUS computeStatus() {
         this.state = STATUS.OK;
+        if (programs.size() + devices.size() + nodes.size() == 0) {
+            LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
+            this.state=STATUS.INVALID;
+        }
         for (String k : programs.keySet()) {
             LOGGER.trace("computeStatus(), program " + k + ", status :" + programs.get(k));
             switch (programs.get(k)) {

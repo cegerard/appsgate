@@ -85,7 +85,7 @@ define([
             if (labelDevice === "") {
                 labelDevice = this.get("id");
             }
-            return "<button id='" + this.get("id") + "' class='btn btn-default btn-keyboard device-node'><span>" + labelDevice + "<span></button>"
+            return "<button id='" + this.get("id") + "' class='btn btn-default btn-keyboard device-node' group-id='" + this.get("type") + "'><span>" + labelDevice + "<span></button>"
         },
 
         getJSONAction: function (type) {
@@ -145,6 +145,9 @@ define([
          */
         getValue: function () {
             return "[No Value]";
+        },
+        getTemplateParameter: function(){
+            return {};
         }
     });
     return Device;

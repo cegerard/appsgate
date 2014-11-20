@@ -31,6 +31,14 @@
 			</button>
 			<button type="button" class="btn btn-default open-calendar-button" data-i18n="programs.action.open-calendar"></button>
 		</div>
+		<div id="test-button-popover" data-toggle="popover" data-container="body" data-trigger="manual" class="btn-group">
+			<button id="test-program-button" data-toggle="modal" href="#test-program-modal" class="btn btn-info test-program-button">
+				<i class="glyphicon glyphicon-expand"></i><span data-i18n="programs.action.test"></span>
+			</button>
+			<button id="stop-testing-button" class="btn btn-info">
+				<i class="glyphicon glyphicon-expand"></i><span data-i18n="programs.action.end-test"></span>
+			</button>
+		</div>
 		<div class="btn-group pull-right">
 			<button id="delete-program-popover" class="btn btn-default delete-popover-button" rel="popover" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="programs.delete-program"></span>
@@ -48,7 +56,7 @@
 		<div class="programInput container"><%= program.get("userInputSource") %></div>
 	</div>
 
-	<!-- modal to add a new place -->
+	<!-- modal to schedule a program -->
 	<div id="schedule-program-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalScheduleProgram" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -63,6 +71,64 @@
 						<input type="radio" name="schedule-radio" value="both"><span data-i18n="modal-schedule-program.schedule-both"/>&nbsp;<%= program.get("name") %></input>
 					</div>
 				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
+					<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- modal to test a program -->
+
+	<% var hours = [];
+		for (var i = 0; i < 24; i++) {
+			hours.push(i);
+		}
+
+		var minutes = [];
+		for (i = 0; i < 60; i++) {
+			minutes.push(i);
+		}
+	%>
+
+	<div id="test-program-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalTestProgram" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button btn" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" data-i18n="modal-test-program.title"></h4>
+				</div>
+				<div class="modal-body">
+						<div class="row">
+							<div class="col-md-3" data-i18n="modal-test-program.time-label"></div>
+							<div class="col-md-9">
+								<div class="row">
+									<div class="col-md-4">
+										<select id="hour" class="form-control">
+											<% _.each(hours, function(h) { %>
+												<option value="<%= h %>"><%= h %></option>
+											<% }); %>
+										</select>
+									</div>
+									<div class="col-md-1">:</div>
+									<div class="col-md-4">
+										<select id="minute" class="form-control">
+											<% _.each(minutes, function(m) { %>
+												<option value="<%= m %>"><%= m %></option>
+											<% }); %>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3" data-i18n="modal-test-program.time-speed-label"></div>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="time-flow-rate" value="1.0">
+							</div>
+						</div>
+			</div>
 				<div class="modal-footer">
 					<button class="btn btn-default cancel-button" data-dismiss="modal" data-i18n="form.cancel-button"></button>
 					<button class="btn btn-primary valid-button" data-i18n="form.valid-button"></button>

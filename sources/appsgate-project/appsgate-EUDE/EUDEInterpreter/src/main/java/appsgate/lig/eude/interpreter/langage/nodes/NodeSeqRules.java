@@ -47,7 +47,7 @@ public class NodeSeqRules extends Node implements INodeSet {
     private Iterator<Node> iterator;
 
     private Node currentNode = null;
-
+    
     /**
      * private Constructor to copy Nodes
      *
@@ -89,9 +89,9 @@ public class NodeSeqRules extends Node implements INodeSet {
 
     @Override
     public JSONObject call() {
-        LOGGER.debug("iterator reinited for {}", getProgramName());
         currentNode = null;
         iterator = instructions.iterator();
+        stopped = false;
         setStarted(true);
         fireStartEvent(new StartEvent(this));
 
@@ -107,14 +107,13 @@ public class NodeSeqRules extends Node implements INodeSet {
     @Override
     public void endEventFired(EndEvent e) {
         if (iterator.hasNext()) {
-            LOGGER.trace("###### launching the next sequence of rules...");
             try {
                 launchNextSeqAndRules();
             } catch (Exception ex) {
                 LOGGER.error("Exception caught: {}", ex.getMessage());
             }
         } else {
-            LOGGER.debug("###### SeqThenRules ended...");
+            LOGGER.trace("## No more rule for {}", this);
             setStarted(false);
             fireEndEvent(new EndEvent(this));
         }
@@ -125,15 +124,12 @@ public class NodeSeqRules extends Node implements INodeSet {
      */
     private void launchNextSeqAndRules() {
 
-        LOGGER.debug("CurrentNode : {}", currentNode);
-        LOGGER.debug("Iterator has next: {}", iterator.hasNext());
-
         // get the next sequence of rules to launch
         currentNode = iterator.next();
-        LOGGER.debug("CurrentNode After next : {}", currentNode);
 
-        if (!isStopping()) {
+        if (!isStopping() && ! stopped) {
             // launch the sequence of rules
+            LOGGER.trace("Launch rule : {}", currentNode);
             currentNode.addEndEventListener(this);
             currentNode.call();
         }
@@ -141,23 +137,16 @@ public class NodeSeqRules extends Node implements INodeSet {
 
     @Override
     public void specificStop() {
+        
         for (Node n : instructions) {
             n.removeEndEventListener(this);
             n.stop();
         }
-        synchronized (this) {
-            if (instructions.size() > 0) {
-                setStopping(true);
-                if (currentNode != null) {
-                    currentNode.stop();
-                }
-            }
-        }
     }
 
     @Override
-    public String toString() {
-        return "[Node SeqRules: [" + instructions.size() + "]]";
+    public String getTypeSpec() {
+        return "SeqRules: (" + instructions.size() + ")";
     }
 
     @Override

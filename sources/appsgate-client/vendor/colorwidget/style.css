@@ -1,0 +1,50 @@
+.picker-colors {
+    position: absolute;
+    top: 10px;
+    left: 5px;
+    width: 360px;
+    height: 360px;
+    background: url(img/cx.png) center no-repeat;
+    cursor: crosshair;
+    background-position: -1px -1px
+}
+
+.picker-colorPicker {
+    position: relative;
+    width: 11px;
+    height: 11px;
+    background: url(img/color.png) center no-repeat;
+    background-position: -175px -31px;
+}
+
+.picker-hues {
+    position: absolute;
+    top: 10px;
+    left: 372px;
+    width: 24px;
+    height: 358px;
+    border: 1px solid #000;
+    background: url(img/cx.png) center no-repeat;
+    background-position: -363px -1px;
+    cursor: crosshair;
+}
+
+.picker-huePicker {
+    position: relative;
+    left: -1px;
+    width: 26px;
+    height: 3px;
+    background: url(img/color.png) center no-repeat;
+    background-position: -176px -2px;
+}
+
+.picker_h {
+    position: absolute;
+    left: 95%;
+    right: 0px;
+    top: -50px;
+    background-color: #0C0;
+    height: 30px;
+    width: 100px;
+    border-radius: 3px;
+}

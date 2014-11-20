@@ -151,7 +151,7 @@ final public class NodeProgram extends Node {
      */
     public NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p) {
         this(mediator, p);
-    	LOGGER.trace("NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p), JSON object : "+o.toString());
+        LOGGER.trace("NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p), JSON object : " + o.toString());
 
         if (!o.has("body")) {
             LOGGER.error("this program has no body");
@@ -166,17 +166,12 @@ final public class NodeProgram extends Node {
             id = getJSONString(o, "id");
             update(o);
 
-            if (o.has("runningState")) {
-                LOGGER.trace("Running state: {}", o.optString("runningState"));
-                runningState = RUNNING_STATE.valueOf(getJSONString(o, "runningState"));
-            }
             // useless ? we lose the name and other attribute if we do not do the update
 //            if (isValid()) { 
 //                update(o);
 //            }
-
         } catch (SpokNodeException ex) {
-        	LOGGER.warn("Program node triggered an exception during constructor : "+ex.getMessage());
+            LOGGER.warn("Program node triggered an exception during constructor : " + ex.getMessage());
             setInvalid();
         }
     }
@@ -203,6 +198,10 @@ final public class NodeProgram extends Node {
             this.bodyJSON = json.optJSONObject("body");
             this.rulesJSON = json.optJSONObject("rules");
             this.actionsJSON = json.optJSONObject("actions");
+            if (json.has("runningState") ) {
+                this.runningState = RUNNING_STATE.valueOf(json.optString("runningState"));
+            }
+
             if (this.bodyJSON != null) {
                 body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
             } else {
@@ -231,7 +230,7 @@ final public class NodeProgram extends Node {
      */
     private Boolean buildReferences() {
         if (this.body == null) {
-        	LOGGER.trace("buildReferences(), body is null, program should not be valid");
+            LOGGER.trace("buildReferences(), body is null, program should not be valid");
             return false;
         }
         this.references = new ReferenceTable(mediator, this.id);
@@ -240,8 +239,7 @@ final public class NodeProgram extends Node {
         }
         ReferenceTable.STATUS newStatus = this.references.checkReferences();
         if (newStatus != ReferenceTable.STATUS.OK) {
-        	LOGGER.trace("buildReferences(), new Status :"+newStatus+", program should not be valid");
-
+            LOGGER.debug("buildReferences(), new Status:{}, program {} not valid", newStatus, this.getId());
             setInvalid();
             return false;
         }
@@ -450,6 +448,7 @@ final public class NodeProgram extends Node {
     public JSONObject getJSONRules() {
         return rulesJSON;
     }
+
     /**
      * @return the JSON source of the actions
      */
@@ -468,8 +467,8 @@ final public class NodeProgram extends Node {
     }
 
     @Override
-    public String toString() {
-        return "[Node Program : " + name + "]";
+    public String getTypeSpec() {
+        return "Program : " + name;
     }
 
     @Override
@@ -637,9 +636,8 @@ final public class NodeProgram extends Node {
      * @param s the status
      */
     public void setDeviceStatus(String id, ReferenceTable.STATUS s) {
-        if (references.setDeviceStatus(id, s)) {
-            changeStatus();
-        }
+        references.setDeviceStatus(id, s);
+        changeStatus();
     }
 
     /**
@@ -649,9 +647,8 @@ final public class NodeProgram extends Node {
      * @param s the new status
      */
     public void setProgramStatus(String id, ReferenceTable.STATUS s) {
-        if (references.setProgramStatus(id, s)) {
-            changeStatus();
-        }
+        references.setProgramStatus(id, s);
+        changeStatus();
     }
 
     /**

@@ -88,7 +88,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
 
     @Override
     public JSONObject call() {
-        LOGGER.trace("##### Action call [{}]!", methodName);
+        LOGGER.trace("Action call [{}]!", methodName);
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         target.addEndEventListener(this);
@@ -244,13 +244,13 @@ public class NodeAction extends Node implements ICanBeEvaluated {
             }
             setStopping(false);
         } else {
-            LOGGER.warn("Trying to stop an action ({}) which is not a program", this);
+            LOGGER.debug("Trying to stop an action ({}) which is not a program", this);
         }
     }
 
     @Override
-    public String toString() {
-        return "[Node Action: " + methodName + " on " + target.getValue() + "]";
+    public String getTypeSpec() {
+        return "Action: " + methodName + " on " + target.getValue();
 
     }
 

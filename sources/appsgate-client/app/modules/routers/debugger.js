@@ -22,6 +22,10 @@ define([
 
             $("#main").html(appRouter.navbartemplate());
 
+            appRouter.navigate("#debugger/all");
+            $(".nav-item").removeClass("active");
+            $("#home-nav").addClass("active");
+
             appRouter.currentMenuView = new DebuggerView({el:$("#main")});
             appRouter.currentMenuView.render();
 
@@ -35,12 +39,9 @@ define([
                 direction: 'top-right'
             });
 
-            appRouter.navigate("#debugger/all");
-
-            $(".nav-item").removeClass("active");
-            $("#home-nav").addClass("active");
-
             $("body").i18n();
+
+            dispatcher.trigger("router:loaded");
         }
     });
     return DebuggerRouter;

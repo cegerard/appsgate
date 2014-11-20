@@ -86,7 +86,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 */
 	String calendarId = "primary";
 
-	public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	@Override
 	public String getCalendarId() {
@@ -225,6 +225,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			for(Integer i : onEndAlarms.keySet()) {
 				clock.unregisterAlarm(i.intValue());
 			}
+			clock.calculateNextTimer();
 			onBeginAlarms.clear();
 			onEndAlarms.clear();
 			eventMap.clear();
@@ -534,13 +535,20 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 					+ programId
 					+ "\n";
 		}
-		if(stopOnEnd) {
+		if(stopOnEnd && startOnBegin) {
 			description += GoogleEvent.ON_END
 					+ ScheduledInstruction.SEPARATOR
 					+ ScheduledInstruction.STOP_PROGRAM
 					+ ScheduledInstruction.SEPARATOR
 					+ programId
 					+ "\n";
+		}else if (stopOnEnd && !startOnBegin) {
+				description += GoogleEvent.ON_BEGIN
+						+ ScheduledInstruction.SEPARATOR
+						+ ScheduledInstruction.STOP_PROGRAM
+						+ ScheduledInstruction.SEPARATOR
+						+ programId
+						+ "\n";
 		}
 
 		content.put("description", description);
@@ -587,6 +595,11 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 		Set <GoogleEvent> bigList = getEvents(starting, stopping);
 		Set <GoogleEvent> results = new HashSet<GoogleEvent>();
+		
+		if(bigList == null) {
+			logger.trace("checkProgramIdScheduled(...), no Events registered,");
+			return results;
+		}
 
 		for(GoogleEvent event : bigList) {
 			if (event.isSchedulingProgram(programId)) {
@@ -618,6 +631,12 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 
 		Set <GoogleEvent> bigList = getEvents(time, -1);
+		
+		if(bigList == null) {
+			logger.trace("checkProgramIdScheduled(...), no Events registered,");
+			return false;
+		}
+		
 		for(GoogleEvent event : bigList) {
 			if (event.isSchedulingProgram(programId)) {
 				logger.trace("checkProgramIdScheduled(...), first found on event : "+event.getName());

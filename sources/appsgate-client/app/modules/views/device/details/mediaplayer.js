@@ -99,6 +99,7 @@ define([
       render: function() {
         var self = this;
 
+
         if (!appRouter.isModalShown) {
 
           var player = this.model;
@@ -129,8 +130,8 @@ define([
 
           this.resize($(".scrollable"));
 
-          // translate the view
-          this.$el.i18n();
+            // translate the view
+            this.$el.i18n();
 
           return this;
         }

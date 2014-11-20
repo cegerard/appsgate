@@ -1,6 +1,8 @@
 package appsgate.lig.yahoo.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -171,7 +173,14 @@ public class YahooWeatherImpl implements YahooWeather {
 					"Already monitoring this location");
 
 		synchronized (lock) {
-			String okPlaceName = placeName.replace(" ", "%20");
+			
+			String okPlaceName=null;
+			try {
+				okPlaceName = URLEncoder.encode(placeName,"UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				logger.error("addLocation(...), exception occured : "+e.getMessage());
+			}			
+			
 			logger.info("addLocation(String placeName: " + placeName + " )");
 
 			String newWOEID = geoPlanet.getWOEIDFromPlaceName(okPlaceName);
@@ -391,17 +400,26 @@ public class YahooWeatherImpl implements YahooWeather {
 
 	@Override
 	public JSONObject checkLocation(String location) {
-		String okLocation = location.replace(" ", "%20");
-
-		return geoPlanet.getDescriptionFromPlaceName(okLocation);
+		String okLocation;
+		try {
+			okLocation = URLEncoder.encode(location,"UTF-8");
+			return geoPlanet.getDescriptionFromPlaceName(okLocation);
+		} catch (UnsupportedEncodingException e) {
+			logger.error("checkLocation(...), exception occured : "+e.getMessage());
+			return null;
+		}
 	}
 
 	@Override
 	public JSONArray checkLocationsStartingWith(String firstLetters) {
-		String okLocation = firstLetters.replace(" ", "%20");
-
-		return geoPlanet.getLocationsStartingWith(okLocation);
-
+		String okLocation;
+		try {
+			okLocation = URLEncoder.encode(firstLetters,"UTF-8");
+			return geoPlanet.getLocationsStartingWith(okLocation);
+		} catch (UnsupportedEncodingException e) {
+			logger.error("checkLocationsStartingWith(...), exception occured : "+e.getMessage());
+			return null;
+		}
 	}
 
 	@Override

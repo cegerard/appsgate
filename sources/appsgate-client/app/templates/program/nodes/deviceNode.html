@@ -1,5 +1,11 @@
 <button class="btn btn-prog btn-prog-device" id="<%= node.iid %>">
+    <% if (node.validDevice) {%>
     <span>
         <%= node.name %>
     </span>
+    <% } else { %>
+    <span>
+        Unknown: <%= node.id %>
+    </span>
+    <%}%>
 </button>

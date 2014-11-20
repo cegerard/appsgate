@@ -18,7 +18,7 @@
             <span data-i18n="services.mail.name.plural"></span>
         <% } %>
     <% } else if (type === "103") { %>
-        <img src='/app/img/yahoo_weather.png' class="img-service-title">
+        <img src='app/img/yahoo_weather.png' class="img-service-title">
         <% if (services.where({type:103}).length === 1) { %>
             <span data-i18n="services.weather.name.singular"></span>
         <% } else { %>
@@ -40,7 +40,7 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-xs-9">
-						<input type="text" class="form-control" name="inputValue" id="weatherInput">
+						<input type="text" class="form-control" name="inputValue" id="weatherInput" autocomplete="off">
 						<input type="hidden" class="form-control" name="woeid" id="WOEID">
 						<input type="hidden" class="form-control" name="name" id="NAME">
 					</div>
@@ -60,16 +60,22 @@
 <div class="contents-list scrollable">
   <div class="panel panel-default">
     <div class="list-group">
-      <%services.getServicesByType()[type].forEach(function(s) { %>
+      <% i=0;
+      function byName(a,b) {
+        var aName = a.get("name").toLowerCase();
+        var bName = b.get("name").toLowerCase(); 
+        return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+      }
+      services.getServicesByType()[type].sort(byName).forEach(function(s) { i++;%>
         <a class="list-group-item">
           <%if (type === "103") { %>
         <div class="pull-right">
             <% if (services.getServicesByType()[type].length > 1) { %>
-			<button type="button" class="btn btn-default delete-weather" rel="popover" id="<%= s.get('id') %>" data-trigger="focus">
+			<button type="button" class="btn btn-default delete-weather" rel="popover" brickid="<%= s.get('id') %>" id="DelBtn<%= i%>" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="form.delete-button"></span>
 			</button>
             <%}%>
-			<button type="button" class="btn btn-default see-meteo" id="<%= s.get('id') %>">
+			<button type="button" class="btn btn-default see-meteo" brickid="<%= s.get('id') %>">
 				<span data-i18n="weather.weblink">Voir météo</span>
 			</button>
         </div>

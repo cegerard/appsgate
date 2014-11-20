@@ -65,6 +65,7 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
         try {
             objectNode = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
         } catch (SpokTypeException ex) {
+            LOGGER.error("Unable to build NodeState: {}", o.toString());
             throw new SpokNodeException("NodeState", "object", ex);
         }
 
@@ -96,18 +97,15 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
         // We are in state
         Boolean state = isOfState();
         if (state == null) {
+            LOGGER.error("Unable to compute a boolean value for {}", this);
             SpokExecutionException ex = new SpokExecutionException("Unable to compute a boolean value for this state");
             return ex.getJSONDescription();
         }
-        if (state) {
-            isOnRules = true;
+        isOnRules = state;
+        if (isOnRules) {
             fireStartEvent(new StartEvent(this));
-            listenEndStateEvent();
-        } else {
-            isOnRules = false;
-            eventStartNode.addEndEventListener(this);
-            eventStartNode.call();
         }
+        listenNextEvent();
         return null;
     }
 
@@ -129,12 +127,15 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
             LOGGER.trace("the start event of the state {} has been thrown", stateName);
             isOnRules = true;
             fireStartEvent(new StartEvent(this));
-            listenEndStateEvent();
-        } else {
+            listenNextEvent();
+
+        } else if (n == eventEnd) {
             LOGGER.trace("the end event of the state {} has been thrown", stateName);
             isOnRules = false;
             fireEndEvent(new EndEvent(this));
-            setStarted(false);
+        } else {
+            LOGGER.error("An unexpected end event ({}) has been thrown for {}", e.getSource(), this);
+            return;
         }
     }
 
@@ -169,14 +170,27 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
     /**
      * do the job when the end state event has been raised
      */
-    private void listenEndStateEvent() {
-        eventEndNode.addEndEventListener(this);
-        eventEndNode.call();
+    private void listenNextEvent() {
+        if (isOnRules) {
+            if (eventEndNode == null) {
+                LOGGER.error("ListenNextEvent: No end event for {}", this);
+                return;
+            }
+            eventEndNode.addEndEventListener(this);
+            eventEndNode.call();
+        } else {
+            if (eventStartNode == null) {
+                LOGGER.error("ListenNextEvent: No start event for {}", this);
+                return;
+            }
+            eventStartNode.addEndEventListener(this);
+            eventStartNode.call();
+        }
     }
 
     @Override
-    public String toString() {
-        return "[State " + stateName + "]";
+    public String getTypeSpec() {
+        return "State " + stateName;
     }
 
     /**
@@ -204,7 +218,7 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
     /**
      * @return true if the state is ok
      */
-    abstract protected Boolean isOfState() ;
+    abstract protected Boolean isOfState();
 
     /**
      * @param start
@@ -214,10 +228,12 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
         if (eventStart == null) {
             eventStart = start;
             eventStartNode = (Node) eventStart;
+            eventStartNode.setIID(this.getIID() + ".start");
         }
         if (eventEnd == null) {
             eventEnd = end;
             eventEndNode = (Node) eventEnd;
+            eventEndNode.setIID(this.getIID() + ".end");
         }
     }
 
@@ -250,6 +266,20 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
         if (this.objectNode != null) {
             objectNode.buildReferences(table);
         }
+    }
+
+    /**
+     * @return
+     */
+    public INodeEvent getStartEvent() {
+        return eventStart;
+    }
+
+    /**
+     * @return
+     */
+    public INodeEvent getEndEvent() {
+        return eventEnd;
     }
 
 }

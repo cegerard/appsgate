@@ -2,6 +2,7 @@ define(function(require, exports, module) {
   "use strict";
 
   // External dependencies.
+  var HomeView = require("views/home/home");
   var PlacesRouter = require("routers/place");
   var DevicesRouter = require("routers/device");
   var ServicesRouter = require("routers/service");
@@ -11,6 +12,7 @@ define(function(require, exports, module) {
   var mainTemplate = require("text!templates/home/main.html");
   var navbarTemplate = require("text!templates/home/navbar.html");
   var circleMenuTemplate = require("text!templates/home/circlemenu.html");
+  var loadingWidgetTemplate = require("text!templates/home/loadingWidget.html");
 
   // define the application router
   var Router = Backbone.Router.extend({
@@ -24,31 +26,78 @@ define(function(require, exports, module) {
     maintemplate : _.template(mainTemplate),
     navbartemplate : _.template(navbarTemplate),
     circlemenutemplate : _.template(circleMenuTemplate),
-
+    loadingtemplate : _.template(loadingWidgetTemplate),
     routes: {
-      "": "debugger",
-      "reset": "debugger",
-      "home": "debugger",
+      "": "home",
+      "reset": "home",
+      "home": "home",
+      "dashboard": "debugger",
       "places": "places",
       "devices": "devices",
       "services": "services",
       "programs": "programs"
     },
+    initialize: function() {
+      dispatcher.on("router:loading", function() {
+          appRouter.loading = true;
+          _.delay(function() {
+            if(appRouter.loading) {
+              appRouter.showLoadingWidget();
+            }
+          },100);
+      });
+
+      dispatcher.on("router:loaded", function() {
+        appRouter.loading = false;
+        appRouter.hideLoadingWidget();
+      });
+    },
+
     // default route of the application
     places: function() {
+      dispatcher.trigger("router:loading");
       this.placesRouter.list();
     },
     devices: function() {
+      dispatcher.trigger("router:loading");
       this.devicesRouter.list();
     },
     services: function() {
+      dispatcher.trigger("router:loading");
       this.servicesRouter.list();
     },
     programs: function() {
+      dispatcher.trigger("router:loading");
       this.programsRouter.list();
     },
     debugger: function() {
+      dispatcher.trigger("router:loading");
       this.debuggerRouter.all();
+    },
+    home: function() {
+      // in case there is a loading widget present
+      this.hideLoadingWidget();
+
+      // remove and unbind the current view for the menu
+      if (this.currentMenuView) {
+          this.currentMenuView.close();
+      }
+      if (this.currentView) {
+          this.currentView.close();
+      }
+
+      appRouter.currentMenuView = new HomeView({el:$("#main")});
+      appRouter.currentMenuView.render();
+
+      $("#main").append(appRouter.circlemenutemplate());
+
+      // initialize the circle menu
+      $(".controlmenu").circleMenu({
+          trigger: "click",
+          item_diameter: 50,
+          circle_radius: 75,
+          direction: 'top-right'
+      });
     },
     // update the side menu w/ new content
     showMenuView: function(menuView) {
@@ -96,11 +145,16 @@ define(function(require, exports, module) {
       this.currentView = view;
       this.currentView.render();
     },
+    showLoadingWidget: function() {
+      $("body").append(this.loadingtemplate);
+    },
+    hideLoadingWidget: function() {
+      $(".loading-widget-wrapper").remove();
+    },
     updateLocale:function(locale) {
       this.locale = locale;
 
       $.i18n.init({ lng : this.locale }).done(function() {
-        appRouter.navigate("reset", { trigger : true });
         $("body").i18n();
       });
     }

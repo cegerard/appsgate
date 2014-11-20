@@ -88,11 +88,14 @@ define([
 
         // listen to marker click event from dashboard
         dashboard.on('marker:click', function (decorations, textContent, htmlContent) {
-            alert(textContent);
+            $("#bubbleModal").find(".modal-body").html(htmlContent);
+            $("#bubbleModal").modal("show");
         });
 
         // prompt server for initial history trace
         dashboard.requestInitialHistoryTrace();
+
+        this.resize($(".scrollable"));
     },
 
     destroy: function() {

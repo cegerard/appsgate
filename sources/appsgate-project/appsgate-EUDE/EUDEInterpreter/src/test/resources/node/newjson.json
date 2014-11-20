@@ -22,7 +22,8 @@
     ],
     "body": {
         "type": "setOfRules",
-        "rules": ""
+        "rules": {
+        }
 
     },
     "activeNodes": {},

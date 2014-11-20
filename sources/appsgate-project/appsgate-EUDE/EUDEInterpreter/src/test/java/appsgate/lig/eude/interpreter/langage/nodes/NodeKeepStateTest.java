@@ -66,19 +66,24 @@ public class NodeKeepStateTest extends NodeTest {
                 allowing(mediator).notifyChanges(with(any(ProgramLineNotification.class)));
             }
         });
+        
+        
         NodeKeepState n = (NodeKeepState) this.instance;
+        NodeState state = n.getState();
+
         System.out.println("=========== First call to keepState test");
         n.call();
         synchroniser.waitUntil(tested.is("listening"), 200);
         tested.become("no");
         System.out.println("============ End event fired");
-        n.endEventFired(new EndEvent(n.getState()));
+        INodeEvent endEvent = state.getEndEvent();
+        state.endEventFired(new EndEvent(endEvent));
         synchroniser.waitUntil(tested.is("listening"), 200);
         tested.become("no");
         System.out.println("============ End event fired");
-        n.endEventFired(new EndEvent(n.getState()));
+        state.endEventFired(new EndEvent(endEvent));
         System.out.println("============ End event fired");
-        n.endEventFired(new EndEvent(n.getState()));
+        state.endEventFired(new EndEvent(endEvent));
         synchroniser.waitUntil(tested.is("listening"), 200);
         System.out.println("============ Stop");
         n.stop();

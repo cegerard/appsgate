@@ -36,7 +36,7 @@ define([
          * return the keyboard code for a given event
          */
         getKeyboardForEvent: function (evt) {
-            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+            var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
             var v = this.getJSONEvent("mandatory");
             switch (evt) {
             case "sunrise":
@@ -68,7 +68,7 @@ define([
         getStates: function (which) {
             if (which == "state") {
                 //code
-                //                return ["isCurrentlyDaylight", "isCurrentWeatherCode", "isForecastWeatherCode"];
+                return ["daylightState", "moonlightState"];
             }
             return [];
         },
@@ -86,46 +86,20 @@ define([
                 "iid": "X"
             };
             switch (state) {
-            case "isCurrentWeatherCode":
-                $(btn).append("<span data-i18n='services.weather.keyboard.is-current-weather-code-state'/>");
-
-                //                    v.methodName = "isWeatherSimplifiedCodeForecast";
-                v.methodName = "isCurrentWeatherCode";
-                v.returnType = "boolean";
-                v.name = "currentWeatherCodeState";
-                v.args = [{
-                    "type": "int",
-                    "value": "0"
-                }];
-                v.phrase = "services.weather.language.is-current-weather-code-state";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
-            case "isForecastWeatherCode":
-                $(btn).append("<span data-i18n='services.weather.keyboard.is-forecast-weather-code-state'/>");
-
-                v.methodName = "isWeatherSimplifiedCodeForecast";
-                v.returnType = "boolean";
-                v.name = "forecastWeatherCodeState";
-                v.args = [{
-                        "type": "int",
-                        "value": "0"
-                    },
-                    {
-                        "type": "int",
-                        "value": "0"
-                    }];
-
-                v.phrase = "services.weather.language.is-forecast-weather-code-state";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
-            case "isCurrentlyDaylight":
+            case "daylightState":
                 $(btn).append("<span data-i18n='services.weather.keyboard.currently-daylight'/>");
 
-                v.methodName = "isCurrentlyDaylight";
-                v.name = "daylightState";
-                v.returnType = "boolean";
+				v.name = state;
 
                 v.phrase = "services.weather.language.currently-daylight";
+                $(btn).attr("json", JSON.stringify(v));
+                break;
+            case "moonlightState":
+                $(btn).append("<span data-i18n='services.weather.keyboard.currently-moonlight'/>");
+
+				v.name = state;
+
+                v.phrase = "services.weather.language.currently-moonlight";
                 $(btn).attr("json", JSON.stringify(v));
                 break;
             default:
@@ -148,11 +122,14 @@ define([
          * return the list of available properties
          */
         getProperties: function () {
-            return ["getCurrentTemperature",
-                "getCurrentWeatherCode", //disabled because, it is ambiguous with the STATE which is near
-                "getForecastWeatherCode", //disabled because, it is ambiguous with the STATE which is near
-                "getForecastMinTemperature",
-                "getForecastMaxTemperature"];
+            return [
+                //"getCurrentTemperature", // Removing those current weather states to remove some buttons on the HMI
+                //"getCurrentWeatherCode",
+                //"getForecastMinTemperature",
+                //"getForecastMaxTemperature",
+                "getForecastWeatherCode",
+                "getForecastTemperature"
+            ];
         },
         /**
          * return the keyboard code for a given property
@@ -171,24 +148,6 @@ define([
 
             //var v = this.getJSONProperty("mandatory");
             switch (property) {
-            case "getCurrentTemperature":
-                $(btn).append("<span data-i18n='services.weather.keyboard.current-temperature'><span>");
-
-                v.methodName = property;
-                v.returnType = "number";
-                v.phrase = "services.weather.language.current-temperature";
-                v.unit = "&deg;C";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
-
-            case "getCurrentWeatherCode":
-                $(btn).append("<span data-i18n='services.weather.keyboard.current-weather-code-state'><span>");
-
-                v.methodName = "getCurrentWeatherString";
-                v.returnType = "scale";
-                v.phrase = "services.weather.language.current-weather-code-state";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
 
             case "getForecastWeatherCode":
                 $(btn).append("<span data-i18n='services.weather.keyboard.forecast-weather-code-state'><span>");
@@ -204,35 +163,24 @@ define([
                 $(btn).attr("json", JSON.stringify(v));
                 break;
                 // TODO : Add the other properties
+            case "getForecastTemperature":
+                    $(btn).append("<span data-i18n='services.weather.keyboard.forecast-temperature'><span>");
 
-            case "getForecastMinTemperature":
-                $(btn).append("<span data-i18n='services.weather.keyboard.forecast-temperature-min'><span>");
-
-                v.methodName = property;
-                v.args = [
-                    {
-                        "type": "int",
-                        "value": "0"
-                    }];
+                    v.methodName = property;
+                    v.args = [
+                        {
+                            "type": "int",
+                            "value": "0"
+                        },
+                        {
+                            "type": "int",
+                            "value": "0"
+                        }];
                 v.returnType = "number";
-                v.phrase = "services.weather.language.forecast-temperature-min";
-                v.unit = "&deg;C";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
-            case "getForecastMaxTemperature":
-                $(btn).append("<span data-i18n='services.weather.keyboard.forecast-temperature-max'><span>");
-
-                v.methodName = property;
-                v.args = [
-                    {
-                        "type": "int",
-                        "value": "0"
-                    }];
-                v.returnType = "number";
-                v.phrase = "services.weather.language.forecast-temperature-max";
-                v.unit = "&deg;C";
-                $(btn).attr("json", JSON.stringify(v));
-                break;
+                    v.phrase = "services.weather.language.forecast-temperature";
+                    v.unit = "&deg;C";
+                    $(btn).attr("json", JSON.stringify(v));
+                    break;
             default:
                 console.error("unexpected service state found for Weather : " + property);
                 btn = null;
@@ -312,7 +260,7 @@ define([
          * @returns the default template state
          */
         getTemplateProperty: function () {
-            return _.template(StateTemplate);
+            return _.template(PropertyTemplate);
         }
     });
     return Weather;

@@ -13,15 +13,16 @@ define([
     "models/device/actuator",
     "models/device/domicube",
     "models/device/mediaplayer",
+    "models/device/coretv",
     "models/device/coreclock"
-], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, CoreClock) {
+], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, CoreTV, CoreClock) {
 
     var Devices = {};
 
     // collection
     Devices = Backbone.Collection.extend({
         model: Device,
-        templates: {'action' : {}, 'event' : {}, 'state': {}, 'property' : {}},
+        templates: {'action' : {}, 'action-parameter' : {}, 'event' : {},'event-parameter' : {}, 'state': {},'state-parameter': {}, 'property' : {},'property-parameter' : {}},
         /**
          * Fetch the devices from the server
          *
@@ -38,7 +39,7 @@ define([
             dispatcher.on("listDevices", function(devices) {
                 _.each(devices, function(device) {
                     if (device) {
-                        self.addDevice(device, true);
+                        self.addDevice(device);
                     }
                 });
                 dispatcher.trigger("devicesReady");
@@ -46,7 +47,7 @@ define([
 
             // listen to the backend notifying when a device appears and add it
             dispatcher.on("newDevice", function(device) {
-                self.addDevice(device, false);
+                self.addDevice(device);
             });
 
             dispatcher.on("removeDevice", function(device) {
@@ -67,7 +68,7 @@ define([
          *
          * @param device
          */
-        addDevice: function(brick, list) {
+        addDevice: function(brick) {
             var self = this;
             var device = null;
             brick.type = parseInt(brick.type);
@@ -102,6 +103,9 @@ define([
                 case 21:
                     device = new CoreClock(brick);
                     break;
+                case 124:
+                    device = new CoreTV(brick);
+                    break;
                 case 31:
                     device = new MediaPlayer(brick);
                     break;
@@ -109,27 +113,27 @@ define([
                     device = new DomiCube(brick);
                     break;
                 default:
-                    //console.log("unknown type", brick.type, brick);
+                    console.log("unknown type of DEVICE : ", brick.type, brick);
                     break;
             }
             if (device != null) {
                 self.templates['action'][brick.type] = device.getTemplateAction();
+                self.templates['action-parameter'][brick.type] = device.getTemplateParameter();
                 self.templates['event'][brick.type] = device.getTemplateEvent();
+                self.templates['event-parameter'][brick.type] = {};
                 self.templates['state'][brick.type] = device.getTemplateState();
+                self.templates['state-parameter'][brick.type] = {};
                 self.templates['property'][brick.type] = device.getTemplateProperty();
+                self.templates['property-parameter'][brick.type] = {};
 
-                //code
-                if(list){
-                  if(typeof brick.placeId !== "undefined"){
-                    places.get(brick.placeId).get("devices").push(brick.id);
-                    places.get(brick.placeId).trigger('change');
-                  }
-                  else{
-                    places.get("-1").get("devices").push(brick.id);
-                    places.get("-1").trigger('change');
-                  }
+                if(typeof brick.placeId !== "undefined"){
+                  places.get(brick.placeId).get("devices").push(brick.id);
+                  places.get(brick.placeId).trigger('change');
                 }
-
+                else{
+                  places.get("-1").get("devices").push(brick.id);
+                  places.get("-1").trigger('change');
+                }
                 self.add(device);
             }
         },
@@ -219,6 +223,8 @@ define([
                 i18="devices.actuator.name.";
             } else if (type == "31") {
                 i18="devices.mediaplayer.name.";
+            } else if (type == "124") {
+                i18="devices.tv.name.";
             } else if (type == "210") {
                 i18="devices.domicube.name.";
             }
@@ -303,7 +309,7 @@ define([
          */
         getTemplateByType: function(word,type,param) {
             if (this.templates[word][type]) {
-                return this.templates[word][type](param);
+                return this.templates[word][type]($.extend(param,this.templates[word+'-parameter'][type]));
             } else {
                 console.warn("No template is defined for type: " + type);
             }

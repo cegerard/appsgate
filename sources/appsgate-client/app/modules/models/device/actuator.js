@@ -22,12 +22,11 @@ define([
           this.generateDefaultName($.i18n.t("devices.actuator.name.singular"));
       }
     },
-
     /**
      * Send a message to the backend to update the attribute value
      */
     sendValue: function() {
-      if (this.get("value") === "true") {
+      if (this.get("value") === "true" || this.get("value") === true) {
         this.remoteControl("on", []);
       } else {
         this.remoteControl("off", []);

@@ -51,7 +51,12 @@ public class NodeWait extends Node {
     @Override
     protected void specificStop() {
         if (waitFor != null) {
+            waitFor.removeEndEventListener(this);
             waitFor.stop();
+        }
+        if (event != null) {
+            event.removeEndEventListener(this);
+            event.stop();
         }
     }
 
@@ -144,5 +149,10 @@ public class NodeWait extends Node {
         if (this.waitFor != null) {
             waitFor.buildReferences(table);
         }
+    }
+
+    @Override
+    public String getTypeSpec() {
+        return "Wait";
     }
 }

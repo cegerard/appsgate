@@ -16,7 +16,7 @@ define([
       },
       autoupdate: function() {
         LightSensorView.__super__.autoupdate.apply(this);
-        this.$el.find("#light-sensor-value").html($.i18n.t("devices.illumination.scale." + this.model.get("label")) + ":" + this.model.getValue() + "Lux");
+        this.$el.find("#light-sensor-value").html($.i18n.t("devices.illumination.scale." + this.model.get("label")) + " : " + this.model.getValue() + " Lux");
 
         // translate the view
         this.$el.i18n();
