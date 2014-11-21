@@ -169,7 +169,7 @@ public class ARDController {
                     try {
                         connect();
                         monitoring();
-                        sendRequest(new SubscriptionRequest());
+                        sendSyncRequest(new SubscriptionRequest()).getResponse();
                     } catch (Exception e) {
                         e.printStackTrace();
                         if(retry==null || retry==-1) break;
