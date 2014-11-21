@@ -82,7 +82,7 @@ public class ARDBusMonitor extends Thread {
 
 
             } catch (IOException e) {
-                e.printStackTrace();
+                //Not necessary to throw exception, this is normal because the timeout for read was changed in order to better control the disconnection
             }
 
         }while(keepMonitoring);
