@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, CoreObjectSpec, CoreARDBadgeDoorSpec { //ARDWatchDogSpec
 
-    private static Logger logger = LoggerFactory.getLogger(ARDBadgeDoor.class);
+    private static Logger logger = LoggerFactory.getLogger(ARDController.ARD_LOGNAME);
     private String sensorName;
     private String sensorId;
     private String sensorType;

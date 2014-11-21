@@ -17,7 +17,7 @@ import java.util.*;
 
 public class ARDSideTask implements Runnable {
 
-    private Logger logger = LoggerFactory.getLogger(ARDSideTask.class);
+    private Logger logger = LoggerFactory.getLogger(ARDController.ARD_LOGNAME);
 
     ARDBrigdeImporter importer;
 
