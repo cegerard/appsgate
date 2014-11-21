@@ -67,7 +67,11 @@ require(["config"], function() {
         $.i18n.init({
           resGetPath: 'app/locales/__lng__/__ns__.json',
           lng: 'fr',
-          fallbackLng: 'fr'
+          fallbackLng: 'fr',
+          ns: {
+            namespaces: ['translation', 'debugger'],
+            defaultNs: 'translation'
+          }
         }).done(function() {
           app.initialize();
         });
