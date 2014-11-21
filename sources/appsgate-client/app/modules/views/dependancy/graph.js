@@ -70,6 +70,8 @@ define([
 				.attr("width", width)
 				.attr("height", height);
 
+			//			svg.call(d3.behavior.zoom().on("zoom", rescale));
+
 			// Add the div for links & nodes
 			svg.append("svg:g").attr("id", "groupLink");
 			svg.append("svg:g").attr("id", "groupNode");
@@ -426,7 +428,7 @@ define([
 		},
 
 		dblclick: function (d) {
-			// ZoomIn manage
+			// Go to details manage
 			if (d3.event.shiftKey) {
 				switch (d.type) {
 				case "place":
@@ -557,7 +559,19 @@ define([
 
 	});
 
+	function rescale() {
+		trans = d3.event.translate;
+		scale = d3.event.scale;
+
+		svg.select("#groupNode").attr("transform",
+			"translate(" + trans + ")" + " scale(" + scale + ")");
+		svg.select("#groupLink").attr("transform",
+			"translate(" + trans + ")" + " scale(" + scale + ")");
+	};
+
 	function mousedown(d) {
+		// disable zoom
+		//		svg.call(d3.behavior.zoom().on("zoom", null));
 		d.hasBeenMoved = false;
 		d3.select(this).on("mousemove", function () {
 			d.hasBeenMoved = true;
@@ -579,6 +593,9 @@ define([
 				force.start();
 			}
 		}
+
+		// enable zoom
+		//		svg.call(d3.behavior.zoom().on("zoom", rescale));
 	};
 
 	function arcPath(turned, d) {
