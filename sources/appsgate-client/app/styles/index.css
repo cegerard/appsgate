@@ -475,6 +475,12 @@ body {
   border: 0;
   position: relative;
 }
+.editorWorkspace .btn:hover,
+.editorWorkspace .btn:focus {
+  color: black;
+  background: transparent !important;
+  border: 1px solid black !important;
+}
 .programInput {
   height: 70%;
   width: 100%;
@@ -558,6 +564,7 @@ fieldset[disabled] .btn {
   background: transparent;
   border: none !important;
   box-shadow: none;
+  cursor:default;
 }
 .read-only .btn:hover,
 .read-only .btn:focus {
