@@ -56,17 +56,24 @@ define([
 		},
 
 		render: function () {
-			this.$el.append(this.template({
+//			this.$el.append(this.template({
+//				dependancy: this.model,
+//			}));
+			this.$el.html(this.template({
 				dependancy: this.model,
 			}));
 
-			var width = this.model.get("width"),
+//			var width = this.model.get("width"),
+//				height = this.model.get("height");
+			
+			var width = $(".body-content").width(),
 				height = this.model.get("height");
 
+			
 			this.createFilters(this.model);
 
 			// Add the svg to html
-			svg = d3.select("#graph").append("svg")
+			svg = d3.select("#graph").select("svg")
 				.attr("width", width)
 				.attr("height", height);
 
