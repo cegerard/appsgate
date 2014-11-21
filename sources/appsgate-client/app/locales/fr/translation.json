@@ -44,9 +44,9 @@
         "force-input": "Forcer entrée ..."
       },
       "event": {
-        "authorized": "badge est autorisé sur ...",
-        "non_authorized": "badge n'est pas autorisé sur ...",
-        "alarm_fired": "alarme sonné en ..."
+        "authorized": "l'accès du badge a était autorisé par ...",
+        "non_authorized": "l'accès du badge n'a pas était autorisé par ...",
+        "alarm_fired": "alarme declenchée par ..."
       },
       "last-authorized": "Dernier badge accès autorisé",
       "last-card": "Dernier badge passé",
@@ -58,9 +58,9 @@
       },
       "negative": "Non",
       "state": {
-        "authorized": "badge est autorisé __myVar__",
-        "non_authorized": "badge n'est pas autorisé __myVar__",
-        "alarm_fired": "alarme sonné en __myVar__"
+        "authorized": "l'accès du badge a était autorisé par __myVar__",
+        "non_authorized": "l'accès du badge n'a pas était autorisé par __myVar__",
+        "alarm_fired": "alarme declenchée par __myVar__"
       }
     },
     "avg": "Moy : ",
