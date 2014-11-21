@@ -13,6 +13,7 @@ import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,13 +76,13 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	 * A map between the periodic alarms, matches the same alarm id as an alarm
 	 * registered at current time
 	 */
-	Map<Integer, AlarmEventObserver> periodicAlarmObservers = new HashMap<Integer, AlarmEventObserver>();
+	Map<Integer, AlarmEventObserver> periodicAlarmObservers = new ConcurrentHashMap<Integer, AlarmEventObserver>();
 
 	/**
 	 * A map between the periods in millis of periodic alarms, matches the same
 	 * alarm id as an alarm registered at current time
 	 */
-	Map<Integer, Long> alarmPeriods = new HashMap<Integer, Long>();
+	Map<Integer, Long> alarmPeriods = new ConcurrentHashMap<Integer, Long>();
 
 	/**
 	 * As single time alarms are removed from the list they do not fire events
@@ -92,7 +93,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	/**
 	 * Convenient to unregister alarms (avoid complexity)
 	 */
-	Map<Integer, Long> reverseAlarmMap = new HashMap<Integer, Long>();
+	Map<Integer, Long> reverseAlarmMap = new ConcurrentHashMap<Integer, Long>();
 
 	Timer timer;
 
@@ -351,6 +352,10 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 							time += alarmPeriods.get(i);
 							periodicAlarmObservers.get(i).alarmEventFired(i);
 						}
+					
+					if(i < 0)
+						System.out.println("ERREUR");
+					
 					if (futureTime - time < alarmLagTolerance)
 						disarmedAlarms.add(i);
 					else
@@ -645,13 +650,20 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 					nextAlarmTime = -1;
 				}
 			}
-			if (nextAlarmId > 0) {
+			int id = nextAlarmId; // Trick to avoid the change nextAlarmId by a calculateNextTimer
+			if (id > 0) {
 				logger.debug("Firing current clock alarms to one periodic event observer");
-
-				periodicAlarmObservers.get(nextAlarmId).alarmEventFired(
-						nextAlarmId);
-				fireClockAlarmNotificationMsg(nextAlarmId);
-				disarmedAlarms.add(nextAlarmId);
+				
+				if(periodicAlarmObservers.containsKey(id)) {
+					periodicAlarmObservers.get(id).alarmEventFired(
+						id);
+					fireClockAlarmNotificationMsg(id);
+				}
+				if(id <0)
+					System.out.println("ERREUR, c'est là");
+				if(disarmedAlarms.contains(id)) {
+					disarmedAlarms.add(id);
+				}
 			}
 			calculateNextTimer();
 		}
