@@ -482,11 +482,11 @@ body {
   border: 1px solid #999999;
   margin-bottom: 20px;
 }
-.btn-primary {
+.editorWorkspace .btn-primary {
   color: white;
   background: #284476 !important;
 }
-.read-only .btn-primary {
+.editorWorkspace .read-only .btn-primary {
   color: #284476 !important;
   background: transparent !important;
   border: none !important;
