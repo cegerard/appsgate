@@ -197,7 +197,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
         if(zonesCache==null){
             zonesCache=new JSONArray();
-            for(int index=1;index<5;index++){
+            for(int index=1;index<10;index++){
                 try {
                     JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
 
@@ -224,25 +224,9 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     private void fillUpInputs(final JSONObject descr){
 
-        /**
-        JSONObject input1 = new JSONObject();
-        JSONObject input2 = new JSONObject();
-        try {
-            input1.put("input_idx", 1);
-            input1.put("input_name", "input 1");
-            input2.put("input_idx", 2);
-            input2.put("input_name", "input 2");
-
-            descr.append("inputs", input1);
-            descr.append("inputs", input2);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-         **/
-
         if(inputsCache==null){
             inputsCache=new JSONArray();
-            for(int index=1;index<5;index++){
+            for(int index=1;index<10;index++){
                 try {
                     JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
 
