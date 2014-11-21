@@ -22,16 +22,10 @@ define([
       }
 
       this.remoteControl("getZonesAvailable", [], "zonesavailable");
-      this.remoteControl("getInputsAvailable", [], "inputsavailable");
 
       dispatcher.on('zonesavailable', function(zones) {
         console.log("zones available received: " + JSON.stringify(zones, 4, null));
         self.set("zones", zones);
-      });
-
-      dispatcher.on('inputsavailable', function(inputs) {
-        console.log("inputs available received: " + JSON.stringify(inputs, 4, null));
-        self.set("inputs", inputs);
       });
     },
     getEvents: function() {
@@ -54,38 +48,32 @@ define([
 
       switch (act) {
         case "zoneActivate":
-          $(btn).append("<span>" + $.i18n.t('devices.ard.keyboard.zone-activate', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.ard.name.singular') + "</span>",
-          }));
+          $(btn).append("<span data-i18n='devices.ard.keyboard.zone-activate'/>");
           v.methodName = "zoneActivate";
           v.phrase = "devices.ard.action.zone-activate";
           v.args = [{
             "type": "int",
-            "value": "1"
+            "value": "0"
           }];
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "zoneDesactivate":
-          $(btn).append("<span>" + $.i18n.t('devices.ard.keyboard.zone-desactivate', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.ard.name.singular') + "</span>",
-          }));
+          $(btn).append("<span data-i18n='devices.ard.keyboard.zone-desactivate'/>");
           v.methodName = "zoneDesactivate";
           v.phrase = "devices.ard.action.zone-desactivate";
           v.args = [{
             "type": "int",
-            "value": "1"
+            "value": "0"
           }];
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "forceInput":
-          $(btn).append("<span>" + $.i18n.t('devices.ard.keyboard.force-input', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.ard.name.singular') + "</span>",
-          }));
+          $(btn).append("<span data-i18n='devices.ard.keyboard.force-input'/>");
           v.methodName = "forceInput";
           v.phrase = "devices.ard.action.force-input";
           v.args = [{
             "type": "int",
-            "value": "1"
+            "value": "0"
           }];
           $(btn).attr("json", JSON.stringify(v));
           break;
@@ -105,10 +93,8 @@ define([
       var v = this.getJSONState("mandatory");
       switch (state) {
         case "getLastCard":
-          $(btn).append("<span>" + $.i18n.t('devices.ard.keyboard.authorized', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.ard.name.singular') + "</span>",
-          }));
-          v.phrase = "devices.ard.language.authorized";
+          $(btn).append("<span data-i18n='devices.ard.state.authorized'/>");
+          v.phrase = "devices.ard.state.opened";
           v.name = "getLastCard";
           $(btn).attr("json", JSON.stringify(v));
           break;
@@ -124,30 +110,24 @@ define([
       var v = this.getJSONEvent("mandatory");
       switch (evt) {
         case "isAuthorized":
-          $(btn).append("<span>" + $.i18n.t('devices.ard.keyboard.authorized', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.ard.name.singular') + "</span>",
-          }));
+          $(btn).append("<span data-i18n='devices.ard.event.authorized'/>");
           v.eventName = "authorized";
           v.eventValue = "true";
-          v.phrase = "devices.ard.language.authorized";
+          v.phrase = "devices.ard.state.authorized";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "isNotAuthorized":
-          $(btn).append("<span>" + $.i18n.t('devices.ard.keyboard.non_authorized', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.ard.name.singular') + "</span>",
-          }));
+          $(btn).append("<span data-i18n='devices.ard.event.non_authorized'/>");
           v.eventName = "authorized";
           v.eventValue = "false";
-          v.phrase = "devices.ard.language.non_authorized";
+          v.phrase = "devices.ard.state.non_authorized";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "alarmFired":
-          $(btn).append("<span>" + $.i18n.t('devices.ard.keyboard.alarm_fired', {
-            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.ard.zone') + "</span>",
-          }));
+          $(btn).append("<span data-i18n='devices.ard.event.alarm_fired'/>");
           v.eventName = "alarmFired";
           v.eventValue = "*";
-          v.phrase = "devices.ard.language.alarm_fired";
+          v.phrase = "devices.ard.state.alarm_fired";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
@@ -164,9 +144,17 @@ define([
       console.log("Actual zones:" + JSON.stringify(this.get("zones"), 4, null));
       return {
         zones: this.get("zones"),
-        inputs: this.get("inputs")
-      } //inputs:[{input_idx:1,input_name:"porte1"},{input_idx:2,input_name:"porte2"}]};//{zones:[{'zone_idx':1,'zone_name':"exterieur"}]};
+        inputs: [{
+          input_idx: 1,
+          input_name: "porte1"
+        }, {
+          input_idx: 2,
+          input_name: "porte2"
+        }]
+      }; //{zones:[{'zone_idx':1,'zone_name':"exterieur"}]};
+
     }
+
   });
   return ARDLock;
 });

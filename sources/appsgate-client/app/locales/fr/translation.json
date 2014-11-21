@@ -32,33 +32,36 @@
       }
     },
     "ard": {
-      "language": {
+      "affirmative": "Oui",
+      "action": {
         "zone-activate": "Activer surveillance __myVar__",
         "zone-desactivate": "Desactiver surveillance __myVar__",
-        "authorized": "badge est autorisé __myVar__",
-        "non_authorized": "badge n'est pas autorisé __myVar__",
-        "alarm_fired": "alarme sonné en __myVar__",
         "force-input": "Forcer entrée __myVar__"
       },
       "keyboard": {
-        "zone-activate": "Activer surveillance sur __myVar__",
-        "zone-desactivate": "Desactiver surveillance sur __myVar__",
-        "authorized": "badge est autorisé sur __myVar__",
-        "non_authorized": "badge n'est pas autorisé sur __myVar__",
-        "alarm_fired": "alarme sonné dans la __myVar__",
-        "force-input": "Forcer entrée __myVar__"
+        "zone-activate": "Activer surveillance sur ...",
+        "zone-desactivate": "Desactiver surveillance sur ...",
+        "force-input": "Forcer entrée ..."
+      },
+      "event": {
+        "authorized": "badge est autorisé sur ...",
+        "non_authorized": "badge n'est pas autorisé sur ...",
+        "alarm_fired": "alarme sonné en ..."
       },
       "last-authorized": "Dernier badge accès autorisé",
       "last-card": "Dernier badge passé",
-      "last-message": "Dernier message",
+      "last-message": "Denier message",
       "last-message-empty": "Pas des message",
       "name": {
         "plural": "ARD",
         "singular": "ARD"
       },
-      "affirmative": "Oui",
       "negative": "Non",
-      "zone": "zone"
+      "state": {
+        "authorized": "badge est autorisé __myVar__",
+        "non_authorized": "badge n'est pas autorisé __myVar__",
+        "alarm_fired": "alarme sonné en __myVar__"
+      }
     },
     "avg": "Moy : ",
     "clock": {

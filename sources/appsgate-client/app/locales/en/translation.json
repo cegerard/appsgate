@@ -32,21 +32,21 @@
       }
     },
     "ard": {
-      "language": {
+      "affirmative": "Yes",
+      "action": {
         "zone-activate": "Activate alarm __myVar__",
         "zone-desactivate": "Desactivate alarm __myVar__",
-        "authorized": "badge is authorized on __myVar__",
-        "non_authorized": "badge is NOT authorized on __myVar__",
-        "alarm_fired": "Alarm fired on __myVar__",
-        "force-input": "Force input __myVar__"
+        "force-input": "Force entry __myVar__"
       },
       "keyboard": {
-        "zone-activate": "Activate alarm __myVar__",
-        "zone-desactivate": "Desactivate alarm __myVar__",
-        "authorized": "badge is authorized on __myVar__",
-        "non_authorized": "badge is NOT authorized on __myVar__",
-        "alarm_fired": "Alarm fired on __myVar__",
-        "force-input": "Force input __myVar__"
+        "zone-activate": "Activate alarm on ...",
+        "zone-desactivate": "Desactivate alarm on ...",
+        "force-input": "Force entry ..."
+      },
+      "event": {
+        "authorized": "badge is authorized on ...",
+        "non_authorized": "badge is NOT authorized on ...",
+        "alarm_fired": "Alarm fired on ..."
       },
       "last-authorized": "Last badge access granted",
       "last-card": "Last badge passed",
@@ -56,9 +56,12 @@
         "plural": "ARD",
         "singular": "ARD"
       },
-      "affirmative": "Yes",
       "negative": "No",
-      "zone": "zone"
+      "state": {
+        "authorized": "badge is authorized on __myVar__",
+        "non_authorized": "badge is NOT authorized on __myVar__",
+        "alarm_fired": "Alarm fired on __myVar__"
+      }
     },
     "avg": "Avg : ",
     "clock": {
