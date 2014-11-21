@@ -2,6 +2,9 @@ define([
     "app",
     "models/device/device",
     "text!templates/program/nodes/defaultActionNode.html",
+    "text!templates/program/nodes/defaultEventNode.html",
+    "text!templates/program/nodes/defaultPropertyNode.html",
+    "text!templates/program/nodes/defaultStateNode.html",
     "models/device/temperaturesensor",
     "models/device/illuminationsensor",
     "models/device/switchsensor",
@@ -15,7 +18,7 @@ define([
     "models/device/mediaplayer",
     "models/device/coretv",
     "models/device/coreclock"
-], function(App, Device, ActionTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, CoreTV, CoreClock) {
+], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, CoreTV, CoreClock) {
 
     var Devices = {};
 
@@ -313,7 +316,20 @@ define([
             } else {
                 console.warn("No template is defined for type: " + type);
             }
-            return _.template(ActionTemplate)(param);
+            switch(word) {
+                case 'action':
+                    return _.template(ActionTemplate)(param);
+                case'event':
+                    return _.template(EventTemplate)(param);
+                case'property':
+                    return _.template(PropertyTemplate)(param);
+                case'state':
+                    return _.template(StateTemplate)(param);
+                default:
+                    console.error("unknown word: " + word+ ", for type: " + type);
+                    console.debug(param);
+                    return "<span>unknown</span>";
+            }
         },
         /**
          * @return Dictionnary of the devices sorted by their type - key is the type id, value - array of devices corresponding the type
