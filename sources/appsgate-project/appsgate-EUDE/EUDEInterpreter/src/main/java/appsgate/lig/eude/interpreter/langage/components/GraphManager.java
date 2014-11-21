@@ -114,8 +114,13 @@ public class GraphManager {
             try {
                 JSONObject o = devices.getJSONObject(i);
                 addDevice(o);
-                // Adding location link
-                addLink(LOCATED_LINK, o.getString("id"), o.getString("placeId"));
+                
+                // Don't add the location link of the service Weather and Mail
+                if (!o.getString("type").equals("102") && !o.getString("type").equals("103")) {
+                    // Adding location link
+                    addLink(LOCATED_LINK, o.getString("id"), o.getString("placeId"));
+                }
+                
             } catch (JSONException ex) {
             }
 
