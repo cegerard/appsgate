@@ -44,7 +44,7 @@
 
             <start implementation="AppsGateDomiCubeServices" name="DomiCubeCompo"></start>
 
-            <start implementation="WeatherServices" name="WeatherAdapter"></start>
+        <!-- <start implementation="WeatherServices" name="WeatherAdapter"></start> -->
 
 
         </contentMngt>
