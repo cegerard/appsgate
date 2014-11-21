@@ -1,8 +1,8 @@
 /*-- HTML5 Boilerplate. -----------------------------------------------------*/
 
 @import "../../vendor/bower/html5-boilerplate/css/normalize.css";
-@import "../../vendor/bower/html5-boilerplate/css/main.css";
 @import "../../vendor/bower/bootstrap/dist/css/bootstrap.css";
+@import "../../vendor/bower/html5-boilerplate/css/main.css";
 @import "../../vendor/bower/jqueryui/themes/custom-theme/jquery-ui-1.10.4.custom.css";
 @import "../../vendor/bower/appsgate.debugger/lib/themes/basic/theme.css";
 /*-- Application stylesheets. -----------------------------------------------*/
