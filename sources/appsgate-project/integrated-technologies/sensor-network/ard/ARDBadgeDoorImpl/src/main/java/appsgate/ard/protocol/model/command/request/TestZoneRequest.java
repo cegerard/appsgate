@@ -7,7 +7,7 @@ public class TestZoneRequest extends ARDRequest {
 
     public TestZoneRequest(Integer inputId) throws JSONException {
         super(0,"test_zone");
-        json.put("input_idx",inputId);
+        json.put("zone_idx",inputId);
     }
 
 }

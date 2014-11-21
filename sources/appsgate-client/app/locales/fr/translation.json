@@ -11,15 +11,15 @@
     "no": "NON"
   },
   "dependancy": {
-    "refresh-data" : "Actualiser les données"
+    "refresh-data": "Actualiser les données"
   },
   "devices": {
-    "no-value":"---",
+    "no-value": "---",
     "actuator": {
       "action": {
         "turnOff": "Eteindre",
         "turnOn": "Allumer",
-        "turnAllOff" : "Tout éteindre",
+        "turnAllOff": "Tout éteindre",
         "turnAllOn": "Tout allumer"
       },
       "name": {
@@ -32,34 +32,35 @@
       }
     },
     "ard": {
-      "affirmative": "Oui",
-      "action": {
+      "language": {
         "zone-activate": "Activer surveillance __myVar__",
-        "zone-desactivate": "Desactiver surveillance __myVar__"
+        "zone-desactivate": "Desactiver surveillance __myVar__",
+        "authorized": "badge est autorisé __myVar__",
+        "non_authorized": "badge n'est pas autorisé __myVar__",
+        "alarm_fired": "alarme sonné en __myVar__",
+        "force-input": "Forcer entrée __myVar__"
       },
       "keyboard": {
-        "zone-activate": "Activer surveillance sur ...",
-        "zone-desactivate": "Desactiver surveillance sur ..."
-      },
-      "event": {
-        "authorized": "badge est autorisé sur ...",
-        "non_authorized": "badge n'est pas autorisé sur ..."
+        "zone-activate": "Activer surveillance sur __myVar__",
+        "zone-desactivate": "Desactiver surveillance sur __myVar__",
+        "authorized": "badge est autorisé sur __myVar__",
+        "non_authorized": "badge n'est pas autorisé sur __myVar__",
+        "alarm_fired": "alarme sonné dans la __myVar__",
+        "force-input": "Forcer entrée __myVar__"
       },
       "last-authorized": "Dernier badge accès autorisé",
       "last-card": "Dernier badge passé",
-      "last-message": "Denier message",
+      "last-message": "Dernier message",
       "last-message-empty": "Pas des message",
       "name": {
         "plural": "ARD",
         "singular": "ARD"
       },
+      "affirmative": "Oui",
       "negative": "Non",
-      "state": {
-        "authorized": "badge est autorisé __myVar__",
-        "non_authorized": "badge n'est pas autorisé __myVar__"
-      }
+      "zone": "zone"
     },
-    "avg" : "Moy : ",
+    "avg": "Moy : ",
     "clock": {
       "name": {
         "no-name": "Horloge système sans nom",
@@ -70,14 +71,15 @@
     "consumption-label": "Consommation",
     "contact": {
       "keyboard": {
-        "closeEvent": "on ferme ...",
-        "isClose": "le capteur ... est fermé",
-        "isOpen": "le capteur ... est ouvert",
-        "openEvent": "on ouvre ..."
+        "contact": "capteur de contact",
+        "closeEvent": "on ferme le __myVar__",
+        "isClosed": "le __myVar__ est fermé(e)",
+        "isOpen": "le __myVar__ est ouvert(e)",
+        "openEvent": "on ouvre le __myVar__"
       },
       "language": {
         "closeEvent": "on ferme __myVar__",
-        "isClose": "__myVar__ est fermé(e)",
+        "isClosed": "__myVar__ est fermé(e)",
         "isOpen": "__myVar__ est ouvert(e)",
         "openEvent": "on ouvre __myVar__"
       },
@@ -102,13 +104,13 @@
         "inactive": "Inactif",
         "unknown": "Inconnu"
       },
-      "language" : {
+      "language": {
         "activated": "le domicube est activé",
         "inactivated": "le domicube est désactivé",
         "west": "l'Ouest",
         "east": "l'Est"
       },
-      "keyboard" : {
+      "keyboard": {
         "activated": "le domicube est activé",
         "inactivated": "le domicube est désactivé",
         "west": "l'Ouest",
@@ -125,12 +127,14 @@
         "intern": "Capteur de luminosité intérieur"
       },
       "keyboard": {
-        "get": "la luminosité mesurée par ...",
-        "change" : "la luminosité mesurée par le capteur de luminosité change"
+        "sensor": "capteur de luminosité",
+        "brightness": "tel niveau de luminosité",
+        "get": "Le __myVar__ mesure __myVar2__",
+        "change": "la luminosité mesurée par __myVar__ change"
       },
       "language": {
-        "get": "la luminosité mesurée par __myVar__",
-        "change" : "la luminosité mesurée par __myVar__ change"
+        "get": "__myVar__ mesure ",
+        "change": "la luminosité mesurée par __myVar__ change"
       },
       "name": {
         "plural": "Capteurs de luminosité",
@@ -149,10 +153,11 @@
     },
     "cardswitch": {
       "keyboard": {
-        "card-inserted": "une carte est insérée dans ...",
-        "insertedEvent": "on insère une carte dans ...",
-        "no-card-inserted": "aucune carte n'est insérée dans ...",
-        "removedEvent": "on retire une carte de ..."
+        "cardswitch": "interrupteur à carte",
+        "card-inserted": "une carte est insérée dans l'__myVar__",
+        "insertedEvent": "on insère une carte dans l'__myVar__",
+        "no-card-inserted": "aucune carte n'est insérée dans l'__myVar__",
+        "removedEvent": "on retire une carte de l'__myVar__"
       },
       "language": {
         "card-inserted": "une carte est insérée dans __myVar__",
@@ -174,7 +179,7 @@
         "blink": "Faire clignoter",
         "turnOff": "Eteindre",
         "turnOn": "Allumer",
-        "turnAllOff" : "Tout éteindre",
+        "turnAllOff": "Tout éteindre",
         "turnAllOn": "Tout allumer"
       },
       "complement": {
@@ -182,16 +187,17 @@
         "color": "Couleur"
       },
       "keyboard": {
-        "blink": "Faire clignoter ...",
-        "brightness": "l'intensité de la lampe ...",
-        "isOff": "la lampe ... est éteinte",
-        "isOff-keep": "la lampe ... éteinte",
-        "isOn": "la lampe ... est allumée",
-        "isOn-keep": "la lampe ... allumée",
-        "turnOff": "Eteindre la lampe ...",
-        "turnOffEvt": "on éteint la lampe ...",
-        "turnOn": "Allumer la lampe ...",
-        "turnOnEvt": "on allume la lampe ..."
+        "blink": "Faire clignoter l'__myVar__",
+        "brightness": "l'intensité de l'__myVar__",
+        "isOff": "l'__myVar__ est éteinte",
+        "isOff-keep": "l'__myVar__ éteinte",
+        "isOn": "l'__myVar__ est allumée",
+        "isOn-keep": "l'__myVar__ allumée",
+        "turnOff": "Eteindre l'__myVar__",
+        "turnOffEvt": "on éteint l'__myVar__",
+        "turnOn": "Allumer l'__myVar__",
+        "turnOnEvt": "on allume l'__myVar__",
+        "lamp": "ampoule"
       },
       "language": {
         "blink": "Faire clignoter __myVar__",
@@ -214,8 +220,8 @@
         "turnedOn": "Allumée"
       },
       "color-information": {
-        "lastColor" : "Dernière couleur de l'ampoule ",
-        "currentColor" : "Couleur de l'ampoule "
+        "lastColor": "Dernière couleur de l'ampoule ",
+        "currentColor": "Couleur de l'ampoule "
       }
     },
     "mediaplayer": {
@@ -236,29 +242,36 @@
         "selected": "Veuillez choisir un média",
         "stopped": "Arrêté : ",
         "PLAYING": "Lecture en cours : ",
+        "NONE": "",
         "PAUSED_PLAYBACK": "En pause : ",
         "STOPPED": "Arrêté : "
       },
-      "language" : {
-        "pause-media-action": "Mettre en pause la lecture sur",
-        "play-media-action": "Lancer la lecture de",
-        "resume-media-action": "Reprendre la lecture sur",
+      "language": {
+        "volume-event": "Le volume du lecteur change sur __myVar__",
+        "play-event": "On lance/reprend la lecture sur le lecteur __myVar__",
+        "stop-event": "On stoppe la lecture sur le lecteur __myVar__",
+        "pause-event": "On met en pause la lecture sur le lecteur __myVar__",
+        "pause-media-action": "Mettre en pause le media",
+        "play-media-action": "Jouer",
+        "resume-media-action": "Reprendre la lecture",
         "set-volume-media-action": "Mettre le volume de",
-        "stop-media-action": "Stopper la lecture"
+        "stop-media-action": "Stopper"
       },
-      "keyboard" : {
+      "keyboard": {
+        "volume-event": "Le volume du __myVar__ change sur __myVar2__",
+        "play-event": "On lance/reprend la lecture sur le __myVar__",
+        "stop-event": "On stoppe la lecture sur le __myVar__",
+        "pause-event": "On met en pause la lecture sur le __myVar__",
+        "pause-action": "Mettre en pause la lecture sur le __myVar__",
+        "play-action": "Lancer la lecture du __myVar__ sur le __myVar2__",
+        "resume-action": "Reprendre la lecture sur le __myVar__",
+        "set-volume-action": "Mettre le volume du __myVar__ à __myVar2__",
+        "stop-action": "Stopper la lecture sur le __myVar__",
         "browse": "Parcourir",
-        "complement" : "sur",
-        "pause-action": "Mettre en pause la lecture sur le",
-        "play-action": "Lancer la lecture du",
-        "resume-action": "Reprendre la lecture sur le",
-        "set-volume-action": "Mettre le volume du",
-        "stop-action": "Stopper la lecture sur le",
+        "complement": "sur",
         "media": "media",
-        "on-the": "sur le",
-        "at": "à",
         "player": "lecteur",
-        "that-value": "telle valeur"
+        "value": "telle valeur"
       }
     },
     "movement": {
@@ -306,20 +319,20 @@
       "action": {
         "turnOff": "Eteindre",
         "turnOn": "Allumer",
-        "turnAllOff" : "Tout éteindre",
+        "turnAllOff": "Tout éteindre",
         "turnAllOn": "Tout allumer"
       },
       "keyboard": {
-        "change": "la consommation électrique mesurée par la prise change",
-        "isOff": "est éteinte",
-        "isOff-keep": "éteinte",
-        "isOn": "est allumée",
-        "isOn-keep": "allumée",
-        "turnOffEvt": "on éteint",
-        "turnOnEvt": "on allume",
-        "turnOff": "Eteindre",
-        "turnOn": "Allumer",
-        "plug":"la prise"
+        "plug": "prise",
+        "change": "la consommation électrique mesurée par la __myVar__ change",
+        "isOff": "la __myVar__ est éteinte",
+        "isOff-keep": "la __myVar__ éteinte",
+        "isOn": "la __myVar__ est allumée",
+        "isOn-keep": "la __myVar__ allumée",
+        "turnOffEvt": "on éteint la __myVar__",
+        "turnOnEvt": "on allume la __myVar__",
+        "turnOff": "Eteindre la __myVar__",
+        "turnOn": "Allumer la __myVar__"
       },
       "language": {
         "change": "la consommation électrique mesurée par __myVar__ change",
@@ -348,23 +361,16 @@
       "waiting": "En attente"
     },
     "status-label": "Statut",
-    "sum" : "Somme : ",
+    "sum": "Somme : ",
     "switch": {
       "keyboard": {
-        "pushed-bottom": "on appuie sur bas de ...",
-        "pushed-bottom-B1": "on appuie sur B1-off de ...",
-        "pushed-bottom-B2": "on appuie sur B2-off de ...",
-        "pushed-up": "on appuie sur haut de ...",
-        "pushed-up-B1": "on appuie sur B1-on de ...",
-        "pushed-up-B2": "on appuie sur B2-on de ..."
+        "pushed-bottom": "on appuie sur bas de l'__myVar__",
+        "pushed-up": "on appuie sur haut de l'__myVar__",
+        "switch": "interrupteur"
       },
       "language": {
         "pushed-bottom": "on appuie sur bas de __myVar__",
-        "pushed-bottom-B1": "on appuie sur B1-off de __myVar__",
-        "pushed-bottom-B2": "on appuie sur B2-off de __myVar__",
-        "pushed-up": "on appuie sur haut de __myVar__",
-        "pushed-up-B1": "on appuie sur B1-on de __myVar__",
-        "pushed-up-B2": "on appuie sur B2-on de __myVar__"
+        "pushed-up": "on appuie sur haut de __myVar__"
       },
       "name": {
         "plural": "Interrupteurs",
@@ -381,8 +387,9 @@
         "intern": "Capteur de température intérieur"
       },
       "keyboard": {
-        "get": "la température mesurée par ...",
-        "change": "la température mesurée par le capteur de température change"
+        "get": "la température du __myVar__",
+        "change": "la température mesurée par le __myVar__ change",
+        "sensor": "capteur de température"
       },
       "language": {
         "get": "la température de __myVar__",
@@ -401,7 +408,7 @@
     "name": "Nom",
     "name-empty": "Le nom doit être renseigné.",
     "title": "Renommer",
-    "contains-html" : "Le nom ne peut pas contenir de code html"
+    "contains-html": "Le nom ne peut pas contenir de code html"
   },
   "editbar": {
     "add": "Ajouter",
@@ -433,7 +440,8 @@
     "valid-button": "Valider"
   },
   "keyboard": {
-    "clock-event": "il est ",
+    "clock-event": "L'horloge d'AppsGate indique ",
+    "time-placeholder": "hh:mm:ss",
     "false": "Faux",
     "if-keyword": "Si",
     "keep-state": "Maintenir l'état ...",
@@ -460,9 +468,10 @@
     "whenImp-keyword": "Dès que",
     "while-keyword": "Pendant que"
   },
-  "language": {"actions": "Actions",
+  "language": {
+    "actions": "Actions",
     "and-when": "Dès que",
-    "color" : {
+    "color": {
       "blue": "bleu",
       "green": "vert",
       "orange": "orange",
@@ -472,9 +481,9 @@
       "white": "blanc",
       "yellow": "jaune"
     },
-    "clock-event": "il est",
-    "clock-status": "il est",
-    "contact-assembled-event": "s assemble",
+    "clock-event": "L'horloge d'AppsGate indique ",
+    "clock-status": "L'horloge d'AppsGate indique ",
+    "contact-assembled-event": "s'assemble",
     "contact-disassembled-event": "se desassemble",
     "else-keyword": "sinon",
     "false": "faux",
@@ -575,10 +584,10 @@
     "title": "Renommer programme"
   },
   "modal-schedule-program": {
-    "title":"Planifier le programme dans l'agenda AppsGate de Google",
-    "schedule-activation":"Planifier l'activation du programme",
-    "schedule-deactivation":"Planifier la désactivation du programme",
-    "schedule-both":"Planifier l'activation et la désactivation du programme"
+    "title": "Planifier le programme dans l'agenda AppsGate de Google",
+    "schedule-activation": "Planifier l'activation du programme",
+    "schedule-deactivation": "Planifier la désactivation du programme",
+    "schedule-both": "Planifier l'activation et la désactivation du programme"
   },
   "modal-edit-service": {
     "name-already-existing": "Nom de service déjà existant",
@@ -643,23 +652,24 @@
       "start": "Activer",
       "stop": "Désactiver",
       "schedule": "Planifier",
-      "open-calendar":"Voir calendrier",
-      "test":"Tester",
-      "end-test":"Fin tester"
+      "open-calendar": "Voir calendrier",
+      "test": "Tester",
+      "end-test": "Fin tester"
     },
     "delete-program": "Supprimer",
     "edit-program": "Editer",
     "end-edit-program": "Valider",
     "keyboard": {
-      "actionActivate": "Activer le programme ...",
-      "actionDisactivate": "Désactiver le programme ...",
+      "actionActivate": "Activer le __myVar__",
+      "actionDisactivate": "Désactiver le __myVar__",
       "actionDisactivate-self": "Désactiver ce programme",
-      "eventStart": "on active le programme ...",
-      "eventStop": "on désactive le programme ...",
-      "stateStarted": "le programme ... est actif",
-      "stateStarted-keep": "le programme ... actif",
-      "stateStopped": "le programme ... est inactif",
-      "stateStopped-keep": "le programme ... inactif"
+      "eventStart": "on active le __myVar__",
+      "eventStop": "on désactive le __myVar__",
+      "stateStarted": "le __myVar__ est actif",
+      "stateStarted-keep": "le __myVar__ actif",
+      "stateStopped": "le __myVar__ est inactif",
+      "stateStopped-keep": "le __myVar__ inactif",
+      "program": "programme"
     },
     "language": {
       "actionActivate": "Activer __myVar__",
@@ -682,7 +692,7 @@
     "warning-program-edition": "Attention, éditer le programme le désactivera",
     "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
     "scheduled-event": "Programme Appsgate ",
-    "simulated-time":"Heure simulée"
+    "simulated-time": "Heure simulée"
   },
   "programs-menu": {
     "add-button": "Ajouter programme",
@@ -712,7 +722,7 @@
     "device-unlocated": "Non localisé",
     "mail": {
       "keyboard": {
-        "sendMail": "Envoyer un mail ...",
+        "sendMail": "Envoyer un mail",
         "mailSent": "un mail a été envoyé"
       },
       "language": {
@@ -725,64 +735,17 @@
         "plural": "Destinataires mail favoris",
         "singular": "Destinataire mail favori"
       },
-      "modal" : {
-        "add" : "Ajouter destinataire favori",
-        "valid-mail" : "Merci d'entrer une adresse valide",
-        "title" : "Destinataire favori"
+      "modal": {
+        "add": "Ajouter destinataire favori",
+        "valid-mail": "Merci d'entrer une adresse valide",
+        "title": "Destinataire favori"
       },
-      "warning-delete" : "Etes vous sûr de vouloir supprimer cette adresse ?"
+      "warning-delete": "Etes vous sûr de vouloir supprimer cette adresse ?"
     },
     "mediabrowser": {
       "name": {
         "plural": "Serveurs multimédia",
         "singular": "Serveur multimédia"
-      }
-    },
-    "mediaplayer": {
-      "action": {
-        "browse": "Parcourir",
-        "pause": "Pause",
-        "play": "Lancer",
-        "resume": "Reprendre",
-        "stop": "Arrêter",
-        "volume": "Volume"
-      },
-      "name": {
-        "plural": "Lecteurs multimédia",
-        "singular": "Lecteur multimédia"
-      },
-      "status": {
-        "playing": "Lecture en cours",
-        "selected": "Veuillez choisir un média",
-        "stopped": "Arrêté : ",
-        "PLAYING": "Lecture en cours : ",
-        "NONE": "",
-        "PAUSED_PLAYBACK": "En pause : ",
-        "STOPPED": "Arrêté : "
-      },
-      "language" : {
-        "volume-event" : "Le volume du lecteur change sur __myVar__",
-        "play-event" : "On lance/reprend la lecture sur le lecteur __myVar__",
-        "stop-event" : "On stoppe la lecture sur le lecteur __myVar__",
-        "pause-event" : "On met en pause la lecture sur le lecteur __myVar__",
-        "pause-media-action": "Mettre en pause le media",
-        "play-media-action": "Jouer",
-        "resume-media-action": "Reprendre la lecture",
-        "set-volume-media-action": "Mettre le volume de",
-        "stop-media-action": "Stopper"
-      },
-      "keyboard" : {
-        "volume-event" : "Le volume du lecteur change",
-        "play-event" : "On lance/reprend la lecture sur le lecteur",
-        "stop-event" : "On stoppe la lecture sur le lecteur",
-        "pause-event" : "On met en pause la lecture sur le lecteur",
-        "browse": "Parcourir",
-        "complement" : "sur",
-        "pause-media-action": "Mettre en pause le media ...",
-        "play-media-action": "Jouer ...",
-        "resume-media-action": "Reprendre la lecture de ...",
-        "set-volume-media-action": "Mettre le volume de ...",
-        "stop-media-action": "Stopper"
       }
     },
     "place-label": "Emplacement",
@@ -807,38 +770,35 @@
         "plural": "Lieux météo favoris",
         "singular": "Lieu météo favori"
       },
-      "modal" : {
-        "title" : "Nouveau lieu favori",
-        "add" : "Ajouter un lieu favori"
+      "modal": {
+        "title": "Nouveau lieu favori",
+        "add": "Ajouter un lieu favori"
       },
       "keyboard": {
-        "sunrise": "le jour se lève à ...",
-        "sunset": "le jour se couche à ...",
-        "current-temperature": "la température actuelle",
-        "current-weather-code-state": "la météo actuelle",
-        "currently-daylight": "il fait jour à",
-        "currently-moonlight": "il fait nuit à",
-        "forecast-temperature-max": "la température maximale prévue pour ...",
-        "forecast-temperature-min": "la température minimale prévue pour ...",
-        "forecast-weather-code-state": "la météo prévue pour ...",
-        "is-current-weather-code-state": "la météo actuelle",
-        "is-forecast-weather-code-state": "la météo prévue pour",
-        "weather-at": "à"
-      },
-      "language": {
         "sunrise": "le jour se lève à __myVar__",
         "sunset": "le jour se couche à __myVar__",
-        "current-temperature": "la température actuelle",
-        "current-weather-code-state": "la météo actuelle",
+        "currently-daylight": "il fait jour à __myVar__",
+        "currently-moonlight": "il fait nuit à __myVar__",
+        "forecast-temperature": "La température de __myVar__ annoncée __myVar2__ indique __myVar3__",
+        "forecast-weather-code-state": "La météo de __myVar__ annoncée __myVar2__ indique __myVar3__",
+        "favorite": "lieu météo favori",
+        "moment": "à tel moment",
+        "weather": "tel temps",
+        "temperature": "au max/min telle valeur"
+      },
+      "language": {
+        "forecast-temperature": "la température prévue",
+        "sunrise": "le jour se lève à __myVar__",
+        "sunset": "le jour se couche à __myVar__",
         "currently-daylight": "il fait jour",
         "currently-moonlight": "il fait nuit à",
-        "forecast-temperature-max": "la température maximale prévue pour",
-        "forecast-temperature-min": "la température minimale prévue pour",
-        "forecast-weather-code-state": "la météo prévue pour",
-        "is-current-weather-code-state": "la météo actuelle",
-        "is-forecast-weather-code-state": "la météo prévue pour",
-        "weather-at": "la météo prévue à",
-        "weather-avg-at": "la température moyenne prévue à",
+        "forecast-weather-code-state": "la météo prévue à",
+        "is-current-weather-code-state": "la météo actuelle à",
+        "is-forecast-weather-code-state": "la météo prévue à",
+        "weather-at": "à",
+        "typical-code-0": "minimale",
+        "typical-code-1": "maximale",
+        "typical-code-2": "moyenne",
         "weather-code-0": "du soleil",
         "weather-code-1": "des nuages",
         "weather-code-2": "de la pluie",
@@ -850,11 +810,9 @@
         "weather-code-verb": "annonce",
         "weather-for-0": "aujourd'hui",
         "weather-for-1": "demain",
-        "weather-for-2": "après demain",
-        "weather-max-at": "la température maximale prévue à",
-        "weather-min-at": "la température minimale prévue à"
+        "weather-for-2": "après demain"
       },
-      "weblink" : "Voir météo",
+      "weblink": "Voir météo",
       "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
     }
   }

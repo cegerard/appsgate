@@ -70,6 +70,9 @@ define([
                             return true;
                         }]
                     ]
+                },
+                i18n: {
+                    ns: "debugger"
                 }
             }
         );

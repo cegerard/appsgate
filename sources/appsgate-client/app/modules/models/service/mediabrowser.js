@@ -14,8 +14,8 @@ define([
     /**
      * @constructor
      */
-    initialize:function() {
-      MediaBrowser.__super__.initialize.apply(this,arguments);
+    initialize: function() {
+      MediaBrowser.__super__.initialize.apply(this, arguments);
     },
   });
   return MediaBrowser;

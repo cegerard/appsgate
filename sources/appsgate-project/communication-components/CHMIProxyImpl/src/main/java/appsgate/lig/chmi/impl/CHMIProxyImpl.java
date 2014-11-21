@@ -403,10 +403,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     		logger.trace("getObjectDescription(CoreObjectSpec obj), description : "
     				+JSONDescription);	
         } catch (JSONException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(),e);
         } catch (Exception e) {
-            logger.error("ApAM error");
-            logger.error(e.getMessage());
+            logger.error("ApAM error",e);
         }
         return JSONDescription;
     }

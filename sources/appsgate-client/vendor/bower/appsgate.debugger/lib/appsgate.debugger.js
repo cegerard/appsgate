@@ -1,4 +1,4 @@
-//     AppsGate.Debugger v0.0.1
+//     AppsGate.Debugger v1.0.1
 
 //
 //     Copyright (c)2014 Rémi Barraquand.
@@ -7,16 +7,16 @@
 (function (root, factory) {
     // Setup AppsGate.Debugger appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
-        define(['backbone', 'jquery', 'underscore', 'd3', 'exports'], function(Backbone, $, _, d3, exports) {
+        define(['backbone', 'jquery', 'underscore', 'd3', 'i18n', 'exports'], function(Backbone, $, _, d3, i18n, exports) {
             // Export global even in AMD case in case this script is loaded with
             // others that may still expect a global AppsGateDebugger.
-            return (root.AppsGateDebugger = factory(root, exports, Backbone, $, _, d3));
+            return (root.AppsGateDebugger = factory(root, exports, Backbone, $, _, d3, i18n));
         });
     } else {
         // Else, as a browser global.
-        root.AppsGateDebugger = factory(root, {}, root.Backbone, root.$, root._, root.d3);
+        root.AppsGateDebugger = factory(root, {}, root.Backbone, root.$, root._, root.d3, root.i18n);
     }
-}(this, function(root, Debugger, Backbone, $, _, d3) {
+}(this, function(root, Debugger, Backbone, $, _, d3, i18n) {
     'use strict';
 
     // Initial Setup
@@ -26,7 +26,7 @@
     var previousDebugger = root.AppsGateDebugger;
 
     // Current version of the library. Keep in sync with package.json.
-    Debugger.VERSION = '0.0.1';
+    Debugger.VERSION = '1.0.1';
 
     // Runs AppsGate.Debugger.js in noConflict mode, returning the AppsGateDebugger variable to its previous owner.
     // Returns a reference to this AppsGateDebugger object.
@@ -589,6 +589,17 @@
                 while(this._buffer.length > 0) {
                     this._buffer.pop();
                 }
+            },
+    
+            // Flush all frames from buffer that date before `timestamp`.
+            flushBefore: function (timestamp) {
+                _.remove(this._buffer, function(frame) {
+                    if (this.options.pairing) {
+                        return frame.timestamp <= timestamp && frame.next.timestamp < timestamp;
+                    } else {
+                        return frame.timestamp <= timestamp;
+                    }
+                }, this);
             }
         });
     
@@ -676,9 +687,10 @@
         },
     
         // Request livetrace from the AppsGate server.
-        requestLiveTrace: function() {
+        requestLiveTrace: function(params) {
             return this._exec({
-                name: 'livetrace'
+                name: 'livetrace',
+                args: params
             });
         },
     
@@ -900,19 +912,19 @@
         initialize: function (selector, options) {
             this.options = defaultsDeep(options || {}, {
                 theme: THEMES_BASIC,
+                i18n: {
+                    ns: 'debugger'
+                },
+                livetrace: {
+                    delayBeforeFlush: 100000
+                },
                 selector: {
                     resolution: 30
                 }
             });
     
-            var kkeys = [], konami = "38,38,40,40,37,39,37,39,66,65";
-            window.addEventListener("keydown", function(e){
-                kkeys.push( e.keyCode );
-                if ( kkeys.toString().indexOf( konami ) >= 0 )
-                    alert('display kitten');
-            }, true);
-    
             this._init_ui(selector);
+            this._init_konami();
             this._init_d3();
             this._clean();
         },
@@ -951,7 +963,7 @@
     
                     if (packet.eventline) {
                         // Reset the dashboard on each request.
-                        this._reset();
+                        this._reset('history');
     
                         // Update focusline with received data.
                         // note: here we prevent rendering except for the last frame
@@ -986,6 +998,12 @@
                         this._update_all_with_frame(lastFrame);
                     }
     
+                    // @todo document
+                    if (lastFrame.timestamp < this._focus[1]) {
+                        this._update_focusline_with_frame({timestamp: this._focus[1]});
+                        this._update_all_with_frame({timestamp: this._focus[1]});
+                    }
+    
                     // Unset loading mode
                     this._toggleLoading(false);
     
@@ -994,6 +1012,12 @@
                 } else {
                     // Unset loading mode
                     this._toggleLoading(false);
+    
+                    // Reset the dashboard on each request.
+                    if (this._requestedForLiveTrace) {
+                        this._reset('live');
+                        this._requestedForLiveTrace = false;
+                    }
     
                     // This is a streaming packet
                     var data = packet.data;
@@ -1008,12 +1032,18 @@
                         }, this);
     
                         if (lastFrame) {
-                            this._update_focusline_with_frame(lastFrame);
-                            this._update_all_with_frame(lastFrame);
+                            this._update_focusline_with_frame(lastFrame, {live: true});
+                            this._update_all_with_frame(lastFrame, {live: true});
+                        }
+    
+                        // @todo document
+                        if (lastFrame.timestamp < this._focus[1]) {
+                            this._update_focusline_with_frame({timestamp: this._focus[1]});
+                            this._update_all_with_frame({timestamp: this._focus[1]});
                         }
                     } else {
-                        this._update_focusline_with_frame(data);
-                        this._update_all_with_frame(data);
+                        this._update_focusline_with_frame(data, {live: true});
+                        this._update_all_with_frame(data, {live: true});
                     }
     
                     // Update widgets according to ruler.
@@ -1032,9 +1062,9 @@
         requestInitialHistoryTrace: function(params) {
             params = _.defaults({}, params, {
                 order: 'type',
-                screenResolution: this._focusline.computed('svg.width'),
+                screenResolution: this.options.theme.dashboard.width,
                 selectorResolution: this.options.selector.resolution,
-                brushResolution: this._focusline.computed('svg.width')
+                brushResolution: this.options.theme.dashboard.width
             });
     
             if (this.connector) {
@@ -1054,19 +1084,40 @@
                     screenResolution: this._focusline.computed('svg.width'),
                     selectorResolution: this.options.selector.resolution,
                     brushResolution: params.brushResolution,
-                    order: params.order
+                    order: params.order,
+                    from: this._domain[0],
+                    to: this._domain[1]
                 })
             }
         },
     
         //  Request live trace.
-        requestLiveTrace: function() {
+        requestLiveTrace: function(params) {
+            params = _.defaults({}, params, {
+                refreshRate: 2000
+            });
+    
             if (this.connector) {
-                this.connector.requestLiveTrace();
+                this._requestedForLiveTrace = true;
+                this.connector.requestLiveTrace(params);
             }
         },
     
         // **Private API**
+    
+        _init_konami: function() {
+            var self = this;
+            self._konami = "38,38,40,40,37,39,37,39,66,65";
+            self._konami_slice = self._konami.split(',').length;
+            self._kkeys = [];
+            window.addEventListener("keydown", function(e){
+                self._kkeys.push( e.keyCode );
+                if ( self._kkeys.toString().indexOf( self._konami ) >= 0 ) {
+                    $('body').addClass('konami-background');
+                }
+                self._kkeys = self._kkeys.slice(-self._konami_slice);
+            }, true);
+        },
     
         // Initialize the UI within the container designated by the `selector`.
         _init_ui: function (selector) {
@@ -1121,52 +1172,6 @@
             if (this._d3_settings && this._d3_settings.timeFormatMulti) {
                 this._d3_timeFormatMulti = d3.time.format.multi(this._d3_settings.timeFormatMulti);
             }
-    
-            // Setup focusline specific options.
-            var focusline_options = defaultsDeep({
-                    theme: {
-                        dashboard: {
-                            widget: {
-                                height: this.options.theme.focusline.height,
-                                margin: this.options.theme.focusline.margin
-                            },
-                            sidebar: {
-                                width: 0
-                            },
-                            aside: {
-                                width: 0
-                            }
-                        }
-                    },
-                    extra: {
-                        svg: {
-                            innerMargin: {
-                                left: this.options.theme.focusline.selector.handle.width,
-                                right: this.options.theme.focusline.selector.handle.width
-                            }
-                        }
-                    }
-                },
-                {
-                    theme: this.options.theme
-                });
-    
-            // Setup focusline attributes
-            var focusline_attributes = {
-                id: 'default',
-                orientation: 'bottom',
-                timeFormat: this._d3_timeFormatMulti
-            };
-    
-            // Create focusline.
-            this._focusline = new Debugger.Widgets.Focusline(focusline_attributes, focusline_options);
-    
-            // Bind dashboard to its events.
-            this.listenTo(this._focusline, 'focus:change', this._onFocusChange);
-            this.listenTo(this._focusline, 'brush:resize', this._onBrushResize);
-    
-            // Attach it to the dashboard.
-            this._attach_widget(this._focusline, this._$header);
         },
     
         _toggleLoading: function(visible) {
@@ -1184,16 +1189,19 @@
         },
     
         // Reset dashboard to its initial state.
-        _reset: function() {
+        _reset: function(mode) {
             // Clean groups, devices, programs.
             this._clean();
     
             this._devices = {};  // reset devices
             this._programs = {}; // reset programs
     
-            // Reset focusline and domain.
-            this._focusline.reset();
-            this._domain = [_.now(), 0];
+            // Reset focusline
+            this._remove_focusline();
+            this._create_focusline(mode);
+    
+            // Reset domain.
+            this._domain = [_.now() - this.options.livetrace.delayBeforeFlush, _.now()];
         },
     
         // Clean dashboard. Cleaning the dashboard will (a) clean and detach all widgets but
@@ -1277,8 +1285,12 @@
     
         // Update focusline.
         _update_focusline_with_frame: function(frame, options) {
-            // Update domain.
-            this._domain = [Math.min(this._domain[0], frame.timestamp), Math.max(this._domain[1], frame.timestamp)];
+            if (options && options.live) {
+                this._domain = [Math.max(this._domain[0], frame.timestamp - this.options.livetrace.delayBeforeFlush), frame.timestamp];
+            } else {
+                // Update domain.
+                this._domain = [Math.min(this._domain[0], frame.timestamp), Math.max(this._domain[1], frame.timestamp)];
+            }
     
             // Update focusline.
             this._focusline.update({
@@ -1395,10 +1407,10 @@
             if (attributes && attributes.func) {
                 switch (attributes.func) {
                     case 'type': return function(item) {
-                        return item.type? 'Devices' : 'Programs'
+                        return item.type? {name: 'Devices', order: 2} : {name: 'Programs', order: 4}
                     };
                     default: return function(item) {
-                        return 'Unknown'
+                        return { name: 'Unknown', order: 3 }
                     };
                 }
             } else if (attributes && attributes.grouping) {
@@ -1411,9 +1423,9 @@
                         });
     
                         if (group) {
-                            return group.name;
+                            return { name: group.name, order: group.order || 3};
                         } else {
-                            return 'Unknown';
+                            return { name: 'Unknown', order: 3};
                         }
                     };
                 })();
@@ -1422,6 +1434,73 @@
                     return 'Unknown';
                 };
             }
+        },
+    
+        // Create focusline
+        _create_focusline: function(mode) {
+            // Setup focusline specific options.
+            var focusline_options = defaultsDeep({
+                    theme: {
+                        dashboard: {
+                            widget: {
+                                height: this.options.theme.focusline.height,
+                                margin: this.options.theme.focusline.margin
+                            },
+                            sidebar: {
+                                width: 0
+                            },
+                            aside: {
+                                width: 0
+                            }
+                        }
+                    },
+                    extra: {
+                        svg: {
+                            innerMargin: {
+                                left: this.options.theme.focusline.selector.handle.width,
+                                right: this.options.theme.focusline.selector.handle.width
+                            }
+                        }
+                    }
+                },
+                {
+                    theme: this.options.theme
+                });
+    
+            // Setup focusline attributes
+            var focusline_attributes = {
+                id: 'default',
+                orientation: 'bottom',
+                timeFormat: this._d3_timeFormatMulti,
+                live: mode == 'live' ? true : false
+            };
+    
+            // Create focusline.
+            this._focusline = new Debugger.Widgets.Focusline(focusline_attributes, focusline_options);
+    
+            // Bind dashboard to its events.
+            this.listenTo(this._focusline, 'focus:change', this._onFocusChange);
+            this.listenTo(this._focusline, 'brush:resize', this._onBrushResize);
+    
+            // Attach it to the dashboard.
+            this._attach_widget(this._focusline, this._$header);
+        },
+    
+        // Remove focusline
+        _remove_focusline: function() {
+            if (!this._focusline) {
+                return;
+            }
+    
+            // Detach timeline.
+            this._detach_widget(this._focusline);
+    
+            // Unbind dashboard to its events.
+            this.stopListening(this._focusline, 'focus:change', this._onFocusChange);
+            this.stopListening(this._focusline, 'brush:resize', this._onBrushResize);
+    
+            // Delete group.
+            delete this._focusline;
         },
     
         // Create the dashboard ruler.
@@ -1473,7 +1552,7 @@
             // Setup timeline attributes
             var timeline_attributes = {
                 id: _.uniqueId('timeline'),
-                name: attributes.name,
+                name: i18n.t(attributes.name, {ns: this.options.i18n.ns}),
                 orientation: 'top',
                 timeFormat: this._d3_timeFormatMulti
             };
@@ -1490,13 +1569,20 @@
                 .attr({
                     id: _.uniqueId('group'),
                     class: 'group',
-                    'data-name': attributes.name
+                    'data-name': attributes.name,
+                    'data-order': attributes.order
                 })
                 .append('<header/>')
                 .append('<div class="element-container"></div>');
     
             // Attach group to the dashboard.
             this._$group_container.append(group);
+    
+            // Sort group by order then by name
+            this._$group_container.children().tsort(
+                {attr: 'data-order'},
+                {attr: 'data-name'}
+            );
     
             // Attach timeline to the group.
             this._attach_widget(timeline, group.find('header')[0]);
@@ -1604,7 +1690,6 @@
                 this.listenTo(widget, 'marker:click', this._onWidgetMarkerClick);
     
                 // Find and attach it to the group to which it belongs.
-                var groupName = this._demux(attributes);
                 this._attach_widget_to_group(widget);
             } else {
                 Debugger.logger.error('Unable to create device of type #{type}', attributes);
@@ -1615,21 +1700,19 @@
     
         // Attach a widget to a group within this dashboard.
         // If the group if not created then it creates the group first.
-        _attach_widget_to_group: function(widget, group) {
-            // If group is not provided then find it from widget attributes.
-            if (_.isUndefined(group)) {
-                group = this._demux(widget.attributes);
-            }
+        _attach_widget_to_group: function(widget) {
+            var group = this._demux(widget.attributes);
     
             // If group is not created then create it.
-            if (_.isUndefined(this._groups[group])) {
-                this._groups[group] = this._create_group({
-                    name: group
+            if (_.isUndefined(this._groups[group.name])) {
+                this._groups[group.name] = this._create_group({
+                    name: group.name,
+                    order: group.order
                 });
             }
     
             // Attach it to the group in the DOM.
-            this._attach_widget(widget, this._groups[group].$container);
+            this._attach_widget(widget, this._groups[group.name].$container);
         },
     
         // Attach a widget to a target element within this dashboard.
@@ -1921,6 +2004,11 @@
                 this.buffer.concat(data.bulk)
             } else if (data && data.timestamp) {
                 this.buffer.push(data.timestamp, data.frame);
+            }
+    
+            // Clear data if live mode is one
+            if (options && options.live) {
+                this.buffer.flushBefore(focus[0]);
             }
     
             // Notify that we are updating.
@@ -2253,7 +2341,8 @@
     Widgets.Focusline = Widgets.Widget.extend({
     
         defaults: {
-            kind: 'focusline'
+            kind: 'focusline',
+            live: false
         },
     
         onBeforeInitD3: function() {
@@ -2417,7 +2506,7 @@
         onBeforeRender: function(data, focus, options) {
             // Setup brush extent to be the size of the whole timescale domain
             // just before the first rendering.
-            if (_.isUndefined(this._isFirstRendering)) {
+            if (_.isUndefined(this._isFirstRendering) && ! this.attributes.live) {
                 this.brush.extent(this.timescale.domain())(this.brushGroup);
                 this._isFirstRendering = false;
             }
@@ -2469,7 +2558,7 @@
     
         rulerFocusChanged: function (coordinate, direction, options) {
             var brushExtentOffset = parseInt(this.brushExtent.attr('x'));
-            var brushExtentWidth = parseInt(this.brushExtent.attr('width'));
+            var brushExtentWidth = this.brush.empty()? this.computed('svg.width') : parseInt(this.brushExtent.attr('width'));
             var focusedTextLabelWidth = parseInt(this.focusedTime.style('width'));
     
             // Workout ruler shadow placement and focused time

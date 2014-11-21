@@ -1,7 +1,9 @@
 package appsgate.ard.protocol.adaptor;
 
 import appsgate.ard.protocol.controller.ARDController;
+import appsgate.ard.protocol.model.Constraint;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
+import appsgate.ard.protocol.model.command.request.*;
 import appsgate.lig.ard.badge.door.messages.ARDBadgeDoorContactNotificationMsg;
 import appsgate.lig.ard.badge.door.spec.CoreARDBadgeDoorSpec;
 import appsgate.lig.core.object.messages.NotificationMsg;
@@ -36,6 +38,8 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     private Boolean authorized=false;
     private String ardClass="";
     private String lastMessage="";
+    private JSONArray zonesCache=null;
+    private JSONArray inputsCache=null;
 
     private ARDController controller;
 
@@ -68,6 +72,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
         descr.put("authorized", authorized);
         descr.put("lastMessage", lastMessage);
 
+        /*
         JSONObject zone1 = new JSONObject();
         JSONObject zone2 = new JSONObject();
         zone1.put("zone_idx",1);
@@ -77,7 +82,9 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
         descr.append("zones", zone1);
         descr.append("zones", zone2);
-
+        */
+        fillUpZones(descr);
+        fillUpInputs(descr);
         return descr;
     }
 
@@ -91,6 +98,26 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     public void newInst() {
         logger.info("New contact sensor detected, "+sensorId);
+        controller.getMapRouter().put(new Constraint() {
+                                          @Override
+                                          public boolean evaluate(JSONObject jsonObject) throws JSONException {
+                                              try {
+                                                  Boolean alarm=jsonObject.getJSONObject("event").getBoolean("alarm");
+                                                  Boolean active=jsonObject.getJSONObject("event").getBoolean("active");
+                                                  return true;//!alarm && active;
+
+                                              } catch (JSONException e){
+                                                  return false;
+                                              }
+                                          }
+                                      },
+                new ARDMessage() {
+                    @Override
+                    public void ardMessageReceived(JSONObject json) throws JSONException {
+                        triggerApamMessage(new ARDBadgeDoorContactNotificationMsg("alarmFired", "false", "true", ARDBadgeDoor.this));
+                    }
+                }
+        );
     }
 
     public void deleteInst() {
@@ -129,37 +156,145 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     @Override
     public void zoneActivate(int zone) {
-        logger.warn("zoneActivate: This function is not implemented yet. Zone to be activated {},",zone);
+        logger.info("zoneActivate invoked: Zone to be activated {},", zone);
+        try {
+            JSONObject result=controller.sendSyncRequest(new ActivateZoneRequest(zone)).getResponse();
+            logger.info("Response: {}",result);
+        } catch (JSONException e) {
+            logger.error("Failed invoking zoneActivate for zone {}", zone);
+        }
+    }
+
+    @Override
+    public void forceInput(int input) {
+        logger.info("forceInput invoked: Input to be forced {},", input);
+        try {
+            JSONObject request1=controller.sendSyncRequest(new ForceInputRequest(input,true,false)).getResponse();
+            JSONObject request2=controller.sendSyncRequest(new ForceInputRequest(input,true,true)).getResponse();
+            logger.info("Response1: {}, Response2: {}",request1,request2);
+        } catch (JSONException e) {
+            logger.error("Failed invoking zoneActivate for zone {}",input);
+        }
     }
 
     @Override
     public void zoneDesactivate(int zone) {
-        logger.debug("zoneDesactivate: This function is not implemented yet. Zone to be activated {},",zone);
+        logger.info("zoneDesactivate invoked: Zone to be desactivated {},", zone);
+        try {
+            JSONObject result=controller.sendSyncRequest(new DeactivateZoneRequest(zone)).getResponse();
+            logger.info("Response: {}",result);
+        } catch (JSONException e) {
+            logger.error("Failed invoking zoneDesactivate for zone {}",zone);
+        }
     }
 
     public NotificationMsg triggerApamMessage(ARDBadgeDoorContactNotificationMsg apamMessage){
-        logger.info("Forwarding ARDMessage as ApamMessage, {}:{})",apamMessage.getVarName(),apamMessage.getNewValue());
+        logger.info("Forwarding ARDMessage as ApamMessage, {}:{})", apamMessage.getVarName(), apamMessage.getNewValue());
         return apamMessage;
+    }
+
+    private void fillUpZones(final JSONObject descr){
+
+        if(zonesCache==null){
+            zonesCache=new JSONArray();
+            for(int index=1;index<5;index++){
+                try {
+                    JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
+
+                    if(response!=null&&!response.getString("name").trim().equals("")){
+                        String zoneName=response.getString("name");
+                        JSONObject zone = new JSONObject();
+                        zone.put("zone_idx",index);
+                        zone.put("zone_name",zoneName);
+                        zonesCache.put(zone);
+                        //descr.append("zones",zone);
+                    }
+                } catch (JSONException e) {
+                    logger.error("Failed to recover zones recorded in the HUB ARD");
+                }
+            }
+        }
+        try {
+            descr.put("zones",zonesCache);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void fillUpInputs(final JSONObject descr){
+
+        /**
+        JSONObject input1 = new JSONObject();
+        JSONObject input2 = new JSONObject();
+        try {
+            input1.put("input_idx", 1);
+            input1.put("input_name", "input 1");
+            input2.put("input_idx", 2);
+            input2.put("input_name", "input 2");
+
+            descr.append("inputs", input1);
+            descr.append("inputs", input2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+         **/
+
+        if(inputsCache==null){
+            inputsCache=new JSONArray();
+            for(int index=1;index<5;index++){
+                try {
+                    JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
+
+                    if(response!=null&&!response.getString("name").trim().equals("")){
+                        String inputName=response.getString("name");
+                        JSONObject input = new JSONObject();
+                        input.put("input_idx", index);
+                        input.put("input_name", inputName);
+                        inputsCache.put(input);
+                    }
+                } catch (JSONException e) {
+                    logger.error("Failed to recover zones recorded in the HUB ARD");
+                }
+
+            }
+        }
+        try {
+            descr.put("inputs",inputsCache);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public JSONObject getInputsAvailable(){
+        JSONObject descr = new JSONObject();
+        fillUpInputs(descr);
+        return descr;
+
     }
 
     public JSONObject getZonesAvailable(){
 
         JSONObject descr = new JSONObject();
-        JSONObject zone1 = new JSONObject();
-        JSONObject zone2 = new JSONObject();
 
-        try {
-            zone1.put("zone_idx",1);
-            zone1.put("zone_name","exterieur");
-            zone2.put("zone_idx",2);
-            zone2.put("zone_name","interieur");
-            descr.append("zones", zone1);
-            descr.append("zones", zone2);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        fillUpZones(descr);
+
 
         return descr;
+
+        /* Example of zone
+            try {
+                zone1.put("zone_idx",1);
+                zone1.put("zone_name","exterieur");
+                zone2.put("zone_idx",2);
+                zone2.put("zone_name","interieur");
+                descr.append("zones", zone1);
+                descr.append("zones", zone2);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        */
     }
 
     public void ardMessageReceived(JSONObject json)  {

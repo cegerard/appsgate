@@ -2,7 +2,7 @@ define([
   "app",
   "models/service/service",
   "text!templates/program/nodes/mailActionNode.html",
-    "text!templates/program/nodes/defaultEventNode.html"
+  "text!templates/program/nodes/defaultEventNode.html"
 ], function(App, Service, ActionTemplate, EventTemplate) {
 
   var Mail = {};
@@ -20,49 +20,49 @@ define([
       this.set("favorites", []);
       Mail.__super__.initialize.apply(this, arguments);
       dispatcher.on(this.get("id"), function(json) {
-          try{
-              t = JSON.parse(json.value);
-              if (Array.isArray(t)) {
-                  this.setFavorites(t);
-              }
-          }catch(err) {}
+        try {
+          t = JSON.parse(json.value);
+          if (Array.isArray(t)) {
+            this.setFavorites(t);
+          }
+        } catch (err) {}
       });
 
     },
 
-      getEvents: function() {
-          return ["mailSent"];
-      },
-      /**
-       * return the keyboard code for a given event
-       */
-      getKeyboardForEvent: function(evt){
-          var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
-          var v = this.getJSONEvent("mandatory");
-          switch(evt) {
-              case "mailSent":
-                  $(btn).append("<span data-i18n='services.mail.keyboard.mailSent'><span>");
+    getEvents: function() {
+      return ["mailSent"];
+    },
+    /**
+     * return the keyboard code for a given event
+     */
+    getKeyboardForEvent: function(evt) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v = this.getJSONEvent("mandatory");
+      switch (evt) {
+        case "mailSent":
+          $(btn).append("<span data-i18n='services.mail.keyboard.mailSent'><span>");
 
-                  v.eventName = "mailSent";
-                  v.eventValue = "*";
-                  v.source.value = this.get("id");
-                  v.source.type = "service";
-                  v.phrase = "services.mail.keyboard.mailSent";
-                  $(btn).attr("json", JSON.stringify(v));
-                  break;
-              default:
-                  console.error("unexpected event found for Mail: " + evt);
-                  btn = null;
-                  break;
-          }
-          return btn;
-      },
-      /**
-       * @returns event template for clock
-       */
-      getTemplateEvent: function() {
-          return _.template(EventTemplate);
-      },
+          v.eventName = "mailSent";
+          v.eventValue = "*";
+          v.source.value = this.get("id");
+          v.source.type = "service";
+          v.phrase = "services.mail.keyboard.mailSent";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected event found for Mail: " + evt);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
+    /**
+     * @returns event template for clock
+     */
+    getTemplateEvent: function() {
+      return _.template(EventTemplate);
+    },
 
 
 
@@ -74,17 +74,33 @@ define([
     },
     /**
      * return the keyboard code for a given action
-    */
-    getKeyboardForAction: function(act){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
-      var v = {"type": "action", "target": {"iid": "X", "type": "service", "serviceType":this.get("type"), "value":this.get("id")}, "iid": "X"};
-      switch(act) {
+     */
+    getKeyboardForAction: function(act) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v = {
+        "type": "action",
+        "target": {
+          "iid": "X",
+          "type": "service",
+          "serviceType": this.get("type"),
+          "value": this.get("id")
+        },
+        "iid": "X"
+      };
+      switch (act) {
         case "sendMail":
           $(btn).append("<span data-i18n='services.mail.keyboard.sendMail'></span>");
           v.methodName = "sendMailSimple";
-          v.args = [ {"type":"String", "value": this.getFavoriteMail()},
-                    {"type":"String", "value": "Test"},
-                    {"type":"String", "value": "..."}];
+          v.args = [{
+            "type": "String",
+            "value": this.getFavoriteMail()
+          }, {
+            "type": "String",
+            "value": "Test"
+          }, {
+            "type": "String",
+            "value": "..."
+          }];
           v.phrase = "services.mail.language.sendMail";
           $(btn).attr("json", JSON.stringify(v));
           break;
@@ -99,9 +115,9 @@ define([
      * @returns the action template specific for mail
      */
     getTemplateAction: function() {
-      return _.template(ActionTemplate);  
+      return _.template(ActionTemplate);
     },
-    
+
     /**
      */
     setFavorites: function(array) {
@@ -132,53 +148,64 @@ define([
      * remove a favorite mail
      */
     removeFavorite: function(which) {
-      this.remoteControl("removeFavoriteRecipient", [{"type": "String", "value": which}]);
+      this.remoteControl("removeFavoriteRecipient", [{
+        "type": "String",
+        "value": which
+      }]);
       v = this.getFavorites();
-      var c, found=false;
-      for(c in v) {
-          if(v[c].mail == which) {
-              found=true;
-              break;
-          }
+      var c, found = false;
+      for (c in v) {
+        if (v[c].mail == which) {
+          found = true;
+          break;
+        }
       }
-      if(found){
-          delete v[c];
+      if (found) {
+        delete v[c];
       }
       this.setFavorites(v);
 
     },
-    
-    getNumberOfFavorites: function () {
+
+    getNumberOfFavorites: function() {
       var i = 0;
       for (val in this.getFavorites()) {
         i++;
       }
       return i;
     },
-    
+
     /**
      * update a favorite mail
      */
     updateFavorite: function(old, which) {
       v = this.getFavorites();
       if (old == "") {
-        v.push({mail:which});
+        v.push({
+          mail: which
+        });
         this.setFavorites(v);
         //code
       } else {
-        this.remoteControl("removeFavoriteRecipient", [{"type": "String", "value": old}]);
+        this.remoteControl("removeFavoriteRecipient", [{
+          "type": "String",
+          "value": old
+        }]);
         for (t in v) {
           if (v[t].mail === old) {
-              v[t].mail = which;
-              this.setFavorites(v);
-              break;
+            v[t].mail = which;
+            this.setFavorites(v);
+            break;
           }
         }
       }
-      this.remoteControl("addFavoriteRecipient", [{"type": "String", "value": which}]);
+      this.remoteControl("addFavoriteRecipient", [{
+        "type": "String",
+        "value": which
+      }]);
 
-    }    
-    
+    }
+
   });
   return Mail;
 });

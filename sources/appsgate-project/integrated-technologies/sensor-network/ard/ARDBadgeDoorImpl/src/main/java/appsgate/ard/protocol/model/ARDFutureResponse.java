@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ARDFutureResponse extends Thread implements ARDMessage,Constraint {
 
-    private static final Long RESPONSE_TIMEOUT=3000l;
+    private static final Long RESPONSE_TIMEOUT=200l;
     private ARDController ard;
     private ARDRequest command;
     private JSONObject response;
@@ -44,7 +44,6 @@ public class ARDFutureResponse extends Thread implements ARDMessage,Constraint {
 
     @Override
     public void ardMessageReceived(JSONObject json) throws JSONException {
-        System.out.println("response received for " + json.getInt("request_id"));
         ard.getMapRouter().remove(this);
         response=json;
         synchronized (this){
@@ -55,7 +54,7 @@ public class ARDFutureResponse extends Thread implements ARDMessage,Constraint {
 
     @Override
     public boolean evaluate(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getInt("request_id")==requestId;
+        return jsonObject.getInt("req_id")==requestId;
     }
 
     public JSONObject getResponse(){

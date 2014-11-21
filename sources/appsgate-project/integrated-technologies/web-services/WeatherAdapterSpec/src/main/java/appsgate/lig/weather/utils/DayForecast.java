@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Forecast for a given Day (java.util.Date)
- * @author jnascimento
+ * @author thibaud
  *
  */
 public class DayForecast {
@@ -17,9 +17,8 @@ public class DayForecast {
     public static final String FORECAST = " Forecast";
     public static final String MIN = " MinTemperature";
     public static final String MAX = " MaxTemperature";
-
-
 	
+
 	public DayForecast(Date date,int min,int max, int code){
 		this.date=date;
 		this.min=min;

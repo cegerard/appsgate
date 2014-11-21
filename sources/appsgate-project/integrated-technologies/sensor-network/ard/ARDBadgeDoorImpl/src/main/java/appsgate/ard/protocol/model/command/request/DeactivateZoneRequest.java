@@ -7,7 +7,7 @@ public class DeactivateZoneRequest extends ARDRequest {
 
     public DeactivateZoneRequest(Integer inputId) throws JSONException {
         super(0,"deactivate_zone");
-        json.put("input_idx",inputId);
+        json.put("zone_idx",inputId);
     }
 
 }

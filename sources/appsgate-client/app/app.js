@@ -38,11 +38,12 @@ define(function(require, exports, module) {
 
       // initialize the history management
       try {
-        Backbone.history.start();
+        Backbone.history.start({"silent":"true"});
+        Backbone.history.fragment = null;
       } catch (e) {}
 
       // navigate to the entry point of the application
-      appRouter.navigate("reset", {
+      appRouter.navigate("home", {
         trigger: true
       });
 

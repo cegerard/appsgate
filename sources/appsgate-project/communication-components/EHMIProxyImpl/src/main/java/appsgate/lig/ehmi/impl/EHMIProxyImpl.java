@@ -209,7 +209,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	boolean synchroContext = false;
 	boolean synchroCoreProxy = false;
 
-	private long TIMEOUT = 1000*60;
+	private final long TIMEOUT = 1000*60;
 
 	private synchronized void synchroCoreProxy() {
 		logger.trace("synchroCoreProxy()...");
@@ -238,9 +238,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 							String id = devicesArray.getJSONObject(i).getString(
 								"id");
 
-							if (type != "21" && getGrammarFromType(type) == null) {
-							addGrammar(id, type, new GrammarDescription(
-									coreProxy.getDeviceBehavior(type)));
+							if (!"21".equals(type)) {
+							addGrammar(id, type, new GrammarDescription(coreProxy.getDeviceBehavior(type)));
 							}
 						}
 					} catch (JSONException e) {
@@ -357,7 +356,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		JSONObject devices = new JSONObject();
 		try {
 			JSONObject coreObject = coreProxy.getDevice(deviceId);
-			return addContextData(coreObject, deviceId);
+            return addContextData(coreObject, deviceId);
 		} catch (CoreDependencyException coreException) {
 			logger.debug("Resolution failed for core dependency, no device can be found.");
 			if (systemClock.isRemote()) {
@@ -408,8 +407,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		JSONObject deviceDetails = coreProxy.getDevice(objectId);
 		try {
-			GrammarDescription grammar = devicePropertiesTable
-					.getGrammarFromType(deviceDetails.getString("type"));
+			GrammarDescription grammar = getGrammarFromType(deviceDetails.getString("type"));
                         if (grammar == null) {
                             logger.error("Unable to get grammar for device: {}", deviceDetails.getString("id"));
                             return null;
@@ -476,10 +474,17 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	@Override
 	public GrammarDescription getGrammarFromType(String deviceType) {
 		if(devicePropertiesTable == null) {
-			logger.error("no context data available");
+			logger.error("getGrammarFromType({}): No context data available", deviceType);
 			return null;
 		}
-		return devicePropertiesTable.getGrammarFromType(deviceType);
+                GrammarDescription desc = devicePropertiesTable.getGrammarFromType(deviceType);
+                if (desc == null ) {
+			logger.warn("getGrammarFromType({}): the devicePropertyTable did not contain", deviceType);
+                        desc = new GrammarDescription(coreProxy.getDeviceBehavior(deviceType));
+                        addGrammar(null, deviceType, new GrammarDescription(coreProxy.getDeviceBehavior(deviceType)));
+                } else {
+                }
+		return desc;
 	}
 
 	@Override
@@ -1402,13 +1407,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		// Add the grammar to the table
 		JSONObject device = coreProxy.getDevice(deviceId);
+
 		try {
 			String type = device.getString("type");
 			devicePropertiesTable.setType(deviceId, type);
 			return devicePropertiesTable.getGrammarFromType(type);
 		} catch (JSONException ex) {
 			logger.error("Unable to get 'type' from {}", device.toString());
-		}
+		} catch (NullPointerException e){
+            logger.error("Device {} is not available, this is not normal, ask the matrix architect why",deviceId);
+        }
 		return null;
 	}
 
