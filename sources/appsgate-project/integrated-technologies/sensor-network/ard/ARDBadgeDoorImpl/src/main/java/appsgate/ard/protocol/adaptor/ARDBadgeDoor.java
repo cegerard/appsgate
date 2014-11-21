@@ -104,7 +104,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
                                               try {
                                                   Boolean alarm=jsonObject.getJSONObject("event").getBoolean("alarm");
                                                   Boolean active=jsonObject.getJSONObject("event").getBoolean("active");
-                                                  return true;//!alarm && active;
+                                                  return alarm && active;
 
                                               } catch (JSONException e){
                                                   return false;
