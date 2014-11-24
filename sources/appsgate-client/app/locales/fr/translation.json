@@ -16,7 +16,7 @@
 		"entities-filter": "Filtre entités",
 		"relations-filter": "Filtre relations",
 		"unfix-node": "Défixer tout",
-		"search-example": "(Exemple : __entity__)"
+		"search-example": "(Exemple : '__entity__')"
     },
     "devices": {
         "no-value":"---",

@@ -65,7 +65,7 @@ require(["config"], function() {
                 console.log("device ready, initializing application...");
                 // Initialize the application-wide event dispatcher
                 // initialise localisation
-                $.i18n.init({resGetPath: 'app/locales/__lng__/__ns__.json', lng: 'fr', fallbackLng: 'fr'}).done(function() {
+                $.i18n.init({resGetPath: 'app/locales/__lng__/__ns__.json', lng: 'fr', fallbackLng: 'fr', useDataAttrOptions: true}).done(function() {
                     app.initialize();
                 });
 
