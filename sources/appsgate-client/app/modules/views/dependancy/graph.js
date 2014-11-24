@@ -11,10 +11,31 @@ define([
 		events: {
 			"click button.refresh-button": "onRefreshButton",
 			"click button.unfix-button": "onUnfixButton",
+			"click button.search-button": "onSearchButton",
 			"keyup .search-input-text": "onSearchButton",
 		},
 
-		initialize: function () {},
+		initialize: function () {
+			var self = this;
+			this.model.on("change:currentEntitiesTypes", function () {
+				force.stop();
+				self.model.updateEntitiesShown();
+				self.update(self.model);
+				force.start();
+			});
+			//			this.model.on("change:currentEntities", function () {
+			//				force.stop();
+			//				self.update(self.model);
+			//				force.start();
+			//			});
+
+			this.model.on("change:currentRelationsTypes", function () {
+				force.stop();
+				self.model.updateRelationsShown();
+				self.update(self.model);
+				force.start();
+			});
+		},
 
 		onRefreshButton: function () {
 			// Reload this page to refresh data
@@ -83,6 +104,8 @@ define([
 
 
 			this.createFilters(this.model);
+			this.updateCheckAllEntities();
+			this.updateCheckAllRelations();
 
 			// Add the svg to html
 			svg = d3.select("#graph").select("svg")
@@ -131,6 +154,8 @@ define([
 		},
 
 		update: function (model) {
+			var self = this;
+
 			force.nodes(model.get("currentEntities"));
 			force.links(model.get("currentRelations"));
 
@@ -299,6 +324,64 @@ define([
 						return -100;
 					}
 				});
+
+
+			/********/
+
+			//			filterNodes = d3.select("#filterContainerNodes").selectAll("div")
+			//				.data(model.get("entitiesTypes"))
+			//				.enter()
+			//				.append("div")
+			//				.attr("class", "checkbox-container")
+			//				.append("label")
+			//				.each(function (d) {
+			//					// create checkbox for each data
+			//					d3.select(this).append("input")
+			//						.attr("type", "checkbox")
+			//						.attr("id", function (d) {
+			//							return "chk_node_" + d;
+			//						})
+			//						.property("checked", function (d) {
+			//							return _.contains(model.get("currentEntitiesTypes"), d);
+			//						})
+			//						.on("click", function (d, i) {
+			//							// register on click event
+			//							self.applyFilter("entities", d, this.checked);
+			//							self.updateCheckAllEntities(model.get("entitiesTypes"));
+			//						})
+			//					d3.select(this).append("span")
+			//						.text(function (d) {
+			//							return d;
+			//						});
+			//				});
+			//
+			//			filterLinks = d3.select("#filterContainerLinks").selectAll("div")
+			//				.data(model.get("relationsTypes"))
+			//				.enter()
+			//				.append("div")
+			//				.attr("class", "checkbox-container")
+			//				.append("label")
+			//				.each(function (d) {
+			//					// create checkbox for each data
+			//					d3.select(this).append("input")
+			//						.attr("type", "checkbox")
+			//						.attr("id", function (d) {
+			//							return "chk_link_" + d;
+			//						})
+			//						.property("checked", function (d) {
+			//							return _.contains(model.get("currentRelationsTypes"), d);
+			//						})
+			//						.on("click", function (d, i) {
+			//							// register on click event
+			//							self.applyFilter("relations", d, this.checked);
+			//						})
+			//					d3.select(this).append("span")
+			//						.text(function (d) {
+			//							return d;
+			//						});
+			//				});
+			//
+			//			self.updateCheckAllEntities(model.get("entitiesTypes"));
 		},
 
 
@@ -387,6 +470,73 @@ define([
 				.attr("cy", function (l) {
 					return (l.source.y + l.target.y) / 2;
 				});
+
+
+			filterNodes.select("input")
+				.property("checked", function (d) {
+					return _.contains(self.model.get("currentEntitiesTypes"), d);
+				});
+
+			filterLinks.select("input")
+				.property("checked", function (d) {
+					return _.contains(self.model.get("currentRelationsTypes"), d);
+				});
+
+			//			d3.select("#filterContainerNodes").selectAll("div")
+			//				.data(model.get("entitiesTypes"))
+			//				.enter()
+			//				.append("div")
+			//				.attr("class", "checkbox-container")
+			//				.append("label")
+			//				.each(function (d) {
+			//					// create checkbox for each data
+			//					d3.select(this).append("input")
+			//						.attr("type", "checkbox")
+			//						.attr("id", function (d) {
+			//							return "chk_node_" + d;
+			//						})
+			//						.property("checked", function (d) {
+			//							return _.contains(model.get("currentEntitiesTypes"), d);
+			//						})
+			//						.on("click", function (d, i) {
+			//							// register on click event
+			//							self.applyFilter("entities", d, this.checked);
+			//							self.updateCheckAllEntities(model.get("entitiesTypes"));
+			//						})
+			//					d3.select(this).append("span")
+			//						.text(function (d) {
+			//							return d;
+			//						});
+			//				});
+			//
+			//			d3.select("#filterContainerLinks").selectAll("div")
+			//				.data(model.get("relationsTypes"))
+			//				.enter()
+			//				.append("div")
+			//				.attr("class", "checkbox-container")
+			//				.append("label")
+			//				.each(function (d) {
+			//					// create checkbox for each data
+			//					d3.select(this).append("input")
+			//						.attr("type", "checkbox")
+			//						.attr("id", function (d) {
+			//							return "chk_link_" + d;
+			//						})
+			//						.property("checked", function (d) {
+			//							return _.contains(model.get("currentRelationsTypes"), d);
+			//						})
+			//						.on("click", function (d, i) {
+			//							// register on click event
+			//							self.applyFilter("relations", d, this.checked);
+			//						})
+			//					d3.select(this).append("span")
+			//						.text(function (d) {
+			//							return d;
+			//						});
+			//				});
+
+
+
 		},
 
 		/**
@@ -503,7 +653,7 @@ define([
 
 		createFilters: function (model) {
 			var self = this;
-			d3.select("#filterContainerNodes").selectAll("div")
+			filterNodes = d3.select("#filterContainerNodes").selectAll("div")
 				.data(model.get("entitiesTypes"))
 				.enter()
 				.append("div")
@@ -522,6 +672,7 @@ define([
 						.on("click", function (d, i) {
 							// register on click event
 							self.applyFilter("entities", d, this.checked);
+							self.updateCheckAllEntities();
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
@@ -529,7 +680,7 @@ define([
 						});
 				});
 
-			d3.select("#filterContainerLinks").selectAll("div")
+			filterLinks = d3.select("#filterContainerLinks").selectAll("div")
 				.data(model.get("relationsTypes"))
 				.enter()
 				.append("div")
@@ -548,6 +699,7 @@ define([
 						.on("click", function (d, i) {
 							// register on click event
 							self.applyFilter("relations", d, this.checked);
+							self.updateCheckAllRelations();
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
@@ -574,8 +726,37 @@ define([
 
 			this.update(this.model);
 			force.start();
-		}
+		},
 
+		updateCheckAllEntities: function () {
+			//			var nbEntities = entitiesTypesArray.length;
+			//			var nbChecked = 0;
+			//			entitiesTypesArray.forEach(function (entityType) {
+			//				if ($("#chk_node_" + entityType).is(':checked')) {
+			//					nbChecked++;
+			//				}
+			//			});
+			//
+			//			if (nbChecked === nbEntities) {
+			//				$("#checkbox-all-entities").prop('checked', true);
+			//			} else {
+			//				$("#checkbox-all-entities").prop('checked', false);
+			//			}
+
+			if (this.model.get("currentEntitiesTypes").length === this.model.get("entitiesTypes").length) {
+				$("#checkbox-all-entities").prop('checked', true);
+			} else {
+				$("#checkbox-all-entities").prop('checked', false);
+			}
+		},
+
+		updateCheckAllRelations: function () {
+			if (this.model.get("currentRelationsTypes").length === this.model.get("relationsTypes").length) {
+				$("#checkbox-all-relations").prop('checked', true);
+			} else {
+				$("#checkbox-all-relations").prop('checked', false);
+			}
+		}
 
 	});
 

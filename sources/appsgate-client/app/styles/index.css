@@ -922,3 +922,7 @@ fieldset[disabled] .btn {
     display: block;
     margin-left: 10px;
 }
+
+#filterContainerNodes>input, #filterContainerNodes>div>label>input, #filterContainerLinks>input, #filterContainerLinks>div>label>input {
+	margin-right: 5px;
+}
