@@ -56,20 +56,20 @@ define([
 		},
 
 		render: function () {
-//			this.$el.append(this.template({
-//				dependancy: this.model,
-//			}));
 			this.$el.html(this.template({
 				dependancy: this.model,
 			}));
 
-//			var width = this.model.get("width"),
-//				height = this.model.get("height");
-			
+			// Pour le moment, largeur en fonction de ce qu'on a sur l'ecran et hauteur en dur dans le modèle
 			var width = $(".body-content").width(),
 				height = this.model.get("height");
 
-			
+			this.model.set({
+				width: width,
+				height: height
+			});
+
+
 			this.createFilters(this.model);
 
 			// Add the svg to html
