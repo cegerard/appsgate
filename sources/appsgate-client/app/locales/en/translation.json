@@ -334,8 +334,8 @@
         "isOn-keep": "A__myVar__ on",
         "turnOffEvt": "A__myVar__ is turned off",
         "turnOnEvt": "A __myVar__ is turned on",
-        "turnOff": "Switch on a __myVar__",
-        "turnOn": "Switch off a __myVar__"
+        "turnOff": "Switch off a __myVar__",
+        "turnOn": "Switch on a __myVar__"
       },
       "language": {
         "change": "consumption of __myVar__ changes",
@@ -345,8 +345,8 @@
         "isOn-keep": "__myVar__ on",
         "turnOffEvt": "__myVar__ is turned off",
         "turnOnEvt": "__myVar__ is turned on",
-        "turnOff": "Switch on __myVar__",
-        "turnOn": "Switch off __myVar__"
+        "turnOff": "Switch off __myVar__",
+        "turnOn": "Switch on __myVar__"
       },
       "name": {
         "plural": "Power sockets",

@@ -475,11 +475,16 @@ body {
   border: 0;
   position: relative;
 }
+.editorWorkspace .btn:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
 .editorWorkspace .btn:hover,
 .editorWorkspace .btn:focus {
-  color: black;
-  background: transparent !important;
-  border: 1px solid black !important;
+  color: #333 !important;
+  background-color: #ebebeb !important;
+  border-color: #adadad !important;
 }
 .programInput {
   height: 70%;
@@ -564,7 +569,7 @@ fieldset[disabled] .btn {
   background: transparent;
   border: none !important;
   box-shadow: none;
-  cursor:default;
+  cursor: default;
 }
 .read-only .btn:hover,
 .read-only .btn:focus {
@@ -676,8 +681,8 @@ fieldset[disabled] .btn {
 }
 .selected-node {
   border: 4px solid black;
-  -webkit-animation: blinking 0.5s infinite alternate cubic-bezier(1,0,0,1);
-  animation: blinking 0.5s infinite alternate cubic-bezier(1,0,0,1);
+  -webkit-animation: blinking 0.5s infinite alternate cubic-bezier(1, 0, 0, 1);
+  animation: blinking 0.5s infinite alternate cubic-bezier(1, 0, 0, 1);
 }
 @-webkit-keyframes blinking {
   from {
