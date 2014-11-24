@@ -298,6 +298,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         HashMap<String, JSONObject> mapProgramJSON = new HashMap<String, JSONObject>();
         for (NodeProgram p : mapPrograms.values()) {
+            p.getReferences().checkReferences();
             mapProgramJSON.put(p.getId(), p.getJSONDescription());
         }
 

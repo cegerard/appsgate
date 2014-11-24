@@ -1,0 +1,45 @@
+{
+  "name": "appsgate.debugger",
+  "description": "Debugger for AppsGate",
+  "version": "1.0.1",
+  "license": "ISC",
+  "private": true,
+  "author": {
+    "name": "Remi Barraquand",
+    "email": "dev@remibarraquand.com",
+    "url": "http://barraq.io"
+  },
+  "main": [
+    "LICENSE",
+    "README.md",
+    "lib/appsgate.debugger.js",
+    "lib/appsgate.debugger.dev.js",
+    "lib/appsgate.debugger.min.js",
+    "lib/appsgate.debugger.min.js.map",
+    "lib/themes/basic/theme.css",
+    "lib/themes/basic/pictograms/*.png"
+  ],
+  "ignore": [
+    "package.json",
+    "server.js",
+    "bower",
+    "Gruntfile.js",
+    "tasks",
+    "examples",
+    "screenshots",
+    "src",
+    ".gitattributes",
+    ".gitignore",
+    ".bowerrc"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "d3": "~3.4.11",
+    "lodash": "~2.4.1",
+    "jquery": "~2.1.1",
+    "requirejs": "~2.1.14",
+    "jqueryui": "~1.11.0",
+    "tinysort": "*",
+    "i18next": "~1.7.4"
+  }
+}

@@ -54,7 +54,7 @@ public class ARDFutureResponse extends Thread implements ARDMessage,Constraint {
 
     @Override
     public boolean evaluate(JSONObject jsonObject) throws JSONException {
-        return jsonObject.getInt("request_id")==requestId;
+        return jsonObject.getInt("req_id")==requestId;
     }
 
     public JSONObject getResponse(){

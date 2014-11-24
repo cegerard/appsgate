@@ -43,7 +43,8 @@ import java.util.Map;
 @Provides
 public class ARDController {
 
-    private Logger logger = LoggerFactory.getLogger(ARDController.class);
+    public static final String ARD_LOGNAME="ARDLOG";
+    private Logger logger = LoggerFactory.getLogger(ARD_LOGNAME);
     private final Integer SOCKET_TIMEOUT=5000;
     private final Integer STREAM_FLOW_RESTTIME=100;
 
@@ -88,8 +89,6 @@ public class ARDController {
                         if (checkResult){
                             logger.debug("Forwarding message {} received to higher layer", json.toString());
                             mapRouter.get(cons).ardMessageReceived(json);
-                        }else {
-                            logger.debug("{} evaluated to {}", new Object[]{Constraint.class.getSimpleName(), checkResult});
                         }
                     }catch(JSONException e){
                         logger.debug("Exception was raised when invoking listener {}", mapRouter.get(cons).toString());
@@ -102,6 +101,7 @@ public class ARDController {
     }
 
     public void disconnect() throws IOException {
+        logger.info("Controller is closing the socket");
         monitor.kill();
         socket.close();
     }
@@ -169,7 +169,7 @@ public class ARDController {
                     try {
                         connect();
                         monitoring();
-                        sendRequest(new SubscriptionRequest());
+                        sendSyncRequest(new SubscriptionRequest()).getResponse();
                     } catch (Exception e) {
                         e.printStackTrace();
                         if(retry==null || retry==-1) break;

@@ -8,6 +8,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import appsgate.lig.ehmi.trace.TraceMan;
 
@@ -27,6 +29,11 @@ import appsgate.lig.ehmi.trace.TraceMan;
 
     	
 		private static final long serialVersionUID = 1L;
+		
+		/**
+	     * The logger
+	     */
+	    private final static Logger LOGGER = LoggerFactory.getLogger(TraceQueue.class);
 		
 	    /**
 	     * Thread to manage trace writing and aggregation
@@ -103,6 +110,37 @@ import appsgate.lig.ehmi.trace.TraceMan;
                     }
                 }, deltaTinMillis, deltaTinMillis);
             }
+            initiated = true;
+        }
+        
+        /**
+         * Initiate the trace executor thread/service by ignoring deltaT for
+         * frequency settings
+         * @param refreshRate use to set the frequency of notifications
+         */
+        public void initTraceExec(long refreshRate) {
+            new Thread(traceExec).start();
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+            	@Override
+                public void run() {
+            		synchronized(traceExec) {
+            			if(traceExec.isSleeping()){
+            				logTime = manager.getCurrentTimeInMillis();
+            				if(traceExec.getTraceQueue().isEmpty()){
+            					try{
+            						manager.sendTraces(new JSONArray().put(new JSONObject().put("timestamp", logTime)
+            									.put("devices", new JSONArray())
+            									.put("programs", new JSONArray())));
+            					}catch(JSONException e){
+            						LOGGER.error("JSON exception occured when generating empty notification trace for live tracing");
+            					}
+            				}
+                            traceExec.notify();
+                        }
+                    }
+                }
+            }, refreshRate, refreshRate);
             initiated = true;
         }
 		

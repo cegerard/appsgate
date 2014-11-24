@@ -51,7 +51,7 @@ public class ObjectEventListener implements CoreEventsListener {
     public void notifyEvent(String srcId, String varName, String value) {
         logger.debug("Event notification received for:  {" + srcId + ", " + varName + ", " + value + "}");
         //trace the last event received
-        if(traceManager != null && notFiltered(srcId, varName, value)) {
+        if(traceManager != null) {
         	traceManager.coreEventNotify(EHMIProxy.getCurrentTimeInMillis(), srcId, varName, value);
         }
 
@@ -83,26 +83,6 @@ public class ObjectEventListener implements CoreEventsListener {
         }
 
     }
-
-    /**
-     * Filter trace that not need to be trace in EHMI point view
-     * @param srcId the equipement identifier
-     * @param varName the vriable name thaht change
-     * @param value the new value to the variable
-     * @return true if the trace can be trace, false otherwise
-     */
-    private boolean notFiltered(String srcId, String varName, String value) {
-    	//Filter on those conditions
-    	if(varName.contentEquals("x")  	   ||
-    	   varName.contentEquals("y")  	   ||
-    	   varName.contentEquals("ct")	   ||
-    	   varName.contentEquals("speed")  ||
-    	   varName.contentEquals("mode")
-    	 )return false;
-    	
-    	//Trace no need to be filtered
-		return true;
-	}
 
 	public void setTraceManager(TraceManSpec traceManager) {
         this.traceManager = traceManager;

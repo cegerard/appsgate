@@ -82,14 +82,25 @@ public class TraceCmdListener implements CommandListener{
 					
 				}else if(cmd.equalsIgnoreCase("livetrace")){
 					long deltaT = 0;
+					long refreshRate = 0;
+					
 					if(obj.has("args")){
 						JSONObject args = obj.getJSONObject("args");
+						
 						if(args.has("delta")){
 							deltaT = args.getLong("delta");
 						}
+						
+						if(args.has("refreshRate")){
+							deltaT = 0; // Refresh rate can only by used alone without aggregation
+										// so it force deltaT interval for aggregation to 0
+							refreshRate = args.getLong("refreshRate");
+						} 
 					}
+					
 					traceMan.setDeltaT(deltaT);
-					traceMan.initLiveTracer();					
+					traceMan.initLiveTracer(refreshRate);
+					
 				}else if (cmd.equalsIgnoreCase("filetrace")){
 					long deltaT = 0;
 					if(obj.has("args")){

@@ -21,25 +21,25 @@ define([
 
       // setting default friendly name if none exists
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
-          this.generateDefaultName($.i18n.t("devices.domicube.name.singular"));
+        this.generateDefaultName($.i18n.t("devices.domicube.name.singular"));
       }
     },
-        /**
+    /**
      * return the list of available events
      */
     getEvents: function() {
-      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate","east","west"];
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate", "east", "west"];
     },
     /**
      * return the keyboard code for a given event
-    */
-    getKeyboardForEvent: function(evt){
+     */
+    getKeyboardForEvent: function(evt) {
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONEvent("mandatory");
       v.source.type = "device";
       v.source.deviceType = "210";
       v.source.value = this.get("id");
-      switch(evt) {
+      switch (evt) {
         case "Music":
           $(btn).append("<img src='app/img/domicube-music.png' width='36px'>");
           v.eventName = "newFace";
@@ -91,22 +91,22 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "west":
-              //$(btn).append("<span data-i18n='devices.domicube.keyboard.west'></span>");
-              $(btn).append("<img src='app/img/cube-turn-left.png' width='36px'>");
-              v.eventName = "newDirection";
-              v.eventValue = "west";
-              //v.phrase = "devices.domicube.language.west";
-              v.icon = "app/img/cube-turn-left.png";
-              $(btn).attr("json", JSON.stringify(v));
-              break;
+          //$(btn).append("<span data-i18n='devices.domicube.keyboard.west'></span>");
+          $(btn).append("<img src='app/img/cube-turn-left.png' width='36px'>");
+          v.eventName = "newDirection";
+          v.eventValue = "west";
+          //v.phrase = "devices.domicube.language.west";
+          v.icon = "app/img/cube-turn-left.png";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
         case "east":
-              //$(btn).append("<span data-i18n='devices.domicube.keyboard.east'></span>");
-              $(btn).append("<img src='app/img/cube-turn-right.png' width='36px'>");
-              v.eventName = "newDirection";
-              v.eventValue = "east";
-              //v.phrase = "devices.domicube.language.east";
-              v.icon = "app/img/cube-turn-right.png";
-              $(btn).attr("json", JSON.stringify(v));
+          //$(btn).append("<span data-i18n='devices.domicube.keyboard.east'></span>");
+          $(btn).append("<img src='app/img/cube-turn-right.png' width='36px'>");
+          v.eventName = "newDirection";
+          v.eventValue = "east";
+          //v.phrase = "devices.domicube.language.east";
+          v.icon = "app/img/cube-turn-right.png";
+          $(btn).attr("json", JSON.stringify(v));
           break;
         default:
           console.error("unexpected event found for DomiCube: " + evt);
@@ -122,7 +122,7 @@ define([
       switch (which) {
         //case
         case "state":
-      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate","dimDirection"];
+          return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "dimDirection"];
         default:
           return [];
       }
@@ -130,8 +130,8 @@ define([
 
     /**
      * return the keyboard code for a given state
-    */
-    getKeyboardForState: function(state, which){
+     */
+    getKeyboardForState: function(state, which) {
       if (which !== "state") {
         console.error('Unsupported type of state: ' + which);
         return null;
@@ -140,7 +140,7 @@ define([
       v.object.type = "device";
       v.object.deviceType = "210";
       v.object.value = this.get("id");
-      switch(state) {
+      switch (state) {
         case "Music":
           $(btn).append("<img src='app/img/domicube-music.png' width='36px'>");
           v.icon = "app/img/domicube-music.png";

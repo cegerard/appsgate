@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, CoreObjectSpec, CoreARDBadgeDoorSpec { //ARDWatchDogSpec
 
-    private static Logger logger = LoggerFactory.getLogger(ARDBadgeDoor.class);
+    private static Logger logger = LoggerFactory.getLogger(ARDController.ARD_LOGNAME);
     private String sensorName;
     private String sensorId;
     private String sensorType;
@@ -39,6 +39,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     private String ardClass="";
     private String lastMessage="";
     private JSONArray zonesCache=null;
+    private JSONArray inputsCache=null;
 
     private ARDController controller;
 
@@ -101,8 +102,9 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
                                           @Override
                                           public boolean evaluate(JSONObject jsonObject) throws JSONException {
                                               try {
-                                                  jsonObject.getJSONObject("event").getInt("input_idx");
-                                                  return true;
+                                                  Boolean alarm=jsonObject.getJSONObject("event").getBoolean("alarm");
+                                                  Boolean active=jsonObject.getJSONObject("event").getBoolean("active");
+                                                  return alarm && active;
 
                                               } catch (JSONException e){
                                                   return false;
@@ -167,8 +169,8 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     public void forceInput(int input) {
         logger.info("forceInput invoked: Input to be forced {},", input);
         try {
-            JSONObject request1=controller.sendSyncRequest(new ForceInputRequest(input,false)).getResponse();
-            JSONObject request2=controller.sendSyncRequest(new ForceInputRequest(input,true)).getResponse();
+            JSONObject request1=controller.sendSyncRequest(new ForceInputRequest(input,true,false)).getResponse();
+            JSONObject request2=controller.sendSyncRequest(new ForceInputRequest(input,true,true)).getResponse();
             logger.info("Response1: {}, Response2: {}",request1,request2);
         } catch (JSONException e) {
             logger.error("Failed invoking zoneActivate for zone {}",input);
@@ -195,7 +197,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
         if(zonesCache==null){
             zonesCache=new JSONArray();
-            for(int index=1;index<5;index++){
+            for(int index=1;index<10;index++){
                 try {
                     JSONObject response=controller.sendSyncRequest(new GetZoneRequest(index)).getResponse();
 
@@ -222,38 +224,31 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
 
     private void fillUpInputs(final JSONObject descr){
 
-        JSONObject input1 = new JSONObject();
-        JSONObject input2 = new JSONObject();
-        try {
-            input1.put("input_idx", 1);
-            input1.put("input_name", "input 1");
-            input2.put("input_idx", 2);
-            input2.put("input_name", "input 2");
+        if(inputsCache==null){
+            inputsCache=new JSONArray();
+            for(int index=1;index<10;index++){
+                try {
+                    JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
 
-            descr.append("inputs", input1);
-            descr.append("inputs", input2);
+                    if(response!=null&&!response.getString("name").trim().equals("")){
+                        String inputName=response.getString("name");
+                        JSONObject input = new JSONObject();
+                        input.put("input_idx", index);
+                        input.put("input_name", inputName);
+                        inputsCache.put(input);
+                    }
+                } catch (JSONException e) {
+                    logger.error("Failed to recover zones recorded in the HUB ARD");
+                }
+
+            }
+        }
+        try {
+            descr.put("inputs",inputsCache);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
-        /**
-        for(int index=1;index<11;index++){
-            try {
-                JSONObject response=controller.sendSyncRequest(new GetInputRequest(index)).getResponse();
-
-                if(response!=null&&!response.getString("name").trim().equals("")){
-                    String inputName=response.getString("name");
-                    JSONObject zone = new JSONObject();
-                    zone.put("input_idx",index);
-                    zone.put("input_name",inputName);
-                    descr.append("inputs",zone);
-                }
-            } catch (JSONException e) {
-                logger.error("Failed to recover zones recorded in the HUB ARD");
-            }
-
-        }**/
     }
 
     public JSONObject getInputsAvailable(){
