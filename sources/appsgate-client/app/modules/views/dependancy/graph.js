@@ -10,7 +10,7 @@ define([
 
 		events: {
 			"click button.refresh-button": "onRefreshButton",
-			"click button.search-button": "onSearchButton",
+			"click button.unfix-button": "onUnfixButton",
 			"keyup .search-input-text": "onSearchButton",
 		},
 
@@ -52,6 +52,18 @@ define([
 						force.start();
 					}
 				}
+			}
+		},
+
+		onUnfixButton: function (e) {
+			var self = this;
+			force.nodes().forEach(function (d) {
+				if (self.model.get("rootNode") !== d) {
+					d.fixed = false
+				}
+			});
+			if (force.alpha() === 0) {
+				force.start();
 			}
 		},
 
@@ -476,6 +488,7 @@ define([
 					});
 					// Don't use the selectAndMove function so unfix manually
 					d.fixed = false;
+					d.selected = false;
 				} else {
 					// Focus and move new root node
 					this.selectAndMoveRootNode(d);
