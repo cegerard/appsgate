@@ -28,7 +28,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate", "east", "west"];
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate", "east", "west", "change"];
     },
     /**
      * return the keyboard code for a given event
@@ -106,6 +106,13 @@ define([
           v.eventValue = "east";
           //v.phrase = "devices.domicube.language.east";
           v.icon = "app/img/cube-turn-right.png";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "change":
+          $(btn).append("<span data-i18n='devices.domicube.keyboard.leaveFace'></span>");
+          v.eventName = "leaveFace";
+          v.eventValue = "*";
+          v.phrase = "devices.domicube.language.leaveFace";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

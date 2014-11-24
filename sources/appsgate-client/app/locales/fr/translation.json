@@ -108,16 +108,18 @@
         "unknown": "Inconnu"
       },
       "language": {
-        "activated": "le domicube est activé",
-        "inactivated": "le domicube est désactivé",
+        "activated": "On arrive sur la face du dessus du Domicube",
+        "inactivated": "On quitte la face du dessus du Domicube",
         "west": "l'Ouest",
-        "east": "l'Est"
+        "east": "l'Est",
+		"leaveFace" : "On change de face du Domicube"
       },
       "keyboard": {
-        "activated": "le domicube est activé",
-        "inactivated": "le domicube est désactivé",
+        "activated": "On arrive sur la face du dessus du Domicube",
+        "inactivated": "On quitte la face du dessus du Domicube",
         "west": "l'Ouest",
-        "east": "l'Est"
+        "east": "l'Est",
+		"leaveFace" : "On change de face du Domicube"
       },
       "white-face": {
         "first-elem": "Face",

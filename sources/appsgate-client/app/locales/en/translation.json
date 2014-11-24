@@ -108,16 +108,18 @@
         "unknown": "Unknown"
       },
       "language": {
-        "activated": "domicube is activated",
-        "inactivated": "domicube is idle",
+        "activated": "get the top face of Domicube",
+        "inactivated": "leave the top face of Domicube",
         "west": "West",
-        "east": "East"
+        "east": "East",
+		"leaveFace" : "Changing Domicube face"
       },
       "keyboard": {
-        "activated": "domicube is activated",
-        "inactivated": "domicube is idle",
+        "activated": "get the top face of Domicube",
+        "inactivated": "leave the top face of Domicube",
         "west": "West",
-        "east": "East"
+        "east": "East",
+		"leaveFace" : "Changing Domicube face"
       },
       "white-face": {
         "first-elem": "White",
@@ -449,8 +451,8 @@
     "if-keyword": "If",
     "keep-state": "Keep state ...",
     "selector": {
-      "prefix-f": "every ",
-      "prefix-m": "every ",
+      "prefix-f": " every ",
+      "prefix-m": " every ",
       "type": {
         "1": "temperature sensors",
         "2": "light sensors",
