@@ -449,8 +449,8 @@
     "if-keyword": "Si",
     "keep-state": "Maintenir l'état ...",
     "selector": {
-      "prefix-f": "Les ",
-      "prefix-m": "Les ",
+      "prefix-f": " Toutes les ",
+      "prefix-m": " Tous les ",
       "type": {
         "1": "capteurs de temperature",
         "2": "capteurs de luminosité",
