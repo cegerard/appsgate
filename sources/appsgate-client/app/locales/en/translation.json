@@ -222,7 +222,8 @@
       },
       "status": {
         "turnedOff": "Off",
-        "turnedOn": "On"
+        "turnedOn": "On",
+        "pairingRequired": "Press the buttom from PhilipsHue bridge."
       },
       "color-information": {
         "lastColor": "Last lamp's color ",

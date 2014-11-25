@@ -222,7 +222,8 @@
       },
       "status": {
         "turnedOff": "Eteinte",
-        "turnedOn": "Allumée"
+        "turnedOn": "Allumée",
+        "pairingRequired": "Appuyez sur le bouton du pont PhilipsHue."
       },
       "color-information": {
         "lastColor": "Dernière couleur de l'ampoule ",

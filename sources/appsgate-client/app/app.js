@@ -6,6 +6,7 @@ define(function(require, exports, module) {
   var Backbone = require("backbone");
   var Router = require("routers/router");
   var Communicator = require("modules/communicator");
+  var alertify=require("alertifyjs");
 
   require("moment");
   require("i18n");
@@ -13,6 +14,7 @@ define(function(require, exports, module) {
   require("jqueryui");
   require("jqueryuitouch");
   require("circlemenu");
+
 
   // Alias the module for easier identification.
   var app = module.exports;
@@ -114,6 +116,18 @@ define(function(require, exports, module) {
 
           if (navigator.splashscreen !== undefined) {
             navigator.splashscreen.hide();
+          }
+
+        });
+
+        dispatcher.on("system", function(msg) {
+
+          console.log("System received message " + JSON.stringify(msg));
+
+          if(msg.message!=undefined){
+               var l10nMessage=$.i18n.t(msg.message)
+               var timeout=10000;
+               alertify.log(l10nMessage, "log", timeout);
           }
 
         });
