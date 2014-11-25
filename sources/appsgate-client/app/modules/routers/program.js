@@ -71,6 +71,8 @@ define([
                 circle_radius: 75,
                 direction: 'top-right'
             });
+
+            $(document).i18n();
         }
 
     });

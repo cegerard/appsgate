@@ -39,7 +39,7 @@ define([
                 direction: 'top-right'
             });
 
-            $("body").i18n();
+            $(document).i18n();
 
             dispatcher.trigger("router:loaded");
         }

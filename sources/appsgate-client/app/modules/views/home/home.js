@@ -87,7 +87,7 @@ define([
             this.$el.html(this.template());
 
             // translate the view
-            $("*").i18n();
+            $(document).i18n();
 
             if(appRouter.initialized) {
               $(".disabled").removeClass("disabled");
