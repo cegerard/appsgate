@@ -188,7 +188,7 @@ define([
 			case 3:
 				return 40;
 			default:
-				return 20;
+				return 40;
 			}
 		},
 
