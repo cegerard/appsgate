@@ -142,7 +142,7 @@
         "change": "luminosity of __myVar__ changes"
       },
       "name": {
-        "plural": "Brightness sensors",
+        "plural": "Light sensors",
         "singular": "Light sensor"
       },
       "scale": {
