@@ -351,8 +351,8 @@
         "turnOn": "Switch on __myVar__"
       },
       "name": {
-        "plural": "Power sockets",
-        "singular": "Power socket"
+        "plural": "Smart Plugs",
+        "singular": "Smart Plug"
       },
       "status": {
         "turnedOff": "Off",
