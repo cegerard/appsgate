@@ -15,6 +15,8 @@ define([
 
 				// add the new graph to the collection only if it is empty (first time) or if we want to refresh to have the last data
 				if (self.length === 0 || isRefresh) {
+					
+					//@TODO : Dans un premier temps si on veut que le nouveau graphe est toujours les précedentes nodes dans le même état, comparé l'ancien model et le nouveau et modifié les attributs du nouveau par rapport à l'ancien
 
 					// Create new dependancy object
 					var newDependancy = new Dependancy();
