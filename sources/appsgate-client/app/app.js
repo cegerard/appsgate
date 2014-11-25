@@ -101,7 +101,7 @@ define(function(require, exports, module) {
 
         // all data have been received, launch the user interface
         dispatcher.on("dataReady", function() {
-          app.initialized = true;
+          appRouter.initialized = true;
           $("#lost-connection-modal").modal("hide");
           $("#settings-modal").modal("hide");
 

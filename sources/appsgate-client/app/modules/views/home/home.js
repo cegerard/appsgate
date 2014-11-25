@@ -32,7 +32,7 @@ define([
 
             dispatcher.on("dataReady", function() {
               $(".disabled").switchClass("disabled","",{"duration":1000});
-              $(".loading-widget").animate({opacity: 0}, 1000);
+              $(".loading-widget").animate({opacity: 0}, 1000, "linear", function() {$(".loading-widget").remove()});
             });
 
         },
@@ -87,10 +87,15 @@ define([
             this.$el.html(this.template());
 
             // translate the view
-            $("body").i18n();
+            $("*").i18n();
+
+            if(appRouter.initialized) {
+              $(".disabled").removeClass("disabled");
+              $(".loading-widget").remove();
+            }
 
             return this;
-        }
+        },
     });
 
     return HomeView;

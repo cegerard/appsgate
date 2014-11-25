@@ -17,6 +17,7 @@ define(function(require, exports, module) {
   // define the application router
   var Router = Backbone.Router.extend({
 
+    initialized: false,
     placesRouter: new PlacesRouter(),
     devicesRouter: new DevicesRouter(),
     servicesRouter: new ServicesRouter(),

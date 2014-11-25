@@ -502,6 +502,9 @@ body {
   background: transparent !important;
   border: none !important;
 }
+.editorWorkspace .read-only .btn-primary:hover {
+  color: #284476 !important;
+}
 .btn-prog-action {
   color: white;
   background: rgb(176, 125, 216) !important;
@@ -511,23 +514,23 @@ body {
   background: transparent !important;
   border: none !important;
 }
-.btn-prog-device {
-  color: white;
-  background: #0F4AB3 !important;
+.read-only .btn-prog-action:hover{
+  color: rgb(176,125,216) !important;
 }
-.read-only .btn-prog-device {
-  color: #0F4AB3 !important;
-  background: transparent !important;
-  border: none !important;
-}
+.btn-prog-device,
 .btn-prog-service {
   color: white;
   background: #0F4AB3 !important;
 }
+.read-only .btn-prog-device,
 .read-only .btn-prog-service {
   color: #0F4AB3 !important;
   background: transparent !important;
   border: none !important;
+}
+.read-only .btn-prog-device:hover,
+.read-only .btn-prog-service:hover {
+  color: #0F4AB3 !important;
 }
 .btn-prog-select {
   color: white;
@@ -537,6 +540,9 @@ body {
   color: #0F4AB3 !important;
   background: transparent !important;
   border: none !imporant;
+}
+.read-only .btn-prog-select:hover {
+  color: #0F4AB3 !important;
 }
 .btn-prog-prog {
   color: white;
@@ -554,6 +560,9 @@ body {
   color: #9999FF !important;
   background: transparent !important;
   border: none !important;
+}
+.read-only .btn-prog-prog:hover {
+  color: #9999FF !important;
 }
 .btn {
   box-shadow: 2px 2px 1px #888888;
@@ -573,7 +582,6 @@ fieldset[disabled] .btn {
 }
 .read-only .btn:hover,
 .read-only .btn:focus {
-  color: black;
   background: transparent !important;
   border: none !important;
 }
