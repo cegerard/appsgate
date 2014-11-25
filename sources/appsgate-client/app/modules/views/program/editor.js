@@ -19,6 +19,7 @@ define([
         "change .selector-place-picker": "onChangeSeletorPlaceNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
         "change .code-forecast-picker": "onChangeCodeForecastNode",
+        "change .typical-forecast-picker": "onChangeTypicalForecastNode",
         "change .scale-selector": "onChangeValue",
         "change .comparator-select": "onChangeComparatorNode",
         "change .number-input": "onChangeValue",
@@ -333,6 +334,23 @@ define([
         // // clearing selection
         // this.resetSelection();
       },
+      onChangeTypicalForecastNode: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var newTypical = e.currentTarget.selectedOptions[0].value;
+        var value = {"type": "int", "value": newTypical};
+        var i = 0;
+          $(".typical-forecast-picker").each(function(){
+              if (this.getAttribute("target-id") === iid) {
+                  i = 1;
+              }
+          });
+
+        this.Mediator.setNodeArg(iid, i, value);
+
+        // // clearing selection
+        // this.resetSelection();
+      },      
       onChangeComparatorNode: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
