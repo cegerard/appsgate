@@ -138,7 +138,7 @@ define([
           appRouter.isModalShown = false;
 
           // starting the program
-          self.model.set("runningState", "PROCESSING");
+          // self.model.set("runningState", "PROCESSING"); SHOULD NOT BE CALLED
           self.model.remoteCall("callProgram", [{type: "String", value: self.model.get("id")}]);
 
           // refresh the menu
@@ -201,7 +201,7 @@ define([
         // get the program to start
         var program = programs.get($(e.currentTarget).attr("id"));
 
-        program.set("runningState", "PROCESSING");
+        //program.set("runningState", "PROCESSING"); SHOULD NOT BE CALLED !
         program.remoteCall("callProgram", [{type: "String", value: program.get("id")}]);
 
         // refresh the menu
@@ -350,7 +350,7 @@ define([
           $(".secondary-block-node").remove();
 
           if(typeof self.model !== "undefined"){
-            if (self.model.get("runningState") === "PROCESSING" || self.model.get("runningState") === "KEEPING" || self.model.get("runningState") === "WAITING") {
+            if (self.model.isWorking()) {
               $("#led-" + self.model.get("id")).addClass("led-yellow").removeClass("led-orange").removeClass("led-default");
               $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.started'));
               $(".start-program-button").hide();

@@ -102,7 +102,6 @@ public class NodeWhile extends Node implements INodeRule {
 
     @Override
     public JSONObject call() {
-        setProgramWaiting();
         setStarted(true);
         fireStartEvent(new StartEvent(this));
         state.addStartEventListener(this);
@@ -137,7 +136,6 @@ public class NodeWhile extends Node implements INodeRule {
         if (node == state) {
             state.addEndEventListener(this);
             rules.addEndEventListener(this);
-            setProgramKeeping();
             rules.call();
         }
     }
@@ -194,7 +192,6 @@ public class NodeWhile extends Node implements INodeRule {
      */
     private void stopWaiting() {
         setStarted(false);
-        setProgramProcessing();
         fireEndEvent(new EndEvent(this));
     }
 

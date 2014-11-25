@@ -6,7 +6,7 @@
 
     <div class="row lead">
         <div class="pull-left">
-        <% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "KEEPING" || program.get("runningState") === "PROCESSING") { %>
+        <% if (program.isWorking()) { %>
         <div class="led led-yellow pull-left fix-row" title="<%= $.i18n.t('programs.state.started') %>"></div>
         <% } else if (program.get("runningState") === "DEPLOYED") { %>
         <div class="led led-default pull-left fix-row" title="<%= $.i18n.t('programs.state.stopped') %>"></div>

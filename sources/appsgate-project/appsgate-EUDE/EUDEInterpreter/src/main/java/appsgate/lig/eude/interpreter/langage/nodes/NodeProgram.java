@@ -41,7 +41,7 @@ final public class NodeProgram extends Node {
      */
     public static enum RUNNING_STATE {
 
-        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"), WAITING("WAITING"), KEEPING("KEEPING");
+        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING");
 
         private String name = "";
 
@@ -317,14 +317,14 @@ final public class NodeProgram extends Node {
      * Set the current running state to deployed
      */
     final public void setDeployed() {
-        setRunningState(RUNNING_STATE.DEPLOYED, null);
+        setState(RUNNING_STATE.DEPLOYED, null);
     }
 
     /**
      * set the state of the program to invalid
      */
     private void setInvalid() {
-        setRunningState(RUNNING_STATE.INVALID, null);
+        setState(RUNNING_STATE.INVALID, null);
     }
 
     /**
@@ -332,7 +332,7 @@ final public class NodeProgram extends Node {
      */
     private void setValid() {
         if (runningState == RUNNING_STATE.INVALID) {
-            setRunningState(RUNNING_STATE.DEPLOYED, id);
+            setState(RUNNING_STATE.DEPLOYED, id);
         }
     }
 
@@ -347,7 +347,7 @@ final public class NodeProgram extends Node {
      * @return true if the program can be stopped, false otherwise
      */
     final public boolean isRunning() {
-        return (this.runningState == RUNNING_STATE.PROCESSING || this.runningState == RUNNING_STATE.WAITING || this.runningState == RUNNING_STATE.KEEPING);
+        return (this.runningState == RUNNING_STATE.PROCESSING);
     }
 
     /**
@@ -364,19 +364,6 @@ final public class NodeProgram extends Node {
         return this.runningState != RUNNING_STATE.INVALID;
     }
 
-    /**
-     * set the state of this program to waiting, if this program is already
-     * running
-     *
-     * @param iid
-     */
-    final public void setWaiting(String iid) {
-        if (isValid()) {
-            setRunningState(RUNNING_STATE.WAITING, iid);
-        } else {
-            LOGGER.warn("Trying to set {} waiting, while being {}", this, this.runningState);
-        }
-    }
 
     /**
      * set the state to processing if the program is valid
@@ -385,19 +372,12 @@ final public class NodeProgram extends Node {
      */
     public void setProcessing(String iid) {
         if (isValid()) {
-            setRunningState(RUNNING_STATE.PROCESSING, iid);
+            setState(RUNNING_STATE.PROCESSING, iid);
         } else {
             LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
         }
     }
 
-    void setKeeping(String iid) {
-        if (isValid()) {
-            setRunningState(RUNNING_STATE.KEEPING, iid);
-        } else {
-            LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
-        }
-    }
 
     @Override
     public void startEventFired(StartEvent e) {
@@ -459,7 +439,7 @@ final public class NodeProgram extends Node {
     /**
      * @param runningState
      */
-    private void setRunningState(RUNNING_STATE runningState, String iid) {
+    private void setState(RUNNING_STATE runningState, String iid) {
         if (runningState != this.runningState) {
             this.runningState = runningState;
             getMediator().notifyChanges(new ProgramStateNotification(id, "runningState", this.runningState.toString(), name, iid));

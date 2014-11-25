@@ -91,7 +91,7 @@ define([
          * Check if a program is working according to its running state
          */
         isWorking: function () {
-            return this.get("runningState") === "PROCESSING" || this.get("runningState") === "WAITING" || this.get("runningState") === "KEEPING";
+            return this.get("runningState") === "PROCESSING";
         },
         // override its synchronization method to send a notification on the network
         sync: function(method, model) {

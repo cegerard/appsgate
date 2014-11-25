@@ -62,7 +62,6 @@ public class NodeWait extends Node {
 
     @Override
     public JSONObject call() {
-        setProgramWaiting();
         setStarted(true);
         fireStartEvent(new StartEvent(this));
         if (waitFor == null) {
@@ -137,7 +136,6 @@ public class NodeWait extends Node {
      */
     private void stopWaiting() {
         setStarted(false);
-        setProgramProcessing();
         fireEndEvent(new EndEvent(this));
     }
 

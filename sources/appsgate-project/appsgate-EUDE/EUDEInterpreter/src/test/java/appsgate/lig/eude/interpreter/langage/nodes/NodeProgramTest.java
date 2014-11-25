@@ -180,8 +180,5 @@ public class NodeProgramTest extends NodeTest {
         Assert.assertEquals(NodeProgram.RUNNING_STATE.DEPLOYED, programTest.getState());
         programTest.setProcessing("1");
         Assert.assertTrue(programTest.isRunning());
-        programTest.setWaiting("2");
-        Assert.assertTrue(programTest.isRunning());
-        Assert.assertEquals(NodeProgram.RUNNING_STATE.WAITING, programTest.getState());
     }
 }
