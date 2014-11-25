@@ -321,7 +321,8 @@ define([
             $(".programInput").children(".separator").remove();
           }
           else {
-            if($(".seq-block-node").find(".input-spot").next(".separator").length > 0){
+            if($(".seq-block-node").find(".input-spot").next(".separator").length > 0
+            && $(".seq-block-node").find(".input-spot").next(".separator").next().length == 0){
               $(".seq-block-node").find(".input-spot").next(".separator")[0].remove();
             }
             $(".seq-block-node").find(".input-spot").prev(".separator").remove();

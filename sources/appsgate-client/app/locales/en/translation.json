@@ -135,14 +135,14 @@
         "sensor": "light sensor",
         "brightness": "that level of luminosity",
         "get": "A __myVar__ detects __myVar2__",
-        "change": "The luminosity measured by a __myVar__ changes"
+        "change": "luminosity measured by a __myVar__ changes"
       },
       "language": {
         "get": "luminosity of __myVar__",
         "change": "luminosity of __myVar__ changes"
       },
       "name": {
-        "plural": "Brightness sensors",
+        "plural": "Light sensors",
         "singular": "Light sensor"
       },
       "scale": {
@@ -162,7 +162,7 @@
         "card-inserted": "a card is inserted in a __myVar__",
         "insertedEvent": "someone inserts a card in a __myVar__",
         "no-card-inserted": "no card in a __myVar__",
-        "removedEvent": "someone remove a card from a __myVar__"
+        "removedEvent": "someone removes a card from a __myVar__"
       },
       "language": {
         "card-inserted": "a card is inserted in __myVar__",
@@ -214,7 +214,7 @@
         "turnOff": "Switch off __myVar__",
         "turnOffEvt": "someone switches __myVar__ off",
         "turnOn": "Switch on lamp __myVar__",
-        "turnOnEvt": "someone switch __myVar__ on"
+        "turnOnEvt": "someone switches __myVar__ on"
       },
       "name": {
         "plural": "Philips Hue lamps",
@@ -331,12 +331,12 @@
       "keyboard": {
         "plug": "Smart Plug",
         "change": "consumption of a __myVar__ changes",
-        "isOff": "A __myVar__ is off",
-        "isOff-keep": "A __myVar__ off",
-        "isOn": "A __myVar__ is on",
-        "isOn-keep": "A__myVar__ on",
-        "turnOffEvt": "A__myVar__ is turned off",
-        "turnOnEvt": "A __myVar__ is turned on",
+        "isOff": "a __myVar__ is off",
+        "isOff-keep": "a __myVar__ off",
+        "isOn": "a __myVar__ is on",
+        "isOn-keep": "a __myVar__ on",
+        "turnOffEvt": "a __myVar__ is turned off",
+        "turnOnEvt": "a __myVar__ is turned on",
         "turnOff": "Switch off a __myVar__",
         "turnOn": "Switch on a __myVar__"
       },
@@ -352,8 +352,8 @@
         "turnOn": "Switch on __myVar__"
       },
       "name": {
-        "plural": "Power sockets",
-        "singular": "Power socket"
+        "plural": "Smart Plugs",
+        "singular": "Smart Plug"
       },
       "status": {
         "turnedOff": "Off",
@@ -375,8 +375,8 @@
         "switch": "switch"
       },
       "language": {
-        "pushed-bottom": "the bottom button of a __myVar__ is pushed",
-        "pushed-up": "the top button of a __myVar__ is pushed"
+        "pushed-bottom": "the bottom button of __myVar__ is pushed",
+        "pushed-up": "the top button of __myVar__ is pushed"
       },
       "name": {
         "plural": "Switches",
@@ -455,17 +455,17 @@
       "prefix-f": " every ",
       "prefix-m": " every ",
       "type": {
-        "1": "temperature sensors",
-        "2": "light sensors",
-        "21": "clocks",
-        "210": "domicubes",
-        "3": "switches",
-        "4": "contact sensors",
-        "5": "key card readers",
-        "6": "plugs",
-        "7": "lamps",
-        "8": "actuators",
-        "31": "media players"
+        "1": "temperature sensor",
+        "2": "light sensor",
+        "21": "clock",
+        "210": "domicube",
+        "3": "switch",
+        "4": "contact sensor",
+        "5": "key card reader",
+        "6": "plug",
+        "7": "lamp",
+        "8": "actuator",
+        "31": "media player"
       }
     },
     "true": "True",
@@ -481,7 +481,7 @@
       "blue": "blue",
       "green": "green",
       "orange": "orange",
-      "pink": "Pink",
+      "pink": "pink",
       "purple": "purple",
       "red": "red",
       "white": "white",
@@ -526,25 +526,25 @@
       "prefix-f": "every ",
       "prefix-m": "every ",
       "type": {
-        "1": "temperature sensors",
-        "2": "light sensors",
-        "21": "clocks",
-        "210": "domicubes",
-        "3": "switches",
-        "4": "contact sensors",
-        "5": "key card readers",
-        "6": "plugs",
-        "7": "lamps",
-        "8": "actuators",
-        "31": "media players"
+        "1": "temperature sensor",
+        "2": "light sensor",
+        "21": "clock",
+        "210": "domicube",
+        "3": "switch",
+        "4": "contact sensor",
+        "5": "key card reader",
+        "6": "plug",
+        "7": "lamp",
+        "8": "actuator",
+        "31": "media player"
       }
     },
     "then-keyword": "then",
     "true": "true",
-    "wait": "wait",
+    "wait": "Wait",
     "when-imp-keyword": "As soon as",
-    "when-keyword": "Every time",
-    "while-keyword": "while"
+    "when-keyword": "Each time",
+    "while-keyword": "While"
   },
   "login": {
     "confirm-password": "Password confirmation",
@@ -622,7 +622,7 @@
     "debugger": "History",
     "dashboard": "Dashboard",
     "devices": "Devices",
-    "dependancies": "Dependancies",
+    "dependancies": "Dependencies",
     "edit": "Edit",
     "emergency-stop": "Emergency stop",
     "home": "Sweet Home",
@@ -678,9 +678,9 @@
       "program": "program"
     },
     "language": {
-      "actionActivate": "start __myVar__",
-      "actionDisactivate": "stop __myVar__",
-      "actionDisactivate-self": "stop myself",
+      "actionActivate": "Start __myVar__",
+      "actionDisactivate": "Stop __myVar__",
+      "actionDisactivate-self": "Stop myself",
       "eventStart": "__myVar__ is being started",
       "eventStop": "__myVar__ is being stopped",
       "stateStarted": "__myVar__ is started",
@@ -729,7 +729,7 @@
     "mail": {
       "keyboard": {
         "sendMail": "Send a mail",
-        "mailSent": "a mail have been sent"
+        "mailSent": "a mail has been sent"
       },
       "language": {
         "body": "Content",
@@ -793,18 +793,19 @@
         "temperature": "max/min that value"
       },
       "language": {
-        "forecast-temperature": "the temperature expected for",
+        "forecast-temperature": "",
+        "forecast": "expected in",
         "sunrise": "the sun rise in __myVar__",
         "sunset": "the sun set in __myVar__",
         "currently-daylight": "it is daytime in ",
         "currently-moonlight": "it is nightime in ",
-        "forecast-weather-code-state": "current weather for",
+        "forecast-weather-code-state": "expected weather in",
         "is-current-weather-code-state": "current weather",
-        "is-forecast-weather-code-state": "current weather for",
-        "weather-at": "current weather",
-        "typical-code-0": "minimum",
-        "typical-code-1": "maximum",
-        "typical-code-2": "average",
+        "is-forecast-weather-code-state": "expected weather in",
+        "weather-at": "",
+        "typical-code-0": "minimum temperature",
+        "typical-code-1": "maximum temperature",
+        "typical-code-2": "average temperature",
         "weather-code-0": "sunny",
         "weather-code-1": "cloudy",
         "weather-code-2": "rain",

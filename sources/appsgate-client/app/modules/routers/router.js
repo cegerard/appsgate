@@ -17,6 +17,7 @@ define(function(require, exports, module) {
   // define the application router
   var Router = Backbone.Router.extend({
 
+    initialized: false,
     placesRouter: new PlacesRouter(),
     devicesRouter: new DevicesRouter(),
     servicesRouter: new ServicesRouter(),
@@ -122,7 +123,7 @@ define(function(require, exports, module) {
         direction: 'top-right'
       });
 
-      $("body").i18n();
+      $(document).i18n();
     },
     showDetailsView: function(view) {
       // remove and unbind the current view

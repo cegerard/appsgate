@@ -793,7 +793,8 @@
         "temperature": "au max/min telle valeur"
       },
       "language": {
-        "forecast-temperature": "la température prévue",
+        "forecast-temperature": "",
+        "forecast": "prévue",
         "sunrise": "le jour se lève à __myVar__",
         "sunset": "le jour se couche à __myVar__",
         "currently-daylight": "il fait jour",
@@ -802,9 +803,9 @@
         "is-current-weather-code-state": "la météo actuelle à",
         "is-forecast-weather-code-state": "la météo prévue à",
         "weather-at": "à",
-        "typical-code-0": "minimale",
-        "typical-code-1": "maximale",
-        "typical-code-2": "moyenne",
+        "typical-code-0": "la température minimale",
+        "typical-code-1": "la température maximale",
+        "typical-code-2": "la température moyenne",
         "weather-code-0": "du soleil",
         "weather-code-1": "des nuages",
         "weather-code-2": "de la pluie",
