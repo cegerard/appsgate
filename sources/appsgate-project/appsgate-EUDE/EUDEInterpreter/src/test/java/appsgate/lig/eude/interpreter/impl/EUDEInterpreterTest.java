@@ -396,7 +396,7 @@ public class EUDEInterpreterTest {
         ehmiProxy.notifAll("3");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         p.stop();
-        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
+        Assert.assertEquals("Program should be deployed", NodeProgram.PROGRAM_STATE.DEPLOYED, p.getState());
 
     }
 
@@ -419,9 +419,9 @@ public class EUDEInterpreterTest {
 
         ehmiProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("flag2"), 500);
-        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
+        Assert.assertEquals("Program should be deployed", NodeProgram.PROGRAM_STATE.DEPLOYED, p.getState());
         p.stop();
-        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
+        Assert.assertEquals("Program should be deployed", NodeProgram.PROGRAM_STATE.DEPLOYED, p.getState());
 
     }
 

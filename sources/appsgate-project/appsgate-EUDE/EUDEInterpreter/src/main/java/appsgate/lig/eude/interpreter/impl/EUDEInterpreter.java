@@ -143,7 +143,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
 
         //save program map state
         if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
-            p.setDeployed();
+            p.setStopped();
             notifyAddProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
             return true;
         } else {
@@ -546,7 +546,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
                         if (np.isRunning()) {
                             //TODO:Restore complete interpreter and programs state
                             //this.callProgram(np.getId());
-                            np.setDeployed();
+                            np.setStopped();
                         }
                     }
                     LOGGER.debug("program list successfully synchronized with database");

@@ -70,8 +70,8 @@ public class NodeProgramTest extends NodeTest {
     @Test
     public void testGetRunningState() {
         System.out.println("getRunningState");
-        NodeProgram.RUNNING_STATE expResult = NodeProgram.RUNNING_STATE.INVALID;
-        NodeProgram.RUNNING_STATE result = this.programTest.getState();
+        NodeProgram.PROGRAM_STATE expResult = NodeProgram.PROGRAM_STATE.INVALID;
+        NodeProgram.PROGRAM_STATE result = this.programTest.getState();
         Assert.assertEquals(expResult, result);
     }
 
@@ -105,16 +105,6 @@ public class NodeProgramTest extends NodeTest {
     }
 
     
-    /**
-     * Test of setDeployed method, of class NodeProgram.
-     *
-     * @throws org.json.JSONException
-     */
-    @Test
-    public void testSetDeployed() throws JSONException {
-        System.out.println("setDeployed");
-        this.programTest.setDeployed();
-    }
 
     /**
      * Test of call method.
@@ -174,11 +164,4 @@ public class NodeProgramTest extends NodeTest {
         Assert.assertEquals("t.c", p3.getPath());
     }
     
-    @Test
-    public void testStates() {
-        programTest.setDeployed();
-        Assert.assertEquals(NodeProgram.RUNNING_STATE.DEPLOYED, programTest.getState());
-        programTest.setProcessing("1");
-        Assert.assertTrue(programTest.isRunning());
-    }
 }
