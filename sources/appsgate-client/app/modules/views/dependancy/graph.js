@@ -17,7 +17,7 @@ define([
 
 		initialize: function () {
 			var self = this;
-			
+
 			// Listen the change done when check filter all
 			this.model.on("change:currentEntitiesTypes", function () {
 				force.stop();
@@ -33,9 +33,12 @@ define([
 				self.update(self.model);
 				force.start();
 			});
+
 		},
 
 		onRefreshButton: function () {
+			// Notify collection we want the new data
+			dependancies.refresh();
 			// Reload this page to refresh data
 			appRouter.dependancies();
 		},

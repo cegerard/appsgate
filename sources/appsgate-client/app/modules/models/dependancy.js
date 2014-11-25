@@ -24,18 +24,6 @@ define([
 				currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"]
 			});
 
-			// listen to the event when the data are received
-			dispatcher.on("dataGraphReady", function (event) {
-				self.set({
-					entities: event.entities,
-					relations: event.relations,
-					neighbors: event.neighbors,
-					currentEntities: event.entities,
-					currentRelations: event.relations
-				});
-
-			});
-
 			self.on("change:rootNode", function (model) {
 				// If the root node is not null, calculate the new mapDepthNeighbors
 				if (model.get("rootNode") !== "") {
@@ -60,12 +48,15 @@ define([
 				relations = processRelationsID(relationsNotSorted, entities),
 				neighbors = buildNeighborsMap(relations);
 
-			console.log("entities : %o", entities);
+			console.log("Entities loaded : %o", entities);
 
-			dispatcher.trigger("dataGraphReady", {
+			// Once data structure are built, set them in the modele
+			this.set({
 				entities: entities,
 				relations: relations,
-				neighbors: neighbors
+				neighbors: neighbors,
+				currentEntities: entities,
+				currentRelations: relations
 			});
 		},
 
@@ -184,11 +175,9 @@ define([
 			case 1:
 				return 100;
 			case 2:
-				return 50;
 			case 3:
-				return 40;
 			default:
-				return 40;
+				return 50;
 			}
 		},
 
