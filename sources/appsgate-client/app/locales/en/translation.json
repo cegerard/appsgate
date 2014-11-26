@@ -75,16 +75,16 @@
     "contact": {
       "keyboard": {
         "contact": "contact sensor",
-        "closeEvent": "closing a __myVar__",
+        "closeEvent": "someone closes a __myVar__",
         "isClose": "a __myVar__ is closed",
         "isOpen": "a __myVar__ is open",
-        "openEvent": "opening a __myVar__"
+        "openEvent": "someone opens a __myVar__"
       },
       "language": {
-        "closeEvent": "closing __myVar__",
+        "closeEvent": "someone closes __myVar__",
         "isClose": "__myVar__ is closed",
         "isOpen": "__myVar__ is open",
-        "openEvent": "opening __myVar__"
+        "openEvent": "someone opens __myVar__"
       },
       "name": {
         "plural": "Contact sensors",
