@@ -673,10 +673,14 @@ font-size: smaller;
 
 /* --------------------- Debugger styles ----------------------------------*/
 
-.debugger {
+.debugger, .debugger-toolbar {
     margin-right: auto;
     margin-left: auto;
     width: 980px;
+}
+
+.debugger-toolbar {
+    margin-bottom: 30px;
 }
 
 .debugger .scrollable {
