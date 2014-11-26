@@ -415,7 +415,7 @@ define([
 					// Multiple target -> RED
 					else if (isMultipleTargeted && d.type === "reference")
 						return "url(#targeting)";
-					else 
+					else
 						return "url(#" + d.type + ")";
 				})
 				.classed("important-path", function (d) {
@@ -630,9 +630,17 @@ define([
 			if (arrayUpdated === "entities") {
 				if (this.model.get("rootNode") !== "" && !_.contains(this.model.get("currentEntities"), this.model.get("rootNode"))) {
 					// Vu que si on a plus rien d'afficher, on ne fait pas le move, on a toujours l'ancienne valeur pour la root node. Risque de Bug.
-					if (this.model.get("currentEntities").length > 0) {
-						this.selectAndMoveRootNode(this.model.get("currentEntities")[0]);
-					}
+					//					if(this.model.get("currentEntities").length > 0) {
+					//						this.selectAndMoveRootNode(this.model.get("currentEntities")[0]);
+					//					}
+					// Mis en com' car mtn on peut ne pas avoir de focus sans que ce soit gênant
+					
+					// unfix the root and set null to the root
+					this.model.get("rootNode").fixed = false;
+					this.model.get("rootNode").selected = false;
+					this.model.set({
+						rootNode: ""
+					});
 				}
 			} else {
 				this.model.updateRelationsShown();
