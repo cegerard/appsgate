@@ -35,32 +35,32 @@
       "affirmative": "Oui",
       "action": {
         "zone-activate": "Activer surveillance __myVar__",
-        "zone-desactivate": "Desactiver surveillance __myVar__",
-        "force-input": "Forcer entrée __myVar__"
+        "zone-desactivate": "Désactiver surveillance __myVar__",
+        "force-input": "Signaler intrusion éventuelle à __myVar__"
       },
       "keyboard": {
-        "zone-activate": "Activer surveillance sur ...",
-        "zone-desactivate": "Desactiver surveillance sur ...",
-        "force-input": "Forcer entrée ..."
+        "zone-activate": "Activer surveillance ...",
+        "zone-desactivate": "Désactiver surveillance ...",
+        "force-input": "Signaler intrusion éventuelle à ..."
       },
       "event": {
-        "authorized": "l'accès du badge a était autorisé par ...",
-        "non_authorized": "l'accès du badge n'a pas était autorisé par ...",
-        "alarm_fired": "alarme declenchée par ..."
+        "authorized": "l'accès du badge a été autorisé par ...",
+        "non_authorized": "l'accès du badge n'a pas été autorisé par ...",
+        "alarm_fired": "alarme déclenchée par ..."
       },
       "last-authorized": "Dernier badge accès autorisé",
       "last-card": "Dernier badge passé",
       "last-message": "Dernier message",
-      "last-message-empty": "Pas des message",
+      "last-message-empty": "Pas de message",
       "name": {
         "plural": "ARD",
         "singular": "ARD"
       },
       "negative": "Non",
       "state": {
-        "authorized": "l'accès du badge a était autorisé par __myVar__",
-        "non_authorized": "l'accès du badge n'a pas était autorisé par __myVar__",
-        "alarm_fired": "alarme declenchée par __myVar__"
+        "authorized": "l'accès du badge a été autorisé par __myVar__",
+        "non_authorized": "l'accès du badge n'a pas été autorisé par __myVar__",
+        "alarm_fired": "alarme déclenchée par __myVar__"
       }
     },
     "avg": "Moy : ",

@@ -36,17 +36,17 @@
       "action": {
         "zone-activate": "Activate alarm __myVar__",
         "zone-desactivate": "Desactivate alarm __myVar__",
-        "force-input": "Force entry __myVar__"
+        "force-input": "Signal possible intrusion to __myVar__"
       },
       "keyboard": {
-        "zone-activate": "Activate alarm on ...",
-        "zone-desactivate": "Desactivate alarm on ...",
-        "force-input": "Force entry ..."
+        "zone-activate": "Activate alarm ...",
+        "zone-desactivate": "Desactivate alarm ...",
+        "force-input": "Signal possible intrusion to ..."
       },
       "event": {
-        "authorized": "badge is authorized on ...",
-        "non_authorized": "badge is NOT authorized on ...",
-        "alarm_fired": "Alarm fired on ..."
+        "authorized": "a badge is authorized by ...",
+        "non_authorized": "a badge is NOT authorized by ...",
+        "alarm_fired": "an alarm is detected by ..."
       },
       "last-authorized": "Last badge access granted",
       "last-card": "Last badge passed",
@@ -58,9 +58,9 @@
       },
       "negative": "No",
       "state": {
-        "authorized": "badge is authorized on __myVar__",
-        "non_authorized": "badge is NOT authorized on __myVar__",
-        "alarm_fired": "Alarm fired on __myVar__"
+        "authorized": "a badge is authorized by __myVar__",
+        "non_authorized": "a badge is NOT authorized by __myVar__",
+        "alarm_fired": "an alarm is detected by __myVar__"
       }
     },
     "avg": "Avg : ",
