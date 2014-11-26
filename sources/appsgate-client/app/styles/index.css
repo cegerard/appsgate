@@ -926,3 +926,11 @@ fieldset[disabled] .btn {
 #filterContainerNodes>input, #filterContainerNodes>div>label>input, #filterContainerLinks>input, #filterContainerLinks>div>label>input {
 	margin-right: 5px;
 }
+
+#graph g>circle.program-invalid {
+	fill: orange;
+}
+
+#graph g>circle.program-processing, #graph g>circle.program-waiting, #graph g>circle.program-keeping {
+	fill: yellow;
+}

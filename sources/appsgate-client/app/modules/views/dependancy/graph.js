@@ -368,6 +368,23 @@ define([
 					}
 				});
 
+			nodeEntity.selectAll("circle")
+				.classed("program-invalid", function (d) {
+					return d.state === "INVALID";
+				})
+				.classed("program-processing", function (d) {
+					return d.state === "PROCESSING";
+				})
+				.classed("program-keeping", function (d) {
+					return d.state === "KEEPING";
+				})
+				.classed("program-deployed", function (d) {
+					return d.state === "DEPLOYED";
+				})
+				.classed("program-waiting", function (d) {
+					return d.state === "WAITING";
+				});
+
 
 			pathLink.select(".link")
 				.attr("d", function (d) {

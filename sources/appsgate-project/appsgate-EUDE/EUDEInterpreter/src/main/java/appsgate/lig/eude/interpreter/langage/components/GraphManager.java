@@ -84,7 +84,13 @@ public class GraphManager {
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
             if (p != null) {
-                addNode(PROGRAM_ENTITY, pid, p.getProgramName());
+                
+                // Get the current status of the program
+                HashMap<String, String> optArg = new HashMap<String, String>();
+                optArg.put("state", p.getState().name());
+                addNode(PROGRAM_ENTITY, pid, p.getProgramName(), optArg);
+                
+                // Program links : Reference or planified
                 ReferenceTable references = p.getReferences();
                 for (String rdevice : references.getDevicesId()) {
                     if (rdevice.equals(CLOCK_ID)) {
@@ -133,6 +139,7 @@ public class GraphManager {
             }
 
         }
+        // Add manual for the unlocated place
 //        JSONObject unLocatedPlace = new JSONObject();
 //        try {
 //            unLocatedPlace.put("id", "-1");
