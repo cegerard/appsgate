@@ -143,6 +143,7 @@ define([
         console.error('Unsupported type of state: ' + which);
         return null;
       }
+      var v = this.getJSONState("mandatory");
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       v.object.type = "device";
       v.object.deviceType = "210";
