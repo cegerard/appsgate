@@ -988,18 +988,22 @@ fieldset[disabled] .btn {
 }
 
 #graph g>circle.program-invalid, .program-invalid {
+	fill: red;
+}
+
+#graph g>circle.program-deployed, .program-deployed, #graph g>circle.program-processing, .program-processing  {
+	fill: green;
+}
+
+#graph g>circle.program-limping, .program-limping, #graph g>circle.program-incomplete, .program-incomplete {
 	fill: orange;
-}
-
-#graph g>circle.program-deployed, .program-deployed {
-/*	fill: rgba(219, 219, 219, 0.98);*/
-	fill: grey;
-}
-
-#graph g>circle.program-processing, .program-processing, #graph g>circle.program-waiting, .program-waiting, #graph g>circle.program-keeping, .program-keeping {
-	fill: yellow;
 }
 
 .caption-label {
 	vertical-align: super;
+}
+
+.form-program {
+	stroke: black;
+	fill: white
 }
