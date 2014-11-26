@@ -257,9 +257,11 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public boolean setColor(long color) {
+        JSONObject oldColor = getLightStatus();
 
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "hue", color)) {
             hue = String.valueOf(color);
+            notifyChanges("colorChanged", oldColor.toString(), getLightStatus().toString());
             return true;
         }
 
@@ -269,7 +271,10 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public boolean setColorJson(JSONObject color) {
+        JSONObject oldColor;
+
         try {
+        	oldColor = getLightStatus();
             color.put("on", on);
         } catch (JSONException e) {
             // never happens since the key is not null
@@ -278,12 +283,11 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, color)) {
             on = String.valueOf(true);
-
             hue = String.valueOf(color);
-
             bri = String.valueOf(BRI_DEFAULT);
-
             sat = String.valueOf(SAT_DEFAULT);
+            notifyChanges("colorChanged", oldColor.toString(), getLightStatus().toString());
+            
             return true;
         }
 
@@ -301,26 +305,27 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
      */
     public boolean setSaturatedColor(long color) {
 
-        JSONObject JSONAttribute = new JSONObject();
-
+        JSONObject newColor = new JSONObject();
+        JSONObject oldColor;
+        
         try {
-            JSONAttribute.put("hue", color);
-            JSONAttribute.put("bri", BRI_DEFAULT);
-            JSONAttribute.put("sat", SAT_DEFAULT);
-            JSONAttribute.put("on", true);
+        	oldColor = getLightStatus();
+            newColor.put("hue", color);
+            newColor.put("bri", BRI_DEFAULT);
+            newColor.put("sat", SAT_DEFAULT);
+            newColor.put("on", true);
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
         }
 
-        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, JSONAttribute)) {
+        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, newColor)) {
             on = String.valueOf(true);
-
             hue = String.valueOf(color);
-
             bri = String.valueOf(BRI_DEFAULT);
-
             sat = String.valueOf(SAT_DEFAULT);
+            
+            notifyChanges("colorChanged", oldColor.toString(), newColor.toString());
             return true;
         }
 
@@ -330,8 +335,11 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     @Override
     public boolean setBrightness(long brightness) {
 
+    	JSONObject oldColor = getLightStatus();
+    	
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", brightness)) {
             bri = String.valueOf(brightness);
+            notifyChanges("colorChanged", oldColor.toString(), getLightStatus().toString());
             return true;
         }
 
@@ -349,9 +357,12 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public boolean setSaturation(int saturation) {
+    	
+    	JSONObject oldColor = getLightStatus();
 
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "sat", saturation)) {
             sat = String.valueOf(saturation);
+            notifyChanges("colorChanged", oldColor.toString(), getLightStatus().toString());
             return true;
         }
 
@@ -482,8 +493,11 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public boolean setWhite() {
+    	
         JSONObject JSONAttribute = new JSONObject();
+        JSONObject oldColor;
         try {
+        	oldColor = getLightStatus();
             JSONAttribute.put("bri", 220);
             JSONAttribute.put("sat", 0);
             JSONAttribute.put("on", true);
@@ -496,6 +510,9 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
             on = String.valueOf(true);
             sat = String.valueOf(0);
             bri = String.valueOf(220);
+            
+            notifyChanges("colorChanged", oldColor.toString(), getLightStatus().toString());
+
             return true;
         }
 
@@ -510,9 +527,11 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public boolean increaseBrightness(int step) {
+    	JSONObject oldColor = getLightStatus();
         int newBri = getLightBrightness() + step;
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", newBri)) {
             bri = String.valueOf(newBri);
+            notifyChanges("colorChanged", oldColor.toString(), getLightStatus().toString());
             return true;
         }
         return false;
@@ -520,9 +539,12 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
     @Override
     public boolean decreaseBrightness(int step) {
+    	JSONObject oldColor = getLightStatus();
+
         int newBri = getLightBrightness() - step;
         if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "bri", newBri)) {
             bri = String.valueOf(newBri);
+            notifyChanges("colorChanged", oldColor.toString(), getLightStatus().toString());
             return true;
         }
         return false;
@@ -647,77 +669,6 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         on = newState;
     }
 
-    /**
-     * Called by ApAM when the attribute value changed
-     *
-     * @param newHue the new hue value. its a string the represent a integer
-     * value for the hue status.
-     */
-    public void hueChanged(String newHue) {
-        logger.info("The actuator, " + actuatorId + " hue changed to " + newHue);
-        notifyChanges("color", hue, newHue);
-        hue = newHue;
-    }
-
-    /**
-     * Called by ApAM when the attribute value changed
-     *
-     * @param newSat the new color saturation value. its a string the represent
-     * a integer value for the color saturation status.
-     */
-    public void satChanged(String newSat) {
-        logger.info("The actuator, " + actuatorId + " sat changed to " + newSat);
-        notifyChanges("saturation", sat, newSat);
-        sat = newSat;
-    }
-
-    /**
-     * Called by ApAM when the attribute value changed
-     *
-     * @param newBri the new brightness value. its a string the represent a
-     * integer value for the brightness status.
-     */
-    public void briChanged(String newBri) {
-        logger.info("The actuator, " + actuatorId + " bri changed to " + newBri);
-        notifyChanges("brightness", bri, newBri);
-        bri = newBri;
-    }
-
-    /**
-     * Called by ApAM when the attribute value changed
-     *
-     * @param newX the new x value. its a string the represent a float value for
-     * the x status.
-     */
-    public void xChanged(String newX) {
-        logger.trace("The actuator, " + actuatorId + " x changed to " + newX);
-        notifyChanges("x", x, newX);
-        x = newX;
-    }
-
-    /**
-     * Called by ApAM when the attribute value changed
-     *
-     * @param newY the new y value. its a string the represent a float value for
-     * the y status.
-     */
-    public void yChanged(String newY) {
-        logger.trace("The actuator, " + actuatorId + " y changed to " + newY);
-        notifyChanges("y", y, newY);
-        y = newY;
-    }
-
-    /**
-     * Called by ApAM when the attribute value changed
-     *
-     * @param newCT the new ct value. its a string the represent a integer value
-     * for the ct status.
-     */
-    public void ctChanged(String newCT) {
-        logger.trace("The actuator, " + actuatorId + " ct changed to " + newCT);
-        notifyChanges("ct", ct, newCT);
-        ct = newCT;
-    }
 
     /**
      * Called by ApAM when the attribute value changed
