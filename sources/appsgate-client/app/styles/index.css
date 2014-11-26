@@ -116,6 +116,52 @@ body {
 .led-yellow {
   background: #ffff00;
 }
+.led-processing {
+	width: 0; 
+	height: 0; 
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
+	
+	border-left: 20px solid green;
+
+}
+.led-limping {
+  	width: 0; 
+	height: 0; 
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
+	
+	border-left: 20px solid #f0ad4e;
+
+}
+.led-invalid {
+  width: 27px;
+  height: 27px;
+  margin-right: 10px;
+  border: 1px solid #999999;
+  border-radius: 2px;
+  background: red;
+
+}
+.led-incomplete {
+  width: 27px;
+  height: 27px;
+  margin-right: 10px;
+  border: 1px solid #999999;
+  border-radius: 2px;
+  background: #f0ad4e;
+
+}
+.led-deployed {
+  width: 27px;
+  height: 27px;
+  margin-right: 10px;
+  border: 1px solid #999999;
+  border-radius: 2px;
+  background: green;
+
+}
+
 .label-yellow {
   background: #ffff00;
   color: black;

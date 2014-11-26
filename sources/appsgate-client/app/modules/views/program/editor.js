@@ -411,23 +411,16 @@ define([
           this.refreshing = true;
           this.Mediator.buildInputFromJSON();
           this.Mediator.buildKeyboard();
-          if (!this.Mediator.isValid) {
-            this.model.set("runningState", "INVALID");
-          }
+          this.model.set("runningState", this.Mediator.programState.toUpperCase());
           this.applyEditMode();
           // translate the view
           this.$el.i18n();
-          if (this.Mediator.isValid) {
-            this.model.set("runningState", "DEPLOYED");
-            $(".led").attr("title", $.i18n.t('programs.state.stopped'));
-            $(".led").addClass("led-default").removeClass("led-orange");
-            $(".led").addClass("led-default").removeClass("led-yellow");
-            $(".programNameInput").addClass("valid-program");
-          } else {
-            this.model.set("runningState", "INVALID");
-            $(".led").attr("title", $.i18n.t('programs.state.failed'));
-            $(".led").addClass("led-orange").removeClass("led-default");
+            $("#prog-led").attr("title", $.i18n.t('programs.state.'+this.Mediator.programState));
+            $("#prog-led").attr("class", "pull-left led-"+this.Mediator.programState);
+          if (this.Mediator.programState == "invalid") {
             $(".programNameInput").removeClass("valid-program");
+          } else {
+            $(".programNameInput").addClass("valid-program");
           }
 
           // scrolling to the selected node

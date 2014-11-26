@@ -47,6 +47,7 @@ define([
 
         initialize: function() {
             this.isValid = true;
+            this.isComplete = true;
         },
         buildInputFromObjectOrTarget: function(node, currentNode) {
             if (typeof node.object !== 'undefined') {
@@ -108,7 +109,7 @@ define([
                     break;
                 case "device":
                     param.node.validDevice = this.isDeviceValid(param.node.value);
-                    this.isValid = this.isValid && param.node.validDevice;
+                    this.isComplete = this.isComplete && param.node.validDevice;
                     param.node.name = this.getDeviceName(param.node.value);
                     input += this.tplDeviceNode(param);
                     break;

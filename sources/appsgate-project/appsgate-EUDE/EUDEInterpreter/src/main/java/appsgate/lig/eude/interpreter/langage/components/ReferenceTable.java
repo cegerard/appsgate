@@ -135,14 +135,6 @@ public class ReferenceTable {
         }
     }
 
-    /**
-     *
-     * @return true if something has change false otherwise
-     */
-    public Boolean checkStatus() {
-        STATUS oldStatus = this.state;
-        return computeStatus() != oldStatus;
-    }
 
     /**
      *
@@ -221,9 +213,9 @@ public class ReferenceTable {
             LOGGER.trace("computeStatus(), program " + k + ", status :" + programs.get(k));
             switch (programs.get(k)) {
                 case MISSING:
-                case INVALID:
                     setState(STATUS.INVALID);
                     break;
+                case INVALID:
                 case UNSTABLE:
                     setState(STATUS.UNSTABLE);
                     break;

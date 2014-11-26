@@ -697,8 +697,10 @@ final public class NodeProgram extends Node {
             case UNSTABLE:
             case UNKNOWN:
                 setIncomplete();
+                break;
             case OK:
                 setValid();
+                break;
         }
         return true;
 

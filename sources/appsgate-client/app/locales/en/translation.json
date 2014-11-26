@@ -690,10 +690,11 @@
     },
     "program-no-name": "Program with no name",
     "state": {
-      "deployed": "Deployed",
-      "failed": "Error",
-      "started": "Started",
-      "stopped": "Stopped"
+      "deployed": "Program activable",
+      "invalid": "Program invalide",
+      "incomplete": "Program partially activable",
+      "limping": "Program partially activated",
+      "processing": "Program activated"
     },
     "warning-program-edition": "Warning, editing a program will deactivate it",
     "warning-program-delete": "Do you really want to delete this program ?",

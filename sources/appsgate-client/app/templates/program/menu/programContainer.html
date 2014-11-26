@@ -1,12 +1,6 @@
 <a href="#programs/<%= program.get('id') %>" class="list-group-item <% if (active) { %> active <% } %>" id="side-<%= program.get('id') %>">
 	<!-- header -->
-        <% if (program.isWorking()) { %>
-        <div class="led led-yellow pull-left" title="<%= $.i18n.t('programs.state.started') %>"></div>
-        <% } else if (program.get("runningState") === "DEPLOYED") { %>
-        <div class="led led-default pull-left" title="<%= $.i18n.t('programs.state.stopped') %>"></div>
-        <% } else if (program.get("runningState") === "INVALID") { %>
-        <div class="led led-orange pull-left" title="<%= $.i18n.t('programs.state.failed') %>"></div>
-        <% } %>
+        <div class="led-<%= program.getState()%> </div> pull-left" title="<%= $.i18n.t('programs.state.'+program.getState()) %>"></div>
 
 	<p class="list-group-item-heading lead">
 		<% if (program.get("name") !== "") { %>

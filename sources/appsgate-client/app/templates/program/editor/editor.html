@@ -6,13 +6,8 @@
 
     <div class="row lead">
         <div class="pull-left">
-        <% if (program.isWorking()) { %>
-        <div class="led led-yellow pull-left fix-row" title="<%= $.i18n.t('programs.state.started') %>"></div>
-        <% } else if (program.get("runningState") === "DEPLOYED") { %>
-        <div class="led led-default pull-left fix-row" title="<%= $.i18n.t('programs.state.stopped') %>"></div>
-        <% } else if (program.get("runningState") === "INVALID") { %>
-        <div class="led led-orange pull-left fix-row" title="<%= $.i18n.t('programs.state.failed') %>"></div>
-        <% } %>
+        <div class="led-<%= program.getState()%> pull-left" id="prog-led" title="<%= $.i18n.t('programs.state.'+program.getState()) %>"></div>
+
         <% if (program.get("name") !== "") { %>
         <input class="programNameInput" type="text" value="<%= program.get('name') %>"/>
         <% } else { %>
