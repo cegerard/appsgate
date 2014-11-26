@@ -702,7 +702,7 @@
   },
   "programs-menu": {
     "add-button": "Add Program",
-    "deactivate-all-programs": "Deactivate all programs"
+    "deactivate-all-programs": "Stop all programs"
   },
   "services": {
     "avtransport": {
