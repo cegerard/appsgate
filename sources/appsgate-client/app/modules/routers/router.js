@@ -153,13 +153,16 @@ define(function(require, exports, module) {
       $(".loading-widget-wrapper").remove();
     },
     updateLocale:function(locale) {
+      var self = this;
       this.locale = locale;
 
       $.i18n.init({ lng : this.locale }).done(function() {
-        var currentRoute = Backbone.history.fragment;
-        Backbone.history.fragment = null;
-        appRouter.navigate(currentRoute, {trigger: true});
+        if(typeof self.currentMenuView !== "undefined") self.currentMenuView.render();
+        if(typeof self.currentView !== "undefined") self.currentView.render();
+
+        $(document).i18n();
       });
+
     }
   });
 
