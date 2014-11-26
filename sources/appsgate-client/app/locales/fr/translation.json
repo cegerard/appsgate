@@ -7,7 +7,11 @@
         "all": "Tous",
         "times": "fois",
         "yes": "OUI",
-        "no": "NON"
+        "no": "NON",
+        "toolbar": {
+            "history": "Historique",
+            "live": "Direct"
+        }
     },
     "devices": {
         "no-value":"---",

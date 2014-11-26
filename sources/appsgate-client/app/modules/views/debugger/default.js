@@ -91,8 +91,19 @@ define([
             alert(textContent);
         });
 
+        // setup ui
+        this.$('.btn-primary').on('click', function(){
+            if( $(this).find('input').attr('id') == 'live') {
+                dashboard._toggleLoading(true);
+                dashboard.requestLiveTrace();
+            } else {
+                dashboard._toggleLoading(true);
+                dashboard.requestInitialHistoryTrace();
+            }
+        });
+
         // prompt server for initial history trace
-        dashboard.requestInitialHistoryTrace();
+        dashboard.requestLiveTrace();
     },
 
     destroy: function() {
