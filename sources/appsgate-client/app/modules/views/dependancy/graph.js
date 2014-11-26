@@ -234,6 +234,26 @@ define([
 						.text(function (d) {
 							return d.name;
 						})
+
+					if (a.type === "program") {
+						if (a.state === "DEPLOYED" || a.state === "INVALID") {
+							d3.select(this).append("rect")
+								.attr("class", "form")
+								.attr("x", function (m) {
+									return 0
+								})
+								.attr("y", function (m) {
+									return 0
+								})
+								.attr("width", 8)
+								.attr("height", 8);
+						} else if (a.state === "PROCESSING" || a.state === "WAITING" || a.state === "KEEPING") {
+							d3.select(this).append("svg:path")
+								.attr("class", "form")
+								.attr("d", "M0,-5L10,0L0,5");
+						}
+
+					}
 				});
 
 			nEnter.select("circle")
@@ -385,6 +405,11 @@ define([
 				})
 				.classed("program-waiting", function (d) {
 					return d.state === "WAITING";
+				});
+
+			nodeEntity.selectAll(".form")
+				.attr("transform", function (d) {
+					return "translate(3,10)";
 				});
 
 
@@ -634,7 +659,7 @@ define([
 					//						this.selectAndMoveRootNode(this.model.get("currentEntities")[0]);
 					//					}
 					// Mis en com' car mtn on peut ne pas avoir de focus sans que ce soit gênant
-					
+
 					// unfix the root and set null to the root
 					this.model.get("rootNode").fixed = false;
 					this.model.get("rootNode").selected = false;
