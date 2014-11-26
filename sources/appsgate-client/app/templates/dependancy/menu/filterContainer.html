@@ -4,3 +4,33 @@
 <div id="filterContainerLinks" class="list-group-item">
 	<input type="checkbox" id="checkbox-all-relations"></input><span class="list-group-item-heading lead" data-i18n="dependancy.relations-filter"></span>
 </div>
+
+<div id="graph-caption" class="list-group-item">
+	<span class="list-group-item-heading lead" data-i18n="dependancy.caption.title"></span>
+	<ul>
+		<li>
+			<svg height="25" width="25">
+				<g>
+					<circle cx="12" cy="12" r="12" stroke="black" class="program-invalid" />
+				</g>
+			</svg>
+			<span class="caption-label" data-i18n="dependancy.caption.invalid-program"></span>
+		</li>
+		<li>
+			<svg height="25" width="25">
+				<g>
+					<circle cx="12" cy="12" r="12" stroke="black" class="program-deployed" />
+				</g>
+			</svg>
+			<span class="caption-label" data-i18n="dependancy.caption.deployed-program"></span>
+		</li>
+		<li>
+			<svg height="25" width="25">
+				<g>
+					<circle cx="12" cy="12" r="12" stroke="black" class="program-processing" />
+				</g>
+			</svg>
+			<span class="caption-label" data-i18n="dependancy.caption.processing-program"></span>
+		</li>
+	</ul>
+</div>

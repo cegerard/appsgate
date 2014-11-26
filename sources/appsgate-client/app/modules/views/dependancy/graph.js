@@ -152,6 +152,8 @@ define([
 
 			// translate the view
 			this.$el.i18n();
+			
+			this.resize($(".scrollable"));
 		},
 
 		update: function (model) {

@@ -16,7 +16,13 @@
 		"entities-filter": "Filtre entités",
 		"relations-filter": "Filtre relations",
 		"unfix-node": "Défixer tout",
-		"search-example": "(Exemple : '__entity__')"
+		"search-example": "(Exemple : '__entity__')",
+	  	"caption": {
+			"title": "Légende",
+			"invalid-program": "Programme invalide",
+			"deployed-program":"Programme déployé",
+			"processing-program": "Programme en cours d'exécution"
+		}
   },
   "devices": {
     "no-value": "---",

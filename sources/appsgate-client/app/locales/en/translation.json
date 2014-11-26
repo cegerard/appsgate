@@ -16,7 +16,14 @@
 		"entities-filter": "Entities filter",
 		"relations-filter": "Relations filter",
 		"unfix-node": "Unfix All",
-		"search-example": "(Example : '__entity__')"
+		"search-example": "(Example : '__entity__')",
+	  	"caption": {
+			"title": "Caption",
+			"invalid-program": "Invalid program",
+			"deployed-program":"Deployed program",
+			"processing-program": "Processing program"
+		}
+	  	
   },
   "devices": {
     "no-value": "---",

@@ -865,7 +865,7 @@ fieldset[disabled] .btn {
 }
 /* Default circle */
 #graph g>circle {
-    fill: rgba(219, 219, 219, 0.96);
+    fill: white;
     stroke: black;
     stroke-width: 1px;
 }
@@ -927,10 +927,19 @@ fieldset[disabled] .btn {
 	margin-right: 5px;
 }
 
-#graph g>circle.program-invalid {
+#graph g>circle.program-invalid, .program-invalid {
 	fill: orange;
 }
 
-#graph g>circle.program-processing, #graph g>circle.program-waiting, #graph g>circle.program-keeping {
+#graph g>circle.program-deployed, .program-deployed {
+/*	fill: rgba(219, 219, 219, 0.98);*/
+	fill: grey;
+}
+
+#graph g>circle.program-processing, .program-processing, #graph g>circle.program-waiting, .program-waiting, #graph g>circle.program-keeping, .program-keeping {
 	fill: yellow;
+}
+
+.caption-label {
+	vertical-align: super;
 }
