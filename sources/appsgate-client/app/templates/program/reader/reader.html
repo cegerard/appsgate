@@ -3,7 +3,7 @@
 	<div class="alert alert-info" data-i18n="editor.no-program-alert"></div>
 <% } else { %>
 	<div class="lead">
-        <div class="led-<%= program.getState()%> </div> pull-left" title="<%= $.i18n.t('programs.state.'+program.getState()) %>"></div>
+        <div class="led-<%= program.getState()%> pull-left" title="<%= $.i18n.t('programs.state.'+program.getState()) %>"></div>
 		<span id="program-name">
 			&nbsp;
 			<% if (program.get("name") !== "") { %>

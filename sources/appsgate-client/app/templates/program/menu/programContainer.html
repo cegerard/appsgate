@@ -1,6 +1,6 @@
 <a href="#programs/<%= program.get('id') %>" class="list-group-item <% if (active) { %> active <% } %>" id="side-<%= program.get('id') %>">
 	<!-- header -->
-        <div class="led-<%= program.getState()%> </div> pull-left" title="<%= $.i18n.t('programs.state.'+program.getState()) %>"></div>
+        <div class="led-<%= program.getState()%> pull-left" title="<%= $.i18n.t('programs.state.'+program.getState()) %>"></div>
 
 	<p class="list-group-item-heading lead">
 		<% if (program.get("name") !== "") { %>
