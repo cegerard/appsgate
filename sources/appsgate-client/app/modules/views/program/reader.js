@@ -332,7 +332,8 @@ define([
             $(".programInput").children(".separator").remove();
           }
           else {
-            if($(".set-block-node").find(".input-spot").next(".separator").length > 0){
+            if($(".set-block-node").find(".input-spot").next(".separator").length > 0
+              && $(".set-block-node").find(".input-spot").next(".separator").next().length == 0){
               $(".set-block-node").find(".input-spot").next(".separator")[0].remove();
             }
             $(".set-block-node").find(".input-spot").prev(".separator").remove();
