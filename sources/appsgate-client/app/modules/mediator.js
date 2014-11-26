@@ -392,11 +392,19 @@ define([
       */
       getInputFromJSON: function() {
         this.ProgramInputBuilder.isValid = true;
+        this.ProgramInputBuilder.isComplete = true;
+		this.programState = "deployed";
         var input = $.parseHTML(this.ProgramInputBuilder.buildInputFromNode(this.programJSON, this.currentNode));
         if (this.checkProgram(this.programJSON)) {
-          this.isValid = this.ProgramInputBuilder.isValid;
+		  if (this.ProgramInputBuilder.isValid) {
+			if (!this.ProgramInputBuilder.isComplete) {
+			  this.programState = "incomplete";
+			}
+		  } else {
+            this.programState = "invalid";
+		  }
         } else {
-          this.isValid = false;
+          this.programState = "invalid";
         }
 
         $(input).find(".btn").css("padding", "3px 6px");
@@ -459,10 +467,8 @@ define([
         } else if (n !== null && n.expected[0] === "ID") {
 		  console.log(this.programJSON)
           console.warn('Something unexpected happened');
-		  this.isValid=false;
 		  return false;
         } else {
-		  this.isValid=false;
 		  return false;
         }
       },

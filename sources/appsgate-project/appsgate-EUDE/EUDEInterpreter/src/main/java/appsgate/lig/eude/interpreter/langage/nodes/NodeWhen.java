@@ -81,7 +81,6 @@ public class NodeWhen extends Node implements INodeRule{
     @Override
     public JSONObject call() {
         LOGGER.debug("Call {}", this);
-        setProgramWaiting();
         if (!isStarted()) {
             fireStartEvent(new StartEvent(this));
             setStarted(true);
@@ -98,7 +97,6 @@ public class NodeWhen extends Node implements INodeRule{
         if (!isStopping()) {
             // if all the events are received, launch the sequence of rules
             if (nodeEnded instanceof INodeEvent) {
-                setProgramProcessing();
                 seqRules.addEndEventListener(this);
                 seqRules.call();
             } else {

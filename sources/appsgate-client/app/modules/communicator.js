@@ -120,13 +120,16 @@ define([
         var jsonMessage = JSON.parse(message.data);
         console.log("received", message);
 
-        if (jsonMessage.callId !== undefined) {
+        if (jsonMessage.callId !== undefined && jsonMessage.callId!="system") {
           if (typeof jsonMessage.value === "string") {
             jsonMessage.value = JSON.parse(jsonMessage.value);
           }
           dispatcher.trigger(jsonMessage.callId, jsonMessage.value);
         } else if (typeof jsonMessage.objectId !== "undefined") {
           var id = jsonMessage.objectId;
+          dispatcher.trigger(id, jsonMessage);
+        } else if (jsonMessage.callId === "system") {
+          var id = "system";
           dispatcher.trigger(id, jsonMessage);
         } else {
           var commandName = _.keys(jsonMessage)[0];

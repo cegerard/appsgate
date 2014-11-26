@@ -46,32 +46,32 @@
       "affirmative": "Oui",
       "action": {
         "zone-activate": "Activer surveillance __myVar__",
-        "zone-desactivate": "Desactiver surveillance __myVar__",
-        "force-input": "Forcer entrée __myVar__"
+        "zone-desactivate": "Désactiver surveillance __myVar__",
+        "force-input": "Signaler intrusion éventuelle à __myVar__"
       },
       "keyboard": {
-        "zone-activate": "Activer surveillance sur ...",
-        "zone-desactivate": "Desactiver surveillance sur ...",
-        "force-input": "Forcer entrée ..."
+        "zone-activate": "Activer surveillance ...",
+        "zone-desactivate": "Désactiver surveillance ...",
+        "force-input": "Signaler intrusion éventuelle à ..."
       },
       "event": {
-        "authorized": "l'accès du badge a était autorisé par ...",
-        "non_authorized": "l'accès du badge n'a pas était autorisé par ...",
-        "alarm_fired": "alarme declenchée par ..."
+        "authorized": "l'accès du badge a été autorisé par ...",
+        "non_authorized": "l'accès du badge n'a pas été autorisé par ...",
+        "alarm_fired": "alarme déclenchée par ..."
       },
       "last-authorized": "Dernier badge accès autorisé",
       "last-card": "Dernier badge passé",
       "last-message": "Dernier message",
-      "last-message-empty": "Pas des message",
+      "last-message-empty": "Pas de message",
       "name": {
         "plural": "ARD",
         "singular": "ARD"
       },
       "negative": "Non",
       "state": {
-        "authorized": "l'accès du badge a était autorisé par __myVar__",
-        "non_authorized": "l'accès du badge n'a pas était autorisé par __myVar__",
-        "alarm_fired": "alarme declenchée par __myVar__"
+        "authorized": "l'accès du badge a été autorisé par __myVar__",
+        "non_authorized": "l'accès du badge n'a pas été autorisé par __myVar__",
+        "alarm_fired": "alarme déclenchée par __myVar__"
       }
     },
     "avg": "Moy : ",
@@ -119,16 +119,18 @@
         "unknown": "Inconnu"
       },
       "language": {
-        "activated": "le domicube est activé",
-        "inactivated": "le domicube est désactivé",
+        "activated": "On arrive sur la face du dessus du Domicube",
+        "inactivated": "On quitte la face du dessus du Domicube",
         "west": "l'Ouest",
-        "east": "l'Est"
+        "east": "l'Est",
+		"leaveFace" : "On change de face du Domicube"
       },
       "keyboard": {
-        "activated": "le domicube est activé",
-        "inactivated": "le domicube est désactivé",
+        "activated": "On arrive sur la face du dessus du Domicube",
+        "inactivated": "On quitte la face du dessus du Domicube",
         "west": "l'Ouest",
-        "east": "l'Est"
+        "east": "l'Est",
+		"leaveFace" : "On change de face du Domicube"
       },
       "white-face": {
         "first-elem": "Face",
@@ -231,7 +233,8 @@
       },
       "status": {
         "turnedOff": "Eteinte",
-        "turnedOn": "Allumée"
+        "turnedOn": "Allumée",
+        "pairingRequired": "Appuyez sur le bouton du pont PhilipsHue."
       },
       "color-information": {
         "lastColor": "Dernière couleur de l'ampoule ",
@@ -460,8 +463,8 @@
     "if-keyword": "Si",
     "keep-state": "Maintenir l'état ...",
     "selector": {
-      "prefix-f": "Les ",
-      "prefix-m": "Les ",
+      "prefix-f": " Toutes les ",
+      "prefix-m": " Tous les ",
       "type": {
         "1": "capteurs de temperature",
         "2": "capteurs de luminosité",
@@ -698,10 +701,11 @@
     },
     "program-no-name": "Programme sans nom",
     "state": {
-      "deployed": "Déployé",
-      "failed": "Erreur",
-      "started": "Démarré",
-      "stopped": "Arrêté"
+      "deployed": "Programme activable",
+      "invalid": "Programme invalide",
+      "incomplete": "Programme partiellement activable",
+      "limping": "Programme partiellement activé",
+      "processing": "Programme activé"
     },
     "warning-program-edition": "Attention, éditer le programme le désactivera",
     "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
@@ -801,7 +805,8 @@
         "temperature": "au max/min telle valeur"
       },
       "language": {
-        "forecast-temperature": "la température prévue",
+        "forecast-temperature": "",
+        "forecast": "prévue",
         "sunrise": "le jour se lève à __myVar__",
         "sunset": "le jour se couche à __myVar__",
         "currently-daylight": "il fait jour",
@@ -810,9 +815,9 @@
         "is-current-weather-code-state": "la météo actuelle à",
         "is-forecast-weather-code-state": "la météo prévue à",
         "weather-at": "à",
-        "typical-code-0": "minimale",
-        "typical-code-1": "maximale",
-        "typical-code-2": "moyenne",
+        "typical-code-0": "la température minimale",
+        "typical-code-1": "la température maximale",
+        "typical-code-2": "la température moyenne",
         "weather-code-0": "du soleil",
         "weather-code-1": "des nuages",
         "weather-code-2": "de la pluie",

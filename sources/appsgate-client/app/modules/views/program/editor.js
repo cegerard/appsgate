@@ -19,6 +19,7 @@ define([
         "change .selector-place-picker": "onChangeSeletorPlaceNode",
         "change .day-forecast-picker": "onChangeDayForecastNode",
         "change .code-forecast-picker": "onChangeCodeForecastNode",
+        "change .typical-forecast-picker": "onChangeTypicalForecastNode",
         "change .scale-selector": "onChangeValue",
         "change .comparator-select": "onChangeComparatorNode",
         "change .number-input": "onChangeValue",
@@ -333,6 +334,23 @@ define([
         // // clearing selection
         // this.resetSelection();
       },
+      onChangeTypicalForecastNode: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var newTypical = e.currentTarget.selectedOptions[0].value;
+        var value = {"type": "int", "value": newTypical};
+        var i = 0;
+          $(".typical-forecast-picker").each(function(){
+              if (this.getAttribute("target-id") === iid) {
+                  i = 1;
+              }
+          });
+
+        this.Mediator.setNodeArg(iid, i, value);
+
+        // // clearing selection
+        // this.resetSelection();
+      },      
       onChangeComparatorNode: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
@@ -393,23 +411,16 @@ define([
           this.refreshing = true;
           this.Mediator.buildInputFromJSON();
           this.Mediator.buildKeyboard();
-          if (!this.Mediator.isValid) {
-            this.model.set("runningState", "INVALID");
-          }
+          this.model.set("runningState", this.Mediator.programState.toUpperCase());
           this.applyEditMode();
           // translate the view
           this.$el.i18n();
-          if (this.Mediator.isValid) {
-            this.model.set("runningState", "DEPLOYED");
-            $(".led").attr("title", $.i18n.t('programs.state.stopped'));
-            $(".led").addClass("led-default").removeClass("led-orange");
-            $(".led").addClass("led-default").removeClass("led-yellow");
-            $(".programNameInput").addClass("valid-program");
-          } else {
-            this.model.set("runningState", "INVALID");
-            $(".led").attr("title", $.i18n.t('programs.state.failed'));
-            $(".led").addClass("led-orange").removeClass("led-default");
+            $("#prog-led").attr("title", $.i18n.t('programs.state.'+this.Mediator.programState));
+            $("#prog-led").attr("class", "pull-left led-"+this.Mediator.programState);
+          if (this.Mediator.programState == "invalid") {
             $(".programNameInput").removeClass("valid-program");
+          } else {
+            $(".programNameInput").addClass("valid-program");
           }
 
           // scrolling to the selected node

@@ -3,13 +3,7 @@
 	<div class="alert alert-info" data-i18n="editor.no-program-alert"></div>
 <% } else { %>
 	<div class="lead">
-		<% if ((program.get("runningState") === "WAITING") || program.get("runningState") === "KEEPING" || program.get("runningState") === "PROCESSING") { %>
-			<div id="led-<%= program.get('id') %>" title="<%= $.i18n.t('programs.state.started') %>" class="led led-yellow pull-left"></div>
-		<% } else if (program.get("runningState") === "DEPLOYED") { %>
-			<div id="led-<%= program.get('id') %>" title="<%= $.i18n.t('programs.state.stopped') %>" class="led led-default pull-left"></div>
-		<% } else if (program.get("runningState") === "INVALID") { %>
-			<div id="led-<%= program.get('id') %>" title="<%= $.i18n.t('programs.state.failed') %>" class="led led-orange pull-left"></div>
-		<% } %>
+        <div class="led-<%= program.getState()%> </div> pull-left" title="<%= $.i18n.t('programs.state.'+program.getState()) %>"></div>
 		<span id="program-name">
 			&nbsp;
 			<% if (program.get("name") !== "") { %>

@@ -74,7 +74,7 @@ public class NodeStateProgramTest extends NodeTest {
         programNode.setProcessing(null);
         Assert.assertTrue(programNode.isRunning());
         Assert.assertTrue(state.isOfState());
-        programNode.setDeployed();
+        programNode.setStopped();
         Assert.assertFalse(programNode.isRunning());
         Assert.assertFalse(state.isOfState());
 

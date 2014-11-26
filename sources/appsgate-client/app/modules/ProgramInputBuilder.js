@@ -47,6 +47,7 @@ define([
 
         initialize: function() {
             this.isValid = true;
+            this.isComplete = true;
         },
         buildInputFromObjectOrTarget: function(node, currentNode) {
             if (typeof node.object !== 'undefined') {
@@ -108,7 +109,7 @@ define([
                     break;
                 case "device":
                     param.node.validDevice = this.isDeviceValid(param.node.value);
-                    this.isValid = this.isValid && param.node.validDevice;
+                    this.isComplete = this.isComplete && param.node.validDevice;
                     param.node.name = this.getDeviceName(param.node.value);
                     input += this.tplDeviceNode(param);
                     break;
@@ -185,7 +186,7 @@ define([
                     break;
                 case "programCall":
                     c = this.getProgramState(jsonNode.value);
-                    input += "<button class='btn btn-prog btn-prog-" + c + "' id='" + jsonNode.iid + "'><span>" + jsonNode.name + "</span></button>";
+                    input += "<button class='btn btn-prog btn-prog-" + c + "' id='" + jsonNode.iid + "'><span>" + programs.get(jsonNode.value).get("name") + "</span></button>";
                     break;
                 case "programs":
                     input += "<button class='btn btn-default input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></button>";

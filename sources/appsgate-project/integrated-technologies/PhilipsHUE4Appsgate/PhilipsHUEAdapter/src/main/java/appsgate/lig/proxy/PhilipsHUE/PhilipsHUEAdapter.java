@@ -641,6 +641,12 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
                 resp.put("hueToastAlert", content);
                 getCommunicationService().send(resp.toString());
 
+				JSONObject ihmi = new JSONObject();
+				ihmi.put("callId","system");
+				ihmi.put("message","devices.lamp.status.pairingRequired");
+				getCommunicationService().send(ihmi.toString());
+
+
             } else if (code == PHMessageType.PUSHLINK_AUTHENTICATION_FAILED) {
                 logger.error("BRIDGE AUTHENTICATION FAILED");
                 resp.put("TARGET", PhilipsHUEAdapter.CONFIG_TARGET);
@@ -649,6 +655,11 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
                 content.put("text", "BRIDGE AUTHENTICATION FAILED");
                 resp.put("hueToastAlert", content);
                 getCommunicationService().send(resp.toString());
+
+				JSONObject ihmi = new JSONObject();
+				ihmi.put("callId","system");
+				ihmi.put("message","devices.lamp.status.pairingRequired");
+				getCommunicationService().send(ihmi.toString());
 
             }
 

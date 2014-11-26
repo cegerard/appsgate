@@ -6,6 +6,7 @@ define(function(require, exports, module) {
   var Backbone = require("backbone");
   var Router = require("routers/router");
   var Communicator = require("modules/communicator");
+  var alertify=require("alertifyjs");
 
   require("moment");
   require("i18n");
@@ -13,6 +14,7 @@ define(function(require, exports, module) {
   require("jqueryui");
   require("jqueryuitouch");
   require("circlemenu");
+
 
   // Alias the module for easier identification.
   var app = module.exports;
@@ -103,7 +105,7 @@ define(function(require, exports, module) {
 
         // all data have been received, launch the user interface
         dispatcher.on("dataReady", function() {
-          app.initialized = true;
+          appRouter.initialized = true;
           $("#lost-connection-modal").modal("hide");
           $("#settings-modal").modal("hide");
 
@@ -113,6 +115,18 @@ define(function(require, exports, module) {
               devices: _.uniq(l.get("devices"))
             });
           });
+
+        });
+
+        dispatcher.on("system", function(msg) {
+
+          console.log("System received message " + JSON.stringify(msg));
+
+          if(msg.message!=undefined){
+               var l10nMessage=$.i18n.t(msg.message)
+               var timeout=10000;
+               alertify.log(l10nMessage, "log", timeout);
+          }
 
         });
 

@@ -28,7 +28,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate", "east", "west"];
+      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate", "east", "west", "change"];
     },
     /**
      * return the keyboard code for a given event
@@ -108,6 +108,13 @@ define([
           v.icon = "app/img/cube-turn-right.png";
           $(btn).attr("json", JSON.stringify(v));
           break;
+        case "change":
+          $(btn).append("<span data-i18n='devices.domicube.keyboard.leaveFace'></span>");
+          v.eventName = "leaveFace";
+          v.eventValue = "*";
+          v.phrase = "devices.domicube.language.leaveFace";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
         default:
           console.error("unexpected event found for DomiCube: " + evt);
           btn = null;
@@ -136,6 +143,7 @@ define([
         console.error('Unsupported type of state: ' + which);
         return null;
       }
+      var v = this.getJSONState("mandatory");
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       v.object.type = "device";
       v.object.deviceType = "210";

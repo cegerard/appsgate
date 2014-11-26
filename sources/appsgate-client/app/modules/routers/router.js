@@ -18,6 +18,7 @@ define(function(require, exports, module) {
   // define the application router
   var Router = Backbone.Router.extend({
 
+    initialized: false,
     placesRouter: new PlacesRouter(),
     devicesRouter: new DevicesRouter(),
     servicesRouter: new ServicesRouter(),
@@ -130,7 +131,7 @@ define(function(require, exports, module) {
         direction: 'top-right'
       });
 
-      $("body").i18n();
+      $(document).i18n();
     },
     showDetailsView: function(view) {
       // remove and unbind the current view
@@ -160,13 +161,16 @@ define(function(require, exports, module) {
       $(".loading-widget-wrapper").remove();
     },
     updateLocale:function(locale) {
+      var self = this;
       this.locale = locale;
 
       $.i18n.init({ lng : this.locale }).done(function() {
-        var currentRoute = Backbone.history.fragment;
-        Backbone.history.fragment = null;
-        appRouter.navigate(currentRoute, {trigger: true});
+        if(typeof self.currentMenuView !== "undefined") self.currentMenuView.render();
+        if(typeof self.currentView !== "undefined") self.currentView.render();
+
+        $(document).i18n();
       });
+
     }
   });
 

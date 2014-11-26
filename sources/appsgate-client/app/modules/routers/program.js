@@ -38,6 +38,11 @@ define([
 				$("#programs-nav").addClass("active");
 			}	
 
+            // in the case the program isn't found in the side-menu, re-render it
+            if($(".aside-menu #side-" + id).length == 0){
+              this.list();
+            }
+
             // display the requested program
             appRouter.showDetailsView(new ProgramReaderView({model: programs.get(id)}));
 
@@ -62,8 +67,8 @@ define([
 
             appRouter.navigate("#programs/editor/" + id);
 
-            appRouter.currentMenuView = new ProgramEditorView({el:$("#main"),model: programs.get(id)});
-            appRouter.currentMenuView.render();
+            appRouter.currentView = new ProgramEditorView({el:$("#main"),model: programs.get(id)});
+            appRouter.currentView.render();
 
             $("#main").append(appRouter.circlemenutemplate());
 
@@ -74,6 +79,8 @@ define([
                 circle_radius: 75,
                 direction: 'top-right'
             });
+
+            $(document).i18n();
         }
 
     });

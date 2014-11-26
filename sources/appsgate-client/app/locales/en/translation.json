@@ -48,17 +48,17 @@
       "action": {
         "zone-activate": "Activate alarm __myVar__",
         "zone-desactivate": "Desactivate alarm __myVar__",
-        "force-input": "Force entry __myVar__"
+        "force-input": "Signal possible intrusion to __myVar__"
       },
       "keyboard": {
-        "zone-activate": "Activate alarm on ...",
-        "zone-desactivate": "Desactivate alarm on ...",
-        "force-input": "Force entry ..."
+        "zone-activate": "Activate alarm ...",
+        "zone-desactivate": "Desactivate alarm ...",
+        "force-input": "Signal possible intrusion to ..."
       },
       "event": {
-        "authorized": "badge is authorized on ...",
-        "non_authorized": "badge is NOT authorized on ...",
-        "alarm_fired": "Alarm fired on ..."
+        "authorized": "a badge is authorized by ...",
+        "non_authorized": "a badge is NOT authorized by ...",
+        "alarm_fired": "an alarm is detected by ..."
       },
       "last-authorized": "Last badge access granted",
       "last-card": "Last badge passed",
@@ -70,9 +70,9 @@
       },
       "negative": "No",
       "state": {
-        "authorized": "badge is authorized on __myVar__",
-        "non_authorized": "badge is NOT authorized on __myVar__",
-        "alarm_fired": "Alarm fired on __myVar__"
+        "authorized": "a badge is authorized by __myVar__",
+        "non_authorized": "a badge is NOT authorized by __myVar__",
+        "alarm_fired": "an alarm is detected by __myVar__"
       }
     },
     "avg": "Avg : ",
@@ -87,16 +87,16 @@
     "contact": {
       "keyboard": {
         "contact": "contact sensor",
-        "closeEvent": "closing a __myVar__",
+        "closeEvent": "someone closes a __myVar__",
         "isClose": "a __myVar__ is closed",
         "isOpen": "a __myVar__ is open",
-        "openEvent": "opening a __myVar__"
+        "openEvent": "someone opens a __myVar__"
       },
       "language": {
-        "closeEvent": "closing __myVar__",
+        "closeEvent": "someone closes __myVar__",
         "isClose": "__myVar__ is closed",
         "isOpen": "__myVar__ is open",
-        "openEvent": "opening __myVar__"
+        "openEvent": "someone opens __myVar__"
       },
       "name": {
         "plural": "Contact sensors",
@@ -120,16 +120,18 @@
         "unknown": "Unknown"
       },
       "language": {
-        "activated": "domicube is activated",
-        "inactivated": "domicube is idle",
+        "activated": "get the top face of Domicube",
+        "inactivated": "leave the top face of Domicube",
         "west": "West",
-        "east": "East"
+        "east": "East",
+		"leaveFace" : "Changing Domicube face"
       },
       "keyboard": {
-        "activated": "domicube is activated",
-        "inactivated": "domicube is idle",
+        "activated": "get the top face of Domicube",
+        "inactivated": "leave the top face of Domicube",
         "west": "West",
-        "east": "East"
+        "east": "East",
+		"leaveFace" : "Changing Domicube face"
       },
       "white-face": {
         "first-elem": "White",
@@ -145,14 +147,14 @@
         "sensor": "light sensor",
         "brightness": "that level of luminosity",
         "get": "A __myVar__ detects __myVar2__",
-        "change": "The luminosity measured by a __myVar__ changes"
+        "change": "luminosity measured by a __myVar__ changes"
       },
       "language": {
         "get": "luminosity of __myVar__",
         "change": "luminosity of __myVar__ changes"
       },
       "name": {
-        "plural": "Brightness sensors",
+        "plural": "Light sensors",
         "singular": "Light sensor"
       },
       "scale": {
@@ -172,7 +174,7 @@
         "card-inserted": "a card is inserted in a __myVar__",
         "insertedEvent": "someone inserts a card in a __myVar__",
         "no-card-inserted": "no card in a __myVar__",
-        "removedEvent": "someone remove a card from a __myVar__"
+        "removedEvent": "someone removes a card from a __myVar__"
       },
       "language": {
         "card-inserted": "a card is inserted in __myVar__",
@@ -224,7 +226,7 @@
         "turnOff": "Switch off __myVar__",
         "turnOffEvt": "someone switches __myVar__ off",
         "turnOn": "Switch on lamp __myVar__",
-        "turnOnEvt": "someone switch __myVar__ on"
+        "turnOnEvt": "someone switches __myVar__ on"
       },
       "name": {
         "plural": "Philips Hue lamps",
@@ -232,7 +234,8 @@
       },
       "status": {
         "turnedOff": "Off",
-        "turnedOn": "On"
+        "turnedOn": "On",
+        "pairingRequired": "Press the buttom from PhilipsHue bridge."
       },
       "color-information": {
         "lastColor": "Last lamp's color ",
@@ -340,14 +343,14 @@
       "keyboard": {
         "plug": "Smart Plug",
         "change": "consumption of a __myVar__ changes",
-        "isOff": "A __myVar__ is off",
-        "isOff-keep": "A __myVar__ off",
-        "isOn": "A __myVar__ is on",
-        "isOn-keep": "A__myVar__ on",
-        "turnOffEvt": "A__myVar__ is turned off",
-        "turnOnEvt": "A __myVar__ is turned on",
-        "turnOff": "Switch on a __myVar__",
-        "turnOn": "Switch off a __myVar__"
+        "isOff": "a __myVar__ is off",
+        "isOff-keep": "a __myVar__ off",
+        "isOn": "a __myVar__ is on",
+        "isOn-keep": "a __myVar__ on",
+        "turnOffEvt": "a __myVar__ is turned off",
+        "turnOnEvt": "a __myVar__ is turned on",
+        "turnOff": "Switch off a __myVar__",
+        "turnOn": "Switch on a __myVar__"
       },
       "language": {
         "change": "consumption of __myVar__ changes",
@@ -357,12 +360,12 @@
         "isOn-keep": "__myVar__ on",
         "turnOffEvt": "__myVar__ is turned off",
         "turnOnEvt": "__myVar__ is turned on",
-        "turnOff": "Switch on __myVar__",
-        "turnOn": "Switch off __myVar__"
+        "turnOff": "Switch off __myVar__",
+        "turnOn": "Switch on __myVar__"
       },
       "name": {
-        "plural": "Power sockets",
-        "singular": "Power socket"
+        "plural": "Smart Plugs",
+        "singular": "Smart Plug"
       },
       "status": {
         "turnedOff": "Off",
@@ -384,8 +387,8 @@
         "switch": "switch"
       },
       "language": {
-        "pushed-bottom": "the bottom button of a __myVar__ is pushed",
-        "pushed-up": "the top button of a __myVar__ is pushed"
+        "pushed-bottom": "the bottom button of __myVar__ is pushed",
+        "pushed-up": "the top button of __myVar__ is pushed"
       },
       "name": {
         "plural": "Switches",
@@ -461,20 +464,20 @@
     "if-keyword": "If",
     "keep-state": "Keep state ...",
     "selector": {
-      "prefix-f": "every ",
-      "prefix-m": "every ",
+      "prefix-f": " every ",
+      "prefix-m": " every ",
       "type": {
-        "1": "temperature sensors",
-        "2": "light sensors",
-        "21": "clocks",
-        "210": "domicubes",
-        "3": "switches",
-        "4": "contact sensors",
-        "5": "key card readers",
-        "6": "plugs",
-        "7": "lamps",
-        "8": "actuators",
-        "31": "media players"
+        "1": "temperature sensor",
+        "2": "light sensor",
+        "21": "clock",
+        "210": "domicube",
+        "3": "switch",
+        "4": "contact sensor",
+        "5": "key card reader",
+        "6": "plug",
+        "7": "lamp",
+        "8": "actuator",
+        "31": "media player"
       }
     },
     "true": "True",
@@ -490,7 +493,7 @@
       "blue": "blue",
       "green": "green",
       "orange": "orange",
-      "pink": "Pink",
+      "pink": "pink",
       "purple": "purple",
       "red": "red",
       "white": "white",
@@ -535,25 +538,25 @@
       "prefix-f": "every ",
       "prefix-m": "every ",
       "type": {
-        "1": "temperature sensors",
-        "2": "light sensors",
-        "21": "clocks",
-        "210": "domicubes",
-        "3": "switches",
-        "4": "contact sensors",
-        "5": "key card readers",
-        "6": "plugs",
-        "7": "lamps",
-        "8": "actuators",
-        "31": "media players"
+        "1": "temperature sensor",
+        "2": "light sensor",
+        "21": "clock",
+        "210": "domicube",
+        "3": "switch",
+        "4": "contact sensor",
+        "5": "key card reader",
+        "6": "plug",
+        "7": "lamp",
+        "8": "actuator",
+        "31": "media player"
       }
     },
     "then-keyword": "then",
     "true": "true",
-    "wait": "wait",
+    "wait": "Wait",
     "when-imp-keyword": "As soon as",
-    "when-keyword": "Every time",
-    "while-keyword": "while"
+    "when-keyword": "Each time",
+    "while-keyword": "While"
   },
   "login": {
     "confirm-password": "Password confirmation",
@@ -631,7 +634,7 @@
     "debugger": "History",
     "dashboard": "Dashboard",
     "devices": "Devices",
-    "dependancies": "Dependancies",
+    "dependancies": "Dependencies",
     "edit": "Edit",
     "emergency-stop": "Emergency stop",
     "home": "Sweet Home",
@@ -687,9 +690,9 @@
       "program": "program"
     },
     "language": {
-      "actionActivate": "start __myVar__",
-      "actionDisactivate": "stop __myVar__",
-      "actionDisactivate-self": "stop myself",
+      "actionActivate": "Start __myVar__",
+      "actionDisactivate": "Stop __myVar__",
+      "actionDisactivate-self": "Stop myself",
       "eventStart": "__myVar__ is being started",
       "eventStop": "__myVar__ is being stopped",
       "stateStarted": "__myVar__ is started",
@@ -699,10 +702,11 @@
     },
     "program-no-name": "Program with no name",
     "state": {
-      "deployed": "Deployed",
-      "failed": "Error",
-      "started": "Started",
-      "stopped": "Stopped"
+      "deployed": "Program activable",
+      "invalid": "Program invalide",
+      "incomplete": "Program partially activable",
+      "limping": "Program partially activated",
+      "processing": "Program activated"
     },
     "warning-program-edition": "Warning, editing a program will deactivate it",
     "warning-program-delete": "Do you really want to delete this program ?",
@@ -711,7 +715,7 @@
   },
   "programs-menu": {
     "add-button": "Add Program",
-    "deactivate-all-programs": "Deactivate all programs"
+    "deactivate-all-programs": "Stop all programs"
   },
   "services": {
     "avtransport": {
@@ -738,7 +742,7 @@
     "mail": {
       "keyboard": {
         "sendMail": "Send a mail",
-        "mailSent": "a mail have been sent"
+        "mailSent": "a mail has been sent"
       },
       "language": {
         "body": "Content",
@@ -802,18 +806,19 @@
         "temperature": "max/min that value"
       },
       "language": {
-        "forecast-temperature": "the temperature expected for",
+        "forecast-temperature": "",
+        "forecast": "expected in",
         "sunrise": "the sun rise in __myVar__",
         "sunset": "the sun set in __myVar__",
         "currently-daylight": "it is daytime in ",
         "currently-moonlight": "it is nightime in ",
-        "forecast-weather-code-state": "current weather for",
+        "forecast-weather-code-state": "expected weather in",
         "is-current-weather-code-state": "current weather",
-        "is-forecast-weather-code-state": "current weather for",
-        "weather-at": "current weather",
-        "typical-code-0": "minimum",
-        "typical-code-1": "maximum",
-        "typical-code-2": "average",
+        "is-forecast-weather-code-state": "expected weather in",
+        "weather-at": "",
+        "typical-code-0": "minimum temperature",
+        "typical-code-1": "maximum temperature",
+        "typical-code-2": "average temperature",
         "weather-code-0": "sunny",
         "weather-code-1": "cloudy",
         "weather-code-2": "rain",
