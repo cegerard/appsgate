@@ -15,4 +15,6 @@
 
 natives=-Djava.library.path=natives/jni/MacOSX/
 
-java -Djava.util.logging.config.file=conf/logging.properties -Dlogback.configurationFile=conf/logback.xml ${natives} -jar bin/felix.jar
+# if problems when discovering the philips HUE, enable the scanNetwork to true
+
+java -Dphilips.discovery.scanNetwork=false -Djava.util.logging.config.file=conf/logging.properties -Dlogback.configurationFile=conf/logback.xml ${natives} -jar bin/felix.jar

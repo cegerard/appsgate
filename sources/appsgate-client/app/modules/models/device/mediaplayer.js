@@ -65,7 +65,7 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "stop":
-          $(btn).append("<span data-i18n='services.mediaplayer.keyboard.stop-event'><span>");
+          $(btn).append("<span data-i18n='devices.mediaplayer.keyboard.stop-event'><span>");
           $(btn).append("<span>" + $.i18n.t('devices.mediaplayer.keyboard.stop-event', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.player') + "</span>",
           }));
