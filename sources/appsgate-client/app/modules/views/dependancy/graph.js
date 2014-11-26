@@ -122,7 +122,7 @@ define([
 			// Build the directional arrows for the links/edges
 			// Per-type markers, as they don't inherit styles.
 			svg.append("svg:defs").selectAll("marker")
-				.data(["targetingFocus", "targetingRefFocus", "reference", "isLocatedIn", "isPlanified", "denotes"])
+				.data(["targetingFocus", "targetingRefFocus", "targeting", "reference", "isLocatedIn", "isPlanified", "denotes"])
 				.enter().append("svg:marker")
 				.attr("id", String)
 				.attr("viewBox", "0 -5 10 10")
@@ -152,7 +152,7 @@ define([
 
 			// translate the view
 			this.$el.i18n();
-			
+
 			this.resize($(".scrollable"));
 		},
 
@@ -405,15 +405,21 @@ define([
 					return !isNode1 && !isNode2;
 				})
 				.attr("marker-end", function (d) {
-					if (d.target === self.model.get("rootNode") && d.type === "reference")
+					var isMultipleTargeted = self.model.isTargetMultipleTargeted(d.target);
+					// Target focus and mutliple target -> RED / ARROW
+					if (d.target === self.model.get("rootNode") && d.type === "reference" && isMultipleTargeted)
 						return "url(#targetingRefFocus)";
+					// Target focus -> ARROW
 					else if (d.target === self.model.get("rootNode"))
 						return "url(#targetingFocus)";
-					else
+					// Multiple target -> RED
+					else if (isMultipleTargeted && d.type === "reference")
+						return "url(#targeting)";
+					else 
 						return "url(#" + d.type + ")";
 				})
 				.classed("important-path", function (d) {
-					return d.type === "reference";
+					return (d.type === "reference" && self.model.isTargetMultipleTargeted(d.target));
 				});
 
 			pathLink.select(".linkText")

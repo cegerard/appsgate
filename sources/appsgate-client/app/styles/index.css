@@ -854,7 +854,7 @@ fieldset[disabled] .btn {
 #graph path.important-path {
     stroke: red;
 }
-#graph marker#targetingRefFocus, #graph marker#reference {
+#graph marker#targetingRefFocus, #graph marker#targeting {
     fill: red;
 }
 /* Default text */

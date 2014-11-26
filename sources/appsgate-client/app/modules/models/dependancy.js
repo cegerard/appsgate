@@ -214,6 +214,26 @@ define([
 				if (arrayUpdated.indexOf(type) !== -1)
 					arrayUpdated.splice(arrayUpdated.indexOf(type), 1);
 			}
+		},
+		
+		/**
+		* Method to know if a target is targeted more than one time
+		* @param: target to search
+		*/
+		isTargetMultipleTargeted: function(target) {
+			var self = this;
+			var targetedOneTime = false;
+			for (var i=0; i < self.get("currentRelations").length; i++) {
+				if (self.get("currentRelations")[i].type === "reference" && target === self.get("currentRelations")[i].target) {
+					// If the target has already seen one time, then multiple time target and return true
+					if (targetedOneTime) {
+						return true;
+					} else {
+						targetedOneTime = true;
+					}
+				}
+			}
+			return false;
 		}
 
 	});
