@@ -850,18 +850,23 @@ fieldset[disabled] .btn {
 }
 /* --------------------- Debugger styles ----------------------------------*/
 
-.debugger {
-  margin-right: auto;
-  margin-left: auto;
-  width: 980px;
-}
-.debugger.scrollable {
-  border: none;
-}
 .ui-autocomplete {
   position: absolute;
   cursor: default;
   z-index: 1300 !important;
+
+.debugger, .debugger-toolbar {
+    margin-right: auto;
+    margin-left: auto;
+    width: 980px;
+}
+
+.debugger-toolbar {
+    margin-bottom: 30px;
+}
+
+.debugger .scrollable {
+    border: none;
 }
 .active-node-indicator {
   width: 100%;

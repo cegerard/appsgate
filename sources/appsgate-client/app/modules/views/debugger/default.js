@@ -92,10 +92,19 @@ define([
             $("#bubbleModal").modal("show");
         });
 
-        // prompt server for initial history trace
-        dashboard.requestInitialHistoryTrace();
+        // setup ui
+        this.$('.btn-primary').on('click', function(){
+            if( $(this).find('input').attr('id') == 'live') {
+                dashboard._toggleLoading(true);
+                dashboard.requestLiveTrace();
+            } else {
+                dashboard._toggleLoading(true);
+                dashboard.requestInitialHistoryTrace();
+            }
+        });
 
-        this.resize($(".scrollable"));
+        // prompt server for initial history trace
+        dashboard.requestLiveTrace();
     },
 
     destroy: function() {

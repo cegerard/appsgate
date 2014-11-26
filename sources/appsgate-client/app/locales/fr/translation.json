@@ -8,7 +8,11 @@
     "all": "Tous",
     "times": "fois",
     "yes": "OUI",
-    "no": "NON"
+    "no": "NON",
+    "toolbar": {
+      "history": "Historique",
+      "live": "Direct"
+    }
   },
   "dependancy": {
         "refresh-data" : "Actualiser les données",
@@ -24,23 +28,23 @@
 			"processing-program": "Programme en cours d'exécution"
 		}
   },
-  "devices": {
-    "no-value": "---",
-    "actuator": {
-      "action": {
-        "turnOff": "Eteindre",
-        "turnOn": "Allumer",
-        "turnAllOff": "Tout éteindre",
-        "turnAllOn": "Tout allumer"
-      },
-      "name": {
-        "plural": "Actionneurs",
-        "singular": "Actionneur"
-      },
-      "status": {
-        "turnedOff": "Eteint",
-        "turnedOn": "Allumé"
-      }
+    "devices": {
+        "no-value":"---",
+        "actuator": {
+            "action": {
+                "turnOff": "Eteindre",
+                "turnOn": "Allumer",
+				"turnAllOff" : "Tout éteindre",
+                "turnAllOn": "Tout allumer"
+            },
+            "name": {
+                "plural": "Actionneurs",
+                "singular": "Actionneur"
+            },
+            "status": {
+                "turnedOff": "Eteint",
+                "turnedOn": "Allumé"
+            }
     },
     "ard": {
       "affirmative": "Oui",
