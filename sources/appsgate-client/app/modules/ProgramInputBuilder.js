@@ -186,7 +186,7 @@ define([
                     break;
                 case "programCall":
                     c = this.getProgramState(jsonNode.value);
-                    input += "<button class='btn btn-prog btn-prog-" + c + "' id='" + jsonNode.iid + "'><span>" + programs.get(jsonNode.value).get("name") + "</span></button>";
+                    input += "<button class='btn btn-prog btn-prog-" + c + "' id='" + jsonNode.iid + "'><span>" + programs.getName(jsonNode.value) + "</span></button>";
                     break;
                 case "programs":
                     input += "<button class='btn btn-default input-spot mandatory-spot' id='" + jsonNode.iid + "'><span data-i18n='language.mandatory-keyword'/></button>";

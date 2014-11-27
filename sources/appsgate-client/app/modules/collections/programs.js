@@ -53,6 +53,12 @@ define([
                 TARGET: "EHMI"
             });
         },
+        getName: function(id) {
+          if(this.get(id)) {
+            return this.get(id).get("name");
+          }
+          return "Unknown";
+        },
         allProgramsStopped:function() {
           var result = true;
           _.each(programs.models, function(program) {
