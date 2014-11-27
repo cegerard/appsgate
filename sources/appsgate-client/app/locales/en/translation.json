@@ -19,9 +19,11 @@
 		"search-example": "(Example : '__entity__')",
 	  	"caption": {
 			"title": "Caption",
-			"invalid-program": "Invalid program",
-			"deployed-program":"Deployed program",
-			"processing-program": "Processing program"
+			"stopped-program": "Stopped",
+			"running-program": "Running",
+			"valid-program": "Valid",
+			"incomplete-program": "Incomplete",
+			"invalid-program": "Invalid"
 		}
 
   },

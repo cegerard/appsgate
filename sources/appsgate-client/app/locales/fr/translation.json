@@ -23,9 +23,11 @@
 		"search-example": "(Exemple : '__entity__')",
 	  	"caption": {
 			"title": "Légende",
-			"invalid-program": "Programme invalide",
-			"deployed-program":"Programme déployé",
-			"processing-program": "Programme en cours d'exécution"
+			"stopped-program": "Arrêté",
+			"running-program": "En exécution",
+			"valid-program": "Valide",
+			"incomplete-program": "Incomplet",
+			"invalid-program": "Invalide"
 		}
   },
     "devices": {

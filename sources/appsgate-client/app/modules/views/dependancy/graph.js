@@ -253,7 +253,7 @@ define([
 						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
 							d3.select(this).append("svg:path")
 								.attr("class", "form-program")
-								.attr("d", "M0,-5L10,0L0,5")
+								.attr("d", "M0,-5L10,0L0,5L0,-5")
 								.attr('opacity', 0);
 						}
 
