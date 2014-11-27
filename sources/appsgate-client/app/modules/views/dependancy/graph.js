@@ -224,6 +224,7 @@ define([
 							}
 							return imgNode;
 						})
+						.attr('opacity', 0)
 						.attr('x', -12)
 						.attr('y', -12)
 						.attr('width', 24)
@@ -234,14 +235,40 @@ define([
 						.text(function (d) {
 							return d.name;
 						})
+					
+					// Type program, add form to indicate running or not. 
+					if (a.type === "program") {
+						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
+							d3.select(this).append("rect")
+								.attr("class", "form-program")
+								.attr("x", function (m) {
+									return 0
+								})
+								.attr("y", function (m) {
+									return 0
+								})
+								.attr("width", 8)
+								.attr("height", 8)
+								.attr('opacity', 0);
+						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
+							d3.select(this).append("svg:path")
+								.attr("class", "form-program")
+								.attr("d", "M0,-5L10,0L0,5")
+								.attr('opacity', 0);
+						}
+
+					}
 				});
 
-			nEnter.select("circle")
-				.transition().duration(800).attr("r", 14);
+			nEnter.select("circle").transition().duration(800).attr("r", 14);
+			nEnter.select("image").transition().duration(1000).style("opacity", 1);
+			nEnter.select(".form-program").transition().duration(800).style("opacity", 1);
+			nEnter.select("text").transition().duration(800).style("opacity", 1);
 
 			nodeEntity.exit().select("image").transition().duration(600).style("opacity", 0);
 			nodeEntity.exit().select("text").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().select("circle").transition().duration(700).attr("r", 0);
+			nodeEntity.exit().select(".form-program").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().transition().duration(800).remove();
 
 
@@ -377,14 +404,19 @@ define([
 				.classed("program-processing", function (d) {
 					return d.state === "PROCESSING";
 				})
-				.classed("program-keeping", function (d) {
-					return d.state === "KEEPING";
-				})
 				.classed("program-deployed", function (d) {
 					return d.state === "DEPLOYED";
 				})
-				.classed("program-waiting", function (d) {
-					return d.state === "WAITING";
+				.classed("program-limping", function (d) {
+					return d.state === "LIMPING";
+				})
+				.classed("program-incomplete", function (d) {
+					return d.state === "INCOMPLETE";
+				});
+
+			nodeEntity.selectAll(".form-program")
+				.attr("transform", function (d) {
+					return "translate(3,10)";
 				});
 
 
@@ -634,7 +666,7 @@ define([
 					//						this.selectAndMoveRootNode(this.model.get("currentEntities")[0]);
 					//					}
 					// Mis en com' car mtn on peut ne pas avoir de focus sans que ce soit gênant
-					
+
 					// unfix the root and set null to the root
 					this.model.get("rootNode").fixed = false;
 					this.model.get("rootNode").selected = false;
