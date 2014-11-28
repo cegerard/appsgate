@@ -834,7 +834,7 @@ fieldset[disabled] .btn {
   vertical-align: middle;
 }
 .highlight-placeholder {
-  color: #60BE68;
+  color: rgb(240, 197, 250);
 }
 .btn-trash {
   cursor: pointer;
@@ -1006,7 +1006,7 @@ fieldset[disabled] .btn {
 }
 
 #graph g>circle.program-deployed, .program-deployed, #graph g>circle.program-processing, .program-processing  {
-	fill: green;
+	fill: #26d43b;
 }
 
 #graph g>circle.program-limping, .program-limping, #graph g>circle.program-incomplete, .program-incomplete {
