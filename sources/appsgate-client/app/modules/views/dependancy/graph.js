@@ -324,7 +324,7 @@ define([
 							return "#linkID_" + i;
 						})
 						.text(function (d) {
-							return d.type;
+							return $.i18n.t("dependancy.type.relation." + d.type);
 						});
 				});
 
@@ -622,7 +622,7 @@ define([
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
-							return d;
+							return $.i18n.t("dependancy.type.entity." + d);
 						});
 				});
 
@@ -649,7 +649,7 @@ define([
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
-							return d;
+							return $.i18n.t("dependancy.type.relation." + d);
 						});
 				});
 

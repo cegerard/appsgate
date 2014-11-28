@@ -24,6 +24,22 @@
 			"valid-program": "Valid",
 			"incomplete-program": "Incomplete",
 			"invalid-program": "Invalid"
+		},
+	  	"type": {
+			"entity": {
+				"place": "Place",
+				"program": "Programs",
+				"service": "Services",
+				"time": "Time",
+				"device": "Devices",
+				"selector": "Selectors"
+			},
+			"relation": {
+				"reference": "Reference", 
+				"isLocatedIn": "Location", 
+				"isPlanified": "Planning", 
+				"denotes": "Denotation"
+			}
 		}
 
   },

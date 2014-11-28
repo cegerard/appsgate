@@ -28,6 +28,22 @@
 			"valid-program": "Valide",
 			"incomplete-program": "Incomplet",
 			"invalid-program": "Invalide"
+		},
+	  	"type": {
+			"entity": {
+				"place": "Lieux de vie",
+				"program": "Programmes",
+				"service": "Services",
+				"time": "Temps",
+				"device": "Equipements",
+				"selector": "Sélecteurs"
+			},
+			"relation": {
+				"reference": "Référence", 
+				"isLocatedIn": "Localisation", 
+				"isPlanified": "Planification", 
+				"denotes": "Dénotation"
+			}
 		}
   },
     "devices": {
