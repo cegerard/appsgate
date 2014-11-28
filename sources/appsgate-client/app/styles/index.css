@@ -119,20 +119,23 @@ body {
 .led-processing {
 	width: 0; 
 	height: 0; 
-	border-top: 20px solid transparent;
-	border-bottom: 20px solid transparent;
+	border-top: 12px solid transparent;
+	border-bottom: 12px solid transparent;
 	
-	border-left: 20px solid green;
+	border-left: 17px solid #26d43b;
+	margin-right: 10px;
+	margin-left: 8px;
 
 }
 .led-limping {
   	width: 0; 
 	height: 0; 
-	border-top: 20px solid transparent;
-	border-bottom: 20px solid transparent;
+	border-top: 12px solid transparent;
+	border-bottom: 12px solid transparent;
 	
-	border-left: 20px solid #f0ad4e;
-
+	border-left: 17px solid #999999;
+	margin-right: 10px;
+	margin-left: 8px;
 }
 .led-invalid {
   width: 27px;
@@ -158,7 +161,7 @@ body {
   margin-right: 10px;
   border: 1px solid #999999;
   border-radius: 2px;
-  background: green;
+  background: #26d43b;
 
 }
 
@@ -632,6 +635,10 @@ fieldset[disabled] .btn {
   border: none !important;
   box-shadow: none;
   cursor: default;
+}
+.read-only .btn-prog-absent {
+  color: red;
+  font-weight: 700;
 }
 .read-only .btn:hover,
 .read-only .btn:focus {

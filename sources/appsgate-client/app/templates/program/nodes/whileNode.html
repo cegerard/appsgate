@@ -28,7 +28,7 @@
     <% } %>
   </div>
   <% if ( node.rulesThen != undefined) { %>
-  <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node seq-block-node"<% } else { %> class="main-block-node seq-block-node" <% } %>>
+  <div <% if(node.rulesThen.rules.length < 2 ) { %>class="secondary-block-node"<% } else { %> class="main-block-node" <% } %>>
     <div>
       <button class="btn btn-prog btn-primary disabled read-only btn-then">
         <span data-i18n="language.and-when"></span>
