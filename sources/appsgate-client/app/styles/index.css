@@ -117,20 +117,20 @@ body {
   background: #ffff00;
 }
 .led-processing {
-	width: 0; 
-	height: 0; 
+	width: 0;
+	height: 0;
 	border-top: 20px solid transparent;
 	border-bottom: 20px solid transparent;
-	
+
 	border-left: 20px solid green;
 
 }
 .led-limping {
-  	width: 0; 
-	height: 0; 
+  	width: 0;
+	height: 0;
 	border-top: 20px solid transparent;
 	border-bottom: 20px solid transparent;
-	
+
 	border-left: 20px solid #f0ad4e;
 
 }
@@ -504,7 +504,9 @@ body {
   font-weight: bold;
 }
 /* --------------------- Editor styles ----------------------------------*/
-
+.editor-header {
+  margin-left:0px;
+}
 .action-node-input {
   background: gray;
   border: 1px solid;
