@@ -125,7 +125,6 @@ body {
 	border-left: 17px solid #26d43b;
 	margin-right: 10px;
 	margin-left: 8px;
-
 }
 .led-limping {
   	width: 0; 
@@ -507,7 +506,9 @@ body {
   font-weight: bold;
 }
 /* --------------------- Editor styles ----------------------------------*/
-
+.editor-header {
+  margin-left:0px;
+}
 .action-node-input {
   background: gray;
   border: 1px solid;
