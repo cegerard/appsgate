@@ -26,8 +26,8 @@ define([
             $(".nav-item").removeClass("active");
             $("#home-nav").addClass("active");
 
-            appRouter.currentMenuView = new DebuggerView({el:$("#main")});
-            appRouter.currentMenuView.render();
+            appRouter.currentView = new DebuggerView({el:$("#main")});
+            appRouter.currentView.render();
 
             $("#main").append(appRouter.circlemenutemplate());
 
@@ -38,6 +38,9 @@ define([
                 circle_radius: 75,
                 direction: 'top-right'
             });
+
+            // resize the menu
+            appRouter.currentView.resize($(".div-scrollable"));
 
             $(document).i18n();
 
