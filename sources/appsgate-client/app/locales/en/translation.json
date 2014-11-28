@@ -27,11 +27,11 @@
 		},
 	  	"type": {
 			"entity": {
-				"place": "Place",
-				"program": "Programs",
-				"service": "Services",
+				"place": "$t(navbar.places)",
+				"program": "$t(navbar.programs)",
+				"service": "$t(navbar.services)",
 				"time": "Time",
-				"device": "Devices",
+				"device": "$t(navbar.devices)",
 				"selector": "Selectors"
 			},
 			"relation": {

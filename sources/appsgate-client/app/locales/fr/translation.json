@@ -31,11 +31,11 @@
 		},
 	  	"type": {
 			"entity": {
-				"place": "Lieux de vie",
-				"program": "Programmes",
-				"service": "Services",
+				"place": "$t(navbar.places)",
+				"program": "$t(navbar.programs)",
+				"service": "$t(navbar.services)",
 				"time": "Temps",
-				"device": "Equipements",
+				"device": "$t(navbar.devices)",
 				"selector": "Sélecteurs"
 			},
 			"relation": {
