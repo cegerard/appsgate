@@ -122,18 +122,18 @@
         "unknown": "Unknown"
       },
       "language": {
-        "activated": "get the top face of Domicube",
-        "inactivated": "leave the top face of Domicube",
+        "activated": "Domicube is turned on the blank face",
+        "inactivated": "Domicube leaves the blank face",
         "west": "West",
         "east": "East",
-		"leaveFace" : "Changing Domicube face"
+		"leaveFace" : "Domicube face changes"
       },
       "keyboard": {
-        "activated": "get the top face of Domicube",
-        "inactivated": "leave the top face of Domicube",
+        "activated": "Domicube is turned on the blank face",
+        "inactivated": "Domicube leaves the blank face",
         "west": "West",
         "east": "East",
-		"leaveFace" : "Changing Domicube face"
+		"leaveFace" : "Domicube face changes"
       },
       "white-face": {
         "first-elem": "White",
@@ -180,9 +180,9 @@
       },
       "language": {
         "card-inserted": "a card is inserted in __myVar__",
-        "insertedEvent": "someone insert a card in __myVar__",
+        "insertedEvent": "someone inserts a card in __myVar__",
         "no-card-inserted": "no card in __myVar__",
-        "removedEvent": "someone remove a card from __myVar__"
+        "removedEvent": "someone removes a card from __myVar__"
       },
       "name": {
         "plural": "Card switches",
@@ -484,7 +484,7 @@
     },
     "true": "True",
     "wait": "Wait ...",
-    "when-keyword": "When",
+    "when-keyword": "Each time",
     "whenImp-keyword": "As soon as",
     "while-keyword": "While"
   },
@@ -683,8 +683,8 @@
       "actionActivate": "Start a __myVar__",
       "actionDisactivate": "Stop a __myVar__",
       "actionDisactivate-self": "Stop myself",
-      "eventStart": "A __myVar__ is being started",
-      "eventStop": "A __myVar__ is being stopped",
+      "eventStart": "A __myVar__ is started",
+      "eventStop": "A __myVar__ is stopped",
       "stateStarted": "A __myVar__ is started",
       "stateStarted-keep": "A __myVar__ started",
       "stateStopped": "A __myVar__ is stopped",
@@ -695,8 +695,8 @@
       "actionActivate": "Start __myVar__",
       "actionDisactivate": "Stop __myVar__",
       "actionDisactivate-self": "Stop myself",
-      "eventStart": "__myVar__ is being started",
-      "eventStop": "__myVar__ is being stopped",
+      "eventStart": "__myVar__ is started",
+      "eventStop": "__myVar__ is stopped",
       "stateStarted": "__myVar__ is started",
       "stateStarted-keep": "__myVar__ started",
       "stateStopped": "__myVar__ is stopped",
@@ -705,7 +705,7 @@
     "program-no-name": "Program with no name",
     "state": {
       "deployed": "Program activable",
-      "invalid": "Program invalide",
+      "invalid": "Program invalid",
       "incomplete": "Program partially activable",
       "limping": "Program partially activated",
       "processing": "Program activated"
@@ -744,7 +744,7 @@
     "mail": {
       "keyboard": {
         "sendMail": "Send a mail",
-        "mailSent": "a mail has been sent"
+        "mailSent": "mail is sent"
       },
       "language": {
         "body": "Content",
@@ -823,10 +823,10 @@
         "typical-code-2": "average temperature",
         "weather-code-0": "sunny",
         "weather-code-1": "cloudy",
-        "weather-code-2": "rain",
-        "weather-code-3": "snow",
-        "weather-code-4": "storm",
-        "weather-code-5": "fog",
+        "weather-code-2": "rainy",
+        "weather-code-3": "snowy",
+        "weather-code-4": "stormy",
+        "weather-code-5": "foggy",
         "weather-code-6": "other",
         "weather-code-7": "unusual weather",
         "weather-code-verb": "forecast",
