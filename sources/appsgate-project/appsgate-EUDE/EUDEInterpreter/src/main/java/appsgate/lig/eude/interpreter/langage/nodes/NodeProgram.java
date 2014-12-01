@@ -680,7 +680,7 @@ final public class NodeProgram extends Node {
      * method to handle a change in the reference table status
      */
     private void changeStatus() {
-        applyStatus(references.getStatus());
+        applyStatus(references.computeStatus());
     }
 
     /**

@@ -208,7 +208,7 @@ public class ReferenceTable {
      *
      * @return
      */
-    private STATUS computeStatus() {
+    public STATUS computeStatus() {
         this.state = STATUS.OK;
         if (programs.size() + devices.size() + nodes.size() == 0) {
             LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
