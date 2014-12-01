@@ -17,7 +17,7 @@ define([
         appRouter.showMenuView(new PlaceMenuView());
 
         // update the url
-        appRouter.navigate("#places/" + places.at(0).get("id"));
+        appRouter.navigate("#places/" + places.at(0).get("id"), {replace:true});
 
         $(".nav-item").removeClass("active");
         $("#places-nav").addClass("active");
@@ -40,8 +40,8 @@ define([
 			  // update tab
 			  $(".nav-item").removeClass("active");
 			  $("#places-nav").addClass("active");
-		  }	
-		  
+		  }
+
         appRouter.showDetailsView(new PlaceDetailsView({model: places.get(id)}));
       }
     });

@@ -150,6 +150,7 @@ define(function(require, exports, module) {
       // remove and unbind the current view
       if (this.currentView) {
         this.currentView.close();
+        this.currentView = null;
       }
 
       // update the content

@@ -8,11 +8,12 @@ define([
 	// router
 	DependancyRouter = Backbone.Router.extend({
 		routes: {
-			"dependancy": "all",
-			"dependancy/id": "selected"
+			"dependancies": "all",
+      "dependancies/all": "all"
+			//"dependancies/:id": "selected"
 		},
 		// No selected entity
-		all: function (id) {
+		all: function () {
 
 			// remove and unbind the current view for the menu
 			if (appRouter.currentMenuView) {
@@ -44,7 +45,7 @@ define([
 				direction: 'top-right'
 			});
 
-			appRouter.navigate("#dependancies/all");
+			appRouter.navigate("#dependancies/all", {replace:true});
 
 			$(".nav-item").removeClass("active");
 			$("#dependancies-nav").addClass("active");

@@ -26,7 +26,7 @@ define([
               this.reader(programs.at(0).get("id"));
             }
 
-            dispatcher.trigger("router:loaded");
+            dispatcher.trigger("router:loaded", {replace:true});
         },
         reader: function(id) {
 			// Direct access to a program, need to add the menu
@@ -62,7 +62,7 @@ define([
             $(".nav-item").removeClass("active");
             $("#programs-nav").addClass("active");
 
-            appRouter.navigate("#programs/editor/" + id);
+            appRouter.navigate("#programs/editor/" + id, {replace:true});
 
             appRouter.currentView = new ProgramEditorView({el:$("#main"),model: programs.get(id)});
             appRouter.currentView.render();

@@ -24,7 +24,7 @@ define([
 
             $("#main").html(appRouter.navbartemplate());
 
-            appRouter.navigate("#debugger/all");
+            appRouter.navigate("#debugger/all", {replace:true});
             $(".nav-item").removeClass("active");
             $("#home-nav").addClass("active");
 
