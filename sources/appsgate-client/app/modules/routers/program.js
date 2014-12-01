@@ -36,12 +36,7 @@ define([
 				// update tab
 				$(".nav-item").removeClass("active");
 				$("#programs-nav").addClass("active");
-			}	
-
-            // in the case the program isn't found in the side-menu, re-render it
-            if($(".aside-menu #side-" + id).length == 0){
-              this.list();
-            }
+			}
 
             // display the requested program
             appRouter.showDetailsView(new ProgramReaderView({model: programs.get(id)}));
@@ -55,9 +50,11 @@ define([
             // remove and unbind the current view for the menu
             if (appRouter.currentMenuView) {
                 appRouter.currentMenuView.close();
+                appRouter.currentMenuView = null;
             }
             if (appRouter.currentView) {
                 appRouter.currentView.close();
+                appRouter.currentView = null;
             }
 
             $("#main").html(appRouter.navbartemplate());

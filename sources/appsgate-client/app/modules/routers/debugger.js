@@ -15,9 +15,11 @@ define([
             // remove and unbind the current view for the menu
             if (appRouter.currentMenuView) {
                 appRouter.currentMenuView.close();
+                appRouter.currentMenuView = null;
             }
             if (appRouter.currentView) {
                 appRouter.currentView.close();
+                appRouter.currentView = null;
             }
 
             $("#main").html(appRouter.navbartemplate());
