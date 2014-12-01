@@ -24,7 +24,7 @@ define([
       list: function() {
         // display the side menu
         appRouter.showMenuView(new ServiceMenuView());
-        
+
         $(".nav-item").removeClass("active");
         $("#services-nav").addClass("active");
 
@@ -37,7 +37,7 @@ define([
           appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
 
           // update the url
-          appRouter.navigate("#services/types/" + typeId);
+          appRouter.navigate("#services/types/" + typeId, {replace:true});
         }
 
         dispatcher.trigger("router:loaded");
@@ -48,14 +48,14 @@ define([
       * @param typeId id of the service category to show
       */
       serviceByType: function(typeId) {
-		  
+
 	  	// Direct access device, need to add the menu
 	  	if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined || appRouter.currentMenuView.attributes.class !== "ServiceMenuView") {
 			  // display the side menu
 			  appRouter.showMenuView(new ServiceMenuView());
 			  appRouter.currentMenuView.updateSideMenu();
-	  	}	
-		  
+	  	}
+
         appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
 
         $(".nav-item").removeClass("active");
@@ -76,8 +76,8 @@ define([
 			  // update tab
 			  $(".nav-item").removeClass("active");
 			  $("#services-nav").addClass("active");
-	  	}	
-		  
+	  	}
+
         appRouter.showDetailsView(new ServiceDetailsView({model: services.get(id)}));
       }
     });
