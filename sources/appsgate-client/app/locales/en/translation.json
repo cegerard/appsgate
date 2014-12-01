@@ -339,12 +339,13 @@
         "notify": "Notify a message on TV"
       },
       "language": {
-        "channelup": "TV, next channel",
-        "channeldown": "TV, previous channel",
-        "resume": "Resume TV",
-        "pause": "Pause TV",
-        "stop": "Stop TV",
-        "notify": "Notify a message on TV"
+        "channelup": "next channel on __myVar__",
+        "channeldown": "previous channel on __myVar__",
+        "resume": "Resume __myVar__",
+        "pause": "Pause __myVar__",
+        "stop": "Stop __myVar__",
+        "notify": "Notify message",
+        "ontv": "on __myVar__"
       },
       "name": {
         "plural": "TVs",
