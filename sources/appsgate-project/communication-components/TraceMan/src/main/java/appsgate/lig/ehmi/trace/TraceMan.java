@@ -488,8 +488,10 @@ public class TraceMan implements TraceManSpec {
     	    				groupFollower.put(type, new GroupTuple(order, objs));
     	    			}else{
     	    				JSONArray objs = groupFollower.get(type).getMembers();
+    	    				if(trace.has("id")) {
     	    				if(!objs.toString().contains(trace.getString("id"))){
     	    					objs.put(trace.get("id"));
+    	    				}
     	    				}
     	    			}
     	    		}
