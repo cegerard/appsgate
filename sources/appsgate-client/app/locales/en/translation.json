@@ -8,7 +8,11 @@
     "all": "All",
     "times": "times",
     "yes": "YES",
-    "no": "NO"
+    "no": "NO",
+    "toolbar": {
+      "history": "History",
+      "live": "Live"
+    }
   },
   "dependancy": {
         "refresh-data" : "Refresh data",
@@ -35,13 +39,12 @@
 				"selector": "Selectors"
 			},
 			"relation": {
-				"reference": "Reference", 
-				"isLocatedIn": "Location", 
-				"isPlanified": "Planning", 
+				"reference": "Reference",
+				"isLocatedIn": "Location",
+				"isPlanified": "Planning",
 				"denotes": "Denotation"
 			}
 		}
-
   },
   "devices": {
     "no-value": "---",
@@ -729,7 +732,8 @@
     "warning-program-edition": "Warning, editing a program will deactivate it",
     "warning-program-delete": "Do you really want to delete this program ?",
     "scheduled-event": "Appsgate program ",
-    "simulated-time": "Simulated-time"
+    "simulated-time": "Simulated-time",
+    "inactive-node": "This instruction won't be executed."
   },
   "programs-menu": {
     "add-button": "Add Program",

@@ -39,9 +39,9 @@
 				"selector": "Sélecteurs"
 			},
 			"relation": {
-				"reference": "Référence", 
-				"isLocatedIn": "Localisation", 
-				"isPlanified": "Planification", 
+				"reference": "Référence",
+				"isLocatedIn": "Localisation",
+				"isPlanified": "Planification",
 				"denotes": "Sélection"
 			}
 		}
@@ -732,7 +732,8 @@
     "warning-program-edition": "Attention, éditer le programme le désactivera",
     "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
     "scheduled-event": "Programme Appsgate ",
-    "simulated-time": "Heure simulée"
+    "simulated-time": "Heure simulée",
+    "inactive-node": "Cette instruction ne sera pas exécutée."
   },
   "programs-menu": {
     "add-button": "Ajouter programme",
