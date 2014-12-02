@@ -174,7 +174,6 @@ define([
 			var nEnter = nodeEntity.enter().append("svg:g")
 				.attr("class", "nodeGroup")
 				.call(force.drag)
-				//                .on("click", this.click.bind(this))
 				.on("dblclick", this.dblclick.bind(this))
 				.on("mouseover", function (d) {
 					nodeEntity.classed("nodeOver", function (d2) {
@@ -317,7 +316,6 @@ define([
 						.attr("class", "linklabel linklabelholder hidden")
 						.style("font-size", "13px")
 						.attr("x", "90")
-						.attr("y", "-10")
 						.attr("text-anchor", "middle")
 						.append("textPath")
 						.attr("xlink:href", function (d) {
@@ -520,28 +518,6 @@ define([
 			}
 		},
 
-		click: function (d) {
-			// Stop the force to control manually the actions
-			//            force.stop();
-			if (d !== this.model.get("rootNode")) {
-				d.fixed = !d.fixed;
-			}
-
-			//            console.log("binding move");
-			//            this.on("mousemove", function () {
-			//                console.log("MOVE");
-			//                d.fixed = true;
-			//                this.onmouseup(function () {
-			//                    this.off("mousemove");
-			//                });
-			//            });
-			if (force.alpha() === 0) {
-				force.start();
-			}
-			// The nodeRoot has been moved, we can restart the force
-			force.start();
-		},
-
 		dblclick: function (d) {
 			// Stop the force to control manually the actions
 			force.stop();
@@ -710,7 +686,7 @@ define([
 		else {
 			// disable zoom
 			//		svg.call(d3.behavior.zoom().on("zoom", null));
-			
+
 			// Fix node management
 			d.hasBeenMoved = false;
 			d3.select(this).on("mousemove", function () {
