@@ -25,6 +25,13 @@
 			"incomplete-program": "Incomplete",
 			"invalid-program": "Invalid"
 		},
+	  	"help" : {
+			"title": "Help",
+			"click": "Click : Unfix a previously fixed entity",
+			"click-move": "Click + Move : Move an entity and fix it",
+			"double-click": "Double Click : Focus / Unfocus an entity",
+			"maj-click": "Shift + Click : Go to the entity's detailed page"
+		},
 	  	"type": {
 			"entity": {
 				"place": "$t(navbar.places)",

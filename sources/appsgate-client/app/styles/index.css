@@ -1021,3 +1021,7 @@ fieldset[disabled] .btn {
 	stroke: black;
 	fill: white
 }
+
+.help-div {
+	font-style : italic;
+}
