@@ -346,6 +346,9 @@ define([
           }
           $(".secondary-block-node").remove();
 
+          // adding tooltips and changing style for the inactive nodes after a self-stop
+          $(".programInput").find(".btn-prog-stopself").parent().nextAll(".btn-current").children(".btn-prog:not(.btn-trash)").attr("title",$.i18n.t("programs.inactive-node")).addClass("inactive-node");
+
           if(typeof self.model !== "undefined"){
             $("#led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
             $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.'+self.model.getState()));

@@ -168,8 +168,8 @@ define(function(require, exports, module) {
       this.locale = locale;
 
       $.i18n.init({ lng : this.locale }).done(function() {
-        if(typeof self.currentMenuView !== "undefined") self.currentMenuView.render();
-        if(typeof self.currentView !== "undefined") self.currentView.render();
+        if(typeof self.currentMenuView !== "undefined" && self.currentMenuView !== null) self.currentMenuView.render();
+        if(typeof self.currentView !== "undefined" && self.currentView !== null) self.currentView.render();
 
         $(document).i18n();
       });

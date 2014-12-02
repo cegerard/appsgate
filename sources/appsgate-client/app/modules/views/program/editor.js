@@ -463,6 +463,10 @@ define([
             $(".input-spot:not(.mandatory-spot:first)").addClass("disabled");
         }
 
+        // adding tooltips and changing style for the inactive nodes after a self-stop
+        $(".programInput").find(".btn-prog-stopself").parent().nextAll(".btn-current").children(".btn-prog:not(.btn-trash)").attr("title",$.i18n.t("programs.inactive-node")).addClass("inactive-node");
+        $(".programInput").find(".btn-prog-stopself").parent().nextAll(".input-spot").attr("title",$.i18n.t("programs.inactive-node")).addClass("inactive-node");
+
       },
       /**
       * Render the editor view
