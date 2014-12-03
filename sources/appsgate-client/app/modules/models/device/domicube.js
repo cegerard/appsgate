@@ -28,8 +28,7 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["getNewFace"];
-//      return ["Music", "Meal", "Question", "Lan", "Night", "inactivate", "activate", "east", "west", "change"];
+      return ["getNewFace", "leaveFace", "change"];
     },
     /**
      * return the keyboard code for a given event
@@ -48,61 +47,30 @@ define([
       };
       switch (evt) {
         case "getNewFace":
-          $(btn).append("<span data-i18n='devices.domicube.keyboard.newFace'></span>");
+          $(btn).append("<span>" + $.i18n.t('devices.domicube.keyboard.newFace', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.domicube.keyboard.oneface') + "</span>",
+          }));
           v.eventName = "newFace";
           v.param = {"type": "param", "iid": "X", "deviceType": this.get("type"), "param" : "event", "mandatory" : true};
           v.phrase = "devices.domicube.language.newFace";
           
           $(btn).attr("json", JSON.stringify(v));
           break;
-        case "Music":
-          $(btn).append("<img src='app/img/domicube-music.png' width='36px'>");
-          v.eventName = "newFace";
-          v.eventValue = "3";
-          v.icon = "app/img/domicube-music.png";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Meal":
-          $(btn).append("<img src='app/img/domicube-meal.png' width='36px'>");
-          v.eventName = "newFace";
-          v.eventValue = "6";
-          v.icon = "app/img/domicube-meal.png";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Question":
-          $(btn).append("<img src='app/img/domicube-question.svg' width='36px'>");
-          v.eventName = "newFace";
-          v.eventValue = "4";
-          v.icon = "app/img/domicube-question.svg";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Lan":
-          $(btn).append("<img src='app/img/domicube-work.svg' width='36px'>");
-          v.eventName = "newFace";
-          v.eventValue = "1";
-          v.icon = "app/img/domicube-work.svg";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Night":
-          $(btn).append("<img src='app/img/domicube-night.png' width='36px'>");
-          v.eventName = "newFace";
-          v.eventValue = "5";
-          v.icon = "app/img/domicube-night.png";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "inactivate":
-          $(btn).append("<span data-i18n='devices.domicube.keyboard.inactivated'></span>");
-          v.eventName = "newFace";
-          v.eventValue = "2";
-          //v.icon = "app/img/domicube-music.png";
-          v.phrase = "devices.domicube.language.inactivated";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "activate":
-          $(btn).append("<span data-i18n='devices.domicube.keyboard.activated'></span>");
+        case "leaveFace":
+          $(btn).append("<span>" + $.i18n.t('devices.domicube.keyboard.leaveFace', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.domicube.keyboard.oneface') + "</span>",
+          }));
           v.eventName = "leaveFace";
-          v.eventValue = "2";
-          v.phrase = "devices.domicube.language.activated";
+          v.param = {"type": "param", "iid": "X", "deviceType": this.get("type"), "param" : "event", "mandatory" : true};
+          v.phrase = "devices.domicube.language.leaveFace";
+          
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        case "change":
+          $(btn).append("<span data-i18n='devices.domicube.keyboard.change'></span>");
+          v.eventName = "leaveFace";
+          v.eventValue = "*";
+          v.phrase = "devices.domicube.language.change";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "west":
@@ -121,13 +89,6 @@ define([
           v.eventValue = "east";
           //v.phrase = "devices.domicube.language.east";
           v.icon = "app/img/cube-turn-right.png";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "change":
-          $(btn).append("<span data-i18n='devices.domicube.keyboard.leaveFace'></span>");
-          v.eventName = "leaveFace";
-          v.eventValue = "*";
-          v.phrase = "devices.domicube.language.leaveFace";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
@@ -161,53 +122,20 @@ define([
       }
       var v = this.getJSONState("mandatory");
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+
       v.object.type = "device";
       v.object.deviceType = "210";
       v.object.value = this.get("id");
       
       switch (state) {
         case "face":
-          $(btn).append("<span data-i18n='devices.domicube.keyboard.face'></span>");
+          $(btn).append("<span>" + $.i18n.t('devices.domicube.keyboard.face', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.domicube.keyboard.oneface') + "</span>",
+          }));
           v.eventName = "newFace";
           v.param = {"type": "param", "iid": "X", "deviceType": this.get("type"), "param" : "state", "mandatory" : true};
           v.phrase = "devices.domicube.language.face";
           
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Music":
-          $(btn).append("<img src='app/img/domicube-music.png' width='36px'>");
-          v.icon = "app/img/domicube-music.png";
-          v.name = "Music";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Meal":
-          $(btn).append("<img src='app/img/domicube-meal.png' width='36px'>");
-          v.icon = "app/img/domicube-meal.png";
-          v.name = "Meal";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Question":
-          $(btn).append("<img src='app/img/domicube-question.svg' width='36px'>");
-          v.icon = "app/img/domicube-question.svg";
-          v.name = "Question";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Lan":
-          $(btn).append("<img src='app/img/domicube-work.svg' width='36px'>");
-          v.icon = "app/img/domicube-work.svg";
-          v.name = "Lan";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "Night":
-          $(btn).append("<img src='app/img/domicube-night.png' width='36px'>");
-          v.icon = "app/img/domicube-night.png";
-          v.name = "Night";
-          $(btn).attr("json", JSON.stringify(v));
-          break;
-        case "inactivate":
-          $(btn).append("<span data-i18n='devices.domicube.keyboard.inactivated'></span>");
-          v.name = "inactivate";
-          v.phrase = "devices.domicube.language.inactivated";
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:
@@ -228,6 +156,7 @@ define([
       
       var v = { 'type' : 'param', 'deviceType' : this.get("type"), "iid" : "X"};
       var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      v.name=which;
       switch (which) {
         case "Music":
           v.value = "3";
@@ -253,8 +182,8 @@ define([
           console.error("unexpected state found for Domicube: " + state);
           return null;
       }
-          $(btn).append("<img src='" + v.icon + "' width='36px'>");
-          $(btn).attr("json", JSON.stringify(v));
+      $(btn).append("<img src='" + v.icon + "' width='36px'>");
+      $(btn).attr("json", JSON.stringify(v));
       return btn;
     },
     
