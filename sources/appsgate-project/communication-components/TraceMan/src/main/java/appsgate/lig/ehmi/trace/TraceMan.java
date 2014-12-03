@@ -483,9 +483,11 @@ public class TraceMan implements TraceManSpec {
     	    				order = 2; //Device order
     	    			}        			
     	    			if(!groupFollower.containsKey(type)){
-    	    				JSONArray objs = new JSONArray();
-    	    				objs.put(trace.get("id"));
-    	    				groupFollower.put(type, new GroupTuple(order, objs));
+    	    				if(trace.has("id")) {
+    	    					JSONArray objs = new JSONArray();
+    	    					objs.put(trace.get("id"));
+    	    					groupFollower.put(type, new GroupTuple(order, objs));
+    	    				}
     	    			}else{
     	    				JSONArray objs = groupFollower.get(type).getMembers();
     	    				if(trace.has("id")) {
@@ -504,7 +506,7 @@ public class TraceMan implements TraceManSpec {
         	    	
         	    	for(JSONObject trace : innerTraces){
         	    		JSONArray objs = groupFollower.get("all").getMembers();
-        	    		if(!objs.toString().contains(trace.getString("id"))){
+        	    		if(trace.has("id") && !objs.toString().contains(trace.getString("id"))){
         	    			objs.put(trace.get("id"));
         	    		}
         	    	}
@@ -527,7 +529,7 @@ public class TraceMan implements TraceManSpec {
             	    	for(JSONObject trace : innerTraces){
             	    		JSONArray objs = null;
             	    		
-            	    		if(!trace.getString("id").equalsIgnoreCase(focus)){//Not a trace from the focused id
+            	    		if(trace.has("id")&&!trace.getString("id").equalsIgnoreCase(focus)){//Not a trace from the focused id
             	    			if(trace.toString().contains(focus)) { //dep
             	    				objs = groupFollower.get("dependencies").getMembers();
             	    				//Remove dependency id from others array
@@ -535,21 +537,21 @@ public class TraceMan implements TraceManSpec {
             	    				
             	    				for(int j=0; j<groupFollower.get("others").getMembers().length(); j++){
             	    					String id = groupFollower.get("others").getMembers().getString(j);
-            	    					if(!id.equalsIgnoreCase(trace.getString("id")))
+            	    					if(trace.has("id")&& !id.equalsIgnoreCase(trace.getString("id")))
             	    						others.put(id);
             	    				}
             	    				
             	    				groupFollower.get("others").setMembers(others);
             	    				
             	    			} else { //others
-            	    				if(!groupFollower.get("dependencies").toString().contains(trace.getString("id"))) 
+            	    				if(trace.has("id") && !groupFollower.get("dependencies").toString().contains(trace.getString("id"))) 
             	    					objs = groupFollower.get("others").getMembers();
             	    				else{
             	    					objs = groupFollower.get("dependencies").getMembers();
             	    				}
             	    			}
             	    			
-            	    			if(!objs.toString().contains(trace.getString("id"))){ //Check if the id is already in the array
+            	    			if(trace.has("id")&& !objs.toString().contains(trace.getString("id"))){ //Check if the id is already in the array
                 	    			objs.put(trace.get("id"));
                 	    		}
             	    		}
@@ -563,7 +565,7 @@ public class TraceMan implements TraceManSpec {
             	    	ArrayList<JSONObject> innerTraces = mergeInnerTraces(superTrace);
             	    	
             	    	for(JSONObject trace : innerTraces){
-            	    		if(!trace.getString("id").equalsIgnoreCase(focus) && !objs.toString().contains(trace.getString("id"))){
+            	    		if(trace.has("id")&&!trace.getString("id").equalsIgnoreCase(focus) && !objs.toString().contains(trace.getString("id"))){
             	    			objs.put(trace.get("id"));
             	    		}
             	    	}
@@ -584,7 +586,7 @@ public class TraceMan implements TraceManSpec {
         	    		if(trace.has("location")){ //Equipment
         	    			JSONObject loc = trace.getJSONObject("location");
         	    			
-        	    			if(loc.getString("id").equalsIgnoreCase("-1")){
+        	    			if(loc.has("id")&& loc.getString("id").equalsIgnoreCase("-1")){
         	    				if(!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
         	    					objs = groupFollower.get("others").getMembers();
         	    				else
@@ -596,12 +598,12 @@ public class TraceMan implements TraceManSpec {
             	    				JSONArray others = new JSONArray();
             	    				for(int j=0; j<groupFollower.get("others").getMembers().length(); j++){
             	    					String id = groupFollower.get("others").getMembers().getString(j);
-            	    					if(!id.equalsIgnoreCase(trace.getString("id")))
+            	    					if(trace.has("id")&&!id.equalsIgnoreCase(trace.getString("id")))
             	    						others.put(id);
             	    				}
             	    				groupFollower.get("others").setMembers(others);
         	    				}else{
-        	    					if(!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
+        	    					if(trace.has("id")&&!groupFollower.get(focus).toString().contains(trace.getString("id"))) 
             	    					objs = groupFollower.get("others").getMembers();
             	    				else
             	    					objs = groupFollower.get("focus").getMembers();
@@ -611,7 +613,7 @@ public class TraceMan implements TraceManSpec {
         	    			objs = groupFollower.get("others").getMembers();
         	    		}
         	    		
-        	    		if(!objs.toString().contains(trace.getString("id"))){
+        	    		if(trace.has("id")&&!objs.toString().contains(trace.getString("id"))){
         	    			objs.put(trace.get("id"));
         	    		}
         	    	}
@@ -639,7 +641,7 @@ public class TraceMan implements TraceManSpec {
         	    			objs = groupFollower.get("others").getMembers();
         	    		}
             			
-        	    		if(!objs.toString().contains(trace.getString("id"))){
+        	    		if(trace.has("id")&&!objs.toString().contains(trace.getString("id"))){
         	    			objs.put(trace.get("id"));
         	    		}
         	    	}

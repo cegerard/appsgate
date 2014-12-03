@@ -147,7 +147,7 @@ public class TraceExecutor implements Runnable {
 					// Merge the device trace
 					JSONObject tempDev = tempDevices.getJSONObject(x);
 					// tempDev.put("timestamp", tempObj.get("timestamp"));
-					String id = tempDev.getString("id");
+					String id = tempDev.optString("id");
 
 					if (!devicesToAgg.containsKey(id)) { // No aggregation for
 															// now
@@ -186,7 +186,7 @@ public class TraceExecutor implements Runnable {
 					// Merge program traces
 					JSONObject tempPgm = tempPgms.getJSONObject(y);
 					// tempPgm.put("timestamp", tempObj.get("timestamp"));
-					String id = tempPgm.getString("id");
+					String id = tempPgm.optString("id");
 
 					if (!programsToAgg.containsKey(id)) {// No aggregation for
 															// now
