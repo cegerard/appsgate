@@ -1,0 +1,26 @@
+<div id="progress-<%= node.iid %>" class="progress-indicator-group pull-left">
+  <table>
+    <tr>
+      <td>
+        <i class="glyphicon glyphicon-flash pull-left"></i>
+      </td>
+      <td>
+        <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
+
+    <% if (typeof node.phrase !== 'undefined') {%>
+        <%=$.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+    <%} else { %>
+        Uknown
+    <% } %>
+
+    <% if (node.methodName == "notify" ) { %>
+        <input type="text" target-id="<%= node.iid %>" value="<%= node.args[2].value %>" size="40" class="arg-input" target-index="2"/>
+        <%=$.i18n.t('devices.tv.language.ontv', {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+    <% } %>
+
+</div>
