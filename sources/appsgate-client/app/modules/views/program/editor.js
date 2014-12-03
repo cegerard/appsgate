@@ -41,7 +41,7 @@ define([
         this.oldState = this.model.get("runningState");
         console.log(this.oldState);
         this.refreshing = false;
-        
+
 
         this.listenTo(this.model, "change", this.refreshDisplay);
         this.listenTo(devices, "remove", this.refreshDisplay);
@@ -131,7 +131,6 @@ define([
           this.model.set("runningState", "INVALID");
         }
         this.model.save();
-        appRouter.navigate("#programs", {trigger: true});
         appRouter.navigate("#programs/" + this.model.get("id"), {trigger: true});
       },
       onClickCancelEdit: function(e) {
@@ -350,7 +349,7 @@ define([
 
         // // clearing selection
         // this.resetSelection();
-      },      
+      },
       onChangeComparatorNode: function(e) {
         e.stopPropagation();
         var iid = $(e.currentTarget).attr("target-id");
@@ -463,6 +462,10 @@ define([
         if($(".programInput").find(".mandatory-spot").length > 0){
             $(".input-spot:not(.mandatory-spot:first)").addClass("disabled");
         }
+
+        // adding tooltips and changing style for the inactive nodes after a self-stop
+        $(".programInput").find(".btn-prog-stopself").parent().nextAll(".btn-current").children(".btn-prog:not(.btn-trash)").attr("title",$.i18n.t("programs.inactive-node")).addClass("inactive-node");
+        $(".programInput").find(".btn-prog-stopself").parent().nextAll(".input-spot").attr("title",$.i18n.t("programs.inactive-node")).addClass("inactive-node");
 
       },
       /**

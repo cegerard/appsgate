@@ -45,7 +45,7 @@ define([
           if (id) {
             var typeId = $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).attr("id").split("side-")[1];
             // update the url
-            appRouter.navigate("#devices/types/" + typeId);
+            appRouter.navigate("#devices/types/" + typeId, {replace:true});
             $(".nav-item").removeClass("active");
             $("#devices-nav").addClass("active");
 
@@ -77,8 +77,8 @@ define([
 			  // update tab
 			  $(".nav-item").removeClass("active");
 			  $("#devices-nav").addClass("active");
-		  }	
-				
+		  }
+
           var device = devices.get(id);
           switch (device.get("type")) {
             case 0: // temperature sensor

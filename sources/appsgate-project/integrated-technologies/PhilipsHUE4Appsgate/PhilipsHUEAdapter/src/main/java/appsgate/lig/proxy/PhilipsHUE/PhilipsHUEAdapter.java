@@ -607,6 +607,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
     public void startPushLinkAuthentication(String bridgeIP) {
         //PHAccessPoint ap = bridgeFinder.getUnauthorizedAccessPoint(bridgeIP);
         //phHueSDK.startPushlinkAuthentication(ap);
+		DisplayIHMMessage("devices.lamp.status.pairingRequired");
     }
 	
 	/**
@@ -640,12 +641,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
                 content.put("text", "you must to push the link button !");
                 resp.put("hueToastAlert", content);
                 getCommunicationService().send(resp.toString());
-
-				JSONObject ihmi = new JSONObject();
-				ihmi.put("callId","system");
-				ihmi.put("message","devices.lamp.status.pairingRequired");
-				getCommunicationService().send(ihmi.toString());
-
+				DisplayIHMMessage("devices.lamp.status.pairingRequired");
 
             } else if (code == PHMessageType.PUSHLINK_AUTHENTICATION_FAILED) {
                 logger.error("BRIDGE AUTHENTICATION FAILED");
@@ -655,13 +651,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
                 content.put("text", "BRIDGE AUTHENTICATION FAILED");
                 resp.put("hueToastAlert", content);
                 getCommunicationService().send(resp.toString());
-
-				JSONObject ihmi = new JSONObject();
-				ihmi.put("callId","system");
-				ihmi.put("message","devices.lamp.status.pairingRequired");
-				getCommunicationService().send(ihmi.toString());
-
-            }
+				DisplayIHMMessage("devices.lamp.status.pairingRequired");
+			}
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -696,6 +687,19 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
         }
 
     }
+
+	private void DisplayIHMMessage(String message){
+
+		try {
+			JSONObject ihmi = new JSONObject();
+			ihmi.put("callId","system");
+			ihmi.put("message",message);
+			getCommunicationService().send(ihmi.toString());
+		} catch (JSONException e) {
+			logger.error("Failed to display message in the IHM");
+		}
+
+	}
 
 	private class NewLightListener extends PHLightListener {
 

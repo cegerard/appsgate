@@ -117,22 +117,22 @@ body {
   background: #ffff00;
 }
 .led-processing {
-	width: 0; 
-	height: 0; 
+	width: 0;
+	height: 0;
 	border-top: 12px solid transparent;
 	border-bottom: 12px solid transparent;
-	
+
 	border-left: 17px solid #26d43b;
 	margin-right: 10px;
 	margin-left: 8px;
 }
 .led-limping {
-  	width: 0; 
-	height: 0; 
+  	width: 0;
+	height: 0;
 	border-top: 12px solid transparent;
 	border-bottom: 12px solid transparent;
-	
-	border-left: 17px solid #999999;
+
+	border-left: 17px solid orange;
 	margin-right: 10px;
 	margin-left: 8px;
 }
@@ -763,7 +763,35 @@ fieldset[disabled] .btn {
 }
 @-keyframes blinking {
   from {
+    border: 4px solid red;
+  }
+  to {
+    border: 4px solid transparent;
+  }
+}
+.inactive-node {
+  border: 4px solid red !important;
+}
+.read-only .inactive-node,
+.read-only .inactive-node .btn-prog,
+.read-only .inactive-node .btn-prog:hover{
+  color: red !important;
+}
+.inactive-node.selected-node {
+  -webkit-animation: redblinking 0.5s infinite alternate cubic-bezier(1, 0, 0, 1) ;
+  animation: redblinking 0.5s infinite alternate cubic-bezier(1, 0, 0, 1);
+}
+@-keyframes redblinking {
+  from {
     border: 4px solid black;
+  }
+  to {
+    border: 4px solid transparent;
+  }
+}
+@-webkit-keyframes redblinking {
+  from {
+    border: 4px solid red;
   }
   to {
     border: 4px solid transparent;

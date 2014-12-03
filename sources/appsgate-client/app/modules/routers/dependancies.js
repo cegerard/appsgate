@@ -8,18 +8,21 @@ define([
 	// router
 	DependancyRouter = Backbone.Router.extend({
 		routes: {
-			"dependancy": "all",
-			"dependancy/id": "selected"
+			"dependancies": "all",
+      "dependancies/all": "all"
+			//"dependancies/:id": "selected"
 		},
 		// No selected entity
-		all: function (id) {
+		all: function () {
 
 			// remove and unbind the current view for the menu
 			if (appRouter.currentMenuView) {
 				appRouter.currentMenuView.close();
+        appRouter.currentMenuView = null;
 			}
 			if (appRouter.currentView) {
 				appRouter.currentView.close();
+        appRouter.currentView = null;
 			}
 
 			$("#main").html(appRouter.navbartemplate());
@@ -42,7 +45,7 @@ define([
 				direction: 'top-right'
 			});
 
-			appRouter.navigate("#dependancies/all");
+			appRouter.navigate("#dependancies/all", {replace:true});
 
 			$(".nav-item").removeClass("active");
 			$("#dependancies-nav").addClass("active");
@@ -54,10 +57,10 @@ define([
 				appRouter.showMenuView(new DependancyMenuView({
 					model: dependancies.at(0)
 				}));
-				
+
 				$(".nav-item").removeClass("active");
 				$("#dependancies-nav").addClass("active");
-				
+
 				appRouter.showDetailsView(new GraphView({
 					//                    el: $("#main"),
 					model: dependancies.at(0)
@@ -66,9 +69,9 @@ define([
 		},
 		// One entity selected
 		//        selected: function (id) {
-		//            
+		//
 		//            console.log("SELECTED id : " + id);
-		//            
+		//
 		//            // remove and unbind the current view for the menu
 		//            if (appRouter.currentMenuView) {
 		//                appRouter.currentMenuView.close();

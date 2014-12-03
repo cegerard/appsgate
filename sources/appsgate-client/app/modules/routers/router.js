@@ -113,6 +113,7 @@ define(function(require, exports, module) {
       // remove and unbind the current view for the menu
       if (this.currentMenuView) {
         this.currentMenuView.close();
+        this.currentMenuView = null;
       }
 
       $("#main").html(this.navbartemplate());
@@ -137,6 +138,7 @@ define(function(require, exports, module) {
       // remove and unbind the current view
       if (this.currentView) {
         this.currentView.close();
+        this.currentView = null;
       }
 
       // update the content
@@ -148,6 +150,7 @@ define(function(require, exports, module) {
       // remove and unbind the current view
       if (this.currentView) {
         this.currentView.close();
+        this.currentView = null;
       }
 
       // update the content
@@ -165,8 +168,8 @@ define(function(require, exports, module) {
       this.locale = locale;
 
       $.i18n.init({ lng : this.locale }).done(function() {
-        if(typeof self.currentMenuView !== "undefined") self.currentMenuView.render();
-        if(typeof self.currentView !== "undefined") self.currentView.render();
+        if(typeof self.currentMenuView !== "undefined" && self.currentMenuView !== null) self.currentMenuView.render();
+        if(typeof self.currentView !== "undefined" && self.currentView !== null) self.currentView.render();
 
         $(document).i18n();
       });

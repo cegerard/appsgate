@@ -115,8 +115,8 @@ final public class NodeProgram extends Node {
     private JSONObject nodesCounter;
 
     /**
-     * The current running state of this program - DEPLOYED - INVALID -
-     * PROCESSING - WAITING
+     * The current running state of this program - DEPLOYED - INVALID - INCOMPLETE
+     * LIMPING - PROCESSING
      */
     private PROGRAM_STATE state = PROGRAM_STATE.DEPLOYED;
 
@@ -328,7 +328,7 @@ final public class NodeProgram extends Node {
                 break;
             case LIMPING:
                 LOGGER.debug("Stopping {} (incomplete)", this);
-                setState(PROGRAM_STATE.DEPLOYED, null);
+                setState(PROGRAM_STATE.INCOMPLETE, null);
                 break;
             default:
                 throw new AssertionError(state.name());
@@ -680,7 +680,7 @@ final public class NodeProgram extends Node {
      * method to handle a change in the reference table status
      */
     private void changeStatus() {
-        applyStatus(references.getStatus());
+        applyStatus(references.computeStatus());
     }
 
     /**
