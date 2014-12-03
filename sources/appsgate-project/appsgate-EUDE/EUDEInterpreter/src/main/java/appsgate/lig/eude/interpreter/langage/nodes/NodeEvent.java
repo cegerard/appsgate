@@ -78,7 +78,12 @@ public class NodeEvent extends Node implements INodeEvent {
         super(parent, eventJSON);
         source = getDevice(eventJSON, "source");
         eventName = getJSONString(eventJSON, "eventName");
-        eventValue = getJSONString(eventJSON, "eventValue");
+        if (eventJSON.has("eventValue") ) {
+            eventValue = getJSONString(eventJSON, "eventValue");
+        } else {
+            JSONObject optJSONObject = getJSONObject(eventJSON, "param");
+            eventValue = getJSONString(optJSONObject, "value");
+        }
 
     }
 
@@ -146,12 +151,12 @@ public class NodeEvent extends Node implements INodeEvent {
     /**
      * Once the event is fired, transmit the fact that the event has been fired
      */
-    public void coreEventFired()  {
+    public void coreEventFired() {
         if (isStarted()) {
             try {
                 getMediator().removeNodeListening(this);
             } catch (SpokExecutionException ex) {
-                LOGGER.error("Unable to remove the node listening from {}", this );
+                LOGGER.error("Unable to remove the node listening from {}", this);
             }
             setStarted(false);
             fireEndEvent(new EndEvent(this));
@@ -239,7 +244,6 @@ public class NodeEvent extends Node implements INodeEvent {
         return source.getType().equalsIgnoreCase("programCall");
     }
 
-    
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -145,14 +145,18 @@
         "inactivated": "On quitte la face du dessus du Domicube",
         "west": "l'Ouest",
         "east": "l'Est",
-		"leaveFace" : "On change de face du Domicube"
+		"leaveFace" : "On change de face du Domicube",
+		"newFace" : "on arrive sur __myVar__ du Domicube",
+		"face" : "on est sur __myVar__ du Domicube"
       },
       "keyboard": {
         "activated": "On arrive sur la face du dessus du Domicube",
         "inactivated": "On quitte la face du dessus du Domicube",
         "west": "l'Ouest",
         "east": "l'Est",
-		"leaveFace" : "On change de face du Domicube"
+		"leaveFace" : "On change de face du Domicube",
+		"newFace" : "on arrive sur la face du dessus du Domicube",
+		"face" : "on est sur la face du dessus du Domicube"
       },
       "white-face": {
         "first-elem": "Face",

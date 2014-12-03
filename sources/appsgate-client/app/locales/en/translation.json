@@ -145,14 +145,18 @@
         "inactivated": "Domicube leaves the blank face",
         "west": "West",
         "east": "East",
-		"leaveFace" : "Domicube face changes"
+		"leaveFace" : "Domicube face changes",
+		"newFace" : "face __myVar__ of Domicube",
+		"face" : "face __myVar__ of Domicube"
       },
       "keyboard": {
         "activated": "Domicube is turned on the blank face",
         "inactivated": "Domicube leaves the blank face",
         "west": "West",
         "east": "East",
-		"leaveFace" : "Domicube face changes"
+		"leaveFace" : "Domicube face changes",
+		"newFace" : "face __myVar__ of Domicube",
+		"face" : "face __myVar__ of Domicube"
       },
       "white-face": {
         "first-elem": "White",

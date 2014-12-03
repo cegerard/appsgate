@@ -11,6 +11,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -61,7 +63,17 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
      */
     public NodeState(Node parent, JSONObject o) throws SpokNodeException {
         super(parent, o);
-        stateName = getJSONString(o, "name");
+        if (o.has("name")) {
+            stateName = getJSONString(o, "name");
+        } else {
+            try {
+                stateName = getJSONString(o.getJSONObject("param"), "value");
+            } catch (JSONException ex) {
+                LOGGER.error("Unable to build NodeState: {}", o.toString());
+                throw new SpokNodeException("NodeState", "name", ex);
+
+            }
+        }
         try {
             objectNode = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
         } catch (SpokTypeException ex) {
