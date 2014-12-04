@@ -70,7 +70,8 @@ define([
         */
         details: function(id) {
 		  // Direct access device, need to add the menu
-		  if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined || appRouter.currentMenuView.attributes.class !== "DeviceMenuView") {
+		  if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined
+        || (appRouter.currentMenuView.attributes.class !== "DeviceMenuView" && appRouter.currentMenuView.attributes.class !== "PlaceMenuView")) {
 			  // display the side menu
 			  appRouter.showMenuView(new DeviceMenuView());
 			  appRouter.currentMenuView.updateSideMenu();
