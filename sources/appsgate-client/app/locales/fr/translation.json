@@ -345,12 +345,13 @@
         "notify": "Afficher un message sur la TV"
       },
       "language": {
-        "channelup": "TV, Chaine suivante",
-        "channeldown": "TV, Chaine précédente",
-        "resume": "Reprendre lecture sur la TV",
-        "pause": "Mettre en pause la TV",
-        "stop": "Arrêter la lecture sur la TV",
-        "notify": "Afficher un message sur la TV"
+        "channelup": "Chaine suivante sur __myVar__",
+        "channeldown": "Chaine précédente sur __myVar__",
+        "resume": "Reprendre lecture sur __myVar__",
+        "pause": "Mettre en pause __myVar__",
+        "stop": "Arrêter la lecture __myVar__",
+        "notify": "Afficher le message ",
+        "ontv": "sur __myVar__"
       },
       "name": {
         "plural": "Les TV",
