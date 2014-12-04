@@ -39,6 +39,9 @@ define([
           case "service":
             this.buildServicesOfType(nodes[0]);
             break;
+          case "param":
+            this.buildParamOfType(nodes[0]);
+            break;
           default:
             for (t in nodes) {
               switch (nodes[t]) {
@@ -164,8 +167,20 @@ define([
       });
     },
 
+    /**
+     * Method to add the params in
+     */
+    buildParamOfType: function(type, param) {
+      devices.forEach(function(device) {
+        if (device.get("type") == type) {
+          params = device.getParams(param);
+          for (a in params) {
+            $(".expected-events").append(device.getKeyboardForParam(params[a]));
+          }
+        }
+      });
+    },
     buildComparatorKeys: function() {
-
       this.buildHackedBooleanComparatorKeys();
     },
     buildBooleanExpressionKeys: function() {

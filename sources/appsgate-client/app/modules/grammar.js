@@ -6,7 +6,7 @@ define([
     require(["peg"]);
 
     var ProgramGrammar = {};
-	var orderedArgs = [ "state", "stateTarget", "expBool", "target", "source", "object", "rules", "events","leftOperand", "rightOperand","seqRulesTrue", "seqRulesFalse", "seqRulesThen", "rulesThen", "left", "right", "devices", "value", "waitFor"];
+	var orderedArgs = [ "state", "stateTarget", "expBool", "target", "source", "object", "param", "rules", "events","leftOperand", "rightOperand","seqRulesTrue", "seqRulesFalse", "seqRulesThen", "rulesThen", "left", "right", "devices", "value", "waitFor"];
     ProgramGrammar = Backbone.Model.extend({
         initialize: function() {
             this.grammar = this.build(grammar);
@@ -84,29 +84,29 @@ define([
             if (obj.length == 0) {
                 return "";
             }
-            var type = obj.iid + ":";
-            if (currentNode == -1) {
-                if (obj.type == "mandatory" && obj.deviceType !== undefined) {
-                    return type + "/" + obj.deviceType + "/";
-                }
-                if (obj.type == "mandatory" && obj.serviceType) {
-                    return type + "|" + obj.serviceType + "|";
-                }
-            }
-            if (obj.iid == currentNode) {
-                if (obj.deviceType !== undefined) {
-                    return type + "/" + obj.deviceType + "/";
-                }
-                if (obj.serviceType) {
-                    return type + "|" + obj.serviceType + "|";
-                }
+			var typedType = "";
+			if (obj.deviceType !== undefined) {
+				typedType = "/" + obj.deviceType + "/";
+			}
+			if (obj.serviceType) {
+				typedType = "|" + obj.serviceType + "|";
+			}
+
+            var prefix = obj.iid + ":";
+            if (obj.iid == currentNode || obj.mandatory) {
+				if (obj.type == "param") {
+					return prefix + "param(" + typedType + ", '" +  obj.param + "')";
+				}
                 if (obj.type == "programs" || obj.type == "programCall") {
-                    return type + "programs";
-				        }
-                return type + "SELECTED";
+                    return prefix + "programs";
+				}
+				if (typedType != "") {
+					return prefix + typedType;
+				}
+                return prefix + "SELECTED";
             }
             if (obj.type) {
-                type += obj.type;
+                prefix += obj.type;
             }
 
             for (var i in orderedArgs) {
@@ -119,7 +119,7 @@ define([
                       }
                   }
             }
-            return type + args;
+            return prefix + args;
         },
 		/**
 		 * Function that returns true if the program is empty, false otherwise

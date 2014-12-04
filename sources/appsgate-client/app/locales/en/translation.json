@@ -141,18 +141,21 @@
         "unknown": "Unknown"
       },
       "language": {
-        "activated": "Domicube is turned on the blank face",
-        "inactivated": "Domicube leaves the blank face",
         "west": "West",
         "east": "East",
-		"leaveFace" : "Domicube face changes"
+		"change" : "Domicube face changes",
+		"newFace" : "we arrive on __myVar__ of Domicube",
+		"leaveFace" : "leaving  __myVar__ of Domicube",
+		"face" : "face __myVar__ of Domicube"
       },
       "keyboard": {
-        "activated": "Domicube is turned on the blank face",
-        "inactivated": "Domicube leaves the blank face",
         "west": "West",
         "east": "East",
-		"leaveFace" : "Domicube face changes"
+		"change" : "Domicube face changes",
+		"newFace" : "we arrive on __myVar__ of Domicube",
+		"leaveFace" : "leaving  __myVar__ of Domicube",
+		"face" : "we are on __myVar__ of Domicube",
+        "oneface" : "top face"
       },
       "white-face": {
         "first-elem": "White",
