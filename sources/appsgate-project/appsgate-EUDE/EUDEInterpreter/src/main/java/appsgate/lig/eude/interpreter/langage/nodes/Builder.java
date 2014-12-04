@@ -150,6 +150,9 @@ public class Builder {
         if (type.equalsIgnoreCase("scale")) {
             return NODE_TYPE.NODE_VALUE;
         }
+        if (type.equalsIgnoreCase("param")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
         if (type.equalsIgnoreCase("assignation")) {
             return NODE_TYPE.NODE_VARIABLE_ASSIGNATION;
         }

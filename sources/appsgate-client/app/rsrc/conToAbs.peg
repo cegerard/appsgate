@@ -37,7 +37,14 @@ EVENTS  = ID "eventsSequence" _ "[" _ EVENTLIST _ "]"
 
 EVENTLIST = (EVENTS _)+
 
-EVT  = ID "event" _ "(" _ SOURCE _ ")" / ID "eventProgram" _ "(" _ SOURCE _ ")"
+EVT  = ID "event" _ "(" _ SOURCE _")" _ "("_ PARAM _ ")" / ID "event" _ "(" _ SOURCE _ ")" / ID "eventProgram" _ "(" _ SOURCE _ ")"
+
+PARAM = i:ID "param"_"(" _ DEVICE_SEP l:NUMBERS DEVICE_SEP _ "," _ p:string _ ")"
+{
+ex = {'message' : 'expected param of type: ' + l.join(","), 'expected':l, 'id' : i, 'type':'param', 'param' : p};
+throw ex;
+}
+ / i:ID "param"
 
 WAIT = ID "wait" _ "(" _ NUMERIC_VALUE _ ")"
 
@@ -64,7 +71,7 @@ PROPERTY = ID "property" _ "(" _ SOURCE _ ")"
 
 KEEP  = ID "keepState" _ "(" _ MAINTAINABLE_STATE _ ")"
 
-STATE = ID "state" _ "(" _ SOURCE _")" / ID "stateProgram" _ "(" _ SOURCE _ ")"
+STATE = ID "state" _ "(" _ SOURCE _")" _ "("_ PARAM _ ")" / ID "state" _ "(" _ SOURCE _")" / ID "stateProgram" _ "(" _ SOURCE _ ")"
 
 MAINTAINABLE_STATE = ID "maintainableState" "(" _ TARGET _ ")" / ID "keepStateProgram" _ "(" _ SOURCE _ ")"
 
@@ -142,3 +149,15 @@ digit
 
 digit19
   = [1-9]
+  
+string "string"
+  = "'" "'" _             { return "";    }
+  / "'" chars:chars "'" _ { return chars; }
+
+chars
+  = chars:char+ { return chars.join(""); }
+
+char
+  // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"
+  = [A-Z]
+  / [a-z]

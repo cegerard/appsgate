@@ -142,6 +142,21 @@ define([
         "args": []
       };
     },
+    
+    /**
+     * Return the list of params for a given type of params
+     */
+    getParams: function(type) {
+        return [];
+    },
+    
+    /**
+     * return a button for a given param
+     */
+    getKeyboardForParam:function(param) {
+        console.warn("Call to a not implemented method");
+        return "";   
+    },
 
     /**
      * Override its synchronization method to send a notification on the network

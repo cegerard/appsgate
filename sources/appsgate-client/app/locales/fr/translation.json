@@ -39,9 +39,9 @@
 				"selector": "Sélecteurs"
 			},
 			"relation": {
-				"reference": "Référence", 
-				"isLocatedIn": "Localisation", 
-				"isPlanified": "Planification", 
+				"reference": "Référence",
+				"isLocatedIn": "Localisation",
+				"isPlanified": "Planification",
 				"denotes": "Sélection"
 			}
 		}
@@ -141,18 +141,21 @@
         "unknown": "Inconnu"
       },
       "language": {
-        "activated": "On arrive sur la face du dessus du Domicube",
-        "inactivated": "On quitte la face du dessus du Domicube",
         "west": "l'Ouest",
         "east": "l'Est",
-		"leaveFace" : "On change de face du Domicube"
+		"change" : "on change de face du Domicube",
+		"newFace" : "on arrive sur __myVar__ du Domicube",
+        "leaveFace": "on quitte __myVar__ du Domicube",
+		"face" : "on est sur __myVar__ du Domicube"
       },
       "keyboard": {
-        "activated": "On arrive sur la face du dessus du Domicube",
-        "inactivated": "On quitte la face du dessus du Domicube",
         "west": "l'Ouest",
         "east": "l'Est",
-		"leaveFace" : "On change de face du Domicube"
+		"change" : "on change de face du Domicube",
+		"newFace" : "on arrive sur __myVar__ du Domicube",
+        "leaveFace": "on quitte __myVar__ du Domicube",
+		"face" : "on est sur __myVar__ du Domicube",
+		"oneface" : "la face du dessus"
       },
       "white-face": {
         "first-elem": "Face",
@@ -732,7 +735,8 @@
     "warning-program-edition": "Attention, éditer le programme le désactivera",
     "warning-program-delete": "Voulez-vous vraiment supprimer ce programme ?",
     "scheduled-event": "Programme Appsgate ",
-    "simulated-time": "Heure simulée"
+    "simulated-time": "Heure simulée",
+    "inactive-node": "Cette instruction ne sera pas exécutée."
   },
   "programs-menu": {
     "add-button": "Ajouter programme",

@@ -10,6 +10,6 @@
     </tr>
   </table>
 </div>
-<div class="btn btn-default btn-prog btn-prog-action " id="<%= node.iid %>">
+<div class="btn btn-default btn-prog btn-prog-action <% if(node.type === 'stopMyself') { %><%= 'btn-prog-stopself' %><% } %>" id="<%= node.iid %>">
         <%= $.i18n.t(node.phrase, {myVar:engine.buildInputFromNodeOrMandatory(node.target, currentNode, typeof node.target.value !== 'undefined')}) %>
 </div>

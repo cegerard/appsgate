@@ -26,7 +26,7 @@ define([
               this.reader(programs.at(0).get("id"));
             }
 
-            dispatcher.trigger("router:loaded");
+            dispatcher.trigger("router:loaded", {replace:true});
         },
         reader: function(id) {
 			// Direct access to a program, need to add the menu
@@ -36,12 +36,7 @@ define([
 				// update tab
 				$(".nav-item").removeClass("active");
 				$("#programs-nav").addClass("active");
-			}	
-
-            // in the case the program isn't found in the side-menu, re-render it
-            if($(".aside-menu #side-" + id).length == 0){
-              this.list();
-            }
+			}
 
             // display the requested program
             appRouter.showDetailsView(new ProgramReaderView({model: programs.get(id)}));
@@ -55,9 +50,11 @@ define([
             // remove and unbind the current view for the menu
             if (appRouter.currentMenuView) {
                 appRouter.currentMenuView.close();
+                appRouter.currentMenuView = null;
             }
             if (appRouter.currentView) {
                 appRouter.currentView.close();
+                appRouter.currentView = null;
             }
 
             $("#main").html(appRouter.navbartemplate());
@@ -65,7 +62,7 @@ define([
             $(".nav-item").removeClass("active");
             $("#programs-nav").addClass("active");
 
-            appRouter.navigate("#programs/editor/" + id);
+            appRouter.navigate("#programs/editor/" + id, {replace:true});
 
             appRouter.currentView = new ProgramEditorView({el:$("#main"),model: programs.get(id)});
             appRouter.currentView.render();

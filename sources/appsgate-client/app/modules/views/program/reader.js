@@ -138,7 +138,6 @@ define([
           appRouter.isModalShown = false;
 
           // starting the program
-          // self.model.set("runningState", "PROCESSING"); SHOULD NOT BE CALLED
           self.model.remoteCall("callProgram", [{type: "String", value: self.model.get("id")}]);
 
           // refresh the menu
@@ -201,7 +200,6 @@ define([
         // get the program to start
         var program = programs.get($(e.currentTarget).attr("id"));
 
-        //program.set("runningState", "PROCESSING"); SHOULD NOT BE CALLED !
         program.remoteCall("callProgram", [{type: "String", value: program.get("id")}]);
 
         // refresh the menu
@@ -220,7 +218,6 @@ define([
         // get the program to stop
         var program = programs.get($(e.currentTarget).attr("id"));
 
-        program.set("runningState", "DEPLOYED");
         program.remoteCall("stopProgram", [{type: "String", value: program.get("id")}]);
         // refresh the menu
         this.render();
@@ -349,9 +346,15 @@ define([
           }
           $(".secondary-block-node").remove();
 
+          // adding tooltips and changing style for the inactive nodes after a self-stop
+          $(".programInput").find(".btn-prog-stopself").parent().nextAll(".btn-current").children(".btn-prog:not(.btn-trash)").attr("title",$.i18n.t("programs.inactive-node")).addClass("inactive-node");
+
           if(typeof self.model !== "undefined"){
             $("#led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
-              $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.'+self.model.getState()));
+            $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.'+self.model.getState()));
+            $("#current-led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
+            $("#current-led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.'+self.model.getState()));
+
             if (self.model.isWorking()) {
               $(".start-program-button").hide();
               $(".stop-program-button").show();
