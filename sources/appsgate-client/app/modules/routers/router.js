@@ -8,6 +8,7 @@ define(function(require, exports, module) {
   var ServicesRouter = require("routers/service");
   var ProgramsRouter = require("routers/program");
   var DebuggerRouter = require("routers/debugger");
+  var DependanciesRouter = require("routers/dependancies");
 
   var mainTemplate = require("text!templates/home/main.html");
   var navbarTemplate = require("text!templates/home/navbar.html");
@@ -17,11 +18,13 @@ define(function(require, exports, module) {
   // define the application router
   var Router = Backbone.Router.extend({
 
+    initialized: false,
     placesRouter: new PlacesRouter(),
     devicesRouter: new DevicesRouter(),
     servicesRouter: new ServicesRouter(),
     programsRouter: new ProgramsRouter(),
     debuggerRouter: new DebuggerRouter(),
+    dependanciesRouter: new DependanciesRouter(),
 
     maintemplate : _.template(mainTemplate),
     navbartemplate : _.template(navbarTemplate),
@@ -35,7 +38,9 @@ define(function(require, exports, module) {
       "places": "places",
       "devices": "devices",
       "services": "services",
-      "programs": "programs"
+      "programs": "programs",
+      "dependancies": "dependancies",
+//      "dependancies/:id": "dependanciesId"
     },
     initialize: function() {
       dispatcher.on("router:loading", function() {
@@ -74,6 +79,10 @@ define(function(require, exports, module) {
       dispatcher.trigger("router:loading");
       this.debuggerRouter.all();
     },
+    dependancies: function() {
+      dispatcher.trigger("router:loading");
+      this.dependanciesRouter.all();
+    },
     home: function() {
       // in case there is a loading widget present
       this.hideLoadingWidget();
@@ -104,6 +113,7 @@ define(function(require, exports, module) {
       // remove and unbind the current view for the menu
       if (this.currentMenuView) {
         this.currentMenuView.close();
+        this.currentMenuView = null;
       }
 
       $("#main").html(this.navbartemplate());
@@ -122,12 +132,13 @@ define(function(require, exports, module) {
         direction: 'top-right'
       });
 
-      $("body").i18n();
+      $(document).i18n();
     },
     showDetailsView: function(view) {
       // remove and unbind the current view
       if (this.currentView) {
         this.currentView.close();
+        this.currentView = null;
       }
 
       // update the content
@@ -139,6 +150,7 @@ define(function(require, exports, module) {
       // remove and unbind the current view
       if (this.currentView) {
         this.currentView.close();
+        this.currentView = null;
       }
 
       // update the content
@@ -152,13 +164,16 @@ define(function(require, exports, module) {
       $(".loading-widget-wrapper").remove();
     },
     updateLocale:function(locale) {
+      var self = this;
       this.locale = locale;
 
       $.i18n.init({ lng : this.locale }).done(function() {
-        var currentRoute = Backbone.history.fragment;
-        Backbone.history.fragment = null;
-        appRouter.navigate(currentRoute, {trigger: true});
+        if(typeof self.currentMenuView !== "undefined" && self.currentMenuView !== null) self.currentMenuView.render();
+        if(typeof self.currentView !== "undefined" && self.currentView !== null) self.currentView.render();
+
+        $(document).i18n();
       });
+
     }
   });
 

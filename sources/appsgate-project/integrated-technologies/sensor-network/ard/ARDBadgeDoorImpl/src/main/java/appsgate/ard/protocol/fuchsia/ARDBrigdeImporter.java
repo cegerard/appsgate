@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 @Provides
 public class ARDBrigdeImporter extends AbstractImporterComponent {
 
-    private Logger logger = LoggerFactory.getLogger(ARDBrigdeImporter.class);
+    private Logger logger = LoggerFactory.getLogger(ARDController.ARD_LOGNAME);
 
     @ServiceProperty(name = "target")
     private String filter;

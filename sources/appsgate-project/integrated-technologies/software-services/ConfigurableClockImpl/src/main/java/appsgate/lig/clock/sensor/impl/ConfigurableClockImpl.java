@@ -6,13 +6,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,13 +74,13 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	 * A map between the periodic alarms, matches the same alarm id as an alarm
 	 * registered at current time
 	 */
-	Map<Integer, AlarmEventObserver> periodicAlarmObservers = new HashMap<Integer, AlarmEventObserver>();
+	Map<Integer, AlarmEventObserver> periodicAlarmObservers = new ConcurrentHashMap<Integer, AlarmEventObserver>();
 
 	/**
 	 * A map between the periods in millis of periodic alarms, matches the same
 	 * alarm id as an alarm registered at current time
 	 */
-	Map<Integer, Long> alarmPeriods = new HashMap<Integer, Long>();
+	Map<Integer, Long> alarmPeriods = new ConcurrentHashMap<Integer, Long>();
 
 	/**
 	 * As single time alarms are removed from the list they do not fire events
@@ -92,7 +91,7 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 	/**
 	 * Convenient to unregister alarms (avoid complexity)
 	 */
-	Map<Integer, Long> reverseAlarmMap = new HashMap<Integer, Long>();
+	Map<Integer, Long> reverseAlarmMap = new ConcurrentHashMap<Integer, Long>();
 
 	Timer timer;
 
@@ -351,6 +350,10 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 							time += alarmPeriods.get(i);
 							periodicAlarmObservers.get(i).alarmEventFired(i);
 						}
+					
+					if(i < 0)
+						System.out.println("ERREUR");
+					
 					if (futureTime - time < alarmLagTolerance)
 						disarmedAlarms.add(i);
 					else
@@ -576,20 +579,19 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 
 				logger.trace("calculateNextTimer(), next alarm should ring in : "
 						+ nextAlarmDelay + "ms");
-				AlarmFiringTask nextAlarm = new AlarmFiringTask();
+				AlarmFiringTask nextAlarm = new AlarmFiringTask(this);
 				if (timer != null)
 					timer.cancel();
 				timer = new Timer();
 				timer.schedule(nextAlarm, nextAlarmDelay);
 				return nextAlarmDelay;
 			} else if (!runningArmTimer && !disarmedAlarms.isEmpty()) {
-				RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask();
+				RearmingPeriodicAlarmTask arming = new RearmingPeriodicAlarmTask(this);
 				if (timer == null)
 					timer = new Timer();
 				timer.schedule(arming, alarmLagTolerance + 1);
 				runningArmTimer = true;
 			}
-
 			return -1;
 		}
 	}
@@ -625,53 +627,59 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 		return new ClockAlarmNotificationMsg(this, alarmEventId);
 	}
 
-	class AlarmFiringTask extends TimerTask {
-		@Override
-		public void run() {
-			logger.trace("AlarmFiringTask starting");
 
-			if (nextAlarmTime > 0) {
-				logger.debug("Firing current clock alarms to all single clock observers");
-				long nextAlarmTimeClone = nextAlarmTime;
-				Map<Integer, AlarmEventObserver> observers = alarms
-						.get(nextAlarmTimeClone);
-				synchronized (lock) {
-					timer.cancel();
-					timer = null;
-					fireClockAlarms(observers);
-					if (observers.isEmpty()) {
-						alarms.remove(nextAlarmTimeClone);
-					}
-					nextAlarmTime = -1;
-				}
-			}
-			if (nextAlarmId > 0) {
-				logger.debug("Firing current clock alarms to one periodic event observer");
-
-				periodicAlarmObservers.get(nextAlarmId).alarmEventFired(
-						nextAlarmId);
-				fireClockAlarmNotificationMsg(nextAlarmId);
-				disarmedAlarms.add(nextAlarmId);
-			}
-			calculateNextTimer();
-		}
-	}
 
 	public FlowRateSetNotification fireFlowRateSetNotificationMsg(
 			double oldFlowRate, double newFlowRate) {
 		return new FlowRateSetNotification(this, String.valueOf(oldFlowRate),
 				String.valueOf(newFlowRate));
 	}
+	
+	public void fireAlarms() {
+		logger.trace("fireAlarms(), AlarmFiringTask starting");
 
-	class RearmingPeriodicAlarmTask extends TimerTask {
-		@Override
-		public void run() {
-			logger.trace("trying to rearm periodic clock alarms");
-			runningArmTimer = false;
-			rearmPeriodicAlarms(null);
-			calculateNextTimer();
+		if (nextAlarmTime > 0) {
+			logger.debug("Firing current clock alarms to all single clock observers");
+			long nextAlarmTimeClone = nextAlarmTime;
+			Map<Integer, AlarmEventObserver> observers = alarms
+					.get(nextAlarmTimeClone);
+			synchronized (lock) {
+				timer.cancel();
+				timer = null;
+				fireClockAlarms(observers);
+				if (observers.isEmpty()) {
+					alarms.remove(nextAlarmTimeClone);
+				}
+				nextAlarmTime = -1;
+			}
 		}
+		int id = nextAlarmId; // Trick to avoid the change nextAlarmId by a calculateNextTimer
+		if (id > 0) {
+			logger.debug("Firing current clock alarms to one periodic event observer");
+			
+			if(periodicAlarmObservers.containsKey(id)) {
+				periodicAlarmObservers.get(id).alarmEventFired(
+					id);
+				fireClockAlarmNotificationMsg(id);
+			}
+			if(id <0)
+				System.out.println("ERREUR, c'est là");
+			if(disarmedAlarms.contains(id)) {
+				disarmedAlarms.add(id);
+			}
+		}
+		calculateNextTimer();
 	}
+	
+	public void rearm() {
+		logger.trace("rearm(), trying to rearm periodic clock alarms");
+		runningArmTimer = false;
+		rearmPeriodicAlarms(null);
+		calculateNextTimer();
+	}
+	
+	
+
 
 	/*
 	 * (non-Javadoc)

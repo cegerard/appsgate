@@ -39,6 +39,9 @@ define([
           case "service":
             this.buildServicesOfType(nodes[0]);
             break;
+          case "param":
+            this.buildParamOfType(nodes[0]);
+            break;
           default:
             for (t in nodes) {
               switch (nodes[t]) {
@@ -164,8 +167,20 @@ define([
       });
     },
 
+    /**
+     * Method to add the params in
+     */
+    buildParamOfType: function(type, param) {
+      devices.forEach(function(device) {
+        if (device.get("type") == type) {
+          params = device.getParams(param);
+          for (a in params) {
+            $(".expected-events").append(device.getKeyboardForParam(params[a]));
+          }
+        }
+      });
+    },
     buildComparatorKeys: function() {
-
       this.buildHackedBooleanComparatorKeys();
     },
     buildBooleanExpressionKeys: function() {
@@ -195,7 +210,7 @@ define([
           o = types[type][0];
           states = o.getStates(which);
           for (a in states) {
-            $(".expected-links").append(o.getKeyboardForState(states[a], which));
+            $(".expected-events").append(o.getKeyboardForState(states[a], which));
           }
         }
       }
@@ -205,7 +220,7 @@ define([
           o = serviceTypes[type][0];
           states = o.getStates(which);
           for (a in states) {
-            $(".expected-links").append(o.getKeyboardForState(states[a], which));
+            $(".expected-events").append(o.getKeyboardForState(states[a], which));
           }
         }
       }
@@ -300,7 +315,7 @@ define([
       v.phrase = "programs.language.stateStarted" + keep;
       v.name = "isStarted";
       $(btn).attr("json", JSON.stringify(v));
-      $(".expected-links").append(btn);
+      $(".expected-events").append(btn);
       var btn2 = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='program'></button>");
       var v2 = {
         "type": which,
@@ -316,7 +331,7 @@ define([
       v2.phrase = "programs.language.stateStopped" + keep;
       v2.name = "isStopped";
       $(btn2).attr("json", JSON.stringify(v2));
-      $(".expected-links").append(btn2);
+      $(".expected-events").append(btn2);
 
     },
     buildEventProgramKeys: function() {
@@ -506,7 +521,7 @@ define([
           o = types[type][0];
           states = o.getProperties();
           for (a in states) {
-            $(".expected-links").append(o.getKeyboardForProperty(states[a]));
+            $(".expected-events").append(o.getKeyboardForProperty(states[a]));
           }
         }
       }
@@ -516,7 +531,7 @@ define([
           o = serviceTypes[type][0];
           states = o.getProperties();
           for (a in states) {
-            $(".expected-links").append(o.getKeyboardForProperty(states[a]));
+            $(".expected-events").append(o.getKeyboardForProperty(states[a]));
           }
         }
       }

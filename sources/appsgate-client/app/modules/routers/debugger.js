@@ -15,19 +15,21 @@ define([
             // remove and unbind the current view for the menu
             if (appRouter.currentMenuView) {
                 appRouter.currentMenuView.close();
+                appRouter.currentMenuView = null;
             }
             if (appRouter.currentView) {
                 appRouter.currentView.close();
+                appRouter.currentView = null;
             }
 
             $("#main").html(appRouter.navbartemplate());
 
-            appRouter.navigate("#debugger/all");
+            appRouter.navigate("#debugger/all", {replace:true});
             $(".nav-item").removeClass("active");
             $("#home-nav").addClass("active");
 
-            appRouter.currentMenuView = new DebuggerView({el:$("#main")});
-            appRouter.currentMenuView.render();
+            appRouter.currentView = new DebuggerView({el:$("#main")});
+            appRouter.currentView.render();
 
             $("#main").append(appRouter.circlemenutemplate());
 
@@ -39,7 +41,10 @@ define([
                 direction: 'top-right'
             });
 
-            $("body").i18n();
+            // resize the menu
+            appRouter.currentView.resize($(".div-scrollable"));
+
+            $(document).i18n();
 
             dispatcher.trigger("router:loaded");
         }

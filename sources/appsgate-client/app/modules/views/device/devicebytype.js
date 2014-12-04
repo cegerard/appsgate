@@ -211,10 +211,7 @@ define([
                 activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-work.svg' width='18px' class='img-responsive'>";
                 break;
               case "2":
-                activeFace = "<svg id='device-" + device.cid + "-value' class='white-face-svg-domus img-responsive'>" +
-                  "<rect class='white-face-rect-domus' x='10' y='10' rx='25' ry='25' width='95%' height='90%'/>" +
-                  "<text class='white-face-text-domus' x='50%' y='47%'>" + $.i18n.t('devices.domicube.white-face.first-elem') +
-                  "</text><text class='white-face-text-domus' x='50%' y='54%'>" + $.i18n.t('devices.domicube.white-face.second-elem') + "</text></svg>";
+					activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-white.svg' width='18px' class='img-responsive'>";
                 break;
               case "3":
                 activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-music.png' width='18px' class='img-responsive'>";

@@ -19,6 +19,12 @@ define([
       events: {
         "click a.list-group-item": "updateSideMenu"
       },
+	  /**
+	  * Attributes to know the type of this menu
+	  */	
+	  attributes: {
+		"class": "DeviceMenuView"
+	  },
       /**
       * Listen to the updates on devices and update if any
       *

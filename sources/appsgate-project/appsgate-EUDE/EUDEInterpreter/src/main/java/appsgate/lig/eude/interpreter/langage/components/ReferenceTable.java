@@ -135,14 +135,6 @@ public class ReferenceTable {
         }
     }
 
-    /**
-     *
-     * @return true if something has change false otherwise
-     */
-    public Boolean checkStatus() {
-        STATUS oldStatus = this.state;
-        return computeStatus() != oldStatus;
-    }
 
     /**
      *
@@ -160,6 +152,11 @@ public class ReferenceTable {
         return devices.keySet();
     }
 
+    public ArrayList<NodeSelect> getSelectors() {
+        return nodes;
+    }
+
+    
     /**
      *
      * @param status
@@ -211,7 +208,7 @@ public class ReferenceTable {
      *
      * @return
      */
-    private STATUS computeStatus() {
+    public STATUS computeStatus() {
         this.state = STATUS.OK;
         if (programs.size() + devices.size() + nodes.size() == 0) {
             LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
@@ -221,9 +218,9 @@ public class ReferenceTable {
             LOGGER.trace("computeStatus(), program " + k + ", status :" + programs.get(k));
             switch (programs.get(k)) {
                 case MISSING:
-                case INVALID:
                     setState(STATUS.INVALID);
                     break;
+                case INVALID:
                 case UNSTABLE:
                     setState(STATUS.UNSTABLE);
                     break;

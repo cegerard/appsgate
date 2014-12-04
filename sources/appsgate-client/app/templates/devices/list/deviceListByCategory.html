@@ -89,6 +89,7 @@
 
 <div class="image-preload hidden">
     <img src='app/img/domicube-work.svg'>
+	<img src='app/img/domicube-white.svg'>
     <img src='app/img/domicube-music.png'>
     <img src='app/img/domicube-question.svg'>
     <img src='app/img/domicube-night.png'>
@@ -227,6 +228,7 @@
                         <text class="white-face-text-domus" x="50%" y="47%"><%= $.i18n.t("devices.domicube.white-face.first-elem") %></text>
                         <text class="white-face-text-domus" x="50%" y="54%"><%= $.i18n.t("devices.domicube.white-face.second-elem") %></text>
                       </svg>
+						<img id="device-<%= s.cid %>-value" src='app/img/domicube-white.svg' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "3") { %>
                       <img id="device-<%= s.cid %>-value" src='app/img/domicube-music.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "4") { %>
@@ -377,6 +379,7 @@
                         <text class="white-face-text-domus" x="50%" y="47%"><%= $.i18n.t("devices.domicube.white-face.first-elem") %></text>
                         <text class="white-face-text-domus" x="50%" y="54%"><%= $.i18n.t("devices.domicube.white-face.second-elem") %></text>
                       </svg>
+<!--						  <img id="device-<%= s.cid %>-value" src='app/img/domicube-white.svg' width='18px' class="img-responsive">-->
                     <% } else if(s.get("activeFace") === "3") { %>
                       <img id="device-<%= s.cid %>-value" src='app/img/domicube-music.png' width='18px' class="img-responsive">
                     <% } else if(s.get("activeFace") === "4") { %>

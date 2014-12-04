@@ -24,6 +24,12 @@ define([
             "keyup #add-program-modal input:text": "validAddProgram",
             "click .deactivate-all-programs-button": "onStopAllPrograms"
         },
+		/**
+		* Attributes to know the type of this menu
+		*/
+		attributes: {
+			"class": "ProgramMenuView"
+		},
         /**
          * Listen to the programs collection updates and refresh if any
          *

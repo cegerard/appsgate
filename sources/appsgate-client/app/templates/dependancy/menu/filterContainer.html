@@ -1,0 +1,52 @@
+<div id="filterContainerNodes" class="list-group-item">
+	<input type="checkbox" id="checkbox-all-entities"></input><span class="list-group-item-heading lead" data-i18n="dependancy.entities-filter"></span>
+</div>
+<div id="filterContainerLinks" class="list-group-item">
+	<input type="checkbox" id="checkbox-all-relations"></input><span class="list-group-item-heading lead" data-i18n="dependancy.relations-filter"></span>
+</div>
+
+<div id="graph-caption" class="list-group-item">
+	<span class="list-group-item-heading lead" data-i18n="dependancy.caption.title"></span>
+	<ul>
+		<li>
+			<svg height="25" width="25">
+				<g>
+					<circle cx="12" cy="12" r="12" stroke="black" class="program-invalid" />
+				</g>
+			</svg>
+			<span class="caption-label" data-i18n="dependancy.caption.invalid-program"></span>
+		</li>
+		<li>
+			<svg height="25" width="25">
+				<g>
+					<circle cx="12" cy="12" r="12" stroke="black" class="program-incomplete" />
+				</g>
+			</svg>
+			<span class="caption-label" data-i18n="dependancy.caption.incomplete-program"></span>
+		</li>
+		<li>
+			<svg height="25" width="25">
+				<g>
+					<circle cx="12" cy="12" r="12" stroke="black" class="program-processing" />
+				</g>
+			</svg>
+			<span class="caption-label" data-i18n="dependancy.caption.valid-program"></span>
+		</li>
+		<li>
+			<svg height="25" width="25">
+				<g>
+					<path d="M5,5L20,13L5,20L5,5" class="form-program" />
+				</g>
+			</svg>
+			<span class="caption-label" data-i18n="dependancy.caption.running-program"></span>
+		</li>
+		<li>
+			<svg height="25" width="25">
+				<g>
+					<rect x="5" y="5" height="15" width="15" class="form-program" />
+				</g>
+			</svg>
+			<span class="caption-label" data-i18n="dependancy.caption.stopped-program"></span>
+		</li>
+	</ul>
+</div>

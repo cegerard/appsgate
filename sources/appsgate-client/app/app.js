@@ -6,6 +6,7 @@ define(function(require, exports, module) {
   var Backbone = require("backbone");
   var Router = require("routers/router");
   var Communicator = require("modules/communicator");
+  var alertify=require("alertifyjs");
 
   require("moment");
   require("i18n");
@@ -13,6 +14,7 @@ define(function(require, exports, module) {
   require("jqueryui");
   require("jqueryuitouch");
   require("circlemenu");
+
 
   // Alias the module for easier identification.
   var app = module.exports;
@@ -60,6 +62,7 @@ define(function(require, exports, module) {
         var devicesReady = false;
         var servicesReady = false;
         var programsReady = false;
+        var dependanciesReady = false;
 
         // places
         dispatcher.on("placesReady", function() {
@@ -98,10 +101,11 @@ define(function(require, exports, module) {
             dispatcher.trigger("dataReady");
           }
         });
+        
 
         // all data have been received, launch the user interface
         dispatcher.on("dataReady", function() {
-          app.initialized = true;
+          appRouter.initialized = true;
           $("#lost-connection-modal").modal("hide");
           $("#settings-modal").modal("hide");
 
@@ -112,8 +116,16 @@ define(function(require, exports, module) {
             });
           });
 
-          if (navigator.splashscreen !== undefined) {
-            navigator.splashscreen.hide();
+        });
+
+        dispatcher.on("system", function(msg) {
+
+          console.log("System received message " + JSON.stringify(msg));
+
+          if(msg.message!=undefined){
+               var l10nMessage=$.i18n.t(msg.message)
+               var timeout=10000;
+               alertify.log(l10nMessage, "log", timeout);
           }
 
         });
@@ -126,6 +138,11 @@ define(function(require, exports, module) {
         // Initialize the collection of programs
         require(['collections/programs'], function(Programs) {
           window.programs = new Programs();
+        });
+        
+        // Initialize the collection dependancies
+        require(['collections/dependancies'], function(Dependancies) {
+            window.dependancies = new Dependancies();
         });
 
       });

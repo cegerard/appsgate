@@ -1,7 +1,9 @@
 define([
   "app",
-  "models/device/device"
-], function(App, Device) {
+  "models/device/device",
+  "text!templates/program/nodes/coretvActionNode.html"
+
+], function(App, Device,  ActionTemplate) {
 
   var TV = {};
   /**
@@ -18,6 +20,12 @@ define([
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
         this.generateDefaultName($.i18n.t("devices.tv.name.singular"));
       }
+    },
+    /**
+     * @returns the action template specific for mail
+     */
+    getTemplateAction: function() {
+      return _.template(ActionTemplate);
     },
     /**
      *return the list of available actions
@@ -43,7 +51,7 @@ define([
             "value": "spok-sender"
           }, {
             "type": "String",
-            "value": "test message"
+            "value": "..."
           }];
           v.phrase = "devices.tv.language.notify";
           $(btn).attr("json", JSON.stringify(v));

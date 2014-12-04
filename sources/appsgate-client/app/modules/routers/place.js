@@ -17,7 +17,7 @@ define([
         appRouter.showMenuView(new PlaceMenuView());
 
         // update the url
-        appRouter.navigate("#places/" + places.at(0).get("id"));
+        appRouter.navigate("#places/" + places.at(0).get("id"), {replace:true});
 
         $(".nav-item").removeClass("active");
         $("#places-nav").addClass("active");
@@ -32,6 +32,16 @@ define([
       },
       // show the details of a places (i.e. list of devices in this place)
       details: function(id) {
+		  // Direct access device, , need to add the menu
+		  if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined || appRouter.currentMenuView.attributes.class !== "PlaceMenuView") {
+			  // display the side menu
+			  appRouter.showMenuView(new PlaceMenuView());
+			  appRouter.currentMenuView.updateSideMenu();
+			  // update tab
+			  $(".nav-item").removeClass("active");
+			  $("#places-nav").addClass("active");
+		  }
+
         appRouter.showDetailsView(new PlaceDetailsView({model: places.get(id)}));
       }
     });

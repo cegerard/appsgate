@@ -18,7 +18,6 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
@@ -537,62 +536,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     /**
      *
-     * @param what
-     * @param where
-     * @return
-     */
-    protected JSONArray getDevicesInSpaces(JSONArray what, JSONArray where) {
-        ArrayList<String> WHAT = getStringList(what);
-
-        ArrayList<String> WHERE = getStringList(where);
-        JSONArray retArray = new JSONArray();
-        ArrayList<String> devicesInSpaces;
-        try {
-            devicesInSpaces = getMediator().getContext().getDevicesInSpaces(WHAT, WHERE);
-            for (String name : devicesInSpaces) {
-                NodeValue n = new NodeValue("device", name, this);
-                retArray.put(n.getJSONDescription());
-            }
-        } catch (SpokExecutionException ex) {
-            LOGGER.warn("Unable to get devices in space");
-        }
-        return retArray;
-    }
-
-    /**
-     * return the list of string value corresponding to a list of JSON
-     * description of nodes.
-     *
-     * @param what the JSONArray containing
-     * @return an array list of string
-     */
-    private ArrayList<String> getStringList(JSONArray what) {
-        ArrayList<String> WHAT = new ArrayList<String>();
-
-        for (int i = 0; i < what.length(); i++) {
-            JSONObject o = what.optJSONObject(i);
-            if (o != null) {
-                try {
-                    Node n = Builder.buildFromJSON(o, this);
-                    if (n instanceof ICanBeEvaluated) {
-                        String s = ((ICanBeEvaluated) n).getResult().getValue();
-                        if (!s.isEmpty()) {
-                            WHAT.add(s);
-                        }
-                    } else {
-                        LOGGER.warn("Found an unexpected node: " + n);
-                    }
-                } catch (SpokTypeException ex) {
-                    LOGGER.error("Unable to parse the what branch of selector");
-                    LOGGER.debug("Unable to parse: " + o.toString());
-                }
-            }
-        }
-        return WHAT;
-    }
-
-    /**
-     *
      * @param ids
      * @param prop
      * @param time_start
@@ -629,43 +572,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     public int hashCode() {
         int hash = 3;
         return hash;
-    }
-
-    /**
-     *
-     */
-    protected void setProgramWaiting() {
-        LOGGER.trace("Program WAITING");
-        NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
-        if (p != null) {
-            p.setWaiting(this.getIID());
-        } else {
-            LOGGER.error("A node without a program has been found");
-        }
-    }
-
-    /**
-     *
-     */
-    protected void setProgramProcessing() {
-        LOGGER.trace("Program PROCESSING from {}", this);
-        NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
-        if (p != null) {
-            p.setProcessing(this.getIID());
-        } else {
-            LOGGER.error("A node without a program has been found");
-        }
-    }
-
-    protected void setProgramKeeping() {
-        LOGGER.trace("Program PROCESSING");
-        NodeProgram p = (NodeProgram) findNode(NodeProgram.class, this);
-        if (p != null) {
-            p.setKeeping(this.getIID());
-        } else {
-            LOGGER.error("A node without a program has been found");
-        }
-
     }
 
     /**

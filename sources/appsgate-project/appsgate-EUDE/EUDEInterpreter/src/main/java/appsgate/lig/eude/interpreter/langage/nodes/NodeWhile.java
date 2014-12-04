@@ -61,9 +61,8 @@ public class NodeWhile extends Node implements INodeRule {
         try {
             Node n = Builder.buildFromJSON(stateJSON, this);
             if (n instanceof NodeState) {
-            this.state = (NodeState)n ;
-            }
-            else {
+                this.state = (NodeState) n;
+            } else {
                 LOGGER.error("The node state is not a State node.");
                 throw new SpokNodeException("NodeWhile", "state", null);
             }
@@ -102,7 +101,6 @@ public class NodeWhile extends Node implements INodeRule {
 
     @Override
     public JSONObject call() {
-        setProgramWaiting();
         setStarted(true);
         fireStartEvent(new StartEvent(this));
         state.addStartEventListener(this);
@@ -137,7 +135,6 @@ public class NodeWhile extends Node implements INodeRule {
         if (node == state) {
             state.addEndEventListener(this);
             rules.addEndEventListener(this);
-            setProgramKeeping();
             rules.call();
         }
     }
@@ -194,15 +191,17 @@ public class NodeWhile extends Node implements INodeRule {
      */
     private void stopWaiting() {
         setStarted(false);
-        setProgramProcessing();
         fireEndEvent(new EndEvent(this));
     }
 
     @Override
     public String getTypeSpec() {
-        return "While " + state.getName();
-
+        if (state != null) {
+            return "While " + state.getName();
+        }
+        return "While (null)";
     }
+
     @Override
     protected void buildReferences(ReferenceTable table) {
         if (this.rules != null) {

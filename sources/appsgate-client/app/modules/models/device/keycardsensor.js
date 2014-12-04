@@ -92,7 +92,7 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "empty":
-          $(btn).append("<span>" + $.i18n.t('devices.cardswitch.no-card-inserted', {
+          $(btn).append("<span>" + $.i18n.t('devices.cardswitch.keyboard.no-card-inserted', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.cardswitch.keyboard.cardswitch') + "</span>",
           }));
           v.name = "empty";
