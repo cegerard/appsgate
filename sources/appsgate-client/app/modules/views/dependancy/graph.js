@@ -232,7 +232,10 @@ define([
 					d3.select(this).append("text")
 						.attr("class", "label-name")
 						.text(function (d) {
-							return d.name;
+							if (d.type === "selector")
+								return $.i18n.t("dependancy.type.entity.selector.type-" + d.name);
+							else
+								return d.name;
 						})
 
 					// Type program, add form to indicate running or not. 
@@ -565,7 +568,12 @@ define([
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
-							return $.i18n.t("dependancy.type.entity." + d);
+							// exception for the selector
+							if (d === "selector") {
+								return $.i18n.t("dependancy.type.entity.selector.filter-label");
+							} else {
+								return $.i18n.t("dependancy.type.entity." + d);
+							}
 						});
 				});
 
@@ -639,8 +647,7 @@ define([
 			} else {
 				$("#checkbox-all-relations").prop('checked', false);
 			}
-		}
-
+		},
 	});
 
 	function rescale() {

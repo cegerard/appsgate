@@ -43,7 +43,22 @@
 				"service": "$t(navbar.services)",
 				"time": "Temps",
 				"device": "$t(navbar.devices)",
-				"selector": "Sélecteurs"
+				"selector": {
+					"filter-label" : "Sélecteurs",
+					"default" : "Sélecteur",
+					"type-0": "$t(dependancy.type.entity.selector.default) de $t(devices.temperature.name.plural)",
+					"type-1": "$t(dependancy.type.entity.selector.default) de $t(devices.illumination.name.plural)",
+					"type-2": "$t(dependancy.type.entity.selector.default) d'$t(devices.switch.name.plural)",
+					"type-3": "$t(dependancy.type.entity.selector.default) de $t(devices.contact.name.plural)",
+					"type-4": "$t(dependancy.type.entity.selector.default) d'$t(devices.cardswitch.name.plural)",
+					"type-5": "$t(dependancy.type.entity.selector.default) d'$t(devices.ard.name.plural)",
+					"type-6": "$t(dependancy.type.entity.selector.default) de $t(devices.plug.name.plural)",
+					"type-7": "$t(dependancy.type.entity.selector.default) d'$t(devices.lamp.name.plural)",
+					"type-8": "$t(dependancy.type.entity.selector.default) d'$t(devices.actuator.name.plural)",
+					"type-31": "$t(dependancy.type.entity.selector.default) de $t(devices.mediaplayer.name.plural)",
+					"type-124": "$t(dependancy.type.entity.selector.default) sur $t(devices.tv.name.plural)",
+					"type-210": "$t(dependancy.type.entity.selector.default) de $t(devices.domicube.name.plural)"
+				}
 			},
 			"relation": {
 				"reference": "Référence", 

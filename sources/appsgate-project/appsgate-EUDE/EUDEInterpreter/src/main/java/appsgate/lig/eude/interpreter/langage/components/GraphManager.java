@@ -271,10 +271,11 @@ public class GraphManager {
 
     private boolean addSelector(ReferenceTable ref, int idSelector) {
         boolean ret = false;
+        String typeDevices = "";
         ArrayList<NodeSelect> selectors = ref.getSelectors();
         // For each selector present in the program...
         for (NodeSelect selector : selectors) {
-            addNode(SELECTOR_ENTITY, "" + idSelector, "S" + idSelector);
+//            addNode(SELECTOR_ENTITY, "" + idSelector, selector.getTypeSpec());
             ret = true;
             
             HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getPlaceDeviceSelector();
@@ -283,6 +284,14 @@ public class GraphManager {
             ArrayList<String> devicesSelector = elements.get("deviceSelector");
             for (String deviceId : devicesSelector) {
                 addLink(DENOTES_LINKS, "" + idSelector, deviceId);
+                // Save the type of the devices once
+                if (typeDevices.equals("")) {
+                    try {
+                        typeDevices = interpreter.getContext().getDevice(deviceId).getString(("type"));
+                    } catch (JSONException ex) {
+                        java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
 
             // Get the places of the selector and link them to the selector
@@ -290,6 +299,12 @@ public class GraphManager {
             for (String placeId : placesSelector) {
                 addLink(LOCATED_LINK, "" + idSelector, placeId);
             }
+            
+            // Add selector : name = type devices selected and add type = selector
+            HashMap<String, String> optArg = new HashMap<String, String>();
+            optArg.put("type", "selector");
+            addNode(SELECTOR_ENTITY, "" + idSelector, typeDevices, optArg);
+            typeDevices = "";
         }
         return ret;
     }
