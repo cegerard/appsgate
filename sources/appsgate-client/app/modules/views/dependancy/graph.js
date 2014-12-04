@@ -212,15 +212,15 @@ define([
 						.attr("xlink:href", function (d) {
 							var imgNode = "";
 							if (d.type === "device") {
-								imgNode = "/app/img/home/device3.svg";
+								imgNode = "app/img/home/device3.svg";
 							} else if (d.type === "time") {
-								imgNode = "/app/img/home/calendar.svg";
+								imgNode = "app/img/home/calendar.svg";
 							} else if (d.type === "place") {
-								imgNode = "/app/img/home/place1.svg";
+								imgNode = "app/img/home/place1.svg";
 							} else if (d.type === "program") {
-								imgNode = "/app/img/home/program2.svg";
+								imgNode = "app/img/home/program2.svg";
 							} else if (d.type === "service") {
-								imgNode = "/app/img/home/service1.svg";
+								imgNode = "app/img/home/service1.svg";
 							}
 							return imgNode;
 						})
