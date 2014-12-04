@@ -300,11 +300,13 @@ public class GraphManager {
                 addLink(LOCATED_LINK, "" + idSelector, placeId);
             }
             
-            // Add selector : name = type devices selected and add type = selector
-            HashMap<String, String> optArg = new HashMap<String, String>();
-            optArg.put("type", "selector");
-            addNode(SELECTOR_ENTITY, "" + idSelector, typeDevices, optArg);
-            typeDevices = "";
+            if (!typeDevices.equals("")){
+                // Add selector : name = type devices selected and add type = selector
+                HashMap<String, String> optArg = new HashMap<String, String>();
+                optArg.put("type", "selector");
+                addNode(SELECTOR_ENTITY, "" + idSelector, typeDevices, optArg);
+                typeDevices = "";
+            }
         }
         return ret;
     }
