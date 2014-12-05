@@ -26,7 +26,7 @@ define([
 
             appRouter.navigate("#debugger/all", {replace:true});
             $(".nav-item").removeClass("active");
-            $("#home-nav").addClass("active");
+            $(".home-nav").addClass("active");
 
             appRouter.currentView = new DebuggerView({el:$("#main")});
             appRouter.currentView.render();

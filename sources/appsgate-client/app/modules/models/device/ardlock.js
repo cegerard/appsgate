@@ -80,7 +80,11 @@ define([
           v.args = [{
             "type": "int",
             "value": "1"
-          }];
+          },
+            {
+              "type": "boolean",
+              "value": "true"
+            }];
           $(btn).attr("json", JSON.stringify(v));
           break;
         default:

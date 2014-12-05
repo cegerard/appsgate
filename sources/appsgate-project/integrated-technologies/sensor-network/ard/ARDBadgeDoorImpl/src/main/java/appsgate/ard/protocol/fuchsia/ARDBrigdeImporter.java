@@ -57,7 +57,6 @@ public class ARDBrigdeImporter extends AbstractImporterComponent {
 
         executor.execute(new ARDSideTask(this, mapIpControllers, mapDeclarationIdController,importDeclaration,controllerFactory));
 
-        super.handleImportDeclaration(importDeclaration);
     }
 
     @Override

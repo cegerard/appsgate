@@ -20,10 +20,7 @@ define([
         appRouter.navigate("#places/" + places.at(0).get("id"), {replace:true});
 
         $(".nav-item").removeClass("active");
-        $("#places-nav").addClass("active");
-
-        // set active the first element - displayed by default
-        $($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).addClass("active");
+        $(".places-nav").addClass("active");
 
         // display the first place
         appRouter.showDetailsView(new PlaceDetailsView({model: places.at(0)}));
@@ -39,7 +36,7 @@ define([
 			  appRouter.currentMenuView.updateSideMenu();
 			  // update tab
 			  $(".nav-item").removeClass("active");
-			  $("#places-nav").addClass("active");
+			  $(".places-nav").addClass("active");
 		  }
 
         appRouter.showDetailsView(new PlaceDetailsView({model: places.get(id)}));

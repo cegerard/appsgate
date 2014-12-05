@@ -24,9 +24,15 @@ import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.ard.protocol.model.command.ARDRequest;
 import appsgate.ard.protocol.model.Constraint;
 import appsgate.ard.protocol.model.command.request.SubscriptionRequest;
+import fr.imag.adele.apam.CST;
+import fr.imag.adele.apam.Implementation;
+import fr.imag.adele.apam.Instance;
+import org.apache.felix.ipojo.Factory;
 import org.apache.felix.ipojo.annotations.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ow2.chameleon.fuchsia.core.component.AbstractImporterComponent;
+import org.ow2.chameleon.fuchsia.core.declaration.ImportDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +44,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 @Provides
@@ -55,7 +62,7 @@ public class ARDController {
     private ARDMessage globalMessageReceived;
     private Map<Constraint,ARDMessage> mapRouter=new HashMap<Constraint, ARDMessage>();
 
-    @Property(value = "-1")
+    @Property(value = "20000")
     private Integer retry;
     @Property(mandatory = true)
     private String host;
@@ -158,37 +165,49 @@ public class ARDController {
 
     }
 
-    //@Validate
-    public void validate() throws JSONException {
+    private ARDMessage initDoor(String id,Integer doorIdx,String doorName){
 
-        Thread t1=new Thread(){
+        Implementation impl = CST.componentBroker.getImpl("ARDBadgeDoor");// CST.apamResolver.findImplByName(null, "");
+        Map<String, String> properties = new HashMap<String, String>();
 
-            public void run(){
-                while(!isConnected()){
+        properties.put("deviceName", "ARD-Door-"+doorName);
+        properties.put("deviceId", "ARD-DoorIdx"+doorIdx);
+        properties.put(Factory.INSTANCE_NAME_PROPERTY, id);
 
-                    try {
-                        connect();
-                        monitoring();
-                        sendSyncRequest(new SubscriptionRequest()).getResponse();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        if(retry==null || retry==-1) break;
-                        try {
-                            Thread.sleep(retry);
-                        } catch (InterruptedException e1) {
-                            logger.error("Failed retrying to connect with ARD HUB");
-                        }
+        Instance instance = impl.createInstance(null, properties);
 
-                    }
+        return (ARDMessage)instance.getServiceObject();
 
+    }
+
+    public void validate(final AbstractImporterComponent importer, final ImportDeclaration declaration,final Map<ARDController,Set<String>> declarationController) throws JSONException {
+
+        while(!isConnected()){
+
+            try {
+                connect();
+                monitoring();
+                sendSyncRequest(new SubscriptionRequest()).getResponse();
+                String id=declaration.getMetadata().get("id").toString();
+                final Integer doorIdx=Integer.parseInt(declaration.getMetadata().get("ard.door_idx").toString());
+                String doorName=declaration.getMetadata().get("ard.door_name").toString();
+                ARDMessage listenerForDoor=initDoor(id, doorIdx, doorName);
+                importer.handleImportDeclaration(declaration);
+                getMapRouter().put(new GenericContraint(doorIdx),listenerForDoor);
+                Set<String> controllersDeclaration=declarationController.get(this);
+                controllersDeclaration.add(id);
+            } catch (Exception e) {
+                System.out.println("Failed to connect.. retrying in "+retry);
+                if(retry==null || retry==-1) break;
+                try {
+                    Thread.sleep(retry);
+                } catch (InterruptedException e1) {
+                    logger.error("Failed retrying to connect with ARD HUB");
                 }
+
             }
 
-        };
-        t1.setDaemon(true);
-        t1.start();
-
-
+        }
     }
 
     @Override

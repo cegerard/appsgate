@@ -404,34 +404,28 @@ define([
       updateProgressIndicators: function() {
         var self = this;
         var input = $(".programInput");
+        var workspace = $(".editorWorkspace");
         var activeSet = $.map(this.model.get("activeNodes"), function(value,index){return [[index, value]];});
+        $(".active-node-indicator").addClass("hidden");
 
-        // mark active nodes as locked
-        if(activeSet.length > 0){
+        // mark active nodes
+        if (self.model.isWorking() && activeSet.length > 0) {
           activeSet.forEach(function(activeNodes) {
-            if($(input).find("#active-" + activeNodes[0]).length > 0 && activeNodes[1] == true) {
-                var workspace = $(".editorWorkspace");
-                workspace.children("#active-" + activeNodes[0]).remove();
-                var activeIndicator = $(input).find("#active-" + activeNodes[0]);
-                var editorWidth = workspace.width();
-                $(activeIndicator).width(editorWidth);
+            var activeIndicator = $(input).find("#active-" + activeNodes[0]);
+            if (activeIndicator.length > 0) {
+              var editorWidth = workspace.width();
+              var leftOffset = activeIndicator.offset().left - workspace.position().left;
+              $(activeIndicator).width(editorWidth);
+              $(activeIndicator).offset({
+                left: leftOffset
+              });
 
-                activeIndicator = activeIndicator.detach();
-                $(activeIndicator.first()).appendTo(workspace);
+              activeIndicator.removeClass("hidden");
 
-                var targetPosition = $("#" + activeIndicator.attr("target-node")).offset();
-                if(targetPosition){
-                  $(activeIndicator).offset({top:targetPosition.top - workspace.offset().top, left:0});
-                }
-
-                $(".editorWorkspace").find("#active-" + activeNodes[0]).removeClass("hidden");
-
-                if(activeIndicator.attr("parent-node") !== null) {
-                  $(".editorWorkspace").children("#active-" + activeIndicator.attr("parent-node")).addClass("hidden");
-                }
-            }
-            else if($(input).find("#active-" + activeNodes[0]).length > 0 && activeNodes[1] == false){
-              $(".editorWorkspace").children("#active-" + activeNodes[0]).addClass("hidden");
+              // if a parent node of an active node is active, hide its indicator
+              if (typeof activeIndicator.attr("parent-node") !== "undefined") {
+                input.find("#active-" + activeIndicator.attr("parent-node")).addClass("hidden");
+              }
             }
           });
         }

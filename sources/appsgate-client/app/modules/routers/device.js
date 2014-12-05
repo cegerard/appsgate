@@ -47,7 +47,7 @@ define([
             // update the url
             appRouter.navigate("#devices/types/" + typeId, {replace:true});
             $(".nav-item").removeClass("active");
-            $("#devices-nav").addClass("active");
+            $(".devices-nav").addClass("active");
 
             appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
           }
@@ -70,13 +70,14 @@ define([
         */
         details: function(id) {
 		  // Direct access device, need to add the menu
-		  if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined || appRouter.currentMenuView.attributes.class !== "DeviceMenuView") {
+		  if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined
+        || (appRouter.currentMenuView.attributes.class !== "DeviceMenuView" && appRouter.currentMenuView.attributes.class !== "PlaceMenuView")) {
 			  // display the side menu
 			  appRouter.showMenuView(new DeviceMenuView());
 			  appRouter.currentMenuView.updateSideMenu();
 			  // update tab
 			  $(".nav-item").removeClass("active");
-			  $("#devices-nav").addClass("active");
+			  $(".devices-nav").addClass("active");
 		  }
 
           var device = devices.get(id);

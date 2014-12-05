@@ -52,9 +52,17 @@ define([
          */
         autoupdate: function(model) {
             var place = places.get(model.get("placeId"));
+            var placeId = "";
+            if(Backbone.history.fragment.split("/")[1] !== "") {
+              placeId = Backbone.history.fragment.split("/")[1];
+              if(typeof devices.get(placeId) !== "undefined") {
+                // when a device is displayed, making active the place it is in
+                placeId = devices.get(placeId).get("placeId");
+              }
+            }
             this.$el.find("#place-" + place.get("id")).replaceWith(this.tplPlaceContainer({
                 place: place,
-                active: Backbone.history.fragment.split("/")[1] === place.get("id") ? true : false
+                active: place.get("id") == placeId?true:false
             }));
 
             // translate the view
@@ -66,15 +74,15 @@ define([
          * @param e JS click event
          */
         updateSideMenu: function(e) {
+          // setting the element active based on click or url
+          if (typeof e !== "undefined") {
+            // reset selected item
             _.forEach($("a.list-group-item"), function(item) {
-                $(item).removeClass("active");
+              $(item).removeClass("active");
             });
 
-			if (typeof e !== "undefined") {
-                $(e.currentTarget).addClass("active");
-            } else if(Backbone.history.fragment.split("/")[1] !== ""){
-                $("#place-" + Backbone.history.fragment.split("/")[1]).addClass("active");
-            } 
+            $(e.currentTarget).addClass("active");
+          }
         },
         /**
          * Clear the input text, hide the error message and disable the valid button by default
@@ -212,6 +220,7 @@ define([
 
                 return this;
             }
+            this.updateSideMenu();
         }
     });
     return PlaceMenuView;

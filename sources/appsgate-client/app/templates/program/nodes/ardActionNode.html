@@ -35,6 +35,13 @@
         <% }); %>
     </select>
 
+    <span data-i18n="devices.ard.with-the-value"></span>
+
+    <select id="ard-input-value-<%= node.iid %>" class="ard-input-value-selector" target-id="<%= node.iid %>" >
+        <option value="true" data-i18n="devices.ard.true" <% if (node.args[1].value == "true") { print('selected'); } %> ></option>
+        <option value="false" data-i18n="devices.ard.false" <% if (node.args[1].value == "false") { print('selected'); } %> ></option>
+    </select>
+
     <% } %>
 
 </div>
