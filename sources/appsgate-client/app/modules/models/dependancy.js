@@ -177,7 +177,7 @@ define([
 			case 2:
 			case 3:
 			default:
-				return 50;
+				return 90;
 			}
 		},
 
