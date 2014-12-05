@@ -174,7 +174,6 @@ define([
 			var nEnter = nodeEntity.enter().append("svg:g")
 				.attr("class", "nodeGroup")
 				.call(force.drag)
-				//                .on("click", this.click.bind(this))
 				.on("dblclick", this.dblclick.bind(this))
 				.on("mouseover", function (d) {
 					nodeEntity.classed("nodeOver", function (d2) {
@@ -233,9 +232,12 @@ define([
 					d3.select(this).append("text")
 						.attr("class", "label-name")
 						.text(function (d) {
-							return d.name;
+							if (d.type === "selector")
+								return $.i18n.t("dependancy.type.entity.selector.type-" + d.name);
+							else
+								return d.name;
 						})
-					
+
 					// Type program, add form to indicate running or not. 
 					if (a.type === "program") {
 						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
@@ -317,7 +319,6 @@ define([
 						.attr("class", "linklabel linklabelholder hidden")
 						.style("font-size", "13px")
 						.attr("x", "90")
-						.attr("y", "-10")
 						.attr("text-anchor", "middle")
 						.append("textPath")
 						.attr("xlink:href", function (d) {
@@ -520,81 +521,26 @@ define([
 			}
 		},
 
-		click: function (d) {
+		dblclick: function (d) {
 			// Stop the force to control manually the actions
-			//            force.stop();
-			if (d !== this.model.get("rootNode")) {
-				d.fixed = !d.fixed;
-			}
-
-			//            console.log("binding move");
-			//            this.on("mousemove", function () {
-			//                console.log("MOVE");
-			//                d.fixed = true;
-			//                this.onmouseup(function () {
-			//                    this.off("mousemove");
-			//                });
-			//            });
-			if (force.alpha() === 0) {
-				force.start();
+			force.stop();
+			// If the node selected is the root node, defocus it
+			if (d === this.model.get("rootNode")) {
+				this.model.set({
+					rootNode: ""
+				});
+				// Don't use the selectAndMove function so unfix manually
+				d.fixed = false;
+				d.selected = false;
+			} else {
+				// Focus and move new root node
+				this.selectAndMoveRootNode(d);
 			}
 			// The nodeRoot has been moved, we can restart the force
 			force.start();
-		},
 
-		dblclick: function (d) {
-			// Go to details manage
-			if (d3.event.shiftKey) {
-				switch (d.type) {
-				case "place":
-					appRouter.navigate("#places/" + d.id, {
-						trigger: true
-					});
-					break;
-				case "program":
-					appRouter.navigate("#programs/" + d.id, {
-						trigger: true
-					});
-					break;
-				case "service":
-					appRouter.navigate("#services/types/" + d.deviceType, {
-						trigger: true
-					});
-					break;
-				case "device":
-					appRouter.navigate("#devices/" + d.id, {
-						trigger: true
-					});
-					break;
-				case "time":
-				case "selector":
-				default:
-					break;
-
-				}
-			} 
-			// Focus / Unfocus
-			else {
-				// Stop the force to control manually the actions
-				force.stop();
-				// If the node selected is the root node, defocus it
-				if (d === this.model.get("rootNode")) {
-					this.model.set({
-						rootNode: ""
-					});
-					// Don't use the selectAndMove function so unfix manually
-					d.fixed = false;
-					d.selected = false;
-				} else {
-					// Focus and move new root node
-					this.selectAndMoveRootNode(d);
-				}
-				// The nodeRoot has been moved, we can restart the force
-				force.start();
-
-				nodeEntity.classed("nodeOver", false);
-				nodeEntity.classed("neighborNodeOver", false);
-			}
+			nodeEntity.classed("nodeOver", false);
+			nodeEntity.classed("neighborNodeOver", false);
 		},
 
 		createFilters: function (model) {
@@ -622,7 +568,12 @@ define([
 						})
 					d3.select(this).append("span")
 						.text(function (d) {
-							return $.i18n.t("dependancy.type.entity." + d);
+							// exception for the selector
+							if (d === "selector") {
+								return $.i18n.t("dependancy.type.entity.selector.filter-label");
+							} else {
+								return $.i18n.t("dependancy.type.entity." + d);
+							}
 						});
 				});
 
@@ -696,8 +647,7 @@ define([
 			} else {
 				$("#checkbox-all-relations").prop('checked', false);
 			}
-		}
-
+		},
 	});
 
 	function rescale() {
@@ -711,12 +661,45 @@ define([
 	};
 
 	function mousedown(d) {
-		// disable zoom
-		//		svg.call(d3.behavior.zoom().on("zoom", null));
-		d.hasBeenMoved = false;
-		d3.select(this).on("mousemove", function () {
-			d.hasBeenMoved = true;
-		});
+		// "ZoomIn" details 
+		if (d3.event.shiftKey) {
+			switch (d.type) {
+			case "place":
+				appRouter.navigate("#places/" + d.id, {
+					trigger: true
+				});
+				break;
+			case "program":
+				appRouter.navigate("#programs/" + d.id, {
+					trigger: true
+				});
+				break;
+			case "service":
+				appRouter.navigate("#services/types/" + d.deviceType, {
+					trigger: true
+				});
+				break;
+			case "device":
+				appRouter.navigate("#devices/" + d.id, {
+					trigger: true
+				});
+				break;
+			case "time":
+			case "selector":
+			default:
+				break;
+			}
+		} 
+		else {
+			// disable zoom
+			//		svg.call(d3.behavior.zoom().on("zoom", null));
+
+			// Fix node management
+			d.hasBeenMoved = false;
+			d3.select(this).on("mousemove", function () {
+				d.hasBeenMoved = true;
+			});
+		}
 	};
 
 	function mouseup(d, nodeElement, nodeRoot) {

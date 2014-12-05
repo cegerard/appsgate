@@ -29,6 +29,13 @@
 			"incomplete-program": "Incomplete",
 			"invalid-program": "Invalid"
 		},
+	  	"help" : {
+			"title": "Help",
+			"click": "Click : Unfix a previously fixed entity",
+			"click-move": "Click + Move : Move an entity and fix it",
+			"double-click": "Double Click : Focus / Unfocus an entity",
+			"maj-click": "Shift + Click : Go to the entity's detailed page"
+		},
 	  	"type": {
 			"entity": {
 				"place": "$t(navbar.places)",
@@ -36,7 +43,22 @@
 				"service": "$t(navbar.services)",
 				"time": "Time",
 				"device": "$t(navbar.devices)",
-				"selector": "Selectors"
+				"selector": {
+					"filter-label" : "Selectors",
+					"default" : "Selector",
+					"type-0": "$t(devices.temperature.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-1": "$t(devices.illumination.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-2": "$t(devices.switch.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-3": "$t(devices.contact.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-4": "$t(devices.cardswitch.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-5": "$t(devices.ard.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-6": "$t(devices.plug.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-7": "$t(devices.lamp.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-8": "$t(devices.actuator.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-31": "$t(devices.mediaplayer.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-124": "$t(devices.tv.name.plural) $t(dependancy.type.entity.selector.default)",
+					"type-210": "$t(devices.domicube.name.plural) $t(dependancy.type.entity.selector.default)"
+				} 
 			},
 			"relation": {
 				"reference": "Reference",
