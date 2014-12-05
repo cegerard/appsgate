@@ -54,7 +54,7 @@ public class ARDSideTask implements Runnable {
                 controllers.put(ip,controller);
                 declarationController.put((ARDController)controller.getPojoObject(),new HashSet<String>());
                 ardController=(ARDController)controller.getPojoObject();
-                ardController.validate();
+                ardController.validate(importer,importDeclaration,declarationController);
                 /*
                 try {
                     controller=new ARDController(ip,port);
@@ -83,41 +83,15 @@ public class ARDSideTask implements Runnable {
 
     }
 
-    private ARDMessage initDoor(String id,Integer doorIdx,String doorName){
-
-        Implementation impl = CST.componentBroker.getImpl("ARDBadgeDoor");// CST.apamResolver.findImplByName(null, "");
-        Map<String, String> properties = new HashMap<String, String>();
-
-        properties.put("deviceName", "ARD-Door-"+doorName);
-        properties.put("deviceId", "ARD-DoorIdx"+doorIdx);
-        properties.put(Factory.INSTANCE_NAME_PROPERTY, id);
-
-        Instance instance = impl.createInstance(null, properties);
-
-        return (ARDMessage)instance.getServiceObject();
-
-    }
-
     @Override
     public void run() {
-        String id=importDeclaration.getMetadata().get("id").toString();
         String ip=importDeclaration.getMetadata().get("ard.bridge.ip").toString();
         Integer port=Integer.parseInt(importDeclaration.getMetadata().get("ard.bridge.port").toString());
-        final Integer doorIdx=Integer.parseInt(importDeclaration.getMetadata().get("ard.door_idx").toString());
-        String doorName=importDeclaration.getMetadata().get("ard.door_name").toString();
 
-        ARDController controller=initController(ip,port);
 
-        Set<String> controllersDeclaration=declarationController.get(controller);
+        initController(ip,port);
 
-        controllersDeclaration.add(id);
 
-        controller.getMapRouter().put(new Constraint() {
-            @Override
-            public boolean evaluate(JSONObject jsonObject) throws JSONException {
-                return jsonObject.getJSONObject("event").getString("class").equals("card") && jsonObject.getJSONObject("event").getInt("door_idx") == doorIdx;
-            }
-        }, initDoor(id,doorIdx, doorName));
 
     }
 }
