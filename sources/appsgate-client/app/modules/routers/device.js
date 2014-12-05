@@ -47,7 +47,7 @@ define([
             // update the url
             appRouter.navigate("#devices/types/" + typeId, {replace:true});
             $(".nav-item").removeClass("active");
-            $("#devices-nav").addClass("active");
+            $(".devices-nav").addClass("active");
 
             appRouter.showDetailsView(new DevicesByTypeView({id: typeId}));
           }
@@ -77,7 +77,7 @@ define([
 			  appRouter.currentMenuView.updateSideMenu();
 			  // update tab
 			  $(".nav-item").removeClass("active");
-			  $("#devices-nav").addClass("active");
+			  $(".devices-nav").addClass("active");
 		  }
 
           var device = devices.get(id);
