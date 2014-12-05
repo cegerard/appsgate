@@ -393,6 +393,7 @@
       "keyboard": {
         "plug": "prise",
         "change": "la consommation électrique mesurée par la __myVar__ change",
+        "get": "la consommation électrique mesurée par la __myVar__",
         "isOff": "la __myVar__ est éteinte",
         "isOff-keep": "la __myVar__ éteinte",
         "isOn": "la __myVar__ est allumée",
@@ -404,6 +405,7 @@
       },
       "language": {
         "change": "la consommation électrique mesurée par __myVar__ change",
+        "get": "la consommation électrique mesurée par __myVar__",
         "isOff": "__myVar__ est éteinte",
         "isOff-keep": "__myVar__ éteinte",
         "isOn": "__myVar__ est allumée",

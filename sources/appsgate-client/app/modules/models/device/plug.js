@@ -160,7 +160,38 @@ define([
       }
 
       return $.i18n.t("devices.no-value");
-    }
+    },
+    /**
+     * return the list of available properties
+     */
+    getProperties: function() {
+      return ["value"];
+    },
+    /**
+     * return the keyboard code for a property
+     */
+    getKeyboardForProperty: function(property) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v = this.getJSONProperty("mandatory");
+      switch (property) {
+        case "value":
+          $(btn).append("<span>" + $.i18n.t('devices.plug.keyboard.get', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.plug.keyboard.plug') + "</span>",
+          }));
+          v.methodName = "activePower";
+          v.returnType = "number";
+          v.unit = "watt";
+          v.phrase = "devices.plug.language.get";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected device state found for plug: " + property);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
+
   });
   return Plug;
 });
