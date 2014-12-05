@@ -19,7 +19,7 @@ define([
             appRouter.showMenuView(new ProgramMenuView());
 
             $(".nav-item").removeClass("active");
-            $("#programs-nav").addClass("active");
+            $(".programs-nav").addClass("active");
 
             // update the url if there is at least one program
             if (programs.length > 0) {
@@ -35,7 +35,7 @@ define([
 				appRouter.showMenuView(new ProgramMenuView());
 				// update tab
 				$(".nav-item").removeClass("active");
-				$("#programs-nav").addClass("active");
+				$(".programs-nav").addClass("active");
 			}
 
             // display the requested program
@@ -60,7 +60,7 @@ define([
             $("#main").html(appRouter.navbartemplate());
 
             $(".nav-item").removeClass("active");
-            $("#programs-nav").addClass("active");
+            $(".programs-nav").addClass("active");
 
             appRouter.navigate("#programs/editor/" + id, {replace:true});
 
