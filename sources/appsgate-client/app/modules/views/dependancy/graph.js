@@ -220,6 +220,8 @@ define([
 								imgNode = "app/img/home/program2.svg";
 							} else if (d.type === "service") {
 								imgNode = "app/img/home/service1.svg";
+							} else if (d.type === "selector") {
+								imgNode = "app/img/home/devices-selector.svg";
 							}
 							return imgNode;
 						})
