@@ -66,6 +66,9 @@
     },
     "ard": {
       "affirmative": "Yes",
+      "true":"True",
+      "false":"False",
+      "with-the-value":"with the value",
       "action": {
         "zone-activate": "Activate alarm __myVar__",
         "zone-desactivate": "Desactivate alarm __myVar__",

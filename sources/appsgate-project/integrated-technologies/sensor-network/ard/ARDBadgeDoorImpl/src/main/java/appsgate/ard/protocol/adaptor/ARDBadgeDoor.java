@@ -166,12 +166,11 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
     }
 
     @Override
-    public void forceInput(int input) {
+    public void forceInput(int input,boolean value) {
         logger.info("forceInput invoked: Input to be forced {},", input);
         try {
-            JSONObject request1=controller.sendSyncRequest(new ForceInputRequest(input,true,false)).getResponse();
-            JSONObject request2=controller.sendSyncRequest(new ForceInputRequest(input,true,true)).getResponse();
-            logger.info("Response1: {}, Response2: {}",request1,request2);
+            JSONObject request1=controller.sendSyncRequest(new ForceInputRequest(input,value,false)).getResponse();
+            logger.info("Response: {}",request1);
         } catch (JSONException e) {
             logger.error("Failed invoking zoneActivate for zone {}",input);
         }
@@ -214,6 +213,7 @@ public class ARDBadgeDoor extends CoreObjectBehavior implements ARDMessage, Core
                 }
             }
         }
+
         try {
             descr.put("zones",zonesCache);
         } catch (JSONException e) {

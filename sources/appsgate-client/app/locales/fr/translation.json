@@ -66,6 +66,9 @@
     },
     "ard": {
       "affirmative": "Oui",
+      "true":"Vrai",
+      "false":"Faux",
+      "with-the-value":"avec le valeur",
       "action": {
         "zone-activate": "Activer surveillance __myVar__",
         "zone-desactivate": "Désactiver surveillance __myVar__",
