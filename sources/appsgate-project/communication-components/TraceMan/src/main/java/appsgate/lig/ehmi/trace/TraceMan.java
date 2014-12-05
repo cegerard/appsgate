@@ -1046,6 +1046,28 @@ public class TraceMan implements TraceManSpec {
 
         return fileTraceActivated;
     }
+    
+    /**
+     * Stop initiated lives mode
+     * @return true if all live mehtod are close
+     */
+    public boolean stopLive() {
+        if (liveTracer != null) {
+            liveTraceActivated = false;
+            liveTracer.close();
+            liveTracer = null;
+        }
+
+        if (fileTracer != null) {
+            fileTraceActivated = false;
+            fileTracer.close();
+            fileTracer = null;
+        }
+        
+        traceQueue.stop();
+
+        return true;
+    }
 
     @Override
     public JSONObject getStatus() {
