@@ -48,7 +48,7 @@ define([
 			appRouter.navigate("#dependancies/all", {replace:true});
 
 			$(".nav-item").removeClass("active");
-			$("#dependancies-nav").addClass("active");
+			$(".dependancies-nav").addClass("active");
 
 			$("body").i18n();
 
@@ -59,7 +59,7 @@ define([
 				}));
 
 				$(".nav-item").removeClass("active");
-				$("#dependancies-nav").addClass("active");
+				$(".dependancies-nav").addClass("active");
 
 				appRouter.showDetailsView(new GraphView({
 					//                    el: $("#main"),

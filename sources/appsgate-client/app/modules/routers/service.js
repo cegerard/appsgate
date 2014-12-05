@@ -26,7 +26,7 @@ define([
         appRouter.showMenuView(new ServiceMenuView());
 
         $(".nav-item").removeClass("active");
-        $("#services-nav").addClass("active");
+        $(".services-nav").addClass("active");
 
         // set active the first element - displayed by default
         if ($($($(".aside-menu .list-group")[1]).find(".list-group-item")[0]).length > 0) {
@@ -59,7 +59,7 @@ define([
         appRouter.showDetailsView(new ServicesByTypeView({id: typeId}));
 
         $(".nav-item").removeClass("active");
-        $("#services-nav").addClass("active");
+        $(".services-nav").addClass("active");
       },
       /**
       * Show the details of a service
@@ -75,7 +75,7 @@ define([
 			  appRouter.currentMenuView.updateSideMenu();
 			  // update tab
 			  $(".nav-item").removeClass("active");
-			  $("#services-nav").addClass("active");
+			  $(".services-nav").addClass("active");
 	  	}
 
         appRouter.showDetailsView(new ServiceDetailsView({model: services.get(id)}));
