@@ -149,7 +149,7 @@ define([
      * Return the list of params for a given type of params
      */
     getParams: function(type) {
-          return ["Music", "Meal", "Question", "Lan", "Night"];
+          return ["Music", "Meal", "Question", "Lan", "Night", "inactivate"];
     },
 
     getKeyboardForParam: function(which) {
@@ -177,6 +177,10 @@ define([
         case "Night":
           v.value = "5";
           v.icon = "app/img/domicube-night.png";
+          break;
+        case "inactivate":
+          v.value = "2";
+          v.icon = "app/img/domicube-white.svg";
           break;
         default:
           console.error("unexpected state found for Domicube: " + state);
