@@ -1,5 +1,7 @@
 package appsgate.lig.google.helpers;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,11 +59,17 @@ public class GoogleOpenAuthent {
 				+ GoogleHTTPRequest.AND
 				+ PARAM_SCOPE +GoogleHTTPRequest.EQUAL + scopes;
 		
-		return GoogleHTTPRequest.httpsPost(oauthDeviceURL,
-				null, 
-				requestContent,
-				null
-				);		
+		try {
+			return GoogleHTTPRequest.httpsPost(oauthDeviceURL,
+					null, 
+					requestContent.getBytes("UTF-8"),
+					null
+					);
+		} catch (UnsupportedEncodingException e) {
+			// Encoding Exists
+			e.printStackTrace();
+			return null;
+		}		
 	}
 	
 	/**
@@ -86,10 +94,16 @@ public class GoogleOpenAuthent {
 				+ PARAM_GRANTTYPE +GoogleHTTPRequest.EQUAL + GRANT_DEVICE
 				;
 
-		return GoogleHTTPRequest.httpsPost(oauthTokenURL,
-				null,
-				requestContent,
-				null);
+		try {
+			return GoogleHTTPRequest.httpsPost(oauthTokenURL,
+					null,
+					requestContent.getBytes("UTF-8"),
+					null);
+		} catch (UnsupportedEncodingException e) {
+			// Encoding Exists
+			e.printStackTrace();
+			return null;			
+		}
 	}	
 	
 	/**
@@ -111,10 +125,16 @@ public class GoogleOpenAuthent {
 				+ PARAM_GRANTTYPE +GoogleHTTPRequest.EQUAL + GRANT_REFRESH
 				;
 		
-		return GoogleHTTPRequest.httpsPost(oauthTokenURL,
-				null,
-				requestContent,
-				null);
+		try {
+			return GoogleHTTPRequest.httpsPost(oauthTokenURL,
+					null,
+					requestContent.getBytes("UTF-8"),
+					null);
+		} catch (UnsupportedEncodingException e) {
+			// Encoding Exists
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

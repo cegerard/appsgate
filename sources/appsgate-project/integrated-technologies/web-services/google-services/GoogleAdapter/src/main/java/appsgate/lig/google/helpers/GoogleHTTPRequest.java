@@ -145,7 +145,7 @@ public class GoogleHTTPRequest {
 	public static final String COMMA = ",";
 	
 	public static final String PARAM_CONTENTTYPE = "Content-Type";
-	public static final String CONTENTTYPE_JSON = "application/json";	
+	public static final String CONTENTTYPE_JSON = "application/json;charset=UTF-8";	
 
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
@@ -250,15 +250,15 @@ public class GoogleHTTPRequest {
 	 * @return A JSONObject if the connection with the webservice was successfull
 	 */
 	public static JSONObject httpsPost(String url, 
-			Map<String,String> requestProperties, String requestContent, Map<String,String> urlParameters )  {
+			Map<String,String> requestProperties, byte[] requestContent, Map<String,String> urlParameters )  {
 
 		try {
 			HttpsURLConnection httpsConnection = httpsRequest(url, requestProperties, POST, urlParameters);
 
 			httpsConnection.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(httpsConnection.getOutputStream());
-			wr.writeBytes(requestContent);
-
+			wr.write(requestContent);
+			
 			wr.flush();
 			wr.close();
 
