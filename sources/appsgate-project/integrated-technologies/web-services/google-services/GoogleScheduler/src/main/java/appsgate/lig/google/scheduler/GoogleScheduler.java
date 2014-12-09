@@ -1,5 +1,7 @@
 package appsgate.lig.google.scheduler;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -523,6 +526,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		JSONObject content = new JSONObject();
 		content.put("start", new JSONObject().put("dateTime",  dateFormat.format(startDate)));
 		content.put("end", new JSONObject().put("dateTime",  dateFormat.format(endDate)));
+
 
 		content.put("summary", eventName);
 

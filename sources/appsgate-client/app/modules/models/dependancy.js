@@ -41,6 +41,28 @@ define([
 			});
 		},
 
+		/*
+		 * Method to launch the graph from a entity
+		 * @param: id - entity id
+		 */
+		initializeRootNode: function (id) {
+			var self = this;
+			self.get("entities").forEach(function (node) {
+				if (node.id === id) {
+					// Test if already one root node
+					if (self.get("rootNode") != "") {
+						// Defix & deselecte it
+						self.get("rootNode").fixed = false;
+						self.get("rootNode").selected = false;
+					}
+					// Save the new root node
+					self.set({
+						rootNode: node
+					});
+				}
+			});
+		},
+
 		loadData: function (jsonData) {
 			// Creation of the data structure : relations / entities / neighbors
 			var relationsNotSorted = jsonData.links,
@@ -215,15 +237,15 @@ define([
 					arrayUpdated.splice(arrayUpdated.indexOf(type), 1);
 			}
 		},
-		
+
 		/**
-		* Method to know if a target is targeted more than one time
-		* @param: target to search
-		*/
-		isTargetMultipleTargeted: function(target) {
+		 * Method to know if a target is targeted more than one time
+		 * @param: target to search
+		 */
+		isTargetMultipleTargeted: function (target) {
 			var self = this;
 			var targetedOneTime = false;
-			for (var i=0; i < self.get("currentRelations").length; i++) {
+			for (var i = 0; i < self.get("currentRelations").length; i++) {
 				if (self.get("currentRelations")[i].type === "reference" && target === self.get("currentRelations")[i].target) {
 					// If the target has already seen one time, then multiple time target and return true
 					if (targetedOneTime) {

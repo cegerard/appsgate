@@ -34,6 +34,10 @@ define([
 				force.start();
 			});
 
+			// Zoom variables
+			savedScale = 1;
+			savedTranslate = [0, 0];
+			onMouseDownNode = false;
 		},
 
 		onRefreshButton: function () {
@@ -108,12 +112,26 @@ define([
 			this.updateCheckAllEntities();
 			this.updateCheckAllRelations();
 
+			// Zoom d3 object
+			pan = d3.behavior.zoom()
+				.on("zoom", rescale)
+				.on("zoomstart", function () {
+					// When pan/zoom change cursor if no on mouse
+					if (!onMouseDownNode) {
+						$("body").css("cursor", "move");
+					}
+				})
+				.on("zoomend", function () {
+					$("body").css("cursor", "default");
+				});
+
 			// Add the svg to html
 			svg = d3.select("#graph").select("svg")
 				.attr("width", width)
-				.attr("height", height);
-
-			//			svg.call(d3.behavior.zoom().on("zoom", rescale));
+				.attr("height", height)
+				.call(pan)
+				.on("dblclick.zoom", null)
+				.append("g");
 
 			// Add the div for links & nodes
 			svg.append("svg:g").attr("id", "groupLink");
@@ -144,6 +162,11 @@ define([
 				.size([width, height])
 				.gravity(0.03)
 				.on("tick", this.tick.bind(this));
+			
+			// Test if we open graph from an entity, if yes, focus it
+			if (this.model.get("rootNode") !== "") {
+				this.selectAndMoveRootNode(this.model.get("rootNode"));
+			}
 
 			// Call update to update the state of the force (node/link)
 			this.update(this.model);
@@ -545,6 +568,9 @@ define([
 			nodeEntity.classed("neighborNodeOver", false);
 		},
 
+		/*
+		 * Method to create the filters and add them to the html
+		 */
 		createFilters: function (model) {
 			var self = this;
 			filterNodes = d3.select("#filterContainerNodes").selectAll("div")
@@ -635,6 +661,9 @@ define([
 			force.start();
 		},
 
+		/*
+		 * Update the checkbox for the entities according to the model
+		 */
 		updateCheckAllEntities: function () {
 			if (this.model.get("currentEntitiesTypes").length === this.model.get("entitiesTypes").length) {
 				$("#checkbox-all-entities").prop('checked', true);
@@ -643,6 +672,9 @@ define([
 			}
 		},
 
+		/*
+		 * Update the checkbox for the relations according to the model
+		 */
 		updateCheckAllRelations: function () {
 			if (this.model.get("currentRelationsTypes").length === this.model.get("relationsTypes").length) {
 				$("#checkbox-all-relations").prop('checked', true);
@@ -653,16 +685,42 @@ define([
 	});
 
 	function rescale() {
-		trans = d3.event.translate;
-		scale = d3.event.scale;
+		// savedScale no null move a node
+		if (savedScale !== null) {
+			// update the zoom object in order to have the last position of the scale
+			pan.scale(savedScale);
+		}
+		// savedTranslate no null move a node
+		if (savedTranslate !== null) {
+			// update the zoom object in order to have the last position of the translation
+			pan.translate(savedTranslate);
+		}
 
-		svg.select("#groupNode").attr("transform",
-			"translate(" + trans + ")" + " scale(" + scale + ")");
-		svg.select("#groupLink").attr("transform",
-			"translate(" + trans + ")" + " scale(" + scale + ")");
+		// Rescale if we are moving a node
+		if (!onMouseDownNode) {
+			trans = d3.event.translate;
+			scale = d3.event.scale;
+
+			savedScale = null;
+			savedTranslate = null;
+
+			svg.attr("transform",
+				"translate(" + trans + ")" + " scale(" + scale + ")");
+		} else {
+			// In this case, we are moving node, so save the scale/pan to update the zoom object
+			savedScale = pan.scale();
+			savedTranslate = pan.translate();
+		}
 	};
 
+	/*
+	 * Call when click on a node. Move or "zoomIn" the node
+	 * param d: Node clicked
+	 */
 	function mousedown(d) {
+		// Flag to avoid the rescale
+		onMouseDownNode = true;
+
 		// "ZoomIn" details 
 		if (d3.event.shiftKey) {
 			switch (d.type) {
@@ -693,9 +751,6 @@ define([
 			}
 		} 
 		else {
-			// disable zoom
-			//		svg.call(d3.behavior.zoom().on("zoom", null));
-
 			// Fix node management
 			d.hasBeenMoved = false;
 			d3.select(this).on("mousemove", function () {
@@ -704,6 +759,12 @@ define([
 		}
 	};
 
+	/*
+	 * Call when mouseup on a node. After a move of a node, fix it
+	 * param d: Node moved HTML
+	 * param nodeElement : Node moved D3
+	 * param nodeRoot : Node root D3
+	 */
 	function mouseup(d, nodeElement, nodeRoot) {
 		// don't defix the nodeRoot
 		if (d !== nodeRoot) {
@@ -720,8 +781,8 @@ define([
 			}
 		}
 
-		// enable zoom
-		//		svg.call(d3.behavior.zoom().on("zoom", rescale));
+		// reset the flag for the rescale
+		onMouseDownNode = false;
 	};
 
 	function arcPath(turned, d) {
