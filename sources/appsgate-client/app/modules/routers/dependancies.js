@@ -9,8 +9,8 @@ define([
 	DependancyRouter = Backbone.Router.extend({
 		routes: {
 			"dependancies": "all",
-      "dependancies/all": "all"
-			//"dependancies/:id": "selected"
+			"dependancies/all": "all",
+			"dependancies/:id": "selected"
 		},
 		// No selected entity
 		all: function () {
@@ -18,11 +18,11 @@ define([
 			// remove and unbind the current view for the menu
 			if (appRouter.currentMenuView) {
 				appRouter.currentMenuView.close();
-        appRouter.currentMenuView = null;
+				appRouter.currentMenuView = null;
 			}
 			if (appRouter.currentView) {
 				appRouter.currentView.close();
-        appRouter.currentView = null;
+				appRouter.currentView = null;
 			}
 
 			$("#main").html(appRouter.navbartemplate());
@@ -45,7 +45,9 @@ define([
 				direction: 'top-right'
 			});
 
-			appRouter.navigate("#dependancies/all", {replace:true});
+			appRouter.navigate("#dependancies/all", {
+				replace: true
+			});
 
 			$(".nav-item").removeClass("active");
 			$(".dependancies-nav").addClass("active");
@@ -68,42 +70,65 @@ define([
 			});
 		},
 		// One entity selected
-		//        selected: function (id) {
-		//
-		//            console.log("SELECTED id : " + id);
-		//
-		//            // remove and unbind the current view for the menu
-		//            if (appRouter.currentMenuView) {
-		//                appRouter.currentMenuView.close();
-		//            }
-		//            if (appRouter.currentView) {
-		//                appRouter.currentView.close();
-		//            }
-		//
-		//            $("#main").html(appRouter.navbartemplate());
-		//
-		//            appRouter.currentMenuView = new GraphView({
-		//                el: $("#main")
-		//            });
-		//            appRouter.currentMenuView.render();
-		//
-		//            $("#main").append(appRouter.circlemenutemplate());
-		//
-		//            // initialize the circle menu
-		//            $(".controlmenu").circleMenu({
-		//                trigger: "click",
-		//                item_diameter: 50,
-		//                circle_radius: 75,
-		//                direction: 'top-right'
-		//            });
-		//
-		//            appRouter.navigate("#dependancies/from" + id);
-		//
-		//            $(".nav-item").removeClass("active");
-		//            $("#home-nav").addClass("active");
-		//
-		//            $("body").i18n();
-		//        }
+		selected: function (idSelected) {
+			// remove and unbind the current view for the menu
+			if (appRouter.currentMenuView) {
+				appRouter.currentMenuView.close();
+				appRouter.currentMenuView = null;
+			}
+			if (appRouter.currentView) {
+				appRouter.currentView.close();
+				appRouter.currentView = null;
+			}
+
+			$("#main").html(appRouter.navbartemplate());
+
+			// Send the request to the server to get the graph
+			communicator.sendMessage({
+				method: "getGraph",
+				args: [],
+				callId: "loadGraph",
+				TARGET: "EHMI"
+			});
+
+			$("#main").append(appRouter.circlemenutemplate());
+
+			// initialize the circle menu
+			$(".controlmenu").circleMenu({
+				trigger: "click",
+				item_diameter: 50,
+				circle_radius: 75,
+				direction: 'top-right'
+			});
+
+			appRouter.navigate("#dependancies/from=" + idSelected, {
+				replace: true
+			});
+
+			$(".nav-item").removeClass("active");
+			$(".dependancies-nav").addClass("active");
+
+			$("body").i18n();
+
+			// Once the dependancies have been created and added to the collection, show the graph
+			dispatcher.once("dependanciesReady", function () {
+
+				// Initialize the dependency model puting the entity of the selected id at "root"
+				dependencyLoaded = dependancies.at(0);
+				dependencyLoaded.initializeRootNode(idSelected);
+
+				appRouter.showMenuView(new DependancyMenuView({
+					model: dependencyLoaded
+				}));
+
+				$(".nav-item").removeClass("active");
+				$(".dependancies-nav").addClass("active");
+
+				appRouter.showDetailsView(new GraphView({
+					model: dependencyLoaded
+				}));
+			});
+		}
 	});
 	return DependancyRouter;
 });
