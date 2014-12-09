@@ -149,11 +149,12 @@ public class NodeStateDevice extends NodeState {
         }
         String targetId = object.getResult().getValue();
         LOGGER.trace("Asking for {}, {}", object.getResult().getValue(), desc.getStateName());
-        ProgramCommandNotification notif = getProgramLineNotification(null, targetId, "Reading from", ProgramCommandNotification.Type.READ);
-
+/*        ProgramCommandNotification notif = 
+                getProgramLineNotification(null, targetId, "Reading from", ProgramCommandNotification.Type.READ);
+*/
         GenericCommand cmd = null;
         try {
-            cmd = getMediator().executeCommand(targetId, desc.getStateName(), new JSONArray(), notif);
+            cmd = getMediator().executeCommand(targetId, desc.getStateName(), new JSONArray(), null);
         } catch (SpokExecutionException ex) {
         }
         if (cmd == null) {

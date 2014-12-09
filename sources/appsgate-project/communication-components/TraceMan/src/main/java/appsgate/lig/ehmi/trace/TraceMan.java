@@ -174,7 +174,7 @@ public class TraceMan implements TraceManSpec {
     private void trace(JSONObject o) {
         synchronized (traceQueue) {
             try {
-                o.put("timestamp", EHMIProxy.getCurrentTimeInMillis());
+                o.put("timestamp", getCurrentTimeInMillis());
 
                 //Delayed in queue to by aggregate by policy if real time tracing is actived
                 if (liveTraceActivated || fileTraceActivated) {
@@ -236,12 +236,14 @@ public class TraceMan implements TraceManSpec {
     }
 
     @Override
-    public synchronized void commandHasBeenPassed(String objectID, String command, String caller) {
+    public synchronized void commandHasBeenPassed(String objectID, String command, String caller, JSONObject context) {
         //if the equipment has been instantiated from ApAM spec before
-        if (EHMIProxy.getGrammarFromDevice(objectID) != null) {
+        GrammarDescription grammar = EHMIProxy.getGrammarFromDevice(objectID);
+        if (grammar != null) {
+
             JSONObject deviceJson = getJSONDevice(objectID, null,
-                    Trace.getJSONDecoration("write", "user", null, objectID,
-                            "default.debugger." + command, null));
+                    Trace.getJSONDecoration("write", caller, null, objectID,
+                            grammar.getTraceMessageFromCommand(command), context));
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
@@ -264,22 +266,23 @@ public class TraceMan implements TraceManSpec {
                         event.put("type", "connection");
                         event.put("picto", Trace.getConnectionPicto());
                         JDecoration = Trace.getJSONDecoration(
-                                "connection", "technical", srcId, null, "Connection", null);
+                                "connection", "technical", srcId, null, "decorations.connection", null);
                     } else if (value.equalsIgnoreCase("0")) {
                         event.put("type", "disconnection");
                         event.put("picto", Trace.getDisconnectionPicto());
                         JDecoration = Trace.getJSONDecoration(
-                                "disconnection", "technical", srcId, null, "Disconnection", null);
+                                "disconnection", "technical", srcId, null, "decorations.disconnection", null);
                     } else {
                         event.put("type", "update");
                         JDecoration = Trace.getJSONDecoration(
-                                "error", "technical", srcId, null, "Error dectected", null);
+                                "error", "technical", srcId, null, "decorations.error", null);
                     }
                 } else {
                     event.put("type", "update");
                     JSONObject context = Trace.addJSONPair(new JSONObject(), "text", value);
+                    Trace.addJSONPair(context, "var", varName);
                     JDecoration = Trace.getJSONDecoration(
-                            "update", "technical", srcId, null, "debugger.change" + varName, context);
+                            "update", "technical", srcId, null, "decorations.change" + varName, context);
                 }
 
                 JSONObject jsonState = getDeviceState(srcId, varName, value);
@@ -326,6 +329,14 @@ public class TraceMan implements TraceManSpec {
         return coreNotif;
     }
 
+    /**
+     * Method to build a trace for an event on a device
+     *
+     * @param srcId
+     * @param event
+     * @param cause
+     * @return
+     */
     private JSONObject getJSONDevice(String srcId, JSONObject event, JSONObject cause) {
         JSONObject objectNotif = new JSONObject();
         try {
@@ -372,14 +383,14 @@ public class TraceMan implements TraceManSpec {
             if (eventType.contentEquals("new")) {
                 event.put("type", "appear");
                 cause = Trace.getJSONDecoration(
-                        "appear", "technical", srcId, null, "appear",
+                        "appear", "technical", srcId, null, "decorations.appear",
                         Trace.addJSONPair(new JSONObject(), "name", name));
                 event.put("state", getDeviceState(srcId, "", ""));
 
             } else if (eventType.contentEquals("remove")) {
                 event.put("type", "disappear");
                 cause = Trace.getJSONDecoration(
-                        "disappear", "technical", srcId, null, "remove",
+                        "disappear", "technical", srcId, null, "decorations.remove",
                         Trace.addJSONPair(new JSONObject(), "name", name));
             }
 
@@ -897,11 +908,18 @@ public class TraceMan implements TraceManSpec {
 
     private JSONObject getDecorationNotification(ProgramCommandNotification n) {
         JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId());
-        JSONObject d = getJSONDevice(n.getTargetId(), null, 
-                Trace.getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, n.getDescription(), null));
+        JSONObject context = null;
+        String desc = "decorations.defaultMessage";
+        GrammarDescription gram = EHMIProxy.getGrammarFromDevice(n.getTargetId());
+        if (gram != null) {
+            context = gram.getContextFromParams(n.getDescription(), n.getParams());
+            desc = gram.getTraceMessageFromCommand(n.getDescription());
+        }
+        JSONObject d = getJSONDevice(n.getTargetId(), null,
+                Trace.getJSONDecoration(n.getType(), "Program", n.getSourceId(), null, desc, context));
         try {
             p.put("decorations", new JSONArray().put(
-                    Trace.getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), n.getDescription(), null)));
+                    Trace.getJSONDecoration(n.getType(), "Program", null, n.getTargetId(), desc, context)));
         } catch (JSONException ex) {
         }
         return getCoreNotif(d, p);

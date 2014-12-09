@@ -46,7 +46,7 @@ public interface TraceManSpec {
      * @param command
      * @param caller
      */
-    public void commandHasBeenPassed(String objectID, String command, String caller);
+    public void commandHasBeenPassed(String objectID, String command, String caller, JSONObject context);
 
     /**
      *

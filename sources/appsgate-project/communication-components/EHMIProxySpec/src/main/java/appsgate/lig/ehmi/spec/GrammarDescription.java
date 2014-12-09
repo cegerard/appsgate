@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package appsgate.lig.ehmi.spec;
 
 import java.util.ArrayList;
@@ -52,7 +47,7 @@ public class GrammarDescription {
 
     /**
      *
-     * @return
+     * @return the type, empty string if no typename is defined
      */
     public String getType() {
         try {
@@ -66,7 +61,7 @@ public class GrammarDescription {
 
     /**
      *
-     * @return
+     * @return friendly name, "unknown" if no friendly name has been defined
      */
     public String getFriendlyName() {
         try {
@@ -93,6 +88,11 @@ public class GrammarDescription {
         return this.commandsState.get(command);
     }
 
+    /**
+     * 
+     * @param stateName
+     * @return 
+     */
     public JSONObject getStateDescription(String stateName) {
         try {
             JSONArray grammarStates = this.json.getJSONArray("states");
@@ -145,4 +145,22 @@ public class GrammarDescription {
         return this.json.has("traceDesc");
     }
 
+    /**
+     * Return the trace message corresponding to the cmd
+     * @param cmd
+     * @return 
+     */
+    public String getTraceMessageFromCommand(String cmd){
+        return "decorations." + this.getType() + "." + cmd;
+    }
+    
+    /**
+     * Return the context corresponding to the cmd and the params
+     * @param cmd
+     * @param params
+     * @return 
+     */
+    public JSONObject getContextFromParams(String cmd, JSONArray params) {
+        return null;
+    }
 }

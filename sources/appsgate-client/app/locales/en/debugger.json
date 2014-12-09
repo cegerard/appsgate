@@ -24,5 +24,19 @@
     "dependencie_plural": "Dependencies",
     "all": "All",
     "all_plural": "All"
-  }
+  },
+  "decorations": {
+    "program_added" : "program __name__ has been added",
+    "program_deleted" : "program __name__ has been deleted",
+    "program_saved" : "program __name__ updated",
+    "connection" : "device connected",
+    "disconnection" : "device disconnected",
+    "error" : "something unexpected happen",
+    "change" : "__var__ : __text__",
+    "appear" : "device __name__ appeared",
+    "remove" : "device __name__ disappeared",
+    "colorlight" : {
+      "off" : "$t(translation:devices.lamp.language.turnOff)",
+      "on" : "$t(translation:devices.lamp.language.turnOn)"
+    }
 }

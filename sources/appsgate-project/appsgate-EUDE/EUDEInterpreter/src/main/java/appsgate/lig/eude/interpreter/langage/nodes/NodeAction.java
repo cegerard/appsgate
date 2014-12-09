@@ -129,9 +129,9 @@ public class NodeAction extends Node implements ICanBeEvaluated {
         LOGGER.debug("Device action {} on {}", methodName, target);
         ProgramCommandNotification notif;
         if (returnType.isEmpty()) {
-            notif = getProgramLineNotification(null, target, "Acting on a device", ProgramCommandNotification.Type.WRITE);
+            notif = getProgramLineNotification(null, target, methodName , ProgramCommandNotification.Type.WRITE, args);
         } else {
-            notif = getProgramLineNotification(null, target, "Reading from", ProgramCommandNotification.Type.READ);
+            notif = getProgramLineNotification(null, target, methodName, ProgramCommandNotification.Type.READ, args);
         }
 
         command = getMediator().executeCommand(target, methodName, args, notif);

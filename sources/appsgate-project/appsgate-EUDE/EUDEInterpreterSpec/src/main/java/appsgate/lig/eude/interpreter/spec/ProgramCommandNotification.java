@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.spec;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -20,6 +21,10 @@ public class ProgramCommandNotification extends ProgramNotification {
      *
      */
     private final String desc;
+    /**
+     * 
+     */
+    private final JSONArray params;
     
     public enum Type { READ, WRITE};
     
@@ -36,14 +41,16 @@ public class ProgramCommandNotification extends ProgramNotification {
      * @param targetId
      * @param description
      * @param type
+     * @param context
      */
     public ProgramCommandNotification(JSONObject source, String programId, String programName,
-            String runningState, String instructionId, String sourceId, String targetId, String description, Type type) {
+            String runningState, String instructionId, String sourceId, String targetId, String description, Type type, JSONArray context) {
         super("", programId, runningState, programName, source, instructionId);
         this.sid = sourceId;
         this.tid = targetId;
         this.desc = description;
         this.t = type;
+        this.params = context;
     }
 
     /**
@@ -74,4 +81,8 @@ public class ProgramCommandNotification extends ProgramNotification {
         return this.t.toString().toLowerCase();
     }
 
+    public JSONArray getParams() {
+        return this.params;
+    }
+    
 }

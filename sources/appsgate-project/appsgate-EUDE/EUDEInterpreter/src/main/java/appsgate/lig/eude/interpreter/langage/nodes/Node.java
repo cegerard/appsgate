@@ -625,9 +625,10 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * @param targetId
      * @param description
      * @param type
+     * @param context
      * @return
      */
-    protected ProgramCommandNotification getProgramLineNotification(String sourceId, String targetId, String description, ProgramCommandNotification.Type type) {
+    protected ProgramCommandNotification getProgramLineNotification(String sourceId, String targetId, String description, ProgramCommandNotification.Type type, JSONArray context) {
         NodeProgram p = this.getProgramNode();
         if (sourceId == null) {
             sourceId = p.getId();
@@ -635,7 +636,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
         if (targetId == null) {
             targetId = p.getId();
         }
-        return new ProgramCommandNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type);
+        return new ProgramCommandNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type, context);
     }
 
     /**

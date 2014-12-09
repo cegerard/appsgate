@@ -352,7 +352,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, objectId);
         } else {
-            notifyChanges(notif);
+            if (notif != null) {
+                notifyChanges(notif);
+            }
             command.run();
         }
         return command;
