@@ -162,6 +162,11 @@ define([
 				.size([width, height])
 				.gravity(0.03)
 				.on("tick", this.tick.bind(this));
+			
+			// Test if we open graph from an entity, if yes, focus it
+			if (this.model.get("rootNode") !== "") {
+				this.selectAndMoveRootNode(this.model.get("rootNode"));
+			}
 
 			// Call update to update the state of the force (node/link)
 			this.update(this.model);
