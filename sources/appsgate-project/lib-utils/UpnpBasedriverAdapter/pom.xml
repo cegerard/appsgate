@@ -43,7 +43,7 @@
               org.apache.felix.upnp.basedriver.resources;version=0.3.0
             </Export-Package>
             <Import-Package>
-              org.osgi.*, javax.xml.parsers, org.w3c.dom, org.xml.sax, org.cybergarage.*
+              org.osgi.*, javax.xml.parsers, org.w3c.dom, org.xml.sax, org.cybergarage.*, org.slf4j.*
             </Import-Package>
             <Private-Package>
                     org.apache.felix.upnp.basedriver.*;-split-package:=merge-first,
