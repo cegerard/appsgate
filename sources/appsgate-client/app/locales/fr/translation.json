@@ -90,16 +90,16 @@
       "affirmative": "Oui",
       "true":"Vrai",
       "false":"Faux",
-      "with-the-value":"avec le valeur",
+      "with-the-value":"avec la valeur",
       "action": {
         "zone-activate": "Activer surveillance __myVar__",
         "zone-desactivate": "Désactiver surveillance __myVar__",
-        "force-input": "Signaler intrusion éventuelle à __myVar__"
+        "force-input": "Signaler au système d'alarme __myVar__ une entrée dans la zone "
       },
       "keyboard": {
         "zone-activate": "Activer surveillance ...",
         "zone-desactivate": "Désactiver surveillance ...",
-        "force-input": "Signaler intrusion éventuelle à ..."
+        "force-input": "Signaler au système d'alarme une entrée dans la zone ..."
       },
       "event": {
         "authorized": "l'accès du badge a été autorisé par ...",

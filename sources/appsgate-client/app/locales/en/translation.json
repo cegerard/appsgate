@@ -90,16 +90,16 @@
       "affirmative": "Yes",
       "true":"True",
       "false":"False",
-      "with-the-value":"with the value",
+      "with-the-value":"with value",
       "action": {
         "zone-activate": "Activate alarm __myVar__",
         "zone-desactivate": "Desactivate alarm __myVar__",
-        "force-input": "Signal possible intrusion to __myVar__"
+        "force-input": "Signal an entry to __myVar__ in zone"
       },
       "keyboard": {
         "zone-activate": "Activate alarm ...",
         "zone-desactivate": "Desactivate alarm ...",
-        "force-input": "Signal possible intrusion to ..."
+        "force-input": "Signal an entry in zone ..."
       },
       "event": {
         "authorized": "a badge is authorized by ...",
