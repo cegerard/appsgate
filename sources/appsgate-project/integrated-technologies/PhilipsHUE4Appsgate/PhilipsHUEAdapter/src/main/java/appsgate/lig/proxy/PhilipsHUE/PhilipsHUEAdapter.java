@@ -669,8 +669,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
         PHBridgeConfiguration bc = bridge.getResourceCache()
                 .getBridgeConfiguration();
 
-        logger.debug("Cache updated: " + flag + " for " + bc.getIpAddress());
-
         for (PHLight light : bridge.getResourceCache().getAllLights()) {
 
             Map<String, String> properties = new HashMap<String, String>();

@@ -90,16 +90,16 @@
       "affirmative": "Yes",
       "true":"True",
       "false":"False",
-      "with-the-value":"with the value",
+      "with-the-value":"with value",
       "action": {
         "zone-activate": "Activate alarm __myVar__",
         "zone-desactivate": "Desactivate alarm __myVar__",
-        "force-input": "Signal possible intrusion to __myVar__"
+        "force-input": "Signal an entry to __myVar__ in zone"
       },
       "keyboard": {
         "zone-activate": "Activate alarm ...",
         "zone-desactivate": "Desactivate alarm ...",
-        "force-input": "Signal possible intrusion to ..."
+        "force-input": "Signal an entry in zone ..."
       },
       "event": {
         "authorized": "a badge is authorized by ...",
@@ -195,7 +195,7 @@
       "keyboard": {
         "sensor": "light sensor",
         "brightness": "that level of luminosity",
-        "get": "A __myVar__ detects __myVar2__",
+        "get": "a __myVar__ detects __myVar2__",
         "change": "luminosity measured by a __myVar__ changes"
       },
       "language": {
@@ -851,8 +851,8 @@
         "sunset": "The sun sets in __myVar__",
         "currently-daylight": "it is daytime in __myVar__",
         "currently-moonlight": "it is nightime in __myVar__",
-        "forecast-temperature": "The announced temperature in __myVar__  for __myVar2__ is __myVar3__",
-        "forecast-weather-code-state": "The announced weather in __myVar__ for __myVar2__ is __myVar3__",
+        "forecast-temperature": "the announced temperature in __myVar__  for __myVar2__ is __myVar3__",
+        "forecast-weather-code-state": "the announced weather in __myVar__ for __myVar2__ is __myVar3__",
         "favorite": "weather forecast place",
         "moment": "that day",
         "weather": "that weather",

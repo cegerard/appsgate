@@ -90,16 +90,16 @@
       "affirmative": "Oui",
       "true":"Vrai",
       "false":"Faux",
-      "with-the-value":"avec le valeur",
+      "with-the-value":"avec la valeur",
       "action": {
         "zone-activate": "Activer surveillance __myVar__",
         "zone-desactivate": "Désactiver surveillance __myVar__",
-        "force-input": "Signaler intrusion éventuelle à __myVar__"
+        "force-input": "Signaler au système d'alarme __myVar__ une entrée dans la zone "
       },
       "keyboard": {
         "zone-activate": "Activer surveillance ...",
         "zone-desactivate": "Désactiver surveillance ...",
-        "force-input": "Signaler intrusion éventuelle à ..."
+        "force-input": "Signaler au système d'alarme une entrée dans la zone ..."
       },
       "event": {
         "authorized": "l'accès du badge a été autorisé par ...",
@@ -195,11 +195,11 @@
       "keyboard": {
         "sensor": "capteur de luminosité",
         "brightness": "tel niveau de luminosité",
-        "get": "Le __myVar__ mesure __myVar2__",
+        "get": "le __myVar__ mesure __myVar2__",
         "change": "la luminosité mesurée par __myVar__ change"
       },
       "language": {
-        "get": "__myVar__ mesure ",
+        "get": "__myVar__",
         "change": "la luminosité mesurée par __myVar__ change"
       },
       "name": {
@@ -851,8 +851,8 @@
         "sunset": "le jour se couche à __myVar__",
         "currently-daylight": "il fait jour à __myVar__",
         "currently-moonlight": "il fait nuit à __myVar__",
-        "forecast-temperature": "La température de __myVar__ annoncée __myVar2__ indique __myVar3__",
-        "forecast-weather-code-state": "La météo de __myVar__ annoncée __myVar2__ indique __myVar3__",
+        "forecast-temperature": "la température de __myVar__ annoncée __myVar2__ indique __myVar3__",
+        "forecast-weather-code-state": "la météo de __myVar__ annoncée __myVar2__ indique __myVar3__",
         "favorite": "lieu météo favori",
         "moment": "à tel moment",
         "weather": "tel temps",
