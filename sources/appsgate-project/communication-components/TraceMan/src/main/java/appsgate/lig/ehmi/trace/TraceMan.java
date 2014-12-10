@@ -422,6 +422,31 @@ public class TraceMan implements TraceManSpec {
 
         return tracesTab;
     }
+    
+    /**
+     * Send the last traces from now to windows millesconds in the past
+     * @param dateNow the start date for data base request
+     * @param window the time window in milisecond
+     * @param obj the request from client
+     */
+    private void sendWindowPastTrace(long dateNow, long window, JSONObject obj) {
+    	JSONObject requestResult = new JSONObject();
+        JSONArray tracesTab = dbTracer.getInterval(dateNow-window, dateNow);
+        JSONObject result = new JSONObject();
+        
+        try {
+        	setGroupingOrder("type");
+        	result.put("groups", computeGroupsFromPolicy(tracesTab));
+        	result.put("data", tracesTab);
+        	requestResult.put("result", result);
+        	requestResult.put("request", obj);
+        	
+        	EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, obj.getInt("clientId"), requestResult.toString());
+        	
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+	}
 
     @Override
     public void getTracesBetweenInterval(Long from, Long to, boolean withEventLine, JSONObject request) {
@@ -1006,13 +1031,20 @@ public class TraceMan implements TraceManSpec {
      * Initiate the live tracer
      *
      * @param refreshRate use to set up auto notification intervall
+     * @param dateNow now time in milisecond
+     * @param window the window time width
+     * @param obj the live trace request received
      * @return true if the live tracer is ready, false otherwise
      */
-    public boolean initLiveTracer(long refreshRate) {
+    public boolean initLiveTracer(long refreshRate, long dateNow,  long window, JSONObject obj) {
         liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
         liveTraceActivated = true;
 
         if (!traceQueue.isInitiated()) {
+        	
+        	//send the first message concerning the window last milisecond data
+        	sendWindowPastTrace(dateNow, window, obj);
+        	
         	if(refreshRate == 0)
         		traceQueue.initTraceExec();
         	else
@@ -1022,7 +1054,7 @@ public class TraceMan implements TraceManSpec {
         return liveTraceActivated;
     }
 
-    /**
+	/**
      * Initiate the file tracer
      *
      * @return true if the file tracer is initiated, false otherwise
