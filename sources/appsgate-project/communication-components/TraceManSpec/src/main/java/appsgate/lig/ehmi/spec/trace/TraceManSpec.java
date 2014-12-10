@@ -1,5 +1,6 @@
 package appsgate.lig.ehmi.spec.trace;
 
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,8 +46,9 @@ public interface TraceManSpec {
      * @param objectID
      * @param command
      * @param caller
+     * @param params
      */
-    public void commandHasBeenPassed(String objectID, String command, String caller, JSONObject context);
+    public void commandHasBeenPassed(String objectID, String command, String caller, ArrayList<Object> params);
 
     /**
      *

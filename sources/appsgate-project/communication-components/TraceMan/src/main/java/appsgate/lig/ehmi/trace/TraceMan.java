@@ -236,14 +236,14 @@ public class TraceMan implements TraceManSpec {
     }
 
     @Override
-    public synchronized void commandHasBeenPassed(String objectID, String command, String caller, JSONObject context) {
+    public synchronized void commandHasBeenPassed(String objectID, String command, String caller, ArrayList<Object> args ) {
         //if the equipment has been instantiated from ApAM spec before
         GrammarDescription grammar = EHMIProxy.getGrammarFromDevice(objectID);
         if (grammar != null) {
 
             JSONObject deviceJson = getJSONDevice(objectID, null,
                     Trace.getJSONDecoration("write", caller, null, objectID,
-                            grammar.getTraceMessageFromCommand(command), context));
+                            grammar.getTraceMessageFromCommand(command), grammar.getContextFromParams(command, args)));
             //Create the notification JSON object
             JSONObject coreNotif = getCoreNotif(deviceJson, null);
             //Trace the notification JSON object in the trace file
