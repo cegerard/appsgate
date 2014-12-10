@@ -1,5 +1,6 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
+import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import java.util.concurrent.Callable;
@@ -20,6 +21,7 @@ import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -652,5 +654,17 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     @Override
     final public String toString() {
         return "[Node("+ this.iid+ ") " + getTypeSpec() + "]";
+    }
+    
+    /**
+     * Method to notify the tracemanager a command has been passed
+     * @param n 
+     */
+    protected void notifyLine(ProgramCommandNotification n) {
+        try {
+            this.getMediator().notifyChanges(n);
+        } catch (SpokExecutionException ex) {
+            LOGGER.debug("Unable to launch Mediator for notifyLine({})", n.JSONize().toString());
+        }
     }
 }
