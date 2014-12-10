@@ -1,5 +1,5 @@
 {
-    "friendlyName": "Medialayer",
+    "friendlyName": "Media Player",
     "typename": "Mediaplayer",
     "properties": [
     ],
@@ -30,5 +30,12 @@
             "stateValue": "true"
         }
 
-    ]
+    ],
+    "commands" : {
+        "play" : {"params" : ["url"]},
+        "pause" : {},
+        "setVolume" : {"params" : ["level"]},
+        "resume" : {},
+        "stop" : {}
+    }
 }

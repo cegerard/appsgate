@@ -47,7 +47,7 @@ public class NodeStateDeviceTest extends NodeTest {
                 allowing(mediator).getContext();
                 will(returnValue(c));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
-                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramCommandNotification.class)));
+                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(aNull(ProgramCommandNotification.class)));
                 will(returnValue(cmd));
                 allowing(cmd).run();
                 allowing(cmd).getReturn();
