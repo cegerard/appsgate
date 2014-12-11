@@ -437,6 +437,7 @@ public class TraceMan implements TraceManSpec {
         try {
         	setGroupingOrder("type");
         	result.put("groups", computeGroupsFromPolicy(tracesTab));
+        	//result.put("eventline", eventLineComputation(tracesTab, dateNow-window, dateNow));
         	result.put("data", tracesTab);
         	requestResult.put("result", result);
         	requestResult.put("request", obj);
