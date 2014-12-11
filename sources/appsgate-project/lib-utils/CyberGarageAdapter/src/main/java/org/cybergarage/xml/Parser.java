@@ -29,6 +29,8 @@ import java.net.URL;
 import org.cybergarage.http.HTTP;
 import org.cybergarage.http.HTTPRequest;
 import org.cybergarage.http.HTTPResponse;
+import org.cybergarage.http.TestURL;
+import org.cybergarage.util.Debug;
 
 public abstract class Parser 
 {
@@ -52,7 +54,11 @@ public abstract class Parser
 
 	public Node parse(URL locationURL) throws ParserException
 	{
-		//System.out.println("Parsing URL : "+locationURL);
+		Debug.message("parse(URL locationURL : "+locationURL+")");
+		if(!TestURL.testURLTimeout(locationURL)) {
+			Debug.warning("parse(...), cannot connect to the location URL");
+			throw new ParserException("cannot connect to the location URL");
+		}
 		if(locationURL == null )
 			return null;		
 		String host = locationURL.getHost();
@@ -79,7 +85,7 @@ public abstract class Parser
 			return rootElem;
 			
 		} catch (Exception e) {
-			//throw new ParserException(e);
+			Debug.warning("parse(...), exception occured : "+e.getMessage());
 		}
 
 		HTTPRequest httpReq = new HTTPRequest();
