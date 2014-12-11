@@ -429,7 +429,14 @@ public interface EHMIProxySpec {
 	 * @return true if the program is scheduled in the future
 	 *  (we do not check if the program-id really exist as we parse Google Calendar events)
 	 */
-	public boolean checkProgramIdScheduled(String programId);    
+	public boolean checkProgramIdScheduled(String programId);
+        
+        /**
+	 * Check programs that are scheduled in the future (on start or on ending)
+	 * @return a JSON Array containing all program scheduled in the future
+	 *  (we do not check if the program-id really exist as we only parse Google Calendar events)
+	 */
+	public JSONArray checkProgramsScheduled();
 
 	/************************************/
 	/**   End User programs management  */
