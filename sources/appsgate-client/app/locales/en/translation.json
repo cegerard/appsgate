@@ -94,12 +94,12 @@
       "action": {
         "zone-activate": "Activate alarm __myVar__",
         "zone-desactivate": "Desactivate alarm __myVar__",
-        "force-input": "Signal an entry to __myVar__ in zone"
+        "force-input": "Signal an entry in the central of alarm __myVar__ in zone"
       },
       "keyboard": {
         "zone-activate": "Activate alarm ...",
         "zone-desactivate": "Desactivate alarm ...",
-        "force-input": "Signal an entry in zone ..."
+        "force-input": "Signal an entry in the central of alarm in zone ..."
       },
       "event": {
         "authorized": "a badge is authorized by ...",
