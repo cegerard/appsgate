@@ -81,6 +81,7 @@ public class GraphManager {
         // Retrieving programs id
         this.programsId = interpreter.getListProgramIds(null);
         int idSelector = -2;
+        JSONArray programsScheduled = this.interpreter.getContext().checkProgramsScheduled();
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
             if (p != null) {
@@ -109,7 +110,8 @@ public class GraphManager {
             }
 
             // Links program - scheduler
-            if (this.interpreter.getContext().checkProgramIdScheduled(pid)) {
+//            if (this.interpreter.getContext().checkProgramIdScheduled(pid)) {
+            if (programsScheduled.toString().contains(pid)) {
                 addLink(PLANIFIED_LINK, pid, CLOCK_ID);
                 //@TODO: if planified more than one time, have more than one relation...
             }
