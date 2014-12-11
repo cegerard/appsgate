@@ -515,8 +515,8 @@ public class TraceMan implements TraceManSpec {
     			groupFollower.put("focus", new GroupTuple(1, new JSONArray().put(focus)));
     			groupFollower.put("others",new GroupTuple(3, new JSONArray()));
     				
-    			if(grouping.equalsIgnoreCase("dep")){//Group based on id dependency (focus, dependencies, others)
-    				groupFollower.put("dependencies", new GroupTuple(2, new JSONArray()));
+    			if(grouping.equalsIgnoreCase("dep")){//Group based on id dependency (focus, dependency, others)
+    				groupFollower.put("dependency", new GroupTuple(2, new JSONArray()));
 
     				for(int i=0; i<l; i++) {
             	    	JSONObject superTrace = tracesTab.getJSONObject(i);
@@ -527,7 +527,7 @@ public class TraceMan implements TraceManSpec {
             	    		
             	    		if(!trace.getString("id").equalsIgnoreCase(focus)){//Not a trace from the focused id
             	    			if(trace.toString().contains(focus)) { //dep
-            	    				objs = groupFollower.get("dependencies").getMembers();
+            	    				objs = groupFollower.get("dependency").getMembers();
             	    				//Remove dependency id from others array
             	    				JSONArray others = new JSONArray();
             	    				
@@ -540,10 +540,10 @@ public class TraceMan implements TraceManSpec {
             	    				groupFollower.get("others").setMembers(others);
             	    				
             	    			} else { //others
-            	    				if(!groupFollower.get("dependencies").toString().contains(trace.getString("id"))) 
+            	    				if(!groupFollower.get("dependency").toString().contains(trace.getString("id"))) 
             	    					objs = groupFollower.get("others").getMembers();
             	    				else{
-            	    					objs = groupFollower.get("dependencies").getMembers();
+            	    					objs = groupFollower.get("dependency").getMembers();
             	    				}
             	    			}
             	    			
