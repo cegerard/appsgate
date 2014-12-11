@@ -76,9 +76,10 @@ define([
 			appRouter.currentView = new DebuggerView({
 				el: $("#main")
 			});
-
-			/* Faire quelque chose avant d'afficher la vue */
-			console.log("Id entity to show : " + id);
+			
+			// ATTENTION, Implémenter dans DebuggerView setIDFilter pour pouvoir récupérer l'id
+			// A modifier selon les modifications apportées dans default.js
+			appRouter.currentView.setIDFilter(id);
 
 			appRouter.currentView.render();
 
