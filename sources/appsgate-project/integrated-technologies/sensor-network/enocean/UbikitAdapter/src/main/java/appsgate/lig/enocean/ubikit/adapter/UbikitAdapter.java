@@ -154,7 +154,6 @@ public class UbikitAdapter implements
 		eventGate.addListener(new ContactEvent(this));
 		eventGate.addListener(new PairingModeEvent(this));
 		eventGate.addListener(new MeteringEvent(this));
-
 		logger.info("EnOcean proxy deployed and instanciated.");
 
 		if (listenerService.addCommandListener(new EnOceanCommandListener(this), CONFIG_TARGET)) {
@@ -225,7 +224,7 @@ public class UbikitAdapter implements
 	//TODO To delete, log method is death code
 //	/**
 //	 * Log all the EnOcean event from the EnOcean dongle.
-//	 * 
+//	 *
 //	 */
 //    public void log(String arg0) {
 //		logger.info("!EnOcean event! " + arg0);
@@ -400,7 +399,6 @@ public class UbikitAdapter implements
 	@Override
 	public void validateItem(String sensorID, ArrayList<String> capList,
 			boolean doesCapabilitiesHaveToBeSelected) {
-
 		logger.debug("validateItem(String sensorID = " + sensorID
         +", ArrayList<String> capList = "+(capList==null?null:capList.toArray())
         + ", boolean doesCapabilitiesHaveToBeSelected = "+doesCapabilitiesHaveToBeSelected
@@ -430,6 +428,20 @@ public class UbikitAdapter implements
 	}
 
 	/**
+	 * Unpair a device based on its UID
+	 * @param uid
+	 * @return returns 'true' case the device was removes, or 'false' otherwise
+	 */
+	public boolean unpairDevice (String uid){
+		logger.debug("Unparing device with UID {} from ubikit",uid);
+		PhysicalEnvironmentItem item=enoceanBridge.removeItem(uid);
+		Boolean result=item!=null;
+		logger.debug("Unparing device with UID {} resulted in {}",uid,result);
+		sidToInstanceName.remove(uid);
+		return result;
+	}
+
+	/**
 	 * Instantiate an already configure item from Ubikit database Pretty similar
 	 * to the action done with ItemAddedEvent received but does not notify
 	 * client just push the instance to ApAM layer.
@@ -438,7 +450,7 @@ public class UbikitAdapter implements
 	 *            the device to instantiate
 	 */
 	public void instanciateItem(PhysicalEnvironmentItem item) {
-        logger.debug("instanciateItem(PhysicalEnvironmentItem item, UID = "+(item==null?null:item.getUID())
+		logger.debug("instanciateItem(PhysicalEnvironmentItem item, UID = "+(item==null?null:item.getUID())
                 +", capabilities = "+(item==null?null:item.getCapabilities())   );
 		EnOceanProfiles ep = EnOceanProfiles.EEP_00_00_00;
 		Implementation impl = null;

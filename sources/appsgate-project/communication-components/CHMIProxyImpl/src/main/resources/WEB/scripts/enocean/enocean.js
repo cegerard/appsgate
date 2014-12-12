@@ -114,7 +114,6 @@ define([], function () {
 	       					$( "#device-type" ).html("Undefined");
 	       					break;
 	       			}
-	       		
 	       			$( "#enocean-id" ).append("<span class=\"icon icon-progress-3\" id=\"icon-signal-"+
 	       					deviceData.id+"\" style=\"margin-left:45px\"></span>");
 	       			
@@ -122,8 +121,9 @@ define([], function () {
 	       			$("#device-name").attr("id", $("#device-name").attr("id")+"-"+deviceData.id);
 	       			$("#device-status").attr("id", $("#device-status").attr("id")+"-"+deviceData.id);
 	       			$("#device-type").attr("id", $("#device-type").attr("id")+"-"+deviceData.id);
-	       			$("#device-value").attr("id", $("#device-value").attr("id")+"-"+deviceData.id);
-	       			
+	       			$("#device-value").attr("id", $("#device-value").attr("id")+"-"+deviceData.id)
+					$("#link-unpair").attr("onclick", "if(confirm('Sure you wanna unpair "+deviceData.id+"?')) { chmi.getWebSocket().getEnocean().unpairing('"+deviceData.id+"');chmi.goToEnOceanSubMenu(); }");
+
 	       			chmi.getWebSocket().getEnocean().setTileStatus(deviceData);
 	       			
 	       			chmi.addNotifHandler(deviceData.id, chmi.getWebSocket().getEnocean().notificationHandler);
@@ -187,7 +187,13 @@ define([], function () {
    			});
 
 		}
-		
+
+		this.unpairing = function (enoceanUID){
+			var call = eval({"CONFIGURATION":"unpairDevice", "unpairDevice":{"uid":enoceanUID}, "TARGET":"ENOCEAN"});
+			console.log(call);
+			chmi.sendCmd(JSON.stringify(call));
+		}
+
 		/** send the paring mode on request */
 		this.pairingON = function () {
 			var call = eval({"CONFIGURATION":"setPairingMode", "setPairingMode":{"pairingMode":"true"}, "TARGET":"ENOCEAN"});

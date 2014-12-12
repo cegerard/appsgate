@@ -83,6 +83,9 @@ public class EnOceanCommandListener implements CommandListener {
 				} else if (action.equalsIgnoreCase("off")) {
 					enoceanProxy.turnOffActuator(id);
 				}
+			} else if (cmd.equalsIgnoreCase("unpairDevice")) {
+				String id = obj.getString("uid");
+				enoceanProxy.unpairDevice(id);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

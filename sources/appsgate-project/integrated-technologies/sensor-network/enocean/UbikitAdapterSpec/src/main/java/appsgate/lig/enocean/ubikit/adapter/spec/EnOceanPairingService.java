@@ -15,5 +15,7 @@ public interface EnOceanPairingService {
 	 * Set the pairing mode to Ubikit layer
 	 * @param pair true to set the pairing mode, false to shutdown the pairing mode.
 	 */
-	public void setPairingMode (boolean pair); 
+	public void setPairingMode (boolean pair);
+
+	public boolean unpairDevice (String uid);
 }
