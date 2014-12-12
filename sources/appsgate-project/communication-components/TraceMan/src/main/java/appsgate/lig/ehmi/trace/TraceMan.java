@@ -437,7 +437,7 @@ public class TraceMan implements TraceManSpec {
         try {
         	setGroupingOrder("type");
         	result.put("groups", computeGroupsFromPolicy(tracesTab));
-        	//result.put("eventline", eventLineComputation(tracesTab, dateNow-window, dateNow));
+        	result.put("eventline", eventLineComputation(tracesTab, dateNow-window, dateNow));
         	result.put("data", tracesTab);
         	requestResult.put("result", result);
         	requestResult.put("request", obj);
@@ -1040,12 +1040,11 @@ public class TraceMan implements TraceManSpec {
     public boolean initLiveTracer(long refreshRate, long dateNow,  long window, JSONObject obj) {
         liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
         liveTraceActivated = true;
+        
+        //send the first message concerning the window last milisecond data
+    	sendWindowPastTrace(dateNow, window, obj);
 
         if (!traceQueue.isInitiated()) {
-        	
-        	//send the first message concerning the window last milisecond data
-        	sendWindowPastTrace(dateNow, window, obj);
-        	
         	if(refreshRate == 0)
         		traceQueue.initTraceExec();
         	else
