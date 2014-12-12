@@ -281,15 +281,19 @@ public class TraceMan implements TraceManSpec {
                 }
 
                 event.put("state", jsonState);
+                
+                JSONObject deviceJson = getJSONDevice(srcId, event, JDecoration);
+                //Check if the trace is correclty formatted (v4)
+                if(!deviceJson.getString("type").equalsIgnoreCase("")){
+                	//Create the notification JSON object
+                    JSONObject coreNotif = getCoreNotif(deviceJson, null);
+                    //Trace the notification JSON object in the trace file
+                    trace(coreNotif);
+                }
 
             } catch (JSONException e) {
+            	LOGGER.warn("Trace misformatted or data missing to build a valide trace: "+e.getMessage());
             }
-
-            JSONObject deviceJson = getJSONDevice(srcId, event, JDecoration);
-            //Create the notification JSON object
-            JSONObject coreNotif = getCoreNotif(deviceJson, null);
-            //Trace the notification JSON object in the trace file
-            trace(coreNotif);
         }
     }
 
