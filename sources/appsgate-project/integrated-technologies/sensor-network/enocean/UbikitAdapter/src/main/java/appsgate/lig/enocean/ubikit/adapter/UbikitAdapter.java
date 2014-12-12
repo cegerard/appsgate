@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import fr.imag.adele.apam.impl.ComponentBrokerImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -437,7 +438,8 @@ public class UbikitAdapter implements
 		PhysicalEnvironmentItem item=enoceanBridge.removeItem(uid);
 		Boolean result=item!=null;
 		logger.debug("Unparing device with UID {} resulted in {}",uid,result);
-		sidToInstanceName.remove(uid);
+		Instance apamInstance=sidToInstanceName.remove(uid);
+		((ComponentBrokerImpl)CST.componentBroker).disappearedComponent(apamInstance.getName());
 		return result;
 	}
 
