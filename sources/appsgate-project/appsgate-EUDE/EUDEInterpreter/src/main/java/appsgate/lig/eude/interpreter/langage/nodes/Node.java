@@ -1,6 +1,5 @@
 package appsgate.lig.eude.interpreter.langage.nodes;
 
-import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import java.util.concurrent.Callable;
@@ -17,11 +16,10 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -623,26 +621,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     /**
      *
-     * @param sourceId
-     * @param targetId
-     * @param description
-     * @param type
-     * @param context
-     * @return
-     */
-    protected ProgramCommandNotification getProgramLineNotification(String sourceId, String targetId, String description, ProgramCommandNotification.Type type, JSONArray context) {
-        NodeProgram p = this.getProgramNode();
-        if (sourceId == null) {
-            sourceId = p.getId();
-        }
-        if (targetId == null) {
-            targetId = p.getId();
-        }
-        return new ProgramCommandNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type, context);
-    }
-
-    /**
-     *
      * @param table
      */
     protected void buildReferences(ReferenceTable table) {
@@ -660,7 +638,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
      * Method to notify the tracemanager a command has been passed
      * @param n 
      */
-    protected void notifyLine(ProgramCommandNotification n) {
+    protected void notifyLine(ProgramTraceNotification n) {
         try {
             this.getMediator().notifyChanges(n);
         } catch (SpokExecutionException ex) {

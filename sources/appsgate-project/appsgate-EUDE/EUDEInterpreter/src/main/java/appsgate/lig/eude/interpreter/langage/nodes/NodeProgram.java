@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.spec.ProgramDesc;
 import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 
 import java.util.Collection;
@@ -31,30 +32,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-final public class NodeProgram extends Node {
+final public class NodeProgram extends Node implements ProgramDesc{
 
-    /**
-     * Program running state static enumeration
-     *
-     * @author Cédric Gérard
-     * @since September 13, 2013
-     */
-    public static enum PROGRAM_STATE {
-
-        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"),
-        INCOMPLETE("INCOMPLETE"), LIMPING("LIMPING");
-
-        private String name = "";
-
-        PROGRAM_STATE(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
@@ -502,7 +481,7 @@ final public class NodeProgram extends Node {
         try {
             o.put("id", id);
             o.put("type", "program");
-            o.put("runningState", state.name);
+            o.put("runningState", state.toString());
             o.put("name", name);
             o.put("header", header);
             o.put("package", getPath());
