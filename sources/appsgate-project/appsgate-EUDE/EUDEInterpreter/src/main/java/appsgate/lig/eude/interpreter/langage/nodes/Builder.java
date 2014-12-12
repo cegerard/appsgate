@@ -57,6 +57,18 @@ public class Builder {
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
+        if (type.equalsIgnoreCase("action0")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
+        if (type.equalsIgnoreCase("action1")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
+        if (type.equalsIgnoreCase("action2")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
+        if (type.equalsIgnoreCase("action3")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
         if (type.equalsIgnoreCase("stopMyself")) {
             return NODE_TYPE.NODE_ACTION;
         }

@@ -97,7 +97,7 @@ define([
 
     getJSONAction: function(type) {
       return {
-        "type": "action",
+        "type": "action0",
         "target": {
           "iid": "X",
           "type": 'mandatory',
