@@ -101,7 +101,7 @@ define([
           var container = document.createDocumentFragment();
           _.forEach(devices.getTypes(), function(type) {
             devs=devices.getDevicesFilterByType(type);
-            if (type != "21" && type != "102" && type != "103" && devs.length>0) {
+            if (type != "21" && type != "102" && type != "103" && type != "36" && devs.length>0) {
               var postfix= "singular";
               if(devs.length>1) postfix="plural";
               $(container).append(self.tplDeviceContainer({
