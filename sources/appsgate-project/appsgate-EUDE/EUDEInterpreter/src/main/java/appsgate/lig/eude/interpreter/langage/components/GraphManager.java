@@ -81,6 +81,7 @@ public class GraphManager {
         // Retrieving programs id
         this.programsId = interpreter.getListProgramIds(null);
         int idSelector = -2;
+        ArrayList<NodeSelect> selectorsSaved = new ArrayList<NodeSelect>();
         JSONArray programsScheduled = this.interpreter.getContext().checkProgramsScheduled();
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
@@ -104,7 +105,7 @@ public class GraphManager {
                     addLink(REFERENCE_LINK, pid, rProgram);
                 }
 
-                if (addSelector(references, idSelector)) {
+                if (addSelector(references, selectorsSaved, idSelector)) {
                     idSelector--;
                 }
             }
@@ -270,15 +271,36 @@ public class GraphManager {
             // Nothing will be raised since there is no null value
         }
     }
+    
+     private boolean isSelectorAlreadySaved(ArrayList<NodeSelect> selectorsSaved, NodeSelect programSelector) {
+        for (NodeSelect selSaved : selectorsSaved) {
+            try {
+                JSONArray pTypeDevice = (JSONArray) programSelector.getJSONDescription().get("what");
+                JSONArray sTypeDevice = (JSONArray) selSaved.getJSONDescription().get("what");
+                JSONArray pLocationDevice = (JSONArray) programSelector.getJSONDescription().get("where");
+                JSONArray sLocationDevice = (JSONArray) selSaved.getJSONDescription().get("where");
 
-    private boolean addSelector(ReferenceTable ref, int idSelector) {
+                if (pTypeDevice.getJSONObject(0).get("value").equals(sTypeDevice.getJSONObject(0).get("value"))
+                        && pLocationDevice.getJSONObject(0).get("value").equals(sLocationDevice.getJSONObject(0).get("value"))) {
+                    return true;
+                }
+            } catch (JSONException ex) {
+                java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
+
+    private boolean addSelector(ReferenceTable ref, ArrayList<NodeSelect> selectorsSaved, int idSelector) {
         boolean ret = false;
         String typeDevices = "";
         ArrayList<NodeSelect> selectors = ref.getSelectors();
         // For each selector present in the program...
         for (NodeSelect selector : selectors) {
-//            addNode(SELECTOR_ENTITY, "" + idSelector, selector.getTypeSpec());
-            ret = true;
+            
+            if (isSelectorAlreadySaved(selectorsSaved, selector)) {
+                continue;
+            }
             
             HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getPlaceDeviceSelector();
 
@@ -307,7 +329,9 @@ public class GraphManager {
                 HashMap<String, String> optArg = new HashMap<String, String>();
                 optArg.put("type", "selector");
                 addNode(SELECTOR_ENTITY, "" + idSelector, typeDevices, optArg);
+                selectorsSaved.add(selector);
                 typeDevices = "";
+                ret = true;
             }
         }
         return ret;
