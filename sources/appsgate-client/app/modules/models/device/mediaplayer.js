@@ -109,8 +109,6 @@ define([
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.media') + "</span>",
             myVar2: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.player') + "</span>"
           }));
-		  // UPDATE ACTION WITH PARAMETERS
-		  v.type = "action2";
           v.methodName = "play";
           v.phrase = "devices.mediaplayer.language.play-media-action";
           $(btn).attr("json", JSON.stringify(v));

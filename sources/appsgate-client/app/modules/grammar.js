@@ -6,7 +6,7 @@ define([
     require(["peg"]);
 
     var ProgramGrammar = {};
-	var orderedArgs = [ "state", "stateTarget", "expBool", "target", "source", "object", "param", "rules", "events","leftOperand", "rightOperand","seqRulesTrue", "seqRulesFalse", "seqRulesThen", "rulesThen", "left", "right", "devices", "value", "waitFor", "args"];
+	var orderedArgs = [ "state", "stateTarget", "expBool", "target", "source", "object", "param", "rules", "events","leftOperand", "rightOperand","seqRulesTrue", "seqRulesFalse", "seqRulesThen", "rulesThen", "left", "right", "devices", "value", "waitFor"];
     ProgramGrammar = Backbone.Model.extend({
         initialize: function() {
             this.grammar = this.build(grammar);
@@ -91,13 +91,8 @@ define([
 			if (obj.serviceType) {
 				typedType = "|" + obj.serviceType + "|";
 			}
-			
-			var prefix = "";
-			// If undefined, paramater with just a value
-			if (obj.iid !== undefined) {
-				var prefix = obj.iid + ":";
-			}
-            
+
+            var prefix = obj.iid + ":";
             if (obj.iid == currentNode || obj.mandatory) {
 				if (obj.type == "param") {
 					return prefix + "param(" + typedType + ", '" +  obj.param + "')";
