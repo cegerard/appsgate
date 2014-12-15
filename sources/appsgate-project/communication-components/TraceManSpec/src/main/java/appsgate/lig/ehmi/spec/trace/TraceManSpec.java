@@ -47,8 +47,9 @@ public interface TraceManSpec {
      * @param command
      * @param caller
      * @param params
+     * @param timeStamp
      */
-    public void commandHasBeenPassed(String objectID, String command, String caller, ArrayList<Object> params);
+    public void commandHasBeenPassed(String objectID, String command, String caller, ArrayList<Object> params, long timeStamp);
 
     /**
      *
