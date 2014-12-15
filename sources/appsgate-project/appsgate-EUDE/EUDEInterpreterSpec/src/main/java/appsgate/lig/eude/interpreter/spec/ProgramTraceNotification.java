@@ -86,4 +86,8 @@ public  class ProgramTraceNotification extends ProgramNotification{
         return this.t.toString().toLowerCase();
     }
 
+    public String getDeviceId() {
+        return this.getTargetId();
+    }
+    
 }

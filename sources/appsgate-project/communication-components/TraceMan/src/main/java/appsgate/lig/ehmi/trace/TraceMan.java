@@ -908,10 +908,10 @@ public class TraceMan implements TraceManSpec {
     }
 
     private JSONObject getDecorationNotification(ProgramTraceNotification n) {
-        JSONObject p = getJSONProgram(n.getSourceId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId());
+        JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId());
         JSONObject context = null;
         String desc = "decorations.defaultMessage";
-        GrammarDescription gram = EHMIProxy.getGrammarFromDevice(n.getTargetId());
+        GrammarDescription gram = EHMIProxy.getGrammarFromDevice(n.getDeviceId());
         if (gram != null) {
             context = gram.getContextFromParams(n.getDescription(), n.getParams());
             desc = gram.getTraceMessageFromCommand(n.getDescription());

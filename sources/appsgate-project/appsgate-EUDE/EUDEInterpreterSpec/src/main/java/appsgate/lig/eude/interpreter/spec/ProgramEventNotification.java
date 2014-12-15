@@ -12,8 +12,21 @@ package appsgate.lig.eude.interpreter.spec;
  */
 public class ProgramEventNotification extends ProgramTraceNotification{
 
-    public ProgramEventNotification(ProgramDesc source, String nodeId, String targetId, String desc) {
-        super(source, nodeId, targetId, source.getId(), desc, Type.WRITE);
+    
+    /**
+     * Constructor
+     * @param source
+     * @param nodeId
+     * @param deviceId
+     * @param desc 
+     */
+    public ProgramEventNotification(ProgramDesc source, String nodeId, String deviceId, String desc) {
+        super(source, nodeId, deviceId, source.getId(), desc, Type.WRITE);
+    }
+    
+    @Override
+    public String getDeviceId() {
+        return this.getSourceId();
     }
     
 }
