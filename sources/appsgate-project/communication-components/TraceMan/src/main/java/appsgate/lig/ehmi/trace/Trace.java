@@ -13,20 +13,24 @@ public class Trace {
     /**
      * Method to format a causality JSON object.
      *
-     * @param type type of decoration (i.e. value, state, access)
+     * @param decorationType type of decoration (i.e. value, state, access)
+     * @param actionType action done (i.e. read, write, connexon, disconnexion)
      * @param cause type of causality (i.e. technical, environmental, user, program)
-     * @param source source id
-     * @param target target id
+     * @param timeStamp the time when this happened
+     * @param source source identifier
+     * @param target target identifier
      * @param description description key for internationalization
      * @param context parameters values
-     * @return the JSON object
+     * @return the complete decoration as JSON object
      */
-    public static JSONObject getJSONDecoration(String type, String cause,
-            String source, String target, String description, JSONObject context) {
+    public static JSONObject getJSONDecoration(DECORATION_TYPE decorationType, String actionType, String cause,
+            long timeStamp, String source, String target, String description, JSONObject context) {
         JSONObject causality = new JSONObject();
         try {
             causality.put("order", 0);
-            causality.put("type", getPictoFromType(type, cause));
+            causality.put("type", decorationType.toString());
+            causality.put("picto", getPictoFromType(actionType, cause));
+            causality.put("time", timeStamp);
             causality.put("causality", cause);
             causality.put("source", source);
             causality.put("target", target);
@@ -39,6 +43,49 @@ public class Trace {
         return causality;
 
     }
+    
+    /**
+     * Get the decoration type from varName that changed and source identifier
+     * @param type the source equipement or program type
+     * @param varName the variable that changed
+     * @return a decoration type object between DECORATION_TYPE.state and DECORATION_TYPE.value
+     */
+	public static DECORATION_TYPE getDecorationType(String type, String varName) {
+		
+		DECORATION_TYPE decoType = DECORATION_TYPE.state;
+		
+        if (type.equalsIgnoreCase("Temperature") && varName.equalsIgnoreCase("value")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("Illumination")  && varName.equalsIgnoreCase("value")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("Switch") && varName.equalsIgnoreCase("switchNumber")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("Contact") && varName.equalsIgnoreCase("contact")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("KeyCardSwitch") && varName.equalsIgnoreCase("inserted")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("ColorLight")) {
+            if (varName.equalsIgnoreCase("state")) {
+            	decoType = DECORATION_TYPE.state;
+            }else{
+            	decoType = DECORATION_TYPE.value;
+            }        
+
+        } else if (type.equalsIgnoreCase("SmartPlug")) {
+            if (varName.equalsIgnoreCase("consumption")) {
+            	decoType = DECORATION_TYPE.value;
+            } else {
+            	decoType = DECORATION_TYPE.state;
+            }
+        }
+        
+        return decoType;
+	}
 
     /**
      * Add a key to a JSON object without exception
@@ -59,24 +106,24 @@ public class Trace {
     /**
      * Return the pictoID that match the decoration type
      *
-     * @param type the decoration type
+     * @param actionType the decoration action type
      * @param cause the decoration cause
      * @return the corresponding pictoID as a String
      */
-    public static String getPictoFromType(String type, String cause) {
+    public static String getPictoFromType(String actionType, String cause) {
 
         String pictoID = PICTO_TABLE.DEFAULT.stringify();
 
         if (cause.equalsIgnoreCase("user")) {
             pictoID = PICTO_TABLE.USER.stringify();
         } else {
-            if (type.equalsIgnoreCase("read")) {
+            if (actionType.equalsIgnoreCase("read")) {
                 pictoID = PICTO_TABLE.READ.stringify();
-            } else if (type.equalsIgnoreCase("write")) {
+            } else if (actionType.equalsIgnoreCase("write")) {
                 pictoID = PICTO_TABLE.WRITE.stringify();
-            } else if (type.equalsIgnoreCase("connection")) {
+            } else if (actionType.equalsIgnoreCase("connection")) {
                 pictoID = PICTO_TABLE.CONNECTION.stringify();
-            } else if (type.equalsIgnoreCase("disconnection")) {
+            } else if (actionType.equalsIgnoreCase("disconnection")) {
                 pictoID = PICTO_TABLE.DISCONNECTION.stringify();
             }
         }
@@ -222,4 +269,11 @@ public class Trace {
     public static String getDisconnectionPicto() {
         return PICTO_TABLE.DISCONNECTION.stringify();
     }
+    
+    public static enum DECORATION_TYPE {
+    	value,
+    	state,
+    	access;
+    }
+    
 }

@@ -1204,7 +1204,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			String objIdentifier, String method, ArrayList<Object> arguments,
 			ArrayList<Class> types, int clientId, String callId) {
 		if(traceManager!= null)
-			traceManager.commandHasBeenPassed(objIdentifier, method, "user", arguments);
+			traceManager.commandHasBeenPassed(objIdentifier, method, "user", arguments, getCurrentTimeInMillis());
 		return coreProxy.executeCommand(clientId, objIdentifier, method,
 				arguments, types, callId);
 	}
