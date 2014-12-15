@@ -171,14 +171,14 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     public void removedAbstractObject(Instance inst) {
         logger.debug("Abstract device removed: " + inst.getName());
-        String deviceId = inst.getProperty("deviceId");
         JSONObject obj = new JSONObject();
+        CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
+        String deviceId = rmObj.getAbstractObjectId();
         try {
             obj.put("objectId", deviceId);
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
-        CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
 
         synchronized(this){
         	String newMsg ="";

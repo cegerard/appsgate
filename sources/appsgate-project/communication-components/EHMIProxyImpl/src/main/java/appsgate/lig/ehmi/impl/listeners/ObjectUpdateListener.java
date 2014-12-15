@@ -98,6 +98,15 @@ public class ObjectUpdateListener implements CoreUpdatesListener {
 
         } else if (coreType.contains("remove")) { //A device has been removed
 
+    		JSONObject jsonResponse =  new JSONObject();
+    		try {
+    			jsonResponse.put(coreType, new JSONObject().put("objectId", objectId));
+                EHMIProxy.sendToClients(jsonResponse);
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		}
+    		
+        	
             if (userType.contentEquals("21") && EHMIProxy.getSystemClock().isRemote() //The removed device is a clock, the system is remotely synchronized
                     && objectId.contentEquals(EHMIProxy.getSystemClock().getAbstractObjectId())) { //and it is the clock what we are synchronized with
                 EHMIProxy.stopRemoteClockSync();
