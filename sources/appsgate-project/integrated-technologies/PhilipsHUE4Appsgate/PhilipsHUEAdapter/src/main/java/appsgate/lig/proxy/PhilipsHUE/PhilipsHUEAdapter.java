@@ -280,17 +280,24 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 
 	@Override
-	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value) {
-		
+	public synchronized boolean setAttribute(String bridgeIP, String id, String attribute, boolean value,Integer transitionTime){
 		PHBridge bridge = getBridgeFromIp(bridgeIP);
 		PHLight light = getLightFromId(bridge, id);
-		
+
 		PHLightState state = new PHLightState();
 		state.setOn(value);
-		
+		state.setBrightness(light.getLastKnownLightState().getBrightness());
+		if(transitionTime!=null){
+			state.setTransitionTime(transitionTime);
+		}
 		bridge.updateLightState(light, state);
-		
 		return true;
+	}
+
+	@Override
+	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value) {
+
+		return setAttribute(bridgeIP,id,attribute,value,4);
 	}
 
 	@Override

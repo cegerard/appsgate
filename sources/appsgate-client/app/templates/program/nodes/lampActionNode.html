@@ -14,7 +14,7 @@
         <% if (typeof node.phrase !== 'undefined') {%>
                 <%=$.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
         <%} else { %>
-        Uknown
+            Unknown
         <% } %>
 
     <% if (node.methodName.search("set") === 0 ) { %>
@@ -30,4 +30,16 @@
         <option <% if (node.methodName === "setWhite") { %>selected<% } %> value="setWhite" data-i18n="language.color.white"></option>
     </select>
     <% }%>
+
+    <% if ( node.methodName == "blink" ) { %>
+        <span data-i18n="devices.lamp.complement.during"></span>
+        <input target-id="<%= node.iid %>" id="lamp-time-<%= node.iid %>" class="lamp-input-selector" type="text" value="<%= node.args[0].value %>" size="4"  />
+        <span data-i18n="devices.lamp.complement.speed"></span>
+        <select target-id="<%= node.iid %>" id="lamp-frequency-<%= node.iid %>" class="lamp-input-selector">
+            <option value="500" data-i18n="devices.lamp.complement.fast" <% if (node.args[1].value === "500") { print('selected'); } %> ></option>
+            <option value="1000" data-i18n="devices.lamp.complement.normal" <% if (node.args[1].value === "1000") { print('selected'); } %> ></option>
+            <option value="1500" data-i18n="devices.lamp.complement.slow" <% if (node.args[1].value === "1500") { print('selected'); } %> ></option>
+        </select>
+    <% } %>
+
 </div>
