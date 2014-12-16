@@ -27,6 +27,7 @@ define([
         "click button.cancel-delete-program-button": "onCancelDeleteProgram",
         "click button.open-calendar-button":"openCalendar",
 	  	"click button.btn-target-dependencies": "onShowDependencies",
+	  	"click button.btn-target-timelines": "onShowTimelines"
       },
       /**
       * @constructor
@@ -277,6 +278,9 @@ define([
       },
 	  onShowDependencies: function() {
 		appRouter.navigate("#dependancies/" + this.model.get("id"), {trigger: true});
+	  },
+	  onShowTimelines: function() {
+		appRouter.navigate("#debugger/" + this.model.get("id"), {trigger: true});
 	  },
       /**
       * Callback when the user has clicked on the button edit. Go to the editor or show the popup
