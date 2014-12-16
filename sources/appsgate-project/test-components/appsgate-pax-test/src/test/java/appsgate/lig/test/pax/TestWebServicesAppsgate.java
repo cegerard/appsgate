@@ -28,7 +28,8 @@ import appsgate.lig.google.services.GoogleAdapter;
 import appsgate.lig.google.services.GoogleEvent;
 import appsgate.lig.mail.Mail;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
+import appsgate.lig.weather.spec.WeatherAdapterSpec;
+import appsgate.lig.yahoo.weather.YahooWeather;
 
 /**
  * @author thibaud
@@ -109,8 +110,9 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		
 	}
 	
+	
 	public void testGoogleScheduler() {
-		String mailAccount= "smarthome.adele@gmail.com";
+		String mailAccount= "appsgate.minikitA@gmail.com";
 		
 		TestCoreAppsgate.testEmptyAppsgate();
 		
@@ -201,7 +203,7 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		testTimeEqual(cal.getTimeInMillis(), service.getCurrentTimeInMillis());
 
 		logger.debug("Test the reset");
-		service.resetClock();
+		service.resetSystemTime();
 		systemTime = System.currentTimeMillis();
 		testTimeEqual(systemTime, service.getCurrentTimeInMillis());
 
@@ -235,7 +237,7 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 		TestCoreAppsgate.testEmptyAppsgate();
 		logger.debug("This test creates and runs an instance of Yahoo Weather");
 		
-		WeatherAdapterSpec service = (WeatherAdapterSpec) initWeather();
+		YahooWeather service = (YahooWeather) initWeather();
 		
 		try {
 			service.addLocation("Grenoble");
@@ -243,14 +245,14 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 					service.containLocation("Grenoble"));
 			service.fetch();
 			Assert.assertNotNull("Weather should have been retrieved",
-					service.getCurrentWeather());
+					service.getCurrentWeather("Grenoble"));
 		} catch (Exception exc) {
 			Assert.fail(exc.getMessage());
 		}
 	}
 	
 	public static Object initWeather() {
-		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"CoreWeatherServiceSpec",
+		return PaxedDistribution.testApAMComponent(true, resolveFrom.IMPLEM,"YahooWeatherSpec",
 				"YahooWeatherImpl", null);
 	}
 
@@ -303,6 +305,8 @@ public class TestWebServicesAppsgate extends PaxedDistribution {
 
 		testApps.put("commons-logging", "commons-logging");
 		testApps.put("commons-lang3", "org.apache.commons");
+		
+		testApps.put("commons-collections4", "org.apache.commons");
 		testApps.put("org.apache.servicemix.bundles.xmlpull", "org.apache.servicemix.bundles");
 		testApps.put("org.apache.servicemix.bundles.xpp3", "org.apache.servicemix.bundles");
 		testApps.put("org.apache.servicemix.bundles.kxml2", "org.apache.servicemix.bundles");

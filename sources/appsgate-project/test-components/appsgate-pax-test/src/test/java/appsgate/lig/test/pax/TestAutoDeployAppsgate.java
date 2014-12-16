@@ -35,7 +35,6 @@ import fr.imag.adele.apam.Specification;
 import appsgate.lig.test.pax.helpers.ApAMHelper;
 import appsgate.lig.test.pax.helpers.PaxedDistribution;
 import appsgate.lig.weather.exception.WeatherForecastException;
-import appsgate.lig.weather.spec.CoreWeatherServiceSpec;
 
 
 /**
@@ -70,15 +69,16 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	
 	private void testExistingStartedByAppsGateComposite() {
 		Assert.assertNotNull(CST.componentBroker.getInst("appsgate-instance"));
-		Assert.assertNotNull(CST.componentBroker.getInst("AppsGatePersistencyInst"));
-		Assert.assertNotNull(CST.componentBroker.getImpl("EHMIProxyImpl").getInst());
 		Assert.assertNotNull(CST.componentBroker.getInst("ConfigurableClockInst"));
-		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateContextProxyInst"));
+		Assert.assertNotNull(CST.componentBroker.getInst("WebSocketCommunicationManagerInst"));
+		Assert.assertNotNull(CST.componentBroker.getInst("EHMIProxyImplInst"));
+		Assert.assertNotNull(CST.componentBroker.getInst("CHMIProxyImplInst"));
+		Assert.assertNotNull(CST.componentBroker.getInst("EUDEInterpreterInst"));
+		Assert.assertNotNull(CST.componentBroker.getInst("AppsGatePersistencyInst"));		
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateGoogleServicesInst"));
 		Assert.assertNotNull(CST.componentBroker.getInst("AppsGateHUEServicesInst"));
 		Assert.assertNotNull(CST.componentBroker.getInst("UPnPMediaAdapter"));
-		Assert.assertNotNull(CST.componentBroker.getInst("UbikitAdapter"));
-		Assert.assertNotNull(CST.componentBroker.getInst("YahooWeather"));
+		Assert.assertNotNull(CST.componentBroker.getInst("WeatherAdapter"));
 	}
 	
 	private void testExistingStartedByUPnPComposite() {
@@ -89,18 +89,18 @@ public class TestAutoDeployAppsgate extends PaxedDistribution {
 	}
 	
 	private void testExistingStartedByHUEComposite() {
-		Assert.assertNotNull(CST.componentBroker.getImpl("PhilipsHUEImplFactory").getInst());
-		Assert.assertNotNull(CST.componentBroker.getInst("AppsgatePhilipsHUEAdapter"));		
+//		Assert.assertNotNull(CST.componentBroker.getImpl("PhilipsHUEImplFactory").getInst());
+//		Assert.assertNotNull(CST.componentBroker.getInst("AppsgatePhilipsHUEAdapter"));		
 	}
 	
 	private void testExistingStartedByGoogleComposite() {
-		Assert.assertNotNull(CST.componentBroker.getImpl("AppsgateGoogleAdapter").getInst());		
+//		Assert.assertNotNull(CST.componentBroker.getImpl("AppsgateGoogleAdapter").getInst());		
 	}
 
 	private void testExistingStartedByPersistencyComposite() {
+		Assert.assertNotNull(CST.componentBroker.getInst("Global-MongoDBConfigFactory"));				
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-PropertyHistoryManager"));		
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-ContextHistoryManager"));		
-//		Assert.assertNotNull(CST.componentBroker.getInst("Global-ContextManager"));
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-PlaceManager"));		
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-DevicePropertiesTableManager"));		
 		Assert.assertNotNull(CST.componentBroker.getInst("Global-UserBaseManager"));		
