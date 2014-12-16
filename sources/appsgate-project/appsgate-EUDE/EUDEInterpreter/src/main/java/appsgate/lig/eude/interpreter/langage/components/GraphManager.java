@@ -8,11 +8,9 @@ package appsgate.lig.eude.interpreter.langage.components;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.json.JSONArray;
@@ -111,7 +109,7 @@ public class GraphManager {
             }
 
             // Links program - scheduler
-            if (programsScheduled.toString().contains(pid)) {
+            if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
                 addLink(PLANIFIED_LINK, pid, CLOCK_ID);
                 //@TODO: if planified more than one time, have more than one relation...
             }
