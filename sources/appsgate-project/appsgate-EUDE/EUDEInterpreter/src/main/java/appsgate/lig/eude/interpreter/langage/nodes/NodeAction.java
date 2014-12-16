@@ -56,7 +56,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
      * Default constructor
      *
      * @param ruleJSON the JSON Object
-     * @param parent
+     * @param parent the parent node
      * @throws SpokNodeException if the interpretation of JSON fails
      */
     public NodeAction(JSONObject ruleJSON, Node parent)
@@ -67,6 +67,12 @@ public class NodeAction extends Node implements ICanBeEvaluated {
         args = ruleJSON.optJSONArray("args");
         if (args == null) {
             args = new JSONArray();
+        }
+        // determine wheather the action as the correct amount of arguments
+        Integer nbParam = Integer.parseInt(ruleJSON.optString("type").replaceAll("[a-zA-Z]", "0"));
+        if (args.length() != nbParam) {
+            LOGGER.warn("The action node {} has not the correct number of arguments", ruleJSON);
+            throw new SpokNodeException(this, "Action", "args", null);
         }
         returnType = ruleJSON.optString("returnType");
     }

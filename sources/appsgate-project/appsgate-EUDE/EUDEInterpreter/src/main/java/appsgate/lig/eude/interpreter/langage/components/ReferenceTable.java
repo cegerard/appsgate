@@ -253,4 +253,12 @@ public class ReferenceTable {
         return computeStatus();
     }
 
+    
+    /**
+     * 
+     * @return the error message if any
+     */
+    public JSONObject getErrorMessage() {
+        return null;
+    }
 }

@@ -341,7 +341,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getString(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get string: {}", jsonParam);
-            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
         }
     }
 
@@ -359,7 +359,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getJSONArray(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get array: {}", jsonParam);
-            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
         }
 
     }
@@ -378,7 +378,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getJSONObject(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get object: {}", jsonParam);
-            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
         }
 
     }
@@ -402,7 +402,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             }
         } catch (SpokTypeException ex) {
             LOGGER.error("No {} found", common);
-            throw new SpokNodeException(this.getClass().getSimpleName(), common, ex);
+            throw new SpokNodeException(this, this.getClass().getSimpleName(), common, ex);
         }
         return s;
     }

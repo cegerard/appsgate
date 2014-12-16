@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ErrorMessagesFactory;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
@@ -32,8 +33,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-final public class NodeProgram extends Node implements ProgramDesc{
-
+final public class NodeProgram extends Node implements ProgramDesc {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
@@ -94,8 +94,8 @@ final public class NodeProgram extends Node implements ProgramDesc{
     private JSONObject nodesCounter;
 
     /**
-     * The current running state of this program - DEPLOYED - INVALID - INCOMPLETE
-     * LIMPING - PROCESSING
+     * The current running state of this program - DEPLOYED - INVALID -
+     * INCOMPLETE LIMPING - PROCESSING
      */
     private PROGRAM_STATE state = PROGRAM_STATE.DEPLOYED;
 
@@ -104,6 +104,14 @@ final public class NodeProgram extends Node implements ProgramDesc{
      */
     private EUDEInterpreter mediator = null;
 
+    /**
+     * If the program is invalid or incomplete, it contains a message saying why
+     */
+    private JSONObject errorMessage = null;
+
+    /**
+     * the table containing all the references
+     */
     private ReferenceTable references = null;
 
     /**
@@ -135,6 +143,7 @@ final public class NodeProgram extends Node implements ProgramDesc{
 
         if (!o.has("body")) {
             LOGGER.error("this program has no body");
+            errorMessage = ErrorMessagesFactory.getEmptyProgramMessage();
             setInvalid();
             return;
         }
@@ -145,13 +154,9 @@ final public class NodeProgram extends Node implements ProgramDesc{
 
             id = getJSONString(o, "id");
             update(o);
-
-            // useless ? we lose the name and other attribute if we do not do the update
-//            if (isValid()) { 
-//                update(o);
-//            }
         } catch (SpokNodeException ex) {
             LOGGER.warn("Program node triggered an exception during constructor : " + ex.getMessage());
+            errorMessage = ErrorMessagesFactory.getMessageFromSpokNodeException(ex);
             setInvalid();
         }
     }
@@ -363,6 +368,7 @@ final public class NodeProgram extends Node implements ProgramDesc{
     /**
      * @return the current state of the program
      */
+    @Override
     final public PROGRAM_STATE getState() {
         return state;
     }
@@ -418,6 +424,7 @@ final public class NodeProgram extends Node implements ProgramDesc{
      *
      * @return the id
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -494,6 +501,8 @@ final public class NodeProgram extends Node implements ProgramDesc{
             o.put("nodesCounter", nodesCounter);
 
             o.put("definitions", getSymbolTableDescription());
+
+            o.put("errorMessage", this.errorMessage);
 
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -668,6 +677,7 @@ final public class NodeProgram extends Node implements ProgramDesc{
      * @return
      */
     private Boolean applyStatus(ReferenceTable.STATUS s) {
+        errorMessage = references.getErrorMessage();
         switch (s) {
             case INVALID:
                 setInvalid();

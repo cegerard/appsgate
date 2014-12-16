@@ -57,7 +57,7 @@ public class NodeStateDevice extends NodeState {
         if (getObjectNode() instanceof ICanBeEvaluated) {
             object = (ICanBeEvaluated) getObjectNode();
         } else {
-            throw new SpokNodeException("NodeStateDevice", "object", null);
+            throw new SpokNodeException(this, "NodeStateDevice", "object", null);
         }
     }
 

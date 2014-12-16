@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package appsgate.lig.eude.interpreter.spec;
 
 import org.json.JSONObject;
@@ -13,7 +7,8 @@ import org.json.JSONObject;
  * @author jr
  */
 public interface ProgramDesc {
-        /**
+
+    /**
      * Program running state static enumeration
      *
      * @author Cédric Gérard
@@ -36,11 +31,26 @@ public interface ProgramDesc {
         }
     }
 
+    /**
+     *
+     * @return the program name
+     */
     String getProgramName();
-    
+
+    /**
+     *
+     * @return the state of the program
+     * INVALID/DEPLOYED/PROCESSING/INCOMPLETE/LIMPING
+     */
     PROGRAM_STATE getState();
-    
+
+    /**
+     * @return the ID of the program
+     */
     String getId();
-    
+
+    /**
+     * @return the json description of the program
+     */
     JSONObject getJSONDescription();
 }

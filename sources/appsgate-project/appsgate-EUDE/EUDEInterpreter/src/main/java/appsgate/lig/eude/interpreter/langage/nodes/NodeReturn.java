@@ -60,10 +60,10 @@ public class NodeReturn extends Node implements ICanBeEvaluated {
                 returnValue = (ICanBeEvaluated) returnValueNode;
             } else {
                 LOGGER.error("The return value is not a function and has no result");
-                throw new SpokNodeException("NodeReturn", "returnValue", null);
+                throw new SpokNodeException(this, "NodeReturn", "returnValue", null);
             }
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeReturn", "returnValue", ex);
+            throw new SpokNodeException(this, "NodeReturn", "returnValue", ex);
         }
     }
 

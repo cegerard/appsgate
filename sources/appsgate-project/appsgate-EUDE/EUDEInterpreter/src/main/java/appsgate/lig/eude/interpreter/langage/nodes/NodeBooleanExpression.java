@@ -91,30 +91,30 @@ public class NodeBooleanExpression extends Node implements ICanBeEvaluated {
         operator = BinaryOperator.get(getJSONString(o, "operator"));
         if (operator == null) {
             LOGGER.debug("Unknown operator: {}", getJSONString(o, "operator"));
-            throw new SpokNodeException("BooleanExpression", "operator", null);
+            throw new SpokNodeException(this, "BooleanExpression", "operator", null);
         }
         try {
             leftNode = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
             if (!(leftNode instanceof ICanBeEvaluated)) {
                 LOGGER.error("Left operand does not return a value");
-                throw new SpokNodeException("BooleanExpression", "leftOperand", null);
+                throw new SpokNodeException(this, "BooleanExpression", "leftOperand", null);
             }
             left = (ICanBeEvaluated) leftNode;
         } catch (SpokTypeException ex) {
             LOGGER.error("Missing left operand");
-            throw new SpokNodeException("BooleanExpression", "leftOperand", ex);
+            throw new SpokNodeException(this, "BooleanExpression", "leftOperand", ex);
         }
         try {
             rightNode = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
             if (!(rightNode instanceof ICanBeEvaluated)) {
                 LOGGER.error("right operand does not return a value");
-                throw new SpokNodeException("BooleanExpression", "rightOperand", null);
+                throw new SpokNodeException(this, "BooleanExpression", "rightOperand", null);
             }
             right = (ICanBeEvaluated) rightNode;
         } catch (SpokTypeException ex) {
             if (needTwoOperands(operator)) {
                 LOGGER.debug("Missing right operand");
-                throw new SpokNodeException("BooleanExpression", "rightOperand", null);
+                throw new SpokNodeException(this, "BooleanExpression", "rightOperand", null);
             }
         }
 

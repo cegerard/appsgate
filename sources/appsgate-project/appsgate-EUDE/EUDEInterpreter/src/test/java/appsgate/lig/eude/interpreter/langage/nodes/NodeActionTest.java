@@ -2,11 +2,15 @@ package appsgate.lig.eude.interpreter.langage.nodes;
 
 import appsgate.lig.ehmi.spec.messages.NotificationMsg;
 import appsgate.lig.eude.interpreter.impl.TestUtilities;
+import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +26,7 @@ public class NodeActionTest extends NodeTest {
 
     public NodeActionTest() throws Exception {
         super();
-        ruleJSON.put("type", "action");
+        ruleJSON.put("type", "action0");
         NodeValueTest t = new NodeValueTest();
         JSONObject o = t.ruleJSON;
         o.put("type", "device");
@@ -94,4 +98,35 @@ public class NodeActionTest extends NodeTest {
         Assert.assertNull(res);
         synchroniser.waitUntil(tested.is("Yes"), 500);
     }
+    
+    @Test
+    public void testConstructor() throws JSONException {
+        ruleJSON.put("type", "action");
+        try {
+            NodeAction action = new NodeAction(ruleJSON, programNode);
+        } catch (SpokNodeException ex) {
+            Assert.fail("No exception should raise, 'action' should be accepted");
+        }
+        ruleJSON.put("type", "action1");
+        try {
+            NodeAction action1 = new NodeAction(ruleJSON, programNode);
+            Assert.fail("An exception should raise, waiting for 1 argument, none provided");
+        } catch (SpokNodeException ex) {
+        }
+        JSONArray array = new JSONArray();
+        array.put("Coucou");
+        ruleJSON.put("args",array );
+        try {
+            NodeAction action1 = new NodeAction(ruleJSON, programNode);
+        } catch (SpokNodeException ex) {
+            Assert.fail("No should raise, waiting for 1 argument, 1 provided");
+        }
+        ruleJSON.put("type", "action2");
+        try {
+            NodeAction action1 = new NodeAction(ruleJSON, programNode);
+            Assert.fail("An exception should raise, waiting for 2 arguments, 1 provided");
+        } catch (SpokNodeException ex) {
+        }
+    }
+    
 }

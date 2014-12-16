@@ -68,7 +68,7 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
                 stateName = getJSONString(o.getJSONObject("param"), "name");
             } catch (JSONException ex) {
                 LOGGER.error("Unable to build NodeState: {}", o.toString());
-                throw new SpokNodeException("NodeState", "name", ex);
+                throw new SpokNodeException(this, "NodeState", "name", ex);
 
             }
         }
@@ -76,7 +76,7 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
             objectNode = Builder.buildFromJSON(getJSONObject(o, "object"), parent);
         } catch (SpokTypeException ex) {
             LOGGER.error("Unable to build NodeState: {}", o.toString());
-            throw new SpokNodeException("NodeState", "object", ex);
+            throw new SpokNodeException(this, "NodeState", "object", ex);
         }
 
     }
