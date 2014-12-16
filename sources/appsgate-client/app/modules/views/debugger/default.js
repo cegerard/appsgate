@@ -87,7 +87,7 @@ define([
                     ns: "debugger"
                 },
                 livetrace: {
-                    delayBeforeFlush: 50000
+                    delayBeforeFlush: 300000
                 }
             }
         );
