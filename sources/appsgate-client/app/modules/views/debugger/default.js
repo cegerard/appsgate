@@ -73,6 +73,9 @@ define([
                 },
                 i18n: {
                     ns: "debugger"
+                },
+                livetrace: {
+                    delayBeforeFlush: 50000
                 }
             }
         );
@@ -89,6 +92,21 @@ define([
         // listen to marker click event from dashboard
         dashboard.on('marker:click', function (decorations, textContent, htmlContent) {
             alert(textContent);
+        });
+
+
+        // listen to widget focus request from dashboard
+        dashboard.on('eventline:focus:request', function(context, attributes) {
+            dashboard.requestHistoryTrace(context);
+        });
+
+        // listen to widget name click from dashboard
+        dashboard.on('eventline:name:click', function(context, attributes) {
+            if (attributes.kind == 'program') {
+                console.log("Program with id "+attributes.id+" was clicked");
+            } else {
+                console.log("Device of type "+attributes.type+" and with id "+attributes.id+" was clicked");
+            }
         });
 
         // setup ui

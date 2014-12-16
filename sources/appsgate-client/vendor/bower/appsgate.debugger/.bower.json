@@ -1,7 +1,7 @@
 {
   "name": "appsgate.debugger",
   "description": "Debugger for AppsGate",
-  "version": "1.0.1",
+  "version": "1.0.2.1",
   "license": "ISC",
   "private": true,
   "author": {
@@ -43,13 +43,13 @@
     "i18next": "~1.7.4"
   },
   "homepage": "https://github.com/yeastlab/appsgate.debugger",
-  "_release": "1.0.1",
+  "_release": "1.0.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.1",
-    "commit": "20ba83ffe7de1a57d7ae1d1290b8b97f388c9a43"
+    "tag": "v1.0.2.1",
+    "commit": "46bd240c758437d997b41d6a765da8f193c00bcc"
   },
   "_source": "https://github.com/yeastlab/appsgate.debugger.git",
-  "_target": "~1.0.1",
+  "_target": "~1.0.2.1",
   "_originalSource": "https://github.com/yeastlab/appsgate.debugger.git"
 }
