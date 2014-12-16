@@ -25,8 +25,20 @@ define([
         // render the editor with the program
         this.$el.append(this.template({}));
 
+        // customize our theme from `basic` theme.
+        var theme = _.merge(Debugger.themes.basic, {
+            'dashboard': {
+                'widget': {
+                    'margin': {
+                        top: 5  // add 5px top margin to each widget
+                    }
+                }
+            }
+        });
+
         // initialize debugger
         var dashboard = this.dashboard = new Debugger.Dashboard(this.$('.debugger .canvas'), {
+                theme: theme,
                 d3: {
                     // Define custom locale (based on http://www.localeplanet.com/icu/fr/)
                     locale: {
