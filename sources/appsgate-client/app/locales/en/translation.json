@@ -507,7 +507,9 @@
     "size-editor": "Size",
     "size-height": "Height",
     "size-width": "Width",
-    "valid-button": "Done"
+    "valid-button": "Done",
+	"show-dependencies-button": "Show its dependencies",
+	"show-historic-button": "Show its timeline"
   },
   "keyboard": {
     "clock-event": "AppsGate clock shows ",
