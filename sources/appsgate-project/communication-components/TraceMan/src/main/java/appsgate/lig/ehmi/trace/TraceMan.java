@@ -134,6 +134,7 @@ public class TraceMan implements TraceManSpec {
      * No filtering for traces (i.e. all trace are returned)
      */
     public static final String NOFOCUS = "NONE";
+    
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -470,6 +471,7 @@ public class TraceMan implements TraceManSpec {
             } else { // Apply aggregation policy
                 //filteringOnFocus(tracesTab);
                 traceQueue.stop();
+                if(liveTracer != null)liveTracer.clearSubscribers();
                 traceQueue.loadTraces(tracesTab);//Third whole traces tab browse
                 result.put("data", traceQueue.applyAggregationPolicy(from, null) /*Call with default aggregation policy (id and time)*/); //Fourth whole traces tab browse + in detail browsing
             }
@@ -1042,11 +1044,24 @@ public class TraceMan implements TraceManSpec {
      * @return true if the live tracer is ready, false otherwise
      */
     public boolean initLiveTracer(long refreshRate, long dateNow,  long window, JSONObject obj) {
-        liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
+        if(liveTracer == null){
+        	liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
+        }
         liveTraceActivated = true;
         
         //send the first message concerning the window last milisecond data
     	sendWindowPastTrace(dateNow, window, obj);
+    	
+		//Save the clients id that request the live mode in order to send live trace to them only
+    	try {
+    		liveTracer.addSubscriber(obj.getInt("clientId"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+			liveTracer.close();
+			liveTraceActivated = false;
+			return false;
+		}
+    	
 
         if (!traceQueue.isInitiated()) {
         	if(refreshRate == 0)
