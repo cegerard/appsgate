@@ -267,6 +267,12 @@ define([
             return this.getTypeSensors(31);
         },
         /**
+         * @return Array of the TV in the place
+         */
+        getTVs: function() {
+            return this.getTypeSensors(124);
+        },
+        /**
          * Send a message to the server to perform a remote call
          *
          * @param method Remote method name to call
