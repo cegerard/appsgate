@@ -591,6 +591,37 @@
 </div>
 <% } %>
 
+<!-- TV -->
+<% if (place.getTVs().length > 0) { %>
+<div class="panel panel-default">
+
+	<div class="list-group">
+		<% place.getTVs().forEach(function(s) { %>
+		<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+			<span id="device-<%= s.cid %>-name">
+			<% if (s.get("name") !== "") { %>
+				<%= s.get("name") %>
+			<% } else { %>
+				<%= $.i18n.t("places-details.body.device-no-name") %>
+			<% } %>
+			</span>
+			<div class="pull-right">
+				<i class="glyphicon glyphicon-chevron-right"></i>
+			</div>
+			<br>
+			<% if (s.get("status") === "0") { %>
+			<span id="device-<%= s.cid %>-status" class="label label-danger" data-18n="devices.status.disconnected"></span>
+			<% } else if (s.get("status" === "1")) { %>
+			<span id="device-<%= s.cid %>-status" class="label label-warning" data-i18n="devices.status.waiting"></span>
+			<% } else { %>
+			<span id="device-<%= s.cid %>-status" class="label label-success" data-i18n="devices.status.connected"></span>
+			<% } %>
+		</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
 <!-- if the place has no device, show a message -->
 <% if (place.get("devices").length === 0) { %>
 	<div class="alert alert-info" data-i18n="places-details.body.no-device-in-place">

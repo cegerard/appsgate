@@ -193,7 +193,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         	}
         	
             try{
-            	notifyAllUpdatesListeners(newMsg, deviceId, rmObj.getUserType(), null, null);
+//            	notifyAllUpdatesListeners(newMsg, deviceId, rmObj.getUserType(), null, null);
             	sendToClientService.send(newMsg, obj); 
         	}catch(ExternalComDependencyException comException) {
         		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
