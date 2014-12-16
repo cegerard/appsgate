@@ -687,6 +687,10 @@ font-size: smaller;
     border: none;
 }
 
+.debugger-toolbar .btn {
+  box-shadow: none !important;
+}
+
 /*.debugger .dashboard > header {*/
     /*position: fixed;*/
 /*}*/
