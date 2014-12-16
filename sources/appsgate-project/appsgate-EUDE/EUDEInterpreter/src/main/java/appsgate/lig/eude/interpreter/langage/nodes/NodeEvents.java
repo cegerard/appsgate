@@ -68,9 +68,9 @@ public abstract class NodeEvents extends Node implements INodeEvent{
             try {
                 listOfEvent.add(Builder.buildFromJSON(seqEventJSON.getJSONObject(i), this, stateTarget));
             } catch (JSONException ex) {
-                throw new SpokNodeException("NodeEvents", "item " + i, ex);
+                throw new SpokNodeException(this, "NodeEvents", "item " + i, ex);
             } catch (SpokTypeException ex) {
-                throw new SpokNodeException("NodeEvents", "event", ex);
+                throw new SpokNodeException(this, "NodeEvents", "event", ex);
             }
         }
     }

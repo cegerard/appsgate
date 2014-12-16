@@ -7,10 +7,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ErrorMessagesFactory;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.spec.ProgramDesc;
 import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 
 import java.util.Collection;
@@ -31,30 +33,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-final public class NodeProgram extends Node {
-
-    /**
-     * Program running state static enumeration
-     *
-     * @author Cédric Gérard
-     * @since September 13, 2013
-     */
-    public static enum PROGRAM_STATE {
-
-        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"),
-        INCOMPLETE("INCOMPLETE"), LIMPING("LIMPING");
-
-        private String name = "";
-
-        PROGRAM_STATE(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
+final public class NodeProgram extends Node implements ProgramDesc {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
@@ -115,8 +94,8 @@ final public class NodeProgram extends Node {
     private JSONObject nodesCounter;
 
     /**
-     * The current running state of this program - DEPLOYED - INVALID - INCOMPLETE
-     * LIMPING - PROCESSING
+     * The current running state of this program - DEPLOYED - INVALID -
+     * INCOMPLETE LIMPING - PROCESSING
      */
     private PROGRAM_STATE state = PROGRAM_STATE.DEPLOYED;
 
@@ -125,6 +104,14 @@ final public class NodeProgram extends Node {
      */
     private EUDEInterpreter mediator = null;
 
+    /**
+     * If the program is invalid or incomplete, it contains a message saying why
+     */
+    private JSONObject errorMessage = null;
+
+    /**
+     * the table containing all the references
+     */
     private ReferenceTable references = null;
 
     /**
@@ -156,6 +143,7 @@ final public class NodeProgram extends Node {
 
         if (!o.has("body")) {
             LOGGER.error("this program has no body");
+            errorMessage = ErrorMessagesFactory.getEmptyProgramMessage();
             setInvalid();
             return;
         }
@@ -166,13 +154,9 @@ final public class NodeProgram extends Node {
 
             id = getJSONString(o, "id");
             update(o);
-
-            // useless ? we lose the name and other attribute if we do not do the update
-//            if (isValid()) { 
-//                update(o);
-//            }
         } catch (SpokNodeException ex) {
             LOGGER.warn("Program node triggered an exception during constructor : " + ex.getMessage());
+            errorMessage = ErrorMessagesFactory.getMessageFromSpokNodeException(ex);
             setInvalid();
         }
     }
@@ -384,6 +368,7 @@ final public class NodeProgram extends Node {
     /**
      * @return the current state of the program
      */
+    @Override
     final public PROGRAM_STATE getState() {
         return state;
     }
@@ -439,6 +424,7 @@ final public class NodeProgram extends Node {
      *
      * @return the id
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -502,7 +488,7 @@ final public class NodeProgram extends Node {
         try {
             o.put("id", id);
             o.put("type", "program");
-            o.put("runningState", state.name);
+            o.put("runningState", state.toString());
             o.put("name", name);
             o.put("header", header);
             o.put("package", getPath());
@@ -515,6 +501,8 @@ final public class NodeProgram extends Node {
             o.put("nodesCounter", nodesCounter);
 
             o.put("definitions", getSymbolTableDescription());
+
+            o.put("errorMessage", this.errorMessage);
 
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -689,6 +677,7 @@ final public class NodeProgram extends Node {
      * @return
      */
     private Boolean applyStatus(ReferenceTable.STATUS s) {
+        errorMessage = references.getErrorMessage();
         switch (s) {
             case INVALID:
                 setInvalid();

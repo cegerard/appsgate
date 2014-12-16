@@ -8,6 +8,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.spec.ProgramEventNotification;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,6 +160,8 @@ public class NodeEvent extends Node implements INodeEvent {
                 LOGGER.error("Unable to remove the node listening from {}", this);
             }
             setStarted(false);
+            ProgramEventNotification n = new ProgramEventNotification(this.getProgramNode(), this.getIID(), this.getSourceId(), eventName);
+            this.notifyLine(n);
             fireEndEvent(new EndEvent(this));
         }
     }

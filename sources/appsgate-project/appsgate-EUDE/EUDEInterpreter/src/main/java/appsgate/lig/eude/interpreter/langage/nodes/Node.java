@@ -16,8 +16,8 @@ import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
@@ -341,7 +341,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getString(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get string: {}", jsonParam);
-            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
         }
     }
 
@@ -359,7 +359,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getJSONArray(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get array: {}", jsonParam);
-            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
         }
 
     }
@@ -378,7 +378,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             return jsonObj.getJSONObject(jsonParam);
         } catch (JSONException ex) {
             LOGGER.debug("Unable to get object: {}", jsonParam);
-            throw new SpokNodeException(this.getClass().getName(), jsonParam, ex);
+            throw new SpokNodeException(this, this.getClass().getName(), jsonParam, ex);
         }
 
     }
@@ -402,7 +402,7 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
             }
         } catch (SpokTypeException ex) {
             LOGGER.error("No {} found", common);
-            throw new SpokNodeException(this.getClass().getSimpleName(), common, ex);
+            throw new SpokNodeException(this, this.getClass().getSimpleName(), common, ex);
         }
         return s;
     }
@@ -621,25 +621,6 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
 
     /**
      *
-     * @param sourceId
-     * @param targetId
-     * @param description
-     * @param type
-     * @return
-     */
-    protected ProgramCommandNotification getProgramLineNotification(String sourceId, String targetId, String description, ProgramCommandNotification.Type type) {
-        NodeProgram p = this.getProgramNode();
-        if (sourceId == null) {
-            sourceId = p.getId();
-        }
-        if (targetId == null) {
-            targetId = p.getId();
-        }
-        return new ProgramCommandNotification(p.getJSONDescription(), p.getId(), p.getProgramName(), p.getState().toString(), this.getIID(), sourceId, targetId, description, type);
-    }
-
-    /**
-     *
      * @param table
      */
     protected void buildReferences(ReferenceTable table) {
@@ -651,5 +632,17 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     @Override
     final public String toString() {
         return "[Node("+ this.iid+ ") " + getTypeSpec() + "]";
+    }
+    
+    /**
+     * Method to notify the tracemanager a command has been passed
+     * @param n 
+     */
+    protected void notifyLine(ProgramTraceNotification n) {
+        try {
+            this.getMediator().notifyChanges(n);
+        } catch (SpokExecutionException ex) {
+            LOGGER.debug("Unable to launch Mediator for notifyLine({})", n.JSONize().toString());
+        }
     }
 }

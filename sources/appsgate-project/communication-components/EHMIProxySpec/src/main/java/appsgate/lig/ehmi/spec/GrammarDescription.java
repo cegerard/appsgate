@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package appsgate.lig.ehmi.spec;
 
 import java.util.ArrayList;
@@ -10,12 +5,19 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jr
  */
 public class GrammarDescription {
+
+    /**
+     * Logger
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(GrammarDescription.class);
 
     private final JSONObject json;
 
@@ -32,27 +34,11 @@ public class GrammarDescription {
             return;
         }
         this.json = o;
-        if (this.json.has("commands")) {
-            try {
-                JSONArray commands = o.getJSONArray("commands");
-
-                for (int i = 0; i < commands.length(); i++) {
-                    ArrayList<String> props = new ArrayList<String>();
-                    JSONObject commandObj = commands.getJSONObject(i);
-                    JSONArray jsonProps = commandObj.getJSONArray("properties");
-                    for (int j = 0; j < jsonProps.length(); j++) {
-                        props.add(jsonProps.getString(j));
-                    }
-                    commandsState.put(commandObj.getString("name"), props);
-                }
-            } catch (JSONException ex) {
-            }
-        }
     }
 
     /**
      *
-     * @return
+     * @return the type, empty string if no typename is defined
      */
     public String getType() {
         try {
@@ -66,7 +52,7 @@ public class GrammarDescription {
 
     /**
      *
-     * @return
+     * @return friendly name, "unknown" if no friendly name has been defined
      */
     public String getFriendlyName() {
         try {
@@ -86,13 +72,10 @@ public class GrammarDescription {
     }
 
     /**
-     * @param command the string describing the command
-     * @return a set of string representing the state that can be modified
+     *
+     * @param stateName
+     * @return
      */
-    public ArrayList<String> getPropertiesModifiedByCommand(String command) {
-        return this.commandsState.get(command);
-    }
-
     public JSONObject getStateDescription(String stateName) {
         try {
             JSONArray grammarStates = this.json.getJSONArray("states");
@@ -143,6 +126,118 @@ public class GrammarDescription {
 
     public boolean generateTrace() {
         return this.json.has("traceDesc");
+    }
+
+    /**
+     * Return the trace message corresponding to the cmd
+     *
+     * @param cmd
+     * @return
+     */
+    public String getTraceMessageFromCommand(String cmd) {
+        return "decorations." + this.getType() + "." + cmd;
+    }
+
+    /**
+     * Return the context corresponding to the cmd and the params
+     *
+     * @param cmd
+     * @param params
+     * @return
+     */
+    public JSONObject getContextFromParams(String cmd, JSONArray params) {
+        int size = 0;
+        if (params != null) {
+            size = params.length();
+        }
+        ArrayList<String> arguments = getArgumentsFromCommand(cmd, size);
+        if (params == null) {
+            return null;
+        }
+        JSONObject ret = new JSONObject();
+        for (int i = 0 ; i < arguments.size(); i++) {
+            try {
+                ret.put(arguments.get(i), params.getJSONObject(i).getString("value"));
+            } catch (JSONException ex) {
+                LOGGER.error("GetContextFromParams, array invalid: {}", params.toString());
+                return null;
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Return the context corresponding to the cmd and the params
+     *
+     * @param cmd
+     * @param params
+     * @return
+     */
+    public JSONObject getContextFromParams(String cmd, ArrayList<Object> params) {
+        int size = 0;
+        if (params != null) {
+            size = params.size();
+        }
+        ArrayList<String> arguments = getArgumentsFromCommand(cmd, size);
+        if (params == null) {
+            return null;
+        }
+        JSONObject ret = new JSONObject();
+        for (int i = 0 ; i < arguments.size(); i++) {
+                Object obj = params.get(i);
+                String v = obj.toString();
+            try {
+                ret.put(arguments.get(i), v);
+            } catch (JSONException ex) {
+                // Could not happen
+            }
+        }
+        return ret;
+    }
+
+    /**
+     *
+     * @param cmd the command name
+     * @return the list of arguments of the given method, empty array if no
+     * method is found
+     */
+    private ArrayList<String> getArgumentsFromCommand(String cmd, int size) {
+        ArrayList<String> params = new ArrayList<String>();
+        if (!this.json.has("commands")) {
+            LOGGER.error("Command not found ({}) for type {}", cmd, this.getType());
+            return params;
+        }
+        if (!this.json.optJSONObject("commands").has(cmd)) {
+            LOGGER.error("Command not found ({}) for type {}", cmd, this.getType());
+            return params;
+        }
+        JSONObject command = this.json.optJSONObject("commands").optJSONObject(cmd);
+
+        if (command == null) {
+            LOGGER.error("Command not found ({}) for type {}, grammar not well formed", cmd, this.getType());
+            return params;
+        }
+
+        JSONArray array = command.optJSONArray("parameters");
+        if (array == null) {
+            LOGGER.debug("No parameters for this command ({}) of type {}", cmd, this.getType());
+            return params;
+        }
+        if (array.length() != size) {
+            LOGGER.error("Method ({} on {}) passed with the wrong parameters number {} waited, {} received", command, this.getType(), array.length(), size);
+            return params;
+        }
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject p = array.optJSONObject(i);
+            if (p == null) {
+                LOGGER.error("File not well formed for type {} : {}", this.getType(), params.toString());
+                return params;
+            }
+            params.add(p.optString("name"));
+        }
+
+        return params;
+
     }
 
 }

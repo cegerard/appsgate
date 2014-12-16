@@ -57,7 +57,7 @@ public class NodeStateDevice extends NodeState {
         if (getObjectNode() instanceof ICanBeEvaluated) {
             object = (ICanBeEvaluated) getObjectNode();
         } else {
-            throw new SpokNodeException("NodeStateDevice", "object", null);
+            throw new SpokNodeException(this, "NodeStateDevice", "object", null);
         }
     }
 
@@ -149,7 +149,8 @@ public class NodeStateDevice extends NodeState {
         }
         String targetId = object.getResult().getValue();
         LOGGER.trace("Asking for {}, {}", object.getResult().getValue(), desc.getStateName());
-        ProgramCommandNotification notif = getProgramLineNotification(null, targetId, "Reading from", ProgramCommandNotification.Type.READ);
+        ProgramCommandNotification notif = null;
+               //getProgramLineNotification(null, targetId, "Reading from", ProgramCommandNotification.Type.READ, null);
 
         GenericCommand cmd = null;
         try {

@@ -24,5 +24,21 @@
     "dependencie_plural": "Dépendances",
     "all": "Tous",
     "all_plural": "Tous"
+  },
+  "decorations": {
+    "program_added" : "le programme __name__ a été ajouté",
+    "program_deleted" : "le programme __name__ a été supprimé",
+    "program_saved" : "le programme __name__ a été modifié",
+    "connection" : "l'équipement s'est connecté",
+    "disconnection" : "l'équipement a été déconnecté",
+    "error" : "une erreur s'est produite",
+    "change" : "__var__ : __text__",
+    "appear" : "l'équipement __name__ est apparu",
+    "remove" : "l'équipement __name__ a été enlevé",
+    "colorlight" : {
+      "off" : "$t(translation:devices.lamp.language.turnOff)",
+      "on" : "$t(translation:devices.lamp.language.turnOn)"
+    }
+
   }
 }

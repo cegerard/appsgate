@@ -51,9 +51,9 @@ public class NodeKeepState extends Node {
         try {
             state = (NodeState) Builder.buildFromJSON(o.getJSONObject("state"), this);
         } catch (JSONException ex) {
-            throw new SpokNodeException("NodeKeepState", "state", ex);
+            throw new SpokNodeException(this, "NodeKeepState", "state", ex);
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeKeepState", "state", ex);
+            throw new SpokNodeException(this, "NodeKeepState", "state", ex);
         }
     }
 

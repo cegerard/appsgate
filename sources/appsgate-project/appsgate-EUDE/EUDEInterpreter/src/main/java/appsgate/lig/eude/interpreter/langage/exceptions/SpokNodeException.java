@@ -5,6 +5,8 @@
  */
 package appsgate.lig.eude.interpreter.langage.exceptions;
 
+import appsgate.lig.eude.interpreter.langage.nodes.Node;
+
 /**
  *
  * @author jr
@@ -15,12 +17,29 @@ public class SpokNodeException extends SpokException {
 
     /**
      *
+     */
+    private final Node node;
+
+    /**
+     *
+     * @param n the node which is not correct
      * @param name
      * @param jsonParam
      * @param ex
      */
-    public SpokNodeException(String name, String jsonParam, Exception ex) {
+    public SpokNodeException(Node n, String name, String jsonParam, Exception ex) {
         super("Missing parameter [" + jsonParam + "] for " + name, ex);
+        this.node = n;
+    }
+
+    /**
+     * @return the node id
+     */
+    public String getNodeId() {
+        if (node != null) {
+            return node.getIID();
+        }
+        return null;
     }
 
 }

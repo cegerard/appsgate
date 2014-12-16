@@ -25,8 +25,8 @@ import appsgate.lig.eude.interpreter.langage.components.StartEventListener;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeEvent;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.spec.EUDE_InterpreterSpec;
-import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import appsgate.lig.manager.propertyhistory.services.PropertyHistoryManager;
 
 import java.io.BufferedReader;
@@ -342,7 +342,7 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
      * @param args the args to pass to the command
      * @return the command to be executed
      */
-    public GenericCommand executeCommand(String objectId, String methodName, JSONArray args, ProgramCommandNotification notif) {
+    public GenericCommand executeCommand(String objectId, String methodName, JSONArray args, ProgramTraceNotification notif) {
         if (ehmiProxy == null) {
             LOGGER.warn("No EHMI Proxy bound");
             return null;
@@ -352,7 +352,9 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
         if (command == null) {
             LOGGER.error("Command not found {}, for {}", methodName, objectId);
         } else {
-            notifyChanges(notif);
+            if (notif != null) {
+                notifyChanges(notif);
+            }
             command.run();
         }
         return command;

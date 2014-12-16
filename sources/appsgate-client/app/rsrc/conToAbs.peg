@@ -67,14 +67,14 @@ NUMERIC_VALUE = ID "number"
 			
 ARG = "String" / "number" / "boolean"
 
-ACTION = ACTION_0 / ACTION_1 / ACTION_2 / ACTION_3
+ACTION = ACTION_0 / ACTION_1 / ACTION_2 / ACTION_3 / ACTION_WITH_ANY_ARGS
 ACTION_WITH_ANY_ARGS = ID "action" _ "(" _ TARGET _ ")" _ "[" _ (ARG _)* _ "]"
 ACTION_0 = ID "action0" _ "(" _ TARGET _ ")" _ "[" _ "]"
 ACTION_1 = ID "action1" _ "(" _ TARGET _ ")" _ "[" _ ARG _ "]"
 ACTION_2 = ID "action2" _ "(" _ TARGET _ ")" _ "[" _ ARG _ ARG _ "]"
 ACTION_3 = ID "action3" _ "(" _ TARGET _ ")" _ "[" _ ARG _ ARG _ ARG _ "]"
 
-PROPERTY = ID "property" _ "(" _ SOURCE _ ")"
+PROPERTY = ID "property" _ "(" _ SOURCE _ ")"  _ "[" _ (ARG _)* _ "]"
 
 KEEP  = ID "keepState" _ "(" _ MAINTAINABLE_STATE _ ")"
 

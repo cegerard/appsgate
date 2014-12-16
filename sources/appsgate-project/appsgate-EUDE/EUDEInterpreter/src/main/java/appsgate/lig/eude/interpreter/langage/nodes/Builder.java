@@ -279,7 +279,7 @@ public class Builder {
                     return new NodeComparator(o, parent);
                 default:
                     LOGGER.error("No such type found : {}", o.toString());
-                    throw new SpokNodeException("NodeBuilder", "type", null);
+                    throw new SpokNodeException(parent, "NodeBuilder", "type", null);
             }
         } catch (SpokNodeException ex) {
             LOGGER.debug("Unable to build node: {}", o.optString("type"));

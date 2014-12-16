@@ -19,35 +19,6 @@
                 "value" : "true" 
             }
 
-        },
-        {
-            "name": "testState",
-            "setter": {
-                "type": "NodeAction",
-                "methodName": "on"
-            },
-            "endEvent": {
-                "name" : "lightOff"
-            },
-            "startEvent": {
-                "name" : "lightOn"
-            },
-            "stateName" : "testState",
-            "stateValue": "1"
-        },
-        {
-            "name": "isOff",
-            "actions": {
-                "type": "NodeAction",
-                "methodName": "off"
-            },
-            "endEvent": {
-                "name" : "lightOn"
-            },
-            "startEvent": {
-                "name" : "lightOff"
-            }
-
         }
     ]
 }

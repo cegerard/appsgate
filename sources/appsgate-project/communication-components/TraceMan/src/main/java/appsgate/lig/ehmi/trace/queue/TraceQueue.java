@@ -140,7 +140,7 @@ import appsgate.lig.ehmi.trace.TraceMan;
                         }
                     }
                 }
-            }, refreshRate, refreshRate);
+            }, 0, refreshRate);
             initiated = true;
         }
 		

@@ -111,6 +111,9 @@ public class TraceCmdListener implements CommandListener{
 					}
 					traceMan.setDeltaT(deltaT);
 					traceMan.initFileTracer();
+					
+				}else if (cmd.equalsIgnoreCase("stoplive")){
+					traceMan.stopLive();
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

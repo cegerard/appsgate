@@ -1204,7 +1204,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			String objIdentifier, String method, ArrayList<Object> arguments,
 			ArrayList<Class> types, int clientId, String callId) {
 		if(traceManager!= null)
-			traceManager.commandHasBeenPassed(objIdentifier, method, "EHMI");
+			traceManager.commandHasBeenPassed(objIdentifier, method, "user", arguments, getCurrentTimeInMillis());
 		return coreProxy.executeCommand(clientId, objIdentifier, method,
 				arguments, types, callId);
 	}
@@ -1390,7 +1390,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
 
 	public void newDeviceStatus(String objectId, Boolean bool) {
+            if (interpreter != null) {
 		interpreter.newDeviceStatus(objectId, bool);
+            }
 	}
 
 	@Override

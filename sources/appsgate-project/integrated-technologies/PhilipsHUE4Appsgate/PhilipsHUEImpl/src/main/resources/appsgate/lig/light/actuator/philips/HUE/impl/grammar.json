@@ -43,5 +43,29 @@
             }
 
         }
-    ]
+    ],
+    "commands": {
+        "setStatus" : {"params" : ["newStatus"]},
+	"on" : {},
+	"off" : {},
+        "setColorJson" : {"params" : ["color"]},
+        "setColor" : {"params" : ["color"]},
+	"setBrightness" : {"params" : ["brightness"]},
+	"setSaturation" : {"params" : ["saturation"]},
+        "setRed" : {},
+        "setBlue" : {},
+        "setGreen" : {},
+        "setYellow" : {},
+        "setOrange" : {},
+        "setPurple" : {},
+        "setPink" : {},
+        "setWhite" : {},
+        "setDefault" : {},
+	"increaseBrightness" : {"params" : ["step"]},
+	"decreaseBrightness" : {"params" : ["step"]},
+        "toggle" : {},
+        "blink" : {},
+        "blink30" : {},
+        "colorLoop" : {}
+    }
 }

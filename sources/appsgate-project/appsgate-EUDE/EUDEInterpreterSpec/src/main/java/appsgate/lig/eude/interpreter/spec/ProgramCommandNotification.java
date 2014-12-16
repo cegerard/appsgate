@@ -1,77 +1,26 @@
 package appsgate.lig.eude.interpreter.spec;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  *
  * @author jr
  */
-public class ProgramCommandNotification extends ProgramNotification {
-
-    /**
-     *
-     */
-    private final String sid;
-    /**
-     *
-     */
-    private final String tid;
-    /**
-     *
-     */
-    private final String desc;
-    
-    public enum Type { READ, WRITE};
-    
-    private Type t;
-
+public class ProgramCommandNotification extends ProgramTraceNotification {
     /**
      *
      * @param source
-     * @param programId
-     * @param programName
-     * @param runningState
-     * @param instructionId
-     * @param sourceId
+     * @param nodeId
      * @param targetId
      * @param description
-     * @param type
+     * @param params
      */
-    public ProgramCommandNotification(JSONObject source, String programId, String programName,
-            String runningState, String instructionId, String sourceId, String targetId, String description, Type type) {
-        super("", programId, runningState, programName, source, instructionId);
-        this.sid = sourceId;
-        this.tid = targetId;
-        this.desc = description;
-        this.t = type;
+    public ProgramCommandNotification(ProgramDesc source, 
+            String nodeId, String targetId, String description, JSONArray params) {
+        super(source, nodeId, source.getId(), targetId, description, Type.WRITE);
+        setParams(params);
     }
 
-    /**
-     * @return the source id
-     */
-    public String getSourceId() {
-        return sid;
-    }
 
-    /**
-     * @return the target id
-     */
-    public String getTargetId() {
-        return tid;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return desc;
-    }
     
-    /**
-     * @return the string representing the type of notification (ie 'read' or 'write')
-     */
-    public String getType() {
-        return this.t.toString().toLowerCase();
-    }
-
 }

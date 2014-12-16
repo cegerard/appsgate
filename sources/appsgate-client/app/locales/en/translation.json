@@ -250,7 +250,12 @@
       },
       "complement": {
         "change-color": "to",
-        "color": "Color"
+        "color": "Color",
+        "during": "during",
+        "speed": "seconds and blink it ",
+        "fast":"rapidly",
+        "normal":"normally",
+        "slow":"slowly"
       },
       "keyboard": {
         "blink": "Blink a __myVar__",
