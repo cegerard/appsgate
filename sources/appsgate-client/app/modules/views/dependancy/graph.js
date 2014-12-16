@@ -111,6 +111,8 @@ define([
 			this.createFilters(this.model);
 			this.updateCheckAllEntities();
 			this.updateCheckAllRelations();
+			// update model, if we have an entity disable by default (ie selector)
+			this.model.updateEntitiesShown();
 
 			// Zoom d3 object
 			pan = d3.behavior.zoom()
