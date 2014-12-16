@@ -250,7 +250,12 @@
       },
       "complement": {
         "change-color": "en",
-        "color": "Couleur"
+        "color": "Couleur",
+        "during": "pendant",
+        "speed": "secondes et faire clignoter de façon ",
+        "fast":"rapide",
+        "normal":"normal",
+        "slow":"lent"
       },
       "keyboard": {
         "blink": "Faire clignoter l'__myVar__",

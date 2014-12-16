@@ -66,7 +66,7 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     private String effect = "";
     private String trans = "";
     private JSONObject state;
-
+    private PhilipsHueBlinkManager blinkController =new PhilipsHueBlinkManager();
     /**
      * The current sensor status.
      *
@@ -225,10 +225,13 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         return false;
     }
 
-    @Override
-    public boolean on() {
-
-        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", true)) {
+    /**
+     * Turns the lamp On with a given transition time
+     * @param transitionTime by default its 4 (which means 400ms from the initial state until arrive into goal state)
+     * @return
+     */
+    public boolean on(Integer transitionTime){
+        if(PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", true,transitionTime)){
             on = String.valueOf(true);
             return true;
         }
@@ -237,13 +240,29 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
     }
 
     @Override
-    public boolean off() {
-        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", false)) {
+    public boolean on() {
+        blinkController.stopBlinking();
+        return on(null);
+    }
+
+    /**
+     * Turns the lamp Off with a given transition time
+     * @param transitionTime by default its 4 (which means 400ms from the initial state until arrive into goal state)
+     * @return
+     */
+    public boolean off(Integer transitionTime) {
+        if (PhilipsBridge.setAttribute(lightBridgeIP, lightBridgeId, "on", false,transitionTime)) {
             on = String.valueOf(false);
             return true;
         }
 
         return false;
+    }
+
+    @Override
+    public boolean off() {
+        blinkController.stopBlinking();
+        return off(null);
     }
 
     @Override
@@ -555,9 +574,15 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
         return setAlert("select");
     }
 
+    public boolean blink(long seconds, long frequency) {
+        blinkController.blink(this, seconds, frequency);
+        return true;
+    }
+
     @Override
     public boolean blink30() {
-        return setAlert("lselect");
+        blink(30l, 1000l);
+        return true;
     }
 
     @Override
