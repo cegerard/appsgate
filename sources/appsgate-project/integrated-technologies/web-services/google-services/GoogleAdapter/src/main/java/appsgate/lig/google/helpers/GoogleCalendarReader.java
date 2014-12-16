@@ -30,6 +30,13 @@ public class GoogleCalendarReader {
 	public final static String PARAM_EVENTS = "events";	
 	public final static String PARAM_TIMEMIN = "timeMin";
 	public final static String PARAM_TIMEMAX = "timeMax";
+	
+	public final static String PARAM_MAX_RESULTS = "maxResults";	
+	public final static String PARAM_MAX_RESULTS_DEFAULT = "50";	
+	
+	public final static String PARAM_NEXT_PAGE_TOKEN = "nextPageToken";
+	public final static String PARAM_PAGE_TOKEN = "pageToken";
+
 
 	public final static String RESP_ITEMS = "items";
 
