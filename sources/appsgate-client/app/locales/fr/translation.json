@@ -31,10 +31,10 @@
 		},
 	  	"help" : {
 			"title" : "Aide",
-			"click": "Click : Défixer une entité préalablement fixée",
-			"click-move": "Click + Déplacement : Déplacer une entité et la fixer",
-			"double-click": "Double click : Mise en valeur / Enlever la mise en valeur, d'une entité",
-			"maj-click": "Maj. + Click : Aller à la page détaillée de l'entité"
+			"click": "Clic : Défixer une entité préalablement fixée",
+			"click-move": "Clic + Déplacement : Déplacer une entité et la fixer",
+			"double-click": "Double clic : Mettre / Enlever le focus d'une entité",
+			"maj-click": "Maj. + Clic : Aller à la page détaillée de l'entité"
 		},
 	  	"type": {
 			"entity": {
