@@ -1520,4 +1520,19 @@ public class EHMIProxyImpl implements EHMIProxySpec {
     		return false;
     	}
 
+        @Override
+        public JSONArray checkProgramsScheduled() {
+            JSONArray programsScheduled = new JSONArray();
+            if (schedulerService == null) {
+    			logger.error("No scheduling service, aborting)");
+    		} else {
+    			try {
+    				programsScheduled =  schedulerService.checkProgramsScheduled();
+    			} catch (SchedulingException exc) {
+    				logger.error("Error when checking the scheduler : "
+    						+ exc.getMessage());
+    			}
+    		}
+    		return programsScheduled;
+        }
 }

@@ -99,7 +99,7 @@ public class GoogleAdapterImpl extends GooglePropertiesHolder implements GoogleA
 			logger.error("Cannot get an access token for the calendar");
 			return null;
 		}
-		
+		requestParameters.put(GoogleCalendarReader.PARAM_MAX_RESULTS, GoogleCalendarReader.PARAM_MAX_RESULTS_DEFAULT);
 		
 		JSONObject result = GoogleCalendarReader.getEvents(
 				GooglePropertiesHolder.getProperties().getProperty(GoogleOpenAuthent.PARAM_APIKEY),
@@ -108,13 +108,37 @@ public class GoogleAdapterImpl extends GooglePropertiesHolder implements GoogleA
 				calendarId,
 				requestParameters);
 		
+		Set<GoogleEvent> response = new HashSet<GoogleEvent>();
+		fillEventResponse( result, response);
+		
+		String nextPage = result.optString(GoogleCalendarReader.PARAM_NEXT_PAGE_TOKEN);			
+		while (nextPage != null && !nextPage.equals("")) {
+			logger.trace("next Page : "+nextPage);
+			requestParameters.put(GoogleCalendarReader.PARAM_PAGE_TOKEN, nextPage);
+			result = GoogleCalendarReader.getEvents(
+					GooglePropertiesHolder.getProperties().getProperty(GoogleOpenAuthent.PARAM_APIKEY),
+					GooglePropertiesHolder.getProperties().getProperty(GoogleOpenAuthent.RESP_TOKENTYPE),
+					currentAccessToken,
+					calendarId,
+					requestParameters);
+			fillEventResponse( result, response);
+
+			
+			nextPage = result.optString(GoogleCalendarReader.PARAM_NEXT_PAGE_TOKEN);
+		}
+
+
+		
+		return response;
+	}
+	
+	private void fillEventResponse(JSONObject result, Set<GoogleEvent> response) {
 		if(result==null ||result.has(GoogleOpenAuthent.RESP_ERROR)) {
 			logger.error("No results for the request: "+result);
-			return null;
+			return ;
 		}
 		
 		JSONArray array = result.optJSONArray(GoogleCalendarReader.RESP_ITEMS);
-		Set<GoogleEvent> response = new HashSet<GoogleEvent>();
 		
 		for(int index=0; array!=null && index<array.length(); index++) {
 			JSONObject item = array.optJSONObject(index);
@@ -127,9 +151,8 @@ public class GoogleAdapterImpl extends GooglePropertiesHolder implements GoogleA
 					logger.warn("Item is not a valid google event , "+item+"  (skipping this item)");
 				}
 			}
-		}
+		}		
 		
-		return response;
 	}
 
 	@Override
