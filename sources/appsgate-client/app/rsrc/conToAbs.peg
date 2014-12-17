@@ -65,7 +65,7 @@ NUMERIC_VALUE = ID "number"
             / PROPERTY
             / ID "scale"
 			
-ARG = "String" / "number" / "boolean"
+ARG = "String" / "number" / "boolean" / "long" / "int" / "float"
 
 ACTION = ACTION_0 / ACTION_1 / ACTION_2 / ACTION_3 / ACTION_WITH_ANY_ARGS
 ACTION_WITH_ANY_ARGS = ID "action" _ "(" _ TARGET _ ")" _ "[" _ (ARG _)* _ "]"
