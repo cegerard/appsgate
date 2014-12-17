@@ -736,6 +736,16 @@
     "delete-program": "Supprimer",
     "edit-program": "Editer",
     "end-edit-program": "Valider",
+    "error" : {
+      "empty" : "Le programme est vide",
+      "node" : "La syntaxe du programme est invalide",
+      "device" : "Au moins un équipement référencé par ce programme est absent",
+      "missingProgram" : "Au moins un programme référencé par ce programme est absent",
+	  "invalidProgram" : "Au moins un programme référencé par ce programme n'est pas valide",
+	  "emptySelec" : "Au moins un sélecteur dans ce programme est vide",
+      "noMessage" : "Erreur inconnue"
+
+	},
     "keyboard": {
       "actionActivate": "Activer le __myVar__",
       "actionDisactivate": "Désactiver le __myVar__",

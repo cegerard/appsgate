@@ -359,9 +359,9 @@ define([
 
           if(typeof self.model !== "undefined"){
             $("#led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
-            $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.'+self.model.getState()));
+            $("#led-" + self.model.get("id")).attr("title", self.model.getProgramState());
             $("#current-led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
-            $("#current-led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.'+self.model.getState()));
+            $("#current-led-" + self.model.get("id")).attr("title", self.model.getProgramState());
 
             if (self.model.isWorking()) {
               $(".start-program-button").hide();

@@ -433,7 +433,7 @@ define([
           this.applyEditMode();
           // translate the view
           this.$el.i18n();
-            $("#prog-led").attr("title", $.i18n.t('programs.state.'+this.Mediator.programState));
+            $("#prog-led").attr("title",  this.Mediator.getProgramState());
             $("#prog-led").attr("class", "pull-left led-"+this.Mediator.programState);
           if (this.Mediator.programState == "invalid") {
             $(".programNameInput").removeClass("valid-program");

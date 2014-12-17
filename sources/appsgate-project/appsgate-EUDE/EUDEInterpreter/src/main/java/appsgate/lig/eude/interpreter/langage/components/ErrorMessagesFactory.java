@@ -1,6 +1,7 @@
 package appsgate.lig.eude.interpreter.langage.components;
 
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,4 +40,62 @@ public class ErrorMessagesFactory {
         
     }
 
+    /**
+     * 
+     * @param deviceId the id of the device
+     * @return a JSONObject corresponding to a missing device
+     */
+    public static JSONObject getMessageFromMissingDevice(String deviceId) {
+        JSONObject error = new JSONObject();
+        try {
+            error.put("msg", "programs.error.device");
+            error.put("device", deviceId);
+        } catch (JSONException ex) {
+            // never happens
+        }
+        return error;
+        
+    } 
+
+    /**
+     * @param programId the id of the missing program
+     * @return a JSONObject corresponding to the missing program message
+     */
+    static JSONObject getMessageFromMissingProgram(String programId) {
+        JSONObject error = new JSONObject();
+        try {
+            error.put("msg", "programs.error.missingProgram");
+            error.put("pid", programId);
+        } catch (JSONException ex) {
+            // never happens
+        }
+        return error;
+    }
+
+    /**
+     * @param programId the id of the missing program
+     * @return a JSONObject corresponding to the invalid program message
+     */
+    static JSONObject getMessageFromInvalidProgram(String programId) {
+        JSONObject error = new JSONObject();
+        try {
+            error.put("msg", "programs.error.invalidProgram");
+            error.put("pid", programId);
+        } catch (JSONException ex) {
+            // never happens
+        }
+        return error;
+    }
+
+    static JSONObject getMessageFromEmptySelect(NodeSelect s) {
+        JSONObject error = new JSONObject();
+        try {
+            error.put("msg", "programs.error.emptySelec");
+           // error.put("pid", programId);
+        } catch (JSONException ex) {
+            // never happens
+        }
+        return error;
+    
+    }
 }

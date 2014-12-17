@@ -40,6 +40,8 @@ public class ReferenceTable {
      *
      */
     private STATUS state;
+    
+    private JSONObject err;
 
     /**
      *
@@ -209,6 +211,7 @@ public class ReferenceTable {
      * @return
      */
     public STATUS computeStatus() {
+        this.err = new JSONObject();
         this.state = STATUS.OK;
         if (programs.size() + devices.size() + nodes.size() == 0) {
             LOGGER.trace("The table is empty, so the program is empty and no empty program is considered as valid");
@@ -219,9 +222,11 @@ public class ReferenceTable {
             switch (programs.get(k)) {
                 case MISSING:
                     setState(STATUS.INVALID);
-                    break;
+                    this.err = ErrorMessagesFactory.getMessageFromMissingProgram(k);
+                    return this.state;
                 case INVALID:
                 case UNSTABLE:
+                    this.err = ErrorMessagesFactory.getMessageFromInvalidProgram(k);
                     setState(STATUS.UNSTABLE);
                     break;
             }
@@ -231,6 +236,7 @@ public class ReferenceTable {
             LOGGER.trace("computeStatus(), device " + k + ", status " + devices.get(k));
             switch (devices.get(k)) {
                 case MISSING:
+                    this.err = ErrorMessagesFactory.getMessageFromMissingDevice(k);
                     setState(STATUS.UNSTABLE);
                     break;
             }
@@ -239,6 +245,7 @@ public class ReferenceTable {
             if (s.isEmptySelection()) {
                 LOGGER.warn("Select node {} is empty.", s);
                 setState(STATUS.UNSTABLE);
+                this.err = ErrorMessagesFactory.getMessageFromEmptySelect(s);
             }
         }
         return this.state;
@@ -259,6 +266,6 @@ public class ReferenceTable {
      * @return the error message if any
      */
     public JSONObject getErrorMessage() {
-        return null;
+        return this.err;
     }
 }

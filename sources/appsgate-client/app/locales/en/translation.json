@@ -736,6 +736,16 @@
     "delete-program": "Delete",
     "edit-program": "Edit",
     "end-edit-program": "Done",
+    "error" : {
+      "empty" : "Program is empty",
+      "node" : "Syntax invalid",
+      "device" : "At least one of the devices referenced by this program is missing",
+      "missingProgram" : "At least one of the programs referenced by this program is missing",
+	  "invalidProgram" : "At least one of the programs referenced by this program is not valid",
+	  "emptySelec" : "At least one of the selector of this program is empty",
+      "noMessage" : "Unexpected error"
+
+	},
     "keyboard": {
       "actionActivate": "Start a __myVar__",
       "actionDisactivate": "Stop a __myVar__",
