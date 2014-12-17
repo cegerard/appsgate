@@ -513,8 +513,8 @@
     "size-height": "Height",
     "size-width": "Width",
     "valid-button": "Done",
-	"show-dependencies-button": "Show its dependencies",
-	"show-historic-button": "Show its timeline"
+	"show-dependencies-button": "Dependencies",
+	"show-historic-button": "History"
   },
   "keyboard": {
     "clock-event": "AppsGate clock shows ",

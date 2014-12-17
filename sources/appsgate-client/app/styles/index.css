@@ -196,6 +196,14 @@ body {
   height: 2em;
   vertical-align: middle;
 }
+.img-button {
+  height: 1.4em;
+  vertical-align: middle;
+}
+.btn-less-large {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 .row {
   margin-right: 0px;
 }
