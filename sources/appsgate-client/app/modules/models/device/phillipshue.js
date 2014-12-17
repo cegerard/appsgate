@@ -59,6 +59,7 @@ define([
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
           }));
           v.methodName = "blink";
+          v.type="action2";
           v.args = [{
             "type": "long",
             "value": "20"
