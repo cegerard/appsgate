@@ -149,6 +149,8 @@ public class Trace {
     			picto = PICTO_TABLE.DOMICUBE_TYPE.stringify();
     		}
     		
+    	} else if (type.equalsIgnoreCase("MediaPlayer")){
+    		picto = PICTO_TABLE.MEDIAPLAYER_TYPE.stringify();
     	}
     	
 		return picto;
@@ -206,7 +208,8 @@ public class Trace {
     	OCCUPANCY_TYPE,
     	SMARTPLUG_TYPE,
     	COLORLIGHT_TYPE,
-    	DOMICUBE_TYPE
+    	DOMICUBE_TYPE,
+    	MEDIAPLAYER_TYPE
     	;
     	
     	/** Get the lower case string of enumerate value*/
