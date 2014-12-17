@@ -141,6 +141,14 @@ public class Trace {
     		}else{
     			picto = PICTO_TABLE.SMARTPLUG_STATE_OFF.stringify();
     		}
+    		
+    	} else if (type.equalsIgnoreCase("DomiCube")){
+    		if(varName.equalsIgnoreCase("activeFace")){
+    			picto = PICTO_TABLE.DOMICUBE_STATE_.stringify()+value;
+    		} else {
+    			picto = PICTO_TABLE.DOMICUBE_TYPE.stringify();
+    		}
+    		
     	}
     	
 		return picto;
@@ -179,6 +187,13 @@ public class Trace {
     	SMARTPLUG_STATE_OFF,
     	COLORLIGHT_STATE_ON,
     	COLORLIGHT_STATE_OFF,
+    	DOMICUBE_STATE_,
+    	DOMICUBE_STATE_1,
+    	DOMICUBE_STATE_2,
+    	DOMICUBE_STATE_3,
+    	DOMICUBE_STATE_4,
+    	DOMICUBE_STATE_5,
+    	DOMICUBE_STATE_6,
     	
     	//Fall back icon identifier
     	TEMPERATURE_TYPE,
@@ -190,7 +205,8 @@ public class Trace {
     	KEYCARDSWITCH_TYPE,
     	OCCUPANCY_TYPE,
     	SMARTPLUG_TYPE,
-    	COLORLIGHT_TYPE    	
+    	COLORLIGHT_TYPE,
+    	DOMICUBE_TYPE
     	;
     	
     	/** Get the lower case string of enumerate value*/
