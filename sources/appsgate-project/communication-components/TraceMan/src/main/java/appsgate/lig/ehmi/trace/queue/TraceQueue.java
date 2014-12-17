@@ -135,12 +135,13 @@ import appsgate.lig.ehmi.trace.TraceMan;
             					}catch(JSONException e){
             						LOGGER.error("JSON exception occured when generating empty notification trace for live tracing");
             					}
+            				} else {
+            					traceExec.notify();
             				}
-                            traceExec.notify();
                         }
                     }
                 }
-            }, 0, refreshRate);
+            }, refreshRate, refreshRate);
             initiated = true;
         }
 		

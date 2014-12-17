@@ -25,8 +25,20 @@ define([
         // render the editor with the program
         this.$el.append(this.template({}));
 
+        // customize our theme from `basic` theme.
+        var theme = _.merge(Debugger.themes.basic, {
+            'dashboard': {
+                'widget': {
+                    'margin': {
+                        top: 5  // add 5px top margin to each widget
+                    }
+                }
+            }
+        });
+
         // initialize debugger
         var dashboard = this.dashboard = new Debugger.Dashboard(this.$('.debugger .canvas'), {
+                theme: theme,
                 d3: {
                     // Define custom locale (based on http://www.localeplanet.com/icu/fr/)
                     locale: {
@@ -73,6 +85,9 @@ define([
                 },
                 i18n: {
                     ns: "debugger"
+                },
+                livetrace: {
+                    delayBeforeFlush: 300000
                 }
             }
         );
@@ -90,6 +105,21 @@ define([
         dashboard.on('marker:click', function (decorations, textContent, htmlContent) {
             $("#bubbleModal").find(".modal-body").html(htmlContent);
             $("#bubbleModal").modal("show");
+        });
+
+
+        // listen to widget focus request from dashboard
+        dashboard.on('eventline:focus:request', function(context, attributes) {
+            dashboard.requestHistoryTrace(context);
+        });
+
+        // listen to widget name click from dashboard
+        dashboard.on('eventline:name:click', function(context, attributes) {
+            if (attributes.kind == 'program') {
+                console.log("Program with id "+attributes.id+" was clicked");
+            } else {
+                console.log("Device of type "+attributes.type+" and with id "+attributes.id+" was clicked");
+            }
         });
 
         // setup ui

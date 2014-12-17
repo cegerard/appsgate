@@ -1,5 +1,7 @@
 package appsgate.lig.ehmi.trace;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,6 +18,11 @@ public class TraceRT implements TraceHistory {
      * the port of opened connection
      */
     private EHMIProxySpec ehmi;
+    
+    /**
+     * The list of all live trace subscribers
+     */
+    private ArrayList<Integer> liveTraceSubscribers = new ArrayList<Integer>();
 
     /**
      * Constructor
@@ -36,7 +43,10 @@ public class TraceRT implements TraceHistory {
 
 	@Override
 	public void trace(JSONObject o) {
-		ehmi.sendFromConnection(connectionName, o.toString());
+		for (int subscriberId : liveTraceSubscribers) {
+			ehmi.sendFromConnection(connectionName, subscriberId, o.toString());
+		}
+		
 	}
 
 	@Override
@@ -49,4 +59,16 @@ public class TraceRT implements TraceHistory {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
+	public void clearSubscribers() {
+		liveTraceSubscribers.clear();
+	}
+
+	public void addSubscriber(int clientId) {
+		if(!liveTraceSubscribers.contains(clientId))
+			liveTraceSubscribers.add(clientId);
+	}
+
+	public void removeSubscriber(int clientId) {
+		liveTraceSubscribers.remove(clientId);
+	}
 }

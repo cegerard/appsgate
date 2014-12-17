@@ -905,6 +905,17 @@ fieldset[disabled] .btn {
 .debugger .scrollable {
     border: none;
 }
+
+.debugger-toolbar .btn {
+  box-shadow: none !important;
+}
+
+/*.debugger .dashboard > header {*/
+    /*position: fixed;*/
+/*}*/
+
+.ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}
+
 .active-node-indicator {
   width: 100%;
   position: absolute;

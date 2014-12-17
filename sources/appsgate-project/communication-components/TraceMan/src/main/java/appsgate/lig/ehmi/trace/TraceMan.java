@@ -134,6 +134,7 @@ public class TraceMan implements TraceManSpec {
      * No filtering for traces (i.e. all trace are returned)
      */
     public static final String NOFOCUS = "NONE";
+    
 
     /**
      * Called by APAM when an instance of this implementation is created
@@ -292,15 +293,19 @@ public class TraceMan implements TraceManSpec {
                 }
 
                 event.put("state", jsonState);
+                
+                JSONObject deviceJson = getJSONDevice(srcId, event, JDecoration);
+                //Check if the trace is correclty formatted (v4)
+                if(!deviceJson.getString("type").equalsIgnoreCase("")){
+                	//Create the notification JSON object
+                    JSONObject coreNotif = getCoreNotif(deviceJson, null);
+                    //Trace the notification JSON object in the trace file
+                    trace(coreNotif, timeStamp);
+                }
 
             } catch (JSONException e) {
+            	LOGGER.warn("Trace misformatted or data missing to build a valide trace: "+e.getMessage());
             }
-
-            JSONObject deviceJson = getJSONDevice(srcId, event, JDecoration);
-            //Create the notification JSON object
-            JSONObject coreNotif = getCoreNotif(deviceJson, null);
-            //Trace the notification JSON object in the trace file
-            trace(coreNotif, timeStamp);
         }
     }
 
@@ -448,6 +453,32 @@ public class TraceMan implements TraceManSpec {
 
         return tracesTab;
     }
+    
+    /**
+     * Send the last traces from now to windows millesconds in the past
+     * @param dateNow the start date for data base request
+     * @param window the time window in milisecond
+     * @param obj the request from client
+     */
+    private void sendWindowPastTrace(long dateNow, long window, JSONObject obj) {
+    	JSONObject requestResult = new JSONObject();
+        JSONArray tracesTab = dbTracer.getInterval(dateNow-window, dateNow);
+        JSONObject result = new JSONObject();
+        
+        try {
+        	setGroupingOrder("type");
+        	result.put("groups", computeGroupsFromPolicy(tracesTab));
+        	result.put("eventline", eventLineComputation(tracesTab, dateNow-window, dateNow));
+        	result.put("data", tracesTab);
+        	requestResult.put("result", result);
+        	requestResult.put("request", obj);
+        	
+        	EHMIProxy.sendFromConnection(DEBUGGER_COX_NAME, obj.getInt("clientId"), requestResult.toString());
+        	
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+	}
 
     @Override
     public void getTracesBetweenInterval(Long from, Long to, boolean withEventLine, JSONObject request) {
@@ -466,6 +497,7 @@ public class TraceMan implements TraceManSpec {
             } else { // Apply aggregation policy
                 //filteringOnFocus(tracesTab);
                 traceQueue.stop();
+                if(liveTracer != null)liveTracer.clearSubscribers();
                 traceQueue.loadTraces(tracesTab);//Third whole traces tab browse
                 result.put("data", traceQueue.applyAggregationPolicy(from, null) /*Call with default aggregation policy (id and time)*/); //Fourth whole traces tab browse + in detail browsing
             }
@@ -1050,11 +1082,30 @@ public class TraceMan implements TraceManSpec {
      * Initiate the live tracer
      *
      * @param refreshRate use to set up auto notification intervall
+     * @param dateNow now time in milisecond
+     * @param window the window time width
+     * @param obj the live trace request received
      * @return true if the live tracer is ready, false otherwise
      */
-    public boolean initLiveTracer(long refreshRate) {
-        liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
+    public boolean initLiveTracer(long refreshRate, long dateNow,  long window, JSONObject obj) {
+        if(liveTracer == null){
+        	liveTracer = new TraceRT(DEBUGGER_COX_NAME, EHMIProxy);
+        }
         liveTraceActivated = true;
+        
+        //send the first message concerning the window last milisecond data
+    	sendWindowPastTrace(dateNow, window, obj);
+    	
+		//Save the clients id that request the live mode in order to send live trace to them only
+    	try {
+    		liveTracer.addSubscriber(obj.getInt("clientId"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+			liveTracer.close();
+			liveTraceActivated = false;
+			return false;
+		}
+    	
 
         if (!traceQueue.isInitiated()) {
             if (refreshRate == 0) {
@@ -1067,7 +1118,7 @@ public class TraceMan implements TraceManSpec {
         return liveTraceActivated;
     }
 
-    /**
+	/**
      * Initiate the file tracer
      *
      * @return true if the file tracer is initiated, false otherwise
