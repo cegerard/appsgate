@@ -124,17 +124,16 @@ define([
 
         // setup ui
         this.$('.btn-primary').on('click', function(){
-            if( $(this).find('input').attr('id') == 'live') {
-                dashboard._toggleLoading(true);
+            if( $(this).find('input').attr('id') == 'live' && !dashboard.isLiveMode()) {
                 dashboard.requestLiveTrace();
-            } else {
-                dashboard._toggleLoading(true);
+            } else if ( $(this).find('input').attr('id') == 'history' && !dashboard.isHistoryMode()) {
                 dashboard.requestInitialHistoryTrace();
             }
         });
 
         // prompt server for initial history trace
-        dashboard.requestLiveTrace();
+        this.$('#debugger-action-history').addClass('active');
+        dashboard.requestInitialHistoryTrace();
     },
 
     destroy: function() {
