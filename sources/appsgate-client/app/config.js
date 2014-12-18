@@ -25,7 +25,7 @@ require.config({
         // Snap.svg
         "snapsvg": "../vendor/bower/Snap.svg/dist/snap.svg",
         // MomentJS
-        "moment": "../vendor/bower/momentjs/moment",
+        "moment": "../vendor/bower/moment/moment",
         // JQuery Circle Menu Plugin
         "circlemenu": "../vendor/circlemenu/JQuery.circlemenu",
         // Raphael.js library
