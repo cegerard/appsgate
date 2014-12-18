@@ -22,6 +22,8 @@ require.config({
         "domReady": "../vendor/bower/requirejs-domready/domReady",
         // Bootstrap
         "bootstrap": "../vendor/bower/bootstrap/dist/js/bootstrap",
+        // Bootstrap DateTimePicker
+        "bootstrap-datetimepicker": "../vendor/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min",
         // Snap.svg
         "snapsvg": "../vendor/bower/Snap.svg/dist/snap.svg",
         // MomentJS
@@ -62,6 +64,9 @@ require.config({
         },
         "bootstrap": {
             deps: ["jquery"]
+        },
+        "bootstrap-datetimepicker": {
+            deps: ["jquery", "moment"]
         },
         "jqueryui": {
             deps: ["jquery"]
