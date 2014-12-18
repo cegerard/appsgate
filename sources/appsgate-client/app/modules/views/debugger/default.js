@@ -2,9 +2,12 @@
  * Created by barraq on 8/28/14.
  */
 
+var MWIMS = 3000000;
+
 define([
     "appsgate.debugger",
-    "text!templates/debugger/default.html"
+    "text!templates/debugger/default.html",
+    "bootstrap-datetimepicker"
 ], function(Debugger, debuggerDefaultTemplate) {
 
   var DebuggerView = {};
@@ -87,7 +90,7 @@ define([
                     ns: "debugger"
                 },
                 livetrace: {
-                    delayBeforeFlush: 300000
+                    delayBeforeFlush: MWIMS
                 }
             }
         );
@@ -95,6 +98,32 @@ define([
 
         // make it scrollable (override width for scrollable)
         this.dashboard.$('.dashboard-container').addClass('scrollable div-scrollable');
+
+        // setup date time pickers options
+        var datetimepicker_options = {
+            use24hours: true
+        };
+
+        // set date time pickers
+        $('#datetimepicker-from').datetimepicker(datetimepicker_options);
+        $('#datetimepicker-to').datetimepicker(datetimepicker_options);
+
+        $("#datetimepicker-from").on("dp.change",function (e) {
+            var now = new Date();
+            $('#datetimepicker-to').data("DateTimePicker").setMinDate(new Date(Math.min(now, e.date.valueOf() + MWIMS)));
+            dashboard.requestInitialHistoryTrace({
+                from: e.date.valueOf(),
+                to: $('#datetimepicker-to').data("DateTimePicker").getDate().valueOf()
+            });
+        });
+        $("#datetimepicker-to").on("dp.change",function (e) {
+            var now = new Date();
+            $('#datetimepicker-from').data("DateTimePicker").setMaxDate(new Date(Math.min(now, e.date.valueOf()) - MWIMS));
+            dashboard.requestInitialHistoryTrace({
+                from: $('#datetimepicker-from').data("DateTimePicker").getDate().valueOf(),
+                to: e.date.valueOf()
+            });
+        });
 
         // listen to zoom request from dashboard
         dashboard.on('zoom:request', function (context) {
@@ -124,15 +153,26 @@ define([
         // setup ui
         this.$('.btn-primary').on('click', function(){
             if( $(this).find('input').attr('id') == 'live' && !dashboard.isLiveMode()) {
+                self.$('#datetimepicker-toolbar').hide();
                 dashboard.requestLiveTrace();
             } else if ( $(this).find('input').attr('id') == 'history' && !dashboard.isHistoryMode()) {
-                dashboard.requestInitialHistoryTrace();
+                self.$('#datetimepicker-toolbar').show();
+                self._resetDateTimePicker();
             }
         });
 
-        // prompt server for initial history trace
+        // activate history mode
+        self.$('#datetimepicker-toolbar').show();
         this.$('#debugger-action-history').addClass('active');
-        dashboard.requestInitialHistoryTrace();
+        self._resetDateTimePicker();
+    },
+
+    _resetDateTimePicker: function() {
+        var now = new Date();
+        $('#datetimepicker-from').data("DateTimePicker").setDate(new Date(now - 86400000));
+        $('#datetimepicker-from').data("DateTimePicker").setMaxDate(new Date(now - MWIMS));
+        $('#datetimepicker-to').data("DateTimePicker").setDate(now);
+        $('#datetimepicker-to').data("DateTimePicker").setMaxDate(now);
     },
 
     destroy: function() {
