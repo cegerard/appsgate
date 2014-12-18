@@ -146,12 +146,9 @@ public class TraceExecutor implements Runnable {
 				while (x < tempDevicesSize) {
 					// Merge the device trace
 					JSONObject tempDev = tempDevices.getJSONObject(x);
-					// tempDev.put("timestamp", tempObj.get("timestamp"));
 					String id = tempDev.optString("id");
 
-					if (!devicesToAgg.containsKey(id)) { // No aggregation for
-															// now
-
+					if (!devicesToAgg.containsKey(id)) { // No aggregation for now
 						devicesToAgg.put(id, tempDev);
 
 					} else { // Device id exist for this time stamp -->
