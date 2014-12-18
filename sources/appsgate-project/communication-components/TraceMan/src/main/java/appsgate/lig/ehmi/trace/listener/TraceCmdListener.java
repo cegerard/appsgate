@@ -44,9 +44,7 @@ public class TraceCmdListener implements CommandListener{
 			String cmd;
 			try {
 				cmd = obj.getString("name");
-				
 				if(cmd.equalsIgnoreCase("historytrace")){
-					
 					JSONObject args   = obj.getJSONObject("args");
 					long from 		  = args.getLong("from");
 					long to 	 	  = args.getLong("to");
@@ -107,7 +105,7 @@ public class TraceCmdListener implements CommandListener{
 
 					traceMan.setDeltaT(deltaT);
 					
-					traceMan.initLiveTracer(refreshRate,dateNow, window, obj);
+					traceMan.initLiveTracer(refreshRate, dateNow, window, obj);
 					
 				}else if (cmd.equalsIgnoreCase("filetrace")){
 					long deltaT = 0;
