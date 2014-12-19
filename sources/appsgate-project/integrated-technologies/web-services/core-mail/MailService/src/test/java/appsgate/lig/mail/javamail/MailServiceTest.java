@@ -51,11 +51,11 @@ public class MailServiceTest {
 	public void test() throws Exception {
         logger.debug("Begin test");
         MailServiceImpl mailer = new MailServiceImpl();
-        mailer.setAccount("smarthome.inria@gmail.com","smarthome2014");
+//        mailer.setAccount("smarthome.inria@gmail.com","smarthome2014");
 
         logger.debug("Mailer creation OK");
 
-        mailer.start();
+  //      mailer.start();
         logger.debug("Mailer started OK");
 
         for (Message message:mailer.getMails(5)) {

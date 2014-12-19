@@ -51,13 +51,17 @@ public class NodeWait extends Node {
     @Override
     protected void specificStop() {
         if (waitFor != null) {
+            waitFor.removeEndEventListener(this);
             waitFor.stop();
+        }
+        if (event != null) {
+            event.removeEndEventListener(this);
+            event.stop();
         }
     }
 
     @Override
     public JSONObject call() {
-        setProgramWaiting();
         setStarted(true);
         fireStartEvent(new StartEvent(this));
         if (waitFor == null) {
@@ -132,7 +136,6 @@ public class NodeWait extends Node {
      */
     private void stopWaiting() {
         setStarted(false);
-        setProgramProcessing();
         fireEndEvent(new EndEvent(this));
     }
 
@@ -144,5 +147,10 @@ public class NodeWait extends Node {
         if (this.waitFor != null) {
             waitFor.buildReferences(table);
         }
+    }
+
+    @Override
+    public String getTypeSpec() {
+        return "Wait";
     }
 }

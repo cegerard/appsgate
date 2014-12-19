@@ -12,8 +12,6 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +29,7 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
 
     public enum TYPE {
 
-        DEVICE, LIST, PROGRAMCALL, VARIABLE, STRING, BOOLEAN, NUMBER, SERVICE, SCALE;
+        DEVICE, LIST, PROGRAMCALL, VARIABLE, STRING, BOOLEAN, NUMBER, SERVICE, SCALE, PARAM;
     }
 
     /**
@@ -266,8 +264,8 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    public String toString() {
-        return "[NodeValue type: " + getType() + ", value: " + getExpertProgramScript() + "]";
+    public String getTypeSpec() {
+        return "Value type: " + getType() + ", value: " + getExpertProgramScript();
     }
 
     @Override
@@ -281,7 +279,7 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
                 table.addDevice(value);
                 break;
             default:
-                LOGGER.debug("Unknonw case to handle");
+                LOGGER.debug("[buildReferences] unknown case to handle: {}", this);
                 break;
         }
     }

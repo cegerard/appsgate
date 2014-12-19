@@ -2,10 +2,12 @@ define([
     "app",
     "models/service/service",
     "text!templates/program/nodes/defaultActionNode.html",
-    "models/service/mediabrowser",
+    "text!templates/program/nodes/defaultEventNode.html",
+    "text!templates/program/nodes/defaultPropertyNode.html",
+    "text!templates/program/nodes/defaultStateNode.html",
     "models/service/mail",
     "models/service/weather"
-], function(App, Service, ActionTemplate, MediaBrowser, Mail, Weather) {
+], function(App, Service, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, Mail, Weather) {
 
     var Services = {};
 
@@ -53,9 +55,6 @@ define([
             brick.type = parseInt(brick.type);
             var service = null;
             switch (brick.type) {
-                case 36:
-                    service = new MediaBrowser(brick);
-                    break;
                 case 102:
                     service = new Mail(brick);
                     break;
@@ -95,12 +94,6 @@ define([
             return services.findWhere({type: 103});
         },
         /**
-         * @return Array of UPnP media browsers
-         */
-        getMediaBrowsers: function() {
-            return services.where({type: 36});
-        },
-        /**
          * @returns the template corresponding to the device
          */
         getTemplateByType: function(word,type,param) {
@@ -109,7 +102,20 @@ define([
             } else {
                 console.warn("No template is defined for type: " + type);
             }
-            return _.template(ActionTemplate)(param);
+            switch(word) {
+                case 'action':
+                    return _.template(ActionTemplate)(param);
+                case'event':
+                    return _.template(EventTemplate)(param);
+                case'property':
+                    return _.template(PropertyTemplate)(param);
+                case'state':
+                    return _.template(StateTemplate)(param);
+                default:
+                    console.error("unknown word: " + word+ ", for type: " + type);
+                    console.debug(param);
+                    return "<span>unknown</span>";
+            }
         },
     });
 

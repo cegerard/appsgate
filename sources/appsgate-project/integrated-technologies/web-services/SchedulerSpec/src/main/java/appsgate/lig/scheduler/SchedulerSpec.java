@@ -3,6 +3,8 @@ package appsgate.lig.scheduler;
 
 import java.util.Set;
 
+import org.json.JSONArray;
+
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
 import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
@@ -21,7 +23,7 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	 * at this rate in ms
 	 * (it should be defined depends on the time flow rate, 10 minutes intervals in real time should be fine)
 	 */
-	public static final long BASE_REFRESH = 10*60*1000;
+	public static final long BASE_REFRESH = 2*60*1000;
 
 	/**
 	 * A single scheduler monitor a single calendar, this is the getter
@@ -50,6 +52,15 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	 */
 	public boolean checkProgramIdScheduled(String programId)
 			throws SchedulingException;
+	
+	/**
+	 * Check programs that are scheduled in the future (on start or on ending)
+	 * @return a JSON Array containing all program scheduled in the future
+	 *  (we do not check if the program-id really exist as we only parse Google Calendar events)
+	 */
+	public JSONArray checkProgramsScheduled()
+			throws SchedulingException;
+	
 
 	/**
 	 * A single scheduler monitor a single calendar, this is the setter
@@ -71,7 +82,8 @@ public interface SchedulerSpec extends AlarmEventObserver{
 
 	/**
 	 * Create a basic Calendar Event, at AppsGate Clock Time, to schedule the start or stop of a program
-	 * The Event is created just one hour before current Time, and last for 30 minutes  
+	 * The Event is created just one hour before current Time, and last for 30 minutes
+	 * Changed specification, if start is false AND stop is true, then the program should stop at the beginning of the event
 	 * @param eventName is the name as it will appear in the Calendar
 	 * @param programId is not checked, but should be a VALID program ID referenced by EUDE Inteprpreter
 	 * @param startOnBegin if program should start when Event begin

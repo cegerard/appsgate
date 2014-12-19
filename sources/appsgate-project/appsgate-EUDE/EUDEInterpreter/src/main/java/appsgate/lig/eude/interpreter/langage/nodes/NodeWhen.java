@@ -57,14 +57,14 @@ public class NodeWhen extends Node implements INodeRule{
             seqEvent = (INodeEvent) seqEventNode;
         } catch (SpokTypeException ex) {
             LOGGER.error("Unable to build events {}", ex.getMessage());
-            throw new SpokNodeException("NodeWhen", "events", ex);
+            throw new SpokNodeException(this, "NodeWhen", "events", ex);
         }
         try {
             // initialize the sequences of events and rules
             seqRules = Builder.buildFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
         } catch (SpokTypeException ex) {
             LOGGER.error("Unable to build seqRulesThen");
-            throw new SpokNodeException("NodeWhen", "seqRulesThen", ex);
+            throw new SpokNodeException(this, "NodeWhen", "seqRulesThen", ex);
         }
 
     }
@@ -81,7 +81,6 @@ public class NodeWhen extends Node implements INodeRule{
     @Override
     public JSONObject call() {
         LOGGER.debug("Call {}", this);
-        setProgramWaiting();
         if (!isStarted()) {
             fireStartEvent(new StartEvent(this));
             setStarted(true);
@@ -98,7 +97,6 @@ public class NodeWhen extends Node implements INodeRule{
         if (!isStopping()) {
             // if all the events are received, launch the sequence of rules
             if (nodeEnded instanceof INodeEvent) {
-                setProgramProcessing();
                 seqRules.addEndEventListener(this);
                 seqRules.call();
             } else {
@@ -119,8 +117,8 @@ public class NodeWhen extends Node implements INodeRule{
     }
 
     @Override
-    public String toString() {
-        return "[Node When: events(" + seqEvent.toString() + "), rules(" + seqRules + ")]";
+    public String getTypeSpec() {
+        return "When: events(" + seqEvent.toString() + "), rules(" + seqRules + ")";
     }
 
     @Override

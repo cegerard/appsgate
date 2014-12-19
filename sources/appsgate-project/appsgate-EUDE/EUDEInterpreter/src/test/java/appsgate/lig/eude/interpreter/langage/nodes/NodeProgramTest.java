@@ -70,8 +70,8 @@ public class NodeProgramTest extends NodeTest {
     @Test
     public void testGetRunningState() {
         System.out.println("getRunningState");
-        NodeProgram.RUNNING_STATE expResult = NodeProgram.RUNNING_STATE.DEPLOYED;
-        NodeProgram.RUNNING_STATE result = this.programTest.getState();
+        NodeProgram.PROGRAM_STATE expResult = NodeProgram.PROGRAM_STATE.INVALID;
+        NodeProgram.PROGRAM_STATE result = this.programTest.getState();
         Assert.assertEquals(expResult, result);
     }
 
@@ -81,7 +81,7 @@ public class NodeProgramTest extends NodeTest {
      * @throws java.lang.Exception
      */
     @Test
-    public void testUpdate() throws Exception {
+    public void testUpdateEmpty() throws Exception {
         System.out.println("update");
         JSONObject rules = new JSONObject();
         rules.put("userSource", "test");
@@ -93,29 +93,18 @@ public class NodeProgramTest extends NodeTest {
         rules.put("header", header);
 
         rules.put("name", "test");
-        rules.put("body", rules);
+        rules.putOnce("body", null);
 
         rules.put("activeNodes", new JSONObject());
         rules.put("nodesCounter", new JSONObject());
 
         rules.put("definitions", (Collection) null);
 
-        boolean expResult = true;
         boolean result = this.programTest.update(rules);
-        Assert.assertEquals(expResult, result);
+        Assert.assertEquals(false, result);
     }
 
     
-    /**
-     * Test of setDeployed method, of class NodeProgram.
-     *
-     * @throws org.json.JSONException
-     */
-    @Test
-    public void testSetDeployed() throws JSONException {
-        System.out.println("setDeployed");
-        this.programTest.setDeployed();
-    }
 
     /**
      * Test of call method.
@@ -156,7 +145,7 @@ public class NodeProgramTest extends NodeTest {
     @Test
     public void testFromJSONFile() throws Exception {
         printTestName("FromJSONFiles");
-        NodeProgram defNode = new NodeProgram(null, TestUtilities.loadFileJSON("src/test/resources/node/newjson.json"), null);
+        NodeProgram defNode = new NodeProgram(this.instance.getMediator(), TestUtilities.loadFileJSON("src/test/resources/node/newjson.json"), null);
         Assert.assertNotNull(defNode);
         System.out.println(defNode.getExpertProgramScript());
     }
@@ -175,14 +164,4 @@ public class NodeProgramTest extends NodeTest {
         Assert.assertEquals("t.c", p3.getPath());
     }
     
-    @Test
-    public void testStates() {
-        programTest.setDeployed();
-        Assert.assertEquals(NodeProgram.RUNNING_STATE.DEPLOYED, programTest.getState());
-        programTest.setProcessing("1");
-        Assert.assertTrue(programTest.isRunning());
-        programTest.setWaiting("2");
-        Assert.assertTrue(programTest.isRunning());
-        Assert.assertEquals(NodeProgram.RUNNING_STATE.WAITING, programTest.getState());
-    }
 }

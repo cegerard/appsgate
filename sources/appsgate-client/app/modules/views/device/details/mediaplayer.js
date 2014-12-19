@@ -30,7 +30,7 @@ define([
         this.$el.html(this.template({
           device: player,
           sensorImg: "app/img/services/media_player.png",
-          sensorType: $.i18n.t("services.mediaplayer.name.singular"),
+          sensorType: $.i18n.t("devices.mediaplayer.name.singular"),
           places: places,
           deviceDetails: this.tplMediaPlayer
         }));
@@ -99,13 +99,14 @@ define([
       render: function() {
         var self = this;
 
+
         if (!appRouter.isModalShown) {
 
           var player = this.model;
           this.$el.html(this.template({
             device: player,
             sensorImg: "app/img/services/media_player.png",
-            sensorType: $.i18n.t("services.mediaplayer.name.singular"),
+            sensorType: $.i18n.t("devices.mediaplayer.name.singular"),
             places: places,
             deviceDetails: this.tplMediaPlayer
           }));
@@ -129,8 +130,8 @@ define([
 
           this.resize($(".scrollable"));
 
-          // translate the view
-          this.$el.i18n();
+            // translate the view
+            this.$el.i18n();
 
           return this;
         }

@@ -7,7 +7,6 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
-import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -54,18 +53,18 @@ public class NodeIf extends Node {
         try {
             this.expBool = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "expBool"), this);
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeIf", "expBool", ex);
+            throw new SpokNodeException(this, "NodeIf", "expBool", ex);
         }
         try {
             this.seqRulesTrue = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesTrue"), this);
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeIf", "seqRulesTrue", ex);
+            throw new SpokNodeException(this, "NodeIf", "seqRulesTrue", ex);
         }
         if (ruleIfJSON.has("seqRulesFalse")) {
             try {
                 this.seqRulesFalse = Builder.buildFromJSON(getJSONObject(ruleIfJSON, "seqRulesFalse"), this);
             } catch (SpokTypeException ex) {
-                throw new SpokNodeException("NodeIf", "seqRulesFalse", ex);
+                throw new SpokNodeException(this, "NodeIf", "seqRulesFalse", ex);
             }
         } else {
             LOGGER.trace("No else block for this node");
@@ -153,7 +152,7 @@ public class NodeIf extends Node {
     }
 
     @Override
-    public String toString() {
+    public String getTypeSpec() {
         if (seqRulesFalse != null) {
             return "[node If:" + expBool.toString() + " THEN " + seqRulesTrue.toString() + " ELSE " + seqRulesFalse.toString() + "]";
         }
@@ -209,7 +208,7 @@ public class NodeIf extends Node {
                 fireEndEvent(new EndEvent(this));
                 return;
             }
-        } catch (SpokException ex) {
+        } catch (SpokTypeException ex) {
             LOGGER.error("An exception has been raised during evaluation of node {}", this.expBool);
             LOGGER.debug(ex.getValue());
             setStarted(false);

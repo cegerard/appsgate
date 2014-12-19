@@ -13,7 +13,6 @@ import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
-import org.osgi.service.upnp.UPnPDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +31,6 @@ import appsgate.lig.ehmi.impl.listeners.EHMICommandListener;
 import appsgate.lig.ehmi.impl.listeners.ObjectEventListener;
 import appsgate.lig.ehmi.impl.listeners.ObjectUpdateListener;
 import appsgate.lig.ehmi.impl.listeners.TimeObserver;
-import appsgate.lig.ehmi.impl.upnp.AppsGateServerDevice;
-import appsgate.lig.ehmi.impl.upnp.ServerInfoService;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerIP;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerURL;
-import appsgate.lig.ehmi.impl.upnp.StateVariableServerWebsocket;
 import appsgate.lig.ehmi.spec.EHMIProxySpec;
 import appsgate.lig.ehmi.spec.StateDescription;
 import appsgate.lig.ehmi.spec.listeners.CoreListener;
@@ -126,11 +120,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	private final BundleContext context;
 
-	private final AppsGateServerDevice upnpDevice;
-	private ServerInfoService upnpService;
-	private StateVariableServerIP serverIP;
-	private StateVariableServerURL serverURL;
-	private StateVariableServerWebsocket serverWebsocket;
 
 	private SchedulerSpec schedulerService;
 
@@ -177,30 +166,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		this.commandListener = new EHMICommandListener(this);
 		this.objectEventsListener = new ObjectEventListener(this);
 		this.objectUpdatesListener = new ObjectUpdateListener(this);
-		this.upnpDevice = new AppsGateServerDevice(context);
 		logger.debug("UPnP Device instanciated");
-		registerUpnpDevice();
 		retrieveLocalAdress();
 		logger.info("EHMI instanciated");
-	}
-
-	/**
-	 * Method that register the Upnp service.
-	 */
-	private void registerUpnpDevice() {
-		Dictionary<String, Object> dict = upnpDevice.getDescriptions(null);
-		ServiceRegistration serviceRegistration = context.registerService(
-				UPnPDevice.class.getName(), upnpDevice, dict);
-		logger.debug("UPnP Device registered");
-
-		upnpService = (ServerInfoService) upnpDevice
-				.getService(ServerInfoService.SERVICE_ID);
-		serverIP = (StateVariableServerIP) upnpService
-				.getStateVariable(StateVariableServerIP.VAR_NAME);
-		serverURL = (StateVariableServerURL) upnpService
-				.getStateVariable(StateVariableServerURL.VAR_NAME);
-		serverWebsocket = (StateVariableServerWebsocket) upnpService
-				.getStateVariable(StateVariableServerWebsocket.VAR_NAME);
 	}
 
 	/**
@@ -216,10 +184,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			final Dictionary<String, String> initParams = new Hashtable<String, String>();
 			initParams.put("from", "HttpService");
 			try {
-				httpService.registerResources("/spok", "/WEB/client",
+				httpService.registerResources("/spok", "/WEB/spok",
 						httpContext);
 				logger.debug("Registered URL : "
-						+ httpContext.getResource("/WEB/client"));
+						+ httpContext.getResource("/WEB/spok"));
 				logger.info("SPOK HTML pages registered.");
 			} catch (NamespaceException ex) {
 				logger.error("NameSpace exception");
@@ -238,14 +206,20 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	}
 
+	boolean synchroContext = false;
 	boolean synchroCoreProxy = false;
+
+	private final long TIMEOUT = 1000*60;
 
 	private synchronized void synchroCoreProxy() {
 		logger.trace("synchroCoreProxy()...");
-		if (synchroCoreProxy)
-			return;		
-		if (coreProxy != null && devicePropertiesTable!=null) {
+		
+		if (synchroCoreProxy && synchroContext)
+			return;	
+		
+		if (coreProxy != null) {
 			logger.trace("... coreProxy is there");
+			
 			synchroCoreProxy = true;
 
 
@@ -255,6 +229,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				JSONArray devicesArray = coreProxy.getDevices();
 				for (int i = 0; i < devicesArray.length(); i++) {
 					try {
+						logger.trace("synchroCoreProxy(), synchro for : "+devicesArray.getJSONObject(i).toString());
 						if(devicesArray.getJSONObject(i).has("type")
 								&& devicesArray.getJSONObject(i).has("id")) {
 							logger.trace("adding device : "+devicesArray.getJSONObject(i));
@@ -263,9 +238,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 							String id = devicesArray.getJSONObject(i).getString(
 								"id");
 
-							if (type != "21" && getGrammarFromType(type) == null) {
-							addGrammar(id, type, new GrammarDescription(
-									coreProxy.getDeviceBehavior(type)));
+							if (!"21".equals(type)) {
+							addGrammar(id, type, new GrammarDescription(coreProxy.getDeviceBehavior(type)));
 							}
 						}
 					} catch (JSONException e) {
@@ -276,7 +250,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 				if (coreProxy.CoreEventsSubscribe(objectEventsListener)) {
 					logger.debug("Core event listener deployed.");
-					systemClock.startRemoteSync(coreProxy);
 				} else {
 					logger.error("Core event deployement failed.");
 				}
@@ -285,6 +258,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				} else {
 					logger.error("Core updates listener deployement failed.");
 				}
+				systemClock.startRemoteSync(coreProxy);
+
 
 			} catch (CoreDependencyException coreException) {
 				logger.warn("Resolution failled for core dependency, no notification subscription can be set.");
@@ -330,6 +305,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices() {
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
@@ -348,16 +325,40 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		return devices;
 	}
+	
+	
+	private void waitForContext() {
+		logger.trace("waitForContext()");
+		long timeStamp =System.currentTimeMillis();
+		while(!synchroContext && ((System.currentTimeMillis()- timeStamp) < TIMEOUT)
+				) {
+			try {
+				if (devicePropertiesTable == null ||placeManager == null) {
+					Thread.sleep(500);
+				} else {
+					synchroContext = true;
+				}
+			} catch (InterruptedException e) {
+				logger.trace("waiting context DB Connexion");
+			}
+		}
+		
+		if(!synchroContext) {
+			logger.trace("waitForContext(), context DB for name and places not found (research timeout)");
+		}
+	}
 
 	@Override
 	public JSONObject getDevice(String deviceId) {
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONObject devices = new JSONObject();
 		try {
 			JSONObject coreObject = coreProxy.getDevice(deviceId);
-			return addContextData(coreObject, deviceId);
+            return addContextData(coreObject, deviceId);
 		} catch (CoreDependencyException coreException) {
-			logger.debug("Resolution failled for core dependency, no device can be found.");
+			logger.debug("Resolution failed for core dependency, no device can be found.");
 			if (systemClock.isRemote()) {
 				systemClock.stopRemoteSync(coreProxy);
 			}
@@ -375,6 +376,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getDevices(String type) {
+		waitForContext();
+
 		synchroCoreProxy();
 		JSONArray devices = new JSONArray();
 		try {
@@ -398,10 +401,17 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public StateDescription getEventsFromState(String objectId, String stateName) {
+		if(devicePropertiesTable == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		JSONObject deviceDetails = coreProxy.getDevice(objectId);
 		try {
-			GrammarDescription grammar = devicePropertiesTable
-					.getGrammarFromType(deviceDetails.getString("type"));
+			GrammarDescription grammar = getGrammarFromType(deviceDetails.getString("type"));
+                        if (grammar == null) {
+                            logger.error("Unable to get grammar for device: {}", deviceDetails.getString("id"));
+                            return null;
+                        }
 			return new StateDescription(grammar.getStateDescription(stateName));
 		} catch (JSONException ex) {
 			logger.error("Grammar not well formatted for: {}", objectId);
@@ -412,44 +422,87 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public void setUserObjectName(String objectId, String user, String name) {
+		if(devicePropertiesTable == null) {
+			logger.error("no context data available");
+			return;
+		}		
 		devicePropertiesTable.addName(objectId, user, name);
 
 	}
 
 	@Override
 	public String getUserObjectName(String objectId, String user) {
+		if(devicePropertiesTable == null) {
+			logger.error("no context data available");
+			return null;
+		}		
 		return devicePropertiesTable.getName(objectId, user);
 	}
 
 	@Override
 	public void deleteUserObjectName(String objectId, String user) {
+		if(devicePropertiesTable == null) {
+			logger.error("no context data available");
+			return ;
+		}		
 		devicePropertiesTable.deleteName(objectId, user);
 	}
 
 	@Override
 	public boolean addGrammar(String deviceId, String deviceType,
 			GrammarDescription grammarDescription) {
+		logger.trace("addGrammar(String deviceId : {}, String deviceType : {},"+
+			"GrammarDescription grammarDescription : {})",
+			deviceId, deviceType, grammarDescription);
+		if(devicePropertiesTable == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return devicePropertiesTable.addGrammarForDevice(deviceId, deviceType,
 				grammarDescription);
 	}
 
 	@Override
 	public boolean removeGrammar(String deviceType) {
+		if(devicePropertiesTable == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return devicePropertiesTable.removeGrammarForDeviceType(deviceType);
 	}
 
 	@Override
 	public GrammarDescription getGrammarFromType(String deviceType) {
-		return devicePropertiesTable.getGrammarFromType(deviceType);
+		if(devicePropertiesTable == null) {
+			logger.error("getGrammarFromType({}): No context data available", deviceType);
+			return null;
+		}
+                GrammarDescription desc = devicePropertiesTable.getGrammarFromType(deviceType);
+                if (desc == null ) {
+			logger.warn("getGrammarFromType({}): the devicePropertyTable did not contain", deviceType);
+                        desc = new GrammarDescription(coreProxy.getDeviceBehavior(deviceType));
+                        addGrammar(null, deviceType, new GrammarDescription(coreProxy.getDeviceBehavior(deviceType)));
+                } else {
+                }
+		return desc;
 	}
 
 	@Override
 	public JSONArray getPlaces() {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		return placeManager.getJSONPlaces();
 	}
 
 	@Override
 	public void newPlace(JSONObject place) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return;
+		}		
+		
 		try {
 
 			String placeParent = null;
@@ -474,11 +527,19 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public void removePlace(String id) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return ;
+		}
 		placeManager.removePlace(id);
 	}
 
 	@Override
 	public void updatePlace(JSONObject place) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return;
+		}
 		// for now we could just rename a place
 		try {
 			placeManager.renamePlace(place.getString("id"),
@@ -490,23 +551,39 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public void moveDevice(String objId, String srcPlaceId, String destPlaceId) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return ;
+		}
 		placeManager.moveObject(objId, srcPlaceId, destPlaceId);
 	}
 
 	@Override
 	public void moveService(String serviceId, String srcPlaceId,
 			String destPlaceId) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return ;
+		}
 		placeManager.moveService(serviceId, srcPlaceId, destPlaceId);
 	}
 
 	@Override
 	public String getCoreObjectPlaceId(String objId) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		return placeManager.getCoreObjectPlaceId(objId);
 	}
 
 	@Override
 	public ArrayList<String> getDevicesInSpaces(ArrayList<String> typeList,
 			ArrayList<String> spaces) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 
 		ArrayList<String> coreObjectInPlace = new ArrayList<String>();
 		ArrayList<String> coreObjectOfType = new ArrayList<String>();
@@ -569,27 +646,47 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getUsers() {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		return userManager.getUsers();
 	}
 
 	@Override
 	public boolean createUser(String id, String password, String lastName,
 			String firstName, String role) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return userManager.adduser(id, password, lastName, lastName, role);
 	}
 
 	@Override
 	public boolean deleteUser(String id, String password) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return userManager.removeUser(id, password);
 	}
 
 	@Override
 	public JSONObject getUserDetails(String id) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		return userManager.getUserDetails(id);
 	}
 
 	@Override
 	public JSONObject getUserFullDetails(String id) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		JSONObject obj = new JSONObject();
 
 		try {
@@ -605,55 +702,95 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public boolean checkIfIdIsFree(String id) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return userManager.checkIfIdIsFree(id);
 	}
 
 	@Override
 	public boolean synchronizeAccount(String id, String password,
 			JSONObject accountDetails) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return userManager.addAccount(id, password, accountDetails);
 	}
 
 	@Override
 	public boolean desynchronizedAccount(String id, String password,
 			JSONObject accountDetails) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return userManager.removeAccount(id, password, accountDetails);
 	}
 
 	@Override
 	public boolean associateDevice(String id, String password, String deviceId) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return userManager.addDevice(id, password, deviceId);
 	}
 
 	@Override
 	public boolean separateDevice(String id, String password, String deviceId) {
+		if(userManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return userManager.removeDevice(id, password, deviceId);
 	}
 
 	@Override
 	public JSONArray addLocationObserver(String location) {
+		if(weatherAdapter == null) {
+			logger.error("no weather service available");
+			return null;
+		}
 		weatherAdapter.addLocationObserver(location);
 		return getAllLocationsObservers();
 	}
 
 	@Override
 	public JSONArray removeLocationObserver(String location) {
+		if(weatherAdapter == null) {
+			logger.error("no weather service available");
+			return null;
+		}
 		weatherAdapter.removeLocationObserver(location);
 		return getAllLocationsObservers();		
 	}
 
 	@Override
 	public JSONArray getActiveLocationsObservers() {
+		if(weatherAdapter == null) {
+			logger.error("no weather service available");
+			return null;
+		}
 		return new JSONArray(weatherAdapter.getActiveLocationsObservers());
 	}
 
 	@Override
 	public JSONArray getAllLocationsObservers() {
+		if(weatherAdapter == null) {
+			logger.error("no weather service available");
+			return null;
+		}
 		return new JSONArray(weatherAdapter.getAllLocationsObservers());
 	}
 	
 	@Override
 	public JSONObject checkLocation(String location) {
+		if(weatherAdapter == null) {
+			logger.error("no weather service available");
+			return null;
+		}
 		if(weatherAdapter != null) {
 			return weatherAdapter.checkLocation(location);
 		}
@@ -662,6 +799,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray checkLocationsStartingWith(String firstLetters) {
+		if(weatherAdapter == null) {
+			logger.error("no weather service available");
+			return null;
+		}
 		if(weatherAdapter != null) {
 			return weatherAdapter.checkLocationsStartingWith(firstLetters);
 		}
@@ -670,12 +811,20 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray addLocationObserverFromWOEID(String woeid) {
+		if(weatherAdapter == null) {
+			logger.error("no weather service available");
+			return null;
+		}
 		weatherAdapter.addLocationObserverFromWOEID(woeid);
 		return getAllLocationsObservers();		
 	}	
 
 	@Override
 	public JSONArray getPlacesByName(String name) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		JSONArray placeByName = new JSONArray();
 		ArrayList<SymbolicPlace> placesList = placeManager
 				.getPlacesWithName(name);
@@ -687,6 +836,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray gePlacesWithTags(JSONArray tags) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		int tagNb = tags.length();
 		ArrayList<String> tagsList = new ArrayList<String>();
 		for (int i = 0; i < tagNb; i++) {
@@ -708,6 +861,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getPlacesWithProperties(JSONArray keys) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		int keysNb = keys.length();
 		ArrayList<String> keysList = new ArrayList<String>();
 		for (int i = 0; i < keysNb; i++) {
@@ -729,6 +886,11 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getPlacesWithPropertiesValue(JSONArray properties) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
+		
 		int propertiesNb = properties.length();
 		HashMap<String, String> propertiesList = new HashMap<String, String>();
 		for (int i = 0; i < propertiesNb; i++) {
@@ -752,6 +914,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public JSONArray getRootPlaces() {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return null;
+		}
 		JSONArray rootPlaces = new JSONArray();
 		for (SymbolicPlace place : placeManager.getRootPlaces()) {
 			rootPlaces.put(place.getDescription());
@@ -761,21 +927,38 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 
 	@Override
 	public boolean addTag(String placeId, String tag) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return placeManager.addTag(placeId, tag);
 	}
 
 	@Override
 	public boolean removeTag(String placeId, String tag) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return placeManager.removeTag(placeId, tag);
 	}
 
 	@Override
 	public boolean addProperty(String placeId, String key, String value) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
 		return placeManager.addProperty(placeId, key, value);
 	}
 
 	@Override
 	public boolean removeProperty(String placeId, String key) {
+		if(placeManager == null) {
+			logger.error("no context data available");
+			return false;
+		}
+		
 		interpreter.checkReferences();
 		return placeManager.removeProperty(placeId, key);
 	}
@@ -858,7 +1041,8 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 *            the identifier of this object
 	 * @return the new contextual enrich JSONObject
 	 */
-	private JSONObject addContextData(JSONObject object, String objectId) {
+	public JSONObject addContextData(JSONObject object, String objectId) {
+		logger.trace("addContextData(JSONObject object : {}, String objectId : {})", object,objectId);
 		try {
 			object.put("placeId", getCoreObjectPlaceId(objectId));
 			object.put("name", getUserObjectName(objectId, ""));
@@ -876,6 +1060,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	 * @return a enrich from contextual data JSONArray
 	 */
 	private JSONArray addContextData(JSONArray objects) {
+		logger.trace("addContextData(JSONArray objects :"+objects.toString());
 		JSONArray contextArray = new JSONArray();
 		try {
 			int nbObjects = objects.length();
@@ -888,13 +1073,14 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 					contextArray.put(addContextData(coreObject,
 						coreObject.getString("id")));
 					logger.trace("... successfully added. With context : "+contextArray.getJSONObject(i));
-					i++;
+
 				}
+				i++;	
 			}
 		} catch (JSONException e) {
 			logger.error(e.getMessage());
 		}
-		return contextArray;
+		return objects;
 	}
 
 	/**
@@ -929,17 +1115,6 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 				}
 			}
 
-			serverIP.setStringValue(localAddress.getHostAddress());
-			logger.debug("State Variable name : " + serverIP.getName()
-					+ ", value : " + serverIP.getCurrentStringValue());
-			serverURL.setStringValue("http://"
-					+ serverIP.getCurrentStringValue() + "/index.html");
-			logger.debug("State Variable name : " + serverURL.getName()
-					+ ", value : " + serverURL.getCurrentStringValue());
-			serverWebsocket.setStringValue("http://"
-					+ serverIP.getCurrentStringValue() + ":" + wsPort + "/");
-			logger.debug("State Variable name : " + serverWebsocket.getName()
-					+ ", value : " + serverWebsocket.getCurrentStringValue());
 
 		} catch (UnknownHostException e) {
 			logger.debug("Unknown host: {}", e.getMessage());
@@ -1029,7 +1204,7 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			String objIdentifier, String method, ArrayList<Object> arguments,
 			ArrayList<Class> types, int clientId, String callId) {
 		if(traceManager!= null)
-			traceManager.commandHasBeenPassed(objIdentifier, method, "EHMI");
+			traceManager.commandHasBeenPassed(objIdentifier, method, "user", arguments, getCurrentTimeInMillis());
 		return coreProxy.executeCommand(clientId, objIdentifier, method,
 				arguments, types, callId);
 	}
@@ -1068,10 +1243,10 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(Long.valueOf(coreListener.getValue()));
 			// register the alarm
-			int alarmId = systemClock.registerAlarm(calendar, new TimeObserver(
-					"EHMI listener for clock event"));
+			int alarmId = systemClock.registerAlarm(calendar, new TimeObserver("EHMI listener for clock event"));
 			// change the event entry with the alarmId value
-			eventKey.setValue(String.valueOf(alarmId));
+			//eventKey.setValue(String.valueOf(alarmId));
+                        eventKey = new TimeEntry(eventKey, alarmId);
 			// save the alarm identifier
 			alarmListenerList.put(eventKey, alarmId);
 			logger.debug("Alarm listener added.");
@@ -1215,11 +1390,18 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 	}
 
 	public void newDeviceStatus(String objectId, Boolean bool) {
+            if (interpreter != null) {
 		interpreter.newDeviceStatus(objectId, bool);
+            }
 	}
 
 	@Override
 	public GrammarDescription getGrammarFromDevice(String deviceId) {
+		if(devicePropertiesTable == null) {
+			logger.error("no context data available");
+			return null;
+		}		
+		
 		GrammarDescription grammar = devicePropertiesTable
 				.getGrammarFromDevice(deviceId);
 		if (grammar != null) {
@@ -1227,13 +1409,16 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		}
 		// Add the grammar to the table
 		JSONObject device = coreProxy.getDevice(deviceId);
+
 		try {
 			String type = device.getString("type");
 			devicePropertiesTable.setType(deviceId, type);
 			return devicePropertiesTable.getGrammarFromType(type);
 		} catch (JSONException ex) {
 			logger.error("Unable to get 'type' from {}", device.toString());
-		}
+		} catch (NullPointerException e){
+            logger.error("Device {} is not available, this is not normal, ask the matrix architect why",deviceId);
+        }
 		return null;
 	}
 
@@ -1299,5 +1484,55 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 			}
 		}
 	}
+    
+    	@Override
+        public Set<?> listEventsSchedulingProgramId(String programId, String startPeriod, String endPeriod) {
+    		logger.trace("listEventsSchedulingProgramId("
+    				+ "String programId : {},"
+    				+ "String startPeriod : {}"
+    				+ ", String endPeriod) : {}"
+    				,programId,startPeriod,endPeriod);
+    		if (schedulerService == null) {
+    			logger.error("No scheduling service, aborting)");
+    		} else {
+    			try {
+    				return schedulerService.listEventsSchedulingProgramId(programId, startPeriod, endPeriod);
+    			} catch (SchedulingException exc) {
+    				logger.error("Error when when checking the scheduler : "
+    						+ exc.getMessage());
+    			}
+    		}    		
+    		return null;
+    	}
+    	
+    	@Override
+    	public boolean checkProgramIdScheduled(String programId) {
+    		if (schedulerService == null) {
+    			logger.error("No scheduling service, aborting)");
+    		} else {
+    			try {
+    				return schedulerService.checkProgramIdScheduled(programId);
+    			} catch (SchedulingException exc) {
+    				logger.error("Error when checking the scheduler : "
+    						+ exc.getMessage());
+    			}
+    		}
+    		return false;
+    	}
 
+        @Override
+        public JSONArray checkProgramsScheduled() {
+            JSONArray programsScheduled = new JSONArray();
+            if (schedulerService == null) {
+    			logger.error("No scheduling service, aborting)");
+    		} else {
+    			try {
+    				programsScheduled =  schedulerService.checkProgramsScheduled();
+    			} catch (SchedulingException exc) {
+    				logger.error("Error when checking the scheduler : "
+    						+ exc.getMessage());
+    			}
+    		}
+    		return programsScheduled;
+        }
 }

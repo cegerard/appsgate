@@ -12,11 +12,12 @@ define([
     events: {
       "click button.back-button": "onBackButton",
       "shown.bs.modal #edit-device-modal": "initializeModal",
-      "hidden.bs.modal #edit-device-modal": "toggleModalValue",
+      "hide.bs.modal #edit-device-modal": "toggleModalValue",
       "click #edit-device-modal button.valid-button": "validEditDevice",
       "keyup #edit-device-modal input": "validEditDevice",
       "change #edit-device-modal select": "checkDevice",
-      "change .clockReset": "checkDevice"
+	  "click button.btn-target-dependencies": "onShowDependencies",
+	  "click button.btn-target-timelines": "onShowTimelines"
     },
     initialize: function() {
       var self = this;
@@ -51,14 +52,8 @@ define([
       // tell the router that there is a modal
       appRouter.isModalShown = true;
     },
-    /**
-     * Tell the router there is no modal anymore
-     */
     toggleModalValue: function() {
-      _.defer(function() {
-        appRouter.isModalShown = false;
-        appRouter.currentView.render();
-      });
+      appRouter.isModalShown = false;
     },
     /**
      * Check the current value given by the user - show an error message if needed
@@ -106,67 +101,24 @@ define([
 
         // update if information are ok
         if (this.checkDevice()) {
-          var destPlaceId;
+          var destPlaceId = $("#edit-device-modal select option:selected").val();
 
-          if (this.model.get("type") !== "21" && this.model.get(
-              "type") !== 21) {
-            destPlaceId = $(
-              "#edit-device-modal select option:selected").val();
-          }
+          var deviceName = $("#edit-device-modal input#device-name").val();
 
-          // save the name now to prevent the reset of the modal after the render called in "moveDevice"
-          var nameDevice = $("#edit-device-modal input#device-name").val();
-
-          this.$el.find("#edit-device-modal").on("hidden.bs.modal",
+          $("#edit-device-modal").on("hidden.bs.modal",
             function() {
-
               // tell the router that there is no modal any more
               appRouter.isModalShown = false;
 
-              // move the device if this is not the core clock
-              if (self.model.get("type") !== "21" && self.model.get(
-                  "type") !== 21) {
-                places.moveDevice(self.model.get("placeId"),
-                  destPlaceId, self.model.get("id"), true);
-              } else { // update the time and the flow rate set by the user
-                // update the moment attribute
-                self.model.get("moment").set("hour", parseInt($(
-                  "#edit-device-modal select#hour").val()));
-                self.model.get("moment").set("minute", parseInt($(
-                  "#edit-device-modal select#minute").val()));
-                // retrieve the value of the flow rate set by the user
-                var timeFlowRate = $(
-                  "#edit-device-modal input#time-flow-rate").val();
+              // save the name now to prevent the reset of the modal after the render called in "moveDevice"
+              self.model.set("name",deviceName);
+              self.model.sendName();
 
-                // update the attributes hour and minute
-                self.model.set("hour", self.model.get("moment").hour());
-                self.model.set("minute", self.model.get("moment").minute());
-
-                // send the update to the server
-                self.model.save();
-
-                // update the attribute time flow rate
-                self.model.set("flowRate", timeFlowRate);
-
-                if (self.model.get("reset") === true) {
-                  self.model.trigger("change:resetClock");
-                  self.model.set("flowRate", "1");
-                }
-
-                //send the update to the server
-                self.model.save();
+              if(typeof destPlaceId != "undefined" && destPlaceId != ""){
+                places.moveDevice(self.model.get("placeId"), destPlaceId, self.model.get("id"), true);
               }
 
-              // set the new name to the device
-              self.model.set("name", nameDevice);
 
-              // send the updates to the server
-              self.model.save();
-
-              // rerender the view
-              self.render();
-
-              return false;
             });
 
           // hide the modal
@@ -181,9 +133,9 @@ define([
      */
     autoupdate: function() {
       // update the name
-      this.$el.find("#device-name").html(this.model.get("name") !==
-        "" ? this.model.get("name") : $.i18n.t(
-          "devices.device-no-name"));
+      var deviceName = "&nbsp;&nbsp;"
+      deviceName += this.model.get("name") !== "" ? this.model.get("name") : $.i18n.t("devices.device-no-name");
+      this.$el.find("#device-name").html(deviceName);
 
       // update the status
       var deviceStatus = "";
@@ -199,6 +151,13 @@ define([
       }
       this.$el.find("#device-status").html(deviceStatus);
     },
+	  
+    onShowDependencies: function() {
+		appRouter.navigate("#dependancies/" + this.model.get("id"), {trigger: true});
+	},
+	onShowTimelines: function() {
+		appRouter.navigate("#debugger/" + this.model.get("id"), {trigger: true});
+	}
   });
   return DeviceDetailsView
 });

@@ -56,7 +56,7 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
                 value = Builder.buildFromJSON(obj.optJSONObject("value"), this);
             } catch (SpokTypeException ex) {
                 LOGGER.error("Unable to build the value of the variable assignation");
-                throw new SpokNodeException("NodeVariableAssignation", "value", ex);
+                throw new SpokNodeException(this, "NodeVariableAssignation", "value", ex);
             }
         }
         name = getJSONString(obj, "name");
@@ -126,8 +126,8 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    public String toString() {
-        return "[Var " + this.name + "=" + this.value + "]";
+    public String getTypeSpec() {
+        return "Var " + this.name + "=" + this.value;
 
     }
 

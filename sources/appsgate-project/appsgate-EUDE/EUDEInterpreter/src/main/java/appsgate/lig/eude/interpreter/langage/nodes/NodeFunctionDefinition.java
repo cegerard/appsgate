@@ -43,12 +43,12 @@ public class NodeFunctionDefinition extends Node {
             this.setSymbolTable(new SymbolTable(programJSON.optJSONArray("seqDefinitions"), this));
         } catch (SpokException ex) {
             LOGGER.error("Unable to set the symbol table");
-            throw new SpokNodeException("NodeFunctionDefinition", "seqDefinitions", ex);
+            throw new SpokNodeException(this, "NodeFunctionDefinition", "seqDefinitions", ex);
         }
         try {
             this.seqRules = Builder.buildFromJSON(programJSON.optJSONObject("seqRules"), this);
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeFunctionDefinition", "seqRules", ex);
+            throw new SpokNodeException(this, "NodeFunctionDefinition", "seqRules", ex);
         }
     }
 
@@ -135,6 +135,11 @@ public class NodeFunctionDefinition extends Node {
     public JSONObject call() {
         LOGGER.warn("Trying to call a non functional node");
         return getJSONDescription();
+    }
+
+    @Override
+    public String getTypeSpec() {
+        return "FunctionDef";
     }
 
 }

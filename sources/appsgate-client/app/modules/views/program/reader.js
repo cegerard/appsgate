@@ -12,8 +12,11 @@ define([
       tplEditor: _.template(programEditorTemplate),
       events: {
         "shown.bs.modal #schedule-program-modal": "initializeModal",
-        "hidden.bs.modal #schedule-program-modal": "toggleModalValue",
+        "shown.bs.modal #test-program-modal": "initializeProgramTestModal",
+        "hide.bs.modal": "toggleModalValue",
         "click #schedule-program-modal button.valid-button": "validScheduleProgram",
+        "click #test-program-modal button.valid-button": "launchProgramTest",
+        "click #stop-testing-button": "cancelTesting",
         "click button.start-program-button": "onStartProgramButton",
         "click button.stop-program-button": "onStopProgramButton",
         "click button.cancel-edit-program-button": "onCancelEditProgram",
@@ -23,6 +26,8 @@ define([
         "click button.delete-popover-button": "onClickDeleteProgram",
         "click button.cancel-delete-program-button": "onCancelDeleteProgram",
         "click button.open-calendar-button":"openCalendar",
+	  	"click button.btn-target-dependencies": "onShowDependencies",
+	  	"click button.btn-target-timelines": "onShowTimelines"
       },
       /**
       * @constructor
@@ -40,6 +45,13 @@ define([
         this.listenTo(dispatcher, "refreshDisplay", this.refreshDisplay);
 
         this.stopListening(devices.getCoreClock());
+        this.listenTo(devices.getCoreClock(), "change", this.displayClockPopover);
+
+      },
+      close:function() {
+        ProgramReaderView.__super__.close.apply(this, arguments);
+
+        $(".popover").remove();
       },
       /**
        * Clear the input text, hide the error message, check the checkbox and disable the valid button by default
@@ -54,6 +66,16 @@ define([
       toggleModalValue: function() {
           appRouter.isModalShown = false;
       },
+      initializeProgramTestModal: function() {
+        var coreClock = devices.getCoreClock();
+
+        // initialize the field to edit the core clock
+        $("#test-program-modal select#hour").val(coreClock.get("moment").hour());
+        $("#test-program-modal select#minute").val(coreClock.get("moment").minute());
+        $("#test-program-modal input#time-flow-rate").val(coreClock.get("flowRate"));
+
+        this.initializeModal();
+      },
       /**
        * Check if the name of the program does not already exist. If not, create the program
        * Hide the modal when done
@@ -63,25 +85,108 @@ define([
       validScheduleProgram: function(e) {
           var self = this;
 
-          // hide the modal
-          $("#schedule-program-modal").modal("hide");
-
-          if($("input[name='schedule-program']:checked").val() == 'activate') {
+          if($("input[name='schedule-radio']:checked").val() == 'activate') {
             this.model.scheduleProgram(true,false);
-          } else if ($("input[name='schedule-program']:checked").val() == 'deactivate') {
+          } else if ($("input[name='schedule-radio']:checked").val() == 'deactivate') {
             this.model.scheduleProgram(false,true);
           } else {
             this.model.scheduleProgram(true,true);
           }
+
+          // hide the modal
+          $("#schedule-program-modal").modal("hide");
 
           // instantiate the program and add it to the collection after the modal has been hidden
           $("#schedule-program-modal").on("hidden.bs.modal", function() {
             // tell the router there is no modal any more
             appRouter.isModalShown = false;
 
+            $("#schedule-program-modal").off("hidden.bs.modal");
+
             window.open("https://www.google.com/calendar");
 
           });
+      },
+      launchProgramTest: function(e) {
+        var self = this;
+
+        // hide the modal
+        $("#test-program-modal").modal("hide");
+
+        var coreClock = devices.getCoreClock();
+        coreClock.set("simulated",true);
+
+        coreClock.get("moment").set("hour", parseInt($("#test-program-modal select#hour").val()));
+        coreClock.get("moment").set("minute", parseInt($("#test-program-modal select#minute").val()));
+        // retrieve the value of the flow rate set by the user
+        var timeFlowRate = $("#test-program-modal input#time-flow-rate").val();
+
+        // update the attributes hour and minute
+        coreClock.set("hour", coreClock.get("moment").hour());
+        coreClock.set("minute", coreClock.get("moment").minute());
+
+        //send the update to the server
+        coreClock.save();
+
+        // update the attribute time flow rate
+        coreClock.set("flowRate", timeFlowRate);
+
+        //send the update to the server
+        coreClock.save();
+
+        // instantiate the program and add it to the collection after the modal has been hidden
+        $("#test-program-modal").on("hidden.bs.modal", function() {
+          // tell the router there is no modal any more
+          appRouter.isModalShown = false;
+
+          // starting the program
+          self.model.remoteCall("callProgram", [{type: "String", value: self.model.get("id")}]);
+
+          // refresh the menu
+          self.render();
+
+          $("#test-program-button").addClass("hidden");
+          $("#stop-testing-button").removeClass("hidden");
+
+        });
+      },
+      cancelTesting: function() {
+
+        $("#test-program-button").removeClass("hidden");
+        $("#stop-testing-button").addClass("hidden");
+
+        var coreClock = devices.getCoreClock();
+        if(coreClock.get("simulated")){
+          coreClock.resetClock();
+          coreClock.set("simulated", false);
+        }
+      },
+      displayClockPopover: function() {
+        var self = this;
+        var coreClock = devices.getCoreClock();
+        if(coreClock.get("simulated") == true && (typeof this.testPopoverShown == "undefined" || this.testPopoverShown == false)) {
+          this.testPopoverShown = true;
+
+          _.defer(function(){
+            // create the test popover
+            self.$el.find("#test-button-popover").popover({
+                content: $.i18n.t("programs.simulated-time"),
+                template: "<div class='popover' role='tooltip'><div class='arrow'></div><div id='popover-clock' class='popover-content'></div></div>",
+                placement: "top",
+            });
+
+            // show the popup
+            self.$el.find("#test-button-popover").popover('show');
+          });
+        }
+        else if(coreClock.get("simulated") == false && this.testPopoverShown == true){
+          this.testPopoverShown = false;
+          // hide the popup
+          this.$el.find("#test-button-popover").popover('destroy');
+          $("#popover-clock").parent().remove();
+        }
+
+        $("#popover-clock").html("<i class='glyphicon glyphicon-time'></i><span>" + coreClock.get('hour') + ":" + coreClock.get('minute') + ":" + coreClock.get('second') + "</span>");
       },
       openCalendar: function(e) {
           window.open("https://www.google.com/calendar");
@@ -97,7 +202,6 @@ define([
         // get the program to start
         var program = programs.get($(e.currentTarget).attr("id"));
 
-        program.set("runningState", "PROCESSING");
         program.remoteCall("callProgram", [{type: "String", value: program.get("id")}]);
 
         // refresh the menu
@@ -116,7 +220,6 @@ define([
         // get the program to stop
         var program = programs.get($(e.currentTarget).attr("id"));
 
-        program.set("runningState", "DEPLOYED");
         program.remoteCall("stopProgram", [{type: "String", value: program.get("id")}]);
         // refresh the menu
         this.render();
@@ -173,13 +276,19 @@ define([
         // navigate to the editor
         appRouter.navigate("#programs/editor/" + this.model.get('id'), {trigger: true});
       },
+	  onShowDependencies: function() {
+		appRouter.navigate("#dependancies/" + this.model.get("id"), {trigger: true});
+	  },
+	  onShowTimelines: function() {
+		appRouter.navigate("#debugger/" + this.model.get("id"), {trigger: true});
+	  },
       /**
       * Callback when the user has clicked on the button edit. Go to the editor or show the popup
       */
       onClickEditProgram : function(e) {
         var self = this;
         // if program waiting, show the popup warning
-        if (this.model.get('runningState') === "WAITING") {
+        if (this.model.isWorking()) {
             // create the popover
             this.$el.find("#edit-program-popover").popover({
                 html: true,
@@ -211,9 +320,32 @@ define([
         _.defer(function() {
           input = self.applyReadMode(input);
           $(".programInput").html(input).addClass("read-only");
+
+          if($(".programInput").children(".seq-block-node").children(":not(.input-spot):not(.seq-block-header)").length < 1){
+            $(".programInput").children(".seq-block-node").remove();
+            $(".programInput").children(".separator").remove();
+          }
+          else {
+            if($(".seq-block-node").find(".input-spot").next(".separator").length > 0
+            && $(".seq-block-node").find(".input-spot").next(".separator").next().length == 0){
+              $(".seq-block-node").find(".input-spot").next(".separator")[0].remove();
+            }
+            $(".seq-block-node").find(".input-spot").prev(".separator").remove();
+          }
+          if($(".programInput").children(".set-block-node").children(":not(.input-spot):not(.set-block-header)").length < 1){
+            $(".programInput").children(".set-block-node").remove();
+            $(".programInput").children(".separator").remove();
+          }
+          else {
+            if($(".set-block-node").find(".input-spot").next(".separator").length > 0
+              && $(".set-block-node").find(".input-spot").next(".separator").next().length == 0){
+              $(".set-block-node").find(".input-spot").next(".separator")[0].remove();
+            }
+            $(".set-block-node").find(".input-spot").prev(".separator").remove();
+          }
+
           $(".input-spot:not(.mandatory-spot)").remove();
           $(".mandatory-spot").text($.i18n.t("language.mandatory-readonly"));
-          $(".rules-node").find(".separator").addClass("separator-hidden");
 
           var test = $(".while-keep-then").parent().next();
 
@@ -222,35 +354,39 @@ define([
           }
           $(".secondary-block-node").remove();
 
-          if($(".programInput").children(".seq-block-node").children().length <= 1){
-            $(".programInput").children(".seq-block-node").remove();
-            $(".programInput").children(".separator").remove();
-          }
-          if($(".programInput").children(".set-block-node").children().length <= 1){
-            $(".programInput").children(".set-block-node").remove();
-            $(".programInput").children(".separator").remove();
-          }
+          // adding tooltips and changing style for the inactive nodes after a self-stop
+          $(".programInput").find(".btn-prog-stopself").parent().nextAll(".btn-current").children(".btn-prog:not(.btn-trash)").attr("title",$.i18n.t("programs.inactive-node")).addClass("inactive-node");
 
           if(typeof self.model !== "undefined"){
-            if (self.model.get("runningState") === "PROCESSING" || self.model.get("runningState") === "KEEPING" || self.model.get("runningState") === "WAITING") {
-              $("#led-" + self.model.get("id")).addClass("led-yellow").removeClass("led-orange").removeClass("led-default");
-              $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.started'));
+            $("#led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
+            $("#led-" + self.model.get("id")).attr("title", self.model.getProgramState());
+            $("#current-led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
+            $("#current-led-" + self.model.get("id")).attr("title", self.model.getProgramState());
+
+            if (self.model.isWorking()) {
               $(".start-program-button").hide();
               $(".stop-program-button").show();
+              // make the visible button first in the div so the correct style applies
+              $(".stop-program-button").insertBefore($(".start-program-button"));
             } else if (self.model.get("runningState") === "INVALID"){
-              $("#led-" + self.model.get("id")).addClass("led-orange").removeClass("led-yellow").removeClass("led-default");
-              $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.failed'));
               $(".start-program-button").show();
               $(".start-program-button").prop('disabled', true);
               $(".stop-program-button").hide();
+              // make the visible button first in the div so the correct style applies
+              $(".start-program-button").insertBefore($(".stop-program-button"));
             } else{
-              $("#led-" + self.model.get("id")).addClass("led-default").removeClass("led-yellow").removeClass("led-orange");
-              $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.stopped'));
               $(".start-program-button").show();
+              $(".start-program-button").prop('disabled', false);
               $(".stop-program-button").hide();
+              // make the visible button first in the div so the correct style applies
+              $(".start-program-button").insertBefore($(".stop-program-button"));
             }
           }
+
+          // translate the view
           $("body").i18n();
+
+          // using jqueryui tooltips
           $( document ).tooltip();
 
           // progress indicators should be updated at the end as they are sensitive to the sizes and positions of elements
@@ -276,34 +412,28 @@ define([
       updateProgressIndicators: function() {
         var self = this;
         var input = $(".programInput");
+        var workspace = $(".editorWorkspace");
         var activeSet = $.map(this.model.get("activeNodes"), function(value,index){return [[index, value]];});
+        $(".active-node-indicator").addClass("hidden");
 
-        // mark active nodes as locked
-        if(activeSet.length > 0){
+        // mark active nodes
+        if (self.model.isWorking() && activeSet.length > 0) {
           activeSet.forEach(function(activeNodes) {
-            if($(input).find("#active-" + activeNodes[0]).length > 0 && activeNodes[1] == true) {
-                var workspace = $(".editorWorkspace");
-                workspace.children("#active-" + activeNodes[0]).remove();
-                var activeIndicator = $(input).find("#active-" + activeNodes[0]);
-                var editorWidth = workspace.width();
-                $(activeIndicator).width(editorWidth);
+            var activeIndicator = $(input).find("#active-" + activeNodes[0]);
+            if (activeIndicator.length > 0) {
+              var editorWidth = workspace.width();
+              var leftOffset = activeIndicator.offset().left - workspace.position().left;
+              $(activeIndicator).width(editorWidth);
+              $(activeIndicator).offset({
+                left: leftOffset
+              });
 
-                activeIndicator = activeIndicator.detach();
-                $(activeIndicator.first()).appendTo(workspace);
+              activeIndicator.removeClass("hidden");
 
-                var targetPosition = $("#" + activeIndicator.attr("target-node")).offset();
-                if(targetPosition){
-                  $(activeIndicator).offset({top:targetPosition.top - workspace.offset().top, left:0});
-                }
-
-                $(".editorWorkspace").find("#active-" + activeNodes[0]).removeClass("hidden");
-
-                if(activeIndicator.attr("parent-node") !== null) {
-                  $(".editorWorkspace").children("#active-" + activeIndicator.attr("parent-node")).addClass("hidden");
-                }
-            }
-            else if($(input).find("#active-" + activeNodes[0]).length > 0 && activeNodes[1] == false){
-              $(".editorWorkspace").children("#active-" + activeNodes[0]).addClass("hidden");
+              // if a parent node of an active node is active, hide its indicator
+              if (typeof activeIndicator.attr("parent-node") !== "undefined") {
+                input.find("#active-" + activeIndicator.attr("parent-node")).addClass("hidden");
+              }
             }
           });
         }
@@ -321,8 +451,6 @@ define([
         $(".progress-true-false-indicator").each(function(index) {
           var span = $(this);
           var nodeCounter = self.model.get("nodesCounter");
-          var test =  nodeCounter[span.attr("true-node")];
-          var test2 = nodeCounter[span.attr("false-node")];
           if(typeof nodeCounter[span.attr("true-node")] !== "undefined" && typeof nodeCounter[span.attr("false-node")] !== "undefined") {
             if(nodeCounter[span.attr("true-node")] > nodeCounter[span.attr("false-node")]){
               span.text($.i18n.t("debugger.yes"));
@@ -341,7 +469,6 @@ define([
             span.addClass("progress-false-indicator");
             span.removeClass("hidden");
           }
-          console.log( index + " : " + span.attr("id") + " true: " + span.attr("true-node") + " false: " + span.attr("false-node"));
         });
 
         return input;
@@ -367,11 +494,22 @@ define([
           // hide the error message
           $("#edit-program-name-modal .text-error").hide();
 
+          // initialize test button
+          if(devices.getCoreClock().get("simulated") == true){
+            $("#test-program-button").addClass("hidden");
+            $("#stop-testing-button").removeClass("hidden");
+          } else {
+            $("#test-program-button").removeClass("hidden");
+            $("#stop-testing-button").addClass("hidden");
+          }
+
           this.refreshDisplay();
 
           // fix the programs list size to be able to scroll through it
           this.resize($(".programInput"));
+
         }
+
         return this;
       }
 

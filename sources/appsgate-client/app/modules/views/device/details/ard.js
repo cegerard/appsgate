@@ -27,7 +27,7 @@ define([
 
         var ardLastMessage = "<span class='pull-right label label-";
         ardLastMessage += this.model.get("authorized") === true || this.model.get("authorized") === "true"?"success>":"default>";
-        if (device.get("lastMessage")!=="") {
+        if (this.model.get("lastMessage")!=="") {
             ardLastMessage += this.model.get("lastMessage") + "</span>";
         } else {
             ardLastMessage = $.i18n.t("devices.ard.last-message-empty") + "</span>";

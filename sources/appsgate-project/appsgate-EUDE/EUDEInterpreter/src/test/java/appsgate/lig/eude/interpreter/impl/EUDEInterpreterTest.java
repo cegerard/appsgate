@@ -69,10 +69,10 @@ public class EUDEInterpreterTest {
     private EUDEInterpreter instance;
     private final JSONObject programJSON;
     private EHMIProxyMock ehmiProxy;
-    private final String programId = "test";
+    private final String programId = "pgm";
 
     public EUDEInterpreterTest() throws Exception {
-        programJSON = TestUtilities.loadFileJSON("src/test/resources/prog/testEmpty.json");
+        programJSON = TestUtilities.loadFileJSON("src/test/resources/prog/pgm.json");
     }
 
     @Before
@@ -194,17 +194,6 @@ public class EUDEInterpreterTest {
         boolean remove = instance.removeProgram(programId);
         Assert.assertTrue("Program should be removed", remove);
 
-    }
-
-    /**
-     * Test of update method, of class EUDEInterpreter.
-     */
-    @Test
-    public void testUpdate() {
-        System.out.println("update");
-        instance.addProgram(this.programJSON);
-        boolean result = instance.update(this.programJSON);
-        Assert.assertTrue("Update should work on a correct program", result);
     }
 
     /**
@@ -396,7 +385,6 @@ public class EUDEInterpreterTest {
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
         NodeProgram p = instance.getNodeProgram("TestWhen");
         Assert.assertNotNull(p);
-        Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
         ehmiProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("Yes"), 500);
         Assert.assertTrue(instance.isProgramActive("TestWhen"));
@@ -407,9 +395,8 @@ public class EUDEInterpreterTest {
         tested.become("no");
         ehmiProxy.notifAll("3");
         synchroniser.waitUntil(tested.is("Yes"), 500);
-        Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
         p.stop();
-        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
+        Assert.assertEquals("Program should be deployed", NodeProgram.PROGRAM_STATE.DEPLOYED, p.getState());
 
     }
 
@@ -426,17 +413,15 @@ public class EUDEInterpreterTest {
         Assert.assertTrue(instance.isProgramActive("TestWhile"));
         NodeProgram p = instance.getNodeProgram("TestWhile");
         Assert.assertNotNull(p);
-        Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
 
         ehmiProxy.notifAll("1");
         synchroniser.waitUntil(tested.is("flag1"), 500);
-        Assert.assertEquals("Program should be waiting", NodeProgram.RUNNING_STATE.WAITING, p.getState());
 
         ehmiProxy.notifAll("2");
         synchroniser.waitUntil(tested.is("flag2"), 500);
-        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
+        Assert.assertEquals("Program should be deployed", NodeProgram.PROGRAM_STATE.DEPLOYED, p.getState());
         p.stop();
-        Assert.assertEquals("Program should be deployed", NodeProgram.RUNNING_STATE.DEPLOYED, p.getState());
+        Assert.assertEquals("Program should be deployed", NodeProgram.PROGRAM_STATE.DEPLOYED, p.getState());
 
     }
 

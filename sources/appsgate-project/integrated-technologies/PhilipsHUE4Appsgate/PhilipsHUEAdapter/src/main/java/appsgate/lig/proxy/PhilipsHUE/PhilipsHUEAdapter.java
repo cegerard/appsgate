@@ -7,6 +7,7 @@ import appsgate.lig.proxy.PhilipsHUE.configuration.listeners.PhilipsHUEBridgeCom
 import appsgate.lig.proxy.PhilipsHUE.dao.LightWrapper;
 import appsgate.lig.proxy.PhilipsHUE.importer.PhilipsHueFactoryExecutor;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
+import org.ow2.chameleon.fuchsia.discovery.philipshue.PhilipsDiscoveryService;
 import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHMessageType;
@@ -279,17 +280,24 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 	}
 
 	@Override
-	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value) {
-		
+	public synchronized boolean setAttribute(String bridgeIP, String id, String attribute, boolean value,Integer transitionTime){
 		PHBridge bridge = getBridgeFromIp(bridgeIP);
 		PHLight light = getLightFromId(bridge, id);
-		
+
 		PHLightState state = new PHLightState();
 		state.setOn(value);
-		
+		state.setBrightness(light.getLastKnownLightState().getBrightness());
+		if(transitionTime!=null){
+			state.setTransitionTime(transitionTime);
+		}
 		bridge.updateLightState(light, state);
-		
 		return true;
+	}
+
+	@Override
+	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value) {
+
+		return setAttribute(bridgeIP,id,attribute,value,4);
 	}
 
 	@Override
@@ -606,6 +614,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
     public void startPushLinkAuthentication(String bridgeIP) {
         //PHAccessPoint ap = bridgeFinder.getUnauthorizedAccessPoint(bridgeIP);
         //phHueSDK.startPushlinkAuthentication(ap);
+		DisplayIHMMessage("devices.lamp.status.pairingRequired");
     }
 	
 	/**
@@ -639,6 +648,7 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
                 content.put("text", "you must to push the link button !");
                 resp.put("hueToastAlert", content);
                 getCommunicationService().send(resp.toString());
+				DisplayIHMMessage("devices.lamp.status.pairingRequired");
 
             } else if (code == PHMessageType.PUSHLINK_AUTHENTICATION_FAILED) {
                 logger.error("BRIDGE AUTHENTICATION FAILED");
@@ -648,8 +658,8 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
                 content.put("text", "BRIDGE AUTHENTICATION FAILED");
                 resp.put("hueToastAlert", content);
                 getCommunicationService().send(resp.toString());
-
-            }
+				DisplayIHMMessage("devices.lamp.status.pairingRequired");
+			}
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -665,8 +675,6 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
         PHBridgeConfiguration bc = bridge.getResourceCache()
                 .getBridgeConfiguration();
-
-        logger.debug("Cache updated: " + flag + " for " + bc.getIpAddress());
 
         for (PHLight light : bridge.getResourceCache().getAllLights()) {
 
@@ -685,29 +693,42 @@ public class PhilipsHUEAdapter implements PhilipsHUEServices {
 
     }
 
+	private void DisplayIHMMessage(String message){
+
+		try {
+			JSONObject ihmi = new JSONObject();
+			ihmi.put("callId","system");
+			ihmi.put("message",message);
+			getCommunicationService().send(ihmi.toString());
+		} catch (JSONException e) {
+			logger.error("Failed to display message in the IHM");
+		}
+
+	}
+
 	private class NewLightListener extends PHLightListener {
 
 		@Override
 		public void onError(int arg0, String arg1) {
-			logger.debug("error code: " +arg0+ " detail: "+arg1);
+			logger.trace("error code: " +arg0+ " detail: "+arg1);
 		}
 
 		@Override
 		public void onStateUpdate(Hashtable<String, String> arg0, List<PHHueError> arg1) {
-			logger.debug("Light state udpated:");
+			logger.trace("Light state update:");
 			for(String key : arg0.keySet()) {
 				String value = arg0.get(key);
-				logger.debug("---- : "+key+" / "+value);
+				logger.trace("---- : "+key+" / "+value);
 			}
-			logger.debug("Light state error:");
+			logger.trace("Light state error:");
 			for(PHHueError error : arg1) {
-				logger.debug(" ##### : "+error.getCode()+" / "+error.getMessage());
+				logger.trace(" ##### : "+error.getCode()+" / "+error.getMessage());
 			}
 		}
 
 		@Override
 		public void onSuccess() {
-			logger.debug("light action success");
+			logger.trace("light action success");
 		}
 
 	}

@@ -19,6 +19,12 @@ define([
       events: {
         "click a.list-group-item": "updateSideMenu"
       },
+	  /**
+	  * Attributes to know the type of this menu
+	  */	
+	  attributes: {
+		"class": "DeviceMenuView"
+	  },
       /**
       * Listen to the updates on devices and update if any
       *
@@ -37,19 +43,21 @@ define([
       * @param collection Collection that holds the changed model
       */
       onChangedDevice: function(model) {
-        var types = devices.getDevicesByType();
+        var devicesByType = devices.getDevicesByType();
         var postfix= "singular";
-        if(types.length>1) postfix="plural";
+        if(devicesByType[model.get("type")].length>1) postfix="plural";
         this.$el.find("#side-" + model.get("type")).replaceWith(this.tplDeviceContainer({
           type: "" + model.get("type"),
           typeLabel: devices.getTypeLabelPrefix(model.get("type"))+postfix,
-          devices: types[model.get("type")],
+          devices: devicesByType[model.get("type")],
           places: places,
           unlocatedDevices: devices.filter(function(d) {
             return (d.get("placeId") === "-1" && d.get("type") === model.get("type") + "");
           }),
           active: Backbone.history.fragment.split("devices/types/")[1] == model.get("type") ? true : false
         }));
+
+        this.updateSideMenu();
 
         // translate the view
         this.$el.i18n();
@@ -93,7 +101,7 @@ define([
           var container = document.createDocumentFragment();
           _.forEach(devices.getTypes(), function(type) {
             devs=devices.getDevicesFilterByType(type);
-            if (type != "21" && type != "102" && type != "103" && devs.length>0) {
+            if (type != "21" && type != "102" && type != "103" && type != "36" && devs.length>0) {
               var postfix= "singular";
               if(devs.length>1) postfix="plural";
               $(container).append(self.tplDeviceContainer({

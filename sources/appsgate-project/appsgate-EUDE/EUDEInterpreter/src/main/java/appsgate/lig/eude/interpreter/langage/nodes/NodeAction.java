@@ -11,6 +11,8 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramDeviceStateNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -54,7 +56,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
      * Default constructor
      *
      * @param ruleJSON the JSON Object
-     * @param parent
+     * @param parent the parent node
      * @throws SpokNodeException if the interpretation of JSON fails
      */
     public NodeAction(JSONObject ruleJSON, Node parent)
@@ -65,6 +67,12 @@ public class NodeAction extends Node implements ICanBeEvaluated {
         args = ruleJSON.optJSONArray("args");
         if (args == null) {
             args = new JSONArray();
+        }
+        // determine wheather the action as the correct amount of arguments
+        Integer nbParam = Integer.parseInt(ruleJSON.optString("type").replaceAll("[a-zA-Z]", "0"));
+        if (args.length() < nbParam) {
+            LOGGER.warn("The action node {} has not the correct number of arguments", ruleJSON);
+            throw new SpokNodeException(this, "Action", "args", null);
         }
         returnType = ruleJSON.optString("returnType");
     }
@@ -88,12 +96,10 @@ public class NodeAction extends Node implements ICanBeEvaluated {
 
     @Override
     public JSONObject call() {
-        LOGGER.trace("##### Action call [{}]!", methodName);
+        LOGGER.trace("Action call [{}]!", methodName);
         fireStartEvent(new StartEvent(this));
         setStarted(true);
         target.addEndEventListener(this);
-        setProgramProcessing();
-
         return target.call();
     }
 
@@ -129,11 +135,11 @@ public class NodeAction extends Node implements ICanBeEvaluated {
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
         LOGGER.debug("Device action {} on {}", methodName, target);
-        ProgramCommandNotification notif;
+        ProgramTraceNotification notif;
         if (returnType.isEmpty()) {
-            notif = getProgramLineNotification(null, target, "Acting on a device", ProgramCommandNotification.Type.WRITE);
+            notif = new ProgramCommandNotification(this.getProgramNode(), this.getIID(), target, methodName, args);
         } else {
-            notif = getProgramLineNotification(null, target, "Reading from", ProgramCommandNotification.Type.READ);
+            notif = new ProgramDeviceStateNotification(this.getProgramNode(), this.getIID(), target, methodName);
         }
 
         command = getMediator().executeCommand(target, methodName, args, notif);
@@ -244,13 +250,13 @@ public class NodeAction extends Node implements ICanBeEvaluated {
             }
             setStopping(false);
         } else {
-            LOGGER.warn("Trying to stop an action ({}) which is not a program", this);
+            LOGGER.debug("Trying to stop an action ({}) which is not a program", this);
         }
     }
 
     @Override
-    public String toString() {
-        return "[Node Action: " + methodName + " on " + target.getValue() + "]";
+    public String getTypeSpec() {
+        return "Action: " + methodName + " on " + target.getValue();
 
     }
 

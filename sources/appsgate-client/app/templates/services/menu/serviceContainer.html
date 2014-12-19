@@ -3,9 +3,9 @@
     <p class="list-group-item-heading lead">
         <% if (type === "31") { %>
             <% if (services.length === 1) { %>
-                <span data-i18n="services.mediaplayer.name.singular"></span>
+                <span data-i18n="devices.mediaplayer.name.singular"></span>
                 <% } else { %>
-                <span data-i18n="services.mediaplayer.name.plural"></span>
+                <span data-i18n="devices.mediaplayer.name.plural"></span>
             <% } %>
         <% } else if (type === "36") { %>
             <% if (services.length === 1) { %>
@@ -28,7 +28,7 @@
         <% } %>        
         <span class="pull-right badge">
             <% if (type === "102") { %>
-            <%= services[0].getFavorites().length %>
+            <span id='mailFavCnt'><%= services[0].getNumberOfFavorites() %></span>
             <% } else { %>
             <%= services.length %>
             <% } %>

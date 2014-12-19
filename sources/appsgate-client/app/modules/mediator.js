@@ -391,12 +391,21 @@ define([
       * Method to get the JSON representation of the program.
       */
       getInputFromJSON: function() {
-        if (this.checkProgram(this.programJSON)) {
-          this.isValid = true;
-        } else {
-          this.isValid = false;
-        }
+        this.ProgramInputBuilder.isValid = true;
+        this.ProgramInputBuilder.isComplete = true;
+		this.programState = "deployed";
         var input = $.parseHTML(this.ProgramInputBuilder.buildInputFromNode(this.programJSON, this.currentNode));
+        if (this.checkProgram(this.programJSON)) {
+		  if (this.ProgramInputBuilder.isValid) {
+			if (!this.ProgramInputBuilder.isComplete) {
+			  this.programState = "incomplete";
+			}
+		  } else {
+            this.programState = "invalid";
+		  }
+        } else {
+          this.programState = "invalid";
+        }
 
         $(input).find(".btn").css("padding", "3px 6px");
 
@@ -464,6 +473,12 @@ define([
         }
       },
 
+	  /**
+	   *
+	   */
+	  getProgramState : function() {
+		return $.i18n.t('programs.state.'+this.programState) ;
+	  },
 	  /**
 	   * Return whether the program is empty
 	   */

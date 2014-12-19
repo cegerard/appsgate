@@ -17,7 +17,7 @@ define([
       autoupdate: function() {
         TemperatureSensorView.__super__.autoupdate.apply(this);
 
-        this.$el.find("#temperature-value").html(Math.round(this.model.get("value")) + "&deg;C");
+        this.$el.find("#temperature-value").html(this.model.getValue() + " &deg;C");
 
         // translate the view
         this.$el.i18n();

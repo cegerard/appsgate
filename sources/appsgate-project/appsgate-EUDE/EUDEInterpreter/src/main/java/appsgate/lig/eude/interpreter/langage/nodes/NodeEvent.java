@@ -8,6 +8,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
+import appsgate.lig.eude.interpreter.spec.ProgramEventNotification;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +79,12 @@ public class NodeEvent extends Node implements INodeEvent {
         super(parent, eventJSON);
         source = getDevice(eventJSON, "source");
         eventName = getJSONString(eventJSON, "eventName");
-        eventValue = getJSONString(eventJSON, "eventValue");
+        if (eventJSON.has("eventValue") ) {
+            eventValue = getJSONString(eventJSON, "eventValue");
+        } else {
+            JSONObject optJSONObject = getJSONObject(eventJSON, "param");
+            eventValue = getJSONString(optJSONObject, "value");
+        }
 
     }
 
@@ -147,18 +153,26 @@ public class NodeEvent extends Node implements INodeEvent {
      * Once the event is fired, transmit the fact that the event has been fired
      */
     public void coreEventFired() {
-        setStarted(false);
-        fireEndEvent(new EndEvent(this));
+        if (isStarted()) {
+            try {
+                getMediator().removeNodeListening(this);
+            } catch (SpokExecutionException ex) {
+                LOGGER.error("Unable to remove the node listening from {}", this);
+            }
+            setStarted(false);
+            ProgramEventNotification n = new ProgramEventNotification(this.getProgramNode(), this.getIID(), this.getSourceId(), eventName);
+            this.notifyLine(n);
+            fireEndEvent(new EndEvent(this));
+        }
     }
 
     @Override
     public void endEventFired(EndEvent e) {
-        LOGGER.debug("EndEvent fired: {}", e.toString());
     }
 
     @Override
-    public String toString() {
-        return "[Node Event on " + source.getValue() + "]";
+    public String getTypeSpec() {
+        return "Event on " + source.getValue();
     }
 
     @Override
@@ -233,7 +247,6 @@ public class NodeEvent extends Node implements INodeEvent {
         return source.getType().equalsIgnoreCase("programCall");
     }
 
-    
     @Override
     public boolean equals(Object o) {
         if (this == o) {

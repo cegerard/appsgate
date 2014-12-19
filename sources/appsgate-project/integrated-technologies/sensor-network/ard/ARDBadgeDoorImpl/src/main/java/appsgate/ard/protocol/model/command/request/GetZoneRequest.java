@@ -7,7 +7,7 @@ public class GetZoneRequest extends ARDRequest {
 
     public GetZoneRequest(Integer inputIndex) throws JSONException {
         super(0,"get_zone");
-        json.put("input_idx",inputIndex);
+        json.put("zone_idx",inputIndex);
     }
 
 }

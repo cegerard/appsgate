@@ -17,6 +17,12 @@ define([
         events: {
             "click a.list-group-item": "updateSideMenu"
         },
+		/**
+		* Attributes to know the type of this menu
+		*/
+		attributes: {
+			"class": "ServiceMenuView"
+		},
         /**
          * Listen to the updates on services and update if any
          *

@@ -7,6 +7,7 @@ require.config({
         "vendor": "../vendor",
         // Almond is used to lighten the output filesize.
         "almond": "../vendor/bower/almond/almond",
+        "alertifyjs": "../vendor/bower/alertifyjs/dist/js/alertify",
         // Opt for Lo-Dash Underscore compatibility build over Underscore.
         "underscore": "../vendor/bower/lodash/dist/lodash",
         // JQuery and Backbone
@@ -34,6 +35,7 @@ require.config({
         raphael: "../vendor/bower/raphael/raphael-min",
         // Color wheel Raphael.js plugin
         colorwheel: "../vendor/raphael/plugins/colorwheel",
+        colorwidget: "../vendor/colorwidget/loadcolor",
         // jsTree for file browsing
         jstree: "../vendor/jstree/jquery.jstree",
         // d3 library

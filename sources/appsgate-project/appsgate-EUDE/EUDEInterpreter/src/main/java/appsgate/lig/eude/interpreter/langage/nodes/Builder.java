@@ -57,6 +57,18 @@ public class Builder {
         if (type.equalsIgnoreCase("action")) {
             return NODE_TYPE.NODE_ACTION;
         }
+        if (type.equalsIgnoreCase("action0")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
+        if (type.equalsIgnoreCase("action1")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
+        if (type.equalsIgnoreCase("action2")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
+        if (type.equalsIgnoreCase("action3")) {
+            return NODE_TYPE.NODE_ACTION;
+        }
         if (type.equalsIgnoreCase("stopMyself")) {
             return NODE_TYPE.NODE_ACTION;
         }
@@ -148,6 +160,9 @@ public class Builder {
             return NODE_TYPE.NODE_VALUE;
         }
         if (type.equalsIgnoreCase("scale")) {
+            return NODE_TYPE.NODE_VALUE;
+        }
+        if (type.equalsIgnoreCase("param")) {
             return NODE_TYPE.NODE_VALUE;
         }
         if (type.equalsIgnoreCase("assignation")) {
@@ -264,7 +279,7 @@ public class Builder {
                     return new NodeComparator(o, parent);
                 default:
                     LOGGER.error("No such type found : {}", o.toString());
-                    throw new SpokNodeException("NodeBuilder", "type", null);
+                    throw new SpokNodeException(parent, "NodeBuilder", "type", null);
             }
         } catch (SpokNodeException ex) {
             LOGGER.debug("Unable to build node: {}", o.optString("type"));

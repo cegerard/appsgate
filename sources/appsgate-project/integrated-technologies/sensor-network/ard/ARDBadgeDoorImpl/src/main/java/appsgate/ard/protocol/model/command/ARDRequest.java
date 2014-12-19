@@ -8,14 +8,19 @@ public abstract class ARDRequest implements JSONARDCommand {
     protected JSONObject json=new JSONObject();
 
     public ARDRequest(int requestId,String request) throws JSONException {
+        Integer id = requestId;
 
-        json.put("request_id",requestId);
+        if(id==0) {
+            id = RequestIdGenerator.getInstance().genId();
+        }
+
+        json.put("req_id",id);
         json.put("request",request);
 
     }
 
     public final Integer getRequestId() throws JSONException {
-        return json.getInt("request_id");
+        return json.getInt("req_id");
     }
 
     public String getJSON() throws JSONException{

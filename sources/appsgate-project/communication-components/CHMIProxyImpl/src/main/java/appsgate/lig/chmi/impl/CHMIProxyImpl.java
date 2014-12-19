@@ -151,7 +151,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
             }
             
             try{
-            	sendToClientService.send(newMsg, getObjectDescription(newObj));
+            	// sendToClientService.send(newMsg, getObjectDescription(newObj)); // this one doesn't contain potential Context data
                 notifyAllUpdatesListeners(newMsg, newObj.getAbstractObjectId(), newObj.getUserType(), newObj.getDescription(), newObj.getBehaviorDescription());
         	}catch(ExternalComDependencyException comException) {
         		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
@@ -171,14 +171,14 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     public void removedAbstractObject(Instance inst) {
         logger.debug("Abstract device removed: " + inst.getName());
-        String deviceId = inst.getProperty("deviceId");
         JSONObject obj = new JSONObject();
+        CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
+        String deviceId = rmObj.getAbstractObjectId();
         try {
             obj.put("objectId", deviceId);
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
-        CoreObjectSpec rmObj = (CoreObjectSpec) inst.getServiceObject();
 
         synchronized(this){
         	String newMsg ="";
@@ -193,8 +193,8 @@ public class CHMIProxyImpl implements CHMIProxySpec {
         	}
         	
             try{
-            	notifyAllUpdatesListeners(newMsg, deviceId, rmObj.getUserType(), null, null);
-            	sendToClientService.send(newMsg, obj);
+//            	notifyAllUpdatesListeners(newMsg, deviceId, rmObj.getUserType(), null, null);
+            	sendToClientService.send(newMsg, obj); 
         	}catch(ExternalComDependencyException comException) {
         		logger.debug("Resolution failled for send to client service dependency, no message will be sent.");
         	}
@@ -282,13 +282,12 @@ public class CHMIProxyImpl implements CHMIProxySpec {
      */
     @Override
     public JSONArray getDevices() {
-        Iterator<CoreObjectSpec> devices = abstractDevice.iterator();
 
-        if (devices != null) {
+        if (abstractDevice != null && !abstractDevice.isEmpty()) {
             JSONArray jsonDeviceList = new JSONArray();
 
-            while (devices.hasNext()) {
-                CoreObjectSpec adev = devices.next();
+            for (CoreObjectSpec adev : abstractDevice) {
+            	logger.debug("getDevices(), adding : "+getObjectDescription(adev));
                 jsonDeviceList.put(getObjectDescription(adev));
             }
             logger.debug("getDevices(), returning "+jsonDeviceList);
@@ -404,10 +403,9 @@ public class CHMIProxyImpl implements CHMIProxySpec {
     		logger.trace("getObjectDescription(CoreObjectSpec obj), description : "
     				+JSONDescription);	
         } catch (JSONException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(),e);
         } catch (Exception e) {
-            logger.error("ApAM error");
-            logger.error(e.getMessage());
+            logger.error("ApAM error",e);
         }
         return JSONDescription;
     }
@@ -483,6 +481,7 @@ public class CHMIProxyImpl implements CHMIProxySpec {
 		if(obj != null) {
 			CoreClockSpec clock = (CoreClockSpec)obj;
 			clock.unregisterAlarm(alarmId);
+			clock.calculateNextTimer();
 		}
 	}
 

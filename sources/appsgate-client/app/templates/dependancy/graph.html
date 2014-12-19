@@ -1,0 +1,25 @@
+<div id="graph" class="scrollable div-scrollable">
+	<div id="graph-action" class="panel panel-default">
+		<p>
+			<button type="button" class="refresh-button" data-i18n="dependancy.refresh-data"></button>
+			<button type="button" class="unfix-button" data-i18n="dependancy.unfix-node"></button>
+		</p>
+		<p><span data-i18n="dependancy.search-label"></span>
+			<input class="search-input-text" type="text">
+			<span data-i18n="dependancy.search-example" data-i18n-options='{"entity":"<%= dependancy.get("entities")[0].name %>"}'></span>
+		</p>
+	</div>
+
+	<svg></svg>
+	
+	<div id="graph-instruction" class="panel panel-default help-div">
+		<span data-i18n="dependancy.help.title"></span>
+		<ul>
+			<li data-i18n="dependancy.help.click"></li>
+			<li data-i18n="dependancy.help.click-move"></li>
+			<li data-i18n="dependancy.help.double-click"></li>
+			<li data-i18n="dependancy.help.maj-click"></li>
+		</ul>
+	</div>
+
+</div>

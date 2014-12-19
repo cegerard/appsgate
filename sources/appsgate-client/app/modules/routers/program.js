@@ -14,18 +14,29 @@ define([
             "programs/editor/:id": "editor",
         },
         list: function() {
+
             // display the side menu
             appRouter.showMenuView(new ProgramMenuView());
+
+            $(".nav-item").removeClass("active");
+            $(".programs-nav").addClass("active");
 
             // update the url if there is at least one program
             if (programs.length > 0) {
               this.reader(programs.at(0).get("id"));
             }
 
-            $(".nav-item").removeClass("active");
-            $("#programs-nav").addClass("active");
+            dispatcher.trigger("router:loaded", {replace:true});
         },
         reader: function(id) {
+			// Direct access to a program, need to add the menu
+			if (appRouter.currentMenuView === null || appRouter.currentMenuView.attributes === undefined || appRouter.currentMenuView.attributes.class !== "ProgramMenuView") {
+				// display the side menu
+				appRouter.showMenuView(new ProgramMenuView());
+				// update tab
+				$(".nav-item").removeClass("active");
+				$(".programs-nav").addClass("active");
+			}
 
             // display the requested program
             appRouter.showDetailsView(new ProgramReaderView({model: programs.get(id)}));
@@ -39,15 +50,22 @@ define([
             // remove and unbind the current view for the menu
             if (appRouter.currentMenuView) {
                 appRouter.currentMenuView.close();
+                appRouter.currentMenuView = null;
             }
             if (appRouter.currentView) {
                 appRouter.currentView.close();
+                appRouter.currentView = null;
             }
 
             $("#main").html(appRouter.navbartemplate());
 
-            appRouter.currentMenuView = new ProgramEditorView({el:$("#main"),model: programs.get(id)});
-            appRouter.currentMenuView.render();
+            $(".nav-item").removeClass("active");
+            $(".programs-nav").addClass("active");
+
+            appRouter.navigate("#programs/editor/" + id, {replace:true});
+
+            appRouter.currentView = new ProgramEditorView({el:$("#main"),model: programs.get(id)});
+            appRouter.currentView.render();
 
             $("#main").append(appRouter.circlemenutemplate());
 
@@ -59,10 +77,7 @@ define([
                 direction: 'top-right'
             });
 
-            $(".nav-item").removeClass("active");
-            $("#programs-nav").addClass("active");
-
-            appRouter.navigate("#programs/editor/" + id);
+            $(document).i18n();
         }
 
     });

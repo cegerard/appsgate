@@ -1,0 +1,45 @@
+<div id="progress-<%= node.iid %>" class="progress-indicator-group pull-left">
+  <table>
+    <tr>
+      <td>
+        <i class="glyphicon glyphicon-flash pull-left"></i>
+      </td>
+      <td>
+        <span id="progress-counter-<%=node.iid %>" class="progress-indicator">0</span>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="btn btn-default btn-prog btn-prog-action" id="<%= node.iid %>">
+        <% if (typeof node.phrase !== 'undefined') {%>
+                <%=$.i18n.t(node.phrase, {myVar:engine.buildInputFromNode(node.target, currentNode)}) %>
+        <%} else { %>
+                Unknown
+        <% } %>
+
+    <% if (node.methodName == "zoneActivate" || node.methodName == "zoneDesactivate"  ) { %>
+
+    <select id="ard-zone-<%= node.iid %>" class="ard-zone-selector" target-id="<%= node.iid %>" >
+        <% _.each(zones,function(zonex){ %>
+            <option value="<%= zonex.zone_idx %>" <% if (node.args[0].value == zonex.zone_idx) { print('selected'); } %> ><%= zonex.zone_name %></option>
+        <% }); %>
+    </select>
+
+    <% } else if (node.methodName == "forceInput" ) { %>
+
+    <select id="ard-input-<%= node.iid %>" class="ard-input-selector" target-id="<%= node.iid %>" >
+        <% _.each(inputs,function(inputx){ %>
+        <option value="<%= inputx.input_idx %>" <% if (node.args[0].value == inputx.input_idx) { print('selected'); } %> ><%= inputx.input_name %></option>
+        <% }); %>
+    </select>
+
+    <span data-i18n="devices.ard.with-the-value"></span>
+
+    <select id="ard-input-value-<%= node.iid %>" class="ard-input-value-selector" target-id="<%= node.iid %>" >
+        <option value="true" data-i18n="devices.ard.true" <% if (node.args[1].value == "true") { print('selected'); } %> ></option>
+        <option value="false" data-i18n="devices.ard.false" <% if (node.args[1].value == "false") { print('selected'); } %> ></option>
+    </select>
+
+    <% } %>
+
+</div>

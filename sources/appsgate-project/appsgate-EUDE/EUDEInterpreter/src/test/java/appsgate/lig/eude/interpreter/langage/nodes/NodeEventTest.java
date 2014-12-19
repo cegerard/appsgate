@@ -40,6 +40,7 @@ public class NodeEventTest extends NodeTest {
                                 allowing(mediator).notifyChanges(with(any(NotificationMsg.class)));
 
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
+                allowing(mediator).removeNodeListening(with(any(NodeEvent.class)));
             }
         });
     }

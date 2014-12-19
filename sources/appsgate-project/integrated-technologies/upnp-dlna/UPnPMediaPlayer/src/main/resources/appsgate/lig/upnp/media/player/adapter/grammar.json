@@ -1,0 +1,41 @@
+{
+    "friendlyName": "Media Player",
+    "typename": "Mediaplayer",
+    "properties": [
+    ],
+    "states": [
+        {
+            "name": "daylightState",
+            "stateName": "isCurrentlyDaylight",
+            "stateValue": "true",
+            "endEvent": {
+                "type": "event",
+                "eventName": "daylightEvent",
+                "eventValue": "sunset"
+            },
+            "startEvent": {
+                "type": "event",
+                "eventName": "daylightEvent",
+                "eventValue": "sunrise"
+            }
+        },
+        {
+            "name": "currentWeatherCodeState",
+            "stateName": "isCurrentWeatherCode",
+            "stateValue": "true"
+        },
+        {
+            "name": "forecastWeatherCodeState",
+            "stateName": "isForecastWeatherCode",
+            "stateValue": "true"
+        }
+
+    ],
+    "commands" : {
+        "play" : {"params" : ["url"]},
+        "pause" : {},
+        "setVolume" : {"params" : ["level"]},
+        "resume" : {},
+        "stop" : {}
+    }
+}

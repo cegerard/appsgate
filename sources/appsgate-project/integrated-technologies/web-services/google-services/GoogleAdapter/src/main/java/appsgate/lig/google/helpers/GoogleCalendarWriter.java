@@ -42,10 +42,16 @@ public class GoogleCalendarWriter extends GoogleCalendarReader{
 		}				
 		serviceURL+=GoogleHTTPRequest.SLASH+PARAM_EVENTS;
 
-		return GoogleHTTPRequest.httpsPost(serviceURL,
-				requestProperties,
-				requestContent,
-				urlParameters);
+		try {
+			return GoogleHTTPRequest.httpsPost(serviceURL,
+					requestProperties,
+					requestContent.getBytes("UTF-8"),
+					urlParameters);
+		} catch (UnsupportedEncodingException e) {
+			// Encoding Exists
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public static String deleteEvent(String apiKey,

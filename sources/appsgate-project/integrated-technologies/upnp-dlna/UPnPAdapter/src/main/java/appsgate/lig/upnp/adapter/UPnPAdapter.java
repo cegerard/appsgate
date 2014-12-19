@@ -296,6 +296,8 @@ public class UPnPAdapter {
 					logger.error("[UPnP Apam Discovery] Service proxy could not be instantiated  "+implementation.getName());
 					continue;
 				}
+				
+				logger.debug("[UPnP Apam Discovery] Added Service proxy  "+proxy.getApamComponent());
 			
 				proxies.add(proxy);
 

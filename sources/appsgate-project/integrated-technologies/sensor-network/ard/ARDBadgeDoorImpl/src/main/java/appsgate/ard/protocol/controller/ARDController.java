@@ -19,13 +19,20 @@
  */
 package appsgate.ard.protocol.controller;
 
+import appsgate.ard.protocol.model.ARDFutureResponse;
 import appsgate.ard.protocol.model.command.listener.ARDMessage;
 import appsgate.ard.protocol.model.command.ARDRequest;
 import appsgate.ard.protocol.model.Constraint;
 import appsgate.ard.protocol.model.command.request.SubscriptionRequest;
+import fr.imag.adele.apam.CST;
+import fr.imag.adele.apam.Implementation;
+import fr.imag.adele.apam.Instance;
+import org.apache.felix.ipojo.Factory;
 import org.apache.felix.ipojo.annotations.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ow2.chameleon.fuchsia.core.component.AbstractImporterComponent;
+import org.ow2.chameleon.fuchsia.core.declaration.ImportDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,15 +41,18 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 @Provides
 public class ARDController {
 
-    private Logger logger = LoggerFactory.getLogger(ARDController.class);
-    private final Integer SOCKET_TIMEOUT=1000;
+    public static final String ARD_LOGNAME="ARDLOG";
+    private Logger logger = LoggerFactory.getLogger(ARD_LOGNAME);
+    private final Integer SOCKET_TIMEOUT=5000;
     private final Integer STREAM_FLOW_RESTTIME=100;
 
 
@@ -52,7 +62,7 @@ public class ARDController {
     private ARDMessage globalMessageReceived;
     private Map<Constraint,ARDMessage> mapRouter=new HashMap<Constraint, ARDMessage>();
 
-    @Property(value = "-1")
+    @Property(value = "20000")
     private Integer retry;
     @Property(mandatory = true)
     private String host;
@@ -74,7 +84,7 @@ public class ARDController {
         globalMessageReceived =new ARDMessage() {
             public void ardMessageReceived(JSONObject json) throws JSONException {
                 logger.debug("Messages received {}", json.toString());
-                for(Constraint cons:mapRouter.keySet()){
+                for(Constraint cons:new ArrayList<Constraint>(mapRouter.keySet())){
                     Boolean checkResult=false;
                     try {
                         checkResult=cons.evaluate(json);
@@ -86,8 +96,6 @@ public class ARDController {
                         if (checkResult){
                             logger.debug("Forwarding message {} received to higher layer", json.toString());
                             mapRouter.get(cons).ardMessageReceived(json);
-                        }else {
-                            logger.debug("{} evaluated to {}", new Object[]{Constraint.class.getSimpleName(), checkResult});
                         }
                     }catch(JSONException e){
                         logger.debug("Exception was raised when invoking listener {}", mapRouter.get(cons).toString());
@@ -100,6 +108,7 @@ public class ARDController {
     }
 
     public void disconnect() throws IOException {
+        logger.info("Controller is closing the socket");
         monitor.kill();
         socket.close();
     }
@@ -115,6 +124,18 @@ public class ARDController {
         }else {
             logger.info("Connection is not open with the host {}:{}, monitoring request ignored.",host,port);
         }
+
+    }
+
+    public ARDFutureResponse sendSyncRequest(ARDRequest command){
+
+        ARDFutureResponse a= null;
+        try {
+            a = new ARDFutureResponse(this,command);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return a;
 
     }
 
@@ -144,37 +165,49 @@ public class ARDController {
 
     }
 
-    @Validate
-    public void validate() throws JSONException {
+    private ARDMessage initDoor(String id,Integer doorIdx,String doorName){
 
-        Thread t1=new Thread(){
+        Implementation impl = CST.componentBroker.getImpl("ARDBadgeDoor");// CST.apamResolver.findImplByName(null, "");
+        Map<String, String> properties = new HashMap<String, String>();
 
-            public void run(){
-                while(!isConnected()){
+        properties.put("deviceName", "ARD-Door-"+doorName);
+        properties.put("deviceId", "ARD-DoorIdx"+doorIdx);
+        properties.put(Factory.INSTANCE_NAME_PROPERTY, id);
 
-                    try {
-                        connect();
-                        monitoring();
-                        sendRequest(new SubscriptionRequest());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        if(retry==null || retry==-1) break;
-                        try {
-                            Thread.sleep(retry);
-                        } catch (InterruptedException e1) {
-                            logger.error("Failed retrying to connect with ARD HUB");
-                        }
+        Instance instance = impl.createInstance(null, properties);
 
-                    }
+        return (ARDMessage)instance.getServiceObject();
 
+    }
+
+    public void validate(final AbstractImporterComponent importer, final ImportDeclaration declaration,final Map<ARDController,Set<String>> declarationController) throws JSONException {
+
+        while(!isConnected()){
+
+            try {
+                connect();
+                monitoring();
+                sendSyncRequest(new SubscriptionRequest()).getResponse();
+                String id=declaration.getMetadata().get("id").toString();
+                final Integer doorIdx=Integer.parseInt(declaration.getMetadata().get("ard.door_idx").toString());
+                String doorName=declaration.getMetadata().get("ard.door_name").toString();
+                ARDMessage listenerForDoor=initDoor(id, doorIdx, doorName);
+                importer.handleImportDeclaration(declaration);
+                getMapRouter().put(new GenericContraint(doorIdx),listenerForDoor);
+                Set<String> controllersDeclaration=declarationController.get(this);
+                controllersDeclaration.add(id);
+            } catch (Exception e) {
+                System.out.println("Failed to connect.. retrying in "+retry);
+                if(retry==null || retry==-1) break;
+                try {
+                    Thread.sleep(retry);
+                } catch (InterruptedException e1) {
+                    logger.error("Failed retrying to connect with ARD HUB");
                 }
+
             }
 
-        };
-        t1.setDaemon(true);
-        t1.start();
-
-
+        }
     }
 
     @Override

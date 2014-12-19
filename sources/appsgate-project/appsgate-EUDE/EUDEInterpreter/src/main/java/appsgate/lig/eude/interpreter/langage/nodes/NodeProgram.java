@@ -7,10 +7,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import appsgate.lig.eude.interpreter.langage.components.EndEvent;
+import appsgate.lig.eude.interpreter.langage.components.ErrorMessagesFactory;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.components.SymbolTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
+import appsgate.lig.eude.interpreter.spec.ProgramDesc;
 import appsgate.lig.eude.interpreter.spec.ProgramStateNotification;
 
 import java.util.Collection;
@@ -31,29 +33,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  *
  */
-final public class NodeProgram extends Node {
-
-    /**
-     * Program running state static enumeration
-     *
-     * @author Cédric Gérard
-     * @since September 13, 2013
-     */
-    public static enum RUNNING_STATE {
-
-        INVALID("INVALID"), DEPLOYED("DEPLOYED"), PROCESSING("PROCESSING"), WAITING("WAITING"), KEEPING("KEEPING");
-
-        private String name = "";
-
-        RUNNING_STATE(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
+final public class NodeProgram extends Node implements ProgramDesc {
 
     // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeProgram.class);
@@ -115,15 +95,23 @@ final public class NodeProgram extends Node {
 
     /**
      * The current running state of this program - DEPLOYED - INVALID -
-     * PROCESSING - WAITING
+     * INCOMPLETE LIMPING - PROCESSING
      */
-    private RUNNING_STATE runningState = RUNNING_STATE.DEPLOYED;
+    private PROGRAM_STATE state = PROGRAM_STATE.DEPLOYED;
 
     /**
      * Pointer to the interpreter, could be the interpreter for the simulator
      */
     private EUDEInterpreter mediator = null;
 
+    /**
+     * If the program is invalid or incomplete, it contains a message saying why
+     */
+    private JSONObject errorMessage = null;
+
+    /**
+     * the table containing all the references
+     */
     private ReferenceTable references = null;
 
     /**
@@ -151,10 +139,11 @@ final public class NodeProgram extends Node {
      */
     public NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p) {
         this(mediator, p);
-    	LOGGER.trace("NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p), JSON object : "+o.toString());
+        LOGGER.trace("NodeProgram(EUDEInterpreter mediator, JSONObject o, Node p), JSON object : " + o.toString());
 
         if (!o.has("body")) {
             LOGGER.error("this program has no body");
+            errorMessage = ErrorMessagesFactory.getEmptyProgramMessage();
             setInvalid();
             return;
         }
@@ -165,18 +154,9 @@ final public class NodeProgram extends Node {
 
             id = getJSONString(o, "id");
             update(o);
-
-            if (o.has("runningState")) {
-                LOGGER.trace("Running state: {}", o.optString("runningState"));
-                runningState = RUNNING_STATE.valueOf(getJSONString(o, "runningState"));
-            }
-            // useless ? we lose the name and other attribute if we do not do the update
-//            if (isValid()) { 
-//                update(o);
-//            }
-
         } catch (SpokNodeException ex) {
-        	LOGGER.warn("Program node triggered an exception during constructor : "+ex.getMessage());
+            LOGGER.warn("Program node triggered an exception during constructor : " + ex.getMessage());
+            errorMessage = ErrorMessagesFactory.getMessageFromSpokNodeException(ex);
             setInvalid();
         }
     }
@@ -203,6 +183,10 @@ final public class NodeProgram extends Node {
             this.bodyJSON = json.optJSONObject("body");
             this.rulesJSON = json.optJSONObject("rules");
             this.actionsJSON = json.optJSONObject("actions");
+            if (json.has("runningState")) {
+                this.state = PROGRAM_STATE.valueOf(json.optString("runningState"));
+            }
+
             if (this.bodyJSON != null) {
                 body = Builder.nodeOrNull(getJSONObject(json, "body"), this);
             } else {
@@ -231,7 +215,7 @@ final public class NodeProgram extends Node {
      */
     private Boolean buildReferences() {
         if (this.body == null) {
-        	LOGGER.trace("buildReferences(), body is null, program should not be valid");
+            LOGGER.trace("buildReferences(), body is null, program should not be valid");
             return false;
         }
         this.references = new ReferenceTable(mediator, this.id);
@@ -239,14 +223,7 @@ final public class NodeProgram extends Node {
             this.body.buildReferences(this.references);
         }
         ReferenceTable.STATUS newStatus = this.references.checkReferences();
-        if (newStatus != ReferenceTable.STATUS.OK) {
-        	LOGGER.trace("buildReferences(), new Status :"+newStatus+", program should not be valid");
-
-            setInvalid();
-            return false;
-        }
-        setValid();
-        return true;
+        return applyStatus(newStatus);
     }
 
     public ReferenceTable getReferences() {
@@ -263,7 +240,7 @@ final public class NodeProgram extends Node {
         JSONObject ret = new JSONObject();
         activeNodes = new JSONObject();
         nodesCounter = new JSONObject();
-        if (runningState == RUNNING_STATE.DEPLOYED) {
+        if (canRun()) {
             setProcessing("0");
             fireStartEvent(new StartEvent(this));
             body.addStartEventListener(this);
@@ -278,7 +255,7 @@ final public class NodeProgram extends Node {
             return ret;
         }
         try {
-            LOGGER.warn("Trying to start {} while: {}", this, runningState.toString());
+            LOGGER.warn("Trying to start {} while: {}", this, state.toString());
             ret.put("status", false);
         } catch (JSONException ex) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -289,12 +266,12 @@ final public class NodeProgram extends Node {
 
     @Override
     public void stop() {
-        if (runningState == RUNNING_STATE.INVALID) {
+        if (!isValid()) {
             LOGGER.warn("Trying to stop {}, but this program is invalid", this);
             return;
         }
 
-        if (runningState == RUNNING_STATE.DEPLOYED) {
+        if (!isRunning()) {
             LOGGER.warn("Trying to stop {}, but this program is not currently running.", this);
             return;
         }
@@ -303,7 +280,7 @@ final public class NodeProgram extends Node {
             setStopping(true);
             body.stop();
             body.removeEndEventListener(this);
-            setDeployed();
+            setStopped();
             fireEndEvent(new EndEvent(this));
             setStopping(false);
         } else {
@@ -318,23 +295,59 @@ final public class NodeProgram extends Node {
     /**
      * Set the current running state to deployed
      */
-    final public void setDeployed() {
-        setRunningState(RUNNING_STATE.DEPLOYED, null);
+    final public void setStopped() {
+        switch (state) {
+            case INVALID:
+                LOGGER.warn("Trying to stop {}, while being invalid", this);
+                break;
+            case DEPLOYED:
+                LOGGER.warn("Trying to stop {}, while being already stopped", this);
+                break;
+            case INCOMPLETE:
+                LOGGER.warn("Trying to stop {}, while being already stopped (incomplete)", this);
+                break;
+            case PROCESSING:
+                LOGGER.debug("Stopping {}", this);
+                setState(PROGRAM_STATE.DEPLOYED, null);
+                break;
+            case LIMPING:
+                LOGGER.debug("Stopping {} (incomplete)", this);
+                setState(PROGRAM_STATE.INCOMPLETE, null);
+                break;
+            default:
+                throw new AssertionError(state.name());
+
+        }
     }
 
     /**
      * set the state of the program to invalid
      */
     private void setInvalid() {
-        setRunningState(RUNNING_STATE.INVALID, null);
+        if (isRunning()) {
+            this.stop();
+        }
+        setState(PROGRAM_STATE.INVALID, null);
     }
 
     /**
      * set the state to a valid state
      */
     private void setValid() {
-        if (runningState == RUNNING_STATE.INVALID) {
-            setRunningState(RUNNING_STATE.DEPLOYED, id);
+        if (state == PROGRAM_STATE.INVALID || state == PROGRAM_STATE.INCOMPLETE) {
+            setState(PROGRAM_STATE.DEPLOYED, id);
+        }
+        if (state == PROGRAM_STATE.LIMPING) {
+            setState(PROGRAM_STATE.PROCESSING, id);
+        }
+    }
+
+    private void setIncomplete() {
+        if (state == PROGRAM_STATE.INVALID || state == PROGRAM_STATE.DEPLOYED) {
+            setState(PROGRAM_STATE.INCOMPLETE, id);
+        }
+        if (state == PROGRAM_STATE.PROCESSING) {
+            setState(PROGRAM_STATE.LIMPING, id);
         }
     }
 
@@ -342,42 +355,29 @@ final public class NodeProgram extends Node {
      * @return true if the program can be run, false otherwise
      */
     final public boolean canRun() {
-        return this.runningState == RUNNING_STATE.DEPLOYED;
+        return this.state == PROGRAM_STATE.DEPLOYED || this.state == PROGRAM_STATE.INCOMPLETE;
     }
 
     /**
      * @return true if the program can be stopped, false otherwise
      */
     final public boolean isRunning() {
-        return (this.runningState == RUNNING_STATE.PROCESSING || this.runningState == RUNNING_STATE.WAITING || this.runningState == RUNNING_STATE.KEEPING);
+        return (this.state == PROGRAM_STATE.PROCESSING || this.state == PROGRAM_STATE.LIMPING);
     }
 
     /**
      * @return the current state of the program
      */
-    final public RUNNING_STATE getState() {
-        return runningState;
+    @Override
+    final public PROGRAM_STATE getState() {
+        return state;
     }
 
     /**
      * @return true if the program is valid
      */
     final public boolean isValid() {
-        return this.runningState != RUNNING_STATE.INVALID;
-    }
-
-    /**
-     * set the state of this program to waiting, if this program is already
-     * running
-     *
-     * @param iid
-     */
-    final public void setWaiting(String iid) {
-        if (isValid()) {
-            setRunningState(RUNNING_STATE.WAITING, iid);
-        } else {
-            LOGGER.warn("Trying to set {} waiting, while being {}", this, this.runningState);
-        }
+        return this.state != PROGRAM_STATE.INVALID;
     }
 
     /**
@@ -386,18 +386,26 @@ final public class NodeProgram extends Node {
      * @param iid
      */
     public void setProcessing(String iid) {
-        if (isValid()) {
-            setRunningState(RUNNING_STATE.PROCESSING, iid);
-        } else {
-            LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
-        }
-    }
-
-    void setKeeping(String iid) {
-        if (isValid()) {
-            setRunningState(RUNNING_STATE.KEEPING, iid);
-        } else {
-            LOGGER.warn("Trying to set {} processing, while being {}", this, this.runningState);
+        switch (state) {
+            case INVALID:
+                LOGGER.warn("Unable to start {}, cause program is invalid", this);
+                break;
+            case DEPLOYED:
+                LOGGER.trace("Program {} started", this);
+                setState(PROGRAM_STATE.PROCESSING, iid);
+                break;
+            case PROCESSING:
+                LOGGER.warn("Unable to start {}, cause program is already running", this);
+                break;
+            case INCOMPLETE:
+                LOGGER.trace("Program {} started (partially)", this);
+                setState(PROGRAM_STATE.LIMPING, iid);
+                break;
+            case LIMPING:
+                LOGGER.warn("Unable to start {}, cause program is already running (partially)", this);
+                break;
+            default:
+                throw new AssertionError(state.name());
         }
     }
 
@@ -408,7 +416,7 @@ final public class NodeProgram extends Node {
 
     @Override
     public void endEventFired(EndEvent e) {
-        setDeployed();
+        setStopped();
         fireEndEvent(new EndEvent(this));
     }
 
@@ -416,6 +424,7 @@ final public class NodeProgram extends Node {
      *
      * @return the id
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -450,6 +459,7 @@ final public class NodeProgram extends Node {
     public JSONObject getJSONRules() {
         return rulesJSON;
     }
+
     /**
      * @return the JSON source of the actions
      */
@@ -460,16 +470,16 @@ final public class NodeProgram extends Node {
     /**
      * @param runningState
      */
-    private void setRunningState(RUNNING_STATE runningState, String iid) {
-        if (runningState != this.runningState) {
-            this.runningState = runningState;
-            getMediator().notifyChanges(new ProgramStateNotification(id, "runningState", this.runningState.toString(), name, iid));
+    private void setState(PROGRAM_STATE runningState, String iid) {
+        if (runningState != this.state) {
+            this.state = runningState;
+            getMediator().notifyChanges(new ProgramStateNotification(id, "runningState", this.state.toString(), name, iid));
         }
     }
 
     @Override
-    public String toString() {
-        return "[Node Program : " + name + "]";
+    public String getTypeSpec() {
+        return "Program : " + name;
     }
 
     @Override
@@ -478,7 +488,7 @@ final public class NodeProgram extends Node {
         try {
             o.put("id", id);
             o.put("type", "program");
-            o.put("runningState", runningState.name);
+            o.put("runningState", state.toString());
             o.put("name", name);
             o.put("header", header);
             o.put("package", getPath());
@@ -491,6 +501,8 @@ final public class NodeProgram extends Node {
             o.put("nodesCounter", nodesCounter);
 
             o.put("definitions", getSymbolTableDescription());
+
+            o.put("errorMessage", this.errorMessage);
 
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -533,7 +545,7 @@ final public class NodeProgram extends Node {
     protected Node copy(Node parent) {
         NodeProgram ret = new NodeProgram(getMediator(), parent);
         ret.id = id;
-        ret.runningState = runningState;
+        ret.state = state;
         ret.name = name;
         ret.header = new JSONObject(header);
 
@@ -637,9 +649,8 @@ final public class NodeProgram extends Node {
      * @param s the status
      */
     public void setDeviceStatus(String id, ReferenceTable.STATUS s) {
-        if (references.setDeviceStatus(id, s)) {
-            changeStatus();
-        }
+        references.setDeviceStatus(id, s);
+        changeStatus();
     }
 
     /**
@@ -649,26 +660,38 @@ final public class NodeProgram extends Node {
      * @param s the new status
      */
     public void setProgramStatus(String id, ReferenceTable.STATUS s) {
-        if (references.setProgramStatus(id, s)) {
-            changeStatus();
-        }
+        references.setProgramStatus(id, s);
+        changeStatus();
     }
 
     /**
      * method to handle a change in the reference table status
      */
     private void changeStatus() {
-        switch (references.getStatus()) {
+        applyStatus(references.computeStatus());
+    }
+
+    /**
+     *
+     * @param s
+     * @return
+     */
+    private Boolean applyStatus(ReferenceTable.STATUS s) {
+        errorMessage = references.getErrorMessage();
+        switch (s) {
             case INVALID:
+                setInvalid();
+                return false;
             case MISSING:
             case UNSTABLE:
             case UNKNOWN:
-                setInvalid();
+                setIncomplete();
                 break;
             case OK:
                 setValid();
                 break;
         }
+        return true;
 
     }
 

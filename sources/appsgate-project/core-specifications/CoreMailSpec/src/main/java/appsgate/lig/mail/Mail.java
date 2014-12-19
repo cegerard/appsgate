@@ -2,15 +2,12 @@ package appsgate.lig.mail;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 
 import org.json.JSONArray;
 
-import com.sun.mail.imap.IMAPFolder;
 
 /**
  * Main mail interface to access the mailbox
@@ -66,20 +63,6 @@ public interface Mail {
 	 * @return
 	 */
 	public boolean sendMail(Message message);
-	
-	/**
-	 * Get the Session used by this service, avoid to retrieve a new imap connections
-	 * @return
-	 */
-	public Session getSession();
-	
-	/**
-	 * Gets the imap folder used by this service 
-	 * @param boxname
-	 * @return
-	 * @throws MessagingException
-	 */
-	public IMAPFolder getMailBox(String boxname) throws MessagingException;
 	
 	/**
 	 * Add a mail of recipient to our favorites

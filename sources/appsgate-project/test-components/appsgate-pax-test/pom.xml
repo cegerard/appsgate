@@ -26,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>appsgate.components</groupId>
-			<artifactId>CoreWeatherServiceSpec</artifactId>
+			<artifactId>WeatherAdapterSpec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -66,7 +66,18 @@
             <version>${project.version}</version>
         </dependency>    
     
-
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>YahooWeatherAdapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>    
+        
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>WeatherAdapterSpec</artifactId>
+            <version>${project.version}</version>
+        </dependency>            
+        
 		<!-- repackaged/patched dependencies (as osgi bundles, or apamcomponents) 
 			for appsgate -->
 		<dependency>

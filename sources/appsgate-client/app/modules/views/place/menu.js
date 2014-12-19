@@ -19,11 +19,17 @@ define([
          */
         events: {
             "click a.list-group-item": "updateSideMenu",
-            "show.bs.modal #add-place-modal": "initializeModal",
-            "hidden.bs.modal #add-place-modal": "toggleModalValue",
+            "shown.bs.modal #add-place-modal": "initializeModal",
+            "hide.bs.modal #add-place-modal": "toggleModalValue",
             "click #add-place-modal button.valid-button": "validEditName",
             "keyup #add-place-modal input": "validEditName"
         },
+		/**
+		* Attributes to know the type of this menu
+		*/
+		attributes: {
+			"class": "PlaceMenuView"
+		},
         /**
          * Listen to the places collection update and refresh if any
          *
@@ -46,9 +52,17 @@ define([
          */
         autoupdate: function(model) {
             var place = places.get(model.get("placeId"));
+            var placeId = "";
+            if(Backbone.history.fragment.split("/")[1] !== "") {
+              placeId = Backbone.history.fragment.split("/")[1];
+              if(typeof devices.get(placeId) !== "undefined") {
+                // when a device is displayed, making active the place it is in
+                placeId = devices.get(placeId).get("placeId");
+              }
+            }
             this.$el.find("#place-" + place.get("id")).replaceWith(this.tplPlaceContainer({
                 place: place,
-                active: Backbone.history.fragment.split("/")[1] === place.get("id") ? true : false
+                active: place.get("id") == placeId?true:false
             }));
 
             // translate the view
@@ -60,17 +74,23 @@ define([
          * @param e JS click event
          */
         updateSideMenu: function(e) {
+          // setting the element active based on click or url
+          if (typeof e !== "undefined") {
+            // reset selected item
             _.forEach($("a.list-group-item"), function(item) {
-                $(item).removeClass("active");
+              $(item).removeClass("active");
             });
 
             $(e.currentTarget).addClass("active");
+          }
         },
         /**
          * Clear the input text, hide the error message and disable the valid button by default
          */
         initializeModal: function() {
             $("#add-place-modal input").val("");
+            $("#add-place-modal input").focus();
+
             $("#add-place-modal .text-danger").addClass("hide");
             $("#add-place-modal .valid-button").addClass("disabled");
             $("#add-place-modal .valid-button").addClass("valid-disabled");
@@ -200,6 +220,7 @@ define([
 
                 return this;
             }
+            this.updateSideMenu();
         }
     });
     return PlaceMenuView;

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package appsgate.lig.ehmi.trace;
 
 import org.json.JSONException;
@@ -11,30 +5,37 @@ import org.json.JSONObject;
 
 /**
  * Utility class
- * 
+ *
  * @author jr
  */
 public class Trace {
-    
+
     /**
      * Method to format a causality JSON object.
      *
-     * @param type
-     * @param cause
-     * @param source
-     * @param target
-     * @param description
-     * @return the JSON object
+     * @param decorationType type of decoration (i.e. value, state, access)
+     * @param actionType action done (i.e. read, write, connexon, disconnexion)
+     * @param cause type of causality (i.e. technical, environmental, user, program)
+     * @param timeStamp the time when this happened
+     * @param source source identifier
+     * @param target target identifier
+     * @param description description key for internationalization
+     * @param context parameters values
+     * @return the complete decoration as JSON object
      */
-    public static JSONObject getJSONDecoration(String type, String cause, String source, String target, String description) {
+    public static JSONObject getJSONDecoration(DECORATION_TYPE decorationType, String actionType, String cause,
+            long timeStamp, String source, String target, String description, JSONObject context) {
         JSONObject causality = new JSONObject();
         try {
-        	causality.put("order", 0);
-            causality.put("type", getPictoFromType(type, cause));
+            causality.put("order", 0);
+            causality.put("type", decorationType.toString());
+            causality.put("picto", getPictoFromType(actionType, cause));
+            causality.put("time", timeStamp);
             causality.put("causality", cause);
             causality.put("source", source);
             causality.put("target", target);
             causality.put("description", description);
+            causality.put("context", context);
 
         } catch (JSONException ex) {
             // Never happens
@@ -44,40 +45,101 @@ public class Trace {
     }
     
     /**
-     * Return the pictoID that match the decoration type
-     * @param type the decoration type
-     * @param cause the decoration cause
-     * @return the corresponding pictoID as a String
+     * Get the decoration type from varName that changed and source identifier
+     * @param type the source equipement or program type
+     * @param varName the variable that changed
+     * @return a decoration type object between DECORATION_TYPE.state and DECORATION_TYPE.value
      */
-    public static String getPictoFromType(String type, String cause) {
-    	
-    	String pictoID = PICTO_TABLE.DEFAULT.stringify();
+	public static DECORATION_TYPE getDecorationType(String type, String varName) {
+		
+		DECORATION_TYPE decoType = DECORATION_TYPE.state;
+		
+        if (type.equalsIgnoreCase("Temperature") && varName.equalsIgnoreCase("value")) {
+        	decoType = DECORATION_TYPE.value;
 
-    	if(cause.equalsIgnoreCase("user")){
-    		pictoID = PICTO_TABLE.USER.stringify();
-    	}else {
-    		if(type.equalsIgnoreCase("read")){
-    			pictoID = PICTO_TABLE.READ.stringify();
-    		} else if (type.equalsIgnoreCase("write")){
-    			pictoID = PICTO_TABLE.WRITE.stringify();
-    		} else if (type.equalsIgnoreCase("connection")){
-    			pictoID = PICTO_TABLE.CONNECTION.stringify();
-    		} else if (type.equalsIgnoreCase("disconnection")){
-    			pictoID = PICTO_TABLE.DISCONNECTION.stringify();
-    		}
-    	}
-    	
-    	return pictoID;
+        } else if (type.equalsIgnoreCase("Illumination")  && varName.equalsIgnoreCase("value")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("Switch") && varName.equalsIgnoreCase("switchNumber")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("Contact") && varName.equalsIgnoreCase("contact")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("KeyCardSwitch") && varName.equalsIgnoreCase("inserted")) {
+        	decoType = DECORATION_TYPE.value;
+
+        } else if (type.equalsIgnoreCase("ColorLight")) {
+            if (varName.equalsIgnoreCase("state")) {
+            	decoType = DECORATION_TYPE.state;
+            }else{
+            	decoType = DECORATION_TYPE.value;
+            }        
+
+        } else if (type.equalsIgnoreCase("SmartPlug")) {
+            if (varName.equalsIgnoreCase("consumption")) {
+            	decoType = DECORATION_TYPE.value;
+            } else {
+            	decoType = DECORATION_TYPE.state;
+            }
+        }
+        
+        return decoType;
+	}
+
+    /**
+     * Add a key to a JSON object without exception
+     * 
+     * @param to the object to which add the key
+     * @param key the key of the object to add
+     * @param value the value to add
+     * @return the object
+     */
+    public static JSONObject addJSONPair(JSONObject to, String key, String value) {
+        try {
+            to.put(key, value);
+        } catch (JSONException ex) {
+        }
+        return to;
     }
     
     /**
+     * Return the pictoID that match the decoration type
+     *
+     * @param actionType the decoration action type
+     * @param cause the decoration cause
+     * @return the corresponding pictoID as a String
+     */
+    public static String getPictoFromType(String actionType, String cause) {
+
+        String pictoID = PICTO_TABLE.DEFAULT.stringify();
+
+        if (cause.equalsIgnoreCase("user")) {
+            pictoID = PICTO_TABLE.USER.stringify();
+        } else {
+            if (actionType.equalsIgnoreCase("read")) {
+                pictoID = PICTO_TABLE.READ.stringify();
+            } else if (actionType.equalsIgnoreCase("write")) {
+                pictoID = PICTO_TABLE.WRITE.stringify();
+            } else if (actionType.equalsIgnoreCase("connection")) {
+                pictoID = PICTO_TABLE.CONNECTION.stringify();
+            } else if (actionType.equalsIgnoreCase("disconnection")) {
+                pictoID = PICTO_TABLE.DISCONNECTION.stringify();
+            }
+        }
+
+        return pictoID;
+    }
+
+    /**
      * Return the pictoID for a device state
+     *
      * @param type the device type
      * @param varName the variable that changed
      * @param value the new value of this variable
      * @param fullState the current state of the device as a JSONObject
      * @return the pictoID as a String
-     * @throws JSONException 
+     * @throws JSONException
      */
     public static String getPictoState(String type, String varName, String value, JSONObject fullState) throws JSONException {
     	
@@ -156,8 +218,10 @@ public class Trace {
 		return picto;
 	}
     
+
     /**
      * Icon type name table
+     *
      * @author Cedric Gerard
      * @version spec_v4
      */
@@ -216,13 +280,21 @@ public class Trace {
     	public String stringify() {
     		return this.toString().toLowerCase();
     	}
+
     }
 
-	public static String getConnectionPicto() {
-		return PICTO_TABLE.CONNECTION.stringify();
-	}
+    public static String getConnectionPicto() {
+        return PICTO_TABLE.CONNECTION.stringify();
+    }
 
-	public static String getDisconnectionPicto() {
-		return PICTO_TABLE.DISCONNECTION.stringify();
-	}
+    public static String getDisconnectionPicto() {
+        return PICTO_TABLE.DISCONNECTION.stringify();
+    }
+    
+    public static enum DECORATION_TYPE {
+    	value,
+    	state,
+    	access;
+    }
+    
 }

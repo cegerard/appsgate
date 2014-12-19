@@ -1,5 +1,7 @@
 package appsgate.lig.google.scheduler;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +89,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 	 */
 	String calendarId = "primary";
 
-	public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	@Override
 	public String getCalendarId() {
@@ -225,6 +228,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 			for(Integer i : onEndAlarms.keySet()) {
 				clock.unregisterAlarm(i.intValue());
 			}
+			clock.calculateNextTimer();
 			onBeginAlarms.clear();
 			onEndAlarms.clear();
 			eventMap.clear();
@@ -523,6 +527,7 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		content.put("start", new JSONObject().put("dateTime",  dateFormat.format(startDate)));
 		content.put("end", new JSONObject().put("dateTime",  dateFormat.format(endDate)));
 
+
 		content.put("summary", eventName);
 
 		String description="";
@@ -534,13 +539,20 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 					+ programId
 					+ "\n";
 		}
-		if(stopOnEnd) {
+		if(stopOnEnd && startOnBegin) {
 			description += GoogleEvent.ON_END
 					+ ScheduledInstruction.SEPARATOR
 					+ ScheduledInstruction.STOP_PROGRAM
 					+ ScheduledInstruction.SEPARATOR
 					+ programId
 					+ "\n";
+		}else if (stopOnEnd && !startOnBegin) {
+				description += GoogleEvent.ON_BEGIN
+						+ ScheduledInstruction.SEPARATOR
+						+ ScheduledInstruction.STOP_PROGRAM
+						+ ScheduledInstruction.SEPARATOR
+						+ programId
+						+ "\n";
 		}
 
 		content.put("description", description);
@@ -587,6 +599,11 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 
 		Set <GoogleEvent> bigList = getEvents(starting, stopping);
 		Set <GoogleEvent> results = new HashSet<GoogleEvent>();
+		
+		if(bigList == null) {
+			logger.trace("checkProgramIdScheduled(...), no Events registered,");
+			return results;
+		}
 
 		for(GoogleEvent event : bigList) {
 			if (event.isSchedulingProgram(programId)) {
@@ -618,6 +635,12 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 
 		Set <GoogleEvent> bigList = getEvents(time, -1);
+		
+		if(bigList == null) {
+			logger.trace("checkProgramIdScheduled(...), no Events registered,");
+			return false;
+		}
+		
 		for(GoogleEvent event : bigList) {
 			if (event.isSchedulingProgram(programId)) {
 				logger.trace("checkProgramIdScheduled(...), first found on event : "+event.getName());
@@ -626,5 +649,40 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 		logger.trace("checkProgramIdScheduled(...), program id not found in events");
 		return false;
+	}
+
+	@Override
+	public JSONArray checkProgramsScheduled() throws SchedulingException {
+		logger.trace("checkProgramsScheduled()");
+		
+		long time;
+		if(clock==null) {
+			logger.debug("No clock service registered, using system time");
+			time = System.currentTimeMillis();
+		} else {
+			time = clock.getCurrentTimeInMillis();
+		}
+
+		Set <GoogleEvent> bigList = getEvents(time, -1);
+		
+		if(bigList == null) {
+			logger.trace("checkProgramsScheduled(...), no Events registered,");
+			return null;
+		}
+		JSONArray response = new JSONArray();
+		
+		for(GoogleEvent event : bigList) {
+			
+			for (ScheduledInstruction inst : event.getOnBeginInstructions() ) {
+				logger.trace("checkProgramsScheduled(...), adding "+inst.getTarget());
+				response.put(inst.getTarget());
+			}
+			for (ScheduledInstruction inst : event.getOnEndInstructions() ) {
+				logger.trace("checkProgramsScheduled(...), adding "+inst.getTarget());
+				response.put(inst.getTarget());
+			}
+		}
+		logger.trace("checkProgramsScheduled(...), returning "+response.toString());
+		return response;
 	}	
 }

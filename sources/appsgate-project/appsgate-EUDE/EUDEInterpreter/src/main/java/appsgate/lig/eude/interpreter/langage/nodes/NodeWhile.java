@@ -61,20 +61,21 @@ public class NodeWhile extends Node implements INodeRule {
         try {
             Node n = Builder.buildFromJSON(stateJSON, this);
             if (n instanceof NodeState) {
-            this.state = (NodeState)n ;
-            }
-            else {
+                this.state = (NodeState) n;
+            } else {
                 LOGGER.error("The node state is not a State node.");
-                throw new SpokNodeException("NodeWhile", "state", null);
+                throw new SpokNodeException(this, "NodeWhile", "state", null);
             }
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeWhile", "state", ex);
+            LOGGER.warn("There is no state to node {}", this);
+            throw new SpokNodeException(this, "NodeWhile", "state", ex);
         }
         JSONObject rulesJSON = o.optJSONObject("rules");
         try {
             this.rules = Builder.buildFromJSON(rulesJSON, this);
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeWhile", "rules", ex);
+            LOGGER.warn("There is no rules to node {}", this);
+            throw new SpokNodeException(this, "NodeWhile", "rules", ex);
         }
         JSONObject thenJSON = o.optJSONObject("rulesThen");
         try {
@@ -100,11 +101,11 @@ public class NodeWhile extends Node implements INodeRule {
 
     @Override
     public JSONObject call() {
-        setProgramWaiting();
         setStarted(true);
         fireStartEvent(new StartEvent(this));
         state.addStartEventListener(this);
-        return state.call();
+        JSONObject ret = state.call();
+        return ret;
     }
 
     @Override
@@ -134,7 +135,6 @@ public class NodeWhile extends Node implements INodeRule {
         if (node == state) {
             state.addEndEventListener(this);
             rules.addEndEventListener(this);
-            setProgramKeeping();
             rules.call();
         }
     }
@@ -177,8 +177,6 @@ public class NodeWhile extends Node implements INodeRule {
             o.put("rules", rules.getJSONDescription());
             if (rulesThen != null) {
                 o.put("rulesThen", rulesThen.getJSONDescription());
-//            } else {
-//                o.put("rulesThen", new JSONObject());
             }
         } catch (JSONException e) {
             // Do nothing since 'JSONObject.put(key,val)' would raise an exception
@@ -193,15 +191,17 @@ public class NodeWhile extends Node implements INodeRule {
      */
     private void stopWaiting() {
         setStarted(false);
-        setProgramProcessing();
         fireEndEvent(new EndEvent(this));
     }
 
     @Override
-    public String toString() {
-        return "[Node While " + state.toString() + "]";
-
+    public String getTypeSpec() {
+        if (state != null) {
+            return "While " + state.getName();
+        }
+        return "While (null)";
     }
+
     @Override
     protected void buildReferences(ReferenceTable table) {
         if (this.rules != null) {

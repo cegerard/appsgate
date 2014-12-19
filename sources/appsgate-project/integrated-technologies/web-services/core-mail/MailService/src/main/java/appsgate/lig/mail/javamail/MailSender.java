@@ -1,6 +1,8 @@
 package appsgate.lig.mail.javamail;
 
+import appsgate.lig.mail.javamail.connexion.MailConfiguration;
 import appsgate.lig.mail.javamail.utils.JSSEProvider;
+
 import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
@@ -11,6 +13,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

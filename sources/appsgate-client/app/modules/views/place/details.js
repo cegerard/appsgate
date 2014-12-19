@@ -22,7 +22,8 @@ define([
             "click button.toggle-lamp-button": "onToggleLampButton",
             "click button.delete-place-button": "deletePlace",
             "click button.delete-popover-button": "onClickDeletePlace",
-            "click button.cancel-delete-place-button": "onCancelDeletePlace"
+            "click button.cancel-delete-place-button": "onCancelDeletePlace",
+			"click button.btn-target-dependencies": "onShowDependencies",
         },
         /**
          * Listen to the model update and refresh if any
@@ -133,7 +134,7 @@ define([
                 var activeFace = "";
                 switch (device.get("activeFace")) {
                   case "1":
-                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-work.svg' width='18px' class='img-responsive'>";
+                    activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-work.svg' width='18px' class='img-responsive'>";
                     break;
                   case "2":
                     activeFace = "<svg id='device-" + device.cid + "-value' class='white-face-svg-domus img-responsive'>" +
@@ -142,16 +143,16 @@ define([
                       "</text><text class='white-face-text-domus' x='50%' y='54%'>" + $.i18n.t('devices.domicube.white-face.second-elem') + "</text></svg>";
                     break;
                   case "3":
-                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-music.png' width='18px' class='img-responsive'>";
+                    activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-music.png' width='18px' class='img-responsive'>";
                     break;
                   case "4":
-                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-question.svg' width='18px' class='img-responsive'>";
+                    activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-question.svg' width='18px' class='img-responsive'>";
                     break;
                   case "5":
-                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-night.png' width='18px' class='img-responsive'>";
+                    activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-night.png' width='18px' class='img-responsive'>";
                     break;
                   case "6":
-                    activeFace = "<img id='device-" + device.cid + "-value' src='/app/img/domicube-meal.png' width='18px' class='img-responsive'>";
+                    activeFace = "<img id='device-" + device.cid + "-value' src='app/img/domicube-meal.png' width='18px' class='img-responsive'>";
                     break;
                   default:
                     //TODO
@@ -211,12 +212,20 @@ define([
 
             // name already existing
             if (places.where({name: $("#edit-name-place-modal input").val()}).length > 0) {
-                $("#edit-name-place-modal .text-danger").removeClass("hide");
-                $("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-already-existing"));
-                $("#edit-name-place-modal .valid-button").addClass("disabled");
-                $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
+                if (places.where({name: $("#edit-name-place-modal input").val()})[0].get("id") !== this.model.get("id")) {
+                    $("#edit-name-place-modal .text-danger").removeClass("hide");
+                    $("#edit-name-place-modal .text-danger").text($.i18n.t("modal-edit-place.place-already-existing"));
+                    $("#edit-name-place-modal .valid-button").addClass("disabled");
+                    $("#edit-name-place-modal .valid-button").addClass("valid-disabled");
 
-                return false;
+                    return false;
+                } else {
+                    $("#edit-name-place-modal .text-danger").addClass("hide");
+                    $("#edit-name-place-modal .valid-button").removeClass("disabled");
+                    $("#edit-name-place-modal .valid-button").removeClass("valid-disabled");
+
+                    return true;
+                }
             }
 
             //ok
@@ -331,25 +340,12 @@ define([
             e.preventDefault();
 
             var lamp = devices.get($(e.currentTarget).attr("device-id"));
-            // value can be string or boolean
-            // string
-            if (typeof lamp.get("value") === "string") {
-                if (lamp.get("value") === "true") {
-                    lamp.set("value", "false");
-                } else {
-                    lamp.set("value", "true");
-                }
-                // boolean
-            } else {
-                if (lamp.get("value")) {
-                    lamp.set("value", "false");
-                } else {
-                    lamp.set("value", "true");
-                }
-            }
 
-            // send the message to the backend
-            lamp.save();
+            if (lamp.get("value") === "true" || lamp.get("value") === true) {
+              lamp.switchOff();
+            } else {
+              lamp.switchOn();
+            }
 
             return false;
         },
@@ -367,6 +363,9 @@ define([
 
             return false;
         },
+		onShowDependencies: function() {
+			appRouter.navigate("#dependancies/" + this.model.get("id"), {trigger: true});
+		},
         /**
          * Render the view
          */

@@ -31,13 +31,13 @@
 		<definition name="lightBridgeIP" type="string" field="lightBridgeIP" />
 		<definition name="reachable" 	 type="string" field="reachable"     method="reachableChanged"/>
 
-		<definition name="state"  type="string" method="stateChanged"/>
-		<definition name="hue"    type="string" method="hueChanged"/>
-		<definition name="sat"    type="string" method="satChanged"/>
-		<definition name="bri"    type="string" method="briChanged"/>
-		<definition name="x"  	  type="string" method="xChanged"/>
-		<definition name="y" 	  type="string" method="yChanged"/>
-		<definition name="ct"	  type="string" method="ctChanged"/>
+		<definition name="state"  type="string"  method="stateChanged"/>
+		<definition name="hue"    type="string" />
+		<definition name="sat"    type="string" />
+		<definition name="bri"    type="string" />
+		<definition name="x"  	  type="string" />
+		<definition name="y" 	  type="string" />
+		<definition name="ct"	  type="string" />
 		<definition name="speed"  type="string" method="speedChanged"/>
 		<definition name="alert"  type="string" method="alertChanged"/>
 		<definition name="mode"   type="string" method="modeChanged"/>

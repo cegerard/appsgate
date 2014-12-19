@@ -47,7 +47,7 @@ public class NodeStateDeviceTest extends NodeTest {
                 allowing(mediator).getContext();
                 will(returnValue(c));
                 allowing(mediator).addNodeListening(with(any(NodeEvent.class)));
-                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(any(ProgramCommandNotification.class)));
+                allowing(mediator).executeCommand(with(any(String.class)), with(any(String.class)), with(any(JSONArray.class)), with(aNull(ProgramCommandNotification.class)));
                 will(returnValue(cmd));
                 allowing(cmd).run();
                 allowing(cmd).getReturn();
@@ -88,5 +88,12 @@ public class NodeStateDeviceTest extends NodeTest {
             Assert.fail("No exception should have been raised");
         }
         Assert.assertNull(state.call());
+    }
+    
+    @Test
+    public void testEvents() {
+        state.call();
+        Assert.assertNotNull("Start event should not be null", state.getStartEvent());
+        Assert.assertNotNull("End event should not be null", state.getEndEvent());
     }
 }

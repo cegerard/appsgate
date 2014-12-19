@@ -5,7 +5,6 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
-import java.util.logging.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -41,14 +40,20 @@ public class NodeKeepState extends Node {
         super(p);
     }
 
+    /**
+     * 
+     * @param o
+     * @param parent
+     * @throws SpokNodeException 
+     */
     public NodeKeepState(JSONObject o, Node parent) throws SpokNodeException {
         super(parent, o);
         try {
             state = (NodeState) Builder.buildFromJSON(o.getJSONObject("state"), this);
         } catch (JSONException ex) {
-            throw new SpokNodeException("NodeKeepState", "state", ex);
+            throw new SpokNodeException(this, "NodeKeepState", "state", ex);
         } catch (SpokTypeException ex) {
-            throw new SpokNodeException("NodeKeepState", "state", ex);
+            throw new SpokNodeException(this, "NodeKeepState", "state", ex);
         }
     }
 
@@ -119,7 +124,6 @@ public class NodeKeepState extends Node {
      *
      */
     private void listenEndEvents() {
-        setProgramKeeping();
         state.addEndEventListener(this);
         state.call();
     }
@@ -139,6 +143,11 @@ public class NodeKeepState extends Node {
         if (this.setter != null) {
             this.setter.buildReferences(table);
         }
+    }
+
+    @Override
+    public String getTypeSpec() {
+        return "KeepState: " + state.getName();
     }
 
 }

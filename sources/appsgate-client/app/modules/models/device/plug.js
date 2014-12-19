@@ -11,12 +11,12 @@ define([
     /**
      * @constructor
      */
-    initialize:function() {
+    initialize: function() {
       Plug.__super__.initialize.apply(this, arguments);
 
       // setting default friendly name if none exists
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
-          this.generateDefaultName($.i18n.t("devices.plug.name.singular"));
+        this.generateDefaultName($.i18n.t("devices.plug.name.singular"));
       }
     },
     /**
@@ -28,18 +28,22 @@ define([
     /**
      * return the keyboard code for a given action
      */
-    getKeyboardForAction: function(act){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+    getKeyboardForAction: function(act) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONAction("mandatory");
-      switch(act) {
+      switch (act) {
         case "switchOn":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOn'></span>");
+          $(btn).append("<span>" + $.i18n.t('devices.plug.keyboard.turnOn', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.plug.keyboard.plug') + "</span>"
+          }));
           v.methodName = "on";
           v.phrase = "devices.plug.language.turnOn";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOff'></span>");
+          $(btn).append("<span>" + $.i18n.t('devices.plug.keyboard.turnOff', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.plug.keyboard.plug') + "</span>"
+          }));
           v.methodName = "off";
           v.phrase = "devices.plug.language.turnOff";
           $(btn).attr("json", JSON.stringify(v));
@@ -55,24 +59,37 @@ define([
      * return the list of available events
      */
     getEvents: function() {
-      return ["switchOn", "switchOff"];
+      return ["switchOn", "switchOff", "value-changed"];
     },
     /**
      * return the keyboard code for a given event
-    */
-    getKeyboardForEvent: function(evt){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+     */
+    getKeyboardForEvent: function(evt) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONEvent("mandatory");
-      switch(evt) {
+      switch (evt) {
+        case "value-changed":
+          $(btn).append("<span>" + $.i18n.t('devices.plug.keyboard.change', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.plug.keyboard.plug') + "</span>"
+          }));
+          v.eventName = "consumption";
+          v.eventValue = "*";
+          v.phrase = "devices.plug.language.change";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
         case "switchOn":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOnEvt'><span>");
+          $(btn).append("<span>" + $.i18n.t('devices.plug.keyboard.turnOnEvt', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.plug.keyboard.plug') + "</span>"
+          }));
           v.eventName = "plugState";
           v.eventValue = "true";
           v.phrase = "devices.plug.language.turnOnEvt";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "switchOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard.turnOffEvt'><span>");
+          $(btn).append("<span>" + $.i18n.t('devices.plug.keyboard.turnOffEvt', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.plug.keyboard.plug') + "</span>"
+          }));
           v.eventName = "plugState";
           v.eventValue = "false";
           v.phrase = "devices.plug.language.turnOffEvt";
@@ -95,50 +112,86 @@ define([
     /**
      * return the keyboard code for a given state
      */
-    getKeyboardForState: function(state, which){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+    getKeyboardForState: function(state, which) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONState("mandatory");
       var keep = "";
       v.type = which;
       if (which == "maintainableState") {
         keep = "-keep";
       }
-      switch(state) {
+      switch (state) {
         case "isOn":
         case "isOff":
-          $(btn).append("<span data-i18n='devices.plug.keyboard." + state + keep + "'><span>");
+          $(btn).append("<span>" + $.i18n.t('devices.plug.keyboard.' + state + keep, {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.plug.keyboard.plug') + "</span>"
+          }));
           v.name = state;
           v.phrase = "devices.plug.language." + state + keep;
           $(btn).attr("json", JSON.stringify(v));
-        return btn;
+          return btn;
 
         default:
           console.error("unexpected state found for Contact Sensor: " + state);
           return null;
       }
     },
-
-
-
+    switchOn: function() {
+      this.remoteControl(("on"), []);
+    },
+    switchOff: function() {
+      this.remoteControl(("off"), []);
+    },
     /**
      * Send a message to the backend to update the attribute plugState
      */
-    sendPlugState:function() {
-      if (this.get("plugState") === "true") {
-        this.remoteControl("on", []);
+    sendPlugState: function() {
+      if (this.get("plugState") === "true" || this.get("plugState") === true) {
+        this.switchOn();
       } else {
-        this.remoteControl("off", []);
+        this.switchOff();
       }
     },
-    getValue: function () {
-          value=parseInt(this.get("consumption"));
+    getValue: function() {
+      value = parseInt(this.get("consumption"));
 
-          if (value != -1 ){
-              return value;
-          }
-
-          return $.i18n.t("devices.no-value");
+      if (value != -1) {
+        return value;
       }
+
+      return $.i18n.t("devices.no-value");
+    },
+    /**
+     * return the list of available properties
+     */
+    getProperties: function() {
+      return ["value"];
+    },
+    /**
+     * return the keyboard code for a property
+     */
+    getKeyboardForProperty: function(property) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
+      var v = this.getJSONProperty("mandatory");
+      switch (property) {
+        case "value":
+          $(btn).append("<span>" + $.i18n.t('devices.plug.keyboard.get', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.plug.keyboard.plug') + "</span>",
+          }));
+          v.methodName = "activePower";
+          v.returnType = "number";
+          v.unit = "watt";
+          v.phrase = "devices.plug.language.get";
+          $(btn).attr("json", JSON.stringify(v));
+          break;
+        default:
+          console.error("unexpected device state found for plug: " + property);
+          btn = null;
+          break;
+      }
+      return btn;
+    },
+
   });
   return Plug;
 });

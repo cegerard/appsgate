@@ -38,7 +38,11 @@
             <artifactId>MailService</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>appsgate.components</groupId>
+            <artifactId>Javamail</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>fr.imag.adele.apam</groupId>
             <artifactId>apam-core</artifactId>

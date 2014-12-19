@@ -51,6 +51,12 @@
         </encoder>
     </appender>
     
+    <appender name="ARD_LOG" class="ch.qos.logback.core.FileAppender">
+        <file>log/ardlog.log</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %msg [%thread] %-5level %n</pattern>
+        </encoder>
+    </appender>
     
     <!--  log in one single big file each execution  -->
     <appender name="LONGTERM_LOG" class="ch.qos.logback.core.FileAppender">
@@ -60,16 +66,19 @@
         </encoder>
     </appender>
     
-    <root level="TRACE" >
+    <root level="INFO" >
         <appender-ref ref="SHORTTERM_LOG"/>
     </root>
     
     <logger name="fr.imag.adele" level="DEBUG">
     </logger>
     
+    <logger name="ARDLOG" level="TRACE">
+	<appender-ref ref="ARD_LOG"/>
+    </logger>
     
     
-    <logger name="appsgate.lig" level="WARN" >
+    <logger name="appsgate.lig" level="TRACE" >
         <appender-ref ref="STDOUT"/>
     </logger>
     

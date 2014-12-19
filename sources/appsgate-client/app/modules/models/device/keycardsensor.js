@@ -18,7 +18,7 @@ define([
 
       // setting default friendly name if none exists
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
-          this.generateDefaultName($.i18n.t("devices.cardswitch.name.singular"));
+        this.generateDefaultName($.i18n.t("devices.cardswitch.name.singular"));
       }
     },
     /**
@@ -29,22 +29,26 @@ define([
     },
     /**
      * return the keyboard code for a given event
-    */
-    getKeyboardForEvent: function(evt){
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+     */
+    getKeyboardForEvent: function(evt) {
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");;
       var v = this.getJSONEvent("mandatory");
       v.source.deviceType = "4";
       v.source.value = this.get("id");
-      switch(evt) {
+      switch (evt) {
         case "insertCard":
-          $(btn).append("<span data-i18n='devices.cardswitch.keyboard.insertedEvent'></span>");
+          $(btn).append("<span>" + $.i18n.t('devices.cardswitch.keyboard.insertedEvent', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.cardswitch.keyboard.cardswitch') + "</span>",
+          }));
           v.eventName = "inserted";
           v.eventValue = "true";
           v.phrase = "devices.cardswitch.language.insertedEvent";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "removeCard":
-          $(btn).append("<span data-i18n='devices.cardswitch.keyboard.removedEvent'></span>");
+          $(btn).append("<span>" + $.i18n.t('devices.cardswitch.keyboard.removedEvent', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.cardswitch.keyboard.cardswitch') + "</span>",
+          }));
           v.eventName = "inserted";
           v.eventValue = "false";
           v.phrase = "devices.cardswitch.language.removedEvent";
@@ -61,32 +65,36 @@ define([
      * return the list of available states
      */
     getStates: function(which) {
-      switch(which) {
+      switch (which) {
         case 'state':
-          return ["inserted","empty"];
+          return ["inserted", "empty"];
         default:
           return [];
       }
     },
     /**
      * return the keyboard code for a given state
-    */
-    getKeyboardForState: function(state, which){
+     */
+    getKeyboardForState: function(state, which) {
       if (which !== "state") {
         console.error('Unsupported type of state: ' + which);
         return null;
       }
-      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' ></button>");
+      var btn = jQuery.parseHTML("<button class='btn btn-default btn-keyboard specific-node' group-id='" + this.get("type") + "'></button>");
       var v = this.getJSONState("mandatory");
-      switch(state) {
+      switch (state) {
         case "inserted":
-          $(btn).append("<span data-i18n='devices.cardswitch.keyboard.card-inserted'></span>");
+          $(btn).append("<span>" + $.i18n.t('devices.cardswitch.keyboard.card-inserted', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.cardswitch.keyboard.cardswitch') + "</span>",
+          }));
           v.phrase = "devices.cardswitch.language.card-inserted";
           v.name = "inserted";
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "empty":
-          $(btn).append("<span data-i18n='devices.cardswitch.keyboard.no-card-inserted'/>");
+          $(btn).append("<span>" + $.i18n.t('devices.cardswitch.keyboard.no-card-inserted', {
+            myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.cardswitch.keyboard.cardswitch') + "</span>",
+          }));
           v.name = "empty";
           v.phrase = "devices.cardswitch.language.no-card-inserted";
           $(btn).attr("json", JSON.stringify(v));
@@ -98,13 +106,12 @@ define([
       }
       return btn;
     },
-	/**
-	 * @returns state template for keycard sensor
-	 */
-	getTemplateState: function() {
-	  return _.template(StateTemplate);
-	},
-
+    /**
+     * @returns state template for keycard sensor
+     */
+    getTemplateState: function() {
+      return _.template(StateTemplate);
+    },
   });
   return KeyCardSensor;
 });

@@ -69,6 +69,13 @@ public interface CoreColorLightSpec {
 	 */
 	public boolean off();
 	
+        /**
+         * Set the color
+         * @param color the json descriptin of the color
+	 * @return true if the new color is set, false otherwise 
+         */
+        public boolean setColorJson(JSONObject color);
+        
 	/**
 	 * Put the light color
 	 * @param color the new light color as a long integer
