@@ -1,4 +1,4 @@
-//     AppsGate.Debugger v1.0.3
+//     AppsGate.Debugger v2.0.0
 
 //
 //     Copyright (c)2014 Rémi Barraquand.
@@ -26,7 +26,7 @@
     var previousDebugger = root.AppsGateDebugger;
 
     // Current version of the library. Keep in sync with package.json.
-    Debugger.VERSION = '1.0.3';
+    Debugger.VERSION = '2.0.0';
 
     // Runs AppsGate.Debugger.js in noConflict mode, returning the AppsGateDebugger variable to its previous owner.
     // Returns a reference to this AppsGateDebugger object.
@@ -167,16 +167,65 @@
     				"x": 5,
     				"y": 5
     			},
+    			"border": {
+    				"width": 2
+    			},
     			"disabled": {
     				"color": "rgba(105, 105, 105, 0.3)",
     				"focused": {
     					"color": "rgba(105, 105, 105, 0.6)"
     				}
     			},
-    			"enabled": {
-    				"color": "rgba(154, 207, 7, 0.3)",
+    			"deployed": {
+    				"fill": {
+    					"color": "rgba(204, 204, 204, 0.3)"
+    				},
+    				"border": {
+    					"color": "rgba(0, 112, 7, 0.3)"
+    				},
     				"focused": {
-    					"color": "rgba(154, 207, 7, 0.6)"
+    					"fill": {
+    						"color": "rgba(204, 204, 204, 0.6)"
+    					}
+    				}
+    			},
+    			"processing": {
+    				"fill": {
+    					"color": "rgba(154, 207, 7, 0.3)"
+    				},
+    				"border": {
+    					"color": "rgba(0, 112, 7, 0.3)"
+    				},
+    				"focused": {
+    					"fill": {
+    						"color": "rgba(154, 207, 7, 0.6)"
+    					}
+    				}
+    			},
+    			"incomplete": {
+    				"fill": {
+    					"color": "rgba(204, 204, 204, 0.3)"
+    				},
+    				"border": {
+    					"color": "rgba(255, 102, 0, 0.3)"
+    				},
+    				"focused": {
+    					"fill": {
+    						"color": "rgba(204, 204, 204, 0.6)"
+    					}
+    				}
+    			},
+    			"limping": {
+    				"fill": {
+    					"color": "rgba(255, 153, 51, 0.3)"
+    				},
+    				"border": {
+    					"color": "rgba(255, 102, 0, 0.3)"
+    				},
+    				"focused": {
+    					"fill": {
+    						"color": "rgba(255, 153, 51, 0.6)"
+    					}
     				}
     			},
     			"invalid": {
@@ -311,6 +360,12 @@
     	}
     };
     
+
+    // Inline include of templates files.
+    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n            <div class="picto picto-<%- decoration.picto %>"></div>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n            <div class="description"><%- i18n.t(decoration.description, decoration.context, { ns: options.i18n.ns }) %></div>\n            <div class="extra">\n                <span class="source"><%- decoration.source %></span> |\n                <span class="causality"><%- decoration.causality %></span>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>';
+
+    // Inline include of templates files.
+    var DECORATIONS_TO_TXT_TPL = '<% _.forEach(decorations, function(decoration) { %>\n<%- timeFormat(\'%x\')(new Date(decoration.time))%> <%- timeFormat(\'%X\')(new Date(decoration.time)) %> | <%- i18n.t(decoration.description, decoration.context, { ns: options.i18n.ns }) %> <<%- decoration.source %>, <%- decoration.causality %>>\n<% }); %>';
 
     Debugger.themes = {
         basic: THEMES_BASIC
@@ -1045,6 +1100,10 @@
                 i18n: {
                     ns: 'debugger'
                 },
+                template: {
+                    'decorations_to_html': DECORATIONS_TO_HTML_TPL,
+                    'decorations_to_txt': DECORATIONS_TO_TXT_TPL
+                },
                 livetrace: {
                     delayBeforeFlush: 100000
                 },
@@ -1448,15 +1507,28 @@
         // Widget marker click callback.
         // `decorations` is an array of decorations associated to the marker.
         _onWidgetMarkerClick: function(decorations) {
-            var textContent = '';
-            var htmlContent = '';
+            var self = this;
+    
+            // Default options for template processor
+            var tpl_options = {
+                'imports': {
+                    'i18n': i18n,
+                    'timeFormat': d3.time.format,
+                    'options': self.options
+                }
+            };
     
             // Build basic string representation of `decorations` array
             // both as plain text and HTML.
-            _.each(_.sortBy(decorations, function(decoration) { return parseInt(decoration.order) }), function(decoration) {
-                textContent += decoration.description + '\n';
-                htmlContent += decoration.description + '</br>';
-            });
+            var htmlContent = _.template(this.options.template.decorations_to_html,
+                { 'decorations': _.sortBy(decorations, function(decoration) { return parseInt(decoration.order) }) },
+                tpl_options
+            );
+    
+            var textContent = _.template(this.options.template.decorations_to_txt,
+                { 'decorations': _.sortBy(decorations, function(decoration) { return parseInt(decoration.order) }) },
+                tpl_options
+            );
     
             // Trigger `marker:click` event with following arguments:
             // - decorations: Arrays - list of decorations associated to the marker
@@ -2464,8 +2536,8 @@
         // **StateChart mixin.**
         ValueChart: {
             initD3ValueChart: function () {
-                //this.value_chart = this.svg.insert('g', '.markers').attr({class: 'value area'}).selectAll('rect');
-                this.value_chart = this.svg.insert('path', '.markers').attr({class: 'value area'});
+                this.value_chart = this.svg.insert('g', '.markers').attr({class: 'value area'}).selectAll('rect');
+                //this.value_chart = this.svg.insert('path', '.markers').attr({class: 'value area'});
                 this.value_chart_border = this.svg.insert('path', '.markers').attr({class: 'value border'});
                 this.value_chart_extra = this.svg.insert('line', /* insert before */ '.markers').attr({class: 'value border pending'});
             },
@@ -2473,58 +2545,44 @@
                 var self = this;
     
                 /* state_chart */
-                //var chart = this.value_chart = this.value_chart.data(
-                //    this.buffer.select(function (d) {
-                //        return ensure(d, 'data.event.type', 'update');
-                //    }),
-                //    function (d) {
-                //        return d.timestamp
-                //    }
-                //);
-                //
-                //chart.enter().append('rect').attr({
-                //    x: function (d) {
-                //        return self.timescale(self.dateFn(d.timestamp));
-                //    },
-                //    y: function (d) {
-                //        return self.computed('svg.height') - self.valueScale(self.valueFn(d.data));
-                //    },
-                //    width: function (d) {
-                //        return self.timescale(self.dateFn(d.next.timestamp)) - self.timescale(self.dateFn(d.timestamp))
-                //    },
-                //    height: function (d) {
-                //        return self.valueScale(self.valueFn(d.data))
-                //    }
-                //});
-                //chart.attr({
-                //    x: function (d) {
-                //        return self.timescale(self.dateFn(d.timestamp))
-                //    },
-                //    y: function (d) {
-                //        return self.computed('svg.height') - self.valueScale(self.valueFn(d.data))
-                //    },
-                //    width: function (d) {
-                //        return self.timescale(self.dateFn(d.next.timestamp)) - self.timescale(self.dateFn(d.timestamp))
-                //    },
-                //    height: function (d) {
-                //        return self.valueScale(self.valueFn(d.data))
-                //    }
-                //});
-                //chart.exit().remove();
-    
-                var area = d3.svg.area()
-                    .x(function(d) { return self.timescale(self.dateFn(d.timestamp)) })
-                    .y0(function(d) { return self.computed('svg.height'); })
-                    .y1(function(d) { return self.computed('svg.height') - self.valueScale(self.valueFn(d.data)); })
-                    .interpolate("cardinal");
-                this.value_chart.datum(
+                var chart = this.value_chart = this.value_chart.data(
                     this.buffer.select(function (d) {
                         return ensure(d, 'data.event.type', 'update');
                     }),
                     function (d) {
                         return d.timestamp
                     }
-                ).attr('d', area);
+                );
+    
+                chart.enter().append('rect').attr({
+                    x: function (d) {
+                        return self.timescale(self.dateFn(d.timestamp));
+                    },
+                    y: function (d) {
+                        return self.computed('svg.height') - self.valueScale(self.valueFn(d.data));
+                    },
+                    width: function (d) {
+                        return self.timescale(self.dateFn(d.next.timestamp)) - self.timescale(self.dateFn(d.timestamp))
+                    },
+                    height: function (d) {
+                        return self.valueScale(self.valueFn(d.data))
+                    }
+                });
+                chart.attr({
+                    x: function (d) {
+                        return self.timescale(self.dateFn(d.timestamp))
+                    },
+                    y: function (d) {
+                        return self.computed('svg.height') - self.valueScale(self.valueFn(d.data))
+                    },
+                    width: function (d) {
+                        return self.timescale(self.dateFn(d.next.timestamp)) - self.timescale(self.dateFn(d.timestamp))
+                    },
+                    height: function (d) {
+                        return self.valueScale(self.valueFn(d.data))
+                    }
+                });
+                chart.exit().remove();
     
                 /* border */
                 var line = d3.svg.line()
@@ -2538,8 +2596,7 @@
                             return self.computed('svg.height') + self.options.theme.device.state.border.width;
                         }
                     })
-                    //.interpolate("step-after");
-                    .interpolate("cardinal");
+                    .interpolate("step-after");
                 this.value_chart_border.datum(
                     this.buffer.all(),
                     function (d) {
@@ -2572,18 +2629,18 @@
             },
     
             updateD3ValueChartFocus: function(focused, unfocused) {
-                //var chart = this.value_chart.data(
-                //    _.compact([focused, unfocused]),
-                //    function (d) {
-                //        return d.timestamp
-                //    }
-                //);
-                //
-                //chart.attr({
-                //    class: function(d) {
-                //        return d == focused ? 'focused' : ''
-                //    }
-                //});
+                var chart = this.value_chart.data(
+                    _.compact([focused, unfocused]),
+                    function (d) {
+                        return d.timestamp
+                    }
+                );
+    
+                chart.attr({
+                    class: function(d) {
+                        return d == focused ? 'focused' : ''
+                    }
+                });
             },
     
             destroyD3ValueChart: function () {
@@ -2618,10 +2675,16 @@
                     .append("use")
                     .attr({
                         'xlink:href': function (d) {
-                            if (d.data.decorations.length > 1) {
+                            if (d.data.decorations.length > 1 /* if more than on decorations AND */ && (
+                                    // some decoration are `state` related
+                                _.some(d.data.decorations, {'type': 'state'})
+                                || // or
+                                    // some decoration are `access` related
+                                _.some(d.data.decorations, {'type': 'access'}))
+                            ) {
                                 return "#magnify"
                             } else {
-                                return "#" + d.data.decorations[0].type;
+                                return "#" + d.data.decorations[0].picto;
                             }
                         },
                         'class': "decoration",
