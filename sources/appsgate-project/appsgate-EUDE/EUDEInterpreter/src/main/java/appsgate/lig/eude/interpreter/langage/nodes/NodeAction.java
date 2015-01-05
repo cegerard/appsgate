@@ -11,6 +11,8 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramDeviceStateNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -54,7 +56,7 @@ public class NodeAction extends Node implements ICanBeEvaluated {
      * Default constructor
      *
      * @param ruleJSON the JSON Object
-     * @param parent
+     * @param parent the parent node
      * @throws SpokNodeException if the interpretation of JSON fails
      */
     public NodeAction(JSONObject ruleJSON, Node parent)
@@ -65,6 +67,12 @@ public class NodeAction extends Node implements ICanBeEvaluated {
         args = ruleJSON.optJSONArray("args");
         if (args == null) {
             args = new JSONArray();
+        }
+        // determine wheather the action as the correct amount of arguments
+        Integer nbParam = Integer.parseInt(ruleJSON.optString("type").replaceAll("[a-zA-Z]", "0"));
+        if (args.length() < nbParam) {
+            LOGGER.warn("The action node {} has not the correct number of arguments", ruleJSON);
+            throw new SpokNodeException(this, "Action", "args", null);
         }
         returnType = ruleJSON.optString("returnType");
     }
@@ -127,11 +135,11 @@ public class NodeAction extends Node implements ICanBeEvaluated {
     private void callDeviceAction(String target) throws SpokException {
         // get the runnable from the interpreter
         LOGGER.debug("Device action {} on {}", methodName, target);
-        ProgramCommandNotification notif;
+        ProgramTraceNotification notif;
         if (returnType.isEmpty()) {
-            notif = getProgramLineNotification(null, target, methodName , ProgramCommandNotification.Type.WRITE, args);
+            notif = new ProgramCommandNotification(this.getProgramNode(), this.getIID(), target, methodName, args);
         } else {
-            notif = getProgramLineNotification(null, target, methodName, ProgramCommandNotification.Type.READ, args);
+            notif = new ProgramDeviceStateNotification(this.getProgramNode(), this.getIID(), target, methodName);
         }
 
         command = getMediator().executeCommand(target, methodName, args, notif);

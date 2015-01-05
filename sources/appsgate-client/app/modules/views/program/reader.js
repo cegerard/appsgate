@@ -26,6 +26,8 @@ define([
         "click button.delete-popover-button": "onClickDeleteProgram",
         "click button.cancel-delete-program-button": "onCancelDeleteProgram",
         "click button.open-calendar-button":"openCalendar",
+	  	"click button.btn-target-dependencies": "onShowDependencies",
+	  	"click button.btn-target-timelines": "onShowTimelines"
       },
       /**
       * @constructor
@@ -274,6 +276,12 @@ define([
         // navigate to the editor
         appRouter.navigate("#programs/editor/" + this.model.get('id'), {trigger: true});
       },
+	  onShowDependencies: function() {
+		appRouter.navigate("#dependancies/" + this.model.get("id"), {trigger: true});
+	  },
+	  onShowTimelines: function() {
+		appRouter.navigate("#debugger/" + this.model.get("id"), {trigger: true});
+	  },
       /**
       * Callback when the user has clicked on the button edit. Go to the editor or show the popup
       */
@@ -351,9 +359,9 @@ define([
 
           if(typeof self.model !== "undefined"){
             $("#led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
-            $("#led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.'+self.model.getState()));
+            $("#led-" + self.model.get("id")).attr("title", self.model.getProgramState());
             $("#current-led-" + self.model.get("id")).attr("class", "pull-left led-"+self.model.getState());
-            $("#current-led-" + self.model.get("id")).attr("title", $.i18n.t('programs.state.'+self.model.getState()));
+            $("#current-led-" + self.model.get("id")).attr("title", self.model.getProgramState());
 
             if (self.model.isWorking()) {
               $(".start-program-button").hide();

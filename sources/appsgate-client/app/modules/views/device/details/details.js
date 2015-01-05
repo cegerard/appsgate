@@ -15,7 +15,9 @@ define([
       "hide.bs.modal #edit-device-modal": "toggleModalValue",
       "click #edit-device-modal button.valid-button": "validEditDevice",
       "keyup #edit-device-modal input": "validEditDevice",
-      "change #edit-device-modal select": "checkDevice"
+      "change #edit-device-modal select": "checkDevice",
+	  "click button.btn-target-dependencies": "onShowDependencies",
+	  "click button.btn-target-timelines": "onShowTimelines"
     },
     initialize: function() {
       var self = this;
@@ -149,6 +151,13 @@ define([
       }
       this.$el.find("#device-status").html(deviceStatus);
     },
+	  
+    onShowDependencies: function() {
+		appRouter.navigate("#dependancies/" + this.model.get("id"), {trigger: true});
+	},
+	onShowTimelines: function() {
+		appRouter.navigate("#debugger/" + this.model.get("id"), {trigger: true});
+	}
   });
   return DeviceDetailsView
 });

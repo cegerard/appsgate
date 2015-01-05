@@ -61,7 +61,16 @@ public interface PhilipsHUEServices {
 	 * @return true if the value is set correctly, false otherwise
 	 */
 	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value);
-	
+	/**
+	 * Set the attribute value for the specified light bulb identifier
+	 * @param bridgeIP the Philips HUE IP address
+	 * @param id the light bulb id on the bridge
+	 * @param attribute the attribute to set
+	 * @param value the new value for the attribute
+	 * @param transition time to change the state
+	 * @return true if the value is set correctly, false otherwise
+	 */
+	public boolean setAttribute(String bridgeIP, String id, String attribute, boolean value,Integer transitionTime);
 	/**
 	 * Set the attribute value for the specified light bulb identifier
 	 * @param bridgeIP the Philips HUE IP address

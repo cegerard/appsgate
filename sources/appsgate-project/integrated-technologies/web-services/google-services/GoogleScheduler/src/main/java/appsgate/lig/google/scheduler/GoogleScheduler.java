@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -649,5 +649,40 @@ public class GoogleScheduler implements SchedulerSpec, AlarmEventObserver {
 		}
 		logger.trace("checkProgramIdScheduled(...), program id not found in events");
 		return false;
+	}
+
+	@Override
+	public JSONArray checkProgramsScheduled() throws SchedulingException {
+		logger.trace("checkProgramsScheduled()");
+		
+		long time;
+		if(clock==null) {
+			logger.debug("No clock service registered, using system time");
+			time = System.currentTimeMillis();
+		} else {
+			time = clock.getCurrentTimeInMillis();
+		}
+
+		Set <GoogleEvent> bigList = getEvents(time, -1);
+		
+		if(bigList == null) {
+			logger.trace("checkProgramsScheduled(...), no Events registered,");
+			return null;
+		}
+		JSONArray response = new JSONArray();
+		
+		for(GoogleEvent event : bigList) {
+			
+			for (ScheduledInstruction inst : event.getOnBeginInstructions() ) {
+				logger.trace("checkProgramsScheduled(...), adding "+inst.getTarget());
+				response.put(inst.getTarget());
+			}
+			for (ScheduledInstruction inst : event.getOnEndInstructions() ) {
+				logger.trace("checkProgramsScheduled(...), adding "+inst.getTarget());
+				response.put(inst.getTarget());
+			}
+		}
+		logger.trace("checkProgramsScheduled(...), returning "+response.toString());
+		return response;
 	}	
 }

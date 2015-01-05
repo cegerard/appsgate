@@ -608,5 +608,11 @@ public class EHMIProxyMock implements EHMIProxySpec {
 		// TODO Auto-generated method stub
 		return false;
 	}
+        
+        @Override
+	public JSONArray checkProgramsScheduled() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

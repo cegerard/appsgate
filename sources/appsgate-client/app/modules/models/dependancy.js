@@ -20,7 +20,7 @@ define([
 				mapDepthNeighbors: {},
 				entitiesTypes: ["place", "program", "service", "time", "device", "selector"],
 				relationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"],
-				currentEntitiesTypes: ["place", "program", "service", "time", "device", "selector"],
+				currentEntitiesTypes: ["place", "program", "service", "time", "device"],
 				currentRelationsTypes: ["reference", "isLocatedIn", "isPlanified", "denotes"]
 			});
 

@@ -75,9 +75,9 @@ public class NodeSetOfRules extends Node implements INodeSet {
             try {
                 instructions.add(Builder.buildFromJSON(seqRulesJSON.getJSONObject(i), this));
             } catch (JSONException ex) {
-                throw new SpokNodeException("NodeSetOfRules", "item " + i, ex);
+                throw new SpokNodeException(this, "NodeSetOfRules", "item " + i, ex);
             } catch (SpokTypeException ex) {
-                throw new SpokNodeException("NodeSetOfRules", "item " + i, ex);
+                throw new SpokNodeException(this, "NodeSetOfRules", "item " + i, ex);
             }
         }
 

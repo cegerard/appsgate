@@ -1,6 +1,6 @@
 define([
   "app",
-  "models/service/service"
+  "models/device/device"
 ], function(App, Service) {
 
   var MediaBrowser = {};

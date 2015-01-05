@@ -3,6 +3,8 @@ package appsgate.lig.scheduler;
 
 import java.util.Set;
 
+import org.json.JSONArray;
+
 import appsgate.lig.clock.sensor.messages.ClockSetNotificationMsg;
 import appsgate.lig.clock.sensor.messages.FlowRateSetNotification;
 import appsgate.lig.clock.sensor.spec.AlarmEventObserver;
@@ -50,6 +52,15 @@ public interface SchedulerSpec extends AlarmEventObserver{
 	 */
 	public boolean checkProgramIdScheduled(String programId)
 			throws SchedulingException;
+	
+	/**
+	 * Check programs that are scheduled in the future (on start or on ending)
+	 * @return a JSON Array containing all program scheduled in the future
+	 *  (we do not check if the program-id really exist as we only parse Google Calendar events)
+	 */
+	public JSONArray checkProgramsScheduled()
+			throws SchedulingException;
+	
 
 	/**
 	 * A single scheduler monitor a single calendar, this is the setter

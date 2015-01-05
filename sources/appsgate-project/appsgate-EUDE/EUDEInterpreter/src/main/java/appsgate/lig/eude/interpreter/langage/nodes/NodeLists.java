@@ -100,26 +100,26 @@ public class NodeLists extends Node implements INodeList, ICanBeEvaluated {
         op = Operator.get(getJSONString(o, "operator"));
         if (op == null) {
             LOGGER.error("Unkown operator {}", getJSONString(o, "operator"));
-            throw new SpokNodeException("NodeLists", "operator", null);
+            throw new SpokNodeException(this, "NodeLists", "operator", null);
         }
         left = Builder.nodeOrNull(o.optJSONObject("left"), this);
         if (left == null) {
             LOGGER.error("No left list");
-            throw new SpokNodeException("NodeLists", "left", null);
+            throw new SpokNodeException(this, "NodeLists", "left", null);
         }
         if (!(left instanceof INodeList)) {
             LOGGER.error("left node is not a list");
-            throw new SpokNodeException("NodeLists", "left", null);
+            throw new SpokNodeException(this, "NodeLists", "left", null);
         }
         leftList = (INodeList) left;
         right = Builder.nodeOrNull(o.optJSONObject("right"), this);
         if (right == null) {
             LOGGER.error("no right list");
-            throw new SpokNodeException("NodeLists", "right", null);
+            throw new SpokNodeException(this, "NodeLists", "right", null);
         }
         if (!(right instanceof INodeList)) {
             LOGGER.error("right node is not a list");
-            throw new SpokNodeException("NodeLists", "right", null);
+            throw new SpokNodeException(this, "NodeLists", "right", null);
         }
         rightList = (INodeList) right;
 

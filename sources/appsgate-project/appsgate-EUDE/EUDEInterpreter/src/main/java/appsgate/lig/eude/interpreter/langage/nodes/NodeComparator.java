@@ -80,33 +80,33 @@ public class NodeComparator extends Node implements ICanBeEvaluated {
         comparator = BinaryComparator.get(getJSONString(o, "comparator"));
         if (comparator == null) {
             LOGGER.debug("Unknown comparator: {}", getJSONString(o, "comparator"));
-            throw new SpokNodeException("Comparator", "comparator", null);
+            throw new SpokNodeException(this, "Comparator", "comparator", null);
         }
         try {
             leftNode = Builder.buildFromJSON(o.optJSONObject("leftOperand"), this);
             if (!(leftNode instanceof ICanBeEvaluated)) {
                 LOGGER.error("Left operand does not return a value");
-                throw new SpokNodeException("Comparator", "leftOperand", null);
+                throw new SpokNodeException(this, "Comparator", "leftOperand", null);
             }
             left = (ICanBeEvaluated) leftNode;
         } catch (SpokTypeException ex) {
             LOGGER.error("Missing left operand");
-            throw new SpokNodeException("Comparator", "leftOperand", ex);
+            throw new SpokNodeException(this, "Comparator", "leftOperand", ex);
         }
         try {
             rightNode = Builder.buildFromJSON(o.optJSONObject("rightOperand"), this);
             if (!(rightNode instanceof ICanBeEvaluated)) {
                 LOGGER.error("right operand does not return a value");
-                throw new SpokNodeException("Comparator", "rightOperand", null);
+                throw new SpokNodeException(this, "Comparator", "rightOperand", null);
             }
             right = (ICanBeEvaluated) rightNode;
         } catch (SpokTypeException ex) {
             LOGGER.debug("Missing right operand");
-            throw new SpokNodeException("Comparator", "rightOperand", null);
+            throw new SpokNodeException(this, "Comparator", "rightOperand", null);
         }
         if (!left.getResultType().equalsIgnoreCase(right.getResultType())) {
             LOGGER.debug("Two types mismatch {}, {}", left.getResultType(), right.getResultType());
-            throw new SpokNodeException("Comparator", "type mismatch", null);
+            throw new SpokNodeException(this, "Comparator", "type mismatch", null);
         }
 
     }

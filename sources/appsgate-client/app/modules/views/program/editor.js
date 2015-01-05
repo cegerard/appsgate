@@ -27,6 +27,7 @@ define([
         "change .volume-input": "onChangeMediaVolume",
         "change .ard-zone-selector": "onARDZoneSelector",
         "change .ard-input-selector": "onARDInputSelector",
+        "change .lamp-input-selector": "onLampInputSelector",
         "change .ard-input-value-selector": "onARDInputValueSelector",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
         "click .valid-media": "onValidMediaButton",
@@ -106,6 +107,16 @@ define([
         $("#end-edit-button").removeClass("disabled");
 
         return true;
+      },
+      onLampInputSelector: function(e) {
+        e.stopPropagation();
+        var iid = $(e.currentTarget).attr("target-id");
+        var valueInt1 = $("#lamp-time-" + iid)[0].value;
+        var valueInt2 = $("#lamp-frequency-" + iid)[0].selectedOptions[0].value;
+        var value1 = {"type": "long", "value": valueInt1};
+        var value2 = {"type": "long", "value": valueInt2};
+        this.Mediator.setNodeArg(iid, 0, value1);
+        this.Mediator.setNodeArg(iid, 1, value2);
       },
       //ARD
       onARDInputSelector: function(e) {
@@ -196,7 +207,7 @@ define([
       // Displays a tree of items the player can read
       onBrowseMedia: function(selectedMedia) {
         var self = this;
-        var browsers = services.getMediaBrowsers();
+        var browsers = devices.getMediaBrowsers();
         var currentDevice;
 
         // make sure the tree is empty
@@ -235,7 +246,7 @@ define([
           event.preventDefault();
           var target = "" + event.currentTarget.parentNode.id;
           if (typeof currentDevice === 'undefined' || event.currentTarget.parentNode.getAttribute("rel") === "root") {
-            currentDevice = services.get(target);
+            currentDevice = devices.get(target);
             target = "0";
           }
           if (event.currentTarget.parentNode.getAttribute("rel") !== "media") {
@@ -422,7 +433,7 @@ define([
           this.applyEditMode();
           // translate the view
           this.$el.i18n();
-            $("#prog-led").attr("title", $.i18n.t('programs.state.'+this.Mediator.programState));
+            $("#prog-led").attr("title",  this.Mediator.getProgramState());
             $("#prog-led").attr("class", "pull-left led-"+this.Mediator.programState);
           if (this.Mediator.programState == "invalid") {
             $(".programNameInput").removeClass("valid-program");

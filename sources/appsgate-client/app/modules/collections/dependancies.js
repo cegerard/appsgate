@@ -13,21 +13,17 @@ define([
 			// listen to the event when the grpah is loaded
 			dispatcher.on("loadGraph", function (graph) {
 
-				// add the new graph to the collection only if it is empty (first time) or if we want to refresh to have the last data
-				if (self.length === 0 || isRefresh) {
-					
-					//@TODO : Dans un premier temps si on veut que le nouveau graphe est toujours les précedentes nodes dans le même état, comparé l'ancien model et le nouveau et modifié les attributs du nouveau par rapport à l'ancien
+				// Create new dependancy object
+				var newDependancy = new Dependancy();
+				newDependancy.loadData(graph);
 
-					// Create new dependancy object
-					var newDependancy = new Dependancy();
-					newDependancy.loadData(graph);
-
-					// Replace the existing dependancy if it already exists or just add it
-					self.reset(newDependancy);
-					isRefresh = false;
-				} else {
-					console.log("Collection pas vide");
+				// If not the first dependency, update the one already in the collection
+				if (self.length !== 0) {
+					self.updateDependency(self.at(0), newDependancy);
 				}
+
+				// Replace the existing dependancy if it already exists or just add it
+				self.reset(newDependancy);
 
 				dispatcher.trigger("dependanciesReady");
 				dispatcher.trigger("router:loaded");
@@ -36,6 +32,51 @@ define([
 
 		refresh: function () {
 			isRefresh = true;
+		},
+
+		/**
+		* Method to update the dependency
+		* @param oldDependency: Old model to update
+		* @param newDependency: Model used to update the old one
+		*/
+		updateDependency: function (oldDependency, newDependency) {
+			var oldEntities = oldDependency.get("entities");
+			
+			// Update each node : x/y and fixed attributes
+			_.each(newDependency.get("entities"), function (e) {
+				var oldE = _.find(oldEntities, function (o) {
+					return o.id === e.id;
+				});
+
+				if (oldE !== undefined) {
+					if (oldE.x && oldE.y) {
+						e.x = oldE.x;
+						e.y = oldE.y;
+					}
+					e.fixed = oldE.fixed;
+
+				}
+			});
+			
+			// Update rootNode
+			if (oldDependency.get("rootNode") !== "") {
+				var rootNodeNewDependency = _.find(newDependency.get("entities"), function (e) {
+					return oldDependency.get("rootNode").id === e.id;
+				});
+				if (rootNodeNewDependency !== undefined) {
+					newDependency.set({
+						rootNode: rootNodeNewDependency
+					});
+				}
+			}
+
+			// Filters update
+			newDependency.set({
+				currentEntitiesTypes: oldDependency.get("currentEntitiesTypes")
+			});
+			newDependency.set({
+				currentRelationsTypes: oldDependency.get("currentRelationsTypes")
+			});
 		}
 	});
 

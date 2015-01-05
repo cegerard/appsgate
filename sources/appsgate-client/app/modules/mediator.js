@@ -474,6 +474,12 @@ define([
       },
 
 	  /**
+	   *
+	   */
+	  getProgramState : function() {
+		return $.i18n.t('programs.state.'+this.programState) ;
+	  },
+	  /**
 	   * Return whether the program is empty
 	   */
 	  isProgramEmpty:function(){

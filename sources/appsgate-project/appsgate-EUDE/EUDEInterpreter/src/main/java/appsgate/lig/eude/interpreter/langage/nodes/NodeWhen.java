@@ -57,14 +57,14 @@ public class NodeWhen extends Node implements INodeRule{
             seqEvent = (INodeEvent) seqEventNode;
         } catch (SpokTypeException ex) {
             LOGGER.error("Unable to build events {}", ex.getMessage());
-            throw new SpokNodeException("NodeWhen", "events", ex);
+            throw new SpokNodeException(this, "NodeWhen", "events", ex);
         }
         try {
             // initialize the sequences of events and rules
             seqRules = Builder.buildFromJSON(ruleWhenJSON.optJSONObject("seqRulesThen"), this);
         } catch (SpokTypeException ex) {
             LOGGER.error("Unable to build seqRulesThen");
-            throw new SpokNodeException("NodeWhen", "seqRulesThen", ex);
+            throw new SpokNodeException(this, "NodeWhen", "seqRulesThen", ex);
         }
 
     }

@@ -5,10 +5,9 @@ define([
     "text!templates/program/nodes/defaultEventNode.html",
     "text!templates/program/nodes/defaultPropertyNode.html",
     "text!templates/program/nodes/defaultStateNode.html",
-    "models/service/mediabrowser",
     "models/service/mail",
     "models/service/weather"
-], function(App, Service, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, MediaBrowser, Mail, Weather) {
+], function(App, Service, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, Mail, Weather) {
 
     var Services = {};
 
@@ -56,9 +55,6 @@ define([
             brick.type = parseInt(brick.type);
             var service = null;
             switch (brick.type) {
-                case 36:
-                    service = new MediaBrowser(brick);
-                    break;
                 case 102:
                     service = new Mail(brick);
                     break;
@@ -96,12 +92,6 @@ define([
          */
         getCoreWeather: function() {
             return services.findWhere({type: 103});
-        },
-        /**
-         * @return Array of UPnP media browsers
-         */
-        getMediaBrowsers: function() {
-            return services.where({type: 36});
         },
         /**
          * @returns the template corresponding to the device

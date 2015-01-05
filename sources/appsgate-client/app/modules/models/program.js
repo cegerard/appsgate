@@ -93,8 +93,27 @@ define([
         isWorking: function () {
             return this.get("runningState") === "PROCESSING" || this.get("runningState") === "LIMPING";
         },
+        /**
+         * Check if a program is working according to its running state
+         */
+        isValid: function () {
+            return this.get("runningState") === "PROCESSING" || this.get("runningState") === "DEPLOYED";
+        },
 		getState: function() {
 			return this.get("runningState").toLowerCase();
+		},
+		/**
+		 *return a message that explains why the program is not valid
+		 */
+		getProgramState: function() {
+			if (this.isValid()) {
+				return $.i18n.t('programs.state.'+this.getState());
+			}
+			err = this.get("errorMessage");
+			if (err == undefined|| err.msg == undefined) {
+				return $.i18n.t('programs.state.'+this.getState())+ "\n" + $.i18n.t("programs.error.noMessage");
+			}
+			return $.i18n.t('programs.state.'+this.getState()) + "\n" + $.i18n.t(err.msg, err);
 		},
         // override its synchronization method to send a notification on the network
         sync: function(method, model) {

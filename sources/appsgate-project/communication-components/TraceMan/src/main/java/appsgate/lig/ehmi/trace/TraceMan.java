@@ -18,6 +18,7 @@ import appsgate.lig.ehmi.trace.listener.TraceCmdListener;
 import appsgate.lig.ehmi.trace.queue.TraceQueue;
 import appsgate.lig.eude.interpreter.spec.ProgramCommandNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramNotification;
+import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
 import appsgate.lig.manager.place.spec.PlaceManagerSpec;
 import appsgate.lig.manager.place.spec.SymbolicPlace;
 import appsgate.lig.persistence.MongoDBConfiguration;
@@ -421,8 +422,8 @@ public class TraceMan implements TraceManSpec {
         
         long timeStamp = getCurrentTimeInMillis();
         
-        if (n instanceof ProgramCommandNotification) {
-            JSONObject o = getDecorationNotification((ProgramCommandNotification) n, timeStamp);
+        if (n instanceof ProgramTraceNotification) {
+            JSONObject o = getDecorationNotification((ProgramTraceNotification) n, timeStamp);
             trace(o,timeStamp);
             return;
         }
@@ -935,11 +936,11 @@ public class TraceMan implements TraceManSpec {
         return deviceState;
     }
 
-    private JSONObject getDecorationNotification(ProgramCommandNotification n, long timeStamp) {
+    private JSONObject getDecorationNotification(ProgramTraceNotification n, long timeStamp) {
         JSONObject p = getJSONProgram(n.getProgramId(), n.getProgramName(), null, n.getRunningState(), n.getInstructionId(), timeStamp);
         JSONObject context = null;
         String desc = "decorations.defaultMessage";
-        GrammarDescription gram = EHMIProxy.getGrammarFromDevice(n.getTargetId());
+        GrammarDescription gram = EHMIProxy.getGrammarFromDevice(n.getDeviceId());
         if (gram != null) {
             context = gram.getContextFromParams(n.getDescription(), n.getParams());
             desc = gram.getTraceMessageFromCommand(n.getDescription());

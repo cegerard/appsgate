@@ -16,9 +16,10 @@ define([
     "models/device/actuator",
     "models/device/domicube",
     "models/device/mediaplayer",
+    "models/device/mediabrowser",
     "models/device/coretv",
     "models/device/coreclock"
-], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, CoreTV, CoreClock) {
+], function(App, Device, ActionTemplate, EventTemplate, PropertyTemplate, StateTemplate, TemperatureSensor, IlluminationSensor, SwitchSensor, ContactSensor, KeyCardSensor, ARDLock, Plug, PhillipsHue, Actuator, DomiCube, MediaPlayer, MediaBrowser, CoreTV, CoreClock) {
 
     var Devices = {};
 
@@ -111,6 +112,9 @@ define([
                     break;
                 case 31:
                     device = new MediaPlayer(brick);
+                    break;
+                case 36:
+                    device = new MediaBrowser(brick);
                     break;
                 case 210:
                     device = new DomiCube(brick);
@@ -298,6 +302,12 @@ define([
          */
         getMediaPlayers: function() {
             return devices.where({type: 31});
+        },
+        /**
+         * @return Array of UPnP media browsers
+         */
+        getMediaBrowsers: function() {
+            return devices.where({type: 36});
         },
         /**
          * @return Array of the unlocated devices

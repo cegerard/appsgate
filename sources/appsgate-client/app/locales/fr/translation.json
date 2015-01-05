@@ -31,10 +31,10 @@
 		},
 	  	"help" : {
 			"title" : "Aide",
-			"click": "Click : Défixer une entité préalablement fixée",
-			"click-move": "Click + Déplacement : Déplacer une entité et la fixer",
-			"double-click": "Double click : Mise en valeur / Enlever la mise en valeur, d'une entité",
-			"maj-click": "Maj. + Click : Aller à la page détaillée de l'entité"
+			"click": "Clic : Défixer une entité préalablement fixée",
+			"click-move": "Clic + Déplacement : Déplacer une entité et la fixer",
+			"double-click": "Double clic : Mettre / Enlever le focus d'une entité",
+			"maj-click": "Maj. + Clic : Aller à la page détaillée de l'entité"
 		},
 	  	"type": {
 			"entity": {
@@ -90,16 +90,16 @@
       "affirmative": "Oui",
       "true":"Vrai",
       "false":"Faux",
-      "with-the-value":"avec le valeur",
+      "with-the-value":"avec la valeur",
       "action": {
         "zone-activate": "Activer surveillance __myVar__",
         "zone-desactivate": "Désactiver surveillance __myVar__",
-        "force-input": "Signaler intrusion éventuelle à __myVar__"
+        "force-input": "Signaler au système d'alarme __myVar__ une entrée dans la zone "
       },
       "keyboard": {
         "zone-activate": "Activer surveillance ...",
         "zone-desactivate": "Désactiver surveillance ...",
-        "force-input": "Signaler intrusion éventuelle à ..."
+        "force-input": "Signaler au système d'alarme une entrée dans la zone ..."
       },
       "event": {
         "authorized": "l'accès du badge a été autorisé par ...",
@@ -195,11 +195,11 @@
       "keyboard": {
         "sensor": "capteur de luminosité",
         "brightness": "tel niveau de luminosité",
-        "get": "Le __myVar__ mesure __myVar2__",
+        "get": "le __myVar__ mesure __myVar2__",
         "change": "la luminosité mesurée par __myVar__ change"
       },
       "language": {
-        "get": "__myVar__ mesure ",
+        "get": "__myVar__",
         "change": "la luminosité mesurée par __myVar__ change"
       },
       "name": {
@@ -250,7 +250,12 @@
       },
       "complement": {
         "change-color": "en",
-        "color": "Couleur"
+        "color": "Couleur",
+        "during": "pendant",
+        "speed": "secondes et faire clignoter de façon ",
+        "fast":"rapide",
+        "normal":"normal",
+        "slow":"lent"
       },
       "keyboard": {
         "blink": "Faire clignoter l'__myVar__",
@@ -507,7 +512,9 @@
     "size-editor": "Taille",
     "size-height": "Hauteur",
     "size-width": "Largeur",
-    "valid-button": "Valider"
+    "valid-button": "Valider",
+	"show-dependencies-button": "Dépendances",
+	"show-historic-button": "Historique"
   },
   "keyboard": {
     "clock-event": "L'horloge d'AppsGate indique ",
@@ -729,6 +736,16 @@
     "delete-program": "Supprimer",
     "edit-program": "Editer",
     "end-edit-program": "Valider",
+    "error" : {
+      "empty" : "Le programme est vide",
+      "node" : "La syntaxe du programme est invalide",
+      "device" : "Au moins un équipement référencé par ce programme est absent",
+      "missingProgram" : "Au moins un programme référencé par ce programme est absent",
+	  "invalidProgram" : "Au moins un programme référencé par ce programme n'est pas valide",
+	  "emptySelec" : "Au moins un sélecteur dans ce programme est vide",
+      "noMessage" : "Erreur inconnue"
+
+	},
     "keyboard": {
       "actionActivate": "Activer le __myVar__",
       "actionDisactivate": "Désactiver le __myVar__",
@@ -851,8 +868,8 @@
         "sunset": "le jour se couche à __myVar__",
         "currently-daylight": "il fait jour à __myVar__",
         "currently-moonlight": "il fait nuit à __myVar__",
-        "forecast-temperature": "La température de __myVar__ annoncée __myVar2__ indique __myVar3__",
-        "forecast-weather-code-state": "La météo de __myVar__ annoncée __myVar2__ indique __myVar3__",
+        "forecast-temperature": "la température de __myVar__ annoncée __myVar2__ indique __myVar3__",
+        "forecast-weather-code-state": "la météo de __myVar__ annoncée __myVar2__ indique __myVar3__",
         "favorite": "lieu météo favori",
         "moment": "à tel moment",
         "weather": "tel temps",

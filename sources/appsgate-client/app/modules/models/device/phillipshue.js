@@ -58,7 +58,15 @@ define([
           $(btn).append("<span>" + $.i18n.t('devices.lamp.keyboard.blink', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.lamp.keyboard.lamp') + "</span>",
           }));
-          v.methodName = "blink30";
+          v.methodName = "blink";
+          v.type="action2";
+          v.args = [{
+            "type": "long",
+            "value": "20"
+          },{
+            "type": "long",
+            "value": "1000"
+          }];
           v.phrase = "devices.lamp.language.blink";
           $(btn).attr("json", JSON.stringify(v));
           break;

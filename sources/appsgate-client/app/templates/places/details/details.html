@@ -6,6 +6,7 @@
 	<% } %>
 	<% if (place.get("id") !== "-1") { %>
 		<div class="pull-right">
+			<button type="button" class="btn btn-default btn-target-dependencies"><img src="app/img/home/dependancies.svg" class="img-button"><span data-i18n="form.show-dependencies-button"></span></button>
 			<button id="delete-popover" class="btn btn-default delete-popover-button" rel="popover" data-trigger="focus">
 				<i class="glyphicon glyphicon-trash"></i><span data-i18n="form.delete-button"></span>
 			</button>
@@ -586,6 +587,37 @@
 					<span id="device-<%= s.cid %>-status" class="label label-success" data-i18n="devices.status.connected"></span>
 				<% } %>
 			</a>
+		<% }) %>
+	</div>
+</div>
+<% } %>
+
+<!-- TV -->
+<% if (place.getTVs().length > 0) { %>
+<div class="panel panel-default">
+
+	<div class="list-group">
+		<% place.getTVs().forEach(function(s) { %>
+		<a href="#devices/<%= s.get('id') %>" class="list-group-item">
+			<span id="device-<%= s.cid %>-name">
+			<% if (s.get("name") !== "") { %>
+				<%= s.get("name") %>
+			<% } else { %>
+				<%= $.i18n.t("places-details.body.device-no-name") %>
+			<% } %>
+			</span>
+			<div class="pull-right">
+				<i class="glyphicon glyphicon-chevron-right"></i>
+			</div>
+			<br>
+			<% if (s.get("status") === "0") { %>
+			<span id="device-<%= s.cid %>-status" class="label label-danger" data-18n="devices.status.disconnected"></span>
+			<% } else if (s.get("status" === "1")) { %>
+			<span id="device-<%= s.cid %>-status" class="label label-warning" data-i18n="devices.status.waiting"></span>
+			<% } else { %>
+			<span id="device-<%= s.cid %>-status" class="label label-success" data-i18n="devices.status.connected"></span>
+			<% } %>
+		</a>
 		<% }) %>
 	</div>
 </div>

@@ -6,7 +6,7 @@
 
     <div class="editor-header row lead">
         <div class="pull-left">
-        <div class="led-<%= program.getState()%> pull-left" id="prog-led" title="<%= $.i18n.t('programs.state.'+program.getState()) %>"></div>
+        <div class="led-<%= program.getState()%> pull-left" id="prog-led" title="<%= program.getProgramState() %>"></div>
 
         <% if (program.get("name") !== "") { %>
         <input class="programNameInput" type="text" value="<%= program.get('name') %>"/>

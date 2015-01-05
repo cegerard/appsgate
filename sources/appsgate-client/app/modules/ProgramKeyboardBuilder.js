@@ -124,6 +124,11 @@ define([
                 case 'separator':
                 case '"programCall"':
                 case '"service"':
+				case '"action0"':
+				case '"action1"':
+			    case '"action2"':
+				case '"action3"':
+			    case '"string"':
                   // silently escaping
                   break;
                 default:

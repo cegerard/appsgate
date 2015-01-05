@@ -111,6 +111,8 @@ define([
 			this.createFilters(this.model);
 			this.updateCheckAllEntities();
 			this.updateCheckAllRelations();
+			// update model, if we have an entity disable by default (ie selector)
+			this.model.updateEntitiesShown();
 
 			// Zoom d3 object
 			pan = d3.behavior.zoom()
@@ -521,6 +523,12 @@ define([
 
 			d.selected = true;
 			d.fixed = true;
+			
+			// If we create the graph for the first time with an id to focus, it has no x y.
+			if (d.x === undefined && d.y === undefined) {
+				d.x = this.model.get("width") / 2;
+				d.y = this.model.get("height") / 2;
+			}
 
 			/*
 			 * Moving the new nodeRoot at the center in delta times

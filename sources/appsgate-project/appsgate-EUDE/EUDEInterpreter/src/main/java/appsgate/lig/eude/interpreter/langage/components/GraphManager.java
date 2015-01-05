@@ -8,11 +8,9 @@ package appsgate.lig.eude.interpreter.langage.components;
 import appsgate.lig.eude.interpreter.impl.EUDEInterpreter;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
-import appsgate.lig.eude.interpreter.langage.nodes.NodeValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.json.JSONArray;
@@ -81,6 +79,8 @@ public class GraphManager {
         // Retrieving programs id
         this.programsId = interpreter.getListProgramIds(null);
         int idSelector = -2;
+        ArrayList<NodeSelect> selectorsSaved = new ArrayList<NodeSelect>();
+        JSONArray programsScheduled = this.interpreter.getContext().checkProgramsScheduled();
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
             if (p != null) {
@@ -103,13 +103,13 @@ public class GraphManager {
                     addLink(REFERENCE_LINK, pid, rProgram);
                 }
 
-                if (addSelector(references, idSelector)) {
+                if (addSelector(pid, references, selectorsSaved, idSelector)) {
                     idSelector--;
                 }
             }
 
             // Links program - scheduler
-            if (this.interpreter.getContext().checkProgramIdScheduled(pid)) {
+            if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
                 addLink(PLANIFIED_LINK, pid, CLOCK_ID);
                 //@TODO: if planified more than one time, have more than one relation...
             }
@@ -268,22 +268,61 @@ public class GraphManager {
             // Nothing will be raised since there is no null value
         }
     }
+    
+    /**
+     * Method to check if a selector has already been added to the graph
+     * 
+     * @param selectorsSaved : ArrayList of selector already added
+     * @param programSelector : selector to check
+     * @return true if programSelector already added
+     */
+     private boolean isSelectorAlreadySaved(ArrayList<NodeSelect> selectorsSaved, NodeSelect programSelector) {
+        for (NodeSelect selSaved : selectorsSaved) {
+            try {
+                JSONArray pTypeDevice = (JSONArray) programSelector.getJSONDescription().get("what");
+                JSONArray sTypeDevice = (JSONArray) selSaved.getJSONDescription().get("what");
+                JSONArray pLocationDevice = (JSONArray) programSelector.getJSONDescription().get("where");
+                JSONArray sLocationDevice = (JSONArray) selSaved.getJSONDescription().get("where");
 
-    private boolean addSelector(ReferenceTable ref, int idSelector) {
+                if (pTypeDevice.getJSONObject(0).get("value").equals(sTypeDevice.getJSONObject(0).get("value"))
+                        && pLocationDevice.getJSONObject(0).get("value").equals(sLocationDevice.getJSONObject(0).get("value"))) {
+                    return true;
+                }
+            } catch (JSONException ex) {
+                java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
+
+     /**
+      * Method to add the selector presented in a program
+      * 
+      * @param pid : Program Id in which we search the selectors
+      * @param ref : ReferenceTable of the program to get the selectors
+      * @param selectorsSaved
+      * @param idSelector
+      * @return 
+      */
+    private boolean addSelector(String pid, ReferenceTable ref, ArrayList<NodeSelect> selectorsSaved, int idSelector) {
         boolean ret = false;
         String typeDevices = "";
         ArrayList<NodeSelect> selectors = ref.getSelectors();
         // For each selector present in the program...
         for (NodeSelect selector : selectors) {
-//            addNode(SELECTOR_ENTITY, "" + idSelector, selector.getTypeSpec());
-            ret = true;
-            
+         
             HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getPlaceDeviceSelector();
 
+            ArrayList<String> placesSelector = elements.get("placeSelector");
+            String placeId = "";
+            // Get the id of the selector's place
+            if (placesSelector.size() > 0) {
+               placeId =  placesSelector.get(0);
+            }
+                     
             // Get the devices of the selector and link them to the selector
             ArrayList<String> devicesSelector = elements.get("deviceSelector");
             for (String deviceId : devicesSelector) {
-                addLink(DENOTES_LINKS, "" + idSelector, deviceId);
                 // Save the type of the devices once
                 if (typeDevices.equals("")) {
                     try {
@@ -292,20 +331,27 @@ public class GraphManager {
                         java.util.logging.Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }
-
-            // Get the places of the selector and link them to the selector
-            ArrayList<String> placesSelector = elements.get("placeSelector");
-            for (String placeId : placesSelector) {
-                addLink(LOCATED_LINK, "" + idSelector, placeId);
+                addLink(DENOTES_LINKS, "selector-" + typeDevices + "-" + placeId, deviceId);
             }
             
-            if (!typeDevices.equals("")){
-                // Add selector : name = type devices selected and add type = selector
-                HashMap<String, String> optArg = new HashMap<String, String>();
-                optArg.put("type", "selector");
-                addNode(SELECTOR_ENTITY, "" + idSelector, typeDevices, optArg);
+            // Add the location link
+            addLink(LOCATED_LINK, "selector-" + typeDevices + "-" + placeId, placeId);
+            // Add the reference
+            addLink(REFERENCE_LINK, pid, "selector-" + typeDevices + "-" + placeId);
+            
+            if (!typeDevices.equals("")){      
+                // If the selector hasn't been add to the graph, create the entity
+                if (!isSelectorAlreadySaved(selectorsSaved, selector)) {
+                    // Add selector : name = type devices selected and add type = selector
+                    HashMap<String, String> optArg = new HashMap<String, String>();
+                    optArg.put("type", "selector");
+                    // id : selector - Type - Place, to be able to link different program to the same selector
+                    addNode(SELECTOR_ENTITY, "selector-" + typeDevices + "-" + placeId, typeDevices, optArg);
+                }
+                // add the selector, to the list of selector added
+                selectorsSaved.add(selector);
                 typeDevices = "";
+                ret = true;
             }
         }
         return ret;

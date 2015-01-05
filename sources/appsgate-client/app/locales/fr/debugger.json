@@ -34,7 +34,11 @@
     "error" : "une erreur s'est produite",
     "change" : "__var__ : __text__",
     "appear" : "l'équipement __name__ est apparu",
-    "remove" : "l'équipement __name__ a été enlevé"
+    "remove" : "l'équipement __name__ a été enlevé",
+    "colorlight" : {
+      "off" : "$t(translation:devices.lamp.language.turnOff)",
+      "on" : "$t(translation:devices.lamp.language.turnOn)"
+    }
 
   }
 }
