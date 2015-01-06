@@ -420,7 +420,7 @@ define([
         if (self.model.isWorking() && activeSet.length > 0) {
           activeSet.forEach(function(activeNodes) {
             var activeIndicator = $(input).find("#active-" + activeNodes[0]);
-            if (activeIndicator.length > 0) {
+            if (activeIndicator.length > 0 && activeNodes[1]) {
               var editorWidth = workspace.width();
               var leftOffset = activeIndicator.offset().left - workspace.position().left;
               $(activeIndicator).width(editorWidth);
