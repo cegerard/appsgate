@@ -111,18 +111,38 @@ define([
         $("#datetimepicker-from").on("dp.change",function (e) {
             var now = new Date();
             $('#datetimepicker-to').data("DateTimePicker").setMinDate(new Date(Math.min(now, e.date.valueOf() + MWIMS)));
-            dashboard.requestInitialHistoryTrace({
-                from: e.date.valueOf(),
-                to: $('#datetimepicker-to').data("DateTimePicker").getDate().valueOf()
-            });
+			if (self.idFiltered === undefined) {
+				dashboard.requestInitialHistoryTrace({
+					from: e.date.valueOf(),
+					to: $('#datetimepicker-to').data("DateTimePicker").getDate().valueOf()
+				});
+			} else {
+				dashboard.requestInitialHistoryTrace({
+					from: e.date.valueOf(),
+					to: $('#datetimepicker-to').data("DateTimePicker").getDate().valueOf(),
+					focus: self.idFiltered,
+					focusType: "id",
+					order: "dep"
+				});
+			}
         });
         $("#datetimepicker-to").on("dp.change",function (e) {
             var now = new Date();
             $('#datetimepicker-from').data("DateTimePicker").setMaxDate(new Date(Math.min(now, e.date.valueOf()) - MWIMS));
-            dashboard.requestInitialHistoryTrace({
-                from: $('#datetimepicker-from').data("DateTimePicker").getDate().valueOf(),
-                to: e.date.valueOf()
-            });
+			if (self.idFiltered === undefined) {
+				dashboard.requestInitialHistoryTrace({
+					from: $('#datetimepicker-from').data("DateTimePicker").getDate().valueOf(),
+					to: e.date.valueOf()
+				});
+			} else {
+				dashboard.requestInitialHistoryTrace({
+					from: $('#datetimepicker-from').data("DateTimePicker").getDate().valueOf(),
+					to: e.date.valueOf(),
+					focus: self.idFiltered,
+					focusType: "id",
+					order: "dep"
+				});
+			}
         });
 
         // listen to zoom request from dashboard
@@ -175,6 +195,10 @@ define([
         $('#datetimepicker-to').data("DateTimePicker").setDate(now);
         $('#datetimepicker-to').data("DateTimePicker").setMaxDate(now);
     },
+	  
+  	setIDFilter: function(id) {
+		this.idFiltered = id;
+	},
 
     destroy: function() {
         this.connector.destroy();
