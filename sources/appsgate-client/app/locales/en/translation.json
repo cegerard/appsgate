@@ -905,5 +905,30 @@
       "weblink": "See weather forecast",
       "warning-weather-delete": "Do you really want to delete this meteo place ?"
     }
+  },
+  "decorations": {
+    "program_added" : "program __name__ has been added",
+    "program_deleted" : "program __name__ has been deleted",
+    "program_saved" : "program __name__ updated",
+    "connection" : "device connected",
+    "disconnection" : "device disconnected",
+    "error" : "something unexpected happen",
+    "changevalue" : "__var__ : __text__",
+    "appear" : "device __name__ appeared",
+    "remove" : "device __name__ disappeared",
+	"changecolorChanged" : "la couleur a changé pour __color__, __value__, __name__",
+    "ColorLight" : {
+      "setRed" : "set color to red",
+      "setBlue" : "set color to blue",
+      "setGreen" : "set color to green",
+      "setYellow" : "set color to yellow",
+      "setOrange" : "set color to orange",
+      "setPurple" : "set color to purple",
+      "setPink" : "set color to pink",
+      "setWhite" : "set color to white",
+	  "setColorJson" : "change color to __color__",
+      "off" : "$t(translation:devices.lamp.action.turnOff)",
+      "on" : "$t(translation:devices.lamp.action.turnOn)"
+    }
   }
 }

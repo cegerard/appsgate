@@ -905,5 +905,30 @@
       "weblink": "Voir météo",
       "warning-weather-delete": "Voulez-vous vraiment supprimer cette météo favorie ?"
     }
+  },
+  "decorations": {
+    "program_added" : "le programme __name__ a été ajouté",
+    "program_deleted" : "le programme __name__ a été supprimé",
+    "program_saved" : "le programme __name__ a été modifié",
+    "connection" : "l'équipement s'est connecté",
+    "disconnection" : "l'équipement a été déconnecté",
+    "error" : "une erreur s'est produite",
+    "changevalue" : "__var__ : __text__",
+    "appear" : "l'équipement __name__ est apparu",
+    "remove" : "l'équipement __name__ a été enlevé",
+	"changecolorChanged" : "la couleur a changé pour __color__, __value__, __name__",
+    "ColorLight" : {
+      "setRed" : "allumer en rouge",
+      "setBlue" : "allumer en bleu",
+      "setGreen" : "allumer en vert",
+      "setYellow" : "allumer en jaune",
+      "setOrange" : "allumer en orange",
+      "setPurple" : "allumer en violet",
+      "setPink" : "allumer en rose",
+      "setWhite" : "allumer en blanc",
+	  "setColorJson" : "changer la couleur en __color__",
+      "off" : "$t(translation:devices.lamp.action.turnOff)",
+      "on" : "$t(translation:devices.lamp.action.turnOn)"
+    }
   }
 }
