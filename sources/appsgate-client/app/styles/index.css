@@ -3,9 +3,11 @@
 @import "../../vendor/bower/html5-boilerplate/css/normalize.css";
 @import "../../vendor/bower/bootstrap/dist/css/bootstrap.css";
 @import "../../vendor/bower/html5-boilerplate/css/main.css";
+@import "../../vendor/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css";
 @import "../../vendor/bower/jqueryui/themes/custom-theme/jquery-ui-1.10.4.custom.css";
 @import "../../vendor/bower/appsgate.debugger/lib/themes/basic/theme.css";
 @import "../../vendor/bower/alertifyjs/dist/css/alertify.css";
+
 /*-- Application stylesheets. -----------------------------------------------*/
 
 html {
@@ -913,6 +915,17 @@ fieldset[disabled] .btn {
 .debugger .scrollable {
     border: none;
 }
+
+.debugger-toolbar .btn {
+  box-shadow: none !important;
+}
+
+/*.debugger .dashboard > header {*/
+    /*position: fixed;*/
+/*}*/
+
+.ui-autocomplete { position: absolute; cursor: default;z-index:1300 !important;}
+
 .active-node-indicator {
   width: 100%;
   position: absolute;
