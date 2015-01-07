@@ -12,7 +12,7 @@
 
         <definition name="user" type="string" field="user" />
 
-        <definition name="auto-refresh" type="int" field="refreshRate" injected="both" method="autoRefreshValueChanged"/>
+        <definition name="auto-refresh" type="int" field="refreshRate" default="200000"/>
 		
 		<definition name="deviceId" 	type="string" default="666666666" field="serviceId"/>
 		<definition name="userType" 	type="string" default="102"	field="userType"/>

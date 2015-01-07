@@ -6587,7 +6587,7 @@ h1 {
 }
 
 h2 {
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 300;
   line-height: 34px;
 }
@@ -8115,9 +8115,9 @@ Progress control. */
 .metro .tile .text-header {
   max-height: 36px;
   overflow: hidden;
-  font-size: 34px;
+  font-size: 24px;
   font-weight: 300;
-  line-height: 36px;
+  line-height: 26px;
   text-align: left;
 }
 
@@ -8285,7 +8285,7 @@ Progress control. */
 
 .metro .tile.wide.text {
   width: 270px;
-  height: 110px;
+  height: 120px;
   padding: 20px;
 }
 

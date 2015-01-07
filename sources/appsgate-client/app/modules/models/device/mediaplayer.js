@@ -140,6 +140,7 @@ define([
           $(btn).attr("json", JSON.stringify(v));
           break;
         case "setVolume":
+		  v.type = "action1";
           $(btn).append("<span>" + $.i18n.t('devices.mediaplayer.keyboard.set-volume-action', {
             myVar: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.player') + "</span>",
             myVar2: "<span class='highlight-placeholder'>" + $.i18n.t('devices.mediaplayer.keyboard.value') + "</span>"

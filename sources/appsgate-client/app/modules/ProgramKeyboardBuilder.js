@@ -91,8 +91,7 @@ define([
                 case '"variable"':
                   console.log("variables not supported in the language right now");
                   break;
-//                case '"action"':
-			    case '"action0"':
+                case '"action"':
                   this.buildActionKeys();
                   break;
                 case '"stopMyself"':
@@ -125,6 +124,7 @@ define([
                 case 'separator':
                 case '"programCall"':
                 case '"service"':
+				case '"action0"':
 				case '"action1"':
 			    case '"action2"':
 				case '"action3"':

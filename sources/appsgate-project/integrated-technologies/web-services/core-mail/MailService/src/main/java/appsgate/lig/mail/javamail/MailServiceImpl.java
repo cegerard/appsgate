@@ -116,7 +116,7 @@ public class MailServiceImpl extends CoreObjectBehavior implements Mail, MailSer
 	
 	private TimerTask refreshtask;	
 	
-	private final Integer refreshRate = -1;
+	private Integer refreshRate;
 	private Timer refreshTimer;
 	
 	
