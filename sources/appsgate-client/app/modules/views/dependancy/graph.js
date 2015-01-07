@@ -33,6 +33,25 @@ define([
 				self.update(self.model);
 				force.start();
 			});
+			
+			// TODO = Improvements -> Sometimes more than one message is processed
+
+			// Update the graph when the modifications does not need to reload it to build new data structures (ie rename place)
+			dispatcher.on("UpdateGraph", function (place) {
+				console.log("graph update");
+				force.stop();
+				self.update(self.model);
+				force.start();
+			});
+
+			// Update the graph when the modifications need to reload it to build new data structures (ie new entity)
+			dispatcher.on("UpdateGraphLoad", function (place) {
+				if (appRouter.currentView === self) {
+					console.log("graph reload for update");
+					// Reload this page to refresh data
+					appRouter.dependancies();
+				}
+			});
 
 			// Zoom variables
 			savedScale = 1;
@@ -164,7 +183,7 @@ define([
 				.size([width, height])
 				.gravity(0.03)
 				.on("tick", this.tick.bind(this));
-			
+
 			// Test if we open graph from an entity, if yes, focus it
 			if (this.model.get("rootNode") !== "") {
 				this.selectAndMoveRootNode(this.model.get("rootNode"));
@@ -193,6 +212,17 @@ define([
 			// Bind node to the currentEntities, a node is represented by her ID 
 			nodeEntity = svg.select("#groupNode").selectAll(".nodeGroup").data(force.nodes(), function (d) {
 				return d.id;
+			});
+
+			// Text node modified - TODO : check 
+			var nModified = svg.select("#groupNode").selectAll(".nodeGroup").select("text").data(model.get("currentEntities"), function (d) {
+				return d.id;
+			});
+			nModified.text(function (d) {
+				if (d.type === "selector")
+					return $.i18n.t("dependancy.type.entity.selector.type-" + d.name);
+				else
+					return d.name;
 			});
 
 			// New nodes
@@ -523,7 +553,7 @@ define([
 
 			d.selected = true;
 			d.fixed = true;
-			
+
 			// If we create the graph for the first time with an id to focus, it has no x y.
 			if (d.x === undefined && d.y === undefined) {
 				d.x = this.model.get("width") / 2;
