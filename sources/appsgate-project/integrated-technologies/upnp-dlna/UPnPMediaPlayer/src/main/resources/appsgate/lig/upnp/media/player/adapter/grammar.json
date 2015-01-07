@@ -32,9 +32,9 @@
 
     ],
     "commands" : {
-        "play" : {"params" : ["url"]},
+        "play" : {"params" : [{"name" : "url"}]},
         "pause" : {},
-        "setVolume" : {"params" : ["level"]},
+        "setVolume" : {"params" : [{"name" : "level"}]},
         "resume" : {},
         "stop" : {}
     }

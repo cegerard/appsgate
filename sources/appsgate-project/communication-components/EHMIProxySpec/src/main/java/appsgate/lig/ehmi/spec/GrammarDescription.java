@@ -218,7 +218,7 @@ public class GrammarDescription {
             return params;
         }
 
-        JSONArray array = command.optJSONArray("parameters");
+        JSONArray array = command.optJSONArray("params");
         if (array == null) {
             LOGGER.debug("No parameters for this command ({}) of type {}", cmd, this.getType());
             return params;

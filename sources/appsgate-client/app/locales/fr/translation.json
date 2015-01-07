@@ -916,7 +916,7 @@
     "changevalue" : "__var__ : __text__",
     "appear" : "l'équipement __name__ est apparu",
     "remove" : "l'équipement __name__ a été enlevé",
-	"changecolorChanged" : "la couleur a changé pour __color__, __value__, __name__",
+	"changecolorChanged" : "la couleur a changé pour __text__",
     "ColorLight" : {
       "setRed" : "allumer en rouge",
       "setBlue" : "allumer en bleu",

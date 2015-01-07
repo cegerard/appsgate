@@ -916,7 +916,7 @@
     "changevalue" : "__var__ : __text__",
     "appear" : "device __name__ appeared",
     "remove" : "device __name__ disappeared",
-	"changecolorChanged" : "la couleur a changé pour __color__, __value__, __name__",
+	"changecolorChanged" : "color has changed for __text.sat__",
     "ColorLight" : {
       "setRed" : "set color to red",
       "setBlue" : "set color to blue",
