@@ -17,7 +17,7 @@ public class FuchsiaSetup {
             .of("org.ow2.chameleon.fuchsia.discovery.mdns.DNSSDDiscovery")
                 .with("dnssd.service.type").setto("_http._tcp.local.")
                 .with("dnssd.service.marker").setto("domicube")
-                .with("dnssd.service.name").setto("domicube")
+                .with("dnssd.service.name").setto("domicube.*")
                 .with("options").setto("{localhostonly}");
 
         /**
