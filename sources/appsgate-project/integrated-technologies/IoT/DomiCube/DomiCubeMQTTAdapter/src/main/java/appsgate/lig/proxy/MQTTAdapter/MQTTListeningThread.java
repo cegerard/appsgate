@@ -64,7 +64,6 @@ public class MQTTListeningThread implements Runnable {
             while (ready) {
                 org.fusesource.mqtt.client.Future<Message> receive = connection.receive();
                 Message message = receive.await();
-                message.ack();
                 logger.debug("MQTT update received from topic {}, setting property {}", message.getTopic(), propertyName);
                 byte[] payload = message.getPayload();
                 Implementation impl = CST.apamResolver.findImplByName(null, "DomiCubeImpl");
@@ -72,7 +71,7 @@ public class MQTTListeningThread implements Runnable {
                 for (Instance inst : instances) {
                     inst.setProperty(propertyName,new String(payload));
                 }
-
+                message.ack();
             }
             logger.debug("MQTTListeningThread terminated.");
         } catch (Exception e) {
