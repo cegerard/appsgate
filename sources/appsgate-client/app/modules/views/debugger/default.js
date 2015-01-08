@@ -2,9 +2,12 @@
  * Created by barraq on 8/28/14.
  */
 
+var MWIMS = 3000000;
+
 define([
     "appsgate.debugger",
-    "text!templates/debugger/default.html"
+    "text!templates/debugger/default.html",
+    "bootstrap-datetimepicker"
 ], function(Debugger, debuggerDefaultTemplate) {
 
   var DebuggerView = {};
@@ -25,8 +28,20 @@ define([
         // render the editor with the program
         this.$el.append(this.template({}));
 
+        // customize our theme from `basic` theme.
+        var theme = _.merge(Debugger.themes.basic, {
+            'dashboard': {
+                'widget': {
+                    'margin': {
+                        top: 5  // add 5px top margin to each widget
+                    }
+                }
+            }
+        });
+
         // initialize debugger
         var dashboard = this.dashboard = new Debugger.Dashboard(this.$('.debugger .canvas'), {
+                theme: theme,
                 d3: {
                     // Define custom locale (based on http://www.localeplanet.com/icu/fr/)
                     locale: {
@@ -73,6 +88,9 @@ define([
                 },
                 i18n: {
                     ns: "debugger"
+                },
+                livetrace: {
+                    delayBeforeFlush: MWIMS
                 }
             }
         );
@@ -80,6 +98,52 @@ define([
 
         // make it scrollable (override width for scrollable)
         this.dashboard.$('.dashboard-container').addClass('scrollable div-scrollable');
+
+        // setup date time pickers options
+        var datetimepicker_options = {
+            use24hours: true
+        };
+
+        // set date time pickers
+        $('#datetimepicker-from').datetimepicker(datetimepicker_options);
+        $('#datetimepicker-to').datetimepicker(datetimepicker_options);
+
+        $("#datetimepicker-from").on("dp.change",function (e) {
+            var now = new Date();
+            $('#datetimepicker-to').data("DateTimePicker").setMinDate(new Date(Math.min(now, e.date.valueOf() + MWIMS)));
+			if (self.idFiltered === undefined) {
+				dashboard.requestInitialHistoryTrace({
+					from: e.date.valueOf(),
+					to: $('#datetimepicker-to').data("DateTimePicker").getDate().valueOf()
+				});
+			} else {
+				dashboard.requestInitialHistoryTrace({
+					from: e.date.valueOf(),
+					to: $('#datetimepicker-to').data("DateTimePicker").getDate().valueOf(),
+					focus: self.idFiltered,
+					focusType: "id",
+					order: "dep"
+				});
+			}
+        });
+        $("#datetimepicker-to").on("dp.change",function (e) {
+            var now = new Date();
+            $('#datetimepicker-from').data("DateTimePicker").setMaxDate(new Date(Math.min(now, e.date.valueOf()) - MWIMS));
+			if (self.idFiltered === undefined) {
+				dashboard.requestInitialHistoryTrace({
+					from: $('#datetimepicker-from').data("DateTimePicker").getDate().valueOf(),
+					to: e.date.valueOf()
+				});
+			} else {
+				dashboard.requestInitialHistoryTrace({
+					from: $('#datetimepicker-from').data("DateTimePicker").getDate().valueOf(),
+					to: e.date.valueOf(),
+					focus: self.idFiltered,
+					focusType: "id",
+					order: "dep"
+				});
+			}
+        });
 
         // listen to zoom request from dashboard
         dashboard.on('zoom:request', function (context) {
@@ -92,20 +156,49 @@ define([
             $("#bubbleModal").modal("show");
         });
 
-        // setup ui
-        this.$('.btn-primary').on('click', function(){
-            if( $(this).find('input').attr('id') == 'live') {
-                dashboard._toggleLoading(true);
-                dashboard.requestLiveTrace();
+
+        // listen to widget focus request from dashboard
+        dashboard.on('eventline:focus:request', function(context, attributes) {
+            dashboard.requestHistoryTrace(context);
+        });
+
+        // listen to widget name click from dashboard
+        dashboard.on('eventline:name:click', function(context, attributes) {
+            if (attributes.kind == 'program') {
+                console.log("Program with id "+attributes.id+" was clicked");
             } else {
-                dashboard._toggleLoading(true);
-                dashboard.requestInitialHistoryTrace();
+                console.log("Device of type "+attributes.type+" and with id "+attributes.id+" was clicked");
             }
         });
 
-        // prompt server for initial history trace
-        dashboard.requestLiveTrace();
+        // setup ui
+        this.$('.btn-primary').on('click', function(){
+            if( $(this).find('input').attr('id') == 'live' && !dashboard.isLiveMode()) {
+                self.$('#datetimepicker-toolbar').hide();
+                dashboard.requestLiveTrace();
+            } else if ( $(this).find('input').attr('id') == 'history' && !dashboard.isHistoryMode()) {
+                self.$('#datetimepicker-toolbar').show();
+                self._resetDateTimePicker();
+            }
+        });
+
+        // activate history mode
+        self.$('#datetimepicker-toolbar').show();
+        this.$('#debugger-action-history').addClass('active');
+        self._resetDateTimePicker();
     },
+
+    _resetDateTimePicker: function() {
+        var now = new Date();
+        $('#datetimepicker-from').data("DateTimePicker").setDate(new Date(now - 86400000));
+        $('#datetimepicker-from').data("DateTimePicker").setMaxDate(new Date(now - MWIMS));
+        $('#datetimepicker-to').data("DateTimePicker").setDate(now);
+        $('#datetimepicker-to').data("DateTimePicker").setMaxDate(now);
+    },
+	  
+  	setIDFilter: function(id) {
+		this.idFiltered = id;
+	},
 
     destroy: function() {
         this.connector.destroy();

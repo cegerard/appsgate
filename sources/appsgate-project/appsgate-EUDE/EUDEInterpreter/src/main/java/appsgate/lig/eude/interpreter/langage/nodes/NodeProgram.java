@@ -113,6 +113,11 @@ final public class NodeProgram extends Node implements ProgramDesc {
      * the table containing all the references
      */
     private ReferenceTable references = null;
+    
+    /**
+     * Boolean to know if the program is syntaxically correct or not, used to avoid the update of the program state
+     */
+    private boolean isSyntaxicallyCorrect = true;
 
     /**
      * Default constructor
@@ -201,9 +206,11 @@ final public class NodeProgram extends Node implements ProgramDesc {
                 }
                 body = Builder.nodeOrNull(o, this);
             }
+            this.isSyntaxicallyCorrect = true;
             return this.buildReferences();
         } catch (SpokException ex) {
             LOGGER.error("Unable to parse a specific node: {}", ex.getMessage());
+            this.isSyntaxicallyCorrect = false;
         }
         setInvalid();
         return false;
@@ -660,8 +667,11 @@ final public class NodeProgram extends Node implements ProgramDesc {
      * @param s the new status
      */
     public void setProgramStatus(String id, ReferenceTable.STATUS s) {
-        references.setProgramStatus(id, s);
-        changeStatus();
+        // No need to update the status and the reference table if this is the same program
+        if (!id.equalsIgnoreCase(this.id)) {
+            references.setProgramStatus(id, s);
+            changeStatus();
+        }
     }
 
     /**
@@ -678,21 +688,25 @@ final public class NodeProgram extends Node implements ProgramDesc {
      */
     private Boolean applyStatus(ReferenceTable.STATUS s) {
         errorMessage = references.getErrorMessage();
-        switch (s) {
-            case INVALID:
-                setInvalid();
-                return false;
-            case MISSING:
-            case UNSTABLE:
-            case UNKNOWN:
-                setIncomplete();
-                break;
-            case OK:
-                setValid();
-                break;
+        // Don't change the status if the program is not syntaxically correct
+        if (this.isSyntaxicallyCorrect) {
+            switch (s) {
+                case INVALID:
+                    setInvalid();
+                    break;
+                case MISSING:
+                case UNSTABLE:
+                case UNKNOWN:
+                    setIncomplete();
+                    break;
+                case OK:
+                    setValid();
+                    break;
+            }
+            return true;
+        } else {
+            return false;
         }
-        return true;
-
     }
 
     /**

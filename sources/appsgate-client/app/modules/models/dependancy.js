@@ -39,6 +39,64 @@ define([
 					});
 				}
 			});
+
+			/**** Event binding to have dynamic update ****/
+			
+			dispatcher.on("updatePlace", function (place) {
+				console.log("updatePlace");
+				var placeUpdated = _.find(self.get("entities"), function (e) {
+					return e.id === place.id;
+				});
+				var placeUpdatedCurrent = _.find(self.get("currentEntities"), function (e) {
+					return e.id === place.id;
+				});
+
+				placeUpdated.name = place.name;
+				placeUpdatedCurrent.name = place.name;
+
+				dispatcher.trigger("UpdateGraph");
+			});
+
+			dispatcher.on("newPlace", function (place) {
+				console.log("newPlace");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("removePlace", function (place) {
+				console.log("removePlace");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("moveDevice", function (messageData) {
+				console.log("moveDevice");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("newProgram", function (program) {
+				console.log("newProgram");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("removeProgram", function (program) {
+				console.log("removeProgram");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("updateProgram", function (program) {
+				console.log("updateProgram");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("newService", function (service) {
+				console.log("newService");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
+			dispatcher.on("removeService", function (serviceId) {
+				console.log("removeService");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+
 		},
 
 		/*
@@ -79,6 +137,13 @@ define([
 				neighbors: neighbors,
 				currentEntities: entities,
 				currentRelations: relations
+			});
+			
+			// Bind event ID
+			_.each(this.get("currentEntities"), function (e) {
+				dispatcher.on(e.id, function () {
+					dispatcher.trigger("UpdateGraphLoad");
+				});
 			});
 		},
 

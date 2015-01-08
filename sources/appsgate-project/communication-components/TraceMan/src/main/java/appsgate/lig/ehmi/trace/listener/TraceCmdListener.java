@@ -1,5 +1,7 @@
 package appsgate.lig.ehmi.trace.listener;
 
+import java.util.Calendar;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -37,14 +39,12 @@ public class TraceCmdListener implements CommandListener{
 	@Override
 	public void onReceivedCommand(JSONObject obj) {
 		LOGGER.debug("debugger command received: "+obj.toString());
-		
+		long dateNow = Calendar.getInstance().getTimeInMillis();
 		if(obj.has("name")){
 			String cmd;
 			try {
 				cmd = obj.getString("name");
-				
 				if(cmd.equalsIgnoreCase("historytrace")){
-					
 					JSONObject args   = obj.getJSONObject("args");
 					long from 		  = args.getLong("from");
 					long to 	 	  = args.getLong("to");
@@ -83,6 +83,7 @@ public class TraceCmdListener implements CommandListener{
 				}else if(cmd.equalsIgnoreCase("livetrace")){
 					long deltaT = 0;
 					long refreshRate = 0;
+					long window = 300000;
 					
 					if(obj.has("args")){
 						JSONObject args = obj.getJSONObject("args");
@@ -95,11 +96,16 @@ public class TraceCmdListener implements CommandListener{
 							deltaT = 0; // Refresh rate can only by used alone without aggregation
 										// so it force deltaT interval for aggregation to 0
 							refreshRate = args.getLong("refreshRate");
-						} 
+						}
+						
+						if(args.has("window")){
+							window = args.getLong("window");
+						}
 					}
-					
+
 					traceMan.setDeltaT(deltaT);
-					traceMan.initLiveTracer(refreshRate);
+					
+					traceMan.initLiveTracer(refreshRate, dateNow, window, obj);
 					
 				}else if (cmd.equalsIgnoreCase("filetrace")){
 					long deltaT = 0;

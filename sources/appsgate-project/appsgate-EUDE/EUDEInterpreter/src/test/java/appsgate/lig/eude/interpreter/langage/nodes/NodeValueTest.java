@@ -44,6 +44,11 @@ public class NodeValueTest extends NodeTest {
     }
 
     @Test
+    @Override
+    public void testCall() {
+    }
+    
+    @Test
     public void testGetResult() throws SpokException {
         printTestName("GetResult");
         SpokObject result = this.node.getResult();

@@ -212,15 +212,14 @@ public class EUDEInterpreter implements EUDE_InterpreterSpec, StartEventListener
             p.stop();
         }
 
-        if (p.update(jsonProgram)) {
-            notifyUpdateProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
-            //save program map state
+        p.update(jsonProgram); 
+        notifyUpdateProgram(p.getId(), p.getState().toString(), p.getProgramName(), p.getJSONDescription());
+        //save program map state
 
-            if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
-                return true;
-            }
+        if (contextHistory_push.pushData_add(this.getClass().getSimpleName(), p.getId(), p.getProgramName(), getProgramsDesc())) {
+            return true;
         }
-
+        
         return false;
     }
 

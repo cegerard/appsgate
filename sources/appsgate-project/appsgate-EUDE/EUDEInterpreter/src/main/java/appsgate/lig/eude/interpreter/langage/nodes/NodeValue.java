@@ -97,7 +97,7 @@ public class NodeValue extends Node implements INodeList, ICanBeEvaluated {
         if (type == TYPE.VARIABLE) {
             return callVariable();
         }
-        setStarted(true);
+        setStarted(false);
         fireEndEvent(new EndEvent(this));
         return null;
     }
