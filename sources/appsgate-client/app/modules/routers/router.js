@@ -40,7 +40,6 @@ define(function(require, exports, module) {
       "services": "services",
       "programs": "programs",
       "dependancies": "dependancies",
-//      "dependancies/:id": "dependanciesId"
     },
     initialize: function() {
       dispatcher.on("router:loading", function() {

@@ -33,7 +33,7 @@ define([
 				self.update(self.model);
 				force.start();
 			});
-			
+
 			// TODO = Improvements -> Sometimes more than one message is processed
 
 			// Update the graph when the modifications does not need to reload it to build new data structures (ie rename place)
@@ -237,8 +237,13 @@ define([
 					nodeEntity.classed("neighborNodeOver", function (d2) {
 						return model.neighboring(d, d2);
 					});
+					// Low opacity of all nodes except node over and its neighbors
+					nodeEntity.classed("node-less-opacity", function (d2) {
+						return d2 !== d && !model.neighboring(d, d2);
+					});
 				})
 				.on("mouseout", function (d) {
+					nodeEntity.classed("node-less-opacity", false);
 					nodeEntity.classed("nodeOver", false);
 					nodeEntity.classed("neighborNodeOver", false);
 					nodeEntity.classed("fixedNode", function (d) {
@@ -362,7 +367,7 @@ define([
 						});
 					// CIRCLE
 					d3.select(this).append("circle")
-						.attr("class", "circle-information hidden")
+						.attr("class", "circle-information")
 						.attr("r", 5)
 						.attr("fill", "red")
 						.on("mouseover", function (d) {
@@ -430,21 +435,22 @@ define([
 					}
 					return transf;
 				})
-				.classed("node-0", function (d) {
-					return d === self.model.get("rootNode");
-				})
-				.classed("node-1", function (d) {
-					return self.model.neighboring(d, self.model.get("rootNode"));
-				})
-				.classed("node-2", function (d) {
-					return self.model.getDepthNeighbor(d) === 2;
-				})
-				.classed("node-more", function (d) {
-					return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
-				})
-				.classed("fixedNode", function (d) {
-					return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
-				});
+			// Old code with opacity according to depth 
+			//				.classed("node-0", function (d) {
+			//					return d === self.model.get("rootNode");
+			//				})
+			//				.classed("node-1", function (d) {
+			//					return self.model.neighboring(d, self.model.get("rootNode"));
+			//				})
+			//				.classed("node-2", function (d) {
+			//					return self.model.getDepthNeighbor(d) === 2;
+			//				})
+			//				.classed("node-more", function (d) {
+			//					return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
+			//				})
+			.classed("fixedNode", function (d) {
+				return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
+			});
 
 			nodeEntity.selectAll("text")
 				.attr("transform", function (d) {
@@ -483,31 +489,37 @@ define([
 					// don't look about the orientation, this is the link showed
 					return arcPath(false, d);
 				})
-				.classed("node-1", function (d) {
-					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
-				})
-				.classed("node-2", function (d) {
-					return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
-				})
-				.classed("node-more", function (d) {
-					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
-					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
-					return !isNode1 && !isNode2;
-				})
-				.attr("marker-end", function (d) {
-					var isMultipleTargeted = self.model.isTargetMultipleTargeted(d.target);
-					// Target focus and mutliple target -> RED / ARROW
-					if (d.target === self.model.get("rootNode") && d.type === "reference" && isMultipleTargeted)
-						return "url(#targetingRefFocus)";
-					// Target focus -> ARROW
-					else if (d.target === self.model.get("rootNode"))
-						return "url(#targetingFocus)";
-					// Multiple target -> RED
-					else if (isMultipleTargeted && d.type === "reference")
-						return "url(#targeting)";
-					else
-						return "url(#" + d.type + ")";
-				})
+			// Old code with opacity according to depth 
+			//				.classed("node-1", function (d) {
+			//					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+			//				})
+			//				.classed("node-2", function (d) {
+			//					return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+			//				})
+			//				.classed("node-more", function (d) {
+			//					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+			//					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+			//					return !isNode1 && !isNode2;
+			//				})
+			//			.classed("node-less-opacity", function (d) {
+			//				var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+			//				var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+			//				return !isNode1 && !isNode2;
+			//			})
+			.attr("marker-end", function (d) {
+				var isMultipleTargeted = self.model.isTargetMultipleTargeted(d.target);
+				// Target focus and mutliple target -> RED / ARROW
+				if (d.target === self.model.get("rootNode") && d.type === "reference" && isMultipleTargeted)
+					return "url(#targetingRefFocus)";
+				// Target focus -> ARROW
+				else if (d.target === self.model.get("rootNode"))
+					return "url(#targetingFocus)";
+				// Multiple target -> RED
+				else if (isMultipleTargeted && d.type === "reference")
+					return "url(#targeting)";
+				else
+					return "url(#" + d.type + ")";
+			})
 				.classed("important-path", function (d) {
 					return (d.type === "reference" && self.model.isTargetMultipleTargeted(d.target));
 				});
@@ -520,9 +532,6 @@ define([
 
 
 			pathLink.select("circle")
-				.classed("hidden", function (l) {
-					return !(l.source === self.model.get("rootNode") || l.target === self.model.get("rootNode"));
-				})
 				.attr("cx", function (l) {
 					return (l.source.x + l.target.x) / 2;
 				})

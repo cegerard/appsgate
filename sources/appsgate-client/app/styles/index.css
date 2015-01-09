@@ -266,6 +266,11 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
+#settings-modal>.modal-dialog {
+	position: fixed;
+	bottom: 0px;
+	left: 50px;
+}
 .fundamental-universe {
   position: relative;
   background: white;
@@ -993,6 +998,7 @@ fieldset[disabled] .btn {
     stroke-width: 1px;
 }
 /* Opacity */
+/*
 .node-0 {
     opacity: 1;
 }
@@ -1011,9 +1017,13 @@ fieldset[disabled] .btn {
 .node-more.neighborNodeOver {
     opacity: 0.5;
 }
+*/
+.node-less-opacity {
+	opacity: 0.5;
+}
 /* MouseOver */
 #graph g>.nodeGroup.nodeOver>circle {
-    fill: #cfff30;
+    fill: #4ac6dd;
     stroke-width: 2px;
 }
 #graph g>.nodeGroup.nodeOver>text {
@@ -1024,7 +1034,7 @@ fieldset[disabled] .btn {
 }
 /* MouseOver Neighbors */
 #graph g>.nodeGroup.neighborNodeOver>circle {
-    fill: #7fb725;
+    fill: #4ac6dd;
     stroke-width: 2px;
 /*    stroke-dasharray: 7, 7;*/
 }
