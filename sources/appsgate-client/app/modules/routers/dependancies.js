@@ -56,15 +56,19 @@ define([
 
 			// Once the dependancies have been created and added to the collection, show the graph
 			dispatcher.once("dependanciesReady", function () {
+				
 				appRouter.showMenuView(new DependancyMenuView({
 					model: dependancies.at(0)
 				}));
+				
+				// View adjustement to have more place for the graph
+				$(".aside-menu").toggleClass("col-md-3");
+				$(".body-content").toggleClass("col-md-9");
 
 				$(".nav-item").removeClass("active");
 				$(".dependancies-nav").addClass("active");
 
 				appRouter.showDetailsView(new GraphView({
-					//                    el: $("#main"),
 					model: dependancies.at(0)
 				}));
 			});
