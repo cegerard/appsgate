@@ -71,6 +71,16 @@ define([
 				console.log("moveDevice");
 				dispatcher.trigger("UpdateGraphLoad");
 			});
+			
+			dispatcher.on("newDevice", function (messageData) {
+				console.log("newDevice");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
+			
+			dispatcher.on("removeDevice", function (messageData) {
+				console.log("removeDevice");
+				dispatcher.trigger("UpdateGraphLoad");
+			});
 
 			dispatcher.on("newProgram", function (program) {
 				console.log("newProgram");
