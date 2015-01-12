@@ -11,7 +11,7 @@ BLOC = SEQ
 
 INSTS  = _ (INST _)* STOP _ EMPTY /  _ (INST _)+ / "(" INSTS ")"
 
-STOP = ID "stopMyself" _ "(" _ TARGET _ ")"
+STOP = ID "stopMyself" _ "(" _ TARGET _ ")" _ "[]"
 
 INST  = IF / ACTION / EMPTY / WAIT / SEQ / WHEN_IMP
 
