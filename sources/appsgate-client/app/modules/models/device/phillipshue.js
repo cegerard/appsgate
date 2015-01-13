@@ -18,11 +18,24 @@ define([
      */
     initialize: function() {
       PhillipsHue.__super__.initialize.apply(this, arguments);
-
+      var self = this;
       // setting default friendly name if none exists
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
         this.generateDefaultName($.i18n.t("devices.lamp.name.singular"));
       }
+
+      dispatcher.on(this.get("id"), function(lampData) {
+
+        if(lampData["varName"]=="colorChanged"){
+          parsedJSON=JSON.parse(lampData.value);
+          self.set("color",parsedJSON["hue"]);
+          self.set("saturation",parsedJSON["sat"]);
+          self.set("brightness",parsedJSON["bri"]);
+
+        }
+
+      });
+
     },
     /**
      *return the list of available actions
