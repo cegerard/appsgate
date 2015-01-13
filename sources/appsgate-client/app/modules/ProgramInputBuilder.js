@@ -85,6 +85,10 @@ define([
             };
             var deletable = false;
             var input = "";
+            if (jsonNode.type === undefined) {
+                console.error("There is a problem in the passing of argument for node: " + currentNode);
+                return "ERROR";
+            }
             switch (jsonNode.type) {
                 case "action":
 				case "action0":
