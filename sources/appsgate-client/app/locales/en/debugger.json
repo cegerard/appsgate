@@ -39,4 +39,5 @@
       "off" : "$t(translation:devices.lamp.language.turnOff)",
       "on" : "$t(translation:devices.lamp.language.turnOn)"
     }
+  }
 }

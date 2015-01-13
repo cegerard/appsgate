@@ -1413,7 +1413,9 @@ public class EHMIProxyImpl implements EHMIProxySpec {
 		try {
 			String type = device.getString("type");
 			devicePropertiesTable.setType(deviceId, type);
-			return devicePropertiesTable.getGrammarFromType(type);
+                        grammar = getGrammarFromType(type);
+                        devicePropertiesTable.addGrammarForDevice(deviceId, type, grammar);
+			return grammar;
 		} catch (JSONException ex) {
 			logger.error("Unable to get 'type' from {}, {}", device.toString(), deviceId);
 		} catch (NullPointerException e){
