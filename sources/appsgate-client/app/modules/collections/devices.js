@@ -36,7 +36,10 @@ define([
             var self = this;
 
             this.comparator = function(device) {
-                return device.get("name").toUpperCase();
+                if (device.get("name")) {
+                    return device.get("name").toUpperCase();
+                }
+                return "";
             };
 
             // listen to the event when the list of devices is received
