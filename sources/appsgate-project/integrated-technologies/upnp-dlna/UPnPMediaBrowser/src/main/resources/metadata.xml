@@ -23,7 +23,7 @@
                 <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
             </constraints>
         </relation>
-        <relation implementation="AVTransportProxyImpl" resolve="exist" fail="wait" field="aVTransport">
+        <relation implementation="AVTransportProxyImpl" resolve="exist" fail="exception" field="aVTransport">
             <message push="onUPnPEvent"/>
             <constraints>
                 <instance filter="(UPnP.device.UDN=$.$UPnP\.device\.UDN)"/>
