@@ -312,24 +312,25 @@ define([
 								return d.name;
 						})
 
+					// shape STATUS PROGRAMS
 					// Type program, add form to indicate running or not. 
 					if (a.type === "program") {
 						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
 							d3.select(this).append("rect")
-								.attr("class", "form-program")
+								.attr("class", "shape-program")
 								.attr("x", function (m) {
 									return 0
 								})
 								.attr("y", function (m) {
 									return 0
 								})
-								.attr("width", 8)
-								.attr("height", 8)
+								.attr("width", 11)
+								.attr("height", 11)
 								.attr('opacity', 0);
 						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
 							d3.select(this).append("svg:path")
-								.attr("class", "form-program")
-								.attr("d", "M0,-5L10,0L0,5L0,-5")
+								.attr("class", "shape-program")
+								.attr("d", "M0,-7L14,0L0,7L0,-7")
 								.attr('opacity', 0);
 						}
 
@@ -338,13 +339,13 @@ define([
 
 			nEnter.select("circle").transition().duration(800).attr("r", 14);
 			nEnter.select("image").transition().duration(1000).style("opacity", 1);
-			nEnter.select(".form-program").transition().duration(800).style("opacity", 1);
+			nEnter.select(".shape-program").transition().duration(800).style("opacity", 1);
 			nEnter.select("text").transition().duration(800).style("opacity", 1);
 
 			nodeEntity.exit().select("image").transition().duration(600).style("opacity", 0);
 			nodeEntity.exit().select("text").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().select("circle").transition().duration(700).attr("r", 0);
-			nodeEntity.exit().select(".form-program").transition().duration(700).style("opacity", 0);
+			nodeEntity.exit().select(".shape-program").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().transition().duration(800).remove();
 
 
@@ -503,7 +504,10 @@ define([
 					}
 				});
 
-			nodeEntity.selectAll("circle")
+			nodeEntity.selectAll(".shape-program")
+				.attr("transform", function (d) {
+					return "translate(3,10)";
+				})
 				.classed("program-invalid", function (d) {
 					return d.state === "INVALID";
 				})
@@ -518,11 +522,6 @@ define([
 				})
 				.classed("program-incomplete", function (d) {
 					return d.state === "INCOMPLETE";
-				});
-
-			nodeEntity.selectAll(".form-program")
-				.attr("transform", function (d) {
-					return "translate(3,10)";
 				});
 
 

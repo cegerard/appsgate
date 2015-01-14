@@ -1072,13 +1072,16 @@ fieldset[disabled] .btn {
 	fill: orange;
 }
 
+#graph g>.circle-information {
+	fill: #ccc;
+}
+
 .caption-label {
 	vertical-align: super;
 }
 
-.form-program {
+.shape-program {
 	stroke: black;
-	fill: white
 }
 
 .help-div {
