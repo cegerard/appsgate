@@ -8,6 +8,7 @@ public class ToggleThread implements Runnable {
     private final Long durationMs;
     private final Long frequency;
     private Boolean active=true;
+    private final Boolean stateBeforeStartBlink;
     private Long startTimeMs;
     private PhilipsHUEImpl philips;
 
@@ -15,10 +16,17 @@ public class ToggleThread implements Runnable {
         this.durationMs =seconds*1000;
         this.frequency=frequency;
         this.philips=philips;
+        stateBeforeStartBlink=philips.getState();
     }
 
     public void desactivate(){
         active=false;
+    }
+
+    private void loadPreviousState(){
+        if(stateBeforeStartBlink)
+            philips.on();
+        else philips.off();
     }
 
     @Override
@@ -39,5 +47,6 @@ public class ToggleThread implements Runnable {
                 e.printStackTrace();
             }
         }
+        loadPreviousState();
     }
 }
