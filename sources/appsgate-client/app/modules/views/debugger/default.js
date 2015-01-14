@@ -147,6 +147,7 @@ define([
 
         // listen to zoom request from dashboard
         dashboard.on('zoom:request', function (context) {
+            self.$('#datetimepicker-toolbar').show();
             dashboard.requestHistoryTrace(context);
         });
 
@@ -154,11 +155,13 @@ define([
         dashboard.on('marker:click', function (decorations, textContent, htmlContent) {
             $("#bubbleModal").find(".modal-body").html(htmlContent);
             $("#bubbleModal").modal("show");
+            console.log(decorations);
         });
 
 
         // listen to widget focus request from dashboard
         dashboard.on('eventline:focus:request', function(context, attributes) {
+            self.$('#datetimepicker-toolbar').show();
             dashboard.requestHistoryTrace(context);
         });
 
