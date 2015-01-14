@@ -1,5 +1,7 @@
 package appsgate.lig.ehmi.trace;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -103,6 +105,39 @@ public class Trace {
         return to;
     }
     
+    /**
+     * 
+     * @param jsonObject
+     * @param value
+     * @return 
+     */
+    public static JSONObject addString(JSONObject jsonObject, String value) {
+        if (value.equalsIgnoreCase("true")){
+            try {
+                jsonObject.put("boolean", true);
+            } catch (JSONException ex) {
+            }
+            return jsonObject;
+        }
+        if (value.equalsIgnoreCase("false")){
+            try {
+                jsonObject.put("boolean", false);
+            } catch (JSONException ex) {
+            }
+            return jsonObject;
+        }
+        try {
+            JSONObject o = new JSONObject(value);
+            return o;
+        } catch (JSONException ex) {
+
+        }
+        try {
+            jsonObject.put("text", value);
+        } catch (JSONException ex) {
+        }
+        return jsonObject;
+    }
     /**
      * Return the pictoID that match the decoration type
      *
@@ -217,6 +252,7 @@ public class Trace {
     	
 		return picto;
 	}
+
     
     /**
      * Icon type name table

@@ -1,7 +1,7 @@
 //     AppsGate.Debugger v2.0.0
 
 //
-//     Copyright (c)2014 Rémi Barraquand.
+//     Copyright (c)2015 Rémi Barraquand.
 //     Distributed under ISC license
 
 (function (root, factory) {
@@ -362,7 +362,7 @@
     
 
     // Inline include of templates files.
-    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n            <div class="picto picto-<%- decoration.picto %>"></div>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n            <div class="description"><%- i18n.t(decoration.description, decoration.context, { ns: options.i18n.ns }) %></div>\n            <div class="extra">\n                <span class="source"><%- decoration.source %></span> |\n                <span class="causality"><%- decoration.causality %></span>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>';
+    var DECORATIONS_TO_HTML_TPL = '<table class="tabular decorations">\n<% _.forEach(decorations, function(decoration) { %>\n    <tr>\n        <td class="decoration-head">\n\n            <% if(decoration.context !== undefined && decoration.context.rgbcolor !== undefined) { %>\n\t    <div class="picto" style="background-color: <%- decoration.context.rgbcolor %>"></div>\n\t    <%} else { %>\n            <div class="picto picto-<%- decoration.picto %>"></div>\n\t    <%}%>\n            <div class="datetime">\n                <span class="date"><%- timeFormat(\'%x\')(new Date(decoration.time))%></span>\n                <span class="time"><%- timeFormat(\'%X\')(new Date(decoration.time))%></span>\n            </div>\n        </td>\n        <td class="decoration-body">\n            <div class="description"><%- i18n.t(decoration.description, decoration.context, { ns: options.i18n.ns }) %></div>\n            <div class="extra">\n                <span class="source"><%- decoration.source %></span> |\n                <span class="causality"><%- decoration.causality %></span>\n            </div>\n        </td>\n    </tr>\n<% }); %>\n</table>\n';
 
     // Inline include of templates files.
     var DECORATIONS_TO_TXT_TPL = '<% _.forEach(decorations, function(decoration) { %>\n<%- timeFormat(\'%x\')(new Date(decoration.time))%> <%- timeFormat(\'%X\')(new Date(decoration.time)) %> | <%- i18n.t(decoration.description, decoration.context, { ns: options.i18n.ns }) %> <<%- decoration.source %>, <%- decoration.causality %>>\n<% }); %>';
