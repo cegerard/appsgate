@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -203,15 +204,15 @@ public class NodeWhile extends Node implements INodeRule {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (this.rules != null) {
-            this.rules.buildReferences(table);
+            this.rules.buildReferences(table, null);
         }
         if (this.rulesThen != null) {
-            this.rulesThen.buildReferences(table);
+            this.rulesThen.buildReferences(table, null);
         }
         if (this.state != null) {
-            this.state.buildReferences(table);
+            this.state.buildReferences(table, null);
         }
     }
 }

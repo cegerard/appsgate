@@ -92,13 +92,22 @@ public class GraphManager {
                 
                 // Program links : Reference or planified
                 ReferenceTable references = p.getReferences();
-                for (String rdevice : references.getDevicesId()) {
-                    if (rdevice.equals(CLOCK_ID)) {
-                        addLink(PLANIFIED_LINK, pid, rdevice);
+//                for (String rdevice : references.getDevicesId()) {
+//                    if (rdevice.equals(CLOCK_ID)) {
+//                        addLink(PLANIFIED_LINK, pid, rdevice);
+//                    } else {
+//                        addLink(REFERENCE_LINK, pid, rdevice);
+//                    }
+//                }
+                
+                 for (DeviceReferences rdevice : references.getDevicesReferences()) {
+                    if (rdevice.getDeviceId().equals(CLOCK_ID)) {
+                        addLink(PLANIFIED_LINK, pid, rdevice.getDeviceId());
                     } else {
-                        addLink(REFERENCE_LINK, pid, rdevice);
+                        addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
                     }
                 }
+                
                 for (String rProgram : references.getProgramsId()) {
                     addLink(REFERENCE_LINK, pid, rProgram);
                 }
@@ -250,6 +259,38 @@ public class GraphManager {
             o.put("type", type);
             o.put("source", source);
             o.put("target", target);
+            returnJSONObject.getJSONArray("links").put(o);
+        } catch (JSONException ex) {
+            // Nothing will be raised since there is no null value
+        }
+    }
+    
+    /**
+     * Method that adds a link to the json object
+     *
+     * @param type the type of link
+     * @param source the id of the source of the link
+     * @param target the id of the source of the target
+     */
+    private void addLink(String type, String source, String target, ArrayList<HashMap<String, String>> optArgs) {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("type", type);
+            o.put("source", source);
+            o.put("target", target);
+            JSONArray refArray = new JSONArray();
+            if (optArgs != null) {
+                for(HashMap<String,String> refOpt : optArgs){ 
+                    JSONObject ref = new JSONObject();
+                    if (refOpt != null) { 
+                        for (Entry<String, String> arg : refOpt.entrySet()) {
+                            ref.put(arg.getKey(), arg.getValue());
+                        }
+                    }
+                    refArray.put(ref);
+                }
+                o.put("referenceData", refArray);
+            }
             returnJSONObject.getJSONArray("links").put(o);
         } catch (JSONException ex) {
             // Nothing will be raised since there is no null value

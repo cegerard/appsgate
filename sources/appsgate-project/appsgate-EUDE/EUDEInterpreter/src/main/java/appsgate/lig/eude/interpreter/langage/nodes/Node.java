@@ -18,6 +18,7 @@ import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
 import appsgate.lig.eude.interpreter.spec.ProgramLineNotification;
 import appsgate.lig.eude.interpreter.spec.ProgramTraceNotification;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.json.JSONArray;
@@ -622,11 +623,12 @@ public abstract class Node implements Callable<JSONObject>, StartEventGenerator,
     /**
      *
      * @param table
+     * @param args The Hashmap of arguments need in the leaf after event and action node
      */
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         // Do nothing for leaf if no Device or no Program is referenced 
     }
-
+    
     abstract public String getTypeSpec();
     
     @Override

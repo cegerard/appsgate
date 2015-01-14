@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.nodes.NodeProgram;
 import appsgate.lig.eude.interpreter.langage.nodes.NodeSelect;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,11 +60,17 @@ public class ReferenceTable {
         MISSING,
         UNKNOWN
     };
+    
+    public enum REFERENCE_TYPE {
+        WRITING,
+        READING
+    };
 
     /**
      *
      */
-    private final HashMap<String, STATUS> devices;
+//    private final HashMap<String, STATUS> devices;
+    private final ArrayList<DeviceReferences> devices;
     /**
      *
      */
@@ -80,7 +87,8 @@ public class ReferenceTable {
      * @param pid
      */
     public ReferenceTable(EUDEInterpreter interpreter, String pid) {
-        devices = new HashMap<String, STATUS>();
+//        devices = new HashMap<String, STATUS>();
+        devices = new ArrayList<DeviceReferences>();
         programs = new HashMap<String, STATUS>();
         nodes = new ArrayList<NodeSelect>();
         this.interpreter = interpreter;
@@ -105,7 +113,27 @@ public class ReferenceTable {
      * @param deviceId
      */
     public void addDevice(String deviceId) {
-        devices.put(deviceId, STATUS.UNKNOWN);
+//        devices.put(deviceId, STATUS.UNKNOWN);
+        devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN));
+    }
+    
+     /**
+     *
+     * @param deviceId
+     * @param refData - data about reference
+     */
+    public void addDevice(String deviceId, HashMap<String,String> refData) {
+//        devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN, refData));
+        
+        DeviceReferences dRef = getDeviceFromId(deviceId);
+        if (dRef != null) {
+            dRef.addReferencesData(refData);
+        } else {
+            ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
+            newRefData.add(refData);
+            devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN, newRefData));
+        }
+        
     }
 
     /**
@@ -121,8 +149,13 @@ public class ReferenceTable {
      * @param newStatus
      */
     public void setDeviceStatus(String deviceId, STATUS newStatus) {
-        if (devices.containsKey(deviceId)) {
-            devices.put(deviceId, newStatus);
+//        if (devices.containsKey(deviceId)) {
+//            devices.put(deviceId, newStatus);
+//        }
+        for (DeviceReferences device : this.devices) {
+            if (device.getDeviceId().equals(deviceId)) {
+                device.setDeviceStatus(newStatus);
+            }
         }
     }
 
@@ -145,13 +178,31 @@ public class ReferenceTable {
     public Set<String> getProgramsId() {
         return programs.keySet();
     }
+    
+    public ArrayList<DeviceReferences> getDevicesReferences() {
+        return this.devices;
+    }
 
     /**
      *
      * @return
      */
     public Set<String> getDevicesId() {
-        return devices.keySet();
+//        return devices.keySet();
+        Set<String> devicesId = new HashSet<String>();
+        for (DeviceReferences device : this.devices) {
+            devicesId.add(device.getDeviceId());
+        }
+        return devicesId;
+    }
+    
+    public DeviceReferences getDeviceFromId (String id) {
+        for (DeviceReferences device : this.devices) {
+            if (device.getDeviceId().equals(id)) {
+                return device;
+            }
+        }
+        return null;
     }
 
     public ArrayList<NodeSelect> getSelectors() {
@@ -177,7 +228,8 @@ public class ReferenceTable {
     private void retrieveReferences() {
         for (String k : programs.keySet()) {
             NodeProgram prog = interpreter.getNodeProgram(k);
-            LOGGER.trace("retrieveReferences(), program " + k + ", status " + devices.get(k));
+//            LOGGER.trace("retrieveReferences(), program " + k + ", status " + devices.get(k));
+            LOGGER.trace("retrieveReferences(), program " + k + ", status " + programs.get(k));
             if (prog != null) {
                 if (!prog.isValid()) {
                     LOGGER.error("The program {} is not valid.", k);
@@ -192,13 +244,24 @@ public class ReferenceTable {
             }
         }
         // Services && devices are treated the same way
-        for (String k : devices.keySet()) {
-            LOGGER.trace("retrieveReferences(), device " + k + ", status " + devices.get(k));
-            JSONObject device = interpreter.getContext().getDevice(k);
+//        for (String k : devices.keySet()) {
+//            LOGGER.trace("retrieveReferences(), device " + k + ", status " + devices.get(k));
+//            JSONObject device = interpreter.getContext().getDevice(k);
+//            try {
+//                if (device == null || !device.has("status") || !device.getString("status").equals("2")) {
+//                    LOGGER.warn("The device {} is missing.", k);
+//                    setDeviceStatus(k, STATUS.MISSING);
+//                }
+//            } catch (JSONException ex) {
+//            }
+//        }
+        for (DeviceReferences device : devices) {
+            LOGGER.trace("retrieveReferences(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
+            JSONObject deviceJSON = interpreter.getContext().getDevice(device.getDeviceId());
             try {
-                if (device == null || !device.has("status") || !device.getString("status").equals("2")) {
-                    LOGGER.warn("The device {} is missing.", k);
-                    setDeviceStatus(k, STATUS.MISSING);
+                if (deviceJSON == null || !deviceJSON.has("status") || !deviceJSON.getString("status").equals("2")) {
+                    LOGGER.warn("The device {} is missing.", device.getDeviceId());
+                    setDeviceStatus(device.getDeviceId(), STATUS.MISSING);
                 }
             } catch (JSONException ex) {
             }
@@ -232,11 +295,20 @@ public class ReferenceTable {
             }
         }
         // Services && devices are treated the same way
-        for (String k : devices.keySet()) {
-            LOGGER.trace("computeStatus(), device " + k + ", status " + devices.get(k));
-            switch (devices.get(k)) {
+//        for (String k : devices.keySet()) {
+//            LOGGER.trace("computeStatus(), device " + k + ", status " + devices.get(k));
+//            switch (devices.get(k)) {
+//                case MISSING:
+//                    this.err = ErrorMessagesFactory.getMessageFromMissingDevice(k);
+//                    setState(STATUS.UNSTABLE);
+//                    break;
+//            }
+//        }
+        for (DeviceReferences device : devices) {
+            LOGGER.trace("computeStatus(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
+            switch (device.getDeviceStatus()) {
                 case MISSING:
-                    this.err = ErrorMessagesFactory.getMessageFromMissingDevice(k);
+                    this.err = ErrorMessagesFactory.getMessageFromMissingDevice(device.getDeviceId());
                     setState(STATUS.UNSTABLE);
                     break;
             }

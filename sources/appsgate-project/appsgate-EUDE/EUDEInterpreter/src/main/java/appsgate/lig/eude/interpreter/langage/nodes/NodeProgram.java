@@ -227,7 +227,7 @@ final public class NodeProgram extends Node implements ProgramDesc {
         }
         this.references = new ReferenceTable(mediator, this.id);
         if (this.body != null) {
-            this.body.buildReferences(this.references);
+            this.body.buildReferences(this.references, null);
         }
         ReferenceTable.STATUS newStatus = this.references.checkReferences();
         return applyStatus(newStatus);

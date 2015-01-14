@@ -8,6 +8,7 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,15 +226,15 @@ public class NodeIf extends Node {
     }
     
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (this.expBool != null) {
-            expBool.buildReferences(table);
+            expBool.buildReferences(table, null);
         }
         if (this.seqRulesTrue != null) {
-            seqRulesTrue.buildReferences(table);
+            seqRulesTrue.buildReferences(table, null);
         }
         if (this.seqRulesFalse != null) {
-            seqRulesFalse.buildReferences(table);
+            seqRulesFalse.buildReferences(table, null);
         }
     }
 

@@ -243,7 +243,7 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         table.addNodeSelect(this);
     }
 

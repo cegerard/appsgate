@@ -10,6 +10,7 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.components.SpokObject;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -168,9 +169,9 @@ public class NodeVariableAssignation extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (value != null) {
-            value.buildReferences(table);
+            value.buildReferences(table, null);
         }
     }
 }

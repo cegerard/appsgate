@@ -57,6 +57,8 @@ define([
 			savedScale = 1;
 			savedTranslate = [0, 0];
 			onMouseDownNode = false;
+			// Used to hide the popups relations
+			onCircleRelation = false;
 		},
 
 		onRefreshButton: function () {
@@ -141,6 +143,14 @@ define([
 					if (!onMouseDownNode) {
 						$("body").css("cursor", "move");
 					}
+					// Temporaire : Hide all popovers if pan ...
+					if (!onCircleRelation) {
+						$('.popover').each(function (pop) {
+							if ($(this).is(":visible")) {
+								$(this).popover('hide');
+							}
+						});
+					}
 				})
 				.on("zoomend", function () {
 					$("body").css("cursor", "default");
@@ -192,6 +202,9 @@ define([
 			// Call update to update the state of the force (node/link)
 			this.update(this.model);
 
+			// Initialize all the popover one time
+			$('[data-toggle="popover"]').popover();
+
 			force.start();
 
 			// translate the view
@@ -205,7 +218,6 @@ define([
 
 			force.nodes(model.get("currentEntities"));
 			force.links(model.get("currentRelations"));
-
 
 			/******* NODES (=Entities) *******/
 
@@ -370,27 +382,57 @@ define([
 						.attr("class", "circle-information")
 						.attr("r", 5)
 						.attr("fill", "red")
+						.attr("data-container", "#graph")
+						.attr("data-toggle", "popover")
+						.attr("data-content", function (d) {
+							if (d.referenceData !== undefined) {
+								var referenceString = "";
+								d.referenceData.forEach(function (ref) {
+									if (ref.referenceType !== undefined && ref.method !== undefined) {
+										referenceString += ref.referenceType + " : " + ref.method + "<br />";
+									}
+								});
+								return referenceString;
+							} else {
+								return null;
+							}
+						})
+						.attr("data-title", function (d) {
+							return $.i18n.t("dependancy.type.relation." + d.type);
+						})
+						.attr("data-template", function (d) {
+							if (d.referenceData) {
+								return '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>';
+							} else {
+								return '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3></div>';
+							}
+						})
+						.attr("data-html", true)
 						.on("mouseover", function (d) {
 							d3.select(this.parentNode).select("text").classed("hidden", false);
+							onCircleRelation = true;
 						})
 						.on("mouseout", function (d) {
 							d3.select(this.parentNode).select("text").classed("hidden", true);
+							onCircleRelation = false;
+						})
+						.on("click", function (d)  {
+							$((d3.select(this))[0]).popover();
 						});
 					// TEXT
-					d3.select(this).append("text")
-						.attr("class", "linklabel linklabelholder hidden")
-						.style("font-size", "13px")
-						.attr("x", "90")
-						.attr("text-anchor", "middle")
-						.append("textPath")
-						.attr("xlink:href", function (d) {
-							return "#linkID_" + i;
-						})
-						.text(function (d) {
-							return $.i18n.t("dependancy.type.relation." + d.type);
-						});
+					//					d3.select(this).append("text")
+					//						.attr("class", "linklabel linklabelholder hidden")
+					//						.style("font-size", "13px")
+					//						.attr("x", "90")
+					//						.attr("text-anchor", "middle")
+					//						.append("textPath")
+					//						.attr("xlink:href", function (d) {
+					//							return "#linkID_" + i;
+					//						})
+					//						.text(function (d) {
+					//							return $.i18n.t("dependancy.type.relation." + d.type);
+					//						});
 				});
-
 
 			pathLink.exit().remove();
 

@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.SpokParser;
 import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -140,12 +141,12 @@ public class NodeWait extends Node {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (this.event != null) {
-            event.buildReferences(table);
+            event.buildReferences(table, null);
         }
         if (this.waitFor != null) {
-            waitFor.buildReferences(table);
+            waitFor.buildReferences(table, null);
         }
     }
 

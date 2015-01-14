@@ -41,7 +41,7 @@ define([
 			});
 
 			/**** Event binding to have dynamic update ****/
-			
+
 			dispatcher.on("updatePlace", function (place) {
 				console.log("updatePlace");
 				var placeUpdated = _.find(self.get("entities"), function (e) {
@@ -71,12 +71,12 @@ define([
 				console.log("moveDevice");
 				dispatcher.trigger("UpdateGraphLoad");
 			});
-			
+
 			dispatcher.on("newDevice", function (messageData) {
 				console.log("newDevice");
 				dispatcher.trigger("UpdateGraphLoad");
 			});
-			
+
 			dispatcher.on("removeDevice", function (messageData) {
 				console.log("removeDevice");
 				dispatcher.trigger("UpdateGraphLoad");
@@ -139,6 +139,7 @@ define([
 				neighbors = buildNeighborsMap(relations);
 
 			console.log("Entities loaded : %o", entities);
+			console.log("Relations loaded : %o", relations);
 
 			// Once data structure are built, set them in the modele
 			this.set({
@@ -400,11 +401,27 @@ define([
 
 			// !!!!!!!!! On ne met pas une relation si une des entités de la relation est indéfinie, donc potentiellement on enlève de l'info
 			if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined') {
-				relations.push({
-					source: sourceNode,
-					target: targetNode,
-					type: e.type
-				});
+				if (e.referenceData) {
+					var refData = [];
+					e.referenceData.forEach(function (ref) {
+						var newReference = {};
+						newReference.referenceType = ref.referenceType;
+						newReference.method = ref.method;
+						refData.push(newReference);
+					});
+					relations.push({
+						source: sourceNode,
+						target: targetNode,
+						type: e.type,
+						referenceData: refData
+					});
+				} else {
+					relations.push({
+						source: sourceNode,
+						target: targetNode,
+						type: e.type
+					});
+				}
 			}
 
 		});
@@ -463,11 +480,20 @@ define([
 				})[0];
 
 			if (typeof sourceNode !== 'undefined' && typeof targetNode !== 'undefined' && _.contains(self.get("currentRelationsTypes"), e.type)) {
-				newLinks.push({
-					source: sourceNode,
-					target: targetNode,
-					type: e.type
-				});
+				if (e.referenceData) {
+					newLinks.push({
+						source: sourceNode,
+						target: targetNode,
+						type: e.type,
+						referenceData: e.referenceData
+					});
+				} else {
+					newLinks.push({
+						source: sourceNode,
+						target: targetNode,
+						type: e.type
+					});
+				}
 			}
 		});
 
