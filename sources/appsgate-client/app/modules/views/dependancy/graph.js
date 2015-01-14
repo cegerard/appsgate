@@ -549,21 +549,37 @@ define([
 			//				return !isNode1 && !isNode2;
 			//			})
 			.attr("marker-end", function (d) {
-				var isMultipleTargeted = self.model.isTargetMultipleTargeted(d.target);
+				var isWritingReference = function (link) {
+					if (link.referenceData) {
+						for (var index = 0; index < link.referenceData.length; index++) {
+							if (link.referenceData[index].referenceType === "WRITING") {
+								return true;
+							}
+						}
+					}
+					return false;
+				}(d);
 				// Target focus and mutliple target -> RED / ARROW
-				if (d.target === self.model.get("rootNode") && d.type === "reference" && isMultipleTargeted)
+				if (d.target === self.model.get("rootNode") && d.type === "reference" && isWritingReference)
 					return "url(#targetingRefFocus)";
 				// Target focus -> ARROW
 				else if (d.target === self.model.get("rootNode"))
 					return "url(#targetingFocus)";
 				// Multiple target -> RED
-				else if (isMultipleTargeted && d.type === "reference")
+				else if (isWritingReference && d.type === "reference")
 					return "url(#targeting)";
 				else
 					return "url(#" + d.type + ")";
 			})
 				.classed("important-path", function (d) {
-					return (d.type === "reference" && self.model.isTargetMultipleTargeted(d.target));
+					if (d.referenceData) {
+						for (var index = 0; index < d.referenceData.length; index++) {
+							if (d.referenceData[index].referenceType === "WRITING") {
+								return true;
+							}
+						}
+					}
+					return false;
 				});
 
 			pathLink.select(".linkText")
