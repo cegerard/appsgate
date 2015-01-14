@@ -88,7 +88,8 @@ public class PhilipsHUEImpl extends CoreObjectBehavior implements CoreColorLight
 
             return obj;
         } catch (Exception exc) {
-            logger.error("PhilipsBridge.getLightState(....), not available : " + exc.getMessage());
+            logger.error("PhilipsBridge.getLightState(....), not available : " + exc);
+            logger.error("Ip: {}, Id: {}", lightBridgeIP, lightBridgeId);
             status = "1";
 
             return null;

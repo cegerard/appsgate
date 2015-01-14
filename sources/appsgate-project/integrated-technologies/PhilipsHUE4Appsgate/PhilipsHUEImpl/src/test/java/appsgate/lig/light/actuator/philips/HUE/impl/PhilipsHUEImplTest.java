@@ -1,17 +1,11 @@
 package appsgate.lig.light.actuator.philips.HUE.impl;
 
-import appsgate.lig.chmi.spec.CHMIProxySpec;
-import appsgate.lig.chmi.spec.GenericCommand;
-import appsgate.lig.context.services.DataBasePullService;
-import appsgate.lig.context.services.DataBasePushService;
 import appsgate.lig.core.tests.CoreObjectBehaviorTest;
-import appsgate.lig.ehmi.spec.EHMIProxyMock;
 import appsgate.lig.proxy.PhilipsHUE.interfaces.PhilipsHUEServices;
 import org.jmock.Expectations;
 import static org.jmock.Expectations.returnValue;
 import org.jmock.Mockery;
 import org.jmock.lib.concurrent.Synchroniser;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
