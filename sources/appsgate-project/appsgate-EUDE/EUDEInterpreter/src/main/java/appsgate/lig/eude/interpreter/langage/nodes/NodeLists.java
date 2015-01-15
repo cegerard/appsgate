@@ -9,6 +9,7 @@ import appsgate.lig.eude.interpreter.langage.components.EndEvent;
 import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
+import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.collections4.ListUtils;
 import org.json.JSONArray;
@@ -249,12 +250,12 @@ public class NodeLists extends Node implements INodeList, ICanBeEvaluated {
 
     }
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (this.left != null) {
-            left.buildReferences(table);
+            left.buildReferences(table, null);
         }
         if (this.right != null) {
-            right.buildReferences(table);
+            right.buildReferences(table, null);
         }
     }
 

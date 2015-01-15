@@ -33,7 +33,7 @@ define([
 				self.update(self.model);
 				force.start();
 			});
-			
+
 			// TODO = Improvements -> Sometimes more than one message is processed
 
 			// Update the graph when the modifications does not need to reload it to build new data structures (ie rename place)
@@ -57,6 +57,8 @@ define([
 			savedScale = 1;
 			savedTranslate = [0, 0];
 			onMouseDownNode = false;
+			// Used to hide the popups relations
+			onCircleRelation = false;
 		},
 
 		onRefreshButton: function () {
@@ -141,6 +143,14 @@ define([
 					if (!onMouseDownNode) {
 						$("body").css("cursor", "move");
 					}
+					// Temporaire : Hide all popovers if pan ...
+					if (!onCircleRelation) {
+						$('.popover').each(function (pop) {
+							if ($(this).is(":visible")) {
+								$(this).popover('hide');
+							}
+						});
+					}
 				})
 				.on("zoomend", function () {
 					$("body").css("cursor", "default");
@@ -192,6 +202,9 @@ define([
 			// Call update to update the state of the force (node/link)
 			this.update(this.model);
 
+			// Initialize all the popover one time
+			$('[data-toggle="popover"]').popover();
+
 			force.start();
 
 			// translate the view
@@ -205,7 +218,6 @@ define([
 
 			force.nodes(model.get("currentEntities"));
 			force.links(model.get("currentRelations"));
-
 
 			/******* NODES (=Entities) *******/
 
@@ -237,8 +249,13 @@ define([
 					nodeEntity.classed("neighborNodeOver", function (d2) {
 						return model.neighboring(d, d2);
 					});
+					// Low opacity of all nodes except node over and its neighbors
+					nodeEntity.classed("node-less-opacity", function (d2) {
+						return d2 !== d && !model.neighboring(d, d2);
+					});
 				})
 				.on("mouseout", function (d) {
+					nodeEntity.classed("node-less-opacity", false);
 					nodeEntity.classed("nodeOver", false);
 					nodeEntity.classed("neighborNodeOver", false);
 					nodeEntity.classed("fixedNode", function (d) {
@@ -295,24 +312,25 @@ define([
 								return d.name;
 						})
 
+					// shape STATUS PROGRAMS
 					// Type program, add form to indicate running or not. 
 					if (a.type === "program") {
 						if (a.state === "DEPLOYED" || a.state === "INVALID" || a.state === "INCOMPLETE") {
 							d3.select(this).append("rect")
-								.attr("class", "form-program")
+								.attr("class", "shape-program")
 								.attr("x", function (m) {
 									return 0
 								})
 								.attr("y", function (m) {
 									return 0
 								})
-								.attr("width", 8)
-								.attr("height", 8)
+								.attr("width", 11)
+								.attr("height", 11)
 								.attr('opacity', 0);
 						} else if (a.state === "PROCESSING" || a.state === "LIMPING") {
 							d3.select(this).append("svg:path")
-								.attr("class", "form-program")
-								.attr("d", "M0,-5L10,0L0,5L0,-5")
+								.attr("class", "shape-program")
+								.attr("d", "M0,-7L14,0L0,7L0,-7")
 								.attr('opacity', 0);
 						}
 
@@ -321,13 +339,13 @@ define([
 
 			nEnter.select("circle").transition().duration(800).attr("r", 14);
 			nEnter.select("image").transition().duration(1000).style("opacity", 1);
-			nEnter.select(".form-program").transition().duration(800).style("opacity", 1);
+			nEnter.select(".shape-program").transition().duration(800).style("opacity", 1);
 			nEnter.select("text").transition().duration(800).style("opacity", 1);
 
 			nodeEntity.exit().select("image").transition().duration(600).style("opacity", 0);
 			nodeEntity.exit().select("text").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().select("circle").transition().duration(700).attr("r", 0);
-			nodeEntity.exit().select(".form-program").transition().duration(700).style("opacity", 0);
+			nodeEntity.exit().select(".shape-program").transition().duration(700).style("opacity", 0);
 			nodeEntity.exit().transition().duration(800).remove();
 
 
@@ -362,30 +380,60 @@ define([
 						});
 					// CIRCLE
 					d3.select(this).append("circle")
-						.attr("class", "circle-information hidden")
+						.attr("class", "circle-information")
 						.attr("r", 5)
 						.attr("fill", "red")
+						.attr("data-container", "#graph")
+						.attr("data-toggle", "popover")
+						.attr("data-content", function (d) {
+							if (d.referenceData !== undefined) {
+								var referenceString = "";
+								d.referenceData.forEach(function (ref) {
+									if (ref.referenceType !== undefined && ref.method !== undefined) {
+										referenceString += ref.referenceType + " : " + ref.method + "<br />";
+									}
+								});
+								return referenceString;
+							} else {
+								return null;
+							}
+						})
+						.attr("data-title", function (d) {
+							return $.i18n.t("dependancy.type.relation." + d.type);
+						})
+						.attr("data-template", function (d) {
+							if (d.referenceData) {
+								return '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>';
+							} else {
+								return '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3></div>';
+							}
+						})
+						.attr("data-html", true)
 						.on("mouseover", function (d) {
 							d3.select(this.parentNode).select("text").classed("hidden", false);
+							onCircleRelation = true;
 						})
 						.on("mouseout", function (d) {
 							d3.select(this.parentNode).select("text").classed("hidden", true);
+							onCircleRelation = false;
+						})
+						.on("click", function (d)  {
+							$((d3.select(this))[0]).popover();
 						});
 					// TEXT
-					d3.select(this).append("text")
-						.attr("class", "linklabel linklabelholder hidden")
-						.style("font-size", "13px")
-						.attr("x", "90")
-						.attr("text-anchor", "middle")
-						.append("textPath")
-						.attr("xlink:href", function (d) {
-							return "#linkID_" + i;
-						})
-						.text(function (d) {
-							return $.i18n.t("dependancy.type.relation." + d.type);
-						});
+					//					d3.select(this).append("text")
+					//						.attr("class", "linklabel linklabelholder hidden")
+					//						.style("font-size", "13px")
+					//						.attr("x", "90")
+					//						.attr("text-anchor", "middle")
+					//						.append("textPath")
+					//						.attr("xlink:href", function (d) {
+					//							return "#linkID_" + i;
+					//						})
+					//						.text(function (d) {
+					//							return $.i18n.t("dependancy.type.relation." + d.type);
+					//						});
 				});
-
 
 			pathLink.exit().remove();
 
@@ -430,21 +478,22 @@ define([
 					}
 					return transf;
 				})
-				.classed("node-0", function (d) {
-					return d === self.model.get("rootNode");
-				})
-				.classed("node-1", function (d) {
-					return self.model.neighboring(d, self.model.get("rootNode"));
-				})
-				.classed("node-2", function (d) {
-					return self.model.getDepthNeighbor(d) === 2;
-				})
-				.classed("node-more", function (d) {
-					return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
-				})
-				.classed("fixedNode", function (d) {
-					return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
-				});
+			// Old code with opacity according to depth 
+			//				.classed("node-0", function (d) {
+			//					return d === self.model.get("rootNode");
+			//				})
+			//				.classed("node-1", function (d) {
+			//					return self.model.neighboring(d, self.model.get("rootNode"));
+			//				})
+			//				.classed("node-2", function (d) {
+			//					return self.model.getDepthNeighbor(d) === 2;
+			//				})
+			//				.classed("node-more", function (d) {
+			//					return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
+			//				})
+			.classed("fixedNode", function (d) {
+				return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
+			});
 
 			nodeEntity.selectAll("text")
 				.attr("transform", function (d) {
@@ -455,7 +504,10 @@ define([
 					}
 				});
 
-			nodeEntity.selectAll("circle")
+			nodeEntity.selectAll(".shape-program")
+				.attr("transform", function (d) {
+					return "translate(3,10)";
+				})
 				.classed("program-invalid", function (d) {
 					return d.state === "INVALID";
 				})
@@ -472,44 +524,61 @@ define([
 					return d.state === "INCOMPLETE";
 				});
 
-			nodeEntity.selectAll(".form-program")
-				.attr("transform", function (d) {
-					return "translate(3,10)";
-				});
-
 
 			pathLink.select(".link")
 				.attr("d", function (d) {
 					// don't look about the orientation, this is the link showed
 					return arcPath(false, d);
 				})
-				.classed("node-1", function (d) {
-					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
-				})
-				.classed("node-2", function (d) {
-					return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
-				})
-				.classed("node-more", function (d) {
-					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
-					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
-					return !isNode1 && !isNode2;
-				})
-				.attr("marker-end", function (d) {
-					var isMultipleTargeted = self.model.isTargetMultipleTargeted(d.target);
-					// Target focus and mutliple target -> RED / ARROW
-					if (d.target === self.model.get("rootNode") && d.type === "reference" && isMultipleTargeted)
-						return "url(#targetingRefFocus)";
-					// Target focus -> ARROW
-					else if (d.target === self.model.get("rootNode"))
-						return "url(#targetingFocus)";
-					// Multiple target -> RED
-					else if (isMultipleTargeted && d.type === "reference")
-						return "url(#targeting)";
-					else
-						return "url(#" + d.type + ")";
-				})
+			// Old code with opacity according to depth 
+			//				.classed("node-1", function (d) {
+			//					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+			//				})
+			//				.classed("node-2", function (d) {
+			//					return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+			//				})
+			//				.classed("node-more", function (d) {
+			//					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+			//					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+			//					return !isNode1 && !isNode2;
+			//				})
+			//			.classed("node-less-opacity", function (d) {
+			//				var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+			//				var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+			//				return !isNode1 && !isNode2;
+			//			})
+			.attr("marker-end", function (d) {
+				var isWritingReference = function (link) {
+					if (link.referenceData) {
+						for (var index = 0; index < link.referenceData.length; index++) {
+							if (link.referenceData[index].referenceType === "WRITING") {
+								return true;
+							}
+						}
+					}
+					return false;
+				}(d);
+				// Target focus and mutliple target -> RED / ARROW
+				if (d.target === self.model.get("rootNode") && d.type === "reference" && isWritingReference)
+					return "url(#targetingRefFocus)";
+				// Target focus -> ARROW
+				else if (d.target === self.model.get("rootNode"))
+					return "url(#targetingFocus)";
+				// Multiple target -> RED
+				else if (isWritingReference && d.type === "reference")
+					return "url(#targeting)";
+				else
+					return "url(#" + d.type + ")";
+			})
 				.classed("important-path", function (d) {
-					return (d.type === "reference" && self.model.isTargetMultipleTargeted(d.target));
+					if (d.referenceData) {
+						for (var index = 0; index < d.referenceData.length; index++) {
+							if (d.referenceData[index].referenceType === "WRITING") {
+								return true;
+							}
+						}
+					}
+					return false;
 				});
 
 			pathLink.select(".linkText")
@@ -520,9 +589,6 @@ define([
 
 
 			pathLink.select("circle")
-				.classed("hidden", function (l) {
-					return !(l.source === self.model.get("rootNode") || l.target === self.model.get("rootNode"));
-				})
 				.attr("cx", function (l) {
 					return (l.source.x + l.target.x) / 2;
 				})

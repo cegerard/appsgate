@@ -5,6 +5,7 @@ import appsgate.lig.eude.interpreter.langage.components.ReferenceTable;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -136,12 +137,12 @@ public class NodeKeepState extends Node {
         return state;
     }
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (this.state != null) {
-            this.state.buildReferences(table);
+            this.state.buildReferences(table, null);
         }
         if (this.setter != null) {
-            this.setter.buildReferences(table);
+            this.setter.buildReferences(table, null);
         }
     }
 

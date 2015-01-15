@@ -92,13 +92,22 @@ public class GraphManager {
                 
                 // Program links : Reference or planified
                 ReferenceTable references = p.getReferences();
-                for (String rdevice : references.getDevicesId()) {
-                    if (rdevice.equals(CLOCK_ID)) {
-                        addLink(PLANIFIED_LINK, pid, rdevice);
+//                for (String rdevice : references.getDevicesId()) {
+//                    if (rdevice.equals(CLOCK_ID)) {
+//                        addLink(PLANIFIED_LINK, pid, rdevice);
+//                    } else {
+//                        addLink(REFERENCE_LINK, pid, rdevice);
+//                    }
+//                }
+                
+                 for (DeviceReferences rdevice : references.getDevicesReferences()) {
+                    if (rdevice.getDeviceId().equals(CLOCK_ID)) {
+                        addLink(PLANIFIED_LINK, pid, rdevice.getDeviceId());
                     } else {
-                        addLink(REFERENCE_LINK, pid, rdevice);
+                        addLink(REFERENCE_LINK, pid, rdevice.getDeviceId(), rdevice.getReferencesData());
                     }
                 }
+                
                 for (String rProgram : references.getProgramsId()) {
                     addLink(REFERENCE_LINK, pid, rProgram);
                 }
@@ -255,6 +264,38 @@ public class GraphManager {
             // Nothing will be raised since there is no null value
         }
     }
+    
+    /**
+     * Method that adds a link to the json object
+     *
+     * @param type the type of link
+     * @param source the id of the source of the link
+     * @param target the id of the source of the target
+     */
+    private void addLink(String type, String source, String target, ArrayList<HashMap<String, String>> optArgs) {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("type", type);
+            o.put("source", source);
+            o.put("target", target);
+            JSONArray refArray = new JSONArray();
+            if (optArgs != null) {
+                for(HashMap<String,String> refOpt : optArgs){ 
+                    JSONObject ref = new JSONObject();
+                    if (refOpt != null) { 
+                        for (Entry<String, String> arg : refOpt.entrySet()) {
+                            ref.put(arg.getKey(), arg.getValue());
+                        }
+                    }
+                    refArray.put(ref);
+                }
+                o.put("referenceData", refArray);
+            }
+            returnJSONObject.getJSONArray("links").put(o);
+        } catch (JSONException ex) {
+            // Nothing will be raised since there is no null value
+        }
+    }
 
     /**
      * Init the JSON Object that will be returned
@@ -307,11 +348,11 @@ public class GraphManager {
     private boolean addSelector(String pid, ReferenceTable ref, ArrayList<NodeSelect> selectorsSaved, int idSelector) {
         boolean ret = false;
         String typeDevices = "";
-        ArrayList<NodeSelect> selectors = ref.getSelectors();
+        ArrayList<SelectReferences> selectors = ref.getSelectors();
         // For each selector present in the program...
-        for (NodeSelect selector : selectors) {
+        for (SelectReferences selector : selectors) {
          
-            HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getPlaceDeviceSelector();
+            HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getNodeSelect().getPlaceDeviceSelector();
 
             ArrayList<String> placesSelector = elements.get("placeSelector");
             String placeId = "";
@@ -337,11 +378,11 @@ public class GraphManager {
             // Add the location link
             addLink(LOCATED_LINK, "selector-" + typeDevices + "-" + placeId, placeId);
             // Add the reference
-            addLink(REFERENCE_LINK, pid, "selector-" + typeDevices + "-" + placeId);
+            addLink(REFERENCE_LINK, pid, "selector-" + typeDevices + "-" + placeId, selector.getReferencesData());
             
             if (!typeDevices.equals("")){      
                 // If the selector hasn't been add to the graph, create the entity
-                if (!isSelectorAlreadySaved(selectorsSaved, selector)) {
+                if (!isSelectorAlreadySaved(selectorsSaved, selector.getNodeSelect())) {
                     // Add selector : name = type devices selected and add type = selector
                     HashMap<String, String> optArg = new HashMap<String, String>();
                     optArg.put("type", "selector");
@@ -349,7 +390,7 @@ public class GraphManager {
                     addNode(SELECTOR_ENTITY, "selector-" + typeDevices + "-" + placeId, typeDevices, optArg);
                 }
                 // add the selector, to the list of selector added
-                selectorsSaved.add(selector);
+                selectorsSaved.add(selector.getNodeSelect());
                 typeDevices = "";
                 ret = true;
             }

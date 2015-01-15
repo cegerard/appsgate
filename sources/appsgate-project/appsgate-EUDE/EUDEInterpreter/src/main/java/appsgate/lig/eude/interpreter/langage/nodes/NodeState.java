@@ -11,6 +11,7 @@ import appsgate.lig.eude.interpreter.langage.components.StartEvent;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokExecutionException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokNodeException;
 import appsgate.lig.eude.interpreter.langage.exceptions.SpokTypeException;
+import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -265,15 +266,15 @@ abstract public class NodeState extends Node implements ICanBeEvaluated {
     }
 
     @Override
-    protected void buildReferences(ReferenceTable table) {
+    protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
         if (this.eventEndNode != null) {
-            eventEndNode.buildReferences(table);
+            eventEndNode.buildReferences(table, null);
         }
         if (this.eventStartNode != null) {
-            eventStartNode.buildReferences(table);
+            eventStartNode.buildReferences(table, null);
         }
         if (this.objectNode != null) {
-            objectNode.buildReferences(table);
+            objectNode.buildReferences(table, null);
         }
     }
 
