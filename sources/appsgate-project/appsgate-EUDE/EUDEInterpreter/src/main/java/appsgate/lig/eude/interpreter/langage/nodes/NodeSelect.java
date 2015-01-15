@@ -244,7 +244,7 @@ public class NodeSelect extends Node implements INodeList, ICanBeEvaluated {
 
     @Override
     protected void buildReferences(ReferenceTable table, HashMap<String,String> args) {
-        table.addNodeSelect(this);
+        table.addNodeSelect(this, args);
     }
 
     @Override

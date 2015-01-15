@@ -348,11 +348,11 @@ public class GraphManager {
     private boolean addSelector(String pid, ReferenceTable ref, ArrayList<NodeSelect> selectorsSaved, int idSelector) {
         boolean ret = false;
         String typeDevices = "";
-        ArrayList<NodeSelect> selectors = ref.getSelectors();
+        ArrayList<SelectReferences> selectors = ref.getSelectors();
         // For each selector present in the program...
-        for (NodeSelect selector : selectors) {
+        for (SelectReferences selector : selectors) {
          
-            HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getPlaceDeviceSelector();
+            HashMap<String, ArrayList<String>> elements = (HashMap<String, ArrayList<String>>) selector.getNodeSelect().getPlaceDeviceSelector();
 
             ArrayList<String> placesSelector = elements.get("placeSelector");
             String placeId = "";
@@ -378,11 +378,11 @@ public class GraphManager {
             // Add the location link
             addLink(LOCATED_LINK, "selector-" + typeDevices + "-" + placeId, placeId);
             // Add the reference
-            addLink(REFERENCE_LINK, pid, "selector-" + typeDevices + "-" + placeId);
+            addLink(REFERENCE_LINK, pid, "selector-" + typeDevices + "-" + placeId, selector.getReferencesData());
             
             if (!typeDevices.equals("")){      
                 // If the selector hasn't been add to the graph, create the entity
-                if (!isSelectorAlreadySaved(selectorsSaved, selector)) {
+                if (!isSelectorAlreadySaved(selectorsSaved, selector.getNodeSelect())) {
                     // Add selector : name = type devices selected and add type = selector
                     HashMap<String, String> optArg = new HashMap<String, String>();
                     optArg.put("type", "selector");
@@ -390,7 +390,7 @@ public class GraphManager {
                     addNode(SELECTOR_ENTITY, "selector-" + typeDevices + "-" + placeId, typeDevices, optArg);
                 }
                 // add the selector, to the list of selector added
-                selectorsSaved.add(selector);
+                selectorsSaved.add(selector.getNodeSelect());
                 typeDevices = "";
                 ret = true;
             }

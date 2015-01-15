@@ -149,7 +149,7 @@ define([
 				currentEntities: entities,
 				currentRelations: relations
 			});
-			
+
 			// Bind event ID
 			_.each(this.get("currentEntities"), function (e) {
 				dispatcher.on(e.id, function () {
@@ -322,14 +322,16 @@ define([
 			var self = this;
 			var targetedOneTime = false;
 			for (var i = 0; i < self.get("currentRelations").length; i++) {
-				if (self.get("currentRelations")[i].type === "reference" && target === self.get("currentRelations")[i].target) {
-					// If the target has already seen one time, then multiple time target and return true
-					if (targetedOneTime) {
-						return true;
-					} else {
-						targetedOneTime = true;
+//				if (self.get("currentRelations")[i].referenceData) {
+					if (self.get("currentRelations")[i].type === "reference" && target === self.get("currentRelations")[i].target) {
+						// If the target has already seen one time, then multiple time target and return true
+						if (targetedOneTime) {
+							return true;
+						} else {
+							targetedOneTime = true;
+						}
 					}
-				}
+//				}
 			}
 			return false;
 		}

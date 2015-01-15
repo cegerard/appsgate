@@ -79,7 +79,7 @@ public class ReferenceTable {
     /**
      *
      */
-    private final ArrayList<NodeSelect> nodes;
+    private final ArrayList<SelectReferences> nodes;
 
     /**
      *
@@ -90,7 +90,7 @@ public class ReferenceTable {
 //        devices = new HashMap<String, STATUS>();
         devices = new ArrayList<DeviceReferences>();
         programs = new HashMap<String, STATUS>();
-        nodes = new ArrayList<NodeSelect>();
+        nodes = new ArrayList<SelectReferences>();
         this.interpreter = interpreter;
         this.state = STATUS.UNKNOWN;
         this.myProgId = pid;
@@ -138,9 +138,20 @@ public class ReferenceTable {
 
     /**
      * @param aThis
+     * @param refData - data about reference
      */
-    public void addNodeSelect(NodeSelect aThis) {
-        nodes.add(aThis);
+    public void addNodeSelect(NodeSelect aThis, HashMap<String,String> refData) {
+        boolean refDataAdded = false;
+        for (SelectReferences sRef : this.nodes) {
+            if (sRef.getNodeSelect() == aThis) {
+                refDataAdded = sRef.addReferencesData(refData);
+            }
+        }
+        if (!refDataAdded) {
+            ArrayList<HashMap<String,String>> newRefData = new ArrayList<HashMap<String, String>>();
+            newRefData.add(refData);
+            nodes.add(new SelectReferences(aThis, newRefData));
+        }
     }
 
     /**
@@ -205,7 +216,7 @@ public class ReferenceTable {
         return null;
     }
 
-    public ArrayList<NodeSelect> getSelectors() {
+    public ArrayList<SelectReferences> getSelectors() {
         return nodes;
     }
 
@@ -313,11 +324,11 @@ public class ReferenceTable {
                     break;
             }
         }
-        for (NodeSelect s : nodes) {
-            if (s.isEmptySelection()) {
-                LOGGER.warn("Select node {} is empty.", s);
+        for (SelectReferences s : nodes) {
+            if (s.getNodeSelect().isEmptySelection()) {
+                LOGGER.warn("Select node {} is empty.", s.getNodeSelect());
                 setState(STATUS.UNSTABLE);
-                this.err = ErrorMessagesFactory.getMessageFromEmptySelect(s);
+                this.err = ErrorMessagesFactory.getMessageFromEmptySelect(s.getNodeSelect());
             }
         }
         return this.state;
