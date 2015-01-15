@@ -279,10 +279,11 @@ public class TraceMan implements TraceManSpec {
                     }
                 } else {
                     event.put("type", "update");
+                    String msg = "decorations." + desc.getType() + ".change." + varName;
                     JSONObject context = Trace.addJSONPair(new JSONObject(), "text", value);
                     Trace.addJSONPair(context, "var", varName);
                     JDecoration = Trace.getJSONDecoration(
-                            Trace.getDecorationType(desc.getType(), varName), "update", "technical", timeStamp, srcId, null, "decorations.change" + varName, context);
+                            Trace.getDecorationType(desc.getType(), varName), "update", "technical", timeStamp, srcId, null, msg, context);
                 }
 
                 JSONObject jsonState = getDeviceState(srcId, varName, value);

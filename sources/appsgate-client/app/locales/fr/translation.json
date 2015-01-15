@@ -916,8 +916,13 @@
     "changevalue" : "__var__ : __text__",
     "appear" : "l'équipement __name__ est apparu",
     "remove" : "l'équipement __name__ a été enlevé",
-	"changecolorChanged" : "la couleur a changé pour __text__",
+	"defaultMessage" : "Une ligne de programme a été exécutée",
+	
     "ColorLight" : {
+	  "change" : {
+		"value" : "la lampe est allumée : __text__",
+		"colorChanged" : "la couleur a changé pour __text__"
+	  },
       "setRed" : "allumer en rouge",
       "setBlue" : "allumer en bleu",
       "setGreen" : "allumer en vert",
@@ -929,6 +934,15 @@
 	  "setColorJson" : "changer la couleur en __color__",
       "off" : "$t(translation:devices.lamp.action.turnOff)",
       "on" : "$t(translation:devices.lamp.action.turnOn)"
-    }
+    },
+	"Temperature" : {
+	  "change" : {
+		"value" : "la température est de __text__ °C"
+	  }
+    },
+	"SmartPlug" : {
+		"on" : "Allumer la prise",
+		"off" : "Eteindre la prise"
+	}
   }
 }

@@ -240,7 +240,7 @@ public class DevicePropertiesTableImpl implements DevicePropertiesTableSpec {
             return null;
         }
         if (typesGrammarMap.get(type) == null ) {
-            logger.warn("There is no grammar associated with the type {} of device {}", type, deviceId);
+            logger.debug("There is no grammar associated with the type {} of device {}", type, deviceId);
         }
         return typesGrammarMap.get(type);
     }
