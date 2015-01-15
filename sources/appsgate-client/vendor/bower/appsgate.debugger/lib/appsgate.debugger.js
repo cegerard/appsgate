@@ -115,6 +115,9 @@
     			"padding": {
     				"left": 10
     			}
+    		},
+    		"rightborder": {
+    			"color": "#000000"
     		}
     	},
     	"pictogram": {
