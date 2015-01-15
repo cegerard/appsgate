@@ -38,19 +38,19 @@ define([
 
 			// Update the graph when the modifications does not need to reload it to build new data structures (ie rename place)
 			dispatcher.on("UpdateGraph", function (place) {
-				console.log("graph update");
-				force.stop();
-				self.update(self.model);
-				force.start();
+//				console.log("graph update");
+//				force.stop();
+//				self.update(self.model);
+//				force.start();
 			});
 
 			// Update the graph when the modifications need to reload it to build new data structures (ie new entity)
 			dispatcher.on("UpdateGraphLoad", function (place) {
-				if (appRouter.currentView === self) {
-					console.log("graph reload for update");
-					// Reload this page to refresh data
-					appRouter.dependancies();
-				}
+//				if (appRouter.currentView === self) {
+//					console.log("graph reload for update");
+//					// Reload this page to refresh data
+//					appRouter.dependancies();
+//				}
 			});
 
 			// Zoom variables
