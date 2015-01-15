@@ -410,29 +410,14 @@ define([
 						})
 						.attr("data-html", true)
 						.on("mouseover", function (d) {
-							d3.select(this.parentNode).select("text").classed("hidden", false);
 							onCircleRelation = true;
 						})
 						.on("mouseout", function (d) {
-							d3.select(this.parentNode).select("text").classed("hidden", true);
 							onCircleRelation = false;
 						})
 						.on("click", function (d)  {
 							$((d3.select(this))[0]).popover();
 						});
-					// TEXT
-					//					d3.select(this).append("text")
-					//						.attr("class", "linklabel linklabelholder hidden")
-					//						.style("font-size", "13px")
-					//						.attr("x", "90")
-					//						.attr("text-anchor", "middle")
-					//						.append("textPath")
-					//						.attr("xlink:href", function (d) {
-					//							return "#linkID_" + i;
-					//						})
-					//						.text(function (d) {
-					//							return $.i18n.t("dependancy.type.relation." + d.type);
-					//						});
 				});
 
 			pathLink.exit().remove();

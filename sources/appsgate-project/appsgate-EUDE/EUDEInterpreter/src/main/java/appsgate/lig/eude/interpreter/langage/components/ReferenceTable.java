@@ -69,7 +69,6 @@ public class ReferenceTable {
     /**
      *
      */
-//    private final HashMap<String, STATUS> devices;
     private final ArrayList<DeviceReferences> devices;
     /**
      *
@@ -87,7 +86,6 @@ public class ReferenceTable {
      * @param pid
      */
     public ReferenceTable(EUDEInterpreter interpreter, String pid) {
-//        devices = new HashMap<String, STATUS>();
         devices = new ArrayList<DeviceReferences>();
         programs = new HashMap<String, STATUS>();
         nodes = new ArrayList<SelectReferences>();
@@ -113,7 +111,6 @@ public class ReferenceTable {
      * @param deviceId
      */
     public void addDevice(String deviceId) {
-//        devices.put(deviceId, STATUS.UNKNOWN);
         devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN));
     }
     
@@ -123,8 +120,6 @@ public class ReferenceTable {
      * @param refData - data about reference
      */
     public void addDevice(String deviceId, HashMap<String,String> refData) {
-//        devices.add(new DeviceReferences(deviceId, STATUS.UNKNOWN, refData));
-        
         DeviceReferences dRef = getDeviceFromId(deviceId);
         if (dRef != null) {
             dRef.addReferencesData(refData);
@@ -160,9 +155,6 @@ public class ReferenceTable {
      * @param newStatus
      */
     public void setDeviceStatus(String deviceId, STATUS newStatus) {
-//        if (devices.containsKey(deviceId)) {
-//            devices.put(deviceId, newStatus);
-//        }
         for (DeviceReferences device : this.devices) {
             if (device.getDeviceId().equals(deviceId)) {
                 device.setDeviceStatus(newStatus);
@@ -199,7 +191,6 @@ public class ReferenceTable {
      * @return
      */
     public Set<String> getDevicesId() {
-//        return devices.keySet();
         Set<String> devicesId = new HashSet<String>();
         for (DeviceReferences device : this.devices) {
             devicesId.add(device.getDeviceId());
@@ -239,7 +230,6 @@ public class ReferenceTable {
     private void retrieveReferences() {
         for (String k : programs.keySet()) {
             NodeProgram prog = interpreter.getNodeProgram(k);
-//            LOGGER.trace("retrieveReferences(), program " + k + ", status " + devices.get(k));
             LOGGER.trace("retrieveReferences(), program " + k + ", status " + programs.get(k));
             if (prog != null) {
                 if (!prog.isValid()) {
@@ -255,17 +245,6 @@ public class ReferenceTable {
             }
         }
         // Services && devices are treated the same way
-//        for (String k : devices.keySet()) {
-//            LOGGER.trace("retrieveReferences(), device " + k + ", status " + devices.get(k));
-//            JSONObject device = interpreter.getContext().getDevice(k);
-//            try {
-//                if (device == null || !device.has("status") || !device.getString("status").equals("2")) {
-//                    LOGGER.warn("The device {} is missing.", k);
-//                    setDeviceStatus(k, STATUS.MISSING);
-//                }
-//            } catch (JSONException ex) {
-//            }
-//        }
         for (DeviceReferences device : devices) {
             LOGGER.trace("retrieveReferences(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
             JSONObject deviceJSON = interpreter.getContext().getDevice(device.getDeviceId());
@@ -306,15 +285,6 @@ public class ReferenceTable {
             }
         }
         // Services && devices are treated the same way
-//        for (String k : devices.keySet()) {
-//            LOGGER.trace("computeStatus(), device " + k + ", status " + devices.get(k));
-//            switch (devices.get(k)) {
-//                case MISSING:
-//                    this.err = ErrorMessagesFactory.getMessageFromMissingDevice(k);
-//                    setState(STATUS.UNSTABLE);
-//                    break;
-//            }
-//        }
         for (DeviceReferences device : devices) {
             LOGGER.trace("computeStatus(), device " + device.getDeviceId() + ", status " + device.getDeviceStatus());
             switch (device.getDeviceStatus()) {
