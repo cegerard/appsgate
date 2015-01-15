@@ -18,11 +18,15 @@ define([
      */
     initialize: function() {
       DomiCube.__super__.initialize.apply(this, arguments);
-
+      var self = this;
       // setting default friendly name if none exists
       if (typeof this.get("name") === "undefined" || this.get("name") === "") {
         this.generateDefaultName($.i18n.t("devices.domicube.name.singular"));
       }
+
+      dispatcher.on(this.get("id"), function(updatedVariableJSON) {
+            self.set(updatedVariableJSON.varName, updatedVariableJSON.value);
+      });
     },
     /**
      * return the list of available events
@@ -203,8 +207,16 @@ define([
      */
     getTemplateState: function() {
       return _.template(EventTemplate);
-    }
+    },
+    getValue: function() {
+      value = parseFloat(this.get("batteryLevel"));
 
+      if (value != parseFloat(999)) {
+        return value.toFixed(0)+"%";
+      }
+
+      return $.i18n.t("devices.no-value");
+    }
   });
 
   return DomiCube;

@@ -201,7 +201,7 @@ public class DomiCubeImpl extends CoreObjectBehavior implements CoreObjectSpec, 
 	 */
 	public void batteryChanged(String newLevel) {
 		logger.info("The DomiCube, "+ deviceId+" battery level changed to "+newLevel+" %");
-		notifyChanges("newBatteryLevel", newLevel);
+		notifyChanges("batteryLevel", newLevel);
 
 	}
 	

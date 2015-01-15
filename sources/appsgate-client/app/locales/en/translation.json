@@ -161,6 +161,7 @@
         "plural": "DomiCubes",
         "singular": "DomiCube"
       },
+      "batteryLevel":"Charge of the Battery",
       "status": {
         "inactive": "Inactive",
         "unknown": "Unknown"
