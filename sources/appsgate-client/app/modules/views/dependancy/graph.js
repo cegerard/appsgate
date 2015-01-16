@@ -381,7 +381,7 @@ define([
 					// CIRCLE
 					d3.select(this).append("circle")
 						.attr("class", "circle-information")
-						.attr("r", 5)
+						.attr("r", 2)
 						.attr("fill", "red")
 						.attr("data-container", "#graph")
 						.attr("data-toggle", "popover")

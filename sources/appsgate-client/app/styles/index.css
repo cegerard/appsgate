@@ -1077,7 +1077,10 @@ fieldset[disabled] .btn {
 }
 
 #graph g>.circle-information {
-	fill: #ccc;
+	fill: black;
+	stroke: transparent;
+	stroke-width: 10px;
+	cursor: pointer;
 }
 
 .caption-label {
