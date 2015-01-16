@@ -38,19 +38,19 @@ define([
 
 			// Update the graph when the modifications does not need to reload it to build new data structures (ie rename place)
 			dispatcher.on("UpdateGraph", function (place) {
-//				console.log("graph update");
-//				force.stop();
-//				self.update(self.model);
-//				force.start();
+				//				console.log("graph update");
+				//				force.stop();
+				//				self.update(self.model);
+				//				force.start();
 			});
 
 			// Update the graph when the modifications need to reload it to build new data structures (ie new entity)
 			dispatcher.on("UpdateGraphLoad", function (place) {
-//				if (appRouter.currentView === self) {
-//					console.log("graph reload for update");
-//					// Reload this page to refresh data
-//					appRouter.dependancies();
-//				}
+				//				if (appRouter.currentView === self) {
+				//					console.log("graph reload for update");
+				//					// Reload this page to refresh data
+				//					appRouter.dependancies();
+				//				}
 			});
 
 			// Zoom variables
@@ -381,7 +381,7 @@ define([
 					// CIRCLE
 					d3.select(this).append("circle")
 						.attr("class", "circle-information")
-						.attr("r", 5)
+						.attr("r", 2)
 						.attr("fill", "red")
 						.attr("data-container", "#graph")
 						.attr("data-toggle", "popover")
@@ -479,6 +479,11 @@ define([
 			.classed("fixedNode", function (d) {
 				return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
 			});
+
+			nodeEntity.selectAll("circle")
+				.classed("program-multiple-writing-reference", function (d) {
+					return self.model.isTargetMultipleTargeted(d);
+				})
 
 			nodeEntity.selectAll("text")
 				.attr("transform", function (d) {

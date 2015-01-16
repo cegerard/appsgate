@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,7 +87,7 @@ public class GraphManager {
         this.programsId = interpreter.getListProgramIds(null);
         int idSelector = -2;
         ArrayList<NodeSelect> selectorsSaved = new ArrayList<NodeSelect>();
-        JSONArray programsScheduled = this.interpreter.getContext().checkProgramsScheduled();
+        
         for (String pid : programsId) {
             NodeProgram p = interpreter.getNodeProgram(pid);
             if (p != null) {
@@ -92,15 +99,7 @@ public class GraphManager {
                 
                 // Program links : Reference or planified
                 ReferenceTable references = p.getReferences();
-//                for (String rdevice : references.getDevicesId()) {
-//                    if (rdevice.equals(CLOCK_ID)) {
-//                        addLink(PLANIFIED_LINK, pid, rdevice);
-//                    } else {
-//                        addLink(REFERENCE_LINK, pid, rdevice);
-//                    }
-//                }
-                
-                 for (DeviceReferences rdevice : references.getDevicesReferences()) {
+                for (DeviceReferences rdevice : references.getDevicesReferences()) {
                     if (rdevice.getDeviceId().equals(CLOCK_ID)) {
                         addLink(PLANIFIED_LINK, pid, rdevice.getDeviceId());
                     } else {
@@ -117,11 +116,33 @@ public class GraphManager {
                 }
             }
 
-            // Links program - scheduler
-            if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
-                addLink(PLANIFIED_LINK, pid, CLOCK_ID);
-                //@TODO: if planified more than one time, have more than one relation...
+            // Planification
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Callable<Object> task = new Callable<Object>() {
+                public Object call() {
+                   return interpreter.getContext().checkProgramsScheduled();
+                }
+             };
+            Future<Object> future = executor.submit(task);
+            try {
+                JSONArray programsScheduled = (JSONArray) future.get(2, TimeUnit.SECONDS);
+            
+                // Links program - scheduler
+                if (programsScheduled != null && programsScheduled.toString().contains(pid)) {
+                    addLink(PLANIFIED_LINK, pid, CLOCK_ID);
+                    //@TODO: if planified more than one time, have more than one relation...
+                }
+            } catch (TimeoutException ex) {
+                LOGGER.error("Time Out trying to reach scheduling service, aborting)");
+                // handle the timeout
+            } catch (InterruptedException e) {
+                // handle the interrupts
+            } catch (ExecutionException e) {
+                // handle other exceptions
+            } finally {
+                future.cancel(true); // may or may not desire this
             }
+            
         }
         // Retrieving devices id
         JSONArray devices = this.interpreter.getContext().getDevices();
