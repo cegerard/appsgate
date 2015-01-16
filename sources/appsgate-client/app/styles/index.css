@@ -1051,6 +1051,10 @@ fieldset[disabled] .btn {
     font-weight: bold;
     font-size: 100%;
 }
+#graph g>circle.circleNode.program-multiple-writing-reference {
+	stroke: red;
+	stroke-width: 2px;
+}
 .checkbox-container {
     display: block;
     margin-left: 10px;

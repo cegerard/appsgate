@@ -315,23 +315,32 @@ define([
 		},
 
 		/**
-		 * Method to know if a target is targeted more than one time
+		 * Method to know if a target is targeted more than one time by executing program
 		 * @param: target to search
 		 */
 		isTargetMultipleTargeted: function (target) {
 			var self = this;
 			var targetedOneTime = false;
 			for (var i = 0; i < self.get("currentRelations").length; i++) {
-//				if (self.get("currentRelations")[i].referenceData) {
-					if (self.get("currentRelations")[i].type === "reference" && target === self.get("currentRelations")[i].target) {
-						// If the target has already seen one time, then multiple time target and return true
-						if (targetedOneTime) {
-							return true;
-						} else {
-							targetedOneTime = true;
+				var relation = self.get("currentRelations")[i];
+				// Test si la source est un programme en cours d'execution et que le target est le bon
+				if (target === relation.target && relation.source.type === "program" && (relation.source.state === "PROCESSING" || relation.source.state === "LIMPING")) {
+					// Vérification qu'on ait bien des infos sur la relation
+					if (relation.referenceData) {
+						for (var j = 0; j < relation.referenceData.length; j++) {
+							var refData = relation.referenceData[j];
+							// Test que la référence est en écriture
+							if (refData.referenceType === "WRITING") {
+								// If the target has already seen one time, then return true
+								if (targetedOneTime) {
+									return true;
+								} else {
+									targetedOneTime = true;
+								}
+							}
 						}
 					}
-//				}
+				}
 			}
 			return false;
 		}
