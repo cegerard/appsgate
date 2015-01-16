@@ -779,5 +779,33 @@ public class ConfigurableClockImpl extends CoreObjectBehavior implements
 			calculateNextTimer();
 		}
 	}
+	
+	/**
+	 * @return the time in millisecond from midnight today
+	 */
+	public long getCurrentTimeOfDay() {
+		logger.trace("getCurrentTimeOfDay()");
+		long currentTime = getCurrentTimeInMillis();
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(currentTime);
+		cal.set(Calendar.YEAR,1970);
+		cal.set(Calendar.DAY_OF_YEAR,1);
+		cal.set(Calendar.ZONE_OFFSET,0);
+		
+		logger.trace("getCurrentTimeOfDay(), returning "+cal.getTimeInMillis());
+		return cal.getTimeInMillis();
+	}
+
+	@Override
+	public boolean checkCurrentTimeOfDay(long isAfter, long isBefore) {
+		logger.trace("checkCurrentTimeOfDay(long isAfter : {}, long isBefore : {})",isAfter,isBefore);
+		if(isAfter >= 0 && isAfter > getCurrentTimeOfDay()) {
+			return false;
+		}
+		if(isBefore >= 0 && isBefore < getCurrentTimeOfDay()) {
+			return false;
+		}				
+		return true;
+	}
 
 }

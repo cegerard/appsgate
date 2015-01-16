@@ -58,6 +58,14 @@ public class SimpleClockTest implements AlarmEventObserver {
 	// clock.start();
 	// clock.show();
 	// }
+	
+	@Test
+	public void checkCurrentTimeOfDay() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 15);
+		clock.setCurrentDate(cal);	
+		Assert.assertTrue("15hXX not between 15h and 16h ? ", clock.checkCurrentTimeOfDay(15*60*60*1000, 16*60*60*1000));
+	}
 
 	@Before
 	public void setUp() {
