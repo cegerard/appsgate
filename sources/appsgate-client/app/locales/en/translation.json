@@ -622,6 +622,9 @@
     "password": "Password",
     "username": "ID Name"
   },
+  "modal" : {
+    "name-too-long" : "Name too long"
+  },
   "modal-add-place": {
     "place-already-existing": "Name of the existing room.",
     "place-name": "Place Name",

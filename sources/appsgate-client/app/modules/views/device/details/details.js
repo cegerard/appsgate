@@ -61,6 +61,14 @@ define([
      * @return false if the information are not correct, true otherwise
      */
     checkDevice: function() {
+            // Check whether the name is too long
+            if ($("#edit-device-modal input").val().length > App.MAX_NAME_LENGTH ) {
+                $("#edit-device-modal .text-danger").removeClass("hide");
+                $("#edit-device-modal .text-danger").text($.i18n.t("modal.name-too-long"));
+                $("#edit-device-modal .valid-button").addClass("disabled");
+                $("#edit-device-modal .valid-button").addClass("valid-disabled");
+                return false;
+            }
       // name already exists
       if (devices.where({
           name: $("#edit-device-modal input").val()

@@ -622,6 +622,9 @@
     "password": "Mot de passe",
     "username": "Nom d'identification"
   },
+  "modal" : {
+    "name-too-long" : "Le nom choisi est trop long"
+  },
   "modal-add-place": {
     "place-already-existing": "Nom de la lieu de vie déjà existant.",
     "place-name": "Nom du lieu de vie",
