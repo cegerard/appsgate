@@ -335,6 +335,13 @@ define([
 						}
 
 					}
+					
+					// shape STATUS DEVICES
+					if (a.type === "device" && a.deviceState !== undefined) {
+						d3.select(this).append("circle")
+						.attr("class", "circle-device-state")
+						.attr("r", 7);
+					}
 				});
 
 			nEnter.select("circle").transition().duration(800).attr("r", 14);
@@ -484,7 +491,18 @@ define([
 				.classed("program-multiple-writing-reference", function (d) {
 					return self.model.isTargetMultipleTargeted(d);
 				})
-
+			
+			nodeEntity.selectAll(".circle-device-state")
+				.attr("transform", function (d) {
+					return "translate(5,10)";
+				})
+				.classed("circle-device-state-true", function (d) {
+					return (d.deviceState === true || d.deviceState === "true");
+				})
+				.classed("circle-device-state-false", function (d) {
+					return (d.deviceState === false || d.deviceState === "false");
+				});
+			
 			nodeEntity.selectAll("text")
 				.attr("transform", function (d) {
 					if (d === self.model.get("rootNode")) {

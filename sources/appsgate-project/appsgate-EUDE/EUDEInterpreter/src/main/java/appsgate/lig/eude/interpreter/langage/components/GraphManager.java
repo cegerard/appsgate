@@ -188,17 +188,41 @@ public class GraphManager {
     private void addDevice(JSONObject o) {
         try {
             HashMap<String, String> optArg = new HashMap<String, String>();
-            try {
-                // send the deviceType to be able to recognize services
-                optArg.put("deviceType", o.getString("type"));
-            } catch (JSONException ex) {
-            }
+            String deviceType = "";
             try {
                 // if it is a weather device, it will have a location, which will be used as a name
                 optArg.put("location", o.getString("location"));
             } catch (JSONException ex) {
             }
-
+            
+            try {
+                deviceType = o.getString("type");
+                // send the deviceType to be able to recognize services
+                optArg.put("deviceType", deviceType);
+            } catch (JSONException ex) {
+            }
+                
+            try {
+                switch (Integer.parseInt(deviceType)) {
+                    case 3 : // Contact
+                        optArg.put("deviceState", o.getString("contact"));
+                        break;
+                    case 4 : // CardSwitch
+                        optArg.put("deviceState", o.getString("inserted"));
+                        break;
+                    case 6 : // Plug
+                        optArg.put("deviceState", o.getString("plugState"));
+                        break;
+                    case 7 : // Lamp
+                        optArg.put("deviceState", String.valueOf(o.getBoolean("value")));
+                        break;
+                    default:
+                        break;
+                }
+                
+            } catch (JSONException ex) {
+            }
+            
             // Time special case
             if (o.getString("id").equals(CLOCK_ID)) {
                 addNode(TIME_ENTITY, o.getString("id"), o.getString("name"), optArg);
