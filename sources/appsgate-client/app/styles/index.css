@@ -1078,20 +1078,24 @@ fieldset[disabled] .btn {
 	cursor: pointer;
 }
 
-#graph g>.circle-device-state-true {
+.shape-program {
+	stroke: black;
+}
+
+#graph g>.circle-device-state-true, .circle-device-state-true {
 	fill: #ffff00;
 }
 
-#graph g>.circle-device-state-false {
+#graph g>.circle-device-state-false, .circle-device-state-false {
 	fill: #777;
+}
+
+#graph-caption {
+	margin-top: 20px;
 }
 
 .caption-label {
 	vertical-align: super;
-}
-
-.shape-program {
-	stroke: black;
 }
 
 .help-div {

@@ -23,11 +23,13 @@
 		"search-example": "(Exemple : '__entity__')",
 	  	"caption": {
 			"title": "Légende",
-			"stopped-program": "Arrêté",
-			"running-program": "En exécution",
-			"valid-program": "Valide",
-			"incomplete-program": "Instable",
-			"invalid-program": "Invalide"
+			"stopped-program": "Programme désactivé",
+			"running-program": "Programme activé",
+			"valid-program": "Programme valide",
+			"incomplete-program": "Programme instable",
+			"invalid-program": "Programme invalide",
+			"device-on": "Equipement allumé ou avec contact",
+			"device-off": "Equipement éteint ou sans contact"
 		},
 	  	"help" : {
 			"title" : "Aide",

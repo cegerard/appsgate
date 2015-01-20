@@ -23,11 +23,13 @@
 		"search-example": "(Example : '__entity__')",
 	  	"caption": {
 			"title": "Caption",
-			"stopped-program": "Stopped",
-			"running-program": "Running",
-			"valid-program": "Valid",
-			"incomplete-program": "Unstable",
-			"invalid-program": "Invalid"
+			"stopped-program": "Deactivated program",
+			"running-program": "Activated program",
+			"valid-program": "Valid program",
+			"incomplete-program": "Unstable program",
+			"invalid-program": "Invalid program",
+			"device-on": "Device turned On or with contact",
+			"device-off": "Device turned Off or without contact"
 		},
 	  	"help" : {
 			"title": "Help",
