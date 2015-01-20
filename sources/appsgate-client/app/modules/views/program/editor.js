@@ -30,6 +30,7 @@ define([
         "change .lamp-input-selector": "onLampInputSelector",
         "change .ard-input-value-selector": "onARDInputValueSelector",
         "change .hour-picker, .minute-picker": "onChangeClockValue",
+        "change .hour-before-picker, .minute-before-picker, .hour-after-picker, .minute-after-picker": "onChangeClockCheckingValue",
         "click .valid-media": "onValidMediaButton",
         "keyup .programNameInput": "validEditName"
       },
@@ -411,6 +412,30 @@ define([
 
         this.Mediator.setNodeAttribute(iid, "eventValue", devices.getCoreClock().getClockAlarm(hourValue, minuteValue));
 
+        // clearing selection
+        this.resetSelection();
+      },
+      onChangeClockCheckingValue: function(e) {
+        e.stopPropagation();
+
+        var iid = $(e.currentTarget).attr("target-id");
+
+        if($(e.currentTarget).attr("class") === "hour-before-picker" || $(e.currentTarget).attr("class") === "minute-before-picker") {
+
+          var hourValue = $("#clock-before-hour-" + iid)[0].selectedOptions[0].value;
+          var minuteValue = $("#clock-before-minute-" + iid)[0].selectedOptions[0].value;
+
+          var value = {"type": "long", "value": (hourValue*60*60*1000)+(minuteValue*60*1000)};
+          this.Mediator.setNodeArg(iid, 0, value);
+
+        } else if ($(e.currentTarget).attr("class") === "hour-after-picker" || $(e.currentTarget).attr("class") === "minute-after-picker") {
+
+          var hourValue = $("#clock-after-hour-" + iid)[0].selectedOptions[0].value;
+          var minuteValue = $("#clock-after-minute-" + iid)[0].selectedOptions[0].value;
+
+          var value = {"type": "long", "value": (hourValue*60*60*1000)+(minuteValue*60*1000)};
+          this.Mediator.setNodeArg(iid, 1, value);
+        }
         // clearing selection
         this.resetSelection();
       },

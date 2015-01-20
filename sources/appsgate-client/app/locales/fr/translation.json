@@ -240,6 +240,17 @@
         "not-inserted": "Pas de carte"
       }
     },
+    "clock": {
+      "keyboard": {
+        "checkCurrentTimeOfDay": "l'heure actuelle est comprise entre __myVar__ et __myVar2__",
+        "before" : "heure 1",
+        "after" : "heure 2"
+      },
+      "language": {
+        "checkCurrentTimeOfDay": "l'heure actuelle est comprise entre ",
+        "and" : "et"
+      }
+    },
     "lamp": {
       "action": {
         "blink": "Faire clignoter",
@@ -518,6 +529,7 @@
   },
   "keyboard": {
     "clock-event": "L'horloge d'AppsGate indique ",
+    "clock-getTime": "L'heure actuelle est ",
     "time-placeholder": "hh:mm:ss",
     "false": "Faux",
     "if-keyword": "Si",
@@ -560,6 +572,7 @@
     },
     "clock-event": "L'horloge d'AppsGate indique ",
     "clock-status": "L'horloge d'AppsGate indique ",
+    "clock-getTime": "L'heure actuelle est ",
     "contact-assembled-event": "s'assemble",
     "contact-disassembled-event": "se desassemble",
     "else-keyword": "sinon",

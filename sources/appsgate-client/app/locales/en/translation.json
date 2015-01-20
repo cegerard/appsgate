@@ -240,6 +240,17 @@
         "not-inserted": "no card inserted"
       }
     },
+    "clock": {
+      "keyboard": {
+        "checkCurrentTimeOfDay": "current hour is between __myVar__ and __myVar2__",
+        "before" : "hour 1",
+        "after" : "hour 2"
+      },
+      "language": {
+        "checkCurrentTimeOfDay": "current hour is between ",
+        "and" : "and"
+      }
+    },
     "lamp": {
       "action": {
         "blink": "Blink",
