@@ -249,13 +249,8 @@ define([
 					nodeEntity.classed("neighborNodeOver", function (d2) {
 						return model.neighboring(d, d2);
 					});
-					// Low opacity of all nodes except node over and its neighbors
-					nodeEntity.classed("node-less-opacity", function (d2) {
-						return d2 !== d && !model.neighboring(d, d2);
-					});
 				})
 				.on("mouseout", function (d) {
-					nodeEntity.classed("node-less-opacity", false);
 					nodeEntity.classed("nodeOver", false);
 					nodeEntity.classed("neighborNodeOver", false);
 					nodeEntity.classed("fixedNode", function (d) {
@@ -335,12 +330,12 @@ define([
 						}
 
 					}
-					
+
 					// shape STATUS DEVICES
 					if (a.type === "device" && a.deviceState !== undefined) {
 						d3.select(this).append("circle")
-						.attr("class", "circle-device-state")
-						.attr("r", 7);
+							.attr("class", "circle-device-state")
+							.attr("r", 7);
 					}
 				});
 
@@ -470,28 +465,28 @@ define([
 					}
 					return transf;
 				})
-			// Old code with opacity according to depth 
-			//				.classed("node-0", function (d) {
-			//					return d === self.model.get("rootNode");
-			//				})
-			//				.classed("node-1", function (d) {
-			//					return self.model.neighboring(d, self.model.get("rootNode"));
-			//				})
-			//				.classed("node-2", function (d) {
-			//					return self.model.getDepthNeighbor(d) === 2;
-			//				})
-			//				.classed("node-more", function (d) {
-			//					return self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1;
-			//				})
-			.classed("fixedNode", function (d) {
-				return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
-			});
+				.classed("node-0", function (d) {
+					return d === self.model.get("rootNode");
+				})
+				.classed("node-1", function (d) {
+					return self.model.neighboring(d, self.model.get("rootNode"));
+				})
+				.classed("node-2", function (d) {
+					return self.model.getDepthNeighbor(d) === 2;
+				})
+				.classed("node-more", function (d) {
+					// Transparence nodes if no depth 0/1/2 and if there is a focus
+					return self.model.get("rootNode") !== "" &&  (self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1);
+				})
+				.classed("fixedNode", function (d) {
+					return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
+				});
 
 			nodeEntity.selectAll("circle")
 				.classed("program-multiple-writing-reference", function (d) {
 					return self.model.isTargetMultipleTargeted(d);
 				})
-			
+
 			nodeEntity.selectAll(".circle-device-state")
 				.attr("transform", function (d) {
 					return "translate(5,10)";
@@ -502,7 +497,7 @@ define([
 				.classed("circle-device-state-false", function (d) {
 					return (d.deviceState === false || d.deviceState === "false");
 				});
-			
+
 			nodeEntity.selectAll("text")
 				.attr("transform", function (d) {
 					if (d === self.model.get("rootNode")) {
@@ -538,25 +533,19 @@ define([
 					// don't look about the orientation, this is the link showed
 					return arcPath(false, d);
 				})
-			// Old code with opacity according to depth 
-			//				.classed("node-1", function (d) {
-			//					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
-			//				})
-			//				.classed("node-2", function (d) {
-			//					return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
-			//				})
-			//				.classed("node-more", function (d) {
-			//					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
-			//					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
-			//					return !isNode1 && !isNode2;
-			//				})
-			//			.classed("node-less-opacity", function (d) {
-			//				var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
-			//				var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
-			//				return !isNode1 && !isNode2;
-			//			})
-			.attr("marker-end", function (d) {
-				var isWritingReference = function (link) {
+				.classed("node-1", function (d) {
+					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+				})
+				.classed("node-2", function (d) {
+					return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+				})
+				.classed("node-more", function (d) {
+					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+					return self.model.get("rootNode") !== "" & !isNode1 && !isNode2;
+				})
+				.attr("marker-end", function (d) {
+					var isWritingReference = function (link) {
 					if (link.referenceData) {
 						for (var index = 0; index < link.referenceData.length; index++) {
 							if (link.referenceData[index].referenceType === "WRITING") {
@@ -577,7 +566,7 @@ define([
 					return "url(#targeting)";
 				else
 					return "url(#" + d.type + ")";
-			})
+				})
 				.classed("important-path", function (d) {
 					if (d.referenceData) {
 						for (var index = 0; index < d.referenceData.length; index++) {
@@ -602,6 +591,17 @@ define([
 				})
 				.attr("cy", function (l) {
 					return (l.source.y + l.target.y) / 2;
+				})
+				.classed("node-1", function (d) {
+					return (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+				})
+				.classed("node-2", function (d) {
+					return (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+				})
+				.classed("node-more", function (d) {
+					var isNode1 = (d.source === self.model.get("rootNode") || d.target === self.model.get("rootNode"));
+					var isNode2 = (self.model.getDepthNeighbor(d.source) === 2 && self.model.getDepthNeighbor(d.target) === 1) || (self.model.getDepthNeighbor(d.target) === 2 && self.model.getDepthNeighbor(d.source) === 1);
+					return self.model.get("rootNode") !== "" & !isNode1 && !isNode2;
 				});
 
 

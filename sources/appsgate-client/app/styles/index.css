@@ -998,7 +998,6 @@ fieldset[disabled] .btn {
     stroke-width: 1px;
 }
 /* Opacity */
-/*
 .node-0 {
     opacity: 1;
 }
@@ -1006,20 +1005,16 @@ fieldset[disabled] .btn {
     opacity: 1;
 }
 .node-2 {
-    opacity: 0.5;
+    opacity: 1;
 }
 .node-more {
-    opacity: 0.2;
+    opacity: 0.25;
 }
 .node-more.nodeOver {
-    opacity: 0.5;
+    opacity: 1;
 }
 .node-more.neighborNodeOver {
-    opacity: 0.5;
-}
-*/
-.node-less-opacity {
-	opacity: 0.5;
+    opacity: 1;
 }
 /* MouseOver */
 #graph g>.nodeGroup.nodeOver>.circleNode {
