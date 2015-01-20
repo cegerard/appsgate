@@ -323,8 +323,10 @@ define([
 			var targetedOneTime = false;
 			for (var i = 0; i < self.get("currentRelations").length; i++) {
 				var relation = self.get("currentRelations")[i];
-				// Test si la source est un programme en cours d'execution et que le target est le bon
-				if (target === relation.target && relation.source.type === "program" && (relation.source.state === "PROCESSING" || relation.source.state === "LIMPING")) {
+				// Test si le target est le bon
+				if (target === relation.target && relation.source.type === "program") {
+					// Test si la source est un programme en cours d'execution : Mis en com' car changement d'avis  
+					//					if (relation.source.state === "PROCESSING" || relation.source.state === "LIMPING") {
 					// Vérification qu'on ait bien des infos sur la relation
 					if (relation.referenceData) {
 						for (var j = 0; j < relation.referenceData.length; j++) {
@@ -340,6 +342,7 @@ define([
 							}
 						}
 					}
+					//					}
 				}
 			}
 			return false;
