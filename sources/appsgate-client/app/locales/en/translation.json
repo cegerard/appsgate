@@ -33,10 +33,12 @@
 		},
 	  	"help" : {
 			"title": "Help",
-			"click": "Click : Unfix a previously fixed entity",
-			"click-move": "Click + Move : Move an entity and fix it",
-			"double-click": "Double Click : Focus / Unfocus an entity",
-			"maj-click": "Shift + Click : Go to the entity's detailed page"
+			"click": "Click on entity : Cancel its repositioning",
+			"click-move": "Drag-Move: Reposition the entity",
+			"double-click": "Double Click on entity : Focus or Unfocus it",
+			"maj-click": "Shift + Click : Go to the entity's detailed page",
+			"hovering-entity": "Hovering an entity : Highlight its relations",
+			"click-relation": "Click on relation : Get information about it"
 		},
 	  	"type": {
 			"entity": {

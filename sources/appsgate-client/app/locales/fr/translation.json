@@ -33,10 +33,12 @@
 		},
 	  	"help" : {
 			"title" : "Aide",
-			"click": "Clic : Défixer une entité préalablement fixée",
-			"click-move": "Clic + Déplacement : Déplacer une entité et la fixer",
-			"double-click": "Double clic : Mettre / Enlever le focus d'une entité",
-			"maj-click": "Maj. + Clic : Aller à la page détaillée de l'entité"
+			"click": "Clic entité : Annuler son repositionnement",
+			"click-move": "Glisser-Déposer : Repositionner l'entité",
+			"double-click": "Double clic sur entité : Mettre ou retirer le focus sur elle",
+			"maj-click": "Maj. + Clic entité : Aller à la page détaillée de l'entité",
+			"hovering-entity": "Survol entité : Mettre en avant ses relations",
+			"click-relation": "Clic relation : Obtenir informations sur elle"
 		},
 	  	"type": {
 			"entity": {

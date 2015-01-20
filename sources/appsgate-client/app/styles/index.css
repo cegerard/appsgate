@@ -1094,10 +1094,22 @@ fieldset[disabled] .btn {
 	margin-top: 20px;
 }
 
+#graph-action {
+	margin-bottom: 0px;
+}
+
 .caption-label {
 	vertical-align: super;
 }
 
 .help-div {
-	font-style : italic;
+	font-style : normal;
+	text-align: left;
+	font-size: 14px;
 }
+
+.help-div-title {
+	font-size: 18px;
+	font-style: normal;
+	font-weight: bold;
+} 
