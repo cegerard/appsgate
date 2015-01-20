@@ -173,16 +173,16 @@
         "west": "West",
         "east": "East",
 		"change" : "Domicube face changes",
-		"newFace" : "we arrive on __myVar__ of Domicube",
-		"leaveFace" : "leaving  __myVar__ of Domicube",
+		"newFace" : "someone shows face __myVar__ of Domicube",
+		"leaveFace" : "someone leaves face __myVar__ of Domicube",
 		"face" : "face __myVar__ of Domicube"
       },
       "keyboard": {
         "west": "West",
         "east": "East",
 		"change" : "Domicube face changes",
-		"newFace" : "we arrive on __myVar__ of Domicube",
-		"leaveFace" : "leaving  __myVar__ of Domicube",
+		"newFace" : "someone shows face __myVar__ of Domicube",
+		"leaveFace" : "someone leaves face __myVar__ of Domicube",
 		"face" : "we are on __myVar__ of Domicube",
         "oneface" : "top face"
       },
@@ -454,13 +454,13 @@
     "sum": "Sum : ",
     "switch": {
       "keyboard": {
-        "pushed-bottom": "the bottom button of a __myVar__ is pushed",
-        "pushed-up": "the top button of a __myVar__ is pushed",
+        "pushed-bottom": "someone pushes the lower part of switch __myVar__",
+        "pushed-up": "someone pushes the upper part of switch __myVar__",
         "switch": "switch"
       },
       "language": {
-        "pushed-bottom": "the bottom button of __myVar__ is pushed",
-        "pushed-up": "the top button of __myVar__ is pushed"
+        "pushed-bottom": "someone pushes the lower part of switch __myVar__",
+        "pushed-up": "someone pushes the upper part of switch __myVar__"
       },
       "name": {
         "plural": "Switches",
@@ -482,7 +482,7 @@
         "sensor": "sensor"
       },
       "language": {
-        "get": "temperetaure measured by __myVar__",
+        "get": "temperature measured by __myVar__",
         "change": "temperature of __myVar__ changes"
       },
       "name": {
@@ -644,7 +644,7 @@
     "place-already-existing": "Name of the existing room.",
     "place-name": "Place Name",
     "place-name-empty": "The name of the place must be filled.",
-    "title": "Add item"
+    "title": "New Place"
   },
   "modal-add-program": {
     "load-from-file": "Load from file",
@@ -652,7 +652,8 @@
     "name-empty": "The program name must be entered.",
     "name-label": "Name",
     "name-placeholder": "Program Name",
-    "title": "Add Program",
+    "title": "New Program",
+    "title": "New Program",
     "unable-to-parse": "Unable to read file"
   },
   "modal-edit-device": {
@@ -738,7 +739,7 @@
     "warning-place-delete": "Do you really want to delete this place ?"
   },
   "places-menu": {
-    "add-button": "Add item",
+    "add-button": "New Place",
     "place-no-name": "Item unnamed",
     "unlocated-devices": "Devices not assigned to places"
   },
@@ -802,7 +803,7 @@
     "inactive-node": "This instruction won't be executed."
   },
   "programs-menu": {
-    "add-button": "Add Program",
+    "add-button": "New Program",
     "deactivate-all-programs": "Stop all programs"
   },
   "services": {
@@ -843,7 +844,7 @@
         "singular": "Mail"
       },
       "modal": {
-        "add": "Add a favorite mail",
+        "add": "New favorite mail",
         "valid-mail": "Please choose a valid mail address",
         "title": "Favorite mail"
       },
@@ -878,8 +879,8 @@
         "singular": "Weather forecast place"
       },
       "modal": {
-        "title": "Adding a weather forecast place",
-        "add": "Add a weather forecast place"
+        "title": "Creation of a weather forecast place",
+        "add": "New weather forecast place"
       },
       "keyboard": {
         "sunrise": "The sun rises in __myVar__",

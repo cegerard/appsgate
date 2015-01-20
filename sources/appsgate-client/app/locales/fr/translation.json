@@ -334,10 +334,10 @@
         "STOPPED": "Arrêté : "
       },
       "language": {
-        "volume-event": "Le volume du lecteur change sur __myVar__",
-        "play-event": "On lance/reprend la lecture sur le lecteur __myVar__",
-        "stop-event": "On stoppe la lecture sur le lecteur __myVar__",
-        "pause-event": "On met en pause la lecture sur le lecteur __myVar__",
+        "volume-event": "le volume du lecteur change sur __myVar__",
+        "play-event": "on lance/reprend la lecture sur le lecteur __myVar__",
+        "stop-event": "on stoppe la lecture sur le lecteur __myVar__",
+        "pause-event": "on met en pause la lecture sur le lecteur __myVar__",
         "pause-media-action": "Mettre en pause le media",
         "play-media-action": "Jouer",
         "resume-media-action": "Reprendre la lecture",
@@ -345,10 +345,10 @@
         "stop-media-action": "Stopper"
       },
       "keyboard": {
-        "volume-event": "Le volume du __myVar__ change sur __myVar2__",
-        "play-event": "On lance/reprend la lecture sur le __myVar__",
-        "stop-event": "On stoppe la lecture sur le __myVar__",
-        "pause-event": "On met en pause la lecture sur le __myVar__",
+        "volume-event": "le volume du __myVar__ change sur __myVar2__",
+        "play-event": "on lance/reprend la lecture sur le __myVar__",
+        "stop-event": "on stoppe la lecture sur le __myVar__",
+        "pause-event": "on met en pause la lecture sur le __myVar__",
         "pause-action": "Mettre en pause la lecture sur le __myVar__",
         "play-action": "Lancer la lecture du __myVar__ sur le __myVar2__",
         "resume-action": "Reprendre la lecture sur le __myVar__",
