@@ -173,11 +173,8 @@
     			"border": {
     				"width": 2
     			},
-    			"disabled": {
-    				"color": "rgba(105, 105, 105, 0.3)",
-    				"focused": {
-    					"color": "rgba(105, 105, 105, 0.6)"
-    				}
+    			"deleted": {
+    				"color": "rgba(255, 255, 255, 0.3)"
     			},
     			"deployed": {
     				"fill": {
