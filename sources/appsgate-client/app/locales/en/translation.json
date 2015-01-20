@@ -26,7 +26,7 @@
 			"stopped-program": "Stopped",
 			"running-program": "Running",
 			"valid-program": "Valid",
-			"incomplete-program": "Incomplete",
+			"incomplete-program": "Unstable",
 			"invalid-program": "Invalid"
 		},
 	  	"help" : {
