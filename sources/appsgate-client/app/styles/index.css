@@ -203,8 +203,8 @@ body {
   vertical-align: middle;
 }
 .btn-less-large {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .row {
   margin-right: 0px;
@@ -1022,7 +1022,7 @@ fieldset[disabled] .btn {
 	opacity: 0.5;
 }
 /* MouseOver */
-#graph g>.nodeGroup.nodeOver>circle {
+#graph g>.nodeGroup.nodeOver>.circleNode {
     fill: #4ac6dd;
     stroke-width: 2px;
 }
@@ -1033,7 +1033,7 @@ fieldset[disabled] .btn {
     cursor: pointer;
 }
 /* MouseOver Neighbors */
-#graph g>.nodeGroup.neighborNodeOver>circle {
+#graph g>.nodeGroup.neighborNodeOver>.circleNode {
     fill: #4ac6dd;
     stroke-width: 2px;
 /*    stroke-dasharray: 7, 7;*/
@@ -1042,7 +1042,7 @@ fieldset[disabled] .btn {
     font-weight: bold;
 }
 /* Fixed nodes */
-#graph g>.nodeGroup.fixedNode>circle {
+#graph g>.nodeGroup.fixedNode>.circleNode {
     stroke-width: 2px;
     stroke-dasharray: 3;
 }
@@ -1081,6 +1081,14 @@ fieldset[disabled] .btn {
 	stroke: transparent;
 	stroke-width: 10px;
 	cursor: pointer;
+}
+
+#graph g>.circle-device-state-true {
+	fill: #ffff00;
+}
+
+#graph g>.circle-device-state-false {
+	fill: #777;
 }
 
 .caption-label {

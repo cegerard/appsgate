@@ -66,6 +66,14 @@ define([
       * @return false if the information are not correct, true otherwise
       */
       checkService: function() {
+        // Check the length of the name
+        if ($("#edit-service-modal input").val().length > App.MAX_NAME_LENGTH ) {
+            $("#edit-service-modal .text-danger").removeClass("hide");
+            $("#edit-service-modal .text-danger").text($.i18n.t("modal.name-too-long"));
+            $("#edit-service-modal .valid-button").addClass("disabled");
+            $("#edit-service-modal .valid-button").addClass("valid-disabled");
+                return false;
+        }
         // name already exists
         if (services.where({name: $("#edit-service-modal input").val()}).length > 0) {
           if (services.where({name: $("#edit-service-modal input").val()})[0].get("id") !== this.model.get("id")) {
