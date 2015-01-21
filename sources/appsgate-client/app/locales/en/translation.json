@@ -19,7 +19,7 @@
         "search-label" : "Search : ",
 		"entities-filter": "Entities filter",
 		"relations-filter": "Relations filter",
-		"unfix-node": "Unfix All",
+		"unfix-node": "Cancel the repositionings",
 		"search-example": "(Example : '__entity__')",
 	  	"caption": {
 			"title": "Caption",

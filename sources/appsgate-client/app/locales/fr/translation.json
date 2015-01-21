@@ -19,7 +19,7 @@
         "search-label" : "Chercher : ",
 		"entities-filter": "Filtre entités",
 		"relations-filter": "Filtre relations",
-		"unfix-node": "Défixer tout",
+		"unfix-node": "Annuler les repositionnements",
 		"search-example": "(Exemple : '__entity__')",
 	  	"caption": {
 			"title": "Légende",
