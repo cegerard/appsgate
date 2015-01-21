@@ -69,35 +69,41 @@ define([
 		},
 
 		onSearchButton: function (e) {
+			e.preventDefault();
 
-			if (e.type === "keyup") {
-				e.preventDefault();
+			var nameSearched = $(".search-input-text").val();
+			var nodesFound = [];
 
-				var nameSearched = $(".search-input-text").val();
-				var nodesFound = [];
+			// Comparing the string entered to the name of the entities
+			force.nodes().forEach(function (d) {
+				if (d.name.toLowerCase().indexOf(nameSearched.toLowerCase()) >= 0) {
+					nodesFound.push(d);
+				}
+			});
 
-				// Comparing the string entered to the name of the entities
-				force.nodes().forEach(function (d) {
-					if (d.name.toLowerCase().indexOf(nameSearched.toLowerCase()) >= 0) {
-						nodesFound.push(d);
-					}
+			if (nodesFound.length === 0 || nodesFound.length === force.nodes().length) {
+				nodeEntity.classed("neighborNodeOver", false);
+				$($(".search-button")[0]).removeClass("btn-success");
+				$(".search-button").prop('disabled', true);
+			} else {
+				// If there is node containing the string searched, highlight them
+				nodeEntity.classed("neighborNodeOver", function (d) {
+					return nodesFound.indexOf(d) !== -1;
 				});
 
-				if (nodesFound.length === 0 || nodesFound.length === force.nodes().length) {
-					nodeEntity.classed("neighborNodeOver", false);
-				} else {
-					// If there is node containing the string searched, highlight them
-					nodeEntity.classed("neighborNodeOver", function (d) {
-						return nodesFound.indexOf(d) !== -1;
-					});
-
-					// There is only one result, typing enter select it
-					if (e.keyCode === 13 && nodesFound.length === 1) {
+				// There is only one result, typing enter select it
+				if (nodesFound.length === 1) {
+					$(".search-button").prop('disabled', false);;
+					$($(".search-button")[0]).addClass("btn-success");
+					if ((e.type === "keyup" && e.keyCode === 13) || (e.type === "click" && e.target.className === "btn btn-default search-button btn-success")) {
 						force.stop();
 						this.selectAndMoveRootNode(nodesFound[0]);
 						$(".search-input-text").select();
 						force.start();
 					}
+				} else {
+					$($(".search-button")[0]).removeClass("btn-success");
+					$(".search-button").prop('disabled', true);
 				}
 			}
 		},
@@ -476,7 +482,7 @@ define([
 				})
 				.classed("node-more", function (d) {
 					// Transparence nodes if no depth 0/1/2 and if there is a focus
-					return self.model.get("rootNode") !== "" &&  (self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1);
+					return self.model.get("rootNode") !== "" && (self.model.getDepthNeighbor(d) > 2 || self.model.getDepthNeighbor(d) === -1);
 				})
 				.classed("fixedNode", function (d) {
 					return d !== self.model.get("rootNode") && d.fixed && !$(this).hasClass("nodeOver");
@@ -546,26 +552,26 @@ define([
 				})
 				.attr("marker-end", function (d) {
 					var isWritingReference = function (link) {
-					if (link.referenceData) {
-						for (var index = 0; index < link.referenceData.length; index++) {
-							if (link.referenceData[index].referenceType === "WRITING") {
-								return true;
+						if (link.referenceData) {
+							for (var index = 0; index < link.referenceData.length; index++) {
+								if (link.referenceData[index].referenceType === "WRITING") {
+									return true;
+								}
 							}
 						}
-					}
-					return false;
-				}(d);
-				// Target focus and mutliple target -> RED / ARROW
-				if (d.target === self.model.get("rootNode") && d.type === "reference" && isWritingReference)
-					return "url(#targetingRefFocus)";
-				// Target focus -> ARROW
-				else if (d.target === self.model.get("rootNode"))
-					return "url(#targetingFocus)";
-				// Multiple target -> RED
-				else if (isWritingReference && d.type === "reference")
-					return "url(#targeting)";
-				else
-					return "url(#" + d.type + ")";
+						return false;
+					}(d);
+					// Target focus and mutliple target -> RED / ARROW
+					if (d.target === self.model.get("rootNode") && d.type === "reference" && isWritingReference)
+						return "url(#targetingRefFocus)";
+					// Target focus -> ARROW
+					else if (d.target === self.model.get("rootNode"))
+						return "url(#targetingFocus)";
+					// Multiple target -> RED
+					else if (isWritingReference && d.type === "reference")
+						return "url(#targeting)";
+					else
+						return "url(#" + d.type + ")";
 				})
 				.classed("important-path", function (d) {
 					if (d.referenceData) {

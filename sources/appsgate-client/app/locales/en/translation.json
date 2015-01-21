@@ -17,10 +17,11 @@
   "dependancy": {
         "refresh-data" : "Refresh data",
         "search-label" : "Search : ",
+	  	"search-button": "OK",
+	  	"search-example": "(Example : '__entity__')",
 		"entities-filter": "Entities filter",
 		"relations-filter": "Relations filter",
 		"unfix-node": "Cancel the repositionings",
-		"search-example": "(Example : '__entity__')",
 	  	"caption": {
 			"title": "Caption",
 			"stopped-program": "Deactivated program",

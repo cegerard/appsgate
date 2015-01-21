@@ -17,10 +17,11 @@
   "dependancy": {
         "refresh-data" : "Actualiser les données",
         "search-label" : "Chercher : ",
+	  	"search-button": "OK",
+	  	"search-example": "(Exemple : '__entity__')",
 		"entities-filter": "Filtre entités",
 		"relations-filter": "Filtre relations",
 		"unfix-node": "Annuler les repositionnements",
-		"search-example": "(Exemple : '__entity__')",
 	  	"caption": {
 			"title": "Légende",
 			"stopped-program": "Programme désactivé",
