@@ -73,7 +73,7 @@
     			"container": {
     				"padding": {
     					"top": 10,
-    					"bottom": 10
+    					"bottom": 60
     				},
     				"margin": {
     					"top": 30,
