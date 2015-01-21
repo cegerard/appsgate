@@ -175,7 +175,8 @@
 		"change" : "Domicube face changes",
 		"newFace" : "someone shows face __myVar__ of Domicube",
 		"leaveFace" : "someone leaves face __myVar__ of Domicube",
-		"face" : "face __myVar__ of Domicube"
+		"face" : "face __myVar__ of Domicube",
+        "turn" : "Domicube turns __myVar__"
       },
       "keyboard": {
         "west": "West",
@@ -184,7 +185,8 @@
 		"newFace" : "someone shows face __myVar__ of Domicube",
 		"leaveFace" : "someone leaves face __myVar__ of Domicube",
 		"face" : "we are on __myVar__ of Domicube",
-        "oneface" : "top face"
+        "oneface" : "top face",
+        "turn" : "Domicube turns"
       },
       "white-face": {
         "first-elem": "White",

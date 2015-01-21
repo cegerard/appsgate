@@ -175,7 +175,8 @@
 		"change" : "on change de face du Domicube",
 		"newFace" : "on arrive sur __myVar__ du Domicube",
         "leaveFace": "on quitte __myVar__ du Domicube",
-		"face" : "on est sur __myVar__ du Domicube"
+		"face" : "on est sur __myVar__ du Domicube",
+		"turn" : "on tourne le Domicube __myVar__"
       },
       "keyboard": {
         "west": "l'Ouest",
@@ -184,7 +185,8 @@
 		"newFace" : "on arrive sur __myVar__ du Domicube",
         "leaveFace": "on quitte __myVar__ du Domicube",
 		"face" : "on est sur __myVar__ du Domicube",
-		"oneface" : "la face du dessus"
+		"oneface" : "la face du dessus",
+		"turn" : "on tourne le Domicube"
       },
       "white-face": {
         "first-elem": "Face",
