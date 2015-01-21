@@ -1,17 +1,29 @@
 <div id="graph" class="scrollable div-scrollable">
-	
+
 	<div id="graph-instruction" class="panel panel-default help-div">
-		<span class="help-div-title" data-i18n="dependancy.help.title"></span>
-		<ul>
-			<li data-i18n="dependancy.help.double-click"></li>
-			<li data-i18n="dependancy.help.click-move"></li>
-			<li data-i18n="dependancy.help.click"></li>
-			<li data-i18n="dependancy.help.maj-click"></li>
-			<li data-i18n="dependancy.help.hovering-entity"></li>
-			<li data-i18n="dependancy.help.click-relation"></li>
-		</ul>
+		<div class="row">
+			<div class="col-md-12">
+				<span class="help-div-title" data-i18n="dependancy.help.title"></span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<ul>
+					<li data-i18n="dependancy.help.double-click"></li>
+					<li data-i18n="dependancy.help.click-move"></li>
+					<li data-i18n="dependancy.help.click"></li>
+				</ul>
+			</div>
+			<div class="col-md-6">
+				<ul>
+					<li data-i18n="dependancy.help.maj-click"></li>
+					<li data-i18n="dependancy.help.hovering-entity"></li>
+					<li data-i18n="dependancy.help.click-relation"></li>
+				</ul>
+			</div>
+		</div>
 	</div>
-	
+
 	<div id="graph-action" class="panel panel-default">
 		<p>
 			<button type="button" class="refresh-button" data-i18n="dependancy.refresh-data"></button>
@@ -22,7 +34,7 @@
 			<span data-i18n="dependancy.search-example" data-i18n-options='{"entity":"<%= dependancy.get("entities")[0].name %>"}'></span>
 		</p>
 	</div>
-	
+
 	<svg></svg>
-	
+
 </div>
