@@ -99,6 +99,7 @@ define([
 						force.stop();
 						this.selectAndMoveRootNode(nodesFound[0]);
 						$(".search-input-text").select();
+						nodeEntity.classed("neighborNodeOver", false);
 						force.start();
 					}
 				} else {
