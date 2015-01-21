@@ -242,12 +242,15 @@
     },
     "clock": {
       "keyboard": {
-        "checkCurrentTimeOfDay": "current hour is between __myVar__ and __myVar2__",
+        "checkCurrentTimeOfDay": "current hour is ",
         "before" : "hour 1",
         "after" : "hour 2"
       },
       "language": {
-        "checkCurrentTimeOfDay": "current hour is between ",
+        "checkCurrentTimeOfDay": "current hour is ",
+        "between" : "between",
+        "before" : "before",
+        "after" : "after",
         "and" : "and"
       }
     },

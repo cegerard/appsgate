@@ -242,12 +242,15 @@
     },
     "clock": {
       "keyboard": {
-        "checkCurrentTimeOfDay": "l'heure actuelle est comprise entre __myVar__ et __myVar2__",
+        "checkCurrentTimeOfDay": "l'heure actuelle est",
         "before" : "heure 1",
         "after" : "heure 2"
       },
       "language": {
-        "checkCurrentTimeOfDay": "l'heure actuelle est comprise entre ",
+        "checkCurrentTimeOfDay": "l'heure actuelle est ",
+        "between" : "comprise entre",
+        "before" : "avant",
+        "after" : "apres",
         "and" : "et"
       }
     },
